@@ -70,14 +70,6 @@ void CUICombo_Image::Update_Priority(const _float fTimeDelta)
 void CUICombo_Image::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	if (KEY_BUTTON_HOLD(DIK_UP))
-	{
-		m_iCurComboCount += 1;
-	}
-	if (KEY_BUTTON_HOLD(DIK_DOWN))
-	{
-		m_iCurComboCount -= 1;
-	}
 }
 
 void CUICombo_Image::Update_Late(const _float fTimeDelta)
@@ -173,9 +165,7 @@ HRESULT CUICombo_Image::Attach_Personal_Info()
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]() 
 		{
-			if (!this->m_isVisible)
-				this->Set_Visible();
-			this->m_iCurComboCount++;
+			this->Set_Visible();
 		});
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]() 
@@ -188,29 +178,20 @@ HRESULT CUICombo_Image::Attach_Personal_Info()
 
 void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 {
-	m_isCountChange = false;
-
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BATTLE_COMBO_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_COMBO_RANK:
 	{
-		// m_iCurComboCount = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
-
-		if (m_iPreComboCount != m_iCurComboCount)
-			m_isCountChange = true;
-
-		m_fComboCoolTime += fTimeDelta;
-		if (m_isCountChange)
-		{
-			m_fComboCoolTime = 0.f;
-		}
-		// ÄÞº¸Ã¢ ²ô±â
-		if (m_fComboCoolTime > 5.f)
+		if (m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO) == 0)
 		{
 			m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_END>();
 		}
+
+		_uint i = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
+		if (m_iPreComboCount != i)
+			m_isComboChange = true;
 
 		Convert_Count_To_Rank();
 		if (m_isComboChange)
@@ -218,24 +199,26 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 			switch (m_eCurComboType)
 			{
 			case Client::ECombotype::C:
-				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(C_RANK_IMAGE_TAG, DEFAULT)))
+				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(C_RANK_IMAGE_TAG, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 					break;
 				break;
 			case Client::ECombotype::B:
-				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(B_RANK_IMAGE_TAG, DEFAULT)))
+				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(B_RANK_IMAGE_TAG, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 					break;
 				break;
 			case Client::ECombotype::A:
-				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(A_RANK_IMAGE_TAG, DEFAULT)))
+				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(A_RANK_IMAGE_TAG, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 					break;
 				break;
 			case Client::ECombotype::S:
-				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(S_RANK_IMAGE_TAG, DEFAULT)))
+				if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(S_RANK_IMAGE_TAG, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 					break;
 				break;
 			case Client::ECombotype::END:
 			default:
 				break;
+
+				m_isComboChange = false;
 			}
 			Ready_LerpChange(0.3f, 3.f, 1.f, 1.f, m_fDelay);
 		}

@@ -52,10 +52,10 @@ void CPhysicsRigidBody::Awake()
 		PHYSICSCOLLIDER_DESC* colDesc = collider->GetDesc();
 		vector<PxShape*>* shapes = &collider->GetShapes();
 
-	m_tDesc.pOwnerMatrix = Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrixPtr();
-	m_pActors = m_pGameInstance->GetActor(&m_tDesc,
-		colDesc,
-		*shapes);
+		m_tDesc.pOwnerMatrix = Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrixPtr();
+		m_pActors = m_pGameInstance->GetActor(&m_tDesc,
+			colDesc,
+			*shapes);
 
 		for (auto& actor : m_pActors)
 		{
@@ -74,6 +74,16 @@ void CPhysicsRigidBody::Update(const Matrix& matWorld)
 {
 	// TODO : get rigidbody state
 	// TODO : set transform
+}
+
+PxRigidActor* CPhysicsRigidBody::GetActor(_uint index)
+{
+	return m_pActors[index];
+}
+
+vector<PxRigidActor*> CPhysicsRigidBody::GetActors()
+{
+	return m_pActors;
 }
 
 CPhysicsRigidBody* CPhysicsRigidBody::SetUserData(_uint iIndex, CGameObject* pObject)
@@ -189,23 +199,9 @@ CPhysicsRigidBody* CPhysicsRigidBody::EnableCollision(_bool bEnable)
 			vector<PxShape*> vecShape(numShape);
 			actor->getShapes(vecShape.data(), numShape);
 
-			if (vecShape.size() > 0)
+			for (auto& shape : vecShape)
 			{
-				for (auto& shape : vecShape)
-				{
-					PxShapeFlags flags = shape->getFlags();
-					if (flags.isSet(PxShapeFlag::eTRIGGER_SHAPE))
-					{
-						shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bEnable);
-						shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-						shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
-					}
-					else
-					{
-						shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bEnable);
-						shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bEnable);
-					}
-				}
+				shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 			}
 		}
 
@@ -257,7 +253,13 @@ void CPhysicsRigidBody::Free()
 	for (auto& actor : m_pActors)
 	{
 		if (actor)
+		{
+			actor->userData = nullptr;
+
+			m_pGameInstance->RemoveActor(actor);
+
 			PX_RELEASE(actor);
+		}
 	}
 
 	m_pActors.clear();

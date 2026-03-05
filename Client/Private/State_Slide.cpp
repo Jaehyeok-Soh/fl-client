@@ -43,6 +43,15 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
 void CState_Slide::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
+
+    if (m_iMainAnimIdx == ENUM_TO_UINT(ANI::SKY) &&
+        Check_OnGround(0.3f))
+    {
+        m_FCollisions |= COLLISIONFLAGS::C_DOWN;
+        Request_ChangeAnimation(m_vecMainAnims[0], false, false, true);
+
+        m_iMainAnimIdx = ENUM_TO_UINT(ANI::NORMAL);
+    }
 }
 
 HRESULT CState_Slide::End()

@@ -340,6 +340,9 @@ namespace Client
 		FLIP_XY,
 		END
 	};
+
+	enum class EUITextureSlot : uint32_t { DEFAULT, NOISE, ALPHA_MASK, GLOW, END };
+
 	enum class EUIPrefabType
 	{
 		NOT_PREFAB,
@@ -348,6 +351,7 @@ namespace Client
 		DAMAGE_FONTS_CRITICAL,
 		DAMAGE_FONTS_HIT,
 		BOSS_NAMEPLATE,
+		MINIMAP_MONSTER_ICON,
 		END
 	};
 
@@ -360,6 +364,7 @@ namespace Client
 		case Client::EUIPrefabType::DAMAGE_FONTS_COMMON:	return L"DAMAGE_FONTS_COMMON";
 		case Client::EUIPrefabType::DAMAGE_FONTS_CRITICAL:	return L"DAMAGE_FONTS_CRITICAL";
 		case Client::EUIPrefabType::DAMAGE_FONTS_HIT:		return L"DAMAGE_FONTS_HIT";
+		case Client::EUIPrefabType::MINIMAP_MONSTER_ICON:	return L"DAMAGE_FONTS_HIT";
 		case Client::EUIPrefabType::END:
 		default:
 			break;
@@ -436,7 +441,7 @@ namespace Client
 	/* Monster Attack OverLap */
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
-
+	inline constexpr wchar_t g_wszBoss_Xibi_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Xibi" };
 #pragma endregion
 
 
@@ -457,6 +462,9 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_XibiLoopThunder[]						{ L"Pool_Xibi_LoopThunder" };
 	inline constexpr wchar_t g_wszPool_XibiCircleProjectile[]					{ L"Pool_Xibi_CircleProjectile" };
 	inline constexpr wchar_t g_wszPool_XibiOneshotThunder[]						{ L"Pool_Xibi_OneshotThunder" };
+
+	inline constexpr wchar_t g_wszMoonSkillE__Prototype_Tag[]								{ L"Prototype_GameObject_Moon_SkillE" };
+	inline constexpr wchar_t g_wszPool_MoonSkillE[]											{ L"Pool_Moon_SkillE" };
 #pragma endregion
 
 #pragma region SkillObjectSpawner 관련
@@ -465,6 +473,8 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360CircleProjectile[]				{ L"Prototype_Spawner_Xibi360CircleProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
+
+	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]					{ L"Prototype_Spawner_PlayerMoon_SkillE" };
 #pragma endregion
 
 #pragma region MapObject 관련
@@ -489,13 +499,18 @@ namespace Client
 	/* Monster Prototype Name 모음 */
 	inline constexpr wchar_t g_wszMonster_Dog_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer" };
+	inline constexpr wchar_t g_wszMonster_Shooter_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi" };
 
 	/* Monster Body Prototype Name 모음 */
 	inline constexpr wchar_t g_wszMonster_Dog_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Dog_Body" };
 	inline constexpr wchar_t g_wszMonster_Boomer_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer_Body" };
+	inline constexpr wchar_t g_wszBoss_Shooter_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter_Body" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi_Body" };
 
+	inline constexpr wchar_t g_wszPool_Monster_Dog[]{ L"Pool_Monster_Dog" };
+	inline constexpr wchar_t g_wszPool_Monster_Boomer[]{ L"Pool_Monster_Boomer" };
+	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
 #pragma endregion
 
 #pragma region 기타

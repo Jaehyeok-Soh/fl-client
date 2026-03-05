@@ -1,6 +1,8 @@
 #pragma once
 #include "ContainerObject.h"
 
+#include "Builder_Map.h"
+
 NS_BEGIN(Engine)
 class CRay;
 NS_END
@@ -118,8 +120,9 @@ protected:
 protected:
 	EMonster_Type			m_eMonsterType{ EMonster_Type::END};
 public:
+	void SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc);
+public:
 	static  HRESULT			Create_Mosnter(EMonster_Type eCreateMonsterType , _uint iFindPrototypeLevelType , _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc = nullptr);
-
 	virtual CGameObject*	Clone(void* pArg) PURE;
 	virtual void Free() override;
 };

@@ -36,6 +36,7 @@ public:
 	typedef struct tagHitStartDesc : public CStateBase::STATE_START_DESC
 	{
 		Vec3 vHitDir = {};
+		Vec3 vVicPos = {};
 	}HITSTATE_START_DESC;
 
 	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
@@ -113,7 +114,7 @@ protected:
 
 	// player 객체 연결 함수들
 protected:
-	_bool	Check_OnGround(_float fMaxDist = 0.8f); // 땅에 있는지 검사
+	_bool	Check_OnGround(_float fMaxDist = 0.6f); // 땅에 있는지 검사 0.8f
 
 	void	Check_Monster();
 

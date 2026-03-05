@@ -38,6 +38,10 @@ private:
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 private:
 	CStatComponent* m_pTargetStat = { nullptr };
+
+	_float m_fMenu_TimeAcc = {};
+	_float m_fMenu_DelayTimeAcc = {};
+
 public:
 	static CUIMenu_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "StateBase_Player.h"
+#include "Client_EventDefine.h"
 
 // has?
 #include "Player.h"
@@ -219,9 +220,8 @@ _bool CStateBase_Player::Check_DashKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SHIFT) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DASH)))
 	{
-
-		// player key event bus 호출
-
+		m_pGameInstance->Broadcast<PLAYER_SKILL_TRIGGERED>(ENUM_TO_UINT(STATEKEY::SHIFT));
+		
 		Change_PlayerState(STATEKEY::SHIFT);
 		return true;
 	}
@@ -325,7 +325,8 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL1)) &&
 		static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(CPlayer::State::SKILL1))
 	{
-		// player key event bus 호출
+		m_pGameInstance->Broadcast<PLAYER_SKILL_TRIGGERED>(ENUM_TO_UINT(STATEKEY::E));
+
 		Change_PlayerState(STATEKEY::E);
 		return true;
 	}
@@ -334,7 +335,8 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::SKILL2)) &&
 		static_cast<CPlayer*>(Get_OwnerObject())->Start_Attack(CPlayer::State::SKILL2))
 	{
-		// player key event bus 호출
+		m_pGameInstance->Broadcast<PLAYER_SKILL_TRIGGERED>(ENUM_TO_UINT(STATEKEY::Q));
+
 		Change_PlayerState(STATEKEY::Q);
 		return true;
 	}
@@ -351,29 +353,47 @@ _bool CStateBase_Player::Check_Hit(const _float fTimeDelta)
 	{
 		Flags fAttackFlag = pActionState->Get_AttackFlag();
 
+		HITSTATE_START_DESC tStartDesc = {};
+		tStartDesc.vHitDir = pActionState->Get_HitNormal();
+		tStartDesc.vVicPos = pActionState->Get_VicPosition();
+
+
 		// 해당 hit collision을 체크 할 거고 : state 권한
 		// 해당 hit가 들어왔다면 : action state에서 처리 -> 아님 플레이어?
-		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Addtive) &&
-			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Addtive))
-		{
-			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITADDTIVE));
-			return true;
-		}
 
-		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Fly) &&
-			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Fly))
-		{
-			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITFLYSTART));
-			return true;
-		}
-
+				// strong은 이제 지면 충돌 검사 후 fly, strong 전환 
 		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Strong) &&
 			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Strong))
 		{
 			// 충돌 방향 desc 넘겨줌
-			HITSTATE_START_DESC tStartDesc = {};
-			tStartDesc.vHitDir = pActionState->Get_HitNormal();
-			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITSTRONG), &tStartDesc);
+			if (Check_OnGround(0.3f))
+			{
+				Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITSTRONG), &tStartDesc);
+			}
+
+			else
+			{
+				Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITFLYSTART), &tStartDesc);
+			}
+
+			return true;
+		}
+		
+		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Fly) &&
+			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Fly))
+		{
+			// 충돌 방향 desc 넘겨줌
+			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITFLYSTART) ,&tStartDesc);
+
+			return true;
+		}
+
+
+
+		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Addtive) &&
+			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Addtive))
+		{
+			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::HITADDTIVE));
 			return true;
 		}
 	}
@@ -418,7 +438,11 @@ void CStateBase_Player::Check_Monster()
 
 void CStateBase_Player::Change_Weapon(_uint iPart, _uint iState)
 {
-	static_cast<CPlayer*>(Get_OwnerObject())->Change_Weapon(iPart, iState);
+	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
+	if (pPlayer)
+	{
+		pPlayer->Change_Weapon(iPart, iState);
+	}
 }
 
 _bool CStateBase_Player::Start_Att(_uint iPlayerState)

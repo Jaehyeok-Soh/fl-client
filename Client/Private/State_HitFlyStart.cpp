@@ -29,6 +29,17 @@ HRESULT CState_HitFlyStart::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	HITSTATE_START_DESC* pDesc = static_cast<HITSTATE_START_DESC*>(pArg);
+
+	CTransform* pOwnerTransform = Get_OwnerObject()->Get_Component<CTransform>();
+	if (pOwnerTransform)
+	{
+		Vec3 vMyPos		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+		Vec3 vTargetPos = vMyPos + (pDesc->vHitDir * -1.f);
+
+		pOwnerTransform->Look_At_XZ(vTargetPos);
+	}
+
 	return S_OK;
 }
 
@@ -38,7 +49,8 @@ void CState_HitFlyStart::Update(const _float fTimeDelta)
 
 	// 바닥 충돌 검사 후 change
 	if (m_fStateElapsed > 0.28f &&
-		Check_OnGround(0.3f))
+		(Check_OnGround(0.3f) || IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES))
+		)
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::HITFLYEND));
 		return;

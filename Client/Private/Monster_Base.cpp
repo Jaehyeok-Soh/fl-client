@@ -75,7 +75,7 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 	Get_Component<CPhysicsCCT>()->Awake();
 
 	if (CPhysicsAttackOverlap* attackOverlap = Get_Component<CPhysicsAttackOverlap>())
-		attackOverlap->Awake();
+		attackOverlap->Bind_Events();
 
 	return S_OK;
 }
@@ -312,6 +312,15 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 	return S_OK;
 }
 
+void CMonster_Base::SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc)
+{
+	Matrix matWorld = tTransformDesc.ScaleMatrix * tTransformDesc.RotationMatrix * tTransformDesc.TranslationMatrix;
+
+	Get_Component<CTransform>()->Set_WorldMatrix(matWorld);
+
+	Get_Component<CPhysicsCCT>()->SetFootPosition(matWorld.Translation());
+}
+
 HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc)
 {
 	/* Monster Typeº°·Î Batch */
@@ -421,9 +430,10 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		////////////////////
 		//  BOSS Xibi  //
 		////////////////////
-		monsterDesc.wstrBodyModelTag			= g_wszBoss_Xibi_Model_Prototype_Tag;
-		monsterDesc.wstrPartBodyPrototypeTag	= g_wszBoss_Xibi_Body_Prototype_Tag;
-		monsterDesc.wstrMonsterStateTag			= g_wszBoss_Xibi_State_Tag;
+		monsterDesc.wstrBodyModelTag				= g_wszBoss_Xibi_Model_Prototype_Tag;
+		monsterDesc.wstrPartBodyPrototypeTag		= g_wszBoss_Xibi_Body_Prototype_Tag;
+		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszBoss_Xibi_AttackOverlap_Prototype_Tag;
+		monsterDesc.wstrMonsterStateTag				= g_wszBoss_Xibi_State_Tag;
 		{
 			PHYSICSCCT_DESC desc;
 			desc.pOwner = nullptr;

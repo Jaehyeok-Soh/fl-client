@@ -5,6 +5,7 @@
 //=================
 // Component
 //=================
+#include "MyStat.h"
 #include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -41,6 +42,14 @@ HRESULT CUIBossStat_Image::Initialize(void* pArg)
 
 HRESULT CUIBossStat_Image::Attach_Personal_Info()
 {
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]()
+		{
+			this->Set_Visible();
+		});
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]()
+		{
+			this->Set_Invisible();
+		});
 	return S_OK;
 }
 
@@ -51,9 +60,10 @@ HRESULT CUIBossStat_Image::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
+
 	if (m_isSpawned)
 	{
-		Set_Visible();
+		Set_Invisible();
 		m_isSpawned = false;
 	}
 	return S_OK;
@@ -72,16 +82,6 @@ void CUIBossStat_Image::Update(const _float fTimeDelta)
 void CUIBossStat_Image::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
-
-	m_fTimeAcc += fTimeDelta;
-	if (m_fTimeAcc > 3.f)
-	{
-		if (m_isBossEventTrigger)
-			return;
-
-		m_pGameInstance->Broadcast<BOSS_STAGING_EVENT_END>();
-		m_isBossEventTrigger = true;
-	}
 }
 
 void CUIBossStat_Image::Ready_Before_Render(const _float fTimeDelta)
@@ -136,18 +136,25 @@ _bool CUIBossStat_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 HRESULT CUIBossStat_Image::Spawn_FromPool(void* pArg)
 {
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
+
+	if (nullptr == m_pTargetStat)
+		return E_FAIL;
 	/* º¸½º ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
-	m_bDead = false;
-	m_isBossEventTrigger = false;
-	m_fTimeAcc = 0.f;
-	m_isSpawned = true;
-	m_pGameInstance->Broadcast<BOSS_STAGING_EVENT_START>();
+	m_bDead					= false;
+	m_isBossEventTrigger	= false;
+	m_isSpawned				= true;
 	return S_OK;
 }
 
 HRESULT CUIBossStat_Image::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
 	m_isVisible			= false;
 	m_isPreVisible		= false;
 	m_isVisibleTrigger	= false;

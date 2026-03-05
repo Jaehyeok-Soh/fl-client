@@ -56,6 +56,7 @@
 #include "Monster_Dog_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
+#include "Moon_SkillE_Obj.h"
 
 
 //=================
@@ -160,6 +161,8 @@ HRESULT CLevel_Tutorial_Village::Build_Prototype()
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_VILLAGE)))))
 		return E_FAIL;
+	if (FAILED(Ready_Builder(DTO::ECategory::UI_PREFAB, CBuilder_UIPrefabs::Create(m_pDevice, m_pDeviceContext, static_cast<_uint>(ELevelType::TUTORIAL_VILLAGE)))))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -188,10 +191,10 @@ HRESULT CLevel_Tutorial_Village::Build_Files()
 
 	eLevelType = ELevelType::TUTORIAL_VILLAGE;
 	iLevelID = ENUM_TO_UINT(eLevelType);
+
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-
 	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
@@ -205,6 +208,21 @@ HRESULT CLevel_Tutorial_Village::Build_Files()
 		}
 	}
 
+	eCategory = DTO::ECategory::UI_PREFAB;
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
+		return E_FAIL;
+	strUIFolderPath = L"../../Resources/Data/UIData/Prefab/";
+	if (std::filesystem::exists(strUIFolderPath))
+	{
+		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		{
+			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+				return E_FAIL;
+
+			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+				return E_FAIL;
+		}
+	}
 
 	return S_OK;
 }
@@ -219,6 +237,20 @@ HRESULT CLevel_Tutorial_Village::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 	/* Player 가 없다면 생성되고 있다면 Safe_Release */
 	{
+		// SkillObject Pool
+		{
+			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillE,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillE__Prototype_Tag,
+				&desc,
+				30)))
+				return E_FAIL;
+		}
+
 		CGameObject* pResult = { nullptr };
 
 		CPlayer::PLAYER_DESC playerDesc = {};

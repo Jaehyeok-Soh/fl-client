@@ -65,6 +65,9 @@ void CPhysics_CCTHitReport::onShapeHit(const PxControllerShapeHit& hit)
 
 void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 {
+	if (hit.controller->getUserData() == nullptr || hit.other->getUserData() == nullptr)
+		return;
+
 	GAMEOBJECTINFO info = Get_GameObject(hit.controller->getUserData(), hit.other->getUserData());
 
 	auto pCCT = static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>();
@@ -119,6 +122,7 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 		Vec3 disp(normal.x, 0.f, normal.z);
 		disp *= 0.01f;
 		pCCT->Add_Disp(disp);
+		pCCT->SetIsSideOnCCT();
 	}
 
 //#ifdef _DEBUG

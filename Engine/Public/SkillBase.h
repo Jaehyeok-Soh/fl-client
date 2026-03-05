@@ -10,6 +10,7 @@
 
 NS_BEGIN(Engine)
 class CMyStat;
+class CGameInstance;
 
 class ENGINE_DLL CSkillBase : public CBase
 {
@@ -72,7 +73,9 @@ protected:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
-	virtual void Update(const _float fTimeDelta);
+	virtual void Awake(const _uint iCurLevelIndex);
+	virtual void Update(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
+	virtual void Update_Default(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
 
 	// start와 end는 외부에서 호출해준다
 public:
@@ -80,6 +83,8 @@ public:
 	virtual void End_Skill(CMyStat* pStatCom = nullptr);
 	 
 	virtual _bool On_Collision(const _float fTimeDelta, CGameObject* pObj = nullptr); // 충돌 했을 때
+
+	virtual void Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat) {};
 
 	// getter setter fucs
 public:
@@ -91,6 +96,9 @@ public:
 	void Set_CountTime(_bool bCount) { m_bCountTime = bCount; }
 
 	_uint Get_SkillCount() const { return m_iOnSkillCount; }
+
+protected:
+	CGameInstance* m_pGameInstance = { nullptr };
 
 protected:
 	_bool		m_bEndSkill = { false };

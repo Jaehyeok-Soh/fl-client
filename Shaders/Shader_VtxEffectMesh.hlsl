@@ -658,7 +658,7 @@ float4 PS_SPRITEMESH(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float4 GradationSample = { 1.f, 1.f, 1.f, 1.f };
     float4 GlowSample = { 1.f, 1.f, 1.f, 1.f };
     float4 DissolveSample = { 1.f, 1.f, 1.f, 1.f };
-    float noiseValue = { 1.f};
+    float noiseValue = { 1.f };
     
     // 생명 주기
     float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
@@ -672,7 +672,6 @@ float4 PS_SPRITEMESH(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 
             DiffuseSample = DefaultTextureSample(SpriteUV);
         }
-        
         else
             DiffuseSample = g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearClampSampler, In.vUV);
     }
@@ -1013,8 +1012,8 @@ float4 PS_UnityConvert(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float lifeAlpha = 1.0f - LifeRatio;
     float finalAlpha = DefaultSample.a * dissolveMask * lifeAlpha;
     
-        if (finalAlpha <= g_Effect.g_DiscardValue)
-            discard;
+    if (finalAlpha <= g_Effect.g_DiscardValue)
+        discard;
     
     //finalColor.a *= finalAlpha;
     

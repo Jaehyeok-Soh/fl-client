@@ -50,6 +50,7 @@ private:
 private:
 	CGameObject* m_pTargetMoster = { nullptr };
 	CMyStat* m_pTargetStat = { nullptr };
+	_bool m_isSpawned = { false };
 
 	// Monster HP Values
 	_bool m_isStartLowHp = { FALSE };

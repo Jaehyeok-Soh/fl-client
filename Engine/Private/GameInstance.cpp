@@ -61,7 +61,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pCollision_Manager = CCollision_Manager::Create(Engine_Desc.iCollideLayerCount)))
 		return E_FAIL;
 
-	if(!(m_pGameData_Manager = CGameDataManager::Create(*ppDevice , *ppContext)))
+	if (!(m_pGameData_Manager = CGameDataManager::Create(*ppDevice, *ppContext)))
 		return E_FAIL;
 
 	if (!(m_pDataRepository = CDataRepository::Create(Engine_Desc.iLevelCount)))
@@ -129,7 +129,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 
 	if (!(m_pEffect_Manager = CEffect_Manager::Create()))
 		return E_FAIL;
-	
+
 	if (!(m_pJudgementSystem = CJudgementSystem::Create()))
 		return E_FAIL;
 
@@ -149,7 +149,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pObject_Manager->Update_Late(fUnscaledTimeDelta, fScaledTimeDelta);
 
 	// 피직스 시뮬레이트
-	if(fScaledTimeDelta > g_XMEpsilon.f[0])
+	if (fScaledTimeDelta > g_XMEpsilon.f[0])
 		m_pPhysics_Module->StepPhysics(fScaledTimeDelta);
 
 	m_pJudgementSystem->Flush_CollidedEvent();
@@ -168,7 +168,7 @@ HRESULT CGameInstance::Draw_Begin(const Vec4* pClearColor)
 {
 	if (FAILED(m_pGraphic_Device->Clear_BackBuffer_View(&m_pLevel_Manager->Get_ClearColor())))
 		return E_FAIL;
-	
+
 	if (FAILED(m_pGraphic_Device->Clear_DepthStencil_View()))
 		return E_FAIL;
 
@@ -303,6 +303,8 @@ void CGameInstance::Request_ChangeLevel(_uint iNewLevelID, CLevel* pNewLevel)
 	desc.iNewLevelID = static_cast<_int>(iNewLevelID);
 	desc.pNewLevel = pNewLevel;
 	m_pEvent_Manager->Push_ChangeLevelEvet(desc);
+
+	SetChangeLevelSequence(true);
 }
 
 _bool CGameInstance::Is_Awaked(const _uint iLevelID) const
@@ -446,7 +448,7 @@ void CGameInstance::Request_AddObject(_uint iPoolLevelIndex, const wstring& wstr
 	wstring wstrLayerTag = { L"" };
 	pResult = m_pObjectPool_Manager->Spawn(iPoolLevelIndex, wstrPoolTag, wstrLayerTag, pArg);
 
-	if(pResult)
+	if (pResult)
 		Request_AddObject(iSpawnLevelIndex, wstrLayerTag, pResult, onSpawnedCallback);
 }
 void CGameInstance::Request_DeleteGameObject(_uint iCloneLevelIndex, const wstring& wstrLayerTag, CGameObject* pGo)
@@ -1015,6 +1017,21 @@ void CGameInstance::ClearPhysics()
 	m_pPhysics_Module->ClearPhysics();
 }
 
+void CGameInstance::FlushScene()
+{
+	m_pPhysics_Module->FlushScene();
+}
+
+void CGameInstance::RemoveActor(PxRigidActor* actor)
+{
+	m_pPhysics_Module->RemoveActor(actor);
+}
+
+void CGameInstance::ResetActorFilter(PxRigidActor* actor)
+{
+	m_pPhysics_Module->ResetActorFilter(actor);
+}
+
 PxTransform CGameInstance::XMMatrixToPxTransform(Matrix mat)
 {
 	return m_pPhysics_Module->XMMatrixToPxTransform(mat);
@@ -1149,7 +1166,7 @@ HRESULT CGameInstance::GameDataManager_Save_CameraCinematicSequence()
 
 HRESULT CGameInstance::GameDataManager_Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT Camera_Cinematic_Sequence* pOutCamCinematicSequence)
 {
-	return m_pGameData_Manager->Load_CameraCinematicSequence(wstrFindKey , pOutCamCinematicSequence);
+	return m_pGameData_Manager->Load_CameraCinematicSequence(wstrFindKey, pOutCamCinematicSequence);
 }
 
 HRESULT CGameInstance::GameDataManager_Save_CameraCinematicSequence(const wstring& wstrFindKey, const Camera_Cinematic_Sequence* pSaveCamCinematicSequence)
@@ -1182,6 +1199,10 @@ HRESULT CGameInstance::Upsert_AttackPresetData(const DTO::TAttackPreset_Data& in
 const unordered_map<_uint, DTO::TAttackPreset_Data>& CGameInstance::Get_AttackPresetsData_ForDebug() const
 {
 	return m_pGameData_Manager->Get_AttackPresetsData_ForDebug();
+}
+void CGameInstance::SetChangeLevelSequence(_bool bVal)
+{
+	m_bChangeLevelSequence = bVal;
 }
 #pragma endregion
 

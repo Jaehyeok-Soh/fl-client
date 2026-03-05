@@ -22,8 +22,8 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Transform.h"
-#include "SkillComp_MoonE.h"
-#include "SkillComp_MoonQ.h"
+#include "SkillBase_MoonE.h"
+#include "SkillBase_MoonQ.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 //=================
@@ -60,6 +60,7 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "BattleField.h"
+#include "Moon_SkillE_Obj.h"
 
 //=================
 // SkillObject
@@ -124,6 +125,7 @@
 #include "UIDamageFont_Text.h"
 #include "UIBossStat_Text.h"
 #include "UICombo_Text.h"
+#include "UIBossAction_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -138,6 +140,8 @@
 #include "UILevelChange_Image.h"
 #include "UIBossStat_Image.h"
 #include "UICombo_Image.h"
+#include "UIMiniMap_Monster_Icon.h"
+#include "UIBossAction_Image.h"
 // 트리거 
 #include "UIMenu_Trigger.h"
 #include "UICommon_Trigger.h"
@@ -155,6 +159,7 @@
 #pragma endregion
 
 
+#define TIME_DELTA 0.016f 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 	: m_pDevice(pDevice)
@@ -249,6 +254,11 @@ HRESULT CLoader::Loading_For_LoadLevel()
 
 HRESULT CLoader::Loading_For_Test()
 {
+	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+	m_fLoadingRatio = 1.f;
+	Sleep(1000);
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -256,8 +266,6 @@ HRESULT CLoader::Loading_For_Test()
 /* 첫 실행 떄 등록해야하는 것들 등록 */
 HRESULT CLoader::Loading_For_Logo()
 {
-	m_fLoadingRatio = 0.f;
-
 	if (FAILED(Ready_Spawner()))
 		return E_FAIL;
 
@@ -491,39 +499,6 @@ HRESULT CLoader::Loading_For_Logo()
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
-	// For.Prototype_Component_Model_Xibi
-	{
-		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::ANIM;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &(matPreTransformScale);
-		desc.wstrModelFolderName = L"Xibi";
-		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = { 3, 59, 375 };
-
-		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
-		tAniChannelData.iRootBoneIndex = 2;
-		desc.pAniChannelData = &tAniChannelData;
-
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszBoss_Xibi_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-	}
-
-	// For.Prototype_Component_Model_XibiWeapon
-	{
-		CModel::MODEL_ORIGIN_DESC desc = {};
-		desc.eType = EModelType::ANIM;
-		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform = &(matPreTransformScale);
-		desc.wstrModelFolderName = L"XibiWeapon";
-		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-
-		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
-		tAniChannelData.iRootBoneIndex = 2;
-		desc.pAniChannelData = &tAniChannelData;
-
-		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_XibiWeapon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-	}
-
 	// For.Prototype_Component_Model_Monster_Dog
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
@@ -571,8 +546,6 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_Sphere_PrototypeTag, CCollider::Create(m_pDevice, m_pDeviceContext, EColliderType::SPHERE));
 	// For. Prototype_Component_Bounds
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
-	// For. Prototype_Component_Xibi_GimmikController
-	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Xibi_GimmikController", CXibi_GimmikController::Create());
 	// For. Prototype_Component_VIBuffer_InstanceMesh
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_EffectHandler_SkillObject
@@ -584,7 +557,6 @@ HRESULT CLoader::Loading_For_Logo()
 	/* player components */
 	// For. Prototype_Component_Stat_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
-
 	// For. Prototype_Component_ControlContext_Monster
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Monster", CMonsterControlContext::Create());
 	// For. Prototype_Component_ActionState_Monster
@@ -612,9 +584,9 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 		
 		// Projectile
-		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiProjectile_Prototype_Tag,				CXibi_Projectile_Circle::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiLoopThunder_Prototype_Tag,				CXibi_Loop_Thunder::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::TEST, g_wszXibiOneshotThunder_Prototype_Tag,			CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
+
+		// player effect object
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,							CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
 
 
 		/* Battle Field */
@@ -650,11 +622,6 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Boss_Xibi
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Xibi_Prototype_Tag , CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Boss_XibiBody
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Xibi_Body_Prototype_Tag, CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
-
 	}
 #pragma endregion
 
@@ -677,7 +644,6 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma region PHYSICS
 #pragma endregion
-
 #pragma region UI
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerStatProgress",		CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MenuText",					CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
@@ -698,13 +664,15 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerAmmoProgress",		CUIPlayerAmmo_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_LevelChangeImage",			CUILevelChange_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_DamageFontText",			CUIDamageFont_Text::Create(m_pDevice, m_pDeviceContext));
-
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatProgress",			CUIBossStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatText",				CUIBossStat_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossStatImage",			CUIBossStat_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboImage",				CUICombo_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboText",				CUICombo_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniMapMonsterIconImage",	CUIMiniMap_Monster_Icon::Create(m_pDevice, m_pDeviceContext));
 	
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionImage",			CUIBossAction_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionText",			CUIBossAction_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;
@@ -721,6 +689,11 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 	
 	// 이펙트 Object
 
+
+	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+	m_fLoadingRatio = 1.f;
+	Sleep(1000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -729,10 +702,66 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 {
 	/* Tutorial Boss */
 
-	// 오브젝트
-	
+#pragma region PretransformMatrix
+	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
+	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
+	Matrix matPreTransformScale150 = Matrix::CreateScale(1.5f, 1.5f, 1.5f);
+	Matrix matPreTransformIdentity = Matrix::Identity;
+	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
+#pragma endregion
 	// 이펙트 Object
 
+	// For. Prototype_GameObject_Boss_Xibi
+	ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Xibi_Prototype_Tag, CBoss_Xibi::Create(m_pDevice, m_pDeviceContext));
+	// For. Prototype_GameObject_Boss_XibiBody
+	ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Xibi_Body_Prototype_Tag, CBoss_Xibi_Body::Create(m_pDevice, m_pDeviceContext));
+
+	// 오브젝트
+	// For.Prototype_Component_Model_Xibi
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Xibi";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = { 375 };
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszBoss_Xibi_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
+	// For.Prototype_Component_Model_XibiWeapon
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"XibiWeapon";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_XibiWeapon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+	// For. Prototype_Component_Xibi_GimmikController
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Xibi_GimmikController", CXibi_GimmikController::Create());
+
+	// Projectile
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiProjectile_Prototype_Tag, CXibi_Projectile_Circle::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiLoopThunder_Prototype_Tag, CXibi_Loop_Thunder::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiOneshotThunder_Prototype_Tag, CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
+
+	
+	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+	m_fLoadingRatio = 1.f;
+	Sleep(1000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -744,7 +773,13 @@ HRESULT CLoader::Loading_For_Square()
 	// 오브젝트
 
 	// 이펙트 Object
-
+	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+	
+	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+	m_fLoadingRatio = 1.f;
+	Sleep(1000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -888,6 +923,9 @@ HRESULT CLoader::Ready_AttackOverlap()
 	if (FAILED(Ready_AttackOverlap_Monster_Boomer()))
 		return E_FAIL;
 
+	if (FAILED(Ready_AttackOverlap_Xibi()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -901,12 +939,7 @@ HRESULT CLoader::Ready_EffectEvent()
 
 HRESULT CLoader::Ready_Spawner()
 {
-	//CSingleSkillSpawner* m_pOneshotThunderSpawner{ nullptr };
-	//CSkillObjectSpawner_RandomXZ* m_pRandomThunderSpawner{ nullptr };
-	//CProjectileSpawner_Fan* m_p3wayThunderSpawner{ nullptr };
-	//CProjectileSpawner_Radial360* m_p360CircleSpawner{ nullptr };
-	//CProjectileSpawner_Radial360* m_p360ThunderSpawner{ nullptr };
-	_uint iLevelID = ENUM_TO_UINT(ELevelType::TEST);
+	_uint iLevelID = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
 
 	/* Xibi */
 	// SingleSkill
@@ -941,7 +974,7 @@ HRESULT CLoader::Ready_Spawner()
 		desc.fLifeTime = 5.f;
 		desc.fInterval = 0.05f;
 		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::TEST), g_wszSpawner_Xibi360CircleProjectile,
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360CircleProjectile,
 			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}
@@ -968,6 +1001,21 @@ HRESULT CLoader::Ready_Spawner()
 
 		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
 			CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+
+	/* player */
+	// Moon Skill
+	{
+		CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = 0;
+		desc.wstrSkillPoolTag = g_wszPool_MoonSkillE; // 스킬 poot에서 꺼내올 오브젝트 태그
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		desc.fLifeTime = 3.5f;
+		desc.fSpeed = 50.f;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillE,
+			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}
 	return S_OK;
@@ -1093,6 +1141,27 @@ HRESULT CLoader::Ready_AttackOverlap_Monster_Boomer()
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Monster_Boomer_Attack.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_AttackOverlap_Xibi()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Xibi_Attack.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

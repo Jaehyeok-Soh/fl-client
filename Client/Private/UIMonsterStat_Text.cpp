@@ -72,6 +72,14 @@ void CUIMonsterStat_Text::Ready_Before_Render(const _float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 	if (FAILED(Convert_Stat_To_Text()))
 		return;
+	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f)
+	{
+		m_vFontColor.w = 0.f;
+	}
+	else
+	{
+		m_vFontColor.w = 1.f;
+	}
 }
 
 HRESULT CUIMonsterStat_Text::Render()
@@ -104,12 +112,18 @@ HRESULT CUIMonsterStat_Text::Bind_ShaderResources()
 
 HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
 {
-	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
+	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>(
+		[this](CGameObject* pDead)
 		{
 			if (pDead == m_pTargetMoster)
 				this->Set_Invisible();
 		});
 
+	if (m_isSpawned)
+	{
+		Set_Visible();
+		m_isSpawned = false;
+	}
 	return S_OK;
 }
 
@@ -118,7 +132,7 @@ HRESULT CUIMonsterStat_Text::Convert_Stat_To_Text()
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_LV:
-		m_wstrText = L"1"; // UIFIX //
+		m_wstrText = L"Lv 1"; // UIFIX //
 		break;
 	case DTO::EUITextSubClassType::MONSTER_STAT_TEXT_NICKNAME:
 		m_wstrText = Engine_Utils::ToWString(m_pTargetStat->Get_Owner()->Get_Name());
@@ -171,6 +185,8 @@ _bool CUIMonsterStat_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 {
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");
@@ -188,13 +204,20 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
 	if (nullptr == m_pTargetStat)
 		return E_FAIL;
-	
-	m_bDead = false;
+
+	m_isSpawned = true;
+	m_isDeadRequest = false;
 	return S_OK;
 }
 
 HRESULT CUIMonsterStat_Text::Despawn_FromPool()
 {
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
+	m_isVisible = false;
+	m_isVisibleTrigger = false;
+	m_isPreVisible = false;
 	return S_OK;
 }
 

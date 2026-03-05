@@ -41,7 +41,7 @@ void CPhysicsAttackOverlap::Render()
 }
 #endif
 
-void CPhysicsAttackOverlap::Awake()
+void CPhysicsAttackOverlap::Bind_Events()
 {
 	Safe_Release(m_pFilterCallback);
 
@@ -108,7 +108,11 @@ void CPhysicsAttackOverlap::Ready_Event()
 void CPhysicsAttackOverlap::Release_Event()
 {
 	if (m_pOwner)
-		m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
+	{
+		if (m_pOwnerModel)
+			m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
+	}
+		
 }
 
 void CPhysicsAttackOverlap::CallbackEvent(const AnimNotifyKey& key)

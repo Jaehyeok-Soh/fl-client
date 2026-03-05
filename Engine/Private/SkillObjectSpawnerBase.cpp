@@ -51,7 +51,7 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
 {
 	if (m_pOriginDesc->wstrSkillPoolTag.empty())
 		return;
-
+	
 	CSkillObject_Base::SKILLOBJECT_DESC desc{};
 	desc.pRequester = m_desc.pRequester;
 	desc.pTarget = m_desc.pTarget;
@@ -64,9 +64,13 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
     desc.vSpawnPos = vSpawnPos;
     desc.vDirection = vDir;
 
-    CGameInstance::GetInstance()->Request_AddObject(
+	// eunbi 초반에 셋팅한 속도 == transform speed
+	//desc.fSpeed = m_pOriginDesc->fSpeed;
+
+	CGameInstance::GetInstance()->Request_AddObject(
 		m_pOriginDesc->iPoolLevelIndex, m_pOriginDesc->wstrSkillPoolTag,
-		m_desc.iSpawnLevelIndex, &desc);
+		m_pGameInstance->Get_CurrentLevelIndex(), &desc);
+		//m_desc.iSpawnLevelIndex, &desc);
 }
 
 HRESULT CSkillObjectSpawnerBase::Ready_Components()
@@ -81,6 +85,7 @@ HRESULT CSkillObjectSpawnerBase::Awake(const _uint iCurrentLevelID)
 
 	CTransform* pTransform = Get_Component<CTransform>();
 	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vOrigin);
+	/*pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, m_desc.vUp);*/
 	pTransform->Set_Scale(m_pOriginDesc->vScaleStart);
 
 	m_eState = EState::Idle;
@@ -141,6 +146,9 @@ void CSkillObjectSpawnerBase::Trigger(const SPAWNER_COPY_DESC& desc, _bool bForc
 	CTransform* pTransform = Get_Component<CTransform>();
 	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vOrigin);
 	pTransform->Set_Scale(m_pOriginDesc->vScaleStart);
+
+	//if(m_desc.eRotationState != TRANSFORM_INFO_STATE::END)
+	//	pTransform->Rotation(m_desc.eRotationState,m_desc.fRotation_Radian);
 
 	// Spawn_WarningIfNeeded();
 

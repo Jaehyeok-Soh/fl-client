@@ -53,6 +53,10 @@ private:
 	_float m_fTargetPercent = {};
 
 	_float m_fDuration = { 1.f };
+	_float m_fLoadingTimeAcc = { 1.f };
+
+	vector<_wstring> m_vecText;
+	_uint m_iCurTextCursor = {};
 
 public:
 	static CUILoading_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -1,7 +1,9 @@
 #pragma once
 #include "UIText.h"
 #include "DataStruct_UI.h"
-
+NS_BEGIN(Engine)
+class CMyStat;
+NS_END
 NS_BEGIN(Client)
 class CWorldUI_Component;
 class CUIBossStat_Text final : public CUIText
@@ -44,6 +46,7 @@ private:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 private:
+	CMyStat* m_pTargetStat = { nullptr };
 	CWorldUI_Component* m_pWorldUIComp = { nullptr };
 	_bool m_isSpawned = { false };
 

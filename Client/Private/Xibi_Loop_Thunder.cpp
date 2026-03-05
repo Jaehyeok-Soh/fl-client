@@ -33,7 +33,8 @@ HRESULT CXibi_Loop_Thunder::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	Get_Component<CPhysicsRigidBody>()->Awake();
+	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
+		pRigidBody->Awake();
 	return S_OK;
 }
 
@@ -42,7 +43,6 @@ HRESULT CXibi_Loop_Thunder::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Get_Component<CEffectHandler>()->Awake();
 	return S_OK;
 }
 
@@ -90,14 +90,20 @@ void CXibi_Loop_Thunder::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLa
 {
 }
 
-void CXibi_Loop_Thunder::Set_Dead(const wstring& wstrLayerTag)
+void CXibi_Loop_Thunder::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	m_bDead = true;
-	m_pGameInstance->Request_DeleteGameObject(
-		m_pGameInstance->Get_CurrentLevelIndex(),
-		g_wszSkillObjectLayer,
-		this);
-	Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
+	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
+		Set_Dead();
+
+	COLLIDED_DESC desc{};
+	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer = iMyColliderLayer;
+	desc.iOtherLayer = iOtherLayer;
+	desc.pRequester = this;
+	desc.pOther = pOther;
+	//desc.tHitInfo = tHitInfo;
+
+	m_pGameInstance->Push_CollidedData(desc);
 }
 
 _bool CXibi_Loop_Thunder::On_Hit(const HIT_DESC& hitDesc)
@@ -153,19 +159,18 @@ HRESULT CXibi_Loop_Thunder::Ready_Components()
 			PHYSICSCOLLIDER_DESC cloneDesc{};
 			cloneDesc.eShape = EPhysicsShape::BOX;
 			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
+			//cloneDesc.bIsSkillTrigger = true;
 			cloneDesc.iFilterMask =
 			{
 				PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::ATTACK
 				| PHYSICSFILTERGROUP::Enum::MAP
 			};
 			cloneDesc.bIsTrigger = true;
 			cloneDesc.bSetOnlyFilter = false;
 			cloneDesc.bIsActive = true;
-			cloneDesc.vCenter = { 0.f, 2.f, 0.f };
+			cloneDesc.vCenter = { 0.f, 2.3f, 0.f };
 			cloneDesc.vExtents = { 0.3f, 4.f,0.3f };
+			cloneDesc.strAttackPresetTag = "Xibi_Thunder";
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial = mtrlDesc;

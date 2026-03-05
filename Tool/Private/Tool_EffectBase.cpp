@@ -61,9 +61,9 @@ HRESULT CTool_EffectBase::Render()
 	return S_OK;
 }
 
-void CTool_EffectBase::Set_Dead(const wstring& wstrLayerTag)
+void CTool_EffectBase::Set_Dead(_bool bStatic)
 {
-	Super::Set_Dead(wstrLayerTag);
+	Super::Set_Dead(bStatic);
 }
 
 void CTool_EffectBase::Free()

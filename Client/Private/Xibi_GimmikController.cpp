@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Xibi_GimmikController.h"
+
 #include "Model.h"
 #include "GameObject.h"
 #include "ModelAnimation.h"
@@ -9,6 +10,7 @@
 #include "SkillObjectSpawner_RandomXZ.h"
 #include "ProjectileSpawner_Fan.h"
 #include "ProjectileSpawner_Radial360.h"
+
 #include "GameInstance.h"
 
 CXibi_GimmikController::CXibi_GimmikController()
@@ -395,7 +397,7 @@ void CXibi_GimmikController::On_SpawnThunder360()
 
 HRESULT CXibi_GimmikController::Ready_Spawner()
 {
-	_uint iLevelId = ENUM_TO_UINT(ELevelType::TEST);
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
 
 	// Oneshot
 	{

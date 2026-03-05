@@ -84,6 +84,20 @@ HRESULT CUIDynamic_Image::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CUIDynamic_Image::Spawn_FromPool(void* pArg)
+{
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CUIDynamic_Image::Despawn_FromPool()
+{
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+	return S_OK;
+}
+
 void CUIDynamic_Image::Free()
 {
 	Super::Free();

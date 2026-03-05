@@ -59,14 +59,6 @@ void CUICombo_Text::Update_Priority(const _float fTimeDelta)
 void CUICombo_Text::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	if (KEY_BUTTON_HOLD(DIK_UP))
-	{
-		m_iCurComboCount += 1;
-	}
-	if (KEY_BUTTON_HOLD(DIK_DOWN))
-	{
-		m_iCurComboCount -= 1;
-	}
 }
 
 void CUICombo_Text::Update_Late(const _float fTimeDelta)
@@ -142,9 +134,7 @@ HRESULT CUICombo_Text::Attach_Personal_Info()
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]()
 		{
-			if (!this->m_isVisible)
-				this->Set_Visible();
-			this->m_iCurComboCount++;
+			this->Set_Visible();
 		});
 
 	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]()
@@ -158,6 +148,7 @@ HRESULT CUICombo_Text::Attach_Personal_Info()
 void CUICombo_Text::Tick_By_Type(const _float fTimeDelta)
 {
 	m_isCountChange = false;
+	 m_iCurComboCount = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
 
 	if (m_iPreComboCount != m_iCurComboCount)
 		m_isCountChange = true;
@@ -170,8 +161,6 @@ void CUICombo_Text::Tick_By_Type(const _float fTimeDelta)
 		break;
 	case DTO::EUITextSubClassType::BATTLE_COMBO_CUR_COUNT_TEXT:
 	{
-		// m_iCurComboCount = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
-
 		if (m_isCountChange)
 		{
 			Ready_LerpChange(0.3f, 3.f, 1.f, 1.f, 0.f);
@@ -183,7 +172,6 @@ void CUICombo_Text::Tick_By_Type(const _float fTimeDelta)
 	}
 	break;
 	case DTO::EUITextSubClassType::BATTLE_COMBO_NEXT_COUNT_TEXT:
-		// m_iCurComboCount = m_pPlayerStatCom->Get_Count(CStatCom_Player::TIMER_TYPE::COMBO);
 		Convert_Count_To_Rank();
 		break;
 	case DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_END:
