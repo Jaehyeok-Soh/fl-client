@@ -16,6 +16,10 @@ HRESULT CGameDataManager::Initialize()
 {
 	m_vecGlobalEventsBroadCast.reserve(100);
 
+
+	if (FAILED(Make_DefaultTextures()))
+		return E_FAIL;
+
     return S_OK;
 }
 
@@ -79,6 +83,119 @@ ID3D11ShaderResourceView* CGameDataManager::Make_ShaderResourceViewColor(_uint A
 
 #pragma region Texture Splating Info
 
+
+HRESULT CGameDataManager::Make_DefaultTextures()
+{
+	// 공통 텍스처 설정 (1x1 픽셀, 32비트 RGBA)
+	D3D11_TEXTURE2D_DESC tDesc = {};
+	tDesc.Width = 1;
+	tDesc.Height = 1;
+	tDesc.MipLevels = 1;
+	tDesc.ArraySize = 1;
+	tDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	tDesc.SampleDesc.Count = 1;
+	tDesc.Usage = D3D11_USAGE_DEFAULT;
+	tDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	tDesc.CPUAccessFlags = 0;
+
+
+	// --- White Texture ---
+	{
+		uint32_t pixelWhite = 0xFFFFFFFF; // R=255, G=255, B=255, A=255 (0xAABBGGRR)
+		D3D11_SUBRESOURCE_DATA tData = {};
+		tData.pSysMem = &pixelWhite;
+		tData.SysMemPitch = sizeof(uint32_t);
+
+		ID3D11Texture2D* pTexWhite = nullptr;
+		if (FAILED(m_pDevice->CreateTexture2D(&tDesc, &tData, &pTexWhite)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTexWhite, nullptr, &m_pDefaultWhite)))
+		{
+			pTexWhite->Release();
+			return E_FAIL;
+		}
+		Safe_Release(pTexWhite);
+	}
+
+	// --- Black Texture ---
+	{
+		uint32_t pixelBlack = 0xFF000000; // R=0, G=0, B=0, A=255 (0xAABBGGRR)
+		D3D11_SUBRESOURCE_DATA tData = {};
+		tData.pSysMem = &pixelBlack;
+		tData.SysMemPitch = sizeof(uint32_t);
+
+		ID3D11Texture2D* pTexBlack = nullptr;
+		if (FAILED(m_pDevice->CreateTexture2D(&tDesc, &tData, &pTexBlack)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTexBlack, nullptr, &m_pDefaultBlack)))
+		{
+			pTexBlack->Release();
+			return E_FAIL;
+		}
+		Safe_Release(pTexBlack);
+	}
+
+	// --- Red Texture ---
+	{
+		uint32_t pixelRed = 0xFF0000FF; // R=255, G=0, B=0, A=255 (0xAABBGGRR)
+		D3D11_SUBRESOURCE_DATA tData = {};
+		tData.pSysMem = &pixelRed;
+		tData.SysMemPitch = sizeof(uint32_t);
+
+		ID3D11Texture2D* pTexRed = nullptr;
+		if (FAILED(m_pDevice->CreateTexture2D(&tDesc, &tData, &pTexRed)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTexRed, nullptr, &m_pDefaultRed)))
+		{
+			pTexRed->Release();
+			return E_FAIL;
+		}
+		Safe_Release(pTexRed);
+	}
+
+	// --- Green Texture ---
+	{
+		uint32_t pixelGreen = 0xFF00FF00; // R=0, G=255, B=0, A=255 (0xAABBGGRR)
+		D3D11_SUBRESOURCE_DATA tData = {};
+		tData.pSysMem = &pixelGreen;
+		tData.SysMemPitch = sizeof(uint32_t);
+
+		ID3D11Texture2D* pTexGreen = nullptr;
+		if (FAILED(m_pDevice->CreateTexture2D(&tDesc, &tData, &pTexGreen)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTexGreen, nullptr, &m_pDefaultGreen)))
+		{
+			pTexGreen->Release();
+			return E_FAIL;
+		}
+		Safe_Release(pTexGreen);
+	}
+
+	// --- Blue Texture ---
+	{
+		uint32_t pixelBlue = 0xFFFF0000; // R=0, G=0, B=255, A=255 (0xAABBGGRR)
+		D3D11_SUBRESOURCE_DATA tData = {};
+		tData.pSysMem = &pixelBlue;
+		tData.SysMemPitch = sizeof(uint32_t);
+
+		ID3D11Texture2D* pTexBlue = nullptr;
+		if (FAILED(m_pDevice->CreateTexture2D(&tDesc, &tData, &pTexBlue)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(pTexBlue, nullptr, &m_pDefaultBlue)))
+		{
+			pTexBlue->Release();
+			return E_FAIL;
+		}
+		Safe_Release(pTexBlue);
+	}
+
+	return S_OK;
+}
 
 HRESULT CGameDataManager::Load_TextureSplatingInfoData()
 {

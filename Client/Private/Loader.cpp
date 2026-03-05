@@ -449,6 +449,10 @@ HRESULT CLoader::Loading_For_Logo()
 	///////////////////////////////////////////////////////
 
 	/* Texture Loading */
+
+	/* Defualt 사진 */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Defualt/")))
+		return E_FAIL;
 	/* Village 사진 */
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Village/")))
 		return E_FAIL;

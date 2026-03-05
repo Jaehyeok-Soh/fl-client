@@ -224,11 +224,15 @@ namespace Tool
 	{
 		STATIC = 0,
 		LOADING,
-		LOGO,
-		TUTORIAL_VILLAGE,	
-		TUTORIAL_BOSS,	
-		SQUARE,				
-		TEST,
+		LOGO,				/* 현재 임시 Test Level용 추후 Logo Scene으로 바뀔예정  */
+		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
+		TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
+		SQUARE,				/* 광장 */
+		TAVERN,				/* 술집 */
+		KUANGKENG,			/* 갱도 */
+
+
+		TEST,				/* Test Scene은 맨 마지막 */
 		END
 	};
 
@@ -244,6 +248,8 @@ namespace Tool
 		case Tool::EClientLevelType::TUTORIAL_VILLAGE:	return "TUTORIAL_VILLAGE";
 		case Tool::EClientLevelType::TUTORIAL_BOSS:		return "TUTORIAL_BOSS";
 		case Tool::EClientLevelType::SQUARE:			return "SQUARE";
+		case Tool::EClientLevelType::TAVERN:			return "TAVERN";
+		case Tool::EClientLevelType::KUANGKENG:			return "KUANGKENG";
 		case Tool::EClientLevelType::TEST:				return "TEST";
 		default:										return "NONE";
 		}
@@ -264,6 +270,10 @@ namespace Tool
 			return EClientLevelType::TUTORIAL_BOSS;
 		else if (::strcmp(str.c_str(), "SQUARE") == 0)
 			return EClientLevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TAVERN") == 0)
+			return EClientLevelType::TAVERN;
+		else if (::strcmp(str.c_str(), "KUANGKENG") == 0)
+			return EClientLevelType::KUANGKENG;
 		else if (::strcmp(str.c_str(), "TEST") == 0)
 			return EClientLevelType::TEST;
 		else

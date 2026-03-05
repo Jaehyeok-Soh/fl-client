@@ -460,11 +460,15 @@ enum class EClientLevelType : unsigned int
 {
 	STATIC = 0,
 	LOADING,
-	LOGO,
-	TUTORIAL_VILLAGE,
-	TUTORIAL_BOSS,
-	SQUARE,
-	TEST,
+	LOGO,				/* 현재 임시 Test Level용 추후 Logo Scene으로 바뀔예정  */
+	TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
+	TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
+	SQUARE,				/* 광장 */
+	TAVERN,				/* 술집 */
+	KUANGKENG,			/* 갱도 */
+
+
+	TEST,				/* Test Scene은 맨 마지막 */
 	END
 };
 
@@ -500,7 +504,6 @@ enum class EClientMakePath
 	TriggerBox_MonsterSpawner,
 	TriggerBox_GlobalEvent_BroadCaster,
 
-
 	END
 };
 
@@ -521,13 +524,15 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_Type,
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EClientLevelType,
 		{
-			{EClientLevelType::STATIC,			"STATIC"},
-			{EClientLevelType::LOADING,			"LOADING"},
-			{EClientLevelType::LOGO,			"LOGO"},
-			{EClientLevelType::TUTORIAL_VILLAGE,"TUTORIAL_VILLAGE"},
-			{EClientLevelType::TUTORIAL_BOSS,	"TUTORIAL_BOSS"},
-			{EClientLevelType::SQUARE,			"SQUARE"},
-			{EClientLevelType::TEST,			"TEST"},
+			{EClientLevelType::STATIC,				"STATIC"},
+			{EClientLevelType::LOADING,				"LOADING"},
+			{EClientLevelType::LOGO,				"LOGO"},
+			{EClientLevelType::TUTORIAL_VILLAGE,	"TUTORIAL_VILLAGE"},
+			{EClientLevelType::TUTORIAL_BOSS,		"TUTORIAL_BOSS"},
+			{EClientLevelType::SQUARE,				"SQUARE"},
+			{EClientLevelType::KUANGKENG,			"KUANGKENG"},
+			{EClientLevelType::TAVERN,				"TAVERN"},
+			{EClientLevelType::TEST,				"TEST"},
 		}
 		)
 NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,

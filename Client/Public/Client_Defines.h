@@ -13,6 +13,7 @@ namespace Client
 {
 	static const unsigned int g_iWinSizeX = 1600;
 	static const unsigned int g_iWinSizeY = 900;
+
 	enum class ELevelType : unsigned int
 	{
 		STATIC = 0,
@@ -21,12 +22,14 @@ namespace Client
 		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
 		TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
 		SQUARE,				/* 광장 */
+		TAVERN,				/* 술집 */
+		KUANGKENG,			/* 갱도 */
 
 
-		/* Test Scene은 맨 마지막 */
-		TEST,
-		END
+		TEST,				/* Test Scene은 맨 마지막 */
+		END					
 	};
+
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
 	enum class EDir : unsigned int

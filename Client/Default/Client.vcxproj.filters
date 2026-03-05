@@ -628,6 +628,12 @@
     <Filter Include="07. System\01. Builder\Effect\Builder_EffectEvent">
       <UniqueIdentifier>{5d286e09-eee0-4b43-bcea-01a835550da6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Level\Kuangkeng">
+      <UniqueIdentifier>{a7626871-21e5-48ac-b793-01f83f14e2a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tavern">
+      <UniqueIdentifier>{2905b500-b428-4805-9fc4-638afebf03dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1165,6 +1171,12 @@
     <ClInclude Include="..\Public\TriggerBox_GlobalEvent_BroadCaster.h">
       <Filter>03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Kuangkeng.h">
+      <Filter>02. Level\Kuangkeng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tavern.h">
+      <Filter>02. Level\Tavern</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1693,6 +1705,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_GlobalEvent_BroadCaster.cpp">
       <Filter>03. GameObject\TriggerBox\02. TriggerBox_GlobalEvent_BroadCaster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tavern.cpp">
+      <Filter>02. Level\Tavern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Kuangkeng.cpp">
+      <Filter>02. Level\Kuangkeng</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
