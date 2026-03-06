@@ -34,6 +34,7 @@ public:
 #endif
 
 public:
+	_bool Aimming(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, _float* hitDist);
 	_bool ShootRay(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, _float* hitDist);
 
 #ifdef _DEBUG
@@ -55,6 +56,7 @@ private:
 
 	PxRaycastBuffer m_RayCastHitBuffer = {};
 	_bool m_bRayHit = { false };
+
 
 public:
 	static CPhysicsAttackRaycast* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

@@ -66,7 +66,15 @@ void CGun::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+	m_pCameraTransform = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>();
+
 	Attack_Update(fTimeDelta);
+
+	Vec3 pos = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 dir = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	_float dist = {};
+	
+	m_bOnTarget = m_pAttackRaycast->Aimming(pos, dir, 500.f, &dist);
 }
 
 void CGun::Update_Late(_float fTimeDelta)
@@ -204,10 +212,8 @@ void CGun::Reload_Update(const _float fTimeDelta)
 
 void CGun::Fire()
 {
-	CTransform* pCameraTransform = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>();
-
-	Vec3 pos = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 dir = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	Vec3 pos = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 dir = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	_float dist = {};
 	m_pAttackRaycast->ShootRay(pos, dir, 500.f, &dist);
 

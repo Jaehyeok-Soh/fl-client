@@ -111,8 +111,29 @@ void CPhysicsAttackRaycast::Render()
 }
 #endif // _DEBUG
 
+_bool CPhysicsAttackRaycast::Aimming(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, _float* hitDist)
+{
+	if (m_pGameInstance->Is_ChangeLevelSequence() || m_pGameInstance->Is_DestroyEngineSequence())
+		return false;
+	
+	PxVec3 o3 = ToPxVec3(vWorldPos);
+
+	vDir.Normalize();
+	PxVec3 d3 = ToPxVec3(vDir);
+
+	m_pScene->lockRead();
+	_bool result = { false };
+	result = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer, PxHitFlag::eDEFAULT, m_filterData, m_pFilterCallback);
+	m_pScene->unlockRead();
+
+	return result;
+}
+
 _bool CPhysicsAttackRaycast::ShootRay(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, _float* hitDist)
 {
+	if (m_pGameInstance->Is_ChangeLevelSequence() || m_pGameInstance->Is_DestroyEngineSequence())
+		return false;
+
 	PxVec3 o3 = ToPxVec3(vWorldPos);
 
 	vDir.Normalize();
@@ -126,6 +147,8 @@ _bool CPhysicsAttackRaycast::ShootRay(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist
 
 		return m_bRayHit;
 	}
+
+	return false;
 }
 
 CPhysicsAttackRaycast* CPhysicsAttackRaycast::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)

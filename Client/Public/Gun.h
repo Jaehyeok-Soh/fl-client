@@ -68,7 +68,10 @@ public:
 	void Set_FireTimer(_bool bCount) { m_tFireTimeCounter.bCountTime = bCount; }
 	void Reset_FireTimer() { m_tFireTimeCounter.fTimeAcc = m_tFireTimeCounter.fMaxTime; m_tFireTimeCounter.bCountTime = false; }
 
+	_bool Get_OnTarget() { return m_bOnTarget; }
+
 private:
+	class CTransform* m_pCameraTransform = { nullptr };
 	class CPhysicsAttackRaycast* m_pAttackRaycast = { nullptr };
 
 	_float m_fSpeed		= { 1.f };
@@ -80,6 +83,8 @@ private:
 	TIME_COUNTER	m_tFireTimeCounter	= { 0.f,0.f };
 
 	_bool m_isFire = { false };
+
+	_bool m_bOnTarget = { false }; // 조준 히트
 
 private:
 	void NoAttack_Update(const _float fTimeDelta);

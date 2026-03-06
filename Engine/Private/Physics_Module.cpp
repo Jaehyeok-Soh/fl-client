@@ -71,6 +71,7 @@ HRESULT CPhysics_Module::Initialize()
 		sceneDesc.gravity = PxVec3(0.f, -9.81f, 0.f);
 		sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 		sceneDesc.flags |= PxSceneFlag::eENABLE_ACTIVE_ACTORS;
+		//sceneDesc.flags |= PxSceneFlag::eREQUIRE_RW_LOCK;
 
 		PxU32 numCores = PxThread::getNbPhysicalCores();
 		m_pDispatcher = PxDefaultCpuDispatcherCreate(numCores == 0 ? 0 : numCores - 1);
@@ -202,8 +203,12 @@ HRESULT CPhysics_Module::Initialize()
 
 void CPhysics_Module::StepPhysics(_float fTimeDelta)
 {
+	m_pScene->lockWrite();
+
 	m_pScene->simulate(std::clamp(fTimeDelta, 1.f / 120.f, 1.f / 30.f));
 	m_pScene->fetchResults(true);
+
+	m_pScene->unlockWrite();
 
 #ifdef _DEBUG
 	if (KEY_BUTTON_DOWN(DIK_F1))
