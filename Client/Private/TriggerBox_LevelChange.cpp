@@ -103,9 +103,9 @@ void CTriggerBox_LevelChange::OnCollision_Exit(_uint iMyColliderLayer, _uint iOt
     Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CTriggerBox_LevelChange::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CTriggerBox_LevelChange::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-    Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
+    Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
     if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
     {

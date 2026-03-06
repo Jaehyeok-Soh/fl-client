@@ -100,6 +100,24 @@ HRESULT CSkillObject_Base::Render()
 	return S_OK;
 }
 
+void CSkillObject_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+{
+	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
+	{
+		Set_Dead();
+		return;
+	}
+
+	COLLIDED_DESC desc{};
+	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer = iMyColliderLayer;
+	desc.iOtherLayer = iOtherLayer;
+	desc.pRequester = this;
+	desc.pOther = pOther;
+	desc.tHitInfo = tHitInfo;
+	m_pGameInstance->Push_CollidedData(desc);
+}
+
 HRESULT CSkillObject_Base::Spawn_FromPool(void* pArg)
 {
 	if (pArg == nullptr)
@@ -129,7 +147,12 @@ HRESULT CSkillObject_Base::Spawn_FromPool(void* pArg)
 	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vSpawnPos);
 	if (pRigidBody)
 		pRigidBody->SetTransform(pTransform->Get_WorldMatrix());
-	pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
+
+	if(m_desc.eEffectRotateState >= TRANSFORM_INFO_STATE::POS)
+		pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
+	else
+		pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN, m_desc.eEffectRotateState, m_desc.fEffectDegree);
+
 	return S_OK;
 }
 

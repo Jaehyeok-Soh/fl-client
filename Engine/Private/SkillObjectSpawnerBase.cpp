@@ -64,6 +64,12 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
     desc.vSpawnPos			= vSpawnPos;
     desc.vDirection			= vDir;
 
+	// 이펙트 회전관련
+	if ((std::abs)(m_desc.fEffect_Rotation_Degree) > g_XMEpsilon.f[0])
+	{
+		desc.eEffectRotateState = m_desc.eEffectRotationState;
+		desc.fEffectDegree = m_desc.fEffect_Rotation_Degree;
+	}
 	// eunbi 초반에 셋팅한 속도 == transform speed
 	//desc.fSpeed = m_pOriginDesc->fSpeed;
 

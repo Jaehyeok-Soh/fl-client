@@ -326,20 +326,14 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1) == false)
+	_bool bPass0 = ((filterData0.word0 & filterData1.word1) != 0);
+	_bool bPass1 = ((filterData1.word0 & filterData0.word1) != 0);
+	// Pair가 아닐 때
+	if ((bPass0 && bPass1) == false)
 		return PxFilterFlag::eSUPPRESS;
 
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
-		if (PxFilterObjectIsKinematic(attributes0) || PxFilterObjectIsKinematic(attributes1))
-		{
-			pairFlags = PxPairFlag::eTRIGGER_DEFAULT
-				| PxPairFlag::eNOTIFY_TOUCH_FOUND
-				| PxPairFlag::eNOTIFY_TOUCH_LOST;
-
-			return PxFilterFlag::eDEFAULT;
-		}
-
 		pairFlags = PxPairFlag::eTRIGGER_DEFAULT
 			| PxPairFlag::eNOTIFY_TOUCH_FOUND
 			| PxPairFlag::eNOTIFY_TOUCH_LOST;
@@ -367,7 +361,7 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	// Enter에서만 추출하기 위해 사용
 	// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
 	if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
-		pairFlags = PxPairFlag::eNOTIFY_CONTACT_POINTS;
+		pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
 
 	return PxFilterFlag::eDEFAULT;
 }

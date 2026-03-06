@@ -652,6 +652,9 @@
     <Filter Include="03. GameObject\PartObjects\PartEffect">
       <UniqueIdentifier>{7217cf30-a2de-41b6-bc09-78d3de156fe9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\Stat\StatCom_Boss">
+      <UniqueIdentifier>{49a4b247-f9ed-4f9d-a881-a94e2c12bde2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1213,6 +1216,9 @@
     <ClInclude Include="..\Public\PlayerSkillObj_Headers.h">
       <Filter>99. ETC\46.Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StatCom_Boss.h">
+      <Filter>05. Component\Stat\StatCom_Boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1762,6 +1768,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\PartEffect.cpp">
       <Filter>03. GameObject\PartObjects\PartEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StatCom_Boss.cpp">
+      <Filter>05. Component\Stat\StatCom_Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

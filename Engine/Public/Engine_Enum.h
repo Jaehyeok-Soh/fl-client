@@ -447,7 +447,7 @@ namespace Engine
 		{
 			static constexpr unsigned int iTriggerLayer
 			{
-				TRIGGER_UI | TRIGGER_QUEST | TRIGGER_SPAWN | TRIGGER_DIRECTION
+				TRIGGER_UI | TRIGGER_QUEST | TRIGGER_SPAWN | TRIGGER_DIRECTION | TRIGGER_BOX
 			};
 			return (iFlag & iTriggerLayer) != 0;
 		}

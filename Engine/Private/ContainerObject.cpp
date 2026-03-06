@@ -110,7 +110,7 @@ void CContainerObject::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherColl
 {
 }
 
-void CContainerObject::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther)
+void CContainerObject::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 }
 

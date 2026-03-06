@@ -63,8 +63,12 @@ HRESULT CPhysicsCollider::Initialize(void* pArg)
 
 	m_tDesc.eFilterLayer = pDesc->eFilterLayer;
 	m_tDesc.iFilterMask = pDesc->iFilterMask;
-	if(m_tDesc.strAttackPresetTag.empty() == false)
+	// AttackPreset
+	if (pDesc->strAttackPresetTag.empty() == false)
+	{
+		m_tDesc.strAttackPresetTag = pDesc->strAttackPresetTag;
 		m_tDesc.iAttackPresetID = m_pGameInstance->Get_AttackPresetIdByTag(m_tDesc.strAttackPresetTag);
+	}
 
 	if (!pDesc->bSetOnlyFilter)
 	{

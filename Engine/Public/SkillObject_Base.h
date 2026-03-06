@@ -40,15 +40,18 @@ public:
 		CGameObject* pRequester = { nullptr };
 		CGameObject* pTarget = { nullptr };
 
-		_uint			iFlags = { 0 };
+		_uint			iFlags = { 0 }; // 행동 플래그 ESkillObjectFlag 참고
 
-		_float			fSpeed = { 0.f };
-		_float          fLifeTime = { 5.f };
-		_float          fMaxDistance = { 15.f };
-		_float          fHomingStrength = { 5.f };
+		// 이펙트를 회전시킨뒤 날리고싶다면?
+		TRANSFORM_INFO_STATE eEffectRotateState = { TRANSFORM_INFO_STATE::END };
+		_float fEffectDegree{ 0.00f };
 
-		Vec3            vSpawnPos = {};
-		Vec3            vDirection = {};
+		_float			fSpeed = { 0.f }; // 투사체 속도
+		_float          fLifeTime = { 5.f }; // 생명 정도
+		_float          fMaxDistance = { 15.f }; // 얼마나 날아가서 죽을래?
+		_float          fHomingStrength = { 5.f }; // 호밍 정도
+		Vec3            vSpawnPos = {}; // 스폰 위치
+		Vec3            vDirection = {}; // 날아가는 방향
 	}SKILLOBJECT_DESC;
 protected:
 	CSkillObject_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -68,7 +71,8 @@ public:
 	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override {}
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override {}
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override {}
-	
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
+
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override { return false; }
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override {}
 

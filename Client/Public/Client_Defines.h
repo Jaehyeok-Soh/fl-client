@@ -42,6 +42,8 @@ namespace Client
 			"TUTORIAL_VILLAGE",
 			"TUTORIAL_BOSS",
 			"SQUARE",
+			"TAVERN",
+			"KUANGKENG",
 			"TEST",
 		};
 

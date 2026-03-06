@@ -175,9 +175,9 @@ void CTriggerBox_MonsterSpawner::OnCollision_Exit(_uint iMyColliderLayer, _uint 
 
 }
 
-void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-    Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
+    Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
 
 	if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)

@@ -90,7 +90,7 @@ void CBoss_Xibi_Body::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer
 {
 }
 
-void CBoss_Xibi_Body::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CBoss_Xibi_Body::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 }
 

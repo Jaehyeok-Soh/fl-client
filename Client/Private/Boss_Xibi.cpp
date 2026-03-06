@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "Boss_Xibi_Body.h"
 #include "Bone.h"
+#include "StatCom_Boss.h"
 #include "ComputeShader.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
@@ -49,6 +50,9 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_Components(pArg)))
+		return E_FAIL;
+
+	if (FAILED(Get_Component<CGimmikController>()->Bind_Events()))
 		return E_FAIL;
 
 	return S_OK;
@@ -134,9 +138,9 @@ void CBoss_Xibi::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGa
 	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CBoss_Xibi::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CBoss_Xibi::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 void CBoss_Xibi::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -239,6 +243,18 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 		CXibi_GimmikController::GIMMIKCTRL_DESC desc{};
 		desc.pOwnerModel = pBody->Get_Component<CModel>();
 		if (FAILED(Add_Component<CXibi_GimmikController>(0 /*static*/, L"Prototype_Component_Xibi_GimmikController", &desc)))
+			return E_FAIL;
+	}
+
+	// BossStat
+	{
+		CStatCom_Boss::BOSS_STAT_DESC desc{};
+		desc.fCriticalAttack = 30.f;
+		desc.fCriticalRate = 0.4f;
+		desc.fMaxHp = 200000.f;
+		desc.FStatFlags = CMyStat::StatFlags::None;
+		desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
+		if (FAILED(Add_Component<CStatCom_Boss>(0 /*static*/, L"Prototype_Component_Stat_Boss", &desc)))
 			return E_FAIL;
 	}
 

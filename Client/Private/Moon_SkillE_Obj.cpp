@@ -93,7 +93,7 @@ void CMoon_SkillE_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLaye
 {
 }
 
-void CMoon_SkillE_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMoon_SkillE_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	COLLIDED_DESC desc{};
 	desc.iCollisionType		= COLLISIONEVENT::ON_COLLISION_ENTER;
