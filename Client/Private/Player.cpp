@@ -284,6 +284,16 @@ void CPlayer::Change_CamState(_uint iCamState)
     }
 }
 
+_float CPlayer::Get_CamPitch() const
+{
+    if (m_pTargeter)
+    {
+        return static_cast<CCameraMan_Targeter*>(m_pTargeter)->Get_Pitch();
+    }
+
+    return -1000.f;
+}
+
 _bool CPlayer::Start_Attack(State iState)
 {
     _bool bChange = { false };

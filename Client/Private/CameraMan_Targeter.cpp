@@ -348,7 +348,7 @@ void CCameraMan_Targeter::GunCam_Update_Priority(const _float fTimeDelta)
     Change_Distance(m_vGunDistance.x,  m_vPreDisatance.x, m_fCurRightDistance, fTimeDelta);
     Change_Distance(m_vGunDistance.y, m_vPreDisatance.y, m_fCurLookDistance, fTimeDelta);
 
-    //Update_Input(fTimeDelta);
+    Update_Input(fTimeDelta);
 }
 
 void CCameraMan_Targeter::GunCam_Update(const _float fTimeDelta)

@@ -103,6 +103,9 @@ void CState_GunBase::Update(const _float fTimeDelta)
         return;
     }
 
+    // 상체 움직임
+    Look_Control(fTimeDelta);
+
     // 2. 움직임키 flag check
     Check_KeyFlag(fTimeDelta);
 
@@ -410,6 +413,32 @@ void CState_GunBase::GunEnd()
          Super::Change_PlayerState(ENUM_TO_UINT(CPlayer::State::FALL));
          break;
     }
+}
+
+void CState_GunBase::Look_Control(_float fTimeDelta)
+{
+    CStateBase::SetupLook_CameraLook();
+
+    _float fPitch = static_cast<CPlayer*>(Get_OwnerObject())->Get_CamPitch();
+
+    //// d , m ,u
+    ////98, 99,100
+    //if (fPitch > XMConvertToRadians(15.f))
+    //{
+    //    Request_ChangeAnimation(98,true,true);
+    //    // 위를 보고 있음
+    //}
+    //else if (fPitch < XMConvertToRadians(-15.f))
+    //{
+    //    // 아래를 보고 있음
+    //    Request_ChangeAnimation(100,true, true);
+    //}
+    //else
+    //{
+    //    // 중앙
+    //    Request_ChangeAnimation(99,true, true);
+    //}
+
 }
 
 void CState_GunBase::Jump(const _float fTimeDelta)

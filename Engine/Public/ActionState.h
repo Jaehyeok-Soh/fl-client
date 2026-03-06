@@ -119,7 +119,8 @@ protected:
 	void			Apply_Gravity(const _float fTimeDelta);
 	void			Apply_ForceMove(const _float fTimeDelta);
 	void			Clear_ForceMove();
-	void			SetupLook_CameraLook();
+	void			SetupLook_CameraLook(); // y축 회전만 가져옴
+	void			SetupLook_CameraSameLook(); // camera look == owenr look
 	void			SetupLookAt(const Vec3& vPoint);
 	void			SetupLook_Target_XZ();
 	CGameObject*	Get_Target();

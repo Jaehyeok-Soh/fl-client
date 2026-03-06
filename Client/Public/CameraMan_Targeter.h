@@ -43,6 +43,10 @@ public:
 	void Change_CamState(_uint iState);
 
 	HRESULT	Ready_GlobalEvent();
+
+public:
+	_float Get_Pitch() const { return m_fPitch; }
+
 private:
 	void Update_Priority_State(const _float fTimeDelta);
 	void Update_State(const _float fTimeDelta);
@@ -98,7 +102,7 @@ private:
 	
 	// 회전 보간용
 	_float m_fYaw			= { 0.f };
-	_float m_fYaw_Target	= { 0.f };
+	_float m_fYaw_Target	= { 0.f }; 
 	_float m_fPitch			= { 0.f };
 	_float m_fPitch_Target	= { 0.f };
 	
