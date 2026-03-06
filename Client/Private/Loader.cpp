@@ -752,7 +752,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Xibi";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = { 375 };
+		desc.vecStageBoneIndices = { 3, 59, 375 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;

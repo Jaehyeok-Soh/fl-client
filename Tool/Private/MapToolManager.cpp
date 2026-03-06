@@ -984,6 +984,7 @@ HRESULT CMapToolManager::Render()
 
 HRESULT CMapToolManager::Export_SaveSceneData(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
+	if (m_pGameInstance->Get_CurrentLevelIndex() != ENUM_TO_UINT(ELevelType::MAP)) return E_FAIL;
 	if (m_pLevelData == nullptr) return E_FAIL;
 
 	m_pLevelData->Export_Data(eCategory , pDocument);

@@ -16,23 +16,15 @@ HRESULT CEffect_Manager::Initialize()
 	return S_OK;
 }
 
-void CEffect_Manager::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTransMatrix)
+void CEffect_Manager::Request_Effect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, EFFECT_SPAWN_DESC& Desc)
 {
-    EFFECT_SPAWN_DESC tEngineDesc = {};
-    tEngineDesc.matWorld = matWorld;
-    tEngineDesc.fDuration = fDuration;
-    tEngineDesc.iSimulationType = bIsLocal;
-    tEngineDesc.pTargetBoneMatrix = &pTargetBone;
-    tEngineDesc.pTransformMatrix = &pTransMatrix;
-    tEngineDesc.iFlag = iFlag;
-
     wstring wstrPrototypeTag = L"POOL_" + Engine_Utils::ToWString(strTag);
 
     m_pGameInstance->Request_AddObject(
         m_pGameInstance->Get_CurrentLevelIndex(),
         wstrPrototypeTag,
         m_pGameInstance->Get_CurrentLevelIndex(),
-        &tEngineDesc,
+        &Desc,
         [handler, UniqueEffectName](CGameObject* pGo)
         {
             pGo->Set_Name(UniqueEffectName);
@@ -41,25 +33,23 @@ void CEffect_Manager::Spawn_PoolEffect(CEffectHandler* handler, const std::strin
     );
 }
 
-void CEffect_Manager::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTransMatrix)
+void CEffect_Manager::Request_Effect(const std::string& strTag, EFFECT_SPAWN_DESC& Desc)
 {
-    EFFECT_SPAWN_DESC tEngineDesc = {};
-    tEngineDesc.matWorld = matWorld;
-    tEngineDesc.fDuration = fDuration;
-    tEngineDesc.iSimulationType = bIsLocal;
-    tEngineDesc.pTargetBoneMatrix = &pTargetBone;
-    tEngineDesc.pTransformMatrix = &pTransMatrix;
-    tEngineDesc.iFlag = iFlag;
-
     wstring wstrPrototypeTag = L"POOL_" + Engine_Utils::ToWString(strTag);
 
     m_pGameInstance->Request_AddObject(
         m_pGameInstance->Get_CurrentLevelIndex(),
         wstrPrototypeTag,
         m_pGameInstance->Get_CurrentLevelIndex(),
-        &tEngineDesc
+        &Desc
     );
 }
+
+void CEffect_Manager::Notify_EffectDespawn(_uint iEffectID)
+{
+
+}
+
 
 CEffect_Manager* CEffect_Manager::Create()
 {
@@ -76,6 +66,8 @@ CEffect_Manager* CEffect_Manager::Create()
 
 void CEffect_Manager::Free()
 {
-	Super::Free();
 	Safe_Release(m_pGameInstance);
+    m_mEffectData.clear();
+
+	Super::Free();
 }

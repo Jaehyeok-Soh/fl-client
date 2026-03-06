@@ -382,8 +382,8 @@ public:
 #pragma endregion
 
 #pragma region EFFECT_MANAGER
-	void Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* = nullptr, const Matrix* = nullptr);
-	void Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* = nullptr, const Matrix* = nullptr);
+	void Request_Effect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, EFFECT_SPAWN_DESC& Desc);
+	void Request_Effect(const std::string& strTag, EFFECT_SPAWN_DESC& Desc);
 #pragma endregion
 
 #pragma region JUDGEMENT_SYSTEM

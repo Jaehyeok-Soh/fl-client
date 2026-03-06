@@ -596,15 +596,21 @@ float4 PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     if (Has(g_Effect.g_TextureFlags, CURVETEXTURE))
     {
-        if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
+        if (HasTextureScroll(SCROLL_CURVE))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+            CurveSample = CurveTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, CURVETEXTURE));
+            CurvePowerStrength = CurveSample.r;
+            CurvePowerStrength *= 2.5f;
+        }
+        else if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.CurveTexture_SpriteInfo);
 
-            SpriteUV.x += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
-           
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 1.6f;
+            CurvePowerStrength *= 2.5f;
         }
         else
         {
@@ -912,12 +918,19 @@ float4 PS_BloomHard(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     
     if (Has(g_Effect.g_TextureFlags, CURVETEXTURE))
     {
-        if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
+        if (HasTextureScroll(SCROLL_CURVE))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+            CurveSample = CurveTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, CURVETEXTURE));
+            CurvePowerStrength = CurveSample.r;
+            CurvePowerStrength *= 2.5f;
+        }
+        
+        else if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.CurveTexture_SpriteInfo);
 
-            SpriteUV.x += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
-           
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
             CurvePowerStrength *= 2.5f;

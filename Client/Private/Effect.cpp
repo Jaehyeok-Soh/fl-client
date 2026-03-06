@@ -235,9 +235,14 @@ HRESULT Effect::Spawn_FromPool(void* pArg)
 
 	// Engine 데이터를 기반으로 Client의 데이터 갱신
 	m_eDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pEngineDesc->iSimulationType;
-	m_pBoneMatrix = *pEngineDesc->pTargetBoneMatrix;
-	m_pBoneOwnerMatrix = *pEngineDesc->pTransformMatrix;
-	m_iBoneFlag = pEngineDesc->iFlag;
+
+	if(pEngineDesc->pTargetBoneMatrix)
+		m_pBoneMatrix = *pEngineDesc->pTargetBoneMatrix;
+
+	if(pEngineDesc->pTransformMatrix)
+		m_pBoneOwnerMatrix = *pEngineDesc->pTransformMatrix;
+
+	m_iBoneFlag = pEngineDesc->iBoneFlag;
 
 	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::WORLD)
 		Get_Component<CTransform>()->Set_WorldMatrix(pEngineDesc->matWorld);

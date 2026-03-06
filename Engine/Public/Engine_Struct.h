@@ -967,14 +967,17 @@ namespace Engine
 
 #pragma region EFFECT
 	typedef struct tagEffectSpawnDesc {
-		SimpleMath::Matrix matWorld;             // 계산된 최종 행렬
-		float fDuration;            // 유지 시간
-		int iSimulationType;        // LOCAL(1) or WORLD(0)
-		const SimpleMath::Matrix** pTargetBoneMatrix; // 실시간 추적용 본 행렬 주소
-		const SimpleMath::Matrix** pTransformMatrix; // 실시간 추적용 본 행렬 주소
-		int iFlag;
-	} EFFECT_SPAWN_DESC;
+		SimpleMath::Matrix matWorld = {};							// 계산된 최종 행렬
+		const SimpleMath::Matrix** pTargetBoneMatrix = { nullptr };	// 실시간 추적용 본 행렬 주소
+		const SimpleMath::Matrix** pTransformMatrix = { nullptr };	// 실시간 추적용 본 행렬 주소
 
+		float fDuration = {};										// 유지 시간 (사실 거의 안씀)
+		float fScale = {1.f};										// 사이즈 조절 (이미 Prefab으로 만들어져 있음)
+		float fPlayBackSpeed = {1.f};								// 전체적인 스피드 조절		
+		int iSimulationType = {1};									// LOCAL(1) or WORLD(0)
+
+		int iBoneFlag;
+	} EFFECT_SPAWN_DESC;
 #pragma endregion
 
 #pragma region CameraShaking_Data

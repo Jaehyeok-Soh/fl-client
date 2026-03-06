@@ -892,14 +892,14 @@ HRESULT CGameInstance::Render_Fonts()
 #pragma endregion
 
 #pragma region EFFECT_MANAGER
-void CGameInstance::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTargetTransMatrix)
+void CGameInstance::Request_Effect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, EFFECT_SPAWN_DESC& Desc)
 {
-	m_pEffect_Manager->Spawn_PoolEffect(handler, UniqueEffectName, strTag, matWorld, fDuration, bIsLocal, iFlag, pTargetBone, pTargetTransMatrix);
+	m_pEffect_Manager->Request_Effect(handler, UniqueEffectName, strTag, Desc);
 }
 
-void CGameInstance::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTargetTransMatrix)
+void CGameInstance::Request_Effect(const std::string& strTag, EFFECT_SPAWN_DESC& Desc)
 {
-	m_pEffect_Manager->Spawn_PoolEffect(strTag, matWorld, fDuration, bIsLocal, iFlag, pTargetBone, pTargetTransMatrix);
+	m_pEffect_Manager->Request_Effect(strTag, Desc);
 }
 
 void CGameInstance::Push_CollidedData(const COLLIDED_DESC& desc)
