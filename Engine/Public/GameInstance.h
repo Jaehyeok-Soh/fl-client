@@ -6,6 +6,7 @@
 #include "EventBus_Manager.h"
 #include "DataRepository.h"
 #include "Anim_Event_Hitbox.h"
+#include "PhysicsAttackRaycast.h"
 
 NS_BEGIN(Engine)
  
@@ -338,6 +339,7 @@ public:
 	void FlushScene();
 	void RemoveActor(PxRigidActor* actor);
 	void ResetActorFilter(PxRigidActor* actor);
+	PxScene* GetPhysicsScene();
 	PxTransform XMMatrixToPxTransform(Matrix mat);
 	Matrix PxTransformToXMMatrix(PxTransform pxTransform);
 	_bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
@@ -358,6 +360,7 @@ public:
 	PxQuat GetPureRotation(const Matrix& mat);
 	PxVec3 GetPureScale(const Matrix& mat);
 	void Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc);
+	void Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc);
 	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);

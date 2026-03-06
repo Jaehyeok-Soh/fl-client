@@ -9,22 +9,22 @@
 
 PxQueryHitType::Enum CPhysics_QueryFilterCallback::preFilter(const PxFilterData& filterData, const PxShape* shape, const PxRigidActor* actor, PxHitFlags& queryFlags)
 {
-	if (actor->userData == nullptr)
+	if (actor->userData != nullptr && actor->userData == m_pOwner)
 		return PxQueryHitType::eNONE;
 
-	if (actor->userData == m_pOwner)
-		return PxQueryHitType::eNONE;
-
-	CGameObject* pTarget = static_cast<CGameObject*>(actor->userData);
-	if (pTarget && pTarget->IsDead())
-		return PxQueryHitType::eNONE;
+	if (actor->userData != nullptr)
+	{
+		CGameObject* pTarget = static_cast<CGameObject*>(actor->userData);
+		if (pTarget && pTarget->IsDead())
+			return PxQueryHitType::eNONE;
+	}
 
 	PxFilterData shapeFilter = shape->getQueryFilterData();
 
-	if ((filterData.word0 & shapeFilter.word1) && (shapeFilter.word0 & filterData.word1))
-		return PxQueryHitType::eBLOCK;
-
 	if (shapeFilter.word0 & PHYSICSFILTERGROUP::MAP)
+		return PxQueryHitType::eBLOCK;
+	
+	if (filterData.word1 & shapeFilter.word0)
 		return PxQueryHitType::eBLOCK;
 
 	return PxQueryHitType::eNONE;

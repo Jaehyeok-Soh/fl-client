@@ -326,7 +326,9 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1) == false)
+	_bool bA = (filterData0.word0 & filterData1.word1) != 0;
+	_bool bB = (filterData1.word0 & filterData0.word1) != 0;
+	if ((bA && bB) == false)
 		return PxFilterFlag::eSUPPRESS;
 
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
@@ -418,6 +420,11 @@ void CPhysics_Module::GetActiveActors()
 void CPhysics_Module::Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc)
 {
 	m_pFilterEventCallback->ProcessOverlap(pOwner, vOverlapPoint, pOverlapHit, event, hitboxDesc);
+}
+
+void CPhysics_Module::Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc)
+{
+	m_pFilterEventCallback->ProcessRaycast(pOwner, pRaycastHitBuffer, raycastDesc);
 }
 
 _bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)

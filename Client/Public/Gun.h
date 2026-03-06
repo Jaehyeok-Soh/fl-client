@@ -1,6 +1,10 @@
 #pragma once
 #include "Weapon.h"
 
+NS_BEGIN(Engine)
+class CPhysicsAttackRaycast;
+NS_END
+
 NS_BEGIN(Client)
 class CGun : public CWeapon
 {
@@ -47,6 +51,9 @@ public:
 	virtual void			OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual HRESULT			Render() override;
 
+private:
+	HRESULT Ready_Components();
+
 public:
 	void					Reload_Bullet();
 
@@ -62,6 +69,8 @@ public:
 	void Reset_FireTimer() { m_tFireTimeCounter.fTimeAcc = m_tFireTimeCounter.fMaxTime; m_tFireTimeCounter.bCountTime = false; }
 
 private:
+	class CPhysicsAttackRaycast* m_pAttackRaycast = { nullptr };
+
 	_float m_fSpeed		= { 1.f };
 
 	// 항상 x가 cur개수. y는 max 개수
