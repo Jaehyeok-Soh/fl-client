@@ -291,10 +291,6 @@ HRESULT CLevel_Tavern::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Tavern::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
-	if (FAILED(CUI_Manager::GetInstance()->Bind_Trigger(ENUM_TO_UINT(ELevelType::TAVERN))))
-		return E_FAIL;
-
-	CUI_Manager::GetInstance()->Clear_TriggerUI();
 	return S_OK;
 }
 

@@ -94,39 +94,6 @@ HRESULT CUIMenu_OutLine::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUIMenu_OutLine::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	// 일회성 플래그
-	if (ETriggerEventType::HOVER_ENTER == eEvent)
-	{
-		m_isTrigger_HoverEnter	= true;
-		m_isFin_Event = false;
-		m_fBrightness = 1.f;
-	}
-
-	// 일회성 플래그
-	if (ETriggerEventType::HOVER_EXIT == eEvent)
-	{
-		m_isTrigger_HoverExit	= true;
-		m_isFin_Event = false;
-		m_fBrightness = m_fEmit;
-	}
-
-	// 일회성 플래그
-	if (ETriggerEventType::PRESS_ENTER == eEvent)
-	{
-		m_isActive = false;
-
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-	}
-}
-
 void CUIMenu_OutLine::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;

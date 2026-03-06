@@ -127,24 +127,6 @@ HRESULT CUIMenu_Image::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUIMenu_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if(!m_isVisible)
-			Set_Visible();
-		else 
-			Set_Invisible();
-	}
-	else if (eEvent == ETriggerEventType::PRESS_EXIT)
-	{
-		Set_Invisible();
-	}
-}
-
 void CUIMenu_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;

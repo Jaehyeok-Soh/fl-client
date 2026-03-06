@@ -35,15 +35,30 @@ HRESULT CGenericUI::Initialize_Prototype()
 
 HRESULT CGenericUI::Initialize(void* pArg)
 {
+	if (FAILED(Super::Initialize(pArg)))
+		return E_FAIL;
+
 	GENERIC_UI_DESC* pDesc = static_cast<GENERIC_UI_DESC*>(pArg);
 	m_strName					= pDesc->strName;
 	m_iLevelID					= pDesc->iLevelIndex;
 	m_eRectTransformType		= static_cast<ERectTransform>(pDesc->iRectTransformType);
 
-	m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::DEFAULT)].push_back(pDesc->wstrTextureTag);
-	m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::NOISE)].push_back(pDesc->wstrNoiseTextureTag);
-	m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK)].push_back(pDesc->wstrAlphaMaskTextureTag);
-	m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::GLOW)].push_back(pDesc->wstrGlowTextureTag);
+	if (pDesc->wstrTextureTag != L"")
+	{
+		m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::DEFAULT)].push_back(pDesc->wstrTextureTag);
+	}
+	if (pDesc->wstrNoiseTextureTag != L"")
+	{
+		m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::NOISE)].push_back(pDesc->wstrNoiseTextureTag);
+	}
+	if (pDesc->wstrAlphaMaskTextureTag != L"")
+	{
+		m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK)].push_back(pDesc->wstrAlphaMaskTextureTag);
+	}
+	if (pDesc->wstrGlowTextureTag != L"")
+	{
+		m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::GLOW)].push_back(pDesc->wstrGlowTextureTag);
+	}
 
 	m_pParentCanvasCache		= pDesc->pCanvasCache;
 	m_isUseColorTint			= pDesc->isUseColorTint;
@@ -55,19 +70,6 @@ HRESULT CGenericUI::Initialize(void* pArg)
 	m_fAlpha_Ratio				= pDesc->fAlpha;
 	m_iFlip						= pDesc->iFlip;
 
-	if (FAILED(Super::Initialize(pArg)))
-		return E_FAIL;
-
-	m_vMoveOffsetBase = m_vMoveOffset;
-	m_fBrightness = 1.f;
-
-	return S_OK;
-}
-
-HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
-{
-	if (FAILED(Super::Awake(iCurrentLevelID)))
-		return E_FAIL;
 
 	Get_Component<CShader>()->Set_Pass(m_iShaderPass);
 
@@ -79,22 +81,32 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	// Noise Texture Binding
 	if (!m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::NOISE)].empty())
 	{
-		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::NOISE)].back(), ENUM_TO_UINT(EUITextureSlot::NOISE))))
+		if (FAILED(pTexture->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::NOISE)].back(), ENUM_TO_UINT(EUITextureSlot::NOISE))))
 			return E_FAIL;
 	}
 	// Alpha Mask Texture Binding
 	if (!m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK)].empty())
 	{
-		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK)].back(), ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK))))
+		if (FAILED(pTexture->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK)].back(), ENUM_TO_UINT(EUITextureSlot::ALPHA_MASK))))
 			return E_FAIL;
 	}
 	// Glow Texture Binding
 	if (!m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::GLOW)].empty())
 	{
-		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::GLOW)].back(), ENUM_TO_UINT(EUITextureSlot::GLOW))))
+		if (FAILED(pTexture->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::GLOW)].back(), ENUM_TO_UINT(EUITextureSlot::GLOW))))
 			return E_FAIL;
 	}
 
+	return S_OK;
+}
+
+HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
+{
+	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
+
+	m_vMoveOffsetBase = m_vMoveOffset;
+	m_fBrightness = 1.f;
 	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
 	return S_OK;
 }
@@ -133,7 +145,6 @@ void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 	}
 
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, this);
-
 }
 
 HRESULT CGenericUI::Render()
@@ -160,8 +171,6 @@ _bool CGenericUI::Calc_HitEvent()
 
 HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 {
-	if (FAILED(Add_Component<CTexture>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", pDesc)))
-		return E_FAIL;
 	if (FAILED(Add_Component<CVIBuffer_Rect_Tex>(0, L"Prototype_Component_VIBuffer_Rect_Tex", pDesc)))
 		return E_FAIL;
 
@@ -184,9 +193,11 @@ HRESULT CGenericUI::Ready_Components(GENERIC_UI_DESC* pDesc)
 		auto* pScriptComp = Get_Script_Component(L"WorldUIComponent");
 		if (nullptr == pScriptComp)
 			return E_FAIL;
-		auto* pWorldUIComp = static_cast<CWorldUI_Component*>(pScriptComp);
+
+		CWorldUI_Component* pWorldUIComp = static_cast<CWorldUI_Component*>(pScriptComp);
 		if (nullptr == pWorldUIComp)
 			return E_FAIL;
+
 		m_pWorldUIComp = pWorldUIComp;
 	}
 	return S_OK;

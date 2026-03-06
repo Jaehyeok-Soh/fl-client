@@ -131,12 +131,6 @@ HRESULT CUIMonsterStat_Progress::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUIMonsterStat_Progress::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUIMonsterStat_Progress::Initialize_Visible_Event()
 {
 	m_isActive		= false;

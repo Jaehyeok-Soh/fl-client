@@ -116,16 +116,6 @@ HRESULT CCanvas::Render()
 	return S_OK;
 }
 
-void CCanvas::OnCanvasEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	for (auto* pUI : m_vecUI)
-	{
-		if (nullptr == pUI)
-			continue;
-		pUI->OnUIEvent(eEvent, pSender);
-	}
-}
-
 _bool CCanvas::Check_FinEvent()
 {
 	for (auto* pUI : m_vecUI)

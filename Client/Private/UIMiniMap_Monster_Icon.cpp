@@ -115,12 +115,6 @@ void CUIMiniMap_Monster_Icon::Tick_By_Type(const _float fTimeDelta)
 {
 }
 
-void CUIMiniMap_Monster_Icon::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUIMiniMap_Monster_Icon::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;

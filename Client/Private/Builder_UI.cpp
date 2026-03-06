@@ -29,11 +29,6 @@
 #include "UICombo_Image.h"
 #include "UIBossAction_Image.h"
 
-// 트리거 클래스
-#include "UICommon_Trigger.h"
-#include "UIMenu_Trigger.h"
-#include "UIMenu_Exit_Trigger.h"
-
 #include "WorldUI_Component.h"
 
 #include"UI_Manager.h"
@@ -87,17 +82,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 		}
 	}
 
-	// For. Trigger
-	{
-		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::TRIGGER));
-		for (const auto& pObjectData : vecDataList)
-		{
-			const auto* pDto = static_cast<const Engine::CUI_Trigger_DTO*>(pObjectData);
-			if (FAILED(Create_TriggerDTO(pDto->Get_Data())))
-				return E_FAIL;
-		}
-	}
-
 	// For. DImage
 	{
 		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::DYNAMIC_IMAGE));
@@ -126,9 +110,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 		return E_FAIL;
 
 	m_MapTextDataCache.clear();
-	m_MapTriggerDataCache.clear();
-
-	CUI_Manager::GetInstance()->Add_TriggerUI(std::move(m_vecTriggerUIs));
 	return S_OK;
 }
 
@@ -185,15 +166,6 @@ HRESULT CBuilder_UI::Create_TextDTO(const DTO::TUI_TextData& data)
 		return E_FAIL;
 
 	m_MapTextDataCache.emplace(data.strOwnerName, data);
-	return S_OK;
-}
-
-HRESULT CBuilder_UI::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
-{
-	if (data.eType != DTO::EUIType::TRIGGER)
-		return E_FAIL;
-
-	m_MapTriggerDataCache.emplace(data.strOwnerName, data);
 	return S_OK;
 }
 
@@ -330,59 +302,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(JustImageDesc) = DefaultDesc;
 		pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, m_iLevelID, g_wszUILayer, &JustImageDesc);
 	}
-
-	////////////////////////////////////////
-	// TRIGGER //
-	else if (eClassType == DTO::EUIClassType::TRIGGER)
-	{
-		auto iter = m_MapTriggerDataCache.find(data.strTag);
-		if (iter == m_MapTriggerDataCache.end())
-			return E_FAIL;
-		const auto Type = iter->second.eTriggerSubClassType;
-		const _bool isMenu = (Type == DTO::EUITriggerSubClassType::MENU_TAB_TRIGGER);
-		const _bool isMenuExit = (Type == DTO::EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER);
-
-		if (isMenu)
-		{
-			CUIMenu_Trigger::UI_MENU_TRIGGER_DESC MenuTriggerDesc= {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuTriggerDesc) = DefaultDesc;
-			MenuTriggerDesc.eTriggerSubClass = Type;
-			MenuTriggerDesc.tTriggerData = std::move(iter->second);
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_UIMenuTrigger", m_iLevelID, g_wszUILayer, &MenuTriggerDesc);
-
-		}
-		else if (isMenuExit)
-		{
-			CUIMenu_Exit_Trigger::UI_MENU_EXIT_TRIGGER_DESC MenuExitTriggerDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuExitTriggerDesc) = DefaultDesc;
-			MenuExitTriggerDesc.eTriggerSubClass = Type;
-			MenuExitTriggerDesc.tTriggerData = std::move(iter->second);
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_UIMenuExitTrigger", m_iLevelID, g_wszUILayer, &MenuExitTriggerDesc);
-		}
-		else
-		{
-			CUICommon_Trigger::UI_COMMON_TRIGGER_DESC CommonTriggerDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(CommonTriggerDesc) = DefaultDesc;
-			CommonTriggerDesc.eTriggerSubClass = Type;
-			CommonTriggerDesc.tTriggerData = std::move(iter->second);
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_UICommonTrigger", m_iLevelID, g_wszUILayer, &CommonTriggerDesc);
-		}
-
-		if (nullptr == pResult)
-		{
-			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
-			MSG_BOXW(wstr.c_str());
-			return E_FAIL;
-		}
-		auto* pUI = dynamic_cast<CGenericUI*>(pResult);
-		if (nullptr == pUI)
-			return E_FAIL;
-		auto* pTriggerUI = dynamic_cast<CUITrigger*>(pUI);
-		if (nullptr == pTriggerUI)
-			return E_FAIL;
-		m_vecTriggerUIs.push_back(pTriggerUI);
-	}
-
 	////////////////////////////////////////
 	// DYNAMIC_IMAGE //
 	else if (eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
@@ -390,8 +309,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		auto iter = m_MapDImageDataCache.find(data.strTag);
 		if (iter == m_MapDImageDataCache.end())
 			return E_FAIL;
-		if ("MiniMap_Player_Icon" == data.strTag)
-			int a = 0;
+
 		const auto Type = iter->second.eDISubClassType;
 
 		const _bool isPlayerSkill		= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&& Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);

@@ -28,8 +28,7 @@ public:
 private:
 	HRESULT Ready_Components(MENU_OUTLINE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
+private:
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;

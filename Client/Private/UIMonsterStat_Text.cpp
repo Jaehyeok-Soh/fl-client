@@ -144,12 +144,6 @@ HRESULT CUIMonsterStat_Text::Convert_Stat_To_Text()
 	return S_OK;
 }
 
-void CUIMonsterStat_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUIMonsterStat_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;

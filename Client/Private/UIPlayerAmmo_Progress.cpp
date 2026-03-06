@@ -128,12 +128,6 @@ HRESULT CUIPlayerAmmo_Progress::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUIPlayerAmmo_Progress::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUIPlayerAmmo_Progress::Initialize_Visible_Event()
 {
 	m_isActive = false;

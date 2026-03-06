@@ -117,12 +117,6 @@ HRESULT CUINameplate_BG::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUINameplate_BG::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUINameplate_BG::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;

@@ -275,12 +275,6 @@ HRESULT CUIAimDot_Image::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUIAimDot_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUIAimDot_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;

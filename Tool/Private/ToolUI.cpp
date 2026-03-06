@@ -66,18 +66,6 @@ HRESULT CToolUI::Initialize(void* pArg)
 		m_fRotate_TextData		= m_tUITextData.fRotate;
 		m_strFontName_TextData	= m_tUITextData.strFontTag;
 	}
-	if (m_eClassType == DTO::EUIClassType::TRIGGER)
-	{
-		m_tUITriggerData				= pDesc->tTriggerData;
-		m_vecHoverEnterTriggerCanvas	= m_tUITriggerData.vecHoverEnterTriggerCanvas;
-		m_vecHoverEnterTriggerUI		= m_tUITriggerData.vecHoverEnterTriggerUI;
-		m_vecHoverExitTriggerCanvas		= m_tUITriggerData.vecHoverExitTriggerCanvas;
-		m_vecHoverExitTriggerUI			= m_tUITriggerData.vecHoverExitTriggerUI;
-		m_vecPressEnterTriggerCanvas	= m_tUITriggerData.vecPressEnterTriggerCanvas;
-		m_vecPressEnterTriggerUI		= m_tUITriggerData.vecPressEnterTriggerUI;
-		m_vecPressExitTriggerCanvas		= m_tUITriggerData.vecPressExitTriggerCanvas;
-		m_vecPressExitTriggerUI			= m_tUITriggerData.vecPressExitTriggerUI;
-	}
 	if (m_eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
 	{
 		m_tDImageData			= pDesc->tDImageData;
@@ -391,14 +379,6 @@ void CToolUI::Sync_Data()
 	{
 		Sync_TextData();
 	}
-	else if (m_eClassType == DTO::EUIClassType::TRIGGER)
-	{
-		Sync_TriggerData();
-	}
-	else if (m_eClassType == DTO::EUIClassType::BUTTON_TRIGGER)
-	{
-		Sync_ButtonTriggerData();
-	}
 	else if (m_eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
 	{
 		Sync_DImageData();
@@ -419,30 +399,6 @@ void CToolUI::Sync_TextData()
 	m_tUITextData.fScale		= m_fScale_TextData;
 }
 
-void CToolUI::Sync_TriggerData()
-{
-	m_tUITriggerData.strTag							= m_strName + "_TriggerData";
-	m_tUITriggerData.strOwnerName					= m_strName;
-	m_tUITriggerData.eTriggerSubClassType			= m_eTriggerSubClass;
-	m_tUITriggerData.vecHoverEnterTriggerCanvas		= m_vecHoverEnterTriggerCanvas;
-	m_tUITriggerData.vecHoverEnterTriggerUI			= m_vecHoverEnterTriggerUI;
-	m_tUITriggerData.vecHoverExitTriggerCanvas		= m_vecHoverExitTriggerCanvas;
-	m_tUITriggerData.vecHoverExitTriggerUI			= m_vecHoverExitTriggerUI;
-	m_tUITriggerData.vecPressEnterTriggerCanvas		= m_vecPressEnterTriggerCanvas;
-	m_tUITriggerData.vecPressEnterTriggerUI			= m_vecPressEnterTriggerUI;
-	m_tUITriggerData.vecPressExitTriggerCanvas		= m_vecPressExitTriggerCanvas;
-	m_tUITriggerData.vecPressExitTriggerUI			= m_vecPressExitTriggerUI;
-}
-
-void CToolUI::Sync_ButtonTriggerData()
-{
-	m_tUIButtonTriggerData.strTag			= m_strName + "_Button_TriggerData";
-	m_tUIButtonTriggerData.strOwnerName		= m_strName;
-	m_tUIButtonTriggerData.strKeyMapping	= m_strKeyMapping;
-	m_tUIButtonTriggerData.vecTriggerCanvas = m_vecButtonTriggerCanvas;
-	m_tUIButtonTriggerData.vecTriggerUI		= m_vecButtonTriggerUI;
-}
-
 void CToolUI::Sync_DImageData()
 {
 	m_tDImageData.strTag			= m_strName + "_DImageData";
@@ -450,12 +406,6 @@ void CToolUI::Sync_DImageData()
 	m_tDImageData.eDISubClassType	= m_eDImageSubClassType;
 }
 
-void CToolUI::Sync_WorldUIData()
-{
-	m_tWorldUIData.strTag			= m_strName + "_WorldUIData";
-	m_tWorldUIData.strOwnerName		= m_strName;
-	m_tWorldUIData.eWorldUISubClass = m_eWorldUISubClassType;
-}
 
 _bool CToolUI::Add_Tag(vector<_string>& vec, const _string& str)
 {

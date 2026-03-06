@@ -30,7 +30,7 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
+private:
 	void Initialize_Visible_Event()override;
 	void Initialize_InVisible_Event()override;
 	_bool Tick_Visible_Event(const _float fTimeDelta)override;

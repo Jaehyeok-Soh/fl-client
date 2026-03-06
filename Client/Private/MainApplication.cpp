@@ -558,6 +558,13 @@ void CMainApplication::Free()
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
+	CUI_Manager::GetInstance()->Clear_Cache(0);
+	CUI_Manager::GetInstance()->Clear_Cache(1);
+	CUI_Manager::GetInstance()->Clear_Cache(2);
+	CUI_Manager::GetInstance()->Clear_Cache(3);
+	CUI_Manager::GetInstance()->Clear_Cache(4);
+	CUI_Manager::GetInstance()->Clear_Cache(5);
+	CUI_Manager::GetInstance()->Clear_Cache(6);
 	CUI_Manager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();

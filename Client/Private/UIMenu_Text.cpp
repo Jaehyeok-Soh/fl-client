@@ -104,28 +104,6 @@ HRESULT CUIMenu_Text::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUIMenu_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-	}
-	else if (eEvent == ETriggerEventType::HOVER_ENTER)
-	{
-		Set_Visible();
-	}
-	else if (eEvent == ETriggerEventType::HOVER_EXIT)
-	{
-		Set_Invisible();
-	}
-}
-
 void CUIMenu_Text::Initialize_Visible_Event()
 {
 	m_vFontColor = Vec4{ 0.f ,0.f ,0.f ,0.f };

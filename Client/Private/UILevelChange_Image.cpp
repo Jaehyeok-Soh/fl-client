@@ -175,12 +175,6 @@ void CUILevelChange_Image::Trigger_By_InteractState()
 	}
 }
 
-void CUILevelChange_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUILevelChange_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;

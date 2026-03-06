@@ -112,20 +112,6 @@ HRESULT CUIPlayerStat_Progress::Render()
 	return S_OK;
 }
 
-void CUIPlayerStat_Progress::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-	}
-}
-
 void CUIPlayerStat_Progress::Initialize_Visible_Event()
 {
 	m_isActive = false;

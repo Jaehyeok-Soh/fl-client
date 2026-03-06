@@ -49,7 +49,6 @@ public:
 
 public:
 	_bool Calc_HitEvent();
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender) {}
 
 protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);

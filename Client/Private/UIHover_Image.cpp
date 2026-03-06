@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUIHover_Image::CUIHover_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -123,22 +124,17 @@ HRESULT CUIHover_Image::Attach_Personal_Info()
 	default:
 		return E_FAIL;
 	}
+
+	m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc) 
+		{
+			if (EUIEventID::MENU_OPEN == Desc.eEventID)
+			{
+				this->Set_Invisible();
+			}
+		});
+
+
 	return S_OK;
-}
-
-void CUIHover_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	if (eEvent == ETriggerEventType::HOVER_ENTER)
-	{
-		Set_Visible();
-	}
-	else if (eEvent == ETriggerEventType::HOVER_EXIT)
-	{
-		Set_Invisible();
-	}
 }
 
 void CUIHover_Image::Initialize_Visible_Event()

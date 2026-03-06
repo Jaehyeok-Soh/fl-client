@@ -5,7 +5,6 @@
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "GameInstance.h"
-#include "UITrigger.h"
 
 NS_BEGIN(Client)
 
@@ -105,36 +104,10 @@ vector<CGenericUI*>* CUI_Manager::Get_Level_All_GenericUI(uint32_t iLevelIndex)
 
 void CUI_Manager::Clear_Cache(uint32_t iLevelIndex)
 {
-	m_vecTriggerUIs.clear();
 	m_vecCanvasCache[iLevelIndex].clear();
 	m_vecGenericUICache[iLevelIndex].clear();
 	m_mapCanvasCache[iLevelIndex].clear();
 	m_mapUICache[iLevelIndex].clear();
-}
-
-void CUI_Manager::Add_TriggerUI(std::vector<CUITrigger*>&& vecUIs)
-{
-	m_vecTriggerUIs.insert(
-		m_vecTriggerUIs.end(),
-		std::make_move_iterator(vecUIs.begin()),
-		std::make_move_iterator(vecUIs.end())
-	);
-	vecUIs.clear();
-}
-
-HRESULT CUI_Manager::Bind_Trigger(_uint iLevelID)
-{
-	for (auto* pUI : m_vecTriggerUIs)
-	{
-		if (FAILED(pUI->Bind_Cache(iLevelID)))
-			return E_FAIL;
-	}
-	return S_OK;
-}
-
-void CUI_Manager::Clear_TriggerUI()
-{
-	m_vecTriggerUIs.clear();
 }
 
 HRESULT CUI_Manager::Regist_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag, const _uint iPrototypeLevel, void* pArg, _uint iNumPrefab)

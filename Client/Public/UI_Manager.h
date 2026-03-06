@@ -55,10 +55,6 @@ public:
 
 	void Clear_Cache(uint32_t iLevelIndex);
 	
-	void Add_TriggerUI(vector<CUITrigger*>&& vecUIs);
-	HRESULT Bind_Trigger(_uint iLevelID);
-	void Clear_TriggerUI();
-
 	HRESULT Regist_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag,const _uint iPrototypeLevel, void* pArg, _uint iNumPrefab);
 	void Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, _uint iSpawnLevel, void* pArg);
 
@@ -68,9 +64,10 @@ public:
 public:
 	// UI 전달 변수 Getter Setter
 	const _float* Get_LoadingRatio() const { return m_pLoadingRatio; }
+	CMulticastDelegate<void(const UIEVENT_DESC&)>& Get_UIEvents() { return m_vEvents; }
 
 	void Set_LoadingRatio(const _float* p) { m_pLoadingRatio = p; }
-
+	
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	/* 특정 오브젝트를 딱 찝어서 이벤트를 발생 시켜야 할 때 */
@@ -82,10 +79,7 @@ private:
 	_bool m_isClear = {false};
 	_bool m_isDeadUIClear = {false};
 
-	vector <CUITrigger*> m_vecTriggerUIs;
-
 	array<_wstring, ENUM_TO_UINT(EUIPrefabType::END)> m_vecPrefabs;
-
 
 	CMulticastDelegate<void(const UIEVENT_DESC&)> m_vEvents = {};
 

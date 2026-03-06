@@ -281,31 +281,6 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUIMini_Map::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	switch (eEvent)
-	{
-	case Client::ETriggerEventType::HOVER_ENTER:
-		break;
-	case Client::ETriggerEventType::HOVER_EXIT:
-		break;
-	case Client::ETriggerEventType::PRESS_ENTER:
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-		break;
-	case Client::ETriggerEventType::PRESS_EXIT:
-		break;
-	case Client::ETriggerEventType::END:
-	default:
-		break;
-	}
-}
-
 void CUIMini_Map::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;

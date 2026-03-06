@@ -279,12 +279,6 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 	m_iPreComboCount = m_iCurComboCount;
 }
 
-void CUICombo_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUICombo_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;

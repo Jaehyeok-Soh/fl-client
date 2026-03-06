@@ -213,19 +213,6 @@ HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
 }
 
 
-void CUIPlayerStat_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-	}
-}
 
 void CUIPlayerStat_Text::Initialize_Visible_Event()
 {
