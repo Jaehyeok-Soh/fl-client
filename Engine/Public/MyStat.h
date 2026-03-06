@@ -14,7 +14,8 @@ public:
 
 	enum StatFlags : Flags
 	{
-		HpUpdate		= 0x000001 // 자동으로 hp를 업데이트를 할거니
+		None
+		,HpUpdate		= 0x000001 // 자동으로 hp를 업데이트를 할거니
 		,DefenseUpdtae	= 0x000002 // 자동으로 defense를	업데이트를 할거니
 		,MentalUpdate	= 0x000004 // 자동으로 mental을 업데이트를 할거니
 

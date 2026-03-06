@@ -44,11 +44,6 @@ HRESULT CXibi_GimmikController::Initialize(void* pArg)
 
 HRESULT CXibi_GimmikController::Awake(const _uint iCurLevelIndex)
 {
-	Bind_ModelAnimNotify();
-
-	if (FAILED(Set_Event()))
-		return E_FAIL;
-
 	m_pOneshotThunderSpawner->Awake(iCurLevelIndex);
 	m_pRandomThunderSpawner->Awake(iCurLevelIndex);
 	m_p3wayThunderSpawner->Awake(iCurLevelIndex);
@@ -66,6 +61,19 @@ void CXibi_GimmikController::Update(const _float fTiemDelta)
 	m_pOneshotThunderSpawner->Update(fTiemDelta);
 	m_p360CircleSpawner->Update(fTiemDelta);
 	m_p360ThunderSpawner->Update(fTiemDelta);
+}
+
+HRESULT CXibi_GimmikController::Bind_Events()
+{
+	// 구독
+	if (FAILED(Super::Bind_Events()))
+		return E_FAIL;
+
+	// 이벤트 하드코딩
+	if (FAILED(Set_Event()))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CXibi_GimmikController::Set_Event()

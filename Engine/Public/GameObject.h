@@ -56,7 +56,7 @@ public:
 	// Static Object가 다른 Level에 가기전 해당 Level이 정리 될때 호출
 	virtual HRESULT Clear_WhenChangeLevel() { return S_OK; }
 	// 객체 생성이 완료되고 Change_Level이 완료되었을 때 호출
-	virtual HRESULT Awake(const _uint iCurrentLevelID) PURE;
+	virtual HRESULT Awake(const _uint iCurrentLevelID) PURE; 
 	virtual void Update_Priority(const _float fTimeDelta);
 	virtual void Update(const _float fTimeDelta);
 	virtual void Update_Late(const _float fTimeDelta);
@@ -64,7 +64,7 @@ public:
 	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo) {}
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) {}
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) {}
 	virtual _bool Picking(OUT Vec3& vOut) { return false; }
 	virtual HRESULT Render();

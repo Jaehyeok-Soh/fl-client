@@ -233,6 +233,7 @@
     <ClInclude Include="..\Public\Rock.h" />
     <ClInclude Include="..\Public\SkillBase_MoonE.h" />
     <ClInclude Include="..\Public\SkillBase_MoonQ.h" />
+    <ClInclude Include="..\public\StatCom_Boss.h" />
     <ClInclude Include="..\Public\StatCom_Player.h" />
     <ClInclude Include="..\Public\State_Charge.h" />
     <ClInclude Include="..\Public\StateBase_Monster.h" />
@@ -444,6 +445,7 @@
     <ClCompile Include="..\Private\Rock.cpp" />
     <ClCompile Include="..\Private\SkillBase_MoonE.cpp" />
     <ClCompile Include="..\Private\SkillBase_MoonQ.cpp" />
+    <ClCompile Include="..\private\StatCom_Boss.cpp" />
     <ClCompile Include="..\Private\StatCom_Player.cpp" />
     <ClCompile Include="..\Private\State_Charge.cpp" />
     <ClCompile Include="..\Private\StateBase_Monster.cpp" />

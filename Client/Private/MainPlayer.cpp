@@ -255,7 +255,7 @@ void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CG
     desc.pOther = pOther;
 }
 
-void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
     COLLIDED_DESC desc{};
     desc.iCollisionType = COLLISIONEVENT::ON_TRIGGER_ENTER;
@@ -288,7 +288,7 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
 
     CLOG_INFO(infoContant);
 #endif // _DEBUG
-
+    CTransform*         pTransform = Get_Component<CTransform>();
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
 
     // 만약 현재 state가 attack을 받을 수 있다면
@@ -307,7 +307,14 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
         {
             UI_PREFAB_DATA tPrefabData = {};
             tPrefabData.DamageFontData.iDamage = static_cast<_uint>(fDamage);
-            tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
+            if (hitDesc.bHasHitPoint)
+                tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
+            else
+            {
+                tPrefabData.DamageFontData.vHitPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+                tPrefabData.DamageFontData.vHitPos.y += 0.4f;
+            }
+                
             CUI_Manager::GetInstance()->Request_Add_Prefab(
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
         }

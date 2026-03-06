@@ -620,9 +620,11 @@ CGameDataManager* CGameDataManager::Create(ID3D11Device* pDevice, ID3D11DeviceCo
 
 void CGameDataManager::Free()
 {
-	Safe_Release(m_pDevice);
-	Safe_Release(m_pDeviceContext);
-    Safe_Release(m_pGameInstance);
+	Safe_Release(m_pDefaultBlack);
+	Safe_Release(m_pDefaultWhite);
+	Safe_Release(m_pDefaultRed);
+	Safe_Release(m_pDefaultBlue);
+	Safe_Release(m_pDefaultGreen);
 
 	Clear_AttackPreset();
 	for (auto& Pair : m_mapTextureSplatingInfoDatas)
@@ -631,6 +633,9 @@ void CGameDataManager::Free()
 
 	m_mapCameraCinematicSequence.clear();
 
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pDeviceContext);
+	Safe_Release(m_pGameInstance);
 
     Super::Free();
 }

@@ -114,9 +114,9 @@ void CMonster_Dog::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, C
 	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Dog::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Dog::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 void CMonster_Dog::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
