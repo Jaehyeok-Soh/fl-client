@@ -89,7 +89,6 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 		if (!pNewLevel)
 			return;
 
-		CUI_Manager::GetInstance()->Clear_Cache(m_pGameInstance->Get_CurrentLevelIndex());
 		m_pGameInstance->Immediately_ChangeLevel(ENUM_TO_UINT(m_eNextLevelID), pNewLevel);
 	}
 }

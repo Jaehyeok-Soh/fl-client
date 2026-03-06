@@ -27,21 +27,18 @@ private:
 	HRESULT Create_TextDTO(const DTO::TUI_TextData& data);
 	HRESULT Create_DImageDTO(const DTO::TUI_DImageData& data);
 
-	HRESULT Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
-	CGenericUI::GENERIC_UI_DESC Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas);
+	HRESULT Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data);
+	CGenericUI::GENERIC_UI_DESC Make_DefaultInfo(const DTO::TUI_GenericUIData& data);
 
 private:
-	unordered_map<_string, CCanvas*> m_MapCanvasCache;
-	unordered_map<_string, CGenericUI* >m_pMapUICache;
-
 	// Data Cache 
 	unordered_map<_string, DTO::TUI_TextData> m_MapTextDataCache;
 	unordered_map<_string, DTO::TUI_DImageData> m_MapDImageDataCache;
 
+	CCanvas* m_pCanvasCache = { nullptr };
+
 	Vec2 m_vAspect = {};
 	Vec2 m_vViewportSIze = {};
-
-	Client::EUIPrefabType m_ePrefabtype = { Client::EUIPrefabType::NOT_PREFAB };
 
 public:
 	static CBuilder_UI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);

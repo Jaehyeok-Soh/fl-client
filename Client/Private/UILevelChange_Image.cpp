@@ -171,7 +171,6 @@ void CUILevelChange_Image::Trigger_By_InteractState()
 		if (m_eNextLevelID == ELevelType::END)
 			return;
 		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
-		m_pUIManager->Request_Clear();
 	}
 }
 

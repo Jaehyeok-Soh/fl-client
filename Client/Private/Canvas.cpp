@@ -137,7 +137,6 @@ HRESULT CCanvas::Ready_Prefab(_uint iPoolLevel, _uint iSpawnLevel)
 				if (nullptr == pUI)
 					return;
 				(this->Get_UIVector())->push_back(pUI);
-				CUI_Manager::GetInstance()->Add_VecGenericUICache(iSpawnLevel,pUI);
 			});
 	}
 	m_isAllDead = false;
@@ -167,7 +166,6 @@ void CCanvas::All_Dead()
 		pUI->Set_Dead();
 	}
 
-	CUI_Manager::GetInstance()->Request_Clear_DeadUI();
 	m_vecUI.clear();
 	Set_Dead();
 }

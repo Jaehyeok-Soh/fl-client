@@ -104,12 +104,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 		}
 	}
 
-	if (FAILED(CUI_Manager::GetInstance()->Merge_MapCanvasCache(m_iLevelID, std::move(m_MapCanvasCache))))
-		return E_FAIL;
-	if (FAILED(CUI_Manager::GetInstance()->Merge_MapGenericUICache(m_iLevelID, std::move(m_pMapUICache))))
-		return E_FAIL;
-
-	m_MapTextDataCache.clear();
 	return S_OK;
 }
 
@@ -128,7 +122,6 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	Desc.fZ				= data.fPosZ;
 	Desc.fWidth			= m_vViewportSIze.x;
 	Desc.fHeight		= m_vViewportSIze.y;
-	m_ePrefabtype = static_cast<Client::EUIPrefabType>(data.iPrefabType);
 
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas", m_iLevelID, g_wszUILayer, &Desc);
 	if (pResult == nullptr)
@@ -138,10 +131,7 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	if (nullptr == pCanvas)
 		return E_FAIL;
 
-	m_MapCanvasCache.emplace(data.strTag, pCanvas);
-	if (FAILED(CUI_Manager::GetInstance()->Add_VecCanvasCache(m_iLevelID, pCanvas)))
-		return E_FAIL;
-
+	m_pCanvasCache = pCanvas;
 	return S_OK;
 }
 
@@ -150,11 +140,7 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	if (data.eType != DTO::EUIType::GENERICUI)
 		return E_FAIL;
 
-	auto iter = m_MapCanvasCache.find(data.strCanvasName);
-	if (iter == m_MapCanvasCache.end())
-		return E_FAIL;
-
-	if (FAILED(Register_Class(data.eClassType, data, iter->second)))
+	if (FAILED(Register_Class(data.eClassType, data)))
 		return E_FAIL;
 
 	return S_OK;
@@ -178,12 +164,9 @@ HRESULT CBuilder_UI::Create_DImageDTO(const DTO::TUI_DImageData& data)
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data)
 {
-	if (nullptr == pCanvas)
-		return E_FAIL;
-
-	CGenericUI::GENERIC_UI_DESC DefaultDesc = Make_DefaultInfo(data, pCanvas);
+	CGenericUI::GENERIC_UI_DESC DefaultDesc = Make_DefaultInfo(data);
 	_wstring wstrProtoTag = L"Prototype_UI_" + Engine_Utils::ToWString(DTO::UIClassTypeToString(eClassType));
 	CGameObject* pResult = nullptr;
 
@@ -413,15 +396,11 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	if (nullptr == pUI)
 		return E_FAIL;
 
-	pCanvas->Get_UIVector()->push_back(pUI);
-	m_pMapUICache.emplace(data.strTag, pUI);
-	if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
-		return E_FAIL;
-
+	m_pCanvasCache->Get_UIVector()->push_back(pUI);
 	return S_OK;
 }
 
-CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_GenericUIData& data)
 {
 	CGenericUI::GENERIC_UI_DESC Desc = {};
 	Desc.strName				= data.strTag;
@@ -443,7 +422,6 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.isInitInteract			= data.isInteract;
 	Desc.isInitActivate			= data.isActivate;
 	Desc.isUseColorTint			= data.isUseColorTint;
-	Desc.pCanvasCache			= pCanvas;
 	Desc.iComponentFlag			= data.iComponentFlag;
 	Desc.isUseColorTint			= data.isUseColorTint;
 	Desc.vColorTint				= data.vColorTint;
