@@ -33,8 +33,14 @@ public:
 	// 어떻게 생성하고 죽일 것인가에 대한 flag들 : 다른 로직에 방해만 되지 않는다면 자유롭게 추가 가능
 	enum PartEff_Flag : Flags
 	{
-			None				= 0
-		,	Spawn_CoolTime		= 0x0000001	// 쿨타임이 지나면 자동 spawn
+			None						= 0
+		,	Spawn_CoolTime				= 0x0000001	// 쿨타임이 지나면 자동 spawn
+
+
+		//	아직 effect가 spawn상태일때 다시 spawn 요청이 들어왔을때
+		//	다시 spawn flag값
+		,	Spawn_Again_NoDespawn		= 0x0000100 // despawn 없이 다시 spawn
+		,	Spawn_Again_AfterDespawn	= 0x0000200 // despawn 하고 다시 spawn
 	};
 
 	typedef struct tagDataEffectHandler

@@ -309,6 +309,7 @@ _bool CPlayer::Start_Attack(State iState)
     case State::SKILL2:
         bChange = Get_Component<CActionSkill>()->Start_Skill(MoonQ);
 
+
         if (bChange && m_ePlayerType == PLAYER_TYPE::MOON)
         {
             if (CPartEffect* pEff = Get_Part<CPartEffect>(Part::EFFECT))
@@ -1149,7 +1150,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             tDesc.arrState_DurationTimes    = {};
             tDesc.arrState_DurationTimes    = { 0.f,12.f,0.f }; 
             tDesc.arrState_DelayTimes       = { 0.f,0.f,0.f };
-            tDesc.FPartEff_Flags = CPartEffect::PartEff_Flag::None;
+            tDesc.FPartEff_Flags = CPartEffect::PartEff_Flag::Spawn_Again_AfterDespawn;
 
 
             vector<CPartEffect::DATA_EFFHANDLER> tEffectHandlerDesc;

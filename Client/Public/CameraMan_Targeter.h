@@ -14,11 +14,11 @@ class CBody;
 
 enum class TargeterState : _uint
 {
-	NORMAL = 0,
+	NORMAL = 0,		// player tarcking cam
 	TARGETSYNC,
-	GUN,
-	CINEMATIC,
-	Bone
+	GUN,			// tps cam
+	SKILL_SEQUENCE,
+	END
 };
 
 class CCameraMan_Targeter final : public CCameraMan
@@ -64,10 +64,10 @@ private:
 	void GunCam_Update(const _float fTimeDelta);
 	void GunCam_End();
 
-	//void GunCam_Begin();
-	//void GunCam_Update_Priority(const _float fTimeDelta);
-	//void GunCam_Update(const _float fTimeDelta);
-	//void GunCam_End();
+	void Skill_SequeneCam_Begin();
+	void Skill_SequeneCam_Update_Priority(const _float fTimeDelta);
+	void Skill_SequeneCam_Update(const _float fTimeDelta);
+	void Skill_SequeneCam_End();
 
 private:
 	void Update_Input(const _float fTimeDelta);

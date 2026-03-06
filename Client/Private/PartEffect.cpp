@@ -141,9 +141,27 @@ HRESULT CPartEffect::Render()
 
 void CPartEffect::Change_State(CPartEff_State eNextState)
 {
+	// 아직 spawn 상태인데 다시 spawn요청이 들어왔을때
+	if (m_eState == CPartEff_State::SPAWN &&
+		m_eState == eNextState)
+	{
+		if (Engine_Utils::Has_Flag(m_FEffFlags, Spawn_Again_NoDespawn))
+		{
+			goto CHANGE;
+		}
+
+		if (Engine_Utils::Has_Flag(m_FEffFlags, Spawn_Again_AfterDespawn))
+		{
+			Despawn_Effect();
+			goto CHANGE;
+		}
+	}
+
+
 	if (m_eState == eNextState)
 		return;
 
+CHANGE:
 	End_State(m_eState);
 
 	// 이전 state를 추적할 수 있도록 매게변수 값으로 넘겨줌

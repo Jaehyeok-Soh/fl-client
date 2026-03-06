@@ -59,6 +59,7 @@ HRESULT CCameraMan_Targeter::Awake(const _uint iCurrentLevelID)
 
 void CCameraMan_Targeter::Update_Priority(const _float fTimeDelta)
 {
+// debug
     if (KEY_BUTTON_HOLD(DIK_UP))
         m_fCurDistance -= fTimeDelta;
 
@@ -148,13 +149,17 @@ void CCameraMan_Targeter::Update_Priority_State(const _float fTimeDelta)
     case Client::TargeterState::NORMAL:
         Normal_Update_Priority(fTimeDelta);
         break;
+
     case Client::TargeterState::TARGETSYNC:
         TargetSync_Update_Priority(fTimeDelta);
         break;
+
     case Client::TargeterState::GUN:
         GunCam_Update_Priority(fTimeDelta);
         break;
-    case Client::TargeterState::CINEMATIC:
+
+    case Client::TargeterState::SKILL_SEQUENCE:
+        Skill_SequeneCam_Update_Priority(fTimeDelta);
         break;
     }
 }
@@ -166,14 +171,17 @@ void CCameraMan_Targeter::Update_State(const _float fTimeDelta)
     case Client::TargeterState::NORMAL:
         Normal_Update(fTimeDelta);
         break;
+
     case Client::TargeterState::TARGETSYNC:
         TargetSync_Update(fTimeDelta);
         break;
+
     case Client::TargeterState::GUN:
         GunCam_Update(fTimeDelta);
         break;
-    case Client::TargeterState::CINEMATIC:
-        /* 임시 Update제거용 코드 */
+
+    case Client::TargeterState::SKILL_SEQUENCE:
+        Skill_SequeneCam_Update(fTimeDelta);
         break;
     }
 }
@@ -191,8 +199,8 @@ void CCameraMan_Targeter::State_Begin(TargeterState eState)
     case Client::TargeterState::GUN:
         GunCam_Begin();
         break;
-    case Client::TargeterState::CINEMATIC:
-        /* 임시 Update제거용 코드 */
+    case Client::TargeterState::SKILL_SEQUENCE:
+        Skill_SequeneCam_Begin();
         break;
     }
 }
@@ -212,7 +220,8 @@ void CCameraMan_Targeter::State_End(TargeterState eState)
         GunCam_End();
         break;
 
-    case Client::TargeterState::CINEMATIC:
+    case Client::TargeterState::SKILL_SEQUENCE:
+        Skill_SequeneCam_End();
         break;
     }
 }
@@ -398,13 +407,53 @@ void CCameraMan_Targeter::GunCam_Update(const _float fTimeDelta)
 
     // 카메라 look과 플레이어의 look을 동일시 하게 만든다
 
-    // 카메라의 pos : 플레이어의 이전 위치값과 현재 위치값 차이만큼 움직여 준다 -> 아님
-
     Get_Component<CTransform>()->Chase(m_vTargetPos, 0.1f, fTimeDelta);
 }
 
 void CCameraMan_Targeter::GunCam_End()
 {
+}
+
+void CCameraMan_Targeter::Skill_SequeneCam_Begin()
+{
+}
+
+void CCameraMan_Targeter::Skill_SequeneCam_Update_Priority(const _float fTimeDelta)
+{
+}
+
+void CCameraMan_Targeter::Skill_SequeneCam_Update(const _float fTimeDelta)
+{
+    CGameObject* pActor = { nullptr };
+    if (!(pActor = Get_Actor()))
+        return;
+
+    if (CContainerObject* pObject = dynamic_cast<CContainerObject*>(pActor))
+    {
+        // 플레이어의 바디를 들고 온다
+        CBody* pBodyOfPlayer = nullptr;
+        if (!(pBodyOfPlayer = pObject->Get_Part<CBody>(CPlayer::BODY)))
+            return;
+
+        // 플레이어의 transform을 들고 온다
+        CTransform* pPlayerTransform = nullptr;
+        if (!(pPlayerTransform = pObject->Get_Component<CTransform>()))
+            return;
+
+        Matrix matFianl;
+        // player body의 ""가 있다면 -> bondM * camM
+        if (CBone* pCamBone = pBodyOfPlayer->Get_CamBone()) //Get_CamBone ?? Get_CamSocketBone
+        {
+            matFianl = pCamBone->Get_CombinedTransformMatrix() * pPlayerTransform->Get_WorldMatrix();
+        }
+
+        Get_Component<CTransform>()->Set_WorldMatrix(matFianl);
+    }
+}
+
+void CCameraMan_Targeter::Skill_SequeneCam_End()
+{
+    //m_fCurDistance = 0.f;
 }
 
 void CCameraMan_Targeter::Update_Input(const _float fTimeDelta)
@@ -480,14 +529,14 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     vUp.Normalize();
 
     // position : chase의 pos 에서 내 look 방향으로 조금 뒤로 빼
-    Vec3 vDesiredPos = vChaseFiltered - vLook * m_fCurDistance;
+    Vec3 vDesiredPos = vChasePositionRaw - vLook * m_fCurDistance;
 
     // RUL & P 다시 재조립
     CTransform* pCameraTransform = Get_Component<CTransform>();
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::UP,    vUp);
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK,  vLook);
-    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::POS,   vDesiredPos);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vDesiredPos);
 }
 
 void CCameraMan_Targeter::OnChangeLockonTarget(CGameObject* pGo)
@@ -515,18 +564,17 @@ Vec3 CCameraMan_Targeter::Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform*
     Matrix matReturn = Matrix::Identity;
     Matrix matWorld = pTrnasform->Get_WorldMatrix(); // player matrix
 
-    // player body의 ""가 있다면 -> bondM * camM
-    if (CBone* pCamBone = pBody->Get_CamSocketBone()) //Get_CamBone ?? Get_CamSocketBone
-    {
-        matReturn = pCamBone->Get_CombinedTransformMatrix() * matWorld;
-    }
+    CBone* pCamBone = nullptr;
 
-    //if (CBone* pHead = pBody->Get_HeadBone())
-    //     matReturn = pHead->Get_BindPoseTransformMatrix() * matWorld;
-    //else if (CBone* pNeck = pBody->Get_NeckBone())
-    //    matReturn = pNeck->Get_BindPoseTransformMatrix() * matWorld;
-    //else if (CBone* pSpine = pBody->Get_Spine1Bone())
-    //    matReturn = pSpine->Get_BindPoseTransformMatrix() * matWorld;
+    switch (m_eCurrentState)
+    {
+    case TargeterState::NORMAL:
+        if (pCamBone = pBody->Get_CamSocketBone()) //Get_CamBone ?? Get_CamSocketBone
+        {
+            matReturn = pCamBone->Get_CombinedTransformMatrix() * matWorld;
+        }
+        break;
+    }
 
     return matReturn.Translation(); // bondM * camM의 Position return
 }
