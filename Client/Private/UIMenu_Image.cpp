@@ -64,8 +64,8 @@ void CUIMenu_Image::Update_Priority(const _float fTimeDelta)
 
 void CUIMenu_Image::Update(const _float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
 	Tick_By_Type(fTimeDelta);
+	Super::Update(fTimeDelta);
 }
 
 void CUIMenu_Image::Update_Late(const _float fTimeDelta)
@@ -116,6 +116,8 @@ HRESULT CUIMenu_Image::Attach_Personal_Info()
 	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	break;
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	break;
 	default:
 		return E_FAIL;
 	}
@@ -152,6 +154,17 @@ void CUIMenu_Image::Tick_By_Type(const _float fTimeDelta)
 			Desc.eEventID = EUIEventID::MENU_ICON_HOVER_EXIT;
 			Desc.iParam0 = m_iSlotIndex;
 			m_pUIManager->Get_UIEvents().Broadcast(Desc);
+		}
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	{
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_ENTER))
+		{
+			UIEVENT_DESC Desc = {};
+			Desc.eEventID = EUIEventID::MENU_CLOSE;
+			m_pUIManager->Get_UIEvents().Broadcast(Desc);
+			Set_NonInteractable();
 		}
 	}
 	break;
@@ -234,6 +247,28 @@ void CUIMenu_Image::Bind_Events()
 		);
 	}
 	break;
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	{
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+					{
+						this->Set_NonInteractable();
+					}
+				})
+		);
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_OPEN == Desc.eEventID)
+					{
+						this->Set_Interactable();
+					}
+				})
+		);
+	}
+	break;
 	}
 }
 
@@ -257,6 +292,11 @@ void CUIMenu_Image::Initialize_Visible_Event()
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
 		Ready_Fade(0.5f, 0.f, 1.f, 0.f);
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	{
+
 	}
 	break;
 	}
@@ -284,9 +324,11 @@ void CUIMenu_Image::Initialize_InVisible_Event()
 		Ready_Fade(0.5f, 1.f, 0.f, 0.f);
 	}
 	break;
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		break;
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	{
+
+	}
+	break;
 	}
 }
 
@@ -301,6 +343,10 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 			m_isActive = true;
 			return true;
 		}
+	}
+	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER)
+	{
+		return true;
 	}
 	else
 	{
@@ -326,6 +372,10 @@ _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 			m_isActive = true;
 			return true;
 		}
+	}
+	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER)
+	{
+		return true;
 	}
 	else
 	{

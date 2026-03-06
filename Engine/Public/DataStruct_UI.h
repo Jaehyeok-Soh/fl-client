@@ -603,6 +603,7 @@ enum class EUIDImageSubClassType
 	MENU_BEGIN,
 	MENU_BG,
 	MENU_ICON,
+	MENU_EXIT_TRIGGER,
 	MENU_ICON_BG,
 	MENU_ICON_OUTLINE,
 	MENU_END,
@@ -690,6 +691,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::MENU_BEGIN,							"MENU_BEGIN" },
 	{ EUIDImageSubClassType::MENU_BG,								"MENU_BG" },
 	{ EUIDImageSubClassType::MENU_ICON,								"MENU_ICON" },
+	{ EUIDImageSubClassType::MENU_EXIT_TRIGGER,						"MENU_EXIT_TRIGGER" },
 	{ EUIDImageSubClassType::MENU_ICON_BG,							"MENU_ICON_BG" },
 	{ EUIDImageSubClassType::MENU_ICON_OUTLINE,						"MENU_ICON_OUTLINE" },
 	{ EUIDImageSubClassType::MENU_END,								"MENU_END" },
@@ -770,6 +772,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MENU_BEGIN")							return EUIDImageSubClassType::MENU_BEGIN;
 	if (str == "MENU_BG")								return EUIDImageSubClassType::MENU_BG;
 	if (str == "MENU_ICON")								return EUIDImageSubClassType::MENU_ICON;
+	if (str == "MENU_EXIT_TRIGGER")						return EUIDImageSubClassType::MENU_EXIT_TRIGGER;
 	if (str == "MENU_ICON_BG")							return EUIDImageSubClassType::MENU_ICON_BG;
 	if (str == "MENU_ICON_OUTLINE")						return EUIDImageSubClassType::MENU_ICON_OUTLINE;
 	if (str == "MENU_END")								return EUIDImageSubClassType::MENU_END;
@@ -852,6 +855,7 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MENU_BEGIN:								return "MENU_BEGIN";
 	case EUIDImageSubClassType::MENU_BG:								return "MENU_BG";
 	case EUIDImageSubClassType::MENU_ICON:								return "MENU_ICON";
+	case EUIDImageSubClassType::MENU_EXIT_TRIGGER:						return "MENU_EXIT_TRIGGER";
 	case EUIDImageSubClassType::MENU_ICON_BG:							return "MENU_ICON_BG";
 	case EUIDImageSubClassType::MENU_ICON_OUTLINE:						return "MENU_ICON_OUTLINE";
 	case EUIDImageSubClassType::MENU_END:								return "MENU_END";

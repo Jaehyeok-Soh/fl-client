@@ -47,7 +47,6 @@ HRESULT CUIMenu_OutLine::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	m_isInteract = true;
 	return S_OK;
 }
 

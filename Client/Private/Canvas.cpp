@@ -99,15 +99,15 @@ void CCanvas::Update(const _float fTimeDelta)
 
 void CCanvas::Update_Late(const _float fTimeDelta)
 {
-	Calc_HitUpdate();
 	Super::Update_Late(fTimeDelta);
+	Calc_HitUpdate();
+
+	if (Check_Dead())
+		All_Dead();
 }
 
 void CCanvas::Ready_Before_Render(const _float fTimeDelta)
 {
-	if (Check_Dead())
-		All_Dead();
-
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
