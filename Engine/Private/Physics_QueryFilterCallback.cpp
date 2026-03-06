@@ -9,6 +9,9 @@
 
 PxQueryHitType::Enum CPhysics_QueryFilterCallback::preFilter(const PxFilterData& filterData, const PxShape* shape, const PxRigidActor* actor, PxHitFlags& queryFlags)
 {
+	if (shape == nullptr || actor == nullptr)
+		return PxQueryHitType::eNONE;
+
 	if (actor->userData == nullptr)
 		return PxQueryHitType::eNONE;
 
@@ -21,10 +24,10 @@ PxQueryHitType::Enum CPhysics_QueryFilterCallback::preFilter(const PxFilterData&
 
 	PxFilterData shapeFilter = shape->getQueryFilterData();
 
-	if ((filterData.word0 & shapeFilter.word1) && (shapeFilter.word0 & filterData.word1))
+	if (shapeFilter.word0 & PHYSICSFILTERGROUP::MAP)
 		return PxQueryHitType::eBLOCK;
 
-	if (shapeFilter.word0 & PHYSICSFILTERGROUP::MAP)
+	if (filterData.word1 & shapeFilter.word0)
 		return PxQueryHitType::eBLOCK;
 
 	return PxQueryHitType::eNONE;

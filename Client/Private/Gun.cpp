@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "Gun.h"
+#include "GameInstance.h"
+#include "CameraMan.h"
+#include "PhysicsAttackRaycast.h"
 
 CGun::CGun(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pDevice, pDeviceContext, Weapon_Type::GUN)
@@ -27,6 +30,11 @@ HRESULT CGun::Initialize(void* pArg)
 
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
+
+	if (FAILED(Ready_Components()))
+		return E_FAIL;
+
+	m_pAttackRaycast = Get_Component<CPhysicsAttackRaycast>();
 
 	GUN_DESC* pDesc = static_cast<GUN_DESC*>(pArg);
 
@@ -58,7 +66,15 @@ void CGun::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+	m_pCameraTransform = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>();
+
 	Attack_Update(fTimeDelta);
+
+	Vec3 pos = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 dir = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	_float dist = {};
+	
+	m_bOnTarget = m_pAttackRaycast->Aimming(pos, dir, 500.f, &dist);
 }
 
 void CGun::Update_Late(_float fTimeDelta)
@@ -69,6 +85,11 @@ void CGun::Update_Late(_float fTimeDelta)
 void CGun::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+
+#ifdef _DEBUG
+	if (m_pAttackRaycast)
+		m_pGameInstance->Push_DebugComponent(m_pAttackRaycast);
+#endif // _DEBUG
 }
 
 void CGun::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -99,6 +120,24 @@ void CGun::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject
 HRESULT CGun::Render()
 {
 	return Super::Render();
+}
+
+HRESULT CGun::Ready_Components()
+{
+	CPhysicsAttackRaycast::ATTACKRAYCASTDESC desc{};
+	desc.eFilterLayer = PHYSICSFILTERGROUP::ATTACK_PROJECTTILE;
+	desc.iFilterMask = PHYSICSFILTERGROUP::MONSTER
+		| PHYSICSFILTERGROUP::MONSTER_ATTACK_PROJECTTILE
+		| PHYSICSFILTERGROUP::MONSTER_SKILL_PROJECTTILE
+		| PHYSICSFILTERGROUP::MAP
+		| PHYSICSFILTERGROUP::OBJECT1
+		| PHYSICSFILTERGROUP::OBJECT2;
+	desc.strAttackPresetTag = "MoonAttack_Normal";
+
+	if (FAILED(Add_Component<CPhysicsAttackRaycast>(0/*static*/, L"Prototype_Component_AttackRaycast", &desc)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 void CGun::Reload_Bullet()
@@ -173,6 +212,11 @@ void CGun::Reload_Update(const _float fTimeDelta)
 
 void CGun::Fire()
 {
+	Vec3 pos = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 dir = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	_float dist = {};
+	m_pAttackRaycast->ShootRay(pos, dir, 500.f, &dist);
+
 	m_MCurBullet.x -=1.f;
 
 	if (m_MCurBullet.x == 0.f)

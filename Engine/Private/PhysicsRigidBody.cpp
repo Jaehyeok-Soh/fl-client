@@ -250,15 +250,20 @@ CComponent* CPhysicsRigidBody::Clone(void* pArg)
 
 void CPhysicsRigidBody::Free()
 {
+	PxScene* pScene = m_pGameInstance->GetPhysicsScene();
+
 	for (auto& actor : m_pActors)
 	{
 		if (actor)
 		{
+			pScene->lockWrite();
+
 			actor->userData = nullptr;
 
 			m_pGameInstance->RemoveActor(actor);
 
 			PX_RELEASE(actor);
+			pScene->unlockWrite();
 		}
 	}
 

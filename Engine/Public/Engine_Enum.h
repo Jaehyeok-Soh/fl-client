@@ -214,6 +214,7 @@ namespace Engine
 		PX_COLLIDER,
 		PX_CCT,
 		PX_ATTACKOVERLAP,
+		PX_ATTACKRAYCAST,
 		// ¿Ã∆Â∆Æ
 		EF_ANIMHANDLER,
 		//
