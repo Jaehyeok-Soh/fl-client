@@ -29,6 +29,7 @@ private:
 	HRESULT Ready_Components(MENU_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
+	virtual void Bind_Events()override;
 
 private:
 	virtual void Initialize_Visible_Event()override;

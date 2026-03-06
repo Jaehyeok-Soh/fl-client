@@ -16,18 +16,21 @@ void to_json(json& j, const TUI_DImageData& data)
 		{ "strTag", data.strTag },
 		{ "strOwnerName", data.strOwnerName },
 		{ "eDISubClassType", data.eDISubClassType },
+		{ "iParams0", data.iParams0 },
 	};
 }
 
 void from_json(const json& j, TUI_DImageData& data)
 {
-	data.strTag			 = "";
-	data.strOwnerName	 = "";
-	data.eDISubClassType = std::decay_t<decltype(data.eDISubClassType)>{};
+	data.strTag				= "";
+	data.strOwnerName		= "";
+	data.eDISubClassType	= std::decay_t<decltype(data.eDISubClassType)>{};
+	data.iParams0			= 0;
 
-	data.strTag          = j.value("strTag", data.strTag);
-	data.strOwnerName    = j.value("strOwnerName", data.strOwnerName);
-	data.eDISubClassType = j.value("eDISubClassType", j.value("eSubClassType", data.eDISubClassType));
+	data.strTag				= j.value("strTag", data.strTag);
+	data.strOwnerName		= j.value("strOwnerName", data.strOwnerName);
+	data.eDISubClassType	= j.value("eDISubClassType", j.value("eSubClassType", data.eDISubClassType));
+	data.iParams0			= j.value("iParams0", data.iParams0);
 }
 
 void to_json(json& j, const TUI_TextData& data)

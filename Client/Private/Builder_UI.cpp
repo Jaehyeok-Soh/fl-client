@@ -333,6 +333,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CUIMenu_Image::MENU_IMAGE_DESC MenuImageDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuImageDesc) = DefaultDesc;
 			MenuImageDesc.eSubClassType = Type;
+			MenuImageDesc.iSlotIndex = iter->second.iParams0;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuImage", m_iLevelID, g_wszUILayer, &MenuImageDesc);
 		}
 		else if (isOutLine)
@@ -340,6 +341,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CUIMenu_OutLine::MENU_OUTLINE_DESC MenuOutlineDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuOutlineDesc) = DefaultDesc;
 			MenuOutlineDesc.eSubClassType = Type;
+			MenuOutlineDesc.iSlotIndex = iter->second.iParams0;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuOutline", m_iLevelID, g_wszUILayer, &MenuOutlineDesc);
 		}
 		else if (isLoading)

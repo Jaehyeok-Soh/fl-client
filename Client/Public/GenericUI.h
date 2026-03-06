@@ -65,6 +65,7 @@ protected:
 	_bool Tick_Fade(const _float fTimeDelta);
 	_bool Tick_LerpChange(_float* p, const _float fTimeDelta);
 	void Request_SetDead();
+	virtual void Bind_Events() {};
 
 public:
 	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
@@ -94,6 +95,8 @@ protected:
 	uint32_t m_iOwnerType				= {};
 	_bool m_isFin_Event					= { true };
 	_bool m_isDeadRequest				= { false };
+
+	vector<DelegateHandle> m_vecEventHandles;
 
 	// Shader Bind Values
 	_bool m_isUseColorTint				= { false };

@@ -70,6 +70,7 @@ HRESULT CToolUI::Initialize(void* pArg)
 	{
 		m_tDImageData			= pDesc->tDImageData;
 		m_eDImageSubClassType	= m_tDImageData.eDISubClassType;
+		m_iParam0				= m_tDImageData.iParams0;
 	}
 
 	if (FAILED(Super::Initialize(pArg)))
@@ -100,7 +101,7 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	m_pBatch	= new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
 	m_pEffect	= new BasicEffect(m_pDevice);
 	m_pEffect->SetVertexColorEnabled(true);
-	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
+	m_iInteractState = static_cast<uint32_t>(EUIInteract_Flag::NONE);
     return S_OK;
 }
 
@@ -123,12 +124,12 @@ void CToolUI::Update(const _float fTimeDelta)
 void CToolUI::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+	Acting_About_State();
+	Sync_Data();
 }
 
 void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_About_State();
-	Sync_Data();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -309,33 +310,33 @@ void CToolUI::SetUp_Visible()
 
 void CToolUI::Acting_About_State()
 {
-	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::INVOKED))
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::INVOKED))
 	{
 	}
 
-	if (m_iInteractState == EUIEvent_Flag::NONE)
+	if (m_iInteractState == EUIInteract_Flag::NONE)
 	{
 	}
 	else
 	{
-		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_ENTER))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_EXIT))
 		{
 			CImGui_UIManager::GetInstance()->Safe_Change_UI(m_iIndex);
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_ENTER))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_EXIT))
 		{
 		}
 
-		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESSING))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESSING))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVERING))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVERING))
 		{
 		}
 	}
@@ -404,6 +405,7 @@ void CToolUI::Sync_DImageData()
 	m_tDImageData.strTag			= m_strName + "_DImageData";
 	m_tDImageData.strOwnerName		= m_strName;
 	m_tDImageData.eDISubClassType	= m_eDImageSubClassType;
+	m_tDImageData.iParams0			= m_iParam0;
 }
 
 

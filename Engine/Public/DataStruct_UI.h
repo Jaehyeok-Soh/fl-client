@@ -586,9 +586,9 @@ enum class EUIDImageSubClassType
 
 	// È£¹öµÆÀ» ¶§ ÆË¾÷Ã¢ // HOVER_POPUP_BG < New Enum < HOVER_POPUP_END
 	HOVER_POPUP_BEGIN,
+	HOVER_ENTER_MENU_ICON,
 	HOVER_POPUP_BG,
 	HOVER_POPUP_ICON,
-	HOVER_POPUP_TEXT,
 	HOVER_POPUP_END,
 
 	// ¹Ì´Ï¸Ê
@@ -675,9 +675,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::PLAYER_SKILL_END,						"PLAYER_SKILL_END" },
 
 	{ EUIDImageSubClassType::HOVER_POPUP_BEGIN,						"HOVER_POPUP_BEGIN" },
+	{ EUIDImageSubClassType::HOVER_ENTER_MENU_ICON,					"HOVER_ENTER_MENU_ICON" },
 	{ EUIDImageSubClassType::HOVER_POPUP_BG,						"HOVER_POPUP_BG" },
 	{ EUIDImageSubClassType::HOVER_POPUP_ICON,						"HOVER_POPUP_ICON" },
-	{ EUIDImageSubClassType::HOVER_POPUP_TEXT,						"HOVER_POPUP_TEXT" },
 	{ EUIDImageSubClassType::HOVER_POPUP_END,						"HOVER_POPUP_END" },
 
 	{ EUIDImageSubClassType::MINIMAP_BEGIN,							"MINIMAP_BEGIN" },
@@ -755,9 +755,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "PLAYER_SKILL_END")						return EUIDImageSubClassType::PLAYER_SKILL_END;
 
 	if (str == "HOVER_POPUP_BEGIN")						return EUIDImageSubClassType::HOVER_POPUP_BEGIN;
+	if (str == "HOVER_ENTER_MENU_ICON")					return EUIDImageSubClassType::HOVER_ENTER_MENU_ICON;
 	if (str == "HOVER_POPUP_BG")						return EUIDImageSubClassType::HOVER_POPUP_BG;
 	if (str == "HOVER_POPUP_ICON")						return EUIDImageSubClassType::HOVER_POPUP_ICON;
-	if (str == "HOVER_POPUP_TEXT")						return EUIDImageSubClassType::HOVER_POPUP_TEXT;
 	if (str == "HOVER_POPUP_END")						return EUIDImageSubClassType::HOVER_POPUP_END;
 
 	if (str == "MINIMAP_BEGIN")							return EUIDImageSubClassType::MINIMAP_BEGIN;
@@ -837,9 +837,9 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::PLAYER_SKILL_END:						return "PLAYER_SKILL_END";
 
 	case EUIDImageSubClassType::HOVER_POPUP_BEGIN:						return "HOVER_POPUP_BEGIN";
+	case EUIDImageSubClassType::HOVER_ENTER_MENU_ICON:					return "HOVER_ENTER_MENU_ICON";
 	case EUIDImageSubClassType::HOVER_POPUP_BG:							return "HOVER_POPUP_BG";
 	case EUIDImageSubClassType::HOVER_POPUP_ICON:						return "HOVER_POPUP_ICON";
-	case EUIDImageSubClassType::HOVER_POPUP_TEXT:						return "HOVER_POPUP_TEXT";
 	case EUIDImageSubClassType::HOVER_POPUP_END:						return "HOVER_POPUP_END";
 
 	case EUIDImageSubClassType::MINIMAP_BEGIN:							return "MINIMAP_BEGIN";
@@ -933,6 +933,8 @@ struct TUI_DImageData
 	std::string				strTag;
 	std::string				strOwnerName;
 	EUIDImageSubClassType	eDISubClassType;
+
+	_uint iParams0;
 };
 
 /////////////////

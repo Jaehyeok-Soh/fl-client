@@ -615,6 +615,13 @@ void CUI_Inspector::SetUp_DImageData()
 			}
 			ImGui::EndCombo();
 		}
+
+		{
+			_int i = m_pSelectedUI->Get_iParmas0();
+			ImGui::InputInt("Set iParam0", &i);
+			m_pSelectedUI->Set_iParams0(i);
+		}
+
 	}
 	End_Card();
 }

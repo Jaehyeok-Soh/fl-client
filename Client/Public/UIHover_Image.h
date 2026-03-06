@@ -34,7 +34,9 @@ private:
 	HRESULT Ready_Components(HOVER_IMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
+	virtual void Tick_By_Type(const _float fTimeDelta)override;
 
+	virtual void Bind_Events()override;
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;

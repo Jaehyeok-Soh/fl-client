@@ -13,12 +13,20 @@ class CUITrigger;
 class CUIPrefab;
 
 enum class EUIEventID {
-	MENU_OPEN, MENU_CLOSE, END
+	MENU_ENTER_ICON_HOVER_ENTER, 
+	MENU_ENTER_ICON_HOVER_EXIT, 
+	MENU_OPEN, 
+	MENU_CLOSE, 
+	MENU_ICON_HOVER_ENTER,
+	MENU_ICON_HOVER_EXIT,
+	END
 };
 
 typedef struct tagUIEventesc
 {
 	EUIEventID eEventID = { EUIEventID::END };
+
+	_uint iParam0 = {};
 
 }UIEVENT_DESC;
 

@@ -107,7 +107,7 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 
 	m_vMoveOffsetBase = m_vMoveOffset;
 	m_fBrightness = 1.f;
-	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
+	m_iInteractState = static_cast<uint32_t>(EUIInteract_Flag::NONE);
 	return S_OK;
 }
 
@@ -349,6 +349,11 @@ void CGenericUI::Request_SetDead()
 
 void CGenericUI::Free()
 {
+	for (auto Handle : m_vecEventHandles)
+	{
+		m_pUIManager->Get_UIEvents().Unsubscribe(Handle);
+	}
+
 	Safe_Release(m_pUIManager);
 	Super::Free();
 }

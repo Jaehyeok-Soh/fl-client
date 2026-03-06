@@ -95,6 +95,8 @@ public:
 	_float Get_GlowPulseSpeed() const { return m_fGlowPulseSpeed; }
 	_float Get_GlowIntensity() const { return m_fGlowIntensity; }
 
+	_uint Get_iParmas0() const { return m_iParam0; }
+
 	void Set_Name(const _string& str) { m_strName = str; }
 	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
 	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
@@ -109,6 +111,8 @@ public:
 	void Set_GlowDistort(_float fGlowDistort) { m_fGlowDistort = fGlowDistort; }
 	void Set_GlowPulseSpeed(_float fGlowPulseSpeed) { m_fGlowPulseSpeed = fGlowPulseSpeed; }
 	void Set_GlowIntensity(_float fGlowIntensity) { m_fGlowIntensity = fGlowIntensity; }
+
+	void Set_iParams0(_uint i) { m_iParam0 = i; }
 
 	Vec4 Get_ColorTint()			const	{ return m_vColorTint; }
 	Vec4 Get_GradiantColorTint()	const	{ return m_vGradiantColorTint; }
@@ -233,7 +237,7 @@ protected:
 	// Client Bind Values Dynamic Image Data
 	DTO::TUI_DImageData m_tDImageData = {};
 	DTO::EUIDImageSubClassType m_eDImageSubClassType = {};
-
+	_uint m_iParam0 = {};
 
 	// Local Values
 	Vec3 m_vRenderPos		= {};

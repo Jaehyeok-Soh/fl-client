@@ -41,6 +41,8 @@ HRESULT CUIHover_Image::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
+
+	Bind_Events();
 	return S_OK;
 }
 
@@ -61,6 +63,8 @@ void CUIHover_Image::Update_Priority(const _float fTimeDelta)
 void CUIHover_Image::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	Tick_By_Type(fTimeDelta);
 }
 
 void CUIHover_Image::Update_Late(const _float fTimeDelta)
@@ -105,6 +109,11 @@ HRESULT CUIHover_Image::Attach_Personal_Info()
 {
 	switch (m_eDImageSubClass)
 	{
+	case DTO::EUIDImageSubClassType::HOVER_ENTER_MENU_ICON:
+	{
+
+	}
+	break;
 	case DTO::EUIDImageSubClassType::HOVER_POPUP_ICON:
 	{
 
@@ -115,26 +124,124 @@ HRESULT CUIHover_Image::Attach_Personal_Info()
 		m_fOriginWidth = m_fWidth;
 	}
 	break;
-	case DTO::EUIDImageSubClassType::HOVER_POPUP_TEXT:
-	{
-
-	}
-	break;
 	case DTO::EUIDImageSubClassType::END:
 	default:
 		return E_FAIL;
 	}
-
-	m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc) 
-		{
-			if (EUIEventID::MENU_OPEN == Desc.eEventID)
-			{
-				this->Set_Invisible();
-			}
-		});
-
-
 	return S_OK;
+}
+
+void CUIHover_Image::Tick_By_Type(const _float fTimeDelta)
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::HOVER_POPUP_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::HOVER_ENTER_MENU_ICON:
+	{
+		/* Hover Enter 이벤트 발송 */
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_ENTER))
+		{
+			UIEVENT_DESC Desc = {};
+			Desc.eEventID = EUIEventID::MENU_ENTER_ICON_HOVER_ENTER;
+			m_pUIManager->Get_UIEvents().Broadcast(Desc);
+		}
+		/* Hover Exit 이벤트 발송 */
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_EXIT))
+		{
+			UIEVENT_DESC Desc = {};
+			Desc.eEventID = EUIEventID::MENU_ENTER_ICON_HOVER_EXIT;
+			m_pUIManager->Get_UIEvents().Broadcast(Desc);
+		}
+
+		/* Menu Open 이벤트 발송 */
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_ENTER))
+		{
+			UIEVENT_DESC Desc = {};
+			Desc.eEventID = EUIEventID::MENU_OPEN;
+			m_pUIManager->Get_UIEvents().Broadcast(Desc);
+
+			Set_Invisible();
+			Set_NonInteractable();
+		}
+	}
+	break;
+	case DTO::EUIDImageSubClassType::HOVER_POPUP_BG:
+		break;
+	case DTO::EUIDImageSubClassType::HOVER_POPUP_ICON:
+		break;
+	case DTO::EUIDImageSubClassType::HOVER_POPUP_END:
+		break;
+	}
+}
+
+void CUIHover_Image::Bind_Events()
+{
+	m_vecEventHandles.resize(ENUM_TO_UINT(EUIEventID::END));
+
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::HOVER_ENTER_MENU_ICON:
+	{
+		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_CLOSE)] = (
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+					this->Set_Interactable();
+				}
+			}));
+	}
+	break;
+
+	case DTO::EUIDImageSubClassType::HOVER_POPUP_ICON:
+	{
+		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_ENTER)] = (
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_ENTER_ICON_HOVER_ENTER == Desc.eEventID)
+					{
+						this->Set_Visible();
+					}
+				})
+			);
+		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_EXIT)] = (
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_ENTER_ICON_HOVER_EXIT == Desc.eEventID)
+					{
+						this->Set_Invisible();
+					}
+				})
+			);
+	}
+	break;
+	case DTO::EUIDImageSubClassType::HOVER_POPUP_BG:
+	{
+		m_fOriginWidth = m_fWidth;
+
+		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_ENTER)] = (
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_ENTER_ICON_HOVER_ENTER == Desc.eEventID)
+					{
+						this->Set_Visible();
+					}
+				})
+			);
+		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_EXIT)] = (
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_ENTER_ICON_HOVER_EXIT == Desc.eEventID)
+					{
+						this->Set_Invisible();
+					}
+				})
+			);
+	}
+	break;
+	}
 }
 
 void CUIHover_Image::Initialize_Visible_Event()
