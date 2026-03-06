@@ -62,7 +62,7 @@ HRESULT CStatCom_Player::Initialize(void* pArg)
 	m_FAttState = Attack_State::Melee;
 	pDesc->fAttack = m_fMeleeAtt;
 
-	if (Super::Initialize(pDesc))
+	if (FAILED(Super::Initialize(pDesc)))
 		return E_FAIL;
 
 	return S_OK;

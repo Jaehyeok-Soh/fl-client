@@ -71,6 +71,10 @@ HRESULT CPartEffect::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	// 프레임 전환시 spawn이나 despawn을 유지하면 안되서
+	// idle로 상태 전환해준다
+	Change_State(CPartEff_State::IDLE);
+
 	return S_OK;
 }
 
@@ -157,10 +161,11 @@ void CPartEffect::Change_State(CPartEff_State eNextState)
 		}
 	}
 
-
+	// 그외에 동일한 state가 들어왔다면 방어
 	if (m_eState == eNextState)
 		return;
 
+	// state change 로직
 CHANGE:
 	End_State(m_eState);
 
@@ -308,7 +313,11 @@ HRESULT CPartEffect::Spawn_Effect()
 
 HRESULT CPartEffect::Despawn_Effect()
 {
-	return Get_Component<CEffectHandler>()->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
+	CEffectHandler* pHandler = Get_Component<CEffectHandler>();
+	if (pHandler && (m_pGameInstance->Is_TearDownSequence() == false))
+		return pHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY);
+
+	return S_OK;
 }
 
 HRESULT CPartEffect::Ready_EffectHandler(PART_EFFECT_DESC* pDesc)
