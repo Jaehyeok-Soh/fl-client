@@ -147,7 +147,12 @@ HRESULT CSkillObject_Base::Spawn_FromPool(void* pArg)
 	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vSpawnPos);
 	if (pRigidBody)
 		pRigidBody->SetTransform(pTransform->Get_WorldMatrix());
-	pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
+
+	if(m_desc.eEffectRotateState >= TRANSFORM_INFO_STATE::POS)
+		pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN);
+	else
+		pEffectHandler->Trigger_Lifecycle_Effect(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN, m_desc.eEffectRotateState, m_desc.fEffectDegree);
+
 	return S_OK;
 }
 

@@ -147,11 +147,14 @@ void CSkillBase_MoonE::Spawn_SkillObj(CMyStat* pOwnerStat, _bool bFirst)
 	desc.vOrigin.y += 1.f;
 	desc.vForward = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
-	desc.eRotationState = TRANSFORM_INFO_STATE::LOOK;
-	desc.fRotation_Radian = bFirst ?  XMConvertToRadians(15.f) : XMConvertToRadians(-15.f);
+	//desc.eRotationState = TRANSFORM_INFO_STATE::LOOK;
+	//desc.fRotation_Radian = bFirst ?  XMConvertToRadians(15.f) : XMConvertToRadians(-15.f);
+
+	desc.eEffectRotationState = TRANSFORM_INFO_STATE::LOOK;
+	desc.fEffect_Rotation_Degree = bFirst ?  30.f : -30.f;
 
 	m_pSkillObjSpawner->Trigger(desc);
-}
+} 
 
 CSkillBase_MoonE* CSkillBase_MoonE::Create(void* pArg)
 {

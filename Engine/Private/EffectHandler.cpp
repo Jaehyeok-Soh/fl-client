@@ -206,6 +206,25 @@ HRESULT CEffectHandler::Create_SpawnEffect()
     return S_OK;
 }
 
+void CEffectHandler::Compute_LocalRotation(TRANSFORM_INFO_STATE eRotateState, _float fDegree, OUT Matrix& outMatLocalRotation)
+{
+    switch (eRotateState)
+    {
+    case Engine::TRANSFORM_INFO_STATE::RIGHT:
+        outMatLocalRotation = Matrix::CreateFromAxisAngle(Vec3::Right, ::XMConvertToRadians(fDegree));
+        break;
+    case Engine::TRANSFORM_INFO_STATE::UP:
+        outMatLocalRotation = Matrix::CreateFromAxisAngle(Vec3::Up, ::XMConvertToRadians(fDegree));
+        break;
+    case Engine::TRANSFORM_INFO_STATE::LOOK:
+        outMatLocalRotation = Matrix::CreateFromAxisAngle(Vec3::Backward, ::XMConvertToRadians(fDegree));
+        break;
+    default:
+        outMatLocalRotation = Matrix::Identity;
+        break;
+    }
+}
+
 void CEffectHandler::Release_Event()
 {
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM)
@@ -280,20 +299,20 @@ void CEffectHandler::PoolObject_CallBack(CGameObject* pGo)
     m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].emplace(pGo->Get_Name(), pGo);
 }
 
-void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
+void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script)
 {
     Matrix MatWorldOffset = XMMatrixIdentity();
     Matrix MatOwnerMatrix = XMMatrixIdentity();
     const Matrix* pTargetBoneMatrix = nullptr;
 
     // 뼈 행렬 계산
-    BoneMatrix_CalCulator(Script, pTargetBoneMatrix);
+    BoneMatrix_CalCulator(script, pTargetBoneMatrix);
     // 애니메이션 모델 떄문에 Scale 행렬을 날려주는 값을 넣어준다.
     MatOwnerMatrix = Delete_ScaleMatrix(*m_pOwnerMatrix);
     // 오프셋 적용
-    MatWorldOffset = Offset_CalCulator(Script);
+    MatWorldOffset = Offset_CalCulator(script);
     // 이펙트 생성 요청
-    Spawn_RequestFromEffectManager(Script, MatWorldOffset, MatOwnerMatrix, pTargetBoneMatrix);
+    Spawn_RequestFromEffectManager(script, MatWorldOffset, MatOwnerMatrix, pTargetBoneMatrix);
 }
 
 void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const std::string& EffectTag)
@@ -309,6 +328,25 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
     // 오프셋 적용
     MatWorldOffset = Offset_CalCulator(script);
 
+    Spawn_RequestFromEffectManager(script, MatWorldOffset, MatOwnerMatrix, pTargetBoneMatrix, EffectTag);
+}
+
+void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const std::string& EffectTag, TRANSFORM_INFO_STATE eRotateState, _float fDegree)
+{
+    Matrix MatWorldOffset = Matrix::Identity;
+    Matrix MatOwnerMatrix = Matrix::Identity;
+    Matrix MatLocalRotationMatrix = Matrix::Identity;
+    Compute_LocalRotation(eRotateState, fDegree, MatLocalRotationMatrix);
+    const Matrix* pTargetBoneMatrix = nullptr;
+
+    // 뼈 행렬 계산
+    BoneMatrix_CalCulator(script, pTargetBoneMatrix);
+    // 애니메이션 모델 떄문에 Scale 행렬을 날려주는 값을 넣어준다.
+    MatOwnerMatrix = Delete_ScaleMatrix(*m_pOwnerMatrix);
+    // 오프셋 적용
+    MatWorldOffset = Offset_CalCulator(script);
+    MatWorldOffset = MatLocalRotationMatrix * MatWorldOffset;
+    // 이펙트 생성 요청
     Spawn_RequestFromEffectManager(script, MatWorldOffset, MatOwnerMatrix, pTargetBoneMatrix, EffectTag);
 }
 
@@ -343,6 +381,53 @@ HRESULT CEffectHandler::Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState)
 
     // 스폰 요청.
     Request_SpawnEffect(Write_EffectEventDesc(eState), m_tDesc.mEffectState[eState].EffectPrefabTag);
+
+    // State 변경
+    m_ePrevState = m_eCurrentState = eState;
+
+    return S_OK;
+}
+
+HRESULT CEffectHandler::Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState, TRANSFORM_INFO_STATE eRotateState, _float fDegree)
+{
+    if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) return E_FAIL;
+    if (m_ePrevState == eState) return S_OK;
+#ifdef _DEBUG
+    switch (eRotateState)
+    {
+    case Engine::TRANSFORM_INFO_STATE::POS:
+    case Engine::TRANSFORM_INFO_STATE::END:
+        MSG_BOX("CEffectHandler::Trigger_Lifecycle_Effect, eRotateState is POS, END");
+        return E_FAIL;
+    }
+#endif
+
+    auto& activeMap = m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)];
+    string prevTag = m_tDesc.mEffectState[m_ePrevState].EffectPrefabTag;
+
+    auto it = activeMap.find(prevTag);
+    if (it != activeMap.end())
+    {
+        // TODO 
+        // 풀에 돌아간 EFfect인지 체크를 함.
+        CEffectBase* pBase = static_cast<CEffectBase*>(it->second);
+        if (pBase && !pBase->IsPooled())
+            pBase->LoopStateChange(DTO::E_LoopState::LOOP_END);
+
+        activeMap.erase(it);
+    }
+
+    // State가 등록되어있는지 확인절차를 한다. 만약에 없으면 Event를 통해서 레이어 추가를 시도하면 안되니까.
+    auto iter = m_tDesc.mEffectState.find(eState);
+    if (iter == m_tDesc.mEffectState.end() || iter->second.EffectPrefabTag.empty())
+    {
+        // 등록된 이펙트가 없으면 그냥 상태만 바꾸고 정상 종료
+        m_ePrevState = m_eCurrentState = eState;
+        return S_OK;
+    }
+
+    // 스폰 요청.
+    Request_SpawnEffect(Write_EffectEventDesc(eState), m_tDesc.mEffectState[eState].EffectPrefabTag, eRotateState, fDegree);
 
     // State 변경
     m_ePrevState = m_eCurrentState = eState;
