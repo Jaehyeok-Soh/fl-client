@@ -30,7 +30,6 @@ public:
 	virtual void Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat) override;
 
 private:
-	CSingleSkillSpawner* m_pSheildSkill_ObjSpawner{ nullptr };
 	CSingleSkillSpawner* m_pAttackSkill_ObjSpawner{ nullptr };
 
 private:
@@ -44,7 +43,6 @@ private:
 
 private:
 	HRESULT			Ready_Spawner();
-	void			Spawn_Sheild_SkillObj(CMyStat* pOwnerStat);
 	void			Spawn_Attack_SkillObj(CMyStat* pOwnerStat);
 
 public:

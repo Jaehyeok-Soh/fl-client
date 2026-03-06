@@ -17,6 +17,7 @@ CPartEffect::CPartEffect(const CPartEffect& rhs)
 	: Super(rhs)
 	, m_eState(rhs.m_eState)
 	, m_FEffFlags(rhs.m_FEffFlags)
+	, m_bSpawnAlready(rhs.m_bSpawnAlready)
 {
 }
 
@@ -60,6 +61,8 @@ HRESULT CPartEffect::Initialize(void* pArg)
 
 	m_eState = CPartEff_State::IDLE;
 
+	Get_Component<CEffectHandler>()->Setup_ForOwner(this);
+
 	return S_OK;
 }
 
@@ -67,8 +70,6 @@ HRESULT CPartEffect::Awake(const _uint iCurrentLevelIndex)
 {
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
-
-	Get_Component<CEffectHandler>()->Awake();
 
 	return S_OK;
 }
@@ -283,6 +284,8 @@ HRESULT CPartEffect::Spawn_Effect()
 		return E_FAIL;
 
 	m_bSpawnAlready = true;
+
+	return S_OK;
 }
 
 HRESULT CPartEffect::Despawn_Effect()
@@ -298,9 +301,9 @@ HRESULT CPartEffect::Ready_EffectHandler(PART_EFFECT_DESC* pDesc)
 	{
 		CEffectHandler::STATE_VFX_DESC SkillDesc{};
 		SkillDesc = pData.tSkillDesc;
-		
 		// part obj의 위치를 따라간다
 		SkillDesc.pParentTransformMatrix = &m_matCombinedWorld;
+
 		Desc.eType = pData.eHandlerType;
 		Desc.mEffectState.emplace(pData.eEffState, SkillDesc);
 	}

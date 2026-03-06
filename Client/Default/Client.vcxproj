@@ -225,7 +225,6 @@
     <ClInclude Include="..\Public\Monster_Dog_Body.h" />
     <ClInclude Include="..\Public\Moon_SkillE_Obj.h" />
     <ClInclude Include="..\Public\Moon_SkillQAttack_Obj.h" />
-    <ClInclude Include="..\Public\Moon_SkillQSheild_Obj.h" />
     <ClInclude Include="..\Public\Moss.h" />
     <ClInclude Include="..\Public\PartEffect.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
@@ -439,7 +438,6 @@
     <ClCompile Include="..\Private\Monster_Dog_Body.cpp" />
     <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp" />
     <ClCompile Include="..\Private\Moon_SkillQAttack_Obj.cpp" />
-    <ClCompile Include="..\Private\Moon_SkillQSheild_Obj.cpp" />
     <ClCompile Include="..\Private\Moss.cpp" />
     <ClCompile Include="..\Private\PartEffect.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />

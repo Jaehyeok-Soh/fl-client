@@ -110,7 +110,6 @@ protected:
 	array<_float, ENUM_TO_SZET(CPartEff_State::END)> m_arrDelay_FloatsAcc			= { 0.f,0.f,0.f };
 
 	_bool m_bSpawnAlready = { false }; // spawn state가 시작된후 한번 spawn이 되어야 true도 변환
-	_bool m_bDespawnAlready = { false }; // spawn state가 시작된후 한번 spawn이 되어야 true도 변환
 
 protected:
 	HRESULT Ready_EffectHandler(PART_EFFECT_DESC* pDesc);

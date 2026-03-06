@@ -49,13 +49,11 @@ HRESULT CSkillBase_MoonQ::Initialize(void* pArg)
 
 void CSkillBase_MoonQ::Awake(const _uint iCurLevelIndex)
 {
-	m_pSheildSkill_ObjSpawner->Awake(iCurLevelIndex);
 	m_pAttackSkill_ObjSpawner->Awake(iCurLevelIndex);
 }	
 
 void CSkillBase_MoonQ::Update_Default(const _float fTimeDelta, CMyStat* pStatCom)
 {
-	m_pSheildSkill_ObjSpawner->Update(fTimeDelta);
 	m_pAttackSkill_ObjSpawner->Update(fTimeDelta);
 }
 
@@ -87,8 +85,6 @@ _bool CSkillBase_MoonQ::Start_Skill(CMyStat* pStatCom)
 		static_cast<CStatCom_Player*>(pStatCom)->Set_Attack_AddRate(m_fAddAttackRate);
 		// 충돌체 발사
 
-		Spawn_Sheild_SkillObj(pStatCom);
-
 		m_bSkillAttackOn = false;
 		m_TAttackSkillObj_Timer.x = 0.f;
 
@@ -118,18 +114,6 @@ void CSkillBase_MoonQ::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, 
 
 HRESULT CSkillBase_MoonQ::Ready_Spawner()
 {
-	{
-		CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
-		desc.iLevelIndex		= 0;
-		desc.iSpawnLevelIndex	= 0;
-
-		CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
-			0, g_wszSpawner_MoonSkillQ_Sheild, &desc);
-		if (pResult == nullptr)
-			return E_FAIL;
-
-		m_pSheildSkill_ObjSpawner = static_cast<CSingleSkillSpawner*>(pResult);
-	}
 
 	{
 		CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
@@ -145,25 +129,6 @@ HRESULT CSkillBase_MoonQ::Ready_Spawner()
 	}
 
 	return S_OK;
-}
-
-void CSkillBase_MoonQ::Spawn_Sheild_SkillObj(CMyStat* pOwnerStat)
-{
-	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
-	CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
-	desc.iLevelIndex = iLevelIndex;
-	desc.iSpawnLevelIndex = iLevelIndex;
-
-	CTransform* pPlayerTrans = pOwnerStat->Get_Owner()->Get_Component<CTransform>();
-
-	// sheild skill obj trigger
-	{
-		desc.vOrigin = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
-		desc.vOrigin.y += 1.f;
-		desc.pRequester = pOwnerStat->Get_Owner();
-
-		m_pSheildSkill_ObjSpawner->Trigger(desc);
-	}
 }
 
 void CSkillBase_MoonQ::Spawn_Attack_SkillObj(CMyStat* pOwnerStat)
@@ -202,6 +167,5 @@ void CSkillBase_MoonQ::Free()
 {
 	Super::Free();
 
-	Safe_Release(m_pSheildSkill_ObjSpawner);
 	Safe_Release(m_pAttackSkill_ObjSpawner);
 }

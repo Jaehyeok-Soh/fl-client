@@ -533,8 +533,8 @@ namespace Client
 
 	inline constexpr wchar_t g_wszMoonSkillE__Prototype_Tag[]								{ L"Prototype_GameObject_Moon_SkillE" };
 	inline constexpr wchar_t g_wszPool_MoonSkillE[]											{ L"Pool_Moon_SkillE" };
-	inline constexpr wchar_t g_wszMoonSkillQSheild_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQSheild" };
-	inline constexpr wchar_t g_wszPool_MoonSkillQSheild[]									{ L"Pool_Moon_SkillQSheild" };
+	//inline constexpr wchar_t g_wszMoonSkillQSheild_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQSheild" };
+	//inline constexpr wchar_t g_wszPool_MoonSkillQSheild[]									{ L"Pool_Moon_SkillQSheild" };
 	inline constexpr wchar_t g_wszMoonSkillQAttack_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQAttack" };	// obj 프로토타입 태그 값
 	inline constexpr wchar_t g_wszPool_MoonSkillQAttack[]									{ L"Pool_Moon_SkillQAttack" };					// pool에서 obj 꺼내올 태그 값
 

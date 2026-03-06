@@ -75,9 +75,7 @@
 #include "Xibi_Loop_Thunder.h"
 #include "Xibi_Oneshot_Thunder.h"
 // player
-#include "Moon_SkillE_Obj.h"
-#include "Moon_SkillQSheild_Obj.h"
-#include "Moon_SkillQAttack_Obj.h"
+#include "PlayerSkillObj_Headers.h"
 
 
 //=================
@@ -624,7 +622,6 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// player effect object
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,							CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillQSheild_Prototype_Tag,						CMoon_SkillQSheild_Obj::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillQAttack_Prototype_Tag,						CMoon_SkillQAttack_Obj::Create(m_pDevice, m_pDeviceContext));
 
 		/* Battle Field */
@@ -1059,18 +1056,18 @@ HRESULT CLoader::Ready_Spawner()
 			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}
-	// Moon SkillQ : sheild
-	{
-		CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = 0;
-		desc.wstrSkillPoolTag = g_wszPool_MoonSkillQSheild;
-		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Follow_Owner) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		desc.fLifeTime = 12.f;
+	//// Moon SkillQ : sheild
+	//{
+	//	CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
+	//	desc.iPoolLevelIndex = 0;
+	//	desc.wstrSkillPoolTag = g_wszPool_MoonSkillQSheild;
+	//	desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Follow_Owner) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+	//	desc.fLifeTime = 12.f;
 
-		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillQ_Sheild,
-			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-	}
+	//	if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillQ_Sheild,
+	//		CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
+	//		return E_FAIL;
+	//}
 	// Moon SkillQ : attack
 	{
 		CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};

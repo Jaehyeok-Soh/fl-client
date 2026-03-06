@@ -1210,9 +1210,6 @@
     <ClInclude Include="PlayerSkillObj_Headers.h">
       <Filter>99. ETC\46.Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Moon_SkillQSheild_Obj.h">
-      <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PartEffect.h">
       <Filter>03. GameObject\PartObjects\PartEffect</Filter>
     </ClInclude>
@@ -1761,9 +1758,6 @@
       <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Moon_SkillQAttack_Obj.cpp">
-      <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Moon_SkillQSheild_Obj.cpp">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PartEffect.cpp">
