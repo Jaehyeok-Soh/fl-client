@@ -22,6 +22,7 @@ public:
 			HIT = 1 << 4,
 			DEAD = 1 << 5,
 			DEAD_PROCESS = 1 << 6,
+			GROGGY = 1 << 7,
 			END
 		};
 	}SUB_STATE;
@@ -37,6 +38,19 @@ public:
 		vector<_int> vecSkillRange;
 	}MONSTER_CONTROLCONTEXT_DESC;
 
+	typedef struct tagRuntimeDesc
+	{
+		Vec3	vMoveDir = {};
+		Vec3    vOwnerPos = {};
+		Vec3    vOwnerLook = {};
+		Vec3    vOwnerRight = {};
+		Vec3    vTargetPos = {};
+		Vec3    vToTarget = {};
+		Vec3    vToTargetDir = {};
+		_float  fDistance = { FLT_MAX };
+		_float  fDotForward = { 0.f };
+		_bool   bTargetValid = { false };
+	}RUNTIME_DESC;
 private:
 	using Super = CControlContext;
 
@@ -50,7 +64,7 @@ private:
 
 public:
 	virtual HRESULT Awake(const _uint iLevelIndex) override;
-
+	void Update_RuntimeDesc(const _float fTiemDelta);
 public:
 	virtual _bool Is_LeftAttackPressed() override { return false; }
 	virtual _bool Is_RightAttackPressed() override { return false; }
@@ -75,6 +89,7 @@ public:
 public:
 	virtual Vec3  Get_MoveDir() override;
 
+	void Set_Groggy(_bool b);
 	void Set_Dead();
 	void Set_Dead_Process() { m_iSubState |= SUB_STATE::DEAD_PROCESS; }
 	void Set_HitDesc(HIT_DESC hitDesc)
@@ -88,16 +103,15 @@ public:
 /// </summary>
 public:
 	// 타겟
-	_bool IsTargetFound();
-	_bool IsTargetLost();
-
-	_bool IsTargetAlive();
+	_bool IsTargetFound() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDistance <= m_tDesc.fDetectionRange; }
+	_bool IsTargetLost() const { return !m_tRuntimeDesc.bTargetValid || m_tRuntimeDesc.fDistance > m_tDesc.fDetectionRange; }
+	_bool IsTargetAlive() const { return m_tRuntimeDesc.bTargetValid; }
 	_bool IsTargetVisible();
 	_bool IsTargetFOV();
-	_bool IsTargetBehind();
-	_bool IsTargetSide();
-	_bool IsTargetClose();
-	_bool IsTargetAhead();
+	_bool IsTargetBehind() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward < 0.0f; }
+	_bool IsTargetSide() const { return m_tRuntimeDesc.bTargetValid && std::abs(m_tRuntimeDesc.fDotForward) < 0.7f; }
+	_bool IsTargetClose() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDistance <= m_tDesc.fCloseRange; }
+	_bool IsTargetAhead() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward > 0.9f; }
 
 	// 절벽
 	_bool IsCliffAhead();
@@ -106,11 +120,11 @@ public:
 	_bool IsPhaseTwo();
 
 	// 공격 범위
-	_bool IsTargetInMeleeRange();
-	_bool IsTargetInAttackRange();
-	_bool IsTargetOutOfMeleeRange();
-	_bool IsTargetOutOfAttackRange();
-	_bool IsTargetDistanceOver(_float fValue);
+	_bool IsTargetInMeleeRange() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDistance <= m_tDesc.fMeleeRange; }
+	_bool IsTargetInAttackRange() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDistance <= m_tDesc.fAttackRange; }
+	_bool IsTargetOutOfMeleeRange() const { return IsTargetFound() && !IsTargetInMeleeRange(); }
+	_bool IsTargetOutOfAttackRange() const { return IsTargetFound() && !IsTargetInAttackRange(); }
+	_bool IsTargetDistanceOver(_float fValue) const { return m_tRuntimeDesc.fDistance > fValue; }
 
 	// 공간
 	_bool IsFalling();
@@ -159,6 +173,8 @@ public:
 	void UpdateTrun180(const _float fTimeDelta);
 	void Set_CCT_Collision_Disable();
 	void Set_CCT_Collision_Enable();
+private:
+	void Clear_RuntimeDesc();
 
 private:
 	//EMovementMode m_eCurrentMovement = { EMovementMode::GROUND };
@@ -172,6 +188,7 @@ private:
 
 	MONSTER_CONTROLCONTEXT_DESC m_tDesc = {};
 	HIT_DESC m_tHitDesc = {};
+	RUNTIME_DESC m_tRuntimeDesc = {};
 	_uint m_iSubState = 0;
 
 public:

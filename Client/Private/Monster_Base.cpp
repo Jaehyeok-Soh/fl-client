@@ -90,10 +90,11 @@ void CMonster_Base::Update_Priority(const _float fTimeDelta)
 
 void CMonster_Base::Update(const _float fTimeDelta)
 {
+	if (CMonsterControlContext* pMonsterControlContext = Get_Component<CMonsterControlContext>())
+		pMonsterControlContext->Update_RuntimeDesc(fTimeDelta);
+
 	if (CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>())
-	{
 		pMonsterState->Update(fTimeDelta);
-	}
 
 	if (m_pEffectHandler)
 		m_pEffectHandler->Update(fTimeDelta);
