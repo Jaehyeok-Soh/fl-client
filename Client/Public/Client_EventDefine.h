@@ -34,4 +34,7 @@ struct ACTION1 { using Signature = void(); }; // UI 위 아래 나오는 연출
 struct ACTION2 { using Signature = void(); }; // UI 위 아래 들어가는 연출
 struct ACTION3 { using Signature = void(); }; // UI 보스 이름 띄우기
 struct ACTION4 { using Signature = void(); }; // UI 보스 이름 넣기
+
+struct UI_EVENT_MENU_OPEN { using Signature = void(); }; // Menu 창 열기 // Menu Trigger에서 Broadcast //
+struct UI_EVENT_MENU_CLOSE {using Signature = void(); }; // Menu 창 닫기 // Menu Trigger에서 Broadcast //
 #pragma endregion

@@ -1,6 +1,6 @@
 #pragma once
 #include "Base.h"
-
+#include "MulticastDelegate.h"
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -11,9 +11,25 @@ class CCanvas;
 class CGenericUI;
 class CUITrigger;
 class CUIPrefab;
+
+enum class EUIEventID {
+	MENU_OPEN, MENU_CLOSE, END
+};
+
+typedef struct tagUIEventesc
+{
+	EUIEventID eEventID = { EUIEventID::END };
+
+}UIEVENT_DESC;
+
 class CUI_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CUI_Manager)
+
+public:
+
+
+
 private:
 	CUI_Manager();
 	virtual ~CUI_Manager() = default;
@@ -69,6 +85,9 @@ private:
 	vector <CUITrigger*> m_vecTriggerUIs;
 
 	array<_wstring, ENUM_TO_UINT(EUIPrefabType::END)> m_vecPrefabs;
+
+
+	CMulticastDelegate<void(const UIEVENT_DESC&)> m_vEvents = {};
 
 private:
 	// UI 전달 변수 

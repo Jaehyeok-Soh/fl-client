@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "UIMenu_Trigger.h"
 #include "Client_Defines.h"
+#include "Client_EventDefine.h"
 
 //=================
 // Component
@@ -37,8 +38,7 @@ HRESULT CUIMenu_Trigger::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
-	if (FAILED(Attach_Personal_Info()))
-		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -47,6 +47,8 @@ HRESULT CUIMenu_Trigger::Attach_Personal_Info()
 	switch (m_eSubClassType)
 	{
 	case DTO::EUITriggerSubClassType::MENU_TAB_TRIGGER:
+		return S_OK;
+	case DTO::EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER:
 		return S_OK;
 	default:
 		return E_FAIL;
@@ -59,13 +61,84 @@ HRESULT CUIMenu_Trigger::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-
+	if (FAILED(Attach_Personal_Info()))
+		return E_FAIL;
 	return S_OK;
 }
 
 void CUIMenu_Trigger::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
+
+}
+
+void CUIMenu_Trigger::Update(const _float fTimeDelta)
+{
+	Super::Update(fTimeDelta);
+}
+
+void CUIMenu_Trigger::Update_Late(const _float fTimeDelta)
+{
+	Super::Update_Late(fTimeDelta);
+}
+
+void CUIMenu_Trigger::Ready_Before_Render(const _float fTimeDelta)
+{
+	Super::Ready_Before_Render(fTimeDelta);
+
+	Check_FinEvent(m_eCurTriggerType);
+}
+
+HRESULT CUIMenu_Trigger::Render()
+{
+	if (!m_isVisible)
+		return S_OK;
+
+	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CUIMenu_Trigger::Fire_ToTargets(ETriggerEventType eEvent)
+{
+	if (!m_isActive)
+		return;
+
+	//for (auto* pUI : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
+	//	if (pUI) pUI->OnUIEvent(eEvent, this);
+	//
+	//for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
+	//	if (pCanvas) pCanvas->OnCanvasEvent(eEvent, this);
+
+
+	switch (m_eSubClassType)
+	{
+	case DTO::EUITriggerSubClassType::MENU_TAB_TRIGGER:
+	{
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
+		{
+			m_pGameInstance->Broadcast<UI_EVENT_MENU_OPEN>();
+		}
+	}
+	break;
+	case DTO::EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER:
+	{
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
+		{
+			m_pGameInstance->Broadcast<UI_EVENT_MENU_CLOSE>();
+		}
+	}
+	break;
+	default:
+		break;
+	}
+
+
+
 	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
 	{
 		m_eCurTriggerType = ETriggerEventType::PRESS_ENTER;
@@ -86,53 +159,6 @@ void CUIMenu_Trigger::Update_Priority(const _float fTimeDelta)
 		m_eCurTriggerType = ETriggerEventType::HOVER_EXIT;
 		Fire_ToTargets(ETriggerEventType::HOVER_EXIT);
 	}
-}
-
-void CUIMenu_Trigger::Update(const _float fTimeDelta)
-{
-	Super::Update(fTimeDelta);
-}
-
-void CUIMenu_Trigger::Update_Late(const _float fTimeDelta)
-{
-	Super::Update_Late(fTimeDelta);
-}
-
-void CUIMenu_Trigger::Ready_Before_Render(const _float fTimeDelta)
-{
-	Check_FinEvent(m_eCurTriggerType);
-
-	Super::Ready_Before_Render(fTimeDelta);
-}
-
-HRESULT CUIMenu_Trigger::Render()
-{
-	if (!m_isVisible)
-		return S_OK;
-
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-	Get_Component<CShader>()->Apply();
-	Get_Component<CVIBuffer>()->Bind_Resource();
-	Get_Component<CVIBuffer>()->Render();
-
-	return S_OK;
-}
-
-void CUIMenu_Trigger::Fire_ToTargets(ETriggerEventType eEvent)
-{
-	if (!m_isActive)
-		return;
-
-	for (auto* pUI : m_pTriggerUI[ENUM_TO_UINT(eEvent)])
-		if (pUI) pUI->OnUIEvent(eEvent, this);
-
-	for (auto* pCanvas : m_pTriggerCanvas[ENUM_TO_UINT(eEvent)])
-		if (pCanvas) pCanvas->OnCanvasEvent(eEvent, this);
 }
 
 void CUIMenu_Trigger::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
