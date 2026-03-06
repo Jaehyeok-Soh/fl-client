@@ -22,6 +22,7 @@ private:
 public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
+
 	HRESULT LevelData_Setting(const DTO::TLevelData& tData);
 	HRESULT Create_StaticObject(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_LandScape(const DTO::TMap_MapObjectData& tData);
@@ -36,7 +37,6 @@ private:
 	HRESULT Create_Water(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_Rock(const DTO::TMap_MapObjectData& tData);
 
-
 	/* Batch Player */
 	HRESULT Batch_Player(const DTO::TMap_MapObjectData& tData);
 	/* Batch Monster */
@@ -48,6 +48,11 @@ private:
 	HRESULT	Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectData& tData);
 	HRESULT	Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObjectData& tData);
 	HRESULT	Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_MapObjectData& tData);
+
+
+	/* Invisible Wall */
+	HRESULT	Create_InvisibleWall(const DTO::TMap_MapObjectData& tData);
+
 
 private:
 	CShader*		m_pMeshShader{nullptr};

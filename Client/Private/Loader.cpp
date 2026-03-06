@@ -86,6 +86,7 @@
 #include "Vine.h"
 #include "Tree.h"
 #include "Grass.h"
+#include "InvisibleWall.h"
 
 //=================
 // Trigger Box
@@ -468,6 +469,9 @@ HRESULT CLoader::Loading_For_Logo()
 	/*  Lianhuo 사진 */
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Lianhuo/")))
 		return E_FAIL;
+	/* Ice Lake 사진 */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/IceLake/")))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->GameDataManager_Load_TextureSplatingInfoData()))
 		return E_FAIL;
@@ -627,11 +631,12 @@ HRESULT CLoader::Loading_For_Logo()
 		// Projectile
 
 		// player effect object
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,							CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,				CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
 
 
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
+
 
 #pragma region Map Object
 		/* Map Object */
@@ -644,6 +649,9 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszVine_Prototype_Tag,						CVine::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszRock_Prototype_Tag,						CRock::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
+
+		/* Invisible Wall */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszInvisibleWall_Prototype_Tag,				CInvisibleWall::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 #pragma region TriggerBox

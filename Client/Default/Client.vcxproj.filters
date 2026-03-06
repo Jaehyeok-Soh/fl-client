@@ -646,6 +646,9 @@
     <Filter Include="02. Level\Lianhuo">
       <UniqueIdentifier>{535bd167-aaf6-410f-87bd-a86b99f67c66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\MapObject\06. InvisibleWall">
+      <UniqueIdentifier>{9b1d8117-c5d3-46a2-991f-551479203aaa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1201,6 +1204,9 @@
     <ClInclude Include="..\Public\Level_Lianhuo.h">
       <Filter>02. Level\Lianhuo</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\InvisibleWall.h">
+      <Filter>03. GameObject\MapObject\06. InvisibleWall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1747,6 +1753,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Lianhuo.cpp">
       <Filter>02. Level\Lianhuo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InvisibleWall.cpp">
+      <Filter>03. GameObject\MapObject\06. InvisibleWall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

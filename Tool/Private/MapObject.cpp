@@ -100,10 +100,10 @@ HRESULT CMapObject::Initialize(void* pArg)
     if (FAILED(Ready_SRTDatas(pDesc)))
         return E_FAIL;
 
-    if (FAILED(Ready_ClientMakePath(pDesc)))
+    if (FAILED(Ready_Component()))
         return E_FAIL;
 
-    if (FAILED(Ready_Component()))
+    if (FAILED(Ready_ClientMakePath(pDesc)))
         return E_FAIL;
 
     if (FAILED(Check_DrawType_ByClientPath()))
@@ -199,11 +199,17 @@ HRESULT CMapObject::Ready_Component()
         return E_FAIL;
 
     /* Bounding Box 업데이트 , Instnace모델이면 0 0 0월드좌표로 들어가는게 맞다 */
-    Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
 
-    if(m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    {
+        Get_Component<CBounds>()->Update_BoundingDesc(m_vecMatrix.front());
         Get_Component<CBounds>()->Add_SubBounds(
-            Get_Component<CModel>()->Get_StaticModelMinMax(),span<Matrix>(m_vecMatrix.data() , m_vecMatrix.size()),1.f);
+            Get_Component<CModel>()->Get_StaticModelMinMax(), span<Matrix>(m_vecMatrix.data(), m_vecMatrix.size()), 1.f);
+    }
+    else
+    {
+        Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
+    }
 
     return S_OK;
 }
@@ -401,6 +407,13 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
         if (FAILED(Ready_TriggerBox_MonsterSpawner()))
             return E_FAIL;
+
+
+    case Tool::EClientMakePath::Invisible_Wall:
+        if (FAILED(Ready_InvisibleWall()))
+            return E_FAIL;
+
+
         break;
     case Tool::EClientMakePath::END:
         break;
@@ -487,8 +500,7 @@ HRESULT CMapObject::Ready_Batch_Object()
 
     /* 현재 Model 무적권 삭제 */
     Remove_Component<CModel>();
-    /* Model은 Cube로 강제조정 */
-    Remove_Component<CModel>();
+
     /* 이름도 강제조정 */
     CModel* pModel = m_pMapToolManager->Get_BatchObjectModel(pDesc->eBatchObjectType);
     if(pModel)
@@ -549,6 +561,26 @@ HRESULT CMapObject::Ready_TriggerBox_MonsterSpawner()
     {
         Safe_Release(MonsterSpawnData.pDebugModel);
         MonsterSpawnData.pDebugModel =  m_pMapToolManager->Get_MonsterPreviewModel(MonsterSpawnData.eMakeMonsterType);
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_InvisibleWall()
+{
+    /* 현재 Model 무적권 삭제 */
+    Remove_Component<CModel>();
+
+    CModel::MODEL_COPY_DESC tModelCopyDesc{};
+
+
+    Add_Component<CModel>(ENUM_TO_UINT(ELevelType::MAP) , L"Prototype_Component_Model_Plane",&tModelCopyDesc);
+    if (Get_Component<CModel>() == nullptr) return E_FAIL;
+
+
+    if (m_isLoaded == false)
+    {
+        //Get_Component<CTransform>()->Rotation(XMConvertToRadians(90.f), 0.f, 0.f);
     }
 
     return S_OK;
@@ -919,7 +951,7 @@ void CMapObject::Set_MapObjectDrawType(EMapObject_DrawType eDrawType)
         pTs->Set_WorldMatrix(Matrix::Identity);
 
         CBounds* pBounds = Get_Component<CBounds>();
-        pBounds->Update_BoundingDesc(pTs->Get_WorldMatrix());
+        pBounds->Update_BoundingDesc(m_vecMatrix.front());
         /* 아직 생성을안함 */
         pBounds->Push_SubBounds(Get_Component<CInstanceMesh>()->Get_InstanceWorldMinMax(),Get_Component<CModel>()->Get_StaticModelMinMax(),m_vecMatrix.front());
     }
@@ -1183,6 +1215,13 @@ HRESULT CMapObject::Render()
         break;
     case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
         hr = Render_TriggerBox_GlobalEvent_BroadCaster();
+        break;
+
+    case Tool::EClientMakePath::Invisible_Wall:
+        hr = Render_StaticObject();
+
+    case Tool::EClientMakePath::Static_Light:
+        hr = Render_StaticObject();
         break;
     default:
         break;

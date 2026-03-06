@@ -563,6 +563,10 @@ namespace Client
 	inline constexpr wchar_t g_wszVine_Prototype_Tag[]							{ L"Prototype_GameObject_Vine" };
 	inline constexpr wchar_t g_wszRock_Prototype_Tag[]							{ L"Prototype_GameObject_Rock" };
 	inline constexpr wchar_t g_wszWater_Prototype_Tag[]							{ L"Prototype_GameObject_Water" };
+
+
+
+	inline constexpr wchar_t g_wszInvisibleWall_Prototype_Tag[]					{ L"Prototype_GameObject_InvisibleWall" };
 #pragma endregion
 
 #pragma region Trigger Box ฐüทร
@@ -610,6 +614,7 @@ namespace Client
 	inline constexpr wchar_t g_wszEffectLayer[]									{ L"Effect_Layer" };
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
+	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
 }
 #pragma endregion
 

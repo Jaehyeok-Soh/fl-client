@@ -433,9 +433,10 @@ namespace Engine
 			TRIGGER_DIRECTION = 1 << 16,
 			TRIGGER_BOX = 1 << 17,
 
+			
+			INVISIBLE_WALL = 1 << 18,
 
-
-			NONE = 1 << 18,
+			NONE = 1 << 19,
 			END
 		};
 
