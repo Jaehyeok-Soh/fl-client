@@ -80,6 +80,14 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 
 void CState_GunBase::Update(const _float fTimeDelta)
 {
+    // 항시 hit 판정 먼저
+    if (Check_Hit(fTimeDelta))
+    {
+        Request_MixAnimation(1, -1);
+        return;
+    }
+
+
     // 0. 만약 r button 눌림이 끝났다면 gun state 탈출
     if (MOUSE_RBUTTON_UP)
     {
@@ -185,6 +193,13 @@ void CState_GunBase::Move_Update(const _float fTimeDelta)
 
 void CState_GunBase::Ground_Update(const _float fTimeDelta)
 {
+    // 바닥과 충돌이 안 되었다면 -> move state : fall로 변경
+    if (!Check_OnGround())
+    {
+        Change_MoveState(MoveState::FALL);
+        return;
+    }
+
     // 3.1 jump 우선 판정
     if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyMask::Mask_Jump))
     {
@@ -275,7 +290,7 @@ void CState_GunBase::Jump_Update(const _float fTimeDelta)
 
     // 바닥 충돌 검사 -> Land
     if (m_TJumpTime.x > 0.15f &&
-        IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+        Check_OnGround(0.3f))
     {
         Change_MoveState(MoveState::GROUND);
     }

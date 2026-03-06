@@ -230,6 +230,7 @@
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\Plants.h" />
+    <ClInclude Include="..\Public\PlayerSkillObj_Headers.h" />
     <ClInclude Include="..\Public\Rock.h" />
     <ClInclude Include="..\Public\SkillBase_MoonE.h" />
     <ClInclude Include="..\Public\SkillBase_MoonQ.h" />
@@ -345,7 +346,6 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PlayerSkillObj_Headers.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

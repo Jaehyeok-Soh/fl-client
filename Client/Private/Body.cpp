@@ -81,6 +81,10 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	// ÇÏÃ¼ ¹Í½º´Â ²ô±â À§ÇÔ
+	CModel* pMyModel = Get_Component<CModel>();
+	pMyModel->Set_MixAnim_AnimIndex(1, -1);
+
 	return S_OK;
 }
 

@@ -1207,11 +1207,11 @@
     <ClInclude Include="..\Public\Moon_SkillQAttack_Obj.h">
       <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerSkillObj_Headers.h">
-      <Filter>99. ETC\46.Headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PartEffect.h">
       <Filter>03. GameObject\PartObjects\PartEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerSkillObj_Headers.h">
+      <Filter>99. ETC\46.Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
