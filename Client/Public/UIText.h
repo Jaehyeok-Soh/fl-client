@@ -49,9 +49,9 @@ protected:
 	void Ready_Fade_Text(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
 	_bool Tick_Fade_Text(const _float fTimeDelta);
 
-protected:
-	virtual HRESULT Spawn_FromPool(void* pArg) override;
-	virtual HRESULT Despawn_FromPool()override;
+	inline virtual HRESULT Spawn_FromPool(void* pArg)override { if (FAILED(Super::Spawn_FromPool(pArg)))return E_FAIL; return S_OK; };
+	inline virtual HRESULT Despawn_FromPool()override { if (FAILED(Super::Despawn_FromPool()))return E_FAIL; return S_OK; };
+
 protected:
 	FONT_DESC m_tFontDesc	= {};
 	DTO::EUITextSubClassType m_eTextSubClassType = {};

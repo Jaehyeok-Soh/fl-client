@@ -35,6 +35,9 @@ HRESULT CXibi_Loop_Thunder::Initialize(void* pArg)
 
 	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
 		pRigidBody->Awake();
+
+	Get_Component<CEffectHandler>()->Setup_ForOwner(this);
+
 	return S_OK;
 }
 
@@ -90,20 +93,9 @@ void CXibi_Loop_Thunder::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLa
 {
 }
 
-void CXibi_Loop_Thunder::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CXibi_Loop_Thunder::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
-		Set_Dead();
-
-	COLLIDED_DESC desc{};
-	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
-	desc.iRequesterLayer = iMyColliderLayer;
-	desc.iOtherLayer = iOtherLayer;
-	desc.pRequester = this;
-	desc.pOther = pOther;
-	//desc.tHitInfo = tHitInfo;
-
-	m_pGameInstance->Push_CollidedData(desc);
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 _bool CXibi_Loop_Thunder::On_Hit(const HIT_DESC& hitDesc)

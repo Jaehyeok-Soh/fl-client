@@ -56,11 +56,6 @@ void CTool_EffectPartBase::Ready_Before_Render(const _float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
-void CTool_EffectPartBase::Set_Dead(_bool bStatic)
-{
-	Super::Set_Dead(bStatic);
-}
-
 void CTool_EffectPartBase::Free()
 {
 	Super::Free();

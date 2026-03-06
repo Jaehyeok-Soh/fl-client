@@ -7,7 +7,7 @@ NS_BEGIN(Engine)
 class CLevel;
 class CGameObject;
 
-struct SpawnEventDesc
+struct AddEventDesc
 {
 	_int iCloneLevelIndex = { -1 };
 	wstring wstrLayerTag = { L"" };
@@ -15,10 +15,9 @@ struct SpawnEventDesc
 	std::function<void(CGameObject*)> callback;
 };
 
-struct DespawnEventDesc
+struct RemoveEventDesc
 {
 	_int iClonedLevelIndex = { -1 };
-	wstring wstrLayerTag = { L"" };
 	CGameObject* pGo = { nullptr };
 };
 
@@ -34,7 +33,7 @@ class CEvent_Manager final : public CBase
 	using Super = CBase;
 	enum class EventType : unsigned int
 	{
-		OBJECT_CREATE = 0,
+		OBJECT_ADD = 0,
 		OBJECT_REMOVE,
 		LEVEL_CHANGE,
 		END
@@ -45,8 +44,8 @@ private:
 
 	HRESULT Initialize();
 public:
-	void Push_SpawnEvent(const SpawnEventDesc &desc);
-	void Push_DespawnEvent(const DespawnEventDesc &desc);
+	void Push_AddEvent(const AddEventDesc &desc);
+	void Push_RemoveEvent(const RemoveEventDesc &desc);
 	void Push_ChangeLevelEvet(const ChangeLevelEventDesc &desc);
 	void Flush_All();
 	void Clear_All();
@@ -54,18 +53,20 @@ private:
 	void Clear(EventType eType);
 	void Flush(EventType eType);
 	void Flush_Pending(EventType eType);
-	HRESULT Spawn_GameObject(SpawnEventDesc &spawnDesc);
-	HRESULT Despawn_GameObject(DespawnEventDesc &despawnDesc);
+	HRESULT Add_GameObject(AddEventDesc &spawnDesc);
+	HRESULT Remove_GameObject(RemoveEventDesc &despawnDesc);
 	HRESULT Change_Level(ChangeLevelEventDesc& changeLevelDesc);
-	void Clear_SpawnEvent(SpawnEventDesc& spawnDesc);
+	void Clear_AddEvent(AddEventDesc& spawnDesc);
+	void Clear_RemoveEvent(RemoveEventDesc &removeDesc);
 	void Clear_ChangeLevelEvent(ChangeLevelEventDesc& changeLevelDesc);
+	_bool Cancel_AddQueued(CGameObject* pGo);
 private:
 	_bool m_bFlushing = { false };
 	class CGameInstance* m_pGameInstance = { nullptr };
-	std::queue<SpawnEventDesc> m_queSpawn;
-	std::queue<SpawnEventDesc> m_queSpawn_Pending;
-	std::queue<DespawnEventDesc> m_queDespawn;
-	std::queue<DespawnEventDesc> m_queDespawn_Pending;
+	std::queue<AddEventDesc> m_queAddGameObject;
+	std::queue<AddEventDesc> m_queAddGameObject_Pending;
+	std::queue<RemoveEventDesc> m_queRemoveGameObject;
+	std::queue<RemoveEventDesc> m_queRemoveGameObject_Pending;
 	std::queue<ChangeLevelEventDesc> m_queChangeLevel;
 	std::queue<ChangeLevelEventDesc> m_queChangeLevel_Pending;
 public:

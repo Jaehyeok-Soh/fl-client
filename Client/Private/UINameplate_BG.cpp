@@ -103,7 +103,7 @@ HRESULT CUINameplate_BG::Bind_ShaderResources()
 
 HRESULT CUINameplate_BG::Attach_Personal_Info()
 {
-	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
+	m_tEventHandle = m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
 		{
 			if (pDead == m_pTargetMoster)
 				this->Set_Invisible();
@@ -138,7 +138,6 @@ _bool CUINameplate_BG::Tick_Visible_Event(const _float fTimeDelta)
 		m_isActive = false;
 		return true;
 	}
-
 	return false;
 }
 
@@ -166,8 +165,9 @@ HRESULT CUINameplate_BG::Spawn_FromPool(void* pArg)
 {
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
+
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
-	
+
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");
 	if (nullptr == pComp)
 		return E_FAIL;

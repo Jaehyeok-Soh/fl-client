@@ -83,7 +83,7 @@ HRESULT CWeapon::Initialize(void* pArg)
 	//Get_Component<CTransform>()->Rotation(0.f, ::XMConvertToRadians(90.f), 0.f);
 	//Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, ::XMVectorSet(0.8f, 0.f, 0.f, 1.f));
 
-	Set_Flag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Outline, true);
 	return S_OK;
 }
 
@@ -193,9 +193,9 @@ void CWeapon::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameO
 	Get_Parent()->OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CWeapon::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CWeapon::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 void CWeapon::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)

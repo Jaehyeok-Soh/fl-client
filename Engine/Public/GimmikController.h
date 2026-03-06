@@ -22,14 +22,15 @@ protected:
 	virtual HRESULT						Initialize_Prototype() override;
 	virtual HRESULT						Initialize(void* pArg) override;
 public:
-
+	virtual HRESULT Bind_Events();
 protected:
 	///////////////
 	//// Event ////
 	///////////////
+	virtual void On_ModelAnimNotify(const AnimNotifyKey& key) PURE;
+private:
 	void Bind_ModelAnimNotify();
 	void Unbind_ModelAnimNotify();
-	virtual void On_ModelAnimNotify(const AnimNotifyKey& key) PURE;
 protected:
 	CModel* m_pOwnerModel{ nullptr };
 	DelegateHandle m_hAnimNotifyHandle;

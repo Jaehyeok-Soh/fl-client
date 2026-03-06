@@ -326,9 +326,10 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	_bool bA = (filterData0.word0 & filterData1.word1) != 0;
-	_bool bB = (filterData1.word0 & filterData0.word1) != 0;
-	if ((bA && bB) == false)
+	_bool bPass0 = ((filterData0.word0 & filterData1.word1) != 0);
+	_bool bPass1 = ((filterData1.word0 & filterData0.word1) != 0);
+	// Pair°¡ ¾Æ´Ò ¶§
+	if ((bPass0 && bPass1) == false)
 		return PxFilterFlag::eSUPPRESS;
 
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))

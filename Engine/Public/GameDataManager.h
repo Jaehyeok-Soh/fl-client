@@ -6,6 +6,7 @@
 NS_BEGIN(Engine)
 
 class CShader;
+class CGameObject;
 
 class CGameDataManager final : public CBase
 {
@@ -24,6 +25,7 @@ public:
 public:
 
 	/* Engine 단위에서는 단순하게 Data들을 들고만 있는다 Json 파일 관리는 MapToolManager에서*/
+	HRESULT		Make_DefaultTextures();
 	HRESULT		Load_TextureSplatingInfoData();
 
 	/* 이름으로 Binding 하는 함수 */
@@ -50,6 +52,10 @@ public:
 
 #pragma endregion
 
+#pragma region Player
+	void Player_BringOutFromStaticLayer();
+	void Player_SetToLayer(const wstring& wstrLayerTag);
+#pragma endregion
 
 #pragma region ATTACK_PRESET
 	const DTO::TAttackPreset_Data* Find_AttackPrseet(_uint iPresetKey) const;
@@ -68,15 +74,23 @@ public:
 private:
 	map<wstring, TEXTURE_SPLATTING_INFO >				m_mapTextureSplatingInfoDatas{};
 	const _tchar*										m_wszTextureSplatingInfoDataPath = L"../../Resources/Data/MapData/TextureSplatingInfoData.json";
+
 	ID3D11ShaderResourceView*							m_pDefaultBlack{nullptr};
 	ID3D11ShaderResourceView*							m_pDefaultWhite{nullptr};
+	ID3D11ShaderResourceView*							m_pDefaultRed{ nullptr };
+	ID3D11ShaderResourceView*							m_pDefaultBlue{ nullptr };
+	ID3D11ShaderResourceView*							m_pDefaultGreen{ nullptr };
 private:
 	map<wstring, Camera_Cinematic_Sequence>				m_mapCameraCinematicSequence{};
 	const _tchar*										m_wszCameraCinematicDataPath = L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json";
 private:
-
 	ID3D11Device*										m_pDevice{nullptr};
 	ID3D11DeviceContext*								m_pDeviceContext{nullptr};
+	//////////////
+	/// Player ///
+	//////////////
+	CGameObject*										m_pPlayer{ nullptr };
+
 	////////////////////
 	/// AttackPreset ///
 	////////////////////

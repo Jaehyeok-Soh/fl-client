@@ -64,7 +64,7 @@ float g_fBrightness;
 // SRV //
 /////////
 textureCUBE g_TextureCube;
-Texture2D g_DefaultTextures[8];
+Texture2D g_DefaultTextures[10];
 Texture2D g_MaterialTextures[MATERIAL_END];
 Texture2D g_SSAONoiseTexture;
 Texture2D g_RenderTargetTexture;

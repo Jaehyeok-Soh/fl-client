@@ -24,6 +24,7 @@ public:
 	void All_Despawn();
 public:
 	_uint Get_ActiveCount() const { return m_iActiveCount; }
+	size_t Get_Capacity() const { return m_iTotalCount; }
 	CGameObject* Get_ActiveObjectAt(_uint iIndex);
 	const wstring& Get_LayerTag() const { return m_wstrLayerTag; }
 private:

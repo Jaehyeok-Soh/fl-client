@@ -25,7 +25,6 @@ CEffectHandler::CEffectHandler(const CEffectHandler& rhs)
 
 HRESULT CEffectHandler::Initialize_Prototype(void* pArg)
 {
-
     if(FAILED(Ready_Desc(pArg)))
         return E_FAIL;
 
@@ -74,7 +73,7 @@ void CEffectHandler::Set_Desc(const ANIM_EFFECT_HANDLER_DESC& Desc)
              pAnimation->Clear_Notifies();
          }
 
-         Ready_Event();
+         Ready_AnimState();
      }
 }
 void CEffectHandler::Ready_State()
@@ -88,13 +87,45 @@ void CEffectHandler::Ready_State()
     m_eCurrentState = E_OBJ_LIFECYCLE_STATE::ON_SPAWN;
 }
 
-void CEffectHandler::Awake()
+void CEffectHandler::Setup_ForOwner(CGameObject* pOwner, CModel* pModel)
 {
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM)
+    {
+        if (FAILED(Owner_Setting(pOwner)))
+        {
+            MSG_BOX("Owner Setting Fail : EffectHandler");
+            return;
+        }
+
+        Setup_OwnerModel(pModel);
         Ready_AnimState();
+    }
+
     else
+    {
+        if (FAILED(Owner_Setting(pOwner)))
+        {
+            MSG_BOX("Owner Setting Fail : EffectHandler");
+            return;
+        }
+
         Create_SpawnEffect();
+    }
+
 }
+
+void CEffectHandler::Setup_OwnerModel(CModel* pModel)
+{
+    if (Get_Owner())
+    {
+        if (m_pOwnerModel == nullptr)
+        {
+            m_pOwnerModel = pModel;
+            Safe_AddRef(m_pOwnerModel);
+        }
+    }
+}
+
 
 void CEffectHandler::Update(_float fDT)
 {
@@ -106,21 +137,10 @@ HRESULT CEffectHandler::Gizmo_Setting()
     return S_OK;
 }
 
-void CEffectHandler::Set_OwnerModel()
-{
-    if (Get_Owner())
-    {
-        if (m_pOwnerModel == nullptr)
-        {
-            m_pOwnerModel = Get_Owner()->Get_Component<CModel>();
-            Safe_AddRef(m_pOwnerModel);
-        }
-    }
-}
 
-void CEffectHandler::Ready_Event()
+HRESULT CEffectHandler::Ready_AnimState()
 {
-    if (m_pOwnerModel == nullptr) return;
+    if (m_pOwnerModel == nullptr) return E_FAIL;
 
     if (m_EventHandle.iID == 0)
     {
@@ -173,19 +193,6 @@ void CEffectHandler::Ready_Event()
 
         pAnimation->Sort_Notifies();
     }
-}
-
-HRESULT CEffectHandler::Ready_AnimState()
-{
-    Set_OwnerModel();
-
-    if (FAILED(Owner_Setting()))
-    {
-        MSG_BOX("Owner Setting Fail : EffectHandler");
-        return E_FAIL;
-    }
-
-    Ready_Event();
 
     return S_OK;
 }
@@ -195,12 +202,6 @@ HRESULT CEffectHandler::Create_SpawnEffect()
     if (m_tDesc.eType == E_HANDLER_TYPE::MODEL_ANIM) return E_FAIL;
 
     m_pOwnerMatrix = m_tDesc.mEffectState[E_OBJ_LIFECYCLE_STATE::ON_SPAWN].pParentTransformMatrix;
-
-    if (FAILED(Owner_Setting()))
-    {
-        MSG_BOX("Owner Setting Fail : EffectHandler");
-        return E_FAIL;
-    }
 
     return S_OK;
 }
@@ -252,7 +253,6 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
         {
             m_pGameInstance->Request_DeleteGameObject(
                 m_pGameInstance->Get_CurrentLevelIndex(),
-                L"Layer_Effect",
                 itActive->second
             );
             m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].erase(itActive);
@@ -262,18 +262,14 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
     }
 }
 
-HRESULT CEffectHandler::Owner_Setting()
+HRESULT CEffectHandler::Owner_Setting(CGameObject* pGo)
 {
     // 넣어준 값이 없다면 여기서 설정을 해준다.
     if (m_pOwnerMatrix == nullptr)
     {
-        if (dynamic_cast<CPartObject*>(Get_Owner()))
-            m_pOwnerMatrix = &(static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix());
-
-        else
-            m_pOwnerMatrix = &(Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrix());
+        if (pGo)
+            m_pOwnerMatrix = &pGo->Get_Component<CTransform>()->Get_WorldMatrix();
     }
-
 
     return m_pOwnerMatrix ? S_OK : E_FAIL;
 }
@@ -290,12 +286,6 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& Script)
     Matrix MatOwnerMatrix = XMMatrixIdentity();
     const Matrix* pTargetBoneMatrix = nullptr;
 
-    if (FAILED(Owner_Setting()))
-    {
-        MSG_BOX("Owner Setting Fail : EffectHandler");
-        return;
-    }
-
     // 뼈 행렬 계산
     BoneMatrix_CalCulator(Script, pTargetBoneMatrix);
     // 애니메이션 모델 떄문에 Scale 행렬을 날려주는 값을 넣어준다.
@@ -311,12 +301,6 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const s
     Matrix MatWorldOffset = XMMatrixIdentity();
     Matrix MatOwnerMatrix = XMMatrixIdentity();
     const Matrix* pTargetBoneMatrix = nullptr;
-
-    if (FAILED(Owner_Setting()))
-    {
-        MSG_BOX("Owner Setting Fail : EffectHandler");
-        return;
-    }
 
     // 뼈 행렬 계산
     BoneMatrix_CalCulator(script, pTargetBoneMatrix);
@@ -339,8 +323,10 @@ HRESULT CEffectHandler::Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState)
     auto it = activeMap.find(prevTag);
     if (it != activeMap.end())
     {
+        // TODO 
+        // 풀에 돌아간 EFfect인지 체크를 함.
         CEffectBase* pBase = static_cast<CEffectBase*>(it->second);
-        if (pBase)
+        if (pBase && !pBase->IsPooled())
             pBase->LoopStateChange(DTO::E_LoopState::LOOP_END);
 
         activeMap.erase(it);
@@ -485,7 +471,7 @@ SimpleMath::Matrix CEffectHandler::Delete_ScaleMatrix(SimpleMath::Matrix Mat)
 // 툴용
 unordered_map<_uint, vector<DTO::EFFECTEVENT>>& CEffectHandler::GetEvents()
 {
-    Ready_Event();
+    Ready_AnimState();
 
     return m_tDesc.mapEvents;
 }

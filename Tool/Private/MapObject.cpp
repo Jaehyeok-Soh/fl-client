@@ -168,7 +168,7 @@ HRESULT CMapObject::Ready_Component()
     CModel::MODEL_ORIGIN_DESC tModelDesc{};
     tModelDesc.eType = EModelType::STATIC;
     tModelDesc.wstrModelFolderName = m_wstrModelPath;
-    tModelDesc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+    tModelDesc.iPrototypeLevelIndex = /*ENUM_TO_UINT(ELevelType::MAP)*/m_pGameInstance->Get_CurrentLevelIndex();
     CModel* pModel = CModel::Create(m_pDevice, m_pDeviceContext, &tModelDesc);
     if (pModel)
     {

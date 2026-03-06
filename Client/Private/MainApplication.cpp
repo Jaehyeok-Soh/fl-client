@@ -92,9 +92,6 @@ void CMainApplication::Update(const _float fTimeDelta)
 	m_pGameInstance->Flush_All();
 
 	m_pGameInstance->Update_Engine(fTimeDelta);
-
-	// ÀÚµ¿ Á¤·Ä X / Request Sort È£ÃâÇØÁà¾ßµÊ 
-	CUI_Manager::GetInstance()->Add_RenderGroup(m_pGameInstance->Get_CurrentLevelIndex());
 }
 
 HRESULT CMainApplication::Render()
@@ -562,8 +559,8 @@ void CMainApplication::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();
-	m_pGameInstance->Destroy_Engine();
 	Safe_Release(m_pGameInstance);
+	m_pGameInstance->Destroy_Engine();
 
 #ifdef _DEBUG
 	CEngineConsole::Shutdown();

@@ -179,6 +179,7 @@ HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
 {
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
+
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 
 	auto* pComp = Get_Script_Component(L"WorldUIComponent");
@@ -187,6 +188,9 @@ HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
 
 	m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
 	if (nullptr == m_pWorldUIComp)
+		return E_FAIL;
+
+	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
 
 	m_pWorldUIComp->Set_Target(pDesc->pTarget);

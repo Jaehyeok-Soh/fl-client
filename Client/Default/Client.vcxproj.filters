@@ -631,6 +631,21 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\MoveState">
       <UniqueIdentifier>{b8e2a682-0862-4d67-a466-eaca1a813102}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Level\Kuangkeng">
+      <UniqueIdentifier>{a7626871-21e5-48ac-b793-01f83f14e2a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Tavern">
+      <UniqueIdentifier>{2905b500-b428-4805-9fc4-638afebf03dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\PoolDebug">
+      <UniqueIdentifier>{424668f6-8bc5-4dd8-8036-5b7a5d57b52a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\ObjectPool">
+      <UniqueIdentifier>{32bebfb6-883b-4452-b824-e6ce5b80a0cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Stat\StatCom_Boss">
+      <UniqueIdentifier>{49a4b247-f9ed-4f9d-a881-a94e2c12bde2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1171,6 +1186,21 @@
     <ClInclude Include="..\Public\ImGui_MoveStateLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\MoveState</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Kuangkeng.h">
+      <Filter>02. Level\Kuangkeng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tavern.h">
+      <Filter>02. Level\Tavern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_PoolInspector.h">
+      <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StatCom_Boss.h">
+      <Filter>05. Component\Stat\StatCom_Boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1702,6 +1732,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_MoveStateLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\MoveState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tavern.cpp">
+      <Filter>02. Level\Tavern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Kuangkeng.cpp">
+      <Filter>02. Level\Kuangkeng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_PoolInspector.cpp">
+      <Filter>07. System\99. Debug_ImGui\Inspector\PoolDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StatCom_Boss.cpp">
+      <Filter>05. Component\Stat\StatCom_Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

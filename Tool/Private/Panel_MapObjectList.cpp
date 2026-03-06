@@ -200,7 +200,7 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 
 				if (m_eShowMapObjectFilter == EClientMakePath::END || static_cast<CMapObject*>(GameObject)->Get_ClientMakePath() == m_eShowMapObjectFilter)
 				{
-					m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer  , GameObject );
+					m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), GameObject);
 				}
 			}
 		}
@@ -392,7 +392,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 
 		if (ImGui::Button(" Delete [ Warning : [Instance] Draw Object All Delete ] "))
 		{
-			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pSelectMapObject->Get_Layer(), m_pSelectMapObject);
+			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), m_pSelectMapObject);
 			static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(nullptr);
 			m_pSelectMapObject = nullptr;
 			ImGui::End();

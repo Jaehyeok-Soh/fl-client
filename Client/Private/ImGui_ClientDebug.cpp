@@ -3,6 +3,7 @@
 #include "MainPlayer.h"
 #include "ImGui_PlayerInspector.h"
 #include "ImGui_GlobalInspector.h"
+#include "ImGui_PoolInspector.h"
 #include "ImGui_TextureDebugInspector.h"
 #include "GameInstance.h"
 
@@ -64,6 +65,7 @@ HRESULT CImGui_ClientDebug::Ready_Inspector()
 	m_arrInspectors[EInspectorType::Player] = CImGui_PlayerInspector::Create();
 	m_arrInspectors[EInspectorType::Global] = CImGui_GlobalInspector::Create();
 	m_arrInspectors[EInspectorType::TextureDebug] = CImGui_TextureDebugInspector::Create();
+	m_arrInspectors[EInspectorType::PoolDebug] = CImGui_PoolInspector::Create();
 	return S_OK;
 }
 
@@ -76,6 +78,7 @@ void CImGui_ClientDebug::Render()
 	m_arrInspectors[EInspectorType::Player]->Render(m_pPlayer);
 	m_arrInspectors[EInspectorType::Global]->Render(nullptr);
 	m_arrInspectors[EInspectorType::TextureDebug]->Render(nullptr);
+	m_arrInspectors[EInspectorType::PoolDebug]->Render(nullptr);
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::Render();

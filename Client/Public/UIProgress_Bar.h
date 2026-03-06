@@ -33,9 +33,8 @@ protected:
 	void Trigger_Ratio();
 	void Tick_Ratio(const _float fTimeDelta);
 
-protected:
-	virtual HRESULT Spawn_FromPool(void* pArg) override;
-	virtual HRESULT Despawn_FromPool()override;
+	inline virtual HRESULT Spawn_FromPool(void* pArg)override { if (FAILED(Super::Spawn_FromPool(pArg)))return E_FAIL; return S_OK; };
+	inline virtual HRESULT Despawn_FromPool()override { if (FAILED(Super::Despawn_FromPool()))return E_FAIL; return S_OK; };
 protected:
 	DTO::EUISubClassType m_eSubClassType = {};
 

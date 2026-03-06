@@ -1,5 +1,6 @@
 #include "Engine_pch.h"
 #include "Layer.h"
+#include "ObjectPool.h"
 #include "GameObject.h"
 
 CLayer::CLayer()
@@ -25,7 +26,7 @@ void CLayer::Update_Priority(const _float fTimeDelta)
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		if (pElement)
+		if (pElement && pElement->Is_Active())
 			pElement->Update_Priority(fTimeDelta);
 	}
 }
@@ -34,7 +35,7 @@ void CLayer::Update(const _float fTimeDelta)
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		if (pElement)
+		if (pElement && pElement->Is_Active())
 			pElement->Update(fTimeDelta);
 	}
 }
@@ -43,7 +44,7 @@ void CLayer::Update_Late(const _float fTimeDelta)
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		if (pElement)
+		if (pElement && pElement->Is_Active())
 			pElement->Update_Late(fTimeDelta);
 	}
 }
@@ -52,7 +53,7 @@ void CLayer::Ready_Before_Render(const _float fTimeDelta)
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		if (pElement)
+		if (pElement && pElement->Can_Render())
 			pElement->Ready_Before_Render(fTimeDelta);
 	}
 }
@@ -123,8 +124,10 @@ void CLayer::Free()
 {
 	for (CGameObject*& pElement : m_pGameObjects)
 	{
-		if(pElement->Is_PoolObject() == false)
+		if (pElement->Is_FromPool() == false)
 			Safe_Release(pElement);
+		else
+			pElement->Get_OwnerPool()->Despawn(pElement);
 	}
 
 	m_pGameObjects.clear();

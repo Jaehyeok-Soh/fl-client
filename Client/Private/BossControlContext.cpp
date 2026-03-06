@@ -36,6 +36,7 @@ HRESULT CBossControlContext::Initialize(void* pArg)
 
 HRESULT CBossControlContext::Awake(const _uint iLevelIndex)
 {
+    Safe_Release(m_pTarget);
 	if (!(m_pTarget = m_pGameInstance->Get_GameObject_Front(0, L"Player_Layer")))
 		return E_FAIL;
 

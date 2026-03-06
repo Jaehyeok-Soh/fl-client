@@ -147,7 +147,7 @@ struct TEFFECT_PartsData
 
     _float              _Effect_PlayBackSpeed = { 1.f };
     _float              _Effect_StartSpeed = { 1.f };   // Particle에 영향을 주는 스피드 [개별 배속]
-    int                 _Effect_MaxParticle = { 30 };
+    int                 _Effect_MaxParticle = { 1 };
 
     // ========  이펙트 Radius  ==========
     Vec3                _Effect_Range = { 1.f, 1.f, 1.f };

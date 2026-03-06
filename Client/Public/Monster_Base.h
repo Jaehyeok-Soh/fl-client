@@ -5,6 +5,7 @@
 
 NS_BEGIN(Engine)
 class CRay;
+class CEffectHandler;
 NS_END
 
 NS_BEGIN(Client)
@@ -104,7 +105,7 @@ public:
 	virtual void		OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void		OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo) override;
 	virtual void		OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void		OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void		OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void		OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
 	virtual _bool		On_Hit(const HIT_DESC& hitDesc) override;
@@ -115,10 +116,12 @@ protected:
 	HRESULT				Ready_PartObjects(void* pArg);
 	HRESULT				Ready_Components(void* pArgs);
 	HRESULT				Ready_AttackOverlap(wstring prototypeName);
+	HRESULT				Ready_EffectHandler(void* pArgs);
 protected:
 	HRESULT Ready_CCT(void* pArgs);
 protected:
 	EMonster_Type			m_eMonsterType{ EMonster_Type::END};
+	class CEffectHandler*	m_pEffectHandler = { nullptr };
 public:
 	void SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc);
 public:

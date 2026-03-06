@@ -195,7 +195,9 @@
     <ClInclude Include="..\Public\imgui_internal.h" />
     <ClInclude Include="..\public\ImGui_Layout.h" />
     <ClInclude Include="..\Public\ImGui_MoveStateLayout.h" />
+    <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h" />
     <ClInclude Include="..\public\ImGui_PlayerInspector.h" />
+    <ClInclude Include="..\public\ImGui_PoolInspector.h" />
     <ClInclude Include="..\public\ImGui_TextureDebugInspector.h" />
     <ClInclude Include="..\public\ImGui_ShaderDebugLayout.h" />
     <ClInclude Include="..\public\ImGui_ShaderLayout.h" />
@@ -206,7 +208,9 @@
     <ClInclude Include="..\Public\imstb_textedit.h" />
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\LandScape.h" />
+    <ClInclude Include="..\Public\Level_Kuangkeng.h" />
     <ClInclude Include="..\Public\Level_Square.h" />
+    <ClInclude Include="..\Public\Level_Tavern.h" />
     <ClInclude Include="..\Public\Level_Test.h" />
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\MonsterActionState.h" />
@@ -227,6 +231,7 @@
     <ClInclude Include="..\Public\Rock.h" />
     <ClInclude Include="..\Public\SkillBase_MoonE.h" />
     <ClInclude Include="..\Public\SkillBase_MoonQ.h" />
+    <ClInclude Include="..\public\StatCom_Boss.h" />
     <ClInclude Include="..\Public\StatCom_Player.h" />
     <ClInclude Include="..\Public\State_Charge.h" />
     <ClInclude Include="..\Public\StateBase_Monster.h" />
@@ -393,7 +398,9 @@
     <ClCompile Include="..\private\ImGui_Inspector.cpp" />
     <ClCompile Include="..\private\ImGui_Layout.cpp" />
     <ClCompile Include="..\Private\ImGui_MoveStateLayout.cpp" />
+    <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp" />
     <ClCompile Include="..\private\ImGui_PlayerInspector.cpp" />
+    <ClCompile Include="..\private\ImGui_PoolInspector.cpp" />
     <ClCompile Include="..\private\ImGui_TextureDebugInspector.cpp" />
     <ClCompile Include="..\private\ImGui_ShaderDebugLayout.cpp" />
     <ClCompile Include="..\private\ImGui_ShaderLayout.cpp" />
@@ -412,7 +419,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
+    <ClCompile Include="..\Private\Level_Kuangkeng.cpp" />
     <ClCompile Include="..\Private\Level_Square.cpp" />
+    <ClCompile Include="..\Private\Level_Tavern.cpp" />
     <ClCompile Include="..\Private\Level_Test.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\MonsterActionState.cpp" />
@@ -432,6 +441,7 @@
     <ClCompile Include="..\Private\Rock.cpp" />
     <ClCompile Include="..\Private\SkillBase_MoonE.cpp" />
     <ClCompile Include="..\Private\SkillBase_MoonQ.cpp" />
+    <ClCompile Include="..\private\StatCom_Boss.cpp" />
     <ClCompile Include="..\Private\StatCom_Player.cpp" />
     <ClCompile Include="..\Private\State_Charge.cpp" />
     <ClCompile Include="..\Private\StateBase_Monster.cpp" />

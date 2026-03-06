@@ -49,10 +49,12 @@ private:
 	HRESULT Render_ToneMap();
 	HRESULT Render_BlendUI();
 	HRESULT Render_UI();
+	void Sort_UI();
 private:
 	array<Vec4, SSAO_KERNAL> Build_SSAO_Kernal16();
 	HRESULT Create_SSAO_NoiseSRV();
 	HRESULT Set_ConstantBuffer();
+	void Request_SortUI();
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
@@ -80,7 +82,6 @@ private:
 	CConstant_Buffer<SHADER_HDRPARAM_DESC>* m_pCB_HDRparam{ nullptr };
 	CConstant_Buffer<SHADER_BLOOMPARAM_DESC>* m_pCB_Bloomparam{ nullptr };
 	CConstant_Buffer<SHADER_OUTLINE_DESC>* m_pCB_Outlineparam{ nullptr };
-
 	CTextureBase* m_pLUTTexture{ nullptr };
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

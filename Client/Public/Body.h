@@ -32,7 +32,7 @@ public:
 	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual HRESULT Render() override;
@@ -48,20 +48,12 @@ public:
 	//CBone* Get_SpineBone();
 	CBone* Get_WeaponSocket();
 	CBone* Get_RightHandSocket();
-	//CBone* Get_LeftHandSocket();
-	//CBone* Get_RightHandSocket();
-	//CBone* Get_LeftFootSocket();
-	//CBone* Get_RightFootSocket();
-	//CBone* Get_LeftShoulderSocket();
-	//CBone* Get_RightShoulderSocket();
-	//CBone* Get_EffectMouseSocket();
 
 public:
 	CComputeShader* Get_AnimMixCS() const { return m_pBoneAnimMixCS; }
 
 private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);
-	HRESULT Ready_EffectEvent();
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_ComputeShader();
 private:
@@ -72,17 +64,6 @@ private:
 	_int m_iCamPos_Index	= { 0 }; // cam ¿¬°á »À idx
 	_int m_iCamSocket_Index = { 0 }; // cam ¿¬°á »À idx
 	_int m_iRootMotion_Index	= { 0 }; // rootmotion »À idx
-	//_int m_iSpine_Index = { 0 };
-	//_int m_iLeftHand_Index = { 0 };
-	//_int m_iRightHand_Index = { 0 };
-	//_int m_iLeftFoot_Index = { 0 };
-	//_int m_iRightFoot_Index = { 0 };
-	//_int m_iSwordSocket_Index = { 0 };
-	//_int m_iLeftShoulderSocket_Index = { 0 };
-	//_int m_iRightShoulderSocket_Index = { 0 };
-	//_int m_iEffectMouseSocket_Index = { 0 };
-	//_int m_iRightHandWeaponSocket_Index = { 0 };
-
 private:
 	CComputeShader* m_pBoneMeshCS			= { nullptr };
 	CComputeShader* m_pBoneCombineCS		= { nullptr };

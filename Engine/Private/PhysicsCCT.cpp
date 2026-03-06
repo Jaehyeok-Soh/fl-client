@@ -72,7 +72,7 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CPhysicsCCT::Awake()
+void CPhysicsCCT::Ready_Position()
 {
 	Vec3 vPos = m_pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	SetFootPosition(vPos);
@@ -215,7 +215,7 @@ void CPhysicsCCT::SetHeight(_float height)
 
 const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, _float fTimeDelta)
 {
-	if (m_pGameInstance->GetChangeLevelSequence())
+	if (m_pGameInstance->Is_ChangeLevelSequence())
 	{
 		PxControllerCollisionFlags collisionFlag;
 		return collisionFlag;

@@ -28,7 +28,7 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 
 HRESULT CStatCom_Player::Initialize_Prototype()
 {
-	if (Super::Initialize_Prototype())
+	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
 	return S_OK;
@@ -36,6 +36,9 @@ HRESULT CStatCom_Player::Initialize_Prototype()
 
 HRESULT CStatCom_Player::Initialize(void* pArg)
 {
+	if (FAILED(Super::Initialize(pArg)))
+		return E_FAIL;
+
 	PLAYER_STATCOMP_DESC* pDesc = static_cast<PLAYER_STATCOMP_DESC*>(pArg);
 
 	m_fMeleeAtt = pDesc->fMeleeAttack;
@@ -61,9 +64,6 @@ HRESULT CStatCom_Player::Initialize(void* pArg)
 	// 초기는 우선 근접 무기로 설정해둠
 	m_FAttState = Attack_State::Melee;
 	pDesc->fAttack = m_fMeleeAtt;
-
-	if (Super::Initialize(pDesc))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -223,7 +223,11 @@ void CStatCom_Player::Sub_Hp(_float iHealth)
 		// 디펜스가 음수가 되었다면 이제서야 health를 뺌
 		if (m_vDefense.x < 0)
 		{
-			m_vHealth.x += (_uint)m_vDefense.x;
+			m_vHealth.x += m_vDefense.x;
+
+			// UI가 바꿔둠
+			if (m_vHealth.x <= 0.f)
+				m_vHealth.x = 0.f;
 
 			m_vDefense.x = 0;
 		}

@@ -35,7 +35,7 @@ void CEvent_Effect_Module::SetEFfectEvent(CEffectHandler* pEffectHandler, CAnimO
     if (m_pEffectEvent)
     {
         m_pEffectEvent->Set_Owner(pOwner);
-        m_pEffectEvent->Awake();
+        m_pEffectEvent->Setup_ForOwner(pOwner, pOwner->Get_Component<CModel>());
     }
 }
 
@@ -44,7 +44,7 @@ void CEvent_Effect_Module::SetOwner(CAnimObj* pOwner)
     if (m_pEffectEvent)
     {
         m_pEffectEvent->Set_Owner(pOwner);
-        m_pEffectEvent->Awake();
+        m_pEffectEvent->Setup_ForOwner(pOwner, pOwner->Get_Component<CModel>());
     }
 }
 
@@ -76,8 +76,6 @@ void CEvent_Effect_Module::Modify_EFfectEvent(vector<DTO::EFFECTEVENT> events)
 
 void CEvent_Effect_Module::Awake()
 {
-    if (m_pEffectEvent)
-        m_pEffectEvent->Awake();
 }
 
 CEvent_Effect_Module* CEvent_Effect_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

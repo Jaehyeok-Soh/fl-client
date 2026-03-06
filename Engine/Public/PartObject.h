@@ -28,7 +28,7 @@ public:
 	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherColliderLayer, CGameObject* pOther) override;
 public:
 	virtual void Set_AttackCollider(_bool bActive, ATTACK_DESC* pDesc);

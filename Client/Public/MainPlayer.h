@@ -38,7 +38,7 @@ public:
 	virtual void	OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void	OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void	OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void	OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void	OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void	OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
@@ -53,6 +53,7 @@ private:
 	HRESULT Ready_Ray();
 	HRESULT Ready_CCT();
 	HRESULT Ready_AttackOverlap();
+	HRESULT Ready_EffectEvent();
 
 	HRESULT Ready_AttackStates();
 

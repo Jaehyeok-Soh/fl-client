@@ -14,6 +14,7 @@
 #include "PhysicsCCT.h"
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
+#include "EffectHandler.h"
 
 #include "GameInstance.h"
 
@@ -50,9 +51,14 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Ready_EffectHandler(pArg)))
+		return E_FAIL;
+
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
+	Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
+	m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
 	return S_OK;
 }
 
@@ -72,10 +78,7 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Get_Component<CPhysicsCCT>()->Awake();
-
-	if (CPhysicsAttackOverlap* attackOverlap = Get_Component<CPhysicsAttackOverlap>())
-		attackOverlap->Bind_Events();
+	Get_Component<CPhysicsCCT>()->Ready_Position();
 
 	return S_OK;
 }
@@ -91,6 +94,9 @@ void CMonster_Base::Update(const _float fTimeDelta)
 	{
 		pMonsterState->Update(fTimeDelta);
 	}
+
+	if (m_pEffectHandler)
+		m_pEffectHandler->Update(fTimeDelta);
 
 	Super::Update(fTimeDelta);
 }
@@ -170,8 +176,17 @@ void CMonster_Base::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, 
 {
 }
 
-void CMonster_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+	COLLIDED_DESC collidedDesc{};
+	collidedDesc.iCollisionType = COLLISIONEVENT::ON_TRIGGER_ENTER;
+	collidedDesc.iRequesterLayer = iMyColliderLayer;
+	collidedDesc.iOtherLayer = iOtherLayer;
+	collidedDesc.pRequester = this;
+	collidedDesc.pOther = pOther;
+	collidedDesc.tHitInfo = tHitInfo;
+
+	m_pGameInstance->Push_CollidedData(collidedDesc);
 }
 
 void CMonster_Base::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -191,7 +206,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		if (vHp.x <= 0)
 		{
 			Get_Component<CMonsterControlContext>()->Set_Dead();
-			m_bDead = true;
+			Set_Dying();
 		}
 	}
 
@@ -282,6 +297,21 @@ HRESULT CMonster_Base::Ready_AttackOverlap(wstring prototypeName)
 		if (FAILED(Add_Component<CPhysicsAttackOverlap>(0, prototypeName, nullptr)))
 			return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CMonster_Base::Ready_EffectHandler(void* pArg)
+{
+	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArg);
+
+	wstring NameTag = pDesc->wstrBodyModelTag;
+	Engine_Utils::Replace(NameTag, L"Prototype_Component_Model_", L"");
+
+	if (FAILED(Add_Component<CEffectHandler>(/*Static*/0, L"Prototype_Component_EffectHandler_" + NameTag, nullptr)))
+		return E_FAIL;
+
+	m_pEffectHandler = Get_Component<CEffectHandler>();
 
 	return S_OK;
 }
@@ -436,9 +466,9 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 	break;
 	case EMonster_Type::Xibi:
 	{
-		////////////////////
+		/////////////////
 		//  BOSS Xibi  //
-		////////////////////
+		/////////////////
 		monsterDesc.wstrBodyModelTag				= g_wszBoss_Xibi_Model_Prototype_Tag;
 		monsterDesc.wstrPartBodyPrototypeTag		= g_wszBoss_Xibi_Body_Prototype_Tag;
 		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszBoss_Xibi_AttackOverlap_Prototype_Tag;

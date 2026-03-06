@@ -44,13 +44,12 @@ HRESULT CMonsterControlContext::Initialize(void* pArg)
 
 HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 {
+	Safe_Release(m_pTarget);
 	if (!(m_pTarget = m_pGameInstance->Get_GameObject_Front(/* static */ 0, L"Player_Layer")))
 		return E_FAIL;
 
 	Safe_AddRef(m_pTarget);
-
 	m_iSubState = 0;
-
 	return S_OK;
 }
 

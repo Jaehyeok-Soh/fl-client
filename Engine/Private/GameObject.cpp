@@ -54,7 +54,7 @@ HRESULT CGameObject::Initialize(void* pArg)
 
 HRESULT CGameObject::Awake(const _uint iCurrentLevelID)
 {
-    m_bAwaked = true;
+    Set_Awake(true);
     return S_OK;
 }
 
@@ -84,29 +84,17 @@ HRESULT CGameObject::Render()
 
 HRESULT CGameObject::Spawn_FromPool(void *pArg)
 {
-    m_bDead = false;
+    Set_Awake(false);
+    m_eState = ELifeState::Alive;
+    Clamp_FlagsByState();
+
     return S_OK;
 }
 
 HRESULT CGameObject::Despawn_FromPool()
 {
-    // Physics
-    {
-        auto pCCT = Get_Component<CPhysicsCCT>();
-        if (pCCT)
-            pCCT->EnableCollision(false);
-
-        auto pRigidBody = Get_Component<CPhysicsRigidBody>();
-        if (pRigidBody)
-        {
-            auto pActors = pRigidBody->GetActors();
-            for (auto& pActor : pActors)
-                m_pGameInstance->ResetActorFilter(pActor);
-
-            pRigidBody->EnableCollision(false);
-        }
-    }
-
+    Mark_Pooled();
+    Disable_CollisionComponent();
     return S_OK;
 }
 
@@ -207,6 +195,7 @@ void CGameObject::Remove_Script_Component(const wstring& wstrComponentTag)
     if (itr == m_ScriptComponents.end())
         return;
 
+    Safe_Release(itr->second);
     m_ScriptComponents.erase(itr);
 }
 
@@ -242,45 +231,41 @@ HRESULT CGameObject::Change_State(_uint iIndex)
 }
 
 /// <summary>
-/// <para>객체 스스로가 호출하는 지연 삭제 함수, 삭제는 다음프레임에, Is_Dead()는 현재프레임에 확인 가능</para>
+/// <para>객체 스스로가 호출하는 지연 삭제 함수, 삭제는 다음프레임에, Is_Destroy()는 현재프레임에 확인 가능</para>
 /// <para>기본 동작은 GameInstance에 접근해서 현재 레벨의 Index를 파라미터로 전달</para>
-/// Static레벨에 속한 오브젝트, 풀오브젝트는 반드시 상속받아서 내부에서 호출하는 Request_DeleteGameObject 파라미터를 변경하여 요청할것을 권장
+/// <para>StaticLevel에 소속된 Object라면 플래그를 켜줄것 </para>
 /// </summary>
-/// <param name="wstrLayerTag">내가 속한 레이어의 태그</param>
-void CGameObject::Set_Dead(_bool bStatic)
+/// <param name="bIsStatic">스태틱 레이어 소속인가?</param>
+void CGameObject::Set_Dead(_bool bIsStatic)
 {
-    if (m_bDead)
+    if (m_eState == ELifeState::Pending || m_eState == ELifeState::Pooled)
         return;
 
-    _uint iLevelIndex = bStatic == true ? 0 : m_pGameInstance->Get_CurrentLevelIndex();
-    m_bDead = true;
-    m_pGameInstance->Request_DeleteGameObject(iLevelIndex, m_wstrLayerTag, this);
+    m_eState = ELifeState::Pending;
+    Clamp_FlagsByState();
+    Disable_CollisionComponent();
+    _uint iLevelIndex = bIsStatic ? 0 : m_pGameInstance->Get_CurrentLevelIndex();
+    m_pGameInstance->Request_DeleteGameObject(iLevelIndex, this);
 }
 
 /// <summary>
-/// 부착된 Collider의 Center를 호출 해주는 유틸 함수
+/// <para>객체 스스로가 호출하는 지연 삭제 함수, 삭제는 다음프레임에, Is_Destroy()는 현재프레임에 확인 가능</para>
+/// <para>기본 동작은 GameInstance에 접근해서 현재 레벨의 Index를 파라미터로 전달</para>
+/// <para>StaticLevel에 소속된 Object라면 플래그를 켜줄것 </para>
 /// </summary>
-/// <param name="eType">콜라이더 타입</param>
-/// <param name="pBounding">바운딩 포인터</param>
-/// <returns></returns>
-Vec3 CGameObject::Get_CenterFromCollider(EColliderType eType, CBounding* pBounding)
+/// <param name="wstrLayerTag">내가 속한 레이어의 태그</param>
+void CGameObject::Set_Dying()
 {
-    switch (eType)
-    {
-    case Engine::EColliderType::SPHERE:
-        return static_cast<CBounding_Sphere*>(pBounding)->Get_Desc()->Center;
-    case Engine::EColliderType::AABB:
-        return static_cast<CBounding_AABB*>(pBounding)->Get_Desc()->Center;
-    case Engine::EColliderType::OBB:
-        return static_cast<CBounding_OBB*>(pBounding)->Get_Desc()->Center;
-    default:
-        return { -100.f, -100.f, -100.f };
-    }
+    if (m_eState != ELifeState::Alive)
+        return;
+
+    m_eState = ELifeState::Dying;
+    Clamp_FlagsByState();
 }
 
-void CGameObject::Set_Flag(_uint iFlag, _bool bActive)
+void CGameObject::Set_RenderInfoFlag(_uint iFlag, _bool bActive)
 {
-    if (bActive)
+    if (bActive == true)
         Engine_Utils::Add_Flag(m_tObjectInfoDesc.Flags8, iFlag);
     else
         Engine_Utils::RemoveHard_Flag(m_tObjectInfoDesc.Flags8, iFlag);
@@ -303,6 +288,66 @@ void CGameObject::Clear_Components_WhenChangeLevel()
             comp->Clear_WhenChangeLevel();
 }
 
+void CGameObject::Mark_Pooled()
+{
+    if (m_eState == ELifeState::Pooled)
+        return;
+
+    m_eState = ELifeState::Pooled;
+    Clamp_FlagsByState();
+}
+
+// Pending, Pooled는 Default Flag
+void CGameObject::Set_Active(_bool bActive)
+{
+    if (bActive && (m_eState == ELifeState::Pending || m_eState == ELifeState::Pooled))
+        return;
+
+    bActive 
+        ? Engine_Utils::Add_Flag(m_iObjectFlags, ACTIVE)
+        : Engine_Utils::RemoveHard_Flag(m_iObjectFlags, ACTIVE);
+}
+
+// Pending, Pooled는 Default Flag
+void CGameObject::Set_Render(_bool bRender)
+{
+    if (bRender && (m_eState == ELifeState::Pending || m_eState == ELifeState::Pooled))
+        return;
+
+    bRender 
+        ? Engine_Utils::Add_Flag(m_iObjectFlags, RENDER)
+        : Engine_Utils::RemoveHard_Flag(m_iObjectFlags, RENDER);
+}
+
+// Pending, Pooled는 Default Flag
+void CGameObject::Set_CollideEnabled(_bool bCollide)
+{
+    if (bCollide && (m_eState != ELifeState::Alive))
+        return;
+
+    bCollide
+        ? Engine_Utils::Add_Flag(m_iObjectFlags, COLLIDE)
+        : Engine_Utils::RemoveHard_Flag(m_iObjectFlags, COLLIDE);
+}
+
+_bool CGameObject::Is_Active() const
+{
+    //return (m_eState == ELifeState::Alive) && Engine_Utils::Has_Flag(m_iObjectFlags, ACTIVE);
+    return Engine_Utils::Has_Flag(m_iObjectFlags, ACTIVE);
+}
+
+_bool CGameObject::Can_Collide() const
+{
+    //return (m_eState == ELifeState::Alive) && Engine_Utils::Has_Flag(m_iObjectFlags, COLLIDE);
+    return Engine_Utils::Has_Flag(m_iObjectFlags, COLLIDE);
+}
+
+_bool CGameObject::Can_Render() const
+{
+    //return ((m_eState == ELifeState::Alive) || (m_eState == ELifeState::Dying)) && Engine_Utils::Has_Flag(m_iObjectFlags, RENDER);
+    return Engine_Utils::Has_Flag(m_iObjectFlags, RENDER);
+}
+
 string CGameObject::Get_Name()
 {
     return m_strName;
@@ -311,6 +356,36 @@ string CGameObject::Get_Name()
 wstring CGameObject::Get_WName()
 {
     return (m_strName.size() > 0) ? Engine_Utils::ToWString(m_strName) : L"";
+}
+
+void CGameObject::Clamp_FlagsByState()
+{
+    if (m_eState == ELifeState::Pending || m_eState == ELifeState::Pooled)
+    {
+        Engine_Utils::Set_OnlyFlag(m_iObjectFlags, NONE);
+    }
+    else if (m_eState == ELifeState::Dying)
+    {
+        Engine_Utils::Set_OnlyFlag(m_iObjectFlags, ACTIVE | RENDER);
+    }
+    else
+    {
+        Engine_Utils::Set_OnlyFlag(m_iObjectFlags, DEFAULT);
+    }
+}
+
+void CGameObject::Disable_CollisionComponent()
+{
+    // Physics
+    {
+        auto pCCT = Get_Component<CPhysicsCCT>();
+        if (pCCT)
+            pCCT->EnableCollision(false);
+
+        auto pRigidBody = Get_Component<CPhysicsRigidBody>();
+        if (pRigidBody)
+            pRigidBody->EnableCollision(false);
+    }
 }
 
 /// <summary>

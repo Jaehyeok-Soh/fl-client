@@ -13,6 +13,7 @@ namespace Client
 {
 	static const unsigned int g_iWinSizeX = 1600;
 	static const unsigned int g_iWinSizeY = 900;
+
 	enum class ELevelType : unsigned int
 	{
 		STATIC = 0,
@@ -21,13 +22,37 @@ namespace Client
 		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
 		TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
 		SQUARE,				/* 광장 */
+		TAVERN,				/* 술집 */
+		KUANGKENG,			/* 갱도 */
 
 
-		/* Test Scene은 맨 마지막 */
-		TEST,
-		END
+		TEST,				/* Test Scene은 맨 마지막 */
+		END					
 	};
+
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
+#ifdef _DEBUG
+	static const char* LevelTypeToString(int lv)
+	{
+		static const char* kNames[] =
+		{
+			"STATIC",
+			"LOADING",
+			"LOGO",
+			"TUTORIAL_VILLAGE",
+			"TUTORIAL_BOSS",
+			"SQUARE",
+			"TAVERN",
+			"KUANGKENG",
+			"TEST",
+		};
+
+		if (lv < 0 || lv >= (_int)ELevelType::END)
+			return "Invalid";
+
+		return kNames[lv];
+	}
+#endif
 
 	enum class EDir : unsigned int
 	{
@@ -223,8 +248,7 @@ namespace Client
 		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
 	};
 
-	enum class EUIEvent : uint32_t
-	{
+	enum class EUIEvent : uint32_t {
 		NONE = 0,
 		HOVER_ENTER,
 		HOVERING,
@@ -236,8 +260,7 @@ namespace Client
 		END
 	};
 
-	enum EUIEvent_Flag : uint32_t
-	{
+	enum EUIEvent_Flag : uint32_t {
 		NONE		= 0u,
 		HOVER_ENTER = 1u << 1,
 		HOVERING	= 1u << 2,
@@ -276,56 +299,61 @@ namespace Client
 		case EUIEvent::PRESS_ENTER:		return EUIEvent_Flag::PRESS_ENTER;
 		case EUIEvent::PRESSING:		return EUIEvent_Flag::PRESSING;
 		case EUIEvent::PRESS_EXIT:		return EUIEvent_Flag::PRESS_EXIT;
-		case EUIEvent::INVOKED:		return EUIEvent_Flag::INVOKED;
-		default:							return EUIEvent_Flag::NONE;
+		case EUIEvent::INVOKED:			return EUIEvent_Flag::INVOKED;
+		default:						return EUIEvent_Flag::NONE;
 		}
 	}
 
 	NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
 		{
-			{EUIEvent::NONE, "NONE"},
+			{EUIEvent::NONE,		"NONE"},
 			{EUIEvent::HOVER_ENTER, "HOVER_ENTER"},
-			{EUIEvent::HOVERING, "HOVERING"},
-			{EUIEvent::HOVER_EXIT, "HOVER_EXIT"},
+			{EUIEvent::HOVERING,	"HOVERING"},
+			{EUIEvent::HOVER_EXIT,	"HOVER_EXIT"},
 			{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
-			{EUIEvent::PRESSING, "PRESSING"},
-			{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
-			{EUIEvent::INVOKED, "INVOKED"},
+			{EUIEvent::PRESSING,	"PRESSING"},
+			{EUIEvent::PRESS_EXIT,	"PRESS_EXIT"},
+			{EUIEvent::INVOKED,		"INVOKED"},
 		})
 
 		inline std::string UIEventToString(EUIEvent eType)
 	{
 		switch (eType)
 		{
-		case EUIEvent::NONE: return "NONE";
+		case EUIEvent::NONE:		return "NONE";
 		case EUIEvent::HOVER_ENTER: return "HOVER_ENTER";
-		case EUIEvent::HOVERING: return "HOVERING";
-		case EUIEvent::HOVER_EXIT: return "HOVER_EXIT";
+		case EUIEvent::HOVERING:	return "HOVERING";
+		case EUIEvent::HOVER_EXIT:	return "HOVER_EXIT";
 		case EUIEvent::PRESS_ENTER: return "PRESS_ENTER";
-		case EUIEvent::PRESSING: return "PRESSING";
-		case EUIEvent::PRESS_EXIT: return "PRESS_EXIT";
-		case EUIEvent::INVOKED: return "INVOKED";
+		case EUIEvent::PRESSING:	return "PRESSING";
+		case EUIEvent::PRESS_EXIT:	return "PRESS_EXIT";
+		case EUIEvent::INVOKED:		return "INVOKED";
 		default: return "";
 		}
 	}
 
 	inline EUIEvent StringToUIEvent(const std::string& str)
 	{
-		if (str == "NONE") return EUIEvent::NONE;
-		else if (str == "HOVER_ENTER") return EUIEvent::HOVER_ENTER;
-		else if (str == "HOVERING") return EUIEvent::HOVERING;
-		else if (str == "HOVER_EXIT") return EUIEvent::HOVER_EXIT;
-		else if (str == "PRESS_ENTER") return EUIEvent::PRESS_ENTER;
-		else if (str == "PRESSING") return EUIEvent::PRESSING;
-		else if (str == "PRESS_EXIT") return EUIEvent::PRESS_EXIT;
-		else if (str == "INVOKED") return EUIEvent::INVOKED;
+		if (str == "NONE")				return EUIEvent::NONE;
+		else if (str == "HOVER_ENTER")	return EUIEvent::HOVER_ENTER;
+		else if (str == "HOVERING")		return EUIEvent::HOVERING;
+		else if (str == "HOVER_EXIT")	return EUIEvent::HOVER_EXIT;
+		else if (str == "PRESS_ENTER")	return EUIEvent::PRESS_ENTER;
+		else if (str == "PRESSING")		return EUIEvent::PRESSING;
+		else if (str == "PRESS_EXIT")	return EUIEvent::PRESS_EXIT;
+		else if (str == "INVOKED")		return EUIEvent::INVOKED;
 		else return EUIEvent::END;
 	}
 
-	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
+	enum class ETriggerEventType { 
+		HOVER_ENTER, 
+		HOVER_EXIT, 
+		PRESS_ENTER, 
+		PRESS_EXIT, 
+		END 
+	};
 
-	enum class EUIFlip
-	{
+	enum class EUIFlip {
 		NONE = 0,
 		FILP_X,
 		FLIP_Y,
@@ -333,10 +361,15 @@ namespace Client
 		END
 	};
 
-	enum class EUITextureSlot : uint32_t { DEFAULT, NOISE, ALPHA_MASK, GLOW, END };
+	enum class EUITextureSlot : uint32_t { 
+		DEFAULT, 
+		NOISE,
+		ALPHA_MASK, 
+		GLOW, 
+		END 
+	};
 
-	enum class EUIPrefabType
-	{
+	enum class EUIPrefabType {
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
 		DAMAGE_FONTS_COMMON,
@@ -384,7 +417,14 @@ namespace Client
 		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
 	}UI_PREFAB_DATA;
 
-	enum class ECombotype {C, B, A, S, END};
+	enum class ECombotype {
+		C, 
+		B, 
+		A, 
+		S, 
+		END
+	};
+
 #pragma endregion
 
 

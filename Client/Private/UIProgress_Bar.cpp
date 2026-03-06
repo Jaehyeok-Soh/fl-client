@@ -123,20 +123,6 @@ void CUIProgress_Bar::Tick_Ratio(const _float fTimeDelta)
 	}
 }
 
-HRESULT CUIProgress_Bar::Spawn_FromPool(void* pArg)
-{
-	if (FAILED(Super::Spawn_FromPool(pArg)))
-		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CUIProgress_Bar::Despawn_FromPool()
-{
-	if (FAILED(Super::Despawn_FromPool()))
-		return E_FAIL;
-	return S_OK;
-}
-
 void CUIProgress_Bar::Free()
 {
 	Super::Free();
