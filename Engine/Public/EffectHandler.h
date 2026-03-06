@@ -84,7 +84,9 @@ public:
 
 public:
     // 오브젝트 상태가 변경되서 Effect를 바꿔주어야할때.
-    HRESULT Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eStage);
+    HRESULT Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState);
+    // 오브젝트의 LocalRotation을 넣어줄때 필요할때.
+    HRESULT Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState, TRANSFORM_INFO_STATE eRotateState, _float fDegree);
     void    PoolObject_CallBack(CGameObject* pGo);
 
 private:
@@ -102,9 +104,10 @@ public:
     void Set_Desc(const ANIM_EFFECT_HANDLER_DESC& Desc);
 
 private:
-
     void Request_SpawnEffect(const DTO::EFFECTEVENT& script);
     void Request_SpawnEffect(const DTO::EFFECTEVENT& script, const std::string& EffectTag);
+    // 오브젝트의 LocalRotation을 넣어줄때 필요할때.
+    void Request_SpawnEffect(const DTO::EFFECTEVENT& script, const std::string& EffectTag, TRANSFORM_INFO_STATE eRotateState, _float fDegree);
 
     void Spawn_RequestFromEffectManager(
         const DTO::EFFECTEVENT& script,
@@ -125,9 +128,10 @@ private:
     DTO::EFFECTEVENT    Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STATE eState);
     void                BoneMatrix_CalCulator(const DTO::EFFECTEVENT& script, OUT const SimpleMath::Matrix*& BoneMatrix);
 
-    private:
-        void Release_Event();
-        void CallBackEvent(const AnimNotifyKey& key);
+private:
+    void Compute_LocalRotation(TRANSFORM_INFO_STATE eRotateState, _float fDegree, OUT Matrix& outMatLocalRotation);
+    void Release_Event();
+    void CallBackEvent(const AnimNotifyKey& key);
 
 private:
     _uint m_iPrevAnimIndex = { 999999 };

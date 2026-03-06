@@ -3,6 +3,9 @@
 
 NS_BEGIN(Client)
 
+#define GROGGY_MIN 0.0f
+#define GROGGY_MAX 100.0f
+
 class CStatCom_Boss final : public CMyStat
 {
 	using Super = CMyStat;
@@ -21,11 +24,12 @@ private:
 	virtual HRESULT Initialize_Prototype()			override;
 	virtual HRESULT Initialize(void* pArg)			override;
 public:
-	_bool Is_Groggy() const { return m_vGroggy.y <= m_vGroggy.x; }
-	void Sub_Groggy(_float fGroggy) { m_vGroggy.y -= fGroggy; }
-	_float Get_CurrentGroggy() const { return m_vGroggy.y; }
+	_bool Is_Groggy() const { return m_vGroggy.x <= GROGGY_MIN; }
+	void Sub_Groggy(_float fGroggy) { m_vGroggy.x -= fGroggy; m_vGroggy.x = (std::clamp)(m_vGroggy.x, GROGGY_MIN, GROGGY_MAX); }
+	_float Get_CurrentGroggy() const { return m_vGroggy.x; }
+	_float Get_CurrentGRoggyRatio() const { return m_vGroggy.x / m_vGroggy.y; }
 private:
-	Vec2						m_vGroggy				= {0.f, 100.f}; // min max
+	Vec2						m_vGroggy				= { GROGGY_MAX, GROGGY_MAX }; // current / max
 	_float						m_fCriticalRate			= { 0.f }; // 0 ~ 1
 	_float						m_fCirticalRate_Add		= { 0.f }; // 0 ~ 1
 	_float						m_fCirticalAttack		= { 0.f };
