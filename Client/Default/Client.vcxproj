@@ -209,6 +209,7 @@
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\Level_Kuangkeng.h" />
+    <ClInclude Include="..\Public\Level_Lianhuo.h" />
     <ClInclude Include="..\Public\Level_Square.h" />
     <ClInclude Include="..\Public\Level_Tavern.h" />
     <ClInclude Include="..\Public\Level_Test.h" />
@@ -419,6 +420,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\Level_Kuangkeng.cpp" />
+    <ClCompile Include="..\Private\Level_Lianhuo.cpp" />
     <ClCompile Include="..\Private\Level_Square.cpp" />
     <ClCompile Include="..\Private\Level_Tavern.cpp" />
     <ClCompile Include="..\Private\Level_Test.cpp" />

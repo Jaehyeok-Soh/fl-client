@@ -24,6 +24,7 @@ namespace Client
 		SQUARE,				/* 광장 */
 		TAVERN,				/* 술집 */
 		KUANGKENG,			/* 갱도 */
+		LIANHUO,			/* 지옥불 교도소장 보스 */
 
 
 		TEST,				/* Test Scene은 맨 마지막 */
@@ -41,7 +42,10 @@ namespace Client
 			"LOGO",
 			"TUTORIAL_VILLAGE",
 			"TUTORIAL_BOSS",
+			"TAVERN",
 			"SQUARE",
+			"KUANGKENG",
+			"LIANHUO",
 			"TEST",
 		};
 

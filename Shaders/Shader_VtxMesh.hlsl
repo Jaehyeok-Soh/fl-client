@@ -241,9 +241,11 @@ PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_MESH input)
     float3 finalWorldNormal = normalize(mul(vNBR_Tile_TangentNormal, TBN));
     
     output.vDiffuse = vDiffuse;
-    output.vNormal = float4(finalWorldNormal * 0.5f + 0.5f, 1.f);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    output.vSpecularMask = float4(0.f, fNBR_Tile_Roughness, 0.f, 0.f);
+    output.vNormal = float4(1.f,0.f,0.f,0.f);
+    output.vNormal = float4(finalWorldNormal * 0.5f + 0.5f, 1.f);
+    //output.vSpecularMask = float4(0.f, fNBR_Tile_Roughness, 0.f, 0.f);
+    output.vSpecularMask = float4(1.f, 0.f, 0.f, 0.f);
     
     return output;
 }

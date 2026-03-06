@@ -466,6 +466,7 @@ enum class EClientLevelType : unsigned int
 	SQUARE,				/* 광장 */
 	TAVERN,				/* 술집 */
 	KUANGKENG,			/* 갱도 */
+	LIANHUO,			/* 지옥불 교도소장 보스 */
 
 
 	TEST,				/* Test Scene은 맨 마지막 */
@@ -532,6 +533,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EClientLevelType,
 			{EClientLevelType::SQUARE,				"SQUARE"},
 			{EClientLevelType::KUANGKENG,			"KUANGKENG"},
 			{EClientLevelType::TAVERN,				"TAVERN"},
+			{EClientLevelType::LIANHUO,				"LIANHUO"},
 			{EClientLevelType::TEST,				"TEST"},
 		}
 		)

@@ -631,5 +631,6 @@ void CGameDataManager::Free()
 
 	m_mapCameraCinematicSequence.clear();
 
+
     Super::Free();
 }

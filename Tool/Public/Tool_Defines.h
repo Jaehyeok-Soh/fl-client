@@ -230,6 +230,7 @@ namespace Tool
 		SQUARE,				/* 광장 */
 		TAVERN,				/* 술집 */
 		KUANGKENG,			/* 갱도 */
+		LIANHUO,			/* 지옥불 교도소장 보스 */
 
 
 		TEST,				/* Test Scene은 맨 마지막 */
@@ -250,6 +251,7 @@ namespace Tool
 		case Tool::EClientLevelType::SQUARE:			return "SQUARE";
 		case Tool::EClientLevelType::TAVERN:			return "TAVERN";
 		case Tool::EClientLevelType::KUANGKENG:			return "KUANGKENG";
+		case Tool::EClientLevelType::LIANHUO:			return "LIANHUO";
 		case Tool::EClientLevelType::TEST:				return "TEST";
 		default:										return "NONE";
 		}
@@ -274,6 +276,8 @@ namespace Tool
 			return EClientLevelType::TAVERN;
 		else if (::strcmp(str.c_str(), "KUANGKENG") == 0)
 			return EClientLevelType::KUANGKENG;
+		else if (::strcmp(str.c_str(), "LIANHUO") == 0)
+			return EClientLevelType::LIANHUO;
 		else if (::strcmp(str.c_str(), "TEST") == 0)
 			return EClientLevelType::TEST;
 		else

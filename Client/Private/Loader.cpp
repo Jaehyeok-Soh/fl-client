@@ -465,6 +465,10 @@ HRESULT CLoader::Loading_For_Logo()
 	/* Clouds 사진 */
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Clouds/")))
 		return E_FAIL;
+	/*  Lianhuo 사진 */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Lianhuo/")))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->GameDataManager_Load_TextureSplatingInfoData()))
 		return E_FAIL;
 
