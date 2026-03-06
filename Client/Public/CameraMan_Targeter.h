@@ -112,7 +112,7 @@ private:
 	Vec2	m_vPreDisatance		= { 0.f,0.f };
 
 
-	_float m_fMoveDistanceTime	= { 0.32f };
+	_float m_fMoveDistanceTime	= { 0.28f };
 
 
 	_float m_fDistanceSpeed		= { 5.f };

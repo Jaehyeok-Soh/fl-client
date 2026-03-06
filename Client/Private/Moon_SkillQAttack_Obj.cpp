@@ -93,7 +93,7 @@ void CMoon_SkillQAttack_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOth
 {
 }
 
-void CMoon_SkillQAttack_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMoon_SkillQAttack_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	// 시간 차로 넣기
 	if (m_TAttackCoolTime.x == m_TAttackCoolTime.y)

@@ -33,6 +33,7 @@ private:
 	CSingleSkillSpawner* m_pSkillObjSpawner{ nullptr };
 
 	_bool m_bSpawn_Second = { false };
+	_bool m_bSpawn_First = { false };
 	_float m_fAccTime = { 0.f };
 
 private:

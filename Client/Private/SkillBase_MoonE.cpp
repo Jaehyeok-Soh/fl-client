@@ -60,12 +60,22 @@ void CSkillBase_MoonE::Update(const _float fTimeDelta, CMyStat* pStatCom)
 {
 	Super::Update(fTimeDelta, pStatCom);
 
-	// 아직 sceond skill이 안 나갔다면
-	if (!m_bSpawn_Second)
-	{
-		// 시간을 누적해서
-		m_fAccTime += fTimeDelta;
+	m_fAccTime += fTimeDelta;
 
+	if (!m_bSpawn_First)
+	{
+		// 0.5초 지났다면 생성
+		if (m_fAccTime >= 0.5f)
+		{
+			Spawn_SkillObj(pStatCom, true);
+			m_bSpawn_First = true;
+		}
+		return;
+	}
+
+	// 아직 sceond skill이 안 나갔다면
+	else if (!m_bSpawn_Second)
+	{
 		// 0.5초 지났다면 생성
 		if (m_fAccTime >= 0.35f)
 		{
@@ -82,8 +92,7 @@ _bool CSkillBase_MoonE::Start_Skill(CMyStat* pStatCom)
 		static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::E, true);
 		static_cast<CStatCom_Player*>(pStatCom)->Set_Critical_AddRate(1.f);
 
-		Spawn_SkillObj(pStatCom, true);
-
+		m_bSpawn_First = false;
 		m_bSpawn_Second = false;
 		m_fAccTime = 0.f;
 
@@ -147,11 +156,8 @@ void CSkillBase_MoonE::Spawn_SkillObj(CMyStat* pOwnerStat, _bool bFirst)
 	desc.vOrigin.y += 1.f;
 	desc.vForward = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
-	//desc.eRotationState = TRANSFORM_INFO_STATE::LOOK;
-	//desc.fRotation_Radian = bFirst ?  XMConvertToRadians(15.f) : XMConvertToRadians(-15.f);
-
 	desc.eEffectRotationState = TRANSFORM_INFO_STATE::LOOK;
-	desc.fEffect_Rotation_Degree = bFirst ?  30.f : -30.f;
+	desc.fEffect_Rotation_Degree = bFirst ?  -30.f : 30.f;
 
 	m_pSkillObjSpawner->Trigger(desc);
 } 
