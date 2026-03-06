@@ -223,6 +223,12 @@ HRESULT CLoader::Loading()
 	case Client::ELevelType::SQUARE:
 		hr = Loading_For_Square();
 		break;
+	case Client::ELevelType::TAVERN:
+		hr = Loading_For_Tavern();
+		break;
+	case Client::ELevelType::KUANGKENG:
+		hr = Loading_For_Kuangkeng();
+		break;
 	case Client::ELevelType::TEST:
 		hr = Loading_For_Test();
 		break;
@@ -798,7 +804,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 HRESULT CLoader::Loading_For_Square()
 {
 	/* Square */
-	m_fLoadingRatio = 1.f;
+	m_fLoadingRatio = 0.f;
 
 	// ø¿∫Í¡ß∆Æ
 
@@ -809,6 +815,51 @@ HRESULT CLoader::Loading_For_Square()
 	m_fLoadingRatio = 1.f;
 	Sleep(5000);
 	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Tavern()
+{
+	/* Square */
+	m_fLoadingRatio = 0.f;
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TAVERN);
+
+	// ¿Ã∆Â∆Æ Object
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+	Sleep(5000);
+
+	m_fLoadingRatio = 1.f;
+
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Kuangkeng()
+{
+	/* Square */
+	m_fLoadingRatio = 0.f;
+
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::KUANGKENG);
+
+
+	// ¿Ã∆Â∆Æ Object
+	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+
+	Sleep(5000);
+
+	m_fLoadingRatio = 1.f;
+
+
+	m_isFinished = true;
+
 	return S_OK;
 }
 

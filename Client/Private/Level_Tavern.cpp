@@ -376,7 +376,7 @@ HRESULT CLevel_Tavern::Ready_Map()
 		return E_FAIL;
 
 	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tarvern/Tarvern.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tavern/Tavern.json";
 
 
 	if (!std::filesystem::exists(FilePath))

@@ -186,6 +186,10 @@ namespace Client
 			return ELevelType::TUTORIAL_BOSS;
 		else if (::strcmp(str.c_str(), "SQUARE") == 0)
 			return ELevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TAVERN") == 0)
+			return ELevelType::TAVERN;
+		else if (::strcmp(str.c_str(), "KUANGKENG") == 0)
+			return ELevelType::KUANGKENG;
 		else if (::strcmp(str.c_str(), "TEST") == 0)
 			return ELevelType::TEST;
 		else
