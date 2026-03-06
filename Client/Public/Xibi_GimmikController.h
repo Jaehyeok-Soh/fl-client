@@ -36,6 +36,8 @@ private:
 public:
 	HRESULT Awake(const _uint iCurLevelIndex);
 	void Update(const _float fTimeDelta);
+public:
+	virtual HRESULT Bind_Events() override;
 private:
 	//TODO - Åø·Î »©±â
 	HRESULT Set_Event();

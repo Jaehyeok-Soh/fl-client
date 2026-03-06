@@ -631,6 +631,9 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\ObjectPool">
       <UniqueIdentifier>{32bebfb6-883b-4452-b824-e6ce5b80a0cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\Stat\StatCom_Boss">
+      <UniqueIdentifier>{49a4b247-f9ed-4f9d-a881-a94e2c12bde2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1168,6 +1171,9 @@
     <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StatCom_Boss.h">
+      <Filter>05. Component\Stat\StatCom_Boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1696,6 +1702,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StatCom_Boss.cpp">
+      <Filter>05. Component\Stat\StatCom_Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

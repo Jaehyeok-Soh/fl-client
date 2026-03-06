@@ -176,8 +176,17 @@ void CMonster_Base::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, 
 {
 }
 
-void CMonster_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+	COLLIDED_DESC collidedDesc{};
+	collidedDesc.iCollisionType = COLLISIONEVENT::ON_TRIGGER_ENTER;
+	collidedDesc.iRequesterLayer = iMyColliderLayer;
+	collidedDesc.iOtherLayer = iOtherLayer;
+	collidedDesc.pRequester = this;
+	collidedDesc.pOther = pOther;
+	collidedDesc.tHitInfo = tHitInfo;
+
+	m_pGameInstance->Push_CollidedData(collidedDesc);
 }
 
 void CMonster_Base::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -457,9 +466,9 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 	break;
 	case EMonster_Type::Xibi:
 	{
-		////////////////////
+		/////////////////
 		//  BOSS Xibi  //
-		////////////////////
+		/////////////////
 		monsterDesc.wstrBodyModelTag				= g_wszBoss_Xibi_Model_Prototype_Tag;
 		monsterDesc.wstrPartBodyPrototypeTag		= g_wszBoss_Xibi_Body_Prototype_Tag;
 		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszBoss_Xibi_AttackOverlap_Prototype_Tag;
