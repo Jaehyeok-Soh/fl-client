@@ -94,7 +94,7 @@ void CMonsterControlContext::Update_RuntimeDesc(const _float fTiemDelta)
 		m_tRuntimeDesc.vToTarget = m_tRuntimeDesc.vTargetPos - m_tRuntimeDesc.vOwnerPos;
 		m_tRuntimeDesc.fDistance = m_tRuntimeDesc.vToTarget.Length();
 
-		if (m_tRuntimeDesc.fDistance > 0.0001f)
+		if (m_tRuntimeDesc.fDistance > g_XMEpsilon.f[0])
 		{
 			m_tRuntimeDesc.vToTargetDir = m_tRuntimeDesc.vToTarget / m_tRuntimeDesc.fDistance;
 			m_tRuntimeDesc.fDotForward = m_tRuntimeDesc.vOwnerLook.Dot(m_tRuntimeDesc.vToTargetDir);

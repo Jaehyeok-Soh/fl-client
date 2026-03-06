@@ -23,6 +23,8 @@ class CPanel_State final : public CImGui_Panel
 	};
 	// TransitionModal 面倒 规瘤
 	enum class ETransOwner { Local, Global, None };
+	// ConditionFeature 面倒 规瘤
+	enum class ECondFeatState { Start, Update, End };
 private:
 	using Super = CImGui_Panel;
 
@@ -76,6 +78,10 @@ private:
 	void RenderFeatureEntryModal(DTO::MONSTER_STATEBASE_DESC& state);
 	void RenderConditionEntryModal(DTO::STATE_TRANSITION& transition);
 	void RenderConditionFeatureModal(DTO::MONSTER_STATEBASE_DESC& state);
+	void RenderConditionFeatureSection(DTO::MONSTER_STATEBASE_DESC& state, const _char* headerLabel, const _char* tableID, ECondFeatState eState);
+	void RenderRedBanner(const _char* text);
+	vector<DTO::CONDITIONFEATURE_ENTRY>& Get_ConditionFeatures(DTO::MONSTER_STATEBASE_DESC& state, ECondFeatState eCondFeatState);
+	const _char* ConditionFeatureState(ECondFeatState eState);
 public:
 	void SetAnimationObject();
 
@@ -104,6 +110,9 @@ private:
 	// FeatureConditionEntry modal
 	_int m_iCondFeatEditIndex = -1;
 	DTO::CONDITIONFEATURE_ENTRY m_tCondFeatDraft{};
+
+	// For. ConditionFeature State
+	ECondFeatState m_eCondFeatState = { ECondFeatState::Update };
 
 	// For. Popup
 	_bool m_bReqOpenCondPopup = false;
