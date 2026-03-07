@@ -428,6 +428,27 @@ namespace Client
 #pragma endregion
 
 
+
+#pragma region Player
+
+	// COLLIDED_DESC -> EXTRA_ATTACK_DESC ->iDamageFlag 에 대한 정보
+	enum class EPlayerAttackFlag : Flags {
+		NONE = 0,
+
+		// player 종류
+		MOON = 0x000001,
+		BERO = 0x000002,
+		PIGGY = 0x000004,
+
+		NORMAL = 0x000008,
+		CRITICAL = 0x000010,
+		SKILLE = 0x000020,
+		SKILLQ = 0x000040
+	};
+
+#pragma	endregion
+
+
 #pragma region BroadCast Enum Mapping
 
 	enum class EGlobal_Broadcast_Type

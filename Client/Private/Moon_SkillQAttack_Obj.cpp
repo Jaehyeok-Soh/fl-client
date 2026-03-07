@@ -4,6 +4,8 @@
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 
+#include "UI_Manager.h"
+
 // manager
 #include "GameInstance.h"
 
@@ -35,8 +37,8 @@ HRESULT CMoon_SkillQAttack_Obj::Initialize(void* pArg)
         return E_FAIL;
 
     Get_Component<CPhysicsRigidBody>()->Awake();
-
 	Get_Component<CEffectHandler>()->Setup_ForOwner(this);
+
     return S_OK;
 }
 
@@ -96,19 +98,44 @@ void CMoon_SkillQAttack_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOth
 void CMoon_SkillQAttack_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	// 시간 차로 넣기
-	if (m_TAttackCoolTime.x == m_TAttackCoolTime.y)
+	//if (m_TAttackCoolTime.x == m_TAttackCoolTime.y)
 	{
-		// trigger enter 넣기
+		if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
+		{
+			Set_Dead();
+			return;
+		}
+
+		COLLIDED_DESC desc{};
+		desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+		desc.iRequesterLayer = iMyColliderLayer;
+		desc.iOtherLayer = iOtherLayer;
+		desc.pRequester = this;
+		desc.pOther = pOther;
+		desc.tHitInfo = tHitInfo;
+
+		EXTRA_ATTACK_DESC tExtra = {};
+		{
+			tExtra.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::MOON) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ);
+			
+			desc.tExtraDesc = tExtra;
+		}
+
+		m_pGameInstance->Push_CollidedData(desc);
+
+		// acc time reset
+		m_TAttackCoolTime.x = 0.f;
 	}
 }
 
 _bool CMoon_SkillQAttack_Obj::On_Hit(const HIT_DESC& hitDesc)
 {
-    return _bool();
+    return false;
 }
 
 void CMoon_SkillQAttack_Obj::Try_Attack(const HIT_DESC& hitDesc)
 {
+
 }
 
 HRESULT CMoon_SkillQAttack_Obj::Ready_Components()
@@ -154,8 +181,13 @@ HRESULT CMoon_SkillQAttack_Obj::Ready_Components()
 		{
 			PHYSICSCOLLIDER_DESC cloneDesc{};
 			cloneDesc.eShape = EPhysicsShape::SPHERE;
-			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::PLAYER; // todo_eunbi : player?
-			cloneDesc.iFilterMask = 0; // 
+			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::ATTACK; // todo_eunbi : player?
+			cloneDesc.iFilterMask = 
+			{
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+			};
 
 			cloneDesc.bIsTrigger = true;
 			cloneDesc.bSetOnlyFilter = false;
@@ -187,16 +219,12 @@ HRESULT CMoon_SkillQAttack_Obj::Ready_Components()
 
 void CMoon_SkillQAttack_Obj::Count_CoolTime(const _float fTimeDelta)
 {
+	m_TAttackCoolTime.x += fTimeDelta;
 	if (m_TAttackCoolTime.x > m_TAttackCoolTime.y)
 	{
-		m_TAttackCoolTime.x = 0.f;
+		m_TAttackCoolTime.x = m_TAttackCoolTime.y;
 	}
 
-	else
-	{
-		m_TAttackCoolTime.x += fTimeDelta;
-		if (m_TAttackCoolTime.x > m_TAttackCoolTime.y) m_TAttackCoolTime.x = m_TAttackCoolTime.y;
-	}
 }
 
 CMoon_SkillQAttack_Obj* CMoon_SkillQAttack_Obj::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

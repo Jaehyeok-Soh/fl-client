@@ -574,6 +574,8 @@ _bool CCameraMan_Targeter::Change_Distance(_float fTargetDistance, _float fPreDi
         }
         return false;
     }
+
+    return true;
 }
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

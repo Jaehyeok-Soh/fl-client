@@ -1158,8 +1158,8 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             CPartEffect::PART_EFFECT_DESC tDesc;
             tDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
             tDesc.arrState_DurationTimes    = {};
-            tDesc.arrState_DurationTimes    = { 0.f,12.f,0.f }; 
-            tDesc.arrState_DelayTimes       = { 0.f,0.f,0.f };
+            tDesc.arrState_DurationTimes    = { 0.f,12.5f,0.f }; 
+            tDesc.arrState_DelayTimes       = { 0.f,0.5f,0.f };
             tDesc.FPartEff_Flags = CPartEffect::PartEff_Flag::Spawn_Again_AfterDespawn;
 
 

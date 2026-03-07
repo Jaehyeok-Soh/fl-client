@@ -99,7 +99,6 @@ _bool CSkillBase_MoonE::Start_Skill(CMyStat* pStatCom)
 		return true;
 	}
 
-
 	return false;
 }
 

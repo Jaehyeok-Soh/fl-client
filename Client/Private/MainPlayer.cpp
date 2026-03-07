@@ -358,11 +358,10 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     }
 
     // damage 폰트 : iDamageFlag에 따라 크리티컬 || 일반 판정
-    switch (hitDesc.iDamageFlag)
+
+    if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::NORMAL)))
     {
-    case 0:
         // 일반 공격 데미지 폰트
-    {
         UI_PREFAB_DATA tPrefabData = {};
         tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
         tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
@@ -375,9 +374,8 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }
-    break;
-    case 1:
-        // 크리티컬 데미지 폰트
+
+    else if(Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
     {
         UI_PREFAB_DATA tPrefabData = {};
         tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);
@@ -386,12 +384,10 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         tPrefabData.DamageFontData.vRandOffset = Vec3{
             m_pGameInstance->Rand_Float(-1.f, 1.f),
             m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f) 
+            m_pGameInstance->Rand_Float(-1.f, 1.f)
         };
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
-    }
-    break;
     }
 }
 

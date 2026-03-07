@@ -29,7 +29,7 @@ public:
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
 
 private:
-	TimeCount m_TAttackCoolTime = { 0.f,2.f };
+	TimeCount m_TAttackCoolTime = { 1.f,1.f };
 
 private:
 	HRESULT Ready_Components();
