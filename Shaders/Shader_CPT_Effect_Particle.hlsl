@@ -24,6 +24,7 @@
 #define CONTINUE_NONE 0
 #define CONTINUE_PLAY 1
 #define CONTINUE_DISTROY 2
+
 struct IMMU_ELEMENT
 {
     float4 vRight;

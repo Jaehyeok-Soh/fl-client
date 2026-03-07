@@ -3,6 +3,9 @@
 
 #include "Player.h"
 #include "StatCom_Player.h"
+#include "SingleSkillSpawner.h"
+
+#include "GameInstance.h"
 
 CSkillBase_MoonQ::CSkillBase_MoonQ()
 	:Super()
@@ -38,12 +41,45 @@ HRESULT CSkillBase_MoonQ::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(&tMyDesc)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Spawner()))
+		return E_FAIL;
+
 	return S_OK;
+}
+
+void CSkillBase_MoonQ::Awake(const _uint iCurLevelIndex)
+{
+	m_pAttackSkill_ObjSpawner->Awake(iCurLevelIndex);
+}	
+
+void CSkillBase_MoonQ::Update_Default(const _float fTimeDelta, CMyStat* pStatCom)
+{
+	m_pAttackSkill_ObjSpawner->Update(fTimeDelta);
 }
 
 void CSkillBase_MoonQ::Update(const _float fTimeDelta, CMyStat* pStatCom )
 {
 	Super::Update(fTimeDelta, pStatCom);
+
+	// defense 계속 더해줌
+	static_cast<CStatCom_Player*>(pStatCom)->Add_Stat(CMyStat::STAT_TYPE::DEFENSE, fTimeDelta * 2.f);
+
+	if (!m_bSkillAttackOn)
+	{
+		m_TAttackSkillObj_Timer.x += fTimeDelta;
+
+		if (m_TAttackSkillObj_Timer.x >= m_TAttackSkillObj_Timer.y)
+		{
+			Spawn_Attack_SkillObj(pStatCom);
+			m_bSkillAttackOn = true;
+			m_TAttackSkillObj_Timer.x = 0.f;
+		}
+	}
+}
+
+void CSkillBase_MoonQ::ClearSkillBase_WhenChangeLevel()
+{
+
 }
 
 _bool CSkillBase_MoonQ::Start_Skill(CMyStat* pStatCom)
@@ -53,6 +89,9 @@ _bool CSkillBase_MoonQ::Start_Skill(CMyStat* pStatCom)
 		static_cast<CStatCom_Player*>(pStatCom)->Set_AttackState(CStatCom_Player::Attack_State::Q, true);
 		static_cast<CStatCom_Player*>(pStatCom)->Set_Attack_AddRate(m_fAddAttackRate);
 		// 충돌체 발사
+
+		m_bSkillAttackOn = false;
+		m_TAttackSkillObj_Timer.x = 0.f;
 
 		return true;
 	}
@@ -78,7 +117,42 @@ void CSkillBase_MoonQ::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, 
 	tStat_ExtraDesc.fAddRate = 0.15f;
 }
 
-void CSkillBase_MoonQ::Update_Skill(const _float fTimeDelta)
+HRESULT CSkillBase_MoonQ::Ready_Spawner()
+{
+
+	{
+		CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
+		desc.iLevelIndex = 0;
+		desc.iSpawnLevelIndex = 0;
+
+		CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
+			0, g_wszSpawner_MoonSkillQ_Attack, &desc);
+		if (pResult == nullptr)
+			return E_FAIL;
+
+		m_pAttackSkill_ObjSpawner = static_cast<CSingleSkillSpawner*>(pResult);
+	}
+
+	return S_OK;
+}
+
+void CSkillBase_MoonQ::Spawn_Attack_SkillObj(CMyStat* pOwnerStat)
+{
+	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
+	CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
+	desc.iLevelIndex = iLevelIndex;
+	desc.iSpawnLevelIndex = iLevelIndex;
+
+	CTransform* pPlayerTrans = pOwnerStat->Get_Owner()->Get_Component<CTransform>();
+
+	// attack skill obj trigger
+	{
+		desc.vOrigin = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
+		m_pAttackSkill_ObjSpawner->Trigger(desc);
+	}
+}
+
+void CSkillBase_MoonQ::Update_Skill(const _float fTimeDelta, CMyStat* pStatCom)
 {
 
 }
@@ -97,4 +171,6 @@ CSkillBase_MoonQ* CSkillBase_MoonQ::Create(void* pArg)
 void CSkillBase_MoonQ::Free()
 {
 	Super::Free();
+
+	Safe_Release(m_pAttackSkill_ObjSpawner);
 }

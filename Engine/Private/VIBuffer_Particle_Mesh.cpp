@@ -213,6 +213,8 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_SpecificRandom()
 		return E_FAIL;
 	}
 	pShader->Resize_InputStruct(0, pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
+	pShader->Resize_OutputStruct(0, pInitialData, sizeof(EFFECT_INSTANCE), m_iInstanceCount);
+
 	Safe_Delete_Array(pInitialData);
 
 	return S_OK;

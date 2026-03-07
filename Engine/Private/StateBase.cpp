@@ -344,6 +344,11 @@ void CStateBase::SetupLook_CameraLook()
 	m_pOwnerStateComp->SetupLook_CameraLook();
 }
 
+void CStateBase::SetupLook_CameraSameLook()
+{
+	m_pOwnerStateComp->SetupLook_CameraSameLook();
+}
+
 void CStateBase::SetupLookAt(const Vec3& vPoint)
 {
 	m_pOwnerStateComp->SetupLookAt(vPoint);

@@ -473,7 +473,7 @@ void CEffectObject::Update(const _float fTimeDelta)
 
         else /*if (m_tEffectDesc.Data._Use_Effect_Continue == false || m_tEffectDesc.Data._Effect_Looping == false)*/
         {
-            if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
+            if (fActiveTime >= /*m_tEffectDesc.Data._Effect_Duration +*/ m_tEffectDesc.Data._Effect_LifeTime)
             {
                 m_bIsEffectFinish = true;
             }
@@ -490,7 +490,6 @@ void CEffectObject::Update(const _float fTimeDelta)
         if (fRatio >= 0.5f)
             fRatio = 0.5f;
     }
-
 
     Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
     Get_Component<CTransform>()->Set_Scale(vCurrentScale);
@@ -545,20 +544,52 @@ HRESULT CEffectObject::Render()
     return S_OK;
 }
 
-_bool CEffectObject::Picking(OUT Vec3& vOut)
-{
-    return _bool();
-}
-
-_bool CEffectObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
-{
-    return false;
-}
-
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
+    if (nullptr == pArg) return E_FAIL;
     if (FAILED(Super::Spawn_FromPool(pArg)))
         return E_FAIL;
+
+    RESET_ForSpawn();
+    Process_InitializeDesc(pArg);
+
+    return S_OK;
+}
+HRESULT CEffectObject::Despawn_FromPool()
+{
+    if (FAILED(Super::Despawn_FromPool()))
+        return E_FAIL;
+
+    RESET_ForDesPawn();
+
+    return S_OK;
+}
+
+HRESULT CEffectObject::Enable_VFX(void* pArg)
+{   
+    if (FAILED(Super::Enable_VFX(pArg)))
+        return E_FAIL;
+
+    RESET_ForSpawn();
+    Process_InitializeDesc(pArg);
+
+    return S_OK;
+}
+
+HRESULT CEffectObject::Disable_VFX()
+{
+    if (FAILED(Super::Disable_VFX()))
+        return E_FAIL;
+
+    RESET_ForDesPawn();
+
+    return S_OK;
+}
+
+void CEffectObject::RESET_ForSpawn()
+{
+    Set_Active(true);
+    Set_Render(true);
 
     m_bDespawnFlag = false;
     m_tEffectDesc = m_tOriginEffectDesc;
@@ -568,14 +599,10 @@ HRESULT CEffectObject::Spawn_FromPool(void* pArg)
         m_pParticleBuffer->Particle_Reset();
 
     TimeFlagRequest(RESET);
-
-    return S_OK;
 }
-HRESULT CEffectObject::Despawn_FromPool()
-{
-    if (FAILED(Super::Despawn_FromPool()))
-        return E_FAIL;
 
+void CEffectObject::RESET_ForDesPawn()
+{
     TimeFlagRequest(RESET);
 
     for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); i++)
@@ -587,6 +614,30 @@ HRESULT CEffectObject::Despawn_FromPool()
     {
         m_iSpriteCurrentNumber[i] = 0;
     }
+
+    Set_Active(false);
+    Set_Render(false);
+}
+
+HRESULT CEffectObject::Process_InitializeDesc(void* pArg)
+{
+    auto EffectDesc = static_cast<EFFECT_SPAWN_DESC*>(pArg);
+    if (EffectDesc == nullptr) return E_FAIL;
+
+    switch (EffectDesc->VFX_COLORTYPE)
+    {
+        case EFFECT_SPAWN_DESC::E_VFX_COLORMODE::COLOR_NONCHANGE:
+            break;
+        
+        case EFFECT_SPAWN_DESC::E_VFX_COLORMODE::COLOR_CHANGE:
+        {
+            m_tEffectDesc.Data._Effect_Color = Vec4(EffectDesc->VFX_Color.x, EffectDesc->VFX_Color.y, EffectDesc->VFX_Color.z, m_tEffectDesc.Data._Effect_Color.w);
+            break;
+        }
+    }
+
+    m_tEffectDesc.Data._Effect_PlayBackSpeed = EffectDesc->VFX_fSpeed;
+
     return S_OK;
 }
 

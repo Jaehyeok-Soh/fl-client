@@ -19,6 +19,7 @@ private:
 	/* Logo Scene에서 Player를 만들예정 */
 	HRESULT Build_Prototype();
 	HRESULT Build_Files();
+	HRESULT Ready_Player_SkillObjPool();
 	HRESULT Ready_Player_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);

@@ -81,6 +81,10 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	// ÇÏÃ¼ ¹Í½º´Â ²ô±â À§ÇÔ
+	CModel* pMyModel = Get_Component<CModel>();
+	pMyModel->Set_MixAnim_AnimIndex(1, -1);
+
 	return S_OK;
 }
 
@@ -193,6 +197,16 @@ const Matrix* CBody::Get_SocketMatrix(_uint iIndex)
 	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(iIndex))
 	{
 		return &pReturn->Get_CombinedTransformMatrix();
+	}
+
+	return nullptr;
+}
+
+const Matrix* CBody::Get_PosMatrix(_uint iIndex)
+{
+	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(iIndex))
+	{
+		return &pReturn->Get_BindPoseTransformMatrix();
 	}
 
 	return nullptr;

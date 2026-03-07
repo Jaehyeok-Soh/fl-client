@@ -2,6 +2,7 @@
 #include "State_MoonSkill.h"
 
 #include "Player.h"
+#include "CameraMan_Targeter.h"
 
 CState_MoonSkill::CState_MoonSkill(CActionState* pOwnerComponent, const string& strName)
 	:Super(pOwnerComponent, strName)
@@ -38,6 +39,8 @@ HRESULT CState_MoonSkill::Start(void* pArg, _bool bForce)
 		break;
 
 	case ENUM_TO_UINT(CPlayer::State::SKILL2):
+		//static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::SKILL));
+
 		break;
 	}
 
@@ -65,10 +68,22 @@ HRESULT CState_MoonSkill::End()
  	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	switch (m_iPlayerState)
+	{
+	case ENUM_TO_UINT(CPlayer::State::SKILL1):
+		break;
+
+	case ENUM_TO_UINT(CPlayer::State::SKILL2):
+		static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::NORMAL));
+		break;
+	}
+
 	Set_ApplyGravity(true);
 
 	return S_OK;
 }
+
+
 
 _uint CState_MoonSkill::Get_Capabilities() const
 {
@@ -105,6 +120,18 @@ void CState_MoonSkill::SkillQ_Update(const _float fTimeDelta)
 	if (m_fStateElapsed >= 5.f)
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
+		return;
+	}
+
+	if (m_fStateElapsed >= 1.5f)
+	{
+		static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::NORMAL));
+		return;
+	}
+
+	if (m_fStateElapsed >= 0.35f)
+	{
+		static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::SKILL_SEQUENCE));
 	}
 }
 

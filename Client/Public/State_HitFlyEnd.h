@@ -18,9 +18,6 @@ public:
 	virtual HRESULT End() override;
 
 public:
-	virtual _uint	Get_Capabilities() const override { return	0; }
-
-public:
 	static CState_HitFlyEnd* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
 };

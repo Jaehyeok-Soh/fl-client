@@ -465,6 +465,7 @@ enum class EClientLevelType : unsigned int
 	SQUARE,				/* 광장 */
 	TAVERN,				/* 술집 */
 	KUANGKENG,			/* 갱도 */
+	LIANHUO,			/* 지옥불 교도소장 보스 */
 
 
 	TEST,				/* Test Scene은 맨 마지막 */
@@ -503,6 +504,11 @@ enum class EClientMakePath
 	TriggerBox_MonsterSpawner,
 	TriggerBox_GlobalEvent_BroadCaster,
 
+
+	/* 맵 기능 관련 */
+	Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
+	Static_Light,			/* Static 점 조명 */
+
 	END
 };
 
@@ -531,6 +537,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EClientLevelType,
 			{EClientLevelType::SQUARE,				"SQUARE"},
 			{EClientLevelType::KUANGKENG,			"KUANGKENG"},
 			{EClientLevelType::TAVERN,				"TAVERN"},
+			{EClientLevelType::LIANHUO,				"LIANHUO"},
 			{EClientLevelType::TEST,				"TEST"},
 		}
 		)
@@ -564,6 +571,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::TriggerBox_ChangeLevel,				"TriggerBox_ChangeLevel"},
 			{EClientMakePath::TriggerBox_MonsterSpawner,			"TriggerBox_MonsterSpawner"},
 			{EClientMakePath::TriggerBox_GlobalEvent_BroadCaster,	"TriggerBox_GlobalEvent_BroadCaster"},
+
+			{EClientMakePath::Invisible_Wall,						"Invisible_Wall"},
+			{EClientMakePath::Static_Light,							"Static_Light"},
 
 			{EClientMakePath::END,									"Unknown"},
 		}

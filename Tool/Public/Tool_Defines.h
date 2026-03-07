@@ -230,6 +230,7 @@ namespace Tool
 		SQUARE,				/* 광장 */
 		TAVERN,				/* 술집 */
 		KUANGKENG,			/* 갱도 */
+		LIANHUO,			/* 지옥불 교도소장 보스 */
 
 
 		TEST,				/* Test Scene은 맨 마지막 */
@@ -250,6 +251,7 @@ namespace Tool
 		case Tool::EClientLevelType::SQUARE:			return "SQUARE";
 		case Tool::EClientLevelType::TAVERN:			return "TAVERN";
 		case Tool::EClientLevelType::KUANGKENG:			return "KUANGKENG";
+		case Tool::EClientLevelType::LIANHUO:			return "LIANHUO";
 		case Tool::EClientLevelType::TEST:				return "TEST";
 		default:										return "NONE";
 		}
@@ -274,6 +276,8 @@ namespace Tool
 			return EClientLevelType::TAVERN;
 		else if (::strcmp(str.c_str(), "KUANGKENG") == 0)
 			return EClientLevelType::KUANGKENG;
+		else if (::strcmp(str.c_str(), "LIANHUO") == 0)
+			return EClientLevelType::LIANHUO;
 		else if (::strcmp(str.c_str(), "TEST") == 0)
 			return EClientLevelType::TEST;
 		else
@@ -410,6 +414,13 @@ namespace Tool
 		TriggerBox_MonsterSpawner,
 		TriggerBox_GlobalEvent_BroadCaster,
 
+
+
+
+		/* 맵 기능 관련 */
+		Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
+		Static_Light,			/* Static 점 조명 */
+
 		END,
 	};
 
@@ -431,14 +442,15 @@ namespace Tool
 	{
 		switch (eType)
 		{
-		case Tool::EClientMakePath::StaticObject:					return "StaticObject";
-		case Tool::EClientMakePath::LandScape:						return "LandScape";
+		case Tool::EClientMakePath::StaticObject:							return "StaticObject";
+		case Tool::EClientMakePath::LandScape:								return "LandScape";
 
 			/* ------------------환경 요소---------------- */
 		case Tool::EClientMakePath::Bush:									return "Bush";
 		case Tool::EClientMakePath::Grass:									return "Grass";
 		case Tool::EClientMakePath::Tree:									return "Tree";
 		case Tool::EClientMakePath::Vine:									return "Vine";
+		case Tool::EClientMakePath::Moss:									return "Moss";
 		case Tool::EClientMakePath::Rock:									return "Rock";
 		case Tool::EClientMakePath::Water:									return "Water";
 			/* ------------------------------------------- */
@@ -454,31 +466,42 @@ namespace Tool
 		case Tool::EClientMakePath::TriggerBox_MonsterSpawner:				return "TriggerBox_MonsterSpawner";
 		case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:		return "TriggerBox_GlobalEvent_BroadCaster";
 
-		default:									return "Unknown";
+
+			/* -------------- Invisible Wall ----------- */
+		case Tool::EClientMakePath::Invisible_Wall:							return "Invisible_Wall";
+		case Tool::EClientMakePath::Static_Light:							return "Static_Light";
+
+		default:															return "Unknown";
 		}
 	};
 
 	static EClientMakePath ClientMakePath_ToEnum(string strType)
 	{
 		/* 진짜 Map Object 관련  */
-		if (strType == "StaticObject")					return EClientMakePath::StaticObject;
-		if (strType == "LandScape")						return EClientMakePath::LandScape;
-		if (strType == "Bush")							return EClientMakePath::Bush;
-		if (strType == "Grass")							return EClientMakePath::Grass;
-		if (strType == "Tree")							return EClientMakePath::Tree;
-		if (strType == "Vine")							return EClientMakePath::Vine;
-		if (strType == "Rock")							return EClientMakePath::Rock;
-		if (strType == "Water")							return EClientMakePath::Water;
+		if (strType == "StaticObject")										return EClientMakePath::StaticObject;
+		if (strType == "LandScape")											return EClientMakePath::LandScape;
+		if (strType == "Bush")												return EClientMakePath::Bush;
+		if (strType == "Grass")												return EClientMakePath::Grass;
+		if (strType == "Moss")												return EClientMakePath::Moss;
+		if (strType == "Tree")												return EClientMakePath::Tree;
+		if (strType == "Vine")												return EClientMakePath::Vine;
+		if (strType == "Rock")												return EClientMakePath::Rock;
+		if (strType == "Water")												return EClientMakePath::Water;
 
 		/* 생성 위치관련 */
-		if (strType == "Batch_Player")					return EClientMakePath::Batch_Player;
-		if (strType == "Batch_Monster")					return EClientMakePath::Batch_Monster;
-		if (strType == "Batch_Object")					return EClientMakePath::Batch_Object;
+		if (strType == "Batch_Player")										return EClientMakePath::Batch_Player;
+		if (strType == "Batch_Monster")										return EClientMakePath::Batch_Monster;
+		if (strType == "Batch_Object")										return EClientMakePath::Batch_Object;
 
 		/* Trigger Box 관련 */
-		if (strType == "TriggerBox_ChangeLevel")		return EClientMakePath::TriggerBox_ChangeLevel;
-		if (strType == "TriggerBox_MonsterSpawner")		return EClientMakePath::TriggerBox_MonsterSpawner;
-		if (strType == "TriggerBox_GlobalEvent_BroadCaster")		return EClientMakePath::TriggerBox_GlobalEvent_BroadCaster;
+		if (strType == "TriggerBox_ChangeLevel")							return EClientMakePath::TriggerBox_ChangeLevel;
+		if (strType == "TriggerBox_MonsterSpawner")							return EClientMakePath::TriggerBox_MonsterSpawner;
+		if (strType == "TriggerBox_GlobalEvent_BroadCaster")				return EClientMakePath::TriggerBox_GlobalEvent_BroadCaster;
+
+
+
+		if (strType == "Invisible_Wall")									return EClientMakePath::Invisible_Wall;
+		if (strType == "Static_Light")										return EClientMakePath::Static_Light;
 
 
 		return EClientMakePath::END;

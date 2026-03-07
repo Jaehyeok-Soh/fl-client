@@ -18,19 +18,27 @@ class CPlayer abstract : public CContainerObject
 {
 	using Super = CContainerObject;
 public:
+	enum class PLAYER_TYPE { MOON, END };
+
 	typedef struct tagPlayerDesc : public Super::GAMEOBJECT_DESC
 	{
 		wstring wstrBodyModelTag = { L"" };
 		wstring wstrNavigationPrototypeTag = { L"" };
 		_int iNavigationCellIndex = { -1 };
 		Vec3 vSpawnPosition = {};
+
+		PLAYER_TYPE ePlayerType = { PLAYER_TYPE::END };
+
 	}PLAYER_DESC;
+
 	enum Part : _uint
 	{
 		BODY = 0,
 		SWORD,
 		SKILL,
 		GUN,
+		SWORD2,
+		EFFECT,
 		END
 	};
 
@@ -104,6 +112,9 @@ public:
 	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
+public:
+	PLAYER_TYPE Get_PlayerType() const { return m_ePlayerType; }
+
 	// state funcs
 public:
 	void	Change_Weapon(_uint iPart, _uint iState); // 어떤 weapon을 어떤 state로
@@ -117,6 +128,7 @@ public:
 	void	Set_DoubleJumpCount(_bool bCount) { m_tDoubleJumpCount.bCountTime = bCount; if (!bCount) m_tDoubleJumpCount.fTimeAcc = 0.f; }
 
 	void	Change_CamState(_uint iCamState);
+	_float	Get_CamPitch()const;
 
 public:
 	_bool	Start_Attack(State iState);
@@ -126,7 +138,8 @@ protected:
 	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 
 protected:
-	TIME_COUNTER m_tDoubleJumpCount = {};
+	TIME_COUNTER	m_tDoubleJumpCount = {};
+	PLAYER_TYPE		m_ePlayerType = { PLAYER_TYPE::END };
 
 private:
 	HRESULT Ready_BaseStates();

@@ -58,6 +58,9 @@
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
 #include "Moon_SkillE_Obj.h"
+#include "Hybrid_WarningSpace.h"
+
+#include "PlayerSkillObj_Headers.h"
 
 //=================
 // GameInstance
@@ -95,6 +98,9 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 		return E_FAIL;
 
+	if (FAILED(Ready_HybridObject()))
+		return E_FAIL;
+
 	return S_OK;
 
 }
@@ -118,6 +124,8 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 void CLevel_Test::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	Spawn_HybridObject();
 
 	static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
@@ -208,16 +216,25 @@ HRESULT CLevel_Test::Build_Files()
 	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(iLevelID, eCategory)))
 		return E_FAIL;
-	std::filesystem::path strUIFolderPath = L"../../Resources/Data/EffectData/";
-	if (std::filesystem::exists(strUIFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
-		{
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
 
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
+	std::filesystem::path strEffectFolderPath = L"../../Resources/Data/EffectData/";
+
+	if (std::filesystem::exists(strEffectFolderPath))
+	{
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(strEffectFolderPath))
+		{
+			if (std::filesystem::is_regular_file(entry.path()))
+			{
+				// 확장자가 .json인 것만 골라내기
+				if (entry.path().extension() == ".json")
+				{
+					if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, entry.path())))
+						return E_FAIL;
+
+					if (FAILED(Build_File(iLevelID, eCategory, entry.path().stem().string())))
+						return E_FAIL;
+				}
+			}
 		}
 	}
 #pragma endregion
@@ -226,7 +243,7 @@ HRESULT CLevel_Test::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	std::filesystem::path strUIFolderPath = L"../../Resources/Data/UIData/Static/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
@@ -261,24 +278,8 @@ HRESULT CLevel_Test::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
 	/* Player 최초 생성 */
 	{
-		// SkillObject Pool
-		{
-			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
-			//TRANSFORM_DESC
-			CTransform::TRANSFORM_DESC tTransDesc = {};
-			tTransDesc.fMovePerSec = 20.f;
-			desc.pTransform_Desc = &tTransDesc;
-
-			if (FAILED(m_pGameInstance->Regist_Pool(
-				0,
-				g_wszPool_MoonSkillE,
-				g_wszSkillObjectLayer,
-				0,
-				g_wszMoonSkillE__Prototype_Tag,
-				&desc,
-				30)))
-				return E_FAIL;
-		}
+		if(FAILED(Ready_Player_SkillObjPool()))
+			return E_FAIL;
 
 		CGameObject* pResult = { nullptr };
 
@@ -288,12 +289,67 @@ HRESULT CLevel_Test::Ready_Player_Layer(const wstring& wstrLayerTag)
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(15.f, 15.f, 15.f));
 		playerDesc.pTransform_Desc = &transformDesc;
+		playerDesc.ePlayerType = CPlayer::PLAYER_TYPE::MOON;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_MainPlayer",
 			ENUM_TO_UINT(ELevelType::STATIC),
 			wstrLayerTag, &playerDesc)))
 			return E_FAIL;
 	}
+	return S_OK;
+}
+
+HRESULT CLevel_Test::Ready_Player_SkillObjPool()
+{
+	// SkillObject Pool
+
+	// Moon skil E
+	{
+		CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+		//TRANSFORM_DESC
+		CTransform::TRANSFORM_DESC tTransDesc = {};
+		tTransDesc.fMovePerSec = 20.f;
+		desc.pTransform_Desc = &tTransDesc;
+
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0,
+			g_wszPool_MoonSkillE,
+			g_wszSkillObjectLayer,
+			0,
+			g_wszMoonSkillE__Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+
+	//// Moon skil Q sheild
+	//{
+	//	CMoon_SkillQSheild_Obj::SKILLOBJECT_DESC desc{};
+	//	if (FAILED(m_pGameInstance->Regist_Pool(
+	//		0,
+	//		g_wszPool_MoonSkillQSheild,
+	//		g_wszSkillObjectLayer,
+	//		0,
+	//		g_wszMoonSkillQSheild_Prototype_Tag,
+	//		&desc,
+	//		10)))
+	//		return E_FAIL;
+	//}
+
+	// Moon skil Q attack
+	{
+		CMoon_SkillQAttack_Obj::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0,
+			g_wszPool_MoonSkillQAttack,
+			g_wszSkillObjectLayer,
+			0,
+			g_wszMoonSkillQAttack_Prototype_Tag,
+			&desc,
+			10)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -678,7 +734,62 @@ HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
 }
+HRESULT CLevel_Test::Ready_HybridObject()
+{
+	wstring PoolTag = L"POOL_Hybrid_WarningSpace";
+	wstring LayTag = L"HybridObject_Layer";
+	wstring PrototypeTag = L"Prototype_GameObject_Hybrid_WarningSpace";
 
+	using HB = CHybrid_WarningSpace;
+	HB::Origin_HybridWarningDesc Desc = {};
+
+	Desc.m_ModuleEffect.push_back(std::make_pair(ENUM_TO_UINT(HB::EWarningState::WARNING), Engine_Utils::ToHash("WarningCircle2")));
+	Desc.m_ModuleEffect.push_back(std::make_pair(ENUM_TO_UINT(HB::EWarningState::EXPLOSION), Engine_Utils::ToHash("Boss_Xibi_Lightning_Oneshot")));
+
+	m_pGameInstance->Regist_Pool((_uint)ELevelType::TEST, PoolTag, LayTag, 0, PrototypeTag, &Desc, 10);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Test::Spawn_HybridObject()
+{
+	if (m_pGameInstance->KeyButton_Down(DIK_P))
+	{
+		using HB = CHybrid_WarningSpace;
+		wstring PoolTag = L"POOL_Hybrid_WarningSpace";
+
+		vector<EFFECT_WARNING_DESC>		m_DescList = {};
+		m_DescList.resize((_uint)HB::EWarningState::END);
+
+		// WARNING
+		{
+			EFFECT_WARNING_DESC Desc = {};
+			Desc.VFX_Target_Position = { 19.f, 17.f, 5.f };
+			Desc.VFX_Scale = { 4.f, 4.f, 4.f };
+			Desc.iSimulationType = (_uint)EFFECT_WARNING_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+			m_DescList[(_uint)HB::EWarningState::WARNING] = Desc;
+		}
+
+		// EXPLOSION
+		{
+			EFFECT_WARNING_DESC Desc = {};
+			Desc.VFX_Target_Position = { 19.f, 17.f, 5.f };
+			Desc.VFX_Scale = { 1.f, 1.f, 1.f };
+			Desc.iSimulationType = (_uint)EFFECT_WARNING_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+			m_DescList[(_uint)HB::EWarningState::EXPLOSION] = Desc;
+		}
+
+		m_pGameInstance->Request_AddObject(
+			m_pGameInstance->Get_CurrentLevelIndex(),
+			PoolTag,
+			m_pGameInstance->Get_CurrentLevelIndex(),
+			&m_DescList
+		);
+	}
+	return S_OK;
+}
 
 CLevel_Test* CLevel_Test::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

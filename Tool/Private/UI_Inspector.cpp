@@ -614,7 +614,7 @@ void CUI_Inspector::SetUp_TriggerData()
 				const _bool isSelected = (cur == i);
 				if (ImGui::Selectable(m_VecTriggerSubClassTag[i].c_str(), isSelected))
 				{
-					cur = i;
+					cur = static_cast<_uint>(i);
 					m_pSelectedUI->Set_UITriggerSubClassType(static_cast<DTO::EUITriggerSubClassType>(i));
 					changed = true;
 				}

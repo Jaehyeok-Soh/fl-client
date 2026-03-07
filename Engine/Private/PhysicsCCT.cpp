@@ -18,6 +18,7 @@ CPhysicsCCT::CPhysicsCCT(const CPhysicsCCT& rhs)
 	: Super(rhs)
 	, m_pDevice(rhs.m_pDevice)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
+	, m_fGravityOffset(rhs.m_fGravityOffset)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -181,7 +182,7 @@ void CPhysicsCCT::ApplyGravity(const _float fTimeDelta)
 	if (m_tMoveState.bGravity == false)
 		return;
 
-	m_tMoveState.vAccelation.y += m_tMoveState.fGravity;
+	m_tMoveState.vAccelation.y += (m_tMoveState.fGravity + m_fGravityOffset);
 }
 
 void CPhysicsCCT::ApplyExternAcc(const _float fTimeDelta)

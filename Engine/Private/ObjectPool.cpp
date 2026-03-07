@@ -66,8 +66,10 @@ HRESULT CObjectPool::Despawn(CGameObject* pGo)
 		MSG_BOX("CObjectPool::Despawn, Index was wrong");
 		return E_FAIL;
 	}
+
 	if (this->m_wstrLayerTag == L"UI_Layer")
 		int a = 0;
+
 	_int iLastActiveIndex = m_iActiveCount - 1;
 	if (iNeed_Despawned_Index != iLastActiveIndex)
 	{

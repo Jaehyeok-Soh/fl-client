@@ -77,6 +77,9 @@ public:
 	virtual void Update(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
 	virtual void Update_Default(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
 
+public:
+	virtual void ClearSkillBase_WhenChangeLevel() {};
+
 	// start와 end는 외부에서 호출해준다
 public:
 	virtual _bool Start_Skill(CMyStat* pStatCom = nullptr); // stat에 있는 값을 건들일 수 있어서 값 던져줌 : aciton skill에서 던져주고 있는다
@@ -118,7 +121,7 @@ protected:
 	// 시작 전에 start 할수 있는지 없는지 검사 하는 함수
 	virtual _bool Can_StartSkill(CMyStat* pStatCom = nullptr);
 
-	virtual void Update_Skill(const _float fTimeDelta); // skill on시 계속적으로 처리해아하는 로직
+	virtual void Update_Skill(const _float fTimeDelta, CMyStat* pStatCom = nullptr); // skill on시 계속적으로 처리해아하는 로직
 	virtual void Count_SkillTime(const _float fTimeDelta);   // skill cool time을 체크
 	virtual void Count_NextCoolTime(const _float fTimeDelta);
 
