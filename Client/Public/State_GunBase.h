@@ -129,6 +129,8 @@ protected:
 
 	void Look_Control(_float fTimeDelta);
 
+
+	// 움직임 관련 함수
 private:
 	void Jump(const _float fTimeDelta);
 

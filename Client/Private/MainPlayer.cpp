@@ -136,6 +136,13 @@ HRESULT CMainPlayer::Clear_WhenChangeLevel()
     m_pTargeter = nullptr;
     Clear_Components_WhenChangeLevel();
 
+    // part obj의 clear 함수 호출
+    for (auto& pPartObj : m_vecPartObjects)
+    {
+        if (pPartObj)
+            pPartObj->Clear_WhenChangeLevel();
+    }
+
     // LoadingScene에서 비활성화
     Set_Active(false);
     Set_CollideEnabled(false);

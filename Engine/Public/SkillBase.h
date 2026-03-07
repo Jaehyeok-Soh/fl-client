@@ -77,6 +77,9 @@ public:
 	virtual void Update(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
 	virtual void Update_Default(const _float fTimeDelta, CMyStat* pStatCom = nullptr);
 
+public:
+	virtual void ClearSkillBase_WhenChangeLevel() {};
+
 	// start와 end는 외부에서 호출해준다
 public:
 	virtual _bool Start_Skill(CMyStat* pStatCom = nullptr); // stat에 있는 값을 건들일 수 있어서 값 던져줌 : aciton skill에서 던져주고 있는다

@@ -84,6 +84,7 @@ void CState_GunBase::Update(const _float fTimeDelta)
     if (Check_Hit(fTimeDelta))
     {
         Request_MixAnimation(1, -1);
+        End_MoveState(m_eMoveState);
         return;
     }
 
@@ -99,6 +100,8 @@ void CState_GunBase::Update(const _float fTimeDelta)
     if (Check_BaseKey(fTimeDelta))
     {
         Request_MixAnimation(1, -1);
+        End_MoveState(m_eMoveState);
+
         return;
     }
 
@@ -307,7 +310,6 @@ void CState_GunBase::Fall_Update(const _float fTimeDelta)
         Request_MixAnimation(1, -1);
         Change_MoveState(MoveState::GROUND);
     }
-
 }
 
 _bool CState_GunBase::Change_MoveState(MoveState eState)
@@ -362,7 +364,7 @@ void CState_GunBase::Start_MoveState(MoveState eNextState)
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::LM)]      = ENUM_TO_UINT(CPlayer::State::JUMPATTSTART);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::CHARGE)]  = m_iEndStateIdx;
 
-        Set_GravityOffset(8.f);
+        Set_GravityOffset(32.5f);
         break;
     }
 }
@@ -390,6 +392,8 @@ void CState_GunBase::GunEnd()
 {
     // 1번 mix 정보를 죽인다
     Request_MixAnimation(1, -1);
+
+    End_MoveState(m_eMoveState);
 
     // gun state 빠져 나올때
     switch (m_eMoveState)
@@ -448,9 +452,9 @@ void CState_GunBase::Jump(const _float fTimeDelta)
     Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
     vUp.Normalize();
 
-    Vec3 accelation = vUp;
+    Vec3 accelation = vUp * moveps *2.f; //  방향 * 속도
 
-    Move(accelation);
+    SetCCTImpuls(accelation);
 }
 
 void CState_GunBase::GunMove(const _float fTimeDelta)

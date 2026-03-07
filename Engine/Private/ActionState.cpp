@@ -228,6 +228,13 @@ void CActionState::Set_ApplyGravity(_bool bApply)
 		cct->SetApplyGravity(bApply);
 }
 
+void CActionState::Set_GravityOffset(_float fOffset)
+{
+	CPhysicsCCT* cct = { nullptr };
+	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
+		cct->Set_GravityOffset(fOffset);
+}
+
 _bool CActionState::IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag)
 {
 	return (CCTFlags & eFlag);
