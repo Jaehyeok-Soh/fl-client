@@ -243,7 +243,6 @@ void CGameObject::Set_Dead(_bool bIsStatic)
 
     m_eState = ELifeState::Pending;
     Clamp_FlagsByState();
-    Disable_CollisionComponent();
     _uint iLevelIndex = bIsStatic ? 0 : m_pGameInstance->Get_CurrentLevelIndex();
     m_pGameInstance->Request_DeleteGameObject(iLevelIndex, this);
 }

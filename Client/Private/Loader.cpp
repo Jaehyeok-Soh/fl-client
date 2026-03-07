@@ -27,6 +27,7 @@
 #include "SkillBase_MoonQ.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
+#include "PhysicsAttackRaycast.h"
 //=================
 // Builder
 //=================
@@ -91,6 +92,7 @@
 #include "Vine.h"
 #include "Tree.h"
 #include "Grass.h"
+#include "InvisibleWall.h"
 
 //=================
 // Trigger Box
@@ -227,6 +229,15 @@ HRESULT CLoader::Loading()
 		break;
 	case Client::ELevelType::SQUARE:
 		hr = Loading_For_Square();
+		break;
+	case Client::ELevelType::TAVERN:
+		hr = Loading_For_Tavern();
+		break;
+	case Client::ELevelType::KUANGKENG:
+		hr = Loading_For_Kuangkeng();
+		break;
+	case Client::ELevelType::LIANHUO:
+		hr = Loading_For_Kuangkeng();
 		break;
 	case Client::ELevelType::TEST:
 		hr = Loading_For_Test();
@@ -464,6 +475,13 @@ HRESULT CLoader::Loading_For_Logo()
 	/* Clouds 사진 */
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Clouds/")))
 		return E_FAIL;
+	/*  Lianhuo 사진 */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Lianhuo/")))
+		return E_FAIL;
+	/* Ice Lake 사진 */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/IceLake/")))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->GameDataManager_Load_TextureSplatingInfoData()))
 		return E_FAIL;
 
@@ -630,6 +648,7 @@ HRESULT CLoader::Loading_For_Logo()
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
 
+
 #pragma region Map Object
 		/* Map Object */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszStaticObject_Prototype_Tag ,				CStaticObject::Create(m_pDevice, m_pDeviceContext));
@@ -641,6 +660,9 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszVine_Prototype_Tag,						CVine::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszRock_Prototype_Tag,						CRock::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
+
+		/* Invisible Wall */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszInvisibleWall_Prototype_Tag,				CInvisibleWall::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 #pragma region TriggerBox
@@ -687,7 +709,9 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region PHYSICS
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_AttackRaycast", CPhysicsAttackRaycast::Create(m_pDevice, m_pDeviceContext, nullptr));
 #pragma endregion
+
 #pragma region UI
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerStatProgress",		CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MenuText",					CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
@@ -810,7 +834,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 HRESULT CLoader::Loading_For_Square()
 {
 	/* Square */
-	m_fLoadingRatio = 1.f;
+	m_fLoadingRatio = 0.f;
 
 	// 오브젝트
 
@@ -821,6 +845,75 @@ HRESULT CLoader::Loading_For_Square()
 	m_fLoadingRatio = 1.f;
 	Sleep(5000);
 	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Tavern()
+{
+	/* Square */
+	m_fLoadingRatio = 0.f;
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TAVERN);
+
+	// 이펙트 Object
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+	Sleep(5000);
+
+	m_fLoadingRatio = 1.f;
+
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Kuangkeng()
+{
+	/* Square */
+	m_fLoadingRatio = 0.f;
+
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::KUANGKENG);
+
+
+	// 이펙트 Object
+	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+
+	Sleep(5000);
+
+	m_fLoadingRatio = 1.f;
+
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Lianhuo()
+{
+
+	/* Square */
+	m_fLoadingRatio = 0.f;
+
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
+
+
+	// 이펙트 Object
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+
+	Sleep(5000);
+
+	m_fLoadingRatio = 1.f;
+
+	m_isFinished = true;
+
 	return S_OK;
 }
 

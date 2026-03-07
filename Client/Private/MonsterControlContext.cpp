@@ -1,14 +1,12 @@
 #include "pch.h"
 #include "MonsterControlContext.h"
-
 #include "Client_Defines.h"
 #include "Monster_Base.h"
 #include "MonsterActionState.h"
-
-#include "GameInstance.h"
-#include "Engine_Utils.h"
-
 #include "PhysicsCCT.h"
+#include "Engine_Utils.h"
+#include "GameInstance.h"
+
 
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
@@ -45,17 +43,82 @@ HRESULT CMonsterControlContext::Initialize(void* pArg)
 HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 {
 	Safe_Release(m_pTarget);
-	if (!(m_pTarget = m_pGameInstance->Get_GameObject_Front(/* static */ 0, L"Player_Layer")))
-		return E_FAIL;
-
-	Safe_AddRef(m_pTarget);
+	m_pTarget = m_pGameInstance->Get_GameObject_Front(/* static */ 0, L"Player_Layer");
+	if (m_pTarget != nullptr)
+		Safe_AddRef(m_pTarget);
 	m_iSubState = 0;
 	return S_OK;
+}
+
+void CMonsterControlContext::Update_RuntimeDesc(const _float fTiemDelta)
+{
+	// 타겟의 유효성 체크
+	if (m_pTarget == nullptr)
+		return;
+
+	if (m_pTarget->IsDead() == true)
+	{
+		Clear_RuntimeDesc();
+		Safe_Release(m_pTarget);
+		m_pTarget == nullptr;
+		return;
+	}
+
+	// 오너의 유효성 체크
+	CGameObject* pOwner = Get_Owner();
+	if (pOwner == nullptr)
+		return;
+
+	if (pOwner->IsDead() == true)
+	{
+		Clear_RuntimeDesc();
+		return;
+	}
+
+	CTransform* pOwnerTransform = pOwner->Get_Component<CTransform>();
+	m_tRuntimeDesc.vOwnerPos = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	m_tRuntimeDesc.vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	m_tRuntimeDesc.vOwnerRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+
+	if (m_tRuntimeDesc.vOwnerLook != Vec3::Zero)
+		m_tRuntimeDesc.vOwnerLook.Normalize();
+	if (m_tRuntimeDesc.vOwnerRight != Vec3::Zero)
+		m_tRuntimeDesc.vOwnerRight.Normalize();
+
+	m_tRuntimeDesc.bTargetValid = (m_pTarget != nullptr && (m_pTarget->IsDead() == false));
+
+	if (m_tRuntimeDesc.bTargetValid)
+	{
+		CTransform* pTargetTr = m_pTarget->Get_Component<CTransform>();
+		m_tRuntimeDesc.vTargetPos = pTargetTr->Get_Info(TRANSFORM_INFO_STATE::POS);
+		m_tRuntimeDesc.vToTarget = m_tRuntimeDesc.vTargetPos - m_tRuntimeDesc.vOwnerPos;
+		m_tRuntimeDesc.fDistance = m_tRuntimeDesc.vToTarget.Length();
+
+		if (m_tRuntimeDesc.fDistance > g_XMEpsilon.f[0])
+		{
+			m_tRuntimeDesc.vToTargetDir = m_tRuntimeDesc.vToTarget / m_tRuntimeDesc.fDistance;
+			m_tRuntimeDesc.fDotForward = m_tRuntimeDesc.vOwnerLook.Dot(m_tRuntimeDesc.vToTargetDir);
+		}
+		else
+		{
+			m_tRuntimeDesc.vToTargetDir = m_tRuntimeDesc.vOwnerLook;
+			m_tRuntimeDesc.fDotForward = 1.f;
+		}
+	}
+	else
+		Clear_RuntimeDesc();
 }
 
 Vec3 CMonsterControlContext::Get_MoveDir()
 {
 	return m_vMoveDir;
+}
+
+void CMonsterControlContext::Set_Groggy(_bool b)
+{
+	b == true
+		? Engine_Utils::Add_Flag(m_iSubState, SUB_STATE::GROGGY)
+		: Engine_Utils::RemoveHard_Flag(m_iSubState, SUB_STATE::GROGGY);
 }
 
 void CMonsterControlContext::Set_Dead()
@@ -64,47 +127,6 @@ void CMonsterControlContext::Set_Dead()
 		return;
 
 	m_iSubState |= SUB_STATE::DEAD;
-}
-_bool CMonsterControlContext::IsTargetFound()
-{
-	if (m_pTarget == nullptr)
-		return false;
-
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
-
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	_float fDistance = ::XMVectorGetX(::XMVector3Length(vToTarget));
-
-	return fDistance <= m_tDesc.fDetectionRange;
-}
-
-_bool CMonsterControlContext::IsTargetLost()
-{
-	if (m_pTarget == nullptr)
-		return true;
-
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
-
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	_float fDistance = ::XMVectorGetX(::XMVector3Length(vToTarget));
-
-	return fDistance > m_tDesc.fDetectionRange;
-}
-
-_bool CMonsterControlContext::IsTargetAlive()
-{
-	if (m_pTarget == nullptr)
-		return false;
-
-	return m_pTarget->IsDead() == false;
 }
 
 _bool CMonsterControlContext::IsTargetVisible()
@@ -117,87 +139,6 @@ _bool CMonsterControlContext::IsTargetFOV()
 	return _bool();
 }
 
-_bool CMonsterControlContext::IsTargetBehind()
-{
-	if (m_pTarget == nullptr)
-		return false;
-
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
-
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	vOwnerLook.Normalize();
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	vToTarget.Normalize();
-
-	return vOwnerLook.Dot(vToTarget) < 0;
-}
-
-_bool CMonsterControlContext::IsTargetSide()
-{
-	if (m_pTarget == nullptr)
-		return false;
-
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
-
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	vOwnerLook.Normalize();
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	vToTarget.Normalize();
-
-	_float dot = vOwnerLook.Dot(vToTarget);
-
-	return dot >= 0.7f || dot <= -0.7f;
-}
-
-_bool CMonsterControlContext::IsTargetClose()
-{
-	if (m_pTarget == nullptr)
-		return false;
-
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
-
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	_float fDistance = ::XMVectorGetX(::XMVector3Length(vToTarget));
-
-	return fDistance <= m_tDesc.fCloseRange;
-}
-
-_bool CMonsterControlContext::IsTargetAhead()
-{
-	if (m_pTarget == nullptr)
-		return false;
-
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
-
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	vOwnerLook.Normalize();
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	vToTarget.Normalize();
-
-	_float dot = vOwnerLook.Dot(vToTarget);
-
-	return dot > 0 && dot > 0.9f;
-}
-
 _bool CMonsterControlContext::IsCliffAhead()
 {
 	return _bool();
@@ -206,66 +147,6 @@ _bool CMonsterControlContext::IsCliffAhead()
 _bool CMonsterControlContext::IsPhaseTwo()
 {
 	return _bool();
-}
-
-_bool CMonsterControlContext::IsTargetInMeleeRange()
-{
-	if (m_pTarget == nullptr)
-		return false;
-
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
-
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	_float fDistance = ::XMVectorGetX(::XMVector3Length(vToTarget));
-
-	return fDistance <= m_tDesc.fMeleeRange;
-}
-
-_bool CMonsterControlContext::IsTargetInAttackRange()
-{
-	if (m_pTarget == nullptr)
-		return false;
-
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
-
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	_float fDistance = ::XMVectorGetX(::XMVector3Length(vToTarget));
-
-	return fDistance <= m_tDesc.fAttackRange;
-}
-
-_bool CMonsterControlContext::IsTargetOutOfMeleeRange()
-{
-	return IsTargetFound() && IsTargetInMeleeRange() == false;
-}
-
-_bool CMonsterControlContext::IsTargetOutOfAttackRange()
-{
-	return IsTargetFound() && IsTargetInAttackRange() == false;
-}
-
-_bool CMonsterControlContext::IsTargetDistanceOver(_float fValue)
-{
-	if (m_pTarget == nullptr)
-		return false;
-
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
-
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	_float fDistance = ::XMVectorGetX(::XMVector3Length(vToTarget));
-	return fDistance > fValue;
 }
 
 _bool CMonsterControlContext::IsFalling()
@@ -489,6 +370,15 @@ void CMonsterControlContext::Set_CCT_Collision_Disable()
 void CMonsterControlContext::Set_CCT_Collision_Enable()
 {
 	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(true);
+}
+
+void CMonsterControlContext::Clear_RuntimeDesc()
+{
+	m_tRuntimeDesc.vTargetPos = {};
+	m_tRuntimeDesc.vToTarget = {};
+	m_tRuntimeDesc.vToTargetDir = {};
+	m_tRuntimeDesc.fDistance = FLT_MAX;
+	m_tRuntimeDesc.fDotForward = 0.f;
 }
 
 CMonsterControlContext* CMonsterControlContext::Create()

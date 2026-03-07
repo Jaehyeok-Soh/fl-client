@@ -210,6 +210,11 @@ namespace DTO
 		// condition feature
 		vector<CONDITIONFEATURE_ENTRY> vecConditionFeature;
 
+		// start - condition feature
+		vector<CONDITIONFEATURE_ENTRY> vecStartConditionFeature;
+		// end - condition feature
+		vector<CONDITIONFEATURE_ENTRY> vecEndConditionFeature;
+
 		vector<FEATURE_ENTRY> vecFeatureEntry;
 		vector<int> vecFeatureIdx;
 	}MONSTER_STATEBASE_DESC;
@@ -240,6 +245,9 @@ namespace DTO
 		j["vecStateTransition"] = d.vecStateTransition;
 
 		j["vecConditionFeature"] = d.vecConditionFeature;
+
+		j["vecStartConditionFeature"] = d.vecStartConditionFeature;
+		j["vecEndConditionFeature"] = d.vecEndConditionFeature;
 
 		j["vecFeatureEntry"] = d.vecFeatureEntry;
 	}
@@ -296,6 +304,12 @@ namespace DTO
 				d.vecFeatureEntry.push_back(entry);
 			}
 		}
+
+		if (j.contains("vecStartConditionFeature"))
+			j.at("vecStartConditionFeature").get_to(d.vecStartConditionFeature);
+
+		if (j.contains("vecEndConditionFeature"))
+			j.at("vecEndConditionFeature").get_to(d.vecEndConditionFeature);
 	}
 
 	typedef struct tagMonsterStateDesc

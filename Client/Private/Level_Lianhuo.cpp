@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Level_Tavern.h"
+#include "Level_Lianhuo.h"
 #include "Level_Loading.h"
 #include "Client_EventDefine.h"
 //=================
@@ -64,12 +64,12 @@
 //=================
 #include "GameInstance.h"
 
-CLevel_Tavern::CLevel_Tavern(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CLevel_Lianhuo::CLevel_Lianhuo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
 }
 
-HRESULT CLevel_Tavern::Initialize()
+HRESULT CLevel_Lianhuo::Initialize()
 {
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
@@ -96,7 +96,7 @@ HRESULT CLevel_Tavern::Initialize()
 
 }
 
-HRESULT CLevel_Tavern::Awake(const _uint iLevelID)
+HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 {
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
@@ -112,7 +112,7 @@ HRESULT CLevel_Tavern::Awake(const _uint iLevelID)
 	return S_OK;
 }
 
-void CLevel_Tavern::Update(const _float fTimeDelta)
+void CLevel_Lianhuo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
@@ -143,7 +143,7 @@ void CLevel_Tavern::Update(const _float fTimeDelta)
 	if (KEY_BUTTON_DOWN(DIK_8))
 	{
 		UI_PREFAB_DATA Desc = {};
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TAVERN), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::TAVERN), &Desc);
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LIANHUO), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::LIANHUO), &Desc);
 	}
 	if (KEY_BUTTON_DOWN(DIK_7))
 	{
@@ -152,11 +152,11 @@ void CLevel_Tavern::Update(const _float fTimeDelta)
 		Desc.DamageFontData.vHitPos = Vec3{0.f, 0.f, 0.f};
 		Desc.DamageFontData.vFontColor = Vec4{ 1.f, 1.f,1.f, 1.f };
 
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TAVERN), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::TAVERN), &Desc);
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LIANHUO), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::LIANHUO), &Desc);
 	}
 }
 
-HRESULT CLevel_Tavern::Render()
+HRESULT CLevel_Lianhuo::Render()
 {
 	if (FAILED(Super::Render()))
 		return E_FAIL;
@@ -164,9 +164,9 @@ HRESULT CLevel_Tavern::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Tavern::Build_Prototype()
+HRESULT CLevel_Lianhuo::Build_Prototype()
 {
-	_uint iLevelType = ENUM_TO_UINT(ELevelType::TAVERN);
+	_uint iLevelType = ENUM_TO_UINT(ELevelType::LIANHUO);
 
 	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, iLevelType ))))
 		return E_FAIL;
@@ -180,9 +180,9 @@ HRESULT CLevel_Tavern::Build_Prototype()
 	return S_OK;
 }
 
-HRESULT CLevel_Tavern::Build_Files()
+HRESULT CLevel_Lianhuo::Build_Files()
 {
-	ELevelType eLevelType = ELevelType::TAVERN;
+	ELevelType eLevelType = ELevelType::LIANHUO;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 #pragma region EFFECT
@@ -238,9 +238,9 @@ HRESULT CLevel_Tavern::Build_Files()
 	return S_OK;
 }
 
-HRESULT CLevel_Tavern::Ready_Player_Layer(const wstring& wstrLayerTag)
+HRESULT CLevel_Lianhuo::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
-	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TAVERN);
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
 
 	// TODO : 만약 플레이어가 늘어난다면 레이어 추가 체크 필수
 	if (CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), wstrLayerTag))
@@ -272,7 +272,7 @@ HRESULT CLevel_Tavern::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 		CPlayer::PLAYER_DESC playerDesc = {};
 		CTransform::TRANSFORM_DESC transformDesc = {};
-		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::TAVERN);
+		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(15.f, 15.f, 15.f));
 		playerDesc.pTransform_Desc = &transformDesc;
@@ -286,7 +286,7 @@ HRESULT CLevel_Tavern::Ready_Player_Layer(const wstring& wstrLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Tavern::Ready_Camera_Layer(const wstring& wstrLayerTag)
+HRESULT CLevel_Lianhuo::Ready_Camera_Layer(const wstring& wstrLayerTag)
 {
 	{
 		CGameObject* pResult = { nullptr };
@@ -305,7 +305,7 @@ HRESULT CLevel_Tavern::Ready_Camera_Layer(const wstring& wstrLayerTag)
 		goDesc.pCamera_Desc = &CameraDesc;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_CameraManTargeter",
-			ENUM_TO_UINT(ELevelType::TAVERN),
+			ENUM_TO_UINT(ELevelType::LIANHUO),
 			wstrLayerTag, &goDesc)))
 			return E_FAIL;
 	}
@@ -313,7 +313,7 @@ HRESULT CLevel_Tavern::Ready_Camera_Layer(const wstring& wstrLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Tavern::Ready_Lights()
+HRESULT CLevel_Lianhuo::Ready_Lights()
 {
 	{
 		LIGHT_DESC desc = {};
@@ -354,9 +354,9 @@ HRESULT CLevel_Tavern::Ready_Lights()
 	return S_OK;
 }
 
-HRESULT CLevel_Tavern::Ready_Map()
+HRESULT CLevel_Lianhuo::Ready_Map()
 {
-	ELevelType eLevelType = ELevelType::TAVERN;
+	ELevelType eLevelType = ELevelType::LIANHUO;
 	DTO::ECategory eCategory = DTO::ECategory::MAP;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
@@ -364,7 +364,7 @@ HRESULT CLevel_Tavern::Ready_Map()
 		return E_FAIL;
 
 	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tavern/Tavern.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/LIANHUO/LIANHUO.json";
 
 
 	if (!std::filesystem::exists(FilePath))
@@ -379,10 +379,10 @@ HRESULT CLevel_Tavern::Ready_Map()
 	return S_OK;
 }
 
-HRESULT CLevel_Tavern::Ready_Octree()
+HRESULT CLevel_Lianhuo::Ready_Octree()
 {
 	// 순회하며 OCTREE BOX 사이즈 검출
-	auto* pList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::TAVERN), g_wszStaticObjectLayer);
+	auto* pList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::LIANHUO), g_wszStaticObjectLayer);
 
 	// Registe에 필요한 Object, Bound 버퍼 reserve
 	vector<CGameObject*> vecWillReigstObject;
@@ -456,7 +456,7 @@ HRESULT CLevel_Tavern::Ready_Octree()
 
 	return S_OK;
 }
-HRESULT CLevel_Tavern::Ready_Camera_Setting(const _uint iLevelIndex)
+HRESULT CLevel_Lianhuo::Ready_Camera_Setting(const _uint iLevelIndex)
 {
 	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
 	m_pGameInstance->Add_Camera(CameraType::DYNAMIC, g_MainActorCameraName, static_cast<CCameraMan*>(pMainCamera));
@@ -471,20 +471,20 @@ HRESULT CLevel_Tavern::Ready_Camera_Setting(const _uint iLevelIndex)
 }
 
 
-CLevel_Tavern* CLevel_Tavern::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CLevel_Lianhuo* CLevel_Lianhuo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CLevel_Tavern* pInstance = new CLevel_Tavern(pDevice, pDeviceContext);
+	CLevel_Lianhuo* pInstance = new CLevel_Lianhuo(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("CLevel_Tavern::Create, Failed");
+		MSG_BOX("CLevel_Lianhuo::Create, Failed");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CLevel_Tavern::Free()
+void CLevel_Lianhuo::Free()
 {
 	m_pGameInstance->Clear_Lights();
 	Super::Free();

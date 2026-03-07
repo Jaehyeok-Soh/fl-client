@@ -318,7 +318,7 @@ HRESULT CLevel_Square::Ready_Map()
 		return E_FAIL;
 
 	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tavern/Tavern.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Square/Square.json";
 
 	if (!std::filesystem::exists(FilePath))
 		return E_FAIL;

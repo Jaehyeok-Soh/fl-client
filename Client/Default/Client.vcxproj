@@ -172,6 +172,7 @@
     <ClInclude Include="..\Public\Bush.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\InvisibleWall.h" />
     <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\Public\Grass.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\Level_Kuangkeng.h" />
+    <ClInclude Include="..\Public\Level_Lianhuo.h" />
     <ClInclude Include="..\Public\Level_Square.h" />
     <ClInclude Include="..\Public\Level_Tavern.h" />
     <ClInclude Include="..\Public\Level_Test.h" />
@@ -366,6 +368,7 @@
     <ClCompile Include="..\Private\Bush.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
+    <ClCompile Include="..\Private\InvisibleWall.cpp" />
     <ClCompile Include="..\Private\ColliderPart.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Builder_Effect.cpp" />
@@ -423,6 +426,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
     <ClCompile Include="..\Private\Level_Kuangkeng.cpp" />
+    <ClCompile Include="..\Private\Level_Lianhuo.cpp" />
     <ClCompile Include="..\Private\Level_Square.cpp" />
     <ClCompile Include="..\Private\Level_Tavern.cpp" />
     <ClCompile Include="..\Private\Level_Test.cpp" />

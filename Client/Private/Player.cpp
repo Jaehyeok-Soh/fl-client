@@ -1140,9 +1140,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
             weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
 
-            weaponDesc.fAllBullet = 100.f;
-            weaponDesc.fCurBullet = 5.f;
-            weaponDesc.fAttackCoolTime = 0.5f;
+            weaponDesc.fAllBullet = 1000.f;
+            weaponDesc.fCurBullet = 500.f;
+            weaponDesc.fAttackCoolTime = 0.05f;
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));

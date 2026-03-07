@@ -288,7 +288,7 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 {
-	//  Prototype 이후 고칠 것
+	//Prototype 이후 고칠 것
 	
 	if (Has_ChangeState(STATEKEY::RM) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::RATT)))

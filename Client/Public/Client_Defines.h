@@ -24,6 +24,7 @@ namespace Client
 		SQUARE,				/* 광장 */
 		TAVERN,				/* 술집 */
 		KUANGKENG,			/* 갱도 */
+		LIANHUO,			/* 지옥불 교도소장 보스 */
 
 
 		TEST,				/* Test Scene은 맨 마지막 */
@@ -41,9 +42,10 @@ namespace Client
 			"LOGO",
 			"TUTORIAL_VILLAGE",
 			"TUTORIAL_BOSS",
-			"SQUARE",
 			"TAVERN",
+			"SQUARE",
 			"KUANGKENG",
+			"LIANHUO",
 			"TEST",
 		};
 
@@ -188,8 +190,14 @@ namespace Client
 			return ELevelType::TUTORIAL_BOSS;
 		else if (::strcmp(str.c_str(), "SQUARE") == 0)
 			return ELevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TAVERN") == 0)
+			return ELevelType::TAVERN;
+		else if (::strcmp(str.c_str(), "KUANGKENG") == 0)
+			return ELevelType::KUANGKENG;
 		else if (::strcmp(str.c_str(), "TEST") == 0)
 			return ELevelType::TEST;
+		else if (::strcmp(str.c_str(), "LIANHUO") == 0)
+			return ELevelType::LIANHUO;
 		else
 			return ELevelType::END;
 	}
@@ -585,6 +593,10 @@ namespace Client
 	inline constexpr wchar_t g_wszVine_Prototype_Tag[]							{ L"Prototype_GameObject_Vine" };
 	inline constexpr wchar_t g_wszRock_Prototype_Tag[]							{ L"Prototype_GameObject_Rock" };
 	inline constexpr wchar_t g_wszWater_Prototype_Tag[]							{ L"Prototype_GameObject_Water" };
+
+
+
+	inline constexpr wchar_t g_wszInvisibleWall_Prototype_Tag[]					{ L"Prototype_GameObject_InvisibleWall" };
 #pragma endregion
 
 #pragma region Trigger Box 관련
@@ -639,6 +651,7 @@ namespace Client
 	inline constexpr wchar_t g_wszEffectLayer[]									{ L"Effect_Layer" };
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
+	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
 }
 #pragma endregion
 
