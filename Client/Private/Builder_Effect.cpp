@@ -56,22 +56,46 @@ HRESULT CBuilder_Effect::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 	pTransDesc.RotationMatrix = Matrix::CreateFromQuaternion(vQuat);
 	pTransDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(vPos));
 
-
 	Effect::EFFECT_CONTAINERDESC pDesc = {};
 	pDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pData._Effect_SimulationType;
 	pDesc.iLevelIndex = m_iLevelID;
 	pDesc.pTransform_Desc = &pTransDesc;
 	pDesc._childData = pData._ChildData;
 
-	wstring PoolTag = L"POOL_" + Engine_Utils::ToWString(pData.EffectContainerName);
-	wstring LayTag = L"Effect_Layer";
-	wstring PrototypeTag = L"Prototype_GameObject_Effect";
-	if(pData.EffectContainerName == "Boss_Xibi_Lightning_Oneshot")
-		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, &pDesc, 100);
-	else
-		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, &pDesc, 30);
-	
+	Regist_pool(&pDesc, pData.EffectContainerName);
+
 	return S_OK;
+}
+
+const wstring CBuilder_Effect::Create_PrototypeTag(const string Tag)
+{
+	wstring PoolTag = {};
+	wstring LayTag = {};
+	wstring PrototypeTag = {};
+
+	if (Tag.find("Warning") != std::string::npos)
+		PrototypeTag = L"Prototype_GameObject_Effect_WarningCircle";
+
+	else
+		PrototypeTag = L"Prototype_GameObject_Effect";
+
+	return PrototypeTag;
+}
+
+void CBuilder_Effect::Regist_pool(void* pArg, string& PrefabEffectTag)
+{
+	wstring PoolTag = L"POOL_" + Engine_Utils::ToWString(PrefabEffectTag);
+	wstring LayTag = L"Effect_Layer";
+	wstring PrototypeTag = Create_PrototypeTag(PrefabEffectTag);
+
+	m_pGameInstance->Push_EffectData(Engine_Utils::ToHash(PrefabEffectTag.c_str()), pArg);
+
+	if (PrefabEffectTag == "Boss_Xibi_Lightning_Oneshot")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 100);
+
+	else
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 30);
+
 }
 
 CBuilder_Effect* CBuilder_Effect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)

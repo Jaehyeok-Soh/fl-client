@@ -646,11 +646,29 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\ObjectPool">
       <UniqueIdentifier>{32bebfb6-883b-4452-b824-e6ce5b80a0cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect\WarningCircle">
+      <UniqueIdentifier>{190738f3-4463-453c-bfff-445941f9ad5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\HybridGameObject">
+      <UniqueIdentifier>{4a97d26b-a7b1-4ded-aa95-e3e8e55b56c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\HybridGameObject\WarningSpace">
+      <UniqueIdentifier>{39cb2a67-010d-4046-a55d-2272b9069c31}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02. Level\Lianhuo">
       <UniqueIdentifier>{535bd167-aaf6-410f-87bd-a86b99f67c66}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\MapObject\06. InvisibleWall">
       <UniqueIdentifier>{9b1d8117-c5d3-46a2-991f-551479203aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Player\Moon\SkillQ">
+      <UniqueIdentifier>{86239eac-2955-425e-ace2-1cb312bcbc65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\46.Headers">
+      <UniqueIdentifier>{e9831f57-7718-4a7b-9669-75fbbef83eee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\PartEffect">
+      <UniqueIdentifier>{7217cf30-a2de-41b6-bc09-78d3de156fe9}</UniqueIdentifier>
     </Filter>
     <Filter Include="05. Component\Stat\StatCom_Boss">
       <UniqueIdentifier>{49a4b247-f9ed-4f9d-a881-a94e2c12bde2}</UniqueIdentifier>
@@ -1207,11 +1225,26 @@
     <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_WarningCircle.h">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\WarningCircle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hybrid_WarningSpace.h">
+      <Filter>03. GameObject\HybridGameObject\WarningSpace</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Level_Lianhuo.h">
       <Filter>02. Level\Lianhuo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\InvisibleWall.h">
       <Filter>03. GameObject\MapObject\06. InvisibleWall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Moon_SkillQAttack_Obj.h">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PartEffect.h">
+      <Filter>03. GameObject\PartObjects\PartEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerSkillObj_Headers.h">
+      <Filter>99. ETC\46.Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\public\StatCom_Boss.h">
       <Filter>05. Component\Stat\StatCom_Boss</Filter>
@@ -1760,11 +1793,23 @@
     <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect_WarningCircle.cpp">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\WarningCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hybrid_WarningSpace.cpp">
+      <Filter>03. GameObject\HybridGameObject\WarningSpace</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Level_Lianhuo.cpp">
       <Filter>02. Level\Lianhuo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\InvisibleWall.cpp">
       <Filter>03. GameObject\MapObject\06. InvisibleWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Moon_SkillQAttack_Obj.cpp">
+      <Filter>03. GameObject\SkillObject\Player\Moon\SkillQ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PartEffect.cpp">
+      <Filter>03. GameObject\PartObjects\PartEffect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\StatCom_Boss.cpp">
       <Filter>05. Component\Stat\StatCom_Boss</Filter>

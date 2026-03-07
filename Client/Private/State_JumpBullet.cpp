@@ -45,6 +45,8 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 		Vec3 accelation = vLook;
 
 		SetCCTImpuls(accelation * 5.f);
+
+		// ¸¶ÂûÀ» ¾ø¾ÖÁÜ
 		Set_ZeroDeAccelRate();
 	}
 

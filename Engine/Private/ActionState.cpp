@@ -228,6 +228,13 @@ void CActionState::Set_ApplyGravity(_bool bApply)
 		cct->SetApplyGravity(bApply);
 }
 
+void CActionState::Set_GravityOffset(_float fOffset)
+{
+	CPhysicsCCT* cct = { nullptr };
+	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
+		cct->Set_GravityOffset(fOffset);
+}
+
 _bool CActionState::IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag)
 {
 	return (CCTFlags & eFlag);
@@ -480,6 +487,24 @@ void CActionState::SetupLook_CameraLook()
 	_float fRadian = std::atan2(vTarget.x, vTarget.z);
 
 	m_pOwnerTransform->Rotation(Vec3::Up, fRadian);
+}
+
+void CActionState::SetupLook_CameraSameLook()
+{
+	//if (!m_pOwnerTargetCamera)
+	//{
+	//	if (!(m_pOwnerTargetCamera = Get_Owner()->Get_CameraTargeter()))
+	//		return;
+	//}
+	//Vec3 vTarget = m_pOwnerTargetCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	//_float fPitch = asin(vTarget.y);
+	//vTarget.y = 0.f;
+	//vTarget.Normalize();
+
+	//_float fRadian = std::atan2(vTarget.x, vTarget.z);
+
+	//m_pOwnerTransform->Rotation(Vec3::Up, fRadian);
+	//m_pOwnerTransform->Rotation(TRANSFORM_INFO_STATE::RIGHT, fPitch);
 }
 
 void CActionState::SetupLookAt(const Vec3& vPoint)

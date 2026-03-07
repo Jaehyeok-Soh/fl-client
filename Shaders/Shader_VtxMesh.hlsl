@@ -257,14 +257,23 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
     float4 vDiffuse = 1.f;
     Compute_Diffse(vDiffuse, input.vUV);
 
-    float4 final =
-     saturate(vDiffuse.r * Color_R) +
-     saturate(vDiffuse.g * Color_G) +
-     saturate(vDiffuse.b * Color_B);
+    float3 final =
+        (vDiffuse.r * Color_R.rgb) +
+        (vDiffuse.g * Color_G.rgb) +
+        (vDiffuse.b * Color_B.rgb);
+     //saturate(vDiffuse.r * Color_R) +
+    // saturate(vDiffuse.g * Color_G) +
+     //saturate(vDiffuse.b * Color_B);
     
-    saturate(final);
+    float luminance = dot(final, float3(0.3, 0.59, 0.11));
+
+    float3 finalRGB = final * luminance;
     
-    output.vDiffuse = final;
+    float4 finalDiffuse = float4(saturate(finalRGB), vDiffuse.a);
+    
+    saturate(finalDiffuse);
+    
+    output.vDiffuse = finalDiffuse;
     
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);

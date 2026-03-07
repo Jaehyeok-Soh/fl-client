@@ -26,6 +26,10 @@ public:
     virtual void LoopState_Change(DTO::E_LoopState eState) = 0;
 
 public:
+    virtual HRESULT Enable_VFX(void* pArg) { return S_OK; };
+    virtual HRESULT Disable_VFX() { return S_OK; };
+
+public:
     virtual void Free() override;
 };
 

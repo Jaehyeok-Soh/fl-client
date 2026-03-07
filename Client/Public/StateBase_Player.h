@@ -83,18 +83,18 @@ public:
 	virtual void Change_PlayerHitState(_uint iState, void* pArg = nullptr);
 	
 protected:
-	_uint					m_iEndStateIdx = { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
+	_uint					m_iEndStateIdx		= { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
-	Flags					m_FMoves		= { 0 };
-	Flags					m_FCollisions	= { 0 };
+	Flags					m_FMoves			= { 0 };
+	Flags					m_FCollisions		= { 0 };
 	vector<_uint>			m_vecChangeState_ByKey;
 
-	TIME_COUNTER			m_tKeyTimer		= {};
+	TIME_COUNTER			m_tKeyTimer			= {};
 
-	STATE_START_DESC		m_tNextStateDesc = {};
+	STATE_START_DESC		m_tNextStateDesc	= {};
 
-	TimeCount				m_TFallingCount = { 0.f,0.4f };
-	TimeCount				m_TChargeCount = { 0.f,0.3f };
+	TimeCount				m_TFallingCount		= { 0.f,0.3f }; // 예전 값 : 0.4f
+	TimeCount				m_TChargeCount		= { 0.f,0.3f };
 
 	// state가 변환 했다면 true
 protected:

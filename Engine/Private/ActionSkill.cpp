@@ -63,6 +63,17 @@ CSkillBase* CActionSkill::Get_Skill(_uint iIndex)
 	return m_vecSkills[iIndex];
 }
 
+void CActionSkill::Clear_WhenChangeLevel()
+{
+	for (auto& pSkill : m_vecSkills)
+	{
+		if (pSkill)
+		{
+			pSkill->ClearSkillBase_WhenChangeLevel();
+		}
+	}
+}
+
 void CActionSkill::Update_Skills(const _float fTimeDelta)
 {
 	for (auto& pSkill : m_vecSkills)

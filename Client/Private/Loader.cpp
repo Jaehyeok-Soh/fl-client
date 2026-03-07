@@ -60,9 +60,13 @@
 #include "ColliderPart.h"
 #include "Loader.h"
 #include "Effect.h"
+#include "Effect_WarningCircle.h"
 #include "EffectObject.h"
 #include "BattleField.h"
+#include "PartEffect.h"
 #include "Moon_SkillE_Obj.h"
+#include "Hybrid_WarningSpace.h"
+
 
 //=================
 // SkillObject
@@ -71,9 +75,12 @@
 #include "ProjectileSpawner_Fan.h"
 #include "SkillObjectSpawner_RandomXZ.h"
 #include "ProjectileSpawner_Radial360.h"
+// xibi
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
 #include "Xibi_Oneshot_Thunder.h"
+// player
+#include "PlayerSkillObj_Headers.h"
 
 
 //=================
@@ -504,7 +511,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices	= {3,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
+		desc.vecStageBoneIndices	= {3,5,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
 
 		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
@@ -633,13 +640,15 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// 이펙트 Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_WarningCircle", CEffect_WarningCircle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Hybrid_WarningSpace",	CHybrid_WarningSpace::Create(m_pDevice, m_pDeviceContext));
 		
 		// Projectile
 
 		// player effect object
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,				CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
-
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,							CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillQAttack_Prototype_Tag,						CMoon_SkillQAttack_Obj::Create(m_pDevice, m_pDeviceContext));
 
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
@@ -679,6 +688,11 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+
+#pragma region PartObjs
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
+#pragma endregion
+
 	}
 #pragma endregion
 
@@ -1129,16 +1143,41 @@ HRESULT CLoader::Ready_Spawner()
 	}
 
 	/* player */
-	// Moon Skill
+	// level : static
+	// Moon SkillE
 	{
 		CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
 		desc.iPoolLevelIndex = 0;
 		desc.wstrSkillPoolTag = g_wszPool_MoonSkillE; // 스킬 poot에서 꺼내올 오브젝트 태그
 		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
 		desc.fLifeTime = 3.5f;
-		desc.fSpeed = 50.f;
+		//desc.fSpeed = 50.f;
 
 		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillE,
+			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	//// Moon SkillQ : sheild
+	//{
+	//	CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
+	//	desc.iPoolLevelIndex = 0;
+	//	desc.wstrSkillPoolTag = g_wszPool_MoonSkillQSheild;
+	//	desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Follow_Owner) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+	//	desc.fLifeTime = 12.f;
+
+	//	if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillQ_Sheild,
+	//		CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
+	//		return E_FAIL;
+	//}
+	// Moon SkillQ : attack
+	{
+		CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = 0;
+		desc.wstrSkillPoolTag = g_wszPool_MoonSkillQAttack;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		desc.fLifeTime = 12.f;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillQ_Attack,
 			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}

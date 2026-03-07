@@ -175,6 +175,7 @@
     <ClInclude Include="..\Public\InvisibleWall.h" />
     <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\Public\Grass.h" />
+    <ClInclude Include="..\Public\Hybrid_WarningSpace.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -226,10 +227,13 @@
     <ClInclude Include="..\Public\Monster_Dog.h" />
     <ClInclude Include="..\Public\Monster_Dog_Body.h" />
     <ClInclude Include="..\Public\Moon_SkillE_Obj.h" />
+    <ClInclude Include="..\Public\Moon_SkillQAttack_Obj.h" />
     <ClInclude Include="..\Public\Moss.h" />
+    <ClInclude Include="..\Public\PartEffect.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\Plants.h" />
+    <ClInclude Include="..\Public\PlayerSkillObj_Headers.h" />
     <ClInclude Include="..\Public\Rock.h" />
     <ClInclude Include="..\Public\SkillBase_MoonE.h" />
     <ClInclude Include="..\Public\SkillBase_MoonQ.h" />
@@ -335,6 +339,7 @@
     <ClInclude Include="..\Public\UITrigger.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Vine.h" />
+    <ClInclude Include="..\Public\Effect_WarningCircle.h" />
     <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="..\Public\WorldUI_Component.h" />
@@ -373,6 +378,7 @@
     <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\Gun.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
+    <ClCompile Include="..\Private\Hybrid_WarningSpace.cpp" />
     <ClCompile Include="..\Private\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -439,7 +445,9 @@
     <ClCompile Include="..\Private\Monster_Dog.cpp" />
     <ClCompile Include="..\Private\Monster_Dog_Body.cpp" />
     <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp" />
+    <ClCompile Include="..\Private\Moon_SkillQAttack_Obj.cpp" />
     <ClCompile Include="..\Private\Moss.cpp" />
+    <ClCompile Include="..\Private\PartEffect.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
     <ClCompile Include="..\Private\Plants.cpp" />
     <ClCompile Include="..\Private\Rock.cpp" />
@@ -547,6 +555,7 @@
     <ClCompile Include="..\Private\UITrigger.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Vine.cpp" />
+    <ClCompile Include="..\Private\Effect_WarningCircle.cpp" />
     <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp" />
