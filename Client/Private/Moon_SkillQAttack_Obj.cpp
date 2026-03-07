@@ -165,7 +165,7 @@ HRESULT CMoon_SkillQAttack_Obj::Ready_Components()
 		{
 			SkillDesc.EffectPrefabTag = "";
 			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
+			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_WORLD };
 			SkillDesc.bFollowBone = { false };
 			SkillDesc.iBoneIndex = -1;
 			SkillDesc.vOffSet = { Vec3::Zero };

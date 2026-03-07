@@ -77,6 +77,11 @@ void CSkillBase_MoonQ::Update(const _float fTimeDelta, CMyStat* pStatCom )
 	}
 }
 
+void CSkillBase_MoonQ::ClearSkillBase_WhenChangeLevel()
+{
+
+}
+
 _bool CSkillBase_MoonQ::Start_Skill(CMyStat* pStatCom)
 {
 	if (Super::Start_Skill(pStatCom))

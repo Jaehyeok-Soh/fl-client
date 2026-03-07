@@ -88,6 +88,7 @@ public:
     // 오브젝트의 LocalRotation을 넣어줄때 필요할때.
     HRESULT Trigger_Lifecycle_Effect(E_OBJ_LIFECYCLE_STATE eState, TRANSFORM_INFO_STATE eRotateState, _float fDegree);
     void    PoolObject_CallBack(CGameObject* pGo);
+    void    Reset_ForNextLevel();
 
 private:
     void    Setup_OwnerModel(CModel* pModel);

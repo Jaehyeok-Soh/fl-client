@@ -29,6 +29,9 @@ public:
 
 	virtual void Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, CMyStat* pOwnerStat) override;
 
+public:
+	virtual void ClearSkillBase_WhenChangeLevel() override;
+
 private:
 	CSingleSkillSpawner* m_pSkillObjSpawner{ nullptr };
 

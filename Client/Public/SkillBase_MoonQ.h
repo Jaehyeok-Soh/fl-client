@@ -22,6 +22,9 @@ public:
 	virtual void	Update(const _float fTimeDelta, CMyStat* pStatCom = nullptr) override;
 
 public:
+	virtual void ClearSkillBase_WhenChangeLevel() override;
+
+public:
 	virtual _bool Start_Skill(CMyStat* pStatCom = nullptr)override;
 	virtual void End_Skill(CMyStat* pStatCom = nullptr)override;
 

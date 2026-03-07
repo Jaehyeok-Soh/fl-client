@@ -120,6 +120,10 @@ void CSkillBase_MoonE::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, 
 	static_cast<CStatCom_Player*>(pOwnerStat)->Set_Critical_AddRate(1.f);
 }
 
+void CSkillBase_MoonE::ClearSkillBase_WhenChangeLevel()
+{
+}
+
 void CSkillBase_MoonE::Update_Skill(const _float fTimeDelta, CMyStat* pStatCom)
 {
 	Super::Update_Skill(fTimeDelta);

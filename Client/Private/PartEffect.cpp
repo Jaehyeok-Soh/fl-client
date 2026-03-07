@@ -142,6 +142,13 @@ HRESULT CPartEffect::Render()
 	return S_OK;
 }
 
+HRESULT CPartEffect::Clear_WhenChangeLevel()
+{
+	Get_Component<CEffectHandler>()->Reset_ForNextLevel();
+
+	return S_OK;
+}
+
 void CPartEffect::Change_State(CPartEff_State eNextState)
 {
 	// 아직 spawn 상태인데 다시 spawn요청이 들어왔을때

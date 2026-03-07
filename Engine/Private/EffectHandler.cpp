@@ -299,6 +299,17 @@ void CEffectHandler::PoolObject_CallBack(CGameObject* pGo)
     m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].emplace(pGo->Get_Name(), pGo);
 }
 
+void CEffectHandler::Reset_ForNextLevel()
+{
+    m_eCurrentState = E_OBJ_LIFECYCLE_STATE::NONE;
+    m_ePrevState = E_OBJ_LIFECYCLE_STATE::NONE;
+
+    for (_uint i = 0; i < ENUM_TO_UINT(E_HANDLER_TYPE::TYPE_END); ++i)
+    {
+        m_ActiveEffects[i].clear();
+    }
+}
+
 void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script)
 {
     Matrix MatWorldOffset = XMMatrixIdentity();

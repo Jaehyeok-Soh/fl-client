@@ -86,6 +86,9 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	virtual HRESULT Clear_WhenChangeLevel();
+
+public:
 	void Change_State(CPartEff_State eNextState);
 
 	void Start_State(CPartEff_State eState);
