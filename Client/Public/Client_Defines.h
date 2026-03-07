@@ -196,6 +196,8 @@ namespace Client
 			return ELevelType::KUANGKENG;
 		else if (::strcmp(str.c_str(), "TEST") == 0)
 			return ELevelType::TEST;
+		else if (::strcmp(str.c_str(), "LIANHUO") == 0)
+			return ELevelType::LIANHUO;
 		else
 			return ELevelType::END;
 	}

@@ -10,6 +10,7 @@
 #include "Level_Tutorial_Village.h"
 #include "Level_Tavern.h"
 #include "Level_Kuangkeng.h"
+#include "Level_Lianhuo.h"
 #include "Level_Test.h"
 #include "TextureBase.h"
 #include "Loader.h"
@@ -89,6 +90,9 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 			break;
 		case Client::ELevelType::KUANGKENG:
 			pNewLevel = CLevel_Kuangkeng::Create(m_pDevice, m_pDeviceContext);
+			break;
+		case Client::ELevelType::LIANHUO:
+			pNewLevel = CLevel_Lianhuo::Create(m_pDevice, m_pDeviceContext);
 			break;
 		case Client::ELevelType::TEST:
 			pNewLevel = CLevel_Test::Create(m_pDevice, m_pDeviceContext);

@@ -231,6 +231,9 @@ HRESULT CLoader::Loading()
 	case Client::ELevelType::KUANGKENG:
 		hr = Loading_For_Kuangkeng();
 		break;
+	case Client::ELevelType::LIANHUO:
+		hr = Loading_For_Kuangkeng();
+		break;
 	case Client::ELevelType::TEST:
 		hr = Loading_For_Test();
 		break;
@@ -872,6 +875,30 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 
 	m_fLoadingRatio = 1.f;
 
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Lianhuo()
+{
+
+	/* Square */
+	m_fLoadingRatio = 0.f;
+
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
+
+
+	// ¿Ã∆Â∆Æ Object
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+
+	Sleep(5000);
+
+	m_fLoadingRatio = 1.f;
 
 	m_isFinished = true;
 

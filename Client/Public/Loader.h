@@ -36,6 +36,7 @@ private:
 	HRESULT Loading_For_Square();
 	HRESULT Loading_For_Tavern();
 	HRESULT Loading_For_Kuangkeng();
+	HRESULT Loading_For_Lianhuo();
 	HRESULT Loading_For_LoadLevel();
 	HRESULT Loading_For_Test();
 private:
