@@ -186,7 +186,7 @@ void CMainPlayer::Update(const _float fTimeDelta)
         SimpleMath::Vector4 HitPosition = { 17.f, 17.f, 17.f, 1.f};
 
         EFFECT_SPAWN_DESC desc = {};
-        desc.fPlayBackSpeed = 1.f;
+        desc.VFX_fSpeed = 1.f;
         desc.iSimulationType = (_uint)E_EFFECT_TYPE::WORLD;
         desc.matWorld = XMMatrixTranslationFromVector(HitPosition);
 

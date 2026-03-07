@@ -466,6 +466,9 @@
     <Filter Include="00. System\12. PhysX\EventCallback\CCTFilterCallback">
       <UniqueIdentifier>{f0f18817-327c-4f4d-89f9-c5faf15fe01f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\04. GameObject\HybridEffect_Base">
+      <UniqueIdentifier>{23c7f10d-0e22-49d6-9df7-3b28da89d977}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -933,6 +936,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Physics_CCTFilterCallback.cpp">
       <Filter>00. System\12. PhysX\EventCallback\CCTFilterCallback</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HybridGameObject_Base.cpp">
+      <Filter>00. System\04. GameObject\HybridEffect_Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1449,6 +1455,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Physics_CCTFilterCallback.h">
       <Filter>00. System\12. PhysX\EventCallback\CCTFilterCallback</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HybridGameObject_Base.h">
+      <Filter>00. System\04. GameObject\HybridEffect_Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

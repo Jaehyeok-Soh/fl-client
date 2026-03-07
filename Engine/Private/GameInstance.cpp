@@ -902,6 +902,16 @@ void CGameInstance::Request_Effect(const std::string& strTag, EFFECT_SPAWN_DESC&
 	m_pEffect_Manager->Request_Effect(strTag, Desc);
 }
 
+void CGameInstance::Push_EffectData(_uint iHashTag, void* Desc)
+{
+	m_pEffect_Manager->Push_EffectData(iHashTag, Desc);
+}
+
+void* CGameInstance::Find_EffectData(_uint iHashTag)
+{
+	return m_pEffect_Manager->Find_EffectData(iHashTag);
+}
+
 void CGameInstance::Push_CollidedData(const COLLIDED_DESC& desc)
 {
 	m_pJudgementSystem->Push_CollidedData(desc);

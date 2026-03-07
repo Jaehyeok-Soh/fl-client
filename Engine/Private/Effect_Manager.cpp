@@ -50,6 +50,31 @@ void CEffect_Manager::Notify_EffectDespawn(_uint iEffectID)
 
 }
 
+void CEffect_Manager::Push_EffectData(_uint iHashTag, void* Desc)
+{
+    CEffectBase::EFFECT_CONTAINERDESC* pDesc = static_cast<CEffectBase::EFFECT_CONTAINERDESC*>(Desc);
+    if (pDesc == nullptr)
+    {
+        MSG_BOX("Desc이 Null입니다 : EffectManager");
+        return;
+    }
+
+    auto result = m_EffectDescData.emplace(iHashTag, *pDesc);
+}
+
+void* CEffect_Manager::Find_EffectData(_uint iHashTag)
+{
+    auto iter = m_EffectDescData.find(iHashTag);
+
+    if (iter == m_EffectDescData.end())
+    {
+        static CEffectBase::EFFECT_CONTAINERDESC tEmptyDesc = {};
+        MSG_BOX("Hash Tag에 맞는 EffectData가 없습니다. : EffectManager");
+        return nullptr;
+    }
+
+    return &(iter->second);
+}
 
 CEffect_Manager* CEffect_Manager::Create()
 {
@@ -68,6 +93,7 @@ void CEffect_Manager::Free()
 {
 	Safe_Release(m_pGameInstance);
     m_mEffectData.clear();
+    m_EffectDescData.clear();
 
 	Super::Free();
 }

@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "DataStruct_EffectEvent.h"
 #include "DataStruct_Effect.h"
+#include "EffectBase.h"
 
 NS_BEGIN(Engine)
 
@@ -26,9 +27,14 @@ public:
 	// TODO : EffectManager에서 Key(EffectOBject ID), Value(EffectHandler)을 가지는 map 컨테이너 관리.
 	// EffectObject가 본인이 반환이 될 때 EffectHandler에게 알려줄 수 있도록 한다.
 	void Notify_EffectDespawn(_uint iEffectID);
+	void Push_EffectData(_uint HashTag, void* Desc);
+	void* Find_EffectData(_uint HashTag);
+	
 private:
-	class CGameInstance* m_pGameInstance = { nullptr };
-	std::unordered_map<_uint, CEffectHandler*>			m_mEffectData = {};
+	class CGameInstance*											m_pGameInstance = { nullptr };
+	std::unordered_map<_uint, CEffectHandler*>						m_mEffectData = {};
+	std::map<_uint, CEffectBase::EFFECT_CONTAINERDESC>				m_EffectDescData = {};	// 해싱한 Data
+
 public:
 	static CEffect_Manager* Create();
 	virtual void Free() override;

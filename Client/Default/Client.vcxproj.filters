@@ -637,6 +637,15 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\ObjectPool">
       <UniqueIdentifier>{32bebfb6-883b-4452-b824-e6ce5b80a0cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect\WarningCircle">
+      <UniqueIdentifier>{190738f3-4463-453c-bfff-445941f9ad5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\HybridGameObject">
+      <UniqueIdentifier>{4a97d26b-a7b1-4ded-aa95-e3e8e55b56c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\HybridGameObject\WarningSpace">
+      <UniqueIdentifier>{39cb2a67-010d-4046-a55d-2272b9069c31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1183,6 +1192,12 @@
     <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_WarningCircle.h">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\WarningCircle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hybrid_WarningSpace.h">
+      <Filter>03. GameObject\HybridGameObject\WarningSpace</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1720,6 +1735,12 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_WarningCircle.cpp">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\WarningCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hybrid_WarningSpace.cpp">
+      <Filter>03. GameObject\HybridGameObject\WarningSpace</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

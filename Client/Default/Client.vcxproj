@@ -174,6 +174,7 @@
     <ClInclude Include="..\Public\Canvas.h" />
     <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\Public\Grass.h" />
+    <ClInclude Include="..\Public\Hybrid_WarningSpace.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -330,6 +331,7 @@
     <ClInclude Include="..\Public\UITrigger.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Vine.h" />
+    <ClInclude Include="..\Public\Effect_WarningCircle.h" />
     <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="..\Public\WorldUI_Component.h" />
@@ -367,6 +369,7 @@
     <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\Gun.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
+    <ClCompile Include="..\Private\Hybrid_WarningSpace.cpp" />
     <ClCompile Include="..\Private\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -537,6 +540,7 @@
     <ClCompile Include="..\Private\UITrigger.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Vine.cpp" />
+    <ClCompile Include="..\Private\Effect_WarningCircle.cpp" />
     <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp" />

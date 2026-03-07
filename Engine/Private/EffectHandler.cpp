@@ -371,7 +371,6 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
 
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matTargetWorld;
-    tEngineDesc.fDuration = script.fDuration;
     tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
     tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
@@ -401,7 +400,6 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
 
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matTargetWorld;
-    tEngineDesc.fDuration = script.fDuration;
     tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
     tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;

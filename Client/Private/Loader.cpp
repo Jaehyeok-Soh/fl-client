@@ -58,9 +58,11 @@
 #include "ColliderPart.h"
 #include "Loader.h"
 #include "Effect.h"
+#include "Effect_WarningCircle.h"
 #include "EffectObject.h"
 #include "BattleField.h"
 #include "Moon_SkillE_Obj.h"
+#include "Hybrid_WarningSpace.h"
 
 //=================
 // SkillObject
@@ -608,7 +610,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// ¿Ã∆Â∆Æ Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_WarningCircle", CEffect_WarningCircle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Hybrid_WarningSpace",	CHybrid_WarningSpace::Create(m_pDevice, m_pDeviceContext));
 		
 		// Projectile
 

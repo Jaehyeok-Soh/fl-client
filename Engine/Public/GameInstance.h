@@ -384,6 +384,9 @@ public:
 #pragma region EFFECT_MANAGER
 	void Request_Effect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, EFFECT_SPAWN_DESC& Desc);
 	void Request_Effect(const std::string& strTag, EFFECT_SPAWN_DESC& Desc);
+
+	void Push_EffectData(_uint iHashTag, void* Desc);
+	void* Find_EffectData(_uint iHashTag);
 #pragma endregion
 
 #pragma region JUDGEMENT_SYSTEM

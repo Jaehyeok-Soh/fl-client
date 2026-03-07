@@ -147,16 +147,25 @@ HRESULT CLevel_Tutorial_Boss::Build_Files()
 	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(iLevelID, eCategory)))
 		return E_FAIL;
-	std::filesystem::path strUIFolderPath = L"../../Resources/Data/EffectData/";
-	if (std::filesystem::exists(strUIFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
-		{
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
 
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
+	std::filesystem::path strEffectFolderPath = L"../../Resources/Data/EffectData/";
+
+	if (std::filesystem::exists(strEffectFolderPath))
+	{
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(strEffectFolderPath))
+		{
+			if (std::filesystem::is_regular_file(entry.path()))
+			{
+				// 확장자가 .json인 것만 골라내기
+				if (entry.path().extension() == ".json")
+				{
+					if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, entry.path())))
+						return E_FAIL;
+
+					if (FAILED(Build_File(iLevelID, eCategory, entry.path().stem().string())))
+						return E_FAIL;
+				}
+			}
 		}
 	}
 #pragma endregion
@@ -164,7 +173,7 @@ HRESULT CLevel_Tutorial_Boss::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	std::filesystem::path strUIFolderPath = L"../../Resources/Data/UIData/Static/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))

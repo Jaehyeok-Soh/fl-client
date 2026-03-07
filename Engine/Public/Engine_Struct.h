@@ -966,18 +966,40 @@ namespace Engine
 #pragma endregion
 
 #pragma region EFFECT
-	typedef struct tagEffectSpawnDesc {
+	typedef struct tagEffectSpawnDesc 
+	{
+		enum class E_VFX_COLORMODE
+		{
+			COLOR_NONCHANGE,
+			COLOR_CHANGE,
+		};
+
+		enum class E_VFX_SIMULTYPE
+		{
+			VFX_LOCAL = 0,
+			VFX_WORLD = 1,
+		};
+	public:
 		SimpleMath::Matrix matWorld = {};							// 계산된 최종 행렬
 		const SimpleMath::Matrix** pTargetBoneMatrix = { nullptr };	// 실시간 추적용 본 행렬 주소
 		const SimpleMath::Matrix** pTransformMatrix = { nullptr };	// 실시간 추적용 본 행렬 주소
-
-		float fDuration = {};										// 유지 시간 (사실 거의 안씀)
-		float fScale = {1.f};										// 사이즈 조절 (이미 Prefab으로 만들어져 있음)
-		float fPlayBackSpeed = {1.f};								// 전체적인 스피드 조절		
-		int iSimulationType = {1};									// LOCAL(1) or WORLD(0)
-
 		int iBoneFlag;
+		int iSimulationType = (int)E_VFX_SIMULTYPE::VFX_WORLD;		// LOCAL(0) or WORLD(1)
+
+	public:
+		float				VFX_fSpeed = { 1.f };					// 전체적인 스피드 조절
+		E_VFX_COLORMODE		VFX_COLORTYPE = E_VFX_COLORMODE::COLOR_NONCHANGE;
+		SimpleMath::Vector3 VFX_Color = {};
 	} EFFECT_SPAWN_DESC;
+
+	typedef struct tagWarningEffectDesc : public EFFECT_SPAWN_DESC
+	{
+		SimpleMath::Vector3 VFX_Target_Position = { 0.f, 0.f, 0.f };
+		//SimpleMath::Vector3 VFX_Attacker_Position = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3 VFX_Scale = { 1.f, 1.f, 1.f };
+		SimpleMath::Vector3 VFX_Rotation = { 0.f, 0.f, 0.f };
+
+	}EFFECT_WARNING_DESC;
 #pragma endregion
 
 #pragma region CameraShaking_Data
