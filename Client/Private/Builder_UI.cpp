@@ -255,10 +255,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		}
 	}
 
-	//Prototype_UI_BossActionImage
-	//Prototype_UI_BossActionText
-
-
 	////////////////////////////////////////
 	// UI_TEXT //
 	else if (eClassType == DTO::EUIClassType::UI_TEXT)
@@ -406,7 +402,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isLoading			= (Type >= DTO::EUIDImageSubClassType::LOADING_BEGIN		&& Type <= DTO::EUIDImageSubClassType::LOADING_END);
 		const _bool isMonsterNameplate	= (Type == DTO::EUIDImageSubClassType::MONSTER_NAMEPLATE_BG);
 		const _bool isAimDot			= (Type >= DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN		&& Type <= DTO::EUIDImageSubClassType::BATTLE_UI_END);
-		const _bool isLevelChange		= (Type >= DTO::EUIDImageSubClassType::LEVEL_CHAGE_1		&& Type <= DTO::EUIDImageSubClassType::LEVEL_CHAGE_5);
+		const _bool isLevelChange		= (Type >= DTO::EUIDImageSubClassType::LEVEL_CHAGE_1		&& Type <= DTO::EUIDImageSubClassType::LEVEL_CHAGE_7);
 		const _bool isCombo				= (Type >= DTO::EUIDImageSubClassType::BATTLE_COMBO_BEGIN	&& Type <= DTO::EUIDImageSubClassType::BATTLE_COMBO_END);
 		const _bool isBossCivila		= (Type >= DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN && Type <= DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END);
 

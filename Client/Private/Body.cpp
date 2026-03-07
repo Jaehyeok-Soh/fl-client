@@ -81,6 +81,10 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	// ÇÏÃ¼ ¹Í½º´Â ²ô±â À§ÇÔ
+	CModel* pMyModel = Get_Component<CModel>();
+	pMyModel->Set_MixAnim_AnimIndex(1, -1);
+
 	return S_OK;
 }
 
@@ -141,9 +145,9 @@ void CBody::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObj
 	Get_Parent()->OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CBody::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CBody::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther);
+	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 void CBody::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -193,6 +197,16 @@ const Matrix* CBody::Get_SocketMatrix(_uint iIndex)
 	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(iIndex))
 	{
 		return &pReturn->Get_CombinedTransformMatrix();
+	}
+
+	return nullptr;
+}
+
+const Matrix* CBody::Get_PosMatrix(_uint iIndex)
+{
+	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(iIndex))
+	{
+		return &pReturn->Get_BindPoseTransformMatrix();
 	}
 
 	return nullptr;

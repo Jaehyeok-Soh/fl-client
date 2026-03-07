@@ -157,6 +157,24 @@ void CPhysics_FilterEventCallback::ProcessOverlap(CGameObject* pOwner, const PxV
 	}
 }
 
+void CPhysics_FilterEventCallback::ProcessRaycast(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc)
+{
+	GAMEOBJECTINFO info = Get_GameObject(pOwner, Conversion_GameObject(pRaycastHitBuffer->block.actor->userData));
+
+	info.leftColliderDesc.eFilterLayer = raycastDesc->eFilterLayer;
+	info.leftColliderDesc.iFilterMask = raycastDesc->iFilterMask;
+	info.leftColliderDesc.iAttackPresetID = raycastDesc->iAttackPresetID;
+
+	info.bHasHitPoint = true;
+	::memcpy(&info.vHitPoint.x, &pRaycastHitBuffer->block.position.x, sizeof(Vec3));
+	::memcpy(&info.vRawNormal.x, &pRaycastHitBuffer->block.normal.x, sizeof(Vec3));
+	const _float fSep = pRaycastHitBuffer->block.distance;
+	info.fDepth = (std::max)(0.0f, -fSep);
+
+	// On collision enter
+	OnCollisionEnter(info);
+}
+
 void CPhysics_FilterEventCallback::OnCollisionEnter(GAMEOBJECTINFO& info)
 {
 	// On collision enter
@@ -219,11 +237,19 @@ CPhysics_FilterEventCallback::GAMEOBJECTINFO CPhysics_FilterEventCallback::Get_G
 {
 	PHYSICSCOLLIDER_DESC leftColliderDesc{};
 	if (leftObj)
-		leftColliderDesc = *leftObj->Get_Component<CPhysicsCollider>()->GetDesc();
+	{
+		auto coll = leftObj->Get_Component<CPhysicsCollider>();
+		if (coll)
+			leftColliderDesc = *coll->GetDesc();
+	}
 
 	PHYSICSCOLLIDER_DESC rightColliderDesc{};
 	if (rightObj)
-		rightColliderDesc = *rightObj->Get_Component<CPhysicsCollider>()->GetDesc();
+	{
+		auto coll = rightObj->Get_Component<CPhysicsCollider>();
+		if (coll)
+			rightColliderDesc = *coll->GetDesc();
+	}
 
 	return GAMEOBJECTINFO(leftObj, leftColliderDesc, rightObj, rightColliderDesc);
 }
@@ -231,8 +257,15 @@ CPhysics_FilterEventCallback::GAMEOBJECTINFO CPhysics_FilterEventCallback::Get_G
 void CPhysics_FilterEventCallback::Ready_EventCallChain()
 {
 	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_COLLISION_ENTER] = [=](GAMEOBJECTINFO& info) {
-		info.leftObject->OnCollision_Enter(info.leftColliderDesc.eFilterLayer, info.rightColliderDesc.eFilterLayer, info.rightObject,
-			COL_HIT_INFO{ info.bHasHitPoint, COLLISIONEVENT::Enum::ON_COLLISION_ENTER, info.leftColliderDesc.iAttackPresetID , info.rightColliderDesc.iAttackPresetID, info.fDepth, info.vHitPoint, info.vRawNormal });
+		COL_HIT_INFO hitInfo{};
+		hitInfo.bHasHitPoint = info.bHasHitPoint;
+		hitInfo.iCollisionPhase = COLLISIONEVENT::Enum::ON_COLLISION_ENTER;
+		hitInfo.iRequester_AttackPresetID = info.leftColliderDesc.iAttackPresetID;
+		hitInfo.iOther_AttackPresetID = info.rightColliderDesc.iAttackPresetID;
+		hitInfo.fDepth = info.fDepth;
+		hitInfo.vPosition = info.vHitPoint;
+		hitInfo.vRawNormal = info.vRawNormal;
+		info.leftObject->OnCollision_Enter(info.leftColliderDesc.eFilterLayer, info.rightColliderDesc.eFilterLayer, info.rightObject, hitInfo);
 #ifdef _DEBUG
 		Debug_Log(COLLISIONEVENT::Enum::ON_COLLISION_ENTER, info);
 #endif // _DEBUG
@@ -253,7 +286,11 @@ void CPhysics_FilterEventCallback::Ready_EventCallChain()
 		};
 
 	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_TRIGGER_ENTER] = [=](GAMEOBJECTINFO& info) {
-		info.leftObject->OnTrigger_Enter(info.leftColliderDesc.eFilterLayer, info.rightColliderDesc.eFilterLayer, info.rightObject);
+		COL_HIT_INFO hitInfo{};
+		hitInfo.iCollisionPhase = COLLISIONEVENT::Enum::ON_COLLISION_ENTER;
+		hitInfo.iRequester_AttackPresetID = info.leftColliderDesc.iAttackPresetID;
+		hitInfo.iOther_AttackPresetID = info.rightColliderDesc.iAttackPresetID;
+		info.leftObject->OnTrigger_Enter(info.leftColliderDesc.eFilterLayer, info.rightColliderDesc.eFilterLayer, info.rightObject, hitInfo);
 #ifdef _DEBUG
 		Debug_Log(COLLISIONEVENT::Enum::ON_TRIGGER_ENTER, info);
 #endif // _DEBUG

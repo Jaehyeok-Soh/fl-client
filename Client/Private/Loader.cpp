@@ -9,6 +9,7 @@
 #include "EffectHandler.h"
 #include "PlayerActionState.h"
 #include "MonsterActionState.h"
+#include "StatCom_Boss.h"
 #include "StatCom_Player.h"
 #include "Collider.h"
 #include "Xibi_GimmikController.h"
@@ -26,6 +27,7 @@
 #include "SkillBase_MoonQ.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
+#include "PhysicsAttackRaycast.h"
 //=================
 // Builder
 //=================
@@ -61,8 +63,10 @@
 #include "Effect_WarningCircle.h"
 #include "EffectObject.h"
 #include "BattleField.h"
+#include "PartEffect.h"
 #include "Moon_SkillE_Obj.h"
 #include "Hybrid_WarningSpace.h"
+
 
 //=================
 // SkillObject
@@ -71,9 +75,12 @@
 #include "ProjectileSpawner_Fan.h"
 #include "SkillObjectSpawner_RandomXZ.h"
 #include "ProjectileSpawner_Radial360.h"
+// xibi
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
 #include "Xibi_Oneshot_Thunder.h"
+// player
+#include "PlayerSkillObj_Headers.h"
 
 
 //=================
@@ -88,6 +95,7 @@
 #include "Vine.h"
 #include "Tree.h"
 #include "Grass.h"
+#include "InvisibleWall.h"
 
 //=================
 // Trigger Box
@@ -224,6 +232,15 @@ HRESULT CLoader::Loading()
 		break;
 	case Client::ELevelType::SQUARE:
 		hr = Loading_For_Square();
+		break;
+	case Client::ELevelType::TAVERN:
+		hr = Loading_For_Tavern();
+		break;
+	case Client::ELevelType::KUANGKENG:
+		hr = Loading_For_Kuangkeng();
+		break;
+	case Client::ELevelType::LIANHUO:
+		hr = Loading_For_Kuangkeng();
 		break;
 	case Client::ELevelType::TEST:
 		hr = Loading_For_Test();
@@ -451,12 +468,23 @@ HRESULT CLoader::Loading_For_Logo()
 	///////////////////////////////////////////////////////
 
 	/* Texture Loading */
+
+	/* Defualt 사진 */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Defualt/")))
+		return E_FAIL;
 	/* Village 사진 */
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Village/")))
 		return E_FAIL;
 	/* Clouds 사진 */
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Clouds/")))
 		return E_FAIL;
+	/*  Lianhuo 사진 */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/Lianhuo/")))
+		return E_FAIL;
+	/* Ice Lake 사진 */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/LandScape/IceLake/")))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->GameDataManager_Load_TextureSplatingInfoData()))
 		return E_FAIL;
 
@@ -483,7 +511,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices	= {3,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
+		desc.vecStageBoneIndices	= {3,5,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
 
 		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
@@ -586,6 +614,8 @@ HRESULT CLoader::Loading_For_Logo()
 	/* player components */
 	// For. Prototype_Component_Stat_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
+	// For. Prototype_Component_Stat_Boss
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Boss", CStatCom_Boss::Create());
 	// For. Prototype_Component_ControlContext_Monster
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Monster", CMonsterControlContext::Create());
 	// For. Prototype_Component_ActionState_Monster
@@ -618,10 +648,11 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// player effect object
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,							CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
-
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillQAttack_Prototype_Tag,						CMoon_SkillQAttack_Obj::Create(m_pDevice, m_pDeviceContext));
 
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
+
 
 #pragma region Map Object
 		/* Map Object */
@@ -634,6 +665,9 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszVine_Prototype_Tag,						CVine::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszRock_Prototype_Tag,						CRock::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
+
+		/* Invisible Wall */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszInvisibleWall_Prototype_Tag,				CInvisibleWall::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 #pragma region TriggerBox
@@ -654,6 +688,11 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Dummy_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+
+#pragma region PartObjs
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
+#pragma endregion
+
 	}
 #pragma endregion
 
@@ -675,7 +714,9 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region PHYSICS
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_AttackRaycast", CPhysicsAttackRaycast::Create(m_pDevice, m_pDeviceContext, nullptr));
 #pragma endregion
+
 #pragma region UI
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerStatProgress",		CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MenuText",					CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
@@ -798,7 +839,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 HRESULT CLoader::Loading_For_Square()
 {
 	/* Square */
-	m_fLoadingRatio = 1.f;
+	m_fLoadingRatio = 0.f;
 
 	// 오브젝트
 
@@ -809,6 +850,75 @@ HRESULT CLoader::Loading_For_Square()
 	m_fLoadingRatio = 1.f;
 	Sleep(5000);
 	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Tavern()
+{
+	/* Square */
+	m_fLoadingRatio = 0.f;
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TAVERN);
+
+	// 이펙트 Object
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+	Sleep(5000);
+
+	m_fLoadingRatio = 1.f;
+
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Kuangkeng()
+{
+	/* Square */
+	m_fLoadingRatio = 0.f;
+
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::KUANGKENG);
+
+
+	// 이펙트 Object
+	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+
+	Sleep(5000);
+
+	m_fLoadingRatio = 1.f;
+
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Lianhuo()
+{
+
+	/* Square */
+	m_fLoadingRatio = 0.f;
+
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
+
+
+	// 이펙트 Object
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
+
+
+	Sleep(5000);
+
+	m_fLoadingRatio = 1.f;
+
+	m_isFinished = true;
+
 	return S_OK;
 }
 
@@ -1033,16 +1143,41 @@ HRESULT CLoader::Ready_Spawner()
 	}
 
 	/* player */
-	// Moon Skill
+	// level : static
+	// Moon SkillE
 	{
 		CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
 		desc.iPoolLevelIndex = 0;
 		desc.wstrSkillPoolTag = g_wszPool_MoonSkillE; // 스킬 poot에서 꺼내올 오브젝트 태그
 		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
 		desc.fLifeTime = 3.5f;
-		desc.fSpeed = 50.f;
+		//desc.fSpeed = 50.f;
 
 		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillE,
+			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	//// Moon SkillQ : sheild
+	//{
+	//	CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
+	//	desc.iPoolLevelIndex = 0;
+	//	desc.wstrSkillPoolTag = g_wszPool_MoonSkillQSheild;
+	//	desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Follow_Owner) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+	//	desc.fLifeTime = 12.f;
+
+	//	if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillQ_Sheild,
+	//		CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
+	//		return E_FAIL;
+	//}
+	// Moon SkillQ : attack
+	{
+		CSkillObjectSpawnerBase::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = 0;
+		desc.wstrSkillPoolTag = g_wszPool_MoonSkillQAttack;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		desc.fLifeTime = 12.f;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillQ_Attack,
 			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}

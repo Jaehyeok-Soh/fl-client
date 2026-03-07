@@ -28,7 +28,7 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 
 HRESULT CStatCom_Player::Initialize_Prototype()
 {
-	if (Super::Initialize_Prototype())
+	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
 	return S_OK;
@@ -36,6 +36,9 @@ HRESULT CStatCom_Player::Initialize_Prototype()
 
 HRESULT CStatCom_Player::Initialize(void* pArg)
 {
+	if (FAILED(Super::Initialize(pArg)))
+		return E_FAIL;
+
 	PLAYER_STATCOMP_DESC* pDesc = static_cast<PLAYER_STATCOMP_DESC*>(pArg);
 
 	m_fMeleeAtt = pDesc->fMeleeAttack;
@@ -62,9 +65,6 @@ HRESULT CStatCom_Player::Initialize(void* pArg)
 	m_FAttState = Attack_State::Melee;
 	pDesc->fAttack = m_fMeleeAtt;
 
-	if (Super::Initialize(pDesc))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -85,7 +85,7 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	m_tExtra_AttackDesc.fAddRate = 0.f;
 	m_tExtra_AttackDesc.fRandomAdd_Rate = 0.f;
 	m_tExtra_AttackDesc.fRandomMul_Rate = 0.f;
-	m_tExtra_AttackDesc.iDamageFlag = 0;
+	m_tExtra_AttackDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);
 	m_tExtra_AttackDesc.vFinalDamege_MinMax = Vec2::Zero;
 	m_tExtra_AttackDesc.vRandomAdd_MinMax = Vec2::Zero;
 	m_tExtra_AttackDesc.vRandomMul_MinMax = Vec2::Zero;
@@ -95,7 +95,7 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	if (m_fCriticalRate + m_fCirticalRate_Add >1.f ||
 	 m_fCriticalRate + m_fCirticalRate_Add <= m_pGameInstance->Rand_Float(0.f, 1.f))
 	{
-		m_tExtra_AttackDesc.iDamageFlag = 1;
+		m_tExtra_AttackDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
 
 		// critical은 일단 더하기로 하는걸로
 		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
@@ -105,14 +105,23 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
 	{
 		m_pESkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc, this);
+		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::SKILLE);
 	}
 	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
 	{
 		m_pQSkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc,this);
+		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ);
 	}
 
 	// 연산 순서 : 우선은 stat 복사 생성시 desc으로 받도록 하자
 	// 좀 복잡해진다면 flag mask 검사후 order 지정
+
+	switch (static_cast<CPlayer*>(Get_Owner())->Get_PlayerType())
+	{
+	case CPlayer::PLAYER_TYPE::MOON:
+		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::MOON);
+		break;
+	}
 
 	return m_tExtra_AttackDesc;
 }
@@ -223,7 +232,11 @@ void CStatCom_Player::Sub_Hp(_float iHealth)
 		// 디펜스가 음수가 되었다면 이제서야 health를 뺌
 		if (m_vDefense.x < 0)
 		{
-			m_vHealth.x += (_uint)m_vDefense.x;
+			m_vHealth.x += m_vDefense.x;
+
+			// UI가 바꿔둠
+			if (m_vHealth.x <= 0.f)
+				m_vHealth.x = 0.f;
 
 			m_vDefense.x = 0;
 		}

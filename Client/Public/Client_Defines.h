@@ -13,6 +13,7 @@ namespace Client
 {
 	static const unsigned int g_iWinSizeX = 1600;
 	static const unsigned int g_iWinSizeY = 900;
+
 	enum class ELevelType : unsigned int
 	{
 		STATIC = 0,
@@ -21,12 +22,15 @@ namespace Client
 		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
 		TUTORIAL_BOSS,		/* 튜토리얼 진입 이후 Boss전 가는 Level Type */
 		SQUARE,				/* 광장 */
+		TAVERN,				/* 술집 */
+		KUANGKENG,			/* 갱도 */
+		LIANHUO,			/* 지옥불 교도소장 보스 */
 
 
-		/* Test Scene은 맨 마지막 */
-		TEST,
-		END
+		TEST,				/* Test Scene은 맨 마지막 */
+		END					
 	};
+
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 #ifdef _DEBUG
 	static const char* LevelTypeToString(int lv)
@@ -38,7 +42,10 @@ namespace Client
 			"LOGO",
 			"TUTORIAL_VILLAGE",
 			"TUTORIAL_BOSS",
+			"TAVERN",
 			"SQUARE",
+			"KUANGKENG",
+			"LIANHUO",
 			"TEST",
 		};
 
@@ -183,8 +190,14 @@ namespace Client
 			return ELevelType::TUTORIAL_BOSS;
 		else if (::strcmp(str.c_str(), "SQUARE") == 0)
 			return ELevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TAVERN") == 0)
+			return ELevelType::TAVERN;
+		else if (::strcmp(str.c_str(), "KUANGKENG") == 0)
+			return ELevelType::KUANGKENG;
 		else if (::strcmp(str.c_str(), "TEST") == 0)
 			return ELevelType::TEST;
+		else if (::strcmp(str.c_str(), "LIANHUO") == 0)
+			return ELevelType::LIANHUO;
 		else
 			return ELevelType::END;
 	}
@@ -243,8 +256,7 @@ namespace Client
 		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
 	};
 
-	enum class EUIEvent : uint32_t
-	{
+	enum class EUIEvent : uint32_t {
 		NONE = 0,
 		HOVER_ENTER,
 		HOVERING,
@@ -256,8 +268,7 @@ namespace Client
 		END
 	};
 
-	enum EUIEvent_Flag : uint32_t
-	{
+	enum EUIEvent_Flag : uint32_t {
 		NONE		= 0u,
 		HOVER_ENTER = 1u << 1,
 		HOVERING	= 1u << 2,
@@ -296,56 +307,61 @@ namespace Client
 		case EUIEvent::PRESS_ENTER:		return EUIEvent_Flag::PRESS_ENTER;
 		case EUIEvent::PRESSING:		return EUIEvent_Flag::PRESSING;
 		case EUIEvent::PRESS_EXIT:		return EUIEvent_Flag::PRESS_EXIT;
-		case EUIEvent::INVOKED:		return EUIEvent_Flag::INVOKED;
-		default:							return EUIEvent_Flag::NONE;
+		case EUIEvent::INVOKED:			return EUIEvent_Flag::INVOKED;
+		default:						return EUIEvent_Flag::NONE;
 		}
 	}
 
 	NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
 		{
-			{EUIEvent::NONE, "NONE"},
+			{EUIEvent::NONE,		"NONE"},
 			{EUIEvent::HOVER_ENTER, "HOVER_ENTER"},
-			{EUIEvent::HOVERING, "HOVERING"},
-			{EUIEvent::HOVER_EXIT, "HOVER_EXIT"},
+			{EUIEvent::HOVERING,	"HOVERING"},
+			{EUIEvent::HOVER_EXIT,	"HOVER_EXIT"},
 			{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
-			{EUIEvent::PRESSING, "PRESSING"},
-			{EUIEvent::PRESS_EXIT, "PRESS_EXIT"},
-			{EUIEvent::INVOKED, "INVOKED"},
+			{EUIEvent::PRESSING,	"PRESSING"},
+			{EUIEvent::PRESS_EXIT,	"PRESS_EXIT"},
+			{EUIEvent::INVOKED,		"INVOKED"},
 		})
 
 		inline std::string UIEventToString(EUIEvent eType)
 	{
 		switch (eType)
 		{
-		case EUIEvent::NONE: return "NONE";
+		case EUIEvent::NONE:		return "NONE";
 		case EUIEvent::HOVER_ENTER: return "HOVER_ENTER";
-		case EUIEvent::HOVERING: return "HOVERING";
-		case EUIEvent::HOVER_EXIT: return "HOVER_EXIT";
+		case EUIEvent::HOVERING:	return "HOVERING";
+		case EUIEvent::HOVER_EXIT:	return "HOVER_EXIT";
 		case EUIEvent::PRESS_ENTER: return "PRESS_ENTER";
-		case EUIEvent::PRESSING: return "PRESSING";
-		case EUIEvent::PRESS_EXIT: return "PRESS_EXIT";
-		case EUIEvent::INVOKED: return "INVOKED";
+		case EUIEvent::PRESSING:	return "PRESSING";
+		case EUIEvent::PRESS_EXIT:	return "PRESS_EXIT";
+		case EUIEvent::INVOKED:		return "INVOKED";
 		default: return "";
 		}
 	}
 
 	inline EUIEvent StringToUIEvent(const std::string& str)
 	{
-		if (str == "NONE") return EUIEvent::NONE;
-		else if (str == "HOVER_ENTER") return EUIEvent::HOVER_ENTER;
-		else if (str == "HOVERING") return EUIEvent::HOVERING;
-		else if (str == "HOVER_EXIT") return EUIEvent::HOVER_EXIT;
-		else if (str == "PRESS_ENTER") return EUIEvent::PRESS_ENTER;
-		else if (str == "PRESSING") return EUIEvent::PRESSING;
-		else if (str == "PRESS_EXIT") return EUIEvent::PRESS_EXIT;
-		else if (str == "INVOKED") return EUIEvent::INVOKED;
+		if (str == "NONE")				return EUIEvent::NONE;
+		else if (str == "HOVER_ENTER")	return EUIEvent::HOVER_ENTER;
+		else if (str == "HOVERING")		return EUIEvent::HOVERING;
+		else if (str == "HOVER_EXIT")	return EUIEvent::HOVER_EXIT;
+		else if (str == "PRESS_ENTER")	return EUIEvent::PRESS_ENTER;
+		else if (str == "PRESSING")		return EUIEvent::PRESSING;
+		else if (str == "PRESS_EXIT")	return EUIEvent::PRESS_EXIT;
+		else if (str == "INVOKED")		return EUIEvent::INVOKED;
 		else return EUIEvent::END;
 	}
 
-	enum class ETriggerEventType { HOVER_ENTER, HOVER_EXIT, PRESS_ENTER, PRESS_EXIT, END };
+	enum class ETriggerEventType { 
+		HOVER_ENTER, 
+		HOVER_EXIT, 
+		PRESS_ENTER, 
+		PRESS_EXIT, 
+		END 
+	};
 
-	enum class EUIFlip
-	{
+	enum class EUIFlip {
 		NONE = 0,
 		FILP_X,
 		FLIP_Y,
@@ -353,10 +369,15 @@ namespace Client
 		END
 	};
 
-	enum class EUITextureSlot : uint32_t { DEFAULT, NOISE, ALPHA_MASK, GLOW, END };
+	enum class EUITextureSlot : uint32_t { 
+		DEFAULT, 
+		NOISE,
+		ALPHA_MASK, 
+		GLOW, 
+		END 
+	};
 
-	enum class EUIPrefabType
-	{
+	enum class EUIPrefabType {
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
 		DAMAGE_FONTS_COMMON,
@@ -404,8 +425,36 @@ namespace Client
 		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
 	}UI_PREFAB_DATA;
 
-	enum class ECombotype {C, B, A, S, END};
+	enum class ECombotype {
+		C, 
+		B, 
+		A, 
+		S, 
+		END
+	};
+
 #pragma endregion
+
+
+
+#pragma region Player
+
+	// COLLIDED_DESC -> EXTRA_ATTACK_DESC ->iDamageFlag 에 대한 정보
+	enum class EPlayerAttackFlag : Flags {
+		NONE = 0,
+
+		// player 종류
+		MOON = 0x000001,
+		BERO = 0x000002,
+		PIGGY = 0x000004,
+
+		NORMAL = 0x000008,
+		CRITICAL = 0x000010,
+		SKILLE = 0x000020,
+		SKILLQ = 0x000040
+	};
+
+#pragma	endregion
 
 
 #pragma region BroadCast Enum Mapping
@@ -515,6 +564,11 @@ namespace Client
 
 	inline constexpr wchar_t g_wszMoonSkillE__Prototype_Tag[]								{ L"Prototype_GameObject_Moon_SkillE" };
 	inline constexpr wchar_t g_wszPool_MoonSkillE[]											{ L"Pool_Moon_SkillE" };
+	//inline constexpr wchar_t g_wszMoonSkillQSheild_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQSheild" };
+	//inline constexpr wchar_t g_wszPool_MoonSkillQSheild[]									{ L"Pool_Moon_SkillQSheild" };
+	inline constexpr wchar_t g_wszMoonSkillQAttack_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQAttack" };	// obj 프로토타입 태그 값
+	inline constexpr wchar_t g_wszPool_MoonSkillQAttack[]									{ L"Pool_Moon_SkillQAttack" };					// pool에서 obj 꺼내올 태그 값
+
 #pragma endregion
 
 #pragma region SkillObjectSpawner 관련
@@ -524,7 +578,9 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
 
-	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]					{ L"Prototype_Spawner_PlayerMoon_SkillE" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]							{ L"Prototype_Spawner_PlayerMoon_SkillE" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Attack[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Attack" };
 #pragma endregion
 
 #pragma region MapObject 관련
@@ -537,6 +593,10 @@ namespace Client
 	inline constexpr wchar_t g_wszVine_Prototype_Tag[]							{ L"Prototype_GameObject_Vine" };
 	inline constexpr wchar_t g_wszRock_Prototype_Tag[]							{ L"Prototype_GameObject_Rock" };
 	inline constexpr wchar_t g_wszWater_Prototype_Tag[]							{ L"Prototype_GameObject_Water" };
+
+
+
+	inline constexpr wchar_t g_wszInvisibleWall_Prototype_Tag[]					{ L"Prototype_GameObject_InvisibleWall" };
 #pragma endregion
 
 #pragma region Trigger Box 관련
@@ -564,6 +624,13 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
 #pragma endregion
 
+#pragma region Part Objects
+
+	/* Bounding Box */
+	inline constexpr wchar_t g_wszPartObj_Effect_Prototype_Tag[]{ L"Prototype_GameObject_Part_Effect" }; // static
+
+#pragma endregion
+
 #pragma region 기타
 	inline constexpr wchar_t g_wszBattleField_Prototype_Tag[]					{ L"Prototype_GameObject_BattleField" };
 #pragma endregion
@@ -584,6 +651,7 @@ namespace Client
 	inline constexpr wchar_t g_wszEffectLayer[]									{ L"Effect_Layer" };
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
+	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
 }
 #pragma endregion
 

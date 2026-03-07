@@ -40,6 +40,31 @@ public:
 		Mask_RB = KeyFlag::S | KeyFlag::A,
 	};
 
+	enum PitchYawFlag : Flags
+	{
+			YR = 0x00001
+		,	YM = 0x00002
+		,	YL = 0x00004
+
+		,	PU = 0x00008
+		,	PM = 0x00010
+		,	PD = 0x00020
+	};
+
+	enum PitchYawMask : Flags
+	{
+			Mask_RU = PitchYawFlag::YR | PitchYawFlag::PU
+		,	Mask_RM = PitchYawFlag::YR | PitchYawFlag::PM
+
+		,	Mask_MD = PitchYawFlag::YM | PitchYawFlag::PD
+		,	Mask_MU = PitchYawFlag::YM | PitchYawFlag::PU
+
+		,	Mask_LM = PitchYawFlag::YL | PitchYawFlag::PM
+		,	Mask_LD = PitchYawFlag::YL | PitchYawFlag::PD
+	};
+
+
+
 	typedef struct tagGunStateDesc
 	{
 		//Vec4 vWSAD_AnimIdx = {-1.f,-1.f ,-1.f ,-1.f };
@@ -102,6 +127,10 @@ protected:
 
 	void GunEnd();
 
+	void Look_Control(_float fTimeDelta);
+
+
+	// 움직임 관련 함수
 private:
 	void Jump(const _float fTimeDelta);
 

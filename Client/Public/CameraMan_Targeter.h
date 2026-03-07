@@ -14,11 +14,11 @@ class CBody;
 
 enum class TargeterState : _uint
 {
-	NORMAL = 0,
+	NORMAL = 0,		// player tarcking cam
 	TARGETSYNC,
-	GUN,
-	CINEMATIC,
-	Bone
+	GUN,			// tps cam
+	SKILL_SEQUENCE,
+	END
 };
 
 class CCameraMan_Targeter final : public CCameraMan
@@ -43,6 +43,10 @@ public:
 	void Change_CamState(_uint iState);
 
 	HRESULT	Ready_GlobalEvent();
+
+public:
+	_float Get_Pitch() const { return m_fPitch; }
+
 private:
 	void Update_Priority_State(const _float fTimeDelta);
 	void Update_State(const _float fTimeDelta);
@@ -64,10 +68,10 @@ private:
 	void GunCam_Update(const _float fTimeDelta);
 	void GunCam_End();
 
-	//void GunCam_Begin();
-	//void GunCam_Update_Priority(const _float fTimeDelta);
-	//void GunCam_Update(const _float fTimeDelta);
-	//void GunCam_End();
+	void Skill_SequeneCam_Begin();
+	void Skill_SequeneCam_Update_Priority(const _float fTimeDelta);
+	void Skill_SequeneCam_Update(const _float fTimeDelta);
+	void Skill_SequeneCam_End();
 
 private:
 	void Update_Input(const _float fTimeDelta);
@@ -76,7 +80,7 @@ private:
 	void OnChangeLockonTarget(CGameObject* pGo);
 	Vec3 Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform* pTrnasform);
 
-	_bool Change_Distance(_float fTargetDistance, const _float fTimeDelta);
+	_bool Change_Distance(_float fTargetDistance,_float fPreDistance, _float& fCurDistanxe, const _float fTimeDelta);
 
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
@@ -98,16 +102,24 @@ private:
 	
 	// 회전 보간용
 	_float m_fYaw			= { 0.f };
-	_float m_fYaw_Target	= { 0.f };
+	_float m_fYaw_Target	= { 0.f }; 
 	_float m_fPitch			= { 0.f };
 	_float m_fPitch_Target	= { 0.f };
 	
-	_float m_fCurDistance		= { 3.f };
+	// 초기 값은 normal이랑 같도록 한다
+	_float m_fCurRightDistance		= { 0.f }; // 이거 하고 있었슨.
+	_float m_fCurLookDistance		= { 3.f };
 
-	_float m_fNormalDistance	= { 3.f };
-	_float m_fGunDistance		= { 1.f };
+	// right, look
+	Vec2	m_vNormalDistance	= { 0.f, 3.f };
+	Vec2	m_vGunDistance		= { 0.6f,1.f };
+	Vec2	m_vPreDisatance		= { 0.f,0.f };
+
+
+	_float m_fMoveDistanceTime	= { 0.28f };
+
+
 	_float m_fDistanceSpeed		= { 5.f };
-	MinMax m_MGun_RightDistance = { 0.f,1.f };
 
 	Vec3 m_vTargetPos = Vec3::Zero;
 

@@ -98,6 +98,8 @@ protected:
 	HRESULT Bind_Transition(vector<DTO::STATE_TRANSITION> &transition);
 	HRESULT Bind_Feature();
 	HRESULT Bind_ConditionFeature();
+	HRESULT Bind_StartConditionFeature();
+	HRESULT Bind_EndConditionFeature();
 	_bool Check_Transition(vector<DTO::STATE_TRANSITION>& transition);
 protected:
 	DTO::MONSTER_STATEBASE_DESC* m_pDesc = { nullptr };
@@ -107,8 +109,12 @@ protected:
 	vector<BOUND_FEATURE> m_vecFeature;
 	vector<BOUND_CONDFEATURE> m_vecConditionFeature;
 
-	_uint m_iThisStateIndex = {};
+	// Start
+	vector<BOUND_CONDFEATURE> m_vecStartConditionFeature;
+	// End
+	vector<BOUND_CONDFEATURE> m_vecEndConditionFeature;
 
+	_uint m_iThisStateIndex = {};
 public:
 	virtual void Free() override;
 

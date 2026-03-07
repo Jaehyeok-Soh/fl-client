@@ -214,6 +214,7 @@ namespace Engine
 		PX_COLLIDER,
 		PX_CCT,
 		PX_ATTACKOVERLAP,
+		PX_ATTACKRAYCAST,
 		// ¿Ã∆Â∆Æ
 		EF_ANIMHANDLER,
 		//
@@ -433,9 +434,10 @@ namespace Engine
 			TRIGGER_DIRECTION = 1 << 16,
 			TRIGGER_BOX = 1 << 17,
 
+			
+			INVISIBLE_WALL = 1 << 18,
 
-
-			NONE = 1 << 18,
+			NONE = 1 << 19,
 			END
 		};
 
@@ -447,7 +449,7 @@ namespace Engine
 		{
 			static constexpr unsigned int iTriggerLayer
 			{
-				TRIGGER_UI | TRIGGER_QUEST | TRIGGER_SPAWN | TRIGGER_DIRECTION
+				TRIGGER_UI | TRIGGER_QUEST | TRIGGER_SPAWN | TRIGGER_DIRECTION | TRIGGER_BOX
 			};
 			return (iFlag & iTriggerLayer) != 0;
 		}

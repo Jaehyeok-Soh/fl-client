@@ -406,6 +406,7 @@ HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 	return S_OK;
 }
 
+
 CModel* CMapToolManager::Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMonsterType)
 {
 	CModel* pModel{ nullptr };

@@ -249,14 +249,17 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 
 	if (LoadJson.contains("Client Make Path Desc"))
 	{
-		for (auto& DescJson : LoadJson["Client Make Path Desc"])
+		if (IsExist_ClientMakePathDesc(tData.eClientMakePath) == true)
 		{
-			if (DescJson.is_null()) continue;
-			CLIENT_MAKEPATH_DESC_BASE* pDescBase = Engine::Create_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath),nullptr);
-			if (!pDescBase) continue;
-			pDescBase->from_Json(DescJson);
-			tData.vecClientMakePathDesc.push_back(pDescBase);
-		} 
+			tData.vecClientMakePathDesc.clear();
+			for (auto& DescJson : LoadJson["Client Make Path Desc"])
+			{
+				if (DescJson.is_null()) continue;
+				CLIENT_MAKEPATH_DESC_BASE* pDescBase = Engine::Create_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath), nullptr);
+				pDescBase->from_Json(DescJson);
+				tData.vecClientMakePathDesc.push_back(pDescBase);
+			}
+		}
 	}
 }
 #pragma endregion
@@ -307,7 +310,6 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 {
 	switch (ePath)
 	{
-	case DTO::EClientMakePath::StaticObject:						return pSource == nullptr ? new STATICOBJECT_DESC	: new STATICOBJECT_DESC(*static_cast<STATICOBJECT_DESC*>(pSource));
 	case DTO::EClientMakePath::LandScape:							return pSource == nullptr ? new LANDSCAPE_DESC		: new LANDSCAPE_DESC(*static_cast<LANDSCAPE_DESC*>(pSource));
 
 

@@ -7,6 +7,7 @@ namespace Tool
     // Client의 CMonsterState_Factory 등록 목록을 수동으로 옮겨 적는 곳
     inline constexpr const char* kConditionNames[] =
     {
+        "condition_true_always",
         "condition_target_encount",
         "condition_in_melee_range",
         "condition_in_attack_range",

@@ -117,6 +117,9 @@ HRESULT CUILevelChange_Image::Attach_Personal_Info()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_1:
+		m_eNextLevelID = ELevelType::LIANHUO;
+		m_wstrText = L"지옥불의 교도소장";
+		m_vFontColor = Vec4{ 0.0f, 222.0f / 255.0f, 165.0f / 255.0f, 1.f };
 		break;
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_2:
 		m_eNextLevelID = ELevelType::TUTORIAL_VILLAGE;
@@ -137,6 +140,16 @@ HRESULT CUILevelChange_Image::Attach_Personal_Info()
 		m_eNextLevelID = ELevelType::TEST;
 		m_wstrText = L"테스트";
 		m_vFontColor = Vec4{ 1.0f, 0.423f, 0.051f, 1.f };
+		break;
+	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_6:
+		m_eNextLevelID = ELevelType::TAVERN;
+		m_wstrText = L"술집"; 
+		m_vFontColor = Vec4{ 0.92f, 0.71f, 0.18f, 1.f };
+		break;
+	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_7:
+		m_eNextLevelID = ELevelType::KUANGKENG;
+		m_wstrText = L"갱도";
+		m_vFontColor = Vec4{ 0.45f, 0.85f, 0.52f, 1.f };
 		break;
 	case DTO::EUIDImageSubClassType::END:
 	default:

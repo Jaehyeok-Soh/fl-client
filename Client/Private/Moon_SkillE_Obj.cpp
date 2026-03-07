@@ -38,6 +38,7 @@ HRESULT CMoon_SkillE_Obj::Initialize(void* pArg)
 
 	Get_Component<CPhysicsRigidBody>()->Awake();
 	Get_Component<CEffectHandler>()->Setup_ForOwner(this);
+
 	return S_OK;
 }
 
@@ -93,17 +94,9 @@ void CMoon_SkillE_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLaye
 {
 }
 
-void CMoon_SkillE_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMoon_SkillE_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	COLLIDED_DESC desc{};
-	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
-	desc.iRequesterLayer = iMyColliderLayer;
-	desc.iOtherLayer = iOtherLayer;
-	desc.pRequester = this;
-	desc.pOther = pOther;
-	//desc.tHitInfo = tHitInfo;
-
-	m_pGameInstance->Push_CollidedData(desc);
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
 _bool CMoon_SkillE_Obj::On_Hit(const HIT_DESC& hitDesc)
@@ -117,10 +110,13 @@ void CMoon_SkillE_Obj::Try_Attack(const HIT_DESC& hitDesc)
 
 	// 일반 공격 데미지 폰트
 	{
+		Vec3 vPos =  Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		vPos.y += 0.5f;
+
 		UI_PREFAB_DATA tPrefabData = {};
-		tPrefabData.DamageFontData.iDamage = hitDesc.fFinalDamage; // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-		tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
-		tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
+		tPrefabData.DamageFontData.iDamage		= static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		tPrefabData.DamageFontData.vFontColor	= Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
+		tPrefabData.DamageFontData.vHitPos = vPos; // 데미지 폰트를 띄울 World 위치 // 
 		tPrefabData.DamageFontData.vRandOffset = Vec3{
 			m_pGameInstance->Rand_Float(-1.f, 1.f),
 			m_pGameInstance->Rand_Float(-1.f, 1.f),
@@ -186,7 +182,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Components()
 			cloneDesc.bIsActive			= true;
 			cloneDesc.vCenter			= { 0.f, 0.3f, 0.f };
 			cloneDesc.vExtents			= { 0.3f, 1.f,0.3f };
-			cloneDesc.strAttackPresetTag = "Xibi_Circle";
+			cloneDesc.strAttackPresetTag = "MoonSkill_E";
 			PHYSICSMATERIAL_DESC mtrlDesc{};
 			mtrlDesc.eMaterial			= EPhysicsMaterial::CONCRETE;
 			cloneDesc.tMaterial			= mtrlDesc;

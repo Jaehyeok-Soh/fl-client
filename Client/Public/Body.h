@@ -32,13 +32,14 @@ public:
 	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual HRESULT Render() override;
 public:
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);
 	const Matrix* Get_SocketMatrix(_uint iIndex);
+	const Matrix* Get_PosMatrix(_uint iIndex);
 	CBone* Get_CamBone();
 	CBone* Get_CamSocketBone();
 

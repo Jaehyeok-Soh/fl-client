@@ -71,6 +71,7 @@ HRESULT CPhysics_Module::Initialize()
 		sceneDesc.gravity = PxVec3(0.f, -9.81f, 0.f);
 		sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 		sceneDesc.flags |= PxSceneFlag::eENABLE_ACTIVE_ACTORS;
+		//sceneDesc.flags |= PxSceneFlag::eREQUIRE_RW_LOCK;
 
 		PxU32 numCores = PxThread::getNbPhysicalCores();
 		m_pDispatcher = PxDefaultCpuDispatcherCreate(numCores == 0 ? 0 : numCores - 1);
@@ -202,8 +203,12 @@ HRESULT CPhysics_Module::Initialize()
 
 void CPhysics_Module::StepPhysics(_float fTimeDelta)
 {
+	m_pScene->lockWrite();
+
 	m_pScene->simulate(std::clamp(fTimeDelta, 1.f / 120.f, 1.f / 30.f));
 	m_pScene->fetchResults(true);
+
+	m_pScene->unlockWrite();
 
 #ifdef _DEBUG
 	if (KEY_BUTTON_DOWN(DIK_F1))
@@ -326,20 +331,14 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1) == false)
+	_bool bPass0 = ((filterData0.word0 & filterData1.word1) != 0);
+	_bool bPass1 = ((filterData1.word0 & filterData0.word1) != 0);
+	// Pair가 아닐 때
+	if ((bPass0 && bPass1) == false)
 		return PxFilterFlag::eSUPPRESS;
 
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
-		if (PxFilterObjectIsKinematic(attributes0) || PxFilterObjectIsKinematic(attributes1))
-		{
-			pairFlags = PxPairFlag::eTRIGGER_DEFAULT
-				| PxPairFlag::eNOTIFY_TOUCH_FOUND
-				| PxPairFlag::eNOTIFY_TOUCH_LOST;
-
-			return PxFilterFlag::eDEFAULT;
-		}
-
 		pairFlags = PxPairFlag::eTRIGGER_DEFAULT
 			| PxPairFlag::eNOTIFY_TOUCH_FOUND
 			| PxPairFlag::eNOTIFY_TOUCH_LOST;
@@ -367,7 +366,7 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	// Enter에서만 추출하기 위해 사용
 	// CPhysics_FilterEventCallback::onContact에서 Flag 체크후 GAMEOBJECTINFO에 넣는중
 	if (PHYSICSFILTERGROUP::IsAttackPair(filterData0.word0, filterData1.word0))
-		pairFlags = PxPairFlag::eNOTIFY_CONTACT_POINTS;
+		pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
 
 	return PxFilterFlag::eDEFAULT;
 }
@@ -418,6 +417,11 @@ void CPhysics_Module::GetActiveActors()
 void CPhysics_Module::Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc)
 {
 	m_pFilterEventCallback->ProcessOverlap(pOwner, vOverlapPoint, pOverlapHit, event, hitboxDesc);
+}
+
+void CPhysics_Module::Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc)
+{
+	m_pFilterEventCallback->ProcessRaycast(pOwner, pRaycastHitBuffer, raycastDesc);
 }
 
 _bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)

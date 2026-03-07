@@ -172,6 +172,7 @@
     <ClInclude Include="..\Public\Bush.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\InvisibleWall.h" />
     <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\Public\Grass.h" />
     <ClInclude Include="..\Public\Hybrid_WarningSpace.h" />
@@ -209,7 +210,10 @@
     <ClInclude Include="..\Public\imstb_textedit.h" />
     <ClInclude Include="..\Public\imstb_truetype.h" />
     <ClInclude Include="..\Public\LandScape.h" />
+    <ClInclude Include="..\Public\Level_Kuangkeng.h" />
+    <ClInclude Include="..\Public\Level_Lianhuo.h" />
     <ClInclude Include="..\Public\Level_Square.h" />
+    <ClInclude Include="..\Public\Level_Tavern.h" />
     <ClInclude Include="..\Public\Level_Test.h" />
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\MonsterActionState.h" />
@@ -223,13 +227,17 @@
     <ClInclude Include="..\Public\Monster_Dog.h" />
     <ClInclude Include="..\Public\Monster_Dog_Body.h" />
     <ClInclude Include="..\Public\Moon_SkillE_Obj.h" />
+    <ClInclude Include="..\Public\Moon_SkillQAttack_Obj.h" />
     <ClInclude Include="..\Public\Moss.h" />
+    <ClInclude Include="..\Public\PartEffect.h" />
     <ClInclude Include="..\Public\Physics_LandScape.h" />
     <ClInclude Include="..\Public\Physics_Terrain.h" />
     <ClInclude Include="..\Public\Plants.h" />
+    <ClInclude Include="..\Public\PlayerSkillObj_Headers.h" />
     <ClInclude Include="..\Public\Rock.h" />
     <ClInclude Include="..\Public\SkillBase_MoonE.h" />
     <ClInclude Include="..\Public\SkillBase_MoonQ.h" />
+    <ClInclude Include="..\public\StatCom_Boss.h" />
     <ClInclude Include="..\Public\StatCom_Player.h" />
     <ClInclude Include="..\Public\State_Charge.h" />
     <ClInclude Include="..\Public\StateBase_Monster.h" />
@@ -362,6 +370,7 @@
     <ClCompile Include="..\Private\Bush.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
+    <ClCompile Include="..\Private\InvisibleWall.cpp" />
     <ClCompile Include="..\Private\ColliderPart.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Builder_Effect.cpp" />
@@ -419,7 +428,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\LandScape.cpp" />
+    <ClCompile Include="..\Private\Level_Kuangkeng.cpp" />
+    <ClCompile Include="..\Private\Level_Lianhuo.cpp" />
     <ClCompile Include="..\Private\Level_Square.cpp" />
+    <ClCompile Include="..\Private\Level_Tavern.cpp" />
     <ClCompile Include="..\Private\Level_Test.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\MonsterActionState.cpp" />
@@ -433,12 +445,15 @@
     <ClCompile Include="..\Private\Monster_Dog.cpp" />
     <ClCompile Include="..\Private\Monster_Dog_Body.cpp" />
     <ClCompile Include="..\Private\Moon_SkillE_Obj.cpp" />
+    <ClCompile Include="..\Private\Moon_SkillQAttack_Obj.cpp" />
     <ClCompile Include="..\Private\Moss.cpp" />
+    <ClCompile Include="..\Private\PartEffect.cpp" />
     <ClCompile Include="..\Private\Physics_LandScape.cpp" />
     <ClCompile Include="..\Private\Plants.cpp" />
     <ClCompile Include="..\Private\Rock.cpp" />
     <ClCompile Include="..\Private\SkillBase_MoonE.cpp" />
     <ClCompile Include="..\Private\SkillBase_MoonQ.cpp" />
+    <ClCompile Include="..\private\StatCom_Boss.cpp" />
     <ClCompile Include="..\Private\StatCom_Player.cpp" />
     <ClCompile Include="..\Private\State_Charge.cpp" />
     <ClCompile Include="..\Private\StateBase_Monster.cpp" />
