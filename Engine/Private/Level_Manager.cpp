@@ -24,6 +24,7 @@ HRESULT CLevel_Manager::Change_Level(_uint iNewLevelID, CLevel* pNewLevel)
 	m_pCurrentLevel = pNewLevel;
 	m_iCurrentLevelID = iNewLevelID;
 	m_pGameInstance->SetChangeLevelSequence(false);
+	m_pGameInstance->FlushScene();
  	Awake();
 	return S_OK;
 }

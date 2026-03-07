@@ -24,6 +24,7 @@ private:
 	HRESULT Build_Prototype();
 	HRESULT Build_Files();
 	HRESULT Ready_Player_Layer(const wstring& wstrLayerTag);
+	HRESULT Ready_Player_SkillObjPool();
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Lights();
@@ -32,6 +33,10 @@ private:
 	HRESULT Ready_Boss_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();
+
+	// TEST
+	HRESULT Ready_HybridObject();
+	HRESULT Spawn_HybridObject();
 private:
 	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
 public:

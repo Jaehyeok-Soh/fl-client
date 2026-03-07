@@ -197,6 +197,7 @@
     <ClCompile Include="..\private\FxShaderVariant.cpp" />
     <ClCompile Include="..\Private\GameData_Struct.cpp" />
     <ClCompile Include="..\private\GimmikController.cpp" />
+    <ClCompile Include="..\Private\HybridGameObject_Base.cpp" />
     <ClCompile Include="..\Private\InstanceMesh.cpp" />
     <ClCompile Include="..\Private\DataDocument_Effect.cpp" />
     <ClCompile Include="..\Private\Cell.cpp" />
@@ -270,6 +271,7 @@
     <ClCompile Include="..\private\Octree_Manager.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\Private\PhysicsAttackOverlap.cpp" />
+    <ClCompile Include="..\Private\PhysicsAttackRaycast.cpp" />
     <ClCompile Include="..\Private\PhysicsCCT.cpp" />
     <ClCompile Include="..\Private\Physics_CCTFilterCallback.cpp" />
     <ClCompile Include="..\Private\PhysicsCollider.cpp" />
@@ -374,6 +376,7 @@
     <ClInclude Include="..\public\FxShaderVariant.h" />
     <ClInclude Include="..\Public\GameData_Struct.h" />
     <ClInclude Include="..\public\GimmikController.h" />
+    <ClInclude Include="..\Public\HybridGameObject_Base.h" />
     <ClInclude Include="..\Public\InstanceMesh.h" />
     <ClInclude Include="..\Public\ComputeShader.h" />
     <ClInclude Include="..\Public\DataDocument_Effect.h" />
@@ -446,6 +449,7 @@
     <ClInclude Include="..\public\Octree_Manager.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\Public\PhysicsAttackOverlap.h" />
+    <ClInclude Include="..\Public\PhysicsAttackRaycast.h" />
     <ClInclude Include="..\Public\PhysicsCCT.h" />
     <ClInclude Include="..\Public\Physics_CCTFilterCallback.h" />
     <ClInclude Include="..\Public\PhysicsCollider.h" />

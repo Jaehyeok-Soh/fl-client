@@ -31,6 +31,14 @@
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
 #pragma endregion
 
+
+#pragma region ±â´É
+
+#include "InvisibleWall.h"
+
+#pragma endregion
+
+
 #include "PhysicsCCT.h"
 #include "GameInstance.h"
 
@@ -104,6 +112,10 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::TriggerBox_ChangeLevel:				Create_TriggerBox_ChangeLevel(tData); break;
 			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			Create_TriggerBox_MonsterSpawner(tData); break;
 			case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	Create_TriggerBox_GlobalEvent_BroadCaster(tData); break;
+
+
+
+			case DTO::EClientMakePath::Invisible_Wall:						Create_InvisibleWall(tData); break;
 
 
 			default:									return E_FAIL;
@@ -528,6 +540,30 @@ HRESULT CBuilder_Map::Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_
 	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), 
 									g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
 									g_wszTriggerBoxLayer, &pDesc);
+
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Create_InvisibleWall(const DTO::TMap_MapObjectData& tData)
+{
+	CInvisibleWall::INVISIBLEWALL_DESC tDesc{};
+
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+
+	/* SRT DATA */
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+		g_wszInvisibleWall_Prototype_Tag, ENUM_TO_UINT(m_eLevelType),
+		g_wszInvisibleWallLayer, &tDesc);
+	
 
 	return S_OK;
 }

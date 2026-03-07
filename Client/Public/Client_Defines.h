@@ -24,6 +24,7 @@ namespace Client
 		SQUARE,				/* 광장 */
 		TAVERN,				/* 술집 */
 		KUANGKENG,			/* 갱도 */
+		LIANHUO,			/* 지옥불 교도소장 보스 */
 
 
 		TEST,				/* Test Scene은 맨 마지막 */
@@ -41,9 +42,10 @@ namespace Client
 			"LOGO",
 			"TUTORIAL_VILLAGE",
 			"TUTORIAL_BOSS",
-			"SQUARE",
 			"TAVERN",
+			"SQUARE",
 			"KUANGKENG",
+			"LIANHUO",
 			"TEST",
 		};
 
@@ -188,8 +190,14 @@ namespace Client
 			return ELevelType::TUTORIAL_BOSS;
 		else if (::strcmp(str.c_str(), "SQUARE") == 0)
 			return ELevelType::SQUARE;
+		else if (::strcmp(str.c_str(), "TAVERN") == 0)
+			return ELevelType::TAVERN;
+		else if (::strcmp(str.c_str(), "KUANGKENG") == 0)
+			return ELevelType::KUANGKENG;
 		else if (::strcmp(str.c_str(), "TEST") == 0)
 			return ELevelType::TEST;
+		else if (::strcmp(str.c_str(), "LIANHUO") == 0)
+			return ELevelType::LIANHUO;
 		else
 			return ELevelType::END;
 	}
@@ -428,6 +436,27 @@ namespace Client
 #pragma endregion
 
 
+
+#pragma region Player
+
+	// COLLIDED_DESC -> EXTRA_ATTACK_DESC ->iDamageFlag 에 대한 정보
+	enum class EPlayerAttackFlag : Flags {
+		NONE = 0,
+
+		// player 종류
+		MOON = 0x000001,
+		BERO = 0x000002,
+		PIGGY = 0x000004,
+
+		NORMAL = 0x000008,
+		CRITICAL = 0x000010,
+		SKILLE = 0x000020,
+		SKILLQ = 0x000040
+	};
+
+#pragma	endregion
+
+
 #pragma region BroadCast Enum Mapping
 
 	enum class EGlobal_Broadcast_Type
@@ -535,6 +564,11 @@ namespace Client
 
 	inline constexpr wchar_t g_wszMoonSkillE__Prototype_Tag[]								{ L"Prototype_GameObject_Moon_SkillE" };
 	inline constexpr wchar_t g_wszPool_MoonSkillE[]											{ L"Pool_Moon_SkillE" };
+	//inline constexpr wchar_t g_wszMoonSkillQSheild_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQSheild" };
+	//inline constexpr wchar_t g_wszPool_MoonSkillQSheild[]									{ L"Pool_Moon_SkillQSheild" };
+	inline constexpr wchar_t g_wszMoonSkillQAttack_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQAttack" };	// obj 프로토타입 태그 값
+	inline constexpr wchar_t g_wszPool_MoonSkillQAttack[]									{ L"Pool_Moon_SkillQAttack" };					// pool에서 obj 꺼내올 태그 값
+
 #pragma endregion
 
 #pragma region SkillObjectSpawner 관련
@@ -544,7 +578,9 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
 
-	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]					{ L"Prototype_Spawner_PlayerMoon_SkillE" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]							{ L"Prototype_Spawner_PlayerMoon_SkillE" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Attack[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Attack" };
 #pragma endregion
 
 #pragma region MapObject 관련
@@ -557,6 +593,10 @@ namespace Client
 	inline constexpr wchar_t g_wszVine_Prototype_Tag[]							{ L"Prototype_GameObject_Vine" };
 	inline constexpr wchar_t g_wszRock_Prototype_Tag[]							{ L"Prototype_GameObject_Rock" };
 	inline constexpr wchar_t g_wszWater_Prototype_Tag[]							{ L"Prototype_GameObject_Water" };
+
+
+
+	inline constexpr wchar_t g_wszInvisibleWall_Prototype_Tag[]					{ L"Prototype_GameObject_InvisibleWall" };
 #pragma endregion
 
 #pragma region Trigger Box 관련
@@ -584,6 +624,13 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
 #pragma endregion
 
+#pragma region Part Objects
+
+	/* Bounding Box */
+	inline constexpr wchar_t g_wszPartObj_Effect_Prototype_Tag[]{ L"Prototype_GameObject_Part_Effect" }; // static
+
+#pragma endregion
+
 #pragma region 기타
 	inline constexpr wchar_t g_wszBattleField_Prototype_Tag[]					{ L"Prototype_GameObject_BattleField" };
 #pragma endregion
@@ -604,6 +651,7 @@ namespace Client
 	inline constexpr wchar_t g_wszEffectLayer[]									{ L"Effect_Layer" };
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
+	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
 }
 #pragma endregion
 

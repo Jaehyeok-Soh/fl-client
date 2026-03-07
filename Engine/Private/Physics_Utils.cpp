@@ -326,11 +326,11 @@ _bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysi
 	// 검사 최대 깊이
 
 	// 1. Vec3 -> PxVec3
-	PxVec3 o3 = { vWorldPos.x,vWorldPos.y,vWorldPos.z };
+	PxVec3 o3 = ToPxVec3(vWorldPos);
 
 	// 2. 길이가 1이어야 하므로 안정하게 한번더 노말라이즈
 	vDir.Normalize();
-	PxVec3 d3 = { vDir.x,vDir.y,vDir.z };
+	PxVec3 d3 = ToPxVec3(vDir);
 
 	// 2. 필터 데이터 설정 (ePRE_FILTER 필수!)
 	PxQueryFilterData filterData;

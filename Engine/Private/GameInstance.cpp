@@ -892,14 +892,24 @@ HRESULT CGameInstance::Render_Fonts()
 #pragma endregion
 
 #pragma region EFFECT_MANAGER
-void CGameInstance::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTargetTransMatrix)
+void CGameInstance::Request_Effect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, EFFECT_SPAWN_DESC& Desc)
 {
-	m_pEffect_Manager->Spawn_PoolEffect(handler, UniqueEffectName, strTag, matWorld, fDuration, bIsLocal, iFlag, pTargetBone, pTargetTransMatrix);
+	m_pEffect_Manager->Request_Effect(handler, UniqueEffectName, strTag, Desc);
 }
 
-void CGameInstance::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTargetTransMatrix)
+void CGameInstance::Request_Effect(const std::string& strTag, EFFECT_SPAWN_DESC& Desc)
 {
-	m_pEffect_Manager->Spawn_PoolEffect(strTag, matWorld, fDuration, bIsLocal, iFlag, pTargetBone, pTargetTransMatrix);
+	m_pEffect_Manager->Request_Effect(strTag, Desc);
+}
+
+void CGameInstance::Push_EffectData(_uint iHashTag, void* Desc)
+{
+	m_pEffect_Manager->Push_EffectData(iHashTag, Desc);
+}
+
+void* CGameInstance::Find_EffectData(_uint iHashTag)
+{
+	return m_pEffect_Manager->Find_EffectData(iHashTag);
 }
 
 void CGameInstance::Push_CollidedData(const COLLIDED_DESC& desc)
@@ -1054,6 +1064,11 @@ void CGameInstance::ResetActorFilter(PxRigidActor* actor)
 	m_pPhysics_Module->ResetActorFilter(actor);
 }
 
+PxScene* CGameInstance::GetPhysicsScene()
+{
+	return m_pPhysics_Module->GetPhysicsScene();
+}
+
 PxTransform CGameInstance::XMMatrixToPxTransform(Matrix mat)
 {
 	return m_pPhysics_Module->XMMatrixToPxTransform(mat);
@@ -1142,6 +1157,11 @@ PxVec3 CGameInstance::GetPureScale(const Matrix& mat)
 void CGameInstance::Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc)
 {
 	return m_pPhysics_Module->Overlap_EventCallback(pOwner, vOverlapPoint, pOverlapHit, event, hitboxDesc);
+}
+
+void CGameInstance::Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc)
+{
+	return m_pPhysics_Module->Raycast_EventCallback(pOwner, pRaycastHitBuffer, raycastDesc);
 }
 
 _bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)

@@ -33,6 +33,9 @@ public:
 	CSkillBase*		Get_Skill(_uint iIndex);
 
 public:
+	virtual void Clear_WhenChangeLevel();
+
+public:
 	// vector를 순회하면서 skill 내부업데이트 함수를 호출 해준다
 	virtual void	Update_Skills(const _float fTimeDelta);
 

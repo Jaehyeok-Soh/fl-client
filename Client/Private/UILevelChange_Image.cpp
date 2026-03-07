@@ -117,6 +117,9 @@ HRESULT CUILevelChange_Image::Attach_Personal_Info()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_1:
+		m_eNextLevelID = ELevelType::LIANHUO;
+		m_wstrText = L"지옥불의 교도소장";
+		m_vFontColor = Vec4{ 0.0f, 222.0f / 255.0f, 165.0f / 255.0f, 1.f };
 		break;
 	case DTO::EUIDImageSubClassType::LEVEL_CHAGE_2:
 		m_eNextLevelID = ELevelType::TUTORIAL_VILLAGE;

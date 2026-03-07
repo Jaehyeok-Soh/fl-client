@@ -1,10 +1,17 @@
 #include "pch.h"
 #include "Level_Loading.h"
+
+//=================
+// Builder
+//=================
 #include "Level_Logo.h"
 #include "Level_Square.h"
-#include "Level_Test.h"
 #include "Level_Tutorial_Boss.h"
 #include "Level_Tutorial_Village.h"
+#include "Level_Tavern.h"
+#include "Level_Kuangkeng.h"
+#include "Level_Lianhuo.h"
+#include "Level_Test.h"
 #include "TextureBase.h"
 #include "Loader.h"
 
@@ -77,6 +84,15 @@ void CLevel_Loading::Update(const _float fTimeDelta)
 			break;
 		case Client::ELevelType::SQUARE:
 			pNewLevel = CLevel_Square::Create(m_pDevice, m_pDeviceContext);
+			break;
+		case Client::ELevelType::TAVERN:
+			pNewLevel = CLevel_Tavern::Create(m_pDevice, m_pDeviceContext);
+			break;
+		case Client::ELevelType::KUANGKENG:
+			pNewLevel = CLevel_Kuangkeng::Create(m_pDevice, m_pDeviceContext);
+			break;
+		case Client::ELevelType::LIANHUO:
+			pNewLevel = CLevel_Lianhuo::Create(m_pDevice, m_pDeviceContext);
 			break;
 		case Client::ELevelType::TEST:
 			pNewLevel = CLevel_Test::Create(m_pDevice, m_pDeviceContext);

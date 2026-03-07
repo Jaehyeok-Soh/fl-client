@@ -253,6 +253,7 @@ Vec3 Engine_Utils::ToEulerDegrees(const Quat& q)
         DirectX::XMConvertToDegrees(vEuler.y),
         DirectX::XMConvertToDegrees(vEuler.z));
 }
+
 void Engine_Utils::Add_Flag(Flags& curFlags, _uint iBitFlag)
 {
     curFlags |= iBitFlag;

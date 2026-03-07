@@ -85,6 +85,9 @@ public:
 	HRESULT								Ready_Batch_Object();
 	HRESULT								Ready_TriggerBox_MonsterSpawner();
 
+
+	HRESULT								Ready_InvisibleWall();
+
 private:
 	HRESULT								Ready_ColliderTypeName();
 	_bool								Check_OutBound(_int iIndex) const;

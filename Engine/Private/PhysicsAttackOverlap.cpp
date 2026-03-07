@@ -257,6 +257,9 @@ void CPhysicsAttackOverlap::Ready_OverlapInfo()
 	_uint eventIdx = { 0 };
 	for (auto& event : m_tDesc.attackEvents)
 	{
+		if (event.tHitboxDesc.strAttackPresetTag.size() > 0)
+			event.tHitboxDesc.iAttackPresetID = m_pGameInstance->Get_AttackPresetIdByTag(event.tHitboxDesc.strAttackPresetTag);
+
 		PHYSICSCOLLIDER_DESC desc;
 
 		switch (event.tHitboxDesc.eType)

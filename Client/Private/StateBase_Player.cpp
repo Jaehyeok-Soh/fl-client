@@ -288,30 +288,30 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 {
-	//  Prototype 이후 고칠 것
+	//Prototype 이후 고칠 것
 	
-	//if (Has_ChangeState(STATEKEY::RM) &&
-	//	Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::RATT)))
-	//{
-	//	if (m_pOwnerGun)
-	//	{
-	//		// 공격이 가능 하다면 : attack
-	//		if (Can_Fire())
-	//		{
-	//			Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
-	//			return true;
-	//		}
+	if (Has_ChangeState(STATEKEY::RM) &&
+		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::RATT)))
+	{
+		if (m_pOwnerGun)
+		{
+			// 공격이 가능 하다면 : attack
+			if (Can_Fire())
+			{
+				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+				return true;
+			}
 
-	//		// 공격은 불가능 하지만 reload는 가능 하다면 : reload
-	//		else if (Can_Reload())
-	//		{
-	//			Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
-	//			return true;
-	//		}
+			// 공격은 불가능 하지만 reload는 가능 하다면 : reload
+			else if (Can_Reload())
+			{
+				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
+				return true;
+			}
 
-	//		return false;
-	//	}
-	//}
+			return false;
+		}
+	}
 
 	return false;
 }

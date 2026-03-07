@@ -62,6 +62,20 @@ HRESULT CEffectBase::Render()
 	return S_OK;
 }
 
+HRESULT CEffectBase::Enable_VFX(void* pArg)
+{
+	m_bIsEffectFinish = false;
+
+	return S_OK;
+}
+
+HRESULT CEffectBase::Disable_VFX()
+{
+	m_bIsEffectFinish = false;
+
+	return S_OK;
+}
+
 void CEffectBase::LoopStateChange(DTO::E_LoopState EState)
 {
 	switch (EState)

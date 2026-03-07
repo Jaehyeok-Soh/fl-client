@@ -231,16 +231,27 @@ CComponent* CPhysicsCollider::Clone(void* pArg)
 
 void CPhysicsCollider::Free()
 {
+	PxScene* pScene = m_pGameInstance->GetPhysicsScene();
+
 	for (auto& shape : m_pColliderShapes)
 	{
 		if (shape != nullptr && shape->isReleasable())
 		{
+			pScene->lockWrite();
+
 			shape->userData = nullptr;
 			PxRigidActor* actor = shape->getActor();
 			if (actor)
-				actor->detachShape(*shape);
+			{
+				if (actor->getScene())
+					actor->getScene()->removeActor(*actor);
 
-			PX_RELEASE(shape);
+				actor->detachShape(*shape);
+			}
+
+			//PX_RELEASE(shape);
+
+			pScene->unlockWrite();
 		}
 	}
 

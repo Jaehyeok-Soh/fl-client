@@ -3,6 +3,7 @@
 
 #include "GameObject.h"
 #include <Anim_Event_Hitbox.h>
+#include "PhysicsAttackRaycast.h"
 
 NS_BEGIN(Engine)
 
@@ -74,6 +75,7 @@ private:
 
 public:
     void ProcessOverlap(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc);
+    void ProcessRaycast(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc);
 
 private:
     // PxSimulationEventCallback을(를) 통해 상속됨
