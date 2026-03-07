@@ -97,6 +97,7 @@ HRESULT CGenericUI::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
+	Bind_Events();
 	return S_OK;
 }
 

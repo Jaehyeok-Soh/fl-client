@@ -10,6 +10,7 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
 #include "GameInstance.h"
+#include <UI_Manager.h>
 
 CUIJust_Image::CUIJust_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CGenericUI(pDevice, pDeviceContext)
@@ -43,8 +44,6 @@ HRESULT CUIJust_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
 
 	return S_OK;
 }
@@ -128,6 +127,40 @@ _bool CUIJust_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		return true;
 	}
 	return false;
+}
+
+void CUIJust_Image::Bind_Events()
+{
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
+
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>(
+		[this]()
+		{ 
+			this->Set_Invisible(); 
+		});
+
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>(
+		[this]() 
+		{ 
+			this->Set_Visible(); 
+		});
 }
 
 CUIJust_Image* CUIJust_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

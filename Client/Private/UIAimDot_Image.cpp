@@ -11,6 +11,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUIAimDot_Image::CUIAimDot_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -133,6 +134,60 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 	return S_OK;
 }
 
+void CUIAimDot_Image::Bind_Events()
+{
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
+
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
+		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_UI_END:
+		break;
+	case DTO::EUIDImageSubClassType::END:
+	default:
+		break;
+	}
+
+}
+
 HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
@@ -159,28 +214,22 @@ HRESULT CUIAimDot_Image::Awake(const _uint iCurrentLevelID)
 	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
 		m_vMaxOffset = Vec2{ 0.f, -10.f };
 		Set_Invisible();
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
 		m_vMaxOffset = Vec2{ 10.f, 0.f };
 		Set_Invisible();
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
 		m_vMaxOffset = Vec2{ 0.f, 10.f };
 		Set_Invisible();
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
 		m_vMaxOffset = Vec2{ -10.f, 0.f };
 		Set_Invisible();
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
 		break;

@@ -38,7 +38,6 @@ HRESULT CUIMenu_OutLine::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
-	Bind_Events();
 
 	return S_OK;
 }
@@ -139,14 +138,15 @@ void CUIMenu_OutLine::Bind_Events()
 				}
 			})
 	);
-
-	m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-		{
-			if (EUIEventID::MENU_OPEN == Desc.eEventID)
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
-				this->Set_Visible();
-			}
-		});
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
 }
 
 void CUIMenu_OutLine::Initialize_Visible_Event()

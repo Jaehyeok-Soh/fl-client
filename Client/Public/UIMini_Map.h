@@ -43,6 +43,7 @@ private:
 	HRESULT Ready_Components(MINIMAP_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
+	virtual void Bind_Events()override;
 private:
 	virtual void Initialize_Visible_Event() override;
 	virtual void Initialize_InVisible_Event()override;

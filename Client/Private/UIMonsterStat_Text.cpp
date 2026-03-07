@@ -12,6 +12,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "GameInstance.h"
+#include <UI_Manager.h>
 
 CUIMonsterStat_Text::CUIMonsterStat_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIText(pDevice, pDeviceContext)
@@ -142,6 +143,28 @@ HRESULT CUIMonsterStat_Text::Convert_Stat_To_Text()
 		return E_FAIL;
 	}
 	return S_OK;
+}
+
+void CUIMonsterStat_Text::Bind_Events()
+{
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
 }
 
 void CUIMonsterStat_Text::Initialize_Visible_Event()

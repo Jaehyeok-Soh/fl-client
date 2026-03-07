@@ -40,6 +40,7 @@ private:
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
+	virtual void Bind_Events()override;
 private:
 	_float m_fTimeAcc = {};
 	_float m_fOriginAlpha = {};

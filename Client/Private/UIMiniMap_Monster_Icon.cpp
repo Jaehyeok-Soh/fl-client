@@ -11,6 +11,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUIMiniMap_Monster_Icon::CUIMiniMap_Monster_Icon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -113,6 +114,28 @@ HRESULT CUIMiniMap_Monster_Icon::Attach_Personal_Info()
 
 void CUIMiniMap_Monster_Icon::Tick_By_Type(const _float fTimeDelta)
 {
+}
+
+void CUIMiniMap_Monster_Icon::Bind_Events()
+{
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
 }
 
 void CUIMiniMap_Monster_Icon::Initialize_Visible_Event()

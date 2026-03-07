@@ -110,8 +110,6 @@ HRESULT CUIBossStat_Text::Bind_ShaderResources()
 
 HRESULT CUIBossStat_Text::Attach_Personal_Info()
 {
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
 
 	return S_OK;
 }
@@ -129,6 +127,20 @@ HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 		break;
 	}
 	return S_OK;
+}
+
+void CUIBossStat_Text::Bind_Events()
+{
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>(
+		[this]() 
+		{
+			this->Set_Invisible();
+		});
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>(
+		[this]()
+		{ 
+			this->Set_Visible(); 
+		});
 }
 
 void CUIBossStat_Text::Initialize_Visible_Event()

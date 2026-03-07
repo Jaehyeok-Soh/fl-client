@@ -37,7 +37,6 @@ HRESULT CUIMenu_Text::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
-	Bind_Events();
 	return S_OK;
 }
 

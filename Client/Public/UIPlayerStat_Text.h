@@ -35,6 +35,7 @@ private:
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
 	HRESULT Convert_Stat_To_Text();
+	virtual void Bind_Events()override;
 private:
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;

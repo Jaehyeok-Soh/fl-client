@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUIMini_Map::CUIMini_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -39,6 +40,7 @@ HRESULT CUIMini_Map::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -275,10 +277,41 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 		return E_FAIL;
 	}
 
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
+
 
 	return S_OK;
+}
+
+void CUIMini_Map::Bind_Events()
+{
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
+
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>(
+		[this]() 
+		{ 
+			this->Set_Invisible();
+		});
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() 
+		{ 
+			this->Set_Visible(); 
+		});
 }
 
 void CUIMini_Map::Initialize_Visible_Event()
