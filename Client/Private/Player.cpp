@@ -222,27 +222,40 @@ _wstring CPlayer::Get_AnimationName(_uint iAniIndex)
 void CPlayer::Change_Weapon(_uint iPart, _uint iState)
 {
     // 우선 다 none으로 바꾼다음
-    static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD))->Set_WeaponState(CWeapon::State::NONE);
-    static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SKILL))->Set_WeaponState(CWeapon::State::NONE);
-    static_cast<CWeapon*>(Get_Part<CWeapon>(Part::GUN))->Set_WeaponState(CWeapon::State::NONE);
+
+    CWeapon* pSword = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD));
+    CWeapon* pSkill = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SKILL));
+    CWeapon* pGun = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::GUN));
+
+    if(pSword)
+        pSword->Set_WeaponState(CWeapon::State::NONE);
+    if (pSkill)
+        pSkill->Set_WeaponState(CWeapon::State::NONE);
+    if (pGun)
+        pGun->Set_WeaponState(CWeapon::State::NONE);
+    else
+        int a = 0;
 
     switch (iPart)
     {
     case static_cast<_uint>(Part::SWORD):
-        static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD))->Set_WeaponState(iState);
+        if(pSword)
+            pSword->Set_WeaponState(iState);
         break;
 
     case static_cast<_uint>(Part::SKILL):
-        static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SKILL))->Set_WeaponState(iState);
+        if (pSkill)
+            pSkill->Set_WeaponState(iState);
         break;
 
     case static_cast<_uint>(Part::GUN):
-        static_cast<CWeapon*>(Get_Part<CWeapon>(Part::GUN))->Set_WeaponState(iState);
+        if (pGun)
+            pGun->Set_WeaponState(iState);
         break;
     }
 
     if(iState == ENUM_TO_UINT(CWeapon::State::NONE))
-        static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD))->Set_WeaponState(CWeapon::State::HOLD);
+        pSword->Set_WeaponState(CWeapon::State::HOLD);
 }
 
 _bool CPlayer::Check_OnGround(_float fMaxDist)
