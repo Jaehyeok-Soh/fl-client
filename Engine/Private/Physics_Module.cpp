@@ -30,11 +30,10 @@ HRESULT CPhysics_Module::Initialize()
 		return E_FAIL;
 	}
 
-
 #ifdef _DEBUG
 	//m_pPvd = PxCreatePvd(*m_pFoundation);
-	//PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
-	////PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+	////PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
+	//PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
 	////m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 #endif // _DEBUG
@@ -209,6 +208,8 @@ void CPhysics_Module::StepPhysics(_float fTimeDelta)
 	m_pScene->fetchResults(true);
 
 	m_pScene->unlockWrite();
+
+	m_pCCTManager->GetPhysicsCCTManager()->computeInteractions(fTimeDelta);
 
 #ifdef _DEBUG
 	if (KEY_BUTTON_DOWN(DIK_F1))
@@ -480,6 +481,11 @@ void CPhysics_Module::RemoveActor(PxRigidActor* actor)
 void CPhysics_Module::ResetActorFilter(PxRigidActor* actor)
 {
 	m_pScene->resetFiltering(*actor);
+}
+
+PxControllerManager* CPhysics_Module::GetPhysicsCCTManager()
+{
+	return m_pCCTManager->GetPhysicsCCTManager();
 }
 
 CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -265,6 +265,22 @@ CChannel* CChannel::Create(const CHANNEL_DESC& desc)
 	return pInstance;
 }
 
+CChannel* CChannel::Clone()
+{
+	CChannel* pInstance = new CChannel();
+
+	::strcpy_s(pInstance->m_szName, m_szName);
+	pInstance->m_iBoneIndex = m_iBoneIndex;
+	pInstance->m_iKeyFrameCount = m_iKeyFrameCount;
+	pInstance->m_vecKeyframes = m_vecKeyframes;  // vector บนป็
+	pInstance->m_bRootBone = m_bRootBone;
+	pInstance->m_bUpdateCpu = m_bUpdateCpu;
+	pInstance->m_matTrans = m_matTrans;
+	pInstance->m_vPreRootLocal = m_vPreRootLocal;
+
+	return pInstance;
+}
+
 void CChannel::Free()
 {
 	Super::Free();

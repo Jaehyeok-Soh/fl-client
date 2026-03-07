@@ -72,6 +72,7 @@ private:
 
 public:
 	static CChannel* Create(const CHANNEL_DESC &desc);
+	CChannel* Clone();
 	virtual void Free() override;
 };
 

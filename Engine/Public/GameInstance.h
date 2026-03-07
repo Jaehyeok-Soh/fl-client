@@ -356,6 +356,7 @@ public:
 	void RemoveActor(PxRigidActor* actor);
 	void ResetActorFilter(PxRigidActor* actor);
 	PxScene* GetPhysicsScene();
+	PxControllerManager* GetPhysicsCCTManager();
 	PxTransform XMMatrixToPxTransform(Matrix mat);
 	Matrix PxTransformToXMMatrix(PxTransform pxTransform);
 	_bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);

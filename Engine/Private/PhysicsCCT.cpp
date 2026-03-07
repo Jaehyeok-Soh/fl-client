@@ -47,6 +47,9 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	GetController();
 	SetUserData(static_cast<void*>(m_tDesc.pOwner));
 
+	auto initPos = m_pController->getFootPosition();
+	m_vPoolingPosition = Vec3(initPos.x, initPos.y, initPos.z);
+
 	SetCollisionFilter();
 
 	m_pCCTFilterCallback = m_pGameInstance->GetCCTFilterCallback();
@@ -68,6 +71,8 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 		cctShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
 		cctShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 	}
+
+	EnableCollision(false);
 
 	return S_OK;
 }
@@ -201,13 +206,13 @@ void CPhysicsCCT::SetHeight(_float height)
 	case EPhysicsCCTType::BOX:
 	{
 		static_cast<PxBoxController*>(m_pController)->setHalfHeight(height * 0.5f);
-		m_pController->resize(height * 0.5f);
+		//m_pController->resize(height * 0.5f);
 	}
 	break;
 	case EPhysicsCCTType::CAPSULE:
 	{
 		static_cast<PxCapsuleController*>(m_pController)->setHeight(height);
-		m_pController->resize(height * 0.5f);
+		//m_pController->resize(height * 0.5f);
 	}
 	break;
 	}
@@ -239,7 +244,7 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	Vec3 finalPos = GetFootPosition();
 	Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 15.f);
+	_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 30.f);
 	finalPos.y = yLerp;
 
 	transform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
@@ -414,6 +419,16 @@ void CPhysicsCCT::EnableCollision(_bool bEnable)
 		SetCollisionFilter();
 	else
 		SetCollisionFilter_Empty();
+}
+
+void CPhysicsCCT::SetPoolingPosition(Vec3 vPos)
+{
+	m_vPoolingPosition = vPos;
+}
+
+void CPhysicsCCT::ApplyPoolingPosition()
+{
+	SetFootPosition(m_vPoolingPosition);
 }
 
 CPhysicsCCT* CPhysicsCCT::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

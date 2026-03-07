@@ -1059,6 +1059,11 @@ PxScene* CGameInstance::GetPhysicsScene()
 	return m_pPhysics_Module->GetPhysicsScene();
 }
 
+PxControllerManager* CGameInstance::GetPhysicsCCTManager()
+{
+	return m_pPhysics_Module->GetPhysicsCCTManager();
+}
+
 PxTransform CGameInstance::XMMatrixToPxTransform(Matrix mat)
 {
 	return m_pPhysics_Module->XMMatrixToPxTransform(mat);

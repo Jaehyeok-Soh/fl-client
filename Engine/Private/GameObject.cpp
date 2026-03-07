@@ -379,7 +379,10 @@ void CGameObject::Disable_CollisionComponent()
     {
         auto pCCT = Get_Component<CPhysicsCCT>();
         if (pCCT)
+        {
             pCCT->EnableCollision(false);
+            pCCT->ApplyPoolingPosition();
+        }
 
         auto pRigidBody = Get_Component<CPhysicsRigidBody>();
         if (pRigidBody)

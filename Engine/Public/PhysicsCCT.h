@@ -188,6 +188,9 @@ public:
 
     void EnableCollision(_bool bEnable);
 
+    void SetPoolingPosition(Vec3 vPos);
+    void ApplyPoolingPosition();
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pDeviceContext = { nullptr };
@@ -210,8 +213,7 @@ private:
     _bool m_bIsSideOnCCT = { false };
 
 private:
-    std::set<CGameObject*> m_setCurContact;
-    std::set<CGameObject*> m_setPreContact;
+    Vec3 m_vPoolingPosition{};
 
 public:
     static CPhysicsCCT* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

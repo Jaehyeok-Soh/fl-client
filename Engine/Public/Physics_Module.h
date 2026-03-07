@@ -29,7 +29,9 @@ public:
     void FlushScene();
     void RemoveActor(PxRigidActor* actor);
     void ResetActorFilter(PxRigidActor* actor);
+
     PxScene* GetPhysicsScene() { return m_pScene; }
+    PxControllerManager* GetPhysicsCCTManager();
 /// <summary>
 /// Utils
 /// </summary>
