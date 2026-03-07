@@ -27,6 +27,7 @@
 #include "SkillBase_MoonQ.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
+#include "PhysicsAttackRaycast.h"
 //=================
 // Builder
 //=================
@@ -699,7 +700,9 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma endregion
 
 #pragma region PHYSICS
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_AttackRaycast", CPhysicsAttackRaycast::Create(m_pDevice, m_pDeviceContext, nullptr));
 #pragma endregion
+
 #pragma region UI
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerStatProgress",		CUIPlayerStat_Progress::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MenuText",					CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));

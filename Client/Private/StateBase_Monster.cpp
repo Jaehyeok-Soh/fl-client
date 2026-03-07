@@ -64,6 +64,12 @@ HRESULT CStateBase_Monster::Initialize(void* pArg)
 	if (FAILED(Bind_ConditionFeature()))
 		return E_FAIL;
 
+	if (FAILED(Bind_StartConditionFeature()))
+		return E_FAIL;
+
+	if (FAILED(Bind_EndConditionFeature()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -92,6 +98,11 @@ HRESULT CStateBase_Monster::Start(void* pArg, _bool bForce)
 		return E_FAIL;
 
 	Update_CooldownTime(0.f, true);
+
+	// 혹시 dt관련 호출한다면 0.f 고정이오
+	for (auto& conditionFeature : m_vecStartConditionFeature)
+		if (conditionFeature.condition(conditionFeature.condParam))
+			conditionFeature.feature(0.f, conditionFeature.featParam);
 
 	return S_OK;
 }
@@ -128,6 +139,11 @@ HRESULT CStateBase_Monster::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	// 여기도 dt 0.f 고정
+	for (auto& cf : m_vecEndConditionFeature)
+		if (cf.condition(cf.condParam))
+			cf.feature(0.f, cf.featParam);
 
 	if (m_tStateLifeTime.bTimeReset)
 		m_tStateLifeTime.fTimeAcc = 0.f;
@@ -290,7 +306,7 @@ HRESULT CStateBase_Monster::Bind_Feature()
 		// param(_2) 호출시 두번째 인자로 받겠다.
         bound.func = std::bind(func, this, std::placeholders::_1, std::placeholders::_2);
         bound.tParam = entry.tParam;
-        m_vecFeature.push_back(bound);
+		m_vecFeature.push_back(bound);
     }
 
     return S_OK;
@@ -302,17 +318,17 @@ HRESULT CStateBase_Monster::Bind_ConditionFeature()
 
 	m_vecConditionFeature.clear();
 	m_vecConditionFeature.reserve(m_pDesc->vecConditionFeature.size());
-	for (auto& cf : m_pDesc->vecConditionFeature)
+	for (auto& conditionfeature : m_pDesc->vecConditionFeature)
 	{
-		auto condFunc = factory->GetCondition(cf.cond.strCondition);
-		auto featFunc = factory->GetFeature(cf.feat.strFeature);
+		auto condFunc = factory->GetCondition(conditionfeature.cond.strCondition);
+		auto featFunc = factory->GetFeature(conditionfeature.feat.strFeature);
 
 		if (condFunc == nullptr || featFunc == nullptr)
 			return E_FAIL;
 
 		BOUND_CONDFEATURE bound{};
-		bound.condParam = cf.cond.tParam;
-		bound.featParam = cf.feat.tParam;
+		bound.condParam = conditionfeature.cond.tParam;
+		bound.featParam = conditionfeature.feat.tParam;
 
 		bound.condition = std::bind(condFunc, this, std::placeholders::_1);
 		bound.feature = std::bind(featFunc, this, std::placeholders::_1, std::placeholders::_2);
@@ -320,6 +336,72 @@ HRESULT CStateBase_Monster::Bind_ConditionFeature()
 		m_vecConditionFeature.push_back(bound);
 	}
 
+	return S_OK;
+}
+
+HRESULT CStateBase_Monster::Bind_StartConditionFeature()
+{
+	auto factory = CMonsterState_Factory::GetInstance();
+
+	m_vecStartConditionFeature.clear();
+	m_vecStartConditionFeature.reserve(m_pDesc->vecStartConditionFeature.size());
+
+	for (auto& conditionfeature : m_pDesc->vecStartConditionFeature)
+	{
+		// feature는 필수
+		auto featFunc = factory->GetFeature(conditionfeature.feat.strFeature);
+		if (!featFunc)
+			return E_FAIL;
+
+		// cond는 비면 always로 치환
+		string condName = conditionfeature.cond.strCondition.empty()
+			? "condition_true_always"
+			: conditionfeature.cond.strCondition;
+		auto condFunc = factory->GetCondition(condName);
+		if (!condFunc) return E_FAIL;
+
+		BOUND_CONDFEATURE bound{};
+		bound.condParam = conditionfeature.cond.tParam;
+		bound.featParam = conditionfeature.feat.tParam;
+
+		bound.condition = std::bind(condFunc, this, std::placeholders::_1);
+		bound.feature = std::bind(featFunc, this, std::placeholders::_1, std::placeholders::_2);
+
+		m_vecStartConditionFeature.push_back(bound);
+	}
+	return S_OK;
+}
+
+HRESULT CStateBase_Monster::Bind_EndConditionFeature()
+{
+	auto factory = CMonsterState_Factory::GetInstance();
+
+	m_vecEndConditionFeature.clear();
+	m_vecEndConditionFeature.reserve(m_pDesc->vecEndConditionFeature.size());
+
+	for (auto& conditionfeature : m_pDesc->vecEndConditionFeature)
+	{
+		// feature는 필수
+		auto featFunc = factory->GetFeature(conditionfeature.feat.strFeature);
+		if (!featFunc)
+			return E_FAIL;
+
+		// cond는 비면 always로 치환
+		string condName = conditionfeature.cond.strCondition.empty()
+			? "condition_true_always"
+			: conditionfeature.cond.strCondition;
+		auto condFunc = factory->GetCondition(condName);
+		if (!condFunc) return E_FAIL;
+
+		BOUND_CONDFEATURE bound{};
+		bound.condParam = conditionfeature.cond.tParam;
+		bound.featParam = conditionfeature.feat.tParam;
+
+		bound.condition = std::bind(condFunc, this, std::placeholders::_1);
+		bound.feature = std::bind(featFunc, this, std::placeholders::_1, std::placeholders::_2);
+
+		m_vecEndConditionFeature.push_back(bound);
+	}
 	return S_OK;
 }
 

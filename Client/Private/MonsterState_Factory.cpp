@@ -95,6 +95,8 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_cooldowntime_satisfy", CONDITION{ return state->IsCooldownTimeSatisfy(); });
 
+	REGISTER_CONDITION("condition_true_always", CONDITION{ return true; });
+
 	REGISTER_CONDITION("param_condition_IsTrackPositionBetween", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionBetweenRaw(param.fParam[0], param.fParam[1]); });
 
 	REGISTER_CONDITION("param_condition_IsTrackPositionAt", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionAtRaw(param.fParam[0]); });

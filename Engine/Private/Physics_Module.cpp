@@ -71,6 +71,7 @@ HRESULT CPhysics_Module::Initialize()
 		sceneDesc.gravity = PxVec3(0.f, -9.81f, 0.f);
 		sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 		sceneDesc.flags |= PxSceneFlag::eENABLE_ACTIVE_ACTORS;
+		//sceneDesc.flags |= PxSceneFlag::eREQUIRE_RW_LOCK;
 
 		PxU32 numCores = PxThread::getNbPhysicalCores();
 		m_pDispatcher = PxDefaultCpuDispatcherCreate(numCores == 0 ? 0 : numCores - 1);
@@ -202,8 +203,12 @@ HRESULT CPhysics_Module::Initialize()
 
 void CPhysics_Module::StepPhysics(_float fTimeDelta)
 {
+	m_pScene->lockWrite();
+
 	m_pScene->simulate(std::clamp(fTimeDelta, 1.f / 120.f, 1.f / 30.f));
 	m_pScene->fetchResults(true);
+
+	m_pScene->unlockWrite();
 
 #ifdef _DEBUG
 	if (KEY_BUTTON_DOWN(DIK_F1))
@@ -412,6 +417,11 @@ void CPhysics_Module::GetActiveActors()
 void CPhysics_Module::Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc)
 {
 	m_pFilterEventCallback->ProcessOverlap(pOwner, vOverlapPoint, pOverlapHit, event, hitboxDesc);
+}
+
+void CPhysics_Module::Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc)
+{
+	m_pFilterEventCallback->ProcessRaycast(pOwner, pRaycastHitBuffer, raycastDesc);
 }
 
 _bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
