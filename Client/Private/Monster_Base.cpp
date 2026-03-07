@@ -213,8 +213,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 
 	_uint iDamageFlag = hitDesc.iDamageFlag;
 
-	// moon + skill Q
-
+	// moon + skill Q : hit point를 얻어올 수 없기에 여기서 객체 positoin 기준으로 폰트 띄움
 	if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
 	{
 		Vec3 vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);

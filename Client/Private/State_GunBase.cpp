@@ -87,7 +87,6 @@ void CState_GunBase::Update(const _float fTimeDelta)
         return;
     }
 
-
     // 0. 만약 r button 눌림이 끝났다면 gun state 탈출
     if (MOUSE_RBUTTON_UP)
     {

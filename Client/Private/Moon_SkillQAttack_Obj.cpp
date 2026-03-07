@@ -97,6 +97,9 @@ void CMoon_SkillQAttack_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOth
 
 void CMoon_SkillQAttack_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+	// todo : 한번 충돌 된 애들은 다시 충돌 처리가 안되어서
+	// 그거에 대한 정보 처리가 필요함 :  active attack overlap을 참고 할것
+
 	// 시간 차로 넣기
 	//if (m_TAttackCoolTime.x == m_TAttackCoolTime.y)
 	{
