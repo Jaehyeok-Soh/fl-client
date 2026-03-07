@@ -115,7 +115,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     
     
-    if (output.vDiffuse.a < 0.1f)
+    if (output.vDiffuse.a < 0.3f)
         discard;
     
     
@@ -138,6 +138,9 @@ PS_OUT_DEFFERED PS_STATICOBJECT(PS_IN_MESH input)
     output.vNormal = float4(vNormal * 0.5f + 0.5f,1.f);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    
+    if (output.vDiffuse.a < 0.3f)
+        discard;
     
     return output;
 }
@@ -276,6 +279,31 @@ PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_MESH input)
     return output;
 }
 
+
+PS_OUT_DEFFERED PS_TREE(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
+    
+    float4 vDiffuse = 1.f;
+    
+    Compute_Diffse(vDiffuse, input.vUV);
+    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    output.vDiffuse = vDiffuse;
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    
+    if (output.vDiffuse.a < 0.3f)
+        discard;
+    
+    return output;
+}
+
+
+
 technique11 T0
 {
     // 기본 오브젝트
@@ -285,10 +313,10 @@ technique11 T0
     PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)
 
     // 식생
-	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_MAIN)
 	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_TREE)
 	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 
     // 환경요소

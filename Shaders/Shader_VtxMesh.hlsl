@@ -17,6 +17,7 @@
 
 
 Texture2D       g_Base_Texture;
+
 //  RGBA ∏ ø° ∏ «Œµ… DH , NBR Texture 2DTextureArray∑Œ µ«æÓ¿÷¥Ÿ
 Texture2DArray  g_Mix_DH_Tile_Texture;
 Texture2DArray  g_Mix_NBR_Tile_Texture;
@@ -96,6 +97,11 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+    
+    if(output.vDiffuse.a < 0.3f )
+        discard;
+    
     return output;
 }
 

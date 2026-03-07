@@ -199,16 +199,13 @@ HRESULT CMapObject::Ready_Component()
         return E_FAIL;
 
     /* Bounding Box 업데이트 , Instnace모델이면 0 0 0월드좌표로 들어가는게 맞다 */
+    Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
     {
-        Get_Component<CBounds>()->Update_BoundingDesc(m_vecMatrix.front());
+        /* Add Bounds 해준다 */
         Get_Component<CBounds>()->Add_SubBounds(
             Get_Component<CModel>()->Get_StaticModelMinMax(), span<Matrix>(m_vecMatrix.data(), m_vecMatrix.size()), 1.f);
-    }
-    else
-    {
-        Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
     }
 
     return S_OK;
