@@ -27,7 +27,7 @@ namespace Client
 
 
 		TEST,				/* Test Scene은 맨 마지막 */
-		END					
+		END
 	};
 
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
@@ -53,6 +53,17 @@ namespace Client
 		return kNames[lv];
 	}
 #endif
+
+	enum class EGroggyState : unsigned int
+	{
+		None = 0,
+		Middle = 1 << 0,
+		Final = 1 << 1,
+		PartBreak_1 = 1 << 2,
+		PartBreak_2 = 1 << 3,
+		PartBreak_3 = 1 << 4,
+		PartBreak_4 = 1 << 5
+	};
 
 	enum class EDir : unsigned int
 	{

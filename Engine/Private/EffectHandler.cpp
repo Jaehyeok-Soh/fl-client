@@ -9,7 +9,6 @@
 #include "MulticastDelegate.h"
 #include "EffectBase.h"
 #include "DataStruct_EffectEvent.h"
-#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 CEffectHandler::CEffectHandler() 

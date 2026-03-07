@@ -151,7 +151,13 @@ void CBoss_Xibi::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGame
 _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 {
 	_bool result = Super::On_Hit(hitDesc);
-
+	if (result == true)
+	{
+		EGroggyState eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
+		if (eGroggy == EGroggyState::None)
+			return result;
+		Get_Component<CMonsterControlContext>()->Set_Groggy(eGroggy);
+	}
 	return result;
 }
 

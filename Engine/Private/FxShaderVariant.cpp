@@ -1,7 +1,6 @@
 #include "Engine_pch.h"
 #include "FxShaderVariant.h"
 #include "FxEffectAsset.h"
-#include "Engine_Utils.h"
 #include "Constant_Buffer.h"
 
 CFxShaderVariant::CFxShaderVariant(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, CFxEffectAsset* pOwner)

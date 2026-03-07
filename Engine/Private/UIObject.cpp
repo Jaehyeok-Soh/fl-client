@@ -2,7 +2,6 @@
 #include "UIObject.h"
 #include "Shader.h"	
 #include "Texture.h"
-#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 CUIObject::CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

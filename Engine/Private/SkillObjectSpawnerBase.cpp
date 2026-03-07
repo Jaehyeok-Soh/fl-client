@@ -4,7 +4,6 @@
 #include "Transform.h"
 #include "SkillObject_Base.h"
 #include "EffectHandler.h"
-#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 CSkillObjectSpawnerBase::CSkillObjectSpawnerBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

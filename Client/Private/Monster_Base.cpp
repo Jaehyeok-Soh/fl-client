@@ -313,7 +313,6 @@ HRESULT CMonster_Base::Ready_EffectHandler(void* pArg)
 		return E_FAIL;
 
 	m_pEffectHandler = Get_Component<CEffectHandler>();
-
 	return S_OK;
 }
 

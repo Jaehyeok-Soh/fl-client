@@ -4,7 +4,6 @@
 #include "DataStruct_EffectEvent.h"
 #include "DataDocument_Effect.h"
 #include "EffectObject.h"
-#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 #define MAX_EFFECTPART 10

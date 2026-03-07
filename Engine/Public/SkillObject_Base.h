@@ -44,7 +44,7 @@ public:
 
 		// 이펙트를 회전시킨뒤 날리고싶다면?
 		TRANSFORM_INFO_STATE eEffectRotateState = { TRANSFORM_INFO_STATE::END };
-		_float fEffectDegree{ 0.00f };
+		_float fEffectDegree = { 0.00f };
 
 		_float			fSpeed = { 0.f }; // 투사체 속도
 		_float          fLifeTime = { 5.f }; // 생명 정도

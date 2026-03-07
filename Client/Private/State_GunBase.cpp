@@ -6,7 +6,6 @@
 #include "PhysicsCCT.h"
 #include "CameraMan_Targeter.h"
 
-#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 CState_GunBase::CState_GunBase(CActionState* pOwnerComponent, const string& strName)

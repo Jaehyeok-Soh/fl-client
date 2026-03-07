@@ -1,8 +1,7 @@
 #include "Engine_pch.h"
 #include "ProjectileSpawner_Fan.h"
-#include "Engine_Utils.h"
-#include "GameInstance.h"
 #include "ProjectileSpawner_Radial360.h"
+#include "GameInstance.h"
 
 CProjectileSpawner_Fan::CProjectileSpawner_Fan(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)

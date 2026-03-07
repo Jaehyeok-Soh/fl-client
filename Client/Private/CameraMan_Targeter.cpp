@@ -266,7 +266,6 @@ void CCameraMan_Targeter::TargetSync_Update_Priority(const _float fTimeDelta)
     m_vChaseFiltered = vChaseFiltered;
 
     Vec3 vPlayerLook = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-    vPlayerLook.Normalize();
     vPlayerLook.y = 0.0f;
 
     if (vPlayerLook.LengthSquared() <= g_XMEpsilon.f[0])
