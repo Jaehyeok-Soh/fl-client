@@ -504,8 +504,8 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 
 	case EUITextSubClassType::BATTLE_WEAKNESS_BEGIN:				return "BATTLE_WEAKNESS_BEGIN";
 	case EUITextSubClassType::BATTLE_WEAKNESS_TEXT:					return "BATTLE_WEAKNESS_TEXT";
-	case EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_LEFT:			return "BATTLE_WEAKNESS_WORLD_TEXT_LEFT";
-	case EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_RIGHT:			return "BATTLE_WEAKNESS_WORLD_TEXT_RIGHT";
+	case EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_LEFT:		return "BATTLE_WEAKNESS_WORLD_TEXT_LEFT";
+	case EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_RIGHT:		return "BATTLE_WEAKNESS_WORLD_TEXT_RIGHT";
 	case EUITextSubClassType::BSTTLE_WEAKNESS_END:					return "BSTTLE_WEAKNESS_END";
 	
 	default:														return "END";
