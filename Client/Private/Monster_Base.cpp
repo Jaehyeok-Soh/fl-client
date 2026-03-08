@@ -365,6 +365,16 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 
 void CMonster_Base::SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc)
 {
+	{
+		Matrix transform = tTransformDesc.TranslationMatrix;
+		Vec3 pos = transform.Translation();
+		pos.x += m_pGameInstance->Rand_Float(-2.5f, 2.5f);
+		pos.y += 3.f;
+		pos.z += m_pGameInstance->Rand_Float(-2.5f, 2.5f);
+
+		tTransformDesc.TranslationMatrix = Matrix::CreateTranslation(pos);
+	}
+
 	Matrix matWorld = tTransformDesc.ScaleMatrix * tTransformDesc.RotationMatrix * tTransformDesc.TranslationMatrix;
 
 	Get_Component<CTransform>()->Set_WorldMatrix(matWorld);
