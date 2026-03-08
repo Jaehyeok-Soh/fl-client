@@ -637,7 +637,7 @@
     <Filter Include="02. Level\Tavern">
       <UniqueIdentifier>{2905b500-b428-4805-9fc4-638afebf03dc}</UniqueIdentifier>
     </Filter>
-        <Filter Include="02. Level\Lianhuo">
+    <Filter Include="02. Level\Lianhuo">
       <UniqueIdentifier>{535bd167-aaf6-410f-87bd-a86b99f67c66}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Inspector\PoolDebug">
@@ -1866,6 +1866,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl">
       <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_AnimAdditiveMix.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

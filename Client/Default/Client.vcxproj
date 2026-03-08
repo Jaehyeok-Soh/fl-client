@@ -579,6 +579,7 @@
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Animation_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\Common_Defines.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_AnimAdditiveMix.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_AnimBlend.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_AnimEvaluate.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_AnimMix.hlsl" />

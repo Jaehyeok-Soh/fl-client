@@ -19,7 +19,7 @@ HRESULT CPanel_ModelInfo::Render(CToolObject* pGo)
 {
 	Render_ObjInfo();
 
-	Render_RootMotionInfo();
+	Render_ModelInfo();
 
 	Render_AnimationInfo();
 
@@ -31,9 +31,13 @@ void CPanel_ModelInfo::Update(const _float fTimeDelta)
 	ANIMCTRLINFO tInfo = m_pAnimToolManager->Get_AnimControllInfo();
 
 	m_iCurAnimIdx = tInfo.iCurrentAnimIndex;
-	if (tInfo.pModel)
+	if (CModel* pObjModle = tInfo.pModel)
 	{
-		m_wstrCurAnimName = tInfo.pModel->Get_AnimationName(m_iCurAnimIdx);
+		m_wstrCurAnimName = pObjModle->Get_AnimationName(m_iCurAnimIdx);
+
+		m_bModelAdditiveOn = pObjModle->Get_Is_AdditiveOn();
+		m_iModleRefAnimIdx = pObjModle->Get_RefAdditive_AnimIdx();
+		m_iModelPosanimIdx = pObjModle->Get_PosAdditive_AnimIdx();
 
 		//m_iRootBondIdx = tInfo.pModel->Get_RootBone();
 		//m_fRootMotionOffset = tInfo.pModel->Get_Animatioin_MotionOffset(m_iCurAnimIdx);
@@ -57,9 +61,20 @@ void CPanel_ModelInfo::Render_ObjInfo()
 	ImGui::End();
 }
 
-void CPanel_ModelInfo::Render_RootMotionInfo()
+void CPanel_ModelInfo::Render_ModelInfo()
 {
 	ImGui::Begin("Model Info");
+
+	Render_RootMotionInfo();
+	
+	Render_AdditiveInfo();
+
+	ImGui::End();
+}
+
+void CPanel_ModelInfo::Render_RootMotionInfo()
+{
+	ImGui::Separator();
 
 	ImGui::SetNextItemWidth(120.f); // 원하는 픽셀 길이
 	ImGui::InputInt("RootBone Index", &m_iRootBondIdx, 1);
@@ -75,7 +90,6 @@ void CPanel_ModelInfo::Render_RootMotionInfo()
 		Set_RootBone();
 	}
 
-	ImGui::End();
 }
 
 void CPanel_ModelInfo::Render_AnimationInfo()
@@ -141,6 +155,59 @@ void CPanel_ModelInfo::AnimationSpeed()
 	{
 		if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
 			m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_Animation_Speed(m_iCurAnimIdx, m_iAnimationSpeed);
+	}
+}
+
+void CPanel_ModelInfo::Render_AdditiveInfo()
+{
+	ImGui::Separator();
+
+	// additive on off?
+	{
+		ImGui::Text("Current Additive On ? : %u", (_int)m_bModelAdditiveOn);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60);
+		ImGui::SliderInt("0 : Off, 1 : On##AddtivieAnimApplyEunbi", &m_iSelectAdditiveOn, 0, 1);
+		ImGui::SameLine();
+		if (ImGui::Button("Apply##AddtivieAnimApplyEunbi"))
+		{
+			if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+				m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_Apply_AdditiveAnim((_bool)m_iSelectAdditiveOn);
+		}
+	}
+
+	// ref info
+	{
+		ImGui::Text("Current Ref Index : %d", m_iModleRefAnimIdx);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(120);
+		ImGui::InputInt("Select Ref AnimIdx##EnumbiRefAnimidx", &m_iSelectRefAnimIdx, 1);
+		// 최소값 -1 제한
+		if (m_iSelectRefAnimIdx < -1)
+			m_iSelectRefAnimIdx = -1;
+		ImGui::SameLine();
+		if (ImGui::Button("Apply##RefAnimIdx"))
+		{
+			if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+				m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_AdditiveRef_AnimIdx(m_iSelectRefAnimIdx);
+		}
+	}
+
+	// pos info
+	{
+		ImGui::Text("Current Pos Index : %d", m_iModelPosanimIdx);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(120);
+		ImGui::InputInt("Select Pos AnimIdx##EnumbiPosAnimidx", &m_iSelectPosanimIdx, 1);
+		// 최소값 -1 제한
+		if (m_iSelectPosanimIdx < -1)
+			m_iSelectPosanimIdx = -1;
+		ImGui::SameLine();
+		if (ImGui::Button("Apply##PosasdfsaAnimIdx"))
+		{
+			if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+				m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_AdditivePos_AnimIdx(m_iSelectPosanimIdx);
+		}
 	}
 }
 
