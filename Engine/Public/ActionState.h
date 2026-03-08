@@ -74,10 +74,9 @@ public:
 	void			Set_GravityOffset(_float fOffset);
 
 	// action state 내부에 CCTFlags 가지고 있음 -> 외부에서는 어떻게 윰직일지만 값을 넘겨준다
-	void			Move(Vec3 vAccelation);					// 가속도 값을 넣어준다 (todo : SetCCTImpuls 와 유사합니다..)
-	void			SetCCTInputDirection(Vec3 vInputDir);	// 매게변수 방향으로 계속 더해준다 : 매게변수가 없으면 
-	void			SetCCTImpuls(Vec3 vImpuls);				// 순간적인 가속도 
-
+	void			Move(Vec3 vAccelation);					// 지속적으로 매프레임 적용할 가속도
+	void			SetCCTInputDirection(Vec3 vInputDir);	// 이동 방향을 셋팅 해준다
+	void			SetCCTImpuls(Vec3 vImpuls);				// 순간적인 가속도 : 한프레임 적용
 	/* animation funcs*/
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);

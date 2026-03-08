@@ -175,6 +175,7 @@
     <ClInclude Include="..\Public\InvisibleWall.h" />
     <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\Public\Grass.h" />
+    <ClInclude Include="..\Public\Hybrid_WarningSpace.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -307,10 +308,8 @@
     <ClInclude Include="..\Public\UIBossStat_Image.h" />
     <ClInclude Include="..\Public\UIBossStat_Progress.h" />
     <ClInclude Include="..\Public\UIBossStat_Text.h" />
-    <ClInclude Include="..\Public\UIButton_Trigger.h" />
     <ClInclude Include="..\Public\UICombo_Image.h" />
     <ClInclude Include="..\Public\UICombo_Text.h" />
-    <ClInclude Include="..\Public\UICommon_Trigger.h" />
     <ClInclude Include="..\Public\UIDamageFont_Text.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIHover_Image.h" />
@@ -319,11 +318,9 @@
     <ClInclude Include="..\Public\UILoading_Image.h" />
     <ClInclude Include="..\Public\UILoading_Progress.h" />
     <ClInclude Include="..\Public\UILoading_Text.h" />
-    <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h" />
     <ClInclude Include="..\Public\UIMenu_Image.h" />
     <ClInclude Include="..\Public\UIMenu_OutLine.h" />
     <ClInclude Include="..\Public\UIMenu_Text.h" />
-    <ClInclude Include="..\Public\UIMenu_Trigger.h" />
     <ClInclude Include="..\Public\UIMiniMap_Monster_Icon.h" />
     <ClInclude Include="..\Public\UIMini_Map.h" />
     <ClInclude Include="..\Public\UIMonsterStat_Progress.h" />
@@ -335,9 +332,9 @@
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
-    <ClInclude Include="..\Public\UITrigger.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Vine.h" />
+    <ClInclude Include="..\Public\Effect_WarningCircle.h" />
     <ClInclude Include="..\Public\Water.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="..\Public\WorldUI_Component.h" />
@@ -376,6 +373,7 @@
     <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\Gun.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
+    <ClCompile Include="..\Private\Hybrid_WarningSpace.cpp" />
     <ClCompile Include="..\Private\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -521,10 +519,8 @@
     <ClCompile Include="..\Private\UIBossStat_Image.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIBossStat_Text.cpp" />
-    <ClCompile Include="..\Private\UIButton_Trigger.cpp" />
     <ClCompile Include="..\Private\UICombo_Image.cpp" />
     <ClCompile Include="..\Private\UICombo_Text.cpp" />
-    <ClCompile Include="..\Private\UICommon_Trigger.cpp" />
     <ClCompile Include="..\Private\UIDamageFont_Text.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIHover_Image.cpp" />
@@ -533,11 +529,9 @@
     <ClCompile Include="..\Private\UILoading_Image.cpp" />
     <ClCompile Include="..\Private\UILoading_Progress.cpp" />
     <ClCompile Include="..\Private\UILoading_Text.cpp" />
-    <ClCompile Include="..\Private\UIMenu_Exit_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMenu_Image.cpp" />
     <ClCompile Include="..\Private\UIMenu_OutLine.cpp" />
     <ClCompile Include="..\Private\UIMenu_Text.cpp" />
-    <ClCompile Include="..\Private\UIMenu_Trigger.cpp" />
     <ClCompile Include="..\Private\UIMiniMap_Monster_Icon.cpp" />
     <ClCompile Include="..\Private\UIMini_Map.cpp" />
     <ClCompile Include="..\Private\UIMonsterStat_Progress.cpp" />
@@ -549,9 +543,9 @@
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
-    <ClCompile Include="..\Private\UITrigger.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Vine.cpp" />
+    <ClCompile Include="..\Private\Effect_WarningCircle.cpp" />
     <ClCompile Include="..\Private\Water.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp" />

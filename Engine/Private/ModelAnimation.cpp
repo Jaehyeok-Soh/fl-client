@@ -14,7 +14,7 @@ CModelAnimation::CModelAnimation(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	: Super(rhs)
 	, m_iChannelCount(rhs.m_iChannelCount)
-	, m_vecChannels(rhs.m_vecChannels)
+	//, m_vecChannels(rhs.m_vecChannels)
 	, m_vecCurrentKeyFrameIndices(rhs.m_vecCurrentKeyFrameIndices)
 	, m_fCurrentTrackPosition(rhs.m_fCurrentTrackPosition)
 	, m_fTickPerSecond(rhs.m_fTickPerSecond)
@@ -34,8 +34,14 @@ CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	//Safe_AddRef(m_pChannelDataBuffer);
 	//Safe_AddRef(m_pInputChannelSB_SRV);
 
-	for (auto& pElement : m_vecChannels)
-		Safe_AddRef(pElement);
+	//for (auto& pElement : m_vecChannels)
+	//	Safe_AddRef(pElement);
+
+	m_vecChannels.reserve(rhs.m_vecChannels.size());
+	for (auto& pChannel : rhs.m_vecChannels)
+	{
+		m_vecChannels.push_back(pChannel->Clone());
+	}
 }
 
 HRESULT CModelAnimation::Initialize(void* pArg)

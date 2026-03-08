@@ -9,6 +9,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUIMenu_Text::CUIMenu_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -104,25 +105,57 @@ HRESULT CUIMenu_Text::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUIMenu_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+void CUIMenu_Text::Bind_Events()
 {
-	if (!m_isActive)
-		return;
+	m_vecEventHandles.resize(ENUM_TO_UINT(EUIEventID::END));
 
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
+	switch (m_eTextSubClassType)
 	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
+	case DTO::EUITextSubClassType::MENU_TEXT_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::MENU_ESC_TEXT:
+	{
+		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_ENTER)] = (
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_ENTER_ICON_HOVER_ENTER == Desc.eEventID)
+					{
+						this->Set_Visible();
+					}
+				}));
+		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_EXIT)] = (
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_ENTER_ICON_HOVER_EXIT == Desc.eEventID)
+					{
+						this->Set_Invisible();
+					}
+				}));
 	}
-	else if (eEvent == ETriggerEventType::HOVER_ENTER)
+	break;
+	case DTO::EUITextSubClassType::MENU_ICON_TEXT:
 	{
-		Set_Visible();
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+					{
+						this->Set_Invisible();
+					}
+				})
+		);
+
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			});
 	}
-	else if (eEvent == ETriggerEventType::HOVER_EXIT)
-	{
-		Set_Invisible();
+	break;
+	case DTO::EUITextSubClassType::MENU_TEXT_END:
+		break;
 	}
 }
 
@@ -132,12 +165,10 @@ void CUIMenu_Text::Initialize_Visible_Event()
 
 	if (m_eTextSubClassType == DTO::EUITextSubClassType::MENU_ESC_TEXT)
 	{
-		m_isActive = true;
 		m_isFin_Event = false;
 	}
 	else
 	{
-		m_isActive = false;
 		m_isFin_Event = false;
 	}
 
@@ -149,7 +180,6 @@ void CUIMenu_Text::Initialize_InVisible_Event()
 {
 	m_vFontColor = m_vOriginFontColor;
 
-	m_isActive = false;
 	m_isFin_Event = false;
 }
 
@@ -166,7 +196,6 @@ _bool CUIMenu_Text::Tick_Visible_Event(const _float fTimeDelta)
 	if (t >= 1.f)
 	{
 		m_vFontColor = m_vOriginFontColor;
-		m_isActive = true;
 		m_isFin_Event = true;
 		return true;
 	}
@@ -179,7 +208,6 @@ _bool CUIMenu_Text::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIMenu_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	m_isActive = true;
 	m_isFin_Event = true;
 	return true;
 }

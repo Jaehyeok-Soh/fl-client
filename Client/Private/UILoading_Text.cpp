@@ -198,17 +198,6 @@ HRESULT CUILoading_Text::Convert_Value_To_Text()
 	return S_OK;
 }
 
-void CUILoading_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	if (m_isVisible)
-		Set_Invisible();
-	else
-		Set_Visible();
-}
-
 void CUILoading_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;

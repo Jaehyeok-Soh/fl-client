@@ -51,9 +51,6 @@ HRESULT CSkillObject_Base::Initialize(void* pArg)
 		m_runtimeDesc.vFollowOffset = m_desc.vSpawnPos - reqPos;
 	}
 
-	if (CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>())
-		pEffectHandler->Setup_ForOwner(this);
-
 	return S_OK;
 }
 

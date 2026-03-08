@@ -424,18 +424,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text">
       <UniqueIdentifier>{4c552970-7965-46f3-85ec-73d256c4eba8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger">
-      <UniqueIdentifier>{48b4a088-d124-4a5f-a826-7eac6ea855f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\00.Basic">
-      <UniqueIdentifier>{ddd0e1e9-b54e-4f7e-b25d-40433ae876b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab">
-      <UniqueIdentifier>{13d70f3a-1964-4c43-a1e8-30b582165d71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit">
-      <UniqueIdentifier>{63c9a3d7-bedc-44a7-89d4-febe6b9de520}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\TriggerBox">
       <UniqueIdentifier>{0d360f5b-9f01-4e63-94fd-b809239f8b4c}</UniqueIdentifier>
     </Filter>
@@ -645,6 +633,15 @@
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Layout\ObjectPool">
       <UniqueIdentifier>{32bebfb6-883b-4452-b824-e6ce5b80a0cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect\WarningCircle">
+      <UniqueIdentifier>{190738f3-4463-453c-bfff-445941f9ad5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\HybridGameObject">
+      <UniqueIdentifier>{4a97d26b-a7b1-4ded-aa95-e3e8e55b56c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\HybridGameObject\WarningSpace">
+      <UniqueIdentifier>{39cb2a67-010d-4046-a55d-2272b9069c31}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. Level\Lianhuo">
       <UniqueIdentifier>{535bd167-aaf6-410f-87bd-a86b99f67c66}</UniqueIdentifier>
@@ -879,17 +876,11 @@
     <ClInclude Include="..\Public\Builder_AttackOverlap.h">
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UITrigger.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIDynamic_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMini_Map.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIButton_Trigger.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ImGui_Layout.h">
       <Filter>07. System\99. Debug_ImGui\Layout</Filter>
@@ -923,15 +914,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIMenu_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIMenu_Trigger.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UICommon_Trigger.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIMenu_Exit_Trigger.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMenu_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\01.Menu Text</Filter>
@@ -1216,6 +1198,12 @@
     <ClInclude Include="..\public\ImGui_ObjectPoolLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_WarningCircle.h">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\WarningCircle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hybrid_WarningSpace.h">
+      <Filter>03. GameObject\HybridGameObject\WarningSpace</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Level_Lianhuo.h">
       <Filter>02. Level\Lianhuo</Filter>
     </ClInclude>
@@ -1423,9 +1411,6 @@
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp">
       <Filter>07. System\01. Builder\Builder_AttackOverlap</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UITrigger.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\State_Walk.cpp">
       <Filter>06. FSM\Player\Walk</Filter>
     </ClCompile>
@@ -1446,9 +1431,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIMini_Map.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\01.Minimap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIButton_Trigger.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ImGui_Layout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout</Filter>
@@ -1488,15 +1470,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIMenu_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\03.MenuImage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIMenu_Trigger.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger\01.MenuTab</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UICommon_Trigger.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger\00.Basic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIMenu_Exit_Trigger.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Trigger\02.Menu Exit</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIDynamic_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image</Filter>
@@ -1777,6 +1750,12 @@
     </ClCompile>
     <ClCompile Include="..\private\ImGui_ObjectPoolLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\ObjectPool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_WarningCircle.cpp">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\WarningCircle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hybrid_WarningSpace.cpp">
+      <Filter>03. GameObject\HybridGameObject\WarningSpace</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Lianhuo.cpp">
       <Filter>02. Level\Lianhuo</Filter>

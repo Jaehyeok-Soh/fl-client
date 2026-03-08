@@ -29,11 +29,6 @@
 #include "UICombo_Image.h"
 #include "UIBossAction_Image.h"
 
-// 트리거 클래스
-#include "UICommon_Trigger.h"
-#include "UIMenu_Trigger.h"
-#include "UIMenu_Exit_Trigger.h"
-
 #include "WorldUI_Component.h"
 
 #include"UI_Manager.h"
@@ -87,17 +82,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 		}
 	}
 
-	// For. Trigger
-	{
-		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::TRIGGER));
-		for (const auto& pObjectData : vecDataList)
-		{
-			const auto* pDto = static_cast<const Engine::CUI_Trigger_DTO*>(pObjectData);
-			if (FAILED(Create_TriggerDTO(pDto->Get_Data())))
-				return E_FAIL;
-		}
-	}
-
 	// For. DImage
 	{
 		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::DYNAMIC_IMAGE));
@@ -120,15 +104,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 		}
 	}
 
-	if (FAILED(CUI_Manager::GetInstance()->Merge_MapCanvasCache(m_iLevelID, std::move(m_MapCanvasCache))))
-		return E_FAIL;
-	if (FAILED(CUI_Manager::GetInstance()->Merge_MapGenericUICache(m_iLevelID, std::move(m_pMapUICache))))
-		return E_FAIL;
-
-	m_MapTextDataCache.clear();
-	m_MapTriggerDataCache.clear();
-
-	CUI_Manager::GetInstance()->Add_TriggerUI(std::move(m_vecTriggerUIs));
 	return S_OK;
 }
 
@@ -147,7 +122,6 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	Desc.fZ				= data.fPosZ;
 	Desc.fWidth			= m_vViewportSIze.x;
 	Desc.fHeight		= m_vViewportSIze.y;
-	m_ePrefabtype = static_cast<Client::EUIPrefabType>(data.iPrefabType);
 
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_Canvas", m_iLevelID, g_wszUILayer, &Desc);
 	if (pResult == nullptr)
@@ -157,10 +131,7 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	if (nullptr == pCanvas)
 		return E_FAIL;
 
-	m_MapCanvasCache.emplace(data.strTag, pCanvas);
-	if (FAILED(CUI_Manager::GetInstance()->Add_VecCanvasCache(m_iLevelID, pCanvas)))
-		return E_FAIL;
-
+	m_pCanvasCache = pCanvas;
 	return S_OK;
 }
 
@@ -169,11 +140,7 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 	if (data.eType != DTO::EUIType::GENERICUI)
 		return E_FAIL;
 
-	auto iter = m_MapCanvasCache.find(data.strCanvasName);
-	if (iter == m_MapCanvasCache.end())
-		return E_FAIL;
-
-	if (FAILED(Register_Class(data.eClassType, data, iter->second)))
+	if (FAILED(Register_Class(data.eClassType, data)))
 		return E_FAIL;
 
 	return S_OK;
@@ -188,15 +155,6 @@ HRESULT CBuilder_UI::Create_TextDTO(const DTO::TUI_TextData& data)
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
-{
-	if (data.eType != DTO::EUIType::TRIGGER)
-		return E_FAIL;
-
-	m_MapTriggerDataCache.emplace(data.strOwnerName, data);
-	return S_OK;
-}
-
 HRESULT CBuilder_UI::Create_DImageDTO(const DTO::TUI_DImageData& data)
 {
 	if (data.eType != DTO::EUIType::DYNAMIC_IMAGE)
@@ -206,12 +164,9 @@ HRESULT CBuilder_UI::Create_DImageDTO(const DTO::TUI_DImageData& data)
 	return S_OK;
 }
 
-HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI_GenericUIData& data)
 {
-	if (nullptr == pCanvas)
-		return E_FAIL;
-
-	CGenericUI::GENERIC_UI_DESC DefaultDesc = Make_DefaultInfo(data, pCanvas);
+	CGenericUI::GENERIC_UI_DESC DefaultDesc = Make_DefaultInfo(data);
 	_wstring wstrProtoTag = L"Prototype_UI_" + Engine_Utils::ToWString(DTO::UIClassTypeToString(eClassType));
 	CGameObject* pResult = nullptr;
 
@@ -330,59 +285,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(JustImageDesc) = DefaultDesc;
 		pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, m_iLevelID, g_wszUILayer, &JustImageDesc);
 	}
-
-	////////////////////////////////////////
-	// TRIGGER //
-	else if (eClassType == DTO::EUIClassType::TRIGGER)
-	{
-		auto iter = m_MapTriggerDataCache.find(data.strTag);
-		if (iter == m_MapTriggerDataCache.end())
-			return E_FAIL;
-		const auto Type = iter->second.eTriggerSubClassType;
-		const _bool isMenu = (Type == DTO::EUITriggerSubClassType::MENU_TAB_TRIGGER);
-		const _bool isMenuExit = (Type == DTO::EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER);
-
-		if (isMenu)
-		{
-			CUIMenu_Trigger::UI_MENU_TRIGGER_DESC MenuTriggerDesc= {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuTriggerDesc) = DefaultDesc;
-			MenuTriggerDesc.eTriggerSubClass = Type;
-			MenuTriggerDesc.tTriggerData = std::move(iter->second);
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_UIMenuTrigger", m_iLevelID, g_wszUILayer, &MenuTriggerDesc);
-
-		}
-		else if (isMenuExit)
-		{
-			CUIMenu_Exit_Trigger::UI_MENU_EXIT_TRIGGER_DESC MenuExitTriggerDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuExitTriggerDesc) = DefaultDesc;
-			MenuExitTriggerDesc.eTriggerSubClass = Type;
-			MenuExitTriggerDesc.tTriggerData = std::move(iter->second);
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_UIMenuExitTrigger", m_iLevelID, g_wszUILayer, &MenuExitTriggerDesc);
-		}
-		else
-		{
-			CUICommon_Trigger::UI_COMMON_TRIGGER_DESC CommonTriggerDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(CommonTriggerDesc) = DefaultDesc;
-			CommonTriggerDesc.eTriggerSubClass = Type;
-			CommonTriggerDesc.tTriggerData = std::move(iter->second);
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_UICommonTrigger", m_iLevelID, g_wszUILayer, &CommonTriggerDesc);
-		}
-
-		if (nullptr == pResult)
-		{
-			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
-			MSG_BOXW(wstr.c_str());
-			return E_FAIL;
-		}
-		auto* pUI = dynamic_cast<CGenericUI*>(pResult);
-		if (nullptr == pUI)
-			return E_FAIL;
-		auto* pTriggerUI = dynamic_cast<CUITrigger*>(pUI);
-		if (nullptr == pTriggerUI)
-			return E_FAIL;
-		m_vecTriggerUIs.push_back(pTriggerUI);
-	}
-
 	////////////////////////////////////////
 	// DYNAMIC_IMAGE //
 	else if (eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
@@ -390,8 +292,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		auto iter = m_MapDImageDataCache.find(data.strTag);
 		if (iter == m_MapDImageDataCache.end())
 			return E_FAIL;
-		if ("MiniMap_Player_Icon" == data.strTag)
-			int a = 0;
+
 		const auto Type = iter->second.eDISubClassType;
 
 		const _bool isPlayerSkill		= (Type >= DTO::EUIDImageSubClassType::PLAYER_SKILL_BEGIN	&& Type <= DTO::EUIDImageSubClassType::PLAYER_SKILL_END);
@@ -432,6 +333,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CUIMenu_Image::MENU_IMAGE_DESC MenuImageDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuImageDesc) = DefaultDesc;
 			MenuImageDesc.eSubClassType = Type;
+			MenuImageDesc.iSlotIndex = iter->second.iParams0;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuImage", m_iLevelID, g_wszUILayer, &MenuImageDesc);
 		}
 		else if (isOutLine)
@@ -439,6 +341,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			CUIMenu_OutLine::MENU_OUTLINE_DESC MenuOutlineDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuOutlineDesc) = DefaultDesc;
 			MenuOutlineDesc.eSubClassType = Type;
+			MenuOutlineDesc.iSlotIndex = iter->second.iParams0;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuOutline", m_iLevelID, g_wszUILayer, &MenuOutlineDesc);
 		}
 		else if (isLoading)
@@ -495,15 +398,11 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 	if (nullptr == pUI)
 		return E_FAIL;
 
-	pCanvas->Get_UIVector()->push_back(pUI);
-	m_pMapUICache.emplace(data.strTag, pUI);
-	if (FAILED(CUI_Manager::GetInstance()->Add_VecGenericUICache(m_iLevelID, pUI)))
-		return E_FAIL;
-
+	m_pCanvasCache->Get_UIVector()->push_back(pUI);
 	return S_OK;
 }
 
-CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_GenericUIData& data, CCanvas* pCanvas)
+CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_GenericUIData& data)
 {
 	CGenericUI::GENERIC_UI_DESC Desc = {};
 	Desc.strName				= data.strTag;
@@ -525,7 +424,6 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.isInitInteract			= data.isInteract;
 	Desc.isInitActivate			= data.isActivate;
 	Desc.isUseColorTint			= data.isUseColorTint;
-	Desc.pCanvasCache			= pCanvas;
 	Desc.iComponentFlag			= data.iComponentFlag;
 	Desc.isUseColorTint			= data.isUseColorTint;
 	Desc.vColorTint				= data.vColorTint;

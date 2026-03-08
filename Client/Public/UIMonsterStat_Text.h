@@ -38,8 +38,8 @@ private:
 	HRESULT Bind_ShaderResources();
 	HRESULT Attach_Personal_Info();
 	HRESULT Convert_Stat_To_Text();
+	virtual void Bind_Events()override;
 private:
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;

@@ -16,92 +16,21 @@ void to_json(json& j, const TUI_DImageData& data)
 		{ "strTag", data.strTag },
 		{ "strOwnerName", data.strOwnerName },
 		{ "eDISubClassType", data.eDISubClassType },
+		{ "iParams0", data.iParams0 },
 	};
 }
 
 void from_json(const json& j, TUI_DImageData& data)
 {
-	data.strTag			 = "";
-	data.strOwnerName	 = "";
-	data.eDISubClassType = std::decay_t<decltype(data.eDISubClassType)>{};
+	data.strTag				= "";
+	data.strOwnerName		= "";
+	data.eDISubClassType	= std::decay_t<decltype(data.eDISubClassType)>{};
+	data.iParams0			= 0;
 
-	data.strTag          = j.value("strTag", data.strTag);
-	data.strOwnerName    = j.value("strOwnerName", data.strOwnerName);
-	data.eDISubClassType = j.value("eDISubClassType", j.value("eSubClassType", data.eDISubClassType));
-}
-
-void to_json(json& j, const TUI_ButtonTriggerData& data)
-{
-	j = json
-	{
-		{"Type", TUI_ButtonTriggerData::eType},
-		{"strTag", data.strTag},
-		{"strOwnerName", data.strOwnerName},
-		{"strKeyMapping", data.strKeyMapping},
-		{"vecTriggerCanvas", data.vecTriggerCanvas},
-		{"vecTriggerUI", data.vecTriggerUI},
-	};
-}
-
-void from_json(const json& j, TUI_ButtonTriggerData& data)
-{
-	data.strTag			= "";
-	data.strOwnerName	= "";
-	data.strKeyMapping	= "";    
-	data.vecTriggerCanvas.clear();
-	data.vecTriggerUI.clear();
-
-	data.strTag           = j.value("strTag", data.strTag);
-	data.strOwnerName     = j.value("strOwnerName", data.strOwnerName);
-	data.strKeyMapping    = j.value("strKeyMapping", data.strKeyMapping);
-	data.vecTriggerCanvas = j.value("vecTriggerCanvas", data.vecTriggerCanvas);
-	data.vecTriggerUI     = j.value("vecTriggerUI", data.vecTriggerUI);
-}
-
-void to_json(json& j, const TUI_TriggerData& data)
-{
-	j = json
-	{
-		{"Type", TUI_TriggerData::eType},
-		{"strTag",						data.strTag},
-		{"strOwnerName",				data.strOwnerName},
-		{"eTriggerSubClassType",		data.eTriggerSubClassType},
-		{"vecHoverEnterTriggerCanvas",  data.vecHoverEnterTriggerCanvas},
-		{"vecHoverEnterTriggerUI",      data.vecHoverEnterTriggerUI},
-		{"vecHoverExitTriggerCanvas",	data.vecHoverExitTriggerCanvas},
-		{"vecHoverExitTriggerUI",		data.vecHoverExitTriggerUI},
-		{"vecPressEnterTriggerCanvas",	data.vecPressEnterTriggerCanvas},
-		{"vecPressEnterTriggerUI",		data.vecPressEnterTriggerUI},
-		{"vecPressExitTriggerCanvas",	data.vecPressExitTriggerCanvas},
-		{"vecPressExitTriggerUI",		data.vecPressExitTriggerUI},
-	};
-}
-
-void from_json(const json& j, TUI_TriggerData& data)
-{
-	data.strTag = "";
-	data.strOwnerName = "";
-	data.eTriggerSubClassType = EUITriggerSubClassType::NONE_OWNER;
-	data.vecHoverEnterTriggerCanvas.clear();
-	data.vecHoverEnterTriggerUI.clear();
-	data.vecHoverExitTriggerCanvas.clear();
-	data.vecHoverExitTriggerUI.clear();
-	data.vecPressEnterTriggerCanvas.clear();
-	data.vecPressEnterTriggerUI.clear();
-	data.vecPressExitTriggerCanvas.clear();
-	data.vecPressExitTriggerUI.clear();
-
-	data.strTag						= j.value("strTag", data.strTag);
-	data.strOwnerName				= j.value("strOwnerName", data.strOwnerName);
-	data.eTriggerSubClassType		= j.value("eTriggerSubClassType", data.eTriggerSubClassType);
-	data.vecHoverEnterTriggerCanvas = j.value("vecHoverEnterTriggerCanvas", data.vecHoverEnterTriggerCanvas);
-	data.vecHoverEnterTriggerUI		= j.value("vecHoverEnterTriggerUI", data.vecHoverEnterTriggerUI);
-	data.vecHoverExitTriggerCanvas	= j.value("vecHoverExitTriggerCanvas", data.vecHoverExitTriggerCanvas);
-	data.vecHoverExitTriggerUI		= j.value("vecHoverExitTriggerUI", data.vecHoverExitTriggerUI);
-	data.vecPressEnterTriggerCanvas = j.value("vecPressEnterTriggerCanvas", data.vecPressEnterTriggerCanvas);
-	data.vecPressEnterTriggerUI		= j.value("vecPressEnterTriggerUI", data.vecPressEnterTriggerUI);
-	data.vecPressExitTriggerCanvas	= j.value("vecPressExitTriggerCanvas", data.vecPressExitTriggerCanvas);
-	data.vecPressExitTriggerUI		= j.value("vecPressExitTriggerUI", data.vecPressExitTriggerUI);
+	data.strTag				= j.value("strTag", data.strTag);
+	data.strOwnerName		= j.value("strOwnerName", data.strOwnerName);
+	data.eDISubClassType	= j.value("eDISubClassType", j.value("eSubClassType", data.eDISubClassType));
+	data.iParams0			= j.value("iParams0", data.iParams0);
 }
 
 void to_json(json& j, const TUI_TextData& data)
@@ -320,28 +249,6 @@ json CUI_DImage_DTO::ToJson() const
 HRESULT CUI_DImage_DTO::FromJson(const json& j)
 {
 	m_Data = j.get<DTO::TUI_DImageData>();
-	return S_OK;
-}
-
-json CUI_ButtonTrigger_DTO::ToJson() const
-{
-	return json(m_Data);
-}
-
-HRESULT CUI_ButtonTrigger_DTO::FromJson(const json& j)
-{
-	m_Data = j.get<DTO::TUI_ButtonTriggerData>();
-	return S_OK;
-}
-
-json CUI_Trigger_DTO::ToJson() const
-{
-	return json(m_Data);
-}
-
-HRESULT CUI_Trigger_DTO::FromJson(const json& j)
-{
-	m_Data = j.get<DTO::TUI_TriggerData>();
 	return S_OK;
 }
 

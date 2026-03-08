@@ -38,20 +38,6 @@ HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_TextData& data)
 	return Try_Add(pObjectBase);
 }
 
-HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_TriggerData& data)
-{
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::TRIGGER);
-	static_cast<CUI_Trigger_DTO*>(pObjectBase)->Get_Data() = data;
-	return Try_Add(pObjectBase);
-}
-
-HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_ButtonTriggerData& data)
-{
-	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::BUTTON_TRIGGER);
-	static_cast<CUI_ButtonTrigger_DTO*>(pObjectBase)->Get_Data() = data;
-	return Try_Add(pObjectBase);
-}
-
 HRESULT CDataDocument_UI::Try_Add(const DTO::TUI_DImageData& data)
 {
 	IObjectDataBase* pObjectBase = Create_ObjectData(DTO::EUIType::DYNAMIC_IMAGE);
@@ -71,12 +57,6 @@ IObjectDataBase* CDataDocument_UI::Create_ObjectData(DTO::EUIType eType)
 
 	case DTO::EUIType::UI_TEXT:
 		return CUI_Text_DTO::Create();
-
-	case DTO::EUIType::TRIGGER:
-		return CUI_Trigger_DTO::Create();
-
-	case DTO::EUIType::BUTTON_TRIGGER:
-		return CUI_ButtonTrigger_DTO::Create();
 
 	case DTO::EUIType::DYNAMIC_IMAGE:
 		return CUI_DImage_DTO::Create();

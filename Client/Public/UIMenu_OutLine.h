@@ -9,6 +9,7 @@ class CUIMenu_OutLine final : public  CUIDynamic_Image
 public:
 	typedef struct tagUIMenuOutLine : public DIMAGE_DESC
 	{
+		_uint iSlotIndex = {};
 	}MENU_OUTLINE_DESC;
 
 private:
@@ -28,8 +29,8 @@ public:
 private:
 	HRESULT Ready_Components(MENU_OUTLINE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
+	virtual void Bind_Events() override;
+private:
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
@@ -41,6 +42,7 @@ private:
 	_bool m_isTrigger_HoverEnter	= { false };
 	_bool m_isTrigger_HoverExit		= { false };
 	_float m_fEmit = { 4.f };
+	_uint m_iSlotIndex = {};
 
 public:
 	static CUIMenu_OutLine* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

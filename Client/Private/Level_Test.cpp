@@ -57,6 +57,8 @@
 #include "Monster_Dog_Body.h"
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
+#include "Moon_SkillE_Obj.h"
+#include "Hybrid_WarningSpace.h"
 
 #include "PlayerSkillObj_Headers.h"
 
@@ -96,6 +98,9 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_UI_Layer(g_wszUILayer)))
 		return E_FAIL;
 
+	if (FAILED(Ready_HybridObject()))
+		return E_FAIL;
+
 	return S_OK;
 
 }
@@ -119,6 +124,8 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 void CLevel_Test::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	Spawn_HybridObject();
 
 	static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
@@ -144,36 +151,36 @@ void CLevel_Test::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-	if (KEY_BUTTON_DOWN(DIK_8))
-	{
-		UI_PREFAB_DATA Desc = {};
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	}
-	if (KEY_BUTTON_DOWN(DIK_7))
-	{
-		UI_PREFAB_DATA Desc = {};
-		Desc.DamageFontData.iDamage = 10;
-		Desc.DamageFontData.vHitPos = Vec3{0.f, 0.f, 0.f};
-		Desc.DamageFontData.vFontColor = Vec4{ 1.f, 1.f,1.f, 1.f };
-
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	}
-	//if (KEY_BUTTON_DOWN(DIK_5))
+	//if (KEY_BUTTON_DOWN(DIK_8))
 	//{
-	//	m_pGameInstance->Broadcast<ACTION1>();
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_6))
-	//{
-	//	m_pGameInstance->Broadcast<ACTION2>();
+	//	UI_PREFAB_DATA Desc = {};
+	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::TEST), &Desc);
 	//}
 	//if (KEY_BUTTON_DOWN(DIK_7))
 	//{
-	//	m_pGameInstance->Broadcast<ACTION3>();
+	//	UI_PREFAB_DATA Desc = {};
+	//	Desc.DamageFontData.iDamage = 10;
+	//	Desc.DamageFontData.vHitPos = Vec3{0.f, 0.f, 0.f};
+	//	Desc.DamageFontData.vFontColor = Vec4{ 1.f, 1.f,1.f, 1.f };
+
+	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
 	//}
-	//if (KEY_BUTTON_DOWN(DIK_8))
-	//{
-	//	m_pGameInstance->Broadcast<ACTION4>();
-	//}
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		m_pGameInstance->Broadcast<ACTION1>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		m_pGameInstance->Broadcast<ACTION2>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		m_pGameInstance->Broadcast<ACTION3>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		m_pGameInstance->Broadcast<ACTION4>();
+	}
 }
 
 HRESULT CLevel_Test::Render()
@@ -209,16 +216,25 @@ HRESULT CLevel_Test::Build_Files()
 	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(iLevelID, eCategory)))
 		return E_FAIL;
-	std::filesystem::path strUIFolderPath = L"../../Resources/Data/EffectData/";
-	if (std::filesystem::exists(strUIFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
-		{
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
 
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
+	std::filesystem::path strEffectFolderPath = L"../../Resources/Data/EffectData/";
+
+	if (std::filesystem::exists(strEffectFolderPath))
+	{
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(strEffectFolderPath))
+		{
+			if (std::filesystem::is_regular_file(entry.path()))
+			{
+				// 확장자가 .json인 것만 골라내기
+				if (entry.path().extension() == ".json")
+				{
+					if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, entry.path())))
+						return E_FAIL;
+
+					if (FAILED(Build_File(iLevelID, eCategory, entry.path().stem().string())))
+						return E_FAIL;
+				}
+			}
 		}
 	}
 #pragma endregion
@@ -227,7 +243,7 @@ HRESULT CLevel_Test::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	std::filesystem::path strUIFolderPath = L"../../Resources/Data/UIData/Static/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
@@ -339,10 +355,6 @@ HRESULT CLevel_Test::Ready_Player_SkillObjPool()
 
 HRESULT CLevel_Test::Ready_UI_Layer(const wstring& wstrLayerTag)
 {
-	if (FAILED(CUI_Manager::GetInstance()->Bind_Trigger(ENUM_TO_UINT(ELevelType::TEST))))
-		return E_FAIL;
-
-	CUI_Manager::GetInstance()->Clear_TriggerUI();
 	return S_OK;
 }
 
@@ -718,7 +730,62 @@ HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
 }
+HRESULT CLevel_Test::Ready_HybridObject()
+{
+	wstring PoolTag = L"POOL_Hybrid_WarningSpace";
+	wstring LayTag = L"HybridObject_Layer";
+	wstring PrototypeTag = L"Prototype_GameObject_Hybrid_WarningSpace";
 
+	using HB = CHybrid_WarningSpace;
+	HB::Origin_HybridWarningDesc Desc = {};
+
+	Desc.m_ModuleEffect.push_back(std::make_pair(ENUM_TO_UINT(HB::EWarningState::WARNING), Engine_Utils::ToHash("WarningCircle2")));
+	Desc.m_ModuleEffect.push_back(std::make_pair(ENUM_TO_UINT(HB::EWarningState::EXPLOSION), Engine_Utils::ToHash("Boss_Xibi_Lightning_Oneshot")));
+
+	m_pGameInstance->Regist_Pool((_uint)ELevelType::TEST, PoolTag, LayTag, 0, PrototypeTag, &Desc, 10);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Test::Spawn_HybridObject()
+{
+	if (m_pGameInstance->KeyButton_Down(DIK_P))
+	{
+		using HB = CHybrid_WarningSpace;
+		wstring PoolTag = L"POOL_Hybrid_WarningSpace";
+
+		vector<EFFECT_WARNING_DESC>		m_DescList = {};
+		m_DescList.resize((_uint)HB::EWarningState::END);
+
+		// WARNING
+		{
+			EFFECT_WARNING_DESC Desc = {};
+			Desc.VFX_Target_Position = { 19.f, 17.f, 5.f };
+			Desc.VFX_Scale = { 4.f, 4.f, 4.f };
+			Desc.iSimulationType = (_uint)EFFECT_WARNING_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+			m_DescList[(_uint)HB::EWarningState::WARNING] = Desc;
+		}
+
+		// EXPLOSION
+		{
+			EFFECT_WARNING_DESC Desc = {};
+			Desc.VFX_Target_Position = { 19.f, 17.f, 5.f };
+			Desc.VFX_Scale = { 1.f, 1.f, 1.f };
+			Desc.iSimulationType = (_uint)EFFECT_WARNING_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+			m_DescList[(_uint)HB::EWarningState::EXPLOSION] = Desc;
+		}
+
+		m_pGameInstance->Request_AddObject(
+			m_pGameInstance->Get_CurrentLevelIndex(),
+			PoolTag,
+			m_pGameInstance->Get_CurrentLevelIndex(),
+			&m_DescList
+		);
+	}
+	return S_OK;
+}
 
 CLevel_Test* CLevel_Test::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

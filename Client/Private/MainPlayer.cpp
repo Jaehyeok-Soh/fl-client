@@ -192,6 +192,17 @@ void CMainPlayer::Update(const _float fTimeDelta)
     Get_Component<CMyStat>()->Update_Stat(fTimeDelta);
     Get_Component<CActionSkill>()->Update_Skills(fTimeDelta);
 
+    if (m_pGameInstance->KeyButton_Down(DIK_T))
+    {
+        SimpleMath::Vector4 HitPosition = { 17.f, 17.f, 17.f, 1.f};
+
+        EFFECT_SPAWN_DESC desc = {};
+        desc.VFX_fSpeed = 1.f;
+        desc.iSimulationType = (_uint)E_EFFECT_TYPE::WORLD;
+        desc.matWorld = XMMatrixTranslationFromVector(HitPosition);
+
+        m_pGameInstance->Request_Effect("VFX_Sword_Hit", desc);
+    }
 }
 
 void CMainPlayer::Update_Late(const _float fTimeDelta)

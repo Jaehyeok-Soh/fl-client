@@ -11,6 +11,7 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
 #include "GameInstance.h"
+#include <UI_Manager.h>
 
 CUIPlayerStat_Progress::CUIPlayerStat_Progress(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIProgress_Bar(pDevice, pDeviceContext)
@@ -112,20 +113,6 @@ HRESULT CUIPlayerStat_Progress::Render()
 	return S_OK;
 }
 
-void CUIPlayerStat_Progress::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-	}
-}
-
 void CUIPlayerStat_Progress::Initialize_Visible_Event()
 {
 	m_isActive = false;
@@ -157,6 +144,40 @@ _bool CUIPlayerStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	m_isFin_Event = true;
 	return true;
+}
+
+void CUIPlayerStat_Progress::Bind_Events()
+{
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
+
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>(
+		[this]() 
+		{
+			this->Set_Invisible();
+		});
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>(
+		[this]()
+		{
+			this->Set_Visible();
+		});
+
 }
 
 
@@ -191,9 +212,6 @@ HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
 
 	m_vOriginColor = m_vColorTint;
 	m_vOriginGradiantColor = m_vGradiantColorTint;
-
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
 
 	return S_OK;
 }

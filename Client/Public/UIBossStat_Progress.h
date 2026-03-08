@@ -34,9 +34,8 @@ public:
 private:
 	HRESULT Ready_Components(BOSS_STAT_PROGRESS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
 	virtual HRESULT Attach_Personal_Info()override;
-	void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
+private:
 	void Initialize_Visible_Event()override;
 	void Initialize_InVisible_Event()override;
 	_bool Tick_Visible_Event(const _float fTimeDelta)override;

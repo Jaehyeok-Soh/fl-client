@@ -35,50 +35,52 @@ void CEffectType_Selection_Panel::DrawEmbedded()
 
 void CEffectType_Selection_Panel::DrawEffectList()
 {
-	// =============  Effect Layer & Effect List  =====================
 	ImGui::SeparatorText("Container_EffectList");
 
 	if (ImGui::TreeNode("Container_EffectList##Effect_List"))
 	{
 		m_pEffectList.clear();
-		auto EffectList = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::EFFECT), L"Effect_Layer");
+		auto pEffectListFromManager = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::EFFECT), L"Effect_Layer");
 
-		if (EffectList == nullptr)
-		{
+		// 현재 선택된 객체가 죽었다면 즉시 nullptr 처리
+		if (*m_ppTargetSlot != nullptr && (*m_ppTargetSlot)->IsDead()) {
+			*m_ppTargetSlot = nullptr;
+		}
+
+		if (pEffectListFromManager == nullptr) {
 			ImGui::TreePop();
 			return;
 		}
 
-
-		for (auto*& pEffect : *EffectList)
-		{
-			if (dynamic_cast<CToolObject*>(pEffect))
-				m_pEffectList.push_back(make_pair(dynamic_cast<CToolObject*>(pEffect)->Get_Name(), static_cast<CToolObject*>(pEffect)));
+		// 살아있는 객체만 수집
+		for (auto* pEffect : *pEffectListFromManager) {
+			if (pEffect && !pEffect->IsDead()) {
+				CToolObject* pToolObj = dynamic_cast<CToolObject*>(pEffect);
+				if (pToolObj)
+					m_pEffectList.push_back({ pToolObj->Get_Name(), pToolObj });
+			}
 		}
 
-		if (m_pEffectList.size() != 0)
-		{
+		if (!m_pEffectList.empty()) {
 			std::vector<const char*> iTems;
-			iTems.reserve(static_cast<int>(m_pEffectList.size()));
+			int iCurrentIdx = -1;
 
-			for (auto& str : m_pEffectList)
-				iTems.push_back(str.first.c_str());
-
-			static int EffectNumber = {};
-
-			ImGui::ListBox("EffectList", &EffectNumber, iTems.data(), static_cast<int>(m_pEffectList.size()),6);
-
-			if ((iTems.size() - 1) < EffectNumber)
-			{
-				ImGui::TreePop();
-				return;
+			for (size_t i = 0; i < m_pEffectList.size(); ++i) {
+				iTems.push_back(m_pEffectList[i].first.c_str());
+				// 현재 선택된 객체가 리스트의 몇 번째인지 확인
+				if (*m_ppTargetSlot == m_pEffectList[i].second)
+					iCurrentIdx = (int)i;
 			}
 
-			// 여기서 선택한 Effect를 Target에 넣어준다.
-			if (m_pEffectList.size() > EffectNumber && m_pEffectList[EffectNumber].second != nullptr)
-				*m_ppTargetSlot = m_pEffectList[EffectNumber].second;
+			// ListBox에서 선택 변경 시
+			if (ImGui::ListBox("EffectList", &iCurrentIdx, iTems.data(), (int)iTems.size(), 6)) {
+				if (iCurrentIdx >= 0)
+					*m_ppTargetSlot = m_pEffectList[iCurrentIdx].second;
+			}
 		}
-
+		else {
+			ImGui::Text("No Effects in Layer.");
+		}
 		ImGui::TreePop();
 	}
 }
@@ -105,9 +107,11 @@ HRESULT CEffectType_Selection_Panel::Render(CToolObject* pGo)
 	}
 
 	m_eSelectedEffectType = E_EffectSystemType::None;
-
-	EditEffect();
-	TransformEffect(pGo);
+	if (*m_ppTargetSlot != nullptr && !(*m_ppTargetSlot)->IsDead())
+	{
+		EditEffect();
+		TransformEffect(*m_ppTargetSlot); // 인자로 받은 pGo 대신 최신화된 TargetSlot 사용
+	}
 	ImGui::End();
 	
 	return S_OK;
@@ -179,8 +183,8 @@ void CEffectType_Selection_Panel::CreateParticleEffect()
 		pEffectDesc.Data._Effect_TargetRotation = { 0.f, 0.f, 0.f };
 
 		// =========   버퍼 사이즈   ======================
-		pEffectDesc.Data._Effect_MaxParticle = { 1 };
-		pEffectDesc.Data._Effect_Looping = { true };
+		pEffectDesc.Data._Effect_MaxParticle = { 10 };
+		pEffectDesc.Data._Effect_Looping = { false };
 		pEffectDesc.Data._Effect_LifeTime = { 5.f };
 		pEffectDesc.Data._Effect_Range = { 1.f, 1.f, 1.f };
 		pEffectDesc.Data._Effect_StartSpeed = { 1.f };
@@ -230,6 +234,9 @@ void CEffectType_Selection_Panel::CreateTrailEffect()
 
 void CEffectType_Selection_Panel::EditEffect()
 {
+	if (m_ppTargetSlot == nullptr || *m_ppTargetSlot == nullptr || (*m_ppTargetSlot)->IsDead())
+		return;
+
 	if(ImGui::TreeNode("Edit##Container_EffectList"))
 	{
 		if (ImGui::TreeNode("Name Change##Container_EffectList"))
@@ -255,11 +262,11 @@ void CEffectType_Selection_Panel::EditEffect()
 
 		if (ImGui::TreeNode("Delete##Container_EffectList"))
 		{
-			if (ImGui::Button("Delete##Container_EffectList"))
+			if (ImGui::Button("REAL DELETE"))
 			{
-				static_cast<Effect*>(*m_ppTargetSlot)->Set_Dead();
+				(*m_ppTargetSlot)->Set_Dead();
+				*m_ppTargetSlot = nullptr; // 여기서 즉시 nullptr로 밀어야 TransformEffect 등에서 안 터짐
 			}
-
 			ImGui::TreePop();
 		}
 		ImGui::TreePop();

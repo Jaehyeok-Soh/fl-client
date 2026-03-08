@@ -32,8 +32,7 @@ private:
 	virtual HRESULT Attach_Personal_Info()override;
 	virtual void Tick_By_Type(const _float fTimeDelta)override;
 	HRESULT Convert_Stat_To_Text();
-
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
+private:
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
