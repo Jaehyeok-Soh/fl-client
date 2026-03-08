@@ -160,7 +160,7 @@ PS_OUT PS_NOISE(PS_IN_POS_TEX input)
     Uv = ApplyFlip(Uv);
     
     vector vBaseColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, Uv);
-    float2 noiseUv = float2(Uv.x, 0.5f); // y를 고정(가로 방향만 노이즈)
+    float2 noiseUv = float2(Uv.x, Uv.y); // y를 고정(가로 방향만 노이즈)
     float Noise = g_DefaultTextures[UI_NOISE].Sample(LinearSampler, noiseUv).r;
     
     float3 c0 = SRGBToLinear(g_vColorTint.rgb);

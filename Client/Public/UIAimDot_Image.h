@@ -39,7 +39,6 @@ private:
 	CStatCom_Player* m_pPlayerStatCom	= { nullptr };
 	CGun* m_pGunParts					= { nullptr };
 
-	_bool m_isHitScan					= { false };	// 몬스터가 조준되고 있는지
 	_bool m_isPreRangeAtt				= { true };		// 이전 프레임에 원거리 공격이였는지
 	_bool m_isPreMeeleAtt				= { false };	// 이전 프레임이 근거리 공격이였는지
 	_float m_fAttSpeed					= {0.1f};		// 공격 딜레이 -> Lerp Movement Duration으로 들어감

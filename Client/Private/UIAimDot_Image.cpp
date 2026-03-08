@@ -51,6 +51,10 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 	else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
 		isMeeleAtt = true;
 
+	_bool isHitScan = m_pGunParts->Get_OnTarget();
+
+	_bool isHit = m_pGunParts;
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
@@ -61,10 +65,10 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 		if (isRangeAtt)
 		{
 			// 플레이어 에임이 적에 맞았는지
-			if (m_isHitScan)
+			if (isHitScan)
 			{
 				m_vColorTint			= Vec4{ 1.f, 0.f, 0.f, 1.f };
-				m_vGradiantColorTint	= Vec4{ 1.f, 0.f, 0.f, 1.f };
+				m_vGradiantColorTint	= Vec4{ 1.f, 1.f, 1.f, 1.f };
 
 			}
 			else
@@ -95,7 +99,7 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 				m_isSpreadEnd = false;
 			}
 
-			if (m_isHitScan)
+			if (isHitScan)
 			{
 				m_vColorTint			= Vec4{ 1.f, 0.f, 0.f, 1.f };
 				m_vGradiantColorTint	= Vec4{ 1.f, 0.f, 0.f, 1.f };
