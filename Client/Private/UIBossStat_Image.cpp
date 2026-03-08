@@ -117,12 +117,6 @@ HRESULT CUIBossStat_Image::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUIBossStat_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUIBossStat_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event	= false;

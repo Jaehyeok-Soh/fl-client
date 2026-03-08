@@ -148,12 +148,6 @@ void CUIBossAction_Image::Tick_By_Type(const _float fTimeDelta)
 {
 }
 
-void CUIBossAction_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUIBossAction_Image::Initialize_Visible_Event()
 {
 	switch (m_eDImageSubClass)

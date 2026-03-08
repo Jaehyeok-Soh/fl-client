@@ -41,7 +41,6 @@ public:
 	Vec3 Get_CB() { return Vec3{ m_fX, m_fY + m_fHeight * 0.5f, m_fZ }; }						// Center Bottom
 	Vec3 Get_RB() { return Vec3{ m_fX + m_fWidth * 0.5f , m_fY + m_fHeight * 0.5f, m_fZ }; }	// Right Bottom
 
-	virtual void OnCanvasEvent(ETriggerEventType eEvent, CGenericUI* pSender);
 	_bool Check_FinEvent();
 
 	HRESULT Ready_Prefab(_uint iPoolLevel, _uint iSpawnLevel);

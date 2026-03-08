@@ -379,29 +379,28 @@ HRESULT CLoader::Loading_For_UI()
 	//=================
 
 	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Tool/";
-	std::error_code ec;
-	for (auto it = std::filesystem::recursive_directory_iterator(
-		root,
-		std::filesystem::directory_options::skip_permission_denied,
-		ec);
-		it != std::filesystem::recursive_directory_iterator();
-		it.increment(ec))
+//	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Client/";
+
+	for (auto& entry : std::filesystem::recursive_directory_iterator(root))
 	{
-		if (ec)
-			return E_FAIL;
-
-		std::error_code ecDir;
-		if (!it->is_directory(ecDir))
-		{
-			if (ecDir)
-				return E_FAIL;
+		if (!entry.is_regular_file())
 			continue;
-		}
 
-		const std::wstring wstrSubFolder = it->path().wstring();
+		auto ext = entry.path().extension().wstring();
 
-		if (FAILED(Loading_Textures_UI(wstrSubFolder)))
-			return E_FAIL;
+		if (ext != L".png" && ext != L".dds")
+			continue;
+
+		std::wstring name = entry.path().stem().wstring();
+
+		CTextureBase::RESOURCE_BASE_DESC desc{};
+		desc.wstrName = name;
+		desc.wstrPath = entry.path();
+
+		m_pGameInstance->Add_Resource(
+			L"Texture_" + name,
+			CTextureBase::Create(m_pDevice, m_pDeviceContext, &desc)
+		);
 	}
 
 	//=================

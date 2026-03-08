@@ -137,12 +137,6 @@ HRESULT CUIBossStat_Progress::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUIBossStat_Progress::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUIBossStat_Progress::Initialize_Visible_Event()
 {
 	m_isActive		= false;

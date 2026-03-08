@@ -99,31 +99,21 @@ void CCanvas::Update(const _float fTimeDelta)
 
 void CCanvas::Update_Late(const _float fTimeDelta)
 {
-	Calc_HitUpdate();
 	Super::Update_Late(fTimeDelta);
+	Calc_HitUpdate();
+
+	if (Check_Dead())
+		All_Dead();
 }
 
 void CCanvas::Ready_Before_Render(const _float fTimeDelta)
 {
-	if (Check_Dead())
-		All_Dead();
-
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CCanvas::Render()
 {
 	return S_OK;
-}
-
-void CCanvas::OnCanvasEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	for (auto* pUI : m_vecUI)
-	{
-		if (nullptr == pUI)
-			continue;
-		pUI->OnUIEvent(eEvent, pSender);
-	}
 }
 
 _bool CCanvas::Check_FinEvent()
@@ -147,7 +137,6 @@ HRESULT CCanvas::Ready_Prefab(_uint iPoolLevel, _uint iSpawnLevel)
 				if (nullptr == pUI)
 					return;
 				(this->Get_UIVector())->push_back(pUI);
-				CUI_Manager::GetInstance()->Add_VecGenericUICache(iSpawnLevel,pUI);
 			});
 	}
 	m_isAllDead = false;
@@ -177,7 +166,6 @@ void CCanvas::All_Dead()
 		pUI->Set_Dead();
 	}
 
-	CUI_Manager::GetInstance()->Request_Clear_DeadUI();
 	m_vecUI.clear();
 	Set_Dead();
 }
@@ -200,7 +188,7 @@ void CCanvas::Calc_HitUpdate()
 		{
 			if (nullptr != pUI)
 			{
-				pUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
+				pUI->Get_InteractState_Ref() = EUIInteract_Flag::NONE;
 				pUI = nullptr;
 			}
 		}
@@ -209,15 +197,15 @@ void CCanvas::Calc_HitUpdate()
 	/* Trigger 이벤트 소비 */
 	if (nullptr != m_pCaptureUI)
 	{
-		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_ENTER);
-		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_EXIT);
-		m_pCaptureUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
+		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIInteract_Flag::PRESS_ENTER);
+		Engine_Utils::RemoveSoft_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIInteract_Flag::PRESS_EXIT);
+		m_pCaptureUI->Get_InteractState_Ref() = EUIInteract_Flag::NONE;
 	}
 	if (nullptr != m_pHoveringUI)
 	{
-		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_ENTER);
-		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_EXIT);
-		m_pHoveringUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
+		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIInteract_Flag::HOVER_ENTER);
+		Engine_Utils::RemoveSoft_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIInteract_Flag::HOVER_EXIT);
+		m_pHoveringUI->Get_InteractState_Ref() = EUIInteract_Flag::NONE;
 	}
 
 	/* 누른 순간 */
@@ -227,7 +215,7 @@ void CCanvas::Calc_HitUpdate()
 		m_pCaptureUI = Calc_TopUI();
 		if (nullptr != m_pCaptureUI)
 		{
-			Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_ENTER);
+			Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIInteract_Flag::PRESS_ENTER);
 			m_isPreUIPressing = TRUE;
 		}
 	}
@@ -240,19 +228,19 @@ void CCanvas::Calc_HitUpdate()
 			{
 				if (!m_isPreUIPressing)
 				{
-					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_ENTER);
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIInteract_Flag::PRESS_ENTER);
 					m_isPreUIPressing = TRUE;
 				}
 				else
 				{
-					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESSING);
+					Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIInteract_Flag::PRESSING);
 				}
 			}
 			else
 			{
 				if (m_isPreUIPressing)
 				{
-					m_pCaptureUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
+					m_pCaptureUI->Get_InteractState_Ref() = EUIInteract_Flag::NONE;
 					m_isPreUIPressing = FALSE;
 				}
 			}
@@ -266,14 +254,14 @@ void CCanvas::Calc_HitUpdate()
 			/* 땠을 때 동일한 UI면 */
 			if (m_pCaptureUI->Calc_HitEvent())
 			{
-				Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIEvent_Flag::PRESS_EXIT);
+				Engine_Utils::Add_Flag(m_pCaptureUI->Get_InteractState_Ref(), EUIInteract_Flag::PRESS_EXIT);
 				const uint32_t CaptureUI = 0u;
 				m_ArrReleasedUI[CaptureUI] = m_pCaptureUI;
 				m_pCaptureUI = nullptr;
 			}
 			else
 			{
-				m_pCaptureUI->Get_InteractState_Ref() = EUIEvent_Flag::NONE;
+				m_pCaptureUI->Get_InteractState_Ref() = EUIInteract_Flag::NONE;
 				m_pCaptureUI = nullptr;
 			}
 			m_isPreUIPressing = FALSE;
@@ -289,7 +277,7 @@ void CCanvas::Calc_HitUpdate()
 			/* 호버링중인 UI가 있다 */
 			if (nullptr != m_pHoveringUI)
 			{
-				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_EXIT);
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIInteract_Flag::HOVER_EXIT);
 				const uint32_t HoverUI = 1u;
 				m_ArrReleasedUI[HoverUI] = m_pHoveringUI;
 				m_pHoveringUI = nullptr;
@@ -301,21 +289,21 @@ void CCanvas::Calc_HitUpdate()
 			if (nullptr == m_pHoveringUI)
 			{
 				m_pHoveringUI = pUI;
-				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_ENTER);
+				Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIInteract_Flag::HOVER_ENTER);
 			}
 			else
 			{
 				if (m_pHoveringUI != pUI)
 				{
-					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_EXIT);
-					Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVER_ENTER);
+					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIInteract_Flag::HOVER_EXIT);
+					Engine_Utils::Add_Flag(pUI->Get_InteractState_Ref(), EUIInteract_Flag::HOVER_ENTER);
 					const uint32_t HoverUI = 1u;
 					m_ArrReleasedUI[HoverUI] = m_pHoveringUI;
 					m_pHoveringUI = pUI;
 				}
 				else
 				{
-					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIEvent_Flag::HOVERING);
+					Engine_Utils::Add_Flag(m_pHoveringUI->Get_InteractState_Ref(), EUIInteract_Flag::HOVERING);
 				}
 			}
 		}

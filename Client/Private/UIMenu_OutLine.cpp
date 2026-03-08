@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUIMenu_OutLine::CUIMenu_OutLine(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -30,10 +31,14 @@ HRESULT CUIMenu_OutLine::Initialize_Prototype()
 HRESULT CUIMenu_OutLine::Initialize(void* pArg)
 {
 	MENU_OUTLINE_DESC* pDesc = static_cast<MENU_OUTLINE_DESC*>(pArg);
+	m_iSlotIndex = pDesc->iSlotIndex;
+
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -41,7 +46,6 @@ HRESULT CUIMenu_OutLine::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	m_isInteract = true;
 	return S_OK;
 }
 
@@ -58,13 +62,13 @@ void CUIMenu_OutLine::Update(const _float fTimeDelta)
 void CUIMenu_OutLine::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+
+	Emit_Light(fTimeDelta);
 }
 
 void CUIMenu_OutLine::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-
-	Emit_Light(fTimeDelta);
 }
 
 HRESULT CUIMenu_OutLine::Render()
@@ -94,37 +98,55 @@ HRESULT CUIMenu_OutLine::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUIMenu_OutLine::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+void CUIMenu_OutLine::Bind_Events()
 {
-	if (!m_isActive)
-		return;
+	m_vecEventHandles.resize(ENUM_TO_UINT(EUIEventID::END));
 
-	// 일회성 플래그
-	if (ETriggerEventType::HOVER_ENTER == eEvent)
-	{
-		m_isTrigger_HoverEnter	= true;
-		m_isFin_Event = false;
-		m_fBrightness = 1.f;
-	}
+	m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ICON_HOVER_ENTER)] = (
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_ICON_HOVER_ENTER == Desc.eEventID)
+				{
+					if (m_iSlotIndex == Desc.iParam0)
+					{
+						m_isTrigger_HoverEnter = true;
+						m_isTrigger_HoverExit = false;
+					}
+				}
+			}));
 
-	// 일회성 플래그
-	if (ETriggerEventType::HOVER_EXIT == eEvent)
-	{
-		m_isTrigger_HoverExit	= true;
-		m_isFin_Event = false;
-		m_fBrightness = m_fEmit;
-	}
+	m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ICON_HOVER_EXIT)] = (
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_ICON_HOVER_EXIT == Desc.eEventID)
+				{
+					if (m_iSlotIndex == Desc.iParam0)
+					{
+						m_isTrigger_HoverEnter = false;
+						m_isTrigger_HoverExit = true;
+					}
+				}
+			}));
 
-	// 일회성 플래그
-	if (ETriggerEventType::PRESS_ENTER == eEvent)
-	{
-		m_isActive = false;
 
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-	}
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
 }
 
 void CUIMenu_OutLine::Initialize_Visible_Event()
