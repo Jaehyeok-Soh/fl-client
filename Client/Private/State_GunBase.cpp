@@ -430,7 +430,7 @@ void CState_GunBase::GunEnd()
 void CState_GunBase::Look_Control(_float fTimeDelta)
 {
     //CStateBase::SetupLook_CameraLook();
-    CStateBase::SetupLook_CameraLookLerp(fTimeDelta);
+    CStateBase::SetupLook_CameraLookLerp(fTimeDelta, 10.f);
 
     _float fPitch = static_cast<CPlayer*>(Get_OwnerObject())->Get_CamPitch();
 

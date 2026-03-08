@@ -489,7 +489,7 @@ void CActionState::SetupLook_CameraLook()
 	m_pOwnerTransform->Rotation(Vec3::Up, fRadian);
 }
 
-void CActionState::SetupLook_CameraLookLerp(const _float fTimeDelta)
+void CActionState::SetupLook_CameraLookLerp(const _float fTimeDelta, _float fLerpSpeed)
 {
 	if (!m_pOwnerTargetCamera)
 	{
@@ -509,13 +509,14 @@ void CActionState::SetupLook_CameraLookLerp(const _float fTimeDelta)
 
 	_float fCurRadian = std::atan2(vCurLook.x, vCurLook.z);
 
-	// lerp 속도
-	_float fSpeed = 10.f;
+	// 현재 각도 : 179°
+	// 목표 각도 : -179°
 
+	// 2도만 돌면 되는데 358도를 돌게 됨 -> 따로 각도 보간 필요
 	_float fDifff = (fRadian - fCurRadian);
 	while (fDifff > XM_PI)  fDifff -= XM_PI * 2.f;
 	while (fDifff < -XM_PI) fDifff += XM_PI * 2.f;
-	_float fNewRadian = fCurRadian + fDifff * std::clamp(fSpeed * fTimeDelta, 0.f, 1.f);
+	_float fNewRadian = fCurRadian + fDifff * std::clamp(fLerpSpeed * fTimeDelta, 0.f, 1.f);
 
 	m_pOwnerTransform->Rotation(Vec3::Up, fNewRadian);
 }
