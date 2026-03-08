@@ -180,6 +180,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     float4 Quat             = IMMU_KEYFRAMS[iMyFrameIdx].vQuat;
     float3 Translation      = IMMU_KEYFRAMS[iMyFrameIdx].vTranslation;
     
+    // 만약 트렉포지시젼 움직이어야 하는거라면
     {
        // uint keyStart = IMMU_CHANNELDATAS[iChannelIdx].iKeyStart;
        // uint keyCount = IMMU_CHANNELDATAS[iChannelIdx].iKeyCount;

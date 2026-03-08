@@ -195,7 +195,7 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 	}
 }
 
-void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float fRatioOffset)
+void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, const vector<class CChannel*>& vRefChannels,CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float fRatioOffset)
 {
 	Bind_AnimationAdditiveData(pAnimAdditiveCS, pPreAnimCS);
 
@@ -229,13 +229,21 @@ void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBo
 		_uint iBondIdx = pChannel->Get_BoneIndex();
 		if (m_vecMixRatios[(size_t)iBondIdx] != 0.f)
 		{
-			if (iIndex == m_iRootBoneIdx && !m_bApplyRootMotion)
-			{
-				pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset);
-				continue;
-			}
+			//if (iIndex == m_iRootBoneIdx && !m_bApplyRootMotion)
+			//{
+			//	pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset);
+			//	continue;
+			//}
 
-			pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset);
+			for (auto& pRefChannel : vRefChannels)
+			{
+				if (pRefChannel->Get_BoneIndex() == iBondIdx)
+				{
+					pChannel->Update_Addtive(vecBones, pRefChannel->Get_KeyFrames(), m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fRatioOffset);
+					continue;
+				}
+			}
+			
 		}
 
 		else
@@ -261,8 +269,8 @@ _bool CModelAnimation::Is_TrackPositionBetweenRaw(_float fTrackPositionA, _float
 
 void CModelAnimation::Bind_AnimationEData(CComputeShader* pAnimEShader)
 {
-	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME), m_pInputKeySB_SRV, m_pKeyFrameBuffer);
-	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), m_pInputChannelSB_SRV, m_pChannelDataBuffer);
+	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME),	m_pInputKeySB_SRV,		m_pKeyFrameBuffer);
+	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), m_pInputChannelSB_SRV,	m_pChannelDataBuffer);
 }
 
 void CModelAnimation::Bind_AnimationMixData(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS)
@@ -280,8 +288,6 @@ void CModelAnimation::Bind_AnimationMixData(CComputeShader* pAnimMixCS, CCompute
 	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME), pKeySRV, m_pKeyFrameBuffer);
 	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), pChannelSRV, m_pChannelDataBuffer);
 	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_MIXDATA), pMixSRV, m_pMixDataBuffer);
-
-
 
 	//// animation °á°ú MixCS¿¡ bind
 	//pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRT),

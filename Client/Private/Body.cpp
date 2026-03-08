@@ -72,7 +72,7 @@ HRESULT CBody::Initialize(void* pArg)
 
 
 		_uint iAnimMiddle = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MM");
-		vector<CModel::DATA_ANIMIX> vecAnimMix = { {4,true,1.f} };
+		vector<CModel::DATA_ANIMIX> vecAnimMix = { {4,true,1.f},{414,true,1.f} };
 		pMyModel->Make_MixRatio(iAnimMiddle-1, vecAnimMix, m_pAdditiveMixCS);	//aim down
 		pMyModel->Make_MixRatio(iAnimMiddle, vecAnimMix, m_pAdditiveMixCS);	// aim middle
 		pMyModel->Make_MixRatio(iAnimMiddle+1, vecAnimMix, m_pAdditiveMixCS); // aim up

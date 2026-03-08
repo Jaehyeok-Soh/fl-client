@@ -982,7 +982,7 @@ void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAni
 		}
 	}
 
-	// mix는 안 하지만 additive는 할때
+	//// mix는 안 하지만 additive는 할때
 	else if (m_bAdditiveAnim && pAdditiveCS && 
 		Additive_Animation(pAdditiveCS, pAnimEvalCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT))
 	{		
@@ -1461,7 +1461,7 @@ _bool  CModel::Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* p
 		// ref animation data 바인딩
 		m_vecAnimations[m_iAdditivRef_AnimIdx]->Bind_RefAnimaationData(pAdditiveCS);
 
-		m_vecAnimations[m_iAdditivePos_AnimIdx]->Update_AdditiveAnimatoin(m_vecBones, pAdditiveCS, pPreAnimCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, m_fAdditiveOffset);
+		m_vecAnimations[m_iAdditivePos_AnimIdx]->Update_AdditiveAnimatoin(m_vecBones, m_vecAnimations[m_iAdditivRef_AnimIdx]->Get_Channels(), pAdditiveCS, pPreAnimCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, m_fAdditiveOffset);
 		return true;
 	}
 
