@@ -137,6 +137,7 @@
 #include "UIBossStat_Text.h"
 #include "UICombo_Text.h"
 #include "UIBossAction_Text.h"
+#include "UIWeakness_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -153,6 +154,7 @@
 #include "UICombo_Image.h"
 #include "UIMiniMap_Monster_Icon.h"
 #include "UIBossAction_Image.h"
+#include "UIWeakness_Image.h"
 //=================
 // Resource
 //=================
@@ -736,9 +738,10 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboImage",				CUICombo_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboText",				CUICombo_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniMapMonsterIconImage",	CUIMiniMap_Monster_Icon::Create(m_pDevice, m_pDeviceContext));
-	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionImage",			CUIBossAction_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionText",			CUIBossAction_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessImage",			CUIWeakness_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessText",				CUIWeakness_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;

@@ -625,7 +625,7 @@
     <Filter Include="02. Level\Tavern">
       <UniqueIdentifier>{2905b500-b428-4805-9fc4-638afebf03dc}</UniqueIdentifier>
     </Filter>
-        <Filter Include="02. Level\Lianhuo">
+    <Filter Include="02. Level\Lianhuo">
       <UniqueIdentifier>{535bd167-aaf6-410f-87bd-a86b99f67c66}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Inspector\PoolDebug">
@@ -660,6 +660,12 @@
     </Filter>
     <Filter Include="05. Component\Stat\StatCom_Boss">
       <UniqueIdentifier>{49a4b247-f9ed-4f9d-a881-a94e2c12bde2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\11.Weakness">
+      <UniqueIdentifier>{1a959e66-effd-4868-b7e0-69afcf6343ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\08.Weakness Text">
+      <UniqueIdentifier>{8314a147-ec5a-4438-b2ae-0e6b8f79b1de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1222,6 +1228,12 @@
     <ClInclude Include="..\public\StatCom_Boss.h">
       <Filter>05. Component\Stat\StatCom_Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIWeakness_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\11.Weakness</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIWeakness_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1771,6 +1783,12 @@
     </ClCompile>
     <ClCompile Include="..\private\StatCom_Boss.cpp">
       <Filter>05. Component\Stat\StatCom_Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIWeakness_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\11.Weakness</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIWeakness_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

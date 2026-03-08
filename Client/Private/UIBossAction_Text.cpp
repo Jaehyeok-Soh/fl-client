@@ -59,14 +59,6 @@ void CUIBossAction_Text::Update_Priority(const _float fTimeDelta)
 void CUIBossAction_Text::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	if (KEY_BUTTON_UP(DIK_9))
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-
-	}
 }
 
 void CUIBossAction_Text::Update_Late(const _float fTimeDelta)

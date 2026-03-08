@@ -332,6 +332,8 @@
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
+    <ClInclude Include="..\Public\UIWeakness_Image.h" />
+    <ClInclude Include="..\Public\UIWeakness_Text.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\Vine.h" />
     <ClInclude Include="..\Public\Effect_WarningCircle.h" />
@@ -543,6 +545,8 @@
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
+    <ClCompile Include="..\Private\UIWeakness_Image.cpp" />
+    <ClCompile Include="..\Private\UIWeakness_Text.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\Vine.cpp" />
     <ClCompile Include="..\Private\Effect_WarningCircle.cpp" />

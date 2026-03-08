@@ -175,12 +175,12 @@ void CLevel_Test::Update(const _float fTimeDelta)
 	}
 	if (KEY_BUTTON_DOWN(DIK_7))
 	{
-		m_pGameInstance->Broadcast<ACTION3>();
+		m_pGameInstance->Broadcast<BOSS_GROGGY>();
 	}
-	if (KEY_BUTTON_DOWN(DIK_8))
-	{
-		m_pGameInstance->Broadcast<ACTION4>();
-	}
+	//if (KEY_BUTTON_DOWN(DIK_8))
+	//{
+	//	m_pGameInstance->Broadcast<ACTION4>();
+	//}
 }
 
 HRESULT CLevel_Test::Render()

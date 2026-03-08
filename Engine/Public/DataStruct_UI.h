@@ -859,11 +859,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "BOSS_CIVILA_ACTION_BOTTOM_BG")			return EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG;
 	if (str == "BOSS_CIVILA_ACTION_END")				return EUIDImageSubClassType::BOSS_CIVILA_ACTION_END;
 
-	if (str == "BATTLE_WEAKNESS_BEGIN")					return EUIDImageSubClassType::BOSS_CIVILA_ACTION_END;
-	if (str == "BATTLE_WEAKNESS_EYEICON")				return EUIDImageSubClassType::BOSS_CIVILA_ACTION_END;
-	if (str == "BATTLE_WEAKNESS_EYEICON_BG")			return EUIDImageSubClassType::BOSS_CIVILA_ACTION_END;
-	if (str == "BATTLE_WEAKNESS_EYEICON_BG_FX")			return EUIDImageSubClassType::BOSS_CIVILA_ACTION_END;
-	if (str == "BSTTLE_WEAKNESS_END")					return EUIDImageSubClassType::BOSS_CIVILA_ACTION_END;
+	if (str == "BATTLE_WEAKNESS_BEGIN")					return EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN;
+	if (str == "BATTLE_WEAKNESS_EYEICON")				return EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON;
+	if (str == "BATTLE_WEAKNESS_EYEICON_BG")			return EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG;
+	if (str == "BATTLE_WEAKNESS_EYEICON_BG_FX")			return EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX;
+	if (str == "BSTTLE_WEAKNESS_END")					return EUIDImageSubClassType::BSTTLE_WEAKNESS_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -948,11 +948,11 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:			return "BOSS_CIVILA_ACTION_BOTTOM_BG";
 	case EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:					return "BOSS_CIVILA_ACTION_END";
 
-	case EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN:					return "BOSS_CIVILA_ACTION_END";
-	case EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON:				return "BOSS_CIVILA_ACTION_END";
-	case EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:				return "BOSS_CIVILA_ACTION_END";
-	case EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:			return "BOSS_CIVILA_ACTION_END";
-	case EUIDImageSubClassType::BSTTLE_WEAKNESS_END:					return "BOSS_CIVILA_ACTION_END";
+	case EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN:					return "BATTLE_WEAKNESS_BEGIN";
+	case EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON:				return "BATTLE_WEAKNESS_EYEICON";
+	case EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:				return "BATTLE_WEAKNESS_EYEICON_BG";
+	case EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:			return "BATTLE_WEAKNESS_EYEICON_BG_FX";
+	case EUIDImageSubClassType::BSTTLE_WEAKNESS_END:					return "BSTTLE_WEAKNESS_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

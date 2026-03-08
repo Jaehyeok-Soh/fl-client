@@ -97,7 +97,6 @@ HRESULT CGenericUI::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
-	Bind_Events();
 	return S_OK;
 }
 
@@ -109,6 +108,9 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	m_vMoveOffsetBase = m_vMoveOffset;
 	m_fBrightness = 1.f;
 	m_iInteractState = static_cast<uint32_t>(EUIInteract_Flag::NONE);
+
+	Bind_Events();
+
 	return S_OK;
 }
 
@@ -257,6 +259,7 @@ void CGenericUI::Ready_Fade(const _float fDuration, const _float fStartAlpha, co
 	
 	m_fFade_Duration = fDuration;
 	m_fFade_Delay = fDelay;
+	m_fFade_EaseValue = 0.f;
 }
 
 void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartValue, const _float fTargetValue, const _float fEaseValue, const _float fDelay)
@@ -315,7 +318,8 @@ _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
 	if (m_fFade_EaseValue > 0.f)
 		eased = powf(t, m_fFade_EaseValue);
 
-	m_fAlpha_Ratio = m_fFade_StartAlphaRatio + (m_fFade_TargetAlphaRatio - m_fFade_StartAlphaRatio) * eased;
+	m_fAlpha_Ratio = m_fFade_StartAlphaRatio + (m_fFade_TargetAlphaRatio - m_fFade_StartAlphaRatio) * t;
+	
 	return false;
 }
 

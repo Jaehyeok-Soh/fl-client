@@ -21,6 +21,8 @@ enum class EUIEventID {
 	MENU_ICON_HOVER_EXIT,
 
 	BOSS_ACTION_FIN,
+
+	WEAKNESS_FIN, // 약점대비 이벤트가 끝났을 때 다같이 없애려고 
 	END
 };
 

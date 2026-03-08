@@ -35,4 +35,6 @@ struct ACTION2 { using Signature = void(); }; // UI 위 아래 들어가는 연출
 struct ACTION3 { using Signature = void(); }; // UI 보스 이름 띄우기
 struct ACTION4 { using Signature = void(); }; // UI 보스 이름 넣기
 
+struct BOSS_GROGGY { using Signature = void(); }; // 약점 노출
+
 #pragma endregion
