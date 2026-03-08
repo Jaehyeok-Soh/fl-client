@@ -23,10 +23,16 @@ CCameraMan_Targeter::CCameraMan_Targeter(const CCameraMan_Targeter& rhs)
     , m_vTargetPos(rhs.m_vTargetPos)
     , m_fCurLookDistance(rhs.m_fCurLookDistance)
     , m_fCurRightDistance(rhs.m_fCurRightDistance)
-    , m_vNormalDistance(rhs.m_vNormalDistance)
-    , m_vGunDistance(rhs.m_vGunDistance)
-    , m_fMoveDistanceTime(rhs.m_fMoveDistanceTime)
 {
+    m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]    = 0.f;
+    m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)]       = 0.f;
+    m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]     = 3.f;
+
+    m_arrGunDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]       = 0.58f;
+    m_arrGunDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)]          = 0.1f;
+    m_arrGunDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]        = 1.f;
+
+    m_arrCurDistances = m_arrNormalDistances;
 }
 
 HRESULT CCameraMan_Targeter::Initialize_Prototype()
@@ -235,8 +241,7 @@ void CCameraMan_Targeter::Normal_Begin()
 
 void CCameraMan_Targeter::Normal_Update_Priority(const _float fTimeDelta)
 {
-    Change_Distance(m_vNormalDistance.x, m_vPreDisatance.x, m_fCurRightDistance, fTimeDelta);
-    Change_Distance(m_vNormalDistance.y, m_vPreDisatance.y, m_fCurLookDistance, fTimeDelta);
+    Change_DistancesAll(fTimeDelta);
 
     Update_Input(fTimeDelta);
 }
@@ -251,7 +256,7 @@ void CCameraMan_Targeter::Normal_End()
     m_bChaseInit = false;
     m_fStateTime = 0.f;
 
-    m_vPreDisatance = m_vNormalDistance;
+    m_arrPreDistances = m_arrCurDistances;
 }
 
 void CCameraMan_Targeter::TargetSync_Begin()
@@ -345,8 +350,7 @@ void CCameraMan_Targeter::GunCam_Begin()
 
 void CCameraMan_Targeter::GunCam_Update_Priority(const _float fTimeDelta)
 {
-    Change_Distance(m_vGunDistance.x,  m_vPreDisatance.x, m_fCurRightDistance, fTimeDelta);
-    Change_Distance(m_vGunDistance.y, m_vPreDisatance.y, m_fCurLookDistance, fTimeDelta);
+    Change_DistancesAll(fTimeDelta);
 
     Update_Input(fTimeDelta);
 }
@@ -358,7 +362,7 @@ void CCameraMan_Targeter::GunCam_Update(const _float fTimeDelta)
 
 void CCameraMan_Targeter::GunCam_End()
 {
-    m_vPreDisatance = m_vGunDistance;
+    m_arrPreDistances = m_arrCurDistances;
 }
 
 void CCameraMan_Targeter::Skill_SequeneCam_Begin()
@@ -481,10 +485,16 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     switch (m_eCurrentState)
     {
     case TargeterState::NORMAL:
-        vDesiredPos = vChasePositionRaw + vRight * m_fCurRightDistance - vLook * m_fCurLookDistance ;
+        vDesiredPos = vChasePositionRaw 
+                    + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
+                    - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
+                    + Vec3{0.f,1.f,0.f} * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
         break;
     case TargeterState::GUN:
-        vDesiredPos = vChasePositionRaw + pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT) * m_fCurRightDistance - vLook * m_fCurLookDistance;
+        vDesiredPos = vChasePositionRaw 
+                    + pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT) * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)] 
+                    - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
+                    + Vec3{ 0.f,1.f,0.f } *m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
     break;
     }
 
@@ -576,6 +586,41 @@ _bool CCameraMan_Targeter::Change_Distance(_float fTargetDistance, _float fPreDi
     }
 
     return true;
+}
+
+void CCameraMan_Targeter::Change_DistancesAll(const _float fTimeDelta)
+{
+    switch (m_eCurrentState)
+    {
+    case Client::TargeterState::NORMAL:
+    {
+        for (size_t i = 0; i < ENUM_TO_SZET(DISTANCE_DATA::END); i++)
+        {
+            Change_Distance(m_arrNormalDistances[i], m_arrPreDistances[i], m_arrCurDistances[i], fTimeDelta);
+        }
+    }
+        break;
+
+    case Client::TargeterState::TARGETSYNC:
+    {
+
+    }
+
+        break;
+
+    case Client::TargeterState::GUN:
+    {
+        for (size_t i = 0; i < ENUM_TO_SZET(DISTANCE_DATA::END); i++)
+        {
+            Change_Distance(m_arrGunDistances[i], m_arrPreDistances[i], m_arrCurDistances[i], fTimeDelta);
+        }
+    }
+    break;
+
+    case Client::TargeterState::SKILL_SEQUENCE:
+
+        break;
+    }
 }
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

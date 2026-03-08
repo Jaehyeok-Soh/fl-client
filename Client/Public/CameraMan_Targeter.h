@@ -25,6 +25,9 @@ class CCameraMan_Targeter final : public CCameraMan
 {
 	using Super = CCameraMan;
 
+public:
+	enum class DISTANCE_DATA { RIGHT, UP, LOOK , END };
+
 private:
 	CCameraMan_Targeter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CCameraMan_Targeter(const CCameraMan_Targeter& rhs);
@@ -82,6 +85,8 @@ private:
 
 	_bool Change_Distance(_float fTargetDistance,_float fPreDistance, _float& fCurDistanxe, const _float fTimeDelta);
 
+	void Change_DistancesAll(const _float fTimeDelta);
+
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
 	CGameObject* m_pLockonTarget = { nullptr };
@@ -110,11 +115,11 @@ private:
 	_float m_fCurRightDistance		= { 0.f }; // 이거 하고 있었슨.
 	_float m_fCurLookDistance		= { 3.f };
 
-	// right, look
-	Vec2	m_vNormalDistance	= { 0.f, 3.f };
-	Vec2	m_vGunDistance		= { 0.6f,1.f };
-	Vec2	m_vPreDisatance		= { 0.f,0.f };
+	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrCurDistances;
+	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrPreDistances;
 
+	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrNormalDistances; // r : 0  , l : 3
+	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrGunDistances; // r : 0.6, l : 1
 
 	_float m_fMoveDistanceTime	= { 0.28f };
 
