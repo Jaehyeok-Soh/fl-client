@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUIMenu_Image::CUIMenu_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -35,11 +36,13 @@ HRESULT CUIMenu_Image::Initialize_Prototype()
 HRESULT CUIMenu_Image::Initialize(void* pArg)
 {
 	MENU_IMAGE_DESC* pDesc = static_cast<MENU_IMAGE_DESC*>(pArg);
-	m_isInteract = true;
+	m_iSlotIndex = pDesc->iSlotIndex;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -60,6 +63,7 @@ void CUIMenu_Image::Update_Priority(const _float fTimeDelta)
 
 void CUIMenu_Image::Update(const _float fTimeDelta)
 {
+	Tick_By_Type(fTimeDelta);
 	Super::Update(fTimeDelta);
 }
 
@@ -106,42 +110,164 @@ HRESULT CUIMenu_Image::Attach_Personal_Info()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::MENU_BG:
-	{
-
-	}
 	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON:
-	{
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
-	}
 	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
-	{
-	}
 	break;
-	case DTO::EUIDImageSubClassType::END:
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	break;
 	default:
 		return E_FAIL;
 	}
 	return S_OK;
 }
 
-void CUIMenu_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+void CUIMenu_Image::Tick_By_Type(const _float fTimeDelta)
 {
-	if (!m_isActive)
-		return;
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::MENU_BG:
+		break;
+	case DTO::EUIDImageSubClassType::MENU_ICON:
+	{
 
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if(!m_isVisible)
-			Set_Visible();
-		else 
-			Set_Invisible();
+		int a = 0;
 	}
-	else if (eEvent == ETriggerEventType::PRESS_EXIT)
+	break;
+	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
-		Set_Invisible();
+		/* 뒷 배경 애들 밝게 빛나게 하기 위해서 */
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_ENTER))
+		{
+			UIEVENT_DESC Desc = {};
+			Desc.eEventID = EUIEventID::MENU_ICON_HOVER_ENTER;
+			Desc.iParam0 = m_iSlotIndex;
+			m_pUIManager->Get_UIEvents().Broadcast(Desc);
+		}
+
+		/* 뒷 배경 애들 다시 어둡게 하기 위해서 */
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_EXIT))
+		{
+			UIEVENT_DESC Desc = {};
+			Desc.eEventID = EUIEventID::MENU_ICON_HOVER_EXIT;
+			Desc.iParam0 = m_iSlotIndex;
+			m_pUIManager->Get_UIEvents().Broadcast(Desc);
+		}
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	{
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_ENTER))
+		{
+			UIEVENT_DESC Desc = {};
+			Desc.eEventID = EUIEventID::MENU_CLOSE;
+			m_pUIManager->Get_UIEvents().Broadcast(Desc);
+			Set_NonInteractable();
+		}
+	}
+	break;
+	}
+}
+
+void CUIMenu_Image::Bind_Events()
+{
+	m_vecEventHandles.resize(ENUM_TO_UINT(EUIEventID::END));
+
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::MENU_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::MENU_BG:
+	{
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+					{
+						this->Set_Invisible();
+					}
+				})
+		);
+
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			});
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MENU_ICON:
+	{
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+					{
+						this->Set_Invisible();
+					}
+				})
+		);
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_OPEN == Desc.eEventID)
+					{
+						this->Set_Visible();
+					}
+				})
+		);
+	}
+	break;
+
+	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
+	{
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+					{
+						this->Set_Invisible();
+						this->Set_NonInteractable();
+					}
+				})
+		);
+ 		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_OPEN == Desc.eEventID)
+					{
+						this->Set_Visible();
+						this->Set_Interactable();
+					}
+				})
+		);
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	{
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+					{
+						this->Set_NonInteractable();
+					}
+				})
+		);
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_OPEN == Desc.eEventID)
+					{
+						this->Set_Interactable();
+					}
+				})
+		);
+	}
+	break;
 	}
 }
 
@@ -154,24 +280,24 @@ void CUIMenu_Image::Initialize_Visible_Event()
 	{
 	case DTO::EUIDImageSubClassType::MENU_BG:
 	{
-		//m_fProgressTimeAcc	= 0.f;
-		//m_fProgress_Ratio		= 1.f;
 		Ready_LerpChange(1.f, 1.f, 0.f, 1.f, m_fDelay);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON:
 	{
-		Ready_Fade(0.5f, 1.f, 0.f, 0.f);
+		Ready_Fade(0.5f, 0.f, 1.f, 0.f);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
-		Ready_Fade(0.5f, 1.f, 0.f, 0.f);
+		Ready_Fade(0.5f, 0.f, 1.f, 0.f);
 	}
 	break;
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		break;
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	{
+
+	}
+	break;
 	}
 }
 
@@ -184,8 +310,6 @@ void CUIMenu_Image::Initialize_InVisible_Event()
 	{
 	case DTO::EUIDImageSubClassType::MENU_BG:
 	{
-		//m_fProgressTimeAcc = 0.f;
-		//m_fProgress_Ratio = 0.f;
 		Ready_LerpChange(1.f, 0.f, 1.f, 1.f, m_fDelay);
 	}
 	break;
@@ -199,9 +323,11 @@ void CUIMenu_Image::Initialize_InVisible_Event()
 		Ready_Fade(0.5f, 1.f, 0.f, 0.f);
 	}
 	break;
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		break;
+	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
+	{
+
+	}
+	break;
 	}
 }
 
@@ -209,18 +335,6 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 {
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_BG)
 	{
-		//m_fTimeAcc += fTimeDelta;
-		//_float t = m_fTimeAcc / 1.f;
-
-		//if (t >= 1.f)
-		//{
-		//	m_fProgress_Ratio = 0.f;	
-		//	m_isFin_Event = true;
-		//	m_isActive = true;
-		//	return true;
-		//}
-		//m_fProgress_Ratio = 1.f - t;
-
 		const _bool isLerp = Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
 		if (isLerp)
 		{
@@ -228,6 +342,10 @@ _bool CUIMenu_Image::Tick_Visible_Event(const _float fTimeDelta)
 			m_isActive = true;
 			return true;
 		}
+	}
+	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER)
+	{
+		return true;
 	}
 	else
 	{
@@ -246,17 +364,6 @@ _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_BG)
 	{
-		//m_fTimeAcc += fTimeDelta;
-		//_float t = m_fTimeAcc / 1.f;
-		//if (t >= 1.f)
-		//{
-		//	m_fProgress_Ratio = 1.f;
-		//	m_isFin_Event = true;
-		//	m_isActive = true;
-		//	return true;
-		//}
-		//m_fProgress_Ratio = t;
-		
 		const _bool isLerp = Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
 		if (isLerp)
 		{
@@ -264,6 +371,10 @@ _bool CUIMenu_Image::Tick_InVisible_Event(const _float fTimeDelta)
 			m_isActive = true;
 			return true;
 		}
+	}
+	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER)
+	{
+		return true;
 	}
 	else
 	{

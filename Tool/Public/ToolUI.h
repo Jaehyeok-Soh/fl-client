@@ -31,8 +31,6 @@ public:
 		_string strAlphaMaskTextureTag;
 		_string strGlowTextureTag;
 		DTO::TUI_TextData tTextData;
-		DTO::TUI_TriggerData tTriggerData;
-		DTO::TUI_ButtonTriggerData tButtonTriggerData;
 		DTO::TUI_DImageData tDImageData;
 		int32_t iIndex;
 	}TOOLUI_DESC;
@@ -66,10 +64,7 @@ protected:
 	void Acting_About_State();
 	void Sync_Data();
 	void Sync_TextData();
-	void Sync_TriggerData();
-	void Sync_ButtonTriggerData();
 	void Sync_DImageData();
-	void Sync_WorldUIData();
 #pragma region GETTER/SETTER
 public:
 	const _string& Get_Name()const { return m_strName; }
@@ -86,8 +81,6 @@ public:
 	const DTO::TUI_GenericUIData& Get_Data()const { return m_tUIData; }
 	DTO::TUI_GenericUIData& Get_Data_Ref() { return m_tUIData; }
 	const DTO::TUI_TextData& Get_TextData()const { return m_tUITextData; }
-	const DTO::TUI_TriggerData& Get_TriggerData()const { return m_tUITriggerData; }
-	const DTO::TUI_ButtonTriggerData& Get_ButtonTriggerData()const { return m_tUIButtonTriggerData; }
 	const DTO::TUI_DImageData& Get_DImageData()const { return m_tDImageData; }
 	const Vec3& Get_RenderPos() const { return m_vRenderPos; }
 	const RECT& Get_RenderRect() const { return m_tRenderRect; }
@@ -101,6 +94,8 @@ public:
 	_float Get_GlowDistort() const { return m_fGlowDistort; }
 	_float Get_GlowPulseSpeed() const { return m_fGlowPulseSpeed; }
 	_float Get_GlowIntensity() const { return m_fGlowIntensity; }
+
+	_uint Get_iParmas0() const { return m_iParam0; }
 
 	void Set_Name(const _string& str) { m_strName = str; }
 	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
@@ -116,6 +111,8 @@ public:
 	void Set_GlowDistort(_float fGlowDistort) { m_fGlowDistort = fGlowDistort; }
 	void Set_GlowPulseSpeed(_float fGlowPulseSpeed) { m_fGlowPulseSpeed = fGlowPulseSpeed; }
 	void Set_GlowIntensity(_float fGlowIntensity) { m_fGlowIntensity = fGlowIntensity; }
+
+	void Set_iParams0(_uint i) { m_iParam0 = i; }
 
 	Vec4 Get_ColorTint()			const	{ return m_vColorTint; }
 	Vec4 Get_GradiantColorTint()	const	{ return m_vGradiantColorTint; }
@@ -134,14 +131,6 @@ public:
 	EFontPivotType Get_FontPivotType() const { return m_ePivot_TextData; }
 	EFontShaderType Get_FontShaderType() const { return m_eFontShaderType; }
 
-	const vector<_string>& Get_vecHoverEnterTriggerCanvas() const { return m_vecHoverEnterTriggerCanvas; }
-	const vector<_string>& Get_vecHoverEnterTriggerUI() const { return m_vecHoverEnterTriggerUI; }
-	const vector<_string>& Get_vecHoverExitTriggerCanvas() const { return m_vecHoverExitTriggerCanvas; }
-	const vector<_string>& Get_vecHoverExitTriggerUI() const { return m_vecHoverExitTriggerUI; }
-	const vector<_string>& Get_vecPressEnterTriggerCanvas() const { return m_vecPressEnterTriggerCanvas; }
-	const vector<_string>& Get_vecPressEnterTriggerUI() const { return m_vecPressEnterTriggerUI; }
-	const vector<_string>& Get_vecPressExitTriggerCanvas() const { return m_vecPressExitTriggerCanvas; }
-	const vector<_string>& Get_vecPressExitTriggerUI() const { return m_vecPressExitTriggerUI; }
 	int32_t Get_Flip()				const	{ return m_iFlip; }
 	void Set_ColorTint(Vec4 v)				{ m_vColorTint = v; }
 	void Set_GradiantColorTint(Vec4 v)				{ m_vGradiantColorTint = v; }
@@ -160,23 +149,6 @@ public:
 
 	_bool Add_Tag(vector<_string>& vec, const _string& str);
 	_bool Remove_Tag(vector<_string>& vec, const _string& str);
-	_bool Add_vecHoverEnterTriggerCanvas(const std::string& str)	{ return Add_Tag(m_vecHoverEnterTriggerCanvas, str); }
-	_bool Add_vecHoverEnterTriggerUI(const std::string& str)		{ return Add_Tag(m_vecHoverEnterTriggerUI, str); }
-	_bool Add_vecHoverExitTriggerCanvas(const std::string& str)		{ return Add_Tag(m_vecHoverExitTriggerCanvas, str); }
-	_bool Add_vecHoverExitTriggerUI(const std::string& str)			{ return Add_Tag(m_vecHoverExitTriggerUI, str); }
-	_bool Add_vecPressEnterTriggerCanvas(const std::string& str)	{ return Add_Tag(m_vecPressEnterTriggerCanvas, str); }
-	_bool Add_vecPressEnterTriggerUI(const std::string& str)		{ return Add_Tag(m_vecPressEnterTriggerUI, str); }
-	_bool Add_vecPressExitTriggerCanvas(const std::string& str)		{ return Add_Tag(m_vecPressExitTriggerCanvas, str); }
-	_bool Add_vecPressExitTriggerUI(const std::string& str)			{ return Add_Tag(m_vecPressExitTriggerUI, str); }
-
-	_bool Remove_vecHoverEnterTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecHoverEnterTriggerCanvas, str); }
-	_bool Remove_vecHoverEnterTriggerUI(const std::string& str)		{ return Remove_Tag(m_vecHoverEnterTriggerUI, str); }
-	_bool Remove_vecHoverExitTriggerCanvas(const std::string& str)	{ return Remove_Tag(m_vecHoverExitTriggerCanvas, str); }
-	_bool Remove_vecHoverExitTriggerUI(const std::string& str)		{ return Remove_Tag(m_vecHoverExitTriggerUI, str); }
-	_bool Remove_vecPressEnterTriggerCanvas(const std::string& str) { return Remove_Tag(m_vecPressEnterTriggerCanvas, str); }
-	_bool Remove_vecPressEnterTriggerUI(const std::string& str)		{ return Remove_Tag(m_vecPressEnterTriggerUI, str); }
-	_bool Remove_vecPressExitTriggerCanvas(const std::string& str)	{ return Remove_Tag(m_vecPressExitTriggerCanvas, str); }
-	_bool Remove_vecPressExitTriggerUI(const std::string& str)		{ return Remove_Tag(m_vecPressExitTriggerUI, str); }
 	_float& Get_TestProgress_Ref() { return m_fTestProgress; }
 	int32_t& Get_FillDir_Ref() { return m_iFillDir; }
 
@@ -202,14 +174,10 @@ public:
 	DTO::EUISubClassType Get_UISubClassType() const { return m_eSubClassType; }
 	DTO::EUITextSubClassType Get_UITextSubClassType() const { return m_eTextSubClassType; }
 	DTO::EUIDImageSubClassType Get_UIDImageSubClassType()const { return m_eDImageSubClassType; }
-	DTO::EUITriggerSubClassType Get_UITriggerSubClassType()const { return m_eTriggerSubClass; }
-	DTO::EUIWorldUISubClassType Get_WorldUISubClassType()const { return m_eWorldUISubClassType; }
 	void Set_UIClassType(DTO::EUIClassType eType) { m_eClassType = eType; }
 	void Set_UISubClassType(DTO::EUISubClassType eType) { m_eSubClassType = eType; }
 	void Set_UITextSubClassType(DTO::EUITextSubClassType eType) { m_eTextSubClassType = eType; }
 	void Set_UIDImageSubClassType(DTO::EUIDImageSubClassType eType) { m_eDImageSubClassType = eType; }
-	void Set_UITriggerSubClassType(DTO::EUITriggerSubClassType eType) { m_eTriggerSubClass = eType; }
-	void Set_WorldUISubClassType(DTO::EUIWorldUISubClassType eType) { m_eWorldUISubClassType = eType; }
 
 #pragma endregion
 
@@ -261,20 +229,7 @@ protected:
 	_string m_strFontName_TextData					= {"SemiBold"};
 	_float m_fRotate_TextData						= {};
 
-	// Client Bind Values Trigger Data
-	DTO::TUI_TriggerData m_tUITriggerData = {};
-	DTO::EUITriggerSubClassType m_eTriggerSubClass = {};
-	vector<std::string> m_vecHoverEnterTriggerCanvas;
-	vector<std::string> m_vecHoverEnterTriggerUI;
-	vector<std::string> m_vecHoverExitTriggerCanvas;
-	vector<std::string> m_vecHoverExitTriggerUI;
-	vector<std::string> m_vecPressEnterTriggerCanvas;
-	vector<std::string> m_vecPressEnterTriggerUI;
-	vector<std::string> m_vecPressExitTriggerCanvas;
-	vector<std::string> m_vecPressExitTriggerUI;
-
 	// Client Bind Values Button Trigger Data
-	DTO::TUI_ButtonTriggerData m_tUIButtonTriggerData = {};
 	_string m_strKeyMapping = {};
 	vector<std::string> m_vecButtonTriggerCanvas;
 	vector<std::string> m_vecButtonTriggerUI;
@@ -282,11 +237,7 @@ protected:
 	// Client Bind Values Dynamic Image Data
 	DTO::TUI_DImageData m_tDImageData = {};
 	DTO::EUIDImageSubClassType m_eDImageSubClassType = {};
-
-	// Client Bind Values World UI Data
-	DTO::TUI_WorldUIData m_tWorldUIData = {};
-	DTO::EUIWorldUISubClassType m_eWorldUISubClassType = {};
-
+	_uint m_iParam0 = {};
 
 	// Local Values
 	Vec3 m_vRenderPos		= {};

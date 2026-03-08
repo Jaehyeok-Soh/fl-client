@@ -122,12 +122,6 @@ HRESULT CUILoading_Image::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUILoading_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUILoading_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;

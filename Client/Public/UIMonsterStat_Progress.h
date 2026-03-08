@@ -37,13 +37,13 @@ private:
 	HRESULT Ready_Components(MONSTER_STAT_PROGRESS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
-	void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	void Initialize_Visible_Event()override;
 	void Initialize_InVisible_Event()override;
 	_bool Tick_Visible_Event(const _float fTimeDelta)override;
 	_bool Tick_InVisible_Event(const _float fTimeDelta)override;
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
+	virtual void Bind_Events()override;
 
 	HRESULT Convert_Stat_To_Ratio();
 

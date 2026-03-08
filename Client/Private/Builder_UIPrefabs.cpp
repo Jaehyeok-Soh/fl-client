@@ -58,16 +58,6 @@ HRESULT CBuilder_UIPrefabs::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
-	// For. Trigger
-	{
-		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::TRIGGER));
-		for (const auto& pObjectData : vecDataList)
-		{
-			const auto* pDto = static_cast<const Engine::CUI_Trigger_DTO*>(pObjectData);
-			if (FAILED(Create_TriggerDTO(pDto->Get_Data())))
-				return E_FAIL;
-		}
-	}
 	// For. DImage
 	{
 		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::DYNAMIC_IMAGE));
@@ -141,15 +131,6 @@ HRESULT CBuilder_UIPrefabs::Create_TextDTO(const DTO::TUI_TextData& data)
 		return E_FAIL;
 
 	m_MapTextDataCache.emplace(data.strOwnerName, data);
-	return S_OK;
-}
-
-HRESULT CBuilder_UIPrefabs::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
-{
-	if (data.eType != DTO::EUIType::TRIGGER)
-		return E_FAIL;
-
-	m_MapTriggerDataCache.emplace(data.strOwnerName, data);
 	return S_OK;
 }
 
@@ -304,19 +285,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(JustImageDesc) = DefaultDesc;
 		JustImageDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;			
 	}
-
-	////////////////////////////////////////
-	// TRIGGER //
-	else if (eClassType == DTO::EUIClassType::TRIGGER)
-	{
-		auto iter = m_MapTriggerDataCache.find(data.strTag);
-		if (iter == m_MapTriggerDataCache.end())
-			return E_FAIL;
-		const auto Type = iter->second.eTriggerSubClassType;
-		const _bool isMenu = (Type == DTO::EUITriggerSubClassType::MENU_TAB_TRIGGER);
-		const _bool isMenuExit = (Type == DTO::EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER);
-	}
-
+	
 	////////////////////////////////////////
 	// DYNAMIC_IMAGE //
 	else if (eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)

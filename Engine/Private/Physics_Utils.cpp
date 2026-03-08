@@ -4,6 +4,7 @@
 #include "Physics_ResourceManager.h"
 #include "Physics_Utils.h"
 #include "Physics_QueryFilterCallback.h"
+#include "Physics_QueryFilterCallback_Gun.h"
 
 #include "DebugDraw.h"
 
@@ -370,6 +371,11 @@ _bool CPhysics_Utils::Execute_Overlap(PxGeometry& shape, PxTransform& transform,
 CPhysics_QueryFilterCallback* CPhysics_Utils::GetQueryFilterCallback()
 {
 	return CPhysics_QueryFilterCallback::Create();
+}
+
+CPhysics_QueryFilterCallback_Gun* CPhysics_Utils::GetQueryFilterCallback_Gun()
+{
+	return CPhysics_QueryFilterCallback_Gun::Create();
 }
 
 #ifdef _DEBUG

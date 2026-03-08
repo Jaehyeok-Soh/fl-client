@@ -30,11 +30,10 @@ HRESULT CPhysics_Module::Initialize()
 		return E_FAIL;
 	}
 
-
 #ifdef _DEBUG
 	//m_pPvd = PxCreatePvd(*m_pFoundation);
-	//PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
-	////PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+	////PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
+	//PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
 	////m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 #endif // _DEBUG
@@ -210,6 +209,8 @@ void CPhysics_Module::StepPhysics(_float fTimeDelta)
 
 	m_pScene->unlockWrite();
 
+	m_pCCTManager->GetPhysicsCCTManager()->computeInteractions(fTimeDelta);
+
 #ifdef _DEBUG
 	if (KEY_BUTTON_DOWN(DIK_F1))
 		m_bEnabledDebugDraw = !m_bEnabledDebugDraw;
@@ -253,6 +254,11 @@ _bool CPhysics_Module::Execute_Overlap(PxGeometry& shape, PxTransform& transform
 CPhysics_QueryFilterCallback* CPhysics_Module::GetQueryFilterCallback()
 {
 	return m_pUtils->GetQueryFilterCallback();
+}
+
+CPhysics_QueryFilterCallback_Gun* CPhysics_Module::GetQueryFilterCallback_Gun()
+{
+	return m_pUtils->GetQueryFilterCallback_Gun();
 }
 
 #ifdef _DEBUG
@@ -480,6 +486,11 @@ void CPhysics_Module::RemoveActor(PxRigidActor* actor)
 void CPhysics_Module::ResetActorFilter(PxRigidActor* actor)
 {
 	m_pScene->resetFiltering(*actor);
+}
+
+PxControllerManager* CPhysics_Module::GetPhysicsCCTManager()
+{
+	return m_pCCTManager->GetPhysicsCCTManager();
 }
 
 CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

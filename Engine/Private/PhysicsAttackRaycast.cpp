@@ -8,6 +8,8 @@
 
 #include "CameraMan.h"
 
+#include "Physics_QueryFilterCallback_Gun.h"
+
 #include "DebugDraw.h"
 
 CPhysicsAttackRaycast::CPhysicsAttackRaycast(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -75,7 +77,7 @@ HRESULT CPhysicsAttackRaycast::Initialize(void* pArg)
 	if (m_tDesc.strAttackPresetTag.size() > 0)
 		m_tDesc.iAttackPresetID = m_pGameInstance->Get_AttackPresetIdByTag(m_tDesc.strAttackPresetTag);
 
-	m_pFilterCallback = m_pGameInstance->GetQueryFilterCallback();
+	m_pFilterCallback = m_pGameInstance->GetQueryFilterCallback_Gun();
 	m_pFilterCallback->SetOwner(Get_Owner());
 
 	m_pScene = m_pGameInstance->GetPhysicsScene();

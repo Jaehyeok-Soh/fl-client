@@ -567,17 +567,6 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 	{
 		m_pGameInstance->Broadcast<ACTION4>();
 	}
-
-	if (KEY_BUTTON_DOWN(DIK_2))
-	{
-		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::TUTORIAL_VILLAGE));
-		CUI_Manager::GetInstance()->Request_Clear();
-	}
-	if (KEY_BUTTON_DOWN(DIK_3))
-	{
-		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::LOGO));
-		CUI_Manager::GetInstance()->Request_Clear();
-	}
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

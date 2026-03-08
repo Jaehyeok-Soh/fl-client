@@ -30,10 +30,12 @@ public:
 private:
 	enum class CS_SB_IDX : _uint
 	{
-		IMMU_KEYFRAME
-		, IMMU_CHANNELDATA
-		, IMMU_MIXDATA
-		, MU_SRT
+			IMMU_KEYFRAME
+		,	IMMU_CHANNELDATA
+		,	IMMU_MIXDATA
+		,	MU_SRT
+		,	REF_KEYFRAME
+		,	REF_CHANNELDATA
 	};
 private:
 	CModelAnimation(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -42,10 +44,14 @@ private:
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	_bool Update_TransformationMatrices(const vector<class CBone*>& vecBones,_bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS);
-	void SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS);
+	_bool	Update_TransformationMatrices(const vector<class CBone*>& vecBones,_bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS);
+	void	SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS);
 	void	Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _bool bFirst);
+	void	Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, const vector<class CChannel*>& vRefChannels, CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float  fRatioOffset);
+	
 	void Clear();
+
+	vector<class CChannel*>& Get_Channels() { return m_vecChannels; }
 
 	_float Get_DurationTime() const { return m_fDuration; }
 	_float Get_NormalizedTime() const { return m_fCurrentTrackPosition / m_fDuration; }
@@ -63,7 +69,9 @@ public:
 
 	void	Bind_AnimationEData(CComputeShader* pAnimEShader);
 	void	Bind_AnimationMixData(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS);
+	void	Bind_AnimationAdditiveData(CComputeShader* pAdditiveCS, CComputeShader* pPreAnimCS);
 	HRESULT Ready_BindBuffers(CComputeShader* pAnimESahder);
+	void	Bind_RefAnimaationData(CComputeShader* pAdditiveCS);
 
 	// test
 	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
@@ -80,6 +88,8 @@ public:
 	_bool Get_ApplyRoot() const { return m_bApplyRootMotion; }
 	void Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed_Offset = fSpeed; if (m_fAnimationSpeed_Offset <= 0.f) m_fAnimationSpeed_Offset = 1.f; }
 	void Set_MixType(_uint iMixType) { if (iMixType > 1) return; m_iMixType = iMixType; }
+
+	_uint Get_KeyFrameStart() const { return m_iKeyFrameStart; }
 
 
 	///////////////
@@ -134,6 +144,8 @@ private:
 
 	_uint m_iMixType	= { 0 };		// 0 : bone mix, 1 : additive mix
 	_uint m_iMyMixBlend = { 0 };		// 0 : non blend, 1 : blend
+
+	_uint m_iKeyFrameStart = { 0 }; // additive animation ½Ã ÇÊ¿ä
 
 	///////////////
 	//// Event ////

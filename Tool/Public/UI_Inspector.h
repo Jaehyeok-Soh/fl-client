@@ -30,7 +30,6 @@ public:
 	void SetUp_ShaderPass();
 	void SetUp_UIProgress();
 	void SetUp_TextData();
-	void SetUp_TriggerData();
 	//버튼 트리거도 
 	void SetUp_DImageData();
 

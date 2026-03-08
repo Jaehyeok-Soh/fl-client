@@ -153,10 +153,6 @@
 #include "UICombo_Image.h"
 #include "UIMiniMap_Monster_Icon.h"
 #include "UIBossAction_Image.h"
-// Æ®¸®°Å 
-#include "UIMenu_Trigger.h"
-#include "UICommon_Trigger.h"
-#include "UIMenu_Exit_Trigger.h"
 //=================
 // Resource
 //=================
@@ -722,9 +718,6 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MenuText",					CUIMenu_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_PlayerStatText",			CUIPlayerStat_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_JUST_IMAGE",				CUIJust_Image::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UIMenuTrigger",			CUIMenu_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UICommonTrigger",			CUICommon_Trigger::Create(m_pDevice, m_pDeviceContext));
-	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_UIMenuExitTrigger",		CUIMenu_Exit_Trigger::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_SkillBG",					CUISkill_BG::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniMap",					CUIMini_Map::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_HoverImage",				CUIHover_Image::Create(m_pDevice, m_pDeviceContext));

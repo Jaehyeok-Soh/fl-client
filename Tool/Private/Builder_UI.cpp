@@ -47,27 +47,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
-	// For. Trigger
-	{
-		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::TRIGGER));
-		for (const auto& pObjectData : vecDataList)
-		{
-			const auto* pDto = static_cast<const Engine::CUI_Trigger_DTO*>(pObjectData);
-			if (FAILED(Create_TriggerDTO(pDto->Get_Data())))
-				return E_FAIL;
-		}
-	}
-
-	// For. ButtonTrigger
-	{
-		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::BUTTON_TRIGGER));
-		for (const auto& pObjectData : vecDataList)
-		{
-			const auto* pDto = static_cast<const Engine::CUI_ButtonTrigger_DTO*>(pObjectData);
-			if (FAILED(Create_ButtonTriggerDTO(pDto->Get_Data())))
-				return E_FAIL;
-		}
-	}
 
 	// For. DImage
 	{
@@ -95,8 +74,6 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 	CImGui_UIManager::GetInstance()->Move_UICache(m_pUICache);
 
 	m_TextDataCache.clear();
-	m_TriggerDataCache.clear();
-	m_ButtonTriggerDataCache.clear();
 	m_DImageDataCache.clear();
 
 	CImGui_UIManager::GetInstance()->Request_SortUI();
@@ -181,22 +158,6 @@ HRESULT CBuilder_UI::Create_GenericUIDTO(const DTO::TUI_GenericUIData& data)
 
 		Desc.tTextData = iter->second;
 	}
-	else if (data.eClassType == DTO::EUIClassType::TRIGGER)
-	{
-		auto iter = m_TriggerDataCache.find(data.strTag);
-		if (iter == m_TriggerDataCache.end())
-			return E_FAIL;
-
-		Desc.tTriggerData = iter->second;
-	}
-	else if (data.eClassType == DTO::EUIClassType::BUTTON_TRIGGER)
-	{
-		auto iter = m_ButtonTriggerDataCache.find(data.strTag);
-		if (iter == m_ButtonTriggerDataCache.end())
-			return E_FAIL;
-
-		Desc.tButtonTriggerData = iter->second;
-	}
 	else if (data.eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
 	{
 		auto iter = m_DImageDataCache.find(data.strTag);
@@ -234,24 +195,6 @@ HRESULT CBuilder_UI::Create_TextDTO(const DTO::TUI_TextData& data)
 		return E_FAIL;
 
 	m_TextDataCache.emplace(data.strOwnerName, data);
-	return S_OK;
-}
-
-HRESULT CBuilder_UI::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
-{
-	if (data.eType != DTO::EUIType::TRIGGER)
-		return E_FAIL;
-
-	m_TriggerDataCache.emplace(data.strOwnerName, data);
-	return S_OK;
-}
-
-HRESULT CBuilder_UI::Create_ButtonTriggerDTO(const DTO::TUI_ButtonTriggerData& data)
-{
-	if (data.eType != DTO::EUIType::BUTTON_TRIGGER)
-		return E_FAIL;
-
-	m_ButtonTriggerDataCache.emplace(data.strOwnerName, data);
 	return S_OK;
 }
 

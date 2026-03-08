@@ -147,7 +147,7 @@ vector<PxShape*> CPhysics_ShapeFactory::MakeShape(PHYSICSCOLLIDER_DESC* pDesc, v
 		if (!isValid)
 			continue;
 
-		PxShape* shape = m_pPhysics->createShape(geometry.any(), *pMaterial, true);
+		PxShape* shape = m_pPhysics->createShape(geometry.any(), *pMaterial);
 		if (shape == nullptr)
 			MSG_BOX("ShapeFactory : shape null");
 

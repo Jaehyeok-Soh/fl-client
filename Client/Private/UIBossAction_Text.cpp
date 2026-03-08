@@ -166,12 +166,6 @@ HRESULT CUIBossAction_Text::Convert_Stat_To_Text()
 	return S_OK;
 }
 
-void CUIBossAction_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUIBossAction_Text::Initialize_Visible_Event()
 {
 	switch (m_eTextSubClassType)

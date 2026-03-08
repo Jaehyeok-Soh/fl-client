@@ -230,12 +230,6 @@ HRESULT CUICombo_Text::Convert_Stat_To_Text()
 	return S_OK;
 }
 
-void CUICombo_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
-}
-
 void CUICombo_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;

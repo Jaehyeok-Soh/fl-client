@@ -32,8 +32,8 @@ private:
 	HRESULT Ready_Components(PLAYER_AMMO_PROGRESS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
+	virtual void Bind_Events()override;
 
-	void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	void Initialize_Visible_Event()override;
 	void Initialize_InVisible_Event()override;
 	_bool Tick_Visible_Event(const _float fTimeDelta)override;

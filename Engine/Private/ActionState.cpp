@@ -629,6 +629,24 @@ void CActionState::Set_AnimationPlayRate(_uint iIndex, _float fSpeed)
 	m_pOwnerModel->Set_AnimationPlayRate(iIndex, fSpeed);
 }
 
+void CActionState::Additive_MixOn(_bool bOn)
+{
+	if (m_pOwnerModel)
+		m_pOwnerModel->Set_Apply_AdditiveAnim(bOn);
+}
+
+void CActionState::Additive_DataSetting(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset)
+{
+	if (m_pOwnerModel)
+		m_pOwnerModel->Set_AdditiveData(bAdditive, iRefIdx,  iPosIdx,  fMixOffset);
+}
+
+void CActionState::Additive_DataSetting(_bool bAdditive, _int iPosIdx, _float fMixOffset)
+{
+	if (m_pOwnerModel)
+		m_pOwnerModel->Set_AdditiveData(bAdditive, iPosIdx, fMixOffset);
+}
+
 void CActionState::Set_JumpCount(_uint iCount)
 {
 	m_pOwnerControlContext->Set_JumpCount(iCount);

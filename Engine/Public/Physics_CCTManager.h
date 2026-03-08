@@ -39,6 +39,8 @@ public:
 
     CPhysics_CCTFilterCallback* GetCCTFilterCallback() { return m_pCCTFilterCallback; }
 
+    PxControllerManager* GetPhysicsCCTManager() { return m_pControllerManager; }
+
 private:
     PxController* MakeBoxController(PHYSICSCCT_DESC* pDesc);
     PxController* MakeCapsuleController(PHYSICSCCT_DESC* pDesc);
@@ -59,6 +61,9 @@ private:
     CPhysics_CCTHitReport* m_pCCTHitReport = { nullptr };
     CPhysics_CCTBehaviorCallback* m_pCCTBehaviorCallback = { nullptr };
     CPhysics_CCTFilterCallback* m_pCCTFilterCallback = { nullptr };
+
+    Vec3 m_vPoolingPosition = {0.f, -1000.f, 0.f};
+    _int m_iPoolingRaw = {};
 
 public:
     static CPhysics_CCTManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene, CPhysics_ResourceManager* pResourceManager);
