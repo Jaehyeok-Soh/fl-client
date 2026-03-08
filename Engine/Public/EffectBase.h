@@ -45,8 +45,8 @@ public:
 	_bool IsEffectFinished() {return m_bIsEffectFinish;}
 
 public:
-	virtual HRESULT Enable_VFX(void* pArg);
-	virtual HRESULT Disable_VFX();
+	virtual HRESULT Enable_VFX(void* pArg) PURE;
+	virtual HRESULT Disable_VFX() PURE;
 
 public:
 	virtual void Free() override;
