@@ -68,7 +68,7 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 			if (isHitScan)
 			{
 				m_vColorTint			= Vec4{ 1.f, 0.f, 0.f, 1.f };
-				m_vGradiantColorTint	= Vec4{ 1.f, 1.f, 1.f, 1.f };
+				m_vGradiantColorTint	= Vec4{ 1.f, 0.f, 0.f, 1.f };
 
 			}
 			else
@@ -101,7 +101,7 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 
 			if (isHitScan)
 			{
-				m_vColorTint			= Vec4{ 1.f, 0.f, 0.f, 1.f };
+				m_vColorTint			= Vec4{ 1.f, 1.f, 1.f, 1.f };
 				m_vGradiantColorTint	= Vec4{ 1.f, 0.f, 0.f, 1.f };
 
 			}

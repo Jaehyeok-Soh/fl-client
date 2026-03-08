@@ -34,6 +34,7 @@ public:
     _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
 
     class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
+    class CPhysics_QueryFilterCallback_Gun* GetQueryFilterCallback_Gun();
 
 #ifdef _DEBUG
     void SetMeshDebugState();

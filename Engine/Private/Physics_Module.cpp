@@ -256,6 +256,11 @@ CPhysics_QueryFilterCallback* CPhysics_Module::GetQueryFilterCallback()
 	return m_pUtils->GetQueryFilterCallback();
 }
 
+CPhysics_QueryFilterCallback_Gun* CPhysics_Module::GetQueryFilterCallback_Gun()
+{
+	return m_pUtils->GetQueryFilterCallback_Gun();
+}
+
 #ifdef _DEBUG
 HRESULT CPhysics_Module::Render(PxRigidActor* pActor, XMVECTOR color)
 {

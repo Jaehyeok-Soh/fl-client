@@ -1094,6 +1094,11 @@ CPhysics_QueryFilterCallback* CGameInstance::GetQueryFilterCallback()
 	return m_pPhysics_Module->GetQueryFilterCallback();
 }
 
+CPhysics_QueryFilterCallback_Gun* CGameInstance::GetQueryFilterCallback_Gun()
+{
+	return m_pPhysics_Module->GetQueryFilterCallback_Gun();
+}
+
 void CGameInstance::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)
 {
 	m_pPhysics_Module->SerializeStaticMesh(path, meshes);
