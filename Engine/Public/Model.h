@@ -287,7 +287,7 @@ private:
 	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
 	void								DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pAnimMixCS);
 	void								Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta);
-	_bool								Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta);
+	_bool								Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta ,CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
 
 	///////////////
 	//// Event ////

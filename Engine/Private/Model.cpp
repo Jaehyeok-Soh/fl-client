@@ -967,7 +967,7 @@ void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAni
 
 		// additive까지 할거라면
 		if (m_bAdditiveAnim && pAdditiveCS &&
-			Additive_Animation(pAdditiveCS, pAnimMixCS, fTimeDelta))
+			Additive_Animation(pAdditiveCS, pAnimMixCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT))
 		{
 			// animation 결과 blendCS에 bind
 			pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
@@ -984,7 +984,7 @@ void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAni
 
 	// mix는 안 하지만 additive는 할때
 	else if (m_bAdditiveAnim && pAdditiveCS && 
-		Additive_Animation(pAdditiveCS, pAnimEvalCS, fTimeDelta))
+		Additive_Animation(pAdditiveCS, pAnimEvalCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT))
 	{		
 		// animation 결과 blendCS에 bind
 		pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
@@ -1242,7 +1242,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 
 		// additive까지 할거라면
 		if (m_bAdditiveAnim && pAdditiveCS &&
-			Additive_Animation(pAdditiveCS, pAnimMixCS, fTimeDelta))
+			Additive_Animation(pAdditiveCS, pAnimMixCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT))
 		{
 			// animation 결과 blendCS에 bind
 			pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
@@ -1259,7 +1259,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 
 	// mix는 안 하지만 additive는 할때
 	else if (m_bAdditiveAnim && pAdditiveCS &&
-		Additive_Animation(pAdditiveCS, pAnimBlendCS, fTimeDelta))
+		Additive_Animation(pAdditiveCS, pAnimBlendCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT))
 	{
 		// animation 결과 blendCS에 bind
 		pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
@@ -1452,7 +1452,7 @@ void CModel::Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimC
 	}
 }
 
-_bool  CModel::Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta)
+_bool  CModel::Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT)
 {
 	// 인덱스 유효성 검사 후
 	if (m_iAdditivRef_AnimIdx >= 0 && (_uint)m_iAdditivRef_AnimIdx < Get_AnimationCount()
@@ -1461,7 +1461,7 @@ _bool  CModel::Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* p
 		// ref animation data 바인딩
 		m_vecAnimations[m_iAdditivRef_AnimIdx]->Bind_RefAnimaationData(pAdditiveCS);
 
-		m_vecAnimations[m_iAdditivePos_AnimIdx]->Update_AdditiveAnimatoin(m_vecBones, pAdditiveCS, pPreAnimCS, fTimeDelta, Get_BoneCount(), m_fAdditiveOffset);
+		m_vecAnimations[m_iAdditivePos_AnimIdx]->Update_AdditiveAnimatoin(m_vecBones, pAdditiveCS, pPreAnimCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, m_fAdditiveOffset);
 		return true;
 	}
 

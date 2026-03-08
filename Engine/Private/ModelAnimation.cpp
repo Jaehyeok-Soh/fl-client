@@ -195,16 +195,16 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 	}
 }
 
-void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _float fRatioOffset)
+void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float fRatioOffset)
 {
 	Bind_AnimationAdditiveData(pAnimAdditiveCS, pPreAnimCS);
 
-	//m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed_Offset;
+	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed_Offset;
 
-	//if (m_fCurrentTrackPosition >= m_fDuration)
-	//{
-	//	m_fCurrentTrackPosition = 0.f;
-	//}
+	if (m_fCurrentTrackPosition >= m_fDuration)
+	{
+		m_fCurrentTrackPosition = 0.f;
+	}
 
 	// 가변 데이터 작성
 	CS_MU_ANIMMIX tMuDesc{};
@@ -231,11 +231,11 @@ void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBo
 		{
 			if (iIndex == m_iRootBoneIdx && !m_bApplyRootMotion)
 			{
-				pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, nullptr, fTimeDelta, m_fRootMotionOffset);
+				pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset);
 				continue;
 			}
 
-			pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, nullptr, fTimeDelta, m_fRootMotionOffset);
+			pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset);
 		}
 
 		else

@@ -435,16 +435,16 @@ void CState_GunBase::Look_Control(_float fTimeDelta)
     //98, 99,100
 
     // down
-    if (fPitch > XMConvertToRadians(15.f))
+    if (fPitch > 0.f)
     {
-        Additive_DataSetting(true, m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::MIDDLE)], m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::DOWN)], 0.5f);
+        Additive_DataSetting(true, m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::MIDDLE)], m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::DOWN)], fPitch / XMConvertToRadians(90.f));
     }
 
     // up
-    else if (fPitch < XMConvertToRadians(-15.f))
+    else if (fPitch < 0.f)
     {
         // 아래를 보고 있음
-        Additive_DataSetting(true, m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::MIDDLE)], m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::UP)], 0.5f);
+        Additive_DataSetting(true, m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::MIDDLE)], m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::UP)], fPitch / XMConvertToRadians(-90.f));
     }
 
     // middle
