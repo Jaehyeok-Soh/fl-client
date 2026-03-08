@@ -152,6 +152,7 @@ protected:
 	void Apply_Gravity(const _float fTimeDelta);
 	void SetupLook_CameraLook();
 	void SetupLook_CameraSameLook(); // camera look == owenr look
+	void SetupLook_CameraLookLerp(const _float fTimeDelta);
 	void SetupLookAt(const Vec3 &vPoint);
 	void SetupLook_Target_XZ();
 	_bool Align_Attack(_uint iState);

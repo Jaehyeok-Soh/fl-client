@@ -103,9 +103,9 @@ protected:
 	void Jump_Update(const _float fTimeDelta);
 	void Fall_Update(const _float fTimeDelta);
 
-	_bool Change_MoveState(MoveState eState);
-	void Start_MoveState(MoveState eNextState);
-	void End_MoveState(MoveState ePreState);
+	_bool	Change_MoveState(MoveState eState);
+	void	Start_MoveState(MoveState eNextState);
+	void	End_MoveState(MoveState ePreState);
 
 	void GunEnd();
 

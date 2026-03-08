@@ -489,6 +489,37 @@ void CActionState::SetupLook_CameraLook()
 	m_pOwnerTransform->Rotation(Vec3::Up, fRadian);
 }
 
+void CActionState::SetupLook_CameraLookLerp(const _float fTimeDelta)
+{
+	if (!m_pOwnerTargetCamera)
+	{
+		if (!(m_pOwnerTargetCamera = Get_Owner()->Get_CameraTargeter()))
+			return;
+	}
+	Vec3 vTarget = m_pOwnerTargetCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	vTarget.y = 0.f;
+	vTarget.Normalize();
+
+	_float fRadian = std::atan2(vTarget.x, vTarget.z);
+
+	// 현재 각도
+	Vec3 vCurLook = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	vCurLook.y = 0.f;
+	vCurLook.Normalize();
+
+	_float fCurRadian = std::atan2(vCurLook.x, vCurLook.z);
+
+	// lerp 속도
+	_float fSpeed = 10.f;
+
+	_float fDifff = (fRadian - fCurRadian);
+	while (fDifff > XM_PI)  fDifff -= XM_PI * 2.f;
+	while (fDifff < -XM_PI) fDifff += XM_PI * 2.f;
+	_float fNewRadian = fCurRadian + fDifff * std::clamp(fSpeed * fTimeDelta, 0.f, 1.f);
+
+	m_pOwnerTransform->Rotation(Vec3::Up, fNewRadian);
+}
+
 void CActionState::SetupLook_CameraSameLook()
 {
 	//if (!m_pOwnerTargetCamera)
