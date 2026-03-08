@@ -39,8 +39,8 @@ struct MU_ELEMENT
     
     int         iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
     
-    float       iFirst;
-    uint        iRefernceKeyStart; // 0 : bone mix, 1 : addtive
+    float       fMixRatioOffset;    // mixfatio를 계속해서 바꿔야하는데 그럼 가변으로 값을 offset 형식으로 주기 위함
+    uint        iFirst; // 0 : bone mix, 1 : addtive
     
     float3      Padding0;
 };
@@ -48,7 +48,7 @@ struct MU_ELEMENT
 // 불변 데이터 : cpu.. but 매번 바인딩
 struct IMMU_MIX
 {
-    float           fMixRatio;
+    float           fMixRatio; // 뼈기준으로 할래말래
 
     float3          Padding0;
 };
@@ -140,17 +140,17 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     if (iChannelIdx >= g_InputData.iChannelCount)
         return;
     
-    uint iBoneIdx           = IMMU_CHANNELDATAS[iChannelIdx].iBoneIndex;
-    bool bRootMotionBone    = (g_InputData.iRootMotionBoneIndex == iBoneIdx);
+    uint iBoneIdx               = IMMU_CHANNELDATAS[iChannelIdx].iBoneIndex;
+    bool bRootMotionBone        = (g_InputData.iRootMotionBoneIndex == iBoneIdx);
     
-    uint iMyFrameIdx        = IMMU_CHANNELDATAS[iChannelIdx].iKeyStart;
-    uint iRefFrameIdx       = REF_CHANNELDATAS[iChannelIdx].iKeyStart;
+    uint iMyFrameIdx            = IMMU_CHANNELDATAS[iChannelIdx].iKeyStart;
+    uint iRefFrameIdx           = REF_CHANNELDATAS[iChannelIdx].iKeyStart;
     
     float fCurrentTrackPosition = g_InputData.fCurTrackPosition;
     
-    float fMixRatio = IMMU_MIXDATA[iBoneIdx].fMixRatio;
+    float fMixRatio             = IMMU_MIXDATA[iBoneIdx].fMixRatio * g_InputData.fMixRatioOffset;
     
-    bool bFirst = (g_InputData.iFirst == 1.f);
+    bool bFirst = (g_InputData.iFirst == 1);
 
     // 만약 섞지 않을거라면
     if (fMixRatio <= 0.f)
@@ -203,7 +203,6 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
         //float4 Quat = normalize(lerp(q0, q1, ratio));
         //float3 Translation = lerp(k0.vTranslation, k1.vTranslation, ratio);
     }
-    
 
     
     // 2. delta SQT 구하기

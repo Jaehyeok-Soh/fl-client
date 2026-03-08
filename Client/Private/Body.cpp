@@ -69,6 +69,16 @@ HRESULT CBody::Initialize(void* pArg)
 		pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
 		pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.5f);
 		pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
+
+
+		_uint iAnimMiddle = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MM");
+		vector<CModel::DATA_ANIMIX> vecAnimMix = { {4,true,1.f} };
+		pMyModel->Make_MixRatio(iAnimMiddle-1, vecAnimMix, m_pAdditiveMixCS);	//aim down
+		pMyModel->Make_MixRatio(iAnimMiddle, vecAnimMix, m_pAdditiveMixCS);	// aim middle
+		pMyModel->Make_MixRatio(iAnimMiddle+1, vecAnimMix, m_pAdditiveMixCS); // aim up
+
+		pMyModel->Set_AdditiveRef_AnimIdx(99);					// middle aim을 ref 애니메이션으로 잡는다
+
 	}
 
 	Set_RenderInfoFlag(OF_Outline, true);

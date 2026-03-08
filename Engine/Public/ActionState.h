@@ -77,6 +77,7 @@ public:
 	void			Move(Vec3 vAccelation);					// 가속도 값을 넣어준다 (todo : SetCCTImpuls 와 유사합니다..)
 	void			SetCCTInputDirection(Vec3 vInputDir);	// 매게변수 방향으로 계속 더해준다 : 매게변수가 없으면 
 	void			SetCCTImpuls(Vec3 vImpuls);				// 순간적인 가속도 
+
 	/* animation funcs*/
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);
@@ -91,6 +92,10 @@ protected:
 	_bool			Is_AnimTrackPositionBetweenRaw(_float fTrackA, _float fTrackB);
 	_bool			Is_AnimTrackPositionHalf();
 	void			Set_AnimationPlayRate(_uint iIndex, _float fSpeed);
+
+	void			Additive_MixOn(_bool bOn);
+	void			Additive_DataSetting(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset =1.f);
+	void			Additive_DataSetting(_bool bAdditive, _int iPosIdx, _float fMixOffset = 1.f);
 
 	/* moves funcs */
 protected:

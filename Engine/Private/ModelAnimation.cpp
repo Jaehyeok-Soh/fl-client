@@ -195,7 +195,7 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 	}
 }
 
-void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _uint iRefFirstKeyFrame)
+void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _float fRatioOffset)
 {
 	Bind_AnimationAdditiveData(pAnimAdditiveCS, pPreAnimCS);
 
@@ -208,11 +208,11 @@ void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBo
 
 	// 가변 데이터 작성
 	CS_MU_ANIMMIX tMuDesc{};
-	tMuDesc.fCurTrackPosition = m_fCurrentTrackPosition;
-	tMuDesc.iChannelCount = m_iChannelCount;
-	tMuDesc.iRootMotionBoneIndex = m_iRootBoneIdx;
-	tMuDesc.iFirst = 1;
-	tMuDesc.iMixType = iRefFirstKeyFrame; // CS_MU_ANIMMIX 에는 mix type이라 되어있는데 additive는 iRefernceKeyStart로 사용한다
+	tMuDesc.fCurTrackPosition		= m_fCurrentTrackPosition;
+	tMuDesc.iChannelCount			= m_iChannelCount;
+	tMuDesc.iRootMotionBoneIndex	= m_iRootBoneIdx;
+	tMuDesc.iFirst					= fRatioOffset; // dnjsfosms first 값인데 mix ratio offset 값을 넣어주자. struct 돌려 쓰기 위함..
+	tMuDesc.iMixType				= 1; // CS_MU_ANIMMIX 에는 mix type이라 되어있는데 additive는 iRefernceKeyStart로 사용한다
 
 	pAnimAdditiveCS->Bind_Compute_AnimMixCB(tMuDesc);
 
@@ -273,11 +273,13 @@ void CModelAnimation::Bind_AnimationMixData(CComputeShader* pAnimMixCS, CCompute
 
 	auto pKeySRV = pAnimMixCS->Get_SRV("IMMU_KEYFRAMS");
 	auto pChannelSRV = pAnimMixCS->Get_SRV("IMMU_CHANNELDATAS");
+	auto pMixSRV = pAnimMixCS->Get_SRV("IMMU_MIXDATA"); // todo 툴에서는 이렇게 써야하지만 client에서능 m_pMixSB_SRV 써도 가능 : 한 애니메이션이 여러 mix 방법을 쓰지 않는다는 가정 하에
+
 
 	//Bind_AnimationEData(pAnimMixCS);
 	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME), pKeySRV, m_pKeyFrameBuffer);
 	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), pChannelSRV, m_pChannelDataBuffer);
-	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_MIXDATA), m_pMixSB_SRV, m_pMixDataBuffer);
+	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_MIXDATA), pMixSRV, m_pMixDataBuffer);
 
 
 
@@ -294,7 +296,7 @@ void CModelAnimation::Bind_AnimationAdditiveData(CComputeShader* pAdditiveCS, CC
 
 	auto pKeySRV		= pAdditiveCS->Get_SRV("IMMU_KEYFRAMS");
 	auto pChannelSRV	= pAdditiveCS->Get_SRV("IMMU_CHANNELDATAS");
-	auto pMixSRV		= pAdditiveCS->Get_SRV("IMMU_MIXDATA");
+	auto pMixSRV		= pAdditiveCS->Get_SRV("IMMU_MIXDATA"); // todo 툴에서는 이렇게 써야하지만 client에서능 m_pMixSB_SRV 써도 가능 : 한 애니메이션이 여러 mix 방법을 쓰지 않는다는 가정 하에
 
 	//Bind_AnimationEData(pAnimMixCS);
 	pAdditiveCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME),		pKeySRV,		m_pKeyFrameBuffer);
@@ -474,15 +476,9 @@ void CModelAnimation::Set_MixRatio(vector<_float>& vecMixRatio, CComputeShader* 
 	if (m_pMixDataBuffer == nullptr)
 		return;
 
-	// 4. SRV 연결
-	m_pMixSB_SRV = pAnimMixCS->Get_SRV("IMMU_MIXDATA");
-	m_pMixSB_SRV->SetResource(m_pMixDataBuffer->Get_SRV());
-
-/*	m_pInputKeySB_SRV = pAnimMixCS->Get_SRV("IMMU_KEYFRAMS");
-	m_pInputKeySB_SRV->SetResource(m_pKeyFrameBuffer->Get_SRV());
-
-	m_pInputChannelSB_SRV = pAnimMixCS->Get_SRV("IMMU_CHANNELDATAS");
-	m_pInputChannelSB_SRV->SetResource(m_pChannelDataBuffer->Get_SRV())*/;
+	//// 4. SRV 연결
+	//m_pMixSB_SRV = pAnimMixCS->Get_SRV("IMMU_MIXDATA");
+	//m_pMixSB_SRV->SetResource(m_pMixDataBuffer->Get_SRV());
 
 
 	if (m_pMixSB_SRV)

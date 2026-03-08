@@ -138,6 +138,9 @@ public:
 	void	Set_AdditivePos_AnimIdx(_int  iAnimIdx) { m_iAdditivePos_AnimIdx = iAnimIdx; }
 	void	Set_Apply_AdditiveAnim(_bool  bAdditive) { m_bAdditiveAnim = bAdditive; }
 
+	void	Set_AdditiveData(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset = 1.f); // ref 까지 같이
+	void	Set_AdditiveData(_bool bAdditive, _int iPosIdx, _float fMixOffset = 1.f); // ref 없이
+
 	// tool
 	_bool	Get_MixBool() const { return m_bMixAnim; }
 	const vector<_int>& Get_MixIdx() const { return m_vecMixAnimIndices; }
@@ -335,6 +338,7 @@ private:
 	// additive anim
 	_int								m_iAdditivRef_AnimIdx	= { -1 };
 	_int								m_iAdditivePos_AnimIdx	= { -1 };
+	_float								m_fAdditiveOffset		= { 1.f };
 	_bool								m_bAdditiveAnim			= { false };
 
 	// compute shader 변수

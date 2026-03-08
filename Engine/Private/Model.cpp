@@ -49,6 +49,7 @@ CModel::CModel(const CModel& rhs)
 	, m_bMixAnim(rhs.m_bMixAnim)
 	, m_iAdditivRef_AnimIdx(rhs.m_iAdditivRef_AnimIdx)
 	, m_iAdditivePos_AnimIdx(rhs.m_iAdditivePos_AnimIdx)
+	, m_fAdditiveOffset(rhs.m_fAdditiveOffset)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -447,6 +448,25 @@ void CModel::Set_MixAnim(_bool bMix)
 			m_vecAnimations[pMixIdx]->Set_TrackPosition(0.f);
 		}
 	}
+}
+
+void CModel::Set_AdditiveData(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset)
+{
+	m_bAdditiveAnim			= bAdditive;
+
+	m_iAdditivRef_AnimIdx	= iRefIdx;
+	m_iAdditivePos_AnimIdx	= iPosIdx;
+
+	m_fAdditiveOffset		= fMixOffset;
+}
+
+void CModel::Set_AdditiveData(_bool bAdditive, _int iPosIdx, _float fMixOffset)
+{
+	m_bAdditiveAnim			= bAdditive;
+
+	m_iAdditivePos_AnimIdx	= iPosIdx;
+
+	m_fAdditiveOffset		= fMixOffset;
 }
 
 void CModel::Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, CComputeShader* pAnimMixCS)
@@ -1441,7 +1461,7 @@ _bool  CModel::Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* p
 		// ref animation data ¹ÙÀÎµù
 		m_vecAnimations[m_iAdditivRef_AnimIdx]->Bind_RefAnimaationData(pAdditiveCS);
 
-		m_vecAnimations[m_iAdditivePos_AnimIdx]->Update_AdditiveAnimatoin(m_vecBones, pAdditiveCS, pPreAnimCS, fTimeDelta, Get_BoneCount(), 0);
+		m_vecAnimations[m_iAdditivePos_AnimIdx]->Update_AdditiveAnimatoin(m_vecBones, pAdditiveCS, pPreAnimCS, fTimeDelta, Get_BoneCount(), m_fAdditiveOffset);
 		return true;
 	}
 
