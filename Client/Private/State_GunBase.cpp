@@ -475,25 +475,38 @@ void CState_GunBase::Jump(const _float fTimeDelta)
 
 void CState_GunBase::GunMove(const _float fTimeDelta)
 {
-    CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+   CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
 
-    Vec3 vRight = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+
+    //Vec3 vRight = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    //vRight.y = 0.f;
+    //vRight.Normalize();
+
+    //Vec3 vFront = Vec3(vRight.z, 0.f, -vRight.x);
+    //vFront.Normalize();
+
+    CTransform* pCamTrans = Get_CamTransform();
+
+    Vec3 vFront = pCamTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+    vFront.y = 0.f;
+    vFront.Normalize();
+
+    Vec3 vRight = pCamTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
     vRight.y = 0.f;
     vRight.Normalize();
 
-    Vec3 vFront = Vec3(vRight.z, 0.f, -vRight.x);
-    vFront.Normalize();
+
 
     Vec3 vDir = Vec3::Zero;
 
     if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::W))
     {
-        vDir -= vFront;
+        vDir += vFront;
     }
 
     if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::S))
     {
-        vDir += vFront;
+        vDir -= vFront;
     }
 
     if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::A))
@@ -509,6 +522,8 @@ void CState_GunBase::GunMove(const _float fTimeDelta)
     if (::XMVector3Equal(vDir, Vec3::Zero) == false)
         vDir.Normalize();
     SetCCTInputDirection(vDir);
+
+   // pCamTrans->Add_Position(vDir * fTimeDelta * pPlayerTrans->Get_MovePerSec());
 }
 
 void CState_GunBase::Free()

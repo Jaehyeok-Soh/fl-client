@@ -61,9 +61,6 @@
     <Filter Include="06. FSM\Player\Idle">
       <UniqueIdentifier>{51b09a75-0a10-4351-89ee-c56fb121e232}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\Camera">
-      <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99. ETC\pch">
       <UniqueIdentifier>{1afcebe2-6c14-4448-ab52-4236696f383f}</UniqueIdentifier>
     </Filter>
@@ -661,6 +658,9 @@
     <Filter Include="05. Component\Stat\StatCom_Boss">
       <UniqueIdentifier>{49a4b247-f9ed-4f9d-a881-a94e2c12bde2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Camera">
+      <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -718,7 +718,7 @@
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraMan_Targeter.h">
-      <Filter>03. GameObject\Camera</Filter>
+      <Filter>03. GameObject\ContainerObjects\Camera</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>99. ETC\pch</Filter>
@@ -1277,7 +1277,7 @@
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
-      <Filter>03. GameObject\Camera</Filter>
+      <Filter>03. GameObject\ContainerObjects\Camera</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>99. ETC\pch</Filter>

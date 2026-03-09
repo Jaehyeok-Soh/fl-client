@@ -101,13 +101,24 @@ void CCameraMan_Targeter::Update_Late(const _float fTimeDelta)
     case Client::TargeterState::TARGETSYNC:
         break;
     case Client::TargeterState::GUN:
-        GunCam_Update(fTimeDelta);
+        //GunCam_Update(fTimeDelta);
         break;
     }
 }
 
 void CCameraMan_Targeter::Ready_Before_Render(const _float fTimeDelta)
 {
+    switch (m_eCurrentState)
+    {
+    case Client::TargeterState::NORMAL:
+        break;
+    case Client::TargeterState::TARGETSYNC:
+        break;
+    case Client::TargeterState::GUN:
+        GunCam_Update(fTimeDelta);
+        break;
+    }
+
     Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -456,8 +467,8 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
     if (m_bChaseInit == false)
     {
-        m_vChaseFiltered = vChasePositionRaw;
-        m_bChaseInit = true;
+        m_vChaseFiltered    = vChasePositionRaw;
+        m_bChaseInit        = true;
     }
 
     _float fT_Chase = 1.f - std::exp(-fTimeDelta / m_fTau_Pos);
@@ -494,7 +505,7 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
         break;
     case TargeterState::GUN:
         vDesiredPos = vChasePositionRaw 
-                    + pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT) * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)] 
+                    + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
                     - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
                     + Vec3{ 0.f,1.f,0.f } *m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
     break;
