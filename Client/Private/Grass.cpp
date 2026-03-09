@@ -1,11 +1,10 @@
 #include "pch.h"
 #include "Grass.h"
 
-
-
 CGrass::CGrass(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CPlants(pDevice ,pDeviceContext)
 {
+	m_ePlantsType = CPlants::Type::Grass;
 }
 
 CGrass::CGrass(const CGrass& rhs)
@@ -32,6 +31,8 @@ HRESULT CGrass::Initialize(void* pArg)
 
 HRESULT CGrass::Ready_Component(GRASS_DESC* pDesc)
 {
+	/* 생성된 Component 를 땔수있나 */
+
 
 	return S_OK;
 }
@@ -69,6 +70,9 @@ void CGrass::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CGrass::Render()
 {
+
+	if (FAILED(Super::Render_Plnats(ENUM_TO_UINT(EMapObjectShaderPass::Grass))))
+		return E_FAIL;
 
 
 

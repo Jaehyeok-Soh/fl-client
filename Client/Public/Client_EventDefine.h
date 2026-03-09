@@ -13,6 +13,8 @@ struct Test2 { using Signature = void(unsigned int iCount); };
 struct TUTORIAL_BOSS_CONTATCT		{ using Signature = void(); };
 struct TUTORIAL_BOSS_CONTATCT_END	{ using Signature = void(); };
 
+/* Ä«¸Þ¶ó */
+
 #pragma endregion
 
 

@@ -82,10 +82,16 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
 {
     PS_OUT_DEFFERED output;
     
-    float4 vDiffuse = 1.f;
+    float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+    
     Compute_Diffse(vDiffuse, input.vUV);
+    
+    if (vDiffuse.a < 0.3f)
+        discard;
+    
     vDiffuse.rgb *= MIDesc.vTintColor.rgb;
     output.vDiffuse = vDiffuse;
+    
     
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
@@ -98,24 +104,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     
-    
-    if(output.vDiffuse.a < 0.3f )
-        discard;
-    
-    return output;
-}
 
-PS_OUT_BAKESHADOW PS_BAKESHADOW(PS_IN_MESH input)
-{
-    PS_OUT_BAKESHADOW output;
-    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    return output;
-}
-
-PS_OUT PS_BLACK(PS_IN_MESH input)
-{
-    PS_OUT output;
-    output.vColor = float4(1.f, 1.f, 1.f, 1.f);
     
     return output;
 }
@@ -248,10 +237,180 @@ PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_MESH input)
     
     output.vDiffuse = vDiffuse;
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    output.vNormal = float4(1.f,0.f,0.f,0.f);
+    //output.vNormal = float4(1.f,0.f,0.f,0.f);
     output.vNormal = float4(finalWorldNormal * 0.5f + 0.5f, 1.f);
-    //output.vSpecularMask = float4(0.f, fNBR_Tile_Roughness, 0.f, 0.f);
-    output.vSpecularMask = float4(1.f, 0.f, 0.f, 0.f);
+    output.vSpecularMask = float4(0.f, fNBR_Tile_Roughness, 0.f, 0.f);
+    //output.vSpecularMask = float4(1.f, 0.f, 0.f, 0.f);
+    
+    return output;
+}
+
+
+PS_OUT_DEFFERED PS_TREE(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+    
+    Compute_Diffse(vDiffuse, input.vUV);
+    
+    if (length(vDiffuse.rgb) < 0.1f)
+        discard;
+    
+    if (vDiffuse.a < 0.3f)
+        discard;
+    
+    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    output.vDiffuse = vDiffuse;
+    
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+    return output;
+}
+
+PS_OUT_DEFFERED PS_MOSS(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float4 vDiffuse = 1.f;
+    Compute_Diffse(vDiffuse, input.vUV);
+    
+    if (vDiffuse.r < 0.1f) 
+        discard;
+    
+    float4 vMI_Color = MIDesc.vTintColor;
+    
+    output.vDiffuse = vMI_Color * vDiffuse.b;
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+   
+    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+
+    return output;
+}
+
+PS_OUT_DEFFERED PS_VINE(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float4 vDiffuse = 1.f;
+    
+    float4 vMask = float4(1.f, 1.f, 1.f, 1.f);
+    
+    if (Has(g_iMaterialMask, METALNESS))
+        vMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV);
+
+    if (vMask.r < 0.3f) 
+        discard;
+    
+    float4 vMI_Color = MIDesc.vTintColor;
+    output.vDiffuse = vMI_Color * vDiffuse.b;
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse, input.iCurInstanceID);
+    
+    return output;
+}
+
+PS_OUT_DEFFERED PS_GRASS(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float4 vDiffuse = 1.f;
+    
+    Compute_Diffse(vDiffuse, input.vUV);
+    
+    if (length(vDiffuse.rgb) < 0.1f)
+        discard;
+    
+    if (vDiffuse.a < 0.3f)
+        discard;
+    
+    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    output.vDiffuse = vDiffuse;
+    
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    
+    return output;
+}
+
+PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float4 vDiffuse = 1.f;
+    
+    Compute_Diffse(vDiffuse, input.vUV);
+    
+    if (length(vDiffuse.rgb) < 0.1f)
+        discard;
+    
+    if (vDiffuse.a < 0.3f)
+        discard;
+    
+    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    output.vDiffuse = vDiffuse;
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    
+    if (Has(g_iMaterialMask, METALNESS))
+    {
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+        
+        if (vSpecMask.r < 0.3f)
+            discard;
+        
+        if (length(vDiffuse.rgb) < 0.1f)
+            discard;
+    }
+    
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
     return output;
 }
@@ -260,7 +419,8 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
 {
     PS_OUT_DEFFERED output;
     
-    float4 vDiffuse = 1.f;
+    float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+    
     Compute_Diffse(vDiffuse, input.vUV);
 
     float4 final =
@@ -286,6 +446,22 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
 }
 
 
+
+PS_OUT_BAKESHADOW PS_BAKESHADOW(PS_IN_MESH input)
+{
+    PS_OUT_BAKESHADOW output;
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    return output;
+}
+
+PS_OUT PS_BLACK(PS_IN_MESH input)
+{
+    PS_OUT output;
+    output.vColor = float4(1.f, 1.f, 1.f, 1.f);
+    
+    return output;
+}
+
 technique11 T0
 {
     // 기본 오브젝트
@@ -294,11 +470,11 @@ technique11 T0
     PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)
 
     // 식생
-	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_BUSH)
+	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_GRASS)
+	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MOSS)
+	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_TREE)
+	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_VINE)
 
     // 환경요소
 	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)

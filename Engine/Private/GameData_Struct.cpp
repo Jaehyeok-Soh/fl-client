@@ -697,9 +697,9 @@ namespace Engine
 		// 1. 현재 이 함수에 들어온 JSON 전체 구조를 로그로 출력
 		OutputDebugStringA(LoadJson.dump(4).c_str());
 
-		if (LoadJson.contains("Start Global Event Index"))
+		if (LoadJson.contains("Start Global Event Names"))
 		{
-			const auto& JsonArray = LoadJson["Start Global Event Index"];
+			const auto& JsonArray = LoadJson["Start Global Event Names"];
 
 			for (auto& Json : JsonArray)
 			{
@@ -709,9 +709,9 @@ namespace Engine
 			}
 		}
 
-		if (LoadJson.contains("End Global Event Index"))
+		if (LoadJson.contains("End Global Event Names"))
 		{
-			const auto& JsonArray = LoadJson["End Global Event Index"];
+			const auto& JsonArray = LoadJson["End Global Event Names"];
 
 			for (auto& Json : JsonArray)
 			{

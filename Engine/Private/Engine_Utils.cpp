@@ -358,6 +358,14 @@ void Engine_Utils::read_vec4_Quat(const json& _j, Quat& vOut)
     vOut.w = _j.value("W", 0.f);
 }
 
+void Engine_Utils::read_vec4_xyzw(const json& _j, Vec4& vOut)
+{
+    vOut.x = _j.value("X", 0.f);
+    vOut.y = _j.value("Y", 0.f);
+    vOut.z = _j.value("Z", 0.f);
+    vOut.w = _j.value("W", 0.f);
+}
+
 void Engine_Utils::write_vec3_xyz(json& _j, const Vec3& vOut)
 {
     _j["X"] = vOut.x;
@@ -385,6 +393,15 @@ void Engine_Utils::write_vec4_Quat(json& _j,const  Quat& vOut)
     _j["Z"] = vOut.z;
     _j["W"] = vOut.w;
 }
+
+void Engine_Utils::write_vec4_xyzw(json& _j, const Vec4& vOut)
+{
+    _j["X"] = vOut.x;
+    _j["Y"] = vOut.y;
+    _j["Z"] = vOut.z;
+    _j["W"] = vOut.w;
+}
+
 
 string Engine_Utils::MaterialTextureType_ToString(EMaterialTextureType eType)
 {

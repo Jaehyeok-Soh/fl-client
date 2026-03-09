@@ -275,6 +275,10 @@ namespace Engine
 		MetalCool,
 		MetalDark,
 		CourtBlue,
+		
+
+		/* 자유타입 Render직전 내가 지정한 컬러값으로 덮어써줄것 */
+		Free,
 		END
 	};
 	//===================

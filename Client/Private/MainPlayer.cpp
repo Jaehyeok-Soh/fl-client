@@ -57,13 +57,13 @@
 
 
 CMainPlayer::CMainPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-    : Super(pDevice, pDeviceContext)
+    : Super(pDevice, pDeviceContext), m_isCinematic{false}
 {
     m_vecPartObjects.resize(Part::END, nullptr);
 }
 
 CMainPlayer::CMainPlayer(const CMainPlayer& rhs)
-    : Super(rhs)
+    : Super(rhs) , m_isCinematic(rhs.m_isCinematic)
 {
     m_vecPartObjects.resize(Part::END, nullptr);
 }
@@ -119,6 +119,12 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     return S_OK;
 }
 
+HRESULT CMainPlayer::Register_GlobalEvent()
+{
+
+    return S_OK;
+}
+
 HRESULT CMainPlayer::Reinitialize(GAMEOBJECT_REINIT_DESC* pDesc)
 {
     if (pDesc == nullptr)
@@ -157,6 +163,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
         return E_FAIL;
     if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
+        return E_FAIL;
+
+    if (FAILED(Register_GlobalEvent()))
         return E_FAIL;
 
     Get_Component<CPhysicsCCT>()->Ready_Position();

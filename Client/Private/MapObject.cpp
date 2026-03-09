@@ -12,7 +12,7 @@
 #include "TriggerBox.h"
 
 CMapObject::CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject(pDevice, pContext), m_eMapObjectType{EMapObject_Type::END}
+    : CGameObject(pDevice, pContext), m_eMapObjectType{ EMapObject_Type::END }, m_iShaderPass{0}
 {
 }
 
@@ -22,6 +22,7 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_isUELoaded{rhs.m_isUELoaded}
     , m_vecMatrix{rhs.m_vecMatrix }
     , m_iSectionNum{rhs.m_iSectionNum}
+    , m_iShaderPass{rhs.m_iShaderPass }
 {
 }
 
@@ -41,16 +42,21 @@ HRESULT	CMapObject::Initialize(void* pArg)
 
     MAPOBJECT_DESC* pDesc = static_cast<MAPOBJECT_DESC*>(pArg);
 
+    /* Client Make Path가 END일떄 혹시 모를 상황을 대비하여 E FAIL 반환 */
+    if (pDesc->eClientMakePath == DTO::EClientMakePath::END) return E_FAIL;
 
-    m_isUELoaded    = pDesc->isUELoaded;
-    m_eMapObjectDrawType = pDesc->eMapObjectDrawType;
-    m_strName       = path(pDesc->wstrModelPath).filename().stem().string();
-    m_iSectionNum  = pDesc->iSectionNum;
+    m_isUELoaded            = pDesc->isUELoaded;
+    m_eMapObjectDrawType    = pDesc->eMapObjectDrawType;
+    m_strName               = path(pDesc->wstrModelPath).filename().stem().string();
+    m_iSectionNum           = pDesc->iSectionNum;
 
     if (FAILED(Ready_Transform(pDesc)))
         return E_FAIL;
 
     if (FAILED(Ready_Component(pDesc)))
+        return E_FAIL;
+
+    if (FAILED(Ready_PhysicsComponent(pDesc)))
         return E_FAIL;
 
 	return S_OK;
@@ -108,7 +114,8 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
             else
             {
                 m_pGameInstance->RegisterPhysicsMesh(tModelDesc.iPrototypeLevelIndex , wstrFileName);
-                Add_Component<CModel>(pDesc->iLevelIndex , wstrFileName  , nullptr );
+                CModel::MODEL_COPY_DESC tModelCopyDesc{};
+                Add_Component<CModel>(pDesc->iLevelIndex , wstrFileName , &tModelCopyDesc);
             }
         }
         /* Bounds 생성 */
@@ -141,9 +148,6 @@ HRESULT	CMapObject::Ready_Component(MAPOBJECT_DESC* pDesc)
             return E_FAIL;
     }
 
-    if (FAILED(Ready_PhysicsComponent(pDesc)))
-        return E_FAIL;
-
 	return S_OK;
 }
 
@@ -158,7 +162,9 @@ HRESULT	CMapObject::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	Get_Component<CPhysicsRigidBody>()->Awake();
+    CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>();
+    if (pRigidBody)
+        pRigidBody->Awake();
 
 	return S_OK;
 }
@@ -199,6 +205,11 @@ HRESULT CMapObject::Ready_OverrideMtl(const DTO::USING_MODEL_INFO& tUsingModelIn
 HRESULT CMapObject::Ready_PhysicsComponent(MAPOBJECT_DESC* pDesc)
 {
     HRESULT result{};
+
+    DTO::EClientMakePath eClientMakePath = pDesc->eClientMakePath;
+
+    /* 콜라이더를 생성하는지 체크 */
+    if (!IsMakePhysicsCollider(pDesc->eClientMakePath))   return S_OK;
 
     if (FAILED(Ready_PhysicsCollider(pDesc)))
         result = E_FAIL;
@@ -419,4 +430,29 @@ void CMapObject::Free()
 	Super::Free();
 
 
+}
+
+_bool CMapObject::IsMakePhysicsCollider(DTO::EClientMakePath eType)
+{
+    switch (eType)
+    {
+    case DTO::EClientMakePath::StaticObject:
+    case DTO::EClientMakePath::LandScape:
+    case DTO::EClientMakePath::Invisible_Wall:          
+    case DTO::EClientMakePath::Rock:
+    case DTO::EClientMakePath::Tree:
+        return true;
+
+    //case DTO::EClientMakePath::Bush:
+    //case DTO::EClientMakePath::Grass:
+    //case DTO::EClientMakePath::Vine:
+    //case DTO::EClientMakePath::Water:
+    //case DTO::EClientMakePath::Moss:
+
+
+    default:                                            return false;
+    }
+
+
+    return false;
 }

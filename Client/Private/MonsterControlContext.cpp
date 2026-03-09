@@ -60,7 +60,7 @@ void CMonsterControlContext::Update_RuntimeDesc(const _float fTiemDelta)
 	{
 		Clear_RuntimeDesc();
 		Safe_Release(m_pTarget);
-		m_pTarget == nullptr;
+		m_pTarget = nullptr;
 		return;
 	}
 

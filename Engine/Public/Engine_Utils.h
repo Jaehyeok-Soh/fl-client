@@ -57,11 +57,13 @@ public:
 	static void read_vec2_xy(const json& _j, Vec2& vOut);
 	static void read_vec3_PitchYawRoll(const json& _j, Vec3& vOut);
 	static void read_vec4_Quat(const json& _j, Quat& vOut);
+	static void read_vec4_xyzw(const json& _j, Vec4& vOut);
 
 	static void write_vec3_xyz(json& _j, const Vec3& vOut);
 	static void write_vec2_xy(json& _j, const Vec2& vOut);
 	static void write_vec3_PitchYawRoll(json& _j, const Vec3& vOut);
 	static void write_vec4_Quat( json& _j, const Quat& vOut);
+	static void write_vec4_xyzw( json& _j, const Vec4& vOut);
 
 
 	static inline string	D3D11_USAGE_ToString(D3D11_USAGE eUsage)
@@ -139,6 +141,8 @@ public:
 			return "MaterialInstance_MetalDark";
 		case Engine::EMaterialInstanceType::CourtBlue:
 			return "MaterialInstance_CourtBlue";
+		case Engine::EMaterialInstanceType::Free:
+			return "MaterialInstance_Free";
 		default:
 			return "";
 		}
@@ -187,9 +191,64 @@ public:
 			return L"MaterialInstance_MetalDark";
 		case Engine::EMaterialInstanceType::CourtBlue:
 			return L"MaterialInstance_CourtBlue";
+		case Engine::EMaterialInstanceType::Free:
+			return L"MaterialInstance_Free";
 		default:
 			return L"";
 		}
+	}
+
+	static EMaterialInstanceType MI_ToEnum(const string& strType)
+	{
+		if (strType == "MaterialInstance_Default") return Engine::EMaterialInstanceType::Default;
+		else if (strType == "MaterialInstance_Concrete") return Engine::EMaterialInstanceType::Concrete;
+		else if (strType == "MaterialInstance_Mirror") return Engine::EMaterialInstanceType::Mirror;
+		else if (strType == "MaterialInstance_Water") return Engine::EMaterialInstanceType::Water;
+		else if (strType == "MaterialInstance_Dirt") return Engine::EMaterialInstanceType::Dirt;
+		else if (strType == "MaterialInstance_Red") return Engine::EMaterialInstanceType::Red;
+		else if (strType == "MaterialInstance_Blue") return Engine::EMaterialInstanceType::Blue;
+		else if (strType == "MaterialInstance_Green") return Engine::EMaterialInstanceType::Green;
+		else if (strType == "MaterialInstance_Grass") return Engine::EMaterialInstanceType::Grass;
+		else if (strType == "MaterialInstance_Orange") return Engine::EMaterialInstanceType::Orange;
+		else if (strType == "MaterialInstance_Brown") return Engine::EMaterialInstanceType::Brown;
+		else if (strType == "MaterialInstance_Pupple") return Engine::EMaterialInstanceType::Pupple;
+		else if (strType == "MaterialInstance_WinterGreen") return Engine::EMaterialInstanceType::WinterGreen;
+		else if (strType == "MaterialInstance_BurnishedBrown") return Engine::EMaterialInstanceType::BurnishedBrown;
+		else if (strType == "MaterialInstance_ConcreteLight") return Engine::EMaterialInstanceType::ConcreteLight;
+		else if (strType == "MaterialInstance_ConcreteMid") return Engine::EMaterialInstanceType::ConcreteMid;
+		else if (strType == "MaterialInstance_ConcreteWarm") return Engine::EMaterialInstanceType::ConcreteWarm;
+		else if (strType == "MaterialInstance_MetalCool") return Engine::EMaterialInstanceType::MetalCool;
+		else if (strType == "MaterialInstance_MetalDark") return Engine::EMaterialInstanceType::MetalDark;
+		else if (strType == "MaterialInstance_CourtBlue") return Engine::EMaterialInstanceType::CourtBlue;
+		else if (strType == "MaterialInstance_Free") return Engine::EMaterialInstanceType::Free;
+
+		return Engine::EMaterialInstanceType::Default; // 기본값 반환
+	}
+	static EMaterialInstanceType MI_ToEnum(const wstring& wstrType)
+	{
+		if (wstrType == L"MaterialInstance_Default") return Engine::EMaterialInstanceType::Default;
+		else if (wstrType == L"MaterialInstance_Concrete") return Engine::EMaterialInstanceType::Concrete;
+		else if (wstrType == L"MaterialInstance_Mirror") return Engine::EMaterialInstanceType::Mirror;
+		else if (wstrType == L"MaterialInstance_Water") return Engine::EMaterialInstanceType::Water;
+		else if (wstrType == L"MaterialInstance_Dirt") return Engine::EMaterialInstanceType::Dirt;
+		else if (wstrType == L"MaterialInstance_Red") return Engine::EMaterialInstanceType::Red;
+		else if (wstrType == L"MaterialInstance_Blue") return Engine::EMaterialInstanceType::Blue;
+		else if (wstrType == L"MaterialInstance_Green") return Engine::EMaterialInstanceType::Green;
+		else if (wstrType == L"MaterialInstance_Grass") return Engine::EMaterialInstanceType::Grass;
+		else if (wstrType == L"MaterialInstance_Orange") return Engine::EMaterialInstanceType::Orange;
+		else if (wstrType == L"MaterialInstance_Brown") return Engine::EMaterialInstanceType::Brown;
+		else if (wstrType == L"MaterialInstance_Pupple") return Engine::EMaterialInstanceType::Pupple;
+		else if (wstrType == L"MaterialInstance_WinterGreen") return Engine::EMaterialInstanceType::WinterGreen;
+		else if (wstrType == L"MaterialInstance_BurnishedBrown") return Engine::EMaterialInstanceType::BurnishedBrown;
+		else if (wstrType == L"MaterialInstance_ConcreteLight") return Engine::EMaterialInstanceType::ConcreteLight;
+		else if (wstrType == L"MaterialInstance_ConcreteMid") return Engine::EMaterialInstanceType::ConcreteMid;
+		else if (wstrType == L"MaterialInstance_ConcreteWarm") return Engine::EMaterialInstanceType::ConcreteWarm;
+		else if (wstrType == L"MaterialInstance_MetalCool") return Engine::EMaterialInstanceType::MetalCool;
+		else if (wstrType == L"MaterialInstance_MetalDark") return Engine::EMaterialInstanceType::MetalDark;
+		else if (wstrType == L"MaterialInstance_CourtBlue") return Engine::EMaterialInstanceType::CourtBlue;
+		else if (wstrType == L"MaterialInstance_Free") return Engine::EMaterialInstanceType::Free;
+
+		return Engine::EMaterialInstanceType::Default;
 	}
 };
 
