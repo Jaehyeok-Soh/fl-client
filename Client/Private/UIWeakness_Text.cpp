@@ -195,12 +195,15 @@ void CUIWeakness_Text::Initialize_Visible_Event()
 		break;
 	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_TEXT:
 		Ready_LerpChange(0.5f, 3.f, 1.f, 3.f, m_fDelay);
+		Ready_Fade_Text(0.5f, 1.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_LEFT:
 		Ready_Lerp_Movement(Vec2{ -50.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 2.f, m_fDelay);
+		Ready_Fade_Text(0.5f, 1.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_RIGHT:
 		Ready_Lerp_Movement(Vec2{ 50.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 2.f, m_fDelay);
+		Ready_Fade_Text(0.5f, 1.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUITextSubClassType::BSTTLE_WEAKNESS_END:
 		break;
@@ -240,7 +243,7 @@ _bool CUIWeakness_Text::Tick_Visible_Event(const _float fTimeDelta)
 	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_BEGIN:
 		break;
 	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_TEXT:
-		Tick_LerpChange(&m_fScaleOffset, fTimeDelta);
+		return Tick_LerpChange(&m_fScaleOffset, fTimeDelta);
 		break;
 	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_LEFT:
 		return Tick_Lerp_Movement(fTimeDelta);

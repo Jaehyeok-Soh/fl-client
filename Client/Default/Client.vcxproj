@@ -332,6 +332,8 @@
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
+    <ClInclude Include="..\Public\UITutorial_Pannel_Image.h" />
+    <ClInclude Include="..\Public\UITutorial_Pannel_Text.h" />
     <ClInclude Include="..\Public\UIWeakness_Image.h" />
     <ClInclude Include="..\Public\UIWeakness_Text.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
@@ -545,6 +547,8 @@
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
+    <ClCompile Include="..\Private\UITutorial_Pannel_Image.cpp" />
+    <ClCompile Include="..\Private\UITutorial_Pannel_Text.cpp" />
     <ClCompile Include="..\Private\UIWeakness_Image.cpp" />
     <ClCompile Include="..\Private\UIWeakness_Text.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />

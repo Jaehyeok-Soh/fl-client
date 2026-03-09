@@ -1,9 +1,23 @@
 #pragma once
 #include "UIObject.h"
+#include "MulticastDelegate.h"
 
 NS_BEGIN(Client)
 class CUILayer;
 class CGenericUI;
+
+enum class EUILocalEventID {
+
+	END
+};
+
+typedef struct tagUILocalEventesc
+{
+	EUILocalEventID eEventID = { EUILocalEventID::END };
+
+	_uint iParam0 = {};
+
+}UI_LOCAL_EVENT_DESC;
 
 class CCanvas final : public CUIObject
 {
@@ -75,6 +89,9 @@ private:
 	_bool m_isAllDead = { false };
 
 	UI_PREFAB_DATA m_pPrefabData;
+
+protected:
+	CMulticastDelegate<void(const UI_LOCAL_EVENT_DESC&)> m_vLocalEvents = {};
 
 public:
 	static CCanvas* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

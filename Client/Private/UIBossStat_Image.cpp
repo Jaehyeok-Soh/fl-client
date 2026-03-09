@@ -42,14 +42,6 @@ HRESULT CUIBossStat_Image::Initialize(void* pArg)
 
 HRESULT CUIBossStat_Image::Attach_Personal_Info()
 {
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]()
-		{
-			this->Set_Visible();
-		});
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]()
-		{
-			this->Set_Invisible();
-		});
 	return S_OK;
 }
 
@@ -117,6 +109,18 @@ HRESULT CUIBossStat_Image::Bind_ShaderResources()
 	return S_OK;
 }
 
+void CUIBossStat_Image::Bind_Events()
+{
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]()
+		{
+			this->Set_Visible();
+		});
+	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]()
+		{
+			this->Set_Invisible();
+		});
+}
+
 void CUIBossStat_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event	= false;
@@ -138,9 +142,13 @@ HRESULT CUIBossStat_Image::Spawn_FromPool(void* pArg)
 
 	if (nullptr == m_pTargetStat)
 		return E_FAIL;
-	/* º¸½º ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
 	m_isBossEventTrigger	= false;
 	m_isSpawned				= true;
+
+
+
+
+
 	return S_OK;
 }
 

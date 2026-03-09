@@ -347,8 +347,8 @@ void CToolUI::Sync_Data()
 	// UI Object Values
 	m_tUIData.fWidth					= m_fWidth;
 	m_tUIData.fHeight					= m_fHeight;
-	m_tUIData.fPosX						= m_fX;
-	m_tUIData.fPosY						= m_fY;
+	m_tUIData.fPosX						= m_fX ;
+	m_tUIData.fPosY						= m_fY ;
 	m_tUIData.fPosZ						= m_fZ;
 	m_tUIData.isVisible					= m_isVisible;
 	m_tUIData.isInteract				= m_isInteract;

@@ -183,11 +183,6 @@ void CUIWeakness_Image::Bind_Events()
 
 void CUIWeakness_Image::Tick_By_Type(const _float fTimeDelta)
 {
-	if (KEY_BUTTON_DOWN(DIK_8))
-	{
-		Set_Invisible();
-	}
-
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN:
@@ -246,7 +241,7 @@ void CUIWeakness_Image::Initialize_InVisible_Event()
 		Ready_Fade(1.f, 1.f, 0.f, 1.f);
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:
-		Ready_Fade(1.f, 1.f, 0.f, 1.f);
+		Ready_Fade(0.3f, 1.f, 0.f, 1.f);
 		break;
 	case DTO::EUIDImageSubClassType::BSTTLE_WEAKNESS_END:
 		break;
@@ -266,20 +261,12 @@ _bool CUIWeakness_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 		if (is && isFade)
 		{
-			m_fWidth = m_vOriginSize.x;
-			m_fHeight = m_vOriginSize.y;
-			Move_Size(m_fWidth, m_fHeight);
-
-
 			UIEVENT_DESC Desc = {};
 			Desc.eEventID = EUIEventID::WEAKNESS_FIN;
 			m_pUIManager->Get_UIEvents().Broadcast(Desc);
 
 			return true;
 		}
-		m_fWidth = m_vOriginSize.x * m_fScale;
-		m_fHeight = m_vOriginSize.y * m_fScale;
-		Move_Size(m_fWidth, m_fHeight);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
@@ -289,12 +276,8 @@ _bool CUIWeakness_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 		if (is && isFade)
 		{
-			m_fHeight = m_vOriginSize.y;
-			Move_Size(m_fWidth, m_fHeight);
 			return true;
 		}
-		m_fHeight = m_vOriginSize.y * m_fScale;
-		Move_Size(m_fWidth, m_fHeight);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:
@@ -321,12 +304,10 @@ _bool CUIWeakness_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		{
 			m_fWidth = 0.f;
 			m_fHeight = 0.f;
-			Move_Size(m_fWidth, m_fHeight);
 			return true;
 		}
 		m_fWidth = m_vOriginSize.x * m_fScale;
 		m_fHeight = m_vOriginSize.y * m_fScale;
-		Move_Size(m_fWidth, m_fHeight);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
@@ -336,12 +317,8 @@ _bool CUIWeakness_Image::Tick_InVisible_Event(const _float fTimeDelta)
 
 		if (is && isFade)
 		{
-			m_fHeight = 0.f;
-			Move_Size(m_fWidth, m_fHeight);
 			return true;
 		}
-		m_fHeight = m_vOriginSize.y * m_fScale;
-		Move_Size(m_fWidth, m_fHeight);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:

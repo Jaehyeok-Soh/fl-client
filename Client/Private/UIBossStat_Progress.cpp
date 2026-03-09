@@ -5,12 +5,13 @@
 //=================
 // Component
 //=================
-#include "MyStat.h"
+#include "StatCom_Boss.h"
 #include "Client_EventDefine.h"
 #include "WorldUI_Component.h"	
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUIBossStat_Progress::CUIBossStat_Progress(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -137,6 +138,29 @@ HRESULT CUIBossStat_Progress::Attach_Personal_Info()
 	return S_OK;
 }
 
+void CUIBossStat_Progress::Tick_By_Type(const _float fTimeDelta)
+{
+	if (DTO::EUISubClassType::BOSS_STAT_ARMOR_PROGRESS == m_eSubClassType)
+	{
+		_bool is = m_pTargetStat->Is_Groggy();
+		
+		if (is)
+		{
+			if (!m_isBossGroggyTrigger)
+			{
+				m_pGameInstance->Broadcast<BOSS_GROGGY>();
+			}
+		}
+		else
+		{
+			if (m_isBossGroggyTrigger)
+			{
+				m_isBossGroggyTrigger = false;
+			}
+		}
+	}
+}
+
 void CUIBossStat_Progress::Initialize_Visible_Event()
 {
 	m_isActive		= false;
@@ -180,11 +204,11 @@ HRESULT CUIBossStat_Progress::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
-	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
 
+	m_pTargetStat = static_cast<CStatCom_Boss*>(pDesc->pTarget->Get_Component<CMyStat>());
 	if (nullptr == m_pTargetStat)
 		return E_FAIL;
-	/* º¸½º ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
+
 	m_isSpawned = true;
 	m_fProgress_Ratio = 0.f;
 	m_vOriginColorTint = m_vColorTint;
@@ -204,15 +228,6 @@ HRESULT CUIBossStat_Progress::Despawn_FromPool()
 
 HRESULT CUIBossStat_Progress::Convert_Stat_To_Ratio()
 {
-	if (KEY_BUTTON_DOWN(DIK_6))
-	{
-		m_fCurRatio = 1.f;
-	}
-	if (KEY_BUTTON_DOWN(DIK_7))
-	{
-		m_fCurRatio = 0.f;
-	}
-
 	switch (m_eSubClassType)
 	{
 	case DTO::EUISubClassType::BOSS_STAT_BEGIN:
@@ -221,7 +236,7 @@ HRESULT CUIBossStat_Progress::Convert_Stat_To_Ratio()
 		m_fCurRatio = m_pTargetStat->Get_HealthRatio();
 		break;
 	case DTO::EUISubClassType::BOSS_STAT_ARMOR_PROGRESS:
-		m_fCurRatio = m_pTargetStat->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
+		m_fCurRatio = m_pTargetStat->Get_CurrentGRoggyRatio();
 		break;
 	case DTO::EUISubClassType::BOSS_STAT_END:
 		break;

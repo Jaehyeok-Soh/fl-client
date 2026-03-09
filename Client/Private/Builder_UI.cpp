@@ -426,7 +426,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.iLevelIndex			= m_iLevelID;
 	Desc.iRectTransformType		= data.iRectTransformType;
 	Desc.fWidth					= data.fWidth * m_vAspect.x;
-	Desc.fHeight				= data.fHeight * m_vAspect.x;
+	Desc.fHeight				= data.fHeight * m_vAspect.y;
 	Desc.fX						= data.fPosX * m_vAspect.x;
 	Desc.fY						= data.fPosY * m_vAspect.y;
 	Desc.fZ						= data.fPosZ;
@@ -450,7 +450,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.iFillDir				= data.iFillDir;
 	Desc.fAlpha					= data.fAlphaRatio;
 	Desc.iFlip					= data.iFlip;
-
+	Desc.pCanvasCache			= m_pCanvasCache;
 	return Desc;
 }
 

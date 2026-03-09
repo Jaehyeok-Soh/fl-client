@@ -151,36 +151,11 @@ void CLevel_Test::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-	//if (KEY_BUTTON_DOWN(DIK_8))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_7))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	Desc.DamageFontData.iDamage = 10;
-	//	Desc.DamageFontData.vHitPos = Vec3{0.f, 0.f, 0.f};
-	//	Desc.DamageFontData.vFontColor = Vec4{ 1.f, 1.f,1.f, 1.f };
-
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}
-	if (KEY_BUTTON_DOWN(DIK_5))
+	if (KEY_BUTTON_DOWN(DIK_8))
 	{
-		m_pGameInstance->Broadcast<ACTION1>();
+		UI_PREFAB_DATA Desc = {};
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
 	}
-	if (KEY_BUTTON_DOWN(DIK_6))
-	{
-		m_pGameInstance->Broadcast<ACTION2>();
-	}
-	if (KEY_BUTTON_DOWN(DIK_7))
-	{
-		m_pGameInstance->Broadcast<BOSS_GROGGY>();
-	}
-	//if (KEY_BUTTON_DOWN(DIK_8))
-	//{
-	//	m_pGameInstance->Broadcast<ACTION4>();
-	//}
 }
 
 HRESULT CLevel_Test::Render()

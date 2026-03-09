@@ -667,6 +667,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\08.Weakness Text">
       <UniqueIdentifier>{8314a147-ec5a-4438-b2ae-0e6b8f79b1de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial">
+      <UniqueIdentifier>{c872efb2-4f85-4d3d-a9a3-efd1ddb268ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text">
+      <UniqueIdentifier>{de480108-e7f3-4f29-830a-0536a69ac532}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1234,6 +1240,12 @@
     <ClInclude Include="..\Public\UIWeakness_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_Pannel_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_Pannel_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1789,6 +1801,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIWeakness_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_Pannel_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_Pannel_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
