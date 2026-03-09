@@ -97,6 +97,8 @@ HRESULT CGenericUI::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
+	m_vMoveOffsetBase = m_vMoveOffset;
+
 	return S_OK;
 }
 
@@ -105,7 +107,6 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	m_vMoveOffsetBase = m_vMoveOffset;
 	m_fBrightness = 1.f;
 	m_iInteractState = static_cast<uint32_t>(EUIInteract_Flag::NONE);
 

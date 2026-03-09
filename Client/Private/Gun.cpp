@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "CameraMan.h"
 #include "PhysicsAttackRaycast.h"
+#include "Client_EventDefine.h"
 
 CGun::CGun(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pDevice, pDeviceContext, Weapon_Type::GUN)
@@ -100,6 +101,8 @@ void CGun::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* p
 void CGun::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+
+	m_pGameInstance->Broadcast<GUN_ON_HIT>();
 }
 
 void CGun::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
