@@ -194,7 +194,8 @@ void CUITutorial_Pannel_Image::Initialize_Visible_Event()
 		Ready_Fade(1.f, 0.f, 0.6f, 1.f);
 		break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_ICON:		// ? 아이콘
-		Ready_Lerp_Movement(Vec2{ 0.f, 235.5 }, Vec2{ 0.f, 0.f }, 1.5f, 3.f, m_fDelay, true);
+		Ready_Lerp_Movement(Vec2{ 0.f, 235.5 }, Vec2{ 0.f, 0.f }, 1.5f, 3.f, 0.5f, true);
+		Ready_LerpChange(0.3f, 2.f, 1.f, 1.f, 0.f);
 		break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_ICON:			// 설명 이미지
 		Ready_Fade(1.f, 0.f, 1.f, 1.f);
@@ -260,8 +261,8 @@ _bool CUITutorial_Pannel_Image::Tick_Visible_Event(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_ICON:		// ? 아이콘
 	{
 		_bool is = Tick_Lerp_Movement(fTimeDelta);
-
-		if (is)
+		_bool isScale = Tick_LerpChange(&m_fScale, fTimeDelta);
+		if (is && isScale)
 		{
 			m_isFin_Event = true;
 			m_isActive = true;

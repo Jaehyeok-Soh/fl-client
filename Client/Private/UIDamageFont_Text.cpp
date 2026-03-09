@@ -251,10 +251,7 @@ _bool CUIDamageFont_Text::Tick_Visible_Event(const _float fTimeDelta)
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
 	{
 		m_fDamageFont_TimeAcc += fTimeDelta;
-		CLOG_INFO(std::to_wstring(m_fDamageFont_TimeAcc));
-
 		_float t = m_fDamageFont_TimeAcc / 0.1f;
-
 		if (t >= 1.f)
 		{
 			Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -30.f }, DESTROY_TIME, 3.f, m_fDelay);

@@ -22,8 +22,6 @@
 #include"UI_Manager.h"
 #include "GameInstance.h"
 
-#define EDITOR_Y_SIZE 1080
-
 CBuilder_UIPrefabs::CBuilder_UIPrefabs(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 	:Super(pDevice, pDeviceContext, iLevelID)
 {
@@ -99,7 +97,7 @@ HRESULT CBuilder_UIPrefabs::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	Desc.iLevelIndex		= data.iLevelIndex;
 	Desc.strName			= data.strTag;
 	m_vAspect.x				= (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
-	m_vAspect.y				= (_float)g_iWinSizeY / EDITOR_Y_SIZE;
+	m_vAspect.y				= (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
 	Desc.fX					= data.fPosX * m_vAspect.x;
 	Desc.fY					= data.fPosY * m_vAspect.y;
 	Desc.fZ					= data.fPosZ;
