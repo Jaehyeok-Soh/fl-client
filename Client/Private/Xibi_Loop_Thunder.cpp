@@ -113,8 +113,9 @@ HRESULT CXibi_Loop_Thunder::Ready_Modules()
 		colliderDesc.bIsTrigger = true;
 		colliderDesc.bSetOnlyFilter = false;
 		colliderDesc.bIsActive = true;
-		colliderDesc.fRadius = 0.5f;
-		colliderDesc.strAttackPresetTag = "Xibi_Circle";
+		colliderDesc.vCenter = { 0.f, 2.3f, 0.f };
+		colliderDesc.vExtents = { 0.3f, 4.f,0.3f };
+		colliderDesc.strAttackPresetTag = "Xibi_Thunder";
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 		colliderDesc.tMaterial = mtrlDesc;
@@ -128,7 +129,7 @@ HRESULT CXibi_Loop_Thunder::Ready_Modules()
 		// IMPACT
 		{
 			if (FAILED(Add_CollideModule(
-				ENUM_TO_UINT(EState::IMPACT),
+				ENUM_TO_UINT(EState::FLY),
 				&colliderDesc,
 				&rigidbodyDesc)))
 				return E_FAIL;

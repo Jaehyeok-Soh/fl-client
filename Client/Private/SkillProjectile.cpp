@@ -1,5 +1,7 @@
 #include "pch.h"
+#include "Transform.h"
 #include "SkillProjectile.h"
+#include "ColliderModule.h"
 #include "EffectBase.h"
 #include "GameInstance.h"
 
@@ -125,15 +127,6 @@ void CSkillProjectile::On_StateExit(_uint iState)
 	case EState::IMPACT:
 		break;
 	}
-}
-
-void CSkillProjectile::On_ColliderModuleEnter(CGameObject* pModule)
-{
-
-}
-
-void CSkillProjectile::On_ColliderModuleExit(Engine::CGameObject* pModule)
-{
 }
 
 void CSkillProjectile::On_LifeOver()

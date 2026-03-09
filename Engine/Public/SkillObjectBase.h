@@ -68,7 +68,7 @@ protected:
 	// 파생을 위해 래핑
 	virtual void Start_HybridState(_uint iState) final override { On_StateEnter(iState); }
 	virtual void End_HybridState(_uint iState) final override { On_StateExit(iState); }
-	virtual void On_ModuleEnter(EHybridModuleType eType, CGameObject* pModule, void *pArg = nullptr) final override;
+	virtual void On_ModuleEnter(EHybridModuleType eType, CGameObject* pModule) final override;
 	virtual void On_ModuleExit(EHybridModuleType eType, CGameObject* pModule) final override;
 	
 	/////////////////////////////////
@@ -83,7 +83,8 @@ protected:
 	virtual void On_StateEnter(_uint iState) {}
 	virtual void On_StateExit(_uint iState) {}
 	// Effect 모듈의 Enter / Exit
-	virtual void On_EffectModuleEnter(CGameObject* pModule, void* pArg = nullptr);
+	// Effect의경우 Desc를 Enable할때마다 전달해야 하므로 해당 초기화값을 이펙트 투사체마다 정의
+	virtual void On_EffectModuleEnter(CGameObject* pModule);
 	virtual void On_EffectModuleExit(CGameObject* pModule);
 	// Collider 모듈의 Enter / Exit
 	virtual void On_ColliderModuleEnter(CGameObject* pModule);
@@ -119,6 +120,8 @@ protected:
 	_uint m_iFlag{ 0 };
 	SKILLOBJECT_SPAWN_DESC m_tDesc{};
 	SKILLOBJECT_RUNTIMEDESC m_tRuntimeDesc{};
+	EFFECT_SPAWN_DESC m_tDefaultEffectDesc{};
+	const Matrix* m_pMyMatrix{ nullptr };
 };
 
 NS_END

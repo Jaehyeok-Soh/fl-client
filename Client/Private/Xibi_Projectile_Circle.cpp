@@ -74,20 +74,6 @@ HRESULT CXibi_Projectile_Circle::Render()
 	return S_OK;
 }
 
-void CXibi_Projectile_Circle::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-
-}
-
-void CXibi_Projectile_Circle::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
-{
-
-}
-
-void CXibi_Projectile_Circle::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
 _bool CXibi_Projectile_Circle::On_Hit(const HIT_DESC& hitDesc)
 {
 	return true;
@@ -118,7 +104,7 @@ HRESULT CXibi_Projectile_Circle::Ready_Moduels()
 				0 /* static */,
 				"Boss_Xibi_Bullet_Dead",
 				wstrDefaultPrototypeTag,
-				ENUM_TO_UINT(EState::FLY))))
+				ENUM_TO_UINT(EState::IMPACT))))
 				return E_FAIL;
 		}
 	}
@@ -136,7 +122,7 @@ HRESULT CXibi_Projectile_Circle::Ready_Moduels()
 		colliderDesc.bIsTrigger = true;
 		colliderDesc.bSetOnlyFilter = false;
 		colliderDesc.bIsActive = true;
-		colliderDesc.fRadius = 0.5f;
+		colliderDesc.fRadius = 0.3f;
 		colliderDesc.strAttackPresetTag = "Xibi_Circle";
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;

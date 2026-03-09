@@ -30,6 +30,9 @@ HRESULT CSkillObjectBase::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_pMyMatrix = Get_Component<CTransform>()->Get_WorldMatrixPtr();
+	m_tDefaultEffectDesc.pTransformMatrix = &m_pMyMatrix;
+	m_tDefaultEffectDesc.iSimulationType = ENUM_TO_UINT(EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_LOCAL);
 	return S_OK;
 }
 
@@ -76,10 +79,10 @@ HRESULT CSkillObjectBase::Despawn_FromPool()
 	return S_OK;
 }
 
-void CSkillObjectBase::On_EffectModuleEnter(CGameObject* pModule, void* pArg)
+void CSkillObjectBase::On_EffectModuleEnter(CGameObject* pModule)
 {
 	if (CEffectBase* pEffect = dynamic_cast<CEffectBase*>(pModule))
-		pEffect->Enable_VFX(pArg);
+		pEffect->Enable_VFX(&m_tDefaultEffectDesc);
 }
 
 void CSkillObjectBase::On_EffectModuleExit(CGameObject* pModule)
@@ -91,7 +94,7 @@ void CSkillObjectBase::On_EffectModuleExit(CGameObject* pModule)
 void CSkillObjectBase::On_ColliderModuleEnter(CGameObject* pModule)
 {
 	if (CColliderModule* pCollider = dynamic_cast<CColliderModule*>(pModule))
-		pCollider->Enable();
+		pCollider->Enable(this);
 }
 
 void CSkillObjectBase::On_ColliderModuleExit(CGameObject* pModule)
@@ -100,23 +103,22 @@ void CSkillObjectBase::On_ColliderModuleExit(CGameObject* pModule)
 		pCollider->Disable();
 }
 
-void CSkillObjectBase::On_ModuleEnter(EHybridModuleType eType, CGameObject* pModule, void* pArg)
+void CSkillObjectBase::On_ModuleEnter(EHybridModuleType eType, CGameObject* pModule)
 {
-	// ÆÄ»ý ÈÅ
-	Sync_ModuleWorldToOwner(pModule);
-
 	switch (eType)
 	{
 	case EHybridModuleType::EFFECT:
+		//Sync_ModuleWorldToOwner(pModule);
 		Compute_Rotate(pModule);
-		On_EffectModuleEnter(pModule, pArg);
+		On_EffectModuleEnter(pModule);
 		break;
 	case EHybridModuleType::COLLIDER:
 		On_ColliderModuleEnter(pModule);
+		//Sync_ModuleWorldToOwner(pModule);
 		break;
 	default:
 		break;
-	}
+	}	
 }
 
 void CSkillObjectBase::On_ModuleExit(EHybridModuleType eType, CGameObject* pModule)

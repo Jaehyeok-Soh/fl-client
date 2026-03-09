@@ -1174,7 +1174,7 @@ HRESULT CLoader::Ready_Spawner()
 		desc.wstrSkillPoolTag = g_wszPool_MoonSkillE; // 스킬 poot에서 꺼내올 오브젝트 태그
 		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
 		desc.fLifeTime = 3.5f;
-		//desc.fSpeed = 50.f;
+		desc.fSpeed = 20.f;
 
 		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillE,
 			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))

@@ -68,7 +68,7 @@ protected:
 	
 	// 초기화
 	// "모듈" 전환시 - 타입별 restart / reset을 처리
-	virtual void On_ModuleEnter(EHybridModuleType eType, CGameObject* pModule, void* pArg = nullptr) PURE;
+	virtual void On_ModuleEnter(EHybridModuleType eType, CGameObject* pModule) PURE;
 	virtual void On_ModuleExit(EHybridModuleType eType, CGameObject* pModule) PURE;	
 
 private:

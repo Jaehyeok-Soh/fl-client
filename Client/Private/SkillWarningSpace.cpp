@@ -132,7 +132,7 @@ void CSkillWarningSpace::On_StateExit(_uint iState)
 	}
 }
 
-void CSkillWarningSpace::On_EffectModuleEnter(CGameObject* pModule, void* pArg)
+void CSkillWarningSpace::On_EffectModuleEnter(CGameObject* pModule)
 {
 	if (pModule == nullptr)
 		return;
@@ -146,26 +146,7 @@ void CSkillWarningSpace::On_EffectModuleEnter(CGameObject* pModule, void* pArg)
 		}
 	}
 
-
-	if (CEffectBase* pEffect = dynamic_cast<Engine::CEffectBase*>(pModule))
-		pEffect->Enable_VFX(nullptr);
-}
-
-void CSkillWarningSpace::On_EffectModuleExit(CGameObject* pModule)
-{
-	if (pModule == nullptr)
-		return;
-
-	if (CEffectBase* pEffect = dynamic_cast<CEffectBase*>(pModule))
-		pEffect->Disable_VFX();
-}
-
-void CSkillWarningSpace::On_ColliderModuleEnter(CGameObject* pModule)
-{
-}
-
-void CSkillWarningSpace::On_ColliderModuleExit(CGameObject* pModule)
-{
+	static_cast<Engine::CEffectBase*>(pModule)->Enable_VFX(&m_tDefaultEffectDesc);
 }
 
 CSkillWarningSpace* CSkillWarningSpace::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -193,9 +174,10 @@ Engine::CGameObject* CSkillWarningSpace::Clone(void* pArg)
 void CSkillWarningSpace::Build_WarningDesc()
 {
 	m_tWarnDesc = {};
+	m_tDesc.vSpawnPos.y += 0.01f;
 	m_tWarnDesc.VFX_Target_Position = m_tDesc.vSpawnPos;
-	m_tWarnDesc.VFX_Scale = m_tDesc.vScale;
-	m_tWarnDesc.iSimulationType = 0;
+	m_tWarnDesc.VFX_Scale = Vec3::One;
+	m_tWarnDesc.iSimulationType = ENUM_TO_UINT(EFFECT_WARNING_DESC::E_VFX_SIMULTYPE::VFX_WORLD);
 }
 
 void CSkillWarningSpace::Free()

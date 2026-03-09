@@ -33,10 +33,7 @@ protected:
 
 	virtual void On_StateEnter(_uint iState) override;
 	virtual void On_StateExit(_uint iState) override;
-	virtual void On_EffectModuleEnter(CGameObject* pModule, void *pArg) override;
-	virtual void On_EffectModuleExit(CGameObject* pModule) override;
-	virtual void On_ColliderModuleEnter(CGameObject* pModule) override;
-	virtual void On_ColliderModuleExit(CGameObject* pModule) override;
+	virtual void On_EffectModuleEnter(CGameObject* pModule) override;
 protected:
 	void Build_WarningDesc();
 protected:

@@ -33,10 +33,6 @@ protected:
     virtual void On_StateEnter(_uint iState) override;
     virtual void On_StateExit(_uint iState) override;
 
-    // 모듈 Enter / Exit
-    virtual void On_ColliderModuleEnter(::CGameObject* pModule) override;
-    virtual void On_ColliderModuleExit(CGameObject* pModule) override;
-
     // 수명이 끝났을때 처리 파생에서 정의
     virtual void On_LifeOver() final override;
 

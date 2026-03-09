@@ -179,6 +179,7 @@ HRESULT CHybridGameObjectBase::Add_CollideModule(_uint iState, PHYSICSCOLLIDER_D
 	CColliderModule::COLLIDERMODULE_COPY_DESC desc{};
 	desc.pPhysicsColliderDesc = colliderDesc;
 	desc.pPhysicsRigidbodyDesc = rigidbodyDesc;
+	desc.pOwner = this;
 
 	CBase* pBase = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
 		/*static*/0,
@@ -252,7 +253,11 @@ void CHybridGameObjectBase::Enable_Module(EHybridModuleType eType, CGameObject* 
 	case Engine::EHybridModuleType::COLLIDER:
 	{
 		pModule->Set_Active(true);
+#ifdef _DEBUG
+		pModule->Set_Render(true);
+#else
 		pModule->Set_Render(false);
+#endif
 		pModule->Set_CollideEnabled(true);
 	} break;
 	default:
