@@ -11,6 +11,7 @@ class CCanvas;
 class CGenericUI;
 class CUITrigger;
 class CUIPrefab;
+class CUITutorial_Manager;
 
 enum class EUIEventID {
 	MENU_ENTER_ICON_HOVER_ENTER, 
@@ -45,6 +46,9 @@ private:
 	CUI_Manager();
 	virtual ~CUI_Manager() = default;
 public:
+	HRESULT Initialize_UIManager();
+
+public:
 	HRESULT Regist_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag,const _uint iPrototypeLevel, void* pArg, _uint iNumPrefab);
 	void Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, _uint iSpawnLevel, void* pArg);
 public:
@@ -59,6 +63,9 @@ private:
 	array<_wstring, ENUM_TO_UINT(EUIPrefabType::END)> m_vecPrefabs;
 
 	CMulticastDelegate<void(const UIEVENT_DESC&)> m_vEvents = {};
+
+private:
+	CUITutorial_Manager* m_pTutorialManager = { nullptr };
 
 private:
 	// UI 전달 변수 

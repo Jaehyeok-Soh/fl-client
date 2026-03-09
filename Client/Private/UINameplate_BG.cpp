@@ -185,21 +185,24 @@ HRESULT CUINameplate_BG::Spawn_FromPool(void* pArg)
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 
-	auto* pComp = Get_Script_Component(L"WorldUIComponent");
-	if (nullptr == pComp)
-		return E_FAIL;
+	if (auto* pNamePlate = std::get_if<UI_NAMEPLATE_PREFAB_DATA>(&pDesc->Data))
+	{
+		auto* pComp = Get_Script_Component(L"WorldUIComponent");
+		if (nullptr == pComp)
+			return E_FAIL;
 
-	m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
-	if (nullptr == m_pWorldUIComp)
-		return E_FAIL;
+		m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
+		if (nullptr == m_pWorldUIComp)
+			return E_FAIL;
 
-	m_pWorldUIComp->Set_Target(pDesc->pTarget);
-	m_pWorldUIComp->Set_TargetWorldOffset(pDesc->NamePlateData.vOffset);
-	m_pTargetMoster = pDesc->pTarget;
-	/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
+		m_pWorldUIComp->Set_Target(pNamePlate->pTarget);
+		m_pWorldUIComp->Set_TargetWorldOffset(pNamePlate->vOffset);
+		m_pTargetMoster = pNamePlate->pTarget;
+		/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
 	
-	m_isSpawned = true;
-	m_isDeadRequest = false;
+		m_isSpawned = true;
+		m_isDeadRequest = false;
+	}
 	return S_OK;
 }
 

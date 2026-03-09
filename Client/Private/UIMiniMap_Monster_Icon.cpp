@@ -164,13 +164,16 @@ void CUIMiniMap_Monster_Icon::Convert_Count_To_Rank()
 
 HRESULT CUIMiniMap_Monster_Icon::Spawn_FromPool(void* pArg)
 {
-	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
-	m_pTarget = pDesc->pTarget;
-	if (nullptr == m_pTarget)
-		return E_FAIL;
-
 	if (FAILED(Super::Spawn_FromPool(pArg)))
-		return E_FAIL;
+		return E_FAIL; 
+
+	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+	if (auto* pMinimapMonster = std::get_if<UI_MINIMAP_MONSTER_ICON_PREFAB_DATA>(&pDesc->Data))
+	{
+		m_pTarget = pMinimapMonster->pTarget;
+		if (nullptr == m_pTarget)
+			return E_FAIL;
+	}
 
 	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
 	if (nullptr == pResult)

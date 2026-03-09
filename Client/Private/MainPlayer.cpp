@@ -328,15 +328,17 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
         // Hit 데미지 폰트 // 색 변경은 가능 //
         {
             UI_PREFAB_DATA tPrefabData = {};
-            tPrefabData.DamageFontData.iDamage = static_cast<_uint>(fDamage);
+            UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+            Desc.iDamage = static_cast<_uint>(fDamage);
             if (hitDesc.bHasHitPoint)
-                tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
+                Desc.vHitPos = hitDesc.vHitPoint;
             else
             {
-                tPrefabData.DamageFontData.vHitPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-                tPrefabData.DamageFontData.vHitPos.y += 0.4f;
+                Desc.vHitPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+                Desc.vHitPos.y += 0.4f;
             }
                 
+            tPrefabData.Data = Desc;
             CUI_Manager::GetInstance()->Request_Add_Prefab(
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
         }
@@ -381,14 +383,15 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     {
         // 일반 공격 데미지 폰트
         UI_PREFAB_DATA tPrefabData = {};
-        tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-        tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
-        tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
-        tPrefabData.DamageFontData.vRandOffset = Vec3{
+        UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+        Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+        Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
+        Desc.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
+        Desc.vRandOffset = Vec3{
             m_pGameInstance->Rand_Float(-1.f, 1.f),
             m_pGameInstance->Rand_Float(-1.f, 1.f),
             m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
-
+        tPrefabData.Data = Desc;
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }
@@ -396,14 +399,16 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     else if(Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
     {
         UI_PREFAB_DATA tPrefabData = {};
-        tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);
-        tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };
-        tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
-        tPrefabData.DamageFontData.vRandOffset = Vec3{
+        UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+        Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);
+        Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };
+        Desc.vHitPos = hitDesc.vHitPoint;
+        Desc.vRandOffset = Vec3{
             m_pGameInstance->Rand_Float(-1.f, 1.f),
             m_pGameInstance->Rand_Float(-1.f, 1.f),
             m_pGameInstance->Rand_Float(-1.f, 1.f)
         };
+        tPrefabData.Data = Desc;
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }

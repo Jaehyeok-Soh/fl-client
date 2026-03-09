@@ -72,7 +72,9 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 
 	{
 		UI_PREFAB_DATA ePrefabData = {};
-		ePrefabData.pTarget = this;
+		UI_BOSS_NAMEPLATE_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		ePrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
 	}
 	return S_OK;

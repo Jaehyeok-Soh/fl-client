@@ -409,23 +409,47 @@ namespace Client
 
 	typedef struct tagUINamePlatePrefabData
 	{
+		CGameObject* pTarget = { nullptr };
 		Vec3 vOffset = {};
-	}UI_NAMEPLATE_PREFAB_DATA;
+	} UI_NAMEPLATE_PREFAB_DATA;
 
 	typedef struct tagUIDamageFontPrefabData
 	{
-		Vec4	vFontColor = {};
-		Vec3	vHitPos = {};
-		_uint	iDamage = {};
-		Vec3	vRandOffset = {};
-	}UI_DAMAGEFONT_PREFAB_DATA;
+		CGameObject* pTarget = { nullptr };
+		Vec4 vFontColor = {};
+		Vec3 vHitPos = {};
+		_uint iDamage = {};
+		Vec3 vRandOffset = {};
+	} UI_DAMAGEFONT_PREFAB_DATA;
+
+	typedef struct tagUIBossNamePlatePrefabData
+	{
+		CGameObject* pTarget = { nullptr };
+	} UI_BOSS_NAMEPLATE_PREFAB_DATA;
+
+	typedef struct tagUIMinimapMonsterIconPrefabData
+	{
+		CGameObject* pTarget = { nullptr };
+	} UI_MINIMAP_MONSTER_ICON_PREFAB_DATA;
+
+	typedef struct tagUITutorialPannelPrefabData
+	{
+	} UI_TUTORIAL_PANNEL_PREFAB_DATA;
+
+	typedef std::variant<
+		UI_NAMEPLATE_PREFAB_DATA,
+		UI_DAMAGEFONT_PREFAB_DATA,
+		UI_BOSS_NAMEPLATE_PREFAB_DATA,
+		UI_MINIMAP_MONSTER_ICON_PREFAB_DATA,
+		UI_TUTORIAL_PANNEL_PREFAB_DATA
+	> UI_PREFAB_VARIANT;
 
 	typedef struct tagUIPrefabData
 	{
-		CGameObject* pTarget = { nullptr };
-		UI_NAMEPLATE_PREFAB_DATA NamePlateData = {};
-		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
-	}UI_PREFAB_DATA;
+		UI_PREFAB_VARIANT Data;
+	} UI_PREFAB_DATA;
+
+
 
 	enum class ECombotype {
 		C, 

@@ -4,6 +4,9 @@
 #include "Engine_Utils.h"
 #include "Canvas.h"
 #include "GenericUI.h"
+
+#include "UITutorial_Manager.h"
+
 #include "GameInstance.h"
 
 NS_BEGIN(Client)
@@ -13,6 +16,18 @@ CUI_Manager::CUI_Manager()
 	:m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
+}
+
+HRESULT CUI_Manager::Initialize_UIManager()
+{
+	m_pTutorialManager = CUITutorial_Manager::Create();
+	if (nullptr == m_pTutorialManager)
+	{
+		MSG_BOX("CUI_Manager::Initialize_UIManager, CUITutorial_Manager::Create Failed");
+		return E_FAIL;
+	}
+
+	return S_OK;
 }
 
 HRESULT CUI_Manager::Regist_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag, const _uint iPrototypeLevel, void* pArg, _uint iNumPrefab)
@@ -113,6 +128,7 @@ void CUI_Manager::Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePref
 
 void CUI_Manager::Free()
 {
+	Safe_Release(m_pTutorialManager);
 	Safe_Release(m_pGameInstance);
 }
 
