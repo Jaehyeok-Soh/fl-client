@@ -111,31 +111,31 @@ HRESULT CUIBossAction_Text::Attach_Personal_Info()
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:
-		m_pGameInstance->Subscribe<ACTION3>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
 			{
 				this->Set_Visible();
 			});
-		m_pGameInstance->Subscribe<ACTION4>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
 			{
 				this->Set_Invisible();
 			});
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:
-		m_pGameInstance->Subscribe<ACTION3>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
 			{
 				this->Set_Visible();
 			});
-		m_pGameInstance->Subscribe<ACTION4>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
 			{
 				this->Set_Invisible();
 			});
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:
-		m_pGameInstance->Subscribe<ACTION3>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
 			{
 				this->Set_Visible();
 			});
-		m_pGameInstance->Subscribe<ACTION4>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
 			{
 				this->Set_Invisible();
 			});

@@ -197,7 +197,7 @@ void CUIBossAction_Image::Initialize_InVisible_Event()
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
 		Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -100.f }, 1.f, 0.7f, m_fDelay);
-		m_pGameInstance->Broadcast<BOSS_STAGING_EVENT_END>();
+		m_pGameInstance->Broadcast<XIBILA_BOSS_UI_OFF>();
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
 		Ready_Lerp_Movement(Vec2{ 0.f, 0.f}, Vec2{ 0.f, 100.f }, 1.f, 0.7f, m_fDelay);

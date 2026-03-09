@@ -126,11 +126,11 @@ HRESULT CUIBossStat_Progress::Bind_ShaderResources()
 
 HRESULT CUIBossStat_Progress::Attach_Personal_Info()
 {
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]()
+	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_ON>([this]()
 		{
 			this->Set_Visible();
 		});
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]()
+	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_OFF>([this]()
 		{
 			this->Set_Invisible();
 		});

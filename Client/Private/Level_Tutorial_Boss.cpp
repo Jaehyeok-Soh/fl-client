@@ -551,18 +551,6 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-	if (KEY_BUTTON_DOWN(DIK_5))
-	{
-		m_pGameInstance->Broadcast<ACTION1>();
-	}
-	if (KEY_BUTTON_DOWN(DIK_6))
-	{
-		m_pGameInstance->Broadcast<ACTION2>();
-	}
-	if (KEY_BUTTON_DOWN(DIK_7))
-	{
-		m_pGameInstance->Broadcast<BOSS_GROGGY>();
-	}
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

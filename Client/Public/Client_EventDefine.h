@@ -34,8 +34,8 @@ struct CINEMATIC_END { using Signature = void(); }; // UI 위 아래 들어가는 연출
 struct XIBILA_BOSS_ACTION_ON { using Signature = void(); }; // UI 보스 이름 띄우기
 struct XIBILA_BOSS_ACTION_OFF { using Signature = void(); }; // UI 보스 이름 넣기
 
-struct BOSS_STAGING_EVENT_START	{ using Signature = void(); };
-struct BOSS_STAGING_EVENT_END	{ using Signature = void(); };
+struct XIBILA_BOSS_UI_ON { using Signature = void(); };
+struct XIBILA_BOSS_UI_OFF { using Signature = void(); };
 
 struct BOSS_GROGGY { using Signature = void(); }; // 약점 노출
 
