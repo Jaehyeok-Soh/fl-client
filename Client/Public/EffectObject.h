@@ -75,6 +75,7 @@ private:
     float Sample_RotationCurve(const vector<DTO::Rotation_CurveKey>& vecCurve, float fLifeRatio);
     void Update_Rotation_Lerp(float fDT, float fRatio);
     void Update_UV_Scroll_Curve(float fRatio);
+    void Apply_Scaling_Dynamics(const _float fRatio);
 
 public:
     void TimeFlagRequest(_uint iTimeFlag);
