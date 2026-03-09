@@ -65,7 +65,7 @@ protected:
 	EFontPivotType m_ePivot = { EFontPivotType::CENTER };
 	_float m_fFontRotate	= {};
 
-	_float m_fScaleOffset = {1.f};
+	_float m_fScaleOffset = { 1.f };
 
 private:
 	// Fade Text Values

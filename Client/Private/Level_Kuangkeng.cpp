@@ -139,23 +139,6 @@ void CLevel_Kuangkeng::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-
-	if (KEY_BUTTON_DOWN(DIK_8))
-	{
-		UI_PREFAB_DATA Desc = {};
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::KUANGKENG), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::KUANGKENG), &Desc);
-	}
-
-	if (KEY_BUTTON_DOWN(DIK_7))
-	{
-		UI_PREFAB_DATA Desc = {};
-		Desc.DamageFontData.iDamage = 10;
-		Desc.DamageFontData.vHitPos = Vec3{0.f, 0.f, 0.f};
-		Desc.DamageFontData.vFontColor = Vec4{ 1.f, 1.f,1.f, 1.f };
-
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::KUANGKENG), EUIPrefabType::DAMAGE_FONTS_CRITICAL, ENUM_TO_UINT(ELevelType::KUANGKENG), &Desc);
-	}
-
 }
 
 HRESULT CLevel_Kuangkeng::Render()

@@ -164,20 +164,20 @@ void CUIAimDot_Image::Bind_Events()
 	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
+		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<CINEMATIC_END>([this]() { this->Set_Visible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
-		m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
 		break;

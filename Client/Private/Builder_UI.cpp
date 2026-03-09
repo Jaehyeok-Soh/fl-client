@@ -16,6 +16,7 @@
 #include "UIMonsterStat_Text.h"
 #include "UICombo_Text.h"
 #include "UIBossAction_Text.h"
+#include "UIWeakness_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -28,6 +29,7 @@
 #include "UILevelChange_Image.h"
 #include "UICombo_Image.h"
 #include "UIBossAction_Image.h"
+#include "UIWeakness_Image.h"
 
 #include "WorldUI_Component.h"
 
@@ -226,6 +228,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isMonsterNameplate	= (Type >= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_END);
 		const _bool isCombo				= (Type >= DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_END);
 		const _bool isBossCivila		= (Type >= DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN && Type <= DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_END);
+		const _bool isWeakness		= (Type >= DTO::EUITextSubClassType::BATTLE_WEAKNESS_BEGIN && Type <= DTO::EUITextSubClassType::BSTTLE_WEAKNESS_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -269,6 +272,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(BossActionTextDesc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossActionText", m_iLevelID, g_wszUILayer, &BossActionTextDesc);
 		}
+		else if (isWeakness)
+		{
+			CUIWeakness_Text::WEAKNESS_TEXT_DESC WeaknessTextDesc= {};
+			static_cast<CUIText::UI_TEXT_DESC&>(WeaknessTextDesc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WeaknessText", m_iLevelID, g_wszUILayer, &WeaknessTextDesc);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -306,6 +315,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isLevelChange		= (Type >= DTO::EUIDImageSubClassType::LEVEL_CHAGE_1		&& Type <= DTO::EUIDImageSubClassType::LEVEL_CHAGE_7);
 		const _bool isCombo				= (Type >= DTO::EUIDImageSubClassType::BATTLE_COMBO_BEGIN	&& Type <= DTO::EUIDImageSubClassType::BATTLE_COMBO_END);
 		const _bool isBossCivila		= (Type >= DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN && Type <= DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END);
+		const _bool isWeakness		= (Type >= DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN && Type <= DTO::EUIDImageSubClassType::BSTTLE_WEAKNESS_END);
 
 		if (isPlayerSkill)
 		{
@@ -379,6 +389,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			BossActionImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossActionImage", m_iLevelID, g_wszUILayer, &BossActionImageDesc);
 		}
+		else if (isWeakness)
+		{
+			CUIWeakness_Image::WEAKNESS_IMAGE_DESC WeaknessImageDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(WeaknessImageDesc) = DefaultDesc;
+			WeaknessImageDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WeaknessImage", m_iLevelID, g_wszUILayer, &WeaknessImageDesc);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -409,7 +426,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.iLevelIndex			= m_iLevelID;
 	Desc.iRectTransformType		= data.iRectTransformType;
 	Desc.fWidth					= data.fWidth * m_vAspect.x;
-	Desc.fHeight				= data.fHeight * m_vAspect.x;
+	Desc.fHeight				= data.fHeight * m_vAspect.y;
 	Desc.fX						= data.fPosX * m_vAspect.x;
 	Desc.fY						= data.fPosY * m_vAspect.y;
 	Desc.fZ						= data.fPosZ;
@@ -433,7 +450,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.iFillDir				= data.iFillDir;
 	Desc.fAlpha					= data.fAlphaRatio;
 	Desc.iFlip					= data.iFlip;
-
+	Desc.pCanvasCache			= m_pCanvasCache;
 	return Desc;
 }
 

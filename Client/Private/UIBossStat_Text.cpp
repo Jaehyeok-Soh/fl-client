@@ -131,12 +131,12 @@ HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 
 void CUIBossStat_Text::Bind_Events()
 {
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>(
+	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_OFF>(
 		[this]() 
 		{
 			this->Set_Invisible();
 		});
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>(
+	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_ON>(
 		[this]()
 		{ 
 			this->Set_Visible(); 

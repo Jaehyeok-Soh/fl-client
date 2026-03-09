@@ -762,6 +762,7 @@ namespace Tool
 		DAMAGE_FONTS_HIT,
 		BOSS_NAMEPLATE,
 		MINIMAP_MONSTER_ICON,
+		TUTORIAL_PANNEL,
 		END
 	};
 
@@ -776,6 +777,7 @@ namespace Tool
 		case EUIPrefabType::DAMAGE_FONTS_HIT:		return "DAMAGE_FONTS_HIT";
 		case EUIPrefabType::BOSS_NAMEPLATE:			return "BOSS_NAMEPLATE";
 		case EUIPrefabType::MINIMAP_MONSTER_ICON:	return "MINIMAP_MONSTER_ICON";
+		case EUIPrefabType::TUTORIAL_PANNEL:		return "TUTORIAL_PANNEL";
 		case EUIPrefabType::END:					return "";
 		default: return "";
 		}

@@ -303,12 +303,12 @@ void CUIMini_Map::Bind_Events()
 			})
 	);
 
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>(
+	m_pGameInstance->Subscribe<CINEMATIC_START>(
 		[this]() 
 		{ 
 			this->Set_Invisible();
 		});
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() 
+	m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
 		{ 
 			this->Set_Visible(); 
 		});

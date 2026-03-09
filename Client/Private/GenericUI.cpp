@@ -97,7 +97,6 @@ HRESULT CGenericUI::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
-	Bind_Events();
 	return S_OK;
 }
 
@@ -109,6 +108,9 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	m_vMoveOffsetBase = m_vMoveOffset;
 	m_fBrightness = 1.f;
 	m_iInteractState = static_cast<uint32_t>(EUIInteract_Flag::NONE);
+
+	Bind_Events();
+
 	return S_OK;
 }
 
@@ -121,13 +123,6 @@ void CGenericUI::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	m_vRenderPos = Vec3{ m_vRectPos.x + m_vMoveOffset.x + m_fX, m_vRectPos.y + m_vMoveOffset.y + m_fY, m_fZ };
-	Move_Position(m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z);
-
-	m_tRenderRect.left		= static_cast<LONG>(m_vRenderPos.x - (m_fWidth * 0.5f));
-	m_tRenderRect.right		= static_cast<LONG>(m_vRenderPos.x + (m_fWidth * 0.5f));
-	m_tRenderRect.top		= static_cast<LONG>(m_vRenderPos.y - (m_fHeight * 0.5f));
-	m_tRenderRect.bottom	= static_cast<LONG>(m_vRenderPos.y + (m_fHeight * 0.5f));
 }
 
 void CGenericUI::Update_Late(const _float fTimeDelta)
@@ -143,6 +138,17 @@ void CGenericUI::Ready_Before_Render(const _float fTimeDelta)
 	{
 		Set_Position(Vec3{ m_pWorldUIComp->Get_TargetScreenPos().x + m_vMoveOffset.x , m_pWorldUIComp->Get_TargetScreenPos().y + m_vMoveOffset.y, m_fZ }) ;
 		Move_Size(m_fWidth * m_pWorldUIComp->Get_ScaleOffset(), m_fHeight * m_pWorldUIComp->Get_ScaleOffset());
+	}
+	else
+	{
+		m_vRenderPos = Vec3{ m_vRectPos.x + m_vMoveOffset.x + m_fX, m_vRectPos.y + m_vMoveOffset.y + m_fY, m_fZ };
+		Move_Position(m_vRenderPos.x, m_vRenderPos.y, m_vRenderPos.z);
+		Move_Size(m_fWidth * m_fScale, m_fHeight * m_fScale);
+
+		m_tRenderRect.left = static_cast<LONG>(m_vRenderPos.x - (m_fWidth * 0.5f));
+		m_tRenderRect.right = static_cast<LONG>(m_vRenderPos.x + (m_fWidth * 0.5f));
+		m_tRenderRect.top = static_cast<LONG>(m_vRenderPos.y - (m_fHeight * 0.5f));
+		m_tRenderRect.bottom = static_cast<LONG>(m_vRenderPos.y + (m_fHeight * 0.5f));
 	}
 
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::UI, this);
@@ -233,7 +239,7 @@ HRESULT CGenericUI::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay)
+void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay, _bool isEaseOut)
 {
 	m_fLerpMove_TimeAcc = 0.f;
 	m_fLerpMove_DelayTimeAcc = 0.f;
@@ -243,6 +249,7 @@ void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTarg
 	m_fLerpMove_Duration = fDuration;
 	m_fLerpMove_EaseValue = fEaseValue;
 	m_fLerpMove_Delay = fDelay;
+	m_isLerpMove_EaseOut = isEaseOut;
 }
 
 void CGenericUI::Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay)
@@ -257,6 +264,7 @@ void CGenericUI::Ready_Fade(const _float fDuration, const _float fStartAlpha, co
 	
 	m_fFade_Duration = fDuration;
 	m_fFade_Delay = fDelay;
+	m_fFade_EaseValue = 0.f;
 }
 
 void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartValue, const _float fTargetValue, const _float fEaseValue, const _float fDelay)
@@ -288,8 +296,14 @@ _bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
 	}
 
 	_float eased = t;
+	
 	if (m_fLerpMove_EaseValue > 0.f)
-		eased = powf(t, m_fLerpMove_EaseValue);
+	{
+		if(m_isLerpMove_EaseOut)
+			eased = 1.f - powf(1.f - t, m_fLerpMove_EaseValue);
+		else
+			eased = powf(t, m_fLerpMove_EaseValue);
+	}
 
 	m_vMoveOffset = m_vMoveOffsetBase + (m_vLerpMove_StartOffset + (m_vLerpMove_TargetOffset - m_vLerpMove_StartOffset) * eased);
 	return false;
@@ -315,7 +329,8 @@ _bool CGenericUI::Tick_Fade(const _float fTimeDelta)
 	if (m_fFade_EaseValue > 0.f)
 		eased = powf(t, m_fFade_EaseValue);
 
-	m_fAlpha_Ratio = m_fFade_StartAlphaRatio + (m_fFade_TargetAlphaRatio - m_fFade_StartAlphaRatio) * eased;
+	m_fAlpha_Ratio = m_fFade_StartAlphaRatio + (m_fFade_TargetAlphaRatio - m_fFade_StartAlphaRatio) * t;
+	
 	return false;
 }
 

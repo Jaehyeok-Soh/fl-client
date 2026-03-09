@@ -149,7 +149,7 @@ void CUIPlayerAmmo_Progress::Bind_Events()
 			})
 	);
 
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>(
+	m_pGameInstance->Subscribe<CINEMATIC_START>(
 		[this]() 
 		{ 
 			this->Set_Invisible();
