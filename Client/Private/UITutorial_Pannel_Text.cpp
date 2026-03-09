@@ -148,14 +148,17 @@ void CUITutorial_Pannel_Text::Initialize_Visible_Event()
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:
-		Ready_Lerp_Movement(Vec2{ 0.f, 235.5 }, Vec2{ 0.f, 0.f }, 1.5f, 3.f, m_fDelay, true);
+		Ready_Lerp_Movement(Vec2{ 0.f, 235.5 }, Vec2{ 0.f, 0.f }, 1.5f, 3.f, 0.5f, true);
 		Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
+		Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_PREV_BTN_TEXT:
+		Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_NEXT_BTN_TEXT:
+		Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
 		break;
 	}
 }
@@ -165,24 +168,11 @@ void CUITutorial_Pannel_Text::Initialize_InVisible_Event()
 	m_isActive = false;
 	m_isFin_Event = false;
 
-	switch (m_eTextSubClassType)
-	{
-	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:
-		break;
-	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
-		break;
-	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_PREV_BTN_TEXT:
-		break;
-	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_NEXT_BTN_TEXT:
-		break;
-	}
+	Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
 }
 
 _bool CUITutorial_Pannel_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_isActive = true;
-	m_isFin_Event = true;
-
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:
@@ -200,14 +190,44 @@ _bool CUITutorial_Pannel_Text::Tick_Visible_Event(const _float fTimeDelta)
 	}
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
-		return true;
-		break;
+	{
+		_bool isFade = Tick_Fade_Text(fTimeDelta);
+
+		if (isFade)
+		{
+			m_isFin_Event = true;
+			m_isActive = true;
+
+			return true;
+		}
+	}
+	break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_PREV_BTN_TEXT:
-		return true;
-		break;
+	{
+		_bool isFade = Tick_Fade_Text(fTimeDelta);
+
+		if (isFade)
+		{
+			m_isFin_Event = true;
+			m_isActive = true;
+
+			return true;
+		}
+	}
+	break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_NEXT_BTN_TEXT:
-		return true;
-		break;
+	{
+		_bool isFade = Tick_Fade_Text(fTimeDelta);
+
+		if (isFade)
+		{
+			m_isFin_Event = true;
+			m_isActive = true;
+
+			return true;
+		}
+	}
+	break;
 	}
 	return false;
 }
