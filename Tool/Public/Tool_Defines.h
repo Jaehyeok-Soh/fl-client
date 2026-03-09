@@ -832,6 +832,15 @@ namespace Tool
 		NONE,
 		TUTORIAL_BOSS_CONTATCT,
 		TUTORIAL_BOSS_CONTATCT_END,
+
+		CINEMATIC_START,
+		CINEMATIC_END,
+		XIBILA_BOSS_ACTION_ON,
+		XIBILA_BOSS_ACTION_OFF,
+
+		XIBILA_BOSS_UI_ON,
+		XIBILA_BOSS_UI_OFF,
+
 		END,
 	};
 
@@ -840,8 +849,13 @@ namespace Tool
 		"NONE",
 		"TUTORIAL_BOSS_CONTATCT",
 		"TUTORIAL_BOSS_CONTATCT_END",
+		"CINEMATIC_START",
+		"CINEMATIC_END",
+		"XIBILA_BOSS_ACTION_ON",
+		"XIBILA_BOSS_ACTION_OFF",
+		"XIBILA_BOSS_UI_ON",
+		"XIBILA_BOSS_UI_OFF",
 	};
-
 	inline string Global_Broadcast_Type_ToString(EGlobal_Broadcast_Type eType)
 	{
 		// 인덱스 초과 방지 안전장치
@@ -850,7 +864,6 @@ namespace Tool
 
 		return "Unknown";
 	}
-
 	inline EGlobal_Broadcast_Type Global_Broadcast_Type_ToEnum(const string& strType)
 	{
 		for (int i = 0; i < (int)EGlobal_Broadcast_Type::END; ++i)

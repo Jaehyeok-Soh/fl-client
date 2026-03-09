@@ -19,6 +19,7 @@ enum class TargeterState : _uint
 	TARGETSYNC,
 	GUN,			// tps cam
 	SKILL_SEQUENCE,
+	CINEMATIC,
 	END
 };
 
