@@ -10,6 +10,7 @@
 #include "Physics_ShapeFactory.h"
 #include "Physics_CCTManager.h"
 #include "Physics_ActorFactory.h"
+#include "Physics_RagdollSystem.h"
 #include "Physics_FilterEventCallback.h"
 
 CPhysics_Module::CPhysics_Module(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -195,6 +196,12 @@ HRESULT CPhysics_Module::Initialize()
 			MSG_BOX("Failed to created : physics cct manager");
 			return E_FAIL;
 		}
+
+		if (!(m_pRagdollSystem = CPhysics_RagdollSystem::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene)))
+		{
+			MSG_BOX("Failed to created : physics ragdoll system");
+			return E_FAIL;
+		}
 	}
 
 	return S_OK;
@@ -224,6 +231,11 @@ void CPhysics_Module::StepPhysics(_float fTimeDelta)
 void CPhysics_Module::AddActor(PxRigidActor* actor)
 {
 	m_pScene->addActor(*actor);
+}
+
+void CPhysics_Module::AddRagdoll(PxArticulationReducedCoordinate* pArticulation)
+{
+	m_pScene->addArticulation(*pArticulation);
 }
 
 PxTransform CPhysics_Module::XMMatrixToPxTransform(Matrix mat)
@@ -302,6 +314,11 @@ void CPhysics_Module::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTa
 	m_pResourceManager->RegisterPhysicsMesh(levelIndex, prototypeTag);
 }
 
+PxMaterial* CPhysics_Module::GetPhysicsMaterial(EPhysicsMaterial eMaterial)
+{
+	return m_pResourceManager->GetMaterial(eMaterial);
+}
+
 vector<PxShape*> CPhysics_Module::GetShape(PHYSICSCOLLIDER_DESC* pDesc)
 {
 	return m_pShapeFactory->GetShape(pDesc);
@@ -320,6 +337,11 @@ vector<PxShape*> CPhysics_Module::CopyShapes(vector<PxShape*>& shapes)
 vector<PxRigidActor*> CPhysics_Module::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
 	return m_pActorFactory->GetActor(rigidBodyDesc, colliderDesc, shapes);
+}
+
+RAGDOLLELEMENTS CPhysics_Module::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc)
+{
+	return m_pRagdollSystem->CreateRagdoll(arrRagdollBoneDesc);
 }
 
 PxController* CPhysics_Module::GetController(PHYSICSCCT_DESC* pDesc)
@@ -508,6 +530,7 @@ CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 
 void CPhysics_Module::Free()
 {
+	Safe_Release(m_pRagdollSystem);
 	Safe_Release(m_pCCTManager);
 	Safe_Release(m_pActorFactory);
 	Safe_Release(m_pShapeFactory);

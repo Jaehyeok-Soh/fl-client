@@ -202,6 +202,8 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 	//		m_vecAnimations[i]->Set_ApplyRootMotion(false);
 	//}
 
+	Mapping_Ragdoll_Bone();
+
 	return S_OK;
 }
 
@@ -1605,6 +1607,48 @@ void CModel::Emit_Notifies(CModelAnimation* pAnimation, _float fCurPos, EAnimNot
 		iIndex = 0;
 		Emit_Range(0.f, fCurPos);
 	}
+}
+
+void CModel::Mapping_Ragdoll_Bone()
+{
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS] = Set_Ragdoll_Bone(RAGDOLLJOINT::PELVIS, RAGDOLLJOINT::END, RAGDOLLJOINT::SPINE_02);
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::SPINE_02] = Set_Ragdoll_Bone(RAGDOLLJOINT::SPINE_02, RAGDOLLJOINT::PELVIS, RAGDOLLJOINT::HEAD);
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::HEAD] = Set_Ragdoll_Bone(RAGDOLLJOINT::HEAD, RAGDOLLJOINT::SPINE_02, RAGDOLLJOINT::END);
+
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::UPPERARM_L] = Set_Ragdoll_Bone(RAGDOLLJOINT::UPPERARM_L, RAGDOLLJOINT::SPINE_02, RAGDOLLJOINT::LOWERARM_L);
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::LOWERARM_L] = Set_Ragdoll_Bone(RAGDOLLJOINT::LOWERARM_L, RAGDOLLJOINT::UPPERARM_L, RAGDOLLJOINT::END);
+
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::UPPERARM_R] = Set_Ragdoll_Bone(RAGDOLLJOINT::UPPERARM_R, RAGDOLLJOINT::SPINE_02, RAGDOLLJOINT::LOWERARM_R);
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::LOWERARM_R] = Set_Ragdoll_Bone(RAGDOLLJOINT::LOWERARM_R, RAGDOLLJOINT::UPPERARM_R, RAGDOLLJOINT::END);
+
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::THIGH_L] = Set_Ragdoll_Bone(RAGDOLLJOINT::THIGH_L, RAGDOLLJOINT::PELVIS, RAGDOLLJOINT::CALF_L);
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::CALF_L] = Set_Ragdoll_Bone(RAGDOLLJOINT::CALF_L, RAGDOLLJOINT::THIGH_L, RAGDOLLJOINT::FOOT_L);
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::FOOT_L] = Set_Ragdoll_Bone(RAGDOLLJOINT::FOOT_L, RAGDOLLJOINT::CALF_L, RAGDOLLJOINT::END);
+
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::THIGH_R] = Set_Ragdoll_Bone(RAGDOLLJOINT::THIGH_R, RAGDOLLJOINT::PELVIS, RAGDOLLJOINT::CALF_R);
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::CALF_R] = Set_Ragdoll_Bone(RAGDOLLJOINT::CALF_R, RAGDOLLJOINT::THIGH_R, RAGDOLLJOINT::FOOT_R);
+	m_arrRagdollBoneDesc[RAGDOLLJOINT::FOOT_R] = Set_Ragdoll_Bone(RAGDOLLJOINT::FOOT_R, RAGDOLLJOINT::CALF_R, RAGDOLLJOINT::END);
+}
+
+RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT::Enum eParentJoint, RAGDOLLJOINT::Enum eChildJoint)
+{
+	CBone* bone = Get_Bone(PhysicsJointNames[eJoint].c_str());
+
+	RAGDOLLBONEDESC desc{};
+	desc.eJoint = eJoint;
+	desc.eParentJoint = eParentJoint;
+	desc.iBoneIndex = bone->Get_Index();
+	desc.iParentIndex = bone->Get_ParentIndex();
+	desc.matLocalTransform = bone->Get_Transform();
+
+	CBone* child = Get_Bone(PhysicsJointNames[eChildJoint].c_str());
+	desc.fHeight = child->Get_Transform().Translation().Length() * 0.9f;
+	
+	desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f));
+	//desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f),
+	//	PxQuat(PxHalfPi, PxVec3(0, 0, 1)));
+
+	return desc;
 }
 
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)

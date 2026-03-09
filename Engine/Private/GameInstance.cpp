@@ -1044,6 +1044,11 @@ void CGameInstance::AddActor(PxRigidActor* actor)
 	m_pPhysics_Module->AddActor(actor);
 }
 
+void CGameInstance::AddRagdoll(PxArticulationReducedCoordinate* pArticulation)
+{
+	m_pPhysics_Module->AddRagdoll(pArticulation);
+}
+
 void CGameInstance::ClearPhysics()
 {
 	m_pPhysics_Module->ClearPhysics();
@@ -1119,6 +1124,11 @@ PxCollection* CGameInstance::SerializeConvexMesh(std::filesystem::path path)
 	return m_pPhysics_Module->SerializeConvexMesh(path);
 }
 
+PxMaterial* CGameInstance::GetPhysicsMaterial(EPhysicsMaterial eMaterial)
+{
+	return m_pPhysics_Module->GetPhysicsMaterial(eMaterial);
+}
+
 vector<PxShape*> CGameInstance::GetShape(PHYSICSCOLLIDER_DESC* pDesc)
 {
 	return m_pPhysics_Module->GetShape(pDesc);
@@ -1137,6 +1147,11 @@ vector<PxShape*> CGameInstance::CopyShapes(vector<PxShape*>& shapes)
 vector<PxRigidActor*> CGameInstance::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
 	return m_pPhysics_Module->GetActor(rigidBodyDesc, colliderDesc, shapes);
+}
+
+RAGDOLLELEMENTS CGameInstance::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc)
+{
+	return m_pPhysics_Module->CreateRagdoll(arrRagdollBoneDesc);
 }
 
 PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)

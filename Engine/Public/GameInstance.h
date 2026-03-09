@@ -351,6 +351,7 @@ public:
 #pragma region PHYSICS_MODULE
 	void StepPhysics(_float fTimeDelta);
 	void AddActor(PxRigidActor* actor);
+	void AddRagdoll(PxArticulationReducedCoordinate* pArticulation);
 	void ClearPhysics();
 	void FlushScene();
 	void RemoveActor(PxRigidActor* actor);
@@ -368,10 +369,12 @@ public:
 	PxCollection* SerializeConvexMesh(std::filesystem::path path);
 	void SerializeLevel(std::filesystem::path path) {}
 	void DeserializeLevel(std::filesystem::path path) {}
+	PxMaterial* GetPhysicsMaterial(EPhysicsMaterial eMaterial);
 	vector<PxShape*> GetShape(PHYSICSCOLLIDER_DESC* pDesc);
 	vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
 	vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
 	vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+	RAGDOLLELEMENTS CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc);
 	PxController* GetController(PHYSICSCCT_DESC* pDesc);
 	class CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
