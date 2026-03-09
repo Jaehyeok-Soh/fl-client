@@ -48,7 +48,7 @@ HRESULT CGun::Initialize(void* pArg)
 	m_tFireTimeCounter.bCountTime	= false;
 	m_tFireTimeCounter.bTimeReset	= true;
 	m_tFireTimeCounter.fMaxTime		= pDesc->fAttackCoolTime;
-	m_tFireTimeCounter.fTimeAcc = pDesc->fAttackCoolTime; // 처음에 바로 쏠 수 있도록 하기 위함
+	m_tFireTimeCounter.fTimeAcc		= m_tFireTimeCounter.fMaxTime * 0.5f; // 처음에 바로 쏠 수 있도록 하기 위함
 
 	return S_OK;
 }
