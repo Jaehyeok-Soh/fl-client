@@ -134,7 +134,6 @@ private:
 
 
 	TargeterState m_ePreState = { TargeterState::NORMAL };
-	TargeterState m_ePreCinmaticState{ TargeterState::NORMAL };
 
 public:
 	static CCameraMan_Targeter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

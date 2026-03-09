@@ -283,19 +283,20 @@ namespace Engine
 	{
 		UnBind_CashingData();
 		
-		eMoveBaseTarget				= ECinematicTarget::NONE;
-		iMoveBaseTargetBoneIndex	= NONE_BONE_INDEX;
-		vPosition					= Vec3::Zero;
-		eMoveLerpType				= ELerpType::NONE;
-		eLookAtLerpType				= ELerpType::NONE;
-		eFovLerpType				= ELerpType::NONE;
-		fDuration					= 1.f;
-		fHoldTime					= 0.f;
-		fFov						= 60.f;
-		eLookAtTarget				= ECinematicTarget::NONE;
-		vPitchYawRoll				= { 0.f, 0.f, 0.f };
-		iLookAtBoneIndex			= NONE_BONE_INDEX;
-		vLookAtOffset				= Vec3::Zero;
+		this->eMoveBaseTarget				= ECinematicTarget::NONE;
+		this->iMoveBaseTargetBoneIndex	= NONE_BONE_INDEX;
+		this->vPosition					= Vec3::Zero;
+		this->eMoveLerpType				= ELerpType::NONE;
+		this->eLookAtLerpType				= ELerpType::NONE;
+		this->eFovLerpType				= ELerpType::NONE;
+		this->fDuration					= 1.f;
+		this->fHoldTime					= 0.f;
+		this->fFov						= 60.f;
+		this->eLookAtTarget				= ECinematicTarget::NONE;
+		this->vPitchYawRoll				= { 0.f, 0.f, 0.f };
+		this->iLookAtBoneIndex			= NONE_BONE_INDEX;
+		this->vLookAtOffset				= Vec3::Zero;
+		
 	}
 
 	void Camera_Keyframe_Data::Copy_Camera(CCameraMan* pCameraman)
@@ -625,6 +626,9 @@ namespace Engine
 	void Camera_Cinematic_Sequence::Reset(_int iResetIndex)
 	{
 		
+		this->vecStartCinematic_GlobalEventIndex.clear();
+		this->vecEndCinematic_GlobalEventIndex.clear();
+
 		/* 전체 리셋 */
 		if (iResetIndex == -1)
 		{
