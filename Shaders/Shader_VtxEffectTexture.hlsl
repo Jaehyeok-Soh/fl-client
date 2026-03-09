@@ -948,7 +948,7 @@ float4 PS_TextureBloomHard(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
         // 5. 최종 결합 (아틀라스 색상 * 캐릭터 고유 색상)
     float3 finalRGB = DiffuseSample.rgb * GradationSample.rgb * g_Effect.g_EffectColor.rgb * CurvePowerStrength;
     
-    float lifeAlpha = 1.0f - LifeRatio;
+    float lifeAlpha = 1.0f - DissolveProgress;
     float finalAlpha = DiffuseSample.a * GlowSample.r * MaskSample.r * dissolveMask * g_Effect.g_EffectColor.a /** lifeAlpha*/;
 
     if (HasLifeDissolve())

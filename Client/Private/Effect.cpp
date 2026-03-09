@@ -255,13 +255,6 @@ void Effect::Spawn_PositionCalculate(void* pArg)
 	{
 		m_pOffsetMartix = pEngineDesc->matWorld;
 	}
-
-	// 타이머 및 자식들 초기화
-	for (auto effectObject : m_vecPartObjects)
-	{
-		if (effectObject != nullptr)
-			effectObject->Spawn_FromPool(pArg);
-	}
 }
 
 HRESULT Effect::Spawn_FromPool(void* pArg)
@@ -272,6 +265,13 @@ HRESULT Effect::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	Spawn_PositionCalculate(pArg);
+
+	// 타이머 및 자식들 초기화
+	for (auto effectObject : m_vecPartObjects)
+	{
+		if (effectObject != nullptr)
+			effectObject->Spawn_FromPool(pArg);
+	}
 
 	return S_OK;
 }
@@ -290,6 +290,32 @@ HRESULT Effect::Despawn_FromPool()
 	return S_OK;
 }
 
+HRESULT Effect::Enable_VFX(void* pArg)
+{
+	m_bIsEffectFinish = false;
+	Spawn_PositionCalculate(pArg);
+
+	// 타이머 및 자식들 초기화
+	for (auto effectObject : m_vecPartObjects)
+	{
+		if (effectObject != nullptr)
+			static_cast<CEffectObject*>(effectObject)->Enable_VFX(pArg);
+	}
+	return S_OK;
+}
+
+HRESULT Effect::Disable_VFX()
+{
+	m_bIsEffectFinish = false;
+
+	for (auto effectObject : m_vecPartObjects)
+	{
+		if (effectObject != nullptr)
+			static_cast<CEffectObject*>(effectObject)->Disable_VFX();
+	}
+
+	return S_OK;
+}
 
 Effect* Effect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
