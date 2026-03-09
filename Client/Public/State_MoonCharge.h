@@ -16,6 +16,8 @@ public:
 	virtual HRESULT Start(void* pArg, _bool bForce = false) override;
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
+private:
+	_bool m_bShakeActived = { false };
 
 public:
 	static CState_MoonCharge* Create(CActionState* pOwnerComponent, void* pArg = nullptr);

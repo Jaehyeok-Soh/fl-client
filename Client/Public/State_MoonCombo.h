@@ -36,6 +36,10 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+private:
+	// TODO - 애니메이션 툴로 빼야함
+	_bool m_bShakeActived{ false };
+
 public:
 	static CState_MoonCombo* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
