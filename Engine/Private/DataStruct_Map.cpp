@@ -569,11 +569,11 @@ void WATER_DESC::from_Json(const json& LoadJson)
 	}
 	if (LoadJson.contains("Speed 1"))
 	{
-		Engine_Utils::read_vec2_xy(LoadJson["Speed"], this->vSpeed1);
+		Engine_Utils::read_vec2_xy(LoadJson["Speed 1"], this->vSpeed1);
 	}
 	if (LoadJson.contains("Speed 2"))
 	{
-		Engine_Utils::read_vec2_xy(LoadJson["Speed"], this->vSpeed2);
+		Engine_Utils::read_vec2_xy(LoadJson["Speed 2"], this->vSpeed2);
 	}
 
 

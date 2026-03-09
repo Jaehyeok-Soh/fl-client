@@ -389,25 +389,25 @@ HRESULT CBuilder_Map::Create_Vine(const DTO::TMap_MapObjectData& tData)
 #pragma region Create Water
 HRESULT CBuilder_Map::Create_Water(const DTO::TMap_MapObjectData& tData)
 {
-	CVine::VINE_DESC tVine_Desc{};
+	CWater::WATER_DESC tDesc{};
 
-	tVine_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);;
-	tVine_Desc.isUELoaded = tData.isUELoaded;
-	tVine_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
-	tVine_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
-	tVine_Desc.iSectionNum = tData.iSectionNum;
-	tVine_Desc.eClientMakePath = tData.eClientMakePath;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);;
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
 
 
 	for (auto& SRT_DATA : tData.vecSRTs)
 	{
-		tVine_Desc.vecSRT.push_back(SRT_DATA);
+		tDesc.vecSRT.push_back(SRT_DATA);
 	}
 
 
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszWater_Prototype_Tag ,
-		tVine_Desc.iLevelIndex, g_wszStaticObjectLayer, &tVine_Desc);
+		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
 
 	return S_OK;
 }
