@@ -212,7 +212,7 @@ void CAnimTool_Manager::Update_Animation(const _float& fTimeDelta)
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimB")));
 	CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimMix")));
-
+	CComputeShader* pAnimAdditiveCS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimAdditiveMix")));
 
 	m_tAnimControllInfo.pModel->Update_Animation(pBonCS,
 		pAnimECS,
@@ -220,7 +220,9 @@ void CAnimTool_Manager::Update_Animation(const _float& fTimeDelta)
 		m_tAnimControllInfo.pCurrentObject->Get_Component<CTransform>(),
 		m_tAnimControllInfo.pCurrentObject->Get_Component<CPhysicsCCT>(),
 		pAnimBCS,
-		pAnimMixCS);
+		pAnimMixCS,
+		pAnimAdditiveCS);
+
 	m_tAnimControllInfo.pModel->Emit_Notifies(EAnimNotifyPhase::Late);
 	m_tAnimControllInfo.pModel->Emit_Notifies(EAnimNotifyPhase::PreRender);
 

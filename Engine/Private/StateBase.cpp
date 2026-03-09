@@ -213,6 +213,24 @@ _bool CStateBase::Is_AnimTrackPositionHalf()
 	return m_pOwnerStateComp->Is_AnimTrackPositionHalf();
 }
 
+void CStateBase::Additive_MixOn(_bool bOn)
+{
+	if (m_pOwnerStateComp)
+		m_pOwnerStateComp->Additive_MixOn(bOn);
+}
+
+void CStateBase::Additive_DataSetting(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset)
+{
+	if (m_pOwnerStateComp)
+		m_pOwnerStateComp->Additive_DataSetting(bAdditive, iRefIdx, iPosIdx, fMixOffset);
+}
+
+void CStateBase::Additive_DataSetting(_bool bAdditive, _int iPosIdx, _float fMixOffset)
+{
+	if (m_pOwnerStateComp)
+		m_pOwnerStateComp->Additive_DataSetting(bAdditive, iPosIdx, fMixOffset);
+}
+
 _bool CStateBase::IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag)
 {
 	if (m_pOwnerStateComp == nullptr)

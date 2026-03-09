@@ -36,18 +36,32 @@ private:
 
 	_float m_iAnimationSpeed = { 1.f };
 
+	// additive data
+private:
+	_int	m_iSelectAdditiveOn = { false };
+	_int	m_iSelectRefAnimIdx = { -1 };
+	_int	m_iSelectPosanimIdx = { -1 };
+
+	_bool	m_bModelAdditiveOn = { false };
+	_int	m_iModleRefAnimIdx = { -1 };
+	_int	m_iModelPosanimIdx = { -1 };
+
 	CGameObject* pObj = { nullptr };
 
 	// render
 private:
 	void Render_ObjInfo();
 
+	void Render_ModelInfo();
 	void Render_RootMotionInfo();
+	void Render_AdditiveInfo();
 
 	void Render_AnimationInfo();
 	void Anim_Info();
 	void RootOffset_Info();
 	void AnimationSpeed();
+
+
 
 private:
 	void Set_RootBone();

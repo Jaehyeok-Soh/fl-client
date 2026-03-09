@@ -92,6 +92,10 @@ protected:
 	_bool			Is_AnimTrackPositionHalf();
 	void			Set_AnimationPlayRate(_uint iIndex, _float fSpeed);
 
+	void			Additive_MixOn(_bool bOn);
+	void			Additive_DataSetting(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset =1.f);
+	void			Additive_DataSetting(_bool bAdditive, _int iPosIdx, _float fMixOffset = 1.f);
+
 	/* moves funcs */
 protected:
 	_bool			Align_Movement(const _float fTimeDelta);

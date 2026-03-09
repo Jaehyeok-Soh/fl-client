@@ -130,6 +130,10 @@ protected:
 	_bool Is_AnimTrackPositionBetween(_float fStartRatio, _float EndRatio);
 	_bool Is_AnimTrackPositionHalf();
 
+	void			Additive_MixOn(_bool bOn);
+	void			Additive_DataSetting(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset = 1.f);
+	void			Additive_DataSetting(_bool bAdditive, _int iPosIdx, _float fMixOffset = 1.f);
+
 	/* move funcs */
 protected:
 	_bool Align_Movement(const _float fTimeDelta);

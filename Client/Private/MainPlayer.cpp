@@ -1112,6 +1112,12 @@ HRESULT CMainPlayer::Ready_AttackStates()
     arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::JUMP)] = Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
     arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::FALL)] = Get_AnimationIndex(L"Animation_PlayerMoon_Jump_FallLoop");
 
+    array<_uint, ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::END)> arrAimMix;
+    arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::DOWN)]      = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MD");
+    arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::MIDDLE)]    = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MM");
+    arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::UP)]        = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MU");
+
+
     vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };
 
     for (auto& MixAnim : arrMix)
@@ -1124,6 +1130,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         CState_GunBase::GUN_STATEBASE_DESC tDesc = {};
 
         tDesc.arrMixAnims = arrMix;
+        tDesc.arrAimAnims = arrAimMix;
 
         tDesc.bLoop = true;
         tDesc.pOwnerGun = pMyGun;
@@ -1140,7 +1147,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         CState_GunBase::GUN_STATEBASE_DESC tDesc = {};
 
         tDesc.arrMixAnims = arrMix;
-
+        tDesc.arrAimAnims = arrAimMix;
+        
         tDesc.bLoop = false;
         tDesc.pOwnerGun = pMyGun;
         tDesc.iMainAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Machinegun01_Reload");

@@ -88,6 +88,11 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"DistortionScale", {{"x", data._Effect_DistortionScale.x}, {"y", data._Effect_DistortionScale.y}}},
         {"StartScale", {{"x", data._Effect_StartScale.x}, {"y", data._Effect_StartScale.y}, {"z", data._Effect_StartScale.z}}},
         {"EndScale", {{"x", data._Effect_EndScale.x}, {"y", data._Effect_EndScale.y}, {"z", data._Effect_EndScale.z}}},
+
+        // --- Scale Curve Flags  ---
+        {"UseScaleCurve", data._bUseScaleCurve},
+        {"SeparateScaleAxes", data._bSeparateScaleAxes}, // 축별 개별 제어 여부
+
         {"Color", {{"x", data._Effect_Color.x}, {"y", data._Effect_Color.y}, {"z", data._Effect_Color.z}, {"w", data._Effect_Color.w}}},
         {"DiscardValue", data._Effect_DiscardValue},
         {"_Use_Effect_Particle_Burst", data._Use_Effect_Particle_Burst},
@@ -206,6 +211,9 @@ void to_json(json& j, const TEFFECT_PartsData& data)
     j["RotationCurveZ"] = CurveToJson(data._vecRotationCurveZ);
     j["UVScrollCurveX"] = CurveToJson(data._vecUVScrollCurveX);
     j["UVScrollCurveY"] = CurveToJson(data._vecUVScrollCurveY);
+    j["ScaleCurveX"] = CurveToJson(data._vecScaleCurveX);
+    j["ScaleCurveY"] = CurveToJson(data._vecScaleCurveY);
+    j["ScaleCurveZ"] = CurveToJson(data._vecScaleCurveZ);
 }
 
 // ==========  Parts (from_json)  ==========
@@ -250,6 +258,12 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     data._Effect_DistortionScale = { j.at("DistortionScale").at("x"), j.at("DistortionScale").at("y") };
     data._Effect_StartScale = { j.at("StartScale").at("x"), j.at("StartScale").at("y"), j.at("StartScale").at("z") };
     data._Effect_EndScale = { j.at("EndScale").at("x"), j.at("EndScale").at("y"), j.at("EndScale").at("z") };
+
+    if (j.contains("UseScaleCurve")) j.at("UseScaleCurve").get_to(data._bUseScaleCurve);
+    else data._bUseScaleCurve = false;
+    if (j.contains("SeparateScaleAxes")) j.at("SeparateScaleAxes").get_to(data._bSeparateScaleAxes);
+    else data._bSeparateScaleAxes = false;
+
     data._Effect_Color = { j.at("Color").at("x"), j.at("Color").at("y"), j.at("Color").at("z"), j.at("Color").at("w") };
     j.at("DiscardValue").get_to(data._Effect_DiscardValue);
     data._Effect_Range = { j.at("Range").at("x"), j.at("Range").at("y"), j.at("Range").at("z") };
@@ -366,6 +380,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
                 vec.push_back({ item.at("Time").get<float>(), item.at("Val").get<float>() });
         }
         };
+
     JsonToCurve("GlobalGravityCurve", data._vecGlobalGravityCurve);
     JsonToCurve("ExternalForceCurve", data._vecExternalForceCurve);
     JsonToCurve("RotationCurveX", data._vecRotationCurveX);
@@ -373,6 +388,9 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     JsonToCurve("RotationCurveZ", data._vecRotationCurveZ);
     JsonToCurve("UVScrollCurveX", data._vecUVScrollCurveX);
     JsonToCurve("UVScrollCurveY", data._vecUVScrollCurveY);
+    JsonToCurve("ScaleCurveX", data._vecScaleCurveX);
+    JsonToCurve("ScaleCurveY", data._vecScaleCurveY);
+    JsonToCurve("ScaleCurveZ", data._vecScaleCurveZ);
 
     // 플래그 및 Tool_Render/Tool_Samplers 복구
     j.at("TextureFlag").get_to(data._Effect_TextureFlag);
