@@ -368,6 +368,11 @@ void CStateBase::SetupLook_CameraSameLook()
 	m_pOwnerStateComp->SetupLook_CameraSameLook();
 }
 
+void CStateBase::SetupLook_CameraLookLerp(const _float fTimeDelta, _float fLerpSpeed)
+{
+	m_pOwnerStateComp->SetupLook_CameraLookLerp(fTimeDelta, fLerpSpeed);
+}
+
 void CStateBase::SetupLookAt(const Vec3& vPoint)
 {
 	m_pOwnerStateComp->SetupLookAt(vPoint);

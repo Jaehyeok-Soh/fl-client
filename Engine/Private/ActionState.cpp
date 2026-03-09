@@ -67,6 +67,9 @@ HRESULT CActionState::Awake(_uint iLvelIndex)
 
 void CActionState::Update(const _float fTimeDelta)
 {
+	if(m_vecStates[m_iCurrentState])
+		m_vecStates[m_iCurrentState]->Update(fTimeDelta);
+
 	CPhysicsCCT* cct = { nullptr };
 	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
 	{
@@ -74,8 +77,6 @@ void CActionState::Update(const _float fTimeDelta)
 		CCTFlags = cct->GetCollisionState();
 	}
 
-	if(m_vecStates[m_iCurrentState])
-		m_vecStates[m_iCurrentState]->Update(fTimeDelta);
 }
 
 void CActionState::Clear_WhenChangeLevel()
@@ -487,6 +488,38 @@ void CActionState::SetupLook_CameraLook()
 	_float fRadian = std::atan2(vTarget.x, vTarget.z);
 
 	m_pOwnerTransform->Rotation(Vec3::Up, fRadian);
+}
+
+void CActionState::SetupLook_CameraLookLerp(const _float fTimeDelta, _float fLerpSpeed)
+{
+	if (!m_pOwnerTargetCamera)
+	{
+		if (!(m_pOwnerTargetCamera = Get_Owner()->Get_CameraTargeter()))
+			return;
+	}
+	Vec3 vTarget = m_pOwnerTargetCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	vTarget.y = 0.f;
+	vTarget.Normalize();
+
+	_float fRadian = std::atan2(vTarget.x, vTarget.z);
+
+	// 현재 각도
+	Vec3 vCurLook = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	vCurLook.y = 0.f;
+	vCurLook.Normalize();
+
+	_float fCurRadian = std::atan2(vCurLook.x, vCurLook.z);
+
+	// 현재 각도 : 179°
+	// 목표 각도 : -179°
+
+	// 2도만 돌면 되는데 358도를 돌게 됨 -> 따로 각도 보간 필요
+	_float fDifff = (fRadian - fCurRadian);
+	while (fDifff > XM_PI)  fDifff -= XM_PI * 2.f;
+	while (fDifff < -XM_PI) fDifff += XM_PI * 2.f;
+	_float fNewRadian = fCurRadian + fDifff * std::clamp(fLerpSpeed * fTimeDelta, 0.f, 1.f);
+
+	m_pOwnerTransform->Rotation(Vec3::Up, fNewRadian);
 }
 
 void CActionState::SetupLook_CameraSameLook()

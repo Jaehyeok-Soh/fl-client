@@ -453,7 +453,8 @@ namespace Client
 		NORMAL = 0x000008,
 		CRITICAL = 0x000010,
 		SKILLE = 0x000020,
-		SKILLQ = 0x000040
+		SKILLQ = 0x000040,
+		GUN = 0x000080
 	};
 
 #pragma	endregion

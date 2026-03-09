@@ -235,6 +235,11 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 			CUI_Manager::GetInstance()->Request_Add_Prefab(
 				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
 		}
+
+		else if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+		{
+			int a = 0;
+		}
 	}
 
 #ifdef _DEBUG
