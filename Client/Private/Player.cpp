@@ -144,14 +144,12 @@ void CPlayer::Update(const _float fTimeDelta)
 {
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
     {
-
         pPlayerState->Update(fTimeDelta);
 
         // attack action desc 정리 : state update 시점에서 change를 다루어야 하기 때문에
         // update 이후 desc을 정리해준다
         pPlayerState->Reset_HitDesc();
     }
-
 
     Super::Update(fTimeDelta);
 }
@@ -1155,7 +1153,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
             weaponDesc.fAllBullet = 1000.f;
             weaponDesc.fCurBullet = 500.f;
-            weaponDesc.fAttackCoolTime = 0.35f;
+            weaponDesc.fAttackCoolTime = 0.2f; // 0.15 넘 빠름 // 0.3 너무 느림
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));

@@ -120,6 +120,7 @@ protected:
 	void			Apply_ForceMove(const _float fTimeDelta);
 	void			Clear_ForceMove();
 	void			SetupLook_CameraLook(); // y축 회전만 가져옴
+	void			SetupLook_CameraLookLerp(const _float fTimeDelta, _float fLerpSpeed); // y축 회전만 가져옴
 	void			SetupLook_CameraSameLook(); // camera look == owenr look
 	void			SetupLookAt(const Vec3& vPoint);
 	void			SetupLook_Target_XZ();

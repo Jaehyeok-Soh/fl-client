@@ -30,6 +30,13 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
     if (FAILED(Super::Start(pArg, bForce)))
         return E_FAIL;
 
+    
+    CPhysicsCCT* cct = { nullptr };
+    if (cct = Get_OwnerObject()->Get_Component<CPhysicsCCT>())
+    {
+        cct->SetHeight(0.1f);
+    }
+
     if (m_iMainAnimIdx == ENUM_TO_UINT(ANI::SKY))
     {
         m_FCollisions &= ~COLLISIONFLAGS::C_DOWN;
@@ -78,6 +85,12 @@ HRESULT CState_Slide::End()
 
     Set_ApplyYLerp(false);
     Reset_DeAccelRate();
+
+    CPhysicsCCT* cct = { nullptr };
+    if (cct = Get_OwnerObject()->Get_Component<CPhysicsCCT>())
+    {
+        cct->SetHeight(0.7f); // todo_eunbi : player cct height °ª ¹Ù²î¸é ¿©±âµµ ¹Ù²ãÁà¾ß ÇÔ
+    }
 
     return S_OK;
 }
