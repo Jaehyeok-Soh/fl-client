@@ -101,6 +101,7 @@ void CCameraMan_Targeter::Update_Late(const _float fTimeDelta)
     case Client::TargeterState::TARGETSYNC:
         break;
     case Client::TargeterState::GUN:
+        GunCam_Update(fTimeDelta);
         break;
     }
 }
@@ -185,7 +186,7 @@ void CCameraMan_Targeter::Update_State(const _float fTimeDelta)
         break;
 
     case Client::TargeterState::GUN:
-        GunCam_Update(fTimeDelta);
+        //GunCam_Update(fTimeDelta);
         break;
 
     case Client::TargeterState::SKILL_SEQUENCE:
@@ -479,8 +480,9 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     Vec3 vUp = vLook.Cross(vRight);
     vUp.Normalize();
 
+
     // position : chase의 pos 에서 내 look 방향으로 조금 뒤로 빼
-    Vec3 vDesiredPos = vChasePositionRaw - vLook * m_fCurLookDistance;
+    Vec3 vDesiredPos;
 
     switch (m_eCurrentState)
     {
@@ -503,7 +505,7 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::UP,    vUp);
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK,  vLook);
-    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vDesiredPos);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::POS,   vDesiredPos);
 }
 
 void CCameraMan_Targeter::OnChangeLockonTarget(CGameObject* pGo)

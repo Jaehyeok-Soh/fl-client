@@ -67,6 +67,9 @@ HRESULT CActionState::Awake(_uint iLvelIndex)
 
 void CActionState::Update(const _float fTimeDelta)
 {
+	if(m_vecStates[m_iCurrentState])
+		m_vecStates[m_iCurrentState]->Update(fTimeDelta);
+
 	CPhysicsCCT* cct = { nullptr };
 	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
 	{
@@ -74,8 +77,6 @@ void CActionState::Update(const _float fTimeDelta)
 		CCTFlags = cct->GetCollisionState();
 	}
 
-	if(m_vecStates[m_iCurrentState])
-		m_vecStates[m_iCurrentState]->Update(fTimeDelta);
 }
 
 void CActionState::Clear_WhenChangeLevel()

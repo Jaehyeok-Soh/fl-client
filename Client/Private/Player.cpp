@@ -144,14 +144,12 @@ void CPlayer::Update(const _float fTimeDelta)
 {
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
     {
-
         pPlayerState->Update(fTimeDelta);
 
         // attack action desc 정리 : state update 시점에서 change를 다루어야 하기 때문에
         // update 이후 desc을 정리해준다
         pPlayerState->Reset_HitDesc();
     }
-
 
     Super::Update(fTimeDelta);
 }
