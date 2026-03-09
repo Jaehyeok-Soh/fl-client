@@ -551,33 +551,6 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-	if (KEY_BUTTON_DOWN(DIK_5))
-	{
-		m_pGameInstance->Broadcast<ACTION1>();
-	}
-	if (KEY_BUTTON_DOWN(DIK_6))
-	{
-		m_pGameInstance->Broadcast<ACTION2>();
-	}
-	if (KEY_BUTTON_DOWN(DIK_7))
-	{
-		m_pGameInstance->Broadcast<ACTION3>();
-	}
-	if (KEY_BUTTON_DOWN(DIK_8))
-	{
-		m_pGameInstance->Broadcast<ACTION4>();
-	}
-
-	if (KEY_BUTTON_DOWN(DIK_2))
-	{
-		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::TUTORIAL_VILLAGE));
-		CUI_Manager::GetInstance()->Request_Clear();
-	}
-	if (KEY_BUTTON_DOWN(DIK_3))
-	{
-		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, ELevelType::LOGO));
-		CUI_Manager::GetInstance()->Request_Clear();
-	}
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

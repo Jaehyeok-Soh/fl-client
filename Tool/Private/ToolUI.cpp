@@ -65,22 +65,11 @@ HRESULT CToolUI::Initialize(void* pArg)
 		m_fRotate_TextData		= m_tUITextData.fRotate;
 		m_strFontName_TextData	= m_tUITextData.strFontTag;
 	}
-	if (m_eClassType == DTO::EUIClassType::TRIGGER)
-	{
-		m_tUITriggerData				= pDesc->tTriggerData;
-		m_vecHoverEnterTriggerCanvas	= m_tUITriggerData.vecHoverEnterTriggerCanvas;
-		m_vecHoverEnterTriggerUI		= m_tUITriggerData.vecHoverEnterTriggerUI;
-		m_vecHoverExitTriggerCanvas		= m_tUITriggerData.vecHoverExitTriggerCanvas;
-		m_vecHoverExitTriggerUI			= m_tUITriggerData.vecHoverExitTriggerUI;
-		m_vecPressEnterTriggerCanvas	= m_tUITriggerData.vecPressEnterTriggerCanvas;
-		m_vecPressEnterTriggerUI		= m_tUITriggerData.vecPressEnterTriggerUI;
-		m_vecPressExitTriggerCanvas		= m_tUITriggerData.vecPressExitTriggerCanvas;
-		m_vecPressExitTriggerUI			= m_tUITriggerData.vecPressExitTriggerUI;
-	}
 	if (m_eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
 	{
 		m_tDImageData			= pDesc->tDImageData;
 		m_eDImageSubClassType	= m_tDImageData.eDISubClassType;
+		m_iParam0				= m_tDImageData.iParams0;
 	}
 
 	if (FAILED(Super::Initialize(pArg)))
@@ -111,7 +100,7 @@ HRESULT CToolUI::Awake(const _uint iCurrentLevelID)
 	m_pBatch	= new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
 	m_pEffect	= new BasicEffect(m_pDevice);
 	m_pEffect->SetVertexColorEnabled(true);
-	m_iInteractState = static_cast<uint32_t>(EUIEvent_Flag::NONE);
+	m_iInteractState = static_cast<uint32_t>(EUIInteract_Flag::NONE);
     return S_OK;
 }
 
@@ -134,12 +123,12 @@ void CToolUI::Update(const _float fTimeDelta)
 void CToolUI::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+	Acting_About_State();
+	Sync_Data();
 }
 
 void CToolUI::Ready_Before_Render(const _float fTimeDelta)
 {
-	Acting_About_State();
-	Sync_Data();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -320,33 +309,33 @@ void CToolUI::SetUp_Visible()
 
 void CToolUI::Acting_About_State()
 {
-	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::INVOKED))
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::INVOKED))
 	{
 	}
 
-	if (m_iInteractState == EUIEvent_Flag::NONE)
+	if (m_iInteractState == EUIInteract_Flag::NONE)
 	{
 	}
 	else
 	{
-		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_ENTER))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_ENTER))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_EXIT))
 		{
 			CImGui_UIManager::GetInstance()->Safe_Change_UI(m_iIndex);
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_ENTER))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_EXIT))
 		{
 		}
 
-		if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESSING))
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESSING))
 		{
 		}
-		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVERING))
+		else if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVERING))
 		{
 		}
 	}
@@ -357,8 +346,8 @@ void CToolUI::Sync_Data()
 	// UI Object Values
 	m_tUIData.fWidth					= m_fWidth;
 	m_tUIData.fHeight					= m_fHeight;
-	m_tUIData.fPosX						= m_fX;
-	m_tUIData.fPosY						= m_fY;
+	m_tUIData.fPosX						= m_fX ;
+	m_tUIData.fPosY						= m_fY ;
 	m_tUIData.fPosZ						= m_fZ;
 	m_tUIData.isVisible					= m_isVisible;
 	m_tUIData.isInteract				= m_isInteract;
@@ -390,14 +379,6 @@ void CToolUI::Sync_Data()
 	{
 		Sync_TextData();
 	}
-	else if (m_eClassType == DTO::EUIClassType::TRIGGER)
-	{
-		Sync_TriggerData();
-	}
-	else if (m_eClassType == DTO::EUIClassType::BUTTON_TRIGGER)
-	{
-		Sync_ButtonTriggerData();
-	}
 	else if (m_eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
 	{
 		Sync_DImageData();
@@ -418,43 +399,14 @@ void CToolUI::Sync_TextData()
 	m_tUITextData.fScale		= m_fScale_TextData;
 }
 
-void CToolUI::Sync_TriggerData()
-{
-	m_tUITriggerData.strTag							= m_strName + "_TriggerData";
-	m_tUITriggerData.strOwnerName					= m_strName;
-	m_tUITriggerData.eTriggerSubClassType			= m_eTriggerSubClass;
-	m_tUITriggerData.vecHoverEnterTriggerCanvas		= m_vecHoverEnterTriggerCanvas;
-	m_tUITriggerData.vecHoverEnterTriggerUI			= m_vecHoverEnterTriggerUI;
-	m_tUITriggerData.vecHoverExitTriggerCanvas		= m_vecHoverExitTriggerCanvas;
-	m_tUITriggerData.vecHoverExitTriggerUI			= m_vecHoverExitTriggerUI;
-	m_tUITriggerData.vecPressEnterTriggerCanvas		= m_vecPressEnterTriggerCanvas;
-	m_tUITriggerData.vecPressEnterTriggerUI			= m_vecPressEnterTriggerUI;
-	m_tUITriggerData.vecPressExitTriggerCanvas		= m_vecPressExitTriggerCanvas;
-	m_tUITriggerData.vecPressExitTriggerUI			= m_vecPressExitTriggerUI;
-}
-
-void CToolUI::Sync_ButtonTriggerData()
-{
-	m_tUIButtonTriggerData.strTag			= m_strName + "_Button_TriggerData";
-	m_tUIButtonTriggerData.strOwnerName		= m_strName;
-	m_tUIButtonTriggerData.strKeyMapping	= m_strKeyMapping;
-	m_tUIButtonTriggerData.vecTriggerCanvas = m_vecButtonTriggerCanvas;
-	m_tUIButtonTriggerData.vecTriggerUI		= m_vecButtonTriggerUI;
-}
-
 void CToolUI::Sync_DImageData()
 {
 	m_tDImageData.strTag			= m_strName + "_DImageData";
 	m_tDImageData.strOwnerName		= m_strName;
 	m_tDImageData.eDISubClassType	= m_eDImageSubClassType;
+	m_tDImageData.iParams0			= m_iParam0;
 }
 
-void CToolUI::Sync_WorldUIData()
-{
-	m_tWorldUIData.strTag			= m_strName + "_WorldUIData";
-	m_tWorldUIData.strOwnerName		= m_strName;
-	m_tWorldUIData.eWorldUISubClass = m_eWorldUISubClassType;
-}
 
 _bool CToolUI::Add_Tag(vector<_string>& vec, const _string& str)
 {

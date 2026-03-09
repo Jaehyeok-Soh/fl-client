@@ -26,6 +26,8 @@ HRESULT CPhysics_CCTManager::Initialize()
 {
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
 
+	m_pControllerManager->setOverlapRecoveryModule(false);
+
 	m_pCCTHitReport = CPhysics_CCTHitReport::Create();
 	m_pCCTBehaviorCallback = CPhysics_CCTBehaviorCallback::Create();
 	m_pCCTFilterCallback = CPhysics_CCTFilterCallback::Create();
@@ -82,14 +84,28 @@ PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 	desc.halfForwardExtent = pDesc->vExtens.z / 2.f;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
-	desc.contactOffset = 0.01f;
-	desc.stepOffset = 0.5f;
+	desc.contactOffset = 0.1f;
+	desc.stepOffset = 0.4f;
 	desc.slopeLimit = 0.7f;
 
 	desc.reportCallback = m_pCCTHitReport;
 	desc.behaviorCallback = m_pCCTBehaviorCallback;
 
-	return m_pControllerManager->createController(desc);
+	PxExtendedVec3 poolPos(m_vPoolingPosition.x, m_vPoolingPosition.y, m_vPoolingPosition.z);
+	desc.position = poolPos;
+
+	PxController* pCCT = m_pControllerManager->createController(desc);
+
+	m_vPoolingPosition.z += pDesc->vExtens.z + 5;
+
+	m_iPoolingRaw++;
+	if (m_iPoolingRaw == 20)
+	{
+		m_vPoolingPosition.x += 10.f;
+		m_iPoolingRaw = 0;
+	}
+
+	return pCCT;
 }
 
 PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
@@ -99,8 +115,8 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 	desc.height = pDesc->fHeight;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
-	desc.contactOffset = 0.01f;
-	desc.stepOffset = 0.5f;
+	desc.contactOffset = 0.1f;
+	desc.stepOffset = 0.4f;
 	desc.slopeLimit = 0.7f;
 
 	desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
@@ -108,7 +124,21 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 	desc.reportCallback = m_pCCTHitReport;
 	desc.behaviorCallback = m_pCCTBehaviorCallback;
 
-	return m_pControllerManager->createController(desc);
+	PxExtendedVec3 poolPos(m_vPoolingPosition.x, m_vPoolingPosition.y, m_vPoolingPosition.z);
+	desc.position = poolPos;
+
+	PxController* pCCT = m_pControllerManager->createController(desc);
+
+	m_vPoolingPosition.z += pDesc->fRadius + 5;
+	
+	m_iPoolingRaw++;
+	if (m_iPoolingRaw == 20)
+	{
+		m_vPoolingPosition.x += 10.f;
+		m_iPoolingRaw = 0;
+	}
+
+	return pCCT;
 }
 
 CPhysics_CCTManager* CPhysics_CCTManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene, CPhysics_ResourceManager* pResourceManager)

@@ -110,10 +110,12 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 	if (m_pOutputStructedBuffer_UAV)
 		m_pOutputStructedBuffer_UAV->SetUnorderedAccessView(m_pOutputStructedBuffer->Get_UAV());
 
+	_uint i = {};
 	for (auto SB : m_pInputStructuredBuffer)
 	{
 		if (SB.first)
 			SB.first->SetResource(SB.second->Get_SRV());
+		i++;
 	}
 
 	m_pOwner->Get_Pass(m_iPass)->Apply(0, m_pDeviceContext);

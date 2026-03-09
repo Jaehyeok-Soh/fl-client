@@ -382,63 +382,6 @@ VS_OUT_POS_GS_PARTICLE VS_Particle(VS_IN_POS_GS_PARTICLE In)
     return Out;
 }
 
-//[maxvertexcount(6)]
-//void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_POS_PARTICLE> OutStream)
-//{
-//    GS_OUT_POS_PARTICLE Out[4];
-    
-//    // =========        빌보드 계산          ==============
-//    float3 vRight = float3(1.f, 0.f, 0.f);
-//    float3 vUp = float3(0.f, 1.f, 0.f);
-//    matrix matVP = mul(V, P);
-    
-//    if (HasDirBillboard())
-//    {
-//        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
-       
-//        vUp = normalize(matInst[2].xyz) * In[0].vPSize.z; // Z스케일이 길이
-//        vRight = normalize(matInst[0].xyz) * In[0].vPSize.x; // X스케일이 폭
-//    }
-
-//    else if (HasBillboard())
-//    {
-//        float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
-//        vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x;
-//        vUp = normalize(cross(vLook, vRight)) * In[0].vPSize.y;
-//    }
-//    else
-//    {
-//        vRight = float3(1.f, 0.f, 0.f) * In[0].vPSize.x;
-//        vUp = float3(0.f, 1.f, 0.f) * In[0].vPSize.y;
-//    }
-
-//    // ========         정점 4개 생성        =============
-//    float3 vPos[4];
-//    vPos[0] = In[0].vPosition.xyz + vRight + vUp;
-//    vPos[1] = In[0].vPosition.xyz - vRight + vUp;
-//    vPos[2] = In[0].vPosition.xyz - vRight - vUp;
-//    vPos[3] = In[0].vPosition.xyz + vRight - vUp;
-
-//    float2 vUV[4] = { float2(0, 0), float2(1, 0), float2(1, 1), float2(0, 1) };
-
-//    for (int i = 0; i < 4; ++i)
-//    {
-//        Out[i].vPosition = mul(float4(vPos[i], 1.f), matVP);
-//        Out[i].vUV = vUV[i];
-//        Out[i].vLifeTime = In[0].vLifeTime;
-//    }
-
-//    // 삼각형 스트립 출력 (0-1-2, 0-2-3)
-//    OutStream.Append(Out[0]);
-//    OutStream.Append(Out[1]);
-//    OutStream.Append(Out[2]);       
-//    OutStream.RestartStrip();
-//    OutStream.Append(Out[0]);
-//    OutStream.Append(Out[2]);
-//    OutStream.Append(Out[3]);
-//    OutStream.RestartStrip();
-//}
-
 [maxvertexcount(4)]
 void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_POS_PARTICLE> OutStream)
 {
@@ -447,7 +390,6 @@ void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT
 
     float3 vRight, vUp;
 
-    // 1. 회전축(방향) 결정
     if (HasBillboard())
     {
         // 일반 빌보드: 카메라를 바라보는 축 계산
@@ -457,7 +399,7 @@ void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT
     }
     else
     {
-        // 회전 반영: 인스턴스 행렬에서 직접 X, Y축 추출 (W는 전역 월드행렬이라 가정)
+        // 회전 반영: 인스턴스 행렬에서 직접 X, Y축 추출
         matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
         matrix matWorld = mul(matInst, W);
         
@@ -465,19 +407,15 @@ void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT
         vUp = normalize(matWorld[2].xyz);
     }
 
-    // 2. 크기 적용 (기존 코드처럼 반경으로 계산하려면 0.5f 사용, 아니면 그대로 사용)
-    // 기존 코드에서 사각형이 잘 나왔던 크기 스케일을 그대로 유지하세요.
     float3 vScaledRight = vRight * In[0].vPSize.x * 0.5f;
     float3 vScaledUp = vUp * In[0].vPSize.y * 0.5f;
 
-    // 3. 정점 위치 계산 (기존에 잘 나오던 순서: 좌상-우상-좌하-우하)
     float3 vPos[4];
     vPos[0] = In[0].vPosition.xyz - vScaledRight + vScaledUp; // 좌상
     vPos[1] = In[0].vPosition.xyz + vScaledRight + vScaledUp; // 우상
     vPos[2] = In[0].vPosition.xyz - vScaledRight - vScaledUp; // 좌하
     vPos[3] = In[0].vPosition.xyz + vScaledRight - vScaledUp; // 우하
 
-    // 4. UV 설정 (기존에 잘 나오던 순서 그대로)
     float2 vUV[4] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
 
     [unroll]
@@ -504,26 +442,15 @@ float4 PS_Particle(GS_OUT_POS_PARTICLE In) : SV_TARGET0
     
     if (Has(g_Effect.g_TextureFlags, CURVETEXTURE))
     {
-        if (HasTextureScroll(SCROLL_CURVE))
-        {
-            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
-            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
-            CurveSample = DissolveTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, CURVETEXTURE));
-            CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 3.f;
-        }
-        else if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
+        if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.CurveTexture_SpriteInfo);
-            
-            SpriteUV.x /= 4.0f;
-            
-            // ㅁ ㅁ ㅁ 형태의 구역으로 나누었다면 3번째 구역부터 1번째 구역으로 스크롤을 하자.
-            // 스크롤이 될 변수는 lifeRatio
-            float scrollOffset = lerp(3.0f / 4.0f, 0.0f, LifeRatio);
-            
-            SpriteUV.x += scrollOffset;
-            
+
+            if (HasTextureScroll(SCROLL_CURVE))
+            {
+                SpriteUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+            }
+
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
             CurvePowerStrength *= 3.f;

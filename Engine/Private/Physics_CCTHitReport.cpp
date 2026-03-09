@@ -118,9 +118,48 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 
 	if (abs(hit.worldNormal.y) < 0.5f)
 	{
-		PxVec3 normal = hit.worldNormal.getNormalized();
-		Vec3 disp(normal.x, 0.f, normal.z);
-		disp *= 0.01f;
+		_float aRadius = { 0.5f };
+		_float bRadius = { 0.5f };
+
+		if ((hit.controller->getType() & PxControllerShapeType::eCAPSULE) != 0)
+		{
+			PxCapsuleController* pACapsule = static_cast<PxCapsuleController*>(hit.controller);
+			aRadius = pACapsule->getRadius();
+		}
+
+		if ((hit.other->getType() & PxControllerShapeType::eCAPSULE) != 0)
+		{
+			PxCapsuleController* pBCapsule = static_cast<PxCapsuleController*>(hit.other);
+			bRadius = pBCapsule->getRadius();
+		}
+
+		PxExtendedVec3 lowerPos = hit.other->getPosition();
+		PxExtendedVec3 upperPos = hit.controller->getPosition();
+
+		PxVec3 diff((_float)(lowerPos.x - upperPos.x), 0.f, (_float)(lowerPos.z - upperPos.z));
+		//auto dif = lowerPos - upperPos;
+		auto dist = diff.magnitude();
+
+		auto fixedDist = aRadius + bRadius;
+
+		auto depth = dist - fixedDist;
+
+		PxVec3 slideDir;
+		slideDir.x = (float)(upperPos.x - lowerPos.x);
+		slideDir.y = 0.f;
+		slideDir.z = (float)(upperPos.z - lowerPos.z);
+
+		if (slideDir.magnitudeSquared() < 1e-6f)
+		{
+			slideDir = PxVec3(0.1f, 0.f, 0.1f);
+		}
+		slideDir.normalize();
+
+		if (depth < 0.f)
+			slideDir *= abs(depth);
+
+		slideDir = slideDir * 0.01f;
+		Vec3 disp(slideDir.x, slideDir.y, slideDir.z);
 		pCCT->AddFixedMove(disp);
 		pCCT->SetIsSideOnCCT();
 	}

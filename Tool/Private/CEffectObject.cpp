@@ -280,8 +280,29 @@ void CEffectObject::Set_EffectDesc(const Effect_Desc& Desc)
         }
         m_pComputeShader->Resize_InputStruct(1, m_tEffectDesc.Data._vecGlobalGravityCurve.data(), sizeof(DTO::Gravity_CurveKey), (_uint)m_tEffectDesc.Data._vecGlobalGravityCurve.size());
     }
-       
+
     m_tEffectDesc = Desc;
+
+    if (m_tEffectDesc.Data._bUseScaleCurve)
+    {
+        auto EnsureDefaultKey = [](vector<DTO::Rotation_CurveKey>& vecCurve) {
+            if (vecCurve.empty()) {
+                DTO::Rotation_CurveKey defaultKey;
+                defaultKey.fTimeKey = 0.0f;
+                defaultKey.fValue = 1.0f; //
+                vecCurve.push_back(defaultKey);
+            }
+            };
+
+        EnsureDefaultKey(m_tEffectDesc.Data._vecScaleCurveX);
+
+        if (m_tEffectDesc.Data._bSeparateScaleAxes) {
+            EnsureDefaultKey(m_tEffectDesc.Data._vecScaleCurveY);
+            EnsureDefaultKey(m_tEffectDesc.Data._vecScaleCurveZ);
+        }
+    }
+       
+
     TimeFlagRequest(RESET);
 
     Model_Setting(m_tEffectDesc.Data._Effect_Model_Tag);
@@ -696,8 +717,11 @@ void CEffectObject::Update(const _float fTimeDelta)
    _float fScrollRatio = fActiveTime / fTotalSimTime;
    if (fScrollRatio > 1.f) fScrollRatio = 1.f;
 
-   Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
-    Get_Component<CTransform>()->Set_Scale(vCurrentScale);
+   //Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
+   // Get_Component<CTransform>()->Set_Scale(vCurrentScale);
+
+   // 스케일 보간 함수
+   Apply_Scaling_Dynamics(fRatio);
 
     // GPU에 백터 바인딩.
     Bind_Curve_To_GPU();
@@ -1024,6 +1048,40 @@ void CEffectObject::Update_UV_Scroll_Curve(float fRatio)
             }
         }
     }
+}
+
+void CEffectObject::Apply_Scaling_Dynamics(const _float fRatio)
+{
+    Vec3 vFinalScale;
+
+    // 1. 커브를 사용하는 경우 (1 -> 10 -> 50 -> 10 같은 다이나믹 연출)
+    if (m_tEffectDesc.Data._bUseScaleCurve)
+    {
+        // X축 샘플링 (공통 혹은 개별)
+        vFinalScale.x = Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveX, fRatio);
+
+        if (m_tEffectDesc.Data._bSeparateScaleAxes)
+        {
+            // 각 축별로 개별적인 커브 적용
+            vFinalScale.y = Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveY, fRatio);
+            vFinalScale.z = Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveZ, fRatio);
+        }
+        else
+        {
+            // 하나의 커브로 모든 축 통일
+            vFinalScale.y = vFinalScale.x;
+            vFinalScale.z = vFinalScale.x;
+        }
+    }
+    // 2. 커브를 사용하지 않는 경우 (기존의 단순한 크기 변화)
+    else
+    {
+        vFinalScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale,
+            m_tEffectDesc.Data._Effect_EndScale, fRatio);
+    }
+
+    // 트랜스폼 컴포넌트에 최종 스케일 반영
+    m_pTransform->Set_Scale(vFinalScale);
 }
 
 CEffectObject* CEffectObject::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

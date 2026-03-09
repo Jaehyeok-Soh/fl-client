@@ -212,7 +212,7 @@ void CAnimTool_Manager::Update_Animation(const _float& fTimeDelta)
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimE")));
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimB")));
 	CComputeShader* pAnimMixCS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimMix")));
-
+	CComputeShader* pAnimAdditiveCS = static_cast<CComputeShader*>(m_tAnimControllInfo.pCurrentObject->Get_Script_Component(TEXT("ComputeShader_AnimAdditiveMix")));
 
 	m_tAnimControllInfo.pModel->Update_Animation(pBonCS,
 		pAnimECS,
@@ -220,7 +220,9 @@ void CAnimTool_Manager::Update_Animation(const _float& fTimeDelta)
 		m_tAnimControllInfo.pCurrentObject->Get_Component<CTransform>(),
 		m_tAnimControllInfo.pCurrentObject->Get_Component<CPhysicsCCT>(),
 		pAnimBCS,
-		pAnimMixCS);
+		pAnimMixCS,
+		pAnimAdditiveCS);
+
 	m_tAnimControllInfo.pModel->Emit_Notifies(EAnimNotifyPhase::Late);
 	m_tAnimControllInfo.pModel->Emit_Notifies(EAnimNotifyPhase::PreRender);
 
@@ -335,22 +337,29 @@ HRESULT CAnimTool_Manager::Ready_BuildFiles()
 {
 #pragma region EFFECT
 	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
-	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(ENUM_TO_UINT(ELevelType::ANIMATION), eCategory)))
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>((_uint)ELevelType::ANIMATION, eCategory)))
 		return E_FAIL;
-	std::filesystem::path strUIFolderPath = L"../../Resources/Data/EffectData/";
-	if (std::filesystem::exists(strUIFolderPath))
+
+	std::filesystem::path strEffectFolderPath = L"../../Resources/Data/EffectData/";
+
+	if (std::filesystem::exists(strEffectFolderPath))
 	{
-		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(strEffectFolderPath))
 		{
-			string strFileName = iter.path().stem().string(); // 파일명 추출
+			if (std::filesystem::is_regular_file(entry.path()))
+			{
+				// 확장자가 .json인 것만 골라내기
+				if (entry.path().extension() == ".json")
+				{
+					if (FAILED(m_pGameInstance->Load_File_Json((_uint)ELevelType::ANIMATION, eCategory, entry.path())))
+						return E_FAIL;
 
-			if (FAILED(m_pGameInstance->Load_File_Json(ENUM_TO_UINT(ELevelType::ANIMATION), eCategory, iter.path())))
-				return E_FAIL;
+					if (FAILED(Build_File((_uint)ELevelType::ANIMATION, eCategory, entry.path().stem().string())))
+						return E_FAIL;
 
-			if (FAILED(Build_File(ENUM_TO_UINT(ELevelType::ANIMATION), eCategory, strFileName)))
-				return E_FAIL;
-
-			m_vecEffectTags.push_back(strFileName);
+					m_vecEffectTags.push_back(entry.path().stem().string());
+				}
+			}
 		}
 	}
 #pragma endregion

@@ -121,9 +121,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     g_hInstance = hInstance;
 
-    MONITORINFO tMonitorInfo = { sizeof(MONITORINFO) };
-    ::GetMonitorInfo(MonitorFromPoint({ 0, 0 }, MONITOR_DEFAULTTONEAREST), &tMonitorInfo);
-    RECT rcWork = tMonitorInfo.rcWork;
+    // MONITORINFO tMonitorInfo = { sizeof(MONITORINFO) };
+    // ::GetMonitorInfo(MonitorFromPoint({ 0, 0 }, MONITOR_DEFAULTTONEAREST), &tMonitorInfo);
+    RECT rcWork = { 100, 100, 1700, 1000 };
 
     RECT rc = { 0, 0, rcWork.right - rcWork.left,  rcWork.bottom - rcWork.top };
 

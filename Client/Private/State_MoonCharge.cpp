@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "State_MoonCharge.h"
-
+#include "GameInstance.h"
 CState_MoonCharge::CState_MoonCharge(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent)
 {
@@ -29,6 +29,7 @@ HRESULT CState_MoonCharge::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	m_bShakeActived = false;
 	return S_OK;
 }
 
@@ -36,11 +37,14 @@ void CState_MoonCharge::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	//if (m_FAniFlags & STATEANI_FLAG::SA_PreAniDone &&
-	//	m_fStateElapsed < 1.15f)
-	//{
-	//	//Go_Front(fTimeDelta);
-	//}
+	if (m_bShakeActived == false && m_fStateElapsed >= 1.f)
+	{
+		CAM_SHAKING_DATA data{};
+		data.fTime = 0.2f;
+		data.fPower = 0.3f;
+		CGameInstance::GetInstance()->Camera_Shaking(data);
+		m_bShakeActived = true;
+	}
 }
 
 HRESULT CState_MoonCharge::End()

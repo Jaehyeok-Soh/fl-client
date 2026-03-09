@@ -59,14 +59,6 @@ void CUIBossAction_Text::Update_Priority(const _float fTimeDelta)
 void CUIBossAction_Text::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	if (KEY_BUTTON_UP(DIK_9))
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-
-	}
 }
 
 void CUIBossAction_Text::Update_Late(const _float fTimeDelta)
@@ -119,31 +111,31 @@ HRESULT CUIBossAction_Text::Attach_Personal_Info()
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:
-		m_pGameInstance->Subscribe<ACTION3>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
 			{
 				this->Set_Visible();
 			});
-		m_pGameInstance->Subscribe<ACTION4>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
 			{
 				this->Set_Invisible();
 			});
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:
-		m_pGameInstance->Subscribe<ACTION3>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
 			{
 				this->Set_Visible();
 			});
-		m_pGameInstance->Subscribe<ACTION4>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
 			{
 				this->Set_Invisible();
 			});
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:
-		m_pGameInstance->Subscribe<ACTION3>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
 			{
 				this->Set_Visible();
 			});
-		m_pGameInstance->Subscribe<ACTION4>([this]()
+		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
 			{
 				this->Set_Invisible();
 			});
@@ -164,12 +156,6 @@ void CUIBossAction_Text::Tick_By_Type(const _float fTimeDelta)
 HRESULT CUIBossAction_Text::Convert_Stat_To_Text()
 {
 	return S_OK;
-}
-
-void CUIBossAction_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
 }
 
 void CUIBossAction_Text::Initialize_Visible_Event()

@@ -356,10 +356,12 @@ public:
 	void RemoveActor(PxRigidActor* actor);
 	void ResetActorFilter(PxRigidActor* actor);
 	PxScene* GetPhysicsScene();
+	PxControllerManager* GetPhysicsCCTManager();
 	PxTransform XMMatrixToPxTransform(Matrix mat);
 	Matrix PxTransformToXMMatrix(PxTransform pxTransform);
 	_bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
 	class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
+	class CPhysics_QueryFilterCallback_Gun* GetQueryFilterCallback_Gun();
 	void SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes);
 	PxCollection* DeserializeStaticMesh(std::filesystem::path path);
 	void SerializeConvexMesh(std::filesystem::path path, vector<PxConvexMesh*> meshes);

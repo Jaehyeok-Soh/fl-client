@@ -584,6 +584,117 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Separator();
 	}
 
+	// ===============================//
+//        Scale Curve Setting     //
+// ===============================//
+
+	if (ImGui::CollapsingHeader("Scale Curve Settings"))
+	{
+		ImGui::Spacing();
+
+		// 1. 커브 사용 여부 및 축 분리 여부
+		m_bModified |= ImGui::Checkbox("Use Scale Curve", &m_tCurrentDesc.Data._bUseScaleCurve);
+		ImGui::SameLine();
+		m_bModified |= ImGui::Checkbox("Separate Axes", &m_tCurrentDesc.Data._bSeparateScaleAxes);
+
+		if (m_tCurrentDesc.Data._bUseScaleCurve)
+		{
+			// 2. 가시성을 위한 최대 스케일 범위 설정 (캔버스 세로축 기준)
+			static float fMaxScaleView = 50.0f;
+			ImGui::SetNextItemWidth(100.f);
+			ImGui::DragFloat("Max View Range", &fMaxScaleView, 1.0f, 1.0f, 1000.0f, "Max: %.f");
+			ImGui::SameLine();
+			ImGui::TextDisabled("(?) Adjust vertical height of canvas");
+
+			// 축별로 루프 (SeparateAxes가 꺼져있으면 X만 표시)
+			int iLoopCount = m_tCurrentDesc.Data._bSeparateScaleAxes ? 3 : 1;
+			const char* pAxisLabels[] = { "Scale X (All)", "Scale Y", "Scale Z" };
+			vector<DTO::Rotation_CurveKey>* pCurves[] = {
+				&m_tCurrentDesc.Data._vecScaleCurveX,
+				&m_tCurrentDesc.Data._vecScaleCurveY,
+				&m_tCurrentDesc.Data._vecScaleCurveZ
+			};
+			ImU32 axisColors[] = { IM_COL32(255, 100, 100, 255), IM_COL32(100, 255, 100, 255), IM_COL32(100, 100, 255, 255) };
+
+			for (int i = 0; i < iLoopCount; ++i)
+			{
+				if (ImGui::TreeNode(pAxisLabels[i]))
+				{
+					ImVec2 canvas_size = ImVec2(ImGui::GetContentRegionAvail().x, 200.0f); // 스케일은 좀 더 크게
+					ImGui::InvisibleButton("ScaleCurveCanvas", canvas_size);
+					ImVec2 canvas_p0 = ImGui::GetItemRectMin();
+					ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_size.x, canvas_p0.y + canvas_size.y);
+					ImVec2 mouse_pos = ImGui::GetMousePos();
+
+					ImDrawList* draw_list = ImGui::GetWindowDrawList();
+					draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(35, 35, 35, 255));
+
+					// 가이드 라인 (0, 1.0 지점 표시)
+					float y_1_0 = canvas_p0.y + (1.0f - (1.0f / fMaxScaleView)) * canvas_size.y;
+					draw_list->AddLine(ImVec2(canvas_p0.x, y_1_0), ImVec2(canvas_p1.x, y_1_0), IM_COL32(100, 100, 100, 150));
+					draw_list->AddText(ImVec2(canvas_p0.x + 5, y_1_0 - 15), IM_COL32(150, 150, 150, 255), "Value: 1.0");
+
+					auto& pVec = *pCurves[i];
+
+					for (size_t j = 0; j < pVec.size(); ++j)
+					{
+						// 좌표 계산: Value가 fMaxScaleView일 때 캔버스 상단(0.0)에 위치
+						float fNormalizedVal = pVec[j].fValue / fMaxScaleView;
+						ImVec2 point_pos = ImVec2(
+							canvas_p0.x + pVec[j].fTimeKey * canvas_size.x,
+							canvas_p0.y + (1.0f - fNormalizedVal) * canvas_size.y
+						);
+
+						// 삭제 (Ctrl + 좌클릭)
+						float dist = sqrtf(powf(mouse_pos.x - point_pos.x, 2) + powf(mouse_pos.y - point_pos.y, 2));
+						if (dist < 8.0f && ImGui::IsMouseClicked(0) && ImGui::GetIO().KeyCtrl)
+						{
+							pVec.erase(pVec.begin() + j);
+							m_bModified = true; break;
+						}
+
+						// 선 그리기
+						if (j < pVec.size() - 1)
+						{
+							float fNextNorm = pVec[j + 1].fValue / fMaxScaleView;
+							ImVec2 next_point = ImVec2(
+								canvas_p0.x + pVec[j + 1].fTimeKey * canvas_size.x,
+								canvas_p0.y + (1.0f - fNextNorm) * canvas_size.y
+							);
+							draw_list->AddLine(point_pos, next_point, axisColors[i], 2.5f);
+						}
+						draw_list->AddCircleFilled(point_pos, 4.0f, IM_COL32(255, 255, 255, 255));
+
+						// 값 표시 (현재 점 위에 수치 나타내기)
+						char buf[16]; sprintf_s(buf, "%.1f", pVec[j].fValue);
+						draw_list->AddText(ImVec2(point_pos.x + 5, point_pos.y - 15), IM_COL32(255, 255, 255, 200), buf);
+					}
+
+					// 점 추가 (우클릭) - 실제 스케일 값으로 변환하여 저장
+					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(1))
+					{
+						DTO::Rotation_CurveKey newKey;
+						newKey.fTimeKey = (mouse_pos.x - canvas_p0.x) / canvas_size.x;
+						// 마우스 y 좌표를 fMaxScaleView 범위 내의 실제 수치로 변환
+						float fRatio = 1.0f - (mouse_pos.y - canvas_p0.y) / canvas_size.y;
+						newKey.fValue = fRatio * fMaxScaleView;
+
+						pVec.push_back(newKey);
+						std::sort(pVec.begin(), pVec.end(), [](auto& a, auto& b) { return a.fTimeKey < b.fTimeKey; });
+						m_bModified = true;
+					}
+					ImGui::TreePop();
+				}
+			}
+
+			// SeparateAxes가 꺼져있을 때 X 데이터를 Y, Z에 동기화
+			if (!m_tCurrentDesc.Data._bSeparateScaleAxes) {
+				m_tCurrentDesc.Data._vecScaleCurveY = m_tCurrentDesc.Data._vecScaleCurveX;
+				m_tCurrentDesc.Data._vecScaleCurveZ = m_tCurrentDesc.Data._vecScaleCurveX;
+			}
+		}
+	}
+
 	// ==================//
    //     Emission      //
   // ==================//

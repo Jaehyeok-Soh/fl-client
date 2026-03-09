@@ -13,6 +13,7 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
 #include "GameInstance.h"
+#include <UI_Manager.h>
 
 CUIPlayerStat_Text::CUIPlayerStat_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIText(pDevice, pDeviceContext)
@@ -127,9 +128,6 @@ HRESULT CUIPlayerStat_Text::Attach_Personal_Info()
 			return E_FAIL;
 	}
 
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
-
 	return S_OK;
 }
 
@@ -212,20 +210,41 @@ HRESULT CUIPlayerStat_Text::Convert_Stat_To_Text()
 	return S_OK;
 }
 
-
-void CUIPlayerStat_Text::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+void CUIPlayerStat_Text::Bind_Events()
 {
-	if (!m_isActive)
-		return;
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
 
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if (m_isVisible)
-			Set_Invisible();
-		else
-			Set_Visible();
-	}
+	m_pGameInstance->Subscribe<CINEMATIC_START>(
+		[this]() 
+		{
+			this->Set_Invisible(); 
+		});
+	m_pGameInstance->Subscribe<CINEMATIC_END>(
+		[this]() 
+		{ 
+			this->Set_Visible(); 
+		});
+
 }
+
+
 
 void CUIPlayerStat_Text::Initialize_Visible_Event()
 {

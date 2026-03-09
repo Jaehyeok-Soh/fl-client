@@ -29,7 +29,9 @@ public:
     void FlushScene();
     void RemoveActor(PxRigidActor* actor);
     void ResetActorFilter(PxRigidActor* actor);
+
     PxScene* GetPhysicsScene() { return m_pScene; }
+    PxControllerManager* GetPhysicsCCTManager();
 /// <summary>
 /// Utils
 /// </summary>
@@ -40,6 +42,7 @@ public:
     PxVec3 GetPureScale(Matrix mat);
     _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
     class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
+    class CPhysics_QueryFilterCallback_Gun* GetQueryFilterCallback_Gun();
 #ifdef _DEBUG
     HRESULT Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
     HRESULT Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);

@@ -4,7 +4,6 @@
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "GameInstance.h"
-#include "UITrigger.h"
 
 NS_BEGIN(Client)
 
@@ -13,127 +12,6 @@ CUI_Manager::CUI_Manager()
 	:m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
-}
-
-HRESULT CUI_Manager::Add_VecCanvasCache(uint32_t iLevelIndex, CCanvas* pCache)
-{
-	if (iLevelIndex >= g_iLevelType_Count)
-		return E_FAIL; 
-	m_vecCanvasCache[iLevelIndex].push_back(pCache); 
-	return S_OK;
-}
-
-HRESULT CUI_Manager::Add_VecGenericUICache(uint32_t iLevelIndex, CGenericUI* pCache)
-{
-	if (iLevelIndex >= g_iLevelType_Count)
-		return E_FAIL; 
-	m_vecGenericUICache[iLevelIndex].push_back(pCache); 
-	return S_OK;
-}
-
-HRESULT CUI_Manager::Merge_MapCanvasCache(uint32_t iLevelIndex, unordered_map<_string, CCanvas*>&& Cache)
-{
-	if (iLevelIndex >= g_iLevelType_Count)
-		return E_FAIL;
-
-	auto& dst = m_mapCanvasCache[iLevelIndex];
-
-	for (auto& kv : Cache)
-	{
-		if (dst.find(kv.first) == dst.end())
-			dst.emplace(std::move(kv.first), kv.second);
-	}
-	Cache.clear();
-	return S_OK;
-}
-
-HRESULT CUI_Manager::Merge_MapGenericUICache(uint32_t iLevelIndex, unordered_map<_string, CGenericUI*>&& Cache)
-{
-	if (iLevelIndex >= g_iLevelType_Count)
-		return E_FAIL;
-
-	auto& dst = m_mapUICache[iLevelIndex];
-
-	for (auto& kv : Cache)
-	{
-		if (dst.find(kv.first) == dst.end())
-			dst.emplace(std::move(kv.first), kv.second);
-	}
-
-	Cache.clear();
-	return S_OK;
-}
-
-CCanvas* CUI_Manager::Find_Canvas(uint32_t iLevelIndex, const _string& strCanvasTag)
-{
-	auto iter = m_mapCanvasCache[iLevelIndex].find(strCanvasTag);
-	if (iter == m_mapCanvasCache[iLevelIndex].end())
-		return nullptr;
-	return iter->second;
-}
-
-CGenericUI* CUI_Manager::Find_GenericUI(uint32_t iLevelIndex, const _string& strUITag)
-{
-	auto iter = m_mapUICache[iLevelIndex].find(strUITag);
-	if (iter == m_mapUICache[iLevelIndex].end())
-		return nullptr;
-	return iter->second;
-}
-
-vector<CGenericUI*>* CUI_Manager::Find_GenericUI_Vector(uint32_t iLevelIndex, const _string& strUILayerTag)
-{
-	auto* pCanvas = Find_Canvas(iLevelIndex, strUILayerTag);
-	if (nullptr == pCanvas)
-		return nullptr;
-	return pCanvas->Get_UIVector();
-}
-
-vector<CCanvas*>* CUI_Manager::Get_Level_All_Canvas(uint32_t iLevelIndex)
-{
-	if (iLevelIndex >= g_iLevelType_Count)
-		return nullptr;
-	return &m_vecCanvasCache[iLevelIndex];
-}
-
-vector<CGenericUI*>* CUI_Manager::Get_Level_All_GenericUI(uint32_t iLevelIndex)
-{
-	if (iLevelIndex >= g_iLevelType_Count)
-		return nullptr;
-	return &m_vecGenericUICache[iLevelIndex];
-}
-
-void CUI_Manager::Clear_Cache(uint32_t iLevelIndex)
-{
-	m_vecTriggerUIs.clear();
-	m_vecCanvasCache[iLevelIndex].clear();
-	m_vecGenericUICache[iLevelIndex].clear();
-	m_mapCanvasCache[iLevelIndex].clear();
-	m_mapUICache[iLevelIndex].clear();
-}
-
-void CUI_Manager::Add_TriggerUI(std::vector<CUITrigger*>&& vecUIs)
-{
-	m_vecTriggerUIs.insert(
-		m_vecTriggerUIs.end(),
-		std::make_move_iterator(vecUIs.begin()),
-		std::make_move_iterator(vecUIs.end())
-	);
-	vecUIs.clear();
-}
-
-HRESULT CUI_Manager::Bind_Trigger(_uint iLevelID)
-{
-	for (auto* pUI : m_vecTriggerUIs)
-	{
-		if (FAILED(pUI->Bind_Cache(iLevelID)))
-			return E_FAIL;
-	}
-	return S_OK;
-}
-
-void CUI_Manager::Clear_TriggerUI()
-{
-	m_vecTriggerUIs.clear();
 }
 
 HRESULT CUI_Manager::Regist_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag, const _uint iPrototypeLevel, void* pArg, _uint iNumPrefab)
@@ -214,21 +92,22 @@ void CUI_Manager::Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePref
 			});
 	}
 	break;
+	case Client::EUIPrefabType::TUTORIAL_PANNEL:
+	{
+		_wstring wstr = m_vecPrefabs[ENUM_TO_UINT(EUIPrefabType::TUTORIAL_PANNEL)];
+		m_pGameInstance->Request_AddObject(iPoolRegistLevel, wstr, iSpawnLevel, pArg,
+			[this, iPoolRegistLevel, iSpawnLevel](CGameObject* pObj)
+			{
+				auto* p = static_cast<CCanvas*>(pObj);
+				p->Ready_Prefab(iPoolRegistLevel, iSpawnLevel);
+			});
+	}
+	break;
 	case Client::EUIPrefabType::END:
 		break;
 	default:
 		break;
 	}
-}
-
-void CUI_Manager::Request_Clear()
-{
-	m_isClear = true;
-}
-
-void CUI_Manager::Request_Clear_DeadUI()
-{
-	m_isDeadUIClear = true;
 }
 
 void CUI_Manager::Free()

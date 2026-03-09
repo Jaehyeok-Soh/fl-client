@@ -14,7 +14,7 @@ CModelAnimation::CModelAnimation(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	: Super(rhs)
 	, m_iChannelCount(rhs.m_iChannelCount)
-	, m_vecChannels(rhs.m_vecChannels)
+	//, m_vecChannels(rhs.m_vecChannels)
 	, m_vecCurrentKeyFrameIndices(rhs.m_vecCurrentKeyFrameIndices)
 	, m_fCurrentTrackPosition(rhs.m_fCurrentTrackPosition)
 	, m_fTickPerSecond(rhs.m_fTickPerSecond)
@@ -34,8 +34,14 @@ CModelAnimation::CModelAnimation(const CModelAnimation& rhs)
 	//Safe_AddRef(m_pChannelDataBuffer);
 	//Safe_AddRef(m_pInputChannelSB_SRV);
 
-	for (auto& pElement : m_vecChannels)
-		Safe_AddRef(pElement);
+	//for (auto& pElement : m_vecChannels)
+	//	Safe_AddRef(pElement);
+
+	m_vecChannels.reserve(rhs.m_vecChannels.size());
+	for (auto& pChannel : rhs.m_vecChannels)
+	{
+		m_vecChannels.push_back(pChannel->Clone());
+	}
 }
 
 HRESULT CModelAnimation::Initialize(void* pArg)
@@ -195,6 +201,62 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 	}
 }
 
+void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, const vector<class CChannel*>& vRefChannels,CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float fRatioOffset)
+{
+	Bind_AnimationAdditiveData(pAnimAdditiveCS, pPreAnimCS);
+
+	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed_Offset;
+
+	if (m_fCurrentTrackPosition >= m_fDuration)
+	{
+		m_fCurrentTrackPosition = 0.f;
+	}
+
+	// 가변 데이터 작성
+	CS_MU_ANIMMIX tMuDesc{};
+	tMuDesc.fCurTrackPosition		= m_fCurrentTrackPosition;
+	tMuDesc.iChannelCount			= m_iChannelCount;
+	tMuDesc.iRootMotionBoneIndex	= m_iRootBoneIdx;
+	tMuDesc.iFirst					= fRatioOffset; // dnjsfosms first 값인데 mix ratio offset 값을 넣어주자. struct 돌려 쓰기 위함..
+	tMuDesc.iMixType				= 1; // CS_MU_ANIMMIX 에는 mix type이라 되어있는데 additive는 iRefernceKeyStart로 사용한다
+
+	pAnimAdditiveCS->Bind_Compute_AnimMixCB(tMuDesc);
+
+	// dispatch
+	_uint iGroupX = ((_uint)m_vecChannels.size() + 31) / 32;
+	pAnimAdditiveCS->Dispatch(iGroupX, 1, 1);
+
+
+	// 원래 하던대로 channel update
+	// todo_eunbi : mix는 root motion 안 건들인다는 마인드.. but 문제 생기면 다시 합시다
+	_uint iIndex = { 0 };
+	for (auto& pChannel : m_vecChannels)
+	{
+		_uint iBondIdx = pChannel->Get_BoneIndex();
+		if (m_vecMixRatios[(size_t)iBondIdx] != 0.f)
+		{
+			//if (iIndex == m_iRootBoneIdx && !m_bApplyRootMotion)
+			//{
+			//	pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset);
+			//	continue;
+			//}
+
+			for (auto& pRefChannel : vRefChannels)
+			{
+				if (pRefChannel->Get_BoneIndex() == iBondIdx)
+				{
+					pChannel->Update_Addtive(vecBones, pRefChannel->Get_KeyFrames(), m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fRatioOffset);
+					continue;
+				}
+			}
+			
+		}
+
+		else
+			iIndex++;
+	}
+}
+
 void CModelAnimation::Clear()
 {
 	m_fCurrentTrackPosition = 0.f;
@@ -213,8 +275,8 @@ _bool CModelAnimation::Is_TrackPositionBetweenRaw(_float fTrackPositionA, _float
 
 void CModelAnimation::Bind_AnimationEData(CComputeShader* pAnimEShader)
 {
-	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME), m_pInputKeySB_SRV, m_pKeyFrameBuffer);
-	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), m_pInputChannelSB_SRV, m_pChannelDataBuffer);
+	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME),	m_pInputKeySB_SRV,		m_pKeyFrameBuffer);
+	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), m_pInputChannelSB_SRV,	m_pChannelDataBuffer);
 }
 
 void CModelAnimation::Bind_AnimationMixData(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS)
@@ -225,17 +287,33 @@ void CModelAnimation::Bind_AnimationMixData(CComputeShader* pAnimMixCS, CCompute
 
 	auto pKeySRV = pAnimMixCS->Get_SRV("IMMU_KEYFRAMS");
 	auto pChannelSRV = pAnimMixCS->Get_SRV("IMMU_CHANNELDATAS");
+	auto pMixSRV = pAnimMixCS->Get_SRV("IMMU_MIXDATA"); // todo 툴에서는 이렇게 써야하지만 client에서능 m_pMixSB_SRV 써도 가능 : 한 애니메이션이 여러 mix 방법을 쓰지 않는다는 가정 하에
+
 
 	//Bind_AnimationEData(pAnimMixCS);
 	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME), pKeySRV, m_pKeyFrameBuffer);
 	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), pChannelSRV, m_pChannelDataBuffer);
-	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_MIXDATA), m_pMixSB_SRV, m_pMixDataBuffer);
-
-
+	pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_MIXDATA), pMixSRV, m_pMixDataBuffer);
 
 	//// animation 결과 MixCS에 bind
 	//pAnimMixCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRT),
 	//	pAnimMixCS->Get_SRV("MU_PRETRANSFORMS"), pPreAnimCS->Get_Output_Buffer());
+}
+
+void CModelAnimation::Bind_AnimationAdditiveData(CComputeShader* pAdditiveCS, CComputeShader* pPreAnimCS)
+{
+	// animation 결과 blendCS에 bind
+	pAdditiveCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRT),
+		pAdditiveCS->Get_SRV("MU_PRETRANSFORMS"), pPreAnimCS->Get_Output_Buffer());
+
+	auto pKeySRV		= pAdditiveCS->Get_SRV("IMMU_KEYFRAMS");
+	auto pChannelSRV	= pAdditiveCS->Get_SRV("IMMU_CHANNELDATAS");
+	auto pMixSRV		= pAdditiveCS->Get_SRV("IMMU_MIXDATA"); // todo 툴에서는 이렇게 써야하지만 client에서능 m_pMixSB_SRV 써도 가능 : 한 애니메이션이 여러 mix 방법을 쓰지 않는다는 가정 하에
+
+	//Bind_AnimationEData(pAnimMixCS);
+	pAdditiveCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME),		pKeySRV,		m_pKeyFrameBuffer);
+	pAdditiveCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA),	pChannelSRV,	m_pChannelDataBuffer);
+	pAdditiveCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_MIXDATA),		pMixSRV,		m_pMixDataBuffer);
 }
 
 HRESULT CModelAnimation::Ready_Buffers()
@@ -303,7 +381,7 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 			MSG_BOX("Warnning : Channel Frame Has One!!!!!");
 		}
 
-		pIniailChannelData[i].iKeyStart = iKeyAcc;
+		m_iKeyFrameStart = pIniailChannelData[i].iKeyStart = iKeyAcc;
 		pIniailChannelData[i].iKeyCount = _uint(KeyFrames.size());
 		pIniailChannelData[i].Padding0 = 0.f;
 
@@ -338,6 +416,16 @@ HRESULT CModelAnimation::Ready_BindBuffers(CComputeShader* pAnimESahder)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CModelAnimation::Bind_RefAnimaationData(CComputeShader* pAdditiveCS)
+{
+	auto pKeySRV		= pAdditiveCS->Get_SRV("REF_KEYFRAMS");
+	auto pChannelSRV	= pAdditiveCS->Get_SRV("REF_CHANNELDATAS");
+
+	//Bind_AnimationEData(pAnimMixCS);
+	pAdditiveCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::REF_KEYFRAME), pKeySRV, m_pKeyFrameBuffer);
+	pAdditiveCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::REF_CHANNELDATA), pChannelSRV, m_pChannelDataBuffer);
 }
 
 void CModelAnimation::Check_UpdateCpu(const vector<class CBone*>& vecBones)
@@ -400,15 +488,9 @@ void CModelAnimation::Set_MixRatio(vector<_float>& vecMixRatio, CComputeShader* 
 	if (m_pMixDataBuffer == nullptr)
 		return;
 
-	// 4. SRV 연결
-	m_pMixSB_SRV = pAnimMixCS->Get_SRV("IMMU_MIXDATA");
-	m_pMixSB_SRV->SetResource(m_pMixDataBuffer->Get_SRV());
-
-/*	m_pInputKeySB_SRV = pAnimMixCS->Get_SRV("IMMU_KEYFRAMS");
-	m_pInputKeySB_SRV->SetResource(m_pKeyFrameBuffer->Get_SRV());
-
-	m_pInputChannelSB_SRV = pAnimMixCS->Get_SRV("IMMU_CHANNELDATAS");
-	m_pInputChannelSB_SRV->SetResource(m_pChannelDataBuffer->Get_SRV())*/;
+	//// 4. SRV 연결
+	//m_pMixSB_SRV = pAnimMixCS->Get_SRV("IMMU_MIXDATA");
+	//m_pMixSB_SRV->SetResource(m_pMixDataBuffer->Get_SRV());
 
 
 	if (m_pMixSB_SRV)

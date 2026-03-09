@@ -9,6 +9,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUINameplate_BG::CUINameplate_BG(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -117,10 +118,26 @@ HRESULT CUINameplate_BG::Attach_Personal_Info()
 	return S_OK;
 }
 
-void CUINameplate_BG::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+void CUINameplate_BG::Bind_Events()
 {
-	if (!m_isActive)
-		return;
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
 }
 
 void CUINameplate_BG::Initialize_Visible_Event()

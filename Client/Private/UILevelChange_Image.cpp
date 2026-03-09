@@ -160,28 +160,21 @@ HRESULT CUILevelChange_Image::Attach_Personal_Info()
 
 void CUILevelChange_Image::Trigger_By_InteractState()
 {
-	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_ENTER))
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_ENTER))
 	{
 		m_isHover = true;
 	}
-	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::HOVER_EXIT))
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_EXIT))
 	{
 		m_isHover = false;
 	}
 
-	if (Engine_Utils::Has_Flag(m_iInteractState, EUIEvent_Flag::PRESS_EXIT))
+	if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_EXIT))
 	{
 		if (m_eNextLevelID == ELevelType::END)
 			return;
 		m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
-		m_pUIManager->Request_Clear();
 	}
-}
-
-void CUILevelChange_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
 }
 
 void CUILevelChange_Image::Initialize_Visible_Event()

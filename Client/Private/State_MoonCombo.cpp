@@ -3,6 +3,7 @@
 
 #include "Player.h"
 
+#include "GameInstance.h"
 CState_MoonCombo::CState_MoonCombo(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent,"MoonCombo")
 {
@@ -78,6 +79,17 @@ HRESULT CState_MoonCombo::Start(void* pArg, _bool bForce)
 void CState_MoonCombo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	if (m_iComboCount == 4)
+	{
+		if (m_bShakeActived  == false && m_fStateElapsed >= 0.8f)
+		{
+			CAM_SHAKING_DATA data{};
+			data.fTime = 0.2f;
+			data.fPower = 0.3f;
+			CGameInstance::GetInstance()->Camera_Shaking(data);
+			m_bShakeActived = true;
+		}
+	}
 }
 
 HRESULT CState_MoonCombo::End()

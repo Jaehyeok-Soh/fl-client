@@ -284,6 +284,7 @@
     <ClCompile Include="..\Private\Physics_CCTManager.cpp" />
     <ClCompile Include="..\Private\Physics_FilterEventCallback.cpp" />
     <ClCompile Include="..\Private\Physics_Module.cpp" />
+    <ClCompile Include="..\Private\Physics_QueryFilterCallback_Gun.cpp" />
     <ClCompile Include="..\Private\Physics_ResourceManager.cpp" />
     <ClCompile Include="..\Private\Physics_ShapeFactory.cpp" />
     <ClCompile Include="..\Private\Physics_Utils.cpp" />
@@ -463,6 +464,7 @@
     <ClInclude Include="..\Public\Physics_CCTManager.h" />
     <ClInclude Include="..\Public\Physics_FilterEventCallback.h" />
     <ClInclude Include="..\Public\Physics_Module.h" />
+    <ClInclude Include="..\Public\Physics_QueryFilterCallback_Gun.h" />
     <ClInclude Include="..\Public\Physics_ResourceManager.h" />
     <ClInclude Include="..\Public\Physics_ShapeFactory.h" />
     <ClInclude Include="..\Public\Physics_Utils.h" />

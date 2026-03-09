@@ -11,14 +11,18 @@
 #include "UIMonsterStat_Text.h"
 #include "UIDamageFont_Text.h"
 #include "UIBossStat_Text.h"
+#include "UITutorial_Pannel_Text.h"
 // 다이나믹 이미지 클래스
 #include "UINameplate_BG.h"
 #include "UIBossStat_Image.h"
 #include "UIMiniMap_Monster_Icon.h"
+#include "UITutorial_Pannel_Image.h"
 // 트리거 클래스
 
 #include"UI_Manager.h"
 #include "GameInstance.h"
+
+#define EDITOR_Y_SIZE 1080
 
 CBuilder_UIPrefabs::CBuilder_UIPrefabs(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
 	:Super(pDevice, pDeviceContext, iLevelID)
@@ -55,16 +59,6 @@ HRESULT CBuilder_UIPrefabs::Build(const CDataDocumentBase& document)
 		{
 			const auto* pDto = static_cast<const Engine::CUI_Text_DTO*>(pObjectData);
 			if (FAILED(Create_TextDTO(pDto->Get_Data())))
-				return E_FAIL;
-		}
-	}
-	// For. Trigger
-	{
-		const vector<Engine::IObjectDataBase*> vecDataList = doc.Get_ListByType(ENUM_TO_UINT(DTO::EUIType::TRIGGER));
-		for (const auto& pObjectData : vecDataList)
-		{
-			const auto* pDto = static_cast<const Engine::CUI_Trigger_DTO*>(pObjectData);
-			if (FAILED(Create_TriggerDTO(pDto->Get_Data())))
 				return E_FAIL;
 		}
 	}
@@ -105,7 +99,7 @@ HRESULT CBuilder_UIPrefabs::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	Desc.iLevelIndex		= data.iLevelIndex;
 	Desc.strName			= data.strTag;
 	m_vAspect.x				= (_float)g_iWinSizeX / (_float)data.iEditorSizeX;
-	m_vAspect.y				= (_float)g_iWinSizeY / (_float)data.iEditorSizeY;
+	m_vAspect.y				= (_float)g_iWinSizeY / EDITOR_Y_SIZE;
 	Desc.fX					= data.fPosX * m_vAspect.x;
 	Desc.fY					= data.fPosY * m_vAspect.y;
 	Desc.fZ					= data.fPosZ;
@@ -141,15 +135,6 @@ HRESULT CBuilder_UIPrefabs::Create_TextDTO(const DTO::TUI_TextData& data)
 		return E_FAIL;
 
 	m_MapTextDataCache.emplace(data.strOwnerName, data);
-	return S_OK;
-}
-
-HRESULT CBuilder_UIPrefabs::Create_TriggerDTO(const DTO::TUI_TriggerData& data)
-{
-	if (data.eType != DTO::EUIType::TRIGGER)
-		return E_FAIL;
-
-	m_MapTriggerDataCache.emplace(data.strOwnerName, data);
 	return S_OK;
 }
 
@@ -231,7 +216,8 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		const _bool isMonsterNameplate	= (Type >= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_END);
 		const _bool isDamageFont		= (Type >= DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END);
 		const _bool isBossStat			= (Type >= DTO::EUITextSubClassType::BOSS_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BOSS_STAT_TEXT_END);
-
+		const _bool isTutorialPannel	= (Type >= DTO::EUITextSubClassType::TUTORIAL_PANNEL_BEGIN && Type <= DTO::EUITextSubClassType::TUTORIAL_PANNEL_END);
+		
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
 		TextDesc.eShaderType	= iter->second.eShaderType;
@@ -288,6 +274,20 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			}
 			m_vecPrefabTags.push_back(wstrPoolTag);
 		}
+		else if (isTutorialPannel)
+		{
+			CUITutorial_Pannel_Text::TUTORIAL_PANNEL_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			wstrProtoTag = L"Prototype_UI_TutorialPannelText";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -304,19 +304,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(JustImageDesc) = DefaultDesc;
 		JustImageDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;			
 	}
-
-	////////////////////////////////////////
-	// TRIGGER //
-	else if (eClassType == DTO::EUIClassType::TRIGGER)
-	{
-		auto iter = m_MapTriggerDataCache.find(data.strTag);
-		if (iter == m_MapTriggerDataCache.end())
-			return E_FAIL;
-		const auto Type = iter->second.eTriggerSubClassType;
-		const _bool isMenu = (Type == DTO::EUITriggerSubClassType::MENU_TAB_TRIGGER);
-		const _bool isMenuExit = (Type == DTO::EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER);
-	}
-
+	
 	////////////////////////////////////////
 	// DYNAMIC_IMAGE //
 	else if (eClassType == DTO::EUIClassType::DYNAMIC_IMAGE)
@@ -330,11 +318,13 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		const _bool isMonsterNameplate	= (Type == DTO::EUIDImageSubClassType::MONSTER_NAMEPLATE_BG);
 		const _bool isBossStat			= (Type >= DTO::EUIDImageSubClassType::BOSS_STAT_BEGIN && Type <= DTO::EUIDImageSubClassType::BOSS_STAT_END);
 		const _bool isMonsterIcon		= (Type == DTO::EUIDImageSubClassType::MINIMAP_MONSTER_ICON);
+		const _bool isTutorialPannel	= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BEGIN && Type <= DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_END);
 
 		if (isMonsterNameplate)
 		{
 			CUINameplate_BG::NAMEPLATE_BG_DESC NameplateDesc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(NameplateDesc) = DefaultDesc;
+			NameplateDesc.eSubClassType = Type;
 			NameplateDesc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
 			wstrProtoTag = L"Prototype_UI_Nameplate_BG";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(NameplateDesc.strName);
@@ -351,6 +341,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		{
 			CUIBossStat_Image::BOSS_STAT_IMAGE_DESC Desc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
 			wstrProtoTag = L"Prototype_UI_BossStatImage";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
 
@@ -367,6 +358,21 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			CUIMiniMap_Monster_Icon::MINIMAP_MONSTER_ICON_DESC Desc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
 			wstrProtoTag = L"Prototype_UI_MiniMapMonsterIconImage";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
+		else if (isTutorialPannel)
+		{
+			CUITutorial_Pannel_Image::TUTORIAL_PANNEL_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			wstrProtoTag = L"Prototype_UI_TutorialPannelImage";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
 			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
 			{
@@ -393,7 +399,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UIPrefabs::Make_DefaultInfo(const DTO::TUI_
 	Desc.iLevelIndex				= m_iLevelID;
 	Desc.iRectTransformType			= data.iRectTransformType;
 	Desc.fWidth						= data.fWidth * m_vAspect.x;
-	Desc.fHeight					= data.fHeight * m_vAspect.x;
+	Desc.fHeight					= data.fHeight * m_vAspect.y;
 	Desc.fX							= data.fPosX * m_vAspect.x;
 	Desc.fY							= data.fPosY * m_vAspect.y;
 	Desc.fZ							= data.fPosZ;

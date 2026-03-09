@@ -38,6 +38,9 @@ protected:
 	virtual HRESULT Spawn_FromPool(void* pArg) override;
 	virtual HRESULT Despawn_FromPool() override;
 
+	virtual HRESULT Enable_VFX(void* pArg) override;
+	virtual HRESULT Disable_VFX() override;
+
 protected:
 	virtual void Update_Bone_Attached_Matrix();
 	virtual void Update_CombinedWorldMatrix();

@@ -192,7 +192,6 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         float fRemainingTime = max(currentData.vLifeTime.y - currentData.vLifeTime.x, 0.01f);
         float3 vToTarget = vTargetPos - vCurPos;
         
-        // [수정] 지역 변수가 아닌 공용 vVelocity에 저장
         vVelocity = vToTarget / fRemainingTime;
         currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }
@@ -202,7 +201,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         float3 vSideDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
         vSideDir.y = 0.f;
         
-        // [수정] 수직 속도와 수평 속도를 합산하여 vVelocity 계산
+        // 수직 속도와 수평 속도를 합산하여 vVelocity 계산
         vVelocity = (vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x)) * input.vSpeed;
         vVelocity += vSideDir * (g_InputB.fStartSpeed * 0.3f);
         
@@ -213,7 +212,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         float3 vDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
         float3 vStartVelocity = vDir * g_InputB.fStartSpeed * input.vSpeed;
         
-        // [수정] 최종 이동 속도를 vVelocity에 저장
+        // 최종 이동 속도를 vVelocity에 저장
         vVelocity = vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x);
         currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }

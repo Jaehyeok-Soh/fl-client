@@ -11,6 +11,7 @@ class CUIMenu_Image final : public  CUIDynamic_Image
 public:
 	typedef struct tagUIMenuImageDesc : public DIMAGE_DESC
 	{
+		_uint iSlotIndex = {};
 	}MENU_IMAGE_DESC;
 
 private:
@@ -31,8 +32,10 @@ private:
 	HRESULT Ready_Components(MENU_IMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
+	virtual void Tick_By_Type(const _float fTimeDelta)override;
+	virtual void Bind_Events()override;
+
 private:
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
@@ -43,6 +46,8 @@ private:
 
 	//¼öÁ¤ÇØ¾ßµÊ
 	_float m_fProgressTimeAcc = {};
+
+	_uint m_iSlotIndex = {};
 
 public:
 	static CUIMenu_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

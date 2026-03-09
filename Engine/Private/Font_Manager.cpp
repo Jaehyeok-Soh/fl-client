@@ -388,7 +388,7 @@ HRESULT CFont_Manager::Begin_Draw_Gradation(const _bool isOutline)
 	CB_FONT_OUTLINE_NOISE cb = {};
 	cb.vOutlineColor = Vec4(0.f, 0.f, 0.f, 1.f);
 	cb.fOutlineStrength = 2.0f;
-	m_vScrollUV.x += 0.0016f;
+	m_vScrollUV.x += 0.0006f;
 	if (m_vScrollUV.x > 1.f)
 		m_vScrollUV.x = 0.f;
 	cb.vNoiseUVScroll = m_vScrollUV;

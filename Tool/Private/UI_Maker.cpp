@@ -609,7 +609,7 @@ void CUI_Maker::Input_Canvas_TransformInfo()
 
 		// ÇÁ¸®ÆÕ °¹¼ö
 		_int iNumPrefabs = (_int)pCanvas->Get_NumPrefab();
-		ImGui::SliderInt("Prefab Num", &iNumPrefabs, 0, 10000);
+		ImGui::SliderInt("Prefab Num", &iNumPrefabs, 0, 1000);
 		pCanvas->Set_NumPrefab((_uint)iNumPrefabs);
 	}
 }

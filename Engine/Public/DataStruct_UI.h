@@ -9,7 +9,6 @@ enum class EUIType : _uint
 	CANVAS,
 	GENERICUI,
 	UI_TEXT,
-	TRIGGER,
 	BUTTON_TRIGGER,
 	DYNAMIC_IMAGE,
 	WORLD_UI,
@@ -22,8 +21,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIType,
 		{EUIType::CANVAS, "CANVAS"},
 		{EUIType::GENERICUI, "GENERICUI"},
 		{EUIType::UI_TEXT, "UI_TEXT"},
-		{EUIType::TRIGGER, "TRIGGER"},
-		{EUIType::BUTTON_TRIGGER, "BUTTON_TRIGGER"},
 		{EUIType::DYNAMIC_IMAGE, "DYNAMIC_IMAGE"},
 		{EUIType::WORLD_UI, "WORLD_UI"},
 	}
@@ -34,8 +31,6 @@ enum class EUIClassType
 	PROGRESS_BAR,
 	JUST_IMAGE,
 	UI_TEXT,
-	TRIGGER,
-	BUTTON_TRIGGER,
 	DYNAMIC_IMAGE,
 	WORLD_UI,
 	END
@@ -48,8 +43,6 @@ inline std::string UIClassTypeToString(EUIClassType eType)
 	case EUIClassType::PROGRESS_BAR: return "PROGRESS_BAR";
 	case EUIClassType::JUST_IMAGE: return "JUST_IMAGE";
 	case EUIClassType::UI_TEXT: return "UI_TEXT";
-	case EUIClassType::TRIGGER: return "TRIGGER";
-	case EUIClassType::BUTTON_TRIGGER: return "BUTTON_TRIGGER";
 	case EUIClassType::DYNAMIC_IMAGE: return "DYNAMIC_IMAGE";
 	case EUIClassType::WORLD_UI: return "WORLD_UI";
 	case EUIClassType::END: return "END";
@@ -62,8 +55,6 @@ inline EUIClassType StringToUIClassType(const std::string& str)
 	if (str == "PROGRESS_BAR") return EUIClassType::PROGRESS_BAR;
 	else if (str == "JUST_IMAGE") return EUIClassType::JUST_IMAGE;
 	else if (str == "UI_TEXT") return EUIClassType::UI_TEXT;
-	else if (str == "TRIGGER") return EUIClassType::TRIGGER;
-	else if (str == "BUTTON_TRIGGER") return EUIClassType::BUTTON_TRIGGER;
 	else if (str == "DYNAMIC_IMAGE") return EUIClassType::DYNAMIC_IMAGE;
 	else if (str == "WORLD_UI") return EUIClassType::WORLD_UI;
 	else return EUIClassType::END;
@@ -74,16 +65,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIClassType,
 		{EUIClassType::PROGRESS_BAR, "PROGRESS_BAR"},
 		{EUIClassType::JUST_IMAGE, "JUST_IMAGE"},
 		{EUIClassType::UI_TEXT, "UI_TEXT"},
-		{EUIClassType::TRIGGER, "TRIGGER"},
-		{EUIClassType::BUTTON_TRIGGER, "BUTTON_TRIGGER"},
 		{EUIClassType::DYNAMIC_IMAGE, "DYNAMIC_IMAGE"},
 		{EUIClassType::WORLD_UI, "WORLD_UI"},
 	})
 
 enum EComponentTypeFlag
 {
-	BUTTON_COMPONENT = 1 << 0,
-	PROGRESS_COMPONENT = 1 << 1,
 	WORLDUI_COMPONENT = 1 << 2
 };
 
@@ -278,6 +265,21 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT,
 	BOSS_CIVILA_ACTION_END,
 
+	// 약점 노출
+	BATTLE_WEAKNESS_BEGIN,
+	BATTLE_WEAKNESS_TEXT,
+	BATTLE_WEAKNESS_WORLD_TEXT_LEFT,
+	BATTLE_WEAKNESS_WORLD_TEXT_RIGHT,
+	BSTTLE_WEAKNESS_END,
+
+	// 튜토리얼 패널 
+	TUTORIAL_PANNEL_BEGIN,
+	TUTORIAL_PANNEL_TITLE_TEXT,
+	TUTORIAL_PANNEL_CONTENTS_TEXT,
+	TUTORIAL_PANNEL_PREV_BTN_TEXT,
+	TUTORIAL_PANNEL_NEXT_BTN_TEXT,
+	TUTORIAL_PANNEL_END,
+
 	END
 };
 
@@ -347,8 +349,21 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN,			  	"BOSS_CIVILA_ACTION_BEGIN" },
 		{ EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT,			  	"BOSS_CIVILA_ACTION_WORLD_TEXT" },
 		{ EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT,			  	"BOSS_CIVILA_ACTION_NAME_TEXT" },
-		{ EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT,			  	"BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT" },
+		{ EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT,  	"BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT" },
 		{ EUITextSubClassType::BOSS_CIVILA_ACTION_END,			  	"BOSS_CIVILA_ACTION_END" },
+
+		{ EUITextSubClassType::BATTLE_WEAKNESS_BEGIN,			  	"BATTLE_WEAKNESS_BEGIN" },
+		{ EUITextSubClassType::BATTLE_WEAKNESS_TEXT,				"BATTLE_WEAKNESS_TEXT" },
+		{ EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_LEFT,		"BATTLE_WEAKNESS_WORLD_TEXT_LEFT" },
+		{ EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_RIGHT,	"BATTLE_WEAKNESS_WORLD_TEXT_RIGHT" },
+		{ EUITextSubClassType::BSTTLE_WEAKNESS_END,			  		"BSTTLE_WEAKNESS_END" },
+
+		{ EUITextSubClassType::TUTORIAL_PANNEL_BEGIN,			  	"TUTORIAL_PANNEL_BEGIN" },
+		{ EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT,			"TUTORIAL_PANNEL_TITLE_TEXT" },
+		{ EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT,		"TUTORIAL_PANNEL_CONTENTS_TEXT" },
+		{ EUITextSubClassType::TUTORIAL_PANNEL_PREV_BTN_TEXT,		"TUTORIAL_PANNEL_PREV_BTN_TEXT" },
+		{ EUITextSubClassType::TUTORIAL_PANNEL_NEXT_BTN_TEXT,		"TUTORIAL_PANNEL_NEXT_BTN_TEXT" },
+		{ EUITextSubClassType::TUTORIAL_PANNEL_END,			  		"TUTORIAL_PANNEL_END" },
 	  
 
 		{ EUITextSubClassType::END,									"END" },
@@ -416,10 +431,23 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "BATTLE_COMBO_TEXT_END")					return EUITextSubClassType::BATTLE_COMBO_TEXT_END;
 	
 	else if (str == "BOSS_CIVILA_ACTION_BEGIN")					return EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN;
-	else if (str == "BOSS_CIVILA_ACTION_WORLD_TEXT")					return EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT;
-	else if (str == "BOSS_CIVILA_ACTION_NAME_TEXT")					return EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT;
-	else if (str == "BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT")					return EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT;
+	else if (str == "BOSS_CIVILA_ACTION_WORLD_TEXT")			return EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT;
+	else if (str == "BOSS_CIVILA_ACTION_NAME_TEXT")				return EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT;
+	else if (str == "BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT")	return EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT;
 	else if (str == "BOSS_CIVILA_ACTION_END")					return EUITextSubClassType::BOSS_CIVILA_ACTION_END;
+
+	else if (str == "BATTLE_WEAKNESS_BEGIN")					return EUITextSubClassType::BATTLE_WEAKNESS_BEGIN;
+	else if (str == "BATTLE_WEAKNESS_TEXT")						return EUITextSubClassType::BATTLE_WEAKNESS_TEXT;
+	else if (str == "BATTLE_WEAKNESS_WORLD_TEXT_LEFT")			return EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_LEFT;
+	else if (str == "BATTLE_WEAKNESS_WORLD_TEXT_RIGHT")			return EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_RIGHT;
+	else if (str == "BSTTLE_WEAKNESS_END")						return EUITextSubClassType::BSTTLE_WEAKNESS_END;
+
+	else if (str == "TUTORIAL_PANNEL_BEGIN")					return EUITextSubClassType::TUTORIAL_PANNEL_BEGIN;
+	else if (str == "TUTORIAL_PANNEL_TITLE_TEXT")				return EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT;
+	else if (str == "TUTORIAL_PANNEL_CONTENTS_TEXT")			return EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT;
+	else if (str == "TUTORIAL_PANNEL_PREV_BTN_TEXT")			return EUITextSubClassType::TUTORIAL_PANNEL_PREV_BTN_TEXT;
+	else if (str == "TUTORIAL_PANNEL_NEXT_BTN_TEXT")			return EUITextSubClassType::TUTORIAL_PANNEL_NEXT_BTN_TEXT;
+	else if (str == "TUTORIAL_PANNEL_END")						return EUITextSubClassType::TUTORIAL_PANNEL_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -491,10 +519,23 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::BATTLE_COMBO_TEXT_END:				return "BATTLE_COMBO_TEXT_END";
 	
 	case EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:				return "BOSS_CIVILA_ACTION_BEGIN";
-	case EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:				return "BOSS_CIVILA_ACTION_WORLD_TEXT";
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:			return "BOSS_CIVILA_ACTION_WORLD_TEXT";
 	case EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:				return "BOSS_CIVILA_ACTION_NAME_TEXT";
-	case EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:				return "BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT";
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:	return "BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT";
 	case EUITextSubClassType::BOSS_CIVILA_ACTION_END:				return "BOSS_CIVILA_ACTION_END";
+
+	case EUITextSubClassType::BATTLE_WEAKNESS_BEGIN:				return "BATTLE_WEAKNESS_BEGIN";
+	case EUITextSubClassType::BATTLE_WEAKNESS_TEXT:					return "BATTLE_WEAKNESS_TEXT";
+	case EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_LEFT:		return "BATTLE_WEAKNESS_WORLD_TEXT_LEFT";
+	case EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_RIGHT:		return "BATTLE_WEAKNESS_WORLD_TEXT_RIGHT";
+	case EUITextSubClassType::BSTTLE_WEAKNESS_END:					return "BSTTLE_WEAKNESS_END";
+
+	case EUITextSubClassType::TUTORIAL_PANNEL_BEGIN:				return "TUTORIAL_PANNEL_BEGIN";
+	case EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:			return "TUTORIAL_PANNEL_TITLE_TEXT";
+	case EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:		return "TUTORIAL_PANNEL_CONTENTS_TEXT";
+	case EUITextSubClassType::TUTORIAL_PANNEL_PREV_BTN_TEXT:		return "TUTORIAL_PANNEL_PREV_BTN_TEXT";
+	case EUITextSubClassType::TUTORIAL_PANNEL_NEXT_BTN_TEXT:		return "TUTORIAL_PANNEL_NEXT_BTN_TEXT";
+	case EUITextSubClassType::TUTORIAL_PANNEL_END:					return "TUTORIAL_PANNEL_END";
 	
 	default:														return "END";
 	}
@@ -599,9 +640,9 @@ enum class EUIDImageSubClassType
 
 	// 호버됐을 때 팝업창 // HOVER_POPUP_BG < New Enum < HOVER_POPUP_END
 	HOVER_POPUP_BEGIN,
+	HOVER_ENTER_MENU_ICON,
 	HOVER_POPUP_BG,
 	HOVER_POPUP_ICON,
-	HOVER_POPUP_TEXT,
 	HOVER_POPUP_END,
 
 	// 미니맵
@@ -616,6 +657,7 @@ enum class EUIDImageSubClassType
 	MENU_BEGIN,
 	MENU_BG,
 	MENU_ICON,
+	MENU_EXIT_TRIGGER,
 	MENU_ICON_BG,
 	MENU_ICON_OUTLINE,
 	MENU_END,
@@ -672,6 +714,26 @@ enum class EUIDImageSubClassType
 	BOSS_CIVILA_ACTION_BOTTOM_BG,
 	BOSS_CIVILA_ACTION_END,
 
+	// 약점 노출
+	BATTLE_WEAKNESS_BEGIN,
+	BATTLE_WEAKNESS_EYEICON,
+	BATTLE_WEAKNESS_EYEICON_BG,
+	BATTLE_WEAKNESS_EYEICON_BG_FX,
+	BSTTLE_WEAKNESS_END,
+
+	// 듀토리얼 패널
+	TUTORIAL_PANNEL_BEGIN,
+	TUTORIAL_PANNEL_TOP_BG,
+	TUTORIAL_PANNEL_BG,
+	TUTORIAL_PANNEL_BOTTOM_BG,
+	TUTORIAL_PANNEL_TOP_ICON,
+	TUTORIAL_PANNEL_ICON,
+	TUTORIAL_PANNEL_BUTTON,
+	TUTORIAL_PANNEL_BUTTON_FX,
+	TUTORIAL_PANNEL_BUTTON_OUTLINE,
+	TUTORIAL_PANNEL_NUM_PAGE_ICON,
+	TUTORIAL_PANNEL_END,
+
 	END
 };
 
@@ -688,9 +750,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::PLAYER_SKILL_END,						"PLAYER_SKILL_END" },
 
 	{ EUIDImageSubClassType::HOVER_POPUP_BEGIN,						"HOVER_POPUP_BEGIN" },
+	{ EUIDImageSubClassType::HOVER_ENTER_MENU_ICON,					"HOVER_ENTER_MENU_ICON" },
 	{ EUIDImageSubClassType::HOVER_POPUP_BG,						"HOVER_POPUP_BG" },
 	{ EUIDImageSubClassType::HOVER_POPUP_ICON,						"HOVER_POPUP_ICON" },
-	{ EUIDImageSubClassType::HOVER_POPUP_TEXT,						"HOVER_POPUP_TEXT" },
 	{ EUIDImageSubClassType::HOVER_POPUP_END,						"HOVER_POPUP_END" },
 
 	{ EUIDImageSubClassType::MINIMAP_BEGIN,							"MINIMAP_BEGIN" },
@@ -703,6 +765,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::MENU_BEGIN,							"MENU_BEGIN" },
 	{ EUIDImageSubClassType::MENU_BG,								"MENU_BG" },
 	{ EUIDImageSubClassType::MENU_ICON,								"MENU_ICON" },
+	{ EUIDImageSubClassType::MENU_EXIT_TRIGGER,						"MENU_EXIT_TRIGGER" },
 	{ EUIDImageSubClassType::MENU_ICON_BG,							"MENU_ICON_BG" },
 	{ EUIDImageSubClassType::MENU_ICON_OUTLINE,						"MENU_ICON_OUTLINE" },
 	{ EUIDImageSubClassType::MENU_END,								"MENU_END" },
@@ -751,6 +814,24 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG,			"BOSS_CIVILA_ACTION_BOTTOM_BG" },
 	{ EUIDImageSubClassType::BOSS_CIVILA_ACTION_END,				"BOSS_CIVILA_ACTION_END" },
 
+	{ EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN,					"BATTLE_WEAKNESS_BEGIN" },
+	{ EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON,				"BATTLE_WEAKNESS_EYEICON" },
+	{ EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG,			"BATTLE_WEAKNESS_EYEICON_BG" },
+	{ EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX,			"BATTLE_WEAKNESS_EYEICON_BG_FX" },
+	{ EUIDImageSubClassType::BSTTLE_WEAKNESS_END,					"BSTTLE_WEAKNESS_END" },
+
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_BEGIN,					"TUTORIAL_PANNEL_BEGIN" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_BG,				"TUTORIAL_PANNEL_TOP_BG" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_BG,					"TUTORIAL_PANNEL_BG" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_BOTTOM_BG,				"TUTORIAL_PANNEL_BOTTOM_BG" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_ICON,				"TUTORIAL_PANNEL_TOP_ICON" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_ICON,					"TUTORIAL_PANNEL_ICON" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON,				"TUTORIAL_PANNEL_BUTTON" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_FX,				"TUTORIAL_PANNEL_BUTTON_FX" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_OUTLINE,		"TUTORIAL_PANNEL_BUTTON_OUTLINE" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_NUM_PAGE_ICON,			"TUTORIAL_PANNEL_NUM_PAGE_ICON" },
+	{ EUIDImageSubClassType::TUTORIAL_PANNEL_END,					"TUTORIAL_PANNEL_END" },
+
 
 	{ EUIDImageSubClassType::END,								"END" }
 	})
@@ -768,9 +849,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "PLAYER_SKILL_END")						return EUIDImageSubClassType::PLAYER_SKILL_END;
 
 	if (str == "HOVER_POPUP_BEGIN")						return EUIDImageSubClassType::HOVER_POPUP_BEGIN;
+	if (str == "HOVER_ENTER_MENU_ICON")					return EUIDImageSubClassType::HOVER_ENTER_MENU_ICON;
 	if (str == "HOVER_POPUP_BG")						return EUIDImageSubClassType::HOVER_POPUP_BG;
 	if (str == "HOVER_POPUP_ICON")						return EUIDImageSubClassType::HOVER_POPUP_ICON;
-	if (str == "HOVER_POPUP_TEXT")						return EUIDImageSubClassType::HOVER_POPUP_TEXT;
 	if (str == "HOVER_POPUP_END")						return EUIDImageSubClassType::HOVER_POPUP_END;
 
 	if (str == "MINIMAP_BEGIN")							return EUIDImageSubClassType::MINIMAP_BEGIN;
@@ -783,6 +864,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MENU_BEGIN")							return EUIDImageSubClassType::MENU_BEGIN;
 	if (str == "MENU_BG")								return EUIDImageSubClassType::MENU_BG;
 	if (str == "MENU_ICON")								return EUIDImageSubClassType::MENU_ICON;
+	if (str == "MENU_EXIT_TRIGGER")						return EUIDImageSubClassType::MENU_EXIT_TRIGGER;
 	if (str == "MENU_ICON_BG")							return EUIDImageSubClassType::MENU_ICON_BG;
 	if (str == "MENU_ICON_OUTLINE")						return EUIDImageSubClassType::MENU_ICON_OUTLINE;
 	if (str == "MENU_END")								return EUIDImageSubClassType::MENU_END;
@@ -831,6 +913,24 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "BOSS_CIVILA_ACTION_BOTTOM_BG")			return EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG;
 	if (str == "BOSS_CIVILA_ACTION_END")				return EUIDImageSubClassType::BOSS_CIVILA_ACTION_END;
 
+	if (str == "BATTLE_WEAKNESS_BEGIN")					return EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN;
+	if (str == "BATTLE_WEAKNESS_EYEICON")				return EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON;
+	if (str == "BATTLE_WEAKNESS_EYEICON_BG")			return EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG;
+	if (str == "BATTLE_WEAKNESS_EYEICON_BG_FX")			return EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX;
+	if (str == "BSTTLE_WEAKNESS_END")					return EUIDImageSubClassType::BSTTLE_WEAKNESS_END;
+
+	if (str == "TUTORIAL_PANNEL_BEGIN")					return EUIDImageSubClassType::TUTORIAL_PANNEL_BEGIN;
+	if (str == "TUTORIAL_PANNEL_TOP_BG")				return EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_BG;
+	if (str == "TUTORIAL_PANNEL_BG")					return EUIDImageSubClassType::TUTORIAL_PANNEL_BG;
+	if (str == "TUTORIAL_PANNEL_BOTTOM_BG")				return EUIDImageSubClassType::TUTORIAL_PANNEL_BOTTOM_BG;
+	if (str == "TUTORIAL_PANNEL_TOP_ICON")				return EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_ICON;
+	if (str == "TUTORIAL_PANNEL_ICON")					return EUIDImageSubClassType::TUTORIAL_PANNEL_ICON;
+	if (str == "TUTORIAL_PANNEL_BUTTON")				return EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON;
+	if (str == "TUTORIAL_PANNEL_BUTTON_FX")				return EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_FX;
+	if (str == "TUTORIAL_PANNEL_BUTTON_OUTLINE")		return EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_OUTLINE;
+	if (str == "TUTORIAL_PANNEL_NUM_PAGE_ICON")			return EUIDImageSubClassType::TUTORIAL_PANNEL_NUM_PAGE_ICON;
+	if (str == "TUTORIAL_PANNEL_END")					return EUIDImageSubClassType::TUTORIAL_PANNEL_END;
+
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
 }
@@ -850,9 +950,9 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::PLAYER_SKILL_END:						return "PLAYER_SKILL_END";
 
 	case EUIDImageSubClassType::HOVER_POPUP_BEGIN:						return "HOVER_POPUP_BEGIN";
+	case EUIDImageSubClassType::HOVER_ENTER_MENU_ICON:					return "HOVER_ENTER_MENU_ICON";
 	case EUIDImageSubClassType::HOVER_POPUP_BG:							return "HOVER_POPUP_BG";
 	case EUIDImageSubClassType::HOVER_POPUP_ICON:						return "HOVER_POPUP_ICON";
-	case EUIDImageSubClassType::HOVER_POPUP_TEXT:						return "HOVER_POPUP_TEXT";
 	case EUIDImageSubClassType::HOVER_POPUP_END:						return "HOVER_POPUP_END";
 
 	case EUIDImageSubClassType::MINIMAP_BEGIN:							return "MINIMAP_BEGIN";
@@ -865,6 +965,7 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MENU_BEGIN:								return "MENU_BEGIN";
 	case EUIDImageSubClassType::MENU_BG:								return "MENU_BG";
 	case EUIDImageSubClassType::MENU_ICON:								return "MENU_ICON";
+	case EUIDImageSubClassType::MENU_EXIT_TRIGGER:						return "MENU_EXIT_TRIGGER";
 	case EUIDImageSubClassType::MENU_ICON_BG:							return "MENU_ICON_BG";
 	case EUIDImageSubClassType::MENU_ICON_OUTLINE:						return "MENU_ICON_OUTLINE";
 	case EUIDImageSubClassType::MENU_END:								return "MENU_END";
@@ -913,90 +1014,28 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:			return "BOSS_CIVILA_ACTION_BOTTOM_BG";
 	case EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:					return "BOSS_CIVILA_ACTION_END";
 
+	case EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN:					return "BATTLE_WEAKNESS_BEGIN";
+	case EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON:				return "BATTLE_WEAKNESS_EYEICON";
+	case EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:				return "BATTLE_WEAKNESS_EYEICON_BG";
+	case EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:			return "BATTLE_WEAKNESS_EYEICON_BG_FX";
+	case EUIDImageSubClassType::BSTTLE_WEAKNESS_END:					return "BSTTLE_WEAKNESS_END";
+
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_BEGIN:					return "TUTORIAL_PANNEL_BEGIN";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_BG:					return "TUTORIAL_PANNEL_TOP_BG";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_BG:						return "TUTORIAL_PANNEL_BG";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_BOTTOM_BG:				return "TUTORIAL_PANNEL_BOTTOM_BG";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_ICON:				return "TUTORIAL_PANNEL_TOP_ICON";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_ICON:					return "TUTORIAL_PANNEL_ICON";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON:					return "TUTORIAL_PANNEL_BUTTON";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_FX:				return "TUTORIAL_PANNEL_BUTTON_FX";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_OUTLINE:			return "TUTORIAL_PANNEL_BUTTON_OUTLINE";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_NUM_PAGE_ICON:			return "TUTORIAL_PANNEL_NUM_PAGE_ICON";
+	case EUIDImageSubClassType::TUTORIAL_PANNEL_END:					return "TUTORIAL_PANNEL_END";
+
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";
 	}
 }
-#pragma endregion
-
-#pragma region 트리거 서브 클래스
-
-enum class EUITriggerSubClassType
-{
-	NONE_OWNER,
-
-	MENU_TAB_TRIGGER,
-	MENU_TAB_EXIT_TRIGGER,
-
-	END
-};
-NLOHMANN_JSON_SERIALIZE_ENUM(EUITriggerSubClassType,
-	{
-		{ EUITriggerSubClassType::NONE_OWNER,        "NONE_OWNER" },
-		{ EUITriggerSubClassType::MENU_TAB_TRIGGER,  "MENU_TAB_TRIGGER" },
-		{ EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER,  "MENU_TAB_EXIT_TRIGGER" },
-	})
-	inline EUITriggerSubClassType StringToUITriggerSubClassType(const std::string& str)
-{
-	if (str == "NONE_OWNER")        return EUITriggerSubClassType::NONE_OWNER;
-	if (str == "MENU_TAB_TRIGGER")  return EUITriggerSubClassType::MENU_TAB_TRIGGER;
-	if (str == "MENU_TAB_EXIT_TRIGGER")  return EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER;
-	return EUITriggerSubClassType::END;
-}
-inline std::string UITriggerSubClassTypeToString(EUITriggerSubClassType e)
-{
-	switch (e)
-	{
-	case EUITriggerSubClassType::NONE_OWNER:       return "NONE_OWNER";
-	case EUITriggerSubClassType::MENU_TAB_TRIGGER: return "MENU_TAB_TRIGGER";
-	case EUITriggerSubClassType::MENU_TAB_EXIT_TRIGGER: return "MENU_TAB_EXIT_TRIGGER";
-	default:                                      return "END";
-	}
-}
-
-#pragma endregion
-
-#pragma region 월드 유아이 서브 클래스
-
-enum class EUIWorldUISubClassType
-{
-	WORLD_UI_NONE,
-	MONSTER_HP,
-	WORLD_DAMAGE_FONT,
-
-	END
-};
-
-NLOHMANN_JSON_SERIALIZE_ENUM(EUIWorldUISubClassType,
-	{
-		{ EUIWorldUISubClassType::WORLD_UI_NONE,	"WORLD_UI_NONE" },
-		{ EUIWorldUISubClassType::MONSTER_HP,		"MONSTER_HP" },
-		{ EUIWorldUISubClassType::WORLD_DAMAGE_FONT,"WORLD_DAMAGE_FONT" },
-		{ EUIWorldUISubClassType::END,				"END" }
-	})
-
-	inline EUIWorldUISubClassType StringToUIWorldUISubType(const std::string& str)
-{
-	if (str == "WORLD_UI_NONE")       return EUIWorldUISubClassType::WORLD_UI_NONE;
-	if (str == "MONSTER_HP")          return EUIWorldUISubClassType::MONSTER_HP;
-	if (str == "WORLD_DAMAGE_FONT")   return EUIWorldUISubClassType::WORLD_DAMAGE_FONT;
-	if (str == "END")                 return EUIWorldUISubClassType::END;
-
-	return EUIWorldUISubClassType::WORLD_UI_NONE;
-}
-
-inline const char* UIWorldUISubTypeToString(EUIWorldUISubClassType type)
-{
-	switch (type)
-	{
-	case EUIWorldUISubClassType::WORLD_UI_NONE:      return "WORLD_UI_NONE";
-	case EUIWorldUISubClassType::MONSTER_HP:         return "MONSTER_HP";
-	case EUIWorldUISubClassType::WORLD_DAMAGE_FONT:  return "WORLD_DAMAGE_FONT";
-	case EUIWorldUISubClassType::END:                return "END";
-	default:                                         return "WORLD_UI_NONE";
-	}
-}
-
 #pragma endregion
 
 #pragma region 유아이 데이터
@@ -1018,38 +1057,6 @@ struct TUI_TextData
 };
 
 /////////////////
-// 트리거 데이터
-struct TUI_TriggerData
-{
-	static constexpr EUIType eType = EUIType::TRIGGER;
-	std::string		strTag;
-	std::string		strOwnerName;
-	EUITriggerSubClassType	eTriggerSubClassType;
-	
-	vector<std::string> vecHoverEnterTriggerCanvas;
-	vector<std::string> vecHoverEnterTriggerUI;
-	vector<std::string> vecHoverExitTriggerCanvas;
-	vector<std::string> vecHoverExitTriggerUI;
-
-	vector<std::string> vecPressEnterTriggerCanvas;
-	vector<std::string> vecPressEnterTriggerUI;
-	vector<std::string> vecPressExitTriggerCanvas;
-	vector<std::string> vecPressExitTriggerUI;
-};
-
-/////////////////
-// 버튼 트리거 데이터
-struct TUI_ButtonTriggerData
-{
-	static constexpr EUIType eType = EUIType::BUTTON_TRIGGER;
-	std::string			strTag;
-	std::string			strOwnerName;
-	_string				strKeyMapping;
-	vector<std::string> vecTriggerCanvas;
-	vector<std::string> vecTriggerUI;
-};
-
-/////////////////
 // 다이나믹 이미지 데이터
 struct TUI_DImageData
 {
@@ -1058,17 +1065,8 @@ struct TUI_DImageData
 	std::string				strTag;
 	std::string				strOwnerName;
 	EUIDImageSubClassType	eDISubClassType;
-};
 
-/////////////////
-// 월드 UI 데이터
-struct TUI_WorldUIData
-{
-	static constexpr EUIType eType = EUIType::WORLD_UI;
-	EUIClassType			eClassType;
-	std::string				strTag;
-	std::string				strOwnerName;
-	EUIWorldUISubClassType	eWorldUISubClass;
+	_uint iParams0;
 };
 
 /////////////////
@@ -1129,12 +1127,6 @@ struct TUI_CanvasData
 void to_json(json& j, const TUI_DImageData& data);
 void from_json(const json& j, TUI_DImageData& data);
 
-void to_json(json& j, const TUI_ButtonTriggerData& data);
-void from_json(const json& j, TUI_ButtonTriggerData& data);
-
-void to_json(json& j, const TUI_TriggerData& data);
-void from_json(const json& j, TUI_TriggerData& data);
-
 void to_json(json& j, const TUI_TextData& data);
 void from_json(const json& j, TUI_TextData& data);
 
@@ -1168,52 +1160,6 @@ private:
 	DTO::TUI_DImageData m_Data;
 public:
 	static CUI_DImage_DTO* Create() { return new CUI_DImage_DTO(); }
-	virtual void Free() override { Super::Free(); }
-};
-
-// 버튼 트리거 클래스 
-class ENGINE_DLL CUI_ButtonTrigger_DTO final : public IObjectDataBase
-{
-	using Super = IObjectDataBase;
-private:
-	CUI_ButtonTrigger_DTO() = default;
-	virtual ~CUI_ButtonTrigger_DTO() = default;
-public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::BUTTON_TRIGGER); }
-	const _string& Get_Tag() const override { return m_Data.strTag; }
-
-	json ToJson() const override;
-	HRESULT FromJson(const json& j) override;
-
-	const DTO::TUI_ButtonTriggerData& Get_Data() const { return m_Data; }
-	DTO::TUI_ButtonTriggerData& Get_Data() { return m_Data; }
-private:
-	DTO::TUI_ButtonTriggerData m_Data;
-public:
-	static CUI_ButtonTrigger_DTO* Create() { return new CUI_ButtonTrigger_DTO(); }
-	virtual void Free() override { Super::Free(); }
-};
-
-// 트리거 클래스
-class ENGINE_DLL CUI_Trigger_DTO final : public IObjectDataBase
-{
-	using Super = IObjectDataBase;
-private:
-	CUI_Trigger_DTO() = default;
-	virtual ~CUI_Trigger_DTO() = default;
-public:
-	_uint Get_Type() const override { return ENUM_TO_UINT(DTO::EUIType::TRIGGER); }
-	const _string& Get_Tag() const override { return m_Data.strTag; }
-
-	json ToJson() const override;
-	HRESULT FromJson(const json& j) override;
-
-	const DTO::TUI_TriggerData& Get_Data() const { return m_Data; }
-	DTO::TUI_TriggerData& Get_Data() { return m_Data; }
-private:
-	DTO::TUI_TriggerData m_Data;
-public:
-	static CUI_Trigger_DTO* Create() { return new CUI_Trigger_DTO(); }
 	virtual void Free() override { Super::Free(); }
 };
 

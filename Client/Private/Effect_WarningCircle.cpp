@@ -104,8 +104,7 @@ HRESULT CEffect_WarningCircle::Spawn_FromPool(void* pArg)
 
 HRESULT CEffect_WarningCircle::Enable_VFX(void* pArg)
 {
-	if (FAILED(Super::Enable_VFX(pArg)))
-		return E_FAIL;
+	m_bIsEffectFinish = false;
 
 	EFFECT_WARNING_DESC* pDesc = static_cast<EFFECT_WARNING_DESC*>(pArg);
 	if (pDesc == nullptr) return E_FAIL;
@@ -127,8 +126,7 @@ HRESULT CEffect_WarningCircle::Enable_VFX(void* pArg)
 
 HRESULT CEffect_WarningCircle::Disable_VFX()
 {
-	if (FAILED(Super::Disable_VFX()))
-		return E_FAIL;
+	m_bIsEffectFinish = false;
 
 	for (auto effectObject : m_vecPartObjects)
 	{
