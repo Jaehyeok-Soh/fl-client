@@ -1,28 +1,26 @@
 #pragma once
-#include "UIDynamic_Image.h"
+#include "UIText.h"
 #include "DataStruct_UI.h"
 
-NS_BEGIN(Engine)
-class CMyStat;
-NS_END
-
 NS_BEGIN(Client)
-class CUIBossStat_Image final : public  CUIDynamic_Image
+
+class CUITutorial_Pannel_Text final : public CUIText
 {
-	using Super = CUIDynamic_Image;
+	using Super = CUIText;
 public:
-	typedef struct tagUIBossStatImageDesc : public DIMAGE_DESC
+	typedef struct tagUITutorialPannelTextDesc : public UI_TEXT_DESC
 	{
-	}BOSS_STAT_IMAGE_DESC;
+	}TUTORIAL_PANNEL_TEXT_DESC;
 
 private:
-	CUIBossStat_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIBossStat_Image(const CUIBossStat_Image& rhs);
-	virtual ~CUIBossStat_Image() = default;
+	CUITutorial_Pannel_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUITutorial_Pannel_Text(const CUITutorial_Pannel_Text& rhs);
+	virtual ~CUITutorial_Pannel_Text() = default;
+
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
-	HRESULT Attach_Personal_Info();
+
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void Update_Priority(const _float fTimeDelta) override;
@@ -30,23 +28,26 @@ public:
 	virtual void Update_Late(const _float fTimeDelta) override;
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
-private:
-	HRESULT Ready_Components(BOSS_STAT_IMAGE_DESC* pDesc);
-	HRESULT Bind_ShaderResources();
-	virtual void Bind_Events()override;
 
+private:
+	HRESULT Ready_Components(TUTORIAL_PANNEL_TEXT_DESC* pDesc);
+	HRESULT Bind_ShaderResources();
+	HRESULT Attach_Personal_Info();
+	HRESULT Convert_Stat_To_Text();
+	virtual void Bind_Events()override;
 private:
 	virtual void Initialize_Visible_Event()override;
+	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
+
 private:
-	CMyStat* m_pTargetStat = { nullptr };
 	_bool m_isSpawned = { false };
-	_bool m_isBossEventTrigger = { false };
 
 public:
-	static CUIBossStat_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUITutorial_Pannel_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

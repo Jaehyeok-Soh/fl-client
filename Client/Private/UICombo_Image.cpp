@@ -226,7 +226,6 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 			Ready_LerpChange(0.3f, 3.f, 1.f, 1.f, m_fDelay);
 		}
 		Tick_LerpChange(&m_fScale, fTimeDelta);
-		Move_Size(m_fWidth * m_fScale, m_fHeight * m_fScale);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BATTLE_COMBO_BG:

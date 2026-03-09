@@ -1,11 +1,10 @@
 #pragma once
 #include "UIProgress_Bar.h"
 #include "DataStruct_UI.h"
-NS_BEGIN(Engine)
-class CMyStat;
-NS_END
+
 NS_BEGIN(Client)
 class CWorldUI_Component;
+class CStatCom_Boss;
 class CUIBossStat_Progress final : public CUIProgress_Bar
 {
 	using Super = CUIProgress_Bar;
@@ -35,6 +34,7 @@ private:
 	HRESULT Ready_Components(BOSS_STAT_PROGRESS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
+	virtual void Tick_By_Type(const _float fTimeDelta)override;
 private:
 	void Initialize_Visible_Event()override;
 	void Initialize_InVisible_Event()override;
@@ -46,9 +46,12 @@ private:
 	HRESULT Convert_Stat_To_Ratio();
 
 private:
-	CMyStat* m_pTargetStat = { nullptr };
+	CStatCom_Boss* m_pTargetStat = { nullptr };
 	_bool m_isSpawned = { false };
 	Vec4 m_vOriginColorTint = {};
+
+	_bool m_isBossGroggyTrigger = { false };
+
 public:
 	static CUIBossStat_Progress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

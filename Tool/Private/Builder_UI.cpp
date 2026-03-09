@@ -96,6 +96,7 @@ HRESULT CBuilder_UI::Create_CanvasDTO(const DTO::TUI_CanvasData& data)
 	Desc.fY = data.fPosY;
 	Desc.fZ = data.fPosZ;
 	Desc.iPrefabType = data.iPrefabType;
+	Desc.iNumPrefabs = data.iNumPrefabs;
 
 	_wstring wstrLayerTag = Engine_Utils::ToWString(Desc.strTag) + L"_Layer";
 	CGameObject* pResult = m_pGameInstance->Add_GameObject(Desc.iLevelIndex, g_wszPrototypeTagCanvas, Desc.iLevelIndex, wstrLayerTag, &Desc);

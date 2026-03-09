@@ -385,6 +385,7 @@ namespace Client
 		DAMAGE_FONTS_HIT,
 		BOSS_NAMEPLATE,
 		MINIMAP_MONSTER_ICON,
+		TUTORIAL_PANNEL,
 		END
 	};
 
@@ -398,6 +399,7 @@ namespace Client
 		case Client::EUIPrefabType::DAMAGE_FONTS_CRITICAL:	return L"DAMAGE_FONTS_CRITICAL";
 		case Client::EUIPrefabType::DAMAGE_FONTS_HIT:		return L"DAMAGE_FONTS_HIT";
 		case Client::EUIPrefabType::MINIMAP_MONSTER_ICON:	return L"DAMAGE_FONTS_HIT";
+		case Client::EUIPrefabType::TUTORIAL_PANNEL:		return L"TUTORIAL_PANNEL";
 		case Client::EUIPrefabType::END:
 		default:
 			break;
@@ -465,6 +467,15 @@ namespace Client
 		NONE,
 		TUTORIAL_BOSS_CONTATCT,
 		TUTORIAL_BOSS_CONTATCT_END,
+
+		CINEMATIC_START,
+		CINEMATIC_END,
+		XIBILA_BOSS_ACTION_ON,
+		XIBILA_BOSS_ACTION_OFF,
+
+		XIBILA_BOSS_UI_ON,
+		XIBILA_BOSS_UI_OFF,
+
 		END,
 	};
 
@@ -473,6 +484,12 @@ namespace Client
 		"NONE",
 		"TUTORIAL_BOSS_CONTATCT",
 		"TUTORIAL_BOSS_CONTATCT_END",
+		"CINEMATIC_START",
+		"CINEMATIC_END",
+		"XIBILA_BOSS_ACTION_ON",
+		"XIBILA_BOSS_ACTION_OFF",
+		"XIBILA_BOSS_UI_ON",
+		"XIBILA_BOSS_UI_OFF",
 	};
 	inline string Global_Broadcast_Type_ToString(EGlobal_Broadcast_Type eType)
 	{
