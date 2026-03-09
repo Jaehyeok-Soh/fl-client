@@ -163,6 +163,7 @@ void CUIAimDot_Image::Bind_Events()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
+		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
 		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });

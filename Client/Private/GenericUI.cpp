@@ -245,6 +245,7 @@ void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTarg
 	m_fLerpMove_TimeAcc = 0.f;
 	m_fLerpMove_DelayTimeAcc = 0.f;
 
+	m_vMoveOffset = vStartOffset;
 	m_vLerpMove_StartOffset	= vStartOffset;
 	m_vLerpMove_TargetOffset = vTargetOffset;
 	m_fLerpMove_Duration = fDuration;
