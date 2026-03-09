@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 CUISkill_BG::CUISkill_BG(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -228,6 +229,28 @@ void CUISkill_BG::Initialize_Visible_Event()
 _bool CUISkill_BG::Tick_Visible_Event(const _float fTimeDelta)
 {
 	return true;
+}
+
+void CUISkill_BG::Bind_Events()
+{
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
 }
 
 CUISkill_BG* CUISkill_BG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -20,9 +20,9 @@ struct SRT
 // 가변 데이터 : cpu
 struct MU_ELEMENT_ONCE  
 {
-    int     iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
-    float   fRatio;
-    uint     iBoneCount;
+    int         iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
+    float       fRatio;
+    uint        iBoneCount;
     float       Padding0;
 };
 

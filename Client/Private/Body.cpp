@@ -69,6 +69,16 @@ HRESULT CBody::Initialize(void* pArg)
 		pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
 		pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.5f);
 		pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
+
+
+		_uint iAnimMiddle = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MM");
+		vector<CModel::DATA_ANIMIX> vecAnimMix = { {4,true,1.f},{414,true,1.f} };
+		pMyModel->Make_MixRatio(iAnimMiddle-1, vecAnimMix, m_pAdditiveMixCS);	//aim down
+		pMyModel->Make_MixRatio(iAnimMiddle, vecAnimMix, m_pAdditiveMixCS);	// aim middle
+		pMyModel->Make_MixRatio(iAnimMiddle+1, vecAnimMix, m_pAdditiveMixCS); // aim up
+
+		pMyModel->Set_AdditiveRef_AnimIdx(99);					// middle aim을 ref 애니메이션으로 잡는다
+
 	}
 
 	Set_RenderInfoFlag(OF_Outline, true);
@@ -80,6 +90,10 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 {
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
+
+	// 하체 믹스는 끄기 위함
+	CModel* pMyModel = Get_Component<CModel>();
+	pMyModel->Set_MixAnim_AnimIndex(1, -1);
 
 	return S_OK;
 }
@@ -96,7 +110,7 @@ void CBody::Update(_float fTimeDelta)
 	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
 	Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS);
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS, m_pAdditiveMixCS);
 
 	if(CCollider* pCollider = Get_Component<CCollider>())
 		pCollider->Update(m_matCombinedWorld);
@@ -193,6 +207,16 @@ const Matrix* CBody::Get_SocketMatrix(_uint iIndex)
 	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(iIndex))
 	{
 		return &pReturn->Get_CombinedTransformMatrix();
+	}
+
+	return nullptr;
+}
+
+const Matrix* CBody::Get_PosMatrix(_uint iIndex)
+{
+	if (CBone* pReturn = Get_Component<CModel>()->Get_Bone(iIndex))
+	{
+		return &pReturn->Get_BindPoseTransformMatrix();
 	}
 
 	return nullptr;
@@ -374,7 +398,7 @@ HRESULT CBody::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc, CAST_VOID_PP(&m_pBoneMeshCS))))
 			return E_FAIL;
 	}
 
@@ -394,7 +418,7 @@ HRESULT CBody::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc, CAST_VOID_PP(&m_pBoneCombineCS))))
 			return E_FAIL;
 	}
 
@@ -415,7 +439,7 @@ HRESULT CBody::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc, CAST_VOID_PP(&m_pBoneAnimEvaluateCS))))
 			return E_FAIL;
 	}
 
@@ -436,7 +460,7 @@ HRESULT CBody::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc, CAST_VOID_PP(&m_pBoneAnimBlendCS))))
 			return E_FAIL;
 	}
 
@@ -457,7 +481,28 @@ HRESULT CBody::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_AnimMix", L"Prototype_Component_Shader_AnimMix", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimMix", L"Prototype_Component_Shader_AnimMix", &ShaderDesc, CAST_VOID_PP(&m_pBoneAnimMixCS))))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : AdditiveMix  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "CHANNEL_OUTPUT_SRV";
+
+		ShaderDesc.InputBufferNum = 6;
+		ShaderDesc.bMakeSB = false;
+		//// 입력 버퍼
+		//ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+		//ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+		//ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "CHANNEL_OUTPUT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimAdditiveMix", L"Prototype_Component_Shader_AnimAdditiveMix", &ShaderDesc, CAST_VOID_PP(&m_pAdditiveMixCS))))
 			return E_FAIL;
 	}
 
@@ -482,13 +527,7 @@ HRESULT CBody::Ready_ComputeShader()
 		//	return E_FAIL;
 	}
 
-	m_pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
-	m_pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	m_pBoneAnimEvaluateCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
-	m_pBoneAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-	m_pBoneAnimMixCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
-
-	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pBoneAnimEvaluateCS, m_pBoneAnimBlendCS, m_pBoneAnimMixCS)))
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pBoneAnimEvaluateCS, m_pBoneAnimBlendCS, m_pBoneAnimMixCS, m_pAdditiveMixCS)))
 		return E_FAIL;
 
 	return S_OK;

@@ -573,5 +573,9 @@ namespace Engine
 	//===================
 	enum class SKILL_TYPE { DAMAGE, BUFF, SUMMON, CURE, DEFENSE, END }; // skill의 타입
 
+	//===================
+	// EFFECT Type
+	//===================
+	enum class E_EFFECT_TYPE { LOCAL, WORLD, END }; // skill의 타입
 }
 #endif // Engine_Enum_h__

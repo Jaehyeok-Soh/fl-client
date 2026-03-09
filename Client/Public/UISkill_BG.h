@@ -34,6 +34,7 @@ private:
 	virtual HRESULT Attach_Personal_Info()override;
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+	virtual void Bind_Events()override;
 private:
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 

@@ -78,6 +78,9 @@ HRESULT CMainPlayer::Initialize_Prototype()
 
 HRESULT CMainPlayer::Initialize(void* pArg)
 {
+    PLAYER_DESC* pDesc = static_cast<PLAYER_DESC*>(pArg);
+    m_ePlayerType = pDesc->ePlayerType;
+
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
@@ -90,8 +93,9 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     tDesc.FKeys = CPlayerControlContext::KEYFLAGS::MOVE     | CPlayerControlContext::KEYFLAGS::JUMP
                 | CPlayerControlContext::KEYFLAGS::DASH     | CPlayerControlContext::KEYFLAGS::SPECIAL
                 | CPlayerControlContext::KEYFLAGS::COMBO    | CPlayerControlContext::KEYFLAGS::SKILL1
-                | CPlayerControlContext::KEYFLAGS::SKILL2   | CPlayerControlContext::KEYFLAGS::INTERACT |
-                    CPlayerControlContext::KEYFLAGS::GUN;
+                | CPlayerControlContext::KEYFLAGS::SKILL2   | CPlayerControlContext::KEYFLAGS::INTERACT 
+                | CPlayerControlContext::KEYFLAGS::GUN;
+
     if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", &tDesc)))
         return E_FAIL;
 
@@ -137,6 +141,13 @@ HRESULT CMainPlayer::Clear_WhenChangeLevel()
 {
     m_pTargeter = nullptr;
     Clear_Components_WhenChangeLevel();
+
+    // part obj의 clear 함수 호출
+    for (auto& pPartObj : m_vecPartObjects)
+    {
+        if (pPartObj)
+            pPartObj->Clear_WhenChangeLevel();
+    }
 
     // LoadingScene에서 비활성화
     Set_Active(false);
@@ -190,6 +201,17 @@ void CMainPlayer::Update(const _float fTimeDelta)
     Get_Component<CMyStat>()->Update_Stat(fTimeDelta);
     Get_Component<CActionSkill>()->Update_Skills(fTimeDelta);
 
+    if (m_pGameInstance->KeyButton_Down(DIK_T))
+    {
+        SimpleMath::Vector4 HitPosition = { 17.f, 17.f, 17.f, 1.f};
+
+        EFFECT_SPAWN_DESC desc = {};
+        desc.VFX_fSpeed = 1.f;
+        desc.iSimulationType = (_uint)E_EFFECT_TYPE::WORLD;
+        desc.matWorld = XMMatrixTranslationFromVector(HitPosition);
+
+        m_pGameInstance->Request_Effect("VFX_Sword_Hit", desc);
+    }
 }
 
 void CMainPlayer::Update_Late(const _float fTimeDelta)
@@ -363,11 +385,10 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     }
 
     // damage 폰트 : iDamageFlag에 따라 크리티컬 || 일반 판정
-    switch (hitDesc.iDamageFlag)
+
+    if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::NORMAL)))
     {
-    case 0:
         // 일반 공격 데미지 폰트
-    {
         UI_PREFAB_DATA tPrefabData = {};
         tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
         tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
@@ -380,9 +401,8 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }
-    break;
-    case 1:
-        // 크리티컬 데미지 폰트
+
+    else if(Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
     {
         UI_PREFAB_DATA tPrefabData = {};
         tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);
@@ -391,12 +411,10 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
         tPrefabData.DamageFontData.vRandOffset = Vec3{
             m_pGameInstance->Rand_Float(-1.f, 1.f),
             m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f) 
+            m_pGameInstance->Rand_Float(-1.f, 1.f)
         };
         CUI_Manager::GetInstance()->Request_Add_Prefab(
             m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
-    }
-    break;
     }
 }
 
@@ -1103,6 +1121,12 @@ HRESULT CMainPlayer::Ready_AttackStates()
     arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::JUMP)] = Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
     arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::FALL)] = Get_AnimationIndex(L"Animation_PlayerMoon_Jump_FallLoop");
 
+    array<_uint, ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::END)> arrAimMix;
+    arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::DOWN)]      = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MD");
+    arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::MIDDLE)]    = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MM");
+    arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::UP)]        = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MU");
+
+
     vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };
 
     for (auto& MixAnim : arrMix)
@@ -1115,6 +1139,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         CState_GunBase::GUN_STATEBASE_DESC tDesc = {};
 
         tDesc.arrMixAnims = arrMix;
+        tDesc.arrAimAnims = arrAimMix;
 
         tDesc.bLoop = true;
         tDesc.pOwnerGun = pMyGun;
@@ -1131,7 +1156,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         CState_GunBase::GUN_STATEBASE_DESC tDesc = {};
 
         tDesc.arrMixAnims = arrMix;
-
+        tDesc.arrAimAnims = arrAimMix;
+        
         tDesc.bLoop = false;
         tDesc.pOwnerGun = pMyGun;
         tDesc.iMainAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Machinegun01_Reload");

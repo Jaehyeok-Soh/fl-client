@@ -1,6 +1,7 @@
 #pragma once
 #include "ContainerObject.h"
 #include "DataStruct_EffectEvent.h"
+#include "DataStruct_Effect.h"
 
 NS_BEGIN(Engine)
 
@@ -8,6 +9,13 @@ class ENGINE_DLL CEffectBase abstract:
     public CContainerObject
 {
 	using Super = CContainerObject;
+public:
+
+	typedef struct tagEffectContainerDesc : public Super::GAMEOBJECT_DESC
+	{
+		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::LOCAL;
+		std::vector<DTO::TEFFECT_PartsData>	_childData = {};
+	}EFFECT_CONTAINERDESC;
 
 public:
 	enum class E_LoopState
@@ -34,9 +42,17 @@ public:
 	virtual HRESULT Render() override;
 public:
 	virtual void LoopStateChange(DTO::E_LoopState EState);
+	_bool IsEffectFinished() {return m_bIsEffectFinish;}
+
+public:
+	virtual HRESULT Enable_VFX(void* pArg) PURE;
+	virtual HRESULT Disable_VFX() PURE;
 
 public:
 	virtual void Free() override;
+
+protected:
+	_bool							m_bIsEffectFinish = false;
 };
 
 NS_END

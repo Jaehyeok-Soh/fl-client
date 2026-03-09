@@ -140,7 +140,7 @@ struct TEFFECT_PartsData
     // ========   이펙트 파티클 전용   ============
     Vec2                _Effect_ParticleSize = { 0.05f, 0.15f };
     _float              _Effect_Duration = { 5.f };
-    _bool               _Effect_Looping = { true };
+    _bool               _Effect_Looping = { false };
     _bool               _Use_Effect_Particle_Burst = { false };
     _bool               _Use_Effect_Continue = { false };
     E_RANDOM_FLAG       iRandomFlags = RAND_NONE;
@@ -189,6 +189,15 @@ struct TEFFECT_PartsData
 
     bool _bUseRotationCurve = false;
     bool _bSeparateAxes = false;
+
+    // ============== 스케일 커브 ==============
+    bool                _bUseScaleCurve = false;
+    bool                _bSeparateScaleAxes = false;
+
+    // 시간대별 스케일 배율을 저장 (기존 Rotation_CurveKey와 동일)
+    vector<Rotation_CurveKey> _vecScaleCurveX;
+    vector<Rotation_CurveKey> _vecScaleCurveY;
+    vector<Rotation_CurveKey> _vecScaleCurveZ;
 
     // ========  이펙트 Texture Flag  =======
     _uint               _Effect_TextureFlag = {};

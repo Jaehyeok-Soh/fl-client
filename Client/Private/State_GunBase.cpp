@@ -17,7 +17,8 @@ CState_GunBase::CState_GunBase(CActionState* pOwnerComponent, const string& strN
 HRESULT CState_GunBase::Initialize(void* pArg)
 {
     GUN_STATEBASE_DESC* pDesc = static_cast<GUN_STATEBASE_DESC*>(pArg);
-    m_MixAnim_Indices = pDesc->arrMixAnims;
+    m_MixAnim_Indices   = pDesc->arrMixAnims;
+    m_Aim_Indicex       = pDesc->arrAimAnims;
 
     PLAYER_STATEBASE_DESC tSuperDesc    = {};
     tSuperDesc.bBlend                   = true;
@@ -72,6 +73,9 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
     else
         Change_MoveState(pDesc->eMoveState);
 
+    // additive mix on
+    Additive_MixOn(true);
+
     // cameara state change
     static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::GUN));
 
@@ -80,6 +84,14 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 
 void CState_GunBase::Update(const _float fTimeDelta)
 {
+    // 항시 hit 판정 먼저
+    if (Check_Hit(fTimeDelta))
+    {
+        Request_MixAnimation(1, -1);
+        End_MoveState(m_eMoveState);
+        return;
+    }
+
     // 0. 만약 r button 눌림이 끝났다면 gun state 탈출
     if (MOUSE_RBUTTON_UP)
     {
@@ -92,8 +104,13 @@ void CState_GunBase::Update(const _float fTimeDelta)
     if (Check_BaseKey(fTimeDelta))
     {
         Request_MixAnimation(1, -1);
+        End_MoveState(m_eMoveState);
+
         return;
     }
+
+    // 상체 움직임
+    Look_Control(fTimeDelta);
 
     // 2. 움직임키 flag check
     Check_KeyFlag(fTimeDelta);
@@ -109,6 +126,9 @@ HRESULT CState_GunBase::End()
 {
     if (FAILED(Super::End()))
         return E_FAIL;
+
+    // additive mix를 꺼준다
+    Additive_MixOn(false);
 
     // cameara state change
     static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::NORMAL));
@@ -185,6 +205,13 @@ void CState_GunBase::Move_Update(const _float fTimeDelta)
 
 void CState_GunBase::Ground_Update(const _float fTimeDelta)
 {
+    // 바닥과 충돌이 안 되었다면 -> move state : fall로 변경
+    if (!Check_OnGround())
+    {
+        Change_MoveState(MoveState::FALL);
+        return;
+    }
+
     // 3.1 jump 우선 판정
     if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyMask::Mask_Jump))
     {
@@ -263,7 +290,7 @@ void CState_GunBase::Jump_Update(const _float fTimeDelta)
         return;
     }
 
-    Jump(fTimeDelta);
+    //Jump(fTimeDelta);
 
     // cool 타임 검사 -> fall
     m_TJumpTime.x += fTimeDelta;
@@ -275,7 +302,7 @@ void CState_GunBase::Jump_Update(const _float fTimeDelta)
 
     // 바닥 충돌 검사 -> Land
     if (m_TJumpTime.x > 0.15f &&
-        IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+        Check_OnGround(0.3f))
     {
         Change_MoveState(MoveState::GROUND);
     }
@@ -290,7 +317,6 @@ void CState_GunBase::Fall_Update(const _float fTimeDelta)
         Request_MixAnimation(1, -1);
         Change_MoveState(MoveState::GROUND);
     }
-
 }
 
 _bool CState_GunBase::Change_MoveState(MoveState eState)
@@ -331,6 +357,8 @@ void CState_GunBase::Start_MoveState(MoveState eNextState)
 
     case MoveState::JUMP:
         Set_ApplyGravity(false);
+        Set_ZeroVerticalVelocity();
+        Jump(0.f);
         Request_MixAnimation(1, m_MixAnim_Indices[JUMP]);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::SHIFT)]   = ENUM_TO_UINT(CPlayer::State::DASHSKY);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::Q)]       = m_iEndStateIdx;
@@ -345,7 +373,7 @@ void CState_GunBase::Start_MoveState(MoveState eNextState)
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::LM)]      = ENUM_TO_UINT(CPlayer::State::JUMPATTSTART);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::CHARGE)]  = m_iEndStateIdx;
 
-        Set_GravityOffset(8.f);
+        Set_GravityOffset(32.5f);
         break;
     }
 }
@@ -374,6 +402,8 @@ void CState_GunBase::GunEnd()
     // 1번 mix 정보를 죽인다
     Request_MixAnimation(1, -1);
 
+    End_MoveState(m_eMoveState);
+
     // gun state 빠져 나올때
     switch (m_eMoveState)
     {
@@ -397,6 +427,39 @@ void CState_GunBase::GunEnd()
     }
 }
 
+void CState_GunBase::Look_Control(_float fTimeDelta)
+{
+    //CStateBase::SetupLook_CameraLook();
+    CStateBase::SetupLook_CameraLookLerp(fTimeDelta, 10.f);
+
+    _float fPitch = static_cast<CPlayer*>(Get_OwnerObject())->Get_CamPitch();
+
+    /*
+    값을 pitch값 0 ~ 90을
+    0 ~ 1로 스케일링 해서
+    ratio offset 설정
+    */
+
+    // down
+    if (fPitch > 0.f)
+    {
+        Additive_DataSetting(true, m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::MIDDLE)], m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::DOWN)], fPitch / XMConvertToRadians(90.f));
+    }
+
+    // up
+    else if (fPitch < 0.f)
+    {
+        Additive_DataSetting(true, m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::MIDDLE)], m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::UP)], fPitch / XMConvertToRadians(-90.f));
+    }
+
+    // middle
+    else
+    {
+        Additive_DataSetting(true, m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::MIDDLE)], 1.f);
+    }
+
+}
+
 void CState_GunBase::Jump(const _float fTimeDelta)
 {
     CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
@@ -405,32 +468,45 @@ void CState_GunBase::Jump(const _float fTimeDelta)
     Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
     vUp.Normalize();
 
-    Vec3 accelation = vUp;
+    Vec3 accelation = vUp * moveps; //  방향 * 속도
 
-    Move(accelation);
+    SetCCTImpuls(accelation);
 }
 
 void CState_GunBase::GunMove(const _float fTimeDelta)
 {
-    CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+   CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
 
-    Vec3 vRight = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+
+    //Vec3 vRight = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    //vRight.y = 0.f;
+    //vRight.Normalize();
+
+    //Vec3 vFront = Vec3(vRight.z, 0.f, -vRight.x);
+    //vFront.Normalize();
+
+    CTransform* pCamTrans = Get_CamTransform();
+
+    Vec3 vFront = pCamTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+    vFront.y = 0.f;
+    vFront.Normalize();
+
+    Vec3 vRight = pCamTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
     vRight.y = 0.f;
     vRight.Normalize();
 
-    Vec3 vFront = Vec3(vRight.z, 0.f, -vRight.x);
-    vFront.Normalize();
+
 
     Vec3 vDir = Vec3::Zero;
 
     if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::W))
     {
-        vDir -= vFront;
+        vDir += vFront;
     }
 
     if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::S))
     {
-        vDir += vFront;
+        vDir -= vFront;
     }
 
     if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyFlag::A))
@@ -446,6 +522,8 @@ void CState_GunBase::GunMove(const _float fTimeDelta)
     if (::XMVector3Equal(vDir, Vec3::Zero) == false)
         vDir.Normalize();
     SetCCTInputDirection(vDir);
+
+   // pCamTrans->Add_Position(vDir * fTimeDelta * pPlayerTrans->Get_MovePerSec());
 }
 
 void CState_GunBase::Free()

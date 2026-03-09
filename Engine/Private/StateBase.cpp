@@ -213,6 +213,24 @@ _bool CStateBase::Is_AnimTrackPositionHalf()
 	return m_pOwnerStateComp->Is_AnimTrackPositionHalf();
 }
 
+void CStateBase::Additive_MixOn(_bool bOn)
+{
+	if (m_pOwnerStateComp)
+		m_pOwnerStateComp->Additive_MixOn(bOn);
+}
+
+void CStateBase::Additive_DataSetting(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset)
+{
+	if (m_pOwnerStateComp)
+		m_pOwnerStateComp->Additive_DataSetting(bAdditive, iRefIdx, iPosIdx, fMixOffset);
+}
+
+void CStateBase::Additive_DataSetting(_bool bAdditive, _int iPosIdx, _float fMixOffset)
+{
+	if (m_pOwnerStateComp)
+		m_pOwnerStateComp->Additive_DataSetting(bAdditive, iPosIdx, fMixOffset);
+}
+
 _bool CStateBase::IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag)
 {
 	if (m_pOwnerStateComp == nullptr)
@@ -343,6 +361,16 @@ void CStateBase::Apply_Gravity(const _float fTimeDelta)
 void CStateBase::SetupLook_CameraLook()
 {
 	m_pOwnerStateComp->SetupLook_CameraLook();
+}
+
+void CStateBase::SetupLook_CameraSameLook()
+{
+	m_pOwnerStateComp->SetupLook_CameraSameLook();
+}
+
+void CStateBase::SetupLook_CameraLookLerp(const _float fTimeDelta, _float fLerpSpeed)
+{
+	m_pOwnerStateComp->SetupLook_CameraLookLerp(fTimeDelta, fLerpSpeed);
 }
 
 void CStateBase::SetupLookAt(const Vec3& vPoint)

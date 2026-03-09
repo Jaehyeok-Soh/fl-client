@@ -226,7 +226,6 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 			Ready_LerpChange(0.3f, 3.f, 1.f, 1.f, m_fDelay);
 		}
 		Tick_LerpChange(&m_fScale, fTimeDelta);
-		Move_Size(m_fWidth * m_fScale, m_fHeight * m_fScale);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BATTLE_COMBO_BG:
@@ -277,12 +276,6 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 		break;
 	}
 	m_iPreComboCount = m_iCurComboCount;
-}
-
-void CUICombo_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
-{
-	if (!m_isActive)
-		return;
 }
 
 void CUICombo_Image::Initialize_Visible_Event()

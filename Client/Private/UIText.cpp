@@ -90,7 +90,6 @@ void CUIText::Ready_Before_Render(const _float fTimeDelta)
 	{
 		m_vFontPos.x = m_vRenderPos.x;
 		m_vFontPos.y = m_vRenderPos.y;
-		m_fScaleOffset = 1.f;
 	}
 }
 

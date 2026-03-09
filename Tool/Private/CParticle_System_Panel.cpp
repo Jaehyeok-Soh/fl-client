@@ -249,20 +249,35 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		}
 		ImGui::Spacing();
 
-		// ===================   Looping - 재생이 끝나면 반복할지 결정한다		=====================
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Looping");
-		ImGui::SameLine();
-		m_bModified |= ImGui::Checkbox("##Looping1", &m_tCurrentDesc.Data._Effect_Looping);
-		ImGui::Spacing();
+		// ==================  Basic Setting  ==================
+		if (ImGui::TreeNode("Particle Basic Setting##ParticleSystem"))
+		{
+			// ===================   Looping - 재생이 끝나면 반복할지 결정한다		=====================
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Looping");
+			ImGui::SameLine();
+			m_bModified |= ImGui::Checkbox("##Looping1", &m_tCurrentDesc.Data._Effect_Looping);
+			ImGui::Spacing();
 
-		// ==================   Prewarm - 체크하면 게임 시작시 이미 시스템이 헌 서아쿨아 돌아간 것처럼 미리 입자가 퍼져있다.  =========================
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Prewarm");
-		ImGui::SameLine();
-		static bool Prewarm = false;
-		m_bModified |= ImGui::Checkbox("##Prewarm1", &Prewarm);
-		ImGui::Spacing();
+			// ===================   Burst   ===================
+			m_bModified |= ImGui::Checkbox("Effect Particle Burst", &m_tCurrentDesc.Data._Use_Effect_Particle_Burst);
+
+			// ===================   Continue   ===================
+			m_bModified |= ImGui::Checkbox("Effect Particle Continue", &m_tCurrentDesc.Data._Use_Effect_Continue);
+
+			// ===================   시간에 따른 LifeDissolve를 줄 것인가   ===================
+			if (ImGui::Checkbox("UseLifeDissolve##LifeDissolve", &m_tCurrentDesc.Data._Effect_Tool_UseLifeDissolve))
+			{
+				if (m_tCurrentDesc.Data._Effect_Tool_UseLifeDissolve)
+					Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 13); // SCROLL
+				else
+					Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 13);
+
+				m_bModified |= true;
+			}
+
+			ImGui::TreePop();
+		}
 
 		// =================   Start Delay - 재생 버튼을 누르고 실제 입자가 나오기까지 걸리는 시간   =========================
 		ImGui::AlignTextToFramePadding();
@@ -284,10 +299,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::TreePop();
 		}
 
-		m_bModified |= ImGui::Checkbox("Effect Particle Burst", &m_tCurrentDesc.Data._Use_Effect_Particle_Burst);
-
-		m_bModified |= ImGui::Checkbox("Effect Particle Continue", &m_tCurrentDesc.Data._Use_Effect_Continue);
-
 		ImGui::AlignTextToFramePadding();
 		if (ImGui::TreeNode("Timeline Setting"))
 		{
@@ -304,16 +315,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Actual Appear Time: %.3f sec", actualTime);
 
 			ImGui::TreePop();
-		}
-
-		if (ImGui::Checkbox("UseLifeDissolve##LifeDissolve", &m_tCurrentDesc.Data._Effect_Tool_UseLifeDissolve))
-		{
-			if (m_tCurrentDesc.Data._Effect_Tool_UseLifeDissolve)
-				Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 13); // SCROLL
-			else
-				Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 13);
-
-			m_bModified |= true;
 		}
 
 		ImGui::AlignTextToFramePadding();
@@ -366,18 +367,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			ImGui::TreePop();
 		}
 
-		// ==============  Start Size - 입자의 초기 사이즈   =========================================
-		ImGui::AlignTextToFramePadding();
-		if (ImGui::TreeNode("Size Setting"))
-		{
-			ImGui::SeparatorText("Start Size##Size Setting");
-			m_bModified |= ImGui::DragFloat3("##Start Size Setting", &m_tCurrentDesc.Data._Effect_StartScale.x, 0.1f, 0.1f, 100.f);
-
-			ImGui::SeparatorText("End Size##Size Setting");
-			m_bModified |= ImGui::DragFloat3("##End Size Setting", &m_tCurrentDesc.Data._Effect_EndScale.x, 0.1f, 0.1f, 100.f);
-
-			ImGui::TreePop();
-		}
 		// ==============   3D Start Rotation - 입자의 축마다의 회전값    =========================
 
 		ImGui::AlignTextToFramePadding();
@@ -394,14 +383,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 				CEffectObject* pInstance = static_cast<Effect*>(pGo)->Get_Part<CEffectObject>(m_iSelectPartsIndex);
 				CTransform* pTransform = pInstance->Get_Component<CTransform>();
-
-	/*			if (pTransform)
-					pTransform->Rotation(
-						DirectX::XMConvertToRadians(StartRotation.x),
-						DirectX::XMConvertToRadians(StartRotation.y),
-						DirectX::XMConvertToRadians(StartRotation.z));
-
-				m_tCurrentDesc._Effect_StartRotation = StartRotation;*/
 			}
 			ImGui::TreePop();
 		}
@@ -416,8 +397,28 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			Vec3 Position = pTranform->Get_Info(TRANSFORM_INFO_STATE::POS);
 			Vec3 Scale = pTranform->Get_Scaled();
 
-			ImGui::DragFloat3(" ##Transform_ParticleSystem", &Position.x, 0.1f, 0.f, 100.f);
+			ImGui::SeparatorText("Position Setting##Transform");
+			ImGui::DragFloat3(" ##Transform_ParticleSystem", &Position.x, 0.1f, -100.f, 100.f);
 			pTranform->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+			ImGui::NewLine();
+
+			// ==============  Start Size - 입자의 초기 사이즈   =========================================
+			ImGui::SeparatorText("Start Size##Size Setting");
+			m_bModified |= ImGui::DragFloat3("##Start Size Setting", &m_tCurrentDesc.Data._Effect_StartScale.x, 0.1f, 0.1f, 100.f);
+
+			ImGui::SeparatorText("End Size##Size Setting");
+			m_bModified |= ImGui::DragFloat3("##End Size Setting", &m_tCurrentDesc.Data._Effect_EndScale.x, 0.1f, 0.1f, 100.f);
+
+			if (m_tCurrentDesc.Data.eEffectParticleType != (_uint)DTO::E_PARTICLETYPE::MESH)
+			{
+				if (m_tCurrentDesc.Data._Effect_StartScale.x < 0.01f)
+					m_tCurrentDesc.Data._Effect_StartScale.x = 0.01f;
+
+				if (m_tCurrentDesc.Data._Effect_EndScale.x < 0.01f)
+					m_tCurrentDesc.Data._Effect_EndScale.x = 0.01f;
+			}
+
+			ImGui::NewLine();
 			ImGui::Text("ObjectPos : (%g, %g, %g)", Position.x, Position.y, Position.z);
 			ImGui::Text("ObjectScale : (%g, %g, %g)", Scale.x, Scale.y, Scale.z);
 
@@ -475,9 +476,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			m_bModified |= ImGui::InputInt("##MaxParticles", &m_tCurrentDesc.Data._Effect_MaxParticle, 0);
 			ImGui::TreePop();
 		}
-
-		
-
 
 		// Simulation Speed - 전체 이펙트의 재생 속도 배수입니다. 2라면 2배속으로 빠르게 움직입니다.
 		// Delta Time - 시간 계산 방식을 정합니다. 게임 속도에 맞춰진 Scaled 시간인가?
@@ -585,6 +583,117 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		ImGui::Spacing();
 		ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.f), "Final Base Gravity: %.2f m/s^2", m_tCurrentDesc.Data._Effect_Gravity_Value);
 		ImGui::Separator();
+	}
+
+	// ===============================//
+//        Scale Curve Setting     //
+// ===============================//
+
+	if (ImGui::CollapsingHeader("Scale Curve Settings"))
+	{
+		ImGui::Spacing();
+
+		// 1. 커브 사용 여부 및 축 분리 여부
+		m_bModified |= ImGui::Checkbox("Use Scale Curve", &m_tCurrentDesc.Data._bUseScaleCurve);
+		ImGui::SameLine();
+		m_bModified |= ImGui::Checkbox("Separate Axes", &m_tCurrentDesc.Data._bSeparateScaleAxes);
+
+		if (m_tCurrentDesc.Data._bUseScaleCurve)
+		{
+			// 2. 가시성을 위한 최대 스케일 범위 설정 (캔버스 세로축 기준)
+			static float fMaxScaleView = 50.0f;
+			ImGui::SetNextItemWidth(100.f);
+			ImGui::DragFloat("Max View Range", &fMaxScaleView, 1.0f, 1.0f, 1000.0f, "Max: %.f");
+			ImGui::SameLine();
+			ImGui::TextDisabled("(?) Adjust vertical height of canvas");
+
+			// 축별로 루프 (SeparateAxes가 꺼져있으면 X만 표시)
+			int iLoopCount = m_tCurrentDesc.Data._bSeparateScaleAxes ? 3 : 1;
+			const char* pAxisLabels[] = { "Scale X (All)", "Scale Y", "Scale Z" };
+			vector<DTO::Rotation_CurveKey>* pCurves[] = {
+				&m_tCurrentDesc.Data._vecScaleCurveX,
+				&m_tCurrentDesc.Data._vecScaleCurveY,
+				&m_tCurrentDesc.Data._vecScaleCurveZ
+			};
+			ImU32 axisColors[] = { IM_COL32(255, 100, 100, 255), IM_COL32(100, 255, 100, 255), IM_COL32(100, 100, 255, 255) };
+
+			for (int i = 0; i < iLoopCount; ++i)
+			{
+				if (ImGui::TreeNode(pAxisLabels[i]))
+				{
+					ImVec2 canvas_size = ImVec2(ImGui::GetContentRegionAvail().x, 200.0f); // 스케일은 좀 더 크게
+					ImGui::InvisibleButton("ScaleCurveCanvas", canvas_size);
+					ImVec2 canvas_p0 = ImGui::GetItemRectMin();
+					ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_size.x, canvas_p0.y + canvas_size.y);
+					ImVec2 mouse_pos = ImGui::GetMousePos();
+
+					ImDrawList* draw_list = ImGui::GetWindowDrawList();
+					draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(35, 35, 35, 255));
+
+					// 가이드 라인 (0, 1.0 지점 표시)
+					float y_1_0 = canvas_p0.y + (1.0f - (1.0f / fMaxScaleView)) * canvas_size.y;
+					draw_list->AddLine(ImVec2(canvas_p0.x, y_1_0), ImVec2(canvas_p1.x, y_1_0), IM_COL32(100, 100, 100, 150));
+					draw_list->AddText(ImVec2(canvas_p0.x + 5, y_1_0 - 15), IM_COL32(150, 150, 150, 255), "Value: 1.0");
+
+					auto& pVec = *pCurves[i];
+
+					for (size_t j = 0; j < pVec.size(); ++j)
+					{
+						// 좌표 계산: Value가 fMaxScaleView일 때 캔버스 상단(0.0)에 위치
+						float fNormalizedVal = pVec[j].fValue / fMaxScaleView;
+						ImVec2 point_pos = ImVec2(
+							canvas_p0.x + pVec[j].fTimeKey * canvas_size.x,
+							canvas_p0.y + (1.0f - fNormalizedVal) * canvas_size.y
+						);
+
+						// 삭제 (Ctrl + 좌클릭)
+						float dist = sqrtf(powf(mouse_pos.x - point_pos.x, 2) + powf(mouse_pos.y - point_pos.y, 2));
+						if (dist < 8.0f && ImGui::IsMouseClicked(0) && ImGui::GetIO().KeyCtrl)
+						{
+							pVec.erase(pVec.begin() + j);
+							m_bModified = true; break;
+						}
+
+						// 선 그리기
+						if (j < pVec.size() - 1)
+						{
+							float fNextNorm = pVec[j + 1].fValue / fMaxScaleView;
+							ImVec2 next_point = ImVec2(
+								canvas_p0.x + pVec[j + 1].fTimeKey * canvas_size.x,
+								canvas_p0.y + (1.0f - fNextNorm) * canvas_size.y
+							);
+							draw_list->AddLine(point_pos, next_point, axisColors[i], 2.5f);
+						}
+						draw_list->AddCircleFilled(point_pos, 4.0f, IM_COL32(255, 255, 255, 255));
+
+						// 값 표시 (현재 점 위에 수치 나타내기)
+						char buf[16]; sprintf_s(buf, "%.1f", pVec[j].fValue);
+						draw_list->AddText(ImVec2(point_pos.x + 5, point_pos.y - 15), IM_COL32(255, 255, 255, 200), buf);
+					}
+
+					// 점 추가 (우클릭) - 실제 스케일 값으로 변환하여 저장
+					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(1))
+					{
+						DTO::Rotation_CurveKey newKey;
+						newKey.fTimeKey = (mouse_pos.x - canvas_p0.x) / canvas_size.x;
+						// 마우스 y 좌표를 fMaxScaleView 범위 내의 실제 수치로 변환
+						float fRatio = 1.0f - (mouse_pos.y - canvas_p0.y) / canvas_size.y;
+						newKey.fValue = fRatio * fMaxScaleView;
+
+						pVec.push_back(newKey);
+						std::sort(pVec.begin(), pVec.end(), [](auto& a, auto& b) { return a.fTimeKey < b.fTimeKey; });
+						m_bModified = true;
+					}
+					ImGui::TreePop();
+				}
+			}
+
+			// SeparateAxes가 꺼져있을 때 X 데이터를 Y, Z에 동기화
+			if (!m_tCurrentDesc.Data._bSeparateScaleAxes) {
+				m_tCurrentDesc.Data._vecScaleCurveY = m_tCurrentDesc.Data._vecScaleCurveX;
+				m_tCurrentDesc.Data._vecScaleCurveZ = m_tCurrentDesc.Data._vecScaleCurveX;
+			}
+		}
 	}
 
 	// ==================//
@@ -836,7 +945,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		if (ImGui::TreeNode("Shape_EffectList##Effect_List"))
 		{
-			vector<string> m_pShapeList = {"NONE", "DROP", "RISE", "SPREAD", "STRAIGHT", "SPIRAL", "DNA","GATHER", "FOUNTAIN"};
+			vector<string> m_pShapeList = {"NONE", "DROP", "RISE", "SPREAD", "STOP", "SPIRAL", "DNA","GATHER", "FOUNTAIN"};
 
 			std::vector<const char*> iTems;
 			iTems.reserve(static_cast<int>(m_pShapeList.size()));
@@ -884,50 +993,6 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		{
 			m_bModified |= ImGui::DragFloat2("##Distortion Scale", &m_tCurrentDesc.Data._Effect_DistortionScale.x, 0.1f, 0.1f, 100.f);
 			ImGui::TreePop();
-		}
-
-		// ============   Scroll 값 설정하기   ============
-		ImGui::AlignTextToFramePadding();
-		if (ImGui::TreeNode("Scroll Speed##Shape"))
-		{
-			m_bModified |= ImGui::DragFloat2("##Scroll Speed", &m_tCurrentDesc.Data._Effect_ScrollSpeed.x, 0.1f, -100.f, 100.f);
-			// ============  Scroll 사용할거야?   =============
-				// SCROLL 사용 여부
-			if (ImGui::Checkbox("Use##Scroll", &m_tCurrentDesc.Data._Effect_Tool_UseScroll))
-			{
-				if (m_tCurrentDesc.Data._Effect_Tool_UseScroll)
-					Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 1); // SCROLL
-				else
-					Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 1);
-
-				m_bModified |= true;
-			}
-
-			// RIGHT
-			if (m_tCurrentDesc.Data._Effect_Tool_UseScroll)
-			{
-				ImGui::SameLine();
-				if (ImGui::Checkbox("RIGHT", &m_tCurrentDesc.Data._Effect_Tool_RightScroll))
-				{
-					if (m_tCurrentDesc.Data._Effect_Tool_RightScroll)
-						Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 2); // RIGHT
-					else
-						Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 2);
-					m_bModified |= true;
-				}
-
-				ImGui::SameLine();
-				if (ImGui::Checkbox("DOWN", &m_tCurrentDesc.Data._Effect_Tool_DownScroll))
-				{
-					if (m_tCurrentDesc.Data._Effect_Tool_DownScroll)
-						Engine_Utils::Add_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 3); // DOWN 
-					else
-						Engine_Utils::RemoveHard_Flag(m_tCurrentDesc.Data._Effect_RenderFlag, 1 << 3);
-					m_bModified |= true;
-				}
-			}
-			ImGui::TreePop();
-
 		}
 
 		// ============ Scroll 값 설정하기 ============
@@ -1155,150 +1220,139 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 				m_bModified |= true;
 			}
-
-			if (ImGui::Checkbox("Directional Billboard", &m_tCurrentDesc.Data._Effect_Tool_UseDirBillboard)) {
-				if (m_tCurrentDesc.Data._Effect_Tool_UseDirBillboard) m_tCurrentDesc.Data._Effect_RenderFlag |= (1 << 4);
-				else m_tCurrentDesc.Data._Effect_RenderFlag &= ~(1 << 4);
-			}
 			// =============  [CHOOSE SAMPLERSTATE]	  ============
 
-			if (ImGui::TreeNode("SamplerState Setting##Renderer"))
+			// Diffuse Texture##SamplerState
+			if (ImGui::TreeNode("Diffuse Texture##SamplerState"))
 			{
-				// Diffuse Texture##SamplerState
-				if (ImGui::TreeNode("Diffuse Texture##SamplerState"))
-				{
-					vector<string> m_PParticleTypeList;
-					m_PParticleTypeList.clear();
+				vector<string> m_PParticleTypeList;
+				m_PParticleTypeList.clear();
+				m_PParticleTypeList.push_back("LinearSampler");
+				m_PParticleTypeList.push_back("LinearClampSampler");
+				m_PParticleTypeList.push_back("LinearBorderSampler");
+				m_PParticleTypeList.push_back("LinearMirrorSampler");
+				m_PParticleTypeList.push_back("PointSampler");
 
-					m_PParticleTypeList.push_back("LinearSampler");
-					m_PParticleTypeList.push_back("LinearClampSampler");
-					m_PParticleTypeList.push_back("LinearBorderSampler");
-					m_PParticleTypeList.push_back("LinearMirrorSampler");
-					m_PParticleTypeList.push_back("PointSampler");
+				std::vector<const char*> iTems1;
+				iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
 
-					std::vector<const char*> iTems1;
-					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+				for (auto& str : m_PParticleTypeList)
+					iTems1.push_back(str.c_str());
 
-					for (auto& str : m_PParticleTypeList)
-						iTems1.push_back(str.c_str());
-
-					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_DiffuseSamplerState_Flag, [](void* data, int idx, const char** out_text)
-						{
-							auto& vector = *static_cast<std::vector<std::string>*>(data);
-							*out_text = vector[idx].c_str();
-							return true;
-						},
-						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+				if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_DiffuseSamplerState_Flag, [](void* data, int idx, const char** out_text)
 					{
-						PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_DiffuseSamplerState_Flag, 0);
-						m_bModified |= true;
-					}
+						auto& vector = *static_cast<std::vector<std::string>*>(data);
+						*out_text = vector[idx].c_str();
+						return true;
+					},
+					(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+				{
+					PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_DiffuseSamplerState_Flag, 0);
+					m_bModified |= true;
+				}
 
 		
-					ImGui::TreePop();
-					ImGui::Spacing();
-				}
-				// Noise Texture##SamplerState
-				if (ImGui::TreeNode("Noise Texture##SamplerState"))
-				{
-					vector<string> m_PParticleTypeList;
-					m_PParticleTypeList.clear();
+				ImGui::TreePop();
+				ImGui::Spacing();
+			}
+			// Noise Texture##SamplerState
+			if (ImGui::TreeNode("Noise Texture##SamplerState"))
+			{
+				vector<string> m_PParticleTypeList;
+				m_PParticleTypeList.clear();
 
-					m_PParticleTypeList.push_back("LinearSampler");
-					m_PParticleTypeList.push_back("LinearClampSampler");
-					m_PParticleTypeList.push_back("LinearBorderSampler");
-					m_PParticleTypeList.push_back("LinearMirrorSampler");
-					m_PParticleTypeList.push_back("PointSampler");
+				m_PParticleTypeList.push_back("LinearSampler");
+				m_PParticleTypeList.push_back("LinearClampSampler");
+				m_PParticleTypeList.push_back("LinearBorderSampler");
+				m_PParticleTypeList.push_back("LinearMirrorSampler");
+				m_PParticleTypeList.push_back("PointSampler");
 
-					std::vector<const char*> iTems1;
-					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+				std::vector<const char*> iTems1;
+				iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
 
-					for (auto& str : m_PParticleTypeList)
-						iTems1.push_back(str.c_str());
+				for (auto& str : m_PParticleTypeList)
+					iTems1.push_back(str.c_str());
 
-					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_NoiseSamplerState_Flag, [](void* data, int idx, const char** out_text)
-						{
-							auto& vector = *static_cast<std::vector<std::string>*>(data);
-							*out_text = vector[idx].c_str();
-							return true;
-						},
-						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+				if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_NoiseSamplerState_Flag, [](void* data, int idx, const char** out_text)
 					{
-						PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_NoiseSamplerState_Flag, 3);
-						m_bModified |= true;
-					}
-
-					ImGui::TreePop();
-					ImGui::Spacing();
-				}
-				// Masking Texture##SamplerState
-				if (ImGui::TreeNode("Masking Texture##SamplerState"))
+						auto& vector = *static_cast<std::vector<std::string>*>(data);
+						*out_text = vector[idx].c_str();
+						return true;
+					},
+					(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
 				{
-					vector<string> m_PParticleTypeList;
-					m_PParticleTypeList.clear();
-
-					m_PParticleTypeList.push_back("LinearSampler");
-					m_PParticleTypeList.push_back("LinearClampSampler");
-					m_PParticleTypeList.push_back("LinearBorderSampler");
-					m_PParticleTypeList.push_back("LinearMirrorSampler");
-					m_PParticleTypeList.push_back("PointSampler");
-
-					std::vector<const char*> iTems1;
-					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
-
-					for (auto& str : m_PParticleTypeList)
-						iTems1.push_back(str.c_str());
-
-					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_MaskingSamplerState_Flag, [](void* data, int idx, const char** out_text)
-						{
-							auto& vector = *static_cast<std::vector<std::string>*>(data);
-							*out_text = vector[idx].c_str();
-							return true;
-						},
-						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
-					{
-						PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_MaskingSamplerState_Flag, 6);
-						m_bModified |= true;
-					}
-
-					ImGui::TreePop();
-					ImGui::Spacing();
-				}
-				// Gradation Texture##SamplerState
-				if (ImGui::TreeNode("Gradation Texture##SamplerState"))
-				{
-					vector<string> m_PParticleTypeList;
-					m_PParticleTypeList.clear();
-
-					m_PParticleTypeList.push_back("LinearSampler");
-					m_PParticleTypeList.push_back("LinearClampSampler");
-					m_PParticleTypeList.push_back("LinearBorderSampler");
-					m_PParticleTypeList.push_back("LinearMirrorSampler");
-					m_PParticleTypeList.push_back("PointSampler");
-
-					std::vector<const char*> iTems1;
-					iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
-
-					for (auto& str : m_PParticleTypeList)
-						iTems1.push_back(str.c_str());
-
-					if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_GradationSamplerState_Flag, [](void* data, int idx, const char** out_text)
-						{
-							auto& vector = *static_cast<std::vector<std::string>*>(data);
-							*out_text = vector[idx].c_str();
-							return true;
-						},
-						(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
-					{
-						PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_GradationSamplerState_Flag, 9);
-						m_bModified |= true;
-					}
-
-					ImGui::TreePop();
-					ImGui::Spacing();
+					PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_NoiseSamplerState_Flag, 3);
+					m_bModified |= true;
 				}
 
 				ImGui::TreePop();
+				ImGui::Spacing();
+			}
+			// Masking Texture##SamplerState
+			if (ImGui::TreeNode("Masking Texture##SamplerState"))
+			{
+				vector<string> m_PParticleTypeList;
+				m_PParticleTypeList.clear();
+
+				m_PParticleTypeList.push_back("LinearSampler");
+				m_PParticleTypeList.push_back("LinearClampSampler");
+				m_PParticleTypeList.push_back("LinearBorderSampler");
+				m_PParticleTypeList.push_back("LinearMirrorSampler");
+				m_PParticleTypeList.push_back("PointSampler");
+
+				std::vector<const char*> iTems1;
+				iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+
+				for (auto& str : m_PParticleTypeList)
+					iTems1.push_back(str.c_str());
+
+				if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_MaskingSamplerState_Flag, [](void* data, int idx, const char** out_text)
+					{
+						auto& vector = *static_cast<std::vector<std::string>*>(data);
+						*out_text = vector[idx].c_str();
+						return true;
+					},
+					(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+				{
+					PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_MaskingSamplerState_Flag, 6);
+					m_bModified |= true;
+				}
+
+				ImGui::TreePop();
+				ImGui::Spacing();
+			}
+			// Gradation Texture##SamplerState
+			if (ImGui::TreeNode("Gradation Texture##SamplerState"))
+			{
+				vector<string> m_PParticleTypeList;
+				m_PParticleTypeList.clear();
+
+				m_PParticleTypeList.push_back("LinearSampler");
+				m_PParticleTypeList.push_back("LinearClampSampler");
+				m_PParticleTypeList.push_back("LinearBorderSampler");
+				m_PParticleTypeList.push_back("LinearMirrorSampler");
+				m_PParticleTypeList.push_back("PointSampler");
+
+				std::vector<const char*> iTems1;
+				iTems1.reserve(static_cast<int>(m_PParticleTypeList.size()));
+
+				for (auto& str : m_PParticleTypeList)
+					iTems1.push_back(str.c_str());
+
+				if (ImGui::ListBox("##ParticleType Select", &m_tCurrentDesc.Data._Effect_Tool_GradationSamplerState_Flag, [](void* data, int idx, const char** out_text)
+					{
+						auto& vector = *static_cast<std::vector<std::string>*>(data);
+						*out_text = vector[idx].c_str();
+						return true;
+					},
+					(void*)&m_PParticleTypeList, (int)m_PParticleTypeList.size(), 2))
+				{
+					PackSamplerFlag(m_tCurrentDesc.Data._Effect_SamplerStateFlag, m_tCurrentDesc.Data._Effect_Tool_GradationSamplerState_Flag, 9);
+					m_bModified |= true;
+				}
+
+				ImGui::TreePop();
+				ImGui::Spacing();
 			}
 
 			ImGui::TreePop();
@@ -1716,32 +1770,6 @@ void CParticle_System_Panel::Draw_Preview_Texture(CToolObject* pGo)
 			}
 		}
 	}
-}
-
-HRESULT CParticle_System_Panel::Create_Preview_Resources()
-{
-	//D3D11_TEXTURE2D_DESC texDesc = {};
-	//texDesc.Width = 256;
-	//texDesc.Height = 256;
-	//texDesc.MipLevels = 1;
-	//texDesc.ArraySize = 1;
-	//texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//texDesc.SampleDesc.Count = 1;
-	//texDesc.Usage = D3D11_USAGE_DEFAULT;
-	//texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-
-	//ID3D11Texture2D* pTargetTexture = nullptr;
-	//if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &pTargetTexture)))
-	//	return E_FAIL;
-
-	//// Tool용 RendertargetView
-	//m_pDevice->CreateRenderTargetView(pTargetTexture, nullptr, &m_pPreviewRTV);
-	//// Tool용 Shader Resource VIew
-	//m_pDevice->CreateShaderResourceView(pTargetTexture, nullptr, &m_pPreviewSRV);
-
-	//Safe_Release(pTargetTexture);
-
-	return S_OK;
 }
 
 void CParticle_System_Panel::Draw_EffectColor(CToolObject* pGo)

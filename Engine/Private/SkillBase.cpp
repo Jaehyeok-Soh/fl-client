@@ -46,7 +46,7 @@ void CSkillBase::Update(const _float fTimeDelta, CMyStat* pStatCom)
 	if (m_bOnSkill && !m_bEndSkill)
 	{
 		// skill update
-		Update_Skill(fTimeDelta);
+		Update_Skill(fTimeDelta, pStatCom);
 
 		// 만약 skill end를 지속 타임을 기준으로 하고 싶다면
 		Count_SkillTime(fTimeDelta);
@@ -71,10 +71,6 @@ _bool CSkillBase::Can_StartSkill(CMyStat* pStatCom)
 		return true;
 
 	return false;
-}
-
-void CSkillBase::Update_Skill(const _float fTimeDelta)
-{
 }
 
 _bool CSkillBase::Start_Skill(CMyStat* pStatCom)
@@ -113,6 +109,10 @@ void CSkillBase::End_Skill(CMyStat* pStatCom)
 _bool CSkillBase::On_Collision(const _float fTimeDelta, CGameObject* pObj)
 {
 	return true;
+}
+
+void CSkillBase::Update_Skill(const _float fTimeDelta, CMyStat* pStatCom)
+{
 }
 
 void CSkillBase::Count_SkillTime(const _float fTimeDelta)

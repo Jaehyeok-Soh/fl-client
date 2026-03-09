@@ -30,12 +30,12 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)override;
+private:
 	void Initialize_Visible_Event()override;
 	void Initialize_InVisible_Event()override;
 	_bool Tick_Visible_Event(const _float fTimeDelta)override;
 	_bool Tick_InVisible_Event(const _float fTimeDelta)override;
-
+	virtual void Bind_Events()override;
 private:
 	HRESULT Ready_Components(PLAYER_STAT_PROGRESS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();

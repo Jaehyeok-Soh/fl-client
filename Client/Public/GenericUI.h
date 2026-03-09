@@ -49,7 +49,6 @@ public:
 
 public:
 	_bool Calc_HitEvent();
-	virtual void OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender) {}
 
 protected:
 	HRESULT Ready_Components(GENERIC_UI_DESC* pDesc);
@@ -59,13 +58,15 @@ protected:
 	virtual void Tick_By_Type(const _float fTimedelta) {}
 	virtual void Trigger_By_InteractState(){}
 
-	void Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay);
+	// 끝에서 천천히 isEaseOut = true / 끝에서 빠르게 isEaseOut = false
+	void Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay, _bool isEaseOut = false);
 	void Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
 	void Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay);
 	_bool Tick_Lerp_Movement(const _float fTimeDelta);
 	_bool Tick_Fade(const _float fTimeDelta);
 	_bool Tick_LerpChange(_float* p, const _float fTimeDelta);
 	void Request_SetDead();
+	virtual void Bind_Events() {};
 
 public:
 	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
@@ -78,7 +79,7 @@ public:
 	inline virtual HRESULT Despawn_FromPool()override { if (FAILED(Super::Despawn_FromPool()))return E_FAIL; return S_OK; };;
 
 protected:
-	CUI_Manager* m_pUIManager = { nullptr };	
+	CUI_Manager* m_pUIManager = { nullptr };
 	uint32_t m_iLevelID = {};
 	class CWorldUI_Component* m_pWorldUIComp = { nullptr };
 
@@ -95,6 +96,8 @@ protected:
 	uint32_t m_iOwnerType				= {};
 	_bool m_isFin_Event					= { true };
 	_bool m_isDeadRequest				= { false };
+
+	vector<DelegateHandle> m_vecEventHandles;
 
 	// Shader Bind Values
 	_bool m_isUseColorTint				= { false };
@@ -120,7 +123,7 @@ private:
 	_float	m_fLerpMove_TimeAcc					= {};
 	_float	m_fLerpMove_DelayTimeAcc			= {};
 	_float	m_fLerpMove_Delay					= {};
-
+	_bool m_isLerpMove_EaseOut					= { false };
 	// Fade Values
 	_float m_fFade_Delay						= {};
 	_float m_fFade_DelayTimeAcc					= {};

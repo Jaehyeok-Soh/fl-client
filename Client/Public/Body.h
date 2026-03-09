@@ -39,6 +39,7 @@ public:
 public:
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);
 	const Matrix* Get_SocketMatrix(_uint iIndex);
+	const Matrix* Get_PosMatrix(_uint iIndex);
 	CBone* Get_CamBone();
 	CBone* Get_CamSocketBone();
 
@@ -64,12 +65,14 @@ private:
 	_int m_iCamPos_Index	= { 0 }; // cam ¿¬°á »À idx
 	_int m_iCamSocket_Index = { 0 }; // cam ¿¬°á »À idx
 	_int m_iRootMotion_Index	= { 0 }; // rootmotion »À idx
+
 private:
 	CComputeShader* m_pBoneMeshCS			= { nullptr };
 	CComputeShader* m_pBoneCombineCS		= { nullptr };
 	CComputeShader* m_pBoneAnimEvaluateCS	= { nullptr };
 	CComputeShader* m_pBoneAnimBlendCS		= { nullptr };
 	CComputeShader* m_pBoneAnimMixCS		= { nullptr };
+	CComputeShader* m_pAdditiveMixCS		= { nullptr };
 
 public:
 	static CBody* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

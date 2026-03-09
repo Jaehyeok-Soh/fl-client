@@ -473,7 +473,7 @@ void CEffectObject::Update(const _float fTimeDelta)
 
         else /*if (m_tEffectDesc.Data._Use_Effect_Continue == false || m_tEffectDesc.Data._Effect_Looping == false)*/
         {
-            if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
+            if (fActiveTime >= /*m_tEffectDesc.Data._Effect_Duration +*/ m_tEffectDesc.Data._Effect_LifeTime)
             {
                 m_bIsEffectFinish = true;
             }
@@ -491,9 +491,11 @@ void CEffectObject::Update(const _float fTimeDelta)
             fRatio = 0.5f;
     }
 
-
-    Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
-    Get_Component<CTransform>()->Set_Scale(vCurrentScale);
+    //Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
+    //Get_Component<CTransform>()->Set_Scale(vCurrentScale);
+    // 
+       // 스케일 보간 함수
+    Apply_Scaling_Dynamics(fRatio);
 
     // GPU에 백터 바인딩.
     Bind_Curve_To_GPU();
@@ -545,20 +547,52 @@ HRESULT CEffectObject::Render()
     return S_OK;
 }
 
-_bool CEffectObject::Picking(OUT Vec3& vOut)
-{
-    return _bool();
-}
-
-_bool CEffectObject::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
-{
-    return false;
-}
-
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
+    if (nullptr == pArg) return E_FAIL;
     if (FAILED(Super::Spawn_FromPool(pArg)))
         return E_FAIL;
+
+    RESET_ForSpawn();
+    Process_InitializeDesc(pArg);
+
+    return S_OK;
+}
+HRESULT CEffectObject::Despawn_FromPool()
+{
+    if (FAILED(Super::Despawn_FromPool()))
+        return E_FAIL;
+
+    RESET_ForDesPawn();
+
+    return S_OK;
+}
+
+HRESULT CEffectObject::Enable_VFX(void* pArg)
+{   
+    if (FAILED(Super::Enable_VFX(pArg)))
+        return E_FAIL;
+
+    RESET_ForSpawn();
+    Process_InitializeDesc(pArg);
+
+    return S_OK;
+}
+
+HRESULT CEffectObject::Disable_VFX()
+{
+    if (FAILED(Super::Disable_VFX()))
+        return E_FAIL;
+
+    RESET_ForDesPawn();
+
+    return S_OK;
+}
+
+void CEffectObject::RESET_ForSpawn()
+{
+    Set_Active(true);
+    Set_Render(true);
 
     m_bDespawnFlag = false;
     m_tEffectDesc = m_tOriginEffectDesc;
@@ -568,14 +602,10 @@ HRESULT CEffectObject::Spawn_FromPool(void* pArg)
         m_pParticleBuffer->Particle_Reset();
 
     TimeFlagRequest(RESET);
-
-    return S_OK;
 }
-HRESULT CEffectObject::Despawn_FromPool()
-{
-    if (FAILED(Super::Despawn_FromPool()))
-        return E_FAIL;
 
+void CEffectObject::RESET_ForDesPawn()
+{
     TimeFlagRequest(RESET);
 
     for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); i++)
@@ -587,6 +617,30 @@ HRESULT CEffectObject::Despawn_FromPool()
     {
         m_iSpriteCurrentNumber[i] = 0;
     }
+
+    Set_Active(false);
+    Set_Render(false);
+}
+
+HRESULT CEffectObject::Process_InitializeDesc(void* pArg)
+{
+    auto EffectDesc = static_cast<EFFECT_SPAWN_DESC*>(pArg);
+    if (EffectDesc == nullptr) return E_FAIL;
+
+    switch (EffectDesc->VFX_COLORTYPE)
+    {
+        case EFFECT_SPAWN_DESC::E_VFX_COLORMODE::COLOR_NONCHANGE:
+            break;
+        
+        case EFFECT_SPAWN_DESC::E_VFX_COLORMODE::COLOR_CHANGE:
+        {
+            m_tEffectDesc.Data._Effect_Color = Vec4(EffectDesc->VFX_Color.x, EffectDesc->VFX_Color.y, EffectDesc->VFX_Color.z, m_tEffectDesc.Data._Effect_Color.w);
+            break;
+        }
+    }
+
+    m_tEffectDesc.Data._Effect_PlayBackSpeed = EffectDesc->VFX_fSpeed;
+
     return S_OK;
 }
 
@@ -819,6 +873,41 @@ void CEffectObject::Update_UV_Scroll_Curve(float fRatio)
         }
     }
 }
+
+void CEffectObject::Apply_Scaling_Dynamics(const _float fRatio)
+{
+    Vec3 vFinalScale;
+
+    // 1. 커브를 사용하는 경우 (1 -> 10 -> 50 -> 10 같은 다이나믹 연출)
+    if (m_tEffectDesc.Data._bUseScaleCurve)
+    {
+        // X축 샘플링 (공통 혹은 개별)
+        vFinalScale.x = Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveX, fRatio);
+
+        if (m_tEffectDesc.Data._bSeparateScaleAxes)
+        {
+            // 각 축별로 개별적인 커브 적용
+            vFinalScale.y = Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveY, fRatio);
+            vFinalScale.z = Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveZ, fRatio);
+        }
+        else
+        {
+            // 하나의 커브로 모든 축 통일
+            vFinalScale.y = vFinalScale.x;
+            vFinalScale.z = vFinalScale.x;
+        }
+    }
+    // 2. 커브를 사용하지 않는 경우 (기존의 단순한 크기 변화)
+    else
+    {
+        vFinalScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale,
+            m_tEffectDesc.Data._Effect_EndScale, fRatio);
+    }
+
+    // 트랜스폼 컴포넌트에 최종 스케일 반영
+    m_pTransform->Set_Scale(vFinalScale);
+}
+
 CEffectObject* CEffectObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
     CEffectObject* pInstance = new CEffectObject(pDevice, pDeviceContext);

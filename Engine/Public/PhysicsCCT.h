@@ -72,6 +72,11 @@ public:
     void SetImpulsAccelation(Vec3 vAccelation);
 
     void SetApplyGravity(_bool bVal) { m_tMoveState.bGravity = bVal; }
+    void Set_GravityOffset(_float fOffset) {
+        if (fOffset > m_tMoveState.fGravity * -1.f)
+            return; 
+        m_fGravityOffset = fOffset;  
+    }
 
     void SetZeroVelocity();
     void SetZeroHorizontalVelocity();
@@ -188,6 +193,9 @@ public:
 
     void EnableCollision(_bool bEnable);
 
+    void SetPoolingPosition(Vec3 vPos);
+    void ApplyPoolingPosition();
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pDeviceContext = { nullptr };
@@ -209,9 +217,10 @@ private:
     _bool m_bIsSteppingOnCCT = { false };
     _bool m_bIsSideOnCCT = { false };
 
+    _float m_fGravityOffset = { 0.f };
+
 private:
-    std::set<CGameObject*> m_setCurContact;
-    std::set<CGameObject*> m_setPreContact;
+    Vec3 m_vPoolingPosition{};
 
 public:
     static CPhysicsCCT* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

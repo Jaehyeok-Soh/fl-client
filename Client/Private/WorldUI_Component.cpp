@@ -101,7 +101,7 @@ void CWorldUI_Component::Calc_Perspective()
 {
 	if (m_isRequestScaleOffset)
 	{
-		m_fScaleOffset = m_fRequestScaleOffset;
+		m_fScaleOffset = m_fRequestScaleOffset * (ZREF / m_fViewZ);
 	}
 	else
 	{

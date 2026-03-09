@@ -65,6 +65,11 @@ public:
 	static void write_vec4_Quat( json& _j, const Quat& vOut);
 	static void write_vec4_xyzw( json& _j, const Vec4& vOut);
 
+	// 문자를 숫자로 바꿔주는 해쉬 함수.
+	constexpr static _uint ToHash(const char* str, _uint h = 2166136261u)
+	{
+		return !*str ? h : ToHash(str + 1, (h ^ _uint(*str)) * 16777619u);
+	}
 
 	static inline string	D3D11_USAGE_ToString(D3D11_USAGE eUsage)
 	{

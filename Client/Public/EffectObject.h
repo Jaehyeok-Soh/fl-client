@@ -49,12 +49,15 @@ public:
     virtual void Update_Late(const _float fTimeDelta) override;
     virtual void Ready_Before_Render(const _float fTimeDelta) override;
     virtual HRESULT Render() override;
-    virtual _bool Picking(OUT Vec3& vOut) override;
-    virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
+
 public:
         // 외부 호출 함수
     virtual HRESULT Spawn_FromPool(void* pArg);
     virtual HRESULT Despawn_FromPool();
+
+    virtual HRESULT Enable_VFX(void* pArg) override;
+    virtual HRESULT Disable_VFX() override;
+
     virtual void LoopState_Change(DTO::E_LoopState eState) override;
 
 public:
@@ -67,19 +70,25 @@ private:
 private:
     // ====== 계산함수 ====== 
     void TimeCalculate(const _float fDT);
-    _bool   Is_Render_Possible() { return m_bIsStarted; }
-    //float Sample_GravityCurve(const vector<DTO::Gravity_CurveKey>& vecVurve, float fLifeRatio);   // 이제 GPU에서 계산함.
+    _bool Is_Render_Possible() { return m_bIsStarted; }
     void Update_Gravity_Force(); // 중력 계산하기.
     float Sample_RotationCurve(const vector<DTO::Rotation_CurveKey>& vecCurve, float fLifeRatio);
     void Update_Rotation_Lerp(float fDT, float fRatio);
     void Update_UV_Scroll_Curve(float fRatio);
+    void Apply_Scaling_Dynamics(const _float fRatio);
 
 public:
     void TimeFlagRequest(_uint iTimeFlag);
+    void RESET_ForSpawn();
+    void RESET_ForDesPawn();
+    HRESULT Process_InitializeDesc(void* pArg);
 
 public:
     const DTO::E_EffectSystemType& Get_EffectType() { return (DTO::E_EffectSystemType)m_tEffectDesc.Data.eEffectSystemType; }
     const DTO::TEFFECT_PartsData& Get_EffectDesc() { return m_tEffectDesc.Data; }
+
+private:
+
 
 public:
     static CEffectObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -99,7 +108,7 @@ private:
     _bool     m_bIsStarted = { false }; // 타임 딜레이 지났는지에 대한 bool값
 
     //  ========= 회전 속도 ===========
-    Vec3       m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
+    Vec3      m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
     Vec3      m_vFinalGravity = { 0.f, 0.f, 0.f };
 
     //  ========== 현재 이펙트 sprite Number  ===========
@@ -120,8 +129,8 @@ private:
 
    vector<_uint>             m_iSpriteCurrentNumber = {};
    vector<float>             m_iSpriteAccumulation = {};
- private:
 
+ private:
    _bool                     m_bIsEffectFinish = { false };
    _bool                     m_bDespawnFlag = { false };
 };

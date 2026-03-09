@@ -892,14 +892,24 @@ HRESULT CGameInstance::Render_Fonts()
 #pragma endregion
 
 #pragma region EFFECT_MANAGER
-void CGameInstance::Spawn_PoolEffect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTargetTransMatrix)
+void CGameInstance::Request_Effect(CEffectHandler* handler, const std::string& UniqueEffectName, const std::string& strTag, EFFECT_SPAWN_DESC& Desc)
 {
-	m_pEffect_Manager->Spawn_PoolEffect(handler, UniqueEffectName, strTag, matWorld, fDuration, bIsLocal, iFlag, pTargetBone, pTargetTransMatrix);
+	m_pEffect_Manager->Request_Effect(handler, UniqueEffectName, strTag, Desc);
 }
 
-void CGameInstance::Spawn_PoolEffect(const std::string& strTag, const Matrix& matWorld, _float fDuration, _uint bIsLocal, _uint iFlag, const Matrix* pTargetBone, const Matrix* pTargetTransMatrix)
+void CGameInstance::Request_Effect(const std::string& strTag, EFFECT_SPAWN_DESC& Desc)
 {
-	m_pEffect_Manager->Spawn_PoolEffect(strTag, matWorld, fDuration, bIsLocal, iFlag, pTargetBone, pTargetTransMatrix);
+	m_pEffect_Manager->Request_Effect(strTag, Desc);
+}
+
+void CGameInstance::Push_EffectData(_uint iHashTag, void* Desc)
+{
+	m_pEffect_Manager->Push_EffectData(iHashTag, Desc);
+}
+
+void* CGameInstance::Find_EffectData(_uint iHashTag)
+{
+	return m_pEffect_Manager->Find_EffectData(iHashTag);
 }
 
 void CGameInstance::Push_CollidedData(const COLLIDED_DESC& desc)
@@ -1059,6 +1069,11 @@ PxScene* CGameInstance::GetPhysicsScene()
 	return m_pPhysics_Module->GetPhysicsScene();
 }
 
+PxControllerManager* CGameInstance::GetPhysicsCCTManager()
+{
+	return m_pPhysics_Module->GetPhysicsCCTManager();
+}
+
 PxTransform CGameInstance::XMMatrixToPxTransform(Matrix mat)
 {
 	return m_pPhysics_Module->XMMatrixToPxTransform(mat);
@@ -1077,6 +1092,11 @@ _bool CGameInstance::Execute_Overlap(PxGeometry& shape, PxTransform& transform, 
 CPhysics_QueryFilterCallback* CGameInstance::GetQueryFilterCallback()
 {
 	return m_pPhysics_Module->GetQueryFilterCallback();
+}
+
+CPhysics_QueryFilterCallback_Gun* CGameInstance::GetQueryFilterCallback_Gun()
+{
+	return m_pPhysics_Module->GetQueryFilterCallback_Gun();
 }
 
 void CGameInstance::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)

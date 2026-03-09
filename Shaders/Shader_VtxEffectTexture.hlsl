@@ -663,17 +663,20 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.CurveTexture_SpriteInfo);
 
-            SpriteUV.x += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
-           
+            if (HasTextureScroll(SCROLL_CURVE))
+            {
+                SpriteUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+            }
+
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 1.6f;
+            CurvePowerStrength *= 2.5f;
         }
         else
         {
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 1.6f;
+            CurvePowerStrength *= 2.5f;
         }
 
     }
@@ -918,8 +921,11 @@ float4 PS_TextureBloomHard(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.CurveTexture_SpriteInfo);
 
-            SpriteUV.x += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
-           
+            if (HasTextureScroll(SCROLL_CURVE))
+            {
+                SpriteUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+            }
+
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
             CurvePowerStrength *= 2.5f;
@@ -942,7 +948,7 @@ float4 PS_TextureBloomHard(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
         // 5. 최종 결합 (아틀라스 색상 * 캐릭터 고유 색상)
     float3 finalRGB = DiffuseSample.rgb * GradationSample.rgb * g_Effect.g_EffectColor.rgb * CurvePowerStrength;
     
-    float lifeAlpha = 1.0f - LifeRatio;
+    float lifeAlpha = 1.0f - DissolveProgress;
     float finalAlpha = DiffuseSample.a * GlowSample.r * MaskSample.r * dissolveMask * g_Effect.g_EffectColor.a /** lifeAlpha*/;
 
     if (HasLifeDissolve())

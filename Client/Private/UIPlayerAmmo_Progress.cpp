@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "GameInstance.h"
+#include <UI_Manager.h>
 
 CUIPlayerAmmo_Progress::CUIPlayerAmmo_Progress(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIProgress_Bar(pDevice, pDeviceContext)
@@ -124,14 +125,35 @@ HRESULT CUIPlayerAmmo_Progress::Attach_Personal_Info()
 	if (nullptr == m_pGunParts)
 		return E_FAIL;
 
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
 	return S_OK;
 }
 
-void CUIPlayerAmmo_Progress::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+void CUIPlayerAmmo_Progress::Bind_Events()
 {
-	if (!m_isActive)
-		return;
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
+
+	m_pGameInstance->Subscribe<CINEMATIC_START>(
+		[this]() 
+		{ 
+			this->Set_Invisible();
+		});
 }
 
 void CUIPlayerAmmo_Progress::Initialize_Visible_Event()

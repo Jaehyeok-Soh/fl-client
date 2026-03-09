@@ -77,6 +77,7 @@ HRESULT CVIBuffer_Particle_Point::Resize_InstanceBuffer(const PARTICLE_ORIGIN_DE
 void CVIBuffer_Particle_Point::Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc)
 {
 	m_tParticleDesc = Desc;
+
 	Resize_InstanceBuffer(Desc);
 
 	m_fStartSpeeds = Desc.m_fStartSpeeds;
@@ -241,6 +242,8 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 		return E_FAIL;
 	}
 	pShader->Resize_InputStruct(0, pInitialData, sizeof(EFFECT_PARTICLE_IMMU_ELEMENT), m_iInstanceCount);
+	pShader->Resize_OutputStruct(0, pInitialData, sizeof(EFFECT_INSTANCE), m_iInstanceCount);
+
 	Safe_Delete_Array(pInitialData);
 
 	return S_OK;

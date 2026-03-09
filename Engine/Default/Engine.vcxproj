@@ -197,6 +197,7 @@
     <ClCompile Include="..\private\FxShaderVariant.cpp" />
     <ClCompile Include="..\Private\GameData_Struct.cpp" />
     <ClCompile Include="..\private\GimmikController.cpp" />
+    <ClCompile Include="..\Private\HybridGameObject_Base.cpp" />
     <ClCompile Include="..\Private\InstanceMesh.cpp" />
     <ClCompile Include="..\Private\DataDocument_Effect.cpp" />
     <ClCompile Include="..\Private\Cell.cpp" />
@@ -282,6 +283,7 @@
     <ClCompile Include="..\Private\Physics_CCTManager.cpp" />
     <ClCompile Include="..\Private\Physics_FilterEventCallback.cpp" />
     <ClCompile Include="..\Private\Physics_Module.cpp" />
+    <ClCompile Include="..\Private\Physics_QueryFilterCallback_Gun.cpp" />
     <ClCompile Include="..\Private\Physics_ResourceManager.cpp" />
     <ClCompile Include="..\Private\Physics_ShapeFactory.cpp" />
     <ClCompile Include="..\Private\Physics_Utils.cpp" />
@@ -375,6 +377,7 @@
     <ClInclude Include="..\public\FxShaderVariant.h" />
     <ClInclude Include="..\Public\GameData_Struct.h" />
     <ClInclude Include="..\public\GimmikController.h" />
+    <ClInclude Include="..\Public\HybridGameObject_Base.h" />
     <ClInclude Include="..\Public\InstanceMesh.h" />
     <ClInclude Include="..\Public\ComputeShader.h" />
     <ClInclude Include="..\Public\DataDocument_Effect.h" />
@@ -459,6 +462,7 @@
     <ClInclude Include="..\Public\Physics_CCTManager.h" />
     <ClInclude Include="..\Public\Physics_FilterEventCallback.h" />
     <ClInclude Include="..\Public\Physics_Module.h" />
+    <ClInclude Include="..\Public\Physics_QueryFilterCallback_Gun.h" />
     <ClInclude Include="..\Public\Physics_ResourceManager.h" />
     <ClInclude Include="..\Public\Physics_ShapeFactory.h" />
     <ClInclude Include="..\Public\Physics_Utils.h" />

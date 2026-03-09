@@ -10,6 +10,7 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
 #include "GameInstance.h"
+#include <UI_Manager.h>
 
 CUIJust_Image::CUIJust_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CGenericUI(pDevice, pDeviceContext)
@@ -43,8 +44,6 @@ HRESULT CUIJust_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_START>([this]() { this->Set_Invisible(); });
-	m_pGameInstance->Subscribe<BOSS_STAGING_EVENT_END>([this]() { this->Set_Visible(); });
 
 	return S_OK;
 }
@@ -80,15 +79,20 @@ HRESULT CUIJust_Image::Render()
 	return S_OK;
 }
 
-void CUIJust_Image::OnUIEvent(ETriggerEventType eEvent, CGenericUI* pSender)
+HRESULT CUIJust_Image::Ready_Components(JUST_IMAGE_DESC* pDesc)
 {
-	if (eEvent == ETriggerEventType::PRESS_ENTER)
-	{
-		if(m_isVisible)
-			Set_Invisible();
-		else 
-			Set_Visible();
-	}
+	Super::Ready_Components(pDesc);
+	return S_OK;
+}
+
+HRESULT CUIJust_Image::Bind_ShaderResources()
+{
+	CShader* pShader = Get_Component<CShader>();
+	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
+		return E_FAIL;
+
+	Super::Bind_ShaderResources();
+	return S_OK;
 }
 
 void CUIJust_Image::Initialize_Visible_Event()
@@ -125,20 +129,38 @@ _bool CUIJust_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	return false;
 }
 
-HRESULT CUIJust_Image::Ready_Components(JUST_IMAGE_DESC* pDesc)
+void CUIJust_Image::Bind_Events()
 {
-	Super::Ready_Components(pDesc);
-	return S_OK;
-}
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
 
-HRESULT CUIJust_Image::Bind_ShaderResources()
-{
-	CShader* pShader = Get_Component<CShader>();
-	if (FAILED(Get_Component<CTransform>()->Bind_ShaderResource(pShader)))
-		return E_FAIL;
+	m_pGameInstance->Subscribe<CINEMATIC_START>(
+		[this]()
+		{ 
+			this->Set_Invisible(); 
+		});
 
-	Super::Bind_ShaderResources();
-	return S_OK;
+	m_pGameInstance->Subscribe<CINEMATIC_END>(
+		[this]() 
+		{ 
+			this->Set_Visible(); 
+		});
 }
 
 CUIJust_Image* CUIJust_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -13,9 +13,6 @@
     <Filter Include="99. ETC\99. Andromeda">
       <UniqueIdentifier>{22cb062d-7f39-486d-886c-bc44b81a8b4d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects">
-      <UniqueIdentifier>{a2605915-b5f6-4baa-afa6-abfe355bb097}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Picking">
       <UniqueIdentifier>{d9601722-b784-4d5f-afb2-aa6a6cfef0d8}</UniqueIdentifier>
     </Filter>
@@ -73,26 +70,14 @@
     <Filter Include="06. ImGui\02. Layout\Transform">
       <UniqueIdentifier>{07c1c70c-f95a-43d2-a4c7-b08e5189b132}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Camera">
-      <UniqueIdentifier>{2b12e5f2-bf70-4b4d-9b74-c22127d59e07}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07. UE_Mapdata">
       <UniqueIdentifier>{0e98bf15-ae63-42d7-96db-f5fefb93e6f9}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. Level\Loading\Loader">
       <UniqueIdentifier>{afe44f16-d8bc-4485-94d6-01fb36c16207}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\UI">
-      <UniqueIdentifier>{0db6a6bb-4c91-4d50-87bc-383b7b30d4b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. MainApplication">
       <UniqueIdentifier>{b2ad5ea6-fa9c-42e2-920e-65fa32a6965c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Map">
-      <UniqueIdentifier>{2318f38b-6d39-4c06-902a-133043782e03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject">
-      <UniqueIdentifier>{c7045980-bb80-4be0-8ca4-288e4abc51ca}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. ImGui\01. Panel\Map">
       <UniqueIdentifier>{b4e4e477-acb3-4c83-a84e-a16a77ffbe18}</UniqueIdentifier>
@@ -100,17 +85,11 @@
     <Filter Include="06. ImGui\01. Panel\Asimp">
       <UniqueIdentifier>{1502112a-c44e-484f-85c7-3e71f9a1a6b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\Map\00. MapObject\00. MapObject">
-      <UniqueIdentifier>{cdb92401-9c8e-484e-b963-3905e522a34c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. ImGui\01. Panel\Map\Panel_MapObjectList">
       <UniqueIdentifier>{9755e817-fb8d-4b80-9214-161ecfd0e6ce}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. ImGui\01. Panel\Map\Panel_MapDataControler">
       <UniqueIdentifier>{418b41f9-ac00-471b-99f0-07f9141edff7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\PartObject">
-      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
     </Filter>
     <Filter Include="98. Defines\pch">
       <UniqueIdentifier>{6a433bfc-3f5f-420f-ac46-69cffb0edf23}</UniqueIdentifier>
@@ -184,12 +163,6 @@
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_Animation">
       <UniqueIdentifier>{bfd46406-ca40-4922-afe3-9c0cfdad63c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\ContainerObject">
-      <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\ContainerObject\AnimModel">
-      <UniqueIdentifier>{c92b61a1-bb6a-4cd8-ab0e-69498fa9e46d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. ImGui\01. Panel\UI">
       <UniqueIdentifier>{25cb433e-dd0f-4224-8a4f-fdf58f05f1a8}</UniqueIdentifier>
     </Filter>
@@ -205,14 +178,8 @@
     <Filter Include="06. ImGui\01. Panel\UI\Component">
       <UniqueIdentifier>{ac792568-75d9-4e4a-84e1-ff4c4adcd6b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\UI\01.Canvas">
-      <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
-    </Filter>
     <Filter Include="09. Builder\Map">
       <UniqueIdentifier>{316c30da-42c6-486a-bbfd-7736152fabec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\UI\02.UI">
-      <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Component\UI">
       <UniqueIdentifier>{8ef29a04-df46-407a-be7c-116b135d8267}</UniqueIdentifier>
@@ -223,9 +190,6 @@
     <Filter Include="04. Component\UI\Progress">
       <UniqueIdentifier>{27815419-4fa4-4be0-9d62-f21f634f2338}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\UI\00.Action">
-      <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99. ETC\03. Tool Shader">
       <UniqueIdentifier>{94f2837f-0795-42b2-b135-340ce4d67014}</UniqueIdentifier>
     </Filter>
@@ -234,12 +198,6 @@
     </Filter>
     <Filter Include="98. Defines\Animation_Define">
       <UniqueIdentifier>{6df89fdd-4dd1-43a4-b7c5-8a2f5905fe86}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Effect">
-      <UniqueIdentifier>{73d967a7-e9a7-4a5a-99fe-849a10cbca9e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Effect\Container">
-      <UniqueIdentifier>{5cbb3ccc-552b-479f-82e0-5cd9dc822d14}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. ImGui\01. Panel\Effect">
       <UniqueIdentifier>{dcfafedc-a3a5-47ae-a71f-86669a2e7b2c}</UniqueIdentifier>
@@ -252,9 +210,6 @@
     </Filter>
     <Filter Include="06. ImGui\01. Panel\Effect\Character_Animation">
       <UniqueIdentifier>{688cc652-9f97-4696-84b4-b6e136bf48fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Effect\Part">
-      <UniqueIdentifier>{8320a8aa-cc55-458d-b417-eee159924dcd}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. Level\Animation\00. Manager">
       <UniqueIdentifier>{17af7dfe-41ef-40f8-9223-cfd74f97975e}</UniqueIdentifier>
@@ -276,9 +231,6 @@
     </Filter>
     <Filter Include="09. Builder\Effect\EffectEvent">
       <UniqueIdentifier>{7c79591a-34b0-4edb-8457-c30c22c35010}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\PartObject\AnimPart">
-      <UniqueIdentifier>{5f37dc5c-8136-45a1-a390-81efe16de549}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. Level\Effect\EffectMap_Manager">
       <UniqueIdentifier>{f6e885fe-6ab5-4919-9664-08fb2ffebacc}</UniqueIdentifier>
@@ -316,20 +268,68 @@
     <Filter Include="06. ImGui\01. Panel\Animation\Panel_AnimationMix">
       <UniqueIdentifier>{beab9b2a-5282-4997-9256-1ad828bcd254}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Camera">
+      <UniqueIdentifier>{8905a5cf-26bc-4a9d-a562-3b55caf442f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects">
+      <UniqueIdentifier>{a2605915-b5f6-4baa-afa6-abfe355bb097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Camera">
+      <UniqueIdentifier>{2b12e5f2-bf70-4b4d-9b74-c22127d59e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI">
+      <UniqueIdentifier>{0db6a6bb-4c91-4d50-87bc-383b7b30d4b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\01.Canvas">
+      <UniqueIdentifier>{5d6846d5-10a5-4a42-bb54-26c8e2fde4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\02.UI">
+      <UniqueIdentifier>{6a558198-77c1-41fb-9345-05c1fc4f9daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Action">
+      <UniqueIdentifier>{566d6d02-9c34-4ed7-beae-db2b024e4049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map">
+      <UniqueIdentifier>{2318f38b-6d39-4c06-902a-133043782e03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject">
+      <UniqueIdentifier>{c7045980-bb80-4be0-8ca4-288e4abc51ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\00. MapObject\00. MapObject">
+      <UniqueIdentifier>{cdb92401-9c8e-484e-b963-3905e522a34c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\01. LevelData">
+      <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\PartObject">
+      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\PartObject\AnimPart">
+      <UniqueIdentifier>{5f37dc5c-8136-45a1-a390-81efe16de549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ContainerObject">
+      <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\ContainerObject\AnimModel">
+      <UniqueIdentifier>{c92b61a1-bb6a-4cd8-ab0e-69498fa9e46d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect">
+      <UniqueIdentifier>{73d967a7-e9a7-4a5a-99fe-849a10cbca9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect\Container">
+      <UniqueIdentifier>{5cbb3ccc-552b-479f-82e0-5cd9dc822d14}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02. GameObjects\Effect\Container\EffectBase">
       <UniqueIdentifier>{4688e8c2-b7fa-4bfb-85c4-39ca80b9260d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect\Part">
+      <UniqueIdentifier>{8320a8aa-cc55-458d-b417-eee159924dcd}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\Effect\Part\Tool_EffectPartBase">
       <UniqueIdentifier>{6cb443e8-4689-44fa-9e46-ecfa4325eb4c}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\ToolObject">
       <UniqueIdentifier>{c95f2943-627a-427c-975c-f24173dcaca5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Map\01. LevelData">
-      <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06. ImGui\01. Panel\Camera">
-      <UniqueIdentifier>{8905a5cf-26bc-4a9d-a562-3b55caf442f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -299,6 +299,17 @@ void CEffectHandler::PoolObject_CallBack(CGameObject* pGo)
     m_ActiveEffects[ENUM_TO_UINT(m_tDesc.eType)].emplace(pGo->Get_Name(), pGo);
 }
 
+void CEffectHandler::Reset_ForNextLevel()
+{
+    m_eCurrentState = E_OBJ_LIFECYCLE_STATE::NONE;
+    m_ePrevState = E_OBJ_LIFECYCLE_STATE::NONE;
+
+    for (_uint i = 0; i < ENUM_TO_UINT(E_HANDLER_TYPE::TYPE_END); ++i)
+    {
+        m_ActiveEffects[i].clear();
+    }
+}
+
 void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script)
 {
     Matrix MatWorldOffset = XMMatrixIdentity();
@@ -454,18 +465,15 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
         matTargetWorld = OffsetMat * OwnerMatrix;
     }
 
+    EFFECT_SPAWN_DESC tEngineDesc = {};
+    tEngineDesc.matWorld = matTargetWorld;
+    tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
+    tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
+    tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
+    tEngineDesc.iBoneFlag = script.iBoneFlag;
+
     // 이펙트 생성 요청
-    m_pGameInstance->Spawn_PoolEffect(
-        this,
-        EffectTag,
-        script.strEffectTag,
-        matTargetWorld,
-        script.fDuration,
-        (_bool)script.iSimulationType,
-        script.iBoneFlag,
-        script.bFollowBone ? BoneMatrix : nullptr,
-        m_pOwnerMatrix
-    );
+    m_pGameInstance->Request_Effect(this, EffectTag, script.strEffectTag, tEngineDesc);
 }
 
 void CEffectHandler::Spawn_RequestFromEffectManager(
@@ -486,16 +494,15 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
         matTargetWorld = OffsetMat * OwnerMatrix;
     }
 
+    EFFECT_SPAWN_DESC tEngineDesc = {};
+    tEngineDesc.matWorld = matTargetWorld;
+    tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
+    tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
+    tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
+    tEngineDesc.iBoneFlag = script.iBoneFlag;
+
     // 이펙트 생성 요청
-    m_pGameInstance->Spawn_PoolEffect(
-    script.strEffectTag,
-        matTargetWorld,
-        script.fDuration,
-        (_bool)script.iSimulationType,
-        script.iBoneFlag,
-        script.bFollowBone ? BoneMatrix : nullptr,
-        m_pOwnerMatrix
-    );
+    m_pGameInstance->Request_Effect(script.strEffectTag, tEngineDesc);
 }
 
 DTO::EFFECTEVENT CEffectHandler::Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STATE eState)

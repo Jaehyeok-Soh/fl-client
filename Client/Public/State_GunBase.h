@@ -15,13 +15,18 @@ public:
 	enum class MoveState { GROUND, JUMP, FALL};
 	enum  Douwn_MixAnim : _uint { F =0, B, L, R, LF, LB, RF, RB, JUMP, FALL, END };
 
+	enum class Aim_MixAnim : _uint
+	{	
+		DOWN, MIDDLE, UP, END
+	};
+
 	enum KeyFlag : Flags
 	{
-		W = 0x00001
-		,S = 0x00002
-		,A = 0x00004
-		, D = 0x00008
-		,Space = 0x00010
+			W		= 0x00001
+		,	S		= 0x00002
+		,	A		= 0x00004
+		,	D		= 0x00008
+		,	Space	= 0x00010
 	};
 
 	enum KeyMask : Flags
@@ -30,10 +35,10 @@ public:
 
 		Mask_Jump = KeyFlag::Space,
 
-		Mask_F = KeyFlag::W,
-		Mask_B = KeyFlag::S,
-		Mask_L = KeyFlag::A,
-		Mask_R = KeyFlag::D,
+		Mask_F	= KeyFlag::W,
+		Mask_B	= KeyFlag::S,
+		Mask_L	= KeyFlag::A,
+		Mask_R	= KeyFlag::D,
 		Mask_LF = KeyFlag::W | KeyFlag::A,
 		Mask_LB = KeyFlag::S | KeyFlag::A,
 		Mask_RF = KeyFlag::W | KeyFlag::A,
@@ -48,7 +53,8 @@ public:
 		//_uint iJumpAnimIdx = { 0 };
 		//_uint iFallAnimIdx = { 0 };
 
-		array<_uint, ENUM_TO_SZET(Douwn_MixAnim::END)> arrMixAnims;
+		array<_uint, ENUM_TO_SZET(Douwn_MixAnim::END)>	arrMixAnims;
+		array<_uint, ENUM_TO_SZET(Aim_MixAnim::END)>	arrAimAnims;
 
 		CGun* pOwnerGun = { nullptr };
 
@@ -78,7 +84,8 @@ protected:
 	MoveState	m_eMoveState = { MoveState::GROUND };
 	Flags		m_FKeyFlags = {};
 
-	array<_uint, ENUM_TO_SZET(Douwn_MixAnim::END)> m_MixAnim_Indices;
+	array<_uint, ENUM_TO_SZET(Douwn_MixAnim::END)>	m_MixAnim_Indices;
+	array<_uint, ENUM_TO_SZET(Aim_MixAnim::END)>	m_Aim_Indicex;
 
 	TimeCount m_TJumpTime = { 0.f, 0.28f };
 	TimeCount m_TLandTime = { 0.f, 1.f };
@@ -96,12 +103,16 @@ protected:
 	void Jump_Update(const _float fTimeDelta);
 	void Fall_Update(const _float fTimeDelta);
 
-	_bool Change_MoveState(MoveState eState);
-	void Start_MoveState(MoveState eNextState);
-	void End_MoveState(MoveState ePreState);
+	_bool	Change_MoveState(MoveState eState);
+	void	Start_MoveState(MoveState eNextState);
+	void	End_MoveState(MoveState ePreState);
 
 	void GunEnd();
 
+	void Look_Control(_float fTimeDelta);
+
+
+	// 움직임 관련 함수
 private:
 	void Jump(const _float fTimeDelta);
 

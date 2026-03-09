@@ -56,7 +56,8 @@
 #include "Monster_Dog_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
-#include "Moon_SkillE_Obj.h"
+
+#include "PlayerSkillObj_Headers.h"
 
 
 //=================
@@ -175,16 +176,25 @@ HRESULT CLevel_Tutorial_Village::Build_Files()
 	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(iLevelID, eCategory)))
 		return E_FAIL;
-	std::filesystem::path strUIFolderPath = L"../../Resources/Data/EffectData/";
-	if (std::filesystem::exists(strUIFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
-		{
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
 
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
+	std::filesystem::path strEffectFolderPath = L"../../Resources/Data/EffectData/";
+
+	if (std::filesystem::exists(strEffectFolderPath))
+	{
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(strEffectFolderPath))
+		{
+			if (std::filesystem::is_regular_file(entry.path()))
+			{
+				// 확장자가 .json인 것만 골라내기
+				if (entry.path().extension() == ".json")
+				{
+					if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, entry.path())))
+						return E_FAIL;
+
+					if (FAILED(Build_File(iLevelID, eCategory, entry.path().stem().string())))
+						return E_FAIL;
+				}
+			}
 		}
 	}
 #pragma endregion
@@ -195,7 +205,7 @@ HRESULT CLevel_Tutorial_Village::Build_Files()
 	eCategory = DTO::ECategory::UI;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
-	strUIFolderPath = L"../../Resources/Data/UIData/Static/";
+	std::filesystem::path strUIFolderPath = L"../../Resources/Data/UIData/Static/";
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
@@ -227,6 +237,58 @@ HRESULT CLevel_Tutorial_Village::Build_Files()
 	return S_OK;
 }
 
+HRESULT CLevel_Tutorial_Village::Ready_Player_SkillObjPool()
+{
+	// Moon skil E
+	{
+		CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+		//TRANSFORM_DESC
+		CTransform::TRANSFORM_DESC tTransDesc = {};
+		tTransDesc.fMovePerSec = 20.f;
+		desc.pTransform_Desc = &tTransDesc;
+
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0,
+			g_wszPool_MoonSkillE,
+			g_wszSkillObjectLayer,
+			0,
+			g_wszMoonSkillE__Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+
+	// Moon skil Q sheild
+	//{
+	//	CMoon_SkillQSheild_Obj::SKILLOBJECT_DESC desc{};
+	//	if (FAILED(m_pGameInstance->Regist_Pool(
+	//		0,
+	//		g_wszPool_MoonSkillQSheild,
+	//		g_wszSkillObjectLayer,
+	//		0,
+	//		g_wszMoonSkillQSheild_Prototype_Tag,
+	//		&desc,
+	//		10)))
+	//		return E_FAIL;
+	//}
+
+	// Moon skil Q attack
+	{
+		CMoon_SkillQAttack_Obj::SKILLOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0,
+			g_wszPool_MoonSkillQAttack,
+			g_wszSkillObjectLayer,
+			0,
+			g_wszMoonSkillQAttack_Prototype_Tag,
+			&desc,
+			10)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 HRESULT CLevel_Tutorial_Village::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE);
@@ -241,19 +303,8 @@ HRESULT CLevel_Tutorial_Village::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 	/* Player 가 없다면 생성되고 있다면 Safe_Release */
 	{
-		// SkillObject Pool
-		{
-			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
-			if (FAILED(m_pGameInstance->Regist_Pool(
-				0,
-				g_wszPool_MoonSkillE,
-				g_wszSkillObjectLayer,
-				0,
-				g_wszMoonSkillE__Prototype_Tag,
-				&desc,
-				30)))
-				return E_FAIL;
-		}
+		if (FAILED(Ready_Player_SkillObjPool()))
+			return E_FAIL;
 
 		CGameObject* pResult = { nullptr };
 
@@ -263,6 +314,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Player_Layer(const wstring& wstrLayerTag)
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(229.12f, 256.72f, -245.039f));
 		playerDesc.pTransform_Desc = &transformDesc;
+		playerDesc.ePlayerType = CPlayer::PLAYER_TYPE::MOON;
 		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 			L"Prototype_GameObject_MainPlayer",
 			ENUM_TO_UINT(ELevelType::STATIC),

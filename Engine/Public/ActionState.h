@@ -71,16 +71,12 @@ public:
 	void			Set_Navigation(CNavigation* pNavigation);
 	void			Set_ApplyYLerp(_bool bApply) { m_bApplyYLerp = bApply; }
 
-	void			Set_GravityOffset(_float fOffset) { 
-		if (fOffset > m_fGravity * -1.f)
-			return; 
-		m_fGravityOffset = fOffset; 
-	}
+	void			Set_GravityOffset(_float fOffset);
 
 	// action state 내부에 CCTFlags 가지고 있음 -> 외부에서는 어떻게 윰직일지만 값을 넘겨준다
-	void			Move(Vec3 vAccelation);
-	void			SetCCTInputDirection(Vec3 vInputDir);
-	void			SetCCTImpuls(Vec3 vImpuls);
+	void			Move(Vec3 vAccelation);					// 지속적으로 매프레임 적용할 가속도
+	void			SetCCTInputDirection(Vec3 vInputDir);	// 이동 방향을 셋팅 해준다
+	void			SetCCTImpuls(Vec3 vImpuls);				// 순간적인 가속도 : 한프레임 적용
 	/* animation funcs*/
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);
@@ -95,6 +91,10 @@ protected:
 	_bool			Is_AnimTrackPositionBetweenRaw(_float fTrackA, _float fTrackB);
 	_bool			Is_AnimTrackPositionHalf();
 	void			Set_AnimationPlayRate(_uint iIndex, _float fSpeed);
+
+	void			Additive_MixOn(_bool bOn);
+	void			Additive_DataSetting(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset =1.f);
+	void			Additive_DataSetting(_bool bAdditive, _int iPosIdx, _float fMixOffset = 1.f);
 
 	/* moves funcs */
 protected:
@@ -119,7 +119,9 @@ protected:
 	void			Apply_Gravity(const _float fTimeDelta);
 	void			Apply_ForceMove(const _float fTimeDelta);
 	void			Clear_ForceMove();
-	void			SetupLook_CameraLook();
+	void			SetupLook_CameraLook(); // y축 회전만 가져옴
+	void			SetupLook_CameraLookLerp(const _float fTimeDelta, _float fLerpSpeed); // y축 회전만 가져옴
+	void			SetupLook_CameraSameLook(); // camera look == owenr look
 	void			SetupLookAt(const Vec3& vPoint);
 	void			SetupLook_Target_XZ();
 	CGameObject*	Get_Target();

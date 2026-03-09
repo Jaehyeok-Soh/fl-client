@@ -256,7 +256,7 @@ namespace Client
 		LT = 0, CT, RT, LC, C, RC, LB, CB, RB, END
 	};
 
-	enum class EUIEvent : uint32_t {
+	enum class EUIInteract : uint32_t {
 		NONE = 0,
 		HOVER_ENTER,
 		HOVERING,
@@ -268,7 +268,7 @@ namespace Client
 		END
 	};
 
-	enum EUIEvent_Flag : uint32_t {
+	enum EUIInteract_Flag : uint32_t {
 		NONE		= 0u,
 		HOVER_ENTER = 1u << 1,
 		HOVERING	= 1u << 2,
@@ -280,77 +280,77 @@ namespace Client
 		END			= 1u << 8
 	};
 
-	inline EUIEvent EventFlagToEvent(EUIEvent_Flag eFlag)
+	inline EUIInteract UIInteractFlagToUIInteract(EUIInteract_Flag eFlag)
 	{
 		switch (eFlag)
 		{
-		case EUIEvent_Flag::NONE:			return EUIEvent::NONE;
-		case EUIEvent_Flag::HOVER_ENTER:	return EUIEvent::HOVER_ENTER;
-		case EUIEvent_Flag::HOVERING:		return EUIEvent::HOVERING;
-		case EUIEvent_Flag::HOVER_EXIT:		return EUIEvent::HOVER_EXIT;
-		case EUIEvent_Flag::PRESS_ENTER:	return EUIEvent::PRESS_ENTER;
-		case EUIEvent_Flag::PRESSING:		return EUIEvent::PRESSING;
-		case EUIEvent_Flag::PRESS_EXIT:		return EUIEvent::PRESS_EXIT;
-		case EUIEvent_Flag::INVOKED:		return EUIEvent::INVOKED;
-		default:							return EUIEvent::NONE;
+		case EUIInteract_Flag::NONE:			return EUIInteract::NONE;
+		case EUIInteract_Flag::HOVER_ENTER:	return EUIInteract::HOVER_ENTER;
+		case EUIInteract_Flag::HOVERING:		return EUIInteract::HOVERING;
+		case EUIInteract_Flag::HOVER_EXIT:		return EUIInteract::HOVER_EXIT;
+		case EUIInteract_Flag::PRESS_ENTER:	return EUIInteract::PRESS_ENTER;
+		case EUIInteract_Flag::PRESSING:		return EUIInteract::PRESSING;
+		case EUIInteract_Flag::PRESS_EXIT:		return EUIInteract::PRESS_EXIT;
+		case EUIInteract_Flag::INVOKED:		return EUIInteract::INVOKED;
+		default:							return EUIInteract::NONE;
 		}
 	}
 
-	inline EUIEvent_Flag EventToEventFlag(EUIEvent eEvent)
+	inline EUIInteract_Flag UIInteractToUIInteractFlag(EUIInteract eEvent)
 	{
 		switch (eEvent)
 		{
-		case EUIEvent::NONE:			return EUIEvent_Flag::NONE;
-		case EUIEvent::HOVER_ENTER:		return EUIEvent_Flag::HOVER_ENTER;
-		case EUIEvent::HOVERING:		return EUIEvent_Flag::HOVERING;
-		case EUIEvent::HOVER_EXIT:		return EUIEvent_Flag::HOVER_EXIT;
-		case EUIEvent::PRESS_ENTER:		return EUIEvent_Flag::PRESS_ENTER;
-		case EUIEvent::PRESSING:		return EUIEvent_Flag::PRESSING;
-		case EUIEvent::PRESS_EXIT:		return EUIEvent_Flag::PRESS_EXIT;
-		case EUIEvent::INVOKED:			return EUIEvent_Flag::INVOKED;
-		default:						return EUIEvent_Flag::NONE;
+		case EUIInteract::NONE:			return EUIInteract_Flag::NONE;
+		case EUIInteract::HOVER_ENTER:		return EUIInteract_Flag::HOVER_ENTER;
+		case EUIInteract::HOVERING:		return EUIInteract_Flag::HOVERING;
+		case EUIInteract::HOVER_EXIT:		return EUIInteract_Flag::HOVER_EXIT;
+		case EUIInteract::PRESS_ENTER:		return EUIInteract_Flag::PRESS_ENTER;
+		case EUIInteract::PRESSING:		return EUIInteract_Flag::PRESSING;
+		case EUIInteract::PRESS_EXIT:		return EUIInteract_Flag::PRESS_EXIT;
+		case EUIInteract::INVOKED:			return EUIInteract_Flag::INVOKED;
+		default:						return EUIInteract_Flag::NONE;
 		}
 	}
 
-	NLOHMANN_JSON_SERIALIZE_ENUM(EUIEvent,
+	NLOHMANN_JSON_SERIALIZE_ENUM(EUIInteract,
 		{
-			{EUIEvent::NONE,		"NONE"},
-			{EUIEvent::HOVER_ENTER, "HOVER_ENTER"},
-			{EUIEvent::HOVERING,	"HOVERING"},
-			{EUIEvent::HOVER_EXIT,	"HOVER_EXIT"},
-			{EUIEvent::PRESS_ENTER, "PRESS_ENTER"},
-			{EUIEvent::PRESSING,	"PRESSING"},
-			{EUIEvent::PRESS_EXIT,	"PRESS_EXIT"},
-			{EUIEvent::INVOKED,		"INVOKED"},
+			{EUIInteract::NONE,		"NONE"},
+			{EUIInteract::HOVER_ENTER, "HOVER_ENTER"},
+			{EUIInteract::HOVERING,	"HOVERING"},
+			{EUIInteract::HOVER_EXIT,	"HOVER_EXIT"},
+			{EUIInteract::PRESS_ENTER, "PRESS_ENTER"},
+			{EUIInteract::PRESSING,	"PRESSING"},
+			{EUIInteract::PRESS_EXIT,	"PRESS_EXIT"},
+			{EUIInteract::INVOKED,		"INVOKED"},
 		})
 
-		inline std::string UIEventToString(EUIEvent eType)
+		inline std::string UIInteractToString(EUIInteract eType)
 	{
 		switch (eType)
 		{
-		case EUIEvent::NONE:		return "NONE";
-		case EUIEvent::HOVER_ENTER: return "HOVER_ENTER";
-		case EUIEvent::HOVERING:	return "HOVERING";
-		case EUIEvent::HOVER_EXIT:	return "HOVER_EXIT";
-		case EUIEvent::PRESS_ENTER: return "PRESS_ENTER";
-		case EUIEvent::PRESSING:	return "PRESSING";
-		case EUIEvent::PRESS_EXIT:	return "PRESS_EXIT";
-		case EUIEvent::INVOKED:		return "INVOKED";
+		case EUIInteract::NONE:		return "NONE";
+		case EUIInteract::HOVER_ENTER: return "HOVER_ENTER";
+		case EUIInteract::HOVERING:	return "HOVERING";
+		case EUIInteract::HOVER_EXIT:	return "HOVER_EXIT";
+		case EUIInteract::PRESS_ENTER: return "PRESS_ENTER";
+		case EUIInteract::PRESSING:	return "PRESSING";
+		case EUIInteract::PRESS_EXIT:	return "PRESS_EXIT";
+		case EUIInteract::INVOKED:		return "INVOKED";
 		default: return "";
 		}
 	}
 
-	inline EUIEvent StringToUIEvent(const std::string& str)
+	inline EUIInteract StringToUIInteract(const std::string& str)
 	{
-		if (str == "NONE")				return EUIEvent::NONE;
-		else if (str == "HOVER_ENTER")	return EUIEvent::HOVER_ENTER;
-		else if (str == "HOVERING")		return EUIEvent::HOVERING;
-		else if (str == "HOVER_EXIT")	return EUIEvent::HOVER_EXIT;
-		else if (str == "PRESS_ENTER")	return EUIEvent::PRESS_ENTER;
-		else if (str == "PRESSING")		return EUIEvent::PRESSING;
-		else if (str == "PRESS_EXIT")	return EUIEvent::PRESS_EXIT;
-		else if (str == "INVOKED")		return EUIEvent::INVOKED;
-		else return EUIEvent::END;
+		if (str == "NONE")				return EUIInteract::NONE;
+		else if (str == "HOVER_ENTER")	return EUIInteract::HOVER_ENTER;
+		else if (str == "HOVERING")		return EUIInteract::HOVERING;
+		else if (str == "HOVER_EXIT")	return EUIInteract::HOVER_EXIT;
+		else if (str == "PRESS_ENTER")	return EUIInteract::PRESS_ENTER;
+		else if (str == "PRESSING")		return EUIInteract::PRESSING;
+		else if (str == "PRESS_EXIT")	return EUIInteract::PRESS_EXIT;
+		else if (str == "INVOKED")		return EUIInteract::INVOKED;
+		else return EUIInteract::END;
 	}
 
 	enum class ETriggerEventType { 
@@ -385,6 +385,7 @@ namespace Client
 		DAMAGE_FONTS_HIT,
 		BOSS_NAMEPLATE,
 		MINIMAP_MONSTER_ICON,
+		TUTORIAL_PANNEL,
 		END
 	};
 
@@ -398,6 +399,7 @@ namespace Client
 		case Client::EUIPrefabType::DAMAGE_FONTS_CRITICAL:	return L"DAMAGE_FONTS_CRITICAL";
 		case Client::EUIPrefabType::DAMAGE_FONTS_HIT:		return L"DAMAGE_FONTS_HIT";
 		case Client::EUIPrefabType::MINIMAP_MONSTER_ICON:	return L"DAMAGE_FONTS_HIT";
+		case Client::EUIPrefabType::TUTORIAL_PANNEL:		return L"TUTORIAL_PANNEL";
 		case Client::EUIPrefabType::END:
 		default:
 			break;
@@ -436,6 +438,28 @@ namespace Client
 #pragma endregion
 
 
+
+#pragma region Player
+
+	// COLLIDED_DESC -> EXTRA_ATTACK_DESC ->iDamageFlag 에 대한 정보
+	enum class EPlayerAttackFlag : Flags {
+		NONE = 0,
+
+		// player 종류
+		MOON = 0x000001,
+		BERO = 0x000002,
+		PIGGY = 0x000004,
+
+		NORMAL = 0x000008,
+		CRITICAL = 0x000010,
+		SKILLE = 0x000020,
+		SKILLQ = 0x000040,
+		GUN = 0x000080
+	};
+
+#pragma	endregion
+
+
 #pragma region BroadCast Enum Mapping
 
 	enum class EGlobal_Broadcast_Type
@@ -443,6 +467,15 @@ namespace Client
 		NONE,
 		TUTORIAL_BOSS_CONTATCT,
 		TUTORIAL_BOSS_CONTATCT_END,
+
+		CINEMATIC_START,
+		CINEMATIC_END,
+		XIBILA_BOSS_ACTION_ON,
+		XIBILA_BOSS_ACTION_OFF,
+
+		XIBILA_BOSS_UI_ON,
+		XIBILA_BOSS_UI_OFF,
+
 		END,
 	};
 
@@ -451,6 +484,12 @@ namespace Client
 		"NONE",
 		"TUTORIAL_BOSS_CONTATCT",
 		"TUTORIAL_BOSS_CONTATCT_END",
+		"CINEMATIC_START",
+		"CINEMATIC_END",
+		"XIBILA_BOSS_ACTION_ON",
+		"XIBILA_BOSS_ACTION_OFF",
+		"XIBILA_BOSS_UI_ON",
+		"XIBILA_BOSS_UI_OFF",
 	};
 	inline string Global_Broadcast_Type_ToString(EGlobal_Broadcast_Type eType)
 	{
@@ -543,6 +582,11 @@ namespace Client
 
 	inline constexpr wchar_t g_wszMoonSkillE__Prototype_Tag[]								{ L"Prototype_GameObject_Moon_SkillE" };
 	inline constexpr wchar_t g_wszPool_MoonSkillE[]											{ L"Pool_Moon_SkillE" };
+	//inline constexpr wchar_t g_wszMoonSkillQSheild_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQSheild" };
+	//inline constexpr wchar_t g_wszPool_MoonSkillQSheild[]									{ L"Pool_Moon_SkillQSheild" };
+	inline constexpr wchar_t g_wszMoonSkillQAttack_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQAttack" };	// obj 프로토타입 태그 값
+	inline constexpr wchar_t g_wszPool_MoonSkillQAttack[]									{ L"Pool_Moon_SkillQAttack" };					// pool에서 obj 꺼내올 태그 값
+
 #pragma endregion
 
 #pragma region SkillObjectSpawner 관련
@@ -552,7 +596,9 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
 
-	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]					{ L"Prototype_Spawner_PlayerMoon_SkillE" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]							{ L"Prototype_Spawner_PlayerMoon_SkillE" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Attack[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Attack" };
 #pragma endregion
 
 #pragma region MapObject 관련
@@ -594,6 +640,13 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_Monster_Dog[]{ L"Pool_Monster_Dog" };
 	inline constexpr wchar_t g_wszPool_Monster_Boomer[]{ L"Pool_Monster_Boomer" };
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
+#pragma endregion
+
+#pragma region Part Objects
+
+	/* Bounding Box */
+	inline constexpr wchar_t g_wszPartObj_Effect_Prototype_Tag[]{ L"Prototype_GameObject_Part_Effect" }; // static
+
 #pragma endregion
 
 #pragma region 기타
