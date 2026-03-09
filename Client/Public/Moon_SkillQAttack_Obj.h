@@ -1,10 +1,11 @@
 #pragma once
-#include "SkillObject_Base.h"
+#include "SkillProjectile.h"
 
 NS_BEGIN(Client)
-class CMoon_SkillQAttack_Obj final : public CSkillObject_Base
+
+class CMoon_SkillQAttack_Obj final : public CSkillProjectile
 {
-	using Super = CSkillObject_Base;
+	using Super = CSkillProjectile;
 private:
 	CMoon_SkillQAttack_Obj(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CMoon_SkillQAttack_Obj(const CMoon_SkillQAttack_Obj& rhs);
@@ -20,14 +21,9 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
-
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
-
+	virtual void Handle_Hit(_uint iMyLayer, _uint iOtherLayer, Engine::CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 private:
 	TimeCount m_TAttackCoolTime = { 1.f,1.f };
 

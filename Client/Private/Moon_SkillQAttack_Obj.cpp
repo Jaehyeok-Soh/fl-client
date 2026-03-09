@@ -83,19 +83,17 @@ HRESULT CMoon_SkillQAttack_Obj::Render()
     return S_OK;
 }
 
-void CMoon_SkillQAttack_Obj::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+_bool CMoon_SkillQAttack_Obj::On_Hit(const HIT_DESC& hitDesc)
 {
+    return false;
 }
 
-void CMoon_SkillQAttack_Obj::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+void CMoon_SkillQAttack_Obj::Try_Attack(const HIT_DESC& hitDesc)
 {
+
 }
 
-void CMoon_SkillQAttack_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
-void CMoon_SkillQAttack_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+void CMoon_SkillQAttack_Obj::Handle_Hit(_uint iMyLayer, _uint iOtherLayer, Engine::CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	// todo : 한번 충돌 된 애들은 다시 충돌 처리가 안되어서
 	// 그거에 대한 정보 처리가 필요함 :  active attack overlap을 참고 할것
@@ -111,7 +109,7 @@ void CMoon_SkillQAttack_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOthe
 
 		COLLIDED_DESC desc{};
 		desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
-		desc.iRequesterLayer = iMyColliderLayer;
+		desc.iRequesterLayer = iMyLayer;
 		desc.iOtherLayer = iOtherLayer;
 		desc.pRequester = this;
 		desc.pOther = pOther;
@@ -120,7 +118,7 @@ void CMoon_SkillQAttack_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOthe
 		EXTRA_ATTACK_DESC tExtra = {};
 		{
 			tExtra.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::MOON) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ);
-			
+
 			desc.tExtraDesc = tExtra;
 		}
 
@@ -129,16 +127,6 @@ void CMoon_SkillQAttack_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOthe
 		// acc time reset
 		m_TAttackCoolTime.x = 0.f;
 	}
-}
-
-_bool CMoon_SkillQAttack_Obj::On_Hit(const HIT_DESC& hitDesc)
-{
-    return false;
-}
-
-void CMoon_SkillQAttack_Obj::Try_Attack(const HIT_DESC& hitDesc)
-{
-
 }
 
 HRESULT CMoon_SkillQAttack_Obj::Ready_Components()

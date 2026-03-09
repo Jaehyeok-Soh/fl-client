@@ -4,7 +4,6 @@
 #include "DataStruct_Effect.h"
 
 NS_BEGIN(Engine)
-
 class CModel;
 class CTexture;
 class CShader;
@@ -12,7 +11,7 @@ class CComputeShader;
 class CTransform;
 class StructuredBuffer;
 class CVIBuffer_Particle;
-    NS_END
+NS_END
 
 NS_BEGIN(Client)
 

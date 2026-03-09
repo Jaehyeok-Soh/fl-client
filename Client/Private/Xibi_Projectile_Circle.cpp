@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Xibi_Projectile_Circle.h"
-#include "EffectHandler.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 #include "GameInstance.h"
@@ -30,14 +29,8 @@ HRESULT CXibi_Projectile_Circle::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Moduels()))
 		return E_FAIL;
-
-	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
-		pRigidBody->Awake();
-	
-	if (CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>())
-		pEffectHandler->Setup_ForOwner(this);
 
 	return S_OK;
 }
@@ -95,11 +88,6 @@ void CXibi_Projectile_Circle::OnCollision_Exit(_uint iMyColliderLayer, _uint iOt
 {
 }
 
-void CXibi_Projectile_Circle::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
-{
-	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
-}
-
 _bool CXibi_Projectile_Circle::On_Hit(const HIT_DESC& hitDesc)
 {
 	return true;
@@ -109,79 +97,65 @@ void CXibi_Projectile_Circle::Try_Attack(const HIT_DESC& hitDesc)
 {
 }
 
-HRESULT CXibi_Projectile_Circle::Ready_Components()
+HRESULT CXibi_Projectile_Circle::Ready_Moduels()
 {
-	// For. Component_EffectHandler
+	wstring wstrDefaultPrototypeTag = L"Prototype_GameObject_Effect";
+
+	// Effect
 	{
-		CEffectHandler::ANIM_EFFECT_HANDLER_DESC Desc{};
-		CEffectHandler::STATE_VFX_DESC SkillDesc{};
-
-		// SPAWN EFFECT
+		// FLY
 		{
-			SkillDesc.EffectPrefabTag = "Boss_Xibi_Bullet_Spawn";
-			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
-			SkillDesc.bFollowBone = { false };
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = { Vec3::Zero };
-			SkillDesc.vRotation = { Vec3::Zero };
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN, SkillDesc);
+			if (FAILED(Add_EffectModule(
+				0 /* static */,
+				"Boss_Xibi_Bullet_Spawn",
+				wstrDefaultPrototypeTag,
+				ENUM_TO_UINT(EState::FLY))))
+				return E_FAIL;
 		}
-
-		// Distory EFFECT
+		// IMPACT
 		{
-			SkillDesc.EffectPrefabTag = "Boss_Xibi_Bullet_Dead";
-			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
-			SkillDesc.bFollowBone = { false };
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = {Vec3::Zero};
-			SkillDesc.vRotation = {Vec3::Zero};			
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY, SkillDesc);
-		}
-
-		if (FAILED(Add_Component<CEffectHandler>(/*Static*/ 0, L"Prototype_Component_EffectHandler_SkillObject", &Desc)))
-			return E_FAIL;
-	}
-
-	// For. Component_PhysicsCollider
-	{
-		/* 피직스 콜라이더 */
-		{
-			PHYSICSCOLLIDER_DESC cloneDesc{};
-			cloneDesc.eShape = EPhysicsShape::SPHERE;
-			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
-			//cloneDesc.bIsSkillTrigger = true;
-			cloneDesc.iFilterMask = 
-			{
-				PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::MAP
-			};
-			cloneDesc.bIsTrigger = true;
-			cloneDesc.bSetOnlyFilter = false;
-			cloneDesc.bIsActive = true;
-			cloneDesc.fRadius = 0.5f;
-			cloneDesc.strAttackPresetTag = "Xibi_Circle";
-			PHYSICSMATERIAL_DESC mtrlDesc{};
-			mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
-			cloneDesc.tMaterial = mtrlDesc;
-			if (FAILED(Add_Component<CPhysicsCollider>(/* static */ 0, L"Prototype_Component_Physics_Collider", &cloneDesc)))
+			if (FAILED(Add_EffectModule(
+				0 /* static */,
+				"Boss_Xibi_Bullet_Dead",
+				wstrDefaultPrototypeTag,
+				ENUM_TO_UINT(EState::FLY))))
 				return E_FAIL;
 		}
 	}
-
-	// For. Component_PhysicsRigidBody
+	// Collider
 	{
-		PHYSICSRIGIDBODY_DESC desc{};
-		desc.eType = EPhysicsActorType::KINEMATIC;
-		desc.detection = EPhysicsCollisionDetection::DISCRETE;
-		desc.bUseGravity = false;
-		desc.bIsKinematic = true;
+		PHYSICSCOLLIDER_DESC colliderDesc{};
+		colliderDesc.eShape = EPhysicsShape::SPHERE;
+		colliderDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
+		//cloneDesc.bIsSkillTrigger = true;
+		colliderDesc.iFilterMask =
+		{
+			PHYSICSFILTERGROUP::Enum::PLAYER
+			| PHYSICSFILTERGROUP::Enum::MAP
+		};
+		colliderDesc.bIsTrigger = true;
+		colliderDesc.bSetOnlyFilter = false;
+		colliderDesc.bIsActive = true;
+		colliderDesc.fRadius = 0.5f;
+		colliderDesc.strAttackPresetTag = "Xibi_Circle";
+		PHYSICSMATERIAL_DESC mtrlDesc{};
+		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
+		colliderDesc.tMaterial = mtrlDesc;
 
-		if (FAILED(Add_Component<CPhysicsRigidBody>(/* static */ 0, L"Prototype_Component_Physics_RigidBody", &desc)))
-			return E_FAIL;
+		PHYSICSRIGIDBODY_DESC rigidbodyDesc{};
+		rigidbodyDesc.eType = EPhysicsActorType::KINEMATIC;
+		rigidbodyDesc.detection = EPhysicsCollisionDetection::DISCRETE;
+		rigidbodyDesc.bUseGravity = false;
+		rigidbodyDesc.bIsKinematic = true;
+
+		// FLY
+		{
+			if (FAILED(Add_CollideModule(
+				ENUM_TO_UINT(EState::FLY),
+				&colliderDesc,
+				&rigidbodyDesc)))
+				return E_FAIL;
+		}
 	}
 	return S_OK;
 }

@@ -2,8 +2,7 @@
 #include "SkillObjectSpawnerBase.h"
 #include "Model.h"
 #include "Transform.h"
-#include "SkillObject_Base.h"
-#include "EffectHandler.h"
+#include "SkillObjectBase.h"
 #include "GameInstance.h"
 
 CSkillObjectSpawnerBase::CSkillObjectSpawnerBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -40,9 +39,6 @@ HRESULT CSkillObjectSpawnerBase::Initialize(void* pArg)
 	else
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -51,7 +47,7 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
 	if (m_pOriginDesc->wstrSkillPoolTag.empty())
 		return;
 	
-	CSkillObject_Base::SKILLOBJECT_DESC desc{};
+	CSkillObjectBase::SKILLOBJECT_SPAWN_DESC desc{};
 	desc.pRequester = m_desc.pRequester;
 	desc.pTarget = m_desc.pTarget;
 
@@ -63,24 +59,20 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
     desc.vSpawnPos			= vSpawnPos;
     desc.vDirection			= vDir;
 
+	// eunbi 초반에 셋팅한 속도 == transform speed
+	desc.fSpeed				= m_pOriginDesc->fSpeed;
+
 	// 이펙트 회전관련
 	if ((std::abs)(m_desc.fEffect_Rotation_Degree) > g_XMEpsilon.f[0])
 	{
 		desc.eEffectRotateState = m_desc.eEffectRotationState;
 		desc.fEffectDegree = m_desc.fEffect_Rotation_Degree;
 	}
-	// eunbi 초반에 셋팅한 속도 == transform speed
-	//desc.fSpeed = m_pOriginDesc->fSpeed;
 
 	CGameInstance::GetInstance()->Request_AddObject(
 		m_pOriginDesc->iPoolLevelIndex, m_pOriginDesc->wstrSkillPoolTag,
 		m_pGameInstance->Get_CurrentLevelIndex(), &desc);
 		//m_desc.iSpawnLevelIndex, &desc);
-}
-
-HRESULT CSkillObjectSpawnerBase::Ready_Components()
-{
-	return S_OK;
 }
 
 HRESULT CSkillObjectSpawnerBase::Awake(const _uint iCurrentLevelID)
@@ -90,8 +82,6 @@ HRESULT CSkillObjectSpawnerBase::Awake(const _uint iCurrentLevelID)
 
 	CTransform* pTransform = Get_Component<CTransform>();
 	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vOrigin);
-	/*pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, m_desc.vUp);*/
-	pTransform->Set_Scale(m_pOriginDesc->vScaleStart);
 
 	m_eState = EState::Idle;
 	m_fStateElapsed = 0.f;
@@ -150,23 +140,12 @@ void CSkillObjectSpawnerBase::Trigger(const SPAWNER_COPY_DESC& desc, _bool bForc
 	m_desc = desc;
 	CTransform* pTransform = Get_Component<CTransform>();
 	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_desc.vOrigin);
-	pTransform->Set_Scale(m_pOriginDesc->vScaleStart);
 
-	//if(m_desc.eRotationState != TRANSFORM_INFO_STATE::END)
-	//	pTransform->Rotation(m_desc.eRotationState,m_desc.fRotation_Radian);
-
-	// Spawn_WarningIfNeeded();
-
-	m_eState = Has_Visual() ? EState::Appear : EState::Spawn;
+	m_eState = EState::Spawn;
 	m_iSpawnedCount = 0;
 	m_fSpawnAcc = 0.f;
 	m_fStateElapsed = 0.f;
 	Start_State(m_eState);
-}
-
-_bool CSkillObjectSpawnerBase::Has_Visual()
-{
-	return (Get_Component<CModel>() != nullptr);
 }
 
 void CSkillObjectSpawnerBase::Change_State(EState eState)
@@ -184,14 +163,8 @@ void CSkillObjectSpawnerBase::Start_State(EState eState)
 {
 	switch (eState)
 	{
-	case Engine::CSkillObjectSpawnerBase::EState::Appear:
-		Start_Appear();
-		break;
 	case Engine::CSkillObjectSpawnerBase::EState::Spawn:
 		Start_Spawn();
-		break;
-	case Engine::CSkillObjectSpawnerBase::EState::Disappear:
-		Start_Disappear();
 		break;
 	default:
 		break;
@@ -204,14 +177,8 @@ void CSkillObjectSpawnerBase::Update_State(const _float fTimeDelta)
 
 	switch (m_eState)
 	{
-	case Engine::CSkillObjectSpawnerBase::EState::Appear:
-		Update_Appear(fTimeDelta);
-		break;
 	case Engine::CSkillObjectSpawnerBase::EState::Spawn:
 		Update_Spawn(fTimeDelta);
-		break;
-	case Engine::CSkillObjectSpawnerBase::EState::Disappear:
-		Update_Disappear(fTimeDelta);
 		break;
 	default:
 		break;
@@ -222,39 +189,12 @@ void CSkillObjectSpawnerBase::End_State(EState eState)
 {
 	switch (eState)
 	{
-	case Engine::CSkillObjectSpawnerBase::EState::Appear:
-		End_Appear();
-		break;
 	case Engine::CSkillObjectSpawnerBase::EState::Spawn:
 		End_Spawn();
-		break;
-	case Engine::CSkillObjectSpawnerBase::EState::Disappear:
-		End_Disappear();
 		break;
 	default:
 		break;
 	}
-}
-
-void CSkillObjectSpawnerBase::Start_Appear()
-{
-}
-
-void CSkillObjectSpawnerBase::Update_Appear(const _float fTimeDelta)
-{
-	const _float fDenom = (m_pOriginDesc->fAppearTime <= 0.f) ? 1.f : m_pOriginDesc->fAppearTime;
-	const _float fT = std::clamp(m_fStateElapsed / fDenom, 0.f, 1.f);
-
-	Vec3 vScale{Vec3::One};
-	vScale = Vec3::Lerp(m_pOriginDesc->vScaleStart, m_pOriginDesc->vScaleEnd, fT);
-	Get_Component<CTransform>()->Set_Scale(vScale);
-
-	if (fT >= 1.f)
-		Change_State(EState::Spawn);
-}
-
-void CSkillObjectSpawnerBase::End_Appear()
-{
 }
 
 void CSkillObjectSpawnerBase::Start_Spawn()
@@ -270,7 +210,7 @@ void CSkillObjectSpawnerBase::Update_Spawn(const _float fTimeDelta)
 	const _uint iTotal = Get_TotalCount();
 	if (iTotal == 0)
 	{
-		Change_State(Has_Visual() ? EState::Disappear : EState::Idle);
+		Change_State(EState::Idle);
 		return;
 	}
 
@@ -303,34 +243,10 @@ void CSkillObjectSpawnerBase::Update_Spawn(const _float fTimeDelta)
 	}
 
 	if (m_iSpawnedCount >= iTotal)
-		Change_State(Has_Visual() ? EState::Disappear : EState::Idle);
-}
-
-void CSkillObjectSpawnerBase::End_Spawn()
-{
-}
-
-void CSkillObjectSpawnerBase::Start_Disappear()
-{
-}
-
-void CSkillObjectSpawnerBase::Update_Disappear(const _float fTimeDelta)
-{
-	if (m_fStateElapsed < m_pOriginDesc->fAfterSpawnHold)
-		return;
-
-	const _float fDenom = (m_pOriginDesc->fDisappearTime <= 0.f) ? 1.f : m_pOriginDesc->fDisappearTime;
-	const _float fT = std::clamp((m_fStateElapsed - m_pOriginDesc->fAfterSpawnHold) / fDenom, 0.f, 1.f);
-
-	Vec3 vScale{ Vec3::One };
-	vScale = Vec3::Lerp(m_pOriginDesc->vScaleEnd, m_pOriginDesc->vScaleStart, fT);
-	Get_Component<CTransform>()->Set_Scale(vScale);
-
-	if (fT >= 1.f)
 		Change_State(EState::Idle);
 }
 
-void CSkillObjectSpawnerBase::End_Disappear()
+void CSkillObjectSpawnerBase::End_Spawn()
 {
 }
 

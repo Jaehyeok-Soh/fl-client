@@ -3,15 +3,13 @@
 #include "EffectBase.h"
 #include "GameInstance.h"
 
-CHybridGameObjectBase::CHybridGameObjectBase(EHyBridEffectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CHybridGameObjectBase::CHybridGameObjectBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pDevice, pDeviceContext)
-	, m_eType(eType)
 {
 }
 
 CHybridGameObjectBase::CHybridGameObjectBase(const CHybridGameObjectBase& rhs)
 	:Super(rhs)
-	, m_eType(rhs.m_eType)
 {
 }
 
@@ -37,36 +35,6 @@ HRESULT CHybridGameObjectBase::Initialize(void* pArg)
 	return S_OK;
 }
 
-//HRESULT CHybridGameObjectBase::Ready_EffectModule(void* pArg)
-//{
-//	HYBRID_DESC* pDesc = static_cast<HYBRID_DESC*>(pArg);
-//
-//	auto& ModuleList = pDesc->m_ModuleEffect;
-//	wstring PrototypeTag = {};
-//	PrototypeTag = L"Prototype_GameObject_Effect_WarningCircle";
-//
-//	for (_uint i = 0; i < (_uint)ModuleList.size(); ++i)
-//	{
-//		_uint iHashTag = ModuleList[i].second;
-//		void* pEffectData = m_pGameInstance->Find_EffectData(iHashTag);
-//		
-//		CBase* pBase = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
-//			/*Static*/0,
-//			PrototypeTag,
-//			pEffectData);
-//
-//		if (pBase == nullptr)
-//			continue;
-//
-//		m_StateModules[ModuleList[i].first].push_back(
-//			std::make_pair(EHybridModuleType::EFFECT, static_cast<CGameObject*>(pBase))
-//		);
-//	}
-//
-//	return S_OK;
-//}
-
-
 HRESULT CHybridGameObjectBase::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
@@ -88,6 +56,7 @@ void CHybridGameObjectBase::Update_Priority(const _float fTimeDelta)
 void CHybridGameObjectBase::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	Update_HybridState(fTimeDelta);
 	Tick_StateModules_Update(fTimeDelta);
 }
 
@@ -119,26 +88,23 @@ HRESULT CHybridGameObjectBase::Spawn_FromPool(void* pArg)
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
 
-	m_iPrevState = 0;
+	m_iPrevState = UINT_MAX;
 	m_iCurrentState = 0;
 
 	Disable_AllModules();
-	Enable_StateModules(m_iCurrentState);
-	Start_HybridState(m_iCurrentState);
 	return S_OK;
 }
 
 HRESULT CHybridGameObjectBase::Despawn_FromPool()
-{
-	if (FAILED(Super::Despawn_FromPool()))
-		return E_FAIL;
-	
+{	
 	End_HybridState(m_iCurrentState);
+	Disable_StateModules(m_iCurrentState);
 	Disable_AllModules();
 
-	m_iPrevState = 0;
+	m_iPrevState = UINT_MAX;
 	m_iCurrentState = 0;
-	return S_OK;
+
+	return Super::Despawn_FromPool();
 }
 
 void CHybridGameObjectBase::Change_HybridState(_uint iState)
@@ -152,8 +118,8 @@ void CHybridGameObjectBase::Change_HybridState(_uint iState)
 	m_iPrevState = m_iCurrentState;
 	m_iCurrentState = iState;
 
-	Enable_StateModules(m_iCurrentState);
 	Start_HybridState(m_iCurrentState);
+	Enable_StateModules(m_iCurrentState);
 }
 
 HRESULT CHybridGameObjectBase::Regist_Module(EHybridModuleType eType, CGameObject* pModule)
@@ -178,6 +144,56 @@ HRESULT CHybridGameObjectBase::Bind_ModuleToState(_uint iState, EHybridModuleTyp
 	}
 
 	m_mapStateModules[iState].emplace_back(std::pair{ eType, pModule });
+	return S_OK;
+}
+
+HRESULT CHybridGameObjectBase::Add_EffectModule(_uint iPrototypeLevelIndex, const string& strEffectName, const wstring& wstrEffectPrototypeTag, _uint iState)
+{
+	_uint iHashTag = Engine_Utils::ToHash(strEffectName.c_str());
+	auto pData = m_pGameInstance->Find_EffectData(iHashTag);
+	if (pData == nullptr)
+	{
+		MSG_BOX("CHybridGameObjectBase::Add_EffectModule, data is invalid");
+		return E_FAIL;
+	}
+
+	CBase* pBase =
+		m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
+		iPrototypeLevelIndex,
+		wstrEffectPrototypeTag,
+			pData);
+
+	if (pBase == nullptr)
+		return E_FAIL;		
+
+	if (FAILED(Regist_Module(EHybridModuleType::EFFECT, static_cast<CGameObject*>(pBase))))
+		return E_FAIL;
+	if (FAILED(Bind_ModuleToState(iState, EHybridModuleType::EFFECT, static_cast<CGameObject*>(pBase))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CHybridGameObjectBase::Add_CollideModule(_uint iState, PHYSICSCOLLIDER_DESC* colliderDesc, PHYSICSRIGIDBODY_DESC* rigidbodyDesc)
+{
+	CColliderModule::COLLIDERMODULE_COPY_DESC desc{};
+	desc.pPhysicsColliderDesc = colliderDesc;
+	desc.pPhysicsRigidbodyDesc = rigidbodyDesc;
+
+	CBase* pBase = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
+		/*static*/0,
+		L"Prototype_GameObject_ColliderModule",
+		&desc);
+
+	if (pBase == nullptr)
+		return E_FAIL;
+
+	if (FAILED(Regist_Module(EHybridModuleType::COLLIDER, static_cast<CGameObject*>(pBase))))
+		return E_FAIL;
+	if (FAILED(Bind_ModuleToState(iState, EHybridModuleType::COLLIDER, static_cast<CGameObject*>(pBase))))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 void CHybridGameObjectBase::Enable_StateModules(_uint iState)

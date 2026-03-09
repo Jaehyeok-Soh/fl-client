@@ -175,7 +175,6 @@
     <ClInclude Include="..\Public\InvisibleWall.h" />
     <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\Public\Grass.h" />
-    <ClInclude Include="..\Public\Hybrid_WarningSpace.h" />
     <ClInclude Include="..\public\ImGuiBase.h" />
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -237,6 +236,9 @@
     <ClInclude Include="..\Public\Rock.h" />
     <ClInclude Include="..\Public\SkillBase_MoonE.h" />
     <ClInclude Include="..\Public\SkillBase_MoonQ.h" />
+    <ClInclude Include="..\public\SkillPierceProjectile.h" />
+    <ClInclude Include="..\public\SkillProjectile.h" />
+    <ClInclude Include="..\public\SkillWarningSpace.h" />
     <ClInclude Include="..\public\StatCom_Boss.h" />
     <ClInclude Include="..\Public\StatCom_Player.h" />
     <ClInclude Include="..\Public\State_Charge.h" />
@@ -378,7 +380,6 @@
     <ClCompile Include="..\Private\GenericUI.cpp" />
     <ClCompile Include="..\Private\Gun.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
-    <ClCompile Include="..\Private\Hybrid_WarningSpace.cpp" />
     <ClCompile Include="..\Private\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -453,6 +454,9 @@
     <ClCompile Include="..\Private\Rock.cpp" />
     <ClCompile Include="..\Private\SkillBase_MoonE.cpp" />
     <ClCompile Include="..\Private\SkillBase_MoonQ.cpp" />
+    <ClCompile Include="..\private\SkillPierceProjectile.cpp" />
+    <ClCompile Include="..\private\SkillProjectile.cpp" />
+    <ClCompile Include="..\private\SkillWarningSpace.cpp" />
     <ClCompile Include="..\private\StatCom_Boss.cpp" />
     <ClCompile Include="..\Private\StatCom_Player.cpp" />
     <ClCompile Include="..\Private\State_Charge.cpp" />

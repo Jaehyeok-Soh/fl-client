@@ -565,6 +565,7 @@ namespace Client
 #pragma endregion
 
 #pragma region SkillObject ฐüทร
+	inline constexpr wchar_t g_wszColliderModule_Prototype_Tag[]				{ L"Prototype_GameObject_ColliderModule" };
 	/* Xibi */
 	inline constexpr wchar_t g_wszXibiProjectile_Prototype_Tag[]				{ L"Prototype_GameObject_Xibi_CircleProjectile" };
 	inline constexpr wchar_t g_wszXibiLoopThunder_Prototype_Tag[]				{ L"Prototype_GameObject_Xibi_LoopThunder" };
