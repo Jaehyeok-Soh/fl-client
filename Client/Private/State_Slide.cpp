@@ -89,7 +89,7 @@ HRESULT CState_Slide::End()
     CPhysicsCCT* cct = { nullptr };
     if (cct = Get_OwnerObject()->Get_Component<CPhysicsCCT>())
     {
-        cct->SetHeight(0.7f);
+        cct->SetHeight(0.7f); // todo_eunbi : player cct height °ª ¹Ù²î¸é ¿©±âµµ ¹Ù²ãÁà¾ß ÇÔ
     }
 
     return S_OK;
