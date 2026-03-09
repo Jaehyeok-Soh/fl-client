@@ -110,7 +110,6 @@ HRESULT CUIBossStat_Text::Bind_ShaderResources()
 
 HRESULT CUIBossStat_Text::Attach_Personal_Info()
 {
-
 	return S_OK;
 }
 
