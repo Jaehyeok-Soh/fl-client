@@ -146,7 +146,14 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 		}
 	}
 
-
+	if (ImGui::CollapsingHeader(" Map Env Data Setting "))
+	{
+		if (FAILED((Render_EnvSetting())))
+		{
+			ImGui::TreePop();
+			return E_FAIL;
+		}
+	}
 
 	if (ImGui::CollapsingHeader(" Map Tool Setting "))
 	{
@@ -967,6 +974,34 @@ HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 		ImGui::EndCombo();
 	}
 #pragma endregion
+
+	ImGui::Separator();
+
+
+	return S_OK;
+}
+
+HRESULT CPanel_MapTool::Render_EnvSetting()
+{
+	auto& tCB_EnvData = m_pMapToolManager->m_tCB_EnvData;
+
+	ImGui::SeparatorText(" Wind Setting ");
+
+	ImGui::NewLine();
+
+	ImGui::Text(" Direction ");
+	if (ImGui::DragFloat3("##Wind Direction", &tCB_EnvData.vWindDirection.x, 0.01f, -1.f, 1.f, "%.2f"))
+	{
+		m_pMapToolManager->Set_GPU_EnvData();
+	}
+
+	ImGui::Text(" Power ");
+	if (ImGui::DragFloat("##Wind Power", &tCB_EnvData.fWindPower, 0.01f, 0.f, 100.f, "%.2f"))
+	{
+		m_pMapToolManager->Set_GPU_EnvData();
+	}
+
+	ImGui::NewLine();
 
 	ImGui::Separator();
 

@@ -46,6 +46,9 @@ private:
 	HRESULT					Render_CheckAndBind();
 	HRESULT					Render_MakeMapObjectSetting();
 
+	/* Env Setting Render */
+	HRESULT					Render_EnvSetting();
+
 	/* Camera Cinematic Sequence */
 	HRESULT					Render_CameraCinematicSequnce();
 

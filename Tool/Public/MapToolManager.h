@@ -243,7 +243,8 @@ public:
 	HRESULT						Render();
 public:
 	HRESULT						Export_SaveSceneData(DTO::ECategory eCategory, CDataDocumentBase* pDocument);
-
+public:
+	HRESULT						Set_GPU_EnvData();
 #pragma region Camera Cinematic Sequence
 public:
 	HRESULT						Load_Camera_Cinematic_Sequence(const wstring& wstrFindKey);
@@ -345,6 +346,9 @@ private:
 	_bool						m_isTex_DH_ArraySelect{false};
 	_bool						m_isTex_NBR_ArraySelect{false};
 	wstring						m_selectedCategoryName{L""};
+
+
+	CB_EnvData					m_tCB_EnvData{};
 
 
 private:
