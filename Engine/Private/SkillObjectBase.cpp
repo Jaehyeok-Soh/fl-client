@@ -200,7 +200,7 @@ void CSkillObjectBase::Process_Life(const _float fTimeDelta)
 		// 수명시간이 다되서 플래그가 true가 된다면
 		if (m_tRuntimeDesc.Life.Tick(fTimeDelta) == true)
 		{
-			Set_Dying();
+ 			Set_Dying();
 			// 파생 클래스의 On_LifeOver를 호출
 			On_LifeOver();
 		}

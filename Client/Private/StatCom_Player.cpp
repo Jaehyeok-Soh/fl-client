@@ -88,6 +88,8 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	m_tExtra_AttackDesc.vRandomAdd_MinMax = Vec2::Zero;
 	m_tExtra_AttackDesc.vRandomMul_MinMax = Vec2::Zero;
 
+	m_tExtra_AttackDesc.iDamageFlag = 0;
+
 	// skill에서 set으로 값을 먼저 설정하고
 	// skill 이 켜져 있다면 안에서 값 수정 하도록 설정
 	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
@@ -107,7 +109,6 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 		m_fCriticalRate + m_fCirticalRate_Add >= m_pGameInstance->Rand_Float(0.f, 1.f))
 	{
 		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
-		m_tExtra_AttackDesc.iDamageFlag &= ~ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);
 
 		// critical은 일단 더하기로 하는걸로
 		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
