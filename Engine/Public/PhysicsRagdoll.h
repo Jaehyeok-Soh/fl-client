@@ -22,20 +22,18 @@ public:
 	void Update();
 	void Sleep();
 
-public:
-	void SetRagdollLive(_bool bVal);
+	_int FindRagdollJointByBoneIndex(_uint boneIdx);
 
 #ifdef _DEBUG
 	void Render();
 #endif // _DEBUG
 
 private:
-	void SetUserData(CGameObject* pObject);
-	void CombinedJoint(RAGDOLLJOINT::Enum eJoint, PxTransform ObjectWorldTransform, PxTransform parentTransform, vector<CChannel*>& vecChannels);
+	void CombinedJoint(RAGDOLLJOINT::Enum eJoint, PxTransform ObjectWorldTransform, PxTransform parentTransform, vector<CChannel*>& vecChannels, vector<class CBone*>& vecBone);
+	PxTransform BoneCombine(class CBone* pCurrentBone, PxTransform pxLocal, class CBone* pParentBone, vector<CChannel*>& vecChannels, vector<class CBone*>& vecBone);
 
 private:
 	RAGDOLLELEMENTS m_tRagdollElements = {};
-	vector<PxRigidActor*> m_pActors = { nullptr };
 	class CModel* m_pSharedModel = { nullptr };
 	uint64 m_iObjectID = {};
 

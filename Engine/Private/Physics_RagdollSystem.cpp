@@ -31,6 +31,7 @@ RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAG
 	RAGDOLLELEMENTS elements{};
 	elements.pArticulation = m_pPhysics->createArticulationReducedCoordinate(); // RCA : Featherstone's algorithm
 	elements.vecPhysicsLink.resize(RAGDOLLJOINT::END);
+	elements.vecRagdollLiveTransform.resize(RAGDOLLJOINT::END);
 
 	PxTransform pxTransform = m_pGameInstance->XMMatrixToPxTransform(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].matLocalTransform);
 	auto link = elements.pArticulation->createLink(NULL, pxTransform); // local transform

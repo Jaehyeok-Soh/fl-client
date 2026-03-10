@@ -92,6 +92,17 @@ public:
     CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 
 /// <summary>
+/// Ragdoll system
+/// </summary>
+public:
+    void RagdollRegister(CGameObject* obj);
+    void RagdollUnregister(int64 objID);
+
+    void RagdollRequestStart(uint64 objID);
+    void RagdollSyncStates(uint64 objID, vector<class CChannel*>& vecChannels);
+    void RagdollFinish(uint64 objID);
+
+/// <summary>
 /// Collision Filter Shader
 /// </summary>
 public:

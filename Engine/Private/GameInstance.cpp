@@ -1194,6 +1194,26 @@ _bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysic
 	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
 }
 
+void CGameInstance::RagdollRegister(CGameObject* obj)
+{
+}
+
+void CGameInstance::RagdollUnregister(int64 objID)
+{
+}
+
+void CGameInstance::RagdollRequestStart(uint64 objID)
+{
+}
+
+void CGameInstance::RagdollSyncStates(uint64 objID, vector<class CChannel*>& vecChannels)
+{
+}
+
+void CGameInstance::RagdollFinish(uint64 objID)
+{
+}
+
 #ifdef _DEBUG
 void CGameInstance::Physics_Render(PxRigidActor* pActor, XMVECTOR color)
 {

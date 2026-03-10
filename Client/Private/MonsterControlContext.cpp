@@ -4,6 +4,7 @@
 #include "Monster_Base.h"
 #include "MonsterActionState.h"
 #include "PhysicsCCT.h"
+#include "PhysicsRagdoll.h"
 #include "Engine_Utils.h"
 #include "GameInstance.h"
 
@@ -47,6 +48,9 @@ HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 	if (m_pTarget != nullptr)
 		Safe_AddRef(m_pTarget);
 	m_iSubState = 0;
+
+	m_iOwnerID = Get_Owner()->Get_ID();
+
 	return S_OK;
 }
 
@@ -370,6 +374,20 @@ void CMonsterControlContext::Set_CCT_Collision_Disable()
 void CMonsterControlContext::Set_CCT_Collision_Enable()
 {
 	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(true);
+}
+
+void CMonsterControlContext::Set_On_Ragdoll()
+{
+	auto pRagdoll = Get_Owner()->Get_Component<CPhysicsRagdoll>();
+	if (pRagdoll)
+		m_pGameInstance->RagdollRequestStart(m_iOwnerID);
+}
+
+void CMonsterControlContext::Set_Off_Ragdoll()
+{
+	auto pRagdoll = Get_Owner()->Get_Component<CPhysicsRagdoll>();
+	if (pRagdoll)
+		m_pGameInstance->RagdollFinish(m_iOwnerID);
 }
 
 void CMonsterControlContext::Clear_RuntimeDesc()

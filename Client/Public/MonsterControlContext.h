@@ -173,6 +173,10 @@ public:
 	void UpdateTrun180(const _float fTimeDelta);
 	void Set_CCT_Collision_Disable();
 	void Set_CCT_Collision_Enable();
+
+	void Set_On_Ragdoll();
+	void Set_Off_Ragdoll();
+
 private:
 	void Clear_RuntimeDesc();
 
@@ -190,6 +194,8 @@ private:
 	HIT_DESC m_tHitDesc = {};
 	RUNTIME_DESC m_tRuntimeDesc = {};
 	_uint m_iSubState = 0;
+
+	uint64 m_iOwnerID = {};
 
 public:
 	static CMonsterControlContext* Create();

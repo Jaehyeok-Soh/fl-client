@@ -944,6 +944,7 @@ namespace Engine
 
 		PxArticulationReducedCoordinate* pArticulation = { nullptr };
 		vector<LinkIdentity> vecPhysicsLink;
+		vector<Matrix> vecRagdollLiveTransform;
 	}RAGDOLLELEMENTS;
 #pragma endregion
 

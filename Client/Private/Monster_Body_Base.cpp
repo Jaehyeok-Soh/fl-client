@@ -12,6 +12,7 @@
 #include "Model.h"
 #include "ComputeShader.h"
 #include "PhysicsCCT.h"
+#include "PhysicsRagdoll.h"
 
 #include "UI_Manager.h"
 #include "GameInstance.h"
@@ -58,6 +59,10 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 {
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
+
+	auto pRagdoll = Get_Component<CPhysicsRagdoll>();
+	if (pRagdoll)
+		m_pGameInstance->RagdollRequestStart(m_iObjectID);
 
 	return S_OK;
 }
@@ -185,6 +190,9 @@ HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)
 		return E_FAIL;
 
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
+		return E_FAIL;
+	
+	if (FAILED(Add_Component<CPhysicsRagdoll>(0/*static*/, L"Prototype_Component_Ragdoll", nullptr)))
 		return E_FAIL;
 
 	return S_OK;

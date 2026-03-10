@@ -354,6 +354,31 @@ CPhysics_CCTFilterCallback* CPhysics_Module::GetCCTFilterCallback()
 	return m_pCCTManager->GetCCTFilterCallback();
 }
 
+void CPhysics_Module::RagdollRegister(CGameObject* obj)
+{
+	m_pRagdollSystem->Register(obj);
+}
+
+void CPhysics_Module::RagdollUnregister(int64 objID)
+{
+	m_pRagdollSystem->Unregister(objID);
+}
+
+void CPhysics_Module::RagdollRequestStart(uint64 objID)
+{
+	m_pRagdollSystem->RequestStart(objID);
+}
+
+void CPhysics_Module::RagdollSyncStates(uint64 objID, vector<class CChannel*>& vecChannels)
+{
+	m_pRagdollSystem->SyncStates(objID, vecChannels);
+}
+
+void CPhysics_Module::RagdollFinish(uint64 objID)
+{
+	m_pRagdollSystem->Finish(objID);
+}
+
 PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes0, PxFilterData filterData0,
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,

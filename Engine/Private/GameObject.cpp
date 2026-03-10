@@ -10,6 +10,7 @@
 
 #include "PhysicsCCT.h"
 #include "PhysicsRigidBody.h"
+#include "PhysicsRagdoll.h"
 
 uint64 CGameObject::s_iNextID = 0;
 
@@ -387,6 +388,10 @@ void CGameObject::Disable_CollisionComponent()
         auto pRigidBody = Get_Component<CPhysicsRigidBody>();
         if (pRigidBody)
             pRigidBody->EnableCollision(false);
+
+        auto pRagdoll = Get_Component<CPhysicsRagdoll>();
+        if (pRagdoll)
+            m_pGameInstance->RagdollFinish(m_iObjectID);
     }
 }
 
