@@ -462,7 +462,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::RUNSHORT);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::SLIDE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)               = ENUM_TO_UINT(State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
@@ -1152,9 +1152,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
             weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
 
-            weaponDesc.fAllBullet = 1000.f;
-            weaponDesc.fCurBullet = 500.f;
-            weaponDesc.fAttackCoolTime = 0.2f; // 0.15 넘 빠름 // 0.3 너무 느림
+            weaponDesc.fAllBullet           = 1000.f;
+            weaponDesc.fCurBullet           = 500.f;
+            weaponDesc.fAttackCoolTime      = 0.18f; // 0.15 넘 빠름 // 0.3 너무 느림
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));

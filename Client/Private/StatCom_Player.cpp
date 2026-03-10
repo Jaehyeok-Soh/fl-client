@@ -84,7 +84,6 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	m_tExtra_AttackDesc.fAddRate = 0.f;
 	m_tExtra_AttackDesc.fRandomAdd_Rate = 0.f;
 	m_tExtra_AttackDesc.fRandomMul_Rate = 0.f;
-	m_tExtra_AttackDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);
 	m_tExtra_AttackDesc.vFinalDamege_MinMax = Vec2::Zero;
 	m_tExtra_AttackDesc.vRandomAdd_MinMax = Vec2::Zero;
 	m_tExtra_AttackDesc.vRandomMul_MinMax = Vec2::Zero;
@@ -108,9 +107,15 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 		m_fCriticalRate + m_fCirticalRate_Add >= m_pGameInstance->Rand_Float(0.f, 1.f))
 	{
 		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
+		m_tExtra_AttackDesc.iDamageFlag &= ~ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);
 
 		// critical은 일단 더하기로 하는걸로
 		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
+	}
+
+	else
+	{
+		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);
 	}
 
 	m_tExtra_AttackDesc.fRandomAdd_Rate		+= 0.5f;
