@@ -551,6 +551,14 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		m_pGameInstance->Broadcast<XIBILA_BOSS_UI_ON>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_9))
+	{
+		m_pGameInstance->Broadcast<XIBILA_BOSS_UI_OFF>();
+	}
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

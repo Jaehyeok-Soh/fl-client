@@ -991,6 +991,16 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	case Tool::EClientMakePath::StaticObject:						ImGuiUpdate_StaticObject_Desc						(static_cast<STATICOBJECT_DESC*>(pDesc));								return S_OK;
 	case Tool::EClientMakePath::LandScape:							ImGuiUpdate_LandScape_Desc							(static_cast<LANDSCAPE_DESC*>(pDesc));									return S_OK;
 
+
+	case Tool::EClientMakePath::Tree:								ImGuiUpdate_Tree_Desc								(static_cast<TREE_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Moss:								ImGuiUpdate_Moss_Desc								(static_cast<MOSS_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Grass:								ImGuiUpdate_Grass_Desc								(static_cast<GRASS_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Vine:								ImGuiUpdate_Vine_Desc								(static_cast<VINE_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Bush:								ImGuiUpdate_Bush_Desc								(static_cast<BUSH_DESC*>(pDesc));										return S_OK;
+
+	case Tool::EClientMakePath::Water:								ImGuiUpdate_Water_Desc								(static_cast<WATER_DESC*>(pDesc));										return S_OK;
+
+
 	case Tool::EClientMakePath::Batch_Monster:						ImGuiUpdate_Batch_Monster_Desc						(static_cast<BATCH_MONSTER_DESC*>(pDesc));								return S_OK;
 	case Tool::EClientMakePath::Batch_Object:						ImGuiUpdate_Batch_Object_Desc						(static_cast<BATCH_OBJECT_DESC*>(pDesc));								return S_OK;
 
@@ -1075,6 +1085,152 @@ void CPanel_MapObjectList::ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc)
 }
 #pragma endregion
 
+
+#pragma region Plants
+
+
+void CPanel_MapObjectList::ImGuiUpdate_Plants_Desc(PLANTS_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGui::SeparatorText(" Plants Description ");
+	
+	ImGui::NewLine();
+
+	ImGui::Text(" if Instance Model) Index 0 Descripton Color Only Apply  ");
+
+	ImGui::NewLine();
+
+	ImGui::ColorEdit4("Plant Color", (float*)&pDesc->vMITint_Color);
+
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
+	return;
+}
+
+
+#pragma region Tree
+void CPanel_MapObjectList::ImGuiUpdate_Tree_Desc(TREE_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGuiUpdate_Plants_Desc(pDesc);
+
+	return;
+}
+#pragma endregion
+
+#pragma region Moss
+void CPanel_MapObjectList::ImGuiUpdate_Moss_Desc(MOSS_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGuiUpdate_Plants_Desc(pDesc);
+
+	return;
+}
+#pragma endregion
+
+#pragma region Bush
+void CPanel_MapObjectList::ImGuiUpdate_Bush_Desc(BUSH_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGuiUpdate_Plants_Desc(pDesc);
+
+	return;
+}
+#pragma endregion
+
+
+#pragma region Grass
+void CPanel_MapObjectList::ImGuiUpdate_Grass_Desc(GRASS_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGuiUpdate_Plants_Desc(pDesc);
+
+	return;
+}
+#pragma endregion
+
+#pragma region Vine
+void CPanel_MapObjectList::ImGuiUpdate_Vine_Desc(VINE_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGuiUpdate_Plants_Desc(pDesc);
+
+	return;
+}
+
+void CPanel_MapObjectList::ImGuiUpdate_Water_Desc(WATER_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGui::SeparatorText(" Plants Description ");
+
+	ImGui::NewLine();
+
+	ImGui::Text(" if Instance Model) Index 0 Descripton Color Only Apply  ");
+
+	ImGui::NewLine();
+
+	ImGui::ColorEdit4("Water Color", (float*)&pDesc->vMI_TintColor);
+
+	ImGui::NewLine();
+
+	ImGui::NewLine();
+
+	ImGui::DragFloat2("Water Speed 1", (float*)&pDesc->vSpeed1,0.01f,0.f,100.f,"%.3f");
+	ImGui::DragFloat2("Water Speed 2", (float*)&pDesc->vSpeed2,0.01f, 0.f, 100.f, "%.3f");
+
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
+
+	string strTextureSlotName{};
+	string strTextureName{};
+	for (_uint i = 0; i < ENUM_TO_UINT(EWaterTextureType::END); ++i)
+	{
+		ImGui::PushID(i);
+		strTextureSlotName = WaterTextureType_ToString(static_cast<EWaterTextureType>(i));
+		auto& pTextureBase = pDesc->arrayTextureBase[i];
+		strTextureName = pTextureBase == nullptr ? "None" : Engine_Utils::ToString(pTextureBase->Get_Name());
+
+		ImGui::SeparatorText(strTextureSlotName.c_str());
+		ImGui::Text("Texture Name		=> [ %s ] " , strTextureName.c_str());
+
+		ID3D11ShaderResourceView* pSRV = pTextureBase == nullptr ? m_pMapToolManager->m_pDefaultWhiteSRV : pTextureBase->Get_SRV();
+
+		if (ImGui::ImageButton("Texture", ImTextureRef(pSRV),ImVec2(32,32)))
+		{
+			// Å¸°Ù ÁÖ¼Ò¸¦ ³Ñ°ÜÁÖ´Â ¾ÆÁÖ ÈÇ¸¢ÇÑ ·ÎÁ÷!
+			m_pMapToolManager->m_ppTargetSlot = &pDesc->arrayTextureBase[i];
+			m_pMapToolManager->m_isTexArraySelect = false;
+			m_pMapToolManager->m_isTex_DH_ArraySelect = false;
+			m_pMapToolManager->m_isTex_NBR_ArraySelect = false;
+
+			// ¿©±â¼­ ÆË¾÷ »óÅÂ¸¦ ÄÒ´Ù
+			ImGui::OpenPopup("Texture_Select_Modal");
+		}
+
+		ImGui::Separator();
+
+		m_pMapToolManager->Select_MapTexture();
+
+		ImGui::PopID();
+	}
+
+}
+
+
+#pragma endregion
+
+#pragma endregion
 
 
 #pragma region Batch Monster

@@ -123,6 +123,7 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
+
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
 		break;
@@ -162,6 +163,7 @@ void CUIAimDot_Image::Bind_Events()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
+		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
 		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
@@ -180,6 +182,8 @@ void CUIAimDot_Image::Bind_Events()
 		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
+		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
+		m_pGameInstance->Subscribe< GUN_ON_HIT>([this]() { this->Set_Visible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
 		break;
@@ -257,18 +261,6 @@ void CUIAimDot_Image::Update_Priority(const _float fTimeDelta)
 void CUIAimDot_Image::Update(const _float fTimeDelta)
 {
 	m_isShootingTrigger = false;
-
-	if (MOUSE_LBUTTON_DOWN)
-	{
-		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
-		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Gun, false);
-	}
-	else if (MOUSE_RBUTTON_DOWN)
-	{
-		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Melee, false);
-		m_pPlayerStatCom->Set_AttackState(CStatCom_Player::Attack_State::Gun, true);
-	}
-
 	if(m_pGunParts->Get_isFire())
 		m_isShootingTrigger = true;
 
@@ -332,9 +324,63 @@ void CUIAimDot_Image::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;
 	m_isActive = false;
+
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
+		Ready_LerpChange(0.15f, 0.5f, 1.5f, 1.f, 0.f);
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
+		break;
+	}
+}
+
+void CUIAimDot_Image::Initialize_InVisible_Event()
+{
 }
 
 _bool CUIAimDot_Image::Tick_Visible_Event(const _float fTimeDelta)
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
+		break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
+	{
+		_bool is = Tick_LerpChange(&m_fScale, fTimeDelta);
+		if (is)
+		{
+			Set_Invisible();
+			return true;
+		}
+		return false;
+	}
+	break;
+	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
+		break;
+	}
+	return true;
+}
+
+_bool CUIAimDot_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	return true;
 }

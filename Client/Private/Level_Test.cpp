@@ -150,11 +150,7 @@ void CLevel_Test::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-	//if (KEY_BUTTON_DOWN(DIK_8))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}	
+
 	if (KEY_BUTTON_DOWN(DIK_4))
 	{
 		m_pGameInstance->Broadcast<CINEMATIC_START>();
@@ -179,6 +175,11 @@ void CLevel_Test::Update(const _float fTimeDelta)
 	{
 		m_pGameInstance->Broadcast<XIBILA_BOSS_UI_OFF>();
 	}
+	if (KEY_BUTTON_DOWN(DIK_0))
+	{
+		UI_PREFAB_DATA Desc = {};
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}	
 }
 
 HRESULT CLevel_Test::Render()

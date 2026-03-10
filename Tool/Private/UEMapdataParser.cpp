@@ -79,7 +79,8 @@ vector<MAPDATA_BASE*> CUEMapdataParser::Convert_UE_MapData(const vector<UE_MAP_D
 {
 	vector<MAPDATA_BASE*> vecConvertedData{};
 	vector<UE_MAP_DATA>		 vecUEMapData = tData;
-	if (tData.empty()) return vecConvertedData;
+	if (tData.empty())
+		return vecConvertedData;
 
 	vecConvertedData.reserve(tData.size());
 

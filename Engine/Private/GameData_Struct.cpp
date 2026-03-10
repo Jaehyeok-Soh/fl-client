@@ -282,19 +282,20 @@ namespace Engine
 	{
 		UnBind_CashingData();
 		
-		eMoveBaseTarget				= ECinematicTarget::NONE;
-		iMoveBaseTargetBoneIndex	= NONE_BONE_INDEX;
-		vPosition					= Vec3::Zero;
-		eMoveLerpType				= ELerpType::NONE;
-		eLookAtLerpType				= ELerpType::NONE;
-		eFovLerpType				= ELerpType::NONE;
-		fDuration					= 1.f;
-		fHoldTime					= 0.f;
-		fFov						= 60.f;
-		eLookAtTarget				= ECinematicTarget::NONE;
-		vPitchYawRoll				= { 0.f, 0.f, 0.f };
-		iLookAtBoneIndex			= NONE_BONE_INDEX;
-		vLookAtOffset				= Vec3::Zero;
+		this->eMoveBaseTarget				= ECinematicTarget::NONE;
+		this->iMoveBaseTargetBoneIndex	= NONE_BONE_INDEX;
+		this->vPosition					= Vec3::Zero;
+		this->eMoveLerpType				= ELerpType::NONE;
+		this->eLookAtLerpType				= ELerpType::NONE;
+		this->eFovLerpType				= ELerpType::NONE;
+		this->fDuration					= 1.f;
+		this->fHoldTime					= 0.f;
+		this->fFov						= 60.f;
+		this->eLookAtTarget				= ECinematicTarget::NONE;
+		this->vPitchYawRoll				= { 0.f, 0.f, 0.f };
+		this->iLookAtBoneIndex			= NONE_BONE_INDEX;
+		this->vLookAtOffset				= Vec3::Zero;
+		
 	}
 
 	void Camera_Keyframe_Data::Copy_Camera(CCameraMan* pCameraman)
@@ -624,6 +625,9 @@ namespace Engine
 	void Camera_Cinematic_Sequence::Reset(_int iResetIndex)
 	{
 		
+		this->vecStartCinematic_GlobalEventIndex.clear();
+		this->vecEndCinematic_GlobalEventIndex.clear();
+
 		/* 전체 리셋 */
 		if (iResetIndex == -1)
 		{
@@ -696,9 +700,9 @@ namespace Engine
 		// 1. 현재 이 함수에 들어온 JSON 전체 구조를 로그로 출력
 		OutputDebugStringA(LoadJson.dump(4).c_str());
 
-		if (LoadJson.contains("Start Global Event Index"))
+		if (LoadJson.contains("Start Global Event Names"))
 		{
-			const auto& JsonArray = LoadJson["Start Global Event Index"];
+			const auto& JsonArray = LoadJson["Start Global Event Names"];
 
 			for (auto& Json : JsonArray)
 			{
@@ -708,9 +712,9 @@ namespace Engine
 			}
 		}
 
-		if (LoadJson.contains("End Global Event Index"))
+		if (LoadJson.contains("End Global Event Names"))
 		{
-			const auto& JsonArray = LoadJson["End Global Event Index"];
+			const auto& JsonArray = LoadJson["End Global Event Names"];
 
 			for (auto& Json : JsonArray)
 			{

@@ -30,6 +30,8 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
     , m_vecMatrix{}
     , m_vecOriginMatrix{}
     , m_wstrUERawDataPath{L""}
+    , m_tUsingModelInfo{}
+    , m_fDT{}
 {
 
 }
@@ -51,9 +53,10 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_vecOriginMatrix{rhs.m_vecOriginMatrix}
     , m_pMapToolManager(CMapToolManager::GetInstance())
     , m_wstrUERawDataPath{rhs.m_wstrUERawDataPath }
+    , m_tUsingModelInfo{ rhs.m_tUsingModelInfo}
+    , m_fDT{rhs.m_fDT }
 {
     /*  Description을 어케해주는게 좋을려나...  */
-
 } 
 
 HRESULT CMapObject::Initialize_Prototype()
@@ -80,6 +83,8 @@ HRESULT CMapObject::Initialize(void* pArg)
     m_iSectionNum               = pDesc->iSectionNumber;
     m_wstrUERawDataPath         = pDesc->wstrUERawDataPath;
 
+    if (m_isUELoaded == true)
+        m_tUsingModelInfo = pDesc->tUsingModelInfo;
 
     if (m_isLoaded == true)
         m_isBatced = true;
@@ -198,16 +203,13 @@ HRESULT CMapObject::Ready_Component()
         return E_FAIL;
 
     /* Bounding Box 업데이트 , Instnace모델이면 0 0 0월드좌표로 들어가는게 맞다 */
+    Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
 
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
     {
-        Get_Component<CBounds>()->Update_BoundingDesc(m_vecMatrix.front());
+        /* Add Bounds 해준다 */
         Get_Component<CBounds>()->Add_SubBounds(
             Get_Component<CModel>()->Get_StaticModelMinMax(), span<Matrix>(m_vecMatrix.data(), m_vecMatrix.size()), 1.f);
-    }
-    else
-    {
-        Get_Component<CBounds>()->Update_BoundingDesc(Get_Component<CTransform>()->Get_WorldMatrix());
     }
 
     return S_OK;
@@ -402,16 +404,28 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
             return E_FAIL;
         break;
 
-
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
         if (FAILED(Ready_TriggerBox_MonsterSpawner()))
             return E_FAIL;
 
-
+        break;
     case Tool::EClientMakePath::Invisible_Wall:
         if (FAILED(Ready_InvisibleWall()))
             return E_FAIL;
+        break;
 
+    case Tool::EClientMakePath::Water:
+        if (FAILED(Ready_Water()))
+            return E_FAIL;
+        break;
+
+    case Tool::EClientMakePath::Bush:
+    case Tool::EClientMakePath::Grass:
+    case Tool::EClientMakePath::Moss:
+    case Tool::EClientMakePath::Tree:
+    case Tool::EClientMakePath::Vine:
+        if (FAILED(Ready_Plants()))
+            return E_FAIL;
 
         break;
     case Tool::EClientMakePath::END:
@@ -423,6 +437,26 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
     return S_OK;
 }
 
+
+HRESULT CMapObject::Ready_Plants()
+{
+    CModel* pModel = Get_Component<CModel>();
+    if (pModel == nullptr)
+    {
+        MSG_BOX(" Plants인데 모델이 없습니다 확인해주세요 ");
+        return S_OK;
+    }
+
+    /* Free 흰색으로 지정해주던지 아니면 알아서 색깔지정해줘라 */
+    _uint iMeshCount = pModel->Get_MeshCount();
+    for (_uint i = 0; i < iMeshCount; ++i )
+    {
+        /* 모두 Free MI로 변경 */
+        pModel->Change_MI(i,EMaterialInstanceType::Free);
+    }
+
+    return S_OK;
+}
 
 HRESULT CMapObject::Ready_Batch_Player()
 {
@@ -560,6 +594,19 @@ HRESULT CMapObject::Ready_TriggerBox_MonsterSpawner()
     {
         Safe_Release(MonsterSpawnData.pDebugModel);
         MonsterSpawnData.pDebugModel =  m_pMapToolManager->Get_MonsterPreviewModel(MonsterSpawnData.eMakeMonsterType);
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_Water()
+{
+    CModel* pModel = Get_Component<CModel>();
+    if (!pModel) return E_FAIL;
+
+    for (_uint i = 0; i < pModel->Get_MaterialCount(); ++i)
+    {
+        pModel->Change_MI(i , EMaterialInstanceType::Free);
     }
 
     return S_OK;
@@ -900,6 +947,8 @@ void CMapObject::Set_ClientMakePath(EClientMakePath eClientMakePath)
     if (FAILED(Check_DrawType_ByClientPath()))
         return;
 
+    Ready_PlusData_ByClientMakePath();
+
     return;
 }
 
@@ -1137,6 +1186,12 @@ void CMapObject::Update_Priority(const _float fTimeDelta)
 void CMapObject::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
+
+    /* 나중에 DT값 활용을위해 */
+
+
+
+    m_fDT += fTimeDelta;
 }
 
 void CMapObject::Update_Late(const _float fTimeDelta)
@@ -1196,7 +1251,6 @@ HRESULT CMapObject::Render()
         hr = Render_Rock();
         break;
 
-
     case Tool::EClientMakePath::Batch_Player:
         hr = Render_Batch_Player();
         break;
@@ -1218,7 +1272,7 @@ HRESULT CMapObject::Render()
 
     case Tool::EClientMakePath::Invisible_Wall:
         hr = Render_StaticObject();
-
+        break;
     case Tool::EClientMakePath::Static_Light:
         hr = Render_StaticObject();
         break;
@@ -1256,6 +1310,17 @@ HRESULT CMapObject::Set_GPU_MapObjectState(CShader* pShader)
     {
         return E_FAIL;
     }
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Set_GPU_BeforeRender(CShader* pShader)
+{
+    if (pShader == nullptr) return E_FAIL;
+
+    if (FAILED(Set_GPU_MapObjectState(pShader)))
+        return E_FAIL;
+
 
     return S_OK;
 }
@@ -1384,19 +1449,19 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
 {
     switch (m_eClientMakePath)
     {
-    case Tool::EClientMakePath::StaticObject:           return S_OK;
-    case Tool::EClientMakePath::Grass:                  return S_OK;
-    case Tool::EClientMakePath::Vine:                   return S_OK;
-    case Tool::EClientMakePath::Tree:                   return S_OK;
-    case Tool::EClientMakePath::Moss:                   return S_OK;
-    case Tool::EClientMakePath::Bush:                   return S_OK;
-    case Tool::EClientMakePath::Water:                  return S_OK;
-    case Tool::EClientMakePath::Rock:                   return S_OK;
-        break;
+    case Tool::EClientMakePath::StaticObject:
+    case Tool::EClientMakePath::Grass:
+    case Tool::EClientMakePath::Vine:
+    case Tool::EClientMakePath::Tree:
+    case Tool::EClientMakePath::Moss:
+    case Tool::EClientMakePath::Bush:
+    case Tool::EClientMakePath::Water:
+    case Tool::EClientMakePath::Rock:
+        return S_OK;
 
 
     case Tool::EClientMakePath::Batch_Player:
-    case Tool::EClientMakePath::Batch_Monster:          
+    case Tool::EClientMakePath::Batch_Monster:
     case Tool::EClientMakePath::LandScape:
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
@@ -1406,7 +1471,6 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
             MSG_BOX(" 현재 바꾸는 Client MakePth 관련 오브젝트는 Instance 를 지원하지 않습니다 Default Draw로  바꿔주세요 ");
         return S_OK;
     }
-
 
     default:                                            return S_OK;
     }
@@ -1669,16 +1733,90 @@ HRESULT CMapObject::Render_LandScape()
     return S_OK;
 }
 
+
+#pragma endregion
+
+#pragma region Plants
+
+HRESULT CMapObject::Render_Plants(_uint iPassIndex)
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
+    {
+
+        CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)         return E_FAIL;
+        CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)          return E_FAIL;
+        CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)      return E_FAIL;
+        /* 제일 앞에있는 친구의 Desc을 참고해서 해준다 모든애들을 가져올수없음 */
+        TREE_DESC* pTreeDesc = static_cast<TREE_DESC*>(m_vecClientMakePathDesc.front());    if (pTreeDesc == nullptr)       return E_FAIL;
+
+
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+        /* Client Make Path를 이용한다 */
+        pShader->Set_Pass(iPassIndex);
+
+
+        if (FAILED(Set_GPU_MapObjectState(pShader)))
+            return E_FAIL;
+
+
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Set_MI_TintColor(i, pTreeDesc->vMITint_Color);
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pShader->Apply();
+            pModel->Render(i);
+        }
+
+    }
+    else if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    {
+        CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)             return E_FAIL;
+        CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)              return E_FAIL;
+        CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)          return E_FAIL;
+        CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();                      if (pInstanceMesh == nullptr)       return E_FAIL;
+        TREE_DESC* pTreeDesc = static_cast<TREE_DESC*>(m_vecClientMakePathDesc.front());    if (pTreeDesc == nullptr)           return E_FAIL;
+
+        pShader->Get_Scalar("g_iSelectInstanceID")->SetRawValue(&m_iSelectedInstanceID, 0, sizeof(m_iSelectedInstanceID));
+        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+        _uint iInstanceCount = Get_InstanceCount();
+
+
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+
+        /* Client Make Path를 이용한다 */
+        pShader->Set_Pass(iPassIndex);
+
+
+        if (FAILED(Set_GPU_MapObjectState(pShader)))
+            return E_FAIL;
+
+        pInstanceMesh->Bind_Instance(1);
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Set_MI_TintColor(i, pTreeDesc->vMITint_Color);
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pShader->Apply();
+            pModel->Render_Instance(i, iInstanceCount);
+        }
+        pInstanceMesh->Unbind_Resource(1);
+    }
+    else
+        return E_FAIL;
+
+    return S_OK;
+}
 #pragma endregion
 
 #pragma region Grass
 
 HRESULT CMapObject::Render_Grass()
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        Render_Instance(ENUM_TO_UINT(EClientMakePath::StaticObject));
-    else
-        Render_Default(ENUM_TO_UINT(EClientMakePath::StaticObject));
+    if (FAILED(Render_Plants(ENUM_TO_UINT(EMapObjectShaderPass::Grass))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -1688,10 +1826,8 @@ HRESULT CMapObject::Render_Grass()
 
 HRESULT CMapObject::Render_Tree()
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Tree));
-    else
-        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Tree));
+    if (FAILED(Render_Plants(ENUM_TO_UINT(EMapObjectShaderPass::Tree))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -1700,10 +1836,8 @@ HRESULT CMapObject::Render_Tree()
 #pragma region Moss
 HRESULT CMapObject::Render_Moss()
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Moss));
-    else
-        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Moss));
+    if (FAILED(Render_Plants(ENUM_TO_UINT(EMapObjectShaderPass::Moss))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -1712,10 +1846,8 @@ HRESULT CMapObject::Render_Moss()
 #pragma region Vine
 HRESULT CMapObject::Render_Vine()
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Vine));
-    else
-        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Vine));
+    if (FAILED(Render_Plants(ENUM_TO_UINT(EMapObjectShaderPass::Vine))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -1724,10 +1856,8 @@ HRESULT CMapObject::Render_Vine()
 #pragma region Bush
 HRESULT CMapObject::Render_Bush()
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Bush));
-    else
-        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Bush));
+    if (FAILED(Render_Plants(ENUM_TO_UINT(EMapObjectShaderPass::Bush))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -1748,10 +1878,142 @@ HRESULT CMapObject::Render_Rock()
 #pragma region Water
 HRESULT CMapObject::Render_Water()
 {
-    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Water));
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
+    {
+        CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)         return E_FAIL;
+        CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)          return E_FAIL;
+        CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)      return E_FAIL;
+        WATER_DESC* pDesc = static_cast<WATER_DESC*>(m_vecClientMakePathDesc.front());      if (pDesc == nullptr)           return E_FAIL;
+        
+
+        /* Water CB 가져오기 */
+        ID3DX11EffectConstantBuffer* pCB = pShader->Get_ConstantBuffer(g_szCB_WaterData);
+        if (!pCB->IsValid())
+        {
+            MSG_BOX("Water CB 생성 실패");
+            return E_FAIL;
+        }
+
+        if (m_fDT >= 1000.f)        /* 일정값 이상 넘어가면 다시재생 */
+            m_fDT = 0.f;
+        CB_WaterData tData{};
+        tData.g_fWaterDT = m_fDT;
+        tData.g_WaterTexBindingFlags = 0;
+        tData.g_vWaterSpeed1 = pDesc->vSpeed1;
+        tData.g_vWaterSpeed2 = pDesc->vSpeed2;
+
+        array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EWaterTextureType::END)>  arraySRVs;
+        arraySRVs.fill(nullptr);
+
+        /* Water Texture Binding */
+        for (_uint i = 0; i < ENUM_TO_UINT(EWaterTextureType::END); ++i)
+        {
+            /* Texture가 바인딩 되어있다면 */
+            if (pDesc->arrayTextureBase[i])
+            {
+                arraySRVs[i] = pDesc->arrayTextureBase[i]->Get_SRV();
+                Engine_Utils::Add_Flag(tData.g_WaterTexBindingFlags, 1 << i); //걍써
+            }
+        }
+
+        pCB->SetRawValue(&tData,0,sizeof(CB_WaterData));
+
+        pShader->Get_SRV(g_szWaterTexture)->SetResourceArray(&arraySRVs[0] , 0 , ENUM_TO_UINT(EWaterTextureType::END) );
+
+        /* 월드 매트릭스 바인딩 */
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+
+        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+        /* Client Make Path를 이용한다 */
+        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Water));
+
+        /* MapObject State 바인딩 */
+        if (FAILED(Set_GPU_MapObjectState(pShader)))
+            return E_FAIL;
+
+        /* Render 호출 */
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Set_MI_TintColor(i,pDesc->vMI_TintColor);
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pShader->Apply();
+            pModel->Render(i);
+        }
+    }
+
+    else if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    {
+        CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)             return E_FAIL;
+        CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)              return E_FAIL;
+        CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)          return E_FAIL;
+        CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();                      if (pInstanceMesh == nullptr)       return E_FAIL;
+        WATER_DESC* pDesc = static_cast<WATER_DESC*>(m_vecClientMakePathDesc.front());      if (pDesc == nullptr)               return E_FAIL;
+
+
+        /* Water CB 가져오기 */
+        ID3DX11EffectConstantBuffer* pCB = pShader->Get_ConstantBuffer(g_szCB_WaterData);
+        if (!pCB->IsValid())
+        {
+            MSG_BOX("Water CB 생성 실패");
+            return E_FAIL;
+        }
+
+
+        if (m_fDT >= 1000.f)        /* 일정값 이상 넘어가면 다시재생 */
+            m_fDT = 0.f;
+
+        CB_WaterData tData{};
+        tData.g_fWaterDT = m_fDT;
+        tData.g_WaterTexBindingFlags = 0;
+
+        array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EWaterTextureType::END)>  arraySRVs;
+        arraySRVs.fill(nullptr);
+
+        /* Water Texture Binding */
+        for (_uint i = 0; i < ENUM_TO_UINT(EWaterTextureType::END); ++i)
+        {
+            /* Texture가 바인딩 되어있다면 */
+            if (pDesc->arrayTextureBase[i])
+            {
+                arraySRVs[i] = pDesc->arrayTextureBase[i]->Get_SRV();
+                Engine_Utils::Add_Flag(tData.g_WaterTexBindingFlags, 1 << i); //걍써
+            }
+        }
+        pCB->SetRawValue(&tData, 0, sizeof(CB_WaterData));
+
+        pShader->Get_SRV(g_szWaterTexture)->SetResourceArray(&arraySRVs[0], 0, ENUM_TO_UINT(EWaterTextureType::END));
+
+        /* 월드 매트릭스 바인딩 */
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+
+        pShader->Get_Scalar("g_iSelectInstanceID")->SetRawValue(&m_iSelectedInstanceID, 0, sizeof(m_iSelectedInstanceID));
+        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+        _uint iInstanceCount = Get_InstanceCount();
+
+
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+
+        /* Client Make Path를 이용한다 */
+        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Water));
+
+        if (FAILED(Set_GPU_MapObjectState(pShader)))
+            return E_FAIL;
+
+        pInstanceMesh->Bind_Instance(1);
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Set_MI_TintColor(i, pDesc->vMI_TintColor);
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pShader->Apply();
+            pModel->Render_Instance(i, iInstanceCount);
+        }
+        pInstanceMesh->Unbind_Resource(1);
+    }
     else
-        Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Water));
+        return E_FAIL;
 
     return S_OK;
 }
@@ -1857,6 +2119,8 @@ HRESULT CMapObject::Render_TriggerBox_MonsterSpawner()
     
     CShader* pShader = Get_Component<CShader>();
     if (pShader == nullptr) return E_FAIL;
+
+    Set_GPU_MapObjectState(pShader);
 
     for (auto& SpawnMonsterData : pDesc->vecMonsterSpawnData)
     {

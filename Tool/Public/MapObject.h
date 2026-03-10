@@ -58,6 +58,7 @@ public:
 
 		/* 현재 MapObject의 상태를 나타내준다 EState 등등 */
 		CMapObject::EState					eState{CMapObject::EState::Default};
+
 	}MAPOBJECT_DESC;
 
 protected:
@@ -80,10 +81,13 @@ public:
 	HRESULT								Ready_PlusData_ByClientMakePath();
 
 public:
+	HRESULT								Ready_Plants();
 	HRESULT								Ready_Batch_Player();
 	HRESULT								Ready_Batch_Monster();
 	HRESULT								Ready_Batch_Object();
 	HRESULT								Ready_TriggerBox_MonsterSpawner();
+
+	HRESULT								Ready_Water();
 
 
 	HRESULT								Ready_InvisibleWall();
@@ -105,7 +109,6 @@ public:
 	void								Update_InstanceWorldMatrix(_bool isAllUpdate , _int iIndex = -1);
 	void								Update_Bounds(_uint iIndex);
 	void								Update_Collider();
-
 public:
 	virtual bool						Get_SRT(OUT  Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)override;
 	virtual Matrix						Get_WorldMatrix()override;
@@ -163,6 +166,8 @@ public:
 
 	wstring								Get_ModelPath()				const	{ return m_wstrModelPath; }
 
+	const USING_MODEL_INFO& Get_UsingModelInfo()					const { return m_tUsingModelInfo; }
+
 	/* Override Mtl 관련 */
 	bool								Get_IsUseOverrideMtl()		const	{ return m_isUseOverrideMaterials; }
 	vector<CMaterial*>					Get_OverrideMtls()			const	{ return m_vecOverrideMaterials; }
@@ -184,8 +189,8 @@ public:
 	virtual HRESULT						Render()										override;
 	virtual void						Draw_ImGui()									override;		
 
+	HRESULT								Set_GPU_BeforeRender(CShader* pShader);
 	HRESULT								Set_GPU_MapObjectState(CShader* pShader);
-
 public:
 	_bool								IntsersectWithPlane(OUT Vec3& vOut, const Vec3& vLocalCamPos);
 	_bool								Picking(OUT Vec3& vOut);
@@ -193,19 +198,23 @@ public:
 private:
 	HRESULT								Check_DrawType_ByClientPath();
 public:
+
 #pragma region Render 함수 모음
+
 	HRESULT								Render_MapObject();
 	HRESULT								Render_StaticObject();
 	HRESULT								Render_LandScape();
+
+	HRESULT								Render_Plants(_uint iPassIndex);
+
 	HRESULT								Render_Grass();
 	HRESULT								Render_Tree();
 	HRESULT								Render_Moss();
 	HRESULT								Render_Vine();
 	HRESULT								Render_Bush();
 	HRESULT								Render_Rock();
+
 	HRESULT								Render_Water();
-
-
 
 	HRESULT								Render_Batch_Player();
 	HRESULT								Render_Batch_Monster();
@@ -269,10 +278,13 @@ protected:
 
 
 
+	tagUsingModelInfo					m_tUsingModelInfo{};
+
+
+	_float								m_fDT{};
 
 	/* Instance Draw 컬링용 Min Max들고있기 */
 	Vec3								m_vInstanceWorldMinMax[2]{ Vec3(FLT_MAX,FLT_MAX,FLT_MAX) , Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX)};
-
 
 public:
 	static CMapObject*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

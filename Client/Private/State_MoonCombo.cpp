@@ -73,6 +73,8 @@ HRESULT CState_MoonCombo::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	m_bShakeActived = false;
+
 	return S_OK;
 }
 

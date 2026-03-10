@@ -97,6 +97,8 @@ HRESULT CGenericUI::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
+	m_vMoveOffsetBase = m_vMoveOffset;
+
 	return S_OK;
 }
 
@@ -105,7 +107,6 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	m_vMoveOffsetBase = m_vMoveOffset;
 	m_fBrightness = 1.f;
 	m_iInteractState = static_cast<uint32_t>(EUIInteract_Flag::NONE);
 
@@ -244,6 +245,7 @@ void CGenericUI::Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTarg
 	m_fLerpMove_TimeAcc = 0.f;
 	m_fLerpMove_DelayTimeAcc = 0.f;
 
+	m_vMoveOffset = vStartOffset;
 	m_vLerpMove_StartOffset	= vStartOffset;
 	m_vLerpMove_TargetOffset = vTargetOffset;
 	m_fLerpMove_Duration = fDuration;

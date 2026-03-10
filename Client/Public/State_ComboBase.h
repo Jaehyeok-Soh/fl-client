@@ -37,6 +37,10 @@ protected:
 	_uint		m_iComboCount	= { 1 };
 
 protected:
+	// TODO - 애니메이션 툴로 빼야함
+	_bool m_bShakeActived{ false };
+
+protected:
 	virtual _bool Can_CheckKey(const _float fTimeDelta) override;;
 
 protected:

@@ -3,6 +3,7 @@
 
 #include "CameraMan.h"
 #include "PhysicsAttackRaycast.h"
+#include "Client_EventDefine.h"
 #include "Player.h"
 
 #include "GameInstance.h"
@@ -47,7 +48,7 @@ HRESULT CGun::Initialize(void* pArg)
 	m_tFireTimeCounter.bCountTime	= false;
 	m_tFireTimeCounter.bTimeReset	= true;
 	m_tFireTimeCounter.fMaxTime		= pDesc->fAttackCoolTime;
-	m_tFireTimeCounter.fTimeAcc = pDesc->fAttackCoolTime; // 처음에 바로 쏠 수 있도록 하기 위함
+	m_tFireTimeCounter.fTimeAcc		= m_tFireTimeCounter.fMaxTime * 0.5f; // 처음에 바로 쏠 수 있도록 하기 위함
 
 	return S_OK;
 }
@@ -123,6 +124,8 @@ void CGun::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObj
 	m_pGameInstance->Push_CollidedData(desc);
 
 	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+
+	m_pGameInstance->Broadcast<GUN_ON_HIT>();
 }
 
 void CGun::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)

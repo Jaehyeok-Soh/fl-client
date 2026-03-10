@@ -294,12 +294,6 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(Ready_Spawner()))
 		return E_FAIL;
 
-
-
-	/* Cinematic Data Load */
-	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
-		return E_FAIL;
-
 #pragma region Register Global Event
 	/////////////////////////////////////////
 	/////////// Ready GlobalEvent ///////////
@@ -307,6 +301,7 @@ HRESULT CLoader::Loading_For_Logo()
 	/* Global */
 	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
 	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
 
 	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
 	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
@@ -319,6 +314,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma endregion
 
+	/* Cinematic Data Load */
+	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
+		return E_FAIL;
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);

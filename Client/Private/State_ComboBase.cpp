@@ -118,6 +118,8 @@ void CState_ComboBase::Change_NextCombo()
 
 	m_TChargeCount.x = 0.f;
 
+	m_bShakeActived = false;
+
 	Request_ChangeAnimation(m_vecMainAnims[m_iComboCount], true, false, true);
 }
 
