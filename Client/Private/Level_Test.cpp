@@ -337,7 +337,11 @@ HRESULT CLevel_Test::Ready_Player_SkillObjPool()
 
 	// Moon skil Q attack
 	{
-		CMoon_SkillQAttack_Obj::GAMEOBJECT_DESC desc{};
+		CMoon_SkillQAttack_Obj::SKILLOBJECT_SPAWN_DESC desc{};
+		desc.fSpeed = 50.f;
+		desc.fLifeTime = 12.5f;
+		desc.iFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+
 		if (FAILED(m_pGameInstance->Regist_Pool(
 			0,
 			g_wszPool_MoonSkillQAttack,

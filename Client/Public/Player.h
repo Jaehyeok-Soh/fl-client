@@ -147,6 +147,7 @@ private:
 	HRESULT Ready_HitStates();
 	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT Ready_Components(PLAYER_DESC* pDesc);
+	HRESULT Ready_PartCollider();
 
 private:
 	void Count_DoubleJump(const _float fTimeDelta);

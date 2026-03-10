@@ -1264,6 +1264,11 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
     return S_OK;
 }
 
+HRESULT CPlayer::Ready_PartCollider()
+{
+    return S_OK;
+}
+
 void CPlayer::Count_DoubleJump(const _float fTimeDelta)
 {
     // count time¿Ã ¥Ÿ √°¥Ÿ∏È
