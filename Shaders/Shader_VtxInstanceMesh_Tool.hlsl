@@ -60,6 +60,8 @@ cbuffer CB_WaterData
     float2 g_vSparkleUVPower; // 8 Byte (윤슬 자글자글함 크기 조절!)  
 };
 
+Texture2D g_WaterTexture[MAX_WATER_TEXTURE_COUNT];
+
 
 uint g_iMapObject_State = {0};
 int g_iSelectInstanceID = { -1 };
@@ -73,15 +75,6 @@ cbuffer CB_DiscardColor
     float4 g_vDiscardColor;
 };
 
-
-
-Texture2D g_WaterTexture[MAX_WATER_TEXTURE_COUNT];
-cbuffer CB_WaterData
-{
-    uint g_WaterTexBindingFlags;
-    float g_fWaterDT = 0.f; // 움직이는 UV좌표를 위한 DT값
-    float2 g_fWaterpadding; // 8 byte (16바이트를 맞추기 위한 패딩)
-};
 
 
 float4 Get_Modified_Diffuse(float4 vOriginDiffuse, int iCurInstanceID)

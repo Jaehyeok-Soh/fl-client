@@ -633,7 +633,7 @@ technique11 T0
 
     // 환경요소
 	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_Default, BS_AlphaBlend , VS_MAIN, PS_WATER)
+	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_ReadOnly, BS_AlphaBlend , VS_MAIN, PS_WATER)
 
     // RGB mapping : weapon 쪽에서 쓰임
 	PASS_RS_DS_BS_VP(RGBMapping, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING) 
