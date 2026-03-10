@@ -39,6 +39,7 @@ public:
 		GUN,
 		SWORD2,
 		EFFECT,
+		CLOAK,
 		END
 	};
 

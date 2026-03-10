@@ -46,12 +46,14 @@ HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 		vLook.Normalize();
 		vUp.Normalize();
 
-		Vec3 vDir = vLook + (vUp * (-1.5f));
-		vDir.Normalize();
+		//Vec3 vDir = vLook + (vUp * (-1.5f));
+		//vDir.Normalize();
 
-		Vec3 accelation = vDir * 50.f;
+		Vec3 vDir = vLook - vUp * 2.f;
 
-		SetCCTImpuls(accelation);
+		//Vec3 accelation = vDir * 50.f;
+
+		SetCCTImpuls(vDir * 20.f);
 		Set_ZeroDeAccelRate();
 	}
 
@@ -61,6 +63,22 @@ HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 void CState_JumpAttStart::Update(const _float fTimeDelta)
 {
 	CStateBase::Update(fTimeDelta);
+
+	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+
+	Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+	Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
+
+	vLook.Normalize();
+	vUp.Normalize();
+
+	//Vec3 vDir = vLook + (vUp * (-1.5f));
+	//vDir.Normalize();
+
+	Vec3 vDir = vLook - vUp * 3.f;
+
+	Move(vDir);
 
 	// 벽이랑 충돌했는지 먼저 검사
 	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES) ||

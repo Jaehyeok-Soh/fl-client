@@ -7,6 +7,7 @@
 CBush::CBush(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CPlants(pDevice ,pDeviceContext)
 {
+	m_ePlantsType = CPlants::Type::Bush;
 }
 
 CBush::CBush(const CBush& rhs)
@@ -70,17 +71,8 @@ void CBush::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CBush::Render()
 {
-	if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-	{
-		if (FAILED(CMapObject::Render_Default(ENUM_TO_UINT(DTO::EClientMakePath::Bush))))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(CMapObject::Render_Default(ENUM_TO_UINT(DTO::EClientMakePath::Bush))))
-			return E_FAIL;
-	}
-
+	if(FAILED(Super::Render_Plnats(ENUM_TO_UINT(EMapObjectShaderPass::Bush))))
+		return E_FAIL;
 
 	return S_OK;
 }

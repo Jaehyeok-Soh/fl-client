@@ -142,6 +142,7 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	return S_OK;
 }
 
+#pragma region Create StaticObject
 HRESULT CBuilder_Map::Create_StaticObject(const DTO::TMap_MapObjectData& tData)
 {
 	CStaticObject::STATICOBJECT_DESC tStaticObjectDesc{};
@@ -150,7 +151,9 @@ HRESULT CBuilder_Map::Create_StaticObject(const DTO::TMap_MapObjectData& tData)
 	tStaticObjectDesc.isUELoaded		 = tData.isUELoaded;
 	tStaticObjectDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tStaticObjectDesc.wstrModelPath		 = Engine_Utils::ToWString(tData.strModelPath);
-	tStaticObjectDesc.iSectionNum		= tData.iSectionNum;
+	tStaticObjectDesc.iSectionNum		 = tData.iSectionNum;
+	tStaticObjectDesc.eClientMakePath	 = tData.eClientMakePath;
+
 
 	/* 여기서 Desc가 따로 필요한 객체라면 알잘딱 static_cast로 부여받기 */
 
@@ -165,6 +168,9 @@ HRESULT CBuilder_Map::Create_StaticObject(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+#pragma endregion
+
+#pragma region Create LandScape
 HRESULT CBuilder_Map::Create_LandScape(const DTO::TMap_MapObjectData& tData)
 {
 	CLandScape::LANDSCAPE_DESC tLandSapceDesc{};
@@ -174,6 +180,7 @@ HRESULT CBuilder_Map::Create_LandScape(const DTO::TMap_MapObjectData& tData)
 	tLandSapceDesc.eMapObjectDrawType	= static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tLandSapceDesc.wstrModelPath		= Engine_Utils::ToWString(tData.strModelPath);
 	tLandSapceDesc.iSectionNum			= tData.iSectionNum;
+	tLandSapceDesc.eClientMakePath		= tData.eClientMakePath;
 
 	/* Land Scape 는 Instance Draw Type 불가능  */
 	if (tLandSapceDesc.eMapObjectDrawType == EMapObject_DrawType::Instance)
@@ -202,143 +209,211 @@ HRESULT CBuilder_Map::Create_LandScape(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+#pragma endregion
+
+#pragma region Create Bush
 HRESULT CBuilder_Map::Create_Bush(const DTO::TMap_MapObjectData& tData)
 {
-	CBush::BUSH_DESC tBush_Desc{};
+	CBush::BUSH_DESC tDesc{};
 
-	tBush_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-	tBush_Desc.isUELoaded = tData.isUELoaded;
-	tBush_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
-	tBush_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
-	tBush_Desc.iSectionNum = tData.iSectionNum;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
+	
+	
 
 	/* SRT DATA */
 	for (auto& SRT_DATA : tData.vecSRTs)
 	{
-		tBush_Desc.vecSRT.push_back(SRT_DATA);
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+	if (!tData.vecClientMakePathDesc.empty())
+	{
+		/* Plants  */
+		PLANTS_DESC* pFrontDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
+		tDesc.vMI_TintColor = pFrontDesc->vMITint_Color;
 	}
 
 
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszBush_Prototype_Tag ,
-		tBush_Desc.iLevelIndex, g_wszStaticObjectLayer, &tBush_Desc);
+		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
 
 	return S_OK;
 }
+#pragma endregion
+
+#pragma region Create Grass
 HRESULT CBuilder_Map::Create_Grass(const DTO::TMap_MapObjectData& tData)
 {
-	CGrass::GRASS_DESC tGrass_Desc{};
+	CGrass::GRASS_DESC tDesc{};
 
-	tGrass_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-	tGrass_Desc.isUELoaded = tData.isUELoaded;
-	tGrass_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
-	tGrass_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
-	tGrass_Desc.iSectionNum = tData.iSectionNum;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
+
 
 	/* SRT DATA */
 	for (auto& SRT_DATA : tData.vecSRTs)
 	{
-		tGrass_Desc.vecSRT.push_back(SRT_DATA);
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+	if (!tData.vecClientMakePathDesc.empty())
+	{
+		/* Plants  */
+		PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
+		tDesc.vMI_TintColor = pDesc->vMITint_Color;
 	}
 
 
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszGrass_Prototype_Tag ,
-		tGrass_Desc.iLevelIndex, g_wszStaticObjectLayer, &tGrass_Desc);
+		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
 
 	return S_OK;
 }
+#pragma endregion
+
+#pragma region Create Moss
 HRESULT CBuilder_Map::Create_Moss(const DTO::TMap_MapObjectData& tData)
 {
 
-	CGrass::GRASS_DESC tMoss_Desc{};
+	CGrass::GRASS_DESC tDesc{};
 
-	tMoss_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-	tMoss_Desc.isUELoaded = tData.isUELoaded;
-	tMoss_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
-	tMoss_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
-	tMoss_Desc.iSectionNum = tData.iSectionNum;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
+
 
 	/* SRT DATA */
 	for (auto& SRT_DATA : tData.vecSRTs)
 	{
-		tMoss_Desc.vecSRT.push_back(SRT_DATA);
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+	if (!tData.vecClientMakePathDesc.empty())
+	{
+		/* Plants  */
+		PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
+		tDesc.vMI_TintColor = pDesc->vMITint_Color;
 	}
 
 
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszMoss_Prototype_Tag ,
-		tMoss_Desc.iLevelIndex, g_wszStaticObjectLayer, &tMoss_Desc);
+		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
 
 	return S_OK;
 
 }
+#pragma endregion
+
+#pragma region Create Tree
 HRESULT CBuilder_Map::Create_Tree(const DTO::TMap_MapObjectData& tData)
 {
-	CTree::TREE_DESC tTree_Desc{};
+	CTree::TREE_DESC tDesc{};
 
-	tTree_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-	tTree_Desc.isUELoaded = tData.isUELoaded;
-	tTree_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
-	tTree_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
-	tTree_Desc.iSectionNum = tData.iSectionNum;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
+
 
 	for (auto& SRT_DATA : tData.vecSRTs)
 	{
-		tTree_Desc.vecSRT.push_back(SRT_DATA);
+		tDesc.vecSRT.push_back(SRT_DATA);
 	}
 
+	if (!tData.vecClientMakePathDesc.empty())
+	{
+		/* Plants  */
+		PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
+		tDesc.vMI_TintColor = pDesc->vMITint_Color;
+	}
 
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszTree_Prototype_Tag ,
-		tTree_Desc.iLevelIndex, g_wszStaticObjectLayer, &tTree_Desc);
+		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
 
 	return S_OK;
 }
+#pragma endregion
+
+#pragma region Create Vine
 HRESULT CBuilder_Map::Create_Vine(const DTO::TMap_MapObjectData& tData)
 {
-	CVine::VINE_DESC tVine_Desc{};
+	CVine::VINE_DESC tDesc{};
 
-	tVine_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-	tVine_Desc.isUELoaded = tData.isUELoaded;
-	tVine_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
-	tVine_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
-	tVine_Desc.iSectionNum = tData.iSectionNum;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
 
 	for (auto& SRT_DATA : tData.vecSRTs)
 	{
-		tVine_Desc.vecSRT.push_back(SRT_DATA);
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+
+	if (!tData.vecClientMakePathDesc.empty())
+	{
+		/* Plants  */
+		PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
+		tDesc.vMI_TintColor = pDesc->vMITint_Color;
 	}
 
 
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC),g_wszVine_Prototype_Tag ,
-		tVine_Desc.iLevelIndex, g_wszStaticObjectLayer, &tVine_Desc);
+		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
 
 	return S_OK;
 }
+#pragma endregion
+
+#pragma region Create Water
 HRESULT CBuilder_Map::Create_Water(const DTO::TMap_MapObjectData& tData)
 {
-	CVine::VINE_DESC tWater_Desc{};
+	CWater::WATER_DESC tDesc{};
 
-	tWater_Desc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);;
-	tWater_Desc.isUELoaded = tData.isUELoaded;
-	tWater_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
-	tWater_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
-	tWater_Desc.iSectionNum = tData.iSectionNum;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);;
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
+
 
 	for (auto& SRT_DATA : tData.vecSRTs)
 	{
-		tWater_Desc.vecSRT.push_back(SRT_DATA);
+		tDesc.vecSRT.push_back(SRT_DATA);
 	}
 
 
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszWater_Prototype_Tag ,
-		tWater_Desc.iLevelIndex, g_wszStaticObjectLayer, &tWater_Desc);
+		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
 
 	return S_OK;
 }
+#pragma endregion
+
+#pragma region Create Rock
 HRESULT CBuilder_Map::Create_Rock(const DTO::TMap_MapObjectData& tData)
 {
 	CVine::VINE_DESC tRock_Desc{};
@@ -348,6 +423,7 @@ HRESULT CBuilder_Map::Create_Rock(const DTO::TMap_MapObjectData& tData)
 	tRock_Desc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
 	tRock_Desc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
 	tRock_Desc.iSectionNum = tData.iSectionNum;
+	tRock_Desc.eClientMakePath = tData.eClientMakePath;
 
 	for (auto& SRT_DATA : tData.vecSRTs)
 	{
@@ -361,6 +437,41 @@ HRESULT CBuilder_Map::Create_Rock(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+#pragma endregion
+
+#pragma region Create InvisibleWalll
+
+HRESULT CBuilder_Map::Create_InvisibleWall(const DTO::TMap_MapObjectData& tData)
+{
+	CInvisibleWall::INVISIBLEWALL_DESC tDesc{};
+
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
+
+	/* SRT DATA */
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+		g_wszInvisibleWall_Prototype_Tag, ENUM_TO_UINT(m_eLevelType),
+		g_wszInvisibleWallLayer, &tDesc);
+
+
+	return S_OK;
+}
+
+#pragma endregion
+
+
+
+#pragma region Batch Player
+
 HRESULT CBuilder_Map::Batch_Player(const DTO::TMap_MapObjectData& tData)
 {
 	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC),g_wszPlayerLayer);
@@ -385,6 +496,10 @@ HRESULT CBuilder_Map::Batch_Player(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+
+#pragma endregion
+
+#pragma region Batch Monster
 HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 {
 	/* Monster Type별로 Batch */
@@ -413,7 +528,9 @@ HRESULT CBuilder_Map::Batch_Monster(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+#pragma endregion
 
+#pragma region Batch Object
 HRESULT CBuilder_Map::Batch_Object(const DTO::TMap_MapObjectData& tData)
 {
 	/* Batch Object */
@@ -463,7 +580,12 @@ HRESULT CBuilder_Map::Batch_Object(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+#pragma endregion
 
+
+
+
+#pragma region TriggerBox ChangeLevel
 HRESULT CBuilder_Map::Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectData& tData)
 {
 	if (tData.vecSRTs.empty()) return E_FAIL;
@@ -489,6 +611,9 @@ HRESULT CBuilder_Map::Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectDat
 
 	return S_OK;
 }
+#pragma endregion
+
+#pragma region TriggerBox Monster Spawner
 HRESULT CBuilder_Map::Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObjectData& tData)
 {
 	if (tData.vecSRTs.empty()) return E_FAIL;
@@ -511,7 +636,9 @@ HRESULT CBuilder_Map::Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObject
 	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszTriggerBox_MonsterSapwner_Prototype_Tag , ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &pDesc);
 	return S_OK;
 }
+#pragma endregion
 
+#pragma region TriggerBox GlobalEvent BroadCaster
 HRESULT CBuilder_Map::Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_MapObjectData& tData)
 {
 	if (tData.vecSRTs.empty()) return E_FAIL;
@@ -543,30 +670,10 @@ HRESULT CBuilder_Map::Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_
 
 	return S_OK;
 }
+#pragma endregion
 
-HRESULT CBuilder_Map::Create_InvisibleWall(const DTO::TMap_MapObjectData& tData)
-{
-	CInvisibleWall::INVISIBLEWALL_DESC tDesc{};
 
-	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-	tDesc.isUELoaded = tData.isUELoaded;
-	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
-	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
-	tDesc.iSectionNum = tData.iSectionNum;
 
-	/* SRT DATA */
-	for (auto& SRT_DATA : tData.vecSRTs)
-	{
-		tDesc.vecSRT.push_back(SRT_DATA);
-	}
-
-	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-		g_wszInvisibleWall_Prototype_Tag, ENUM_TO_UINT(m_eLevelType),
-		g_wszInvisibleWallLayer, &tDesc);
-	
-
-	return S_OK;
-}
 
 EMonster_Type CBuilder_Map::Change_MakeMonsterType_To_MonsterType(DTO::EMakeMonsterType eMakeMonsterType)
 {

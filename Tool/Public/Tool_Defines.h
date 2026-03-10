@@ -314,7 +314,7 @@ namespace Tool
 	inline constexpr _char  g_szLandScape_TextureUV_RB		[]{ "g_LandScape_TextureUV_RB" };
 
 
-	inline constexpr _tchar g_wszMapTexture_Path			[]{L"../../Resources/Textures/Map/LandScape"};
+	inline constexpr _tchar g_wszMapTexture_Path			[]{L"../../Resources/Textures/Map"};
 	inline constexpr _char	g_szTexLandScape_Mix_RGB		[]{"g_TexLandScape_Mix_RGB" };
 	inline constexpr _char	g_szTexLandScape_Mix_RGBA		[]{"g_TexLandScape_Mix_RGBA" };
 
@@ -328,6 +328,11 @@ namespace Tool
 
 	inline constexpr _char	g_szCB_MIX_RGBA_INFO			[]{"CB_MIX_RGBA_INFO" };
 	inline constexpr _char	g_szUse_Mix_RGBA_Map_Count		[]{"g_iUse_Mix_RGBA_Count"};
+
+	inline constexpr _char	g_szCB_WaterData[]{ "CB_WaterData" };
+	inline constexpr _char	g_szWaterTexture[]{ "g_WaterTexture" };
+
+
 
 
 	inline constexpr _uint  Uint_NoneIndex{ 0xFFFFFFFF };
@@ -827,6 +832,15 @@ namespace Tool
 		NONE,
 		TUTORIAL_BOSS_CONTATCT,
 		TUTORIAL_BOSS_CONTATCT_END,
+
+		CINEMATIC_START,
+		CINEMATIC_END,
+		XIBILA_BOSS_ACTION_ON,
+		XIBILA_BOSS_ACTION_OFF,
+
+		XIBILA_BOSS_UI_ON,
+		XIBILA_BOSS_UI_OFF,
+
 		END,
 	};
 
@@ -835,8 +849,13 @@ namespace Tool
 		"NONE",
 		"TUTORIAL_BOSS_CONTATCT",
 		"TUTORIAL_BOSS_CONTATCT_END",
+		"CINEMATIC_START",
+		"CINEMATIC_END",
+		"XIBILA_BOSS_ACTION_ON",
+		"XIBILA_BOSS_ACTION_OFF",
+		"XIBILA_BOSS_UI_ON",
+		"XIBILA_BOSS_UI_OFF",
 	};
-
 	inline string Global_Broadcast_Type_ToString(EGlobal_Broadcast_Type eType)
 	{
 		// 인덱스 초과 방지 안전장치
@@ -845,7 +864,6 @@ namespace Tool
 
 		return "Unknown";
 	}
-
 	inline EGlobal_Broadcast_Type Global_Broadcast_Type_ToEnum(const string& strType)
 	{
 		for (int i = 0; i < (int)EGlobal_Broadcast_Type::END; ++i)

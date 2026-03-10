@@ -3,7 +3,6 @@
 
 #include "Player.h"
 #include "PlayerControlContext.h"
-#include "Engine_Utils.h"
 
 #include "GameInstance.h"
 
@@ -90,17 +89,7 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	m_tExtra_AttackDesc.vRandomAdd_MinMax = Vec2::Zero;
 	m_tExtra_AttackDesc.vRandomMul_MinMax = Vec2::Zero;
 
-
-	// critical 정보 처리 : test용으로 일단 무조건 criticla
-	if (m_fCriticalRate + m_fCirticalRate_Add >1.f ||
-	 m_fCriticalRate + m_fCirticalRate_Add <= m_pGameInstance->Rand_Float(0.f, 1.f))
-	{
-		m_tExtra_AttackDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
-
-		// critical은 일단 더하기로 하는걸로
-		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
-	}
-
+	// skill에서 set으로 값을 먼저 설정하고
 	// skill 이 켜져 있다면 안에서 값 수정 하도록 설정
 	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
 	{
@@ -112,6 +101,20 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 		m_pQSkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc,this);
 		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ);
 	}
+
+	// critical이나 다른 값들 그 다음에 추가 한다
+	// critical 정보 처리 : test용으로 일단 무조건 criticla
+	if (m_fCriticalRate + m_fCirticalRate_Add > 1.f ||
+		m_fCriticalRate + m_fCirticalRate_Add >= m_pGameInstance->Rand_Float(0.f, 1.f))
+	{
+		m_tExtra_AttackDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
+
+		// critical은 일단 더하기로 하는걸로
+		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
+	}
+
+	m_tExtra_AttackDesc.fRandomAdd_Rate += 0.3f;
+	m_tExtra_AttackDesc.vRandomAdd_MinMax = { -3.f,3.f };
 
 	// 연산 순서 : 우선은 stat 복사 생성시 desc으로 받도록 하자
 	// 좀 복잡해진다면 flag mask 검사후 order 지정

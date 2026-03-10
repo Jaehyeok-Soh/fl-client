@@ -42,7 +42,7 @@ public:
 	virtual HRESULT Render() override;
 public:
 	virtual void LoopStateChange(DTO::E_LoopState EState);
-	_bool IsEffectFinished() {return m_bIsEffectFinish;}
+	_bool IsEffectFinished() const { return m_bIsEffectFinish; }
 
 public:
 	virtual HRESULT Enable_VFX(void* pArg) PURE;

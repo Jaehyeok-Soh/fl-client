@@ -165,6 +165,7 @@
     <ClCompile Include="..\Private\ActionSkill.cpp" />
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
+    <ClCompile Include="..\Private\ColliderModule.cpp" />
     <ClCompile Include="..\Private\EffectBase.cpp" />
     <ClCompile Include="..\private\EffectHandler.cpp" />
     <ClCompile Include="..\Private\AsTypes.cpp" />
@@ -197,7 +198,7 @@
     <ClCompile Include="..\private\FxShaderVariant.cpp" />
     <ClCompile Include="..\Private\GameData_Struct.cpp" />
     <ClCompile Include="..\private\GimmikController.cpp" />
-    <ClCompile Include="..\Private\HybridGameObject_Base.cpp" />
+    <ClCompile Include="..\Private\HybridGameObjectBase.cpp" />
     <ClCompile Include="..\Private\InstanceMesh.cpp" />
     <ClCompile Include="..\Private\DataDocument_Effect.cpp" />
     <ClCompile Include="..\Private\Cell.cpp" />
@@ -301,9 +302,9 @@
     <ClCompile Include="..\private\ShaderAsset_Manager.cpp" />
     <ClCompile Include="..\private\SingleSkillSpawner.cpp" />
     <ClCompile Include="..\Private\SkillBase.cpp" />
+    <ClCompile Include="..\private\SkillObjectBase.cpp" />
     <ClCompile Include="..\private\SkillObjectSpawnerBase.cpp" />
     <ClCompile Include="..\private\SkillObjectSpawner_RandomXZ.cpp" />
-    <ClCompile Include="..\private\SkillObject_Base.cpp" />
     <ClCompile Include="..\Private\Sound_Manager.cpp" />
     <ClCompile Include="..\Private\MyStat.cpp" />
     <ClCompile Include="..\Private\StateBase.cpp" />
@@ -342,6 +343,7 @@
     <ClInclude Include="..\Public\ActionSkill.h" />
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
+    <ClInclude Include="..\Public\ColliderModule.h" />
     <ClInclude Include="..\public\EffectBase.h" />
     <ClInclude Include="..\Public\EffectHandler.h" />
     <ClInclude Include="..\Public\Anim_Event_AttackOverlap.h" />
@@ -377,7 +379,7 @@
     <ClInclude Include="..\public\FxShaderVariant.h" />
     <ClInclude Include="..\Public\GameData_Struct.h" />
     <ClInclude Include="..\public\GimmikController.h" />
-    <ClInclude Include="..\Public\HybridGameObject_Base.h" />
+    <ClInclude Include="..\Public\HybridGameObjectBase.h" />
     <ClInclude Include="..\Public\InstanceMesh.h" />
     <ClInclude Include="..\Public\ComputeShader.h" />
     <ClInclude Include="..\Public\DataDocument_Effect.h" />
@@ -480,9 +482,9 @@
     <ClInclude Include="..\public\ShaderAsset_Manager.h" />
     <ClInclude Include="..\public\SingleSkillSpawner.h" />
     <ClInclude Include="..\Public\SkillBase.h" />
+    <ClInclude Include="..\public\SkillObjectBase.h" />
     <ClInclude Include="..\public\SkillObjectSpawnerBase.h" />
     <ClInclude Include="..\public\SkillObjectSpawner_RandomXZ.h" />
-    <ClInclude Include="..\public\SkillObject_Base.h" />
     <ClInclude Include="..\Public\Sound_Manager.h" />
     <ClInclude Include="..\Public\MyStat.h" />
     <ClInclude Include="..\Public\StateBase.h" />

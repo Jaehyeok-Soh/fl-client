@@ -58,8 +58,7 @@
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
 #include "Moon_SkillE_Obj.h"
-#include "Hybrid_WarningSpace.h"
-
+#include "SkillWarningSpace.h"
 #include "PlayerSkillObj_Headers.h"
 
 //=================
@@ -151,11 +150,7 @@ void CLevel_Test::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
-	//if (KEY_BUTTON_DOWN(DIK_8))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}	
+
 	if (KEY_BUTTON_DOWN(DIK_4))
 	{
 		m_pGameInstance->Broadcast<CINEMATIC_START>();
@@ -180,6 +175,11 @@ void CLevel_Test::Update(const _float fTimeDelta)
 	{
 		m_pGameInstance->Broadcast<XIBILA_BOSS_UI_OFF>();
 	}
+	if (KEY_BUTTON_DOWN(DIK_0))
+	{
+		UI_PREFAB_DATA Desc = {};
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}	
 }
 
 HRESULT CLevel_Test::Render()
@@ -304,7 +304,7 @@ HRESULT CLevel_Test::Ready_Player_SkillObjPool()
 
 	// Moon skil E
 	{
-		CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+		CMoon_SkillE_Obj::GAMEOBJECT_DESC desc{};
 		//TRANSFORM_DESC
 		CTransform::TRANSFORM_DESC tTransDesc = {};
 		tTransDesc.fMovePerSec = 20.f;
@@ -337,7 +337,7 @@ HRESULT CLevel_Test::Ready_Player_SkillObjPool()
 
 	// Moon skil Q attack
 	{
-		CMoon_SkillQAttack_Obj::SKILLOBJECT_DESC desc{};
+		CMoon_SkillQAttack_Obj::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
 			0,
 			g_wszPool_MoonSkillQAttack,
@@ -731,17 +731,16 @@ HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
 }
 HRESULT CLevel_Test::Ready_HybridObject()
 {
-	wstring PoolTag = L"POOL_Hybrid_WarningSpace";
-	wstring LayTag = L"HybridObject_Layer";
-	wstring PrototypeTag = L"Prototype_GameObject_Hybrid_WarningSpace";
+	//wstring PoolTag = L"POOL_Hybrid_WarningSpace";
+	//wstring LayTag = L"HybridObject_Layer";
+	//wstring PrototypeTag = L"Prototype_GameObject_WarningSpace";
 
-	using HB = CHybrid_WarningSpace;
-	HB::Origin_HybridWarningDesc Desc = {};
+	//CSkillWarningSpace::HYBRID_DESC Desc = {};
 
-	Desc.m_ModuleEffect.push_back(std::make_pair(ENUM_TO_UINT(HB::EWarningState::WARNING), Engine_Utils::ToHash("WarningCircle2")));
-	Desc.m_ModuleEffect.push_back(std::make_pair(ENUM_TO_UINT(HB::EWarningState::EXPLOSION), Engine_Utils::ToHash("Boss_Xibi_Lightning_Oneshot")));
+	//Desc.m_ModuleEffect.push_back(std::make_pair(ENUM_TO_UINT(CSkillWarningSpace::EState::WARNING), Engine_Utils::ToHash("WarningCircle2")));
+	//Desc.m_ModuleEffect.push_back(std::make_pair(ENUM_TO_UINT(CSkillWarningSpace::EState::STRIKE), Engine_Utils::ToHash("Boss_Xibi_Lightning_Oneshot")));
 
-	m_pGameInstance->Regist_Pool((_uint)ELevelType::TEST, PoolTag, LayTag, 0, PrototypeTag, &Desc, 10);
+	//m_pGameInstance->Regist_Pool((_uint)ELevelType::TEST, PoolTag, LayTag, 0, PrototypeTag, &Desc, 10);
 
 	return S_OK;
 }
@@ -750,37 +749,25 @@ HRESULT CLevel_Test::Spawn_HybridObject()
 {
 	if (m_pGameInstance->KeyButton_Down(DIK_P))
 	{
-		using HB = CHybrid_WarningSpace;
 		wstring PoolTag = L"POOL_Hybrid_WarningSpace";
 
 		vector<EFFECT_WARNING_DESC>		m_DescList = {};
-		m_DescList.resize((_uint)HB::EWarningState::END);
+		m_DescList.resize(ENUM_TO_UINT(CSkillWarningSpace::EState::END));
 
-		// WARNING
-		{
-			EFFECT_WARNING_DESC Desc = {};
-			Desc.VFX_Target_Position = { 19.f, 17.f, 5.f };
-			Desc.VFX_Scale = { 4.f, 4.f, 4.f };
-			Desc.iSimulationType = (_uint)EFFECT_WARNING_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+		CSkillObjectBase::SKILLOBJECT_SPAWN_DESC desc{};
 
-			m_DescList[(_uint)HB::EWarningState::WARNING] = Desc;
-		}
+		desc.vSpawnPos = { 19.f, 17.f, 5.f };
+		desc.vScale = { 4.f, 4.f, 4.f };
+		desc.vDirection = { 0.f, 0.f, 1.f };
 
-		// EXPLOSION
-		{
-			EFFECT_WARNING_DESC Desc = {};
-			Desc.VFX_Target_Position = { 19.f, 17.f, 5.f };
-			Desc.VFX_Scale = { 1.f, 1.f, 1.f };
-			Desc.iSimulationType = (_uint)EFFECT_WARNING_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
-
-			m_DescList[(_uint)HB::EWarningState::EXPLOSION] = Desc;
-		}
+		desc.pRequester = nullptr;
+		desc.pTarget = nullptr;
 
 		m_pGameInstance->Request_AddObject(
 			m_pGameInstance->Get_CurrentLevelIndex(),
 			PoolTag,
 			m_pGameInstance->Get_CurrentLevelIndex(),
-			&m_DescList
+			&desc
 		);
 	}
 	return S_OK;

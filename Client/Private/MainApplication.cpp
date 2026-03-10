@@ -5,7 +5,6 @@
 #include "MaterialInstance.h"
 #include "VIBuffer_Rect_Color.h"
 #include "VIBuffer_Cube_Tex.h"
-#include "Engine_Utils.h"
 #include "Shader.h"
 #include "ComputeShader.h"
 #include "Character.h"
@@ -454,6 +453,11 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	// For. MaterialInstance_CourtBlue
 	if (FAILED(makeMaterialInstance(Vec4{ 0.16f, 0.22f, 0.52f, 1.f }, EMaterialInstanceType::CourtBlue)))
 		return E_FAIL;
+
+	// For. MaterialInstance_CourtBlue
+	if (FAILED(makeMaterialInstance(Vec4{1.f,1.f,1.f,1.f}, EMaterialInstanceType::Free)))
+		return E_FAIL;
+
 	//=================
 	// Physics Component
 	//=================

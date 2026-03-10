@@ -54,8 +54,8 @@ public:
 	}MODEL_ORIGIN_DESC;
 	typedef struct tagModelCopyDesc
 	{
-		std::span<const EMaterialInstanceType> spanMIs;
-		std::span<const _int> spanShaderPassesByMesh;
+		std::span<const EMaterialInstanceType>	spanMIs;
+		std::span<const _int>					spanShaderPassesByMesh;
 	}MODEL_COPY_DESC;
 
 	struct BONE_GROUP
@@ -214,10 +214,10 @@ public:
 	void								Set_ApplyRootMotionAll(_bool bRootApply);
 
 	void								Set_Animtion_MotionOffset_All(_float fOffset);
-
-	// materials funcs
 public:
-	HRESULT								Change_MI(_uint iIndex, const wstring& wstrMITag);
+	HRESULT								Set_MI_TintColor(_uint iIndex, const Vec4& vColor );
+public:
+	HRESULT								Change_MI(_uint iIndex, EMaterialInstanceType eChangeType );
 	HRESULT								Change_Material(_uint iIndex, const wstring& wstrMaterialTag);
 	HRESULT								Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass);
 

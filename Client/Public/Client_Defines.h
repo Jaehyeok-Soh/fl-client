@@ -28,7 +28,7 @@ namespace Client
 
 
 		TEST,				/* Test Scene은 맨 마지막 */
-		END					
+		END
 	};
 
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
@@ -55,6 +55,17 @@ namespace Client
 		return kNames[lv];
 	}
 #endif
+
+	enum class EGroggyState : unsigned int
+	{
+		None = 0,
+		Middle = 1 << 0,
+		Final = 1 << 1,
+		PartBreak_1 = 1 << 2,
+		PartBreak_2 = 1 << 3,
+		PartBreak_3 = 1 << 4,
+		PartBreak_4 = 1 << 5
+	};
 
 	enum class EDir : unsigned int
 	{
@@ -453,7 +464,8 @@ namespace Client
 		NORMAL = 0x000008,
 		CRITICAL = 0x000010,
 		SKILLE = 0x000020,
-		SKILLQ = 0x000040
+		SKILLQ = 0x000040,
+		GUN = 0x000080
 	};
 
 #pragma	endregion
@@ -571,6 +583,7 @@ namespace Client
 #pragma endregion
 
 #pragma region SkillObject 관련
+	inline constexpr wchar_t g_wszColliderModule_Prototype_Tag[]				{ L"Prototype_GameObject_ColliderModule" };
 	/* Xibi */
 	inline constexpr wchar_t g_wszXibiProjectile_Prototype_Tag[]				{ L"Prototype_GameObject_Xibi_CircleProjectile" };
 	inline constexpr wchar_t g_wszXibiLoopThunder_Prototype_Tag[]				{ L"Prototype_GameObject_Xibi_LoopThunder" };

@@ -558,6 +558,7 @@ HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 
     return S_OK;
 }
+
 HRESULT CEffectObject::Despawn_FromPool()
 {
     if (FAILED(Super::Despawn_FromPool()))
@@ -652,7 +653,7 @@ void CEffectObject::LoopState_Change(DTO::E_LoopState eState)
     case DTO::E_LoopState::LOOP_START:
     {
         // 얘는 상황보고 판단.
- /*       m_tEffectDesc.Data._Use_Effect_Continue = true;*/
+        /*m_tEffectDesc.Data._Use_Effect_Continue = true;*/
         /*m_tEffectDesc.Data._Effect_Looping = true;*/
         break;
     }

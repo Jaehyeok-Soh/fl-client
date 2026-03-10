@@ -2,7 +2,6 @@
 #include "ObjectDataBase.h"
 #include "DataEnum.h"
 #include "json_forward.h"
-#include "Engine_Utils.h"
 
 
 NS_BEGIN(DTO)
@@ -84,6 +83,7 @@ enum class EMakeTriggerBoxType
 };
 
 #pragma endregion
+
 NS_END
 
 NS_BEGIN(Engine)
@@ -167,6 +167,166 @@ public:
 };
 #pragma endregion
 
+#pragma region 식생 Plants 관련
+
+#pragma region Plants_Desc Base
+
+/* Plants 생성관련 Desc 작성 */
+struct PLANTS_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+	/* MI Free Type의 Color값을 바꿔줄 값 */
+	Vec4		vMITint_Color{ 1.f, 1.f ,1.f ,1.f };
+public:
+	PLANTS_DESC() 
+		: CLIENT_MAKEPATH_DESC_BASE(), vMITint_Color{1.f, 1.f ,1.f ,1.f}
+	{
+	}
+	PLANTS_DESC(const PLANTS_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs), vMITint_Color{rhs.vMITint_Color}
+	{
+
+	}
+	virtual ~PLANTS_DESC()
+	{
+
+	}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+
+#pragma region Tree
+struct TREE_DESC : public PLANTS_DESC
+{
+public:
+
+public:
+	TREE_DESC()
+		:PLANTS_DESC()
+	{
+
+	}
+	TREE_DESC(const TREE_DESC& rhs)
+		: PLANTS_DESC(rhs)
+	{
+
+	}
+	virtual ~TREE_DESC()
+	{
+	}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+#pragma endregion
+
+
+#pragma region Moss
+struct MOSS_DESC : public PLANTS_DESC
+{
+public:
+
+public:
+	MOSS_DESC()
+		:PLANTS_DESC()
+	{
+
+	}
+	MOSS_DESC(const MOSS_DESC& rhs)
+		: PLANTS_DESC(rhs)
+	{
+
+	}
+	virtual ~MOSS_DESC()
+	{
+	}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+#pragma endregion
+
+
+#pragma region Grass
+struct GRASS_DESC : public PLANTS_DESC
+{
+public:
+
+public:
+	GRASS_DESC()
+		:PLANTS_DESC()
+	{
+
+	}
+	GRASS_DESC(const GRASS_DESC& rhs)
+		: PLANTS_DESC(rhs)
+	{
+
+	}
+	virtual ~GRASS_DESC()
+	{
+	}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+#pragma endregion
+
+#pragma region Vine
+struct VINE_DESC : public PLANTS_DESC
+{
+public:
+
+public:
+	VINE_DESC()
+		:PLANTS_DESC()
+	{
+
+	}
+	VINE_DESC(const VINE_DESC& rhs)
+		: PLANTS_DESC(rhs)
+	{
+
+	}
+	virtual ~VINE_DESC()
+	{
+	}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+#pragma endregion
+
+
+#pragma region Bush
+struct BUSH_DESC : public PLANTS_DESC
+{
+public:
+
+public:
+	BUSH_DESC()
+		:PLANTS_DESC()
+	{
+
+	}
+	BUSH_DESC(const BUSH_DESC& rhs)
+		: PLANTS_DESC(rhs)
+	{
+
+	}
+	virtual ~BUSH_DESC()
+	{
+	}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+#pragma endregion
+
+#pragma endregion
+
+#pragma endregion
 
 #pragma region Batch 관련
 
@@ -197,11 +357,8 @@ public:
 
 #pragma endregion
 
-
 #pragma region Batch Object
 
-
-#pragma region Battle Field
 
 struct ENGINE_DLL BATCH_OBJECT_DESC_BASE
 {
@@ -214,6 +371,36 @@ public:
 	virtual void to_Json(json& SaveJson)			PURE;
 };
 
+inline BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType, BATCH_OBJECT_DESC_BASE* pBase = nullptr);
+
+
+struct ENGINE_DLL BATCH_OBJECT_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+	DTO::EMakeObjectType	eBatchObjectType{ DTO::EMakeObjectType::END };
+	BATCH_OBJECT_DESC_BASE* pBatchObjectDesc{ nullptr };
+public:
+	explicit BATCH_OBJECT_DESC()
+		: eBatchObjectType{ DTO::EMakeObjectType::END }, pBatchObjectDesc{ nullptr }
+	{
+		Change_BatchObjecType(DTO::EMakeObjectType::Battle_Field);
+	}
+	explicit BATCH_OBJECT_DESC(const BATCH_OBJECT_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs), eBatchObjectType{ rhs.eBatchObjectType }, pBatchObjectDesc{ nullptr }
+	{
+		this->pBatchObjectDesc = Make_BatchObject_Desc(this->eBatchObjectType, rhs.pBatchObjectDesc);
+		return;
+	}
+	virtual ~BATCH_OBJECT_DESC() { Safe_Delete(pBatchObjectDesc); }
+public:
+	void		 Change_BatchObjecType(DTO::EMakeObjectType eChangeType);
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+#pragma endregion
+
+#pragma region Battle Field
 
 struct ENGINE_DLL BATTLE_FIELD_DESC : BATCH_OBJECT_DESC_BASE
 {
@@ -258,7 +445,7 @@ public:
 };
 #pragma endregion
 
-inline BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType , BATCH_OBJECT_DESC_BASE* pBase = nullptr)
+BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType, BATCH_OBJECT_DESC_BASE* pBase)
 {
 	switch (eBatchObjectType)
 	{
@@ -269,34 +456,104 @@ inline BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatch
 	return nullptr;
 }
 
+#pragma endregion
 
-#pragma region Batch Object Desc
-struct ENGINE_DLL BATCH_OBJECT_DESC : public CLIENT_MAKEPATH_DESC_BASE
+
+
+#pragma region Water
+
+/* 나중에 Engine으로 옮길수도? Water관련 */
+enum class EWaterTextureType
 {
-	DTO::EMakeObjectType	eBatchObjectType{DTO::EMakeObjectType::END};
-	BATCH_OBJECT_DESC_BASE*	pBatchObjectDesc{nullptr};
-public:
-	explicit BATCH_OBJECT_DESC()
-		: eBatchObjectType{ DTO::EMakeObjectType::END }, pBatchObjectDesc{nullptr}
-	{
-		Change_BatchObjecType(DTO::EMakeObjectType::Battle_Field);
-	}
-	explicit BATCH_OBJECT_DESC(const BATCH_OBJECT_DESC& rhs)
-		: CLIENT_MAKEPATH_DESC_BASE(rhs), eBatchObjectType{ rhs.eBatchObjectType }, pBatchObjectDesc{ nullptr }
-	{
-		this->pBatchObjectDesc = Make_BatchObject_Desc(this->eBatchObjectType,rhs.pBatchObjectDesc);
-		return;
-	}
-	virtual ~BATCH_OBJECT_DESC() { Safe_Delete(pBatchObjectDesc);}
-public:
-	void		 Change_BatchObjecType(DTO::EMakeObjectType eChangeType);
-public:
-	virtual void from_Json(const json& LoadJson);
-	virtual void to_Json(json& SaveJson);
+	Normal1,			/* 기본적인 물 움직임 1 */
+	Normal2,			/* 기본적인 물 움직임 2*/
+	StarLight,		/* 추가 찰랑거림 */
+	Lighting,		/* 빛? */
+	Noise,			/* 노이즈 석기 */
+
+	/* Deco 최대 3개 */
+	Deco1_D,
+	Deco1_N,
+	Deco1_ORH,
+
+	Deco2_D,
+	Deco2_N,
+	Deco2_ORH,
+
+	Deco3_D,
+	Deco3_N,
+	Deco3_ORH,
+
+	END,
 };
 
+// 헤더 파일의 Enum 선언 바로 밑이나, cpp 파일 상단에 선언해 둡니다.
+static const char* g_szWaterTextureType[(int)EWaterTextureType::END] = {
+	"Normal1",
+	"Normal2",
+	"StarLight",
+	"Lighting",
+	"Noise",
+
+	"Deco1_D",
+	"Deco1_N",
+	"Deco1_ORH",
+
+	"Deco2_D",
+	"Deco2_N",
+	"Deco2_ORH",
+
+	"Deco3_D",
+	"Deco3_N",
+	"Deco3_ORH",
+};
+
+inline std::string WaterTextureType_ToString(EWaterTextureType eType)
+{
+	// 인덱스 초과 방지 안전장치
+	if (eType >= EWaterTextureType::Normal1 && eType < EWaterTextureType::END)
+		return g_szWaterTextureType[(int)eType];
+
+	return "Unknown";
+}
+
+inline EWaterTextureType WaterTextureType_ToEnum(const std::string& strType)
+{
+	for (int i = 0; i < (int)EWaterTextureType::END; ++i)
+	{
+		if (strType == g_szWaterTextureType[i])
+			return (EWaterTextureType)i;
+	}
+	return EWaterTextureType::END;
+}
+
+struct WATER_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+	/* Binding 시켜주고있을 TextureBase 슬롯  */
+	Vec4	vMI_TintColor{1.f,1.f,1.f,1.f};
+
+
+	std::array<class CTextureBase*, ENUM_TO_UINT(EWaterTextureType::END)>	arrayTextureBase{};
+	Vec2	vSpeed1{1.f,1.f};		/* 파동 2개 섞기 */
+	Vec2	vSpeed2{1.f,1.f};		/* 파동 2개 섞기 */
+
+public:
+	WATER_DESC()
+		: arrayTextureBase{}, vMI_TintColor{ 1.f,1.f,1.f,1.f }
+	{
+		arrayTextureBase.fill(nullptr);
+	}
+	WATER_DESC(const WATER_DESC& rhs);
+	virtual ~WATER_DESC();
+public:
+	virtual void from_Json(const json& LoadJson)	override;
+	virtual void to_Json(json& SaveJson)			override;
+};
 
 #pragma endregion
+
+
+
 
 #pragma region 
 
@@ -443,6 +700,7 @@ public:
 #pragma endregion
 
 #pragma endregion
+
 NS_END
 
 NS_BEGIN(DTO)

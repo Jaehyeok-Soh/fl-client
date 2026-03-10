@@ -80,7 +80,7 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	Get_Component<CPhysicsCCT>()->Ready_Position();
-
+	
 	return S_OK;
 }
 
@@ -256,7 +256,8 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 			//	m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
 			//}
 
-			/*else */if (hitDesc.attackDesc.iAttackerLayer == PHYSICSFILTERGROUP::ATTACK_PROJECTTILE)
+			/*else */if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+
 			{
 				m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
 			}
@@ -371,7 +372,6 @@ HRESULT CMonster_Base::Ready_EffectHandler(void* pArg)
 		return E_FAIL;
 
 	m_pEffectHandler = Get_Component<CEffectHandler>();
-
 	return S_OK;
 }
 

@@ -139,6 +139,14 @@ void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
 			}
 		}
 	}
+
+	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::PLAYER_DODGE)
+	{
+		m_fProgress_Ratio = 1.f - (m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fTimeAcc / m_fMaxCoolTime);
+
+		if (m_fProgress_Ratio >= 0.99f)
+			m_fProgress_Ratio = 0.f;
+	}
 }
 
 HRESULT CUISkill_BG::Ready_Components(SKILL_BG_DESC* pDesc)
@@ -201,16 +209,17 @@ HRESULT CUISkill_BG::Attach_Personal_Info()
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
 		m_fMaxCoolTime = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fMaxTime;
-		m_pGameInstance->Subscribe<PLAYER_SKILL_TRIGGERED>([this](_uint iKey)
-			{
-				if (static_cast<CStateBase_Player::STATEKEY>(iKey) == CStateBase_Player::STATEKEY::SHIFT)
-				{
-					this->Ready_Fade(0.2f, 0.f, 0.7f, m_fDelay);
-					this->m_isUsingSkill = true;
-					this->m_isSkillFlash = false;
-					this->m_fProgress_Ratio = 1.f;
-				}
-			});
+		m_fAlpha_Ratio = 0.7f;
+		//m_pGameInstance->Subscribe<PLAYER_SKILL_TRIGGERED>([this](_uint iKey)
+		//	{
+		//		if (static_cast<CStateBase_Player::STATEKEY>(iKey) == CStateBase_Player::STATEKEY::SHIFT)
+		//		{
+		//			this->Ready_Fade(0.2f, 0.f, 0.7f, m_fDelay);
+		//			this->m_isUsingSkill = true;
+		//			this->m_isSkillFlash = false;
+		//			this->m_fProgress_Ratio = 1.f;
+		//		}
+		//	});
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_SKILL_END:
 		break;

@@ -2,7 +2,6 @@
 #include "ShaderAsset_Manager.h"
 #include "FxEffectAsset.h"
 #include "FxShaderVariant.h"
-#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 std::size_t FxVariantKeyHasher::operator()(const FxVariantKey& key) const noexcept

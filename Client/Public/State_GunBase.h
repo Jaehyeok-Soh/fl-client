@@ -22,11 +22,11 @@ public:
 
 	enum KeyFlag : Flags
 	{
-		W = 0x00001
-		,S = 0x00002
-		,A = 0x00004
-		, D = 0x00008
-		,Space = 0x00010
+			W		= 0x00001
+		,	S		= 0x00002
+		,	A		= 0x00004
+		,	D		= 0x00008
+		,	Space	= 0x00010
 	};
 
 	enum KeyMask : Flags
@@ -35,10 +35,10 @@ public:
 
 		Mask_Jump = KeyFlag::Space,
 
-		Mask_F = KeyFlag::W,
-		Mask_B = KeyFlag::S,
-		Mask_L = KeyFlag::A,
-		Mask_R = KeyFlag::D,
+		Mask_F	= KeyFlag::W,
+		Mask_B	= KeyFlag::S,
+		Mask_L	= KeyFlag::A,
+		Mask_R	= KeyFlag::D,
 		Mask_LF = KeyFlag::W | KeyFlag::A,
 		Mask_LB = KeyFlag::S | KeyFlag::A,
 		Mask_RF = KeyFlag::W | KeyFlag::A,
@@ -103,9 +103,9 @@ protected:
 	void Jump_Update(const _float fTimeDelta);
 	void Fall_Update(const _float fTimeDelta);
 
-	_bool Change_MoveState(MoveState eState);
-	void Start_MoveState(MoveState eNextState);
-	void End_MoveState(MoveState ePreState);
+	_bool	Change_MoveState(MoveState eState);
+	void	Start_MoveState(MoveState eNextState);
+	void	End_MoveState(MoveState ePreState);
 
 	void GunEnd();
 
