@@ -467,11 +467,26 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma endregion
 
+#pragma region Env Texture Binding
+
+	////////////////////////////////////////////////////
+	////////// Ready Env TextureBinding Load ///////////
+	////////////////////////////////////////////////////
+
+	/* Water Texture Binding */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/Env/Water/")))
+		return E_FAIL;
+
+#pragma endregion
+
+
 #pragma region Texture Splating Data
 
 	///////////////////////////////////////////////////////
 	////////// Ready Texture Splating Data Load ///////////
 	///////////////////////////////////////////////////////
+
+
 
 	/* Texture Loading */
 
@@ -977,6 +992,8 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 		{
 			ext = entry.path().extension().wstring();
 			if (ext == L".ini")
+				continue;
+			if (ext == L".hdr")
 				continue;
 			wstrFileName = entry.path().filename().lexically_normal().stem();
 			CTextureBase::RESOURCE_BASE_DESC desc = {};

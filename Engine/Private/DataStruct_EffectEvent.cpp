@@ -87,6 +87,7 @@ HRESULT CDataStruct_EffectEvent::FromJson(const json& j) {
     }
     catch (const std::exception& e) {
         // 로드 실패 시 디버깅을 위해 에러 로그 출력 권장
+        const char* pText = e.what();
         return E_FAIL;
     }
     return S_OK;

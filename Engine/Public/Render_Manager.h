@@ -36,6 +36,7 @@ public:
 private:	
 	HRESULT Render_Priority();
 	HRESULT Render_NoneBlend();
+	HRESULT Render_ComputeLight_Blend();	/* Deffered에 들어갈 알파블렌딩 애들 */
 	HRESULT Render_SSAO();
 	HRESULT Render_Lights();
 	HRESULT Render_CombinedHDR();

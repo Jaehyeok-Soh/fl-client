@@ -187,6 +187,33 @@ namespace Client
 
 #pragma region MapObject
 
+
+	struct CB_WaterData
+	{
+		_uint  g_WaterTexBindingFlags{ 0 };								// Texture가 바인딩되었는지 안되어있는지 Flag값
+		float  g_fWaterDT{ 0.f };										// 움직이는 UV좌표를 위한 DT값
+		Vec2   g_vWaterSpeed1{ 1.f,1.f };								// 물 일렁임관련? Speed 값
+		Vec2   g_vWaterSpeed2{ 1.f,1.f };								// 물 일렁임관련? Speed 값
+		Vec2   g_vWaterDistortionSpeed{ 1.f, 1.f };                     // 
+
+		Vec2    g_vWaterUVPower{ 1.f, 1.f };
+		Vec2    g_vWaterDistortionUVPower{ 1.f, 1.f };                  // Noise Texture UV Tiling Power
+		float   g_fDistortionPower{ 1.f };								// Noise가 섞이는 비율? 세기
+
+		float   g_fSparklePower;                                        // 4 Byte (윤슬 눈뽕 강도!)
+		Vec2    g_vSparkleUVPower;                                      // 8 Byte (윤슬 자글자글함 크기 조절!)
+	};
+
+	struct CB_GrassData
+	{
+		_float	g_fGrassDT			{0.f};
+		_float	g_fGrassMaxHeight	{1.f};		//Model Min Max 중 Max의 Y값		
+		_float  g_fGrassSwaySpeed	{1.f};		//이 잔디가 Sway = 흔들리는 Speed		Tool에서 지정
+		_float  g_fGrassWaveSize	{1.f};		//이 잔디가 Power = 흔들리는 힘		Tool에서 지정
+	};
+
+
+
 	static ELevelType StringToClientleveltype(const _string& str)
 	{
 		if (::strcmp(str.c_str(), "STATIC") == 0)
@@ -682,8 +709,8 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
 	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
-}
 #pragma endregion
+}
 
 #pragma endregion
 

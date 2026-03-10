@@ -35,6 +35,7 @@ CMapToolManager::CMapToolManager()
 	, m_arrayMapObjectCloneFactory			{}
 	, m_umapMapTextures						{}
 	, m_mapTextureSplatingInfoDatas			{}
+	, m_tCB_EnvData{}
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
@@ -91,6 +92,9 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	if (FAILED(Set_GPU_DiscardColor()))
 		return E_FAIL;
 
+	if (FAILED(Set_GPU_EnvData()))
+		return E_FAIL;
+
 	if (FAILED(Register_MapObjectCloneFactory()))
 		return E_FAIL;
 
@@ -105,6 +109,7 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	if (FAILED(Update_Camera_Cinematic_Sequence_Names()))
 		return E_FAIL;
+
 
 
 	return S_OK;
@@ -1063,6 +1068,25 @@ HRESULT CMapToolManager::Export_SaveSceneData(DTO::ECategory eCategory, CDataDoc
 	if (m_pLevelData == nullptr) return E_FAIL;
 
 	m_pLevelData->Export_Data(eCategory , pDocument);
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Set_GPU_EnvData()
+{
+	if (m_pInstMesh_Shader == nullptr) return E_FAIL;
+	if (m_pMesh_Shader == nullptr) return E_FAIL;
+
+	HRESULT hr{E_FAIL};
+
+	ID3DX11EffectConstantBuffer* pCB = m_pInstMesh_Shader->Get_ConstantBuffer("CB_EnvData");
+	if (pCB->IsValid() == false) return E_FAIL;
+	hr = pCB->SetRawValue(&m_tCB_EnvData,0,sizeof(CB_EnvData));
+	
+
+	pCB = m_pMesh_Shader->Get_ConstantBuffer("CB_EnvData");
+	if (pCB->IsValid() == false) return E_FAIL;
+	hr = pCB->SetRawValue(&m_tCB_EnvData, 0, sizeof(CB_EnvData));
 
 	return S_OK;
 }
