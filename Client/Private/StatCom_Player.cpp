@@ -108,7 +108,7 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	if (m_fCriticalRate + m_fCirticalRate_Add > 1.f ||
 		m_fCriticalRate + m_fCirticalRate_Add >= m_pGameInstance->Rand_Float(0.f, 1.f))
 	{
-		m_tExtra_AttackDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
+		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
 
 		// critical은 일단 더하기로 하는걸로
 		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
@@ -125,6 +125,8 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	case CPlayer::PLAYER_TYPE::MOON:
 		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::MOON);
 		break;
+	default:
+		int a = 0;
 	}
 
 	return m_tExtra_AttackDesc;

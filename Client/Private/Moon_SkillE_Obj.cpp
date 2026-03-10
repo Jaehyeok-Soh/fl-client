@@ -96,7 +96,28 @@ void CMoon_SkillE_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLaye
 
 void CMoon_SkillE_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
+	{
+		Set_Dead();
+		return;
+	}
+
+	COLLIDED_DESC desc{};
+	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer = iMyColliderLayer;
+	desc.iOtherLayer = iOtherLayer;
+	desc.pRequester = this;
+	desc.pOther = pOther;
+	desc.tHitInfo = tHitInfo;
+
+	EXTRA_ATTACK_DESC tExtra = {};
+	{
+		tExtra.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::MOON) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE);
+
+		desc.tExtraDesc = tExtra;
+	}
+
+	m_pGameInstance->Push_CollidedData(desc);
 }
 
 _bool CMoon_SkillE_Obj::On_Hit(const HIT_DESC& hitDesc)
