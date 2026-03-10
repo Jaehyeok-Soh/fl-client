@@ -4,11 +4,53 @@
 
 #define CopicMask 0
 #define SecondNormal 1
+
+#define Water_Normal_1    0
+#define Water_Normal_2    1
+#define Water_StarLight   2   
+#define Water_Lighting    3
+#define Water_Noise       4
+
+#define Water_Deco1_D     5
+#define Water_Deco1_N     6
+#define Water_Deco1_ORH   7
+
+#define Water_Deco2_D     8
+#define Water_Deco2_N     9
+#define Water_Deco2_ORH   10
+
+#define Water_Deco3_D     11
+#define Water_Deco3_N     12
+#define Water_Deco3_ORH   13
+#define MAX_WATER_TEXTURE_COUNT 14
+
 bool HasCopickMask() { return (g_iGlobalMask & 1) != 0; }
 bool HasSecNormal() { return (g_iGlobalMask & 2) != 0; }
 
-/* CPU 에서 선택된 ID값을 판단해서 GPU에 보내준다 */ 
-int g_iSelectInstanceID = { -1 };
+
+Texture2D g_WaterTexture[MAX_WATER_TEXTURE_COUNT];
+cbuffer CB_WaterData
+{
+// --- Register 0 ---
+    uint g_WaterTexBindingFlags; // 4 Byte
+    float g_fWaterDT; // 4 Byte
+    float2 g_vWaterSpeed1; // 8 Byte
+    
+    // --- Register 1 ---
+    float2 g_vWaterSpeed2; // 8 Byte
+    float2 g_vWaterDistortionSpeed; // 8 Byte
+    
+    // --- Register 2 ---
+    float2 g_vWaterUVPower; // 8 Byte (잔물결 촘촘함 조절) 전체적인 UV Tile Power
+    float2 g_vWaterDistortionUVPower; // 8 Byte (노이즈 큼직함 조절) Noise UV Tile Power
+    
+    // --- Register 3 ---
+    float g_fDistortionPower; // 4 Byte (왜곡 강도)
+    
+    float g_fSparklePower; // 4 Byte (윤슬 눈뽕 강도!)
+    float2 g_vSparkleUVPower; // 8 Byte (윤슬 자글자글함 크기 조절!)
+    
+};
 
 VS_OUT_INST_MESH VS_MAIN(VS_IN_INST_MESH input)
 {
@@ -124,7 +166,7 @@ PS_OUT_DEFFERED PS_MOSS(PS_IN_INST_MESH input)
 
 PS_OUT_DEFFERED PS_VINE(PS_IN_INST_MESH input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED)0;
     
     float4 vDiffuse = 1.f;
     
@@ -229,6 +271,105 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_INST_MESH input)
 }
 
 
+PS_OUT_DEFFERED PS_WATER(PS_IN_INST_MESH input)
+{
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
+    
+    // 기본 Tile UV
+    float2 vTiledUV = input.vUV * g_vWaterUVPower;
+    
+    float4 vDiffuse = 1.f;
+    vDiffuse = MIDesc.vTintColor.rgba; //기본색깔 입히기
+
+    
+    bool bHasAnyNormal = false;
+    float3 vNormal = input.vNormal;
+    float3 vLocalNormal = float3(0.0f, 0.0f, 1.0f);
+
+    // Noise Texture 
+    float2 vDistortion = float2(0.f, 0.f);
+    float fDistortionPower = 0.f;
+    if (Has(g_WaterTexBindingFlags, Water_Noise))
+    {
+        float2 vDistortionTiledUV = input.vUV * g_vWaterDistortionUVPower;
+        float2 vDistortionUV = vDistortionTiledUV + float2(g_fWaterDT * g_vWaterDistortionSpeed.x, g_fWaterDT * g_vWaterDistortionSpeed.y);
+        vDistortion = g_WaterTexture[Water_Noise].Sample(LinearSampler, vDistortionUV).rg * 2.f - 1.f;
+        fDistortionPower = g_fDistortionPower;
+    }
+    
+    // 1. 물결 1 계산
+    if (Has(g_WaterTexBindingFlags, Water_Normal_1))
+    {
+        float2 uv1 = vTiledUV + float2(g_fWaterDT * g_vWaterSpeed1.x, g_fWaterDT * g_vWaterSpeed1.y);
+        uv1 += (vDistortion * fDistortionPower);
+
+        vLocalNormal = g_WaterTexture[Water_Normal_1].Sample(LinearSampler, uv1).xyz * 2.f - 1.f;
+        
+        bHasAnyNormal = true;
+    }
+    
+    // 2. 물결 2 계산 (Speed2, Normal_2, uv2 사용!)
+    if (Has(g_WaterTexBindingFlags, Water_Normal_2))
+    {
+        float2 uv2 = vTiledUV + float2(g_fWaterDT * g_vWaterSpeed2.x, g_fWaterDT * g_vWaterSpeed2.y);
+        uv2 += (vDistortion * fDistortionPower);
+        
+        
+        
+        float3 n2 = g_WaterTexture[Water_Normal_2].Sample(LinearSampler, uv2).xyz * 2.f - 1.f;
+        if (bHasAnyNormal)
+            vLocalNormal += n2; // 1번이 이미 있으면 벡터를 더해서 섞어준다!
+        else
+            vLocalNormal = n2; // 1번이 없으면 그냥 2번을 쓴다.
+                    
+        bHasAnyNormal = true;
+    }
+
+    // 3. 월드 노멀로 변환
+    if (bHasAnyNormal)
+    {
+        // 두 벡터를 더했으므로 길이가 1이 아닐 수 있음. 다시 정규화 필수!
+        vLocalNormal = normalize(vLocalNormal);
+        
+        // TBN 행렬 생성
+        float3x3 TBN = float3x3(normalize(input.vTangent), normalize(input.vBinormal), normalize(input.vNormal));
+        
+        // 로컬 노멀을 월드(또는 뷰) 노멀로 변환
+        vNormal = normalize(mul(vLocalNormal, TBN));
+    }
+    else
+    {
+        // 바인딩된 텍스처가 아무것도 없으면 기본 함수 사용
+        Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    }
+   
+    output.vDiffuse = vDiffuse;
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_WaterTexBindingFlags, Water_Lighting))
+    {
+        float2 vSparkleUV = input.vUV * g_vSparkleUVPower;
+        vSparkleUV += float2(g_fWaterDT * g_vWaterSpeed1.x, g_fWaterDT * g_vWaterSpeed1.y);
+        if (bHasAnyNormal)
+            vSparkleUV += (vLocalNormal.xy * 0.3f);
+        //vSparkleUV += (vDistortion * fDistortionPower);
+        float fSparkle = g_WaterTexture[Water_Lighting].Sample(LinearSampler, vSparkleUV).r;
+        
+        vSpecMask.g -= (fSparkle * g_fSparklePower);
+        vSpecMask.g = max(vSpecMask.g, 0.0f);
+    }
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    
+    return output;
+}
+
+
 technique11 T0
 {
 	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
@@ -244,8 +385,10 @@ technique11 T0
 
     // 환경요소
 	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_Default, BS_AlphaBlend, VS_MAIN, PS_WATER)
 
+    // RGB mapping : weapon 쪽에서 쓰임
+	PASS_RS_DS_BS_VP(RGBMapping, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 
     //EXT
     PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)

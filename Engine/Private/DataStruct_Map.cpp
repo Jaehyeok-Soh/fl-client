@@ -549,6 +549,13 @@ void BUSH_DESC::to_Json(json& SaveJson)
 
 WATER_DESC::WATER_DESC(const WATER_DESC& rhs)
 	: CLIENT_MAKEPATH_DESC_BASE(rhs), arrayTextureBase{ rhs.arrayTextureBase }, vMI_TintColor{rhs.vMI_TintColor}
+	, vSpeed1{ rhs.vSpeed1 }, vSpeed2{rhs.vSpeed2}
+	, vDistortionSpeed{rhs.vDistortionSpeed }
+	, fDistortionPower{rhs.fDistortionPower }
+	, vWaterUVPower{rhs.vWaterUVPower }
+	, vDistortionUVPower{rhs.vDistortionUVPower }
+	, vSparkleUVPower{rhs.vSparkleUVPower}
+	, fSparklePower{rhs.fSparklePower}
 {
 	for (auto& Tex : arrayTextureBase)
 		Safe_AddRef(Tex);
@@ -574,6 +581,36 @@ void WATER_DESC::from_Json(const json& LoadJson)
 	if (LoadJson.contains("Speed 2"))
 	{
 		Engine_Utils::read_vec2_xy(LoadJson["Speed 2"], this->vSpeed2);
+	}
+
+	if (LoadJson.contains("UV Power"))
+	{
+		Engine_Utils::read_vec2_xy(LoadJson["UV Power"], this->vWaterUVPower);
+	}
+
+	if (LoadJson.contains("Distortion UV Power"))
+	{
+		Engine_Utils::read_vec2_xy(LoadJson["Distortion UV Power"], this->vDistortionUVPower);
+	}
+
+	if (LoadJson.contains("Distortion Speed"))
+	{
+		Engine_Utils::read_vec2_xy(LoadJson["Distortion Speed"], this->vDistortionSpeed);
+	}
+
+	if (LoadJson.contains("Distortion Power"))
+	{
+		this->fDistortionPower = LoadJson["Distortion Power"];
+	}
+
+	if (LoadJson.contains("Sparkle UV Power"))
+	{
+		Engine_Utils::read_vec2_xy(LoadJson["Sparkle UV Power"], this->vSparkleUVPower);
+	}
+
+	if (LoadJson.contains("Sparkle Power"))
+	{
+		this->fSparklePower = LoadJson["Sparkle Power"];
 	}
 
 
@@ -610,6 +647,20 @@ void WATER_DESC::to_Json(json& SaveJson)
 	Engine_Utils::write_vec4_xyzw(SaveJson["Color"] , this->vMI_TintColor );
 	Engine_Utils::write_vec2_xy(SaveJson["Speed 1"],this->vSpeed1);
 	Engine_Utils::write_vec2_xy(SaveJson["Speed 2"],this->vSpeed2);
+
+	Engine_Utils::write_vec2_xy(SaveJson["UV Power"],this->vWaterUVPower);
+
+
+	Engine_Utils::write_vec2_xy(SaveJson["Distortion UV Power"],this->vDistortionUVPower);
+
+	Engine_Utils::write_vec2_xy(SaveJson["Distortion Speed"],this->vDistortionSpeed);
+
+
+	SaveJson["Distortion Power"] = this->fDistortionPower;
+
+	
+	Engine_Utils::write_vec2_xy(SaveJson["Sparkle UV Power"],this->vSparkleUVPower);
+	SaveJson["Sparkle Power"] = this->fSparklePower;
 
 	auto& Texture_SaveJson = SaveJson["Texture Names"];;
 

@@ -1205,7 +1205,16 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
     Super::Ready_Before_Render(fTimeDelta);
 
     // m_eMapObjectState == CMapObject::EState::Select ?  RENDER_CATEGORY::NONELIGHT : 
-    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+
+    RENDER_CATEGORY eCategroy = RENDER_CATEGORY::NONEBLEND;
+
+    switch (m_eClientMakePath)
+    {
+    case Tool::EClientMakePath::Water:  eCategroy = RENDER_CATEGORY::COMPUTELIGHT_BLEND;  break;
+    default:                            break;
+    }
+
+    m_pGameInstance->Push_RenderObject(eCategroy, this);
 
 #ifdef _DEBUG
     //if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
@@ -1900,8 +1909,16 @@ HRESULT CMapObject::Render_Water()
         CB_WaterData tData{};
         tData.g_fWaterDT = m_fDT;
         tData.g_WaterTexBindingFlags = 0;
-        tData.g_vWaterSpeed1 = pDesc->vSpeed1;
-        tData.g_vWaterSpeed2 = pDesc->vSpeed2;
+        tData.g_vWaterSpeed1            = pDesc->vSpeed1;
+        tData.g_vWaterSpeed2            = pDesc->vSpeed2;
+
+        tData.g_vWaterUVPower           = pDesc->vWaterUVPower;
+
+        tData.g_vWaterDistortionSpeed   = pDesc->vDistortionSpeed;
+        tData.g_fDistortionPower        = pDesc->fDistortionPower;
+
+        tData.g_fSparklePower           = pDesc->fSparklePower;
+        tData.g_vSparkleUVPower         = pDesc->vSparkleUVPower;
 
         array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EWaterTextureType::END)>  arraySRVs;
         arraySRVs.fill(nullptr);
@@ -1922,7 +1939,8 @@ HRESULT CMapObject::Render_Water()
         pShader->Get_SRV(g_szWaterTexture)->SetResourceArray(&arraySRVs[0] , 0 , ENUM_TO_UINT(EWaterTextureType::END) );
 
         /* 월드 매트릭스 바인딩 */
-        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+        const Matrix& pMatrix = pTransform->Get_WorldMatrix();
+        pShader->Bind_TransformData(pMatrix);
 
         _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
 
