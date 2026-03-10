@@ -24,6 +24,7 @@
 #include "Body.h"
 #include "Gun.h"
 #include "PartEffect.h"
+#include "SocketObject.h"
 
 #include "MainPlayer.h"
 #include "CameraMan_Targeter.h"
@@ -1135,7 +1136,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
                 return E_FAIL;
         }
 
-         //Weapons : Gun
+        //Weapons : Gun
         {
             CGun::GUN_DESC weaponDesc = {};
             weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonGun"; //Prototype_Component_Model_XibiWeapon //Prototype_Component_Model_MoonGun
@@ -1168,9 +1169,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
         {
             CPartEffect::PART_EFFECT_DESC tDesc;
             tDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-            tDesc.arrState_DurationTimes    = {};
-            tDesc.arrState_DurationTimes    = { 0.f,12.5f,0.f }; 
-            tDesc.arrState_DelayTimes       = { 0.f,0.5f,0.f };
+            tDesc.arrState_DurationTimes = {};
+            tDesc.arrState_DurationTimes = { 0.f,12.5f,0.f };
+            tDesc.arrState_DelayTimes = { 0.f,0.5f,0.f };
             tDesc.FPartEff_Flags = CPartEffect::PartEff_Flag::Spawn_Again_AfterDespawn;
 
 
@@ -1198,7 +1199,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
             CPartEffect::DATA_EFFHANDLER tData1 = {};
             {
-                tData1.eEffState    = CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY;
+                tData1.eEffState = CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY;
                 tData1.eHandlerType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
 
                 CEffectHandler::STATE_VFX_DESC SkillDesc{};
@@ -1220,12 +1221,22 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             if (FAILED(Add_Part(Part::EFFECT, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Effect_Prototype_Tag, &tDesc)))
                 return E_FAIL;
         }
-
-            break;
+        break;
         }
-
-        return S_OK;
     }
+
+    // parts
+
+    {
+        //CSocketObject::SOCEKT_DESC SocketDesc = {};
+        //SocketDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        //SocketDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        //SocketDesc.iLevelIndex = pDesc->iLevelIndex;
+        //SocketDesc.wstrModelPrototypeName = pDesc->wstrBodyModelTag;
+        //if (FAILED(Add_Part(Part::CLOAK, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Socket_Prototype_Tag, &SocketDesc)))
+        //    return E_FAIL;
+    }
+
 
     return S_OK;
 }

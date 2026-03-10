@@ -28,7 +28,7 @@ struct IMMU_ELEMENT
     uint    iKeyStart;              // 키프레임 시작 위치
     uint    iKeyCount;              // 키프레임 개수
     
-    float Padding0;
+    float   Padding0;
 };
 
 // 가변 데이터 : cpu
@@ -37,9 +37,9 @@ struct MU_ELEMENT
     float   fCurTrackPosition;
     uint    iChannelCount;
     
-    int iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
+    int     iRootMotionBoneIndex; // root motion일 경우 tralation을 0으로 만들기 위함
     
-    float  Padding0;
+    float   Padding0;
 };
 
 // out put
@@ -62,8 +62,8 @@ cbuffer MU_Track
 StructuredBuffer<IMMU_KEYFRAME> IMMU_KEYFRAMS;          // 한 애니메이션에 대한 모든 keyframe 정보를 일차원 배열로 들고 있는다
 StructuredBuffer<IMMU_ELEMENT>  IMMU_CHANNELDATAS;      // 한 채널에 대한 정보들            :  이 애니메이션 channel 수 만큼
 
-RWStructuredBuffer<SRT> CHANNEL_OUTPUT; // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함
-StructuredBuffer<SRT>   CHANNEL_OUTPUT_SRV;
+RWStructuredBuffer<SRT>         CHANNEL_OUTPUT; // bone 인덱스랑 1 : 1 매칭 -> bone update때 문제 없도록 하기 위함
+StructuredBuffer<SRT>           CHANNEL_OUTPUT_SRV;
 
 
 uint BinarySearchKeyframe(float trackPos, uint firstIdx, uint keyCount)

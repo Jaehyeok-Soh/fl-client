@@ -114,8 +114,8 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
 	}
 
-	m_tExtra_AttackDesc.fRandomAdd_Rate += 0.3f;
-	m_tExtra_AttackDesc.vRandomAdd_MinMax = { -3.f,3.f };
+	m_tExtra_AttackDesc.fRandomAdd_Rate		+= 0.5f;
+	m_tExtra_AttackDesc.vRandomAdd_MinMax	= { -3.f,3.f };
 
 	// 연산 순서 : 우선은 stat 복사 생성시 desc으로 받도록 하자
 	// 좀 복잡해진다면 flag mask 검사후 order 지정

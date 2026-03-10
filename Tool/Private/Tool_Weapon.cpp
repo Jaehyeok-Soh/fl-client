@@ -180,6 +180,8 @@ HRESULT CTool_Weapon::Ready_ComputeShaders()
 	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS)))
 		return E_FAIL;
 
+	Get_Component<CModel>()->Set_ApplyRootMotionAll(false);
+
 	return S_OK;
 }
 
@@ -238,7 +240,22 @@ void CTool_Weapon::Ready_Before_Render(const _float fTimeDelta)
 	case State::HOLD:
 		if (m_pMatSocket)
 		{
-			Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
+			if (Get_Component<CModel>()->Get_RootBone() >= 0)
+			{
+				//Vec3 vPos{ Vec3::Zero };
+				//Vec3 vScale{ Vec3::One };
+				//Quat qRot{ Quat::Identity };
+				//Matrix* pMat = const_cast<Matrix*>(m_pMatSocket);
+				//pMat->Decompose(vScale, qRot, vPos);
+				//Matrix matfinalMat = Matrix::CreateScale(vScale);
+				//matfinalMat *= Matrix::CreateTranslation(vPos);
+
+				Matrix matfinalMat = Matrix::Identity;
+				matfinalMat.Translation((*m_pMatSocket).Translation());
+				Super::Update_CombinedWorldMatrix(m_matRotation * matfinalMat * (*m_pMatParent));
+			}
+			else
+				Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
 
 		}
 		else
@@ -365,6 +382,15 @@ void CTool_Weapon::Set_SRT(SRT eSRT, Vec3 vValue)
 		m_tWeaponInfo.vTranslation[2] = vValue.z;
 		break;
 	}
+}
+
+void CTool_Weapon::Change_Animation(_uint iIndex)
+{
+	if (Get_Component<CModel>()->Get_AnimationCount() <= iIndex)
+		return;
+
+	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+	Get_Component<CModel>()->Change_Animation(pAnimECS, iIndex, false, true, true);
 }
 
 CTool_Weapon* CTool_Weapon::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

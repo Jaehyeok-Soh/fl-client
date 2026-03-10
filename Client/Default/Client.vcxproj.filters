@@ -673,6 +673,9 @@
     <Filter Include="03. GameObject\ContainerObjects\Camera">
       <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PartObjects\SocektObject">
+      <UniqueIdentifier>{18b43d9c-ed3e-4109-85da-3382fa87dff4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1246,6 +1249,9 @@
     <ClInclude Include="..\Public\UITutorial_Pannel_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SocketObject.h">
+      <Filter>03. GameObject\PartObjects\SocektObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1807,6 +1813,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UITutorial_Pannel_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SocketObject.cpp">
+      <Filter>03. GameObject\PartObjects\SocektObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

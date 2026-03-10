@@ -573,16 +573,16 @@ HRESULT CMainPlayer::Ready_Ability()
     // stat
     {
         CStatCom_Player::PLAYER_STATCOMP_DESC desc = {};
-        desc.fMaxHp = 320.f;
-        desc.fDefense = 400.f;
-        desc.fMental = 105.f;
+        desc.fMaxHp     = 320.f;
+        desc.fDefense   = 400.f;
+        desc.fMental    = 105.f;
         desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate;
 
-        desc.fComboCoolTime = 2.f;
-        desc.fDashCoolTime = 2.f;
+        desc.fComboCoolTime     = 2.f;
+        desc.fDashCoolTime      = 2.f;
 
-        desc.fMeleeAttack = 20.f;
-        desc.fGunAttack = 20.f;
+        desc.fMeleeAttack       = 20.f;
+        desc.fGunAttack         = 20.f;
 
         desc.pESkill = pESkill;
         desc.pQSkill = pQSkill;
@@ -597,8 +597,8 @@ HRESULT CMainPlayer::Ready_Ability()
         }
 
         desc.vecExtraComputeOrder = vecComputeOrder;
-        desc.fCriticalAttack = 30.f;
-        desc.fCriticalRate = 0.3f;
+        desc.fCriticalAttack    = 30.f;
+        desc.fCriticalRate      = 0.1f;
 
         if (FAILED(Add_Component<CMyStat>(0/* STATIC */, L"Prototype_Component_Stat_Player", &desc)))
             return E_FAIL;
