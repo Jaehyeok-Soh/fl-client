@@ -34,11 +34,15 @@ public:
 	enum Part : _uint
 	{
 		BODY = 0,
+
+		// weapon
 		SWORD,
 		SKILL,
 		GUN,
 		SWORD2,
+
 		EFFECT,
+		DETECTCOLLIDER, // 몬스터 감지용 collider
 		CLOAK,
 		END
 	};

@@ -12,7 +12,6 @@
 #include "Bounding_Sphere.h"
 #include "Bone.h"
 #include "PlayerActionState.h"
-#include "TriggerCollidePart.h"
 #include "Collider.h"
 #include "ComputeShader.h"
 #include "StatCom_Player.h"
@@ -25,8 +24,8 @@
 #include "Gun.h"
 #include "PartEffect.h"
 #include "SocketObject.h"
+#include "TriggerCollidePart.h"
 
-#include "MainPlayer.h"
 #include "CameraMan_Targeter.h"
 
 #pragma region States
@@ -111,6 +110,9 @@ HRESULT CPlayer::Initialize(void* pArg)
         return E_FAIL;
 
     if (FAILED(Ready_HitStates()))
+        return E_FAIL;
+
+    if (FAILED(Ready_PartCollider()))
         return E_FAIL;
 
     return S_OK;
@@ -1266,6 +1268,40 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
 
 HRESULT CPlayer::Ready_PartCollider()
 {
+    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc;
+    {
+        PHYSICSRIGIDBODY_DESC tRigiDesc = {};
+        {
+            tRigiDesc.eType = EPhysicsActorType::KINEMATIC;
+            tRigiDesc.bUseGravity = false;
+            tRigiDesc.pOwnerMatrix = nullptr;
+
+            tPartColliDesc.pRigidbodyDesc = &tRigiDesc;
+        }
+
+        PHYSICSCOLLIDER_DESC tPColliDesc = {};
+        {
+            tPColliDesc.eShape  = EPhysicsShape::BOX;
+            tPColliDesc.vCenter = { 0.f,1.f,0.f };
+            tPColliDesc.vExtents = { 3.f,2.f,3.f }; // 몬스터 충돌 감지 범위 todo x,z는 desc으로 받아오기
+            tPColliDesc.bIsTrigger = { true };
+            tPColliDesc.eFilterLayer = tagPhysicsFilterGroup::DETECT_MONSTER; 
+            tPColliDesc.iFilterMask =
+            {
+                PHYSICSFILTERGROUP::Enum::MONSTER
+                | PHYSICSFILTERGROUP::Enum::OBJECT1
+                | PHYSICSFILTERGROUP::Enum::OBJECT2
+            };
+
+           tPartColliDesc.pColliderDesc = &tPColliDesc;
+        }
+
+        tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
+    }
+
+    if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+        return E_FAIL;
+
     return S_OK;
 }
 

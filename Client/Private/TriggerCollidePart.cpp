@@ -119,6 +119,14 @@ HRESULT CTriggerCollidePart::Ready_Components(TRIGGER_COLLIDEPART_DESC* pDesc)
 {
 	if (FAILED(Add_Component<CPhysicsCollider>(0, L"Prototype_Component_Physics_Collider", pDesc->pColliderDesc)))
 		return E_FAIL;
+
+	// 만약 외부에서 지정 하지 않았다면
+	// 이거의 transform을 따라가도록	설정
+	if (pDesc->pRigidbodyDesc->pOwnerMatrix == nullptr)
+	{
+		pDesc->pRigidbodyDesc->pOwnerMatrix = Get_Component<CTransform>()->Get_WorldMatrixPtr();
+	}
+
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", pDesc->pRigidbodyDesc)))
 		return E_FAIL;
 

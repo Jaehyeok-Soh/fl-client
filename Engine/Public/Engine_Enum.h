@@ -440,8 +440,9 @@ namespace Engine
 
 			
 			INVISIBLE_WALL = 1 << 18,
+			DETECT_MONSTER = 1 << 19,
 
-			NONE = 1 << 19,
+			NONE = 1 << 20,
 			END
 		};
 
