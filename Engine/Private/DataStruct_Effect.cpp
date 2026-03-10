@@ -122,8 +122,10 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             {"Gradation", {{"x", data._Effect_GradationTexture_SpriteInfo.x}, {"y", data._Effect_GradationTexture_SpriteInfo.y}, {"z", data._Effect_GradationTexture_SpriteInfo.z}, {"w", data._Effect_GradationTexture_SpriteInfo.w}}},
             {"Dissolve",  {{"x", data._Effect_DissolveTexture_SpriteInfo.x},  {"y", data._Effect_DissolveTexture_SpriteInfo.y},  {"z", data._Effect_DissolveTexture_SpriteInfo.z},  {"w", data._Effect_DissolveTexture_SpriteInfo.w}}},
             {"Glow",      {{"x", data._Effect_GlowTexture_SpriteInfo.x},      {"y", data._Effect_GlowTexture_SpriteInfo.y},      {"z", data._Effect_GlowTexture_SpriteInfo.z},      {"w", data._Effect_GlowTexture_SpriteInfo.w}}},
-             {"Curve",      {{"x", data._Effect_CurveTexture_SpriteInfo.x},      {"y", data._Effect_CurveTexture_SpriteInfo.y},      {"z", data._Effect_CurveTexture_SpriteInfo.z},      {"w", data._Effect_CurveTexture_SpriteInfo.w}}}
-        }},
+             {"Curve",      {{"x", data._Effect_CurveTexture_SpriteInfo.x},      {"y", data._Effect_CurveTexture_SpriteInfo.y},      {"z", data._Effect_CurveTexture_SpriteInfo.z},      {"w", data._Effect_CurveTexture_SpriteInfo.w}}},
+             {"Mask",      {{"x", data._Effect_MaskTexture_SpriteInfo.x},      {"y", data._Effect_MaskTexture_SpriteInfo.y},      {"z", data._Effect_MaskTexture_SpriteInfo.z},      {"w", data._Effect_MaskTexture_SpriteInfo.w}}}
+        
+         }},
 
         // --- 스크롤 가중치 & 개별 활성화 ---
         {"ScrollWeights", {

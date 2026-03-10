@@ -199,6 +199,7 @@ struct VS_OUT_POS_GS_PARTICLE
     float3 vPSize : PSIZE;
     float2 vLifeTime : TEXCOORD0;
     uint vInstID : TEXCOORD1;
+    row_major float4x4 matTransform : WORLD;
 };
 
 struct VS_OUT_INST_MESH_PARTICLE

@@ -236,11 +236,41 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
 		}
 
-		else if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+		/*이펙트를 생성하기 위해서*/
+		if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
 		{
-			int a = 0;
+			/*	hitDesc.attackDesc.iAttackerLayer = PHYSICSFILTERGROUP::ATTACK_PROJECTTILE;*/
+			EFFECT_SPAWN_DESC Desc = {};
+			//Matrix OffsetMatrix = Matrix::CreateTranslation(Vec3(0.f, 0.5f, 0.5f));
+			Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
+
+			Vec3 vScale, vPos;
+			Quat vQuat;
+			WorldMatrix.Decompose(vScale, vQuat, vPos);
+
+			Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
+			Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+			//if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+			//{
+			//	m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+			//}
+
+
+			if (/*Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN*/
+				hitDesc.attackDesc.iAttackerLayer == PHYSICSFILTERGROUP::ATTACK_PROJECTTILE)
+
+			{
+				m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
+			}
+
+			else
+			{
+				m_pGameInstance->Request_Effect("VFX_Sword_Hit", Desc);
+			}
 		}
 	}
+
 
 #ifdef _DEBUG
 	wstring infoHeader(L"Monster Hit ");

@@ -694,6 +694,8 @@ void CEffectObject::Update(const _float fTimeDelta)
     m_bIsStarted = true;
 
 
+
+
     // Duration 및 Loop 제어 설정
     if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration)
     {
@@ -705,7 +707,7 @@ void CEffectObject::Update(const _float fTimeDelta)
         
         else if(m_tEffectDesc.Data._Use_Effect_Continue == false|| m_tEffectDesc.Data._Effect_Looping == false)
         {
-            if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
+            if (fActiveTime >=/* m_tEffectDesc.Data._Effect_Duration +*/m_tEffectDesc.Data._Effect_LifeTime)
             {
                 m_bIsEffectFinish = true;
             }
