@@ -253,15 +253,26 @@ public:
 struct GRASS_DESC : public PLANTS_DESC
 {
 public:
-
+	_float fGrassDT{ 0.f };
+	_float fGrassMaxHeight{ 1.f }; //ÀÌ ¸ðµ¨ÀÇ ÀÜµð MinMaxÁß MaxÀÇ  Y°ª
+	_float fGrassSwaySpeed{ 1.f }; //ÀÌ ÀÜµð°¡ Sway = Èçµé¸®´Â Speed
+	_float fGrassWaveSize{ 1.f }; //ÀÌ ÀÜµð°¡ Power = Èçµé¸®´Â Èû
 public:
 	GRASS_DESC()
 		:PLANTS_DESC()
+		, fGrassDT{0.f}
+		, fGrassMaxHeight{1.f}
+		, fGrassSwaySpeed{1.f}
+		, fGrassWaveSize{1.f}
 	{
 
 	}
 	GRASS_DESC(const GRASS_DESC& rhs)
 		: PLANTS_DESC(rhs)
+		, fGrassDT{ rhs.fGrassDT }
+		, fGrassMaxHeight{ rhs.fGrassMaxHeight }
+		, fGrassSwaySpeed{ rhs.fGrassSwaySpeed }
+		, fGrassWaveSize{ rhs.fGrassWaveSize }
 	{
 
 	}

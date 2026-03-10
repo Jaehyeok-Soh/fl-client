@@ -93,6 +93,22 @@ namespace Tool
     }INSTANCEMODEL_DATA;
 
 
+    struct CB_EnvData
+    {
+        Vec3        vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
+        _float      fWindPower{ 1.f }; //바람이 부는 새기
+    };
+
+
+    struct CB_GrassData
+    {
+        _float g_fGrassDT{0.f};
+        _float g_fGrassMaxHeight{1.f}; //이 모델의 잔디 MinMax중 Max의  Y값
+        _float g_fGrassSwaySpeed{1.f}; //이 잔디가 Sway = 흔들리는 Speed
+        _float g_fGrassWaveSize{1.f}; //이 잔디가 Power = 흔들리는 힘
+    };
+
+
     struct CB_WaterData
     {
         _uint  g_WaterTexBindingFlags           {0};                            // Texture가 바인딩되었는지 안되어있는지 Flag값

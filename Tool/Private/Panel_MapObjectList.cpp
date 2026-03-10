@@ -1153,6 +1153,26 @@ void CPanel_MapObjectList::ImGuiUpdate_Grass_Desc(GRASS_DESC* pDesc)
 
 	ImGuiUpdate_Plants_Desc(pDesc);
 
+	ImGui::SeparatorText("Grass Data");
+
+	ImGui::Text(" DT => [ %f ] " , pDesc->fGrassDT );
+
+	ImGui::NewLine();
+
+	ImGui::Text(" Max Height => [ %f ]" , pDesc->fGrassMaxHeight);
+
+	ImGui::NewLine();
+
+	ImGui::Text(" Sway Speed ");
+	ImGui::DragFloat("##Grass Sway Speed",&pDesc->fGrassSwaySpeed , 0.01f , 0.f , 1000.f , "%.2f");
+	ImGui::NewLine();
+
+	ImGui::Text(" Wave Size ");
+	ImGui::DragFloat("##Grass Wave Size", &pDesc->fGrassWaveSize, 0.01f, 0.f, 1000.f, "%.2f");
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
 	return;
 }
 #pragma endregion
@@ -1163,6 +1183,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Vine_Desc(VINE_DESC* pDesc)
 	if (pDesc == nullptr) return;
 
 	ImGuiUpdate_Plants_Desc(pDesc);
+
 
 	return;
 }

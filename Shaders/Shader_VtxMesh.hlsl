@@ -33,6 +33,21 @@
 #define Water_Deco3_ORH   13
 #define MAX_WATER_TEXTURE_COUNT 14
 
+cbuffer CB_EnvData
+{
+    float3 vWindDirection = float3(1.f, -1.f, 1.f); //바람이 부는 방향
+    float fWindPower = 1.f; //바람이 부는 새기
+};
+
+cbuffer CB_GrassData
+{
+    float g_fGrassDT = 0.f;
+    float g_fGrassMaxHeight = 1.f; //이 모델의 잔디 MinMax중 Max의  Y값
+    float g_fGrassSwaySpeed = 1.f; //이 잔디가 Sway = 흔들리는 Speed
+    float g_fGrassWaveSize = 1.f; //이 잔디가 Power = 흔들리는 힘
+};
+
+
 
 Texture2D g_WaterTexture[MAX_WATER_TEXTURE_COUNT];
 cbuffer CB_WaterData
@@ -118,6 +133,39 @@ VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
     
     output.vWorldPos = mul(float4(input.vPosition, 1.f), W);
     output.vProjPos = output.vPosition;
+    return output;
+}
+
+VS_OUT_MESH VS_GRASS(VS_IN_MESH input)
+{
+    VS_OUT_MESH output;
+    
+    // LocalY 좌표를 현재 모델의 Max의 Y좌표를 나눠주어 현재 Y값의 비율을 알려준다
+    float fSwayWeight = saturate(input.vPosition.y / g_fGrassMaxHeight);
+    float2 vInstancePosXZ = float2(W._41, W._43);
+    float fRandom = frac(sin(dot(vInstancePosXZ, float2(12.9898f, 78.233f))) * 43758.5453f);
+    
+    //월드 좌표
+    output.vPosition = mul(float4(input.vPosition, 1.f), W);
+   
+    
+    // 괄호 안에는 '간격(Size)'을 곱하고!
+    float fWindPhase = (g_fGrassDT * g_fGrassSwaySpeed) + (output.vPosition.x * g_fGrassWaveSize) + (output.vPosition.z * g_fGrassWaveSize) + (fRandom * 3.141592f);
+    
+    float fRandomPower = fWindPower * (0.5f + (fRandom * 0.5f));
+    float fSway = sin(fWindPhase) * fRandomPower;
+    
+    output.vPosition.xyz += (vWindDirection * fSway * fSwayWeight);
+    output.vWorldPos = output.vPosition;
+    
+    output.vPosition = mul(output.vPosition, VP);
+    output.vUV = input.vUV;
+    output.vNormal = normalize(mul(input.vNormal, (float3x3) W));
+    output.vTangent = normalize(mul(input.vTangent, (float3x3) W));
+    output.vBinormal = normalize(mul(input.vBinormal, (float3x3) W));
+    
+    output.vProjPos = output.vPosition;
+    
     return output;
 }
 
@@ -354,7 +402,7 @@ PS_OUT_DEFFERED PS_MOSS(PS_IN_MESH input)
 
 PS_OUT_DEFFERED PS_VINE(PS_IN_MESH input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED)0;
     
     float4 vDiffuse = 1.f;
     
@@ -626,7 +674,7 @@ technique11 T0
 
     // 식생
 	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_BUSH)
-	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_GRASS)
+	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_GRASS, PS_GRASS)
 	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MOSS)
 	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_TREE)
 	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_VINE)

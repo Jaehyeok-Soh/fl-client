@@ -486,6 +486,16 @@ void GRASS_DESC::from_Json(const json& LoadJson)
 {
 	this->PLANTS_DESC::from_Json(LoadJson);
 
+	if (LoadJson.contains("Grass Sway Speed"))
+	{
+		this->fGrassSwaySpeed = LoadJson["Grass Sway Speed"];
+	}
+	if (LoadJson.contains("Grass Wave Size"))
+	{
+		this->fGrassWaveSize = LoadJson["Grass Wave Size"];
+	}
+
+
 	/* 그다음 나무 Desc Load */
 }
 
@@ -494,6 +504,8 @@ void GRASS_DESC::to_Json(json& SaveJson)
 	this->PLANTS_DESC::to_Json(SaveJson);
 
 	/* 그다움 나무 Desc Save */
+	SaveJson["Grass Sway Speed"]	= this->fGrassSwaySpeed;
+	SaveJson["Grass Wave Size"]		= this->fGrassWaveSize;
 
 }
 

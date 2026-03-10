@@ -30,7 +30,7 @@ public:
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
 private:
-	Vec4							 m_vMI_TintColor{1.f,1.f,1.f,1.f};
+	Vec4									m_vMI_TintColor{1.f,1.f,1.f,1.f};
 	array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EWaterTextureType::END)>	m_arrayWaterSRVs{};
 	CB_WaterData							m_tCBWaterData{};
 	ID3DX11EffectConstantBuffer*			m_pEffectCBBuffer{};

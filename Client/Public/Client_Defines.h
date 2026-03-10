@@ -173,6 +173,10 @@ namespace Client
 	}SKILL_PRESET;
 
 
+
+#pragma region MapObject
+
+
 	struct CB_WaterData
 	{
 		_uint  g_WaterTexBindingFlags{ 0 };								// Texture가 바인딩되었는지 안되어있는지 Flag값
@@ -189,8 +193,15 @@ namespace Client
 		Vec2    g_vSparkleUVPower;                                      // 8 Byte (윤슬 자글자글함 크기 조절!)
 	};
 
+	struct CB_GrassData
+	{
+		_float	g_fGrassDT			{0.f};
+		_float	g_fGrassMaxHeight	{1.f};		//Model Min Max 중 Max의 Y값		
+		_float  g_fGrassSwaySpeed	{1.f};		//이 잔디가 Sway = 흔들리는 Speed		Tool에서 지정
+		_float  g_fGrassWaveSize	{1.f};		//이 잔디가 Power = 흔들리는 힘		Tool에서 지정
+	};
 
-#pragma region MapObject
+
 
 	static ELevelType StringToClientleveltype(const _string& str)
 	{
