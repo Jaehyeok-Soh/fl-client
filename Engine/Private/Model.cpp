@@ -50,6 +50,7 @@ CModel::CModel(const CModel& rhs)
 	, m_iAdditivRef_AnimIdx(rhs.m_iAdditivRef_AnimIdx)
 	, m_iAdditivePos_AnimIdx(rhs.m_iAdditivePos_AnimIdx)
 	, m_fAdditiveOffset(rhs.m_fAdditiveOffset)
+	, m_arrRagdollBoneDesc(rhs.m_arrRagdollBoneDesc)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -1677,16 +1678,21 @@ void CModel::Mapping_Ragdoll_Bone()
 RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT::Enum eParentJoint, RAGDOLLJOINT::Enum eChildJoint)
 {
 	CBone* bone = Get_Bone(PhysicsJointNames[eJoint].c_str());
-
 	RAGDOLLBONEDESC desc{};
 	desc.eJoint = eJoint;
 	desc.eParentJoint = eParentJoint;
+	desc.fHeight = 0.1f;
+
+	if (bone == nullptr)
+		return desc;
+	
 	desc.iBoneIndex = bone->Get_Index();
 	desc.iParentIndex = bone->Get_ParentIndex();
 	desc.matLocalTransform = bone->Get_Transform();
 
 	CBone* child = Get_Bone(PhysicsJointNames[eChildJoint].c_str());
-	desc.fHeight = child->Get_Transform().Translation().Length() * 0.9f;
+	if (child != nullptr)
+		desc.fHeight = child->Get_Transform().Translation().Length() * 0.9f;
 	
 	desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f));
 	//desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f),

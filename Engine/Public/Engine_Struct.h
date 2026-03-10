@@ -935,7 +935,7 @@ namespace Engine
 		float fMass = 1.f;
 
 		Matrix matLocalTransform = { Matrix::Identity };
-		PxTransform matOffsetTransform = {};
+		PxTransform matOffsetTransform = {PxTransform(PxIdentity)};
 	}RAGDOLLBONEDESC;
 
 	typedef struct tagRagdollElements

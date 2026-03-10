@@ -29,6 +29,8 @@ private:
     HRESULT Initialize();
 
 public:
+    _bool CheckRagdollState(int64 objID);
+
     RAGDOLLELEMENTS CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc);
     void Register(CGameObject* obj);
     void Unregister(int64 objID);
@@ -53,6 +55,8 @@ private:
 private:
     PxPhysics* m_pPhysics = { nullptr };
     PxScene* m_pScene = { nullptr };
+
+    PxFilterData filterData{};
 
 public:
     static CPhysics_RagdollSystem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene);

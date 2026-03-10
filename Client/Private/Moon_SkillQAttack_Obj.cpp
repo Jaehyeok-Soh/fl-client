@@ -184,7 +184,7 @@ HRESULT CMoon_SkillQAttack_Obj::Ready_Components()
 		{
 			PHYSICSCOLLIDER_DESC cloneDesc{};
 			cloneDesc.eShape = EPhysicsShape::SPHERE;
-			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::ATTACK; // todo_eunbi : player?
+			cloneDesc.eFilterLayer = EPhysicsFilterGroup::ATTACK; // todo_eunbi : player?
 			cloneDesc.iFilterMask = 
 			{
 				PHYSICSFILTERGROUP::Enum::MONSTER

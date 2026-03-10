@@ -23,7 +23,28 @@ CPhysics_RagdollSystem::CPhysics_RagdollSystem(ID3D11Device* pDevice, ID3D11Devi
 
 HRESULT CPhysics_RagdollSystem::Initialize()
 {
+	filterData.word0 = PHYSICSFILTERGROUP::MONSTER;
+	filterData.word1 = PHYSICSFILTERGROUP::MAP
+		| PHYSICSFILTERGROUP::MONSTER
+		| PHYSICSFILTERGROUP::PLAYER
+		| PHYSICSFILTERGROUP::ATTACK
+		| PHYSICSFILTERGROUP::ATTACK_PROJECTTILE
+		| PHYSICSFILTERGROUP::SKILL
+		| PHYSICSFILTERGROUP::MONSTER_SKILL_PROJECTTILE;
+
 	return S_OK;
+}
+
+_bool CPhysics_RagdollSystem::CheckRagdollState(int64 objID)
+{
+	auto item = m_umapRegisteredMap.find(objID);
+	if (item == m_umapRegisteredMap.end())
+		return false;
+
+	if (item->second.second == ERagdollState::PROCESSING || item->second.second == ERagdollState::PENDING)
+		return true;
+
+	return false;
 }
 
 RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc)
@@ -33,15 +54,24 @@ RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAG
 	elements.vecPhysicsLink.resize(RAGDOLLJOINT::END);
 	elements.vecRagdollLiveTransform.resize(RAGDOLLJOINT::END);
 
-	PxTransform pxTransform = m_pGameInstance->XMMatrixToPxTransform(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].matLocalTransform);
-	auto link = elements.pArticulation->createLink(NULL, pxTransform); // local transform
-	link->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
-	link->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+	PxTransform pxLocal = m_pGameInstance->XMMatrixToPxTransform(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].matLocalTransform);
+	auto link = elements.pArticulation->createLink(NULL, PxTransform(PxIdentity) /*pxLocal*/); // local transform
 
 	PxMaterial* material = m_pGameInstance->GetPhysicsMaterial(EPhysicsMaterial::PLAYER);
 
 	PxRigidBodyExt::updateMassAndInertia(*link, 10.f /*arrRagdollBoneDesc[i].fMass*/);
-	PxRigidActorExt::createExclusiveShape(*link, PxCapsuleGeometry(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fRadius, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fHeight), *material);
+	//PxRigidActorExt::createExclusiveShape(*link, PxCapsuleGeometry(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fRadius, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fHeight), *material);
+	{
+		PxShape* pShape = m_pPhysics->createShape(PxCapsuleGeometry(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fRadius, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fHeight), *material, true);
+
+		pShape->setLocalPose(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].matOffsetTransform);
+
+		pShape->setSimulationFilterData(filterData);
+		pShape->setQueryFilterData(filterData);
+
+		link->attachShape(*pShape);
+		PX_RELEASE(pShape);
+	}
 
 	elements.vecPhysicsLink[arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].eJoint] = std::make_pair(link, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS]);
 
@@ -117,19 +147,42 @@ void CPhysics_RagdollSystem::Finish(uint64 objID)
 
 void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc, _int index, PxArticulationLink* parentLink)
 {
-	PxTransform pxTransform = m_pGameInstance->XMMatrixToPxTransform(arrRagdollBoneDesc[index].matLocalTransform);
-	auto link = elements->pArticulation->createLink(parentLink, pxTransform); // local transform
-	link->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
+	auto link = elements->pArticulation->createLink(parentLink, PxTransform(PxIdentity) /*pxLocal*/); // local transform
 	link->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
 
 	PxMaterial* material = m_pGameInstance->GetPhysicsMaterial(EPhysicsMaterial::PLAYER);
 
 	PxRigidBodyExt::updateMassAndInertia(*link, arrRagdollBoneDesc[index].fMass);
-	PxRigidActorExt::createExclusiveShape(*link, PxCapsuleGeometry(arrRagdollBoneDesc[index].fRadius, arrRagdollBoneDesc[index].fHeight), *material);
+	//PxRigidActorExt::createExclusiveShape(*link, PxCapsuleGeometry(arrRagdollBoneDesc[index].fRadius, arrRagdollBoneDesc[index].fHeight), *material);
+	{
+		PxShape* pShape = m_pPhysics->createShape(PxCapsuleGeometry(arrRagdollBoneDesc[index].fRadius, arrRagdollBoneDesc[index].fHeight), *material, true);
+
+		pShape->setLocalPose(arrRagdollBoneDesc[index].matOffsetTransform);
+
+		pShape->setSimulationFilterData(filterData);
+		pShape->setQueryFilterData(filterData);
+
+		link->attachShape(*pShape);
+		PX_RELEASE(pShape);
+	}
 
 	PxArticulationJointReducedCoordinate* articulationJoint = static_cast<PxArticulationJointReducedCoordinate*>(link->getInboundJoint());
-	articulationJoint->setParentPose(articulationJoint->getParentArticulationLink().getGlobalPose().getInverse() * pxTransform);
-	articulationJoint->setChildPose(link->getGlobalPose().getInverse() * pxTransform);
+	
+	{
+		articulationJoint->setJointType(PxArticulationJointType::eSPHERICAL);
+
+		articulationJoint->setMotion(PxArticulationAxis::eSWING1, PxArticulationMotion::eFREE);
+		articulationJoint->setMotion(PxArticulationAxis::eSWING2, PxArticulationMotion::eFREE);
+		articulationJoint->setMotion(PxArticulationAxis::eTWIST, PxArticulationMotion::eFREE);
+	}
+
+	PxTransform pxLocal = m_pGameInstance->XMMatrixToPxTransform(arrRagdollBoneDesc[index].matLocalTransform);
+	pxLocal.q.normalize();
+
+	//articulationJoint->setParentPose(articulationJoint->getParentArticulationLink().getGlobalPose().getInverse() * PxTransform(PxIdentity));
+	//articulationJoint->setChildPose(link->getGlobalPose().getInverse() * PxTransform(PxIdentity));
+	articulationJoint->setParentPose(pxLocal);
+	articulationJoint->setChildPose(PxTransform(PxIdentity));
 
 	elements->vecPhysicsLink[arrRagdollBoneDesc[index].eJoint] = std::make_pair(link, arrRagdollBoneDesc[index]);
 

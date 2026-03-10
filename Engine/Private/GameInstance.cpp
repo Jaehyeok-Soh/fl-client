@@ -1049,6 +1049,11 @@ void CGameInstance::AddRagdoll(PxArticulationReducedCoordinate* pArticulation)
 	m_pPhysics_Module->AddRagdoll(pArticulation);
 }
 
+void CGameInstance::RemoveRagdoll(PxArticulationReducedCoordinate* pArticulation)
+{
+	m_pPhysics_Module->RemoveRagdoll(pArticulation);
+}
+
 void CGameInstance::ClearPhysics()
 {
 	m_pPhysics_Module->ClearPhysics();
@@ -1194,24 +1199,34 @@ _bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysic
 	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
 }
 
+_bool CGameInstance::CheckRagdollState(int64 objID)
+{
+	return m_pPhysics_Module->CheckRagdollState(objID);
+}
+
 void CGameInstance::RagdollRegister(CGameObject* obj)
 {
+	m_pPhysics_Module->RagdollRegister(obj);
 }
 
 void CGameInstance::RagdollUnregister(int64 objID)
 {
+	m_pPhysics_Module->RagdollUnregister(objID);
 }
 
 void CGameInstance::RagdollRequestStart(uint64 objID)
 {
+	m_pPhysics_Module->RagdollRequestStart(objID);
 }
 
 void CGameInstance::RagdollSyncStates(uint64 objID, vector<class CChannel*>& vecChannels)
 {
+	m_pPhysics_Module->RagdollSyncStates(objID, vecChannels);
 }
 
 void CGameInstance::RagdollFinish(uint64 objID)
 {
+	m_pPhysics_Module->RagdollFinish(objID);
 }
 
 #ifdef _DEBUG

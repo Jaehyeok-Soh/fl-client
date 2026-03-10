@@ -238,6 +238,11 @@ void CPhysics_Module::AddRagdoll(PxArticulationReducedCoordinate* pArticulation)
 	m_pScene->addArticulation(*pArticulation);
 }
 
+void CPhysics_Module::RemoveRagdoll(PxArticulationReducedCoordinate* pArticulation)
+{
+	m_pScene->removeArticulation(*pArticulation);
+}
+
 PxTransform CPhysics_Module::XMMatrixToPxTransform(Matrix mat)
 {
 	return m_pUtils->XMMatrixToPxTransform(mat);
@@ -352,6 +357,11 @@ PxController* CPhysics_Module::GetController(PHYSICSCCT_DESC* pDesc)
 CPhysics_CCTFilterCallback* CPhysics_Module::GetCCTFilterCallback()
 {
 	return m_pCCTManager->GetCCTFilterCallback();
+}
+
+_bool CPhysics_Module::CheckRagdollState(int64 objID)
+{
+	return m_pRagdollSystem->CheckRagdollState(objID);
 }
 
 void CPhysics_Module::RagdollRegister(CGameObject* obj)

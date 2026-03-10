@@ -51,7 +51,7 @@ HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
         {
             PHYSICSCOLLIDER_DESC cloneDesc{};
             cloneDesc.eShape = EPhysicsShape::BOX;
-            cloneDesc.eFilterLayer = tagPhysicsFilterGroup::TRIGGER_BOX;
+            cloneDesc.eFilterLayer = EPhysicsFilterGroup::TRIGGER_BOX;
             cloneDesc.iFilterMask = 0xFFFFFFFF;
             cloneDesc.bSetOnlyFilter = false;
             cloneDesc.bIsActive = true;

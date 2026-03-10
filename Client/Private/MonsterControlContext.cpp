@@ -7,7 +7,7 @@
 #include "PhysicsRagdoll.h"
 #include "Engine_Utils.h"
 #include "GameInstance.h"
-
+#include "Monster_Body_Base.h"
 
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
@@ -376,18 +376,31 @@ void CMonsterControlContext::Set_CCT_Collision_Enable()
 	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(true);
 }
 
+//struct Part
+//{
+//	enum Enum : _uint
+//	{
+//		BODY = 0,
+//		SWORD,
+//		GUN,
+//		END
+//	};
+//};
+
 void CMonsterControlContext::Set_On_Ragdoll()
 {
-	auto pRagdoll = Get_Owner()->Get_Component<CPhysicsRagdoll>();
+	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
+	auto pRagdoll = body->Get_Component<CPhysicsRagdoll>();
 	if (pRagdoll)
-		m_pGameInstance->RagdollRequestStart(m_iOwnerID);
+		m_pGameInstance->RagdollRequestStart(body->Get_ID());
 }
 
 void CMonsterControlContext::Set_Off_Ragdoll()
 {
-	auto pRagdoll = Get_Owner()->Get_Component<CPhysicsRagdoll>();
+	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
+	auto pRagdoll = body->Get_Component<CPhysicsRagdoll>();
 	if (pRagdoll)
-		m_pGameInstance->RagdollFinish(m_iOwnerID);
+		m_pGameInstance->RagdollFinish(body->Get_ID());
 }
 
 void CMonsterControlContext::Clear_RuntimeDesc()

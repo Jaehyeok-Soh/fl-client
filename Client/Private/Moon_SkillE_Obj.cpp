@@ -170,7 +170,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Components()
 		{
 			PHYSICSCOLLIDER_DESC cloneDesc{};
 			cloneDesc.eShape = EPhysicsShape::BOX;
-			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::ATTACK;
+			cloneDesc.eFilterLayer = EPhysicsFilterGroup::ATTACK;
 			cloneDesc.iFilterMask =
 			{
 				PHYSICSFILTERGROUP::Enum::MONSTER

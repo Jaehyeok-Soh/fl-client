@@ -27,6 +27,7 @@ public:
     void StepPhysics(_float fTimeDelta);
     void AddActor(PxRigidActor* actor);
     void AddRagdoll(PxArticulationReducedCoordinate* pArticulation);
+    void RemoveRagdoll(PxArticulationReducedCoordinate* pArticulation);
     void ClearPhysics();
     void FlushScene();
     void RemoveActor(PxRigidActor* actor);
@@ -95,6 +96,7 @@ public:
 /// Ragdoll system
 /// </summary>
 public:
+    _bool CheckRagdollState(int64 objID);
     void RagdollRegister(CGameObject* obj);
     void RagdollUnregister(int64 objID);
 

@@ -352,6 +352,7 @@ public:
 	void StepPhysics(_float fTimeDelta);
 	void AddActor(PxRigidActor* actor);
 	void AddRagdoll(PxArticulationReducedCoordinate* pArticulation);
+	void RemoveRagdoll(PxArticulationReducedCoordinate* pArticulation);
 	void ClearPhysics();
 	void FlushScene();
 	void RemoveActor(PxRigidActor* actor);
@@ -384,13 +385,12 @@ public:
 	void Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc);
 	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
 
+	_bool CheckRagdollState(int64 objID);
 	void RagdollRegister(CGameObject* obj);
 	void RagdollUnregister(int64 objID);
-
 	void RagdollRequestStart(uint64 objID);
 	void RagdollSyncStates(uint64 objID, vector<class CChannel*>& vecChannels);
 	void RagdollFinish(uint64 objID);
-
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
 	void Physics_Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);
