@@ -256,7 +256,9 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 			//	m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
 			//}
 
-			/*else */if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+
+			if (/*Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN*/
+				hitDesc.attackDesc.iAttackerLayer == PHYSICSFILTERGROUP::ATTACK_PROJECTTILE)
 
 			{
 				m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
