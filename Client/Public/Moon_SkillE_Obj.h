@@ -15,10 +15,6 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
-	virtual void Update(const _float fTimeDelta) override;
-	virtual void Ready_Before_Render(const _float fTimeDelta) override;
-
-	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
 private:
 	HRESULT Ready_Modules();

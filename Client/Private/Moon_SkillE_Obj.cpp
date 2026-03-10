@@ -46,24 +46,6 @@ HRESULT CMoon_SkillE_Obj::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-void CMoon_SkillE_Obj::Update(const _float fTimeDelta)
-{
-	Super::Update(fTimeDelta);
-}
-
-void CMoon_SkillE_Obj::Ready_Before_Render(const _float fTimeDelta)
-{
-	Super::Ready_Before_Render(fTimeDelta);
-#ifdef _DEBUG
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
-#endif
-}
-
-_bool CMoon_SkillE_Obj::On_Hit(const HIT_DESC& hitDesc)
-{
-	return true;
-}
-
 void CMoon_SkillE_Obj::Try_Attack(const HIT_DESC& hitDesc)
 {
 	// damage 폰트 : iDamageFlag에 따라 크리티컬 || 일반 판정
@@ -93,12 +75,12 @@ HRESULT CMoon_SkillE_Obj::Ready_Modules()
 
 	// Effect
 	{
-		// WARNING
+		// FLY
 		{
 			if (FAILED(Add_EffectModule(
 				0 /* static */,
 				"PlayerMoon_ESkillObject",
-				L"Prototype_GameObject_Effect",
+				wstrDefaultPrototypeTag,
 				ENUM_TO_UINT(EState::FLY))))
 				return E_FAIL;
 		}
@@ -140,7 +122,6 @@ HRESULT CMoon_SkillE_Obj::Ready_Modules()
 				return E_FAIL;
 		}
 	}
-
 	return S_OK;
 }
 

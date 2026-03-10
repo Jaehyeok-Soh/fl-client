@@ -19,7 +19,7 @@
 // objects
 #include "CameraMan_Targeter.h"
 #include "Camera.h"
-#include "ColliderPart.h"
+#include "TriggerCollidePart.h"
 #include "PhysicsCCT.h"
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
@@ -97,9 +97,6 @@ HRESULT CMainPlayer::Initialize(void* pArg)
                 | CPlayerControlContext::KEYFLAGS::GUN;
 
     if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", &tDesc)))
-        return E_FAIL;
-
-    if (FAILED(Ready_Colliders()))
         return E_FAIL;
 
     if (FAILED(Ready_Ray()))
@@ -706,122 +703,6 @@ HRESULT CMainPlayer::Ready_Ability()
 
     //    pActionState->Add_State(ENUM_TO_UINT(CPlayer::State::LEFTMELEE), pContainer);
     //}
-    return S_OK;
-}
-
-HRESULT CMainPlayer::Ready_Colliders()
-{
-    CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
-    if (!pBody)
-        return E_FAIL;
-    
-    //CWeapon* pWeapon = Get_Part<CWeapon>(ENUM_TO_UINT(Part::WEAPON));
-    //if (!pWeapon)
-    //    return E_FAIL;
-
-    //CColliderPart* pLeftHand = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::LEFTHAND));
-    //if (!pLeftHand)
-    //    return E_FAIL;
-
-    //CColliderPart* pRightHand = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::RIGHTHAND));
-    //if (!pRightHand)
-    //    return E_FAIL;
-
-    //CColliderPart* pLeftFoot = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::LEFTFOOT));
-    //if (!pLeftFoot)
-    //    return E_FAIL;
-
-    //CColliderPart* pRightFoot = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::RIGHTFOOT));
-    //if (!pRightFoot)
-    //    return E_FAIL;
-
-    //// Body
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_BODY);
-    //    boundingDesc.fRadius = 0.7f;
-    //    boundingDesc.vCenter = { 0.f, boundingDesc.fRadius, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pBody->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// Weapon
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_WEAPON);
-    //    boundingDesc.fRadius = 0.4f;
-    //    boundingDesc.vCenter = { 0.f, -boundingDesc.fRadius, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pWeapon->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// LeftHand
-    //{
-    //    CColliderPart* pLeftHand = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::LEFTHAND));
-    //    if (!pLeftHand)
-    //        return E_FAIL;
-
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_LEFTHAND);
-    //    boundingDesc.fRadius = 0.3f;
-    //    boundingDesc.vCenter = { 0.f, 0.f, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pLeftHand->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// RightHand
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_RIGHTHAND);
-    //    boundingDesc.fRadius = 0.3f;
-    //    boundingDesc.vCenter = { 0.f, 0.f, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pRightHand->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// LeftFoot
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_LEFTFOOT);
-    //    boundingDesc.fRadius = 0.3f;
-    //    boundingDesc.vCenter = { 0.f, 0.f, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pLeftFoot->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// RightFoot
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_RIGHTFOOT);
-    //    boundingDesc.fRadius = 0.45f;
-    //    boundingDesc.vCenter = { 0.f, 0.f, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pRightFoot->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //m_pGameInstance->Register_Collider(pBody->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pWeapon->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pLeftHand->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pRightHand->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pLeftFoot->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pRightFoot->Get_Component<CCollider>());
-    //pWeapon->Get_Component<CCollider>()->Set_Active(false);
-    //pLeftHand->Get_Component<CCollider>()->Set_Active(false);
-    //pRightHand->Get_Component<CCollider>()->Set_Active(false);
-    //pLeftFoot->Get_Component<CCollider>()->Set_Active(false);
-    //pRightFoot->Get_Component<CCollider>()->Set_Active(false);
     return S_OK;
 }
 

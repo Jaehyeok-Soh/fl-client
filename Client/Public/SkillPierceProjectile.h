@@ -16,6 +16,8 @@ protected:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
 protected:
+    // Pierce니까 Try_Attack에서 Set_Dead처리 안함
+    virtual void Try_Attack(const HIT_DESC& hitDesc) override {};
     virtual void Handle_Hit(_uint iMyLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 public:
     static CSkillPierceProjectile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

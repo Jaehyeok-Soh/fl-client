@@ -45,6 +45,15 @@ HRESULT CColliderModule::Initialize(void* pArg)
 	return S_OK;
 }
 
+HRESULT CColliderModule::Awake(_uint iCurrentLevelIndex)
+{
+	if (FAILED(Super::Awake(iCurrentLevelIndex)))
+		return E_FAIL;
+
+	Get_Component<CPhysicsRigidBody>()->Awake();
+	return S_OK;
+}
+
 void CColliderModule::Enable(CGameObject* pOwner)
 {
 	m_pOwner = pOwner;
@@ -55,7 +64,6 @@ void CColliderModule::Enable(CGameObject* pOwner)
 
 void CColliderModule::Disable()
 {
-	m_pOwner = nullptr;
 	CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>();
 	if (pRigidBody)
 		pRigidBody->EnableCollision(false);
@@ -64,9 +72,12 @@ void CColliderModule::Disable()
 void CColliderModule::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>();
 	CTransform* pOwnerTransform = m_pOwner->Get_Component<CTransform>();
 	CTransform* pTransform = Get_Component<CTransform>();
-	pTransform->Set_WorldMatrix(pTransform->Get_WorldMatrix() * pOwnerTransform->Get_WorldMatrix());
+	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vOwnerPosition);
+	pRigidBody->Move(vOwnerPosition, fTimeDelta);
 }
 
 void CColliderModule::Ready_Before_Render(const _float fTimeDelta)
@@ -85,15 +96,6 @@ void CColliderModule::OnTrigger_Enter(_uint iMyLayer, _uint iOtherLayer, Engine:
 void CColliderModule::OnTrigger_Exit(_uint iMyLayer, _uint iOtherLayer, Engine::CGameObject* pOther)
 {
 	m_pOwner->OnTrigger_Exit(iMyLayer, iOtherLayer, pOther);
-}
-
-HRESULT CColliderModule::Awake(_uint iCurrentLevelIndex)
-{
-	if (FAILED(Super::Awake(iCurrentLevelIndex)))
-		return E_FAIL;
-
-	Get_Component<CPhysicsRigidBody>()->Awake();
-	return S_OK;
 }
 
 CColliderModule* CColliderModule::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

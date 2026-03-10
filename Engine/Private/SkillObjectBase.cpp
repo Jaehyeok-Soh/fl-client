@@ -335,7 +335,10 @@ void CSkillObjectBase::Compute_Rotate(CGameObject* pEffectModule)
 		return;
 
 	vAxis.Normalize();
-	pEffectTransform->Rotation(vAxis, ::XMConvertToRadians(m_tDesc.fEffectDegree));
+	// 03/10 Effefct는 matworld를 넣어서 내부적으로 offset처리가되고있다 ..? 때문에 Transform 소용없음...?
+	// pEffectTransform->Rotation(vAxis, ::XMConvertToRadians(m_tDesc.fEffectDegree));
+	Matrix matRotation = Matrix::CreateFromAxisAngle(vAxis, ::XMConvertToRadians(m_tDesc.fEffectDegree));
+	m_tDefaultEffectDesc.matWorld = matRotation;
 }
 
 void CSkillObjectBase::Free()

@@ -60,14 +60,13 @@ void CSkillProjectile::OnTrigger_Enter(_uint iMyLayer, _uint iOtherLayer, Engine
 	Handle_Hit(iMyLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-_bool CSkillProjectile::On_Hit(const HIT_DESC& hitDesc)
+void CSkillProjectile::Try_Attack(const HIT_DESC& hitDesc)
 {
 	if (IsDying() || IsDead())
-		return false;
+		return;
 
 	Set_Dying();
 	LoopEnd_EffectModules(ENUM_TO_UINT(EState::FLY));
-	return true;
 }
 
 void CSkillProjectile::Update_HybridState(const _float fTimeDelta)

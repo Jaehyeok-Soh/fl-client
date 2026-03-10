@@ -25,8 +25,9 @@ public:
     virtual void Update(const _float fTimeDelta) override;
 
     virtual void OnTrigger_Enter(_uint iMyLayer, _uint iOtherLayer, Engine::CGameObject* pOther, const COL_HIT_INFO& tHitInfo) final override;
-    virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
+    virtual void Try_Attack(const HIT_DESC& hitDesc) override;
 protected:
+    // 상태에 따른 override
     virtual void Update_HybridState(const _float fTimeDelta) override;
 
     // 상태 Enter / Exit
@@ -34,6 +35,7 @@ protected:
     virtual void On_StateExit(_uint iState) override;
 
     // 수명이 끝났을때 처리 파생에서 정의
+    // 투사체의 경우 FLAG에 따라 Life가 다되거나 Distance가 멀어지면 죽는게 Default
     virtual void On_LifeOver() final override;
 
     // 기본 정책은 Map에 맞으면 FlyState의 Loop을 꺼버리고, ImpacState로 전환

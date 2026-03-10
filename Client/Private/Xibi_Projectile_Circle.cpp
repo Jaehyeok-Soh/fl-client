@@ -35,54 +35,6 @@ HRESULT CXibi_Projectile_Circle::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CXibi_Projectile_Circle::Awake(const _uint iCurrentLevelID)
-{
-	if (FAILED(Super::Awake(iCurrentLevelID)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-void CXibi_Projectile_Circle::Update_Priority(const _float fTimeDelta)
-{
-	Super::Update_Priority(fTimeDelta);
-}
-
-void CXibi_Projectile_Circle::Update(const _float fTimeDelta)
-{
-	Super::Update(fTimeDelta);
-}
-
-void CXibi_Projectile_Circle::Update_Late(const _float fTimeDelta)
-{
-	Super::Update_Late(fTimeDelta);
-}
-
-void CXibi_Projectile_Circle::Ready_Before_Render(const _float fTimeDelta)
-{
-	Super::Ready_Before_Render(fTimeDelta);
-#ifdef _DEBUG
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
-#endif
-}
-
-HRESULT CXibi_Projectile_Circle::Render()
-{
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-_bool CXibi_Projectile_Circle::On_Hit(const HIT_DESC& hitDesc)
-{
-	return true;
-}
-
-void CXibi_Projectile_Circle::Try_Attack(const HIT_DESC& hitDesc)
-{
-}
-
 HRESULT CXibi_Projectile_Circle::Ready_Moduels()
 {
 	wstring wstrDefaultPrototypeTag = L"Prototype_GameObject_Effect";

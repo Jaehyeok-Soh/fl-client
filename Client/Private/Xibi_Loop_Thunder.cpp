@@ -35,54 +35,6 @@ HRESULT CXibi_Loop_Thunder::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CXibi_Loop_Thunder::Awake(const _uint iCurrentLevelID)
-{
-	if (FAILED(Super::Awake(iCurrentLevelID)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-void CXibi_Loop_Thunder::Update_Priority(const _float fTimeDelta)
-{
-	Super::Update_Priority(fTimeDelta);
-}
-
-void CXibi_Loop_Thunder::Update(const _float fTimeDelta)
-{
-	Super::Update(fTimeDelta);
-}
-
-void CXibi_Loop_Thunder::Update_Late(const _float fTimeDelta)
-{
-	Super::Update_Late(fTimeDelta);
-}
-
-void CXibi_Loop_Thunder::Ready_Before_Render(const _float fTimeDelta)
-{
-	Super::Ready_Before_Render(fTimeDelta);
-#ifdef _DEBUG
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
-#endif
-}
-
-HRESULT CXibi_Loop_Thunder::Render()
-{
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-_bool CXibi_Loop_Thunder::On_Hit(const HIT_DESC& hitDesc)
-{
-	return true;
-}
-
-void CXibi_Loop_Thunder::Try_Attack(const HIT_DESC& hitDesc)
-{
-}
-
 HRESULT CXibi_Loop_Thunder::Ready_Modules()
 {
 	wstring wstrDefaultPrototypeTag = L"Prototype_GameObject_Effect";
@@ -102,7 +54,7 @@ HRESULT CXibi_Loop_Thunder::Ready_Modules()
 	// Collider
 	{
 		PHYSICSCOLLIDER_DESC colliderDesc{};
-		colliderDesc.eShape = EPhysicsShape::SPHERE;
+		colliderDesc.eShape = EPhysicsShape::BOX;
 		colliderDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
 		//cloneDesc.bIsSkillTrigger = true;
 		colliderDesc.iFilterMask =

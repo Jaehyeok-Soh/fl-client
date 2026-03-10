@@ -714,7 +714,7 @@
     <ClInclude Include="..\Public\Loader.h">
       <Filter>02. Level\Loading\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ColliderPart.h">
+    <ClInclude Include="..\Public\TriggerCollidePart.h">
       <Filter>03. GameObject\PartObjects\ColliderPart</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Weapon.h">
@@ -1291,7 +1291,7 @@
     <ClCompile Include="..\Private\Loader.cpp">
       <Filter>02. Level\Loading\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ColliderPart.cpp">
+    <ClCompile Include="..\Private\TriggerCollidePart.cpp">
       <Filter>03. GameObject\PartObjects\ColliderPart</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp">

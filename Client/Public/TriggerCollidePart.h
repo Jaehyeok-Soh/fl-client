@@ -3,18 +3,28 @@
 
 NS_BEGIN(Client)
 
-class CColliderPart final : public CPartObject
+class CTriggerCollidePart final : public CPartObject
 {
 	using Super = CPartObject;
 public:
 	typedef struct tagColliderPartDesc : public CPartObject::PARTOBJ_DESC
 	{
+		PHYSICSRIGIDBODY_DESC* pRigidbodyDesc = { nullptr };
+		PHYSICSCOLLIDER_DESC* pColliderDesc = { nullptr };
 		const Matrix* pMatSocket = { nullptr };
-	}COLLIDERPART_DESC;
+		Matrix vPreScale = { Matrix::Identity };
+	}TRIGGER_COLLIDEPART_DESC;
 private:
-	CColliderPart(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CColliderPart(const CColliderPart& rhs);
-	virtual ~CColliderPart() = default;
+	enum EState
+	{
+		None = 0,
+		WithBone,
+		OnlyOwner
+	};
+private:
+	CTriggerCollidePart(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CTriggerCollidePart(const CTriggerCollidePart& rhs);
+	virtual ~CTriggerCollidePart() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -24,18 +34,17 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Update_Late(_float fTimeDelta) override;
 	virtual void Ready_Before_Render(_float fTimeDelta) override;
-	virtual void OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
-	virtual void OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual HRESULT Render() override;
 private:
-	HRESULT Ready_Components(COLLIDERPART_DESC* pDesc);
+	HRESULT Ready_Components(TRIGGER_COLLIDEPART_DESC* pDesc);
 private:
+	EState m_eState{ EState::None };
 	const Matrix* m_pMatSocket = { nullptr };
+	Matrix m_matPreScale{ Matrix::Identity };
 public:
-	static CColliderPart* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CTriggerCollidePart* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

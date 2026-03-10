@@ -33,18 +33,7 @@ HRESULT CMoon_SkillQAttack_Obj::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_Components()))
-        return E_FAIL;
-
-    Get_Component<CPhysicsRigidBody>()->Awake();
-	Get_Component<CEffectHandler>()->Setup_ForOwner(this);
-
-    return S_OK;
-}
-
-HRESULT CMoon_SkillQAttack_Obj::Awake(const _uint iCurrentLevelID)
-{
-    if (FAILED(Super::Awake(iCurrentLevelID)))
+    if (FAILED(Ready_Modules()))
         return E_FAIL;
 
     return S_OK;
@@ -60,37 +49,6 @@ void CMoon_SkillQAttack_Obj::Update_Priority(const _float fTimeDelta)
 void CMoon_SkillQAttack_Obj::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
-}
-
-void CMoon_SkillQAttack_Obj::Update_Late(const _float fTimeDelta)
-{
-    Super::Update_Late(fTimeDelta);
-}
-
-void CMoon_SkillQAttack_Obj::Ready_Before_Render(const _float fTimeDelta)
-{
-    Super::Ready_Before_Render(fTimeDelta);
-#ifdef _DEBUG
-    m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
-#endif
-}
-
-HRESULT CMoon_SkillQAttack_Obj::Render()
-{
-    if (FAILED(Super::Render()))
-        return E_FAIL;
-
-    return S_OK;
-}
-
-_bool CMoon_SkillQAttack_Obj::On_Hit(const HIT_DESC& hitDesc)
-{
-    return false;
-}
-
-void CMoon_SkillQAttack_Obj::Try_Attack(const HIT_DESC& hitDesc)
-{
-
 }
 
 void CMoon_SkillQAttack_Obj::Handle_Hit(_uint iMyLayer, _uint iOtherLayer, Engine::CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
@@ -129,82 +87,61 @@ void CMoon_SkillQAttack_Obj::Handle_Hit(_uint iMyLayer, _uint iOtherLayer, Engin
 	}
 }
 
-HRESULT CMoon_SkillQAttack_Obj::Ready_Components()
+HRESULT CMoon_SkillQAttack_Obj::Ready_Modules()
 {
-	// For. Component_EffectHandler
+	wstring wstrDefaultPrototypeTag = L"Prototype_GameObject_Effect";
+
+	// EffectModule
 	{
-		CEffectHandler::ANIM_EFFECT_HANDLER_DESC Desc{};
-		CEffectHandler::STATE_VFX_DESC SkillDesc{};
-
-		// SPAWN EFFECT
+		// FLY ( Move flag 없으면 제자리 )
 		{
-			SkillDesc.EffectPrefabTag = "Player_Moon_QSkill_AOE";//"PlayerMoon_ESkillObject";
-			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_WORLD };
-			SkillDesc.bFollowBone = { false };
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = { 0.f,0.f,0.f };
-			SkillDesc.vRotation = { Vec3::Zero };
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN, SkillDesc);
+			if (FAILED(Add_EffectModule(
+				0 /* static */,
+				"Player_Moon_QSkill_AOE",
+				wstrDefaultPrototypeTag,
+				ENUM_TO_UINT(EState::FLY))))
+				return E_FAIL;
 		}
+	}	
 
-		// Distory EFFECT
-		{
-			SkillDesc.EffectPrefabTag = "";
-			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_WORLD };
-			SkillDesc.bFollowBone = { false };
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = { Vec3::Zero };
-			SkillDesc.vRotation = { Vec3::Zero };
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY, SkillDesc);
-		}
-
-		if (FAILED(Add_Component<CEffectHandler>(/*Static*/ 0, L"Prototype_Component_EffectHandler_SkillObject", &Desc)))
-			return E_FAIL;
-	}
-
-	// For. Component_PhysicsCollider
+	// ColliderModule
 	{
-		/* 피직스 콜라이더 */
+		PHYSICSCOLLIDER_DESC colliderDesc{};
+		colliderDesc.eShape = EPhysicsShape::SPHERE;
+		colliderDesc.eFilterLayer = tagPhysicsFilterGroup::ATTACK; // todo_eunbi : player?
+		colliderDesc.iFilterMask =
 		{
-			PHYSICSCOLLIDER_DESC cloneDesc{};
-			cloneDesc.eShape = EPhysicsShape::SPHERE;
-			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::ATTACK; // todo_eunbi : player?
-			cloneDesc.iFilterMask = 
-			{
-				PHYSICSFILTERGROUP::Enum::MONSTER
-				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2
-			};
+			PHYSICSFILTERGROUP::Enum::MONSTER
+			| PHYSICSFILTERGROUP::Enum::OBJECT1
+			| PHYSICSFILTERGROUP::Enum::OBJECT2
+		};
 
-			cloneDesc.bIsTrigger = true;
-			cloneDesc.bSetOnlyFilter = false;
-			cloneDesc.bIsActive = true;
-			cloneDesc.vCenter = { 0.f, 0.f, 0.f };
-			cloneDesc.fRadius = { 8.f };
-			cloneDesc.strAttackPresetTag = "MoonSkill_Q";
-			PHYSICSMATERIAL_DESC mtrlDesc{};
-			mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
-			cloneDesc.tMaterial = mtrlDesc;
-			if (FAILED(Add_Component<CPhysicsCollider>(/* static */ 0, L"Prototype_Component_Physics_Collider", &cloneDesc)))
+		colliderDesc.bIsTrigger = true;
+		colliderDesc.bSetOnlyFilter = false;
+		colliderDesc.bIsActive = true;
+		colliderDesc.vCenter = { 0.f, 0.f, 0.f };
+		colliderDesc.fRadius = { 8.f };
+		colliderDesc.strAttackPresetTag = "MoonSkill_Q";
+		PHYSICSMATERIAL_DESC mtrlDesc{};
+		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
+		colliderDesc.tMaterial = mtrlDesc;
+
+		PHYSICSRIGIDBODY_DESC rigidbodyDesc{};
+		rigidbodyDesc.eType = EPhysicsActorType::KINEMATIC;
+		rigidbodyDesc.detection = EPhysicsCollisionDetection::DISCRETE;
+		rigidbodyDesc.bUseGravity = false;
+		rigidbodyDesc.bIsKinematic = true;
+
+		// FLY
+		{
+			if (FAILED(Add_CollideModule(
+				ENUM_TO_UINT(EState::FLY),
+				&colliderDesc,
+				&rigidbodyDesc)))
 				return E_FAIL;
 		}
 	}
 
-	// For. Component_PhysicsRigidBody
-	{
-		PHYSICSRIGIDBODY_DESC desc{};
-		desc.eType = EPhysicsActorType::KINEMATIC;
-		desc.detection = EPhysicsCollisionDetection::DISCRETE;
-		desc.bUseGravity = false;
-		desc.bIsKinematic = true;
-
-		if (FAILED(Add_Component<CPhysicsRigidBody>(/* static */ 0, L"Prototype_Component_Physics_RigidBody", &desc)))
-			return E_FAIL;
-	}
 	return S_OK;
 }
 
@@ -215,7 +152,6 @@ void CMoon_SkillQAttack_Obj::Count_CoolTime(const _float fTimeDelta)
 	{
 		m_TAttackCoolTime.x = m_TAttackCoolTime.y;
 	}
-
 }
 
 CMoon_SkillQAttack_Obj* CMoon_SkillQAttack_Obj::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

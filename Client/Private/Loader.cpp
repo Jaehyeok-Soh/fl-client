@@ -56,7 +56,7 @@
 #include "Weapon.h"
 #include "Sword.h"
 #include "Gun.h"
-#include "ColliderPart.h"
+#include "TriggerCollidePart.h"
 #include "Loader.h"
 #include "Effect.h"
 #include "Effect_WarningCircle.h"
@@ -655,7 +655,7 @@ HRESULT CLoader::Loading_For_Logo()
 		// For. Prototype_GameObject_Part_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Body",			CBody::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Part_Collider
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CColliderPart::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CTriggerCollidePart::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_ColliderModule
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszColliderModule_Prototype_Tag, 			CColliderModule::Create(m_pDevice, m_pDeviceContext));
 
