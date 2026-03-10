@@ -5,6 +5,7 @@
 #include "Collider.h"
 #include "Bounding_Sphere.h"
 #include "Bounding_Obb.h"
+#include "TextureBase.h"
 
 #pragma push_macro("new")
 #undef new
@@ -194,9 +195,10 @@ inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 		{ "SRT" , tData.vecSRTs},
 	};
 
-	if (!tData.vecClientMakePathDesc.empty())
+	/* 생성해야하는지 안하는지 */
+	if (IsExist_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath)))
 	{
-		if (IsExist_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath)))
+		if (!tData.vecClientMakePathDesc.empty())
 		{
 			auto& DescJson = SaveJson["Client Make Path Desc"];
 
@@ -213,8 +215,11 @@ inline void to_json(json& SaveJson, const DTO::TMap_MapObjectData& tData)
 				DescJson.push_back(BufferJson);
 			}
 		}
+		else
+		{
+			MSG_BOX(" Desc이 존재해야하는데 없는 거같다 조심해라 뭐가 이상하다 ");
+		}
 	}
-
 }
 
 inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
@@ -247,20 +252,28 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 	if (LoadJson.contains("SRT"))
 		tData.vecSRTs = LoadJson["SRT"].get<vector<SRT_DATA>>();
 
-	if (LoadJson.contains("Client Make Path Desc"))
+
+
+	if (IsExist_ClientMakePathDesc(tData.eClientMakePath))
 	{
-		if (IsExist_ClientMakePathDesc(tData.eClientMakePath) == true)
+		tData.vecClientMakePathDesc.clear();
+		size_t srtCount = tData.vecSRTs.size();
+
+		for (size_t i = 0; i < srtCount; ++i)
 		{
-			tData.vecClientMakePathDesc.clear();
-			for (auto& DescJson : LoadJson["Client Make Path Desc"])
+			CLIENT_MAKEPATH_DESC_BASE* pDescBase = Engine::Create_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath), nullptr);
+			if (LoadJson.contains("Client Make Path Desc") && i < LoadJson["Client Make Path Desc"].size())
 			{
-				if (DescJson.is_null()) continue;
-				CLIENT_MAKEPATH_DESC_BASE* pDescBase = Engine::Create_ClientMakePathDesc(static_cast<DTO::EClientMakePath>(tData.eClientMakePath), nullptr);
-				pDescBase->from_Json(DescJson);
-				tData.vecClientMakePathDesc.push_back(pDescBase);
+				const auto& DescJson = LoadJson["Client Make Path Desc"][i];
+				if (!DescJson.is_null())
+				{
+					pDescBase->from_Json(DescJson);
+				}
 			}
+			tData.vecClientMakePathDesc.push_back(pDescBase);
 		}
 	}
+
 }
 #pragma endregion
 
@@ -312,15 +325,19 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	{
 	case DTO::EClientMakePath::LandScape:							return pSource == nullptr ? new LANDSCAPE_DESC		: new LANDSCAPE_DESC(*static_cast<LANDSCAPE_DESC*>(pSource));
 
+	case DTO::EClientMakePath::Tree:								return pSource == nullptr ? new TREE_DESC			: new TREE_DESC(*static_cast<TREE_DESC*>(pSource));
+	case DTO::EClientMakePath::Grass:								return pSource == nullptr ? new GRASS_DESC			: new GRASS_DESC(*static_cast<GRASS_DESC*>(pSource));
+	case DTO::EClientMakePath::Vine:								return pSource == nullptr ? new VINE_DESC			: new VINE_DESC(*static_cast<VINE_DESC*>(pSource));
+	case DTO::EClientMakePath::Moss:								return pSource == nullptr ? new MOSS_DESC			: new MOSS_DESC(*static_cast<MOSS_DESC*>(pSource));
+	case DTO::EClientMakePath::Bush:								return pSource == nullptr ? new BUSH_DESC			: new BUSH_DESC(*static_cast<BUSH_DESC*>(pSource));
 
-	
+	case DTO::EClientMakePath::Water:								return pSource == nullptr ? new WATER_DESC			: new WATER_DESC(*static_cast<WATER_DESC*>(pSource));
 		/* Batch Object 관련 */
-	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC : new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
-	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC : new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
-
+	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC	: new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC	: new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
 		/* Trigger Box 관련 */
-	case DTO::EClientMakePath::TriggerBox_ChangeLevel:				return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC : new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
-	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC : new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_ChangeLevel:				return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC				: new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC			: new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	return pSource == nullptr ? new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC : new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC(*static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pSource));
 
 
@@ -401,6 +418,223 @@ void LANDSCAPE_DESC::to_Json(json& SaveJson)
 
 #pragma endregion
 
+#pragma region	Plants
+
+void PLANTS_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Plants"))
+	{
+		const auto& Plants_LoadJson = LoadJson["Plants"];
+		if (Plants_LoadJson.contains("Color"))
+		{
+			Engine_Utils::read_vec4_xyzw(Plants_LoadJson["Color"],this->vMITint_Color);
+		}
+	}
+}
+
+void PLANTS_DESC::to_Json(json& SaveJson)
+{
+	auto& Plants_SaveJson = SaveJson["Plants"];
+
+	Engine_Utils::write_vec4_xyzw(Plants_SaveJson["Color"],this->vMITint_Color);
+
+}
+
+#pragma region Tree
+
+void TREE_DESC::from_Json(const json& LoadJson)
+{
+	this->PLANTS_DESC::from_Json(LoadJson);
+
+	/* 그다음 나무 Desc Load */
+}
+
+void TREE_DESC::to_Json(json& SaveJson)
+{
+	this->PLANTS_DESC::to_Json(SaveJson);
+
+	/* 그다움 나무 Desc Save */
+
+}
+
+#pragma endregion
+
+
+#pragma region Moss
+
+void MOSS_DESC::from_Json(const json& LoadJson)
+{
+	this->PLANTS_DESC::from_Json(LoadJson);
+
+	/* 그다음 나무 Desc Load */
+}
+
+void MOSS_DESC::to_Json(json& SaveJson)
+{
+	this->PLANTS_DESC::to_Json(SaveJson);
+
+	/* 그다움 나무 Desc Save */
+
+}
+
+#pragma endregion
+
+
+#pragma region Grass
+
+void GRASS_DESC::from_Json(const json& LoadJson)
+{
+	this->PLANTS_DESC::from_Json(LoadJson);
+
+	/* 그다음 나무 Desc Load */
+}
+
+void GRASS_DESC::to_Json(json& SaveJson)
+{
+	this->PLANTS_DESC::to_Json(SaveJson);
+
+	/* 그다움 나무 Desc Save */
+
+}
+
+#pragma endregion
+
+
+#pragma region Vine
+
+void VINE_DESC::from_Json(const json& LoadJson)
+{
+	this->PLANTS_DESC::from_Json(LoadJson);
+
+	/* 그다음 나무 Desc Load */
+}
+
+void VINE_DESC::to_Json(json& SaveJson)
+{
+	this->PLANTS_DESC::to_Json(SaveJson);
+
+	/* 그다움 나무 Desc Save */
+
+}
+
+#pragma endregion
+
+
+#pragma region Bush
+
+void BUSH_DESC::from_Json(const json& LoadJson)
+{
+	this->PLANTS_DESC::from_Json(LoadJson);
+
+	/* 그다음 나무 Desc Load */
+}
+
+void BUSH_DESC::to_Json(json& SaveJson)
+{
+	this->PLANTS_DESC::to_Json(SaveJson);
+
+	/* 그다움 나무 Desc Save */
+
+}
+
+#pragma endregion
+
+
+#pragma endregion
+
+#pragma region Env
+
+#pragma region Water
+
+
+WATER_DESC::WATER_DESC(const WATER_DESC& rhs)
+	: CLIENT_MAKEPATH_DESC_BASE(rhs), arrayTextureBase{ rhs.arrayTextureBase }, vMI_TintColor{rhs.vMI_TintColor}
+{
+	for (auto& Tex : arrayTextureBase)
+		Safe_AddRef(Tex);
+}
+
+WATER_DESC::~WATER_DESC()
+{
+	for (auto& TexBase : this->arrayTextureBase)
+		Safe_Release(TexBase);
+}
+
+
+void WATER_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Color"))
+	{
+		Engine_Utils::read_vec4_xyzw(LoadJson["Color"],this->vMI_TintColor);
+	}
+	if (LoadJson.contains("Speed 1"))
+	{
+		Engine_Utils::read_vec2_xy(LoadJson["Speed 1"], this->vSpeed1);
+	}
+	if (LoadJson.contains("Speed 2"))
+	{
+		Engine_Utils::read_vec2_xy(LoadJson["Speed 2"], this->vSpeed2);
+	}
+
+
+	if (LoadJson.contains("Texture Names"))
+	{
+		const json& TextureNames_LoadJson = LoadJson["Texture Names"];
+
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+		for (_uint i = 0; i < ENUM_TO_UINT(EWaterTextureType::END); ++i)
+		{
+			string strTextureKeyName = WaterTextureType_ToString(static_cast<EWaterTextureType>(i));
+			if (TextureNames_LoadJson.contains(strTextureKeyName))
+			{
+				wstring wstrTextureName = Engine_Utils::ToWString(TextureNames_LoadJson[strTextureKeyName].get<string>());
+				if (wstrTextureName == L"None")
+					continue;
+
+				CTextureBase* pTexBase = pGameInstance->GetOrAddTexture(L"Texture_" + wstrTextureName , nullptr);
+				if (pTexBase == nullptr)
+				{
+					MSG_BOX("Water Texture 연동중 문제 발생");
+					continue;
+				}
+				this->arrayTextureBase[i] = pTexBase;
+			}
+		}
+	}
+}
+
+void WATER_DESC::to_Json(json& SaveJson)
+{
+	
+	Engine_Utils::write_vec4_xyzw(SaveJson["Color"] , this->vMI_TintColor );
+	Engine_Utils::write_vec2_xy(SaveJson["Speed 1"],this->vSpeed1);
+	Engine_Utils::write_vec2_xy(SaveJson["Speed 2"],this->vSpeed2);
+
+	auto& Texture_SaveJson = SaveJson["Texture Names"];;
+
+	for (_uint i = 0; i < ENUM_TO_UINT(EWaterTextureType::END); ++i)
+	{
+		string strTextureName{};
+		CTextureBase* pTexBase{ nullptr };
+		pTexBase = this->arrayTextureBase[i];
+		if (!pTexBase)
+		{
+			strTextureName = "None";
+		}
+		else
+		{
+			strTextureName = Engine_Utils::ToString(pTexBase->Get_Name());
+		}
+		Texture_SaveJson[WaterTextureType_ToString(static_cast<EWaterTextureType>(i))] = strTextureName;
+	}
+}
+
+#pragma endregion
+
+#pragma endregion
+
+
 #pragma region Batch Monster
 
 void BATCH_MONSTER_DESC::from_Json(const json& LoadJson)
@@ -419,103 +653,6 @@ void BATCH_MONSTER_DESC::to_Json(json& SaveJson)
 #pragma endregion 
 
 #pragma region Batch Object
-
-
-#pragma region Battle Field
-
-BATTLE_FIELD_DESC::BATTLE_FIELD_DESC()
-	: fRadius{1.f}, vExtents{ 1.f,1.f,1.f }, pBattleFieldColliderBox{ nullptr }, pBattleFieldColliderSphere{ nullptr }, eFieldType{ Field_Type::Box }
-{
-}
-
-BATTLE_FIELD_DESC::BATTLE_FIELD_DESC(const BATTLE_FIELD_DESC& rhs)
-	: fRadius{rhs.fRadius }, vExtents{ rhs.vExtents }, pBattleFieldColliderSphere{ rhs.pBattleFieldColliderSphere }, pBattleFieldColliderBox{ rhs.pBattleFieldColliderBox }, eFieldType{ rhs.eFieldType }
-{
-}
-BATTLE_FIELD_DESC::~BATTLE_FIELD_DESC()
-{
-	Safe_Release(pBattleFieldColliderSphere);
-	Safe_Release(pBattleFieldColliderBox);
-}
-
-void BATTLE_FIELD_DESC::Update_Collider(const Matrix* pWorldMatrix)
-{
-	if (!pBattleFieldColliderSphere)
-		return;
-	if (!pBattleFieldColliderBox)
-		return;
-
-	/* 위치 + Rotation 만 빼와서 Update 해주자 */
-
-
-	if (eFieldType == BATTLE_FIELD_DESC::Field_Type::Box)
-	{
-		static_cast<BoundingOrientedBox*>(static_cast<CBounding_OBB*>(pBattleFieldColliderBox->Get_Bounding())->Get_OriginalDesc())->Extents = this->vExtents;
-		if (pWorldMatrix)
-		{
-			Vec3 vPosition{}, vScale{};
-			Quat vQuat{};
-
-			Matrix World = *pWorldMatrix;
-			World.Decompose(vScale, vQuat, vPosition);
-
-			World = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
-			pBattleFieldColliderBox->Update(World);
-		}
-	}
-	else if (eFieldType == BATTLE_FIELD_DESC::Field_Type::Sphere)
-	{
-		static_cast<BoundingSphere*>(static_cast<CBounding_Sphere*>(pBattleFieldColliderSphere->Get_Bounding())->Get_OriginalDesc())->Radius = this->fRadius;
-
-		if (pWorldMatrix)
-		{
-			Vec3 vPosition{}, vScale{};
-			Quat vQuat{};
-
-			Matrix World = *pWorldMatrix;
-			World.Decompose(vScale, vQuat, vPosition);
-
-			World = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
-			pBattleFieldColliderSphere->Update(World);
-		}
-		/* 나중에 Rotation 값을 실제 SRT Rotation 값으로 들어가면 될거 같기도하고... */
-	}
-}
-
-void BATTLE_FIELD_DESC::from_Json(const json& LoadJson)
-{
-	if (LoadJson.contains("Field Type"))
-	{
-		this->eFieldType = BATTLE_FIELD_DESC::FieldType_ToEnum(LoadJson["Field Type"].get<string>());
-	}
-
-	if (LoadJson.contains("Radius"))
-	{	
-		this->fRadius = LoadJson["Radius"];
-	}
-	if (LoadJson.contains("Extents"))
-	{
-		Engine_Utils::read_vec3_xyz(LoadJson["Extents"],this->vExtents);
-	}
-
-}
-void BATTLE_FIELD_DESC::to_Json(json& SaveJson)
-{
-	SaveJson["Field Type"] = BATTLE_FIELD_DESC::FieldType_ToString(this->eFieldType);
-
-	if (this->eFieldType == BATTLE_FIELD_DESC::Field_Type::Box)
-	{
-		Engine_Utils::write_vec3_xyz(SaveJson["Extents"], this->vExtents);
-	}
-	else
-	{
-		SaveJson["Radius"] = this->fRadius;
-	}
-}
-
-#pragma endregion
-
-#pragma region Batch Object Desc
 
 void BATCH_OBJECT_DESC::Change_BatchObjecType(DTO::EMakeObjectType eChangeType)
 {
@@ -561,9 +698,100 @@ void BATCH_OBJECT_DESC::to_Json(json& SaveJson)
 		pBatchObjectDesc->to_Json(BatchObjectDesc_SaveJson["Desc"]);
 }
 
-#pragma region 
+#pragma endregion
+
+#pragma region Battle Field
+
+BATTLE_FIELD_DESC::BATTLE_FIELD_DESC()
+	: fRadius{ 1.f }, vExtents{ 1.f,1.f,1.f }, pBattleFieldColliderBox{ nullptr }, pBattleFieldColliderSphere{ nullptr }, eFieldType{ Field_Type::Box }
+{
+}
+BATTLE_FIELD_DESC::BATTLE_FIELD_DESC(const BATTLE_FIELD_DESC& rhs)
+	: fRadius{ rhs.fRadius }, vExtents{ rhs.vExtents }, pBattleFieldColliderSphere{ rhs.pBattleFieldColliderSphere }, pBattleFieldColliderBox{ rhs.pBattleFieldColliderBox }, eFieldType{ rhs.eFieldType }
+{
+}
+BATTLE_FIELD_DESC::~BATTLE_FIELD_DESC()
+{
+	Safe_Release(pBattleFieldColliderSphere);
+	Safe_Release(pBattleFieldColliderBox);
+}
+void BATTLE_FIELD_DESC::Update_Collider(const Matrix* pWorldMatrix)
+{
+	if (!pBattleFieldColliderSphere)
+		return;
+	if (!pBattleFieldColliderBox)
+		return;
+
+	/* 위치 + Rotation 만 빼와서 Update 해주자 */
+
+
+	if (eFieldType == BATTLE_FIELD_DESC::Field_Type::Box)
+	{
+		static_cast<BoundingOrientedBox*>(static_cast<CBounding_OBB*>(pBattleFieldColliderBox->Get_Bounding())->Get_OriginalDesc())->Extents = this->vExtents;
+		if (pWorldMatrix)
+		{
+			Vec3 vPosition{}, vScale{};
+			Quat vQuat{};
+
+			Matrix World = *pWorldMatrix;
+			World.Decompose(vScale, vQuat, vPosition);
+
+			World = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
+			pBattleFieldColliderBox->Update(World);
+		}
+	}
+	else if (eFieldType == BATTLE_FIELD_DESC::Field_Type::Sphere)
+	{
+		static_cast<BoundingSphere*>(static_cast<CBounding_Sphere*>(pBattleFieldColliderSphere->Get_Bounding())->Get_OriginalDesc())->Radius = this->fRadius;
+
+		if (pWorldMatrix)
+		{
+			Vec3 vPosition{}, vScale{};
+			Quat vQuat{};
+
+			Matrix World = *pWorldMatrix;
+			World.Decompose(vScale, vQuat, vPosition);
+
+			World = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(vPosition);
+			pBattleFieldColliderSphere->Update(World);
+		}
+		/* 나중에 Rotation 값을 실제 SRT Rotation 값으로 들어가면 될거 같기도하고... */
+	}
+}
+void BATTLE_FIELD_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Field Type"))
+	{
+		this->eFieldType = BATTLE_FIELD_DESC::FieldType_ToEnum(LoadJson["Field Type"].get<string>());
+	}
+
+	if (LoadJson.contains("Radius"))
+	{
+		this->fRadius = LoadJson["Radius"];
+	}
+	if (LoadJson.contains("Extents"))
+	{
+		Engine_Utils::read_vec3_xyz(LoadJson["Extents"], this->vExtents);
+	}
+
+}
+void BATTLE_FIELD_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Field Type"] = BATTLE_FIELD_DESC::FieldType_ToString(this->eFieldType);
+
+	if (this->eFieldType == BATTLE_FIELD_DESC::Field_Type::Box)
+	{
+		Engine_Utils::write_vec3_xyz(SaveJson["Extents"], this->vExtents);
+	}
+	else
+	{
+		SaveJson["Radius"] = this->fRadius;
+	}
+}
 
 #pragma endregion
+
+
 
 #pragma region Trigger Box
 

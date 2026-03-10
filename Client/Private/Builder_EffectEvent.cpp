@@ -2,7 +2,6 @@
 #include "Builder_EffectEvent.h"
 #include "DataDocument_EffectEvent.h"
 #include "EffectHandler.h"
-#include "Engine_Utils.h"
 #include "GameInstance.h"
 
 CBuilder_EffectEvent::CBuilder_EffectEvent(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)

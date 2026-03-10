@@ -29,7 +29,25 @@ class CLevelData;
 class CPanel_MapObjectList;
 
 using MapObjectCloneFactory = std::function<CGameObject*(void* pArg)>;
-using PairKey = std::pair<wstring, vector<wstring>>;
+
+/*  EClinetMakePath 값 체크*/
+
+struct UEDataBindKey
+{
+	wstring					wstrModelPath{};
+	vector<wstring>			vecMaterialNames{};
+	Tool::EClientMakePath	eClientMakeType{ Tool::EClientMakePath::END };
+	inline _bool	operator==(const UEDataBindKey& other) const
+	{
+		return std::tie(eClientMakeType, wstrModelPath, vecMaterialNames) < std::tie(other.eClientMakeType, other.wstrModelPath, other.vecMaterialNames);
+	}
+	inline bool operator<(const UEDataBindKey& other) const
+	{
+		return std::tie(eClientMakeType , wstrModelPath , vecMaterialNames) < std::tie(other.eClientMakeType, other.wstrModelPath, other.vecMaterialNames);
+	}
+};
+
+using PairKey = std::pair<vector<uintptr_t>, Tool::EClientMakePath>;
 
 
 
@@ -169,6 +187,8 @@ public:
 	HRESULT						Save_TextureSplatingInfoData(const wstring& wstrSaveName);
 	HRESULT						UnRegister_MapTexture();
 public:
+	HRESULT						Set_GPU_DiscardColor();
+public:
 	void						Update(float DT);
 	void						Input_Update(float DT);
 	void						Mouse_Update(float DT);
@@ -233,6 +253,8 @@ public:
 	HRESULT						Update_Camera_Cinematic_Sequence_Names();
 
 	HRESULT						Ready_CinematicSequenceDebugRender();
+public:
+	void						Select_MapTexture();
 private:
 	/* Camera Cinematic Sequence 관련 데이터를 복사로 받아와서 작업하고 저장하는용도 */	
 	Camera_Cinematic_Sequence*	m_pCamCinematicSequence{nullptr};
@@ -294,6 +316,7 @@ private:
 	unordered_map< wstring , vector<CTextureBase*>>						m_umapMapTextures{};
 
 	CShader*															m_pMesh_Shader{nullptr};
+	CShader*															m_pInstMesh_Shader{nullptr};
 
 
 
@@ -309,6 +332,20 @@ private:
 
 
 	CLevelData*															m_pLevelData{nullptr};
+
+
+
+	/* Discard Test 용 */
+	Vec4																m_vDiscardColor{0.1f,0.1f ,0.1f ,0.1f };
+
+
+	/* Map Texture Binding 함수용 */
+	CTextureBase**				m_ppTargetSlot{nullptr};
+	_bool						m_isTexArraySelect{false};
+	_bool						m_isTex_DH_ArraySelect{false};
+	_bool						m_isTex_NBR_ArraySelect{false};
+	wstring						m_selectedCategoryName{L""};
+
 
 private:
 	virtual void Free() override;

@@ -106,10 +106,11 @@ void CCameraMan::Cinematic(const _float fTimeDelta)
 
     if (m_iCurFrameIndex + 1 >= iSize)
     {
-        /* Level_Type */
+        /* 시네마틱 삭제 */
         m_isCinematicEvent = false;
         m_fDeltaTime = 0;
         m_iCurFrameIndex = 0;
+        m_pCinematicSquence->BroadCast(false);
         m_pCinematicSquence = nullptr;
         return;
     }
@@ -202,8 +203,8 @@ void CCameraMan::Cinematic(const _float fTimeDelta)
             m_isCinematicEvent  = false;
             m_fDeltaTime        = 0;
             m_iCurFrameIndex    = 0;
-            m_pCinematicSquence = nullptr;
             m_pCinematicSquence->BroadCast(false);
+            m_pCinematicSquence = nullptr;
         }
     }
 

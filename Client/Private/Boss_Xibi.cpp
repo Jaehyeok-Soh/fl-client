@@ -169,6 +169,13 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 		m_pGameInstance->Request_Effect("VFX_Sword_Hit", Desc);
 	}
 
+	if (result == true)
+	{
+		EGroggyState eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
+		if (eGroggy == EGroggyState::None)
+			return result;
+		Get_Component<CMonsterControlContext>()->Set_Groggy(eGroggy);
+	}
 	return result;
 }
 

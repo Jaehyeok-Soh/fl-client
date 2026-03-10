@@ -6,6 +6,7 @@
 CTree::CTree(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CPlants(pDevice ,pDeviceContext)
 {
+	m_ePlantsType = CPlants::Type::Tree;
 }
 
 CTree::CTree(const CTree& rhs)
@@ -69,16 +70,8 @@ void CTree::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CTree::Render()
 {
-	if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-	{
-		if (FAILED(Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Tree))))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Tree))))
-			return E_FAIL;
-	}
+	if (FAILED(Super::Render_Plnats(ENUM_TO_UINT(EMapObjectShaderPass::Tree))))
+		return E_FAIL;
 
 	return S_OK;
 }

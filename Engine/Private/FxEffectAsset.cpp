@@ -1,6 +1,5 @@
 #include "Engine_pch.h"
 #include "FxEffectAsset.h"
-#include "Engine_Utils.h"
 
 CFxEffectAsset::CFxEffectAsset(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)

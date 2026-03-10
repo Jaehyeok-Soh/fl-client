@@ -241,7 +241,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Player_SkillObjPool()
 {
 	// Moon skil E
 	{
-		CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+		CMoon_SkillE_Obj::GAMEOBJECT_DESC desc{};
 		//TRANSFORM_DESC
 		CTransform::TRANSFORM_DESC tTransDesc = {};
 		tTransDesc.fMovePerSec = 20.f;
@@ -274,7 +274,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Player_SkillObjPool()
 
 	// Moon skil Q attack
 	{
-		CMoon_SkillQAttack_Obj::SKILLOBJECT_DESC desc{};
+		CMoon_SkillQAttack_Obj::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
 			0,
 			g_wszPool_MoonSkillQAttack,
@@ -365,7 +365,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Map()
 		return E_FAIL;
 
 	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Tutorial_Village.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Village/Prologue_Village.json";
 
 	if (!std::filesystem::exists(FilePath))
 		return E_FAIL;

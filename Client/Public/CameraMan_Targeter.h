@@ -1,6 +1,7 @@
 #pragma once
 #include "CameraMan.h"
 
+
 NS_BEGIN(Engine)
 class CBone;
 class CGameObject;
@@ -18,6 +19,7 @@ enum class TargeterState : _uint
 	TARGETSYNC,
 	GUN,			// tps cam
 	SKILL_SEQUENCE,
+	CINEMATIC,
 	END
 };
 

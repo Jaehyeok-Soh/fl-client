@@ -7,7 +7,7 @@
 #include "CameraMan.h"
 
 CPanel_MapTool::CPanel_MapTool(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_szBuffer{}, m_isTexArraySelect{ false }, m_szTextureSplatingInfoData_SaveName{}, m_iSelectTextureSplatingInfoData{}
+	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_szBuffer{}, m_szTextureSplatingInfoData_SaveName{}, m_iSelectTextureSplatingInfoData{}
 	, m_vecTextureSplatingInfoDataName{}
 	, m_szLevelTypeName{}
 	, m_szCameraCinematicSequence_SaveName{}
@@ -260,8 +260,8 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 		if (ImGui::ImageButton(" Bind Texture##Base", m_pMapToolManager->m_tTextureSplattingInfo.pBase_Texture == nullptr ? (ImTextureID)m_pDefaultSRV :
 			(ImTextureID)m_pMapToolManager->m_tTextureSplattingInfo.pBase_Texture->Get_SRV(), ImVec2(32, 32)))
 		{
-			m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.pBase_Texture;
-			m_isTexArraySelect = false;
+			m_pMapToolManager->m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.pBase_Texture;
+			m_pMapToolManager->m_isTexArraySelect = false;
 			ImGui::OpenPopup("Texture_Select_Modal");
 		}
 
@@ -298,9 +298,9 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 		if (ImGui::ImageButton(" Bind Texture##Mix_DH ", m_pMapToolManager->m_tTextureSplattingInfo.pMix_DH_Tile_Texture == nullptr ? (ImTextureID)m_pDefaultSRV :
 			(ImTextureID)m_pMapToolManager->m_tTextureSplattingInfo.vecDHTextureArraySlices[0], ImVec2(32, 32)))
 		{
-			m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.pMix_DH_Tile_Texture;
-			m_isTex_DH_ArraySelect = true;
-			m_isTexArraySelect = true;
+			m_pMapToolManager->m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.pMix_DH_Tile_Texture;
+			m_pMapToolManager->m_isTex_DH_ArraySelect = true;
+			m_pMapToolManager->m_isTexArraySelect = true;
 			ImGui::OpenPopup("Texture_Select_Modal");
 		}
 
@@ -313,9 +313,9 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 		if (ImGui::ImageButton(" Bind Texture##Mix_NBR ", m_pMapToolManager->m_tTextureSplattingInfo.pMix_NBR_Tile_Texture == nullptr ? (ImTextureID)m_pDefaultSRV :
 			(ImTextureID)m_pMapToolManager->m_tTextureSplattingInfo.vecNBRTextureArraySlices[0], ImVec2(32, 32)))
 		{
-			m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.pMix_NBR_Tile_Texture;
-			m_isTexArraySelect = true;
-			m_isTex_NBR_ArraySelect = true;
+			m_pMapToolManager->m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.pMix_NBR_Tile_Texture;
+			m_pMapToolManager->m_isTexArraySelect = true;
+			m_pMapToolManager->m_isTex_NBR_ArraySelect = true;
 			ImGui::OpenPopup("Texture_Select_Modal");
 		}
 
@@ -361,8 +361,8 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 				if (ImGui::ImageButton(" Bind Texture##Mix_RGBA ", isRGBATextureBinding ? (ImTextureID)m_pMapToolManager->m_tTextureSplattingInfo.tMix_RGBA_Info.vecMixRGBATexture[i]->Get_SRV() : (ImTextureID)m_pDefaultSRV,ImVec2(32, 32)))
 				{
-					m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.tMix_RGBA_Info.vecMixRGBATexture[i];
-					m_isTexArraySelect = false;
+					m_pMapToolManager->m_ppTargetSlot = &m_pMapToolManager->m_tTextureSplattingInfo.tMix_RGBA_Info.vecMixRGBATexture[i];
+					m_pMapToolManager->m_isTexArraySelect = false;
 					ImGui::OpenPopup("Texture_Select_Modal");
 				}
 #pragma endregion
@@ -506,6 +506,9 @@ HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const
 
 void CPanel_MapTool::Select_MapTexture()
 {
+	m_pMapToolManager->Select_MapTexture();
+	return;
+
 	_bool isChangeTexture				{false};
 	_bool isChangeTextureArray			{false};
 	_bool isChange_DH_TextureArray		{false};
@@ -528,11 +531,11 @@ void CPanel_MapTool::Select_MapTexture()
 
 		if (ImGui::Button("Clear Selection (None)", ImVec2(clearBtnWidth, 0)))
 		{
-			if (m_ppTargetSlot != nullptr)
+			if (m_pMapToolManager->m_ppTargetSlot != nullptr)
 			{
-				Safe_Release(*m_ppTargetSlot);
-				*m_ppTargetSlot = nullptr;
-				m_ppTargetSlot = nullptr;
+				Safe_Release(*m_pMapToolManager->m_ppTargetSlot);
+				*m_pMapToolManager->m_ppTargetSlot = nullptr;
+				m_pMapToolManager->m_ppTargetSlot = nullptr;
 				isChangeTexture = true;
 			}
 			ImGui::CloseCurrentPopup();
@@ -556,11 +559,11 @@ void CPanel_MapTool::Select_MapTexture()
 			{
 				wstring currentCategoryW = pair.first;
 				string currentCategoryStr = Engine_Utils::ToString(currentCategoryW);
-				bool isSelected = (m_selectedCategoryName == currentCategoryW);
+				bool isSelected = (m_pMapToolManager->m_selectedCategoryName == currentCategoryW);
 
 				if (ImGui::Selectable(currentCategoryStr.c_str(), isSelected))
 				{
-					m_selectedCategoryName = currentCategoryW;
+					m_pMapToolManager->m_selectedCategoryName = currentCategoryW;
 
 				}
 			}
@@ -571,7 +574,7 @@ void CPanel_MapTool::Select_MapTexture()
 
 		ImGui::BeginChild("RightPane", ImVec2(rightPaneWidth, paneHeight), true);
 		{
-			auto iter = m_pMapToolManager->m_umapMapTextures.find(m_selectedCategoryName);
+			auto iter = m_pMapToolManager->m_umapMapTextures.find(m_pMapToolManager->m_selectedCategoryName);
 
 			if (iter == m_pMapToolManager->m_umapMapTextures.end())
 			{
@@ -600,7 +603,7 @@ void CPanel_MapTool::Select_MapTexture()
 
 					isTextureArray = (desc.ViewDimension == D3D11_SRV_DIMENSION_TEXTURE2DARRAY);
 
-					isCompatible = (m_isTexArraySelect == isTextureArray);
+					isCompatible = (m_pMapToolManager->m_isTexArraySelect == isTextureArray);
 
 					ImGui::BeginGroup();
 					{
@@ -608,17 +611,17 @@ void CPanel_MapTool::Select_MapTexture()
 
 						if (ImGui::ImageButton("##TexBtn", (ImTextureID)pSRV, ImVec2(button_sz, button_sz)))
 						{
-							if (isCompatible && m_ppTargetSlot != nullptr)
+							if (isCompatible && m_pMapToolManager->m_ppTargetSlot != nullptr)
 							{
-								Safe_Release(*m_ppTargetSlot);
-								*m_ppTargetSlot = pTex;        
-								Safe_AddRef(*m_ppTargetSlot); 
+								Safe_Release(*m_pMapToolManager->m_ppTargetSlot);
+								*m_pMapToolManager->m_ppTargetSlot = pTex;
+								Safe_AddRef(*m_pMapToolManager->m_ppTargetSlot);
 
-								m_ppTargetSlot = nullptr;      
+								m_pMapToolManager->m_ppTargetSlot = nullptr;
 								isChangeTexture = true;  
 								isChangeTextureArray = isTextureArray;
-								isChange_DH_TextureArray = m_isTex_DH_ArraySelect;
-								isChange_NBR_TextureArray = m_isTex_NBR_ArraySelect;
+								isChange_DH_TextureArray = m_pMapToolManager->m_isTex_DH_ArraySelect;
+								isChange_NBR_TextureArray = m_pMapToolManager->m_isTex_NBR_ArraySelect;
 							}
 							ImGui::CloseCurrentPopup();
 						}
@@ -667,10 +670,10 @@ void CPanel_MapTool::Select_MapTexture()
 		ImGui::Separator();
 		if (ImGui::Button("Cancel", ImVec2(120, 0)))
 		{
-			m_ppTargetSlot = nullptr;
-			m_isTex_DH_ArraySelect = false;
-			m_isTex_NBR_ArraySelect = false;
-			m_isTexArraySelect = false;
+			m_pMapToolManager->m_ppTargetSlot = nullptr;
+			m_pMapToolManager->m_isTex_DH_ArraySelect = false;
+			m_pMapToolManager->m_isTex_NBR_ArraySelect = false;
+			m_pMapToolManager->m_isTexArraySelect = false;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -683,14 +686,14 @@ void CPanel_MapTool::Select_MapTexture()
 		m_pMapToolManager->Bind_Mix_RGBA_Texture();
 		if (isChangeTextureArray)
 		{
-			if (m_isTex_DH_ArraySelect)
+			if (m_pMapToolManager->m_isTex_DH_ArraySelect)
 				m_pMapToolManager->Slice_DH_Texture();
-			if (m_isTex_NBR_ArraySelect)
+			if (m_pMapToolManager->m_isTex_NBR_ArraySelect)
 				m_pMapToolManager->Slice_NBR_Texture();
 
-			m_isTex_DH_ArraySelect = false;
-			m_isTex_NBR_ArraySelect = false;
-			m_isTexArraySelect = false;
+			m_pMapToolManager->m_isTex_DH_ArraySelect = false;
+			m_pMapToolManager->m_isTex_NBR_ArraySelect = false;
+			m_pMapToolManager->m_isTexArraySelect = false;
 
 		}
 	}
@@ -841,6 +844,44 @@ HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 	ImGui::Separator();
 
 #pragma endregion
+
+#pragma region Discard Color
+
+	if (ImGui::TreeNode(" Dicard Color Setting "))
+	{
+		ImGui::Spacing();
+		ImGui::Text("Adjust Values (Speed: 0.005)");
+
+		// Vec4 구조체의 시작 주소를 float 포인터로 받아옵니다.
+		// 배열처럼 [0], [1], [2], [3] 으로 R, G, B, A에 접근할 수 있습니다.
+		float* pColor = (float*)&m_pMapToolManager->m_vDiscardColor;
+
+		bool bIsChanged = false;
+
+		// 한 줄에 하나씩! 싹싹 잘 보이게 DragFloat를 4번 따로 만듭니다.
+		bIsChanged |= ImGui::DragFloat("R (Red)", &pColor[0], 0.005f, 0.0f, 1.0f, "%.3f");
+		bIsChanged |= ImGui::DragFloat("G (Green)", &pColor[1], 0.005f, 0.0f, 1.0f, "%.3f");
+		bIsChanged |= ImGui::DragFloat("B (Blue)", &pColor[2], 0.005f, 0.0f, 1.0f, "%.3f");
+		bIsChanged |= ImGui::DragFloat("A (Alpha)", &pColor[3], 0.005f, 0.0f, 1.0f, "%.3f");
+
+		if (bIsChanged)
+		{
+			m_pMapToolManager->Set_GPU_DiscardColor();
+		}
+
+		ImGui::Spacing();
+
+		// 직관적으로 무슨 색인지 눈으로 확인하기 위한 컬러 픽커 (선택 사항)
+		ImGui::ColorEdit4("Preview Color", pColor, ImGuiColorEditFlags_NoInputs);
+
+		ImGui::Spacing();
+		ImGui::Separator();
+
+		ImGui::TreePop();
+	}
+
+#pragma endregion
+
 
 	ImGui::SeparatorText("Make Map Object Setting");
 

@@ -80,7 +80,7 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	Get_Component<CPhysicsCCT>()->Ready_Position();
-
+	
 	return S_OK;
 }
 
@@ -344,7 +344,6 @@ HRESULT CMonster_Base::Ready_EffectHandler(void* pArg)
 		return E_FAIL;
 
 	m_pEffectHandler = Get_Component<CEffectHandler>();
-
 	return S_OK;
 }
 

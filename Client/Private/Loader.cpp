@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "Engine_Utils.h"
 //=================
 // Component
 //=================
@@ -57,17 +56,17 @@
 #include "Weapon.h"
 #include "Sword.h"
 #include "Gun.h"
-#include "ColliderPart.h"
+#include "TriggerCollidePart.h"
 #include "Loader.h"
 #include "Effect.h"
 #include "Effect_WarningCircle.h"
 #include "EffectObject.h"
 #include "BattleField.h"
+#include "ColliderModule.h"
 #include "PartEffect.h"
 #include "Moon_SkillE_Obj.h"
-#include "Hybrid_WarningSpace.h"
+#include "SkillWarningSpace.h"
 #include "SocketObject.h"
-
 
 //=================
 // SkillObject
@@ -296,12 +295,6 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(Ready_Spawner()))
 		return E_FAIL;
 
-
-
-	/* Cinematic Data Load */
-	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
-		return E_FAIL;
-
 #pragma region Register Global Event
 	/////////////////////////////////////////
 	/////////// Ready GlobalEvent ///////////
@@ -309,6 +302,7 @@ HRESULT CLoader::Loading_For_Logo()
 	/* Global */
 	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
 	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
 
 	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
 	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
@@ -321,6 +315,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma endregion
 
+	/* Cinematic Data Load */
+	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
+		return E_FAIL;
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
@@ -657,19 +654,22 @@ HRESULT CLoader::Loading_For_Logo()
 		// For. Prototype_GameObject_Part_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Body",			CBody::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Part_Collider
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CColliderPart::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CTriggerCollidePart::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_ColliderModule
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszColliderModule_Prototype_Tag, 			CColliderModule::Create(m_pDevice, m_pDeviceContext));
+
 
 		// 이펙트 Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_WarningCircle", CEffect_WarningCircle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Hybrid_WarningSpace",	CHybrid_WarningSpace::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_WarningSpace",			CSkillWarningSpace::Create(m_pDevice, m_pDeviceContext));
 		
 		// Projectile
 
 		// player effect object
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,							CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillQAttack_Prototype_Tag,						CMoon_SkillQAttack_Obj::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,				CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillQAttack_Prototype_Tag,			CMoon_SkillQAttack_Obj::Create(m_pDevice, m_pDeviceContext));
 
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
@@ -1175,7 +1175,7 @@ HRESULT CLoader::Ready_Spawner()
 		desc.wstrSkillPoolTag = g_wszPool_MoonSkillE; // 스킬 poot에서 꺼내올 오브젝트 태그
 		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
 		desc.fLifeTime = 3.5f;
-		//desc.fSpeed = 50.f;
+		desc.fSpeed = 20.f;
 
 		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillE,
 			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))

@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Moon_SkillE_Obj.h"
-#include "EffectHandler.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 
@@ -33,11 +32,8 @@ HRESULT CMoon_SkillE_Obj::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Modules()))
 		return E_FAIL;
-
-	Get_Component<CPhysicsRigidBody>()->Awake();
-	Get_Component<CEffectHandler>()->Setup_ForOwner(this);
 
 	return S_OK;
 }
@@ -48,81 +44,6 @@ HRESULT CMoon_SkillE_Obj::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	return S_OK;
-}
-
-void CMoon_SkillE_Obj::Update_Priority(const _float fTimeDelta)
-{
-	Super::Update_Priority(fTimeDelta);
-}
-
-void CMoon_SkillE_Obj::Update(const _float fTimeDelta)
-{
-	Super::Update(fTimeDelta);
-}
-
-void CMoon_SkillE_Obj::Update_Late(const _float fTimeDelta)
-{
-	Super::Update_Late(fTimeDelta);
-}
-
-void CMoon_SkillE_Obj::Ready_Before_Render(const _float fTimeDelta)
-{
-	Super::Ready_Before_Render(fTimeDelta);
-#ifdef _DEBUG
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
-#endif
-}
-
-HRESULT CMoon_SkillE_Obj::Render()
-{
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-void CMoon_SkillE_Obj::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-
-}
-
-void CMoon_SkillE_Obj::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
-{
-}
-
-void CMoon_SkillE_Obj::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
-void CMoon_SkillE_Obj::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
-{
-	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
-	{
-		Set_Dead();
-		return;
-	}
-
-	COLLIDED_DESC desc{};
-	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
-	desc.iRequesterLayer = iMyColliderLayer;
-	desc.iOtherLayer = iOtherLayer;
-	desc.pRequester = this;
-	desc.pOther = pOther;
-	desc.tHitInfo = tHitInfo;
-
-	EXTRA_ATTACK_DESC tExtra = {};
-	{
-		tExtra.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::MOON) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE);
-
-		desc.tExtraDesc = tExtra;
-	}
-
-	m_pGameInstance->Push_CollidedData(desc);
-}
-
-_bool CMoon_SkillE_Obj::On_Hit(const HIT_DESC& hitDesc)
-{
-	return true;
 }
 
 void CMoon_SkillE_Obj::Try_Attack(const HIT_DESC& hitDesc)
@@ -148,80 +69,58 @@ void CMoon_SkillE_Obj::Try_Attack(const HIT_DESC& hitDesc)
 	}
 }
 
-HRESULT CMoon_SkillE_Obj::Ready_Components()
+HRESULT CMoon_SkillE_Obj::Ready_Modules()
 {
-	// For. Component_EffectHandler
+	wstring wstrDefaultPrototypeTag = L"Prototype_GameObject_Effect";
+
+	// Effect
 	{
-		CEffectHandler::ANIM_EFFECT_HANDLER_DESC Desc{};
-		CEffectHandler::STATE_VFX_DESC SkillDesc{};
-
-		// SPAWN EFFECT
+		// FLY
 		{
-			SkillDesc.EffectPrefabTag = "PlayerMoon_ESkillObject";
-			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL }; 
-			SkillDesc.bFollowBone = { false };
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = { 0.f,0.f,0.f };
-			SkillDesc.vRotation = { Vec3::Zero };
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN, SkillDesc);
-		}
-
-		// Distory EFFECT
-		{
-			SkillDesc.EffectPrefabTag = "";
-			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
-			SkillDesc.bFollowBone = { false };
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = { Vec3::Zero };
-			SkillDesc.vRotation = { Vec3::Zero };
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY, SkillDesc);
-		}
-
-		if (FAILED(Add_Component<CEffectHandler>(/*Static*/ 0, L"Prototype_Component_EffectHandler_SkillObject", &Desc)))
-			return E_FAIL;
-	}
-
-	// For. Component_PhysicsCollider
-	{
-		/* 피직스 콜라이더 */
-		{
-			PHYSICSCOLLIDER_DESC cloneDesc{};
-			cloneDesc.eShape = EPhysicsShape::BOX;
-			cloneDesc.eFilterLayer = tagPhysicsFilterGroup::ATTACK;
-			cloneDesc.iFilterMask =
-			{
-				PHYSICSFILTERGROUP::Enum::MONSTER
-				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2
-			};
-			cloneDesc.bIsTrigger		= true;
-			cloneDesc.bSetOnlyFilter	= false;
-			cloneDesc.bIsActive			= true;
-			cloneDesc.vCenter			= { 0.f, 0.3f, 0.f };
-			cloneDesc.vExtents			= { 0.3f, 1.f,0.3f };
-			cloneDesc.strAttackPresetTag = "MoonSkill_E";
-			PHYSICSMATERIAL_DESC mtrlDesc{};
-			mtrlDesc.eMaterial			= EPhysicsMaterial::CONCRETE;
-			cloneDesc.tMaterial			= mtrlDesc;
-			if (FAILED(Add_Component<CPhysicsCollider>(/* static */ 0, L"Prototype_Component_Physics_Collider", &cloneDesc)))
+			if (FAILED(Add_EffectModule(
+				0 /* static */,
+				"PlayerMoon_ESkillObject",
+				wstrDefaultPrototypeTag,
+				ENUM_TO_UINT(EState::FLY))))
 				return E_FAIL;
 		}
 	}
-
-	// For. Component_PhysicsRigidBody
+	// Collider
 	{
-		PHYSICSRIGIDBODY_DESC desc{};
-		desc.eType			= EPhysicsActorType::KINEMATIC;
-		desc.detection		= EPhysicsCollisionDetection::DISCRETE;
-		desc.bUseGravity	= false;
-		desc.bIsKinematic	= true;
+		PHYSICSCOLLIDER_DESC colliderDesc{};
+		colliderDesc.eShape = EPhysicsShape::BOX;
+		colliderDesc.eFilterLayer = tagPhysicsFilterGroup::ATTACK;
+		//cloneDesc.bIsSkillTrigger = true;
+		colliderDesc.iFilterMask =
+		{
+				PHYSICSFILTERGROUP::Enum::MONSTER
+				| PHYSICSFILTERGROUP::Enum::OBJECT1
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+		};
+		colliderDesc.bIsTrigger = true;
+		colliderDesc.bSetOnlyFilter = false;
+		colliderDesc.bIsActive = true;
+		colliderDesc.vCenter = { 0.f, 0.3f, 0.f };
+		colliderDesc.vExtents = { 0.3f, 1.f,0.3f };
+		colliderDesc.strAttackPresetTag = "MoonSkill_E";
+		PHYSICSMATERIAL_DESC mtrlDesc{};
+		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
+		colliderDesc.tMaterial = mtrlDesc;
 
-		if (FAILED(Add_Component<CPhysicsRigidBody>(/* static */ 0, L"Prototype_Component_Physics_RigidBody", &desc)))
-			return E_FAIL;
+		PHYSICSRIGIDBODY_DESC rigidbodyDesc{};
+		rigidbodyDesc.eType = EPhysicsActorType::KINEMATIC;
+		rigidbodyDesc.detection = EPhysicsCollisionDetection::DISCRETE;
+		rigidbodyDesc.bUseGravity = false;
+		rigidbodyDesc.bIsKinematic = true;
+
+		// IMPACT
+		{
+			if (FAILED(Add_CollideModule(
+				ENUM_TO_UINT(EState::FLY),
+				&colliderDesc,
+				&rigidbodyDesc)))
+				return E_FAIL;
+		}
 	}
 	return S_OK;
 }

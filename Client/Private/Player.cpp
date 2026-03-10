@@ -12,7 +12,7 @@
 #include "Bounding_Sphere.h"
 #include "Bone.h"
 #include "PlayerActionState.h"
-#include "ColliderPart.h"
+#include "TriggerCollidePart.h"
 #include "Collider.h"
 #include "ComputeShader.h"
 #include "StatCom_Player.h"

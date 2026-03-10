@@ -142,7 +142,7 @@ void CUIBossStat_Progress::Tick_By_Type(const _float fTimeDelta)
 {
 	if (DTO::EUISubClassType::BOSS_STAT_ARMOR_PROGRESS == m_eSubClassType)
 	{
-		_bool is = m_pTargetStat->Is_Groggy();
+		_bool is = false;//m_pTargetStat->Is_Groggy();
 		
 		if (is)
 		{

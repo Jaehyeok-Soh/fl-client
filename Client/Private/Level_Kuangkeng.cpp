@@ -240,11 +240,11 @@ HRESULT CLevel_Kuangkeng::Ready_Player_Layer(const wstring& wstrLayerTag)
 	{
 		// SkillObject Pool
 		{
-			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
-			//TRANSFORM_DESC
-			CTransform::TRANSFORM_DESC tTransDesc = {};
-			tTransDesc.fMovePerSec = 20.f;
-			desc.pTransform_Desc = &tTransDesc;
+			//CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			////TRANSFORM_DESC
+			//CTransform::TRANSFORM_DESC tTransDesc = {};
+			//tTransDesc.fMovePerSec = 20.f;
+			//desc.pTransform_Desc = &tTransDesc;
 
 			if (FAILED(m_pGameInstance->Regist_Pool(
 				0,
@@ -252,7 +252,7 @@ HRESULT CLevel_Kuangkeng::Ready_Player_Layer(const wstring& wstrLayerTag)
 				g_wszSkillObjectLayer,
 				0,
 				g_wszMoonSkillE__Prototype_Tag,
-				&desc,
+				nullptr,
 				30)))
 				return E_FAIL;
 		}

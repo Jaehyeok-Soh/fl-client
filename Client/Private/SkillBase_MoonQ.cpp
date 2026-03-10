@@ -119,7 +119,6 @@ void CSkillBase_MoonQ::Set_ExtraAttack_Desc(EXTRA_ATTACK_DESC& tStat_ExtraDesc, 
 
 HRESULT CSkillBase_MoonQ::Ready_Spawner()
 {
-
 	{
 		CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
 		desc.iLevelIndex = 0;

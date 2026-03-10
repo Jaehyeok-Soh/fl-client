@@ -1,6 +1,5 @@
 #include "Engine_pch.h"
 #include "DataStruct_Effect.h"
-#include "Engine_Utils.h"
 #pragma push_macro("new")
 #undef new
 #include "json.hpp"

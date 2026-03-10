@@ -1,11 +1,8 @@
 #include "pch.h"
 #include "MonsterState_Factory.h"
-
 #include "GameObject.h"
-
 #include "StateBase_Monster.h"
-#include "ActionState.h"
-#include "ControlContext.h"
+#include "StatCom_Boss.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
 
@@ -97,12 +94,20 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_true_always", CONDITION{ return true; });
 
+	REGISTER_CONDITION("condition_normal_groggy_requested", CONDITION{ return MONSTERCC(state)->IsNormalGroggyRequested(); });
+
+	REGISTER_CONDITION("condition_final_groggy_requested", CONDITION{ return MONSTERCC(state)->IsFinalGroggyRequested(); });
+
+	REGISTER_CONDITION("condition_normal_groggy", CONDITION{ return MONSTERCC(state)->IsNormalGroggy(); });
+
+	REGISTER_CONDITION("condition_final_groggy", CONDITION{ return MONSTERCC(state)->IsFinalGroggy(); });
+
+	REGISTER_CONDITION("condition_not_groggy", CONDITION{ return MONSTERCC(state)->IsNotGroggy(); });
+
 	REGISTER_CONDITION("param_condition_IsTrackPositionBetween", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionBetweenRaw(param.fParam[0], param.fParam[1]); });
 
 	REGISTER_CONDITION("param_condition_IsTrackPositionAt", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionAtRaw(param.fParam[0]); });
 
-	// 02-27 구조 변경 후 예시
-	REGISTER_CONDITION("param_condition_distance_over", CONDITION{ return MONSTERCC(state)->IsTargetDistanceOver(param.fParam[0]); });
 	return S_OK;
 }
 
@@ -119,6 +124,9 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_TurnToTarget_XZ", FEATURE{ MONSTERCC(state)->Update_TurnToTarget_XZ(fTimeDelta); });
 	REGISTER_FEATURE("feat_TurnToTarget_XZ_Ratio", FEATURE{ MONSTERCC(state)->Update_TurnToTarget_XZ(fTimeDelta * param.fParam[0]); });
 
+	REGISTER_FEATURE("feat_consume_groggy", FEATURE{ MONSTERCC(state)->Consume_GroggyRequest(); });
+	REGISTER_FEATURE("feat_end_groggy", FEATURE{ MONSTERCC(state)->End_Groggy(); });
+
 	// 8방향 움직임
 	REGISTER_FEATURE("feat_move_front", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, 0.f); state->Align_Movement_MoveDir(fTimeDelta); });
 	REGISTER_FEATURE("feat_move_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 0.f, 1.f); state->Align_Movement_MoveDir(fTimeDelta); });
@@ -128,9 +136,6 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_move_front_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, 1.f, -1.f); state->Align_Movement_MoveDir(fTimeDelta); });
 	REGISTER_FEATURE("feat_move_backward_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, 1.f); state->Align_Movement_MoveDir(fTimeDelta); });
 	REGISTER_FEATURE("feat_move_backward_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, -1.f); state->Align_Movement_MoveDir(fTimeDelta); });
-
-	// 02-27 구조 변경 후 예시
-	REGISTER_FEATURE("param_feat_move_local", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, param.fParam[0], param.fParam[1]); state->Align_Movement(fTimeDelta); });
 	
 	REGISTER_FEATURE("feat_set_dead", FEATURE{ state->Get_OwnerObject()->Set_Dead(); });
 	REGISTER_FEATURE("feat_set_deadprocess", FEATURE{ MONSTERCC(state)->Set_Dead_Process(); });
@@ -188,6 +193,11 @@ CMonsterActionState* CMonsterState_Factory::GetActionState(CStateBase_Monster* s
 CMonsterControlContext* CMonsterState_Factory::GetControlContext(CStateBase_Monster* state)
 {
 	return static_cast<CMonsterControlContext*>(MONSTERACTIONSTATE(state)->GetOwnerControlContext());
+}
+
+CStatCom_Boss* CMonsterState_Factory::GetBossStat(CStateBase_Monster* state)
+{
+	return nullptr;//pOwner->;
 }
 
 void CMonsterState_Factory::Free()

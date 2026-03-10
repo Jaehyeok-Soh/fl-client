@@ -1,7 +1,6 @@
 #include "Engine_pch.h"
 #include "ComputeShader.h"
 #include "FxEffectAsset.h"
-#include "Engine_Utils.h"
 
 // has class
 #include "StructuredBuffer.h"

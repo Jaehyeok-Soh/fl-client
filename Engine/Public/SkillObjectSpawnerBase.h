@@ -9,24 +9,10 @@ class ENGINE_DLL CSkillObjectSpawnerBase abstract : public CGameObject
 public:
 	typedef struct tagSpawnerOriginDesc
 	{
-		// Spawner Visual (스포너 자체에 모델이있거나 비주얼이 있을 때)
-		Vec3 vScaleStart{ Vec3::One }; // 시작 스케일
-		Vec3 vScaleEnd{ Vec3::One }; // 끝났을때 스케일
-		_float fAppearTime{ 0.15f }; // 비주얼이 나타나는 시간 (스케일 보간)
-		_float fDisappearTime{ 0.15f }; // 비주얼이 사라지는 시간
-		_float fAfterSpawnHold{ 0.05f }; // 스폰이 끝나고 사라지기 전 홀드하는 시간
-
 		// Schedule Default
 		_float fStartDelay{ 0.f }; // Spawn 요청후 몇초뒤에 시작?
 		_float fInterval{ 0.f }; // 스폰 되는 사이에 Interval
 		_uint  iMaxPerTick{ 8 }; // 한 틱 스폰 제한
-
-		// Warning 이펙트
-		_bool bSpawnWarning{ false };
-		_uint iWarningPoolLevel{ 0 };
-		wstring wstrWarningPoolTag{ L"" };
-		_uint iWarningSpawnLevel{ 0 };
-		// TODO : warningDesc 추가
 
 		// 스킬 오브젝트 풀
 		_uint iPoolLevelIndex{ 0 };		// 풀 레벨 인덱스
@@ -47,10 +33,6 @@ public:
 
 		CGameObject* pRequester{ nullptr };
 		CGameObject* pTarget{ nullptr };
-
-		// 스포너 회전 상태
-		//TRANSFORM_INFO_STATE eRotationState = TRANSFORM_INFO_STATE::END;
-		//_float fRotation_Radian{0.f};
 		
 		// 이펙트 회전상태
 		TRANSFORM_INFO_STATE eEffectRotationState = TRANSFORM_INFO_STATE::END;
@@ -60,9 +42,7 @@ private:
 	enum class EState : _uint
 	{
 		Idle,
-		Appear,
-		Spawn,
-		Disappear
+		Spawn
 	};
 protected:
 	CSkillObjectSpawnerBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -86,33 +66,21 @@ protected:
 	virtual void  Emit_One(_uint i, const Vec3& vFoward, const Vec3& vUp) PURE;
 	void Spawn_SkillObject(const Vec3& vSpawnPos, const Vec3& vDir);
 private:
-	HRESULT Ready_Components();
-private:
-	// Spawner 렌더관련이 있는가?
-	_bool Has_Visual();
 	void Change_State(EState eState);
 	void Start_State(EState eState);
 	void Update_State(const _float fTimeDelta);
 	void End_State(EState eState);
 
-	void Start_Appear();
-	void Update_Appear(const _float fTimeDelta);
-	void End_Appear();
-
 	void Start_Spawn();
 	void Update_Spawn(const _float fTimeDelta);
 	void End_Spawn();
-
-	void Start_Disappear();
-	void Update_Disappear(const _float fTimeDelta);
-	void End_Disappear();
 
 	Vec3 Get_Forward();
 	Vec3 Get_Up() const;
 protected:
 	SPAWNER_ORIGIN_DESC* m_pOriginDesc{ nullptr };
 	SPAWNER_COPY_DESC m_desc{};
-	EState m_eState{ EState::Appear };
+	EState m_eState{ EState::Idle };
 	_float m_fStateElapsed{ 0.f };
 	_float m_fSpawnAcc{ 0.f };
 	_uint  m_iSpawnedCount{ 0 };
