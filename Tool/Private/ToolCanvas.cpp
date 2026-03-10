@@ -48,7 +48,7 @@ HRESULT CToolCanvas::Initialize(void* pArg)
 	m_tCanvasData.iEditorSizeX	= pDesc->iEditorSizeX;
 	m_tCanvasData.iEditorSizeY	= pDesc->iEditorSizeY;
 	m_ePrefabType				= static_cast<EUIPrefabType>(pDesc->iPrefabType);
-
+	m_iNumPrefabs = pDesc->iNumPrefabs;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -91,12 +91,12 @@ void CToolCanvas::Update(const _float fTimeDelta)
 
 void CToolCanvas::Update_Late(const _float fTimeDelta)
 {
+	Sync_Data();
 	Super::Update_Late(fTimeDelta);
 }
 
 void CToolCanvas::Ready_Before_Render(const _float fTimeDelta)
 {
-	Sync_Data();
 	Super::Ready_Before_Render(fTimeDelta);
 }
 

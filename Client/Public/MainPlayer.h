@@ -23,6 +23,8 @@ private:
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+private:
+	virtual HRESULT	Register_GlobalEvent();
 public:
 	// Static Object가 다른 Level에 갈때 호출
 	virtual HRESULT Reinitialize(GAMEOBJECT_REINIT_DESC* pDesc) override;
@@ -61,6 +63,8 @@ private:
 	CRay* m_pFootRay = { nullptr };
 	CRay* m_pMoveRay = { nullptr };
 
+
+	_bool	m_isCinematic{false};
 public:
 	static CMainPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

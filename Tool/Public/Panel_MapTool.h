@@ -54,8 +54,6 @@ private:
 	void					Select_MiXTextureIndex();
 private:
 
-	CTextureBase**			m_ppTargetSlot = nullptr;
-
 	CGameInstance*			m_pGameInstance{ nullptr };
 	CMapToolManager*		m_pMapToolManager{ nullptr };
 
@@ -71,11 +69,6 @@ private:
 	char					m_szBuffer[MAX_PATH];
 
 
-	_bool					m_isTexArraySelect{false};
-	_bool					m_isTex_DH_ArraySelect{false};
-	_bool					m_isTex_NBR_ArraySelect{false};
-
-	wstring					m_selectedCategoryName = L"";
 	ID3D11ShaderResourceView* m_pDefaultSRV{nullptr};
 
 	_int*					m_pSelectMixTileTextureIndex{nullptr};

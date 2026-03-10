@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "Gun.h"
-#include "GameInstance.h"
+
 #include "CameraMan.h"
 #include "PhysicsAttackRaycast.h"
+#include "Client_EventDefine.h"
+#include "Player.h"
+
+#include "GameInstance.h"
 
 CGun::CGun(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pDevice, pDeviceContext, Weapon_Type::GUN)
@@ -44,7 +48,7 @@ HRESULT CGun::Initialize(void* pArg)
 	m_tFireTimeCounter.bCountTime	= false;
 	m_tFireTimeCounter.bTimeReset	= true;
 	m_tFireTimeCounter.fMaxTime		= pDesc->fAttackCoolTime;
-	m_tFireTimeCounter.fTimeAcc = pDesc->fAttackCoolTime; // 처음에 바로 쏠 수 있도록 하기 위함
+	m_tFireTimeCounter.fTimeAcc		= m_tFireTimeCounter.fMaxTime * 0.5f; // 처음에 바로 쏠 수 있도록 하기 위함
 
 	return S_OK;
 }
@@ -99,7 +103,29 @@ void CGun::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* p
 
 void CGun::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+	COLLIDED_DESC desc{};
+	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer = iMyColliderLayer;
+	desc.iOtherLayer = iOtherLayer;
+	desc.pRequester = this;
+	desc.pOther = pOther;
+	desc.tHitInfo = tHitInfo;
+
+	desc.tExtraDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::GUN);
+
+	CPlayer::PLAYER_TYPE tType = static_cast<CPlayer*>(Get_Parent())->Get_PlayerType();
+	switch (tType)
+	{
+	case CPlayer::PLAYER_TYPE::MOON:
+		desc.tExtraDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::MOON);
+		break;
+	}
+
+	m_pGameInstance->Push_CollidedData(desc);
+
 	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+
+	m_pGameInstance->Broadcast<GUN_ON_HIT>();
 }
 
 void CGun::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)

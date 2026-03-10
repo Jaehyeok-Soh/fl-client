@@ -203,6 +203,91 @@ void CChannel::Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrent
 	}
 }
 
+void CChannel::Update_Addtive(const vector<class CBone*>& vecBones, const vector<KEYFRAME>& RefKeyFrame, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMixRatio)
+{
+	if (m_bUpdateCpu)
+	{
+		Matrix matPreTransform = vecBones[m_iBoneIndex]->Get_Transform();
+
+		// 0. 필요한 SQT 구하기
+
+		// 0.1 Base SQT
+		Vec3 vBaseScale, vBaseTranslation;
+		Quat vBaseQuat;
+		matPreTransform.Decompose(vBaseScale, vBaseQuat, vBaseTranslation);
+
+		// 0.1 Ref SQT
+		Vec3 vRefScale = RefKeyFrame[0].vScale;
+		Quat vRefQuat = RefKeyFrame[0].vQuaterion;
+		Vec3 vRefTranslation = RefKeyFrame[0].vTranslation;
+
+		// 0.2 My SQT
+		Vec3 vScale = m_vecKeyframes[0].vScale;
+		Quat vQuat = m_vecKeyframes[0].vQuaterion;
+		Vec3 vTranslation = m_vecKeyframes[0].vTranslation;
+
+		KEYFRAME lastKeyFrame = m_vecKeyframes.back();
+
+		if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
+		{
+			vScale = lastKeyFrame.vScale;
+			vQuat = lastKeyFrame.vQuaterion;
+			vTranslation = lastKeyFrame.vTranslation;
+		}
+		else
+		{
+			if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
+				++(*pCurrentKeyFrameIndex);
+
+			auto& left = m_vecKeyframes[*pCurrentKeyFrameIndex];
+			auto& right = m_vecKeyframes[*pCurrentKeyFrameIndex + 1];
+
+			float ratio =
+				(fCurrentTrackPosition - left.fTrackPosition) /
+				(right.fTrackPosition - left.fTrackPosition);
+
+			vScale = Vec3::Lerp(left.vScale, right.vScale, ratio);
+			vQuat = Quat::Slerp(left.vQuaterion, right.vQuaterion, ratio);
+			vTranslation = Vec3::Lerp(left.vTranslation, right.vTranslation, ratio);
+		}
+
+
+		// 2. delta SQT 구하기
+		Vec3 vDeltaScale = vScale / vRefScale;
+
+		Quat InvRefQuat;
+		vRefQuat.Conjugate(InvRefQuat);
+
+		Quat DeltaQuat = vQuat * InvRefQuat;
+
+		Vec3 vDeltaTranslation = vTranslation - vRefTranslation;
+
+		// 3. delta SQT에 mixRatio 적용
+		Vec3 scaledDelta = Vec3{ 1.f,1.f,1.f } + (vDeltaScale - Vec3{ 1.f,1.f,1.f }) * fMixRatio;
+
+		Quat identity = Quat(0, 0, 0, 1);
+		if ((identity).Dot((DeltaQuat)) < 0)
+			DeltaQuat = -DeltaQuat;
+		Quat scaledDeltaQuat = Quat::Slerp(identity, DeltaQuat, fMixRatio);
+
+		Vec3 scaledDeltaTranslation = vDeltaTranslation * fMixRatio;
+
+		// 4. final SQT 구하기
+		Vec3 vFinalScale = vBaseScale * scaledDelta;
+		Quat vFinalQuat = (scaledDeltaQuat * vBaseQuat);
+		vFinalQuat.Normalize();
+		Vec3 vFinalTranslation = vBaseTranslation + scaledDeltaTranslation;
+		if (m_bRootBone)
+		{
+			vFinalTranslation = Vec3(0, 0, 0);
+		}
+
+		Matrix matFinal = Matrix::CreateScale(vFinalScale) * Matrix::CreateFromQuaternion(vFinalQuat) * Matrix::CreateTranslation(vFinalTranslation);
+		vecBones[m_iBoneIndex]->Set_TransformationMatrix(matFinal);
+	}
+
+}
+
 void CChannel::Check_UpdateCpu(const vector<class CBone*>& vecBones)
 {
 	m_bUpdateCpu = vecBones[m_iBoneIndex]->Get_IsUpdateCpu();

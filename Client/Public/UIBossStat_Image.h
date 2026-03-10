@@ -33,6 +33,8 @@ public:
 private:
 	HRESULT Ready_Components(BOSS_STAT_IMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	virtual void Bind_Events()override;
+
 private:
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;

@@ -162,8 +162,8 @@ HRESULT CBounds::Make_Bounds(const Vec3* pMinMax, float fRatio)
 	if (!(m_tBounds.pAABB = Create_AABB(vFinalMinMax)))
 		return E_FAIL;
 
-	vFinalMinMax[0] *= 1.3f;
-	vFinalMinMax[1] *= 1.3f;
+	vFinalMinMax[0];
+	vFinalMinMax[1];
 
 	Safe_Release(m_tBounds.pSphere);
 	if (!(m_tBounds.pSphere = Create_Sphere(vFinalMinMax)))

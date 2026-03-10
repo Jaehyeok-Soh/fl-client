@@ -214,24 +214,32 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 
 	_uint iDamageFlag = hitDesc.iDamageFlag;
 
-	// moon + skill Q : hit point를 얻어올 수 없기에 여기서 객체 positoin 기준으로 폰트 띄움
-	if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+	if (IsAlive())
 	{
-		Vec3 vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-		vPos.y += 0.5f;
+		// moon + skill Q : hit point를 얻어올 수 없기에 여기서 객체 positoin 기준으로 폰트 띄움
+		if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+		{
+			Vec3 vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+			vPos.y += 0.5f;
 
-		UI_PREFAB_DATA tPrefabData = {};
+			UI_PREFAB_DATA tPrefabData = {};
 
-		tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-		tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
-		tPrefabData.DamageFontData.vHitPos = vPos; // 데미지 폰트를 띄울 World 위치 // 
-		tPrefabData.DamageFontData.vRandOffset = Vec3{
-			m_pGameInstance->Rand_Float(-1.f, 1.f),
-			m_pGameInstance->Rand_Float(-1.f, 1.f),
-			m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
+			tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+			tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
+			tPrefabData.DamageFontData.vHitPos = vPos; // 데미지 폰트를 띄울 World 위치 // 
+			tPrefabData.DamageFontData.vRandOffset = Vec3{
+				m_pGameInstance->Rand_Float(-1.f, 1.f),
+				m_pGameInstance->Rand_Float(-1.f, 1.f),
+				m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
 
-		CUI_Manager::GetInstance()->Request_Add_Prefab(
-			m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+
+		else if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+		{
+			int a = 0;
+		}
 	}
 
 #ifdef _DEBUG

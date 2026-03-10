@@ -61,9 +61,6 @@
     <Filter Include="06. FSM\Player\Idle">
       <UniqueIdentifier>{51b09a75-0a10-4351-89ee-c56fb121e232}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\Camera">
-      <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99. ETC\pch">
       <UniqueIdentifier>{1afcebe2-6c14-4448-ab52-4236696f383f}</UniqueIdentifier>
     </Filter>
@@ -625,7 +622,7 @@
     <Filter Include="02. Level\Tavern">
       <UniqueIdentifier>{2905b500-b428-4805-9fc4-638afebf03dc}</UniqueIdentifier>
     </Filter>
-        <Filter Include="02. Level\Lianhuo">
+    <Filter Include="02. Level\Lianhuo">
       <UniqueIdentifier>{535bd167-aaf6-410f-87bd-a86b99f67c66}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Inspector\PoolDebug">
@@ -660,6 +657,21 @@
     </Filter>
     <Filter Include="05. Component\Stat\StatCom_Boss">
       <UniqueIdentifier>{49a4b247-f9ed-4f9d-a881-a94e2c12bde2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\11.Weakness">
+      <UniqueIdentifier>{1a959e66-effd-4868-b7e0-69afcf6343ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\08.Weakness Text">
+      <UniqueIdentifier>{8314a147-ec5a-4438-b2ae-0e6b8f79b1de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial">
+      <UniqueIdentifier>{c872efb2-4f85-4d3d-a9a3-efd1ddb268ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text">
+      <UniqueIdentifier>{de480108-e7f3-4f29-830a-0536a69ac532}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Camera">
+      <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -718,7 +730,7 @@
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraMan_Targeter.h">
-      <Filter>03. GameObject\Camera</Filter>
+      <Filter>03. GameObject\ContainerObjects\Camera</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>99. ETC\pch</Filter>
@@ -1222,6 +1234,18 @@
     <ClInclude Include="..\public\StatCom_Boss.h">
       <Filter>05. Component\Stat\StatCom_Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIWeakness_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\11.Weakness</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIWeakness_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_Pannel_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_Pannel_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1277,7 +1301,7 @@
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
-      <Filter>03. GameObject\Camera</Filter>
+      <Filter>03. GameObject\ContainerObjects\Camera</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>99. ETC\pch</Filter>
@@ -1772,6 +1796,18 @@
     <ClCompile Include="..\private\StatCom_Boss.cpp">
       <Filter>05. Component\Stat\StatCom_Boss</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIWeakness_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\11.Weakness</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIWeakness_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_Pannel_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_Pannel_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">
@@ -1845,6 +1881,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_VtxMesh_SkillEffect.hlsl">
       <Filter>04. Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_AnimAdditiveMix.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -57,12 +57,21 @@ private:
 	HRESULT	Render_SelectOverrideMaterialInfo();
 	HRESULT	Render_SelectOriginMaterialInfo();
 
-
 private:
 	
 	void						ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDesc);
 	void						ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc);
 
+	/* Plants 관련 */
+	void						ImGuiUpdate_Plants_Desc(PLANTS_DESC* pDesc);
+	void						ImGuiUpdate_Tree_Desc(TREE_DESC* pDesc);
+	void						ImGuiUpdate_Moss_Desc(MOSS_DESC* pDesc);
+	void						ImGuiUpdate_Bush_Desc(BUSH_DESC* pDesc);
+	void						ImGuiUpdate_Grass_Desc(GRASS_DESC* pDesc);
+	void						ImGuiUpdate_Vine_Desc(VINE_DESC* pDesc);
+
+	/* Water */
+	void						ImGuiUpdate_Water_Desc(WATER_DESC* pDesc);
 
 	/* Batch 관련 */
 	void						ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pDesc);
@@ -82,7 +91,7 @@ private:
 	/* Mosnter Spawn ImGuiUpdate */
 	void						ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData* pMonsterSpawnData);
 
-
+public:
 
 private:
 	void						Compute_LandScape_TextureUV(_uint iLandScapeIndex , OUT Vec2& vOut_LT , OUT Vec2& vOut_RB );

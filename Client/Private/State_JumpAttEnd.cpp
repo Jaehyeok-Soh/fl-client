@@ -4,6 +4,8 @@
 #include "Player.h"
 #include "Weapon.h"
 
+#include "GameInstance.h"
+
 CState_JumpAttEnd::CState_JumpAttEnd(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "JumpAttEnd")
 {
@@ -32,6 +34,10 @@ HRESULT CState_JumpAttEnd::Start(void* pArg, _bool bForce)
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
 
+	CAM_SHAKING_DATA data{};
+	data.fTime = 0.2f;
+	data.fPower = 0.3f;
+	CGameInstance::GetInstance()->Camera_Shaking(data);
 	return S_OK;
 }
 

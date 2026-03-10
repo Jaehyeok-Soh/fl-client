@@ -93,6 +93,15 @@ namespace Tool
     }INSTANCEMODEL_DATA;
 
 
+    struct CB_WaterData
+    {
+        _uint  g_WaterTexBindingFlags   {0};                            // Texture가 바인딩되었는지 안되어있는지 Flag값
+        float  g_fWaterDT               {0.f};                          // 움직이는 UV좌표를 위한 DT값
+        Vec2   g_vWaterSpeed1            {1.f,1.f};                      // 물 일렁임관련? Speed 값
+        Vec2   g_vWaterSpeed2            {1.f,1.f};                      // 물 일렁임관련? Speed 값
+        Vec2   padding;        // 16바이트 패딩 맞추기
+    };
+
 
     void to_json(json& SaveJson, const    SRT_DATA& tData);
     void to_json(json& SaveJson, const    OVERRIDE_MATERIALS& tData);

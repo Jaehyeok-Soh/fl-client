@@ -19,7 +19,10 @@ HRESULT CState_GunWalk::Initialize(void* pArg)
 	tSuperDesc.pOwnerGun = pMyDesc->pOwnerGun;
 	tSuperDesc.vecMainAnims = std::move(pMyDesc->vecMainAnims);
 
-	tSuperDesc.FCollis = COLLISIONFLAGS::C_DOWN;
+	tSuperDesc.FCollis = COLLISIONFLAGS::C_DOWN
+		| CStateBase_Player::COLLISIONFLAGS::C_Strong
+		| CStateBase_Player::COLLISIONFLAGS::C_Fly;
+
 	tSuperDesc.FMoves = MOVEFLAGS::NORMAL;
 
 	vector<_uint> vecChangeState_ByKey{};

@@ -188,14 +188,44 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Shader_GetBone
+	// For. Prototype_Component_Shader_AnimMesh
 	{
+		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxAnimMesh.hlsl";
+		shaderDesc.eLayout = EVtxLayout::VTXANIMMESH;
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMesh",
+			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Shader_AnimMix
+	{
+		//ComShader_AnimMix
 		CComputeShader::ComShaderOriginDesc shaderDesc = {};
-		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_GetBoneCombine.hlsl";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_GetBone",
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_AnimMix.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMix",
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
+
+	// For. Prototype_Component_Shader_AnimAdditiveCS
+	{
+		//ComShader_AnimMix
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_AnimAdditiveMix.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimAdditiveCS",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	//// For. Prototype_Component_Shader_GetBone
+	//{
+	//	CComputeShader::ComShaderOriginDesc shaderDesc = {};
+	//	shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_GetBoneCombine.hlsl";
+	//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_GetBone",
+	//		CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+	//		return E_FAIL;
+	//}
 
 
 	//=================
@@ -268,26 +298,6 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		shaderDesc.eLayout = EVtxLayout::VTX_INSTANCE_MESH;
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh_Tool",
 			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
-			return E_FAIL;
-	}
-
-	// For. Prototype_Component_Shader_AnimMesh
-	{
-		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
-		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxAnimMesh.hlsl";
-		shaderDesc.eLayout = EVtxLayout::VTXANIMMESH;
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMesh",
-			CShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
-			return E_FAIL;
-	}
-
-	// For. Prototype_Component_Shader_AnimMix
-	{
-		//ComShader_AnimMix
-		CComputeShader::ComShaderOriginDesc shaderDesc = {};
-		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_AnimMix.hlsl";
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMix",
-			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
 
@@ -382,6 +392,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 
 			return S_OK;
 		};
+
 	// For. MaterialInstance_Default
 	if (FAILED(makeMaterialInstance(Vec4{ 1.f, 1.f, 1.f, 1.f }, EMaterialInstanceType::Default)))
 		return E_FAIL;
@@ -460,6 +471,11 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 
 	// For. MaterialInstance_CourtBlue
 	if (FAILED(makeMaterialInstance(Vec4{ 0.16f, 0.22f, 0.52f, 1.f }, EMaterialInstanceType::CourtBlue)))
+		return E_FAIL;
+
+
+	// For. MaterialInstance_Free
+	if (FAILED(makeMaterialInstance(Vec4{ 1.f , 1.f , 1.f , 1.f }, EMaterialInstanceType::Free)))
 		return E_FAIL;
 
 	return S_OK;

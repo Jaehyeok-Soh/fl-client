@@ -248,6 +248,16 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
+
+	// For. Prototype_Component_Shader_AnimAdditiveMix
+	{
+		//ComShader_AnimMix
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_AnimAdditiveMix.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimAdditiveMix",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
 #pragma endregion
 
 #pragma region EFFECT_Shader
@@ -444,6 +454,11 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	// For. MaterialInstance_CourtBlue
 	if (FAILED(makeMaterialInstance(Vec4{ 0.16f, 0.22f, 0.52f, 1.f }, EMaterialInstanceType::CourtBlue)))
 		return E_FAIL;
+
+	// For. MaterialInstance_CourtBlue
+	if (FAILED(makeMaterialInstance(Vec4{1.f,1.f,1.f,1.f}, EMaterialInstanceType::Free)))
+		return E_FAIL;
+
 	//=================
 	// Physics Component
 	//=================
@@ -558,7 +573,7 @@ void CMainApplication::Free()
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
-	CUI_Manager::GetInstance()->DestroyInstance();
+	CUI_Manager::GetInstance()->DestroyInstance();	// 오브젝트 삭제 이후 삭제해야되는데 / 오브젝트에서 Addref 하고 있어서 안터짐
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();
 

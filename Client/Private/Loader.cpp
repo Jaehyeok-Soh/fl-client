@@ -138,6 +138,8 @@
 #include "UIBossStat_Text.h"
 #include "UICombo_Text.h"
 #include "UIBossAction_Text.h"
+#include "UIWeakness_Text.h"
+#include "UITutorial_Pannel_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -154,6 +156,8 @@
 #include "UICombo_Image.h"
 #include "UIMiniMap_Monster_Icon.h"
 #include "UIBossAction_Image.h"
+#include "UIWeakness_Image.h"
+#include "UITutorial_Pannel_Image.h"
 //=================
 // Resource
 //=================
@@ -292,12 +296,6 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(Ready_Spawner()))
 		return E_FAIL;
 
-
-
-	/* Cinematic Data Load */
-	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
-		return E_FAIL;
-
 #pragma region Register Global Event
 	/////////////////////////////////////////
 	/////////// Ready GlobalEvent ///////////
@@ -305,9 +303,22 @@ HRESULT CLoader::Loading_For_Logo()
 	/* Global */
 	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
 	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
+
+	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
+	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
+
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_ON);
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_OFF);
+
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
 
 #pragma endregion
 
+	/* Cinematic Data Load */
+	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
+		return E_FAIL;
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
@@ -552,6 +563,17 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+	//// For. Prototype_Component_Model_MoonCloak
+	//{
+	//	CModel::MODEL_ORIGIN_DESC desc = {};
+	//	desc.eType = EModelType::ANIM;
+	//	desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+	//	desc.pMatPreTransform = &(matPreTransformScale);
+	//	desc.wstrModelFolderName = L"PlayerMoon_Cloak";
+	//	desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+	//	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	//}
 
 	// For.Prototype_Component_Model_Monster_Dog
 	{
@@ -738,9 +760,13 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboImage",				CUICombo_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ComboText",				CUICombo_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniMapMonsterIconImage",	CUIMiniMap_Monster_Icon::Create(m_pDevice, m_pDeviceContext));
-	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionImage",			CUIBossAction_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionText",			CUIBossAction_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessImage",			CUIWeakness_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessText",				CUIWeakness_Text::Create(m_pDevice, m_pDeviceContext));
+	
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelImage",		CUITutorial_Pannel_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelText",		CUITutorial_Pannel_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;

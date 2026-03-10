@@ -57,13 +57,13 @@
 
 
 CMainPlayer::CMainPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-    : Super(pDevice, pDeviceContext)
+    : Super(pDevice, pDeviceContext), m_isCinematic{false}
 {
     m_vecPartObjects.resize(Part::END, nullptr);
 }
 
 CMainPlayer::CMainPlayer(const CMainPlayer& rhs)
-    : Super(rhs)
+    : Super(rhs) , m_isCinematic(rhs.m_isCinematic)
 {
     m_vecPartObjects.resize(Part::END, nullptr);
 }
@@ -123,6 +123,12 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     return S_OK;
 }
 
+HRESULT CMainPlayer::Register_GlobalEvent()
+{
+
+    return S_OK;
+}
+
 HRESULT CMainPlayer::Reinitialize(GAMEOBJECT_REINIT_DESC* pDesc)
 {
     if (pDesc == nullptr)
@@ -168,6 +174,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
         return E_FAIL;
     if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
+        return E_FAIL;
+
+    if (FAILED(Register_GlobalEvent()))
         return E_FAIL;
 
     Get_Component<CPhysicsCCT>()->Ready_Position();
@@ -1112,6 +1121,12 @@ HRESULT CMainPlayer::Ready_AttackStates()
     arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::JUMP)] = Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
     arrMix[ENUM_TO_SZET(CState_GunBase::Douwn_MixAnim::FALL)] = Get_AnimationIndex(L"Animation_PlayerMoon_Jump_FallLoop");
 
+    array<_uint, ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::END)> arrAimMix;
+    arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::DOWN)]      = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MD");
+    arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::MIDDLE)]    = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MM");
+    arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::UP)]        = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MU");
+
+
     vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };
 
     for (auto& MixAnim : arrMix)
@@ -1124,6 +1139,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         CState_GunBase::GUN_STATEBASE_DESC tDesc = {};
 
         tDesc.arrMixAnims = arrMix;
+        tDesc.arrAimAnims = arrAimMix;
 
         tDesc.bLoop = true;
         tDesc.pOwnerGun = pMyGun;
@@ -1140,7 +1156,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         CState_GunBase::GUN_STATEBASE_DESC tDesc = {};
 
         tDesc.arrMixAnims = arrMix;
-
+        tDesc.arrAimAnims = arrAimMix;
+        
         tDesc.bLoop = false;
         tDesc.pOwnerGun = pMyGun;
         tDesc.iMainAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Machinegun01_Reload");

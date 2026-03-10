@@ -54,8 +54,8 @@ public:
 	}MODEL_ORIGIN_DESC;
 	typedef struct tagModelCopyDesc
 	{
-		std::span<const EMaterialInstanceType> spanMIs;
-		std::span<const _int> spanShaderPassesByMesh;
+		std::span<const EMaterialInstanceType>	spanMIs;
+		std::span<const _int>					spanShaderPassesByMesh;
 	}MODEL_COPY_DESC;
 
 	struct BONE_GROUP
@@ -107,7 +107,7 @@ public:
 	HRESULT								Change_Animation(CComputeShader* pAnimEComShader,_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
 	// Transform과 CCT를 바인딩 안할 시 RootMotion적용은 되나, 포지션을 반영안한다.
-	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
+	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
 
 	// bind funcs
 public:
@@ -123,12 +123,23 @@ public:
 	_float	Get_Animatioin_MotionOffset(_uint iAnimIdx);
 	void	Set_Animation_Speed(_uint iAnimIdx, _float fSpeed);
 
+	_bool	Get_Is_AdditiveOn() const { return m_bAdditiveAnim; }
+	_int	Get_RefAdditive_AnimIdx() const { return m_iAdditivRef_AnimIdx; }
+	_int	Get_PosAdditive_AnimIdx() const { return m_iAdditivePos_AnimIdx; }
+
 	// mix anim funcs
 public:
 	void	Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, CComputeShader* pAnimMixCS);
 	void	Set_MixAnim_ResetSize(_uint iSize);
 	void	Set_MixAnim_AnimIndex(_uint iVectorIdx, _int iAnimIdx);
 	void	Set_MixAnim(_bool bMix);
+
+	void	Set_AdditiveRef_AnimIdx(_int  iAnimIdx) { m_iAdditivRef_AnimIdx = iAnimIdx; }
+	void	Set_AdditivePos_AnimIdx(_int  iAnimIdx) { m_iAdditivePos_AnimIdx = iAnimIdx; }
+	void	Set_Apply_AdditiveAnim(_bool  bAdditive) { m_bAdditiveAnim = bAdditive; }
+
+	void	Set_AdditiveData(_bool bAdditive, _int iRefIdx, _int iPosIdx, _float fMixOffset = 1.f); // ref 까지 같이
+	void	Set_AdditiveData(_bool bAdditive, _int iPosIdx, _float fMixOffset = 1.f); // ref 없이
 
 	// tool
 	_bool	Get_MixBool() const { return m_bMixAnim; }
@@ -203,15 +214,15 @@ public:
 	void								Set_ApplyRootMotionAll(_bool bRootApply);
 
 	void								Set_Animtion_MotionOffset_All(_float fOffset);
-
-	// materials funcs
 public:
-	HRESULT								Change_MI(_uint iIndex, const wstring& wstrMITag);
+	HRESULT								Set_MI_TintColor(_uint iIndex, const Vec4& vColor );
+public:
+	HRESULT								Change_MI(_uint iIndex, EMaterialInstanceType eChangeType );
 	HRESULT								Change_Material(_uint iIndex, const wstring& wstrMaterialTag);
 	HRESULT								Change_ShaderPassByMseh(_uint iMeshIndex, _uint iPass);
 
 public:
-	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr);
+	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr);
 	void								Get_BoneMatrix(CComputeShader* pAnimMixCS);
 
 	// load func
@@ -236,24 +247,21 @@ private:
 
 	// animation funcs
 private:
-	void								Play_Animation(_float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
-	void								Blend_Animation(_float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr);
-
-	void								Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr);
-	void								Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr);
+	void								Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
+	void								Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
 
 	HRESULT								Build_AnimationIndexTable();
 	void								Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
-	void								Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr);
+	void								Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
 	void								End_AnimationPlayState(AnimationPlayState eState);
 	void								Change_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
 
 	void								Play_Begin(CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
-	void								Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr);
+	void								Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
 	void								Play_End();
 
 	void								Blend_Begin(_uint CurAnimationIndex);
-	void								Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr);
+	void								Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
 	void								Blend_End();
 
 	// ready funcs
@@ -278,7 +286,8 @@ private:
 	void								Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS);
 	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
 	void								DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pAnimMixCS);
-	void								Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, CComputeShader* pBoneComBineCS, const _float fTimeDelta);
+	void								Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta);
+	_bool								Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta ,CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
 
 	///////////////
 	//// Event ////
@@ -331,8 +340,16 @@ private:
 
 private:
 	_int								m_iRootBoneIdx				= { -1 };
+
+	// mix anim
 	vector<_int>						m_vecMixAnimIndices;
 	_bool								m_bMixAnim = { false };
+
+	// additive anim
+	_int								m_iAdditivRef_AnimIdx	= { -1 };
+	_int								m_iAdditivePos_AnimIdx	= { -1 };
+	_float								m_fAdditiveOffset		= { 1.f };
+	_bool								m_bAdditiveAnim			= { false };
 
 	// compute shader 변수
 private:

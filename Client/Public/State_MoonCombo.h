@@ -36,6 +36,8 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+
+
 public:
 	static CState_MoonCombo* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
