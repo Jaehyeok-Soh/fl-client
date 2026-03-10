@@ -225,11 +225,14 @@ void CPlayer::Change_Weapon(_uint iPart, _uint iState)
     // 우선 다 none으로 바꾼다음
 
     CWeapon* pSword = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD));
+    CWeapon* pSword2 = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD2));
     CWeapon* pSkill = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SKILL));
     CWeapon* pGun = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::GUN));
 
     if(pSword)
         pSword->Set_WeaponState(CWeapon::State::NONE);
+    if (pSword2)
+        pSword2->Set_WeaponState(CWeapon::State::NONE);
     if (pSkill)
         pSkill->Set_WeaponState(CWeapon::State::NONE);
     if (pGun)
@@ -242,6 +245,8 @@ void CPlayer::Change_Weapon(_uint iPart, _uint iState)
     case static_cast<_uint>(Part::SWORD):
         if(pSword)
             pSword->Set_WeaponState(iState);
+        if (pSword2)
+            pSword2->Set_WeaponState(iState);
         break;
 
     case static_cast<_uint>(Part::SKILL):
@@ -255,8 +260,13 @@ void CPlayer::Change_Weapon(_uint iPart, _uint iState)
         break;
     }
 
-    if(iState == ENUM_TO_UINT(CWeapon::State::NONE))
-        pSword->Set_WeaponState(CWeapon::State::HOLD);
+    if (iState == ENUM_TO_UINT(CWeapon::State::NONE))
+    {
+        if(pSword)
+           pSword->Set_WeaponState(CWeapon::State::HOLD);
+        if(pSword2)
+           pSword2->Set_WeaponState(CWeapon::State::HOLD);
+    }
 }
 
 _bool CPlayer::Check_OnGround(_float fMaxDist)
@@ -1281,9 +1291,9 @@ HRESULT CPlayer::Ready_PartCollider()
 
         PHYSICSCOLLIDER_DESC tPColliDesc = {};
         {
-            tPColliDesc.eShape  = EPhysicsShape::BOX;
-            tPColliDesc.vCenter = { 0.f,1.f,0.f };
-            tPColliDesc.vExtents = { 3.f,2.f,3.f }; // 몬스터 충돌 감지 범위 todo x,z는 desc으로 받아오기
+            tPColliDesc.eShape  = EPhysicsShape::SPHERE;
+            tPColliDesc.vCenter = { 0.f,0.f,0.f };
+            tPColliDesc.fRadius = { 5.f };
             tPColliDesc.bIsTrigger = { true };
             tPColliDesc.eFilterLayer = tagPhysicsFilterGroup::DETECT_MONSTER; 
             tPColliDesc.iFilterMask =

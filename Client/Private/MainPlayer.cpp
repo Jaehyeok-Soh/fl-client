@@ -285,12 +285,15 @@ void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CG
 
 void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-    COLLIDED_DESC desc{};
-    desc.iCollisionType = COLLISIONEVENT::ON_TRIGGER_ENTER;
-    desc.iRequesterLayer = iMyColliderLayer;
-    desc.iOtherLayer = iOtherLayer;
-    desc.pRequester = this;
-    desc.pOther = pOther;
+    switch (iMyColliderLayer)
+    {
+    case ENUM_TO_UINT(PHYSICSFILTERGROUP::Enum::DETECT_MONSTER):
+        {
+        // ui에게 충돌 된 monster 객체 pointer 넘겨주기
+        // to UI담당자 : tHitInfo랑 pOther 잘 이용해서 하면 되지 않을까
+        }
+        break;
+    }
 }
 
 void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)

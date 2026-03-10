@@ -495,7 +495,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
@@ -549,7 +550,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
@@ -597,7 +599,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
