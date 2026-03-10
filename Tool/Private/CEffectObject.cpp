@@ -673,7 +673,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     float TimeFlag = (m_tEffectDesc.Data._Effect_TimeFlag == PLAY) ? 1.f : 0.f;
     _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * fTimeDelta * TimeFlag;
     _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
-    _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
+    _float fRatio = fActiveTime / m_tEffectDesc.Data./*_Effect_Duration*/_Effect_LifeTime;
 
     if (m_tEffectDesc.Data._Use_Effect_Continue && fRatio >= 0.5f)
     {
@@ -694,6 +694,8 @@ void CEffectObject::Update(const _float fTimeDelta)
     m_bIsStarted = true;
 
 
+
+
     // Duration 및 Loop 제어 설정
     if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration)
     {
@@ -705,7 +707,7 @@ void CEffectObject::Update(const _float fTimeDelta)
         
         else if(m_tEffectDesc.Data._Use_Effect_Continue == false|| m_tEffectDesc.Data._Effect_Looping == false)
         {
-            if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
+            if (fActiveTime >=/* m_tEffectDesc.Data._Effect_Duration +*/m_tEffectDesc.Data._Effect_LifeTime)
             {
                 m_bIsEffectFinish = true;
             }
@@ -713,7 +715,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     }
    if (fRatio > 1.f) fRatio = 1.f;
 
-   _float fTotalSimTime = m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime;
+   _float fTotalSimTime = /*m_tEffectDesc.Data._Effect_Duration + */m_tEffectDesc.Data._Effect_LifeTime;
    _float fScrollRatio = fActiveTime / fTotalSimTime;
    if (fScrollRatio > 1.f) fScrollRatio = 1.f;
 

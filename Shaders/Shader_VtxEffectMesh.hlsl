@@ -1225,4 +1225,13 @@ technique11 T0
         SetPixelShader(CompileShader(ps_5_0, PS_UnityConvert()));
     }
 
+    pass None_DepthDefault
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_Disabled, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
+        GeometryShader = NULL;
+        SetPixelShader(CompileShader(ps_5_0, PS_DefaultMesh()));
+    }
 }

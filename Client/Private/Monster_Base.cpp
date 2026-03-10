@@ -250,10 +250,23 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 
 			Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
 			Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
-			m_pGameInstance->Request_Effect("VFX_Sword_Hit", Desc);
+
+			//if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+			//{
+			//	m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+			//}
+
+			/*else */if (hitDesc.attackDesc.iAttackerLayer == PHYSICSFILTERGROUP::ATTACK_PROJECTTILE)
+			{
+				m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
+			}
+
+			else
+			{
+				m_pGameInstance->Request_Effect("VFX_Sword_Hit", Desc);
+			}
 		}
 	}
-
 
 
 #ifdef _DEBUG

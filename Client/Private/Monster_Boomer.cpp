@@ -68,6 +68,11 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 		Desc.pTarget = this;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MINIMAP_MONSTER_ICON, iCurrentLevelID, &Desc);
 	}
+
+	{
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 600.f);
+	}
+
 	return S_OK;
 }
 
