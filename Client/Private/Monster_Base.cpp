@@ -15,6 +15,7 @@
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
 #include "EffectHandler.h"
+#include "RenderFx.h"
 
 #include "UI_Manager.h"
 #include "GameInstance.h"
@@ -426,6 +427,15 @@ void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
 			CUI_Manager::GetInstance()->Request_Add_Prefab(
 				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
 		}
+	}
+
+	// Shake & Emissive
+	if (CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(Part::Enum::BODY))
+	{
+		CRenderFx* pRenderFx = pBody->Get_Component<CRenderFx>();
+		pRenderFx->Play_Shake(0.35f);
+		pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
+
 	}
 }
 

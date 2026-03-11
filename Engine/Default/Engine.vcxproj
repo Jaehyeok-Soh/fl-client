@@ -295,6 +295,7 @@
     <ClCompile Include="..\private\ProjectileSpawner_Radial360.cpp" />
     <ClCompile Include="..\Private\Prototype_Manager.cpp" />
     <ClCompile Include="..\Private\Ray.cpp" />
+    <ClCompile Include="..\Private\RenderFx.cpp" />
     <ClCompile Include="..\Private\RenderTarget.cpp" />
     <ClCompile Include="..\Private\RenderTarget_Manager.cpp" />
     <ClCompile Include="..\Private\Render_Manager.cpp" />
@@ -477,6 +478,7 @@
     <ClInclude Include="..\public\ProjectileSpawner_Radial360.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />
     <ClInclude Include="..\Public\Ray.h" />
+    <ClInclude Include="..\Public\RenderFx.h" />
     <ClInclude Include="..\Public\RenderTarget.h" />
     <ClInclude Include="..\Public\RenderTarget_Manager.h" />
     <ClInclude Include="..\Public\Render_Manager.h" />

@@ -15,6 +15,7 @@
 #include "ActionSkill.h"
 #include "SkillBase_MoonE.h"
 #include "SkillBase_MoonQ.h"
+#include "RenderFx.h"
 
 // objects
 #include "CameraMan_Targeter.h"
@@ -350,6 +351,15 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
             tPrefabData.Data = Desc;
             CUI_Manager::GetInstance()->Request_Add_Prefab(
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+        }
+
+        // Shake & Emissive
+        if (CBody* pBody = Get_Part<CBody>(Part::BODY))
+        {
+            CRenderFx* pRenderFx = pBody->Get_Component<CRenderFx>();
+            pRenderFx->Play_Shake(0.35f);
+            pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
+
         }
         return true;
     }
