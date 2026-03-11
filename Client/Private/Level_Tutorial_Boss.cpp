@@ -294,7 +294,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 			iLevelId,
 			g_wszXibiProjectile_Prototype_Tag,
 			&desc,
-			100)))
+			200)))
 			return E_FAIL;
 	}
 	{
@@ -318,7 +318,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 			iLevelId,
 			g_wszXibiOneshotThunder_Prototype_Tag,
 			&desc,
-			100)))
+			200)))
 			return E_FAIL;
 	}
 	return S_OK;

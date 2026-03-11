@@ -94,9 +94,6 @@ HRESULT CEffectObject::Ready_Component(void* pArg)
             pSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(DTO::Gravity_CurveKey), 
                 static_cast<_uint>(m_tEffectDesc.Data._vecGlobalGravityCurve.size()));
 
-  /*      else
-            pSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(DTO::Gravity_CurveKey), 1);*/
-
         if (pSB)
         {
             pSRV->SetResource(pSB->Get_SRV());
@@ -485,7 +482,7 @@ void CEffectObject::Update(const _float fTimeDelta)
 
         else /*if (m_tEffectDesc.Data._Use_Effect_Continue == false || m_tEffectDesc.Data._Effect_Looping == false)*/
         {
-            if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
+            if (fActiveTime >= /*m_tEffectDesc.Data._Effect_Duration + */m_tEffectDesc.Data._Effect_LifeTime)
             {
                 m_bIsEffectFinish = true;
             }

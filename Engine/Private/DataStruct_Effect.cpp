@@ -17,6 +17,7 @@ void to_json(json& j, const TEFFECT_ContainerData& data)
 		{ "strTag", data.strTag },
 		{ "ContainerName", data.EffectContainerName },
 		{ "SimulationType", data._Effect_SimulationType },
+        { "IsPoolingEffect", data._IsPoolingEffect },
 		{ "WorldMatrix", {
 			data.vWorldMatrix._11, data.vWorldMatrix._12, data.vWorldMatrix._13, data.vWorldMatrix._14,
 			data.vWorldMatrix._21, data.vWorldMatrix._22, data.vWorldMatrix._23, data.vWorldMatrix._24,
@@ -33,6 +34,9 @@ void from_json(const json& j, TEFFECT_ContainerData& data)
 	j.at("ContainerName").get_to(data.EffectContainerName);
 	j.at("SimulationType").get_to(data._Effect_SimulationType);
 
+    if (j.contains("IsPoolingEffect")) {
+        j.at("IsPoolingEffect").get_to(data._IsPoolingEffect);
+    }
 	if (j.contains("WorldMatrix")) {
 		const auto& m = j.at("WorldMatrix");
 		data.vWorldMatrix._11 = m[0];  data.vWorldMatrix._12 = m[1];  data.vWorldMatrix._13 = m[2];  data.vWorldMatrix._14 = m[3];

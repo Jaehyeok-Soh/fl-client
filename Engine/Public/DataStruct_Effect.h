@@ -271,7 +271,8 @@ struct TEFFECT_ContainerData
     std::string EffectContainerName = {};
 
     Matrix      vWorldMatrix = {};
-    _uint _Effect_SimulationType = ENUM_TO_UINT(E_SIMULATION_SPACE::WORLD);
+    _uint       _Effect_SimulationType = ENUM_TO_UINT(E_SIMULATION_SPACE::WORLD);
+    _bool       _IsPoolingEffect = {true};
     vector<TEFFECT_PartsData>   _ChildData = {};
 };
 

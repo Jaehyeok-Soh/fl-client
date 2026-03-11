@@ -237,38 +237,51 @@ void CEffectType_Selection_Panel::EditEffect()
 	if (m_ppTargetSlot == nullptr || *m_ppTargetSlot == nullptr || (*m_ppTargetSlot)->IsDead())
 		return;
 
-	if(ImGui::TreeNode("Edit##Container_EffectList"))
+	// 객체를 Effect 클래스로 캐스팅 (Container Data에 접근하기 위함)
+	Effect* pEffectContainer = static_cast<Effect*>(*m_ppTargetSlot);
+
+	// 풀 체크 체크박스
 	{
+		auto pDesc = pEffectContainer->Get_ContainerData(); // 실제 객체의 주소를 가져옴
+		ImGui::Checkbox("Pooling", &pDesc->_IsPoolingEffect); // 원본 메모리를 직접 제어
+
+	}
+
+
+	if (ImGui::TreeNode("Edit##Container_EffectList"))
+	{
+		// 1. 이름 변경 UI
 		if (ImGui::TreeNode("Name Change##Container_EffectList"))
 		{
 			static char nameBuf[128] = {};
-			string effectName = static_cast<Effect*>(*m_ppTargetSlot)->Get_Name();
+			string effectName = pEffectContainer->Get_Name();
 
 			if (nameBuf[0] == '\0' && !effectName.empty())
 			{
-				std::string tmp = effectName;
-				strncpy_s(nameBuf, sizeof(nameBuf), tmp.c_str(), _TRUNCATE);
+				strncpy_s(nameBuf, sizeof(nameBuf), effectName.c_str(), _TRUNCATE);
 			}
-			// ImGui에서 입력 받기
-			ImGui::InputText(" ##Container_EffectList", nameBuf, IM_ARRAYSIZE(nameBuf)); ImGui::SameLine();
+
+			ImGui::InputText("##NameInput", nameBuf, IM_ARRAYSIZE(nameBuf));
+			ImGui::SameLine();
 
 			if (ImGui::Button("SAVE"))
 			{
-				effectName = nameBuf;
-				static_cast<Effect*>(*m_ppTargetSlot)->Set_Name(effectName);
+				pEffectContainer->Set_Name(nameBuf);
 			}
 			ImGui::TreePop();
 		}
 
+		// 3. 삭제 버튼
 		if (ImGui::TreeNode("Delete##Container_EffectList"))
 		{
 			if (ImGui::Button("REAL DELETE"))
 			{
 				(*m_ppTargetSlot)->Set_Dead();
-				*m_ppTargetSlot = nullptr; // 여기서 즉시 nullptr로 밀어야 TransformEffect 등에서 안 터짐
+				*m_ppTargetSlot = nullptr;
 			}
 			ImGui::TreePop();
 		}
+
 		ImGui::TreePop();
 	}
 }

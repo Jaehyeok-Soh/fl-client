@@ -64,6 +64,7 @@ HRESULT Effect::Ready_PartsData(void* pArg)
 	if (pDesc == nullptr) return E_FAIL;
 
 	m_eDesc._Effect_SimulationType = pDesc->_Effect_SimulationType;
+	m_eDesc._IsPoolingEffect = pDesc->_IsPoolingEffect;
 	auto& ChildDataList = pDesc->_childData;
 
 	m_vecPartObjects.resize(ChildDataList.size(), nullptr);
@@ -224,6 +225,7 @@ _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument
 	tContainerData.EffectContainerName = tContainerData.strTag;
 	tContainerData.vWorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
 	tContainerData._Effect_SimulationType = ENUM_TO_UINT(m_eDesc._Effect_SimulationType);
+	tContainerData._IsPoolingEffect = m_eDesc._IsPoolingEffect;
 
 	// 자식(Parts) 데이터 수집
 	for (auto& pPart : m_vecPartObjects)
