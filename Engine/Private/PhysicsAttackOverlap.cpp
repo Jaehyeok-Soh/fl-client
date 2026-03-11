@@ -205,7 +205,7 @@ void CPhysicsAttackOverlap::Modify_AttackOverlap(_uint eventIdx, DTO::ATTACKEVEN
 
 	auto& animations = m_pOwnerModel->Get_Animations();
 	for (auto& anim : animations)
-		anim->Clear_Notifies();
+		anim->Clear_Notifies(EAnimNotifyId::Hitbox);
 
 	m_tDesc.attackEvents[eventIdx] = event;
 	Ready_OverlapInfo();
@@ -215,7 +215,7 @@ void CPhysicsAttackOverlap::Modify_AttackOverlap(vector<DTO::ATTACKEVENT> events
 {
 	auto& animations = m_pOwnerModel->Get_Animations();
 	for (auto& anim : animations)
-		anim->Clear_Notifies();
+		anim->Clear_Notifies(EAnimNotifyId::Hitbox);
 
 	m_tDesc.attackEvents = events;
 	Ready_OverlapInfo();
