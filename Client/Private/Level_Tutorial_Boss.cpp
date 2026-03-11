@@ -488,7 +488,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_Map()
 		return E_FAIL;
 
 	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Tutorial_Boss.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Boss/Tutorial_Boss.json";
 
 
 	if (!std::filesystem::exists(FilePath))

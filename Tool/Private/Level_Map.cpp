@@ -71,8 +71,6 @@ HRESULT CLevel_Map::Initialize()
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
 
 	m_pMapToolManager->Set_LevelMap(this);
-	
-	m_pMapToolManager->Ready_LevelData();
 
 
 	if (FAILED(m_pMapToolManager->Register_MapTexture()))

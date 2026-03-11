@@ -163,7 +163,7 @@ public:
 	CModel*						Get_BatchObjectModel(DTO::EMakeObjectType eType);
 public:
 	HRESULT						Ready_LevelData();
-	HRESULT						Apply_LevelData(const DTO::TLevelData* tData);
+	HRESULT						Apply_LevelData(const DTO::TLevelData* pData);
 	HRESULT						Release_SceneData();
 public:
 	HRESULT						Bind_SplatingTextureInfo();
@@ -348,7 +348,6 @@ private:
 	wstring						m_selectedCategoryName{L""};
 
 
-	CB_EnvData					m_tCB_EnvData{};
 
 
 private:

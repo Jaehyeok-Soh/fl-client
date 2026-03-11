@@ -187,6 +187,11 @@ namespace Client
 
 #pragma region MapObject
 
+	struct CB_EnvData
+	{
+		Vec3        vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
+		_float      fWindPower{ 1.f }; //바람이 부는 새기
+	};
 
 	struct CB_WaterData
 	{

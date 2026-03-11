@@ -288,10 +288,21 @@ inline void to_json(json& SaveJson, const TLevelData& tData)
 		{ "strTag", tData.strTag },
 		{ "Texture Splating Info"	, tData.strTextureSplatingInfoName },
 		{ "Level Type"				, tData.strLevelTypeName},
+		{ "Env Data", {
+			{ "Wind Data", json::object() } // 빈 객체로 미리 생성
+		}}
 	};
+
+	// 2. 구조가 완성된 '후에' 참조자를 가져옵니다.
+	auto& WindJson = SaveJson["Env Data"]["Wind Data"];
+
+	// 3. 이제 값을 채웁니다. (안전함)
+	Engine_Utils::write_vec3_xyz(WindJson["Direction"], tData.vWindDirection);
+	WindJson["Power"] = tData.fWindPower;
 
 	return;
 }
+
 inline void from_json(const json& LoadJson, TLevelData& tData)
 {
 	if (LoadJson.contains("strTag"))
@@ -304,6 +315,24 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 	if (LoadJson.contains("Level Type"))
 		tData.strLevelTypeName = LoadJson["Level Type"].get<string>();
 	
+	if (LoadJson.contains("Env Data"))
+	{
+		auto& EnvLoadJson = LoadJson["Env Data"];
+		if (EnvLoadJson.contains("Wind Data"))
+		{
+			auto& WindLoaddJson = EnvLoadJson["Wind Data"];
+			
+			if (WindLoaddJson.contains("Direction"))
+			{
+				Engine_Utils::read_vec3_xyz(WindLoaddJson["Direction"],tData.vWindDirection);
+			}
+			if (WindLoaddJson.contains("Power"))
+			{
+				tData.fWindPower = WindLoaddJson["Power"];
+			}
+		}
+	}
+
 	return;
 }
 

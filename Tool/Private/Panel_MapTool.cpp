@@ -983,7 +983,7 @@ HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 
 HRESULT CPanel_MapTool::Render_EnvSetting()
 {
-	auto& tCB_EnvData = m_pMapToolManager->m_tCB_EnvData;
+	auto& tCB_EnvData = m_pMapToolManager->m_pLevelData->m_tCB_EnvData;
 
 	ImGui::SeparatorText(" Wind Setting ");
 
@@ -1072,13 +1072,30 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	ImGui::NewLine();
 
 
-	if (ImGui::Button("Save Camera Cinematic Sequence"))
+	if (ImGui::Button("Save Camera Cinematic Sequence [ Data ] "))
 	{
 		if (FAILED(m_pMapToolManager->Save_Camera_Cinematic_Sequence(Engine_Utils::ToWString(pCamCinematicSequence->strDataName))))
 		{
 			MSG_BOX(" Save Camera Cinematic Sequence 실패");
 		}
 	}
+
+	if (ImGui::Button("Save Camera Cinematic Sequence  [ Json ] "))
+	{
+		if (FAILED(m_pGameInstance->GameDataManager_Save_CameraCinematicSequence()))
+		{
+			MSG_BOX(" Save Camera Cinematic Sequence 실패");
+		}
+	}
+
+	ImGui::Separator();
+
+	if (ImGui::Button(" Reset Camera Cinematic Sequence "))
+	{
+		/* 전체 리셋 */
+		pCamCinematicSequence->Reset();
+	}
+
 
 	ImGui::NewLine();
 
@@ -1176,15 +1193,6 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	ImGui::Separator();
 	// =========================================================
 
-
-	ImGui::Separator();
-
-	if (ImGui::Button(" Reset Camera Cinematic Sequence "))
-	{
-		/* 전체 리셋 */
-		pCamCinematicSequence->Reset();
-	}
-
 	ImGui::Separator();
 
 	ImGui::SeparatorText(" Add Buttons");
@@ -1221,7 +1229,9 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 			// ★ 아주 중요: ImGui는 이름이 같으면 겹치기 때문에, 반드시 고유 ID를 푸시해야 합니다.
 			ImGui::PushID(i);
 
-			string strTreeNodeName = "KeyFrame [" + std::to_string(i) + "]";
+			_int iDeleteIndex{-1};
+
+			string strTreeNodeName = "KeyFrame[" + std::to_string(i) + "]";
 
 			// TreeNodeEx를 써서 기본적으로 펼쳐져 있게 하거나 닫혀있게 설정 가능
 			bool bNodeOpen = ImGui::TreeNodeEx(strTreeNodeName.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
@@ -1229,6 +1239,15 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 			// 트리 노드와 같은 줄 오른쪽 끝에 삭제 버튼 배치
 			ImGui::SameLine();
 
+			/* 중간사이에 끼워넣기가능 */
+			if (ImGui::Button("Insert"))
+			{
+				pCamCinematicSequence->Insert_KeyFrameData(i);
+			}
+			if (ImGui::Button("Insert(Cam)"))
+			{
+				pCamCinematicSequence->Insert_KeyFrameData(i,m_pGameInstance->Get_MainCamera());
+			}
 			if (ImGui::Button("Delete"))
 			{
 				if(iDeleteIndex == -1)
@@ -1240,11 +1259,17 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				if (iResetIndex == -1)
 					iResetIndex = i;
 			}
+
 			ImGui::SameLine();
 			if (ImGui::Button("Copy Camera"))
 			{
 				if (iCopyCameraIndex == -1)
 					iCopyCameraIndex = i;
+			}
+
+			if (ImGui::Button("Move To Camera"))
+			{
+				m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_WorldMatrix(pCamCinematicSequence->vecCamKeyFrameData[i].Get_WorldMatrix());
 			}
 
 			// 노드가 펼쳐져 있을 때만 내부 UI 렌더링
@@ -1284,6 +1309,102 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				ImGui::Combo("Move Lerp", (int*)&KeyFrame.eMoveLerpType, g_szLerpTypes, (int)Engine::ELerpType::END);
 				ImGui::Combo("LookAt Lerp", (int*)&KeyFrame.eLookAtLerpType, g_szLerpTypes, (int)Engine::ELerpType::END);
 				ImGui::Combo("Fov Lerp", (int*)&KeyFrame.eFovLerpType, g_szLerpTypes, (int)Engine::ELerpType::END);
+
+
+
+				ImGui::SeparatorText("Events");
+
+				// TreeNode가 열렸을 때만 안쪽 내용을 그리고 TreePop을 합니다.
+				if (ImGui::TreeNode("On Reach Events"))
+				{
+					// 1. 이벤트 추가 버튼
+					if (ImGui::Button("Add##OnReachEvents"))
+					{
+						KeyFrame.vecOnReachEventIndex.push_back(0); // 기본값 0으로 추가
+					}
+
+					_int iEventToDelete = -1; // 삭제할 이벤트의 인덱스를 기억할 변수
+
+					// 2. 현재 들어있는 이벤트 리스트 순회
+					for (_uint j = 0; j < KeyFrame.vecOnReachEventIndex.size(); ++j)
+					{
+						ImGui::PushID(j); 
+
+						// ImGui는 int 포인터를 쓰기 때문에 _uint를 잠시 int로 캐스팅
+						int iEventVal = static_cast<int>(KeyFrame.vecOnReachEventIndex[j]);
+
+						if (ImGui::Combo("##OnReachEvents", &iEventVal, g_szGlobalBroadCastType, (int)EGlobal_Broadcast_Type::END))
+						{
+							// 정수값 바로 갱신
+							KeyFrame.vecOnReachEventIndex[j] = static_cast<_uint>(iEventVal);
+						}
+
+						ImGui::SameLine();
+
+						// 3. 개별 삭제 버튼
+						if (ImGui::Button("Delte##OnReachEvents"))
+						{
+							iEventToDelete = j; // 눌린 버튼의 인덱스를 저장
+						}
+
+						ImGui::PopID();
+					}
+
+					// 4. 루프가 끝난 뒤에 안전하게 삭제 처리 (중간 삭제 완벽 지원)
+					if (iEventToDelete != -1)
+					{
+						KeyFrame.vecOnReachEventIndex.erase(KeyFrame.vecOnReachEventIndex.begin() + iEventToDelete);
+					}
+
+					ImGui::TreePop(); // Arrival Events용 TreePop
+				}
+
+
+				// TreeNode가 열렸을 때만 안쪽 내용을 그리고 TreePop을 합니다.
+				if (ImGui::TreeNode("Hold Time End Events"))
+				{
+					// 1. 이벤트 추가 버튼
+					if (ImGui::Button("Add##HoldTimeEnd"))
+					{
+						KeyFrame.vecHoldTimeEndEventIndex.push_back(0); // 기본값 0으로 추가
+					}
+
+					_int iEventToDelete = -1; // 삭제할 이벤트의 인덱스를 기억할 변수
+
+					// 2. 현재 들어있는 이벤트 리스트 순회
+					for (_uint j = 0; j < KeyFrame.vecHoldTimeEndEventIndex.size(); ++j)
+					{
+						ImGui::PushID(j); // 이벤트 리스트용 고유 ID 푸시
+
+						// ImGui는 int 포인터를 쓰기 때문에 _uint를 잠시 int로 캐스팅
+						int iEventVal = static_cast<int>(KeyFrame.vecHoldTimeEndEventIndex[j]);
+
+						if (ImGui::Combo("##OnReachEvents", &iEventVal, g_szGlobalBroadCastType, (int)EGlobal_Broadcast_Type::END))
+						{
+							// 정수값 바로 갱신
+							KeyFrame.vecHoldTimeEndEventIndex[j] = static_cast<_uint>(iEventVal);
+						}
+
+						ImGui::SameLine();
+
+						// 3. 개별 삭제 버튼
+						if (ImGui::Button("Delte##OnReachEvents"))
+						{
+							iEventToDelete = j; // 눌린 버튼의 인덱스를 저장
+						}
+
+						ImGui::PopID();
+					}
+
+					// 4. 루프가 끝난 뒤에 안전하게 삭제 처리 (중간 삭제 완벽 지원)
+					if (iEventToDelete != -1)
+					{
+						KeyFrame.vecHoldTimeEndEventIndex.erase(KeyFrame.vecHoldTimeEndEventIndex.begin() + iEventToDelete);
+					}
+
+					ImGui::TreePop(); // Arrival Events용 TreePop
+				}
+
 
 				ImGui::NewLine();
 				ImGui::TreePop(); // TreeNode를 닫아줌

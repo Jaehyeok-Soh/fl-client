@@ -619,7 +619,7 @@ void CGameInstance::Setup_Inv_ToCBuffer()
 	m_pCamera_Manager->Setup_Inv_ToCBuffer();
 }
 
-HRESULT CGameInstance::Play_CameraCinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence)
+HRESULT CGameInstance::Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence)
 {
 	return m_pCamera_Manager->Play_CameraCinematic(pCameraCinematicSequence);
 }
