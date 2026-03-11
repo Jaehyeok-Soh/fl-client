@@ -69,6 +69,7 @@ HRESULT CPhysics_Module::Initialize()
 	{
 		PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.f, -9.81f, 0.f);
+		sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;
 		sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 		sceneDesc.flags |= PxSceneFlag::eENABLE_ACTIVE_ACTORS;
 		//sceneDesc.flags |= PxSceneFlag::eREQUIRE_RW_LOCK;
