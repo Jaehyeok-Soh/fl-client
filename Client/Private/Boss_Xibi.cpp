@@ -171,6 +171,8 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 void CBoss_Xibi::Try_Attack(const HIT_DESC& hitDesc)
 {
 	Super::Try_Attack(hitDesc);
+
+	Get_Component<CMonsterControlContext>()->Set_AttackLanded();
 }
 
 HRESULT CBoss_Xibi::Change_CondemnedDie()

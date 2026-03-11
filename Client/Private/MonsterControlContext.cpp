@@ -9,6 +9,7 @@
 #include "Engine_Utils.h"
 #include "GameInstance.h"
 #include "Monster_Body_Base.h"
+#include "MainPlayer.h"
 
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
@@ -147,6 +148,11 @@ void CMonsterControlContext::End_Groggy()
 	m_eCurrentGroggyState = { EGroggyState::None };
 }
 
+void CMonsterControlContext::Set_RootMotion_Apply(_bool bApply)
+{
+	static_cast<CMainPlayer*>(Get_Owner())->Set_RootMotion_Apply(bApply);
+}
+
 Vec3 CMonsterControlContext::Get_MoveDir()
 {
 	return m_vMoveDir;
@@ -266,6 +272,16 @@ _bool CMonsterControlContext::IsAlive()
 _bool CMonsterControlContext::IsDying()
 {
 	return Get_Owner()->IsDying();
+}
+
+_bool CMonsterControlContext::IsAttackLanded()
+{
+	_bool result = { false };
+
+	if (result = Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::ATTACK_LANDED))
+		Engine_Utils::RemoveHard_Flag(m_iSubState, SUB_STATE::ATTACK_LANDED);
+
+	return result;
 }
 
 _bool CMonsterControlContext::IsComboPossible()
