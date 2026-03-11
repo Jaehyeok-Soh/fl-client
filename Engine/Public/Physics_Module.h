@@ -8,6 +8,7 @@ class CPhysics_ResourceManager;
 class CPhysics_ShapeFactory;
 class CPhysics_ActorFactory;
 class CPhysics_CCTManager;
+class CPhysics_RagdollSystem;
 class CPhysics_FilterEventCallback;
 
 class CPhysics_Module final : public CBase
@@ -25,6 +26,8 @@ private:
 public:
     void StepPhysics(_float fTimeDelta);
     void AddActor(PxRigidActor* actor);
+    void AddRagdoll(PxArticulationReducedCoordinate* pArticulation);
+    void RemoveRagdoll(PxArticulationReducedCoordinate* pArticulation);
     void ClearPhysics();
     void FlushScene();
     void RemoveActor(PxRigidActor* actor);
@@ -63,6 +66,8 @@ public:
 
     void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 
+    PxMaterial* GetPhysicsMaterial(EPhysicsMaterial eMaterial);
+
 /// <summary>
 /// Shape Factory : 中宜端 持失
 /// </summary>
@@ -77,6 +82,7 @@ public:
 /// </summary>
 public:
     vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+    RAGDOLLELEMENTS CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc);
 
 /// <summary>
 /// Character Controller Manager
@@ -85,6 +91,18 @@ public:
 public:
     PxController* GetController(PHYSICSCCT_DESC* pDesc);
     CPhysics_CCTFilterCallback* GetCCTFilterCallback();
+
+/// <summary>
+/// Ragdoll system
+/// </summary>
+public:
+    _bool CheckRagdollState(int64 objID);
+    void RagdollRegister(CGameObject* obj);
+    void RagdollUnregister(int64 objID);
+
+    void RagdollRequestStart(uint64 objID);
+    void RagdollSyncStates(uint64 objID, vector<class CChannel*>& vecChannels);
+    void RagdollFinish(uint64 objID);
 
 /// <summary>
 /// Collision Filter Shader
@@ -132,6 +150,7 @@ private:
     CPhysics_ShapeFactory* m_pShapeFactory = { nullptr };
     CPhysics_ActorFactory* m_pActorFactory = { nullptr };
     CPhysics_CCTManager* m_pCCTManager = { nullptr };
+    CPhysics_RagdollSystem* m_pRagdollSystem = { nullptr };
     CPhysics_FilterEventCallback* m_pFilterEventCallback = { nullptr };
 
 public:

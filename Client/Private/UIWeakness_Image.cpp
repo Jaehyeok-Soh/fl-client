@@ -57,7 +57,7 @@ HRESULT CUIWeakness_Image::Attach_Personal_Info()
 	{
 		m_vNoiseUVScale = Vec2{ 1.5f, 1.5f };
 		m_vNoiseUVScroll = Vec2{ 0.f, -0.5f };
-		m_fGlowDistort = 0.02;
+		m_fGlowDistort = 0.02f;
 		m_fGlowPulseSpeed = 0.f;
 		m_fGlowIntensity = 1.6f;
 	}

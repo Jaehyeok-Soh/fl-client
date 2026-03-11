@@ -60,11 +60,7 @@ namespace Client
 	{
 		None = 0,
 		Middle = 1 << 0,
-		Final = 1 << 1,
-		PartBreak_1 = 1 << 2,
-		PartBreak_2 = 1 << 3,
-		PartBreak_3 = 1 << 4,
-		PartBreak_4 = 1 << 5
+		Final = 1 << 1
 	};
 
 	enum class EDir : unsigned int
@@ -186,6 +182,33 @@ namespace Client
 
 
 #pragma region MapObject
+
+
+	struct CB_WaterData
+	{
+		_uint  g_WaterTexBindingFlags{ 0 };								// Texture가 바인딩되었는지 안되어있는지 Flag값
+		float  g_fWaterDT{ 0.f };										// 움직이는 UV좌표를 위한 DT값
+		Vec2   g_vWaterSpeed1{ 1.f,1.f };								// 물 일렁임관련? Speed 값
+		Vec2   g_vWaterSpeed2{ 1.f,1.f };								// 물 일렁임관련? Speed 값
+		Vec2   g_vWaterDistortionSpeed{ 1.f, 1.f };                     // 
+
+		Vec2    g_vWaterUVPower{ 1.f, 1.f };
+		Vec2    g_vWaterDistortionUVPower{ 1.f, 1.f };                  // Noise Texture UV Tiling Power
+		float   g_fDistortionPower{ 1.f };								// Noise가 섞이는 비율? 세기
+
+		float   g_fSparklePower;                                        // 4 Byte (윤슬 눈뽕 강도!)
+		Vec2    g_vSparkleUVPower;                                      // 8 Byte (윤슬 자글자글함 크기 조절!)
+	};
+
+	struct CB_GrassData
+	{
+		_float	g_fGrassDT			{0.f};
+		_float	g_fGrassMaxHeight	{1.f};		//Model Min Max 중 Max의 Y값		
+		_float  g_fGrassSwaySpeed	{1.f};		//이 잔디가 Sway = 흔들리는 Speed		Tool에서 지정
+		_float  g_fGrassWaveSize	{1.f};		//이 잔디가 Power = 흔들리는 힘		Tool에서 지정
+	};
+
+
 
 	static ELevelType StringToClientleveltype(const _string& str)
 	{
@@ -388,6 +411,48 @@ namespace Client
 		END 
 	};
 
+
+	// 지금 어떤 퀘스트인지
+	enum class EUITutorialQuestTypeID
+	{
+		// 연옥도 탈출
+		QUEST1_1,		// 계속 전진해서 산 아래의 마을로 가기
+		QUEST1_2,		// 필토이드를 피해 집으로 돌아가 무기 찾기
+		QUEST1_3,		// 공격해 오는 필토이드 퇴치(0/10)
+		QUEST1_4,		// 부두에서 배 찾기
+		QUEST1_5,		// 해안을 따라 해변 조사
+
+		//세월에 묻힌 땅
+		QUEST2_1,		// 총기를 테스트하고 필토이드 무리 처치(0/10)
+		QUEST2_2,		// 산 위의 유적으로 가기
+
+		// 모레의 메아리
+		QUEST3_1,		// 병사를 처치하고 벗어나기(0/40)
+		QUEST3_2,		// 시빌라의 공격 막아내기
+
+		END
+	};
+
+	enum class EUITutorialPopUpTypeID
+	{
+		TUTORIAL_POPUP_1,	// [Space] 를 눌러 점프
+		TUTORIAL_POPUP_2,	// [LCtrl] 를 눌러 슬라이드로 구멍 지나가기
+		TUTORIAL_POPUP_3,	// [LCtrl] 를 길게 눌러 앉기/슬라이드 상태 진입
+		TUTORIAL_POPUP_3_1,	// [Space] 를 다시 눌러 스파이럴 점프로 절벽 넘기
+		TUTORIAL_POPUP_4,	// 마우스를 움직여 시야를 올린 후 대각선으로 뛰어오르기
+		TUTORIAL_POPUP_4_1,	// [LCtrl] 를 길게 누른 상태에서 [Space] 를 눌러 스파이럴 점프로 절벽을 넘거나 원거리 이동할 수 있습니다.
+		TUTORIAL_POPUP_5,	// 벽에 다가가서 [Space] 를 연속으로 눌러 벽 오르기
+		TUTORIAL_POPUP_6,	// [V] 버튼을 눌러 가이드 포인트를 확인할 수 있습니다.
+		TUTORIAL_POPUP_7,	// [Mouse L] 을 눌러 근접 공격
+		TUTORIAL_POPUP_8,	// [LShift] 버튼을 눌러 적의 공격 회피
+		TUTORIAL_POPUP_9,	// [Mouse R] 를 눌러 원거리 공격
+		TUTORIAL_POPUP_10,	// [R] 버튼을 눌러 탄환 장전
+		TUTORIAL_POPUP_11,	// [E] 버튼을 눌러 스킬 시전
+		TUTORIAL_POPUP_12,	// 보스를 조준하고 [Mouse Wheel] 마우스 휠 버튼을 눌러 시점 고정, 다시 눌러서 고정 해제
+		TUTORIAL_POPUP_13,	// [Q] 버튼을 눌러 종결 스킬 시전
+		END,
+	};
+
 	enum class EUIPrefabType {
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
@@ -397,6 +462,23 @@ namespace Client
 		BOSS_NAMEPLATE,
 		MINIMAP_MONSTER_ICON,
 		TUTORIAL_PANNEL,
+
+		TUTORIAL_POPUP_1,
+		TUTORIAL_POPUP_2,
+		TUTORIAL_POPUP_3,
+		TUTORIAL_POPUP_3_1,
+		TUTORIAL_POPUP_4,
+		TUTORIAL_POPUP_4_1,
+		TUTORIAL_POPUP_5,
+		TUTORIAL_POPUP_6,
+		TUTORIAL_POPUP_7,
+		TUTORIAL_POPUP_8,
+		TUTORIAL_POPUP_9,
+		TUTORIAL_POPUP_10,
+		TUTORIAL_POPUP_11,
+		TUTORIAL_POPUP_12,
+		TUTORIAL_POPUP_13,
+
 		END
 	};
 
@@ -411,6 +493,23 @@ namespace Client
 		case Client::EUIPrefabType::DAMAGE_FONTS_HIT:		return L"DAMAGE_FONTS_HIT";
 		case Client::EUIPrefabType::MINIMAP_MONSTER_ICON:	return L"DAMAGE_FONTS_HIT";
 		case Client::EUIPrefabType::TUTORIAL_PANNEL:		return L"TUTORIAL_PANNEL";
+
+		case Client::EUIPrefabType::TUTORIAL_POPUP_1:		return L"TUTORIAL_POPUP_1";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_2:		return L"TUTORIAL_POPUP_2";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_3:		return L"TUTORIAL_POPUP_3";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_3_1:		return L"TUTORIAL_POPUP_3_1";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_4:		return L"TUTORIAL_POPUP_4";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_4_1:		return L"TUTORIAL_POPUP_4_1";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_5:		return L"TUTORIAL_POPUP_5";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_6:		return L"TUTORIAL_POPUP_6";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_7:		return L"TUTORIAL_POPUP_7";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_8:		return L"TUTORIAL_POPUP_8";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_9:		return L"TUTORIAL_POPUP_9";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_10:		return L"TUTORIAL_POPUP_10";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_11:		return L"TUTORIAL_POPUP_11";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_12:		return L"TUTORIAL_POPUP_12";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_13:		return L"TUTORIAL_POPUP_13";
+
 		case Client::EUIPrefabType::END:
 		default:
 			break;
@@ -420,23 +519,57 @@ namespace Client
 
 	typedef struct tagUINamePlatePrefabData
 	{
+		CGameObject* pTarget = { nullptr };
 		Vec3 vOffset = {};
-	}UI_NAMEPLATE_PREFAB_DATA;
+	} UI_NAMEPLATE_PREFAB_DATA;
 
 	typedef struct tagUIDamageFontPrefabData
 	{
-		Vec4	vFontColor = {};
-		Vec3	vHitPos = {};
-		_uint	iDamage = {};
-		Vec3	vRandOffset = {};
-	}UI_DAMAGEFONT_PREFAB_DATA;
+		CGameObject* pTarget = { nullptr };
+		Vec4 vFontColor = {};
+		Vec3 vHitPos = {};
+		_uint iDamage = {};
+		Vec3 vRandOffset = {};
+	} UI_DAMAGEFONT_PREFAB_DATA;
+
+	typedef struct tagUIBossNamePlatePrefabData
+	{
+		CGameObject* pTarget = { nullptr };
+	} UI_BOSS_NAMEPLATE_PREFAB_DATA;
+
+	typedef struct tagUIMinimapMonsterIconPrefabData
+	{
+		CGameObject* pTarget = { nullptr };
+	} UI_MINIMAP_MONSTER_ICON_PREFAB_DATA;
+
+	typedef struct tagUITutorialPannelPrefabData
+	{
+
+
+	} UI_TUTORIAL_PANNEL_PREFAB_DATA;
+
+	typedef struct tagUITutorialPopUpPrefabData
+	{
+		EUITutorialPopUpTypeID eTutorialTypeID = { EUITutorialPopUpTypeID::END };
+
+	} UI_TUTORIAL_POPUP_PREFAB_DATA;
+
+
+	typedef std::variant<
+		UI_NAMEPLATE_PREFAB_DATA,
+		UI_DAMAGEFONT_PREFAB_DATA,
+		UI_BOSS_NAMEPLATE_PREFAB_DATA,
+		UI_MINIMAP_MONSTER_ICON_PREFAB_DATA,
+		UI_TUTORIAL_PANNEL_PREFAB_DATA,
+		UI_TUTORIAL_POPUP_PREFAB_DATA
+	> UI_PREFAB_VARIANT;
 
 	typedef struct tagUIPrefabData
 	{
-		CGameObject* pTarget = { nullptr };
-		UI_NAMEPLATE_PREFAB_DATA NamePlateData = {};
-		UI_DAMAGEFONT_PREFAB_DATA DamageFontData = {};
-	}UI_PREFAB_DATA;
+		UI_PREFAB_VARIANT Data;
+	} UI_PREFAB_DATA;
+
+
 
 	enum class ECombotype {
 		C, 
@@ -445,6 +578,9 @@ namespace Client
 		S, 
 		END
 	};
+
+
+
 
 #pragma endregion
 
@@ -607,6 +743,7 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360CircleProjectile[]				{ L"Prototype_Spawner_Xibi360CircleProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
+	inline constexpr wchar_t g_wszSpawner_XibiGate[]							{ L"Prototype_Spawner_XibiGate" };
 
 	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]							{ L"Prototype_Spawner_PlayerMoon_SkillE" };
 	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };
@@ -656,8 +793,8 @@ namespace Client
 
 #pragma region Part Objects
 
-	/* Bounding Box */
 	inline constexpr wchar_t g_wszPartObj_Effect_Prototype_Tag[]{ L"Prototype_GameObject_Part_Effect" }; // static
+	inline constexpr wchar_t g_wszPartObj_Socket_Prototype_Tag[]{ L"Prototype_GameObject_Part_Socket" }; // static
 
 #pragma endregion
 
@@ -682,8 +819,8 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
 	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
-}
 #pragma endregion
+}
 
 #pragma endregion
 

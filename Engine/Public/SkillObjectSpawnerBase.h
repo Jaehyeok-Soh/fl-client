@@ -65,6 +65,7 @@ protected:
 	virtual _uint Get_TotalCount() const PURE;
 	virtual void  Emit_One(_uint i, const Vec3& vFoward, const Vec3& vUp) PURE;
 	void Spawn_SkillObject(const Vec3& vSpawnPos, const Vec3& vDir);
+	void Spawn_SkillObject(const Vec3& vSpawnPos, const Vec3& vMoveDir, const Vec3& vLookDir);
 private:
 	void Change_State(EState eState);
 	void Start_State(EState eState);

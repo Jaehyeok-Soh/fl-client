@@ -234,6 +234,17 @@ namespace Engine
 		Matrix matWorld = Matrix::Identity;
 	}SHADER_TRANSFORMDESC;
 
+	typedef struct tagShaderRenderFxDesc
+	{
+		unsigned int iFlags = 0;
+		float fEmissiveIntensity = 0.f;
+		float fOffsetX = 0.f;
+		float fOffsetY = 0.f;
+
+		SimpleMath::Vector3   vEmissiveColor = { SimpleMath::Vector3::One};
+		float fReserved0 = 0.f;
+	}SHADER_RENDER_FX_DESC;
+
 	typedef struct tagLightDesc
 	{
 		LIGHT_TYPE				eType = { LIGHT_TYPE::END };
@@ -921,6 +932,31 @@ namespace Engine
 		string strAttackPresetTag = { "" };
 		unsigned int iAttackPresetID = { UINT_MAX };
 	}PHYSICSCOLLIDER_DESC;
+
+	typedef struct tagRagdollBoneDesc
+	{
+		RAGDOLLJOINT::Enum eJoint = { RAGDOLLJOINT::END };
+		RAGDOLLJOINT::Enum eParentJoint = { RAGDOLLJOINT::END };
+		
+		unsigned int iBoneIndex = {};
+		int iParentIndex = { -1 };
+
+		float fRadius = 0.05f;
+		float fHeight = 0.05f;
+		float fMass = 1.f;
+
+		Matrix matLocalTransform = { Matrix::Identity };
+		PxTransform matOffsetTransform = {PxTransform(PxIdentity)};
+	}RAGDOLLBONEDESC;
+
+	typedef struct tagRagdollElements
+	{
+		using LinkIdentity = std::pair<PxArticulationLink*, RAGDOLLBONEDESC>;
+
+		PxArticulationReducedCoordinate* pArticulation = { nullptr };
+		vector<LinkIdentity> vecPhysicsLink;
+		vector<Matrix> vecRagdollLiveTransform;
+	}RAGDOLLELEMENTS;
 #pragma endregion
 
 	typedef struct tagOctreeDesc

@@ -119,6 +119,10 @@ protected:
 	HRESULT				Ready_EffectHandler(void* pArgs);
 protected:
 	HRESULT Ready_CCT(void* pArgs);
+
+protected:
+	void				OnHit_PlayerMoon(const HIT_DESC& hitDesc); //플레이어 별 처리를 위함.. 필요하다면 virtual로 빼도 될지도
+
 protected:
 	EMonster_Type			m_eMonsterType{ EMonster_Type::END};
 	class CEffectHandler*	m_pEffectHandler = { nullptr };

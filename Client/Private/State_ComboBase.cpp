@@ -53,6 +53,8 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::COMBO));
 
+	LookAt_Monser();
+
 	return S_OK;
 }
 
@@ -90,6 +92,10 @@ _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 void CState_ComboBase::Change_NextCombo()
 {
 	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+
+	// 먼저 monster를 바라보도록 설정
+	//LookAt_Monser();
+
 	Vec3 vDir = Get_MoveDir();
 	if (vDir.LengthSquared() > 0.f)
 	{

@@ -58,6 +58,8 @@ private:
 	Vec4 m_vLowHpColor		= {};
 	_bool m_isHPPulse		= {};
 
+	_float m_fPlayer_PreRatio = {};
+
 public:
 	static CUIPlayerStat_Progress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

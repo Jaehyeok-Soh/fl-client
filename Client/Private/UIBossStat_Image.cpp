@@ -138,16 +138,15 @@ HRESULT CUIBossStat_Image::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
-	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
+	if (auto* pBossNamePlate= std::get_if<UI_BOSS_NAMEPLATE_PREFAB_DATA>(&pDesc->Data))
+	{
+		m_pTargetStat = pBossNamePlate->pTarget->Get_Component<CMyStat>();
+		if (nullptr == m_pTargetStat)
+			return E_FAIL;
+	}
 
-	if (nullptr == m_pTargetStat)
-		return E_FAIL;
 	m_isBossEventTrigger	= false;
 	m_isSpawned				= true;
-
-
-
-
 
 	return S_OK;
 }

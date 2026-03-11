@@ -204,10 +204,12 @@ HRESULT CUIBossStat_Progress::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
-
-	m_pTargetStat = static_cast<CStatCom_Boss*>(pDesc->pTarget->Get_Component<CMyStat>());
-	if (nullptr == m_pTargetStat)
-		return E_FAIL;
+	if (auto* pBossNamePlate = std::get_if<UI_BOSS_NAMEPLATE_PREFAB_DATA>(&pDesc->Data))
+	{
+		m_pTargetStat = static_cast<CStatCom_Boss*>(pBossNamePlate->pTarget->Get_Component<CMyStat>());
+		if (nullptr == m_pTargetStat)
+			return E_FAIL;
+	}
 
 	m_isSpawned = true;
 	m_fProgress_Ratio = 0.f;

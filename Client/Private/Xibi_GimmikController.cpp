@@ -10,7 +10,7 @@
 #include "SkillObjectSpawner_RandomXZ.h"
 #include "ProjectileSpawner_Fan.h"
 #include "ProjectileSpawner_Radial360.h"
-
+#include "Xibi_GateSpawner.h"
 #include "GameInstance.h"
 
 CXibi_GimmikController::CXibi_GimmikController()
@@ -49,6 +49,7 @@ HRESULT CXibi_GimmikController::Awake(const _uint iCurLevelIndex)
 	m_p3wayThunderSpawner->Awake(iCurLevelIndex);
 	m_p360CircleSpawner->Awake(iCurLevelIndex);
 	m_p360ThunderSpawner->Awake(iCurLevelIndex);
+	m_pGateSpawner->Awake(iCurLevelIndex);
 
 	m_vSpawnPosition = Get_Owner()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	return S_OK;
@@ -61,6 +62,7 @@ void CXibi_GimmikController::Update(const _float fTiemDelta)
 	m_pOneshotThunderSpawner->Update(fTiemDelta);
 	m_p360CircleSpawner->Update(fTiemDelta);
 	m_p360ThunderSpawner->Update(fTiemDelta);
+	m_pGateSpawner->Update(fTiemDelta);
 }
 
 HRESULT CXibi_GimmikController::Bind_Events()
@@ -195,6 +197,26 @@ HRESULT CXibi_GimmikController::Set_Event()
 			pAnim->Pushback_Notifies(EAnimNotifyPhase::Late, key);
 		}
 	}
+
+	// Spawn8Gate
+	{
+		_int iXibiSkill05_AnimIndex = Get_Owner()->Get_AnimationIndex(L"Animation_Xibi_Skill05");
+		if (iXibiSkill05_AnimIndex == -1)
+			return E_FAIL;
+
+		CModelAnimation* pAnim = m_pOwnerModel->Get_Animation(iXibiSkill05_AnimIndex);
+		if (pAnim == nullptr)
+			return E_FAIL;
+
+		// Spawn 8Gate
+		{
+			AnimNotifyKey key{};
+			key.eID = EAnimNotifyId::Trigger_Gimmik;
+			key.fTrackPosition = 64.f;
+			key.iParam0 = ENUM_TO_UINT(EGimmikType::Spawn8Gate);
+			pAnim->Pushback_Notifies(EAnimNotifyPhase::Late, key);
+		}
+	}
 	return S_OK;
 }
 
@@ -262,6 +284,9 @@ void CXibi_GimmikController::On_ModelAnimNotify(const AnimNotifyKey& key)
 		break;
 	case Client::CXibi_GimmikController::EGimmikType::Spawn360Thunder:
 		On_SpawnThunder360();
+		break;
+	case Client::CXibi_GimmikController::EGimmikType::Spawn8Gate:
+		On_Spawn8Gate();
 		break;
 	}
 }
@@ -401,6 +426,28 @@ void CXibi_GimmikController::On_SpawnThunder360()
 	m_p360ThunderSpawner->Trigger(desc);
 }
 
+void CXibi_GimmikController::On_Spawn8Gate()
+{
+	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
+	CGameObject* pOwner = Get_Owner();
+	if (pOwner == nullptr || pOwner->IsDead())
+		return;
+
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(0, L"Player_Layer");
+	if (pPlayer == nullptr || pPlayer->IsDead())
+		return;
+
+	CXibi_GateSpawner::XIBIGATE_COPTY_DESC desc{};
+	desc.iLevelIndex = iLevelIndex;
+	desc.iSpawnLevelIndex = iLevelIndex;
+	desc.vOrigin = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	desc.vUp = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::UP);
+	desc.pTarget = pPlayer;
+
+	m_pGateSpawner->Trigger(desc);
+}
+
 HRESULT CXibi_GimmikController::Ready_Spawner()
 {
 	_uint iLevelId = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
@@ -481,6 +528,20 @@ HRESULT CXibi_GimmikController::Ready_Spawner()
 
 		m_p360ThunderSpawner = static_cast<CProjectileSpawner_Radial360*>(pResult);
 	}
+	// 8Gate
+	{
+		CXibi_GateSpawner::XIBIGATE_COPTY_DESC desc{};
+		desc.iLevelIndex = iLevelId;
+		desc.iSpawnLevelIndex = iLevelId;
+		desc.fSpreadYawDeg = 8.f;
+		desc.fSpreadPitchDeg = 10.f;
+		CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
+			iLevelId, g_wszSpawner_XibiGate, &desc);
+		if (pResult == nullptr)
+			return E_FAIL;
+
+		m_pGateSpawner = static_cast<CXibi_GateSpawner*>(pResult);
+	}
 
 	return S_OK;
 }
@@ -514,5 +575,6 @@ void CXibi_GimmikController::Free()
 	Safe_Release(m_p360ThunderSpawner);
 	Safe_Release(m_p3wayThunderSpawner);
 	Safe_Release(m_p360CircleSpawner);
+	Safe_Release(m_pGateSpawner);
 	Super::Free();
 }

@@ -11,6 +11,7 @@ CTriggerCollidePart::CTriggerCollidePart(ID3D11Device* pDevice, ID3D11DeviceCont
 
 CTriggerCollidePart::CTriggerCollidePart(const CTriggerCollidePart& rhs)
 	: Super(rhs)
+	, m_vColliedPos(rhs.m_vColliedPos)
 {
 }
 
@@ -100,6 +101,16 @@ void CTriggerCollidePart::Ready_Before_Render(_float fTimeDelta)
 void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+
+	if (pOther)
+	{
+		CTransform* pTrans = pOther->Get_Component<CTransform>();
+
+		if (pTrans)
+		{
+			m_vColliedPos = pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
+		}
+	}
 }
 
 void CTriggerCollidePart::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -119,6 +130,13 @@ HRESULT CTriggerCollidePart::Ready_Components(TRIGGER_COLLIDEPART_DESC* pDesc)
 {
 	if (FAILED(Add_Component<CPhysicsCollider>(0, L"Prototype_Component_Physics_Collider", pDesc->pColliderDesc)))
 		return E_FAIL;
+
+	// 만약 외부에서 지정 하지 않았다면
+	// 이거의 transform을 따라가도록	설정
+	if (pDesc->pRigidbodyDesc->pOwnerMatrix == nullptr)
+	{
+		pDesc->pRigidbodyDesc->pOwnerMatrix = Get_Component<CTransform>()->Get_WorldMatrixPtr();
+	}
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", pDesc->pRigidbodyDesc)))
 		return E_FAIL;
 

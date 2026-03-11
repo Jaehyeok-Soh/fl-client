@@ -105,7 +105,16 @@ void CSkillProjectile::On_StateEnter(_uint iState)
 	{
 	case EState::FLY:
 	{
-		Get_Component<CTransform>()->Look_At_Dir(m_tRuntimeDesc.vCurDir);
+		Vec3 vLookDir = m_tDesc.vLookDir;
+		if (vLookDir == Vec3::Zero)
+			vLookDir = m_tRuntimeDesc.vCurDir;
+
+		if (vLookDir != Vec3::Zero)
+		{
+			vLookDir.Normalize();
+			Get_Component<CTransform>()->Look_At_Dir(vLookDir);
+		}
+
 		if (m_tDesc.fSpeed > g_XMEpsilon.f[0])
 			Get_Component<CTransform>()->Set_MovePerSec(m_tDesc.fSpeed);
 	} break;

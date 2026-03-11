@@ -70,6 +70,8 @@ public:
     void Set_SRT(SRT eSRT, Vec3 vValue);
     const WEAPON_INFO& Get_Info() const { return m_tWeaponInfo; }
 
+    void Change_Animation(_uint iIndex);
+
 public:
     //  ==========  초기 Component 설정  ================
     HRESULT Ready_Component(WEAPON_DESC* pArg);

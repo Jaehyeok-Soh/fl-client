@@ -1044,6 +1044,16 @@ void CGameInstance::AddActor(PxRigidActor* actor)
 	m_pPhysics_Module->AddActor(actor);
 }
 
+void CGameInstance::AddRagdoll(PxArticulationReducedCoordinate* pArticulation)
+{
+	m_pPhysics_Module->AddRagdoll(pArticulation);
+}
+
+void CGameInstance::RemoveRagdoll(PxArticulationReducedCoordinate* pArticulation)
+{
+	m_pPhysics_Module->RemoveRagdoll(pArticulation);
+}
+
 void CGameInstance::ClearPhysics()
 {
 	m_pPhysics_Module->ClearPhysics();
@@ -1119,6 +1129,11 @@ PxCollection* CGameInstance::SerializeConvexMesh(std::filesystem::path path)
 	return m_pPhysics_Module->SerializeConvexMesh(path);
 }
 
+PxMaterial* CGameInstance::GetPhysicsMaterial(EPhysicsMaterial eMaterial)
+{
+	return m_pPhysics_Module->GetPhysicsMaterial(eMaterial);
+}
+
 vector<PxShape*> CGameInstance::GetShape(PHYSICSCOLLIDER_DESC* pDesc)
 {
 	return m_pPhysics_Module->GetShape(pDesc);
@@ -1137,6 +1152,11 @@ vector<PxShape*> CGameInstance::CopyShapes(vector<PxShape*>& shapes)
 vector<PxRigidActor*> CGameInstance::GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes)
 {
 	return m_pPhysics_Module->GetActor(rigidBodyDesc, colliderDesc, shapes);
+}
+
+RAGDOLLELEMENTS CGameInstance::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc)
+{
+	return m_pPhysics_Module->CreateRagdoll(arrRagdollBoneDesc);
 }
 
 PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
@@ -1177,6 +1197,36 @@ void CGameInstance::Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* 
 _bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
 {
 	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
+}
+
+_bool CGameInstance::CheckRagdollState(int64 objID)
+{
+	return m_pPhysics_Module->CheckRagdollState(objID);
+}
+
+void CGameInstance::RagdollRegister(CGameObject* obj)
+{
+	m_pPhysics_Module->RagdollRegister(obj);
+}
+
+void CGameInstance::RagdollUnregister(int64 objID)
+{
+	m_pPhysics_Module->RagdollUnregister(objID);
+}
+
+void CGameInstance::RagdollRequestStart(uint64 objID)
+{
+	m_pPhysics_Module->RagdollRequestStart(objID);
+}
+
+void CGameInstance::RagdollSyncStates(uint64 objID, vector<class CChannel*>& vecChannels)
+{
+	m_pPhysics_Module->RagdollSyncStates(objID, vecChannels);
+}
+
+void CGameInstance::RagdollFinish(uint64 objID)
+{
+	m_pPhysics_Module->RagdollFinish(objID);
 }
 
 #ifdef _DEBUG

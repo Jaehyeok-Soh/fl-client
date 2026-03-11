@@ -449,6 +449,9 @@ HRESULT CRender_Manager::Render()
 	if (FAILED(Render_NoneBlend()))
 		return E_FAIL;
 
+	if (FAILED(Render_ComputeLight_Blend()))
+		return E_FAIL;
+
 	m_pGameInstance->Setup_UIViewProj_ToCBuffer();
 
 	if (FAILED(Render_SSAO()))
@@ -873,6 +876,23 @@ HRESULT CRender_Manager::Render_NoneBlend()
 	}
 	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)].clear();
 	
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Render_ComputeLight_Blend()
+{
+
+	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::COMPUTELIGHT_BLEND)])
+	{
+		if (FAILED(pElement->Render()))
+			return E_FAIL;
+
+		Safe_Release(pElement);
+	}
+	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::COMPUTELIGHT_BLEND)].clear();
+
+
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
 

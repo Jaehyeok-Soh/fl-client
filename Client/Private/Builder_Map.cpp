@@ -397,13 +397,42 @@ HRESULT CBuilder_Map::Create_Water(const DTO::TMap_MapObjectData& tData)
 	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
 	tDesc.iSectionNum = tData.iSectionNum;
 	tDesc.eClientMakePath = tData.eClientMakePath;
-
-
+	
 	for (auto& SRT_DATA : tData.vecSRTs)
 	{
 		tDesc.vecSRT.push_back(SRT_DATA);
 	}
 
+	if (tData.vecClientMakePathDesc.empty())		return E_FAIL;
+	/* Desc */
+	Engine::WATER_DESC* pOriginDesc = static_cast<Engine::WATER_DESC*>(tData.vecClientMakePathDesc.front());
+	if (pOriginDesc == nullptr) return E_FAIL;
+	
+	/* Flag 담아서 던져주기 */
+	tDesc.arrayWaterSRVs.fill(nullptr);
+	for (_uint i = 0; i < ENUM_TO_UINT(EWaterTextureType::END) ; ++i)
+	{
+		if(pOriginDesc->arrayTextureBase[i])
+			tDesc.arrayWaterSRVs[i] = pOriginDesc->arrayTextureBase[i]->Get_SRV();
+		if (tDesc.arrayWaterSRVs[i] != nullptr)
+			Engine_Utils::Add_Flag(tDesc.tCBWaterData.g_WaterTexBindingFlags , 1 << i);
+	}
+
+	/* 기본 Normal 관련  */
+	tDesc.tCBWaterData.g_vWaterSpeed1				= pOriginDesc->vSpeed1;
+	tDesc.tCBWaterData.g_vWaterSpeed2				= pOriginDesc->vSpeed2;
+	tDesc.tCBWaterData.g_vWaterUVPower				= pOriginDesc->vWaterUVPower;
+
+	/* Noise Texture 관련 */
+	tDesc.tCBWaterData.g_fDistortionPower			= pOriginDesc->fDistortionPower;
+	tDesc.tCBWaterData.g_vWaterDistortionSpeed		= pOriginDesc->vDistortionSpeed;
+	tDesc.tCBWaterData.g_vWaterDistortionUVPower	= pOriginDesc->vDistortionUVPower;
+
+	/* Lighting Texture 관련 */
+	tDesc.tCBWaterData.g_fSparklePower				= pOriginDesc->fSparklePower;
+	tDesc.tCBWaterData.g_vSparkleUVPower			= pOriginDesc->vSparkleUVPower;
+
+	tDesc.vMI_TintColor								= pOriginDesc->vMI_TintColor;
 
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszWater_Prototype_Tag ,

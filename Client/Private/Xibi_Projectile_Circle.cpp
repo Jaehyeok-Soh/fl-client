@@ -64,7 +64,7 @@ HRESULT CXibi_Projectile_Circle::Ready_Moduels()
 	{
 		PHYSICSCOLLIDER_DESC colliderDesc{};
 		colliderDesc.eShape = EPhysicsShape::SPHERE;
-		colliderDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
+		colliderDesc.eFilterLayer = PHYSICSFILTERGROUP::MONSTER_SKILL_PROJECTTILE;
 		//cloneDesc.bIsSkillTrigger = true;
 		colliderDesc.iFilterMask =
 		{

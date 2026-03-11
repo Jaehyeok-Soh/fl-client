@@ -43,7 +43,7 @@ private:
 
 	_bool m_isPreRangeAtt				= { true };		// 이전 프레임에 원거리 공격이였는지
 	_bool m_isPreMeeleAtt				= { false };	// 이전 프레임이 근거리 공격이였는지
-	_float m_fAttSpeed					= {0.1f};		// 공격 딜레이 -> Lerp Movement Duration으로 들어감
+	_float m_fAttSpeed					= {0.05f};		// 공격 딜레이 -> Lerp Movement Duration으로 들어감
 	_bool m_isShootingTrigger			= {};			// 총을 쐈는지
 	Vec2 m_vMaxOffset					= {};			// 크로스 헤어 얼마나 튈지
 	_bool m_isSpreadStart				= {};			// 지금 크로스 헤어가 올라가고 있는지

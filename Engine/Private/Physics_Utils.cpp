@@ -258,7 +258,10 @@ PxTransform CPhysics_Utils::XMMatrixToPxTransform(Matrix mat)
 	Vec3 translation = {};
 	mat.Decompose(scale, quaternion, translation);
 
-	return PxTransform(PxVec3(translation.x, translation.y, translation.z), PxQuat(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
+	PxQuat pxRot(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+	pxRot.normalize();
+
+	return PxTransform(PxVec3(translation.x, translation.y, translation.z), pxRot);
 }
 
 Matrix CPhysics_Utils::PxTransformToXMMatrix(PxTransform pxTransform)
@@ -266,6 +269,7 @@ Matrix CPhysics_Utils::PxTransformToXMMatrix(PxTransform pxTransform)
 	Matrix matQuat, matTrans;
 
 	Quat vQuat(pxTransform.q.x, pxTransform.q.y, pxTransform.q.z, pxTransform.q.w);
+	vQuat.Normalize();
 	Vec4 vTrans(pxTransform.p.x, pxTransform.p.y, pxTransform.p.z, 1.f);
 
 	matQuat = XMMatrixRotationQuaternion(vQuat);

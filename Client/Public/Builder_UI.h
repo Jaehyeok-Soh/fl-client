@@ -32,7 +32,7 @@ private:
 
 private:
 	// Data Cache 
-	unordered_map<_string, DTO::TUI_TextData> m_MapTextDataCache;
+	unordered_map<_string, DTO::TUI_TextData>	m_MapTextDataCache;
 	unordered_map<_string, DTO::TUI_DImageData> m_MapDImageDataCache;
 
 	CCanvas* m_pCanvasCache = { nullptr };

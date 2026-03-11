@@ -401,6 +401,10 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 
+	if (auto* pDamageFont = std::get_if<UI_TUTORIAL_PANNEL_PREFAB_DATA>(&pDesc->Data))
+	{
+
+	}
 	m_isSpawned = true;
 	m_isDeadRequest = false;
 	return S_OK;

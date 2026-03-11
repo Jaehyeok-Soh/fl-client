@@ -357,7 +357,7 @@ void CState_GunBase::Start_MoveState(MoveState eNextState)
     case MoveState::JUMP:
         Set_ApplyGravity(false);
         Set_ZeroVerticalVelocity();
-        Jump(0.f);
+        Jump_Impuls();
         Request_MixAnimation(1, m_MixAnim_Indices[JUMP]);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::SHIFT)]   = ENUM_TO_UINT(CPlayer::State::DASHSKY);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::Q)]       = m_iEndStateIdx;
@@ -457,19 +457,6 @@ void CState_GunBase::Look_Control(_float fTimeDelta)
         Additive_DataSetting(true, m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::MIDDLE)], 1.f);
     }
 
-}
-
-void CState_GunBase::Jump(const _float fTimeDelta)
-{
-    CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-    _float moveps = pPlayerTrans->Get_MovePerSec(); // 속도
-
-    Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
-    vUp.Normalize();
-
-    Vec3 accelation = vUp * moveps; //  방향 * 속도
-
-    SetCCTImpuls(accelation);
 }
 
 void CState_GunBase::GunMove(const _float fTimeDelta)

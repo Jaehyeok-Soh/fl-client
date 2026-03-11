@@ -1,11 +1,11 @@
 #include "Engine_pch.h"
 
+#include "Physics_ActorFactory.h"
+
 #include "GameInstance.h"
 #include "EngineConsole.h"
 
 #include "GameObject.h"
-
-#include "Physics_ActorFactory.h"
 
 CPhysics_ActorFactory::CPhysics_ActorFactory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, PxPhysics* pPhysics, PxScene* pScene)
 	: m_pGameInstance{ CGameInstance::GetInstance() },

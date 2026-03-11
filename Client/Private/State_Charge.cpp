@@ -37,6 +37,8 @@ HRESULT CState_Charge::Start(void* pArg, _bool bForce)
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::CHARGE));
 
+	LookAt_Monser();
+
 	return S_OK;
 }
 

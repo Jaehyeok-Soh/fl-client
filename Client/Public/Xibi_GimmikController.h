@@ -10,6 +10,8 @@ NS_END
 
 NS_BEGIN(Client)
 
+class CXibi_GateSpawner;
+
 class CXibi_GimmikController final : public CGimmikController
 {
 	using Super = CGimmikController;
@@ -24,6 +26,7 @@ public:
 		SpawnThunder3way,
 		Spawn360Circle,
 		Spawn360Thunder,
+		Spawn8Gate,
 		COUNT
 	};
 private:
@@ -54,6 +57,7 @@ private:
 	void On_SpawnThunder3way();
 	void On_SpawnCircle360();
 	void On_SpawnThunder360();
+	void On_Spawn8Gate();
 private:
 	HRESULT Ready_Spawner();
 private:
@@ -68,6 +72,7 @@ private:
 	CProjectileSpawner_Fan* m_p3wayThunderSpawner{ nullptr };
 	CProjectileSpawner_Radial360* m_p360CircleSpawner{ nullptr };
 	CProjectileSpawner_Radial360* m_p360ThunderSpawner{ nullptr };
+	CXibi_GateSpawner* m_pGateSpawner{ nullptr };
 public:
 	static CXibi_GimmikController* Create();
 	virtual CComponent* Clone(void* pArg) override;

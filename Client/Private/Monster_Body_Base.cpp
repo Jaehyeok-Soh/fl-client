@@ -8,10 +8,12 @@
 
 // components
 #include "ActionState.h"
+#include "RenderFx.h"
 #include "Shader.h"
 #include "Model.h"
 #include "ComputeShader.h"
 #include "PhysicsCCT.h"
+#include "PhysicsRagdoll.h"
 
 #include "UI_Manager.h"
 #include "GameInstance.h"
@@ -59,12 +61,21 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	// Shake & Emissive 연출용
+	Get_Component<CShader>()->Set_Pass(3);
 	return S_OK;
 }
 
 void CMonster_Body_Base::Update_Priority(_float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
+
+	if (m_pGameInstance->CheckRagdollState(Get_ID()))
+	{
+		auto model = Get_Component<CModel>();
+		auto animIdx = model->Get_CurrentAnimationIndex();
+		m_pGameInstance->RagdollSyncStates(Get_ID(), model->Get_Animation(animIdx)->Get_Channels());
+	}
 }
 
 void CMonster_Body_Base::Update(_float fTimeDelta)
@@ -78,6 +89,9 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 
 	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta,
 		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pAnimMix);
+
+	// Shake & Emissive 연출용
+	Get_Component<CRenderFx>()->Update(fTimeDelta);
 }
 
 void CMonster_Body_Base::Update_Late(_float fTimeDelta)
@@ -92,8 +106,11 @@ void CMonster_Body_Base::Ready_Before_Render(_float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
+
+#ifdef _DEBUG
+	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRagdoll>());
+#endif // _DEBUG
 }
 
 void CMonster_Body_Base::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -132,11 +149,13 @@ HRESULT CMonster_Body_Base::Render()
 		return E_FAIL;
 
 	CShader* pShader = Get_Component<CShader>();
+	CRenderFx* pRenderFx = Get_Component<CRenderFx>();
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
 	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
 	CComputeShader* pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 
+	pRenderFx->Bind_Resources(pShader);
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
@@ -186,6 +205,22 @@ HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)
 
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 		return E_FAIL;
+	
+	if (FAILED(Add_Component<CPhysicsRagdoll>(0/*static*/, L"Prototype_Component_Ragdoll", this)))
+		return E_FAIL;
+
+	// RenderFx
+	{
+		CRenderFx::RENDER_FX_COPY_DESC desc{};
+		desc.vEmissiveColor = Vec3{ 1.00f, 0.45f, 0.45f };
+		desc.fEmissiveDefaultIntensity = 1.2f;
+		desc.fShakeAmpX = 0.015f;
+		desc.fShakeAmpY = 0.030f;
+		desc.fShakeFreq = 9.0f;
+		desc.fShakePhase = 0.0f;
+		if (FAILED(Add_Component<CRenderFx>(0, L"Prototype_Component_RenderFx", &desc)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
