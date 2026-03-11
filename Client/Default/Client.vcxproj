@@ -179,6 +179,7 @@
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_EventDefine.h" />
+    <ClInclude Include="..\Public\State_Condemn.h" />
     <ClInclude Include="..\Public\TriggerCollidePart.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Builder_Effect.h" />
@@ -376,6 +377,7 @@
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\InvisibleWall.cpp" />
+    <ClCompile Include="..\Private\State_Condemn.cpp" />
     <ClCompile Include="..\Private\TriggerCollidePart.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Builder_Effect.cpp" />

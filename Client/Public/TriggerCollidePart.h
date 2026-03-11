@@ -38,12 +38,21 @@ public:
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
 	virtual HRESULT Render() override;
+
+	// getter setter funcs
+public:
+	const Vec3& Get_CollidedPos() const { return m_vColliedPos; }
+
 private:
 	HRESULT Ready_Components(TRIGGER_COLLIDEPART_DESC* pDesc);
 private:
 	EState m_eState{ EState::None };
 	const Matrix* m_pMatSocket = { nullptr };
 	Matrix m_matPreScale{ Matrix::Identity };
+
+private:
+	Vec3 m_vColliedPos = { Vec3::Zero };
+
 public:
 	static CTriggerCollidePart* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -96,6 +96,8 @@ public:
 		,HITFLYEND
 		,HITSTRONG
 
+		,CONDEMN
+
 		,END
 	};
 protected:
@@ -134,6 +136,9 @@ public:
 
 	void	Change_CamState(_uint iCamState);
 	_float	Get_CamPitch()const;
+
+	void	Set_FKeyEvent(_uint iEvenet, _bool bOn); // f event È°¼ºÈ­ onoff
+	const Vec3& Get_CollidedMonster_Position();
 
 public:
 	_bool	Start_Attack(State iState);

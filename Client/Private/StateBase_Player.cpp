@@ -106,6 +106,9 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 
 		if (Check_SkillKey(fTimeDelta))
 			return;
+
+		if (Check_FKey(fTimeDelta))
+			return;
 	}
 
 	Check_Collis(fTimeDelta);
@@ -417,6 +420,20 @@ _bool CStateBase_Player::Check_Hit(const _float fTimeDelta)
 	return false;
 }
 
+_bool CStateBase_Player::Check_FKey(const _float fTimeDelta)
+{
+	if (static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Can_FKeyEvent() &&												// event가 켜졌는디
+		Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_CheckF) &&			// 이번 state에서 f키 check 할건디
+		KEY_BUTTON_DOWN(DIK_F))														// f키를 눌렀다면
+	{
+		//todo iKeyEvent 검사후 state 관리
+		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::CONDEMN));
+		return true;
+	}
+
+	return false;
+}
+
 _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 {
 	// 플래그 먼저 확인
@@ -446,6 +463,24 @@ void CStateBase_Player::Jump_Impuls(_float fOffset)
 	Vec3 accelation = vUp * moveps * fOffset; //  방향 * 속도
 
 	SetCCTImpuls(accelation);
+}
+
+void CStateBase_Player::LookAt_Monser()
+{
+	Vec3 vMonsterPos = Vec3::Zero;
+	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
+	if (pPlayer == nullptr)
+		return;
+
+	CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
+	if (pPlayerTransform == nullptr)
+		return;
+
+	vMonsterPos = pPlayer->Get_CollidedMonster_Position();
+	if (vMonsterPos != Vec3::Zero)
+	{
+		pPlayerTransform->Look_At_XZ(vMonsterPos);
+	}
 }
 
 _bool CStateBase_Player::Check_OnGround(_float fMaxDist)

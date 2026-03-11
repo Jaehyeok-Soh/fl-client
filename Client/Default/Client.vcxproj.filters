@@ -685,6 +685,9 @@
     <Filter Include="03. GameObject\PartObjects\SocektObject">
       <UniqueIdentifier>{18b43d9c-ed3e-4109-85da-3382fa87dff4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Condemn">
+      <UniqueIdentifier>{ef8bb50b-d728-4e6a-9da9-6af193a6c305}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1267,6 +1270,9 @@
     <ClInclude Include="..\Public\SocketObject.h">
       <Filter>03. GameObject\PartObjects\SocektObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_Condemn.h">
+      <Filter>06. FSM\Player\Condemn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1837,6 +1843,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SocketObject.cpp">
       <Filter>03. GameObject\PartObjects\SocektObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Condemn.cpp">
+      <Filter>06. FSM\Player\Condemn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
