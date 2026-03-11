@@ -217,10 +217,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 
 		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 		if (vHp.x <= 0)
-		{
-			Get_Component<CMonsterControlContext>()->Set_Dead();
 			Set_Dying();
-		}
 	}
 
 #ifdef _DEBUG
@@ -477,7 +474,7 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 			desc.bIsPlayer = false;
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
+			desc.fRadius = 0.5f;
 			desc.fHeight = 0.1f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 
@@ -533,7 +530,7 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
 			desc.fRadius = 1.f;
-			desc.fHeight = 1.5f;
+			desc.fHeight = 1.f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 
 			PHYSICSMATERIAL_DESC mtrlDesc{};
@@ -581,8 +578,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 			desc.bIsPlayer = false;
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
-			desc.fHeight = 1.f;
+			desc.fRadius = 0.7f;
+			desc.fHeight = 0.7f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 
 			PHYSICSMATERIAL_DESC mtrlDesc{};

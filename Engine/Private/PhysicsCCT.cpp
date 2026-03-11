@@ -369,7 +369,10 @@ void CPhysicsCCT::SetCollisionFilter()
 	PxFilterData filter(m_tDesc.eFilterLayer, m_tDesc.iFilterMask, 0, 0);
 
 	for (auto& shape : shapes)
+	{
 		shape->setSimulationFilterData(filter);
+		shape->setQueryFilterData(filter);
+	}
 }
 
 void CPhysicsCCT::SetCollisionFilter_Empty()
@@ -381,7 +384,10 @@ void CPhysicsCCT::SetCollisionFilter_Empty()
 	PxFilterData filter(0, 0, 0, 0);
 
 	for (auto& shape : shapes)
+	{
 		shape->setSimulationFilterData(filter);
+		shape->setQueryFilterData(filter);
+	}
 }
 
 void CPhysicsCCT::SetIsSteppingOnCCT()

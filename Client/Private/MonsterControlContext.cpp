@@ -150,14 +150,6 @@ Vec3 CMonsterControlContext::Get_MoveDir()
 	return m_vMoveDir;
 }
 
-void CMonsterControlContext::Set_Dead()
-{
-	if (IsDeadProcessing())
-		return;
-
-	m_iSubState |= SUB_STATE::DEAD;
-}
-
 _bool CMonsterControlContext::Set_Groggy(EGroggyState eState, _bool bRequest, _float fGroggyDuration)
 {
 	const _bool bAleradyRequested = Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ);
@@ -269,21 +261,14 @@ _bool CMonsterControlContext::IsHitKnockdown()
 	return result;
 }
 
-_bool CMonsterControlContext::IsDead()
+_bool CMonsterControlContext::IsAlive()
 {
-	_bool result = m_iSubState & SUB_STATE::DEAD;
-	return result;
+	return Get_Owner()->IsAlive();
 }
 
-_bool CMonsterControlContext::IsDeadProcessing()
+_bool CMonsterControlContext::IsDying()
 {
-	_bool result = m_iSubState & SUB_STATE::DEAD_PROCESS;
-	return result;
-}
-
-_bool CMonsterControlContext::IsDamageRecently()
-{
-	return _bool();
+	return Get_Owner()->IsDying();
 }
 
 _bool CMonsterControlContext::IsComboPossible()

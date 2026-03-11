@@ -135,10 +135,8 @@ _bool CMonster_Dog::On_Hit(const HIT_DESC& hitDesc)
 	auto myStat = Get_Component<CMyStat>();
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
-	{
-		Get_Component<CMonsterControlContext>()->Set_Dead();
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
-	}
+
 	return result;
 }
 

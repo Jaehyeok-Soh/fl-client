@@ -19,10 +19,14 @@ namespace Tool
         "condition_target_close",
         "condition_target_lost",
         "condition_animation_finish",
-        "condition_die",
-        "condition_none_die",
-        "condition_already_die",
-        "condition_none_already_die",
+        "condition_alive",
+        "condition_none_alive",
+        "condition_dying",
+        "condition_none_dying",
+        "condition_die_process",
+        "condition_none_die_process",
+        "condition_die_pose",
+        "condition_none_die_pose",
         "condition_hit",
         "condition_hit_light",
         "condition_hit_heavy",
@@ -72,14 +76,29 @@ namespace Tool
         // param examples
         "param_feat_move_local",
 
+        "feat_set_die_process",
+
+        "feat_set_die_pose",
         "feat_set_dead",
-        "feat_set_deadprocess",
 
         "feat_set_cct_collision_enable",
         "feat_set_cct_collision_disable",
 
         "feat_set_on_ragdoll",
         "feat_set_off_ragdoll",
+
+        // velocity
+        "feat_set_zero_velocity",
+        "feat_set_zero_horizontal_velocity",
+        "feat_set_zero_vertical_velocity",
+        "feat_set_zero_deaccel_rate",
+        "feat_set_deaccel_rate",
+        "feat_reset_deaccel_rate",
+        "feat_set_apply_gravity",
+        "feat_set_impuls",
+        "feat_set_impuls_right",
+        "feat_set_impuls_up",
+        "feat_set_impuls_front",
     };
 
     inline constexpr int kConditionCount = (int)(sizeof(kConditionNames) / sizeof(kConditionNames[0]));

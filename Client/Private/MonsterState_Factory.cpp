@@ -58,13 +58,21 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	
 	REGISTER_CONDITION("condition_animation_finish", CONDITION{ return state->Is_MainAnimFinished(); });
 	
-	REGISTER_CONDITION("condition_die", CONDITION{ return MONSTERCC(state)->IsDead(); });
+	REGISTER_CONDITION("condition_alive", CONDITION{ return MONSTERCC(state)->IsAlive(); });
 
-	REGISTER_CONDITION("condition_none_die", CONDITION{ return !MONSTERCC(state)->IsDead(); });
+	REGISTER_CONDITION("condition_none_alive", CONDITION{ return !MONSTERCC(state)->IsAlive(); });
 
-	REGISTER_CONDITION("condition_already_die", CONDITION{ return MONSTERCC(state)->IsDeadProcessing(); });
+	REGISTER_CONDITION("condition_dying", CONDITION{ return MONSTERCC(state)->IsDying(); });
+
+	REGISTER_CONDITION("condition_none_dying", CONDITION{ return !MONSTERCC(state)->IsDying(); });
 	
-	REGISTER_CONDITION("condition_none_already_die", CONDITION{ return !MONSTERCC(state)->IsDeadProcessing(); });
+	REGISTER_CONDITION("condition_die_process", CONDITION{ return MONSTERCC(state)->IsDieProcess(); });
+	
+	REGISTER_CONDITION("condition_none_die_process", CONDITION{ return !MONSTERCC(state)->IsDieProcess(); });
+
+	REGISTER_CONDITION("condition_die_pose", CONDITION{ return MONSTERCC(state)->IsDiePose(); });
+	
+	REGISTER_CONDITION("condition_none_die_pose", CONDITION{ return !MONSTERCC(state)->IsDiePose(); });
 
 	REGISTER_CONDITION("condition_loop_animation", CONDITION{ return state->IsLoop(); });
 
@@ -137,13 +145,29 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_move_backward_right", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, 1.f); state->Align_Movement_MoveDir(fTimeDelta); });
 	REGISTER_FEATURE("feat_move_backward_left", FEATURE{ MONSTERCC(state)->Update_8Dir_LocalAxisXZ(fTimeDelta, -1.f, -1.f); state->Align_Movement_MoveDir(fTimeDelta); });
 	
+	REGISTER_FEATURE("feat_set_die_process", FEATURE{ MONSTERCC(state)->Set_DieProcess(); });
+	
+	REGISTER_FEATURE("feat_set_die_pose", FEATURE{ MONSTERCC(state)->Set_DiePose(); });
 	REGISTER_FEATURE("feat_set_dead", FEATURE{ state->Get_OwnerObject()->Set_Dead(); });
-	REGISTER_FEATURE("feat_set_deadprocess", FEATURE{ MONSTERCC(state)->Set_Dead_Process(); });
+	
 	REGISTER_FEATURE("feat_set_cct_collision_enable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Enable(); });
 	REGISTER_FEATURE("feat_set_cct_collision_disable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Disable(); });
 
 	REGISTER_FEATURE("feat_set_on_ragdoll", FEATURE{ MONSTERCC(state)->Set_On_Ragdoll(); });
 	REGISTER_FEATURE("feat_set_off_ragdoll", FEATURE{ MONSTERCC(state)->Set_Off_Ragdoll(); });
+
+	// 가속도 관련
+	REGISTER_FEATURE("feat_set_zero_velocity", FEATURE{ MONSTERACTIONSTATE(state)->Set_ZeroVelocity(); });
+	REGISTER_FEATURE("feat_set_zero_horizontal_velocity", FEATURE{ MONSTERACTIONSTATE(state)->Set_ZeroHorizontalVelocity(); });
+	REGISTER_FEATURE("feat_set_zero_vertical_velocity", FEATURE{ MONSTERACTIONSTATE(state)->Set_ZeroVerticalVelocity(); });
+	REGISTER_FEATURE("feat_set_zero_deaccel_rate", FEATURE{ MONSTERACTIONSTATE(state)->Set_ZeroDeAccelRate(); });
+	REGISTER_FEATURE("feat_set_deaccel_rate", FEATURE{ MONSTERACTIONSTATE(state)->Set_DeAccelRate(param.fParam[0]); });
+	REGISTER_FEATURE("feat_reset_deaccel_rate", FEATURE{ MONSTERACTIONSTATE(state)->Reset_DeAccelRate(); });
+	REGISTER_FEATURE("feat_set_apply_gravity", FEATURE{ MONSTERACTIONSTATE(state)->Set_ApplyGravity(param.bParam[0]); });
+	REGISTER_FEATURE("feat_set_impuls", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(param.fParam[0], param.fParam[1], param.fParam[2])); });
+	REGISTER_FEATURE("feat_set_impuls_right", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(param.fParam[0], 0.f, 0.f)); });
+	REGISTER_FEATURE("feat_set_impuls_up", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(0.f, param.fParam[0], 0.f)); });
+	REGISTER_FEATURE("feat_set_impuls_front", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(0.f, 0.f, param.fParam[0])); });
 
 	return S_OK;
 }
