@@ -67,7 +67,12 @@ HRESULT CBuilder_Effect::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 	wstring PrototypeTag = L"Prototype_GameObject_Effect";
 
 	m_pGameInstance->Push_EffectData(Engine_Utils::ToHash(pData.EffectContainerName.c_str()), &pDesc);
-	m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 50);
+
+	if(pData.EffectContainerName == "Boss_Xibi_Lightning_Oneshot")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 150);
+
+	else
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 50);
 
 	return S_OK;
 }

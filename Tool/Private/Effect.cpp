@@ -13,7 +13,7 @@
 #include "Picking_ToolManager.h"
 #include "GameInstance.h"
 
-#define MAX_EFFECTPART 10
+#define MAX_EFFECTPART 20
 
 Effect::Effect(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(eType, pDevice, pDeviceContext)
