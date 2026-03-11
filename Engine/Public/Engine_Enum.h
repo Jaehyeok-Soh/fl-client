@@ -13,7 +13,7 @@ namespace Engine
 	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, STATICPOINT, DYNAMICPOINT, END };
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
-	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND, NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, END };
+	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND , COMPUTELIGHT_BLEND , NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, END };
 	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, OUTLINE, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, END };
 	enum class ECursorMode : unsigned int
 	{
@@ -275,6 +275,10 @@ namespace Engine
 		MetalCool,
 		MetalDark,
 		CourtBlue,
+		
+
+		/* 자유타입 Render직전 내가 지정한 컬러값으로 덮어써줄것 */
+		Free,
 		END
 	};
 	//===================
@@ -436,8 +440,9 @@ namespace Engine
 
 			
 			INVISIBLE_WALL = 1 << 18,
+			DETECT_MONSTER = 1 << 19,
 
-			NONE = 1 << 19,
+			NONE = 1 << 20,
 			END
 		};
 

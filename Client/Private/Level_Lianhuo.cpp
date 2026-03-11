@@ -246,7 +246,7 @@ HRESULT CLevel_Lianhuo::Ready_Player_Layer(const wstring& wstrLayerTag)
 	{
 		// SkillObject Pool
 		{
-			CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+			CMoon_SkillE_Obj::GAMEOBJECT_DESC desc{};
 			//TRANSFORM_DESC
 			CTransform::TRANSFORM_DESC tTransDesc = {};
 			tTransDesc.fMovePerSec = 20.f;

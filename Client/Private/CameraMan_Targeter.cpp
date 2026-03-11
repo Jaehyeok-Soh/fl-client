@@ -78,6 +78,8 @@ void CCameraMan_Targeter::Update_Priority(const _float fTimeDelta)
     Super::Update_Priority(fTimeDelta);
     Update_Priority_State(fTimeDelta);
 
+
+
 }
 
 void CCameraMan_Targeter::Update(const _float fTimeDelta)
@@ -157,7 +159,21 @@ HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
     /* Xibi_Cinematic Event 구독 */
     m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT>([this]() {
         m_pGameInstance->Play_CameraCinematic(L"Xibi_Cinematic");
+        Change_CamState(TargeterState::CINEMATIC);
+        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::CINEMATIC_START));
+        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::XIBILA_BOSS_ACTION_ON));
+        m_pActor->Set_Active(false);
         });
+
+    /* Xibi_Cinematic Event 구독 */
+    m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT_END>([this]() {
+        Change_CamState(TargeterState::NORMAL);
+        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::CINEMATIC_END));
+        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::XIBILA_BOSS_ACTION_OFF));
+        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::XIBILA_BOSS_UI_ON));
+        m_pActor->Set_Active(true);
+        });
+
 
     return S_OK;
 }
@@ -298,7 +314,6 @@ void CCameraMan_Targeter::TargetSync_Update_Priority(const _float fTimeDelta)
     m_vChaseFiltered = vChaseFiltered;
 
     Vec3 vPlayerLook = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-    vPlayerLook.Normalize();
     vPlayerLook.y = 0.0f;
 
     if (vPlayerLook.LengthSquared() <= g_XMEpsilon.f[0])

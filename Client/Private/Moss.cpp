@@ -6,6 +6,7 @@
 CMoss::CMoss(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CPlants(pDevice ,pDeviceContext)
 {
+	m_ePlantsType = CPlants::Type::Moss;
 }
 
 CMoss::CMoss(const CMoss& rhs)
@@ -69,16 +70,9 @@ void CMoss::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CMoss::Render()
 {
-	if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-	{
-		if (FAILED(CMapObject::Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::Moss))))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(CMapObject::Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::Moss))))
-			return E_FAIL;
-	}
+
+	if (FAILED(Super::Render_Plnats(ENUM_TO_UINT(EMapObjectShaderPass::Moss))))
+		return E_FAIL;
 
 	return S_OK;
 }

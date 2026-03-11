@@ -1,5 +1,4 @@
 #include "Engine_pch.h"
-#include "Engine_Utils.h"
 #include "TextureBase.h"
 
 CTextureBase::CTextureBase(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

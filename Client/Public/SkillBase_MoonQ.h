@@ -39,7 +39,7 @@ private:
 	_float		m_fAddAttackRate = { 0.15f };
 
 	_bool		m_bSkillAttackOn = { false };
-	TimeCount	m_TAttackSkillObj_Timer = { 0.f,1.85f };
+	TimeCount	m_TAttackSkillObj_Timer = { 0.f, /*1.85*/1.95f };
 
 private:
 	virtual void	Update_Skill(const _float fTimeDelta, CMyStat* pStatCom = nullptr) override;

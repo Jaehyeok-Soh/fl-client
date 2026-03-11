@@ -10,24 +10,32 @@
 #include "GameInstance.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "Material.h"
 #include "LevelData.h"
 
 IMPLEMENT_SINGLETON(CMapToolManager)
 
 CMapToolManager::CMapToolManager()
-	: m_pGameInstance					{ CGameInstance::GetInstance() }
-	, m_pImGui_ToolManager				{ CImGui_ToolManager::GetInstance() }
-	, m_pPreviewMapobject				{ nullptr }
-	, m_pMesh_Shader					{nullptr}
-	, m_tTextureSplattingInfo			{}
-	, m_arrayMapObjectCloneFactory		{}
-	, m_umapMapTextures					{}
-	, m_pDefaultBlackSRV				{nullptr}
-	, m_pDefaultWhiteSRV				{nullptr}
-	, m_mapTextureSplatingInfoDatas		{}
-	, m_pLevelData						{nullptr}
-	, m_pCamCinematicSequenceRenderModel{nullptr}
-	, m_pCamCinematicSequenceRenderShader{nullptr}
+	: m_pGameInstance						{ CGameInstance::GetInstance() }
+	, m_pImGui_ToolManager					{ CImGui_ToolManager::GetInstance() }
+	, m_pPreviewMapobject					{ nullptr }
+	, m_pMesh_Shader						{nullptr}
+	, m_pDefaultBlackSRV					{nullptr}
+	, m_pDefaultWhiteSRV					{nullptr}
+	, m_pLevelData							{nullptr}
+	, m_pCamCinematicSequenceRenderModel	{nullptr}
+	, m_pCamCinematicSequenceRenderShader	{nullptr}
+	, m_pInstMesh_Shader					{nullptr}
+	, m_ppTargetSlot						{nullptr}
+	, m_isTexArraySelect					{false}
+	, m_isTex_DH_ArraySelect				{false}
+	, m_isTex_NBR_ArraySelect				{false}
+	, m_selectedCategoryName				{L""}
+	, m_tTextureSplattingInfo				{}
+	, m_arrayMapObjectCloneFactory			{}
+	, m_umapMapTextures						{}
+	, m_mapTextureSplatingInfoDatas			{}
+	, m_tCB_EnvData{}
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
@@ -75,7 +83,17 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	m_pMesh_Shader = 
 		static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool"));
+	if (m_pMesh_Shader == nullptr) return E_FAIL;
 
+	m_pInstMesh_Shader =
+		static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh_Tool"));
+	if (m_pInstMesh_Shader == nullptr) return E_FAIL;
+
+	if (FAILED(Set_GPU_DiscardColor()))
+		return E_FAIL;
+
+	if (FAILED(Set_GPU_EnvData()))
+		return E_FAIL;
 
 	if (FAILED(Register_MapObjectCloneFactory()))
 		return E_FAIL;
@@ -91,6 +109,8 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	if (FAILED(Update_Camera_Cinematic_Sequence_Names()))
 		return E_FAIL;
+
+
 
 	return S_OK;
 }
@@ -207,6 +227,7 @@ HRESULT CMapToolManager::Register_MapTexture()
 
 		if (wstrExt != L".png" && wstrExt != L".dds")
 			continue;
+
 		path FullPath = path(Path);
 		tTexDesc.wstrPath = path(FullPath);
 		tTexDesc.wstrName = path(FullPath).filename().stem();
@@ -380,6 +401,34 @@ HRESULT CMapToolManager::UnRegister_MapTexture()
 		for (auto& Tex : Pair.second)
 			Safe_Release(Tex);
 	}
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Set_GPU_DiscardColor()
+{
+	if (m_pMesh_Shader == nullptr) return E_FAIL;
+	if (m_pInstMesh_Shader == nullptr) return E_FAIL;
+
+	ID3DX11EffectVectorVariable* pEffectVector{ nullptr };
+
+	pEffectVector = m_pMesh_Shader->Get_Variable("g_vDiscardColor")->AsVector();
+	if (!pEffectVector->IsValid())
+	{
+		MSG_BOX(" g_vDiscardColor is Can't Find ");
+		return E_FAIL;
+	}
+	pEffectVector->SetFloatVector((float*)&m_vDiscardColor);
+
+	pEffectVector = m_pInstMesh_Shader->Get_Variable("g_vDiscardColor")->AsVector();
+	if (!pEffectVector->IsValid())
+	{
+		MSG_BOX(" g_vDiscardColor is Can't Find ");
+		return E_FAIL;
+	}
+	pEffectVector->SetFloatVector((float*)&m_vDiscardColor);
+
+
 
 	return S_OK;
 }
@@ -734,53 +783,83 @@ HRESULT CMapToolManager::Check_And_Bind_FromUE()
 	//if(pInstanceModelList) vecMapObject.insert(vecMapObject.end() , pInstanceModelList->begin(), pInstanceModelList->end());
 
 	/* 사용하는 모델주소가 같은 StaticModel을 모아둘 장소 */
-	map<PairKey, vector<CMapObject*> > mapSameModels{};
+	map<UEDataBindKey, vector<CMapObject*> > mapSameModels{};
 
-	for (auto& MapObject : vecMapObject)
+
+	for (auto& MapObject : *pUEMapObject)
 	{
-	//	PairKey Key{};
-	//	if (!MapObject)
-	//		continue;
-	//	CMapObject* pMapObject = static_cast<CMapObject*>(MapObject);
-	//	CModel* pModel = pMapObject->Get_Component<CModel>();
-	//	if (!pModel)
-	//		continue;
-	//	Key.first = pMapObject->Get_UsingModelInfo().wstrName;
-	//	Key.second =  pMapObject->Get_TotalUseMtlsName();
-	//	mapSameModels[Key].push_back(static_cast<CMapObject*>(pMapObject));
-	//}
+		UEDataBindKey Key{};
+		if (!MapObject)
+			continue;
+		CMapObject* pMapObject = static_cast<CMapObject*>(MapObject);
+		if (pMapObject->Get_MapObjectDrawType() == EMapObject_DrawType::Collider)
+			continue;
 
-	//for (auto& Key : mapSameModels)
-	//{
-	//	for (auto& MapObject : Key.second)
-	//	{
-	//		if (!MapObject) continue;
+		CModel* pModel = pMapObject->Get_Component<CModel>();
 
-	//		EMapObject_Type eMapObjectType = MapObject->Get_MapObjectType();
-	//		if (eMapObjectType != EMapObject_Type::STATICMODEL && eMapObjectType != EMapObject_Type::INSTANCEMODEL) continue;
+		if (!pModel)
+			continue;
 
-	//		vector<SRT_DATA> vecSRTData = MapObject->Get_SRTDatas();
-	//		tInstanceModelDesc.tData.vecSRT.insert(tInstanceModelDesc.tData.vecSRT.end() , vecSRTData.begin() , vecSRTData.end());
-	//	} 
-	//	if (tInstanceModelDesc.tData.vecSRT.size() <= 1)
-	//	{
-	//		tInstanceModelDesc.tData.vecSRT.clear();
-	//		continue;
-	//	}
-	//	else
-	//	{
-	//		tInstanceModelDesc.tData.tUsingModelInfo = Key.second.front()->Get_UsingModelInfo();
-	//		Make_MapObject(EMapObject_Type::INSTANCEMODEL, &tInstanceModelDesc);
-	//		tInstanceModelDesc.tData.vecSRT.clear();
-	//		for (auto& MapObject : Key.second)
-	//			m_pGameInstance->Request_DeleteGameObject(ENUM_TO_UINT(ELevelType::MAP), MapObject->Get_MapObjectType() ==  EMapObject_Type::STATICMODEL ?
-	//				g_wszStaticModelLayer : g_wszInstanceModelLayer, MapObject);
-	//	}
+		const USING_MODEL_INFO& tInfo = pMapObject->Get_UsingModelInfo();
+
+		Key.eClientMakeType  = pMapObject->Get_ClientMakePath();
+		Key.wstrModelPath	 = tInfo.wstrPath;
+		Key.vecMaterialNames = pMapObject->Get_TotalUseMtlsName();
+
+		mapSameModels[Key].push_back(static_cast<CMapObject*>(pMapObject));
 	}
 
-	/* 그리고 한개짜리인 */
+	for (auto& Key : mapSameModels)
+	{
+		if (Key.second.size() <= 1)
+			continue;
 
+		CMapObject::MAPOBJECT_DESC tDesc{};
 
+		for (auto& MapObject : Key.second)
+		{
+			if (!MapObject) continue;
+
+			/* SRT Data 넣어주기 */
+			vector<SRT_DATA> vecSRTData = MapObject->Get_SRTDatas();
+			tDesc.vecSRTs.insert(tDesc.vecSRTs.end() , vecSRTData.begin() , vecSRTData.end());
+
+			/* Clinet Desc 넣어주기 */
+			vector<CLIENT_MAKEPATH_DESC_BASE*> vevDesc = MapObject->Get_ClientMakePathDescs();
+			tDesc.vecClientMakePathDesc.insert(tDesc.vecClientMakePathDesc.end(), vevDesc.begin() , vevDesc.end());
+
+		} 
+
+		/* 2개 이상을 합쳤는데 size가 1일수가있나? 혹시모르니 체크 */
+		if (tDesc.vecSRTs.size() <= 1)
+			continue;
+
+		else
+		{
+			CMapObject* pMapObject				= Key.second.front();
+			tDesc.eMapObjectDrawType = EMapObject_DrawType::Instance;
+			tDesc.eClientLevelType				= pMapObject->Get_ClientLevelType();
+			tDesc.eClientMakePath				= pMapObject->Get_ClientMakePath();
+			tDesc.eState						= CMapObject::EState::Default;
+			tDesc.isLoaded						= pMapObject->Get_IsLoaded();
+			tDesc.isUELoaded					= true;
+			tDesc.wstrLayerTag					= pMapObject->Get_Layer();
+			tDesc.tUsingModelInfo.wstrPath		= pMapObject->Get_ModelPath();
+			tDesc.tUsingModelInfo				= pMapObject->Get_UsingModelInfo();
+			tDesc.iLevelIndex					= ENUM_TO_UINT(ELevelType::MAP);
+			tDesc.iSectionNumber				= pMapObject->Get_SectionNumber();
+
+			/* 생성해주고 난뒤 기존 오브젝트 삭제 */
+			Make_MapObject(&tDesc);
+
+			for (auto& MapObject : Key.second)
+			{
+				if(MapObject)
+					MapObject->Set_Dead();
+			}
+
+		}
+	}
 
 	return S_OK;
 }
@@ -993,6 +1072,25 @@ HRESULT CMapToolManager::Export_SaveSceneData(DTO::ECategory eCategory, CDataDoc
 	return S_OK;
 }
 
+HRESULT CMapToolManager::Set_GPU_EnvData()
+{
+	if (m_pInstMesh_Shader == nullptr) return E_FAIL;
+	if (m_pMesh_Shader == nullptr) return E_FAIL;
+
+	HRESULT hr{E_FAIL};
+
+	ID3DX11EffectConstantBuffer* pCB = m_pInstMesh_Shader->Get_ConstantBuffer("CB_EnvData");
+	if (pCB->IsValid() == false) return E_FAIL;
+	hr = pCB->SetRawValue(&m_tCB_EnvData,0,sizeof(CB_EnvData));
+	
+
+	pCB = m_pMesh_Shader->Get_ConstantBuffer("CB_EnvData");
+	if (pCB->IsValid() == false) return E_FAIL;
+	hr = pCB->SetRawValue(&m_tCB_EnvData, 0, sizeof(CB_EnvData));
+
+	return S_OK;
+}
+
 HRESULT CMapToolManager::Load_Camera_Cinematic_Sequence(const wstring& wstrFindKey)
 {
 	m_pGameInstance->GameDataManager_Load_CameraCinematicSequence(wstrFindKey , m_pCamCinematicSequence);
@@ -1051,6 +1149,197 @@ HRESULT CMapToolManager::Ready_CinematicSequenceDebugRender()
 	if (m_pCamCinematicSequenceRenderShader == nullptr) return E_FAIL;
 
 	return S_OK;
+}
+
+void CMapToolManager::Select_MapTexture()
+{
+	_bool isChangeTexture{ false };
+	_bool isChangeTextureArray{ false };
+	_bool isChange_DH_TextureArray{ false };
+	_bool isChange_NBR_TextureArray{ false };
+	_bool isCompatible{ false };
+	_bool isTextureArray{ false };
+
+	ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	ImGui::SetNextWindowSize(ImVec2(800, 500));
+
+
+	if (ImGui::BeginPopupModal("Texture_Select_Modal", NULL, ImGuiWindowFlags_NoResize))
+	{
+		ImGui::Text("Select a Texture...");
+
+
+		ImGui::SameLine();
+		float clearBtnWidth = 160.0f;
+		ImGui::SetCursorPosX(ImGui::GetWindowWidth() - clearBtnWidth - 20.0f);
+
+		if (ImGui::Button("Clear Selection (None)", ImVec2(clearBtnWidth, 0)))
+		{
+			if (m_ppTargetSlot != nullptr)
+			{
+				Safe_Release(*m_ppTargetSlot);
+				*m_ppTargetSlot = nullptr;
+				m_ppTargetSlot = nullptr;
+				isChangeTexture = true;
+			}
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::Separator();
+
+
+		float totalWidth = ImGui::GetContentRegionAvail().x;
+		float leftPaneWidth = totalWidth * 0.25f; // 25%
+		float rightPaneWidth = totalWidth - leftPaneWidth - ImGui::GetStyle().ItemSpacing.x; // 나머지
+		float paneHeight = 350.0f;
+
+
+		ImGui::BeginChild("LeftPane", ImVec2(leftPaneWidth, paneHeight), true);
+		{
+			ImGui::TextColored(ImVec4(0.7f, 0.7f, 1.0f, 1.0f), "[ Categories ]");
+			ImGui::Separator();
+
+			for (auto& pair : m_umapMapTextures)
+			{
+				wstring currentCategoryW = pair.first;
+				string currentCategoryStr = Engine_Utils::ToString(currentCategoryW);
+				bool isSelected = (m_selectedCategoryName == currentCategoryW);
+
+				if (ImGui::Selectable(currentCategoryStr.c_str(), isSelected))
+				{
+					m_selectedCategoryName = currentCategoryW;
+
+				}
+			}
+		}
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::BeginChild("RightPane", ImVec2(rightPaneWidth, paneHeight), true);
+		{
+			auto iter = m_umapMapTextures.find(m_selectedCategoryName);
+
+			if (iter == m_umapMapTextures.end())
+			{
+				ImGui::TextDisabled("Please select a category.");
+			}
+			else
+			{
+				vector<CTextureBase*>& textureList = iter->second;
+
+				float button_sz = 80.0f;
+				float spacing = 10.0f;
+				float window_visible_x2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
+
+				for (size_t i = 0; i < textureList.size(); ++i)
+				{
+					CTextureBase* pTex = textureList[i];
+					if (pTex == nullptr) continue;
+
+					ID3D11ShaderResourceView* pSRV = pTex->Get_SRV();
+					if (pSRV == nullptr) continue;
+
+					ImGui::PushID((int)i);
+
+					D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+					pSRV->GetDesc(&desc);
+
+					isTextureArray = (desc.ViewDimension == D3D11_SRV_DIMENSION_TEXTURE2DARRAY);
+
+					isCompatible = (m_isTexArraySelect == isTextureArray);
+
+					ImGui::BeginGroup();
+					{
+						if (!isCompatible) ImGui::BeginDisabled(true);
+
+						if (ImGui::ImageButton("##TexBtn", (ImTextureID)pSRV, ImVec2(button_sz, button_sz)))
+						{
+							if (isCompatible && m_ppTargetSlot != nullptr)
+							{
+								Safe_Release(*m_ppTargetSlot);
+								*m_ppTargetSlot = pTex;
+								Safe_AddRef(*m_ppTargetSlot);
+
+								m_ppTargetSlot = nullptr;
+								isChangeTexture = true;
+								isChangeTextureArray = isTextureArray;
+								isChange_DH_TextureArray = m_isTex_DH_ArraySelect;
+								isChange_NBR_TextureArray = m_isTex_NBR_ArraySelect;
+							}
+							ImGui::CloseCurrentPopup();
+						}
+
+						if (!isCompatible) ImGui::EndDisabled();
+
+						if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+						{
+							if (isCompatible)
+								ImGui::SetTooltip("%s", Engine_Utils::ToString(pTex->Get_Name()).c_str());
+							else
+								ImGui::SetTooltip("[Incompatible Type]\n%s", Engine_Utils::ToString(pTex->Get_Name()).c_str());
+						}
+
+						ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + button_sz);
+
+						string texName = Engine_Utils::ToString(pTex->Get_Name());
+						if (texName.length() > 9)
+							texName = texName.substr(0, 9) + "...";
+
+						if (!isCompatible) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.f));
+
+						ImGui::Text("%s", texName.c_str());
+
+						if (!isCompatible) ImGui::PopStyleColor();
+
+						ImGui::PopTextWrapPos();
+					}
+					ImGui::EndGroup();
+
+					float last_button_x2 = ImGui::GetItemRectMax().x;
+					float next_button_x2 = last_button_x2 + spacing + button_sz;
+
+					if (i + 1 < textureList.size() && next_button_x2 < window_visible_x2)
+						ImGui::SameLine(0.0f, spacing);
+
+					ImGui::PopID();
+				}
+			}
+		}
+		ImGui::EndChild();
+
+		// -----------------------------------------------------------
+		// [하단] 취소 버튼
+		// -----------------------------------------------------------
+		ImGui::Separator();
+		if (ImGui::Button("Cancel", ImVec2(120, 0)))
+		{
+			m_ppTargetSlot = nullptr;
+			m_isTex_DH_ArraySelect = false;
+			m_isTex_NBR_ArraySelect = false;
+			m_isTexArraySelect = false;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (isChangeTexture)
+	{
+		Bind_MapTexture();
+		Bind_Mix_RGBA_Texture();
+		if (isChangeTextureArray)
+		{
+			if (m_isTex_DH_ArraySelect)
+				Slice_DH_Texture();
+			if (m_isTex_NBR_ArraySelect)
+				Slice_NBR_Texture();
+
+			m_isTex_DH_ArraySelect = false;
+			m_isTex_NBR_ArraySelect = false;
+			m_isTexArraySelect = false;
+		}
+	}
 }
 
 CMapObject* CMapToolManager::Make_MapObject(void* pArg, _bool isPreview)
@@ -1136,6 +1425,7 @@ void CMapToolManager::Free()
 	Safe_Release(m_pDefaultBlackSRV);
 
 	Safe_Release(m_pMesh_Shader);
+	Safe_Release(m_pInstMesh_Shader);
 
 
 	/* 안에 들어있는 Texture 정리 */

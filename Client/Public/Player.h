@@ -34,11 +34,15 @@ public:
 	enum Part : _uint
 	{
 		BODY = 0,
+
+		// weapon
 		SWORD,
 		SKILL,
 		GUN,
 		SWORD2,
+
 		EFFECT,
+		DETECTCOLLIDER, // 몬스터 감지용 collider
 		CLOAK,
 		END
 	};
@@ -147,6 +151,7 @@ private:
 	HRESULT Ready_HitStates();
 	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT Ready_Components(PLAYER_DESC* pDesc);
+	HRESULT Ready_PartCollider();
 
 private:
 	void Count_DoubleJump(const _float fTimeDelta);

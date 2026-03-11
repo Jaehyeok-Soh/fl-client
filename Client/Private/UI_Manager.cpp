@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "UI_Manager.h"
 #include "FileUtils.h"
-#include "Engine_Utils.h"
 #include "Canvas.h"
 #include "GenericUI.h"
 #include "UITutorial_Manager.h"
@@ -24,7 +23,6 @@ HRESULT CUI_Manager::Initialize_UIManager()
 		MSG_BOX("CUI_Manager::Initialize_UIManager, CUITutorial_Manager::Create Failed");
 		return E_FAIL;
 	}
-	m_pGameInstance->Add_GameObject(0, g_wszStaticObjectLayer, m_pTutorialManager);
 	return S_OK;
 }
 

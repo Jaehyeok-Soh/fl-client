@@ -39,6 +39,7 @@ HRESULT CPhysicsRigidBody::Initialize(void* pArg)
 
 void CPhysicsRigidBody::Awake()
 {
+
 	CPhysicsCollider* collider = m_pOwner->Get_Component<CPhysicsCollider>();
 
 	if (!collider)

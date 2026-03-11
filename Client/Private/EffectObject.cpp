@@ -442,7 +442,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     float TimeFlag = (m_tEffectDesc.Data._Effect_TimeFlag == PLAY) ? 1.f : 0.f;
     _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * fTimeDelta * TimeFlag;
     _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
-    _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration;
+    _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration/*_Effect_LifeTime*/;
 
     if (m_tEffectDesc.Data._Use_Effect_Continue && fRatio >= 0.5f && m_bDespawnFlag == false)
     {
@@ -463,7 +463,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     m_bIsStarted = true;
 
     // Duration 및 Loop 제어 설정
-    if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration)
+    if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration/*_Effect_LifeTime*/)
     {
         if (m_bDespawnFlag == false && (m_tEffectDesc.Data._Use_Effect_Continue || m_tEffectDesc.Data._Effect_Looping))
         {
@@ -473,7 +473,7 @@ void CEffectObject::Update(const _float fTimeDelta)
 
         else /*if (m_tEffectDesc.Data._Use_Effect_Continue == false || m_tEffectDesc.Data._Effect_Looping == false)*/
         {
-            if (fActiveTime >= /*m_tEffectDesc.Data._Effect_Duration +*/ m_tEffectDesc.Data._Effect_LifeTime)
+            if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
             {
                 m_bIsEffectFinish = true;
             }
@@ -558,6 +558,7 @@ HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 
     return S_OK;
 }
+
 HRESULT CEffectObject::Despawn_FromPool()
 {
     if (FAILED(Super::Despawn_FromPool()))
@@ -652,7 +653,7 @@ void CEffectObject::LoopState_Change(DTO::E_LoopState eState)
     case DTO::E_LoopState::LOOP_START:
     {
         // 얘는 상황보고 판단.
- /*       m_tEffectDesc.Data._Use_Effect_Continue = true;*/
+        /*m_tEffectDesc.Data._Use_Effect_Continue = true;*/
         /*m_tEffectDesc.Data._Effect_Looping = true;*/
         break;
     }

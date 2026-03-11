@@ -29,7 +29,7 @@ public:
 private:
 	static class CMonsterActionState* GetActionState(class CStateBase_Monster* state);
 	static class CMonsterControlContext* GetControlContext(class CStateBase_Monster* state);
-
+	static class CStatCom_Boss* GetBossStat(class CStateBase_Monster* state);
 private:
 	map<string, ConditionFunc> m_mapCondition;
 	map<string, FeatureFunc> m_mapFeature;

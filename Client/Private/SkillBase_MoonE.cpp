@@ -65,7 +65,7 @@ void CSkillBase_MoonE::Update(const _float fTimeDelta, CMyStat* pStatCom)
 	if (!m_bSpawn_First)
 	{
 		// 0.5초 지났다면 생성
-		if (m_fAccTime >= 0.5f)
+		if (m_fAccTime >= 0.3f)
 		{
 			Spawn_SkillObj(pStatCom, true);
 			m_bSpawn_First = true;
@@ -77,7 +77,7 @@ void CSkillBase_MoonE::Update(const _float fTimeDelta, CMyStat* pStatCom)
 	else if (!m_bSpawn_Second)
 	{
 		// 0.5초 지났다면 생성
-		if (m_fAccTime >= 0.35f)
+		if (m_fAccTime >= 0.5f)
 		{
 			Spawn_SkillObj(pStatCom, false);
 			m_bSpawn_Second = true;
@@ -160,7 +160,7 @@ void CSkillBase_MoonE::Spawn_SkillObj(CMyStat* pOwnerStat, _bool bFirst)
 	desc.vForward = pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
 	desc.eEffectRotationState = TRANSFORM_INFO_STATE::LOOK;
-	desc.fEffect_Rotation_Degree = bFirst ?  -30.f : 30.f;
+	desc.fEffect_Rotation_Degree = bFirst ?  30.f : -30.f;
 
 	m_pSkillObjSpawner->Trigger(desc);
 } 

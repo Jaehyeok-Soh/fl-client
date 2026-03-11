@@ -72,6 +72,10 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 		tPrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MINIMAP_MONSTER_ICON, iCurrentLevelID, &tPrefabData);
 	}
+
+	{
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 300.f);
+	}
 	return S_OK;
 }
 
@@ -139,24 +143,6 @@ _bool CMonster_Dog::On_Hit(const HIT_DESC& hitDesc)
 		Get_Component<CMonsterControlContext>()->Set_Dead();
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
 	}
-
-	/*이펙트를 생성하기 위해서*/
-	if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
-	{
-		/*	hitDesc.attackDesc.iAttackerLayer = PHYSICSFILTERGROUP::ATTACK_PROJECTTILE;*/
-		EFFECT_SPAWN_DESC Desc = {};
-		//Matrix OffsetMatrix = Matrix::CreateTranslation(Vec3(0.f, 0.5f, 0.5f));
-		Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
-
-		Vec3 vScale, vPos;
-		Quat vQuat;
-		WorldMatrix.Decompose(vScale, vQuat, vPos);
-
-		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
-		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
-		m_pGameInstance->Request_Effect("VFX_Sword_Hit", Desc);
-	}
-
 	return result;
 }
 

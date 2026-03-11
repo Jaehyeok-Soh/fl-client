@@ -24,23 +24,17 @@ typedef struct tagUITutorialEventesc
 
 }UI_TUTORIAL_EVENT_DESC;
 
-class CUITutorial_Manager final : public CGameObject
+class CUITutorial_Manager final : public CBase
 {
-	using Super = CGameObject;
+	using Super = CBase;
 private:
 	CUITutorial_Manager();
 	virtual ~CUITutorial_Manager() = default;
 public:
-	HRESULT Initialize_Prototype() override;
-	HRESULT Initialize(void* pArg) override;
-	HRESULT Awake(const _uint iCurrentLevelID) override;
-	CGameObject* Clone(void* pArg) override;
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	CMulticastDelegate<void(const UI_TUTORIAL_EVENT_DESC&)> m_vTutorialEvents = {};
-
-	
 
 public:
 	static CUITutorial_Manager* Create();

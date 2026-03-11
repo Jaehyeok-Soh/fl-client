@@ -52,10 +52,11 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
         CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
         Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+        vLook.Normalize();
 
-        Vec3 accelation = vLook;
+        Vec3 accelation = vLook * 10.f;
 
-        SetCCTImpuls(accelation * 0.5f);
+        SetCCTImpuls(accelation);
         Set_DeAccelRate(0.5f);
     }
 

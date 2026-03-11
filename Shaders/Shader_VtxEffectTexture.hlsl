@@ -380,6 +380,7 @@ VS_OUT_POS_GS_PARTICLE VS_Texture(VS_IN_POS_GS_PARTICLE In)
     Out.vPSize = float3(length(W._11_12_13) * pSize.x, length(W._21_22_23) * pSize.y, length(W._31_32_33));
     Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
     Out.vInstID = In.vInstID;
+    Out.matTransform = W;
     
     return Out;
 }
@@ -393,48 +394,47 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
     float3 vRight = float3(1.f, 0.f, 0.f);
     float3 vUp = float3(0.f, 1.f, 0.f);
 
-    // 1. 빌보드 플래그가 켜진 경우 (카메라 응시)
     if (HasBillboard())
     {
-        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
-        matrix matWorld = mul(matInst, W);
-        
-        matrix BillboardWorld = (matrix) 0;
-        
-        // 카메라와의 방향 벡터(Look) 계산
+        // 카메라를 향하는 기본 빌보드 축 생성
         float3 vLook = normalize(CameraPosition() - In[0].vPosition.xyz);
-        
-        // 카메라의 Look과 월드 Up(0,1,0)을 외적하여 Right 축 생성
         vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook));
-        
-        // 생성된 Right와 Look을 외적하여 수직 Up 축 생성
-        vUp = normalize(cross(vLook, vRight)); // 그냥 y축에 회전된 행렬 곱하기
-        
+        vUp = normalize(cross(vLook, vRight));
+
+        float fAngle = atan2(W._12, W._11);
+
+        if (fAngle != 0.0f)
+        {
+            float s, c;
+            sincos(fAngle, s, c);
+
+            // 빌보드 축을 fAngle만큼 회전 (평면 회전)
+            float3 vRotRight = vRight * c + vUp * s;
+            float3 vRotUp = -vRight * s + vUp * c;
+
+            vRight = vRotRight;
+            vUp = vRotUp;
+        }
     }
-    // 2. 빌보드 플래그가 꺼진 경우 (월드/인스턴스 행렬 회전 반영)
     else
     {
-        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
-        matrix matWorld = mul(matInst, W);
-        
-        // 행렬에서 월드 기준 X축(0번행)과 Y축(1번행) 추출
-        vRight = normalize(matWorld[0].xyz);
-        vUp = normalize(matWorld[2].xyz);
+        // 빌보드가 아닐 경우 월드 행렬의 축을 그대로 사용
+        vRight = normalize(W[0].xyz);
+        vUp = normalize(W[1].xyz);
     }
 
-    // 3. 최종 크기 적용
+    // 최종 크기 적용 (VS에서 넘어온 pSize 사용)
     vRight *= In[0].vPSize.x;
     vUp *= In[0].vPSize.y;
     
     matrix matVP = mul(V, P);
     
-    // 4. 정점 위치 계산
+    // 정점 위치 계산 (중심점 In[0].vPosition 기준)
     float3 vFinalPos[4];
     vFinalPos[0] = In[0].vPosition.xyz - vRight + vUp; // 좌상
     vFinalPos[1] = In[0].vPosition.xyz + vRight + vUp; // 우상
     vFinalPos[2] = In[0].vPosition.xyz - vRight - vUp; // 좌하
     vFinalPos[3] = In[0].vPosition.xyz + vRight - vUp; // 우하
-
 
     // 기본 UV만 설정
     float2 vFinalUV[4] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
@@ -449,6 +449,7 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
     }
     OutStream.RestartStrip();
 }
+
 
 float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
 {
@@ -609,7 +610,7 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
         else if (HasTextureSprite(g_Effect.MaskTexture_SpriteInfo))
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.MaskTexture_SpriteInfo);
-            MaskSample = GradationTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
         }
         else
         {
@@ -1003,8 +1004,18 @@ technique11 T0
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-        SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Texture())); 
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_TextureBloomHard()));
+    }
+
+    pass None_DepthDefault
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_Disabled, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
+        SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Texture()));
     }
 }

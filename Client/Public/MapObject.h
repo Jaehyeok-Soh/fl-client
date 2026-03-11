@@ -31,6 +31,7 @@ public:
 		EMapObject_DrawType			eMapObjectDrawType{EMapObject_DrawType::END};
 		wstring						wstrModelPath{};
 		vector<DTO::SRT_DATA>		vecSRT{};
+		DTO::EClientMakePath		eClientMakePath{ DTO::EClientMakePath::StaticObject };
 	}MAPOBJECT_DESC;
 protected:
 	CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -63,15 +64,20 @@ private:
 	void					Filtering_Visible(OUT _uint &iInstanceCount);
 	HRESULT					Update_InstanceBuffer(CInstanceMesh* pMesh);
 protected:
+
 	_uint					m_iSectionNum{0};
+	_uint					m_iShaderPass{0};
 	_bool					m_isUELoaded{false};
 	EMapObject_DrawType		m_eMapObjectDrawType{EMapObject_DrawType::Default};
 	EMapObject_Type			m_eMapObjectType{ EMapObject_Type::END };
 	vector<Matrix>			m_vecMatrix{};
 	vector<Matrix>			m_vecVisibleMatrix{};
 	vector<_uint>			m_vecVisibleIndex{};
+
 public:
 	virtual void			Free()	override;
+public:
+	static					_bool	IsMakePhysicsCollider(DTO::EClientMakePath eType);
 };
 
 
