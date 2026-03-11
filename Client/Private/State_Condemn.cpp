@@ -57,7 +57,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	pPlayerTransform->Look_At_XZ(vBossPos);
 
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::CONDEMN));
 
 	return S_OK;
 }

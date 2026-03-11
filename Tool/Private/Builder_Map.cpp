@@ -30,7 +30,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			pObjectData->Get_Type();
 			const auto* pMapObjectData = static_cast<const Engine::CData_LevelData*>(pObjectData);
 
-			if (FAILED(Apply_ScenceData(pMapObjectData->Get_Data())))
+			if (FAILED(Apply_LevelData(pMapObjectData->Get_Data())))
 				return E_FAIL;
 		}
 	}
@@ -80,7 +80,7 @@ HRESULT CBuilder_Map::Create_MapObject(const DTO::TMap_MapObjectData& tData)
 	return S_OK;
 }
 
-HRESULT CBuilder_Map::Apply_ScenceData(const DTO::TLevelData& tData)
+HRESULT CBuilder_Map::Apply_LevelData(const DTO::TLevelData& tData)
 {
 	m_eClientLevelType = StringToClientleveltype(tData.strLevelTypeName);
 

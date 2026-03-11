@@ -947,6 +947,16 @@ typedef struct TLevelData
 	string								strTextureSplatingInfoName{"None"};
 	string								strLevelTypeName{"STATIC"};
 
+
+	/* 환경 데이터 */
+
+	/* Wind */
+	Vec3								vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
+	_float								fWindPower{ 1.f }; //바람이 부는 새기
+	/*-------*/
+
+
+
 }SCENEDATA;
 
 #pragma endregion

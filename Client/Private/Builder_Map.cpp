@@ -58,6 +58,12 @@ HRESULT	CBuilder_Map::Initialize()
 			L"Prototype_Component_Shader_VtxMesh", nullptr));
 	if (!m_pMeshShader) return E_FAIL;
 
+	/* Scene Data를 적용시켜줄 Shader 미리 Binding  */
+	m_pInstMeshShader =
+		static_cast<CShader*> (m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC),
+			L"Prototype_Component_Shader_VtxInstanceMesh", nullptr));
+	if (!m_pInstMeshShader) return E_FAIL;
+
 	return S_OK;
 }
 
@@ -130,6 +136,9 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 {
 	m_eLevelType = StringToClientleveltype(tData.strLevelTypeName);
 
+	if (m_pMeshShader == nullptr) return E_FAIL;
+	if (m_pInstMeshShader == nullptr) return E_FAIL;
+
 
 	/*  None이라면 돌아가기  */
 	if (tData.strTextureSplatingInfoName != "None")
@@ -137,6 +146,20 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 		if (FAILED(m_pGameInstance->GameDataManager_Bind_SplatingTextureInfo(m_pMeshShader, Engine_Utils::ToWString(tData.strTextureSplatingInfoName))))
 			return E_FAIL;
 	}
+
+	CB_EnvData tEnvData{};
+	tEnvData.vWindDirection = tData.vWindDirection;
+	tEnvData.fWindPower = tData.fWindPower;
+
+	/* Env Data 세팅 */
+	ID3DX11EffectConstantBuffer* pCB = m_pMeshShader->Get_ConstantBuffer("CB_EnvData");
+	if (!pCB->IsValid())	return E_FAIL;
+	pCB->SetRawValue(&tEnvData, 0 , sizeof(CB_EnvData));
+
+	pCB = m_pInstMeshShader->Get_ConstantBuffer("CB_EnvData");
+	if (!pCB->IsValid())	return E_FAIL;
+	pCB->SetRawValue(&tEnvData, 0, sizeof(CB_EnvData));
+
 
 
 	return S_OK;
@@ -269,8 +292,10 @@ HRESULT CBuilder_Map::Create_Grass(const DTO::TMap_MapObjectData& tData)
 	if (!tData.vecClientMakePathDesc.empty())
 	{
 		/* Plants  */
-		PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
-		tDesc.vMI_TintColor = pDesc->vMITint_Color;
+		GRASS_DESC* pOrigin = static_cast<GRASS_DESC*>(tData.vecClientMakePathDesc.front());
+		tDesc.vMI_TintColor = pOrigin->vMITint_Color;
+		tDesc.fGrassSwaySpeed = pOrigin->fGrassSwaySpeed;
+		tDesc.fGrassWaveSize = pOrigin->fGrassWaveSize;
 	}
 
 
