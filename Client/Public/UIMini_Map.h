@@ -31,7 +31,6 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void Tick_CameraSight(const Vec3& vLook);
 	void Rotate_Translate_CameraSight();
 	void Rotate_PlayerIcon();
 

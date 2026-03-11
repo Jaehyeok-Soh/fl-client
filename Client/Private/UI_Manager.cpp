@@ -15,14 +15,8 @@ CUI_Manager::CUI_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CUI_Manager::Initialize_UIManager()
+HRESULT CUI_Manager::Initialize_UIManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	m_pTutorialManager = CUITutorial_Manager::Create();
-	if (nullptr == m_pTutorialManager)
-	{
-		MSG_BOX("CUI_Manager::Initialize_UIManager, CUITutorial_Manager::Create Failed");
-		return E_FAIL;
-	}
 	return S_OK;
 }
 
@@ -46,7 +40,6 @@ void CUI_Manager::Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePref
 
 void CUI_Manager::Free()
 {
-	Safe_Release(m_pTutorialManager);
 	Safe_Release(m_pGameInstance);
 }
 
