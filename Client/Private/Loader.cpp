@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "Engine_Utils.h"
 //=================
 // Component
 //=================
@@ -58,16 +57,17 @@
 #include "Weapon.h"
 #include "Sword.h"
 #include "Gun.h"
-#include "ColliderPart.h"
+#include "TriggerCollidePart.h"
 #include "Loader.h"
 #include "Effect.h"
 #include "Effect_WarningCircle.h"
 #include "EffectObject.h"
 #include "BattleField.h"
+#include "ColliderModule.h"
 #include "PartEffect.h"
 #include "Moon_SkillE_Obj.h"
-#include "Hybrid_WarningSpace.h"
-
+#include "SkillWarningSpace.h"
+#include "SocketObject.h"
 
 //=================
 // SkillObject
@@ -469,11 +469,26 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma endregion
 
+#pragma region Env Texture Binding
+
+	////////////////////////////////////////////////////
+	////////// Ready Env TextureBinding Load ///////////
+	////////////////////////////////////////////////////
+
+	/* Water Texture Binding */
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/Map/Env/Water/")))
+		return E_FAIL;
+
+#pragma endregion
+
+
 #pragma region Texture Splating Data
 
 	///////////////////////////////////////////////////////
 	////////// Ready Texture Splating Data Load ///////////
 	///////////////////////////////////////////////////////
+
+
 
 	/* Texture Loading */
 
@@ -655,19 +670,22 @@ HRESULT CLoader::Loading_For_Logo()
 		// For. Prototype_GameObject_Part_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Body",			CBody::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Part_Collider
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CColliderPart::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Collider",		CTriggerCollidePart::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_ColliderModule
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszColliderModule_Prototype_Tag, 			CColliderModule::Create(m_pDevice, m_pDeviceContext));
+
 
 		// 이펙트 Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_WarningCircle", CEffect_WarningCircle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Hybrid_WarningSpace",	CHybrid_WarningSpace::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_WarningSpace",			CSkillWarningSpace::Create(m_pDevice, m_pDeviceContext));
 		
 		// Projectile
 
 		// player effect object
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,							CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
-		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillQAttack_Prototype_Tag,						CMoon_SkillQAttack_Obj::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillE__Prototype_Tag,				CMoon_SkillE_Obj::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMoonSkillQAttack_Prototype_Tag,			CMoon_SkillQAttack_Obj::Create(m_pDevice, m_pDeviceContext));
 
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
@@ -710,6 +728,8 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
+
+		//ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Socket_Prototype_Tag, CSocketObject::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 	}
@@ -978,6 +998,8 @@ HRESULT CLoader::Loading_Textures(const wstring& wstrFolder)
 			ext = entry.path().extension().wstring();
 			if (ext == L".ini")
 				continue;
+			if (ext == L".hdr")
+				continue;
 			wstrFileName = entry.path().filename().lexically_normal().stem();
 			CTextureBase::RESOURCE_BASE_DESC desc = {};
 			desc.wstrName = wstrFileName;
@@ -1172,7 +1194,7 @@ HRESULT CLoader::Ready_Spawner()
 		desc.wstrSkillPoolTag = g_wszPool_MoonSkillE; // 스킬 poot에서 꺼내올 오브젝트 태그
 		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
 		desc.fLifeTime = 3.5f;
-		//desc.fSpeed = 50.f;
+		desc.fSpeed = 20.f;
 
 		if (FAILED(m_pGameInstance->Add_Prototype(0, g_wszSpawner_MoonSkillE,
 			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))

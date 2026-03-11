@@ -54,6 +54,16 @@ HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 	return S_OK;
 }
 
+void CMonsterControlContext::Consume_GroggyRequest()
+{
+	// 요청이 없었다면
+	if (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ) == false)
+		return;
+
+	Engine_Utils::RemoveHard_Flag(m_iSubState, SUB_STATE::GROGGY_REQ);
+	Engine_Utils::Add_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE);
+}
+
 void CMonsterControlContext::Update_RuntimeDesc(const _float fTiemDelta)
 {
 	// 타겟의 유효성 체크
@@ -78,6 +88,8 @@ void CMonsterControlContext::Update_RuntimeDesc(const _float fTiemDelta)
 		Clear_RuntimeDesc();
 		return;
 	}
+	
+	Update_Groggy(fTiemDelta);
 
 	CTransform* pOwnerTransform = pOwner->Get_Component<CTransform>();
 	m_tRuntimeDesc.vOwnerPos = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
@@ -113,16 +125,29 @@ void CMonsterControlContext::Update_RuntimeDesc(const _float fTiemDelta)
 		Clear_RuntimeDesc();
 }
 
+void CMonsterControlContext::Update_Groggy(const _float fTimeDelta)
+{
+	if (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE) == false)
+		return;
+
+
+	if (m_tGroggyCounter.Tick(fTimeDelta))
+		End_Groggy();
+}
+
+void CMonsterControlContext::End_Groggy()
+{
+	if (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE) == false)
+		return;
+
+	Engine_Utils::RemoveHard_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE);
+	m_tGroggyCounter.Clear();
+	m_eCurrentGroggyState = { EGroggyState::None };
+}
+
 Vec3 CMonsterControlContext::Get_MoveDir()
 {
 	return m_vMoveDir;
-}
-
-void CMonsterControlContext::Set_Groggy(_bool b)
-{
-	b == true
-		? Engine_Utils::Add_Flag(m_iSubState, SUB_STATE::GROGGY)
-		: Engine_Utils::RemoveHard_Flag(m_iSubState, SUB_STATE::GROGGY);
 }
 
 void CMonsterControlContext::Set_Dead()
@@ -131,6 +156,37 @@ void CMonsterControlContext::Set_Dead()
 		return;
 
 	m_iSubState |= SUB_STATE::DEAD;
+}
+
+_bool CMonsterControlContext::Set_Groggy(EGroggyState eState, _bool bRequest, _float fGroggyDuration)
+{
+	const _bool bAleradyRequested = Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ);
+	const _bool bActive = Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE);
+
+	// 그로기 요청이라면
+	if (bRequest == true)
+	{
+		// 이미 활성화 된상태 요청은 받지 않음
+		if (bAleradyRequested || bActive)
+			return false;
+
+		Engine_Utils::Add_Flag(m_iSubState, SUB_STATE::GROGGY_REQ);
+
+		m_eCurrentGroggyState = eState;
+		m_tGroggyCounter.Start(fGroggyDuration);
+	}
+	// 아니라면
+	else
+	{
+		// 요청 취소
+		if (bAleradyRequested == false)
+			return false;
+
+		Engine_Utils::RemoveHard_Flag(m_iSubState, SUB_STATE::GROGGY_REQ);
+	}
+
+	// 요청 성공
+	return true;
 }
 
 _bool CMonsterControlContext::IsTargetVisible()
@@ -151,28 +207,6 @@ _bool CMonsterControlContext::IsCliffAhead()
 _bool CMonsterControlContext::IsPhaseTwo()
 {
 	return _bool();
-}
-
-_bool CMonsterControlContext::IsFalling()
-{
-	_bool result = m_iSubState & SUB_STATE::FALL;
-	m_iSubState &= ~SUB_STATE::FALL;
-	return result;
-}
-
-_bool CMonsterControlContext::IsDown()
-{
-	_bool result = m_iSubState & SUB_STATE::DOWN;
-	m_iSubState &= ~SUB_STATE::DOWN;
-	return result;
-}
-
-_bool CMonsterControlContext::IsHit()
-{
-	if (m_tHitDesc.attackDesc.pAttackPreset == nullptr)
-		return false;
-
-	return m_iSubState & SUB_STATE::HIT;
 }
 
 _bool CMonsterControlContext::IsHitAdditive()
@@ -284,49 +318,40 @@ _bool CMonsterControlContext::IsPathBlocked()
 
 void CMonsterControlContext::UpdateWalk(const _float fTimeDelta)
 {
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-
-	Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	vOwnerLook.Normalize();
-	vOwnerLook* fTimeDelta;
-
-	m_vMoveDir = vOwnerLook;
+	m_vMoveDir = m_tRuntimeDesc.vOwnerLook;
+	if (m_vMoveDir.LengthSquared() <= g_XMEpsilon.f[0])
+		m_vMoveDir = Vec3(0.f, 0.f, 1.f);
 }
 
 void CMonsterControlContext::UpdateChase(const _float fTimeDelta)
 {
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>();
+	if (m_tRuntimeDesc.bTargetValid == false)
+	{
+		m_vMoveDir = Vec3::Zero;
+		return;
+	}
 
-	Vec3 vOwnerPosition = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 vTargetPosition = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	Vec3 vToTarget = vTargetPosition - vOwnerPosition;
-	vToTarget.Normalize();
-
-	m_vMoveDir = vToTarget;
+	m_vMoveDir = m_tRuntimeDesc.vToTargetDir;
 }
 
 void CMonsterControlContext::Update_TurnToTarget_XZ(const _float fTimeDelta)
 {
-	CGameObject* pTarget = Get_Target();
-	if (pTarget == nullptr)
+	if (m_tRuntimeDesc.bTargetValid == false)
 		return;
 
 	CTransform* pTransform = Get_Owner()->Get_Component<CTransform>();
-	Vec3 vTargetPos = pTarget->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	pTransform->Tunr_ToPoint_YAxis(vTargetPos, fTimeDelta);
+	pTransform->Tunr_ToPoint_YAxis(m_tRuntimeDesc.vTargetPos, fTimeDelta);
 }
 
 void CMonsterControlContext::Update_8Dir_LocalAxisXZ(const _float fTimeDelta, _float fForward, _float fRight)
 {
-	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
-	Vec3 vLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	Vec3 vRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+	Vec3 vDir = m_tRuntimeDesc.vOwnerLook * fForward + m_tRuntimeDesc.vOwnerRight * fRight;
 
-	Vec3 vDir = vLook * fForward + vRight * fRight;
-	vDir.Normalize();
+	if (vDir.LengthSquared() <= g_XMEpsilon.f[0])
+		vDir = Vec3(0.f, 0.f, 1.f);
+	else
+		vDir.Normalize();
+
 	m_vMoveDir = vDir;
 }
 

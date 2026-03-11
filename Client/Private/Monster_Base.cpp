@@ -80,7 +80,7 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	Get_Component<CPhysicsCCT>()->Ready_Position();
-
+	
 	return S_OK;
 }
 
@@ -199,6 +199,17 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 {
 	Get_Component<CMonsterControlContext>()->Set_HitDesc(hitDesc);
 
+	_uint iDamageFlag = hitDesc.iDamageFlag;
+	// 살아 있을때만 피격 처리를 하겠다
+	if (IsAlive())
+	{
+		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+		{
+			OnHit_PlayerMoon(hitDesc);
+		}
+	}
+
+	// stat 관리
 	auto myStat = Get_Component<CMyStat>();
 	if (myStat)
 	{
@@ -209,36 +220,6 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		{
 			Get_Component<CMonsterControlContext>()->Set_Dead();
 			Set_Dying();
-		}
-	}
-
-	_uint iDamageFlag = hitDesc.iDamageFlag;
-
-	if (IsAlive())
-	{
-		// moon + skill Q : hit point를 얻어올 수 없기에 여기서 객체 positoin 기준으로 폰트 띄움
-		if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
-		{
-			Vec3 vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-			vPos.y += 0.5f;
-
-			UI_PREFAB_DATA tPrefabData = {};
-
-			tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-			tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
-			tPrefabData.DamageFontData.vHitPos = vPos; // 데미지 폰트를 띄울 World 위치 // 
-			tPrefabData.DamageFontData.vRandOffset = Vec3{
-				m_pGameInstance->Rand_Float(-1.f, 1.f),
-				m_pGameInstance->Rand_Float(-1.f, 1.f),
-				m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
-
-			CUI_Manager::GetInstance()->Request_Add_Prefab(
-				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
-		}
-
-		else if (Engine_Utils::Has_OnlyFlag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN) | ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
-		{
-			int a = 0;
 		}
 	}
 
@@ -344,7 +325,6 @@ HRESULT CMonster_Base::Ready_EffectHandler(void* pArg)
 		return E_FAIL;
 
 	m_pEffectHandler = Get_Component<CEffectHandler>();
-
 	return S_OK;
 }
 
@@ -369,6 +349,84 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 	}
 
 	return S_OK;
+}
+
+void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
+{
+	_uint iDamageFlag = hitDesc.iDamageFlag;
+	_bool bCritical = false;
+
+	UI_PREFAB_DATA tPrefabData = {};
+	tPrefabData.DamageFontData.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+	tPrefabData.DamageFontData.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
+	tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
+	tPrefabData.DamageFontData.vRandOffset = Vec3{
+		m_pGameInstance->Rand_Float(-1.f, 1.f),
+		m_pGameInstance->Rand_Float(-1.f, 1.f),
+		m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
+
+	/*이펙트를 생성하기 위해서*/
+	//if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+	{
+		/*	hitDesc.attackDesc.iAttackerLayer = PHYSICSFILTERGROUP::ATTACK_PROJECTTILE;*/
+		EFFECT_SPAWN_DESC Desc = {};
+		//Matrix OffsetMatrix = Matrix::CreateTranslation(Vec3(0.f, 0.5f, 0.5f));
+		Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
+
+		Vec3 vScale, vPos;
+		Quat vQuat;
+		WorldMatrix.Decompose(vScale, vQuat, vPos);
+
+		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
+		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+		//if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+		//{
+		//	m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+		//}
+
+
+		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+		{
+			m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
+		}
+
+		else
+		{
+			m_pGameInstance->Request_Effect("VFX_Sword_Hit", Desc);
+		}
+	}
+
+	/* 폰트 추가 정보 */
+	{
+		// skill : hit point가 없어서 positoin 값 기준으로 데미지 폰트 띄움
+		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE)))
+		{
+			Vec3 vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+			vPos.y += 0.5f;
+
+			tPrefabData.DamageFontData.vHitPos = vPos;
+		}
+
+		// critical 여부 판단
+		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+		{
+			bCritical = true;
+		}
+
+		////// UI에게 폰트 호출 //////
+		if (bCritical)
+		{
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+
+		else
+		{
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+	}
 }
 
 void CMonster_Base::SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc)
@@ -437,7 +495,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
@@ -491,7 +550,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
@@ -539,7 +599,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };

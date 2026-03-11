@@ -362,15 +362,15 @@ void CGameObject::Clamp_FlagsByState()
 {
     if (m_eState == ELifeState::Pending || m_eState == ELifeState::Pooled)
     {
-        Engine_Utils::Set_OnlyFlag(m_iObjectFlags, NONE);
+        m_iObjectFlags = NONE;
     }
     else if (m_eState == ELifeState::Dying)
     {
-        Engine_Utils::Set_OnlyFlag(m_iObjectFlags, ACTIVE | RENDER);
+        m_iObjectFlags = ACTIVE | RENDER;
     }
     else
     {
-        Engine_Utils::Set_OnlyFlag(m_iObjectFlags, DEFAULT);
+        m_iObjectFlags = DEFAULT;
     }
 }
 

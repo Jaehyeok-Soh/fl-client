@@ -37,6 +37,9 @@ private:
 	_bool		m_bCombine = { true };
 	_bool		m_bRender = { true };
 
+	_int m_iCurAnimationIdx = {};
+	_int m_iSelecAnimationIdx = {};
+
 	CTool_Weapon::WEAPON_INFO m_tInfo = {};
 
 private:
@@ -46,6 +49,8 @@ private:
 	void Socket_Info();
 	void State_Info();
 	void SRT_Info();
+
+	void Animation_Info();
 
 private:
 	void Set_PartObj();

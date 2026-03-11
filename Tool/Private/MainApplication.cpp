@@ -2,7 +2,6 @@
 #include "MainApplication.h"
 #include "Picking_ToolManager.h"
 #include "VertexData.h"
-#include "Engine_Utils.h"
 #include "ImGui_ToolManager.h"
 #include "Level_Loading.h"
 #include "ImGui_UIManager.h"
@@ -100,8 +99,6 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		CTexture::TEXTURE_COMPONENT_ORIGIN_DESC desc = {};
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Texture_Empty", CTexture::Create(&desc))))
 			return E_FAIL;
-
-
 	}
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Transform", CTransform::Create())))
 		return E_FAIL;
@@ -271,7 +268,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Shader_VtxMesh
+	// For. Prototype_Component_Shader_VtxMesh_Tool
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxMesh_Tool.hlsl";
@@ -291,7 +288,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
-	// For. Prototype_Component_Shader_VtxInstanceMesh
+	// For. Prototype_Component_Shader_VtxInstanceMesh_Tool
 	{
 		CShader::SHADER_ORIGIN_DESC shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/Shader_VtxInstanceMesh_Tool.hlsl";

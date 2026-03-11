@@ -12,7 +12,6 @@
 #include "Bounding_Sphere.h"
 #include "Bone.h"
 #include "PlayerActionState.h"
-#include "ColliderPart.h"
 #include "Collider.h"
 #include "ComputeShader.h"
 #include "StatCom_Player.h"
@@ -24,8 +23,9 @@
 #include "Body.h"
 #include "Gun.h"
 #include "PartEffect.h"
+#include "SocketObject.h"
+#include "TriggerCollidePart.h"
 
-#include "MainPlayer.h"
 #include "CameraMan_Targeter.h"
 
 #pragma region States
@@ -110,6 +110,9 @@ HRESULT CPlayer::Initialize(void* pArg)
         return E_FAIL;
 
     if (FAILED(Ready_HitStates()))
+        return E_FAIL;
+
+    if (FAILED(Ready_PartCollider()))
         return E_FAIL;
 
     return S_OK;
@@ -222,11 +225,14 @@ void CPlayer::Change_Weapon(_uint iPart, _uint iState)
     // 우선 다 none으로 바꾼다음
 
     CWeapon* pSword = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD));
+    CWeapon* pSword2 = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD2));
     CWeapon* pSkill = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SKILL));
     CWeapon* pGun = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::GUN));
 
     if(pSword)
         pSword->Set_WeaponState(CWeapon::State::NONE);
+    if (pSword2)
+        pSword2->Set_WeaponState(CWeapon::State::NONE);
     if (pSkill)
         pSkill->Set_WeaponState(CWeapon::State::NONE);
     if (pGun)
@@ -239,6 +245,8 @@ void CPlayer::Change_Weapon(_uint iPart, _uint iState)
     case static_cast<_uint>(Part::SWORD):
         if(pSword)
             pSword->Set_WeaponState(iState);
+        if (pSword2)
+            pSword2->Set_WeaponState(iState);
         break;
 
     case static_cast<_uint>(Part::SKILL):
@@ -252,8 +260,13 @@ void CPlayer::Change_Weapon(_uint iPart, _uint iState)
         break;
     }
 
-    if(iState == ENUM_TO_UINT(CWeapon::State::NONE))
-        pSword->Set_WeaponState(CWeapon::State::HOLD);
+    if (iState == ENUM_TO_UINT(CWeapon::State::NONE))
+    {
+        if(pSword)
+           pSword->Set_WeaponState(CWeapon::State::HOLD);
+        if(pSword2)
+           pSword2->Set_WeaponState(CWeapon::State::HOLD);
+    }
 }
 
 _bool CPlayer::Check_OnGround(_float fMaxDist)
@@ -460,16 +473,16 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::RUNSHORT);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::SLIDE);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
-        tKeyTimer.bCountTime = false;
-        desc.tKeyTimer = tKeyTimer;
-        desc.pOwnerGun = pMyGun;
+        tKeyTimer.bCountTime    = false;
+        desc.tKeyTimer          = tKeyTimer;
+        desc.pOwnerGun          = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::WALK), CState_Walk::Create(pActionState, &desc))))
             return E_FAIL;
@@ -1135,7 +1148,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
                 return E_FAIL;
         }
 
-         //Weapons : Gun
+        //Weapons : Gun
         {
             CGun::GUN_DESC weaponDesc = {};
             weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonGun"; //Prototype_Component_Model_XibiWeapon //Prototype_Component_Model_MoonGun
@@ -1151,9 +1164,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
             weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
 
-            weaponDesc.fAllBullet = 1000.f;
-            weaponDesc.fCurBullet = 500.f;
-            weaponDesc.fAttackCoolTime = 0.2f; // 0.15 넘 빠름 // 0.3 너무 느림
+            weaponDesc.fAllBullet           = 1000.f;
+            weaponDesc.fCurBullet           = 500.f;
+            weaponDesc.fAttackCoolTime      = 0.18f; // 0.15 넘 빠름 // 0.3 너무 느림
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));
@@ -1168,9 +1181,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
         {
             CPartEffect::PART_EFFECT_DESC tDesc;
             tDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-            tDesc.arrState_DurationTimes    = {};
-            tDesc.arrState_DurationTimes    = { 0.f,12.5f,0.f }; 
-            tDesc.arrState_DelayTimes       = { 0.f,0.5f,0.f };
+            tDesc.arrState_DurationTimes = {};
+            tDesc.arrState_DurationTimes = { 0.f,12.5f,0.f };
+            tDesc.arrState_DelayTimes = { 0.f,0.5f,0.f };
             tDesc.FPartEff_Flags = CPartEffect::PartEff_Flag::Spawn_Again_AfterDespawn;
 
 
@@ -1198,7 +1211,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
             CPartEffect::DATA_EFFHANDLER tData1 = {};
             {
-                tData1.eEffState    = CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY;
+                tData1.eEffState = CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY;
                 tData1.eHandlerType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
 
                 CEffectHandler::STATE_VFX_DESC SkillDesc{};
@@ -1220,12 +1233,22 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             if (FAILED(Add_Part(Part::EFFECT, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Effect_Prototype_Tag, &tDesc)))
                 return E_FAIL;
         }
-
-            break;
+        break;
         }
-
-        return S_OK;
     }
+
+    // parts
+
+    {
+        //CSocketObject::SOCEKT_DESC SocketDesc = {};
+        //SocketDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        //SocketDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        //SocketDesc.iLevelIndex = pDesc->iLevelIndex;
+        //SocketDesc.wstrModelPrototypeName = pDesc->wstrBodyModelTag;
+        //if (FAILED(Add_Part(Part::CLOAK, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Socket_Prototype_Tag, &SocketDesc)))
+        //    return E_FAIL;
+    }
+
 
     return S_OK;
 }
@@ -1249,6 +1272,45 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
         if (FAILED(Add_Component<CNavigation>(0 /* static */, pDesc->wstrNavigationPrototypeTag, &desc)))
             return E_FAIL;
     }
+
+    return S_OK;
+}
+
+HRESULT CPlayer::Ready_PartCollider()
+{
+    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc;
+    {
+        PHYSICSRIGIDBODY_DESC tRigiDesc = {};
+        {
+            tRigiDesc.eType = EPhysicsActorType::KINEMATIC;
+            tRigiDesc.bUseGravity = false;
+            tRigiDesc.pOwnerMatrix = nullptr;
+
+            tPartColliDesc.pRigidbodyDesc = &tRigiDesc;
+        }
+
+        PHYSICSCOLLIDER_DESC tPColliDesc = {};
+        {
+            tPColliDesc.eShape  = EPhysicsShape::SPHERE;
+            tPColliDesc.vCenter = { 0.f,0.f,0.f };
+            tPColliDesc.fRadius = { 5.f };
+            tPColliDesc.bIsTrigger = { true };
+            tPColliDesc.eFilterLayer = tagPhysicsFilterGroup::DETECT_MONSTER; 
+            tPColliDesc.iFilterMask =
+            {
+                PHYSICSFILTERGROUP::Enum::MONSTER
+                | PHYSICSFILTERGROUP::Enum::OBJECT1
+                | PHYSICSFILTERGROUP::Enum::OBJECT2
+            };
+
+           tPartColliDesc.pColliderDesc = &tPColliDesc;
+        }
+
+        tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
+    }
+
+    if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+        return E_FAIL;
 
     return S_OK;
 }

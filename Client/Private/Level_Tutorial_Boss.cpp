@@ -211,7 +211,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_Player_SkillObjPool()
 
 	// Moon skil E
 	{
-		CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+		CMoon_SkillE_Obj::GAMEOBJECT_DESC desc{};
 		//TRANSFORM_DESC
 		CTransform::TRANSFORM_DESC tTransDesc = {};
 		tTransDesc.fMovePerSec = 20.f;
@@ -244,7 +244,11 @@ HRESULT CLevel_Tutorial_Boss::Ready_Player_SkillObjPool()
 
 	// Moon skil Q attack
 	{
-		CMoon_SkillQAttack_Obj::SKILLOBJECT_DESC desc{};
+		CMoon_SkillQAttack_Obj::SKILLOBJECT_SPAWN_DESC desc{};
+		desc.fSpeed = 50.f;
+		desc.fLifeTime = 12.5f;
+		desc.iFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+
 		if (FAILED(m_pGameInstance->Regist_Pool(
 			0,
 			g_wszPool_MoonSkillQAttack,
@@ -282,7 +286,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 
 	// SkillObject Pool
 	{
-		CXibi_Projectile_Circle::SKILLOBJECT_DESC desc{};
+		CXibi_Projectile_Circle::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
 			iLevelId,
 			g_wszPool_XibiCircleProjectile,
@@ -294,7 +298,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 			return E_FAIL;
 	}
 	{
-		CXibi_Loop_Thunder::SKILLOBJECT_DESC desc{};
+		CXibi_Loop_Thunder::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
 			iLevelId,
 			g_wszPool_XibiLoopThunder,
@@ -306,7 +310,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 			return E_FAIL;
 	}
 	{
-		CXibi_Oneshot_Thunder::SKILLOBJECT_DESC desc{};
+		CXibi_Oneshot_Thunder::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
 			iLevelId,
 			g_wszPool_XibiOneshotThunder,

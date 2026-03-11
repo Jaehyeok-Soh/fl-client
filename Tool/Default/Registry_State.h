@@ -34,8 +34,14 @@ namespace Tool
         "condition_non_cancellation",
         "condition_over_lifetime",
         "condition_cooldowntime_satisfy",
+        "condition_normal_groggy_requested",
+        "condition_final_groggy_requested",
+        "condition_normal_groggy",
+        "condition_final_groggy",
+        "condition_not_groggy",
         "param_condition_IsTrackPositionBetween",
         "param_condition_IsTrackPositionAt",
+
 
         // param examples
         "param_condition_distance_over",
@@ -59,6 +65,9 @@ namespace Tool
         "feat_move_front_left",
         "feat_move_backward_right",
         "feat_move_backward_left",
+
+        "feat_consume_groggy",
+        "feat_end_groggy",
 
         // param examples
         "param_feat_move_local",

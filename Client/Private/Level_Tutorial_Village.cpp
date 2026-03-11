@@ -241,7 +241,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Player_SkillObjPool()
 {
 	// Moon skil E
 	{
-		CMoon_SkillE_Obj::SKILLOBJECT_DESC desc{};
+		CMoon_SkillE_Obj::GAMEOBJECT_DESC desc{};
 		//TRANSFORM_DESC
 		CTransform::TRANSFORM_DESC tTransDesc = {};
 		tTransDesc.fMovePerSec = 20.f;
@@ -274,7 +274,12 @@ HRESULT CLevel_Tutorial_Village::Ready_Player_SkillObjPool()
 
 	// Moon skil Q attack
 	{
-		CMoon_SkillQAttack_Obj::SKILLOBJECT_DESC desc{};
+
+		CMoon_SkillQAttack_Obj::SKILLOBJECT_SPAWN_DESC desc{};
+		desc.fSpeed = 50.f;
+		desc.fLifeTime = 12.5f;
+		desc.iFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+
 		if (FAILED(m_pGameInstance->Regist_Pool(
 			0,
 			g_wszPool_MoonSkillQAttack,

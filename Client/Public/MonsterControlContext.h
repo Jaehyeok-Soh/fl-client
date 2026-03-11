@@ -22,11 +22,11 @@ public:
 			HIT = 1 << 4,
 			DEAD = 1 << 5,
 			DEAD_PROCESS = 1 << 6,
-			GROGGY = 1 << 7,
+			GROGGY_REQ = 1 << 7,
+			GROGGY_ACTIVE = 1 << 8,
 			END
 		};
 	}SUB_STATE;
-
 	typedef struct tagMonsterControlContextDesc
 	{
 		_float fMeleeRange = {};
@@ -65,6 +65,8 @@ private:
 public:
 	virtual HRESULT Awake(const _uint iLevelIndex) override;
 	void Update_RuntimeDesc(const _float fTiemDelta);
+private:
+	void Update_Groggy(const _float fTimeDelta);
 public:
 	virtual _bool Is_LeftAttackPressed() override { return false; }
 	virtual _bool Is_RightAttackPressed() override { return false; }
@@ -88,16 +90,15 @@ public:
 
 public:
 	virtual Vec3  Get_MoveDir() override;
-
-	void Set_Groggy(_bool b);
 	void Set_Dead();
-	void Set_Dead_Process() { m_iSubState |= SUB_STATE::DEAD_PROCESS; }
+	void Set_Dead_Process() { Engine_Utils::Add_Flag(m_iSubState ,SUB_STATE::DEAD_PROCESS); }
 	void Set_HitDesc(HIT_DESC hitDesc)
 	{
 		m_tHitDesc = hitDesc;
-		m_iSubState |= SUB_STATE::HIT;
+		Engine_Utils::Add_Flag(m_iSubState, SUB_STATE::HIT);
 	}
-
+	// 해당 요청이 이루어지면 true 요청 취소되면 false
+	_bool Set_Groggy(EGroggyState eState, _bool bRequest = true, _float fGroggyDuration = 10.f);
 /// <summary>
 /// Condition
 /// </summary>
@@ -127,16 +128,21 @@ public:
 	_bool IsTargetDistanceOver(_float fValue) const { return m_tRuntimeDesc.fDistance > fValue; }
 
 	// 공간
-	_bool IsFalling();
-	_bool IsDown();
+	_bool IsFalling() const { return Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::FALL); }
+	_bool IsDown() const { return Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::DOWN); }
 
 	// 상태
-	_bool IsHit();
+	_bool IsHit() const { return (m_tHitDesc.attackDesc.pAttackPreset != nullptr) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::HIT); }
 	_bool IsHitAdditive();
 	_bool IsHitLight();
 	_bool IsHitHeavy();
 	_bool IsHitLaunch();
 	_bool IsHitKnockdown();
+	_bool IsNotGroggy() const { return (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE) == 0) && (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ) == 0); }
+	_bool IsNormalGroggyRequested() const { return (m_eCurrentGroggyState != EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ); }
+	_bool IsFinalGroggyRequested() const { return (m_eCurrentGroggyState == EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ); }
+	_bool IsNormalGroggy() const { return(m_eCurrentGroggyState != EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
+	_bool IsFinalGroggy() const { return (m_eCurrentGroggyState == EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 
 	_bool IsDead();
 	_bool IsDeadProcessing();
@@ -177,6 +183,8 @@ public:
 	void Set_On_Ragdoll();
 	void Set_Off_Ragdoll();
 
+	void Consume_GroggyRequest();
+	void End_Groggy();
 private:
 	void Clear_RuntimeDesc();
 
@@ -189,8 +197,9 @@ private:
 	//_uint m_iJumpCount = { 0 };
 
 	Vec3 m_vMoveDir = {};
-
 	MONSTER_CONTROLCONTEXT_DESC m_tDesc = {};
+	EGroggyState m_eCurrentGroggyState = { EGroggyState::None };
+	TIME_LINE m_tGroggyCounter = {};
 	HIT_DESC m_tHitDesc = {};
 	RUNTIME_DESC m_tRuntimeDesc = {};
 	_uint m_iSubState = 0;

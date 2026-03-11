@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Panel_MapObjectList.h"
-#include "Engine_Utils.h"
 #include "ImGui_Layout_Transform.h"
 #include "Level_Map.h"
 #include "CameraMan.h"
@@ -1153,6 +1152,26 @@ void CPanel_MapObjectList::ImGuiUpdate_Grass_Desc(GRASS_DESC* pDesc)
 
 	ImGuiUpdate_Plants_Desc(pDesc);
 
+	ImGui::SeparatorText("Grass Data");
+
+	ImGui::Text(" DT => [ %f ] " , pDesc->fGrassDT );
+
+	ImGui::NewLine();
+
+	ImGui::Text(" Max Height => [ %f ]" , pDesc->fGrassMaxHeight);
+
+	ImGui::NewLine();
+
+	ImGui::Text(" Sway Speed ");
+	ImGui::DragFloat("##Grass Sway Speed",&pDesc->fGrassSwaySpeed , 0.01f , 0.f , 1000.f , "%.2f");
+	ImGui::NewLine();
+
+	ImGui::Text(" Wave Size ");
+	ImGui::DragFloat("##Grass Wave Size", &pDesc->fGrassWaveSize, 0.01f, 0.f, 1000.f, "%.2f");
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
 	return;
 }
 #pragma endregion
@@ -1163,6 +1182,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Vine_Desc(VINE_DESC* pDesc)
 	if (pDesc == nullptr) return;
 
 	ImGuiUpdate_Plants_Desc(pDesc);
+
 
 	return;
 }
@@ -1183,15 +1203,35 @@ void CPanel_MapObjectList::ImGuiUpdate_Water_Desc(WATER_DESC* pDesc)
 
 	ImGui::NewLine();
 
-	ImGui::NewLine();
+	ImGui::SeparatorText("Normal Data");
 
 	ImGui::DragFloat2("Water Speed 1", (float*)&pDesc->vSpeed1,0.01f,0.f,100.f,"%.3f");
 	ImGui::DragFloat2("Water Speed 2", (float*)&pDesc->vSpeed2,0.01f, 0.f, 100.f, "%.3f");
 
 	ImGui::NewLine();
 
+	ImGui::DragFloat2("UV Power", (float*)&pDesc->vWaterUVPower,0.f,0.1f,1000.f, "%.3f");
+
+	ImGui::NewLine();
+
+	ImGui::SeparatorText("Noise Data");
+
+	ImGui::DragFloat2("Distortion UV Power ", (float*)&pDesc->vDistortionUVPower, 0.01f , 0.f, 1000.f, "%.3f");
+	ImGui::DragFloat2("Distortion Speed ", (float*)&pDesc->vDistortionSpeed, 0.01f, 0.f, 100.f, "%.3f");
+	ImGui::DragFloat("Distortion Power", (float*)&pDesc->fDistortionPower, 0.001f, 0.f, 10.f, "%.3f");
+
 	ImGui::Separator();
 
+	ImGui::NewLine();
+
+	ImGui::SeparatorText("Light Data");
+
+	ImGui::DragFloat2("Sparkle UV Power ", (float*)&pDesc->vSparkleUVPower, 0.01f, 0.f, 1000.f, "%.3f");
+	ImGui::DragFloat("Sparkle Power", (float*)&pDesc->fSparklePower, 0.001f, 0.f, 10.f, "%.3f");
+
+	ImGui::NewLine();
+
+	ImGui::Separator();
 
 	string strTextureSlotName{};
 	string strTextureName{};
@@ -1225,9 +1265,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Water_Desc(WATER_DESC* pDesc)
 
 		ImGui::PopID();
 	}
-
 }
-
 
 #pragma endregion
 

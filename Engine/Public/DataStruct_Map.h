@@ -2,7 +2,6 @@
 #include "ObjectDataBase.h"
 #include "DataEnum.h"
 #include "json_forward.h"
-#include "Engine_Utils.h"
 
 
 NS_BEGIN(DTO)
@@ -253,15 +252,26 @@ public:
 struct GRASS_DESC : public PLANTS_DESC
 {
 public:
-
+	_float fGrassDT{ 0.f };
+	_float fGrassMaxHeight{ 1.f }; //ÀÌ ¸ðµ¨ÀÇ ÀÜµð MinMaxÁß MaxÀÇ  Y°ª
+	_float fGrassSwaySpeed{ 1.f }; //ÀÌ ÀÜµð°¡ Sway = Èçµé¸®´Â Speed
+	_float fGrassWaveSize{ 1.f }; //ÀÌ ÀÜµð°¡ Power = Èçµé¸®´Â Èû
 public:
 	GRASS_DESC()
 		:PLANTS_DESC()
+		, fGrassDT{0.f}
+		, fGrassMaxHeight{1.f}
+		, fGrassSwaySpeed{1.f}
+		, fGrassWaveSize{1.f}
 	{
 
 	}
 	GRASS_DESC(const GRASS_DESC& rhs)
 		: PLANTS_DESC(rhs)
+		, fGrassDT{ rhs.fGrassDT }
+		, fGrassMaxHeight{ rhs.fGrassMaxHeight }
+		, fGrassSwaySpeed{ rhs.fGrassSwaySpeed }
+		, fGrassWaveSize{ rhs.fGrassWaveSize }
 	{
 
 	}
@@ -537,10 +547,25 @@ struct WATER_DESC : public CLIENT_MAKEPATH_DESC_BASE
 	std::array<class CTextureBase*, ENUM_TO_UINT(EWaterTextureType::END)>	arrayTextureBase{};
 	Vec2	vSpeed1{1.f,1.f};		/* ÆÄµ¿ 2°³ ¼¯±â */
 	Vec2	vSpeed2{1.f,1.f};		/* ÆÄµ¿ 2°³ ¼¯±â */
+	Vec2	vDistortionSpeed{ 1.f,1.f };
+
+	Vec2    vWaterUVPower{ 1.f, 1.f };
+	Vec2    vDistortionUVPower{ 1.f, 1.f };
+	Vec2    vSparkleUVPower;                                              // 8 Byte (À±½½ ÀÚ±ÛÀÚ±ÛÇÔ Å©±â Á¶Àý!)
+
+	float	fDistortionPower{ 1.f };									// Noise °¡ ¼¯ÀÌ´Â °­µµ
+	float   fSparklePower;                                            // 4 Byte (À±½½ ´«»Í °­µµ!)
 
 public:
 	WATER_DESC()
-		: arrayTextureBase{}, vMI_TintColor{ 1.f,1.f,1.f,1.f }
+		: arrayTextureBase{}, vMI_TintColor{1.f,1.f,1.f,1.f }
+		, vSpeed1{ 1.f }, vSpeed2{1.f}
+		, vDistortionSpeed{1.f,1.f}
+		, fDistortionPower{1.f}
+		, vWaterUVPower{1.f,1.f}
+		, vDistortionUVPower{1.f,1.f}
+		, fSparklePower{1.f}
+		, vSparkleUVPower{1.f,1.f}
 	{
 		arrayTextureBase.fill(nullptr);
 	}

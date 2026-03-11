@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Xibi_Loop_Thunder.h"
-#include "EffectHandler.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 #include "GameInstance.h"
@@ -30,159 +29,65 @@ HRESULT CXibi_Loop_Thunder::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
-		return E_FAIL;
-
-	if (CPhysicsRigidBody* pRigidBody = Get_Component<CPhysicsRigidBody>())
-		pRigidBody->Awake();
-
-	if (CEffectHandler* pEffectHandler = Get_Component<CEffectHandler>())
-		pEffectHandler->Setup_ForOwner(this);
-
-	return S_OK;
-}
-
-HRESULT CXibi_Loop_Thunder::Awake(const _uint iCurrentLevelID)
-{
-	if (FAILED(Super::Awake(iCurrentLevelID)))
+	if (FAILED(Ready_Modules()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void CXibi_Loop_Thunder::Update_Priority(const _float fTimeDelta)
+HRESULT CXibi_Loop_Thunder::Ready_Modules()
 {
-	Super::Update_Priority(fTimeDelta);
-}
+	wstring wstrDefaultPrototypeTag = L"Prototype_GameObject_Effect";
 
-void CXibi_Loop_Thunder::Update(const _float fTimeDelta)
-{
-	Super::Update(fTimeDelta);
-}
-
-void CXibi_Loop_Thunder::Update_Late(const _float fTimeDelta)
-{
-	Super::Update_Late(fTimeDelta);
-}
-
-void CXibi_Loop_Thunder::Ready_Before_Render(const _float fTimeDelta)
-{
-	Super::Ready_Before_Render(fTimeDelta);
-#ifdef _DEBUG
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
-#endif
-}
-
-HRESULT CXibi_Loop_Thunder::Render()
-{
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-void CXibi_Loop_Thunder::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-
-}
-
-void CXibi_Loop_Thunder::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
-{
-}
-
-void CXibi_Loop_Thunder::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
-void CXibi_Loop_Thunder::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
-{
-	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
-}
-
-_bool CXibi_Loop_Thunder::On_Hit(const HIT_DESC& hitDesc)
-{
-	return true;
-}
-
-void CXibi_Loop_Thunder::Try_Attack(const HIT_DESC& hitDesc)
-{
-}
-
-HRESULT CXibi_Loop_Thunder::Ready_Components()
-{
-	// For. Component_EffectHandler
+	// Effect
 	{
-		CEffectHandler::ANIM_EFFECT_HANDLER_DESC Desc{};
-		CEffectHandler::STATE_VFX_DESC SkillDesc{};
-
-		// SPAWN EFFECT
+		// FLY
 		{
-			SkillDesc.EffectPrefabTag = "Boss_Xibi_Lightning";
-			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
-			SkillDesc.bFollowBone = { false };
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = { Vec3::Zero };
-			SkillDesc.vRotation = { Vec3::Zero };
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_SPAWN, SkillDesc);
+			if (FAILED(Add_EffectModule(
+				0 /* static */,
+				"Boss_Xibi_Lightning",
+				wstrDefaultPrototypeTag,
+				ENUM_TO_UINT(EState::FLY))))
+				return E_FAIL;
 		}
-
-		// Distory EFFECT
-		{
-			SkillDesc.EffectPrefabTag = "";
-			SkillDesc.pParentTransformMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-			SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
-			SkillDesc.bFollowBone = { false };
-			SkillDesc.iBoneIndex = -1;
-			SkillDesc.vOffSet = { Vec3::Zero };
-			SkillDesc.vRotation = { Vec3::Zero };
-			Desc.eType = CEffectHandler::E_HANDLER_TYPE::SKILL_OBJ;
-			Desc.mEffectState.emplace(CEffectHandler::E_OBJ_LIFECYCLE_STATE::ON_DESTROY, SkillDesc);
-		}
-
-		if (FAILED(Add_Component<CEffectHandler>(/*Static*/ 0, L"Prototype_Component_EffectHandler_SkillObject", &Desc)))
-			return E_FAIL;
 	}
-
-	// For. Component_PhysicsCollider
+	// Collider
 	{
-		/* 피직스 콜라이더 */
+		PHYSICSCOLLIDER_DESC colliderDesc{};
+		colliderDesc.eShape = EPhysicsShape::BOX;
+		colliderDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
+		//cloneDesc.bIsSkillTrigger = true;
+		colliderDesc.iFilterMask =
 		{
-			PHYSICSCOLLIDER_DESC cloneDesc{};
-			cloneDesc.eShape = EPhysicsShape::BOX;
-			cloneDesc.eFilterLayer = EPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
-			//cloneDesc.bIsSkillTrigger = true;
-			cloneDesc.iFilterMask =
-			{
-				PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::MAP
-			};
-			cloneDesc.bIsTrigger = true;
-			cloneDesc.bSetOnlyFilter = false;
-			cloneDesc.bIsActive = true;
-			cloneDesc.vCenter = { 0.f, 2.3f, 0.f };
-			cloneDesc.vExtents = { 0.3f, 4.f,0.3f };
-			cloneDesc.strAttackPresetTag = "Xibi_Thunder";
-			PHYSICSMATERIAL_DESC mtrlDesc{};
-			mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
-			cloneDesc.tMaterial = mtrlDesc;
-			if (FAILED(Add_Component<CPhysicsCollider>(/* static */ 0, L"Prototype_Component_Physics_Collider", &cloneDesc)))
+			PHYSICSFILTERGROUP::Enum::PLAYER
+			| PHYSICSFILTERGROUP::Enum::MAP
+		};
+		colliderDesc.bIsTrigger = true;
+		colliderDesc.bSetOnlyFilter = false;
+		colliderDesc.bIsActive = true;
+		colliderDesc.vCenter = { 0.f, 2.3f, 0.f };
+		colliderDesc.vExtents = { 0.3f, 4.f,0.3f };
+		colliderDesc.strAttackPresetTag = "Xibi_Thunder";
+		PHYSICSMATERIAL_DESC mtrlDesc{};
+		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
+		colliderDesc.tMaterial = mtrlDesc;
+
+		PHYSICSRIGIDBODY_DESC rigidbodyDesc{};
+		rigidbodyDesc.eType = EPhysicsActorType::KINEMATIC;
+		rigidbodyDesc.detection = EPhysicsCollisionDetection::DISCRETE;
+		rigidbodyDesc.bUseGravity = false;
+		rigidbodyDesc.bIsKinematic = true;
+
+		// IMPACT
+		{
+			if (FAILED(Add_CollideModule(
+				ENUM_TO_UINT(EState::FLY),
+				&colliderDesc,
+				&rigidbodyDesc)))
 				return E_FAIL;
 		}
 	}
 
-	// For. Component_PhysicsRigidBody
-	{
-		PHYSICSRIGIDBODY_DESC desc{};
-		desc.eType = EPhysicsActorType::KINEMATIC;
-		desc.detection = EPhysicsCollisionDetection::DISCRETE;
-		desc.bUseGravity = false;
-		desc.bIsKinematic = true;
-
-		if (FAILED(Add_Component<CPhysicsRigidBody>(/* static */ 0, L"Prototype_Component_Physics_RigidBody", &desc)))
-			return E_FAIL;
-	}
 	return S_OK;
 }
 

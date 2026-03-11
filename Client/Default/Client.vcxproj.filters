@@ -637,9 +637,6 @@
     <Filter Include="03. GameObject\HybridGameObject">
       <UniqueIdentifier>{4a97d26b-a7b1-4ded-aa95-e3e8e55b56c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\HybridGameObject\WarningSpace">
-      <UniqueIdentifier>{39cb2a67-010d-4046-a55d-2272b9069c31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. Level\Lianhuo">
       <UniqueIdentifier>{535bd167-aaf6-410f-87bd-a86b99f67c66}</UniqueIdentifier>
     </Filter>
@@ -673,6 +670,21 @@
     <Filter Include="03. GameObject\ContainerObjects\Camera">
       <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\HybridGameObject\SkillObject">
+      <UniqueIdentifier>{5aa36a99-3aec-48fa-afe7-263fd91b249d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\HybridGameObject\SkillObject\Projectile">
+      <UniqueIdentifier>{c6e44175-d510-4c6c-add1-64a9ae4223ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\HybridGameObject\SkillObject\Projectile\Pierce">
+      <UniqueIdentifier>{c224e9bb-24a0-424a-b8ce-767cffcf5f38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\HybridGameObject\SkillObject\WarningSpace">
+      <UniqueIdentifier>{39cb2a67-010d-4046-a55d-2272b9069c31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\SocektObject">
+      <UniqueIdentifier>{18b43d9c-ed3e-4109-85da-3382fa87dff4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -705,7 +717,7 @@
     <ClInclude Include="..\Public\Loader.h">
       <Filter>02. Level\Loading\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ColliderPart.h">
+    <ClInclude Include="..\Public\TriggerCollidePart.h">
       <Filter>03. GameObject\PartObjects\ColliderPart</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Weapon.h">
@@ -1213,9 +1225,6 @@
     <ClInclude Include="..\Public\Effect_WarningCircle.h">
       <Filter>03. GameObject\EffectObject\Parent_Effect\WarningCircle</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Hybrid_WarningSpace.h">
-      <Filter>03. GameObject\HybridGameObject\WarningSpace</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Level_Lianhuo.h">
       <Filter>02. Level\Lianhuo</Filter>
     </ClInclude>
@@ -1245,6 +1254,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\UITutorial_Pannel_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillProjectile.h">
+      <Filter>03. GameObject\HybridGameObject\SkillObject\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillPierceProjectile.h">
+      <Filter>03. GameObject\HybridGameObject\SkillObject\Projectile\Pierce</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SkillWarningSpace.h">
+      <Filter>03. GameObject\HybridGameObject\SkillObject\WarningSpace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SocketObject.h">
+      <Filter>03. GameObject\PartObjects\SocektObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1276,7 +1297,7 @@
     <ClCompile Include="..\Private\Loader.cpp">
       <Filter>02. Level\Loading\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ColliderPart.cpp">
+    <ClCompile Include="..\Private\TriggerCollidePart.cpp">
       <Filter>03. GameObject\PartObjects\ColliderPart</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp">
@@ -1778,9 +1799,6 @@
     <ClCompile Include="..\Private\Effect_WarningCircle.cpp">
       <Filter>03. GameObject\EffectObject\Parent_Effect\WarningCircle</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Hybrid_WarningSpace.cpp">
-      <Filter>03. GameObject\HybridGameObject\WarningSpace</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Level_Lianhuo.cpp">
       <Filter>02. Level\Lianhuo</Filter>
     </ClCompile>
@@ -1807,6 +1825,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\UITutorial_Pannel_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillProjectile.cpp">
+      <Filter>03. GameObject\HybridGameObject\SkillObject\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillPierceProjectile.cpp">
+      <Filter>03. GameObject\HybridGameObject\SkillObject\Projectile\Pierce</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SkillWarningSpace.cpp">
+      <Filter>03. GameObject\HybridGameObject\SkillObject\WarningSpace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SocketObject.cpp">
+      <Filter>03. GameObject\PartObjects\SocektObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -10,9 +10,8 @@
 #include "PlayerActionState.h"
 
 // manager
-#include "GameInstance.h"
 #include "ControlContext.h"
-#include "Engine_Utils.h"
+#include "GameInstance.h"
 
 CStateBase_Player::CStateBase_Player(CActionState* pOwnerComponent, const string& strName)
 	: Super(pOwnerComponent, strName)

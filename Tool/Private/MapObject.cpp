@@ -8,7 +8,6 @@
 #include "MapToolManager.h"
 #include "Bounds.h"
 #include "InstanceMesh.h"
-#include "Engine_Utils.h"
 #include "DataDocument_Map.h"
 #include "DataStruct_Map.h"
 #include "GameInstance.h"
@@ -1205,7 +1204,16 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
     Super::Ready_Before_Render(fTimeDelta);
 
     // m_eMapObjectState == CMapObject::EState::Select ?  RENDER_CATEGORY::NONELIGHT : 
-    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+
+    RENDER_CATEGORY eCategroy = RENDER_CATEGORY::NONEBLEND;
+
+    switch (m_eClientMakePath)
+    {
+    case Tool::EClientMakePath::Water:  eCategroy = RENDER_CATEGORY::COMPUTELIGHT_BLEND;  break;
+    default:                            break;
+    }
+
+    m_pGameInstance->Push_RenderObject(eCategroy, this);
 
 #ifdef _DEBUG
     //if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
@@ -1748,7 +1756,7 @@ HRESULT CMapObject::Render_Plants(_uint iPassIndex)
         CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)          return E_FAIL;
         CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)      return E_FAIL;
         /* 제일 앞에있는 친구의 Desc을 참고해서 해준다 모든애들을 가져올수없음 */
-        TREE_DESC* pTreeDesc = static_cast<TREE_DESC*>(m_vecClientMakePathDesc.front());    if (pTreeDesc == nullptr)       return E_FAIL;
+        PLANTS_DESC* pTreeDesc = static_cast<PLANTS_DESC*>(m_vecClientMakePathDesc.front());    if (pTreeDesc == nullptr)       return E_FAIL;
 
 
         pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
@@ -1778,7 +1786,7 @@ HRESULT CMapObject::Render_Plants(_uint iPassIndex)
         CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)              return E_FAIL;
         CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)          return E_FAIL;
         CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();                      if (pInstanceMesh == nullptr)       return E_FAIL;
-        TREE_DESC* pTreeDesc = static_cast<TREE_DESC*>(m_vecClientMakePathDesc.front());    if (pTreeDesc == nullptr)           return E_FAIL;
+        PLANTS_DESC* pTreeDesc = static_cast<PLANTS_DESC*>(m_vecClientMakePathDesc.front());    if (pTreeDesc == nullptr)           return E_FAIL;
 
         pShader->Get_Scalar("g_iSelectInstanceID")->SetRawValue(&m_iSelectedInstanceID, 0, sizeof(m_iSelectedInstanceID));
         _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
@@ -1816,7 +1824,93 @@ HRESULT CMapObject::Render_Plants(_uint iPassIndex)
 
 HRESULT CMapObject::Render_Grass()
 {
-    if (FAILED(Render_Plants(ENUM_TO_UINT(EMapObjectShaderPass::Grass))))
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
+    {
+
+        CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)         return E_FAIL;
+        CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)          return E_FAIL;
+        CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)      return E_FAIL;
+        /* 제일 앞에있는 친구의 Desc을 참고해서 해준다 모든애들을 가져올수없음 */
+        GRASS_DESC* pDesc = static_cast<GRASS_DESC*>(m_vecClientMakePathDesc.front());    if (pDesc == nullptr)       return E_FAIL;
+
+        CB_GrassData tData{};
+        tData.g_fGrassDT = m_fDT;
+
+        const Vec3* pMinMax = pModel->Get_StaticModelMinMax(); if (pMinMax == nullptr) return E_FAIL;
+        tData.g_fGrassMaxHeight = pMinMax[1].y;
+        tData.g_fGrassWaveSize = pDesc->fGrassWaveSize;
+        tData.g_fGrassSwaySpeed = pDesc->fGrassSwaySpeed;
+
+       
+        if (FAILED(pShader->Get_ConstantBuffer("CB_GrassData")->SetRawValue(&tData, 0, sizeof(CB_GrassData))))
+            return E_FAIL;
+
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+        /* Client Make Path를 이용한다 */
+        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));
+
+
+        if (FAILED(Set_GPU_MapObjectState(pShader)))
+            return E_FAIL;
+
+
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Set_MI_TintColor(i, pDesc->vMITint_Color);
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pShader->Apply();
+            pModel->Render(i);
+        }
+
+    }
+    else if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    {
+        CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)             return E_FAIL;
+        CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)              return E_FAIL;
+        CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)          return E_FAIL;
+        CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();                      if (pInstanceMesh == nullptr)       return E_FAIL;
+        GRASS_DESC* pDesc = static_cast<GRASS_DESC*>(m_vecClientMakePathDesc.front());      if (pDesc == nullptr)       return E_FAIL;
+
+        CB_GrassData tData{};
+        tData.g_fGrassDT = m_fDT;
+        const Vec3* pMinMax = pModel->Get_StaticModelMinMax(); if (pMinMax == nullptr) return E_FAIL;
+        tData.g_fGrassMaxHeight = pMinMax[1].y;
+
+        tData.g_fGrassWaveSize = pDesc->fGrassWaveSize;
+        tData.g_fGrassSwaySpeed = pDesc->fGrassSwaySpeed;
+
+        if (FAILED(pShader->Get_ConstantBuffer("CB_GrassData")->SetRawValue(&tData, 0, sizeof(CB_GrassData))))
+            return E_FAIL;
+
+
+        pShader->Get_Scalar("g_iSelectInstanceID")->SetRawValue(&m_iSelectedInstanceID, 0, sizeof(m_iSelectedInstanceID));
+        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+        _uint iInstanceCount = Get_InstanceCount();
+
+
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+
+        /* Client Make Path를 이용한다 */
+        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));
+
+        if (FAILED(Set_GPU_MapObjectState(pShader)))
+            return E_FAIL;
+
+        pInstanceMesh->Bind_Instance(1);
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Set_MI_TintColor(i, pDesc->vMITint_Color);
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pShader->Apply();
+            pModel->Render_Instance(i, iInstanceCount);
+        }
+        pInstanceMesh->Unbind_Resource(1);
+    }
+    else
         return E_FAIL;
 
     return S_OK;
@@ -1900,8 +1994,16 @@ HRESULT CMapObject::Render_Water()
         CB_WaterData tData{};
         tData.g_fWaterDT = m_fDT;
         tData.g_WaterTexBindingFlags = 0;
-        tData.g_vWaterSpeed1 = pDesc->vSpeed1;
-        tData.g_vWaterSpeed2 = pDesc->vSpeed2;
+        tData.g_vWaterSpeed1            = pDesc->vSpeed1;
+        tData.g_vWaterSpeed2            = pDesc->vSpeed2;
+
+        tData.g_vWaterUVPower           = pDesc->vWaterUVPower;
+
+        tData.g_vWaterDistortionSpeed   = pDesc->vDistortionSpeed;
+        tData.g_fDistortionPower        = pDesc->fDistortionPower;
+
+        tData.g_fSparklePower           = pDesc->fSparklePower;
+        tData.g_vSparkleUVPower         = pDesc->vSparkleUVPower;
 
         array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EWaterTextureType::END)>  arraySRVs;
         arraySRVs.fill(nullptr);
@@ -1922,7 +2024,8 @@ HRESULT CMapObject::Render_Water()
         pShader->Get_SRV(g_szWaterTexture)->SetResourceArray(&arraySRVs[0] , 0 , ENUM_TO_UINT(EWaterTextureType::END) );
 
         /* 월드 매트릭스 바인딩 */
-        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+        const Matrix& pMatrix = pTransform->Get_WorldMatrix();
+        pShader->Bind_TransformData(pMatrix);
 
         _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
 

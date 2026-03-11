@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Tool_Structs.h"
-#include "Engine_Utils.h"
 
 #pragma push_macro("new")
 #undef new
