@@ -6,6 +6,15 @@ NS_BEGIN(Client)
 class CBoss_Xibi final : public CMonster_Base
 {
 	using Super = CMonster_Base;
+public:
+	enum EStateForDirecting
+	{
+		Idle = 0,
+		Condemned_Die,
+		Condemned_End,
+		Direction,
+		COUNT
+	};
 private:
 	CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CBoss_Xibi(const CBoss_Xibi& rhs);
@@ -31,11 +40,14 @@ public:
 
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
-
+	HRESULT Change_State_ForDirecting(EStateForDirecting eState);
 private:
 	HRESULT Ready_Ability();
 	HRESULT Ready_Weapon();
 	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_StateIndexForDirecting();
+private:
+	array<_int, (size_t)EStateForDirecting::COUNT> m_arrStateIndex;
 
 public:
 	static CBoss_Xibi* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

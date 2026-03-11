@@ -55,7 +55,7 @@ HRESULT CXibi_Loop_Thunder::Ready_Modules()
 	{
 		PHYSICSCOLLIDER_DESC colliderDesc{};
 		colliderDesc.eShape = EPhysicsShape::BOX;
-		colliderDesc.eFilterLayer = tagPhysicsFilterGroup::MONSTER_SKILL_PROJECTTILE;
+		colliderDesc.eFilterLayer = PHYSICSFILTERGROUP::MONSTER_SKILL_PROJECTTILE;
 		//cloneDesc.bIsSkillTrigger = true;
 		colliderDesc.iFilterMask =
 		{

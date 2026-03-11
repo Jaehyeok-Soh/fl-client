@@ -139,8 +139,8 @@ void CSkillBase_MoonQ::Spawn_Attack_SkillObj(CMyStat* pOwnerStat)
 {
 	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
 	CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
-	desc.iLevelIndex = iLevelIndex;
-	desc.iSpawnLevelIndex = iLevelIndex;
+	desc.iLevelIndex			= iLevelIndex;
+	desc.iSpawnLevelIndex		= iLevelIndex;
 
 	CTransform* pPlayerTrans = pOwnerStat->Get_Owner()->Get_Component<CTransform>();
 

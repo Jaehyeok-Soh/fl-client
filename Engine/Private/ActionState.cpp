@@ -172,6 +172,14 @@ const char* CActionState::Get_CurrentStateName() const
 	return m_vecStates[m_iCurrentState]->Get_Name();
 }
 
+CModelAnimation* CActionState::Get_CurrentAnimation()
+{
+	if (!m_pOwnerModel)
+		return nullptr;
+
+	return m_pOwnerModel->Get_CurrentAnimation();
+}
+
 void CActionState::Set_ZeroVelocity()
 {
 	CPhysicsCCT* cct = { nullptr };
@@ -295,6 +303,31 @@ void CActionState::SetCCTImpuls(Vec3 vImpuls)
 	CPhysicsCCT* cct = { nullptr };
 	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
 		cct->SetImpulsAccelation(vImpuls);
+}
+
+void CActionState::SetCCTImpuls_Conversion(Vec3 vLocal)
+{
+	CPhysicsCCT* cct = m_pOwner->Get_Component<CPhysicsCCT>();
+	if (cct == nullptr)
+		return;
+
+	CTransform* pTransform = m_pOwner->Get_Component<CTransform>();
+	Matrix matWorld = pTransform->Get_WorldMatrix();
+
+	Vec3 vRight = matWorld.Right();
+	Vec3 vLook = matWorld.Forward();
+
+	vRight.y = 0.f;
+	vLook.y = 0.f;
+
+	vRight.Normalize();
+	vLook.Normalize();
+
+	Vec3 vGlobalUp = Vec3(0.f, 1.f, 0.f);
+
+	Vec3 vImpuls = (vRight * vLocal.x) + (vGlobalUp * vLocal.y) + (vLook * vLocal.z);
+
+	cct->SetImpulsAccelation(vImpuls);
 }
 
 HRESULT CActionState::Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx)
@@ -524,20 +557,20 @@ void CActionState::SetupLook_CameraLookLerp(const _float fTimeDelta, _float fLer
 
 void CActionState::SetupLook_CameraSameLook()
 {
-	//if (!m_pOwnerTargetCamera)
-	//{
-	//	if (!(m_pOwnerTargetCamera = Get_Owner()->Get_CameraTargeter()))
-	//		return;
-	//}
-	//Vec3 vTarget = m_pOwnerTargetCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	//_float fPitch = asin(vTarget.y);
-	//vTarget.y = 0.f;
-	//vTarget.Normalize();
+	if (!m_pOwnerTargetCamera)
+	{
+		if (!(m_pOwnerTargetCamera = Get_Owner()->Get_CameraTargeter()))
+			return;
+	}
+	Vec3 vTarget = m_pOwnerTargetCamera->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	_float fPitch = asin(vTarget.y);
+	vTarget.y = 0.f;
+	vTarget.Normalize();
 
-	//_float fRadian = std::atan2(vTarget.x, vTarget.z);
+	_float fRadian = std::atan2(vTarget.x, vTarget.z);
 
-	//m_pOwnerTransform->Rotation(Vec3::Up, fRadian);
-	//m_pOwnerTransform->Rotation(TRANSFORM_INFO_STATE::RIGHT, fPitch);
+	m_pOwnerTransform->Rotation(Vec3::Up, fRadian);
+	m_pOwnerTransform->Rotation(TRANSFORM_INFO_STATE::RIGHT, fPitch);
 }
 
 void CActionState::SetupLookAt(const Vec3& vPoint)

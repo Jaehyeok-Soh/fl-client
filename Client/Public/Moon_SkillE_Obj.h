@@ -15,9 +15,11 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
-	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
+	virtual void Handle_Hit(_uint iMyLayer, _uint iOtherLayer, Engine::CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
+
 private:
 	HRESULT Ready_Modules();
+
 public:
 	static CMoon_SkillE_Obj* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

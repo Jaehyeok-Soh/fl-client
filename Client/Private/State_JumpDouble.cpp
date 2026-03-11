@@ -31,6 +31,7 @@ HRESULT CState_JumpDouble::Start(void* pArg, _bool bForce)
 
 	Set_ApplyGravity(false);
 	Set_ZeroVerticalVelocity();
+	Jump_Impuls(0.3f);
 
 	return S_OK;
 }

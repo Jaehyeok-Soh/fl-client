@@ -69,6 +69,20 @@ EGroggyState CStatCom_Boss::Sub_Groggy(_float fValue)
 	return EGroggyState::None;
 }
 
+void CStatCom_Boss::Sub_Hp(_float fHealth)
+{
+	m_vHealth.x += fHealth;
+
+	if (m_vHealth.x < 0)
+		m_vHealth.x = 0;
+	else if ((m_vHealth.x / m_vHealth.y <= 0.5f))
+	{
+		CMonsterControlContext* pCC = Get_Owner()->Get_Component<CMonsterControlContext>();
+		if (pCC!= nullptr && pCC->IsPhaseTwo() == false)
+			pCC->Set_PhaseTwo();
+	}
+}
+
 void CStatCom_Boss::Reset_GroggyStats()
 {
 	Engine_Utils::RemoveHard_Flag(m_iGroggyFlag, ENUM_TO_UINT(EGroggyState::Final));

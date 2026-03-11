@@ -33,18 +33,20 @@ HRESULT CState_JumpWall::Start(void* pArg, _bool bForce)
 
 	Set_ApplyGravity(false);
 
-	// 03/05 ¼ÒÀçÇõ Ãß°¡
-	{
-		CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+	//// 03/05 ¼ÒÀçÇõ Ãß°¡
+	//{
+	//	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+	//	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
-		Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
+	//	Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
 
-		Vec3 accelation = vUp;
+	//	Vec3 accelation = vUp;
 
-		SetCCTImpuls(accelation);
-		Set_ZeroVerticalVelocity();
-	}
+	//	SetCCTImpuls(accelation);
+	//	Set_ZeroVerticalVelocity();
+	//}
+	Jump_Impuls(0.5f);
+	Set_ZeroVerticalVelocity();
 
 	return S_OK;
 }

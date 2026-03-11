@@ -4,6 +4,8 @@
 
 NS_BEGIN(Client)
 class CStatCom_Player;
+class CUIIcon_Component;
+
 class CUIMiniMap_Monster_Icon final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
@@ -40,11 +42,11 @@ private:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 
-	void Proj_World_To_Screen(const Vec3& vLook);
 	void Rotate_MonsterIcon();
+
 private:
 	CGameObject* m_pTarget = { nullptr };
-	CGameObject* m_pPlayer = { nullptr };
+	CUIIcon_Component* m_pTargetIconComp = { nullptr };
 
 	_bool m_isSpawned = { false };
 	_float m_fRadian = {};

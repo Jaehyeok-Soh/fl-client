@@ -33,18 +33,22 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 
 	Set_ApplyGravity(false);
 
-	CStateBase::SetupLook_CameraLook();
+	CStateBase::SetupLook_CameraSameLook();
 
 	// 03/05 ¼ÒÀçÇõ Ãß°¡
 	{
-		CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+		CTransform* pCamTransform = Get_CamTransform();
+		CTransform* pPlayerTransform = Get_OwnerObject()->Get_Component<CTransform>();
 		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
-		Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+		Vec3 vLook = (pCamTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+		Vec3 vPos = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-		Vec3 accelation = vLook;
+		pPlayerTransform->Look_At(vPos + vLook);
 
-		SetCCTImpuls(accelation * 5.f);
+		m_vDir = vLook;
+		SetCCTInputDirection(m_vDir);
+		SetCCTImpuls(m_vDir * 5.f);
 
 		// ¸¶ÂûÀ» ¾ø¾ÖÁÜ
 		Set_ZeroDeAccelRate();
@@ -59,6 +63,8 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 
 	if (Get_AnimElpasedTimeSeconds() > 0.8f)
 	{
+		CStateBase::SetupLook_CameraLookLerp(fTimeDelta,10.f);
+
 		Set_ApplyGravity(true);
 
 		Set_RootMotion_Apply(false);
@@ -70,6 +76,11 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 			return;
 		}
 	}
+
+	//else
+	//{
+	//	Move(m_vDir * 10.f);
+	//}
 }
 
 HRESULT CState_JumpBullet::End()
@@ -79,6 +90,8 @@ HRESULT CState_JumpBullet::End()
 
 	Set_ApplyGravity(true);
 	Reset_DeAccelRate();
+
+	CStateBase::SetupLook_CameraLook();
 
 	return S_OK;
 }

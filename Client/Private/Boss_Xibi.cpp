@@ -13,6 +13,7 @@
 #include "Weapon.h"
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "UIIcon_Component.h"
 #include "MyStat.h"
 
 CBoss_Xibi::CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -26,6 +27,7 @@ CBoss_Xibi::CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 CBoss_Xibi::CBoss_Xibi(const CBoss_Xibi& rhs)
 	: Super(rhs)
 {
+	m_arrStateIndex.fill(-1);
 }
 
 HRESULT CBoss_Xibi::Initialize_Prototype()
@@ -55,6 +57,9 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 	if (FAILED(Get_Component<CGimmikController>()->Bind_Events()))
 		return E_FAIL;
 
+	if (FAILED(Ready_StateIndexForDirecting()))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -72,31 +77,41 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 
 	{
 		UI_PREFAB_DATA ePrefabData = {};
-		ePrefabData.pTarget = this;
+		UI_BOSS_NAMEPLATE_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		ePrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
 	}
+
+	if (FAILED(Change_State_ForDirecting(EStateForDirecting::Idle)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CBoss_Xibi::Update_Priority(const _float fTimeDelta)
 {
-	Super::Update_Priority(fTimeDelta);
+	const _float fLocalTimeDelta = Get_Component<CMonsterControlContext>()->IsPhaseTwo() == true ? fTimeDelta * 1.4f : fTimeDelta;
+	Super::Update_Priority(fLocalTimeDelta);
 }
 
 void CBoss_Xibi::Update(const _float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
-	Get_Component<CXibi_GimmikController>()->Update(fTimeDelta);
+	const _float fLocalTimeDelta = Get_Component<CMonsterControlContext>()->IsPhaseTwo() == true ? fTimeDelta * 1.4f : fTimeDelta;
+	Super::Update(fLocalTimeDelta);
+	Get_Component<CXibi_GimmikController>()->Update(fLocalTimeDelta);
 }
 
 void CBoss_Xibi::Update_Late(const _float fTimeDelta)
 {
-	Super::Update_Late(fTimeDelta);
+	const _float fLocalTimeDelta = Get_Component<CMonsterControlContext>()->IsPhaseTwo() == true ? fTimeDelta * 1.4f : fTimeDelta;
+	Super::Update_Late(fLocalTimeDelta);
 }
 
 void CBoss_Xibi::Ready_Before_Render(const _float fTimeDelta)
 {
-	Super::Ready_Before_Render(fTimeDelta);
+	const _float fLocalTimeDelta = Get_Component<CMonsterControlContext>()->IsPhaseTwo() == true ? fTimeDelta * 1.4f : fTimeDelta;
+	Super::Ready_Before_Render(fLocalTimeDelta);
 }
 
 HRESULT CBoss_Xibi::Render()
@@ -154,9 +169,9 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 	if (result == true)
 	{
 		EGroggyState eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
-		if (eGroggy == EGroggyState::None)
-			return result;
-		Get_Component<CMonsterControlContext>()->Set_Groggy(eGroggy);
+		if (eGroggy != EGroggyState::None)
+			if (_bool bSucess = Get_Component<CMonsterControlContext>()->Set_Groggy(eGroggy))
+				m_pGameInstance->Broadcast<BOSS_GROGGY>();
 	}
 	return result;
 }
@@ -166,14 +181,31 @@ void CBoss_Xibi::Try_Attack(const HIT_DESC& hitDesc)
 	Super::Try_Attack(hitDesc);
 }
 
+HRESULT CBoss_Xibi::Change_State_ForDirecting(EStateForDirecting eState)
+{
+	if (eState < 0 || eState >= COUNT)
+		return E_FAIL;
+
+	CActionState* pActionState = Get_Component<CActionState>();
+	if (pActionState == nullptr)
+		return E_FAIL;
+
+	if (FAILED(pActionState->Change_State(m_arrStateIndex[eState], true)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CBoss_Xibi::Ready_Ability()
 {
-	CMyStat::STAT_DESC desc = {};
+	CStatCom_Boss::BOSS_STAT_DESC desc = {};
+	desc.fCriticalAttack = 30.f;
+	desc.fCriticalRate = 0.4f;
 	desc.fMaxHp = 3000.f;
-	desc.fDefense = 1000.f;
-	desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
+	desc.FStatFlags = CMyStat::StatFlags::None;
+	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 
-	if (FAILED(Add_Component<CMyStat>(0/* STATIC */, L"Prototype_Component_Stat", &desc)))
+	if (FAILED(Add_Component<CStatCom_Boss>(0 /*static*/, L"Prototype_Component_Stat_Boss", &desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -252,17 +284,38 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
-	// BossStat
 	{
-		CStatCom_Boss::BOSS_STAT_DESC desc{};
-		desc.fCriticalAttack = 30.f;
-		desc.fCriticalRate = 0.4f;
-		desc.fMaxHp = 200000.f;
-		desc.FStatFlags = CMyStat::StatFlags::None;
-		desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
-		if (FAILED(Add_Component<CStatCom_Boss>(0 /*static*/, L"Prototype_Component_Stat_Boss", &desc)))
+		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CBoss_Xibi::Ready_StateIndexForDirecting()
+{
+	CMonsterActionState *pActionState = Get_Component<CMonsterActionState>();
+	if (pActionState == nullptr)
+		return E_FAIL;
+
+	auto setStateIndex = [&](_uint iStateIndex, const string& strStateName)->_bool
+		{
+			_uint iIndex = pActionState->Get_StateIndex(strStateName);
+			if (iIndex < 0)
+				return false;
+			m_arrStateIndex[iStateIndex] = iIndex;
+			return true;
+		};
+
+	if (setStateIndex(EStateForDirecting::Idle, "Idle") == false)
+		return E_FAIL;
+	if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemned_Die") == false)
+		return E_FAIL;
+	if (setStateIndex(EStateForDirecting::Condemned_End, "Condemned_End") == false)
+		return E_FAIL;
+	if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
+		return E_FAIL;
 
 	return S_OK;
 }

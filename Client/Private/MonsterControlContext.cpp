@@ -2,10 +2,13 @@
 #include "MonsterControlContext.h"
 #include "Client_Defines.h"
 #include "Monster_Base.h"
+#include "MyStat.h"
 #include "MonsterActionState.h"
 #include "PhysicsCCT.h"
+#include "PhysicsRagdoll.h"
+#include "Engine_Utils.h"
 #include "GameInstance.h"
-
+#include "Monster_Body_Base.h"
 
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
@@ -46,6 +49,10 @@ HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 	if (m_pTarget != nullptr)
 		Safe_AddRef(m_pTarget);
 	m_iSubState = 0;
+
+	m_iOwnerID = Get_Owner()->Get_ID();
+
+	m_bPhaseTwo = false;
 	return S_OK;
 }
 
@@ -145,14 +152,6 @@ Vec3 CMonsterControlContext::Get_MoveDir()
 	return m_vMoveDir;
 }
 
-void CMonsterControlContext::Set_Dead()
-{
-	if (IsDeadProcessing())
-		return;
-
-	m_iSubState |= SUB_STATE::DEAD;
-}
-
 _bool CMonsterControlContext::Set_Groggy(EGroggyState eState, _bool bRequest, _float fGroggyDuration)
 {
 	const _bool bAleradyRequested = Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ);
@@ -195,11 +194,6 @@ _bool CMonsterControlContext::IsTargetFOV()
 }
 
 _bool CMonsterControlContext::IsCliffAhead()
-{
-	return _bool();
-}
-
-_bool CMonsterControlContext::IsPhaseTwo()
 {
 	return _bool();
 }
@@ -264,21 +258,14 @@ _bool CMonsterControlContext::IsHitKnockdown()
 	return result;
 }
 
-_bool CMonsterControlContext::IsDead()
+_bool CMonsterControlContext::IsAlive()
 {
-	_bool result = m_iSubState & SUB_STATE::DEAD;
-	return result;
+	return Get_Owner()->IsAlive();
 }
 
-_bool CMonsterControlContext::IsDeadProcessing()
+_bool CMonsterControlContext::IsDying()
 {
-	_bool result = m_iSubState & SUB_STATE::DEAD_PROCESS;
-	return result;
-}
-
-_bool CMonsterControlContext::IsDamageRecently()
-{
-	return _bool();
+	return Get_Owner()->IsDying();
 }
 
 _bool CMonsterControlContext::IsComboPossible()
@@ -394,6 +381,33 @@ void CMonsterControlContext::Set_CCT_Collision_Disable()
 void CMonsterControlContext::Set_CCT_Collision_Enable()
 {
 	Get_Owner()->Get_Component<CPhysicsCCT>()->EnableCollision(true);
+}
+
+//struct Part
+//{
+//	enum Enum : _uint
+//	{
+//		BODY = 0,
+//		SWORD,
+//		GUN,
+//		END
+//	};
+//};
+
+void CMonsterControlContext::Set_On_Ragdoll()
+{
+	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
+	auto pRagdoll = body->Get_Component<CPhysicsRagdoll>();
+	if (pRagdoll)
+		m_pGameInstance->RagdollRequestStart(body->Get_ID());
+}
+
+void CMonsterControlContext::Set_Off_Ragdoll()
+{
+	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
+	auto pRagdoll = body->Get_Component<CPhysicsRagdoll>();
+	if (pRagdoll)
+		m_pGameInstance->RagdollFinish(body->Get_ID());
 }
 
 void CMonsterControlContext::Clear_RuntimeDesc()

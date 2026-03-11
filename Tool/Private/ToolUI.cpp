@@ -397,6 +397,7 @@ void CToolUI::Sync_TextData()
 	m_tUITextData.ePivot		= m_ePivot_TextData;
 	m_tUITextData.strFontTag	= m_strFontName_TextData;
 	m_tUITextData.fScale		= m_fScale_TextData;
+	m_tUITextData.iParam0		= m_iTextParam0;
 }
 
 void CToolUI::Sync_DImageData()

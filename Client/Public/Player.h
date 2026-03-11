@@ -34,11 +34,15 @@ public:
 	enum Part : _uint
 	{
 		BODY = 0,
+
+		// weapon
 		SWORD,
 		SKILL,
 		GUN,
 		SWORD2,
+
 		EFFECT,
+		DETECTCOLLIDER, // 몬스터 감지용 collider
 		CLOAK,
 		END
 	};
@@ -92,6 +96,8 @@ public:
 		,HITFLYEND
 		,HITSTRONG
 
+		,CONDEMN
+
 		,END
 	};
 protected:
@@ -131,6 +137,9 @@ public:
 	void	Change_CamState(_uint iCamState);
 	_float	Get_CamPitch()const;
 
+	void	Set_FKeyEvent(_uint iEvenet, _bool bOn); // f event 활성화 onoff
+	const Vec3& Get_CollidedMonster_Position();
+
 public:
 	_bool	Start_Attack(State iState);
 	void	End_Attack(State iState);
@@ -141,15 +150,17 @@ protected:
 protected:
 	TIME_COUNTER	m_tDoubleJumpCount = {};
 	PLAYER_TYPE		m_ePlayerType = { PLAYER_TYPE::END };
+	_bool			m_bMainPlayer = { false };
 
 private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_HitStates();
 	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT Ready_Components(PLAYER_DESC* pDesc);
+	HRESULT Ready_PartCollider();
 
 private:
-	void Count_DoubleJump(const _float fTimeDelta);
+	void	Count_DoubleJump(const _float fTimeDelta);
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

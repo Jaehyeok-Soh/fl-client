@@ -351,6 +351,8 @@ public:
 #pragma region PHYSICS_MODULE
 	void StepPhysics(_float fTimeDelta);
 	void AddActor(PxRigidActor* actor);
+	void AddRagdoll(PxArticulationReducedCoordinate* pArticulation);
+	void RemoveRagdoll(PxArticulationReducedCoordinate* pArticulation);
 	void ClearPhysics();
 	void FlushScene();
 	void RemoveActor(PxRigidActor* actor);
@@ -368,10 +370,12 @@ public:
 	PxCollection* SerializeConvexMesh(std::filesystem::path path);
 	void SerializeLevel(std::filesystem::path path) {}
 	void DeserializeLevel(std::filesystem::path path) {}
+	PxMaterial* GetPhysicsMaterial(EPhysicsMaterial eMaterial);
 	vector<PxShape*> GetShape(PHYSICSCOLLIDER_DESC* pDesc);
 	vector<PxShape*> GetMeshShape(PHYSICSCOLLIDER_DESC* pDesc);
 	vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
 	vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
+	RAGDOLLELEMENTS CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc);
 	PxController* GetController(PHYSICSCCT_DESC* pDesc);
 	class CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
@@ -380,6 +384,13 @@ public:
 	void Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc);
 	void Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc);
 	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
+
+	_bool CheckRagdollState(int64 objID);
+	void RagdollRegister(CGameObject* obj);
+	void RagdollUnregister(int64 objID);
+	void RagdollRequestStart(uint64 objID);
+	void RagdollSyncStates(uint64 objID, vector<class CChannel*>& vecChannels);
+	void RagdollFinish(uint64 objID);
 #ifdef _DEBUG
 	void Physics_Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
 	void Physics_Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);

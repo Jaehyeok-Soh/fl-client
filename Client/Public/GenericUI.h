@@ -61,7 +61,7 @@ protected:
 	// 끝에서 천천히 isEaseOut = true / 끝에서 빠르게 isEaseOut = false
 	void Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay, _bool isEaseOut = false);
 	void Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
-	void Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay);
+	void Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay, _bool isEaseOut = false);
 	_bool Tick_Lerp_Movement(const _float fTimeDelta);
 	_bool Tick_Fade(const _float fTimeDelta);
 	_bool Tick_LerpChange(_float* p, const _float fTimeDelta);
@@ -141,6 +141,7 @@ private:
 	_float m_fLerpChange_StartValue				= {};
 	_float m_fLerpChange_TargetValue			= {};
 	_float m_fLerpChange_EaseValue				= {};
+	_bool m_isLerpChange_EaseOut				= { false };
 
 public:
 	virtual void Free()override;

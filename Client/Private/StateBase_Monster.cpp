@@ -185,7 +185,7 @@ _bool CStateBase_Monster::IsCooldownTimeSatisfy()
 	if (!m_tStateCoolDownTime.bCountTime)
 		return true;
 
-	return m_tStateCoolDownTime.fTimeAcc == m_tStateCoolDownTime.fMaxTime;
+	return m_tStateCoolDownTime.fTimeAcc >= m_tStateCoolDownTime.fMaxTime;
 }
 
 _bool CStateBase_Monster::Has_ChangeState(_int eKey)

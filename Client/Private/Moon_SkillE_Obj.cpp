@@ -46,27 +46,30 @@ HRESULT CMoon_SkillE_Obj::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-void CMoon_SkillE_Obj::Try_Attack(const HIT_DESC& hitDesc)
+void CMoon_SkillE_Obj::Handle_Hit(_uint iMyLayer, _uint iOtherLayer, Engine::CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	// damage 폰트 : iDamageFlag에 따라 크리티컬 || 일반 판정
-
-	// 일반 공격 데미지 폰트
+	if (iOtherLayer == PHYSICSFILTERGROUP::Enum::MAP)
 	{
-		Vec3 vPos =  Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-		vPos.y += 0.5f;
-
-		UI_PREFAB_DATA tPrefabData = {};
-		tPrefabData.DamageFontData.iDamage		= static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-		tPrefabData.DamageFontData.vFontColor	= Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
-		tPrefabData.DamageFontData.vHitPos = vPos; // 데미지 폰트를 띄울 World 위치 // 
-		tPrefabData.DamageFontData.vRandOffset = Vec3{
-			m_pGameInstance->Rand_Float(-1.f, 1.f),
-			m_pGameInstance->Rand_Float(-1.f, 1.f),
-			m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
-
-		CUI_Manager::GetInstance()->Request_Add_Prefab(
-			m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		Set_Dead();
+		return;
 	}
+
+	COLLIDED_DESC desc{};
+	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	desc.iRequesterLayer = iMyLayer;
+	desc.iOtherLayer = iOtherLayer;
+	desc.pRequester = this;
+	desc.pOther = pOther;
+	desc.tHitInfo = tHitInfo;
+
+	EXTRA_ATTACK_DESC tExtra = {};
+	{
+		tExtra.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::MOON) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE);
+
+		desc.tExtraDesc = tExtra;
+	}
+
+	m_pGameInstance->Push_CollidedData(desc);
 }
 
 HRESULT CMoon_SkillE_Obj::Ready_Modules()
@@ -89,7 +92,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Modules()
 	{
 		PHYSICSCOLLIDER_DESC colliderDesc{};
 		colliderDesc.eShape = EPhysicsShape::BOX;
-		colliderDesc.eFilterLayer = tagPhysicsFilterGroup::ATTACK;
+		colliderDesc.eFilterLayer = PHYSICSFILTERGROUP::ATTACK;
 		//cloneDesc.bIsSkillTrigger = true;
 		colliderDesc.iFilterMask =
 		{
@@ -101,7 +104,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Modules()
 		colliderDesc.bSetOnlyFilter = false;
 		colliderDesc.bIsActive = true;
 		colliderDesc.vCenter = { 0.f, 0.3f, 0.f };
-		colliderDesc.vExtents = { 0.3f, 1.f,0.3f };
+		colliderDesc.vExtents = { 1.f, 4.f,1.f };
 		colliderDesc.strAttackPresetTag = "MoonSkill_E";
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;

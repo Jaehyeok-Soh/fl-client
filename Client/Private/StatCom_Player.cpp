@@ -84,10 +84,11 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	m_tExtra_AttackDesc.fAddRate = 0.f;
 	m_tExtra_AttackDesc.fRandomAdd_Rate = 0.f;
 	m_tExtra_AttackDesc.fRandomMul_Rate = 0.f;
-	m_tExtra_AttackDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);
 	m_tExtra_AttackDesc.vFinalDamege_MinMax = Vec2::Zero;
 	m_tExtra_AttackDesc.vRandomAdd_MinMax = Vec2::Zero;
 	m_tExtra_AttackDesc.vRandomMul_MinMax = Vec2::Zero;
+
+	m_tExtra_AttackDesc.iDamageFlag = 0;
 
 	// skill에서 set으로 값을 먼저 설정하고
 	// skill 이 켜져 있다면 안에서 값 수정 하도록 설정
@@ -107,14 +108,19 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	if (m_fCriticalRate + m_fCirticalRate_Add > 1.f ||
 		m_fCriticalRate + m_fCirticalRate_Add >= m_pGameInstance->Rand_Float(0.f, 1.f))
 	{
-		m_tExtra_AttackDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
+		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
 
 		// critical은 일단 더하기로 하는걸로
 		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
 	}
 
-	m_tExtra_AttackDesc.fRandomAdd_Rate += 0.3f;
-	m_tExtra_AttackDesc.vRandomAdd_MinMax = { -3.f,3.f };
+	else
+	{
+		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);
+	}
+
+	m_tExtra_AttackDesc.fRandomAdd_Rate		+= 0.5f;
+	m_tExtra_AttackDesc.vRandomAdd_MinMax	= { -3.f,3.f };
 
 	// 연산 순서 : 우선은 stat 복사 생성시 desc으로 받도록 하자
 	// 좀 복잡해진다면 flag mask 검사후 order 지정
@@ -124,6 +130,8 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 	case CPlayer::PLAYER_TYPE::MOON:
 		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::MOON);
 		break;
+	default:
+		int a = 0;
 	}
 
 	return m_tExtra_AttackDesc;

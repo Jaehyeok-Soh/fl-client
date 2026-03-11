@@ -19,7 +19,7 @@ PxQueryHitType::Enum CPhysics_QueryFilterCallback::preFilter(const PxFilterData&
 		return PxQueryHitType::eNONE;
 
 	CGameObject* pTarget = static_cast<CGameObject*>(actor->userData);
-	if (pTarget && pTarget->IsDead())
+	if (pTarget && !pTarget->IsAlive())
 		return PxQueryHitType::eNONE;
 
 	PxFilterData shapeFilter = shape->getQueryFilterData();

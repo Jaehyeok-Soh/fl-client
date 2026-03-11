@@ -20,6 +20,9 @@ public:
 protected:
 	virtual void Set_NextStateDesc(_uint iNextState) override;
 
+private:
+	Vec3 m_vDir = { Vec3::Zero };
+
 public:
 	static CState_JumpBullet* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
