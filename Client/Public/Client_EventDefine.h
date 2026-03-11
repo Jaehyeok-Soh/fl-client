@@ -40,4 +40,7 @@ struct BOSS_GROGGY { using Signature = void(); }; // 약점 노출
 
 struct GUN_ON_HIT { using Signature = void(); };	// 총알을 적중했을 때  
 
+struct TUTORIAL_POPUP_TRIGGER{ using Signature = void(EUITutorialPopUpTypeID ID); }; // 튜토리얼 팝업 띄우기
+struct TUTORIAL_POPUP_CLEAR{ using Signature = void(EUITutorialPopUpTypeID ID); }; // 튜토리얼 팝업 내리고 클리어 띄우기
+
 #pragma endregion

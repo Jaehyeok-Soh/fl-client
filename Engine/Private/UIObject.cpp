@@ -146,8 +146,14 @@ void CUIObject::Update_Late(const _float fTimeDelta)
 
 	if (m_isPlaying_VisibleEvent)
 	{
-		if (m_isVisibleTrigger)	m_isPlaying_VisibleEvent = !Tick_Visible_Event(fTimeDelta);
-		else					m_isPlaying_VisibleEvent = !Tick_InVisible_Event(fTimeDelta);
+		if (m_isVisibleTrigger)
+		{
+			m_isPlaying_VisibleEvent = !Tick_Visible_Event(fTimeDelta);
+		}
+		else
+		{
+			m_isPlaying_VisibleEvent = !Tick_InVisible_Event(fTimeDelta);
+		}
 
 		if (!m_isVisibleTrigger && !m_isPlaying_VisibleEvent)
 		{

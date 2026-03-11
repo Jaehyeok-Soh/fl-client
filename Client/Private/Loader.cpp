@@ -139,6 +139,8 @@
 #include "UIBossAction_Text.h"
 #include "UIWeakness_Text.h"
 #include "UITutorial_Pannel_Text.h"
+#include "UITutorial_PopUp_Text.h"
+#include "UITutorial_PopUp_Clear_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -157,6 +159,8 @@
 #include "UIBossAction_Image.h"
 #include "UIWeakness_Image.h"
 #include "UITutorial_Pannel_Image.h"
+#include "UITutorial_PopUp_Image.h"
+#include "UITutorial_PopUp_Clear_Image.h"
 //=================
 // Resource
 //=================
@@ -767,6 +771,10 @@ HRESULT CLoader::Loading_For_Logo()
 	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelImage",		CUITutorial_Pannel_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelText",		CUITutorial_Pannel_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpImage",		CUITutorial_PopUp_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpText",		CUITutorial_PopUp_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearImage",	CUITutorial_PopUp_Clear_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearText",	CUITutorial_PopUp_Clear_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;

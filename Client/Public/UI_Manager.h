@@ -11,7 +11,6 @@ class CCanvas;
 class CGenericUI;
 class CUITrigger;
 class CUIPrefab;
-class CUITutorial_Manager;
 
 enum class EUIEventID {
 	MENU_ENTER_ICON_HOVER_ENTER, 
@@ -26,6 +25,9 @@ enum class EUIEventID {
 	WEAKNESS_FIN, // 약점대비 이벤트가 끝났을 때 다같이 없애려고 
 	
 	TUTORIAL_PANNEL_START,	// 튜토리얼 패널 나왔을 때 
+
+	TUTORIAL_POPUP_EVENT1,	// V 표시 서클 다 채워졌을 때	// 내부 이벤트
+	TUTORIAL_POPUP_EVENT2,	// 이벤트 다 끝났을 때			// 내부 이벤트
 
 	END
 };
@@ -65,7 +67,8 @@ private:
 	CMulticastDelegate<void(const UIEVENT_DESC&)> m_vEvents = {};
 
 private:
-	CUITutorial_Manager* m_pTutorialManager = { nullptr };
+	class CUITutorial_Manager* m_pTutorialManager = { nullptr };
+	class CUIMinimap_Manager* m_pMinimapManager = { nullptr };
 
 private:
 	// UI 전달 변수 

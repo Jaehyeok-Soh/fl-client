@@ -676,6 +676,21 @@
     <Filter Include="03. GameObject\UIObjects\00.Manager\00.Tutorial Manager">
       <UniqueIdentifier>{dba795a0-d055-4e45-bd0d-357e9544dfe3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\Pannel">
+      <UniqueIdentifier>{788b45e8-c51d-473c-a5ed-f8d52a90ac4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp">
+      <UniqueIdentifier>{25e2a233-e7f7-4563-a572-f106fac280f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\Pannel">
+      <UniqueIdentifier>{0e249d57-e22d-4908-969a-70de9299ef04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp">
+      <UniqueIdentifier>{cde727db-6845-48a6-aeed-98cf05c11225}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\00.Manager\01.Minimap Manager">
+      <UniqueIdentifier>{6c9a8bf9-b442-48de-a00f-913c231209ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1243,14 +1258,29 @@
     <ClInclude Include="..\Public\UIWeakness_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UITutorial_Pannel_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UITutorial_Pannel_Image.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UITutorial_Manager.h">
       <Filter>03. GameObject\UIObjects\00.Manager\00.Tutorial Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_Pannel_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\Pannel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_PopUp_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_Pannel_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\Pannel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_PopUp_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_PopUp_Clear_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_PopUp_Clear_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMinimap_Manager.h">
+      <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1808,14 +1838,29 @@
     <ClCompile Include="..\Private\UIWeakness_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UITutorial_Pannel_Text.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UITutorial_Pannel_Image.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UITutorial_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\00.Tutorial Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_Pannel_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\Pannel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_PopUp_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_Pannel_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\Pannel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_PopUp_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_PopUp_Clear_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_PopUp_Clear_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMinimap_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

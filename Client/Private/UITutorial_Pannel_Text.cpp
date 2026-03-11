@@ -250,6 +250,12 @@ HRESULT CUITutorial_Pannel_Text::Spawn_FromPool(void* pArg)
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
 
+	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+	if (auto* pDamageFont = std::get_if<UI_TUTORIAL_PANNEL_PREFAB_DATA>(&pDesc->Data))
+	{
+
+	}
+
 	m_isSpawned = true;
 	m_isDeadRequest = false;
 	return S_OK;

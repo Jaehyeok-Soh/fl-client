@@ -1,5 +1,5 @@
 #pragma once
-#include "Base.h"
+#include "GameObject.h"
 #include "MulticastDelegate.h"
 
 NS_BEGIN(Engine)
@@ -12,6 +12,7 @@ class CGenericUI;
 class CUIPrefab;
 
 enum class EUITutorialEventID {
+
 	END
 };
 
@@ -23,15 +24,23 @@ typedef struct tagUITutorialEventesc
 
 }UI_TUTORIAL_EVENT_DESC;
 
-class CUITutorial_Manager final : public CBase
+class CUITutorial_Manager final : public CGameObject
 {
+	using Super = CGameObject;
 private:
 	CUITutorial_Manager();
 	virtual ~CUITutorial_Manager() = default;
 public:
-	CGameInstance* m_pGameInstance = { nullptr };
+	HRESULT Initialize_Prototype() override;
+	HRESULT Initialize(void* pArg) override;
+	HRESULT Awake(const _uint iCurrentLevelID) override;
+	CGameObject* Clone(void* pArg) override;
 
+private:
+	CGameInstance* m_pGameInstance = { nullptr };
 	CMulticastDelegate<void(const UI_TUTORIAL_EVENT_DESC&)> m_vTutorialEvents = {};
+
+	
 
 public:
 	static CUITutorial_Manager* Create();

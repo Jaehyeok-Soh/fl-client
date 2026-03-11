@@ -377,6 +377,48 @@ namespace Client
 		END 
 	};
 
+
+	// 지금 어떤 퀘스트인지
+	enum class EUITutorialQuestTypeID
+	{
+		// 연옥도 탈출
+		QUEST1_1,		// 계속 전진해서 산 아래의 마을로 가기
+		QUEST1_2,		// 필토이드를 피해 집으로 돌아가 무기 찾기
+		QUEST1_3,		// 공격해 오는 필토이드 퇴치(0/10)
+		QUEST1_4,		// 부두에서 배 찾기
+		QUEST1_5,		// 해안을 따라 해변 조사
+
+		//세월에 묻힌 땅
+		QUEST2_1,		// 총기를 테스트하고 필토이드 무리 처치(0/10)
+		QUEST2_2,		// 산 위의 유적으로 가기
+
+		// 모레의 메아리
+		QUEST3_1,		// 병사를 처치하고 벗어나기(0/40)
+		QUEST3_2,		// 시빌라의 공격 막아내기
+
+		END
+	};
+
+	enum class EUITutorialPopUpTypeID
+	{
+		TUTORIAL_POPUP_1,	// [Space] 를 눌러 점프
+		TUTORIAL_POPUP_2,	// [LCtrl] 를 눌러 슬라이드로 구멍 지나가기
+		TUTORIAL_POPUP_3,	// [LCtrl] 를 길게 눌러 앉기/슬라이드 상태 진입
+		TUTORIAL_POPUP_3_1,	// [Space] 를 다시 눌러 스파이럴 점프로 절벽 넘기
+		TUTORIAL_POPUP_4,	// 마우스를 움직여 시야를 올린 후 대각선으로 뛰어오르기
+		TUTORIAL_POPUP_4_1,	// [LCtrl] 를 길게 누른 상태에서 [Space] 를 눌러 스파이럴 점프로 절벽을 넘거나 원거리 이동할 수 있습니다.
+		TUTORIAL_POPUP_5,	// 벽에 다가가서 [Space] 를 연속으로 눌러 벽 오르기
+		TUTORIAL_POPUP_6,	// [V] 버튼을 눌러 가이드 포인트를 확인할 수 있습니다.
+		TUTORIAL_POPUP_7,	// [Mouse L] 을 눌러 근접 공격
+		TUTORIAL_POPUP_8,	// [LShift] 버튼을 눌러 적의 공격 회피
+		TUTORIAL_POPUP_9,	// [Mouse R] 를 눌러 원거리 공격
+		TUTORIAL_POPUP_10,	// [R] 버튼을 눌러 탄환 장전
+		TUTORIAL_POPUP_11,	// [E] 버튼을 눌러 스킬 시전
+		TUTORIAL_POPUP_12,	// 보스를 조준하고 [Mouse Wheel] 마우스 휠 버튼을 눌러 시점 고정, 다시 눌러서 고정 해제
+		TUTORIAL_POPUP_13,	// [Q] 버튼을 눌러 종결 스킬 시전
+		END,
+	};
+
 	enum class EUIPrefabType {
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
@@ -386,6 +428,23 @@ namespace Client
 		BOSS_NAMEPLATE,
 		MINIMAP_MONSTER_ICON,
 		TUTORIAL_PANNEL,
+
+		TUTORIAL_POPUP_1,
+		TUTORIAL_POPUP_2,
+		TUTORIAL_POPUP_3,
+		TUTORIAL_POPUP_3_1,
+		TUTORIAL_POPUP_4,
+		TUTORIAL_POPUP_4_1,
+		TUTORIAL_POPUP_5,
+		TUTORIAL_POPUP_6,
+		TUTORIAL_POPUP_7,
+		TUTORIAL_POPUP_8,
+		TUTORIAL_POPUP_9,
+		TUTORIAL_POPUP_10,
+		TUTORIAL_POPUP_11,
+		TUTORIAL_POPUP_12,
+		TUTORIAL_POPUP_13,
+
 		END
 	};
 
@@ -400,6 +459,23 @@ namespace Client
 		case Client::EUIPrefabType::DAMAGE_FONTS_HIT:		return L"DAMAGE_FONTS_HIT";
 		case Client::EUIPrefabType::MINIMAP_MONSTER_ICON:	return L"DAMAGE_FONTS_HIT";
 		case Client::EUIPrefabType::TUTORIAL_PANNEL:		return L"TUTORIAL_PANNEL";
+
+		case Client::EUIPrefabType::TUTORIAL_POPUP_1:		return L"TUTORIAL_POPUP_1";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_2:		return L"TUTORIAL_POPUP_2";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_3:		return L"TUTORIAL_POPUP_3";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_3_1:		return L"TUTORIAL_POPUP_3_1";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_4:		return L"TUTORIAL_POPUP_4";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_4_1:		return L"TUTORIAL_POPUP_4_1";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_5:		return L"TUTORIAL_POPUP_5";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_6:		return L"TUTORIAL_POPUP_6";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_7:		return L"TUTORIAL_POPUP_7";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_8:		return L"TUTORIAL_POPUP_8";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_9:		return L"TUTORIAL_POPUP_9";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_10:		return L"TUTORIAL_POPUP_10";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_11:		return L"TUTORIAL_POPUP_11";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_12:		return L"TUTORIAL_POPUP_12";
+		case Client::EUIPrefabType::TUTORIAL_POPUP_13:		return L"TUTORIAL_POPUP_13";
+
 		case Client::EUIPrefabType::END:
 		default:
 			break;
@@ -434,14 +510,24 @@ namespace Client
 
 	typedef struct tagUITutorialPannelPrefabData
 	{
+
+
 	} UI_TUTORIAL_PANNEL_PREFAB_DATA;
+
+	typedef struct tagUITutorialPopUpPrefabData
+	{
+		EUITutorialPopUpTypeID eTutorialTypeID = { EUITutorialPopUpTypeID::END };
+
+	} UI_TUTORIAL_POPUP_PREFAB_DATA;
+
 
 	typedef std::variant<
 		UI_NAMEPLATE_PREFAB_DATA,
 		UI_DAMAGEFONT_PREFAB_DATA,
 		UI_BOSS_NAMEPLATE_PREFAB_DATA,
 		UI_MINIMAP_MONSTER_ICON_PREFAB_DATA,
-		UI_TUTORIAL_PANNEL_PREFAB_DATA
+		UI_TUTORIAL_PANNEL_PREFAB_DATA,
+		UI_TUTORIAL_POPUP_PREFAB_DATA
 	> UI_PREFAB_VARIANT;
 
 	typedef struct tagUIPrefabData
@@ -458,6 +544,9 @@ namespace Client
 		S, 
 		END
 	};
+
+
+
 
 #pragma endregion
 
