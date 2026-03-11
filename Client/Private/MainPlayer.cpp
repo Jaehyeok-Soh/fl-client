@@ -50,6 +50,7 @@
 #include "State_MoonSkill.h"
 
 #pragma endregion
+#include "UIMinimap_Manager.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
@@ -290,8 +291,7 @@ void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGa
     {
     case ENUM_TO_UINT(PHYSICSFILTERGROUP::Enum::DETECT_MONSTER):
         {
-        // ui에게 충돌 된 monster 객체 pointer 넘겨주기
-        // to UI담당자 : tHitInfo랑 pOther 잘 이용해서 하면 되지 않을까
+            CUIMinimap_Manager::GetInstance()->Add_Ranged_Object(pOther, EUIMinimapIconTypeID::MONSTER);
         }
         break;
     }
@@ -305,6 +305,15 @@ void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGam
     desc.iOtherLayer = iOtherLayer;
     desc.pRequester = this;
     desc.pOther = pOther;
+
+    switch (iMyColliderLayer)
+    {
+    case ENUM_TO_UINT(PHYSICSFILTERGROUP::Enum::DETECT_MONSTER):
+    {
+        CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(pOther);
+    }
+    break;
+    }
 }
 
 _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
@@ -556,7 +565,7 @@ HRESULT CMainPlayer::Ready_Ability()
         desc.fMental    = 105.f;
         desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate;
 
-        desc.fComboCoolTime     = 2.f;
+        desc.fComboCoolTime     = 7.f;
         desc.fDashCoolTime      = 2.f;
 
         desc.fMeleeAttack       = 20.f;

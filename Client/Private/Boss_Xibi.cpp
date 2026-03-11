@@ -13,6 +13,7 @@
 #include "Weapon.h"
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "UIIcon_Component.h"
 #include "MyStat.h"
 
 CBoss_Xibi::CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -163,7 +164,8 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 	{
 		EGroggyState eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
 		if (eGroggy != EGroggyState::None)
-			Get_Component<CMonsterControlContext>()->Set_Groggy(eGroggy);
+			if (_bool bSucess = Get_Component<CMonsterControlContext>()->Set_Groggy(eGroggy))
+				m_pGameInstance->Broadcast<BOSS_GROGGY>();
 	}
 	return result;
 }
@@ -282,6 +284,12 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 		CXibi_GimmikController::GIMMIKCTRL_DESC desc{};
 		desc.pOwnerModel = pBody->Get_Component<CModel>();
 		if (FAILED(Add_Component<CXibi_GimmikController>(0 /*static*/, L"Prototype_Component_Xibi_GimmikController", &desc)))
+			return E_FAIL;
+	}
+
+	{
+		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}
 

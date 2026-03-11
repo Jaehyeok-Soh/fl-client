@@ -9,6 +9,7 @@
 #include "PhysicsCCT.h"
 #include "ComputeShader.h"
 #include "UI_Manager.h"
+#include "UIIcon_Component.h"
 #include "GameInstance.h"
 #include "MyStat.h"
 
@@ -65,14 +66,6 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 		tPrefabData.Data = Desc;
  		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	}
-	{
-		UI_PREFAB_DATA tPrefabData = {};
-		UI_NAMEPLATE_PREFAB_DATA Desc = {};
-		Desc.pTarget = this;
-		tPrefabData.Data = Desc;
-		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MINIMAP_MONSTER_ICON, iCurrentLevelID, &tPrefabData);
-	}
-
 	{
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 300.f);
 	}
@@ -222,6 +215,12 @@ HRESULT CMonster_Dog::Ready_Components(void* pArg)
 
 	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
 		return E_FAIL;
+
+	{
+		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

@@ -675,6 +675,7 @@ enum class EUIDImageSubClassType
 	MINIMAP_CAMERA_SIGHT,
 	MINIMAP_BGFRAME,
 	MINIMAP_WARNING_FRAME,
+	MINIMAP_DIR_ICON,
 	MINIMAP_END,
 
 	// ¸Þ´ºÃ¢
@@ -799,6 +800,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT,					"MINIMAP_CAMERA_SIGHT" },
 	{ EUIDImageSubClassType::MINIMAP_BGFRAME,						"MINIMAP_BGFRAME" },
 	{ EUIDImageSubClassType::MINIMAP_WARNING_FRAME,					"MINIMAP_WARNING_FRAME" },
+	{ EUIDImageSubClassType::MINIMAP_DIR_ICON,						"MINIMAP_DIR_ICON" },
 	{ EUIDImageSubClassType::MINIMAP_END,							"MINIMAP_END" },
 
 	{ EUIDImageSubClassType::MENU_BEGIN,							"MENU_BEGIN" },
@@ -910,6 +912,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MINIMAP_CAMERA_SIGHT")					return EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT;
 	if (str == "MINIMAP_BGFRAME")						return EUIDImageSubClassType::MINIMAP_BGFRAME;
 	if (str == "MINIMAP_WARNING_FRAME")					return EUIDImageSubClassType::MINIMAP_WARNING_FRAME;
+	if (str == "MINIMAP_DIR_ICON")						return EUIDImageSubClassType::MINIMAP_DIR_ICON;
 	if (str == "MINIMAP_END")							return EUIDImageSubClassType::MINIMAP_END;
 
 	if (str == "MENU_BEGIN")							return EUIDImageSubClassType::MENU_BEGIN;
@@ -1023,6 +1026,7 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT:					return "MINIMAP_CAMERA_SIGHT";
 	case EUIDImageSubClassType::MINIMAP_BGFRAME:						return "MINIMAP_BGFRAME";
 	case EUIDImageSubClassType::MINIMAP_WARNING_FRAME:					return "MINIMAP_WARNING_FRAME";
+	case EUIDImageSubClassType::MINIMAP_DIR_ICON:						return "MINIMAP_DIR_ICON";
 	case EUIDImageSubClassType::MINIMAP_END:							return "MINIMAP_END";
 
 	case EUIDImageSubClassType::MENU_BEGIN:								return "MENU_BEGIN";

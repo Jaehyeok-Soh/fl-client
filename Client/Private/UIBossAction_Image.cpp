@@ -156,12 +156,15 @@ void CUIBossAction_Image::Initialize_Visible_Event()
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
 		Ready_LerpChange(1.5f, 1.f, 0.f, 0.7f, m_fDelay);
+		Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
 		Ready_Lerp_Movement(Vec2{ 0.f, -100.f }, Vec2{ 0.f, 0.f }, 1.5f, 0.7f, m_fDelay);
+		Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
 		Ready_Lerp_Movement(Vec2{ 0.f, 100.f }, Vec2{ 0.f, 0.f }, 1.5f, 0.7f, m_fDelay);
+		Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
 		break;
@@ -175,11 +178,39 @@ _bool CUIBossAction_Image::Tick_Visible_Event(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
-		return Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+	{
+		_bool is = Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+		_bool isFade = Tick_Fade(fTimeDelta);
+
+		if (is && isFade)
+		{
+			m_isFin_Event = true;
+			return true;
+		}
+	}
+	break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
-		return Tick_Lerp_Movement(fTimeDelta);
+	{
+		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+		_bool isFade = Tick_Fade(fTimeDelta);
+		if (isMove && isFade)
+		{
+			m_isFin_Event = true;
+			return true;
+		}
+	}
+	break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
-		return Tick_Lerp_Movement(fTimeDelta);
+	{
+		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+		_bool isFade = Tick_Fade(fTimeDelta);
+		if (isMove && isFade)
+		{
+			m_isFin_Event = true;
+			return true;
+		}
+	}
+	break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
 		break;
 	}
@@ -194,12 +225,15 @@ void CUIBossAction_Image::Initialize_InVisible_Event()
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
 		Ready_LerpChange(1.f, 0.f, 1.f, 0.7f, m_fDelay);
+		Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
 		Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ 0.f, -100.f }, 1.f, 0.7f, m_fDelay);
+		Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
 		Ready_Lerp_Movement(Vec2{ 0.f, 0.f}, Vec2{ 0.f, 100.f }, 1.f, 0.7f, m_fDelay);
+		Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
 		break;
@@ -213,13 +247,39 @@ _bool CUIBossAction_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
-		return Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+	{
+		_bool is = Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+		_bool isFade = Tick_Fade(fTimeDelta);
+
+		if (is && isFade)
+		{
+			m_isFin_Event = true;
+			return true;
+		}
+	}
+	break;;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
-		return Tick_Lerp_Movement(fTimeDelta);
+	{
+		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+		_bool isFade = Tick_Fade(fTimeDelta);
+		if (isMove && isFade)
+		{
+			m_isFin_Event = true;
+			return true;
+		}
+	}
+	break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
-		return Tick_Lerp_Movement(fTimeDelta);
-	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
-		break;
+	{
+		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+		_bool isFade = Tick_Fade(fTimeDelta);
+		if (isMove && isFade)
+		{
+			m_isFin_Event = true;
+			return true;
+		}
+	}
+	break;
 	}
 	return false;
 }
