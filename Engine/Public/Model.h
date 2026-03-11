@@ -330,7 +330,7 @@ private:
 	_bool								m_isAnimLoop				= { false };
 	_bool								m_bIsAnimFinished			= { false };
 	_float								m_fBlendedTime				= { 0.f };
-	const _float						m_fBlendDuration			= { 0.2f };
+	const _float						m_fBlendDuration			= { 0.25f };
 	_uint								m_iAnimationCount			= { 0 };
 	_uint								m_iCurrentAnimIndex			= { 0 };
 	_uint								m_iPrevAnimIndex			= { 0 };

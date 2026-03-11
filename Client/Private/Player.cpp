@@ -932,7 +932,7 @@ HRESULT CPlayer::Ready_BaseStates()
         CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = 0;
         desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Land_Inplace"), Get_AnimationIndex(L"Animation_PlayerMoon_LandHeavy_Inplace") };
-        desc.bBlend = false;
+        desc.bBlend = true;
         desc.bLoop = false;
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN

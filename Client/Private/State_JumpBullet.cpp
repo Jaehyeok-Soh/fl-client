@@ -61,10 +61,10 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+	CStateBase::SetupLook_CameraLookLerp(fTimeDelta, 3.f);
+
 	if (Get_AnimElpasedTimeSeconds() > 0.8f)
 	{
-		CStateBase::SetupLook_CameraLookLerp(fTimeDelta,10.f);
-
 		Set_ApplyGravity(true);
 
 		Set_RootMotion_Apply(false);
@@ -88,10 +88,12 @@ HRESULT CState_JumpBullet::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	CStateBase::SetupLook_CameraLook();
+
+	//CStateBase::SetupLook_CameraLookLerp(0.7f, 10.f);
+
 	Set_ApplyGravity(true);
 	Reset_DeAccelRate();
-
-	CStateBase::SetupLook_CameraLook();
 
 	return S_OK;
 }

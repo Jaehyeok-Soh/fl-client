@@ -116,6 +116,9 @@ void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLa
 void CTriggerCollidePart::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
+
+	// 충돌 position 리셋
+	m_vColliedPos = Vec3::Zero;
 }
 
 HRESULT CTriggerCollidePart::Render()
