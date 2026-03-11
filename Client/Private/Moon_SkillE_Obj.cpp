@@ -103,7 +103,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Modules()
 		colliderDesc.bIsTrigger = true;
 		colliderDesc.bSetOnlyFilter = false;
 		colliderDesc.bIsActive = true;
-		colliderDesc.vCenter = { 0.f, 0.3f, 0.f };
+		colliderDesc.vCenter = { 0.f, 3.f, 0.f };
 		colliderDesc.vExtents = { 1.f, 4.f,1.f };
 		colliderDesc.strAttackPresetTag = "MoonSkill_E";
 		PHYSICSMATERIAL_DESC mtrlDesc{};

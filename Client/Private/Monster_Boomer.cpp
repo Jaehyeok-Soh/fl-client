@@ -11,6 +11,7 @@
 #include "UI_Manager.h"
 #include "GameInstance.h"
 #include "MyStat.h"
+#include "UIIcon_Component.h"
 
 CMonster_Boomer::CMonster_Boomer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -65,13 +66,7 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 		tPrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	}
-	{
-		UI_PREFAB_DATA tPrefabData = {};
-		UI_NAMEPLATE_PREFAB_DATA Desc = {};
-		Desc.pTarget = this;
-		tPrefabData.Data = Desc;
-		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MINIMAP_MONSTER_ICON, iCurrentLevelID, &tPrefabData);
-	}
+
 
 	{
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 600.f);
@@ -224,6 +219,12 @@ HRESULT CMonster_Boomer::Ready_Components(void* pArg)
 	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
 		return E_FAIL;
 
+	{
+		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -261,7 +262,8 @@ CMonster_Base::MONSTER_DESC CMonster_Boomer::Get_PreSetDesc(_uint iLevelId)
 			| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 			| PHYSICSFILTERGROUP::Enum::MAP
 			| PHYSICSFILTERGROUP::Enum::OBJECT1
-			| PHYSICSFILTERGROUP::Enum::OBJECT2;
+			| PHYSICSFILTERGROUP::Enum::OBJECT2
+			| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 		desc.bGravity = { true };
 		desc.fGravity = { -35.f };

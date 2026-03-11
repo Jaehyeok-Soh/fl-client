@@ -50,6 +50,7 @@
 #include "State_MoonSkill.h"
 
 #pragma endregion
+#include "UIMinimap_Manager.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
@@ -290,8 +291,7 @@ void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGa
     {
     case ENUM_TO_UINT(PHYSICSFILTERGROUP::Enum::DETECT_MONSTER):
         {
-        // ui에게 충돌 된 monster 객체 pointer 넘겨주기
-        // to UI담당자 : tHitInfo랑 pOther 잘 이용해서 하면 되지 않을까
+            CUIMinimap_Manager::GetInstance()->Add_Ranged_Object(pOther, EUIMinimapIconTypeID::MONSTER);
         }
         break;
     }
@@ -305,6 +305,15 @@ void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGam
     desc.iOtherLayer = iOtherLayer;
     desc.pRequester = this;
     desc.pOther = pOther;
+
+    switch (iMyColliderLayer)
+    {
+    case ENUM_TO_UINT(PHYSICSFILTERGROUP::Enum::DETECT_MONSTER):
+    {
+        CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(pOther);
+    }
+    break;
+    }
 }
 
 _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
@@ -556,7 +565,7 @@ HRESULT CMainPlayer::Ready_Ability()
         desc.fMental    = 105.f;
         desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate;
 
-        desc.fComboCoolTime     = 2.f;
+        desc.fComboCoolTime     = 7.f;
         desc.fDashCoolTime      = 2.f;
 
         desc.fMeleeAttack       = 20.f;
@@ -791,7 +800,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
         _float fAttackSpeed = { 1.4f };
-        tDesc.vCombo_CheckTimes = Vec4{ 0.5f / fAttackSpeed,0.5f / fAttackSpeed,1.f / fAttackSpeed ,1.5f / fAttackSpeed };
+        tDesc.vCombo_CheckTimes = Vec4{ 0.45f / fAttackSpeed,0.45f / fAttackSpeed,0.95f / fAttackSpeed ,1.f / fAttackSpeed };
         tDesc.fSlide_CheckTime = 0.7f;
 
         _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
@@ -870,7 +879,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.65f ;
+        tKeyTimer.fMaxTime = 0.55f ;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;
@@ -901,13 +910,13 @@ HRESULT CMainPlayer::Ready_AttackStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.8f;
+        tKeyTimer.fMaxTime = 0.5f;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;

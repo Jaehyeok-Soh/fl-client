@@ -13,6 +13,7 @@
 #include "Weapon.h"
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "UIIcon_Component.h"
 #include "MyStat.h"
 
 CBoss_Xibi::CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -56,6 +57,8 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 	if (FAILED(Get_Component<CGimmikController>()->Bind_Events()))
 		return E_FAIL;
 
+	if (FAILED(Ready_StateIndexForDirecting()))
+		return E_FAIL;
 	
 	return S_OK;
 }
@@ -79,6 +82,10 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 		ePrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
 	}
+
+	if (FAILED(Change_State_ForDirecting(EStateForDirecting::Idle)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -163,7 +170,8 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 	{
 		EGroggyState eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
 		if (eGroggy != EGroggyState::None)
-			Get_Component<CMonsterControlContext>()->Set_Groggy(eGroggy);
+			if (_bool bSucess = Get_Component<CMonsterControlContext>()->Set_Groggy(eGroggy))
+				m_pGameInstance->Broadcast<BOSS_GROGGY>();
 	}
 	return result;
 }
@@ -173,25 +181,16 @@ void CBoss_Xibi::Try_Attack(const HIT_DESC& hitDesc)
 	Super::Try_Attack(hitDesc);
 }
 
-HRESULT CBoss_Xibi::Change_CondemnedDie()
+HRESULT CBoss_Xibi::Change_State_ForDirecting(EStateForDirecting eState)
 {
+	if (eState < 0 || eState >= COUNT)
+		return E_FAIL;
+
 	CActionState* pActionState = Get_Component<CActionState>();
 	if (pActionState == nullptr)
 		return E_FAIL;
 
-	if(FAILED(pActionState->Change_State(m_arrStateIndex[EStateForDirecting::Condemned_Die], true)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CBoss_Xibi::Change_CondemnedEnd()
-{
-	CActionState* pActionState = Get_Component<CActionState>();
-	if (pActionState == nullptr)
-		return E_FAIL;
-	
-	if (FAILED(pActionState->Change_State(m_arrStateIndex[EStateForDirecting::Condemned_End], true)))
+	if (FAILED(pActionState->Change_State(m_arrStateIndex[eState], true)))
 		return E_FAIL;
 
 	return S_OK;
@@ -285,6 +284,12 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
+	{
+		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -303,11 +308,15 @@ HRESULT CBoss_Xibi::Ready_StateIndexForDirecting()
 			return true;
 		};
 
+	if (setStateIndex(EStateForDirecting::Idle, "Idle") == false)
+		return E_FAIL;
 	if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemned_Die") == false)
 		return E_FAIL;
 	if (setStateIndex(EStateForDirecting::Condemned_End, "Condemned_End") == false)
 		return E_FAIL;
-	// setStateIndex(EStateForDirecting::DirectiongState, "???");
+	if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
+		return E_FAIL;
+
 	return S_OK;
 }
 

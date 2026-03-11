@@ -14,6 +14,7 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "MyStat.h"
 #include "UI_Manager.h"
+#include "UIMinimap_Manager.h"
 #include "GameInstance.h"
 
 CUIMini_Map::CUIMini_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -71,12 +72,12 @@ void CUIMini_Map::Update(const _float fTimeDelta)
 	{
 		Matrix CamWorldMat = m_pGameInstance->Get_ViewMatrix().Invert();
 		Vec3 vCamLook = -CamWorldMat.Forward();
-		Tick_CameraSight(vCamLook);
+		m_fRadian = CUIMinimap_Manager::GetInstance()->WorldLook_Convert_To_Radian(vCamLook);
 		Rotate_Translate_CameraSight();
 	}
 	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_PLAYER_ICON)
 	{
-		Tick_CameraSight(m_pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+		m_fRadian = CUIMinimap_Manager::GetInstance()->WorldLook_Convert_To_Radian(m_pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
 		Rotate_PlayerIcon();
 	}
 	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_BGFRAME)
@@ -120,6 +121,9 @@ void CUIMini_Map::Update(const _float fTimeDelta)
 				m_isPulseDown = FALSE;
 			}
 		}
+		else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_DIR_ICON)
+		{
+		}
 		else
 		{
 			m_fAlpha_Ratio += fTimeDelta * fSpeed;
@@ -154,14 +158,6 @@ HRESULT CUIMini_Map::Render()
 		return E_FAIL;
 
 	return S_OK;
-}
-
-void CUIMini_Map::Tick_CameraSight(const Vec3& vLook)
-{
-	Vec2 vDir2D = Vec2{ vLook.x, vLook.z };
-	if(vDir2D.Length() > 1e-6f)
-		vDir2D.Normalize();
-	m_fRadian = atan2f(vDir2D.x, vDir2D.y);
 }
 
 void CUIMini_Map::Rotate_Translate_CameraSight()
@@ -269,6 +265,11 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 	{
 		// * 외부 변수 바인딩 *
 		m_beAttackEventTrigger;
+	}
+	break;
+	case DTO::EUIDImageSubClassType::MINIMAP_DIR_ICON:
+	{
+
 	}
 	break;
 	case DTO::EUIDImageSubClassType::END:

@@ -12,6 +12,7 @@ CTriggerCollidePart::CTriggerCollidePart(ID3D11Device* pDevice, ID3D11DeviceCont
 CTriggerCollidePart::CTriggerCollidePart(const CTriggerCollidePart& rhs)
 	: Super(rhs)
 	, m_vColliedPos(rhs.m_vColliedPos)
+	, m_iColliedID(rhs.m_iColliedID)
 {
 }
 
@@ -47,6 +48,13 @@ HRESULT CTriggerCollidePart::Initialize(void* pArg)
 		return E_FAIL;
 
 	Get_Component<CPhysicsRigidBody>()->Awake();
+
+	auto actor = Get_Component<CPhysicsRigidBody>()->GetActor(0);
+	PxShape* pShape = { nullptr };
+	actor->getShapes(&pShape, 1);
+
+	pShape->setLocalPose(PxTransform(PxVec3(0.f), PxQuat(0.f, 0.f, PxHalfPi, 1.f)));
+
 	return S_OK;
 }
 
@@ -102,13 +110,14 @@ void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLa
 {
 	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
-	if (pOther)
+	if (pOther && pOther->IsAlive())
 	{
 		CTransform* pTrans = pOther->Get_Component<CTransform>();
 
 		if (pTrans)
 		{
 			m_vColliedPos = pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
+			m_iColliedID = pOther->Get_ID();
 		}
 	}
 }
@@ -116,6 +125,10 @@ void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLa
 void CTriggerCollidePart::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
+
+	// 충돌 position 리셋
+	if(pOther && pOther->Get_ID() == m_iColliedID)
+		m_vColliedPos = Vec3::Zero;
 }
 
 HRESULT CTriggerCollidePart::Render()

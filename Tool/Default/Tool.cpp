@@ -124,7 +124,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     // 최정우용 
     MONITORINFO tMonitorInfo = { sizeof(MONITORINFO) };
     ::GetMonitorInfo(MonitorFromPoint({ 0, 0 }, MONITOR_DEFAULTTONEAREST), &tMonitorInfo);
-    // RECT rcWork = tMonitorInfo.rcWork;
+    //RECT rcWork = tMonitorInfo.rcWork;
 
     RECT rcWork = { 100, 100, 1700, 1000 };
     RECT rc = { 0, 0, rcWork.right - rcWork.left,  rcWork.bottom - rcWork.top };

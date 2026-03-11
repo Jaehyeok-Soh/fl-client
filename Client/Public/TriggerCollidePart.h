@@ -52,6 +52,7 @@ private:
 
 private:
 	Vec3 m_vColliedPos = { Vec3::Zero };
+	_int m_iColliedID = {-1};
 
 public:
 	static CTriggerCollidePart* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

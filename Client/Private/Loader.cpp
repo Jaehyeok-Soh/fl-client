@@ -125,6 +125,8 @@
 // UI
 //=================
 #include "GenericUI.h"
+
+#include "UIIcon_Component.h"	
 //프로그레스바
 #include "UIPlayerStat_Progress.h"
 #include "UILoading_Progress.h"
@@ -662,6 +664,12 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ControlContext_Monster", CMonsterControlContext::Create());
 	// For. Prototype_Component_ActionState_Monster
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionState_Monster", CMonsterActionState::Create(m_pDevice, m_pDeviceContext));
+
+	// For. Prototype_ScriptComponent_UIIcon
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_ScriptComponent_UIIcon", CUIIcon_Component::Create())))
+			return E_FAIL;
+	}
 
 #pragma endregion
 
@@ -1260,7 +1268,7 @@ HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Moon2.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonFinal.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

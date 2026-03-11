@@ -332,6 +332,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CWorldUI_Component::Create())))
 			return E_FAIL;
 	}
+	
 
 	// For. UI Texture
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/Loading/")))
@@ -516,6 +517,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 
 HRESULT CMainApplication::Ready_Managers()
 {
+	CUI_Manager::GetInstance()->Initialize_UIManager(m_pDevice, m_pDeviceContext);
 	return S_OK;
 }
 
