@@ -431,6 +431,9 @@ _bool CStateBase_Player::Check_FKey(const _float fTimeDelta)
 		return true;
 	}
 
+	else if (KEY_BUTTON_DOWN(DIK_F))
+		int a = 0;
+
 	return false;
 }
 

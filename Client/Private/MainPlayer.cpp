@@ -170,7 +170,10 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 
     CGameInstance::GetInstance()->Add_Actor_Object(this);
 
-    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
+    CStateBase::STATE_START_DESC tDesc = {};
+    tDesc.bCheckPre = false;
+
+    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE),false,&tDesc)))
         return E_FAIL;
     if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
         return E_FAIL;
@@ -799,7 +802,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     // combo state
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
-        _float fAttackSpeed = { 1.4f };
+        _float fAttackSpeed = { 1.2f };
         tDesc.vCombo_CheckTimes = Vec4{ 0.45f / fAttackSpeed,0.45f / fAttackSpeed,0.95f / fAttackSpeed ,1.f / fAttackSpeed };
         tDesc.fSlide_CheckTime = 0.7f;
 
@@ -962,7 +965,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
         tDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly
+            | CStateBase_Player::COLLISIONFLAGS::C_CheckF;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNIDLE), CState_GunIdle::Create(pActionState, &tDesc))))
             return E_FAIL;
@@ -978,7 +982,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
         tDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly 
+            | CStateBase_Player::COLLISIONFLAGS::C_CheckF;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNWALK), CState_GunWalk::Create(pActionState, &tDesc))))
             return E_FAIL;

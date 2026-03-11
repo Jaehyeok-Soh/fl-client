@@ -37,10 +37,11 @@ HRESULT CState_RunShort::Start(void* pArg, _bool bForce)
 
 void CState_RunShort::Update(const _float fTimeDelta)
 {
-	if (m_fStateElapsed >= 0.5f)
-	{
-		SetupLook_CameraLookLerp(fTimeDelta,10.f);
-	}
+	//// °­Á¦·Î state change
+	//if (m_fStateElapsed >= 0.5f)
+	//{
+	//	Change_PlayerState(STATEKEY::LOOPDONE);
+	//}
 
 	Super::Update(fTimeDelta);
 }
