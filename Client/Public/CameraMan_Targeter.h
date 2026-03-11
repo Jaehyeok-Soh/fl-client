@@ -39,6 +39,7 @@ public:
 		_float	fDistance		= {};	// pivot 과의 거리
 
 		Vec3	vPivot			= {};	// 회전 시킬 중심
+		Vec3	vFirstLookDir	= {};   // begin에서 셋팅할 look 방향. pivot을 
 
 		_float	fSpeed			= {};	// 움직임 속도
 

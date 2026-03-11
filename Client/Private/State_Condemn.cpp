@@ -64,15 +64,20 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	m_tTurnData.vPivot = (vBossPos + vNewPos) * 0.5f;
 	m_tTurnData.vPivot.y += 1.f;
 
+
 	vNewPos.y = 0.f;
 	vBossPos.y = 0.f;
 
+	Vec3 vDir = (vBossPos - vNewPos);
+	vDir.Normalize();
+
 	// boss¸¦ ÃÄ´Ù º½
-	pPlayerTransform->Look_At_Dir(vBossPos - vNewPos);
+	pPlayerTransform->Look_At_Dir(vDir);
+
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::CONDEMN));
 
-
+	m_tTurnData.vFirstLookDir = vDir;
 	static_cast<CCameraMan_Targeter*>(pPlayer->Get_CameraTargeter())->Set_TurnData(m_tTurnData);
 	pPlayer->Change_CamState(ENUM_TO_UINT(Client::TargeterState::TURN));
 
