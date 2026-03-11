@@ -86,7 +86,7 @@ HRESULT CUIMinimap_Manager::Delete_Ranged_Object(CGameObject* pObj)
 Vec2 CUIMinimap_Manager::WorldPos_Convert_MinimapPosOffset(const Vec3& vPos, const Vec3& vPlayerPos)
 {
 
-	_float fScaleOffet = 125.f / 10.f; // 미니맵 반지름 / 그에 대응하는 유닛 // 유닛을 픽셀로 변환 //
+	_float fScaleOffet = MINIMAP_RADIUS_LENGTH / 20.f; // 미니맵 반지름 / 그에 대응하는 유닛 // 유닛을 픽셀로 변환 //
 	Vec3 vDeltaPos = vPos - vPlayerPos;
 	
 
