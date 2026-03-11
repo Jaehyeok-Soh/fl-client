@@ -261,7 +261,8 @@ CMonster_Base::MONSTER_DESC CMonster_Boomer::Get_PreSetDesc(_uint iLevelId)
 			| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 			| PHYSICSFILTERGROUP::Enum::MAP
 			| PHYSICSFILTERGROUP::Enum::OBJECT1
-			| PHYSICSFILTERGROUP::Enum::OBJECT2;
+			| PHYSICSFILTERGROUP::Enum::OBJECT2
+			| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 		desc.bGravity = { true };
 		desc.fGravity = { -35.f };
