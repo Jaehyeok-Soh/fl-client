@@ -158,7 +158,7 @@ HRESULT CGun::Ready_Components()
 		| PHYSICSFILTERGROUP::MAP
 		| PHYSICSFILTERGROUP::OBJECT1
 		| PHYSICSFILTERGROUP::OBJECT2;
-	desc.strAttackPresetTag = "MoonAttack_Normal";
+	desc.strAttackPresetTag = "MoonAttack_Gun";
 
 	if (FAILED(Add_Component<CPhysicsAttackRaycast>(0/*static*/, L"Prototype_Component_AttackRaycast", &desc)))
 		return E_FAIL;

@@ -96,6 +96,11 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
 
         // bossÂÊ
     case DTO::EAttackPresetCategory::BossBasic:
+    {
+        m_fAttackFlag |= AF_Strong;
+        m_fAttackFlag |= AF_Fly;
+        break;
+    }
     case DTO::EAttackPresetCategory::BossSkill:
     case DTO::EAttackPresetCategory::BossProjectile:
     {

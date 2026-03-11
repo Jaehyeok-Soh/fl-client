@@ -1036,34 +1036,7 @@ HRESULT CPlayer::Ready_HitStates()
             return E_FAIL;
     }
 
-    // HITSTRONG
-    {
-        CState_HitStrong::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags = 0;
-        vector<_int> vecHitStrong;
-        vecHitStrong.resize(ENUM_TO_UINT(CState_HitStrong::HitStrong_AnimIdx::END));
 
-        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
-        vecHitStrong[ENUM_TO_SZET(CState_HitStrong::HitStrong_AnimIdx::FRONT)] = Get_AnimationIndex(L"Animation_PlayerMoon_HitLight_01");
-        vecHitStrong[ENUM_TO_SZET(CState_HitStrong::HitStrong_AnimIdx::BACK)] = Get_AnimationIndex(L"Animation_PlayerMoon_HitLight_B");
-        vecHitStrong[ENUM_TO_SZET(CState_HitStrong::HitStrong_AnimIdx::RIGHT)] = Get_AnimationIndex(L"Animation_PlayerMoon_HitLight_R");
-        vecHitStrong[ENUM_TO_SZET(CState_HitStrong::HitStrong_AnimIdx::LEFT)] = Get_AnimationIndex(L"Animation_PlayerMoon_HitLight_L");
-
-        desc.vecMainAnims = vecHitStrong;
-        desc.bBlend = true;
-        desc.bLoop = false;
-
-        desc.FMoves = 0;
-        // key additive客 悼老
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
-        desc.vecChangeState_ByKey = vecChangeState_ByKey;
-
-        desc.tKeyTimer = tKeyTimer;
-        desc.pOwnerGun = pMyGun;
-
-        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::HITSTRONG), CState_HitStrong::Create(pActionState, &desc))))
-            return E_FAIL;
-    }
 
     // HITADDTIVE
     {
@@ -1099,6 +1072,37 @@ HRESULT CPlayer::Ready_HitStates()
             return E_FAIL;
     }
 
+    // HITSTRONG
+    {
+        CState_HitStrong::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        vector<_int> vecHitStrong;
+        vecHitStrong.resize(ENUM_TO_UINT(CState_HitStrong::HitStrong_AnimIdx::END));
+
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
+        vecHitStrong[ENUM_TO_SZET(CState_HitStrong::HitStrong_AnimIdx::FRONT)] = Get_AnimationIndex(L"Animation_PlayerMoon_HitLight_01");
+        vecHitStrong[ENUM_TO_SZET(CState_HitStrong::HitStrong_AnimIdx::BACK)] = Get_AnimationIndex(L"Animation_PlayerMoon_HitLight_B");
+        vecHitStrong[ENUM_TO_SZET(CState_HitStrong::HitStrong_AnimIdx::RIGHT)] = Get_AnimationIndex(L"Animation_PlayerMoon_HitLight_R");
+        vecHitStrong[ENUM_TO_SZET(CState_HitStrong::HitStrong_AnimIdx::LEFT)] = Get_AnimationIndex(L"Animation_PlayerMoon_HitLight_L");
+
+        desc.vecMainAnims = vecHitStrong;
+        desc.bBlend = true;
+        desc.bLoop = false;
+
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        // key additive客 悼老
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 0.2f;
+        desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::HITSTRONG), CState_HitStrong::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
     // HITFLYEND
     {
         CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
@@ -1114,7 +1118,7 @@ HRESULT CPlayer::Ready_HitStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 2.3f;
+        tKeyTimer.fMaxTime = 2.f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
