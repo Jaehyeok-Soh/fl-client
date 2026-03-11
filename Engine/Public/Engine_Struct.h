@@ -930,7 +930,7 @@ namespace Engine
 		unsigned int iBoneIndex = {};
 		int iParentIndex = { -1 };
 
-		float fRadius = 0.1f;
+		float fRadius = 0.05f;
 		float fHeight = 0.05f;
 		float fMass = 1.f;
 

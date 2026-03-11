@@ -400,6 +400,17 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	if ((bPass0 && bPass1) == false)
 		return PxFilterFlag::eSUPPRESS;
 
+	if ((filterData0.word0 & PHYSICSFILTERGROUP::RAGDOLL)
+		|| (filterData1.word0 & PHYSICSFILTERGROUP::RAGDOLL))
+	{
+		_bool isMap0 = filterData0.word0 & PHYSICSFILTERGROUP::MAP;
+		_bool isMap1 = filterData1.word0 & PHYSICSFILTERGROUP::MAP;
+
+		if (!isMap0 && !isMap1)
+			return PxFilterFlag::eSUPPRESS;
+	}
+
+
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{
 		pairFlags = PxPairFlag::eTRIGGER_DEFAULT

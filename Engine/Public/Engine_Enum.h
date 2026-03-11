@@ -441,7 +441,9 @@ namespace Engine
 
 			INVISIBLE_WALL = 1 << 18,
 
-			NONE = 1 << 19,
+			RAGDOLL = 1 << 19,
+
+			NONE = 1 << 20,
 			END
 		};
 

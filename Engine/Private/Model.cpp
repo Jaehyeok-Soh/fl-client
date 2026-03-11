@@ -1681,7 +1681,6 @@ RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT
 	RAGDOLLBONEDESC desc{};
 	desc.eJoint = eJoint;
 	desc.eParentJoint = eParentJoint;
-	desc.fHeight = 0.1f;
 
 	if (bone == nullptr)
 		return desc;
@@ -1691,8 +1690,8 @@ RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT
 	desc.matLocalTransform = bone->Get_Transform();
 
 	CBone* child = Get_Bone(PhysicsJointNames[eChildJoint].c_str());
-	if (child != nullptr)
-		desc.fHeight = child->Get_Transform().Translation().Length() * 0.9f;
+	/*if (child != nullptr)
+		desc.fHeight = child->Get_Transform().Translation().Length() * 0.9f;*/
 	
 	desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f));
 	//desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f),

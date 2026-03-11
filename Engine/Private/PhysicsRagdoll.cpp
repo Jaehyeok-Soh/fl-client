@@ -52,15 +52,25 @@ void CPhysicsRagdoll::Awake(vector<CChannel*>& vecChannels)
 	if (m_pGameInstance->CheckRagdollState(m_iObjectID) == false)
 		return;
 
+	// TODO : 프로토타입이후
+	return;
+
 	m_pGameInstance->RemoveRagdoll(m_tRagdollElements.pArticulation);
 
 	Matrix objectWorld = static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
 	PxTransform pxObjectWorld = m_pGameInstance->XMMatrixToPxTransform(objectWorld);
 	vector<CBone*>& vecBone = m_pSharedModel->Get_Bones();
-	
+
+	if (pxObjectWorld.q.magnitudeSquared() < 1e-6f)
+		pxObjectWorld.q = PxQuat(PxIdentity);
+	else
+		pxObjectWorld.q.normalize();
+
+	pxObjectWorld.p.y += 1.f;
+
 	{
 		auto& link = m_tRagdollElements.vecPhysicsLink[RAGDOLLJOINT::PELVIS];
-		
+
 		PxTransform pose = link.first->getGlobalPose();
 		if (!pose.isValid())
 		{
@@ -85,7 +95,7 @@ void CPhysicsRagdoll::Awake(vector<CChannel*>& vecChannels)
 		}
 
 		PxTransform pxGlobal = pxObjectWorld * pxLocal;
-		PxTransform finalPose = pxGlobal * link.second.matOffsetTransform;
+		//PxTransform finalPose = pxGlobal * link.second.matOffsetTransform;
 		if (!pxGlobal.q.isFinite() || pxGlobal.q.magnitudeSquared() < 1e-6f)
 			pxGlobal.q = PxQuat(PxIdentity);
 		else
@@ -94,18 +104,19 @@ void CPhysicsRagdoll::Awake(vector<CChannel*>& vecChannels)
 		if (!pxGlobal.p.isFinite())
 			return;
 
-		link.first->setGlobalPose(finalPose);
+		//link.first->setGlobalPose(finalPose);
 
-		for (size_t i = RAGDOLLJOINT::PELVIS + 1; i < RAGDOLLJOINT::END; i++)
-		{
-			auto desc = m_tRagdollElements.vecPhysicsLink[i].second;
+		//for (size_t i = RAGDOLLJOINT::PELVIS + 1; i < RAGDOLLJOINT::END; i++)
+		//{
+		//	auto desc = m_tRagdollElements.vecPhysicsLink[i].second;
 
-			if (desc.eParentJoint == RAGDOLLJOINT::PELVIS)
-				CombinedJoint((RAGDOLLJOINT::Enum)i, pxObjectWorld, pxLocal, vecChannels, vecBone);
-		}
+		//	if (desc.eParentJoint == RAGDOLLJOINT::PELVIS)
+		//		CombinedJoint((RAGDOLLJOINT::Enum)i, pxObjectWorld, pxLocal, vecChannels, vecBone);
+		//}
 
 		//m_tRagdollElements.pArticulation->updateKinematic(PxArticulationKinematicFlag::ePOSITION);
-		//m_tRagdollElements.pArticulation->setRootGlobalPose(pxGlobal, true);
+		
+		m_tRagdollElements.pArticulation->setRootGlobalPose(pxGlobal, false);
 
 		m_pGameInstance->AddRagdoll(m_tRagdollElements.pArticulation);
 
@@ -189,7 +200,7 @@ void CPhysicsRagdoll::CombinedJoint(RAGDOLLJOINT::Enum eJoint, PxTransform Objec
 
 	PxTransform pxCombined = parentTransform * pxLocal;
 	PxTransform pxGlobal = ObjectWorldTransform * pxCombined;
-	PxTransform finalPose = pxGlobal * link.second.matOffsetTransform;
+	//PxTransform finalPose = pxGlobal * link.second.matOffsetTransform;
 	if (!pxGlobal.q.isFinite() || pxGlobal.q.magnitudeSquared() < 1e-6f)
 		pxGlobal.q = PxQuat(PxIdentity);
 	else
@@ -238,6 +249,7 @@ PxTransform CPhysicsRagdoll::BoneCombine(class CBone* pCurrentJoint, PxTransform
 	PxTransform pxParentLocal = PxTransform(PxVec3(translation.x, translation.y, translation.z), pxRot);
 
 	pxTemp = pxParentLocal * pxTemp;
+	pxTemp.q.normalize();
 
 	pxTemp = BoneCombine(bone, pxTemp, pParentJoint, vecChannels, vecBone);
 
