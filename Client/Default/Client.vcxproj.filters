@@ -1308,8 +1308,8 @@
     </ClInclude>
     <ClInclude Include="..\Public\UITutorial_Manager.h">
       <Filter>03. GameObject\UIObjects\00.Manager\00.Tutorial Manager</Filter>
-	</ClInclude>
-	<ClInclude Include="..\Public\UIMinimap_Manager.h">
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMinimap_Manager.h">
       <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Xibi_GateSpawner.h">
@@ -1906,8 +1906,8 @@
     </ClCompile>
     <ClCompile Include="..\Private\UITutorial_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\00.Tutorial Manager</Filter>
-	</ClCompile>
-	<ClCompile Include="..\Private\UIMinimap_Manager.cpp">
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMinimap_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Xibi_GateSpawner.cpp">

@@ -96,6 +96,7 @@ namespace Engine
 		Bloomparam,
 		Outlineparam,
 		RGBMapping,
+		RenderFx,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -115,7 +116,8 @@ namespace Engine
 		"HDRParamBuffer",
 		"BLOOMParamBuffer",
 		"OUTLINEParamBuffer",
-		"CB_MAPPING_RGB"
+		"CB_MAPPING_RGB",
+		"RenderFxParamBuffer"
 	};
 	//===================
 	// FX SRV
@@ -209,6 +211,7 @@ namespace Engine
 		STAT,
 		ACTIONSKILL,
 		GIMMIKCTRL,
+		RENDER_FX,
 		//
 		PX_RIGIDBODY,
 		PX_COLLIDER,
