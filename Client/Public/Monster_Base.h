@@ -111,6 +111,8 @@ public:
 	virtual _bool		On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void		Try_Attack(const HIT_DESC& hitDesc) override;
 
+	void				Set_RootMotion_Apply(_bool bApply);
+
 protected:
 	HRESULT				Ready_BaseStates();
 	HRESULT				Ready_PartObjects(void* pArg);

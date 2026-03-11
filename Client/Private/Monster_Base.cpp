@@ -250,6 +250,11 @@ void CMonster_Base::Try_Attack(const HIT_DESC& hitDesc)
 #endif // _DEBUG
 }
 
+void CMonster_Base::Set_RootMotion_Apply(_bool bApply)
+{
+	Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>()->Set_CurAnimation_RootApply(bApply);
+}
+
 HRESULT CMonster_Base::Ready_BaseStates()
 {
 	CMonsterActionState* pActionState = { nullptr };

@@ -150,7 +150,7 @@ void CMonsterControlContext::End_Groggy()
 
 void CMonsterControlContext::Set_RootMotion_Apply(_bool bApply)
 {
-	static_cast<CMainPlayer*>(Get_Owner())->Set_RootMotion_Apply(bApply);
+	static_cast<CMonster_Base*>(Get_Owner())->Set_RootMotion_Apply(bApply);
 }
 
 Vec3 CMonsterControlContext::Get_MoveDir()
