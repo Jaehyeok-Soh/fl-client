@@ -337,15 +337,17 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
         // Hit 데미지 폰트 // 색 변경은 가능 //
         {
             UI_PREFAB_DATA tPrefabData = {};
-            tPrefabData.DamageFontData.iDamage = static_cast<_uint>(fDamage);
+            UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+            Desc.iDamage = static_cast<_uint>(fDamage);
             if (hitDesc.bHasHitPoint)
-                tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
+                Desc.vHitPos = hitDesc.vHitPoint;
             else
             {
-                tPrefabData.DamageFontData.vHitPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-                tPrefabData.DamageFontData.vHitPos.y += 0.4f;
+                Desc.vHitPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+                Desc.vHitPos.y += 0.4f;
             }
                 
+            tPrefabData.Data = Desc;
             CUI_Manager::GetInstance()->Request_Add_Prefab(
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
         }
@@ -369,19 +371,9 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     CLOG_INFO(infoContant);
 #endif // _DEBUG
 
-    // player state에 따라 combo count 증가 여부 결정
-    CStatCom_Player* pStat = Get_Component<CStatCom_Player>();
-    switch ((_uint)Get_Component<CActionState>()->Get_CurrentStateIndex())
+    if (hitDesc.pVictim->IsAlive())
     {
-    case ENUM_TO_UINT(State::COMBO):
-    case ENUM_TO_UINT(State::JUMPATTEND):
-    case ENUM_TO_UINT(State::CHARGE):
-        pStat->Add_ComboCount();
-        m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
-        break;
-
-    default:
-        pStat->Reset_ComboCount();
+        Count_Combo();
     }
 }
 
@@ -788,14 +780,27 @@ HRESULT CMainPlayer::Ready_AttackStates()
     // combo state
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
-        tDesc.vCombo_CheckTimes = Vec4{ 0.5f,0.5f,1.f,1.5f };
+        _float fAttackSpeed = { 1.4f };
+        tDesc.vCombo_CheckTimes = Vec4{ 0.5f / fAttackSpeed,0.5f / fAttackSpeed,1.f / fAttackSpeed ,1.5f / fAttackSpeed };
         tDesc.fSlide_CheckTime = 0.7f;
 
-        tDesc.iSlideAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
-        tDesc.iFirstAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
-        tDesc.iSecondAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02");
-        tDesc.iThirdAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03");
-        tDesc.iFourthAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04");
+        _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
+        _int iCombo1 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
+        _int iCombo2 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02");
+        _int iCombo3 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03");
+        _int iCombo4 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04");
+
+        pModel->Set_Animation_Speed(iSlide,     fAttackSpeed);
+        pModel->Set_Animation_Speed(iCombo1,    fAttackSpeed);
+        pModel->Set_Animation_Speed(iCombo2,    fAttackSpeed);
+        pModel->Set_Animation_Speed(iCombo3,    fAttackSpeed);
+        pModel->Set_Animation_Speed(iCombo4,    fAttackSpeed);
+
+        tDesc.iSlideAnimIdx = iSlide;
+        tDesc.iFirstAnimIdx = iCombo1;
+        tDesc.iSecondAnimIdx = iCombo2;
+        tDesc.iThirdAnimIdx = iCombo3;
+        tDesc.iFourthAnimIdx = iCombo4;
         tDesc.iEndStateIndex = ENUM_TO_UINT(State::END);
         tDesc.pOwnerGun = pMyGun;
 
@@ -1018,6 +1023,24 @@ HRESULT CMainPlayer::Ready_AttackStates()
     }
 
     return S_OK;
+}
+
+void CMainPlayer::Count_Combo()
+{
+    // player state에 따라 combo count 증가 여부 결정
+    CStatCom_Player* pStat = Get_Component<CStatCom_Player>();
+    switch ((_uint)Get_Component<CActionState>()->Get_CurrentStateIndex())
+    {
+    case ENUM_TO_UINT(State::COMBO):
+    case ENUM_TO_UINT(State::JUMPATTEND):
+    case ENUM_TO_UINT(State::CHARGE):
+        pStat->Add_ComboCount();
+        m_pGameInstance->Broadcast<COMBO_ATTACK_EVENT_START>();
+        break;
+
+    default:
+        pStat->Reset_ComboCount();
+    }
 }
 
 CMainPlayer* CMainPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -107,15 +107,12 @@ protected:
 	void	Start_MoveState(MoveState eNextState);
 	void	End_MoveState(MoveState ePreState);
 
-	void GunEnd();
+	void	GunEnd();
 
-	void Look_Control(_float fTimeDelta);
-
+	void	Look_Control(_float fTimeDelta);
 
 	// 움직임 관련 함수
 private:
-	void Jump(const _float fTimeDelta);
-
 	void GunMove(const _float fTimeDelta);
 
 public:

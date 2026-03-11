@@ -179,6 +179,7 @@
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_EventDefine.h" />
+    <ClInclude Include="..\Public\State_Condemn.h" />
     <ClInclude Include="..\Public\TriggerCollidePart.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Builder_Effect.h" />
@@ -327,6 +328,7 @@
     <ClInclude Include="..\Public\UIMenu_Image.h" />
     <ClInclude Include="..\Public\UIMenu_OutLine.h" />
     <ClInclude Include="..\Public\UIMenu_Text.h" />
+    <ClInclude Include="..\Public\UIMinimap_Manager.h" />
     <ClInclude Include="..\Public\UIMiniMap_Monster_Icon.h" />
     <ClInclude Include="..\Public\UIMini_Map.h" />
     <ClInclude Include="..\Public\UIMonsterStat_Progress.h" />
@@ -338,8 +340,13 @@
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
+    <ClInclude Include="..\Public\UITutorial_Manager.h" />
     <ClInclude Include="..\Public\UITutorial_Pannel_Image.h" />
     <ClInclude Include="..\Public\UITutorial_Pannel_Text.h" />
+    <ClInclude Include="..\Public\UITutorial_PopUp_Clear_Image.h" />
+    <ClInclude Include="..\Public\UITutorial_PopUp_Clear_Text.h" />
+    <ClInclude Include="..\Public\UITutorial_PopUp_Image.h" />
+    <ClInclude Include="..\Public\UITutorial_PopUp_Text.h" />
     <ClInclude Include="..\Public\UIWeakness_Image.h" />
     <ClInclude Include="..\Public\UIWeakness_Text.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
@@ -349,6 +356,7 @@
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="..\Public\WorldUI_Component.h" />
     <ClInclude Include="..\public\Boss_Xibi_Body.h" />
+    <ClInclude Include="..\public\Xibi_GateSpawner.h" />
     <ClInclude Include="..\public\Xibi_GimmikController.h" />
     <ClInclude Include="..\public\Xibi_Loop_Thunder.h" />
     <ClInclude Include="..\public\Xibi_Oneshot_Thunder.h" />
@@ -376,6 +384,7 @@
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\InvisibleWall.cpp" />
+    <ClCompile Include="..\Private\State_Condemn.cpp" />
     <ClCompile Include="..\Private\TriggerCollidePart.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Builder_Effect.cpp" />
@@ -548,6 +557,7 @@
     <ClCompile Include="..\Private\UIMenu_Image.cpp" />
     <ClCompile Include="..\Private\UIMenu_OutLine.cpp" />
     <ClCompile Include="..\Private\UIMenu_Text.cpp" />
+    <ClCompile Include="..\Private\UIMinimap_Manager.cpp" />
     <ClCompile Include="..\Private\UIMiniMap_Monster_Icon.cpp" />
     <ClCompile Include="..\Private\UIMini_Map.cpp" />
     <ClCompile Include="..\Private\UIMonsterStat_Progress.cpp" />
@@ -559,8 +569,13 @@
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
+    <ClCompile Include="..\Private\UITutorial_Manager.cpp" />
     <ClCompile Include="..\Private\UITutorial_Pannel_Image.cpp" />
     <ClCompile Include="..\Private\UITutorial_Pannel_Text.cpp" />
+    <ClCompile Include="..\Private\UITutorial_PopUp_Clear_Image.cpp" />
+    <ClCompile Include="..\Private\UITutorial_PopUp_Clear_Text.cpp" />
+    <ClCompile Include="..\Private\UITutorial_PopUp_Image.cpp" />
+    <ClCompile Include="..\Private\UITutorial_PopUp_Text.cpp" />
     <ClCompile Include="..\Private\UIWeakness_Image.cpp" />
     <ClCompile Include="..\Private\UIWeakness_Text.cpp" />
     <ClCompile Include="..\Private\UI_Manager.cpp" />
@@ -570,6 +585,7 @@
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp" />
     <ClCompile Include="..\private\Boss_Xibi_Body.cpp" />
+    <ClCompile Include="..\private\Xibi_GateSpawner.cpp" />
     <ClCompile Include="..\private\Xibi_GimmikController.cpp" />
     <ClCompile Include="..\private\Xibi_Loop_Thunder.cpp" />
     <ClCompile Include="..\private\Xibi_Oneshot_Thunder.cpp" />

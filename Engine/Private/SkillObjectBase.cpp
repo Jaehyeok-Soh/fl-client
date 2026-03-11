@@ -105,16 +105,16 @@ void CSkillObjectBase::On_ColliderModuleExit(CGameObject* pModule)
 
 void CSkillObjectBase::On_ModuleEnter(EHybridModuleType eType, CGameObject* pModule)
 {
+	Sync_ModuleWorldToOwner(pModule);
+
 	switch (eType)
 	{
 	case EHybridModuleType::EFFECT:
-		//Sync_ModuleWorldToOwner(pModule);
 		Compute_Rotate(pModule);
 		On_EffectModuleEnter(pModule);
 		break;
 	case EHybridModuleType::COLLIDER:
 		On_ColliderModuleEnter(pModule);
-		//Sync_ModuleWorldToOwner(pModule);
 		break;
 	default:
 		break;
@@ -306,8 +306,12 @@ void CSkillObjectBase::Reset_RuntimeDesc()
 	m_tRuntimeDesc = {};
 	m_tRuntimeDesc.vStartPos = m_tDesc.vSpawnPos;
 	m_tRuntimeDesc.vCurDir = m_tDesc.vDirection;
+
 	if (m_tRuntimeDesc.vCurDir != Vec3::Zero)
 		m_tRuntimeDesc.vCurDir.Normalize();
+
+	if (m_tDesc.vLookDir != Vec3::Zero)
+		m_tDesc.vLookDir.Normalize();
 
 	m_tRuntimeDesc.Life.Start(m_tDesc.fLifeTime);
 

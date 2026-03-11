@@ -96,6 +96,7 @@ public:
 	_float Get_GlowIntensity() const { return m_fGlowIntensity; }
 
 	_uint Get_iParmas0() const { return m_iParam0; }
+	_uint Get_iTextParmas0() const { return m_iTextParam0; }
 
 	void Set_Name(const _string& str) { m_strName = str; }
 	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
@@ -113,6 +114,7 @@ public:
 	void Set_GlowIntensity(_float fGlowIntensity) { m_fGlowIntensity = fGlowIntensity; }
 
 	void Set_iParams0(_uint i) { m_iParam0 = i; }
+	void Set_iTextParams0(_uint i) { m_iTextParam0 = i; }
 
 	Vec4 Get_ColorTint()			const	{ return m_vColorTint; }
 	Vec4 Get_GradiantColorTint()	const	{ return m_vGradiantColorTint; }
@@ -228,6 +230,7 @@ protected:
 	EFontPivotType m_ePivot_TextData				= { EFontPivotType::CENTER };
 	_string m_strFontName_TextData					= {"SemiBold"};
 	_float m_fRotate_TextData						= {};
+	_uint m_iTextParam0 = {};
 
 	// Client Bind Values Button Trigger Data
 	_string m_strKeyMapping = {};

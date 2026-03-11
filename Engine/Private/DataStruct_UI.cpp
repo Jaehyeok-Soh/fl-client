@@ -52,6 +52,7 @@ void to_json(json& j, const TUI_TextData& data)
 		{"ePivot",				data.ePivot},
 		{"fRotate",				data.fRotate},
 		{"fScale",				data.fScale},
+		{"iParam0",				data.iParam0},
 	};
 }
 
@@ -70,6 +71,7 @@ void from_json(const json& j, TUI_TextData& data)
 	data.ePivot			= EFontPivotType::CENTER;
 	data.fRotate		= 0.f;
 	data.fScale			= 1.f;
+	data.iParam0		= 0;
 
 	data.strTag			= j.value("strTag", data.strTag);
 	data.strOwnerName	= j.value("strOwnerName", data.strOwnerName);
@@ -85,6 +87,7 @@ void from_json(const json& j, TUI_TextData& data)
 	data.ePivot			= j.value("ePivot", data.ePivot);
 	data.fRotate		= j.value("fRotate", data.fRotate);
 	data.fScale			= j.value("fScale", data.fScale);
+	data.iParam0		= j.value("iParam0", data.iParam0);
 }
 
 void to_json(json& j, const TUI_GenericUIData& data)

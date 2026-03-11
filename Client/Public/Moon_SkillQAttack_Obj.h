@@ -1,11 +1,11 @@
 #pragma once
-#include "SkillProjectile.h"
+#include "SkillPierceProjectile.h"
 
 NS_BEGIN(Client)
 
-class CMoon_SkillQAttack_Obj final : public CSkillProjectile
+class CMoon_SkillQAttack_Obj final : public CSkillPierceProjectile
 {
-	using Super = CSkillProjectile;
+	using Super = CSkillPierceProjectile;
 private:
 	CMoon_SkillQAttack_Obj(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CMoon_SkillQAttack_Obj(const CMoon_SkillQAttack_Obj& rhs);

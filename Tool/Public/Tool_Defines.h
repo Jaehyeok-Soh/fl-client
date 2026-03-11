@@ -768,6 +768,23 @@ namespace Tool
 		BOSS_NAMEPLATE,
 		MINIMAP_MONSTER_ICON,
 		TUTORIAL_PANNEL,
+
+		TUTORIAL_POPUP_1,
+		TUTORIAL_POPUP_2,
+		TUTORIAL_POPUP_3,
+		TUTORIAL_POPUP_3_1,
+		TUTORIAL_POPUP_4,
+		TUTORIAL_POPUP_4_1,
+		TUTORIAL_POPUP_5,
+		TUTORIAL_POPUP_6,
+		TUTORIAL_POPUP_7,
+		TUTORIAL_POPUP_8,
+		TUTORIAL_POPUP_9,
+		TUTORIAL_POPUP_10,
+		TUTORIAL_POPUP_11,
+		TUTORIAL_POPUP_12,
+		TUTORIAL_POPUP_13,
+
 		END
 	};
 
@@ -783,6 +800,23 @@ namespace Tool
 		case EUIPrefabType::BOSS_NAMEPLATE:			return "BOSS_NAMEPLATE";
 		case EUIPrefabType::MINIMAP_MONSTER_ICON:	return "MINIMAP_MONSTER_ICON";
 		case EUIPrefabType::TUTORIAL_PANNEL:		return "TUTORIAL_PANNEL";
+
+		case EUIPrefabType::TUTORIAL_POPUP_1:		return "TUTORIAL_POPUP_1";
+		case EUIPrefabType::TUTORIAL_POPUP_2:		return "TUTORIAL_POPUP_2";
+		case EUIPrefabType::TUTORIAL_POPUP_3:		return "TUTORIAL_POPUP_3";
+		case EUIPrefabType::TUTORIAL_POPUP_3_1:		return "TUTORIAL_POPUP_3_1";
+		case EUIPrefabType::TUTORIAL_POPUP_4:		return "TUTORIAL_POPUP_4";
+		case EUIPrefabType::TUTORIAL_POPUP_4_1:		return "TUTORIAL_POPUP_4_1";
+		case EUIPrefabType::TUTORIAL_POPUP_5:		return "TUTORIAL_POPUP_5";
+		case EUIPrefabType::TUTORIAL_POPUP_6:		return "TUTORIAL_POPUP_6";
+		case EUIPrefabType::TUTORIAL_POPUP_7:		return "TUTORIAL_POPUP_7";
+		case EUIPrefabType::TUTORIAL_POPUP_8:		return "TUTORIAL_POPUP_8";
+		case EUIPrefabType::TUTORIAL_POPUP_9:		return "TUTORIAL_POPUP_9";
+		case EUIPrefabType::TUTORIAL_POPUP_10:		return "TUTORIAL_POPUP_10";
+		case EUIPrefabType::TUTORIAL_POPUP_11:		return "TUTORIAL_POPUP_11";
+		case EUIPrefabType::TUTORIAL_POPUP_12:		return "TUTORIAL_POPUP_12";
+		case EUIPrefabType::TUTORIAL_POPUP_13:		return "TUTORIAL_POPUP_13";
+
 		case EUIPrefabType::END:					return "";
 		default: return "";
 		}

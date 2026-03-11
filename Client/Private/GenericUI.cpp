@@ -269,7 +269,7 @@ void CGenericUI::Ready_Fade(const _float fDuration, const _float fStartAlpha, co
 	m_fFade_EaseValue = 0.f;
 }
 
-void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartValue, const _float fTargetValue, const _float fEaseValue, const _float fDelay)
+void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartValue, const _float fTargetValue, const _float fEaseValue, const _float fDelay, _bool isEaseOut)
 {
 	m_fLerpChange_TimeAcc = 0.f;
 	m_fLerpChange_DelayTimeAcc = 0.f;
@@ -279,6 +279,7 @@ void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartVal
 	m_fLerpChange_StartValue = fStartValue;
 	m_fLerpChange_TargetValue = fTargetValue;
 	m_fLerpChange_EaseValue = fEaseValue;
+	m_isLerpChange_EaseOut = isEaseOut;
 }
 
 _bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
@@ -353,8 +354,14 @@ _bool CGenericUI::Tick_LerpChange(_float* p, const _float fTimeDelta)
 	}
 
 	_float eased = t;
+
 	if (m_fLerpChange_EaseValue > 0.f)
-		eased = powf(t, m_fLerpChange_EaseValue);
+	{
+		if (m_isLerpChange_EaseOut)
+			eased = 1.f - powf(1.f - t, m_fLerpChange_EaseValue);
+		else
+			eased = powf(t, m_fLerpChange_EaseValue);
+	}
 
 	*p = m_fLerpChange_StartValue + (m_fLerpChange_TargetValue - m_fLerpChange_StartValue) * eased;
 	return false;

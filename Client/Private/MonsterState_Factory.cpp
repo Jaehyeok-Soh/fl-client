@@ -112,6 +112,8 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_not_groggy", CONDITION{ return MONSTERCC(state)->IsNotGroggy(); });
 
+	REGISTER_CONDITION("condition_phase_two", CONDITION{ return MONSTERCC(state)->IsPhaseTwo(); });
+
 	REGISTER_CONDITION("param_condition_IsTrackPositionBetween", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionBetweenRaw(param.fParam[0], param.fParam[1]); });
 
 	REGISTER_CONDITION("param_condition_IsTrackPositionAt", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionAtRaw(param.fParam[0]); });

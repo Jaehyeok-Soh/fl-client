@@ -106,6 +106,9 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 
 		if (Check_SkillKey(fTimeDelta))
 			return;
+
+		if (Check_FKey(fTimeDelta))
+			return;
 	}
 
 	Check_Collis(fTimeDelta);
@@ -254,32 +257,49 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 {
-	if (Has_ChangeState(STATEKEY::CHARGE) &&
-		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
+	// holding 시간 체크
+	if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
 	{
 		m_TChargeCount.x += fTimeDelta;
 
-		if (m_TChargeCount.x >= m_TChargeCount.y)
+		if (Has_ChangeState(STATEKEY::CHARGE))
 		{
-			m_TChargeCount.x = 0.f;
-			Change_PlayerState(STATEKEY::CHARGE);
-			return true;
+			if (m_TChargeCount.x >= m_TChargeCount.y)
+			{
+				Change_PlayerState(STATEKEY::CHARGE);
+				m_TChargeCount.x = 0.f;
+				return true;
+			}
 		}
 	}
 
-	/*else */if (Has_ChangeState(STATEKEY::LM) &&
-	Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::LATT)))
+	// 만약에 마우스를 땠다면
+	else if (MOUSE_LBUTTON_UP)
 	{
-		if (Check_OnGround(0.3f))
+		if (Has_ChangeState(STATEKEY::CHARGE))
 		{
-			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO));
+			if (m_TChargeCount.x >= m_TChargeCount.y)
+			{
+				Change_PlayerState(STATEKEY::CHARGE);
+				return true;
+			}
 		}
 
-		else
+		if (Has_ChangeState(STATEKEY::LM))
 		{
-			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTSTART));
+			if (Check_OnGround(0.3f))
+			{
+				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO));
+			}
+
+			else
+			{
+				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTSTART));
+			}
+			return true;
 		}
-		return true;
+
+		m_TChargeCount.x = 0.f;
 	}
 
 	return false;
@@ -400,6 +420,20 @@ _bool CStateBase_Player::Check_Hit(const _float fTimeDelta)
 	return false;
 }
 
+_bool CStateBase_Player::Check_FKey(const _float fTimeDelta)
+{
+	if (static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Can_FKeyEvent() &&												// event가 켜졌는디
+		Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_CheckF) &&			// 이번 state에서 f키 check 할건디
+		KEY_BUTTON_DOWN(DIK_F))														// f키를 눌렀다면
+	{
+		//todo iKeyEvent 검사후 state 관리
+		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::CONDEMN));
+		return true;
+	}
+
+	return false;
+}
+
 _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 {
 	// 플래그 먼저 확인
@@ -416,6 +450,37 @@ _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 	}
 
 	return false;
+}
+
+void CStateBase_Player::Jump_Impuls(_float fOffset)
+{
+	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+	_float moveps = pPlayerTrans->Get_MovePerSec(); // 속도
+
+	Vec3 vUp = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::UP));
+	vUp.Normalize();
+
+	Vec3 accelation = vUp * moveps * fOffset; //  방향 * 속도
+
+	SetCCTImpuls(accelation);
+}
+
+void CStateBase_Player::LookAt_Monser()
+{
+	Vec3 vMonsterPos = Vec3::Zero;
+	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
+	if (pPlayer == nullptr)
+		return;
+
+	CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
+	if (pPlayerTransform == nullptr)
+		return;
+
+	vMonsterPos = pPlayer->Get_CollidedMonster_Position();
+	if (vMonsterPos != Vec3::Zero)
+	{
+		pPlayerTransform->Look_At_XZ(vMonsterPos);
+	}
 }
 
 _bool CStateBase_Player::Check_OnGround(_float fMaxDist)

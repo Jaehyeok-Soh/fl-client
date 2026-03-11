@@ -17,6 +17,8 @@
 #include "UICombo_Text.h"
 #include "UIBossAction_Text.h"
 #include "UIWeakness_Text.h"
+#include "UITutorial_PopUp_Text.h"
+#include "UITutorial_PopUp_Clear_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -30,6 +32,8 @@
 #include "UICombo_Image.h"
 #include "UIBossAction_Image.h"
 #include "UIWeakness_Image.h"
+#include "UITutorial_PopUp_Image.h"
+#include "UITutorial_PopUp_Clear_Image.h"
 
 #include "WorldUI_Component.h"
 
@@ -105,7 +109,8 @@ HRESULT CBuilder_UI::Build(const CDataDocumentBase& document)
 				return E_FAIL;
 		}
 	}
-
+	m_MapTextDataCache.clear();
+	m_MapDImageDataCache.clear();
 	return S_OK;
 }
 
@@ -211,6 +216,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			return E_FAIL;
 		}
 	}
+	//Prototype_UI_TutorialPopUpClearImage
+	//Prototype_UI_TutorialPopUpClearText
 
 	////////////////////////////////////////
 	// UI_TEXT //
@@ -228,7 +235,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isMonsterNameplate	= (Type >= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::MONSTER_STAT_TEXT_END);
 		const _bool isCombo				= (Type >= DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BATTLE_COMBO_TEXT_END);
 		const _bool isBossCivila		= (Type >= DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN && Type <= DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_END);
-		const _bool isWeakness		= (Type >= DTO::EUITextSubClassType::BATTLE_WEAKNESS_BEGIN && Type <= DTO::EUITextSubClassType::BSTTLE_WEAKNESS_END);
+		const _bool isWeakness			= (Type >= DTO::EUITextSubClassType::BATTLE_WEAKNESS_BEGIN && Type <= DTO::EUITextSubClassType::BSTTLE_WEAKNESS_END);
+		const _bool isTutorialPopUp		= (Type >= DTO::EUITextSubClassType::TUTORIAL_POPUP_BEGIN && Type <= DTO::EUITextSubClassType::TUTORIAL_POPUP_END);
+		const _bool isTutorialPopUpClear= (Type == DTO::EUITextSubClassType::TUTORIAL_POPUP_CLEAR_TEXT);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -278,6 +287,19 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(WeaknessTextDesc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WeaknessText", m_iLevelID, g_wszUILayer, &WeaknessTextDesc);
 		}
+		else if (isTutorialPopUp)
+		{
+			CUITutorial_PopUp_Text::TUTORIAL_POPUP_TEXT_DESC TutorialPopUpData = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(TutorialPopUpData) = TextDesc;
+			TutorialPopUpData.iTutorialTypeID = iter->second.iParam0;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpText", m_iLevelID, g_wszUILayer, &TutorialPopUpData);
+		}
+		else if (isTutorialPopUpClear)
+		{
+			CUITutorial_PopUp_Clear_Text::TUTORIAL_POPUP_CLEAR_TEXT_DESC TutorialPopUpClearDesc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(TutorialPopUpClearDesc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpClearText", m_iLevelID, g_wszUILayer, &TutorialPopUpClearDesc);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -315,7 +337,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isLevelChange		= (Type >= DTO::EUIDImageSubClassType::LEVEL_CHAGE_1		&& Type <= DTO::EUIDImageSubClassType::LEVEL_CHAGE_7);
 		const _bool isCombo				= (Type >= DTO::EUIDImageSubClassType::BATTLE_COMBO_BEGIN	&& Type <= DTO::EUIDImageSubClassType::BATTLE_COMBO_END);
 		const _bool isBossCivila		= (Type >= DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN && Type <= DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END);
-		const _bool isWeakness		= (Type >= DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN && Type <= DTO::EUIDImageSubClassType::BSTTLE_WEAKNESS_END);
+		const _bool isWeakness			= (Type >= DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN && Type <= DTO::EUIDImageSubClassType::BSTTLE_WEAKNESS_END);
+		const _bool isTutorialPopUp		= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BEGIN && Type <= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_END);
+		const _bool isTutorialPopUpClear= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG && Type <= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX);
 
 		if (isPlayerSkill)
 		{
@@ -395,6 +419,23 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(WeaknessImageDesc) = DefaultDesc;
 			WeaknessImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WeaknessImage", m_iLevelID, g_wszUILayer, &WeaknessImageDesc);
+		}
+		else if (isTutorialPopUp)
+		{
+			CUITutorial_PopUp_Image::TUTORIAL_POPUP_IMAGE_DESC TutorialPopUpImageDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(TutorialPopUpImageDesc) = DefaultDesc;
+			TutorialPopUpImageDesc.eSubClassType = Type;
+			TutorialPopUpImageDesc.iTutorialTypeID = iter->second.iParams0;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpImage", m_iLevelID, g_wszUILayer, &TutorialPopUpImageDesc);
+
+		}
+		else if (isTutorialPopUpClear)
+		{
+			CUITutorial_PopUp_Clear_Image::TUTORIAL_POPUP_CLEAR_IMAGE_DESC TutorialPopUpClearImageDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(TutorialPopUpClearImageDesc) = DefaultDesc;
+			TutorialPopUpClearImageDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpClearImage", m_iLevelID, g_wszUILayer, &TutorialPopUpClearImageDesc);
+
 		}
 		else
 		{

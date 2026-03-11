@@ -15,6 +15,7 @@ public:
 	{
 		enum Enum
 		{
+			NONE,
 			FALL = 1 << 0,
 			DOWN = 1 << 1,
 			AIRBORNE = 1 << 2,
@@ -90,6 +91,7 @@ public:
 
 public:
 	virtual Vec3  Get_MoveDir() override;
+	void Set_PhaseTwo() { m_bPhaseTwo = true; }
 	void Set_HitDesc(HIT_DESC hitDesc)
 	{
 		m_tHitDesc = hitDesc;
@@ -118,7 +120,7 @@ public:
 	_bool IsCliffAhead();
 
 	// 페이즈
-	_bool IsPhaseTwo();
+	_bool IsPhaseTwo() const { return m_bPhaseTwo; }
 
 	// 공격 범위
 	_bool IsTargetInMeleeRange() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDistance <= m_tDesc.fMeleeRange; }
@@ -141,6 +143,7 @@ public:
 	_bool IsNotGroggy() const { return (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE) == 0) && (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ) == 0); }
 	_bool IsNormalGroggyRequested() const { return (m_eCurrentGroggyState != EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ); }
 	_bool IsFinalGroggyRequested() const { return (m_eCurrentGroggyState == EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ); }
+	_bool IsGroggy() const { return (m_eCurrentGroggyState != EGroggyState::None) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 	_bool IsNormalGroggy() const { return(m_eCurrentGroggyState != EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 	_bool IsFinalGroggy() const { return (m_eCurrentGroggyState == EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 
@@ -208,6 +211,7 @@ private:
 
 	uint64 m_iOwnerID = {};
 
+	_bool m_bPhaseTwo = { false };
 public:
 	static CMonsterControlContext* Create();
 	virtual CComponent* Clone(void* pArg) override;

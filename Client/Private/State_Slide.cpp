@@ -43,6 +43,7 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
     }
 
     Set_ApplyYLerp(true);
+    m_FMoves &= ~MOVEFLAGS::OWN;
 
     // 가속도 구조로 변경하면서 impuls 한번만 주도록 변경
     // ownMove에서 이동함
@@ -65,13 +66,20 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
 
 void CState_Slide::Update(const _float fTimeDelta)
 {
+    //// pre끝나고 own move를 하도록
+    //if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
+    //{
+    //    m_FMoves |= MOVEFLAGS::OWN;
+    //}
+
     Super::Update(fTimeDelta);
 
+    // sky animation 일때는 바닥 체크를 하고
     if (m_iMainAnimIdx == ENUM_TO_UINT(ANI::SKY) &&
         Check_OnGround(0.3f))
     {
         m_FCollisions |= COLLISIONFLAGS::C_DOWN;
-        Request_ChangeAnimation(m_vecMainAnims[0], false, false, true);
+        Request_ChangeAnimation(m_vecMainAnims[0], true, false, true);
 
         m_iMainAnimIdx = ENUM_TO_UINT(ANI::NORMAL);
     }
@@ -98,16 +106,16 @@ HRESULT CState_Slide::End()
 
 void CState_Slide::OwnMove(const _float fTimeDelta)
 {
-    ////CStateBase::Move_Front(fTimeDelta);
+    //CStateBase::Move_Front(fTimeDelta);
 
-    //CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-    //CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+    CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+    CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
-    //Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+    Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
 
-    //Vec3 accelation = vLook;
+    Vec3 accelation = vLook * pPlayerTrans->Get_MovePerSec();
 
-    //SetCCTImpuls(accelation * 10.f);
+    Move(accelation);
 }
 
 void CState_Slide::Change_PlayerState(STATEKEY eKey)

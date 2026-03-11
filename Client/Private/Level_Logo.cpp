@@ -192,16 +192,17 @@ HRESULT CLevel_Logo::Build_Files()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
 	std::filesystem::path strUIFolderPath = L"../../Resources/Data/UIData/Logo/";
-	if (std::filesystem::exists(strUIFolderPath))
-	{
-		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))
-		{
-			if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
-				return E_FAIL;
 
-			if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
-				return E_FAIL;
-		}
+	for (auto& iter : std::filesystem::recursive_directory_iterator(strUIFolderPath))
+	{
+		if (!iter.is_regular_file())
+			continue;
+
+		if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+			return E_FAIL;
+
+		if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+			return E_FAIL;
 	}
 
 

@@ -30,7 +30,8 @@ public:
 		,C_Addtive	= 0x00008
 		,C_Fly		= 0x00010
 		,C_Strong	= 0x00020
-		
+
+		,C_CheckF = 0x00040
 	};
 
 	typedef struct tagHitStartDesc : public CStateBase::STATE_START_DESC
@@ -94,7 +95,7 @@ protected:
 	STATE_START_DESC		m_tNextStateDesc	= {};
 
 	TimeCount				m_TFallingCount		= { 0.f,0.3f }; // 예전 값 : 0.4f
-	TimeCount				m_TChargeCount		= { 0.f,0.3f };
+	TimeCount				m_TChargeCount		= { 0.f,0.1f };
 
 	// state가 변환 했다면 true
 protected:
@@ -109,8 +110,14 @@ protected:
 
 	_bool Check_Hit(const _float fTimeDelta);
 
+	_bool Check_FKey(const _float fTimeDelta);
+
 protected:
 	_bool Check_Collis(const _float fTimeDelta);
+
+	void Jump_Impuls(_float fOffset = 1.f);
+
+	void LookAt_Monser();
 
 	// player 객체 연결 함수들
 protected:
