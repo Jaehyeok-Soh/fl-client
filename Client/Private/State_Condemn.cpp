@@ -47,14 +47,18 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 
 	Vec3 vBossPos	= pBossTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 	Vec3 vBossLook	= pBossTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	vBossLook.y = 0.f;
 	vBossLook.Normalize();
 
 	// boss 위치 + look 방향으로 밀어낸 위치
 	Vec3 vNewPos = vBossPos + vBossLook * 5.f;
 	pCCT->SetFootPosition(vNewPos);
 
+	vNewPos.y = 0.f;
+	vBossPos.y = 0.f;
+
 	// boss를 쳐다 봄
-	pPlayerTransform->Look_At_XZ(vBossPos);
+	pPlayerTransform->Look_At_Dir(vBossPos - vNewPos);
 
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::CONDEMN));
