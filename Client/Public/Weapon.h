@@ -24,7 +24,7 @@ public:
 
 	enum class State : _uint
 	{
-		NONE, HOLD, HAND, HAND_ONLY_POS, HAND_ONLY_POS_SCALE
+		NONE, HOLD, HAND, HAND_ONLY_POS, HAND_ONLY_POS_SCALE, CONDEMN
 	};
 
 	enum class AnimState : _uint
@@ -57,6 +57,7 @@ public:
 		
 		Matrix matHoldOffsetMatrix = Matrix::Identity;
 		Matrix matHandOffsetMatrix = Matrix::Identity;
+		Matrix matConOffsetMatrix	= Matrix::Identity;
 
 		_uint iStartAnimIdx = { 0 };
 
@@ -110,6 +111,7 @@ protected:
 
 	Matrix				m_matHoldOffsetMatrix = {  };
 	Matrix				m_matHandOffsetMatrix = {  };
+	Matrix				m_matConOffsetMatrix		= {};
 
 	Flags				m_FDescFlags = { 0 };
 

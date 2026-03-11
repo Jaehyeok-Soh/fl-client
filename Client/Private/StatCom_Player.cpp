@@ -103,6 +103,12 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ);
 	}
 
+	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Gun))
+	{
+		m_pQSkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc, this);
+		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::GUN);
+	}
+
 	// critical이나 다른 값들 그 다음에 추가 한다
 	// critical 정보 처리 : test용으로 일단 무조건 criticla
 	if (m_fCriticalRate + m_fCirticalRate_Add > 1.f ||

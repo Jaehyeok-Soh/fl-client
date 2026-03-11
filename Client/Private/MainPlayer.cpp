@@ -800,7 +800,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
         _float fAttackSpeed = { 1.4f };
-        tDesc.vCombo_CheckTimes = Vec4{ 0.5f / fAttackSpeed,0.5f / fAttackSpeed,1.f / fAttackSpeed ,1.5f / fAttackSpeed };
+        tDesc.vCombo_CheckTimes = Vec4{ 0.45f / fAttackSpeed,0.45f / fAttackSpeed,0.95f / fAttackSpeed ,1.f / fAttackSpeed };
         tDesc.fSlide_CheckTime = 0.7f;
 
         _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
@@ -879,7 +879,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.65f ;
+        tKeyTimer.fMaxTime = 0.55f ;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;
@@ -910,13 +910,13 @@ HRESULT CMainPlayer::Ready_AttackStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.8f;
+        tKeyTimer.fMaxTime = 0.5f;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;

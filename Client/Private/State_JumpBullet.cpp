@@ -41,8 +41,10 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 		CTransform* pPlayerTransform = Get_OwnerObject()->Get_Component<CTransform>();
 		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
-		Vec3 vLook = (pCamTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
-		Vec3 vPos = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+		Vec3 vLook	= (pCamTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+		Vec3 vPos	= pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+		vLook.Normalize();
 
 		pPlayerTransform->Look_At(vPos + vLook);
 
@@ -61,10 +63,10 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+	CStateBase::SetupLook_CameraLookLerp(fTimeDelta, 3.f);
+
 	if (Get_AnimElpasedTimeSeconds() > 0.8f)
 	{
-		CStateBase::SetupLook_CameraLookLerp(fTimeDelta,10.f);
-
 		Set_ApplyGravity(true);
 
 		Set_RootMotion_Apply(false);
@@ -88,10 +90,12 @@ HRESULT CState_JumpBullet::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	CStateBase::SetupLook_CameraLook();
+
+	//CStateBase::SetupLook_CameraLookLerp(0.7f, 10.f);
+
 	Set_ApplyGravity(true);
 	Reset_DeAccelRate();
-
-	CStateBase::SetupLook_CameraLook();
 
 	return S_OK;
 }

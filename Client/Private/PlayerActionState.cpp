@@ -96,9 +96,14 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
 
         // boss쪽
     case DTO::EAttackPresetCategory::BossBasic:
+    {
+        m_fAttackFlag |= AF_Strong;
+        m_fAttackFlag |= AF_Fly;
+        break;
+    }
     case DTO::EAttackPresetCategory::BossSkill:
     case DTO::EAttackPresetCategory::BossProjectile:
-
+    {
         switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
         {
         case DTO::EHitType::Additive:
@@ -109,7 +114,8 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
             m_fAttackFlag |= AF_Strong;
             m_fAttackFlag |= AF_Fly;
             break;
-        } 
+        }
+    }
         break;
 
         // 만약 위에 조건에 걸리지 않았다면 일단 attck을 끄자
