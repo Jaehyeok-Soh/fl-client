@@ -10,6 +10,7 @@ class CTransform;
 class CNavigation;
 class CCameraMan;
 class CComputeShader;
+class CModelAnimation;
 
 class ENGINE_DLL CActionState abstract : public CComponent
 {
@@ -58,6 +59,8 @@ public:
 	CStateBase*		Get_CurrentState();
 	_uint			Get_CurrentCapabilities() { return Get_CurrentState()->Get_Capabilities(); }
 	const char*		Get_CurrentStateName() const;
+
+	CModelAnimation* Get_CurrentAnimation();
 
 	// cct move state
 	void			Set_ZeroVelocity();

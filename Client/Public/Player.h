@@ -145,6 +145,7 @@ protected:
 protected:
 	TIME_COUNTER	m_tDoubleJumpCount = {};
 	PLAYER_TYPE		m_ePlayerType = { PLAYER_TYPE::END };
+	_bool			m_bMainPlayer = { false };
 
 private:
 	HRESULT Ready_BaseStates();
@@ -154,7 +155,7 @@ private:
 	HRESULT Ready_PartCollider();
 
 private:
-	void Count_DoubleJump(const _float fTimeDelta);
+	void	Count_DoubleJump(const _float fTimeDelta);
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

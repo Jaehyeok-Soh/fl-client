@@ -94,7 +94,7 @@ protected:
 	STATE_START_DESC		m_tNextStateDesc	= {};
 
 	TimeCount				m_TFallingCount		= { 0.f,0.3f }; // 예전 값 : 0.4f
-	TimeCount				m_TChargeCount		= { 0.f,0.3f };
+	TimeCount				m_TChargeCount		= { 0.f,0.1f };
 
 	// state가 변환 했다면 true
 protected:
@@ -111,6 +111,8 @@ protected:
 
 protected:
 	_bool Check_Collis(const _float fTimeDelta);
+
+	void Jump_Impuls(_float fOffset = 1.f);
 
 	// player 객체 연결 함수들
 protected:
