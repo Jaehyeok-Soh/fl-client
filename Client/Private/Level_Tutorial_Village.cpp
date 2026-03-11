@@ -365,7 +365,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Map()
 		return E_FAIL;
 
 	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Village/Prologue_Village.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Village/Tutorial_Village.json";
 
 	if (!std::filesystem::exists(FilePath))
 		return E_FAIL;
