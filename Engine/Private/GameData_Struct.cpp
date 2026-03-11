@@ -172,6 +172,8 @@ namespace Engine
 		, pCinematicMoveBaseModel(nullptr)
 		, pCinematicLookAtTarget(nullptr)
 		, pCinematicLookAtModel(nullptr)
+		, vecOnReachEventIndex{}
+		, vecHoldTimeEndEventIndex{}
 	{
 	}
 	Camera_Keyframe_Data::Camera_Keyframe_Data(CCameraMan* pCameraman)
@@ -192,6 +194,8 @@ namespace Engine
 		, pCinematicMoveBaseModel(nullptr)
 		, pCinematicLookAtTarget(nullptr)
 		, pCinematicLookAtModel(nullptr)
+		, vecHoldTimeEndEventIndex{}
+		, vecOnReachEventIndex{}
 	{
 		Copy_Camera(pCameraman);
 	}
@@ -209,6 +213,8 @@ namespace Engine
 		, vPitchYawRoll(rhs.vPitchYawRoll)
 		, iLookAtBoneIndex(rhs.iLookAtBoneIndex)
 		, vLookAtOffset(rhs.vLookAtOffset)
+		, vecOnReachEventIndex{rhs.vecOnReachEventIndex}
+		, vecHoldTimeEndEventIndex{rhs.vecHoldTimeEndEventIndex}
 	{
 		/* 내 현재 Cashing 데이터가 있다면 Unbind Cashing 해줘야한다 */
 		this->UnBind_CashingData();
@@ -249,6 +255,9 @@ namespace Engine
 		this->vLookAtOffset = rhs.vLookAtOffset;
 
 
+		this->vecOnReachEventIndex = rhs.vecOnReachEventIndex;
+		this->vecHoldTimeEndEventIndex = rhs.vecHoldTimeEndEventIndex;
+
 
 		/* 내 현재 Cashing 데이터가 있다면 Unbind Cashing 해줘야한다 */
 		this->UnBind_CashingData();
@@ -278,6 +287,40 @@ namespace Engine
 			* Matrix::CreateTranslation(this->vPosition);
 	}
 
+	void Camera_Keyframe_Data::BroadCast_OnReachEvent()
+	{
+		if (this->isOnReachEventWork == true)
+			return;
+
+		auto*  pMgr =CGameInstance::GetInstance();
+
+		for (auto& Index : this->vecOnReachEventIndex)
+		{
+			pMgr->BroadCaset_RegisterGlobalEvent(Index);
+		}
+
+		this->isOnReachEventWork = true;
+
+		return;
+	}
+
+	void Camera_Keyframe_Data::BroadCast_HoldTimeEndEvent()
+	{
+		if (this->isHoldTimeEndEventWork == true)
+			return;
+
+		auto* pMgr = CGameInstance::GetInstance();
+
+		for (auto& Index : this->vecHoldTimeEndEventIndex)
+		{
+			pMgr->BroadCaset_RegisterGlobalEvent(Index);
+		}
+
+		this->isHoldTimeEndEventWork = true;
+
+		return;
+	}
+
 	void Camera_Keyframe_Data::Reset()
 	{
 		UnBind_CashingData();
@@ -296,6 +339,9 @@ namespace Engine
 		this->iLookAtBoneIndex			= NONE_BONE_INDEX;
 		this->vLookAtOffset				= Vec3::Zero;
 		
+
+		this->vecOnReachEventIndex.clear();
+		this->vecHoldTimeEndEventIndex.clear();
 	}
 
 	void Camera_Keyframe_Data::Copy_Camera(CCameraMan* pCameraman)
@@ -336,6 +382,12 @@ namespace Engine
 		this->pCinematicMoveBaseModel = nullptr;
 		Safe_Release(this->pCinematicMoveBaseTarget);
 		this->pCinematicMoveBaseTarget = nullptr;
+	}
+
+	void Camera_Keyframe_Data::Reset_GlobalEventWork()
+	{
+		this->isOnReachEventWork = false;
+		this->isHoldTimeEndEventWork = false;
 	}
 
 #pragma endregion
@@ -566,10 +618,28 @@ namespace Engine
 
 		SaveJson["Duration"]					= this->fDuration;
 		SaveJson["HoldTime"]					= this->fHoldTime;
+
+
+		/* Event */
+		if (!this->vecHoldTimeEndEventIndex.empty())
+		{
+			for (auto& Index : this->vecHoldTimeEndEventIndex)
+			{
+				SaveJson["Hold Time Event"].push_back(Index);
+			}
+		}
+		if (!this->vecOnReachEventIndex.empty())
+		{
+			for (auto& Index : this->vecOnReachEventIndex)
+			{
+				SaveJson["On Reach Event"].push_back(Index);
+			}
+		}
 	}
 
 	void Camera_Keyframe_Data::Load_Json(const json& LoadJson)
 	{/* Move 관련 */
+
 		if (LoadJson.contains("MoveBase Target"))
 			this->eMoveBaseTarget = CinematicTarget_ToEnum(LoadJson["MoveBase Target"].get<string>());
 
@@ -613,8 +683,18 @@ namespace Engine
 
 		if (LoadJson.contains("HoldTime"))
 			this->fHoldTime = LoadJson["HoldTime"].get<_float>();
-	}
 
+
+		if (LoadJson.contains("On Reach Event"))
+		{
+			this->vecOnReachEventIndex = LoadJson["On Reach Event"].get<vector<_uint>>();
+		}
+		if (LoadJson.contains("Hold Time Event"))
+		{
+			this->vecHoldTimeEndEventIndex = LoadJson["Hold Time Event"].get<vector<_uint>>();
+		}
+
+	}
 
 	void Camera_Cinematic_Sequence::Delete(_int iDeleteIndex)
 	{
@@ -624,7 +704,6 @@ namespace Engine
 
 	void Camera_Cinematic_Sequence::Reset(_int iResetIndex)
 	{
-		
 		this->vecStartCinematic_GlobalEventIndex.clear();
 		this->vecEndCinematic_GlobalEventIndex.clear();
 
@@ -665,8 +744,55 @@ namespace Engine
 			/* Boudinig Check */
 			if (iCopyBeforeDataIndex >= vecCamKeyFrameData.size())
 				return;
+
 			vecCamKeyFrameData.push_back(vecCamKeyFrameData[iCopyBeforeDataIndex]);
 		}
+	}
+
+	void Camera_Cinematic_Sequence::Insert_KeyFrameData(_uint iCurIndex, CCameraMan* pCamera)
+	{
+		if (iCurIndex >= this->vecCamKeyFrameData.size() && !this->vecCamKeyFrameData.empty())
+			return;
+
+		Camera_Keyframe_Data newData{};
+
+		if (pCamera == nullptr)
+		{
+			Vec3 vScale{};
+			Quat vQuat{};
+			Matrix WorldMatrix = pCamera->Get_Component<CTransform>()->Get_WorldMatrix();
+			WorldMatrix.Decompose(vScale,vQuat,newData.vPosition);
+			newData.vPosition = WorldMatrix.Translation();
+			Vec3 vRoatation = vQuat.ToEuler();
+			newData.vPitchYawRoll = { XMConvertToDegrees(vRoatation.x), XMConvertToDegrees(vRoatation.y), XMConvertToDegrees(vRoatation.z) };
+		}
+		else
+		{
+			Vec3 vScale{};
+			Quat vQuat{};
+			Matrix WorldMatrix = this->vecCamKeyFrameData[iCurIndex].Get_WorldMatrix();
+			WorldMatrix.Decompose(vScale, vQuat, newData.vPosition);
+			newData.vPosition = WorldMatrix.Translation();
+			Vec3 vRoatation = vQuat.ToEuler();
+			newData.vPitchYawRoll = { XMConvertToDegrees(vRoatation.x), XMConvertToDegrees(vRoatation.y), XMConvertToDegrees(vRoatation.z) };
+		}
+
+	}
+
+	void Camera_Cinematic_Sequence::BroadCast_OnReachEvent(_uint iindex)
+	{
+		if (iindex >= this->vecCamKeyFrameData.size())
+			return;
+
+		this->vecCamKeyFrameData[iindex].BroadCast_OnReachEvent();
+	}
+
+	void Camera_Cinematic_Sequence::BroadCast_HoldTimeEndEvent(_uint iindex)
+	{
+		if (iindex >= this->vecCamKeyFrameData.size())
+			return;
+
+		this->vecCamKeyFrameData[iindex].BroadCast_HoldTimeEndEvent();
 	}
 
 	void Camera_Cinematic_Sequence::Save_Json(json& SaveJson)
@@ -743,7 +869,7 @@ namespace Engine
 		}
 	}
 
-	void Camera_Cinematic_Sequence::BroadCast(_bool isStart) const
+	void Camera_Cinematic_Sequence::BroadCast(_bool isStart)
 	{
 		auto* pGameInstnace = CGameInstance::GetInstance();
 		if (pGameInstnace == nullptr) return;
@@ -757,6 +883,10 @@ namespace Engine
 		{
 			for (auto& Index : this->vecEndCinematic_GlobalEventIndex)
 				pGameInstnace->BroadCaset_RegisterGlobalEvent(Index);
+
+
+			for (auto& KeyFrame : this->vecCamKeyFrameData)
+				KeyFrame.Reset_GlobalEventWork();
 		}
 	}
 

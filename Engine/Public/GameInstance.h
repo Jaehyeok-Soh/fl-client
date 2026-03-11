@@ -193,7 +193,7 @@ public:
 	void Setup_UIViewProj_ToCBuffer();
 	void Setup_Inv_ToCBuffer();
 
-	HRESULT Play_CameraCinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence);
+	HRESULT Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence);
 	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
 #pragma endregion
 	

@@ -22,6 +22,7 @@ HRESULT CRock::Initialize_Prototype()
 	return S_OK;
 }
 
+
 HRESULT CRock::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))

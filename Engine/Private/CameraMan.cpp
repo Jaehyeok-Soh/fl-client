@@ -95,6 +95,10 @@ void CCameraMan::Cinematic(const _float fTimeDelta)
     /* 시네마틱 State가 아니라면 움직임 제한 */
     if (!m_pCinematicSquence || m_isCinematicEvent == false) return;
 
+    /* 처음 프레임은 카메라 위치값 */
+    /* 마지막 프레임은 의미가 없다 */
+
+
     m_fDeltaTime += fTimeDelta;
 
     CCamera* pCameraCom = Get_Component<CCamera>(); if (pCameraCom == nullptr) return;
@@ -102,18 +106,6 @@ void CCameraMan::Cinematic(const _float fTimeDelta)
 
     /* 현재 키프레임 데이터 */
     _uint iSize = static_cast<_uint>(m_pCinematicSquence->vecCamKeyFrameData.size());
-
-
-    if (m_iCurFrameIndex + 1 >= iSize)
-    {
-        /* 시네마틱 삭제 */
-        m_isCinematicEvent = false;
-        m_fDeltaTime = 0;
-        m_iCurFrameIndex = 0;
-        m_pCinematicSquence->BroadCast(false);
-        m_pCinematicSquence = nullptr;
-        return;
-    }
 
     auto& tStartCamKeyFrameData  = m_pCinematicSquence->vecCamKeyFrameData[m_iCurFrameIndex];
     auto& tEndCamKeyFrameData    = m_pCinematicSquence->vecCamKeyFrameData[m_iCurFrameIndex + 1];
@@ -146,19 +138,50 @@ void CCameraMan::Cinematic(const _float fTimeDelta)
     switch (tEndCamKeyFrameData.eMoveLerpType)
     {
     case ELerpType::NONE:
-        
+    {
+        vResultPos = vEndCinematicPos;   /* None 일때는 바로이동 */
+        break;
+    }
         vResultPos = vEndCinematicPos;   /* None 일때는 바로이동 */
         break;
     case ELerpType::Linear:             /* 단순 이동 */
+    {
+
         fReusltRatio = fTimeRatio;
         vResultPos = Vec3::Lerp(vStartCinematicPos, vEndCinematicPos, fReusltRatio);
         break;
+    }
     case ELerpType::SmoothStep:
+    {
         fReusltRatio = fTimeRatio * fTimeRatio * (3.0f - 2.0f * fTimeRatio);          /* 스무스 보간 */
         vResultPos = Vec3::Lerp(vStartCinematicPos, vEndCinematicPos, fReusltRatio);
         break;
+    }
     case ELerpType::SlowStart:                      break;
     case ELerpType::SlowEnd:                        break;
+
+    case ELerpType::Curve:
+    {
+        fReusltRatio = fTimeRatio;
+
+        /* Pre Pos */
+        Vec3 vPrevPos = vStartCinematicPos; // 인덱스가 없으면 그냥 Start 위치를 쓴다!
+        if (m_iCurFrameIndex > 0)
+        {
+            auto& tPreData = m_pCinematicSquence->vecCamKeyFrameData[m_iCurFrameIndex - 1];
+            vPrevPos = tPreData.Get_WorldMatrix().Translation();
+        }
+
+        /* 다다음 점구하기 */
+        Vec3 vNextPos = vEndCinematicPos; //만약없다면 NexpPos => 는 내가 이동할 Pos그대로사용
+        if (m_iCurFrameIndex + 2 < iSize)
+        {
+            auto& tNextData = m_pCinematicSquence->vecCamKeyFrameData[m_iCurFrameIndex + 2];
+            vNextPos = tNextData.Get_WorldMatrix().Translation();
+        }
+        vResultPos = Vec3::CatmullRom(vPrevPos, vStartCinematicPos, vEndCinematicPos, vNextPos, fReusltRatio);
+        break;
+    }
     default:                                        break;
     }
 
@@ -166,19 +189,54 @@ void CCameraMan::Cinematic(const _float fTimeDelta)
     switch (tEndCamKeyFrameData.eLookAtLerpType)
     {
     case ELerpType::NONE:
+    {
         vResultQuat = vEndCinematicQuat;   /* None 일때는 바로이동 */
         break;
+    }
     case ELerpType::Linear:
+    {
         fReusltRatio = fTimeRatio;
-        vResultQuat = Quat::Slerp( vStartCinematicQuat , vEndCinematicQuat  , fReusltRatio);
+        vResultQuat = Quat::Slerp(vStartCinematicQuat, vEndCinematicQuat, fReusltRatio);
         break;
+    }
     case ELerpType::SmoothStep:
+    {
         fReusltRatio = fTimeRatio * fTimeRatio * (3.0f - 2.0f * fTimeRatio);
         vResultQuat = Quat::Slerp(vStartCinematicQuat, vEndCinematicQuat, fReusltRatio);
         break;
+    }
 
     case ELerpType::SlowStart:                      break;
     case ELerpType::SlowEnd:                        break;
+
+    case ELerpType::Curve:                        
+    {
+        fReusltRatio = fTimeRatio;
+
+        Quat vPrevQuat = vStartCinematicQuat;       // 이동과 마찬가지로 사용
+        if (m_iCurFrameIndex > 0)
+        {
+            auto& tPreData = m_pCinematicSquence->vecCamKeyFrameData[m_iCurFrameIndex - 1];
+            tPreData.Get_WorldMatrix().Decompose(vCurCamScale, vPrevQuat, vCurCamPos); 
+        }
+
+        Quat vNextQuat = vEndCinematicQuat;
+        if (m_iCurFrameIndex + 2 < iSize)
+        {
+            auto& tNextData = m_pCinematicSquence->vecCamKeyFrameData[m_iCurFrameIndex + 2];
+            tNextData.Get_WorldMatrix().Decompose(vCurCamScale, vNextQuat, vCurCamPos);
+        }
+
+        XMVECTOR A, B, C;
+
+        // Setup 함수로 곡선 제어점(A, B, C) 생성
+        XMQuaternionSquadSetup(&A, &B, &C, vPrevQuat, vStartCinematicQuat, vEndCinematicQuat, vNextQuat);
+
+        /* 3. 보간 결과도 SimpleMath::Quaternion이 XMVECTOR를 바로 받을 수 있습니다. */
+        vResultQuat = XMQuaternionSquad(vStartCinematicQuat, A, B, vEndCinematicQuat, fReusltRatio);
+
+        break;
+    }
     default:                                        break;
     }
 
@@ -190,14 +248,22 @@ void CCameraMan::Cinematic(const _float fTimeDelta)
     /* 총 도착시간 + HoldTime 시간 */
     _float fTotalFrameTime = tEndCamKeyFrameData.fDuration + tEndCamKeyFrameData.fHoldTime;
 
+    /* 도착했을떄 Event발송 */
+    if (m_fDeltaTime >= tEndCamKeyFrameData.fDuration)
+    {
+        /* 도착 Event발송 발송 */
+        tEndCamKeyFrameData.BroadCast_OnReachEvent();
+    }
+
     /* 이 시간을 넘었다면 */
     if (m_fDeltaTime >= fTotalFrameTime)
     {
+        /* Hold Time Event 발송 */
+        tEndCamKeyFrameData.BroadCast_HoldTimeEndEvent();
         m_iCurFrameIndex++;     // 다음 키프레임으로!
         m_fDeltaTime = 0.f;     // 시간 초기화
 
-
-        if (m_iCurFrameIndex >= iSize)
+        if (m_iCurFrameIndex + 1 >= iSize)
         {
             /* 시네마틱 삭제 */
             m_isCinematicEvent  = false;
@@ -251,7 +317,7 @@ void CCameraMan::Camera_Shaking(const _float fTimeDelta)
 
 }
 
-void CCameraMan::Cinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence)
+void CCameraMan::Cinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence)
 {
     if (pCameraCinematicSequence == nullptr) return;
     

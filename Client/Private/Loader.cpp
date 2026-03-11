@@ -310,6 +310,7 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 	/* Global */
 	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
+
 	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
 	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
 

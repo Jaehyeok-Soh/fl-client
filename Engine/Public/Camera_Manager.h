@@ -32,7 +32,7 @@ public:
 	HRESULT Change_Target_Next();
 
 	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
-	HRESULT Play_CameraCinematic( const Camera_Cinematic_Sequence* pCameraCinematicSequence );
+	HRESULT Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence );
 	
 	const Matrix& Get_ViewMatrix() const { return m_matView; }
 	void Set_ViewMatrix(const Matrix &matView) { m_matView = matView; }

@@ -264,6 +264,7 @@ namespace Engine
 		SlowStart,      /* 서서히 출발 (점점 빨라짐. 상용 엔진의 EaseIn) */
 		SlowEnd,        /* 서서히 도착 (목적지에서 스르륵 멈춤. 상용 엔진의 EaseOut) */
 		SmoothStep,     /* 서서히 출발 + 서서히 도착 (컷신의 꽃. 상용 엔진의 EaseInOut) */
+		Curve,			/* 국선 주행 */
 		END
 	};
 
@@ -273,7 +274,8 @@ namespace Engine
 		"Linear",
 		"SlowStart",
 		"SlowEnd",
-		"SmoothStep"
+		"SmoothStep",
+		"Curve"
 	};
 
 	inline string LerpType_ToString(ELerpType eType)
@@ -306,12 +308,12 @@ namespace Engine
 
 		/* 카메라가 움직일 기준이될 Target정보  */
 		ECinematicTarget	eMoveBaseTarget{ ECinematicTarget::NONE };	/* 타겟 정보를 들고온다 */
-		_int				iMoveBaseTargetBoneIndex{ NONE_BONE_INDEX };		/* BoneIndex 정보 없으면 -1 있다면 0 이상 */
-		Vec3				vPosition{ Vec3::Zero };								/* 포지션 */
+		_int				iMoveBaseTargetBoneIndex{ NONE_BONE_INDEX };/* BoneIndex 정보 없으면 -1 있다면 0 이상 */
+		Vec3				vPosition{ Vec3::Zero };					/* 포지션 */
 
-		ELerpType			eMoveLerpType{ELerpType::Linear};			/* 이번 포지션값 이동에 Lerp를 쓸건지 말건지 */
-		ELerpType			eLookAtLerpType{ELerpType::Linear };		/* 이번 LookAt  이동에  Lerp를 쓸지 말지 */
-		ELerpType			eFovLerpType{ELerpType::NONE};				/* 이번 LookAt  이동에  Lerp를 쓸지 말지 */
+		ELerpType			eMoveLerpType{ELerpType::Linear};			/* 이번 포지션값   이동에 Lerp를 쓸건지 말건지 */
+		ELerpType			eLookAtLerpType{ELerpType::Linear };		/* 이번 LookAt    이동에  Lerp를 쓸지 말지 */
+		ELerpType			eFovLerpType{ELerpType::NONE};				/* 이번 Fov값에   이동에  Lerp를 쓸지 말지 */
 
 		/* Position , Look At , fov 가 전부 동일하게 사용하게된다 3개로 쪼갤려니 크게 어려워질거같아서 못쪼갬 ㅇㅇ */
 		_float				fDuration{ 1.f };									/* 걸리는 시간 (초) */
@@ -325,6 +327,11 @@ namespace Engine
 		/* 바라볼 대상이 있을때 사용할 데이터들 */
 		_int                iLookAtBoneIndex{ NONE_BONE_INDEX };				/* 바라볼 대상의 특정 뼈 */
 		Vec3                vLookAtOffset{ Vec3::Zero };						/* 타겟 위치에서 약간 위/아래를 볼 때 쓰는 오프셋 */
+
+
+		vector<_uint>		vecOnReachEventIndex{};							/* 카메라가 이 위치에 도달했을 때 사용해줄 Global Event Index */
+		vector<_uint>		vecHoldTimeEndEventIndex{};							/* 카메라가 이 위치에 도달하고 대기시간이 모두 끝났을 때 발송 해줄 Event Index */
+
 	public:
 		/* Cashing 용 데이터 */
 		/* MoveBase */
@@ -334,6 +341,10 @@ namespace Engine
 		/* LookAt Base */
 		class CGameObject*	pCinematicLookAtTarget{ nullptr };
 		class CModel*		pCinematicLookAtModel{ nullptr };
+
+	private:
+		_bool				isOnReachEventWork{false};
+		_bool				isHoldTimeEndEventWork{false};
 	public:
 		Camera_Keyframe_Data();
 		Camera_Keyframe_Data(class CCameraMan* pCameraman);
@@ -342,6 +353,11 @@ namespace Engine
 		~Camera_Keyframe_Data();
 	public:
 		Matrix				Get_WorldMatrix() const;
+
+		/* BroadCast */
+		void				BroadCast_OnReachEvent();
+		void				BroadCast_HoldTimeEndEvent();
+		void				Reset_GlobalEventWork();
 	public:
 		void				Reset();
 		void				Copy_Camera(class CCameraMan* pCameraman);
@@ -355,11 +371,11 @@ namespace Engine
 	struct		ENGINE_DLL				Camera_Cinematic_Sequence
 	{
 	public:
-		vector<_uint>					vecStartCinematic_GlobalEventIndex{0};
-		vector<_uint>					vecEndCinematic_GlobalEventIndex{0};
-		string							strDataName;			/* Data Name */
-		vector<Camera_Keyframe_Data>	vecCamKeyFrameData{};	/* 카메라 움직임 정보 */
-		_bool							isDebugRender{ true };
+		vector<_uint>									vecStartCinematic_GlobalEventIndex{0};
+		vector<_uint>									vecEndCinematic_GlobalEventIndex{0};
+		string											strDataName;			/* Data Name */
+		vector<Camera_Keyframe_Data>					vecCamKeyFrameData{};	/* 카메라 움직임 정보 */
+		_bool											isDebugRender{ true };
 	private:
 
 		ID3D11Device*									pDevice{nullptr};
@@ -383,11 +399,15 @@ namespace Engine
 		void	Reset(_int iResetIndex = -1);
 		void	Copy_Camera(class CCameraMan* pCamera , _int iCopyIndex = -1);
 		void	Add_KeyFrameData(_int iCopyBeforeDataIndex = false);
+		void	Insert_KeyFrameData( _uint iCurIndex , CCameraMan* pCamera = nullptr);
+	public:
+		void	BroadCast_OnReachEvent(_uint iindex);
+		void	BroadCast_HoldTimeEndEvent(_uint iindex);
 	public:
 		void	Save_Json(json& SaveJson);
 		void	Load_Json(const json& LoadJson);
 	public:
-		void	BroadCast(_bool isStart) const;
+		void	BroadCast(_bool isStart);
 	};
 
 #pragma endregion

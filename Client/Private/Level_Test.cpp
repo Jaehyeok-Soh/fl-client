@@ -421,7 +421,7 @@ HRESULT CLevel_Test::Ready_Map()
 		return E_FAIL;
 
 	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Test/Test.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Test/Test_Grass.json";
 
 
 	if (!std::filesystem::exists(FilePath))
