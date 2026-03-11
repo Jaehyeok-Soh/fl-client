@@ -35,6 +35,7 @@ public:
 
     class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
     class CPhysics_QueryFilterCallback_Gun* GetQueryFilterCallback_Gun();
+    class CPhysics_QueryFilterCallback_SpringArm* GetQueryFilterCallback_SpringArm();
 
 #ifdef _DEBUG
     void SetMeshDebugState();

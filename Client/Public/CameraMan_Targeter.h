@@ -89,6 +89,8 @@ private:
 
 	void Change_DistancesAll(const _float fTimeDelta);
 
+	Vec3 CheckCameraCollision(Vec3 vCameraPos, Vec3 vTargetPos);
+
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
 	CGameObject* m_pLockonTarget = { nullptr };

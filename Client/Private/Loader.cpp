@@ -29,6 +29,7 @@
 #include "PhysicsRigidBody.h"
 #include "PhysicsAttackRaycast.h"
 #include "PhysicsRagdoll.h"
+#include "PhysicsSpringArm.h"
 //=================
 // Builder
 //=================
@@ -770,6 +771,7 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region PHYSICS
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_AttackRaycast", CPhysicsAttackRaycast::Create(m_pDevice, m_pDeviceContext, nullptr));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Ragdoll", CPhysicsRagdoll::Create());
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_SpringArm", CPhysicsSpringArm::Create(nullptr));
 #pragma endregion
 
 #pragma region UI

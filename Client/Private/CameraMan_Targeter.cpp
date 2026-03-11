@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "Bone.h"
 #include "CameraMan_Targeter.h"
+#include "PhysicsSpringArm.h"
 
 #include "GameInstance.h"
 
@@ -46,6 +47,9 @@ HRESULT CCameraMan_Targeter::Initialize_Prototype()
 HRESULT CCameraMan_Targeter::Initialize(void* pArg)
 {
     if (FAILED(Super::Initialize(pArg)))
+        return E_FAIL;
+
+    if (FAILED(Add_Component<CPhysicsSpringArm>(0 /*static*/, L"Prototype_Component_SpringArm", nullptr)))
         return E_FAIL;
 
     return S_OK;
@@ -521,6 +525,8 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     break;
     }
 
+    vDesiredPos = CheckCameraCollision(vDesiredPos, vChasePositionRaw);
+
     // RUL & P 다시 재조립
     CTransform* pCameraTransform = Get_Component<CTransform>();
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
@@ -644,6 +650,11 @@ void CCameraMan_Targeter::Change_DistancesAll(const _float fTimeDelta)
 
         break;
     }
+}
+
+Vec3 CCameraMan_Targeter::CheckCameraCollision(Vec3 vCameraPos, Vec3 vTargetPos)
+{
+    return Get_Component<CPhysicsSpringArm>()->CheckResolveCollision(vCameraPos, vTargetPos);
 }
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
