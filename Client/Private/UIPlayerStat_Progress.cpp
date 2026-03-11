@@ -218,27 +218,40 @@ HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
 
 HRESULT CUIPlayerStat_Progress::Convert_Stat_To_Ratio()
 {
+	_float f = {};
+
 	switch (m_eSubClassType)
 	{
 	case DTO::EUISubClassType::NONE_OWNER:
 		break;
 	case DTO::EUISubClassType::PLAYER_HP:
-		m_fCurRatio = m_pPlayerStatCom->Get_HealthRatio();
+		f = m_pPlayerStatCom->Get_HealthRatio();
 		break;
 	case DTO::EUISubClassType::PLAYER_ARMOR:
 	{
-		m_fCurRatio = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
+		f = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
 		break;
 	}
 	case DTO::EUISubClassType::PLAYER_ENERGY:
 	{
-		m_fCurRatio = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::MENTAL);
+		f = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::MENTAL);
 		break;
 	}
 	case DTO::EUISubClassType::END:
 	default:
 		return E_FAIL;
 	}
+
+	if ((f - m_fPlayer_PreRatio) > 0.f)
+	{
+		m_fProgress_Ratio = f;
+	}
+	else
+	{
+		m_fCurRatio = f;
+	}
+
+	m_fPlayer_PreRatio = f;
 	return S_OK;
 }
 

@@ -299,6 +299,16 @@ public:
 private:
 	void								Emit_Notifies(CModelAnimation* pAnimation, _float fCurPos, EAnimNotifyPhase ePhase);
 
+	/////////////////
+	////  Ragdoll  //
+	/////////////////
+public:
+	array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> Get_RagdollBoneDesc() { return m_arrRagdollBoneDesc; }
+
+private:
+	void								Mapping_Ragdoll_Bone();
+	RAGDOLLBONEDESC						Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT::Enum eParentJoint, RAGDOLLJOINT::Enum eChildJoint);
+	
 private:
 	EModelType							m_eType						= { EModelType::END };
 	Matrix								m_matPreTransform			= {};
@@ -365,6 +375,8 @@ private:
 	_float m_fAnimPrevTrackPosition{ -1.f }; // 외부 공개용 아님
 public:
 	CMulticastDelegate<void(const AnimNotifyKey&)> OnNotify;
+
+	array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> m_arrRagdollBoneDesc;
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

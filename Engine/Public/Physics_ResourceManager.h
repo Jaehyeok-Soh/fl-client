@@ -29,6 +29,7 @@ private:
 public:
 	void InitMaterials();
 	PxMaterial* GetMaterial(PHYSICSMATERIAL_DESC* pDesc);
+	PxMaterial* GetMaterial(EPhysicsMaterial eMaterial);
 	PxMaterial* CreateMaterial(PHYSICSMATERIAL_DESC* pDesc);
 
 public:

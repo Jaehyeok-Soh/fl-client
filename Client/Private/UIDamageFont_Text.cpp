@@ -346,73 +346,72 @@ HRESULT CUIDamageFont_Text::Spawn_FromPool(void* pArg)
 	m_isHitFontEventTrigger		= false;
 	m_fDamageFontScaleOffet		= 1.f;
 
-
-	_float x = pDesc->DamageFontData.vRandOffset.x;
-	_float y = pDesc->DamageFontData.vRandOffset.y;
-	_float z = pDesc->DamageFontData.vRandOffset.z;
-
-	if (m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE ||
-		m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL)
+	if (auto* pDamageFont = std::get_if<UI_DAMAGEFONT_PREFAB_DATA>(&pDesc->Data))
 	{
-		if(pDesc->DamageFontData.vHitPos.x > 100000 || pDesc->DamageFontData.vHitPos.x < -100000)
-			m_pWorldUIComp->Set_Target(pDesc->pTarget);
+		_float x = pDamageFont->vRandOffset.x;
+		_float y = pDamageFont->vRandOffset.y;
+		_float z = pDamageFont->vRandOffset.z;
+
+		if (m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE ||
+			m_eTextSubClassType == DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL)
+		{
+			if(pDamageFont->vHitPos.x > 100000 || pDamageFont->vHitPos.x < -100000)
+				m_pWorldUIComp->Set_Target(pDamageFont->pTarget);
+			else
+				m_pWorldUIComp->Set_TargetPos(Vec3{ pDamageFont->vHitPos.x,  pDamageFont->vHitPos.y, pDamageFont->vHitPos.z});
+		}
 		else
-			m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x,  pDesc->DamageFontData.vHitPos.y, pDesc->DamageFontData.vHitPos.z});
-	}
-	else
-	{
-		if (pDesc->DamageFontData.vHitPos.x > 100000 || pDesc->DamageFontData.vHitPos.x < -100000)
-			m_pWorldUIComp->Set_Target(pDesc->pTarget);
-		else
-			m_pWorldUIComp->Set_TargetPos(Vec3{ pDesc->DamageFontData.vHitPos.x + x,  pDesc->DamageFontData.vHitPos.y + y, pDesc->DamageFontData.vHitPos.z + z });
-	}
+		{
+			if (pDamageFont->vHitPos.x > 100000 || pDamageFont->vHitPos.x < -100000)
+				m_pWorldUIComp->Set_Target(pDamageFont->pTarget);
+			else
+				m_pWorldUIComp->Set_TargetPos(Vec3{ pDamageFont->vHitPos.x + x,  pDamageFont->vHitPos.y + y, pDamageFont->vHitPos.z + z });
+		}
 
-	switch (m_eTextSubClassType)
-	{
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
+		switch (m_eTextSubClassType)
+		{
+		case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN:
+			break;
+		case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
+		{
+			m_wstrText				= std::to_wstring(pDamageFont->iDamage);
+			m_vOriginFontColor		= pDamageFont->vFontColor;
+			m_vFontColor			= m_vOriginFontColor;
+			m_fDamageFontScaleOffet = 1.5f;
+			m_isSpawned				= true;
+		}
 		break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_COMMON:
-	{
-		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage);
-		m_vOriginFontColor		= pDesc->DamageFontData.vFontColor;
-		m_vFontColor			= m_vOriginFontColor;
-		m_fDamageFontScaleOffet = 1.5f;
-		m_isSpawned				= true;
-	}
-	break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
-	{
-		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage);
-		m_vOriginFontColor		= m_vFontColor;
-		m_isSpawned				= true;
-	}
-	break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
-	{
-		m_wstrText				= std::to_wstring(pDesc->DamageFontData.iDamage) + L"!";
-	}
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
-	{
-		m_vOriginFontColor		= pDesc->DamageFontData.vFontColor;
-		m_vFontColor			= m_vOriginFontColor;
-		m_fDamageFontScaleOffet = 5.f;
-		m_isSpawned				= true;
-	}
-	break;
-	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
+		case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
+		{
+			m_wstrText				= std::to_wstring(pDamageFont->iDamage);
+			m_vOriginFontColor		= m_vFontColor;
+			m_isSpawned				= true;
+		}
 		break;
-	case DTO::EUITextSubClassType::END:
-	default:
-		return E_FAIL;
+		case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
+		{
+			m_wstrText				= std::to_wstring(pDamageFont->iDamage) + L"!";
+		}
+		case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
+		{
+			m_vOriginFontColor		= pDamageFont->vFontColor;
+			m_vFontColor			= m_vOriginFontColor;
+			m_fDamageFontScaleOffet = 5.f;
+			m_isSpawned				= true;
+		}
+		break;
+		case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
+			break;
+		case DTO::EUITextSubClassType::END:
+		default:
+			return E_FAIL;
+		}
 	}
 	return S_OK;
 }
 
 HRESULT CUIDamageFont_Text::Despawn_FromPool()
 {
-	CLOG_INFO(L"\n/////////////////////////////////////////\n데미지 폰트 비활성화 됨\n///////////////////////////////////////////");
-
-
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
 

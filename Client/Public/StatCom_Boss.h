@@ -4,7 +4,7 @@
 NS_BEGIN(Client)
 
 #define GROGGY_MIN 0.0f
-#define GROGGY_MAX 40.0f
+#define GROGGY_MAX 100.0f
 
 class CStatCom_Boss final : public CMyStat
 {
@@ -28,6 +28,7 @@ public:
 	_float Get_CurrentGroggy() const { return m_vGroggy.x; }
 	_float Get_CurrentGRoggyRatio() const { return m_vGroggy.x / m_vGroggy.y; }
 private:
+	virtual void Sub_Hp(_float fHealth) override;
 	void Reset_GroggyStats();
 private:
 	_uint						m_iGroggyFlag			= { ENUM_TO_UINT(EGroggyState::None) };

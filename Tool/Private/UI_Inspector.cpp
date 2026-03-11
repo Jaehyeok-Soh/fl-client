@@ -580,6 +580,12 @@ void CUI_Inspector::SetUp_TextData()
 		}
 	}
 
+	{
+		_int i = m_pSelectedUI->Get_iTextParmas0();
+		ImGui::InputInt("Set iParam0", &i);
+		m_pSelectedUI->Set_iTextParams0(i);
+	}
+
 	End_Card();
 }
 

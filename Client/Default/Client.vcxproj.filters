@@ -61,6 +61,9 @@
     <Filter Include="06. FSM\Player\Idle">
       <UniqueIdentifier>{51b09a75-0a10-4351-89ee-c56fb121e232}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\Camera">
+      <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="99. ETC\pch">
       <UniqueIdentifier>{1afcebe2-6c14-4448-ab52-4236696f383f}</UniqueIdentifier>
     </Filter>
@@ -667,8 +670,8 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text">
       <UniqueIdentifier>{de480108-e7f3-4f29-830a-0536a69ac532}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\ContainerObjects\Camera">
-      <UniqueIdentifier>{4ef88d48-f7cf-4d3e-bc7a-24d09855396e}</UniqueIdentifier>
+    <Filter Include="03. GameObject\UIObjects\00.Manager\00.Tutorial Manager">
+      <UniqueIdentifier>{dba795a0-d055-4e45-bd0d-357e9544dfe3}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\HybridGameObject\SkillObject">
       <UniqueIdentifier>{5aa36a99-3aec-48fa-afe7-263fd91b249d}</UniqueIdentifier>
@@ -684,6 +687,24 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\SocektObject">
       <UniqueIdentifier>{18b43d9c-ed3e-4109-85da-3382fa87dff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\Pannel">
+      <UniqueIdentifier>{788b45e8-c51d-473c-a5ed-f8d52a90ac4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp">
+      <UniqueIdentifier>{25e2a233-e7f7-4563-a572-f106fac280f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\Pannel">
+      <UniqueIdentifier>{0e249d57-e22d-4908-969a-70de9299ef04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp">
+      <UniqueIdentifier>{cde727db-6845-48a6-aeed-98cf05c11225}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\00.Manager\01.Minimap Manager">
+      <UniqueIdentifier>{6c9a8bf9-b442-48de-a00f-913c231209ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\Spawner">
+      <UniqueIdentifier>{e8909b6c-2fe3-4a23-a845-27745c5f1495}</UniqueIdentifier>
     </Filter>
     <Filter Include="06. FSM\Player\Condemn">
       <UniqueIdentifier>{ef8bb50b-d728-4e6a-9da9-6af193a6c305}</UniqueIdentifier>
@@ -745,7 +766,7 @@
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraMan_Targeter.h">
-      <Filter>03. GameObject\ContainerObjects\Camera</Filter>
+      <Filter>03. GameObject\Camera</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>99. ETC\pch</Filter>
@@ -1252,11 +1273,26 @@
     <ClInclude Include="..\Public\UIWeakness_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UITutorial_Pannel_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text</Filter>
+    <ClInclude Include="..\Public\UITutorial_Manager.h">
+      <Filter>03. GameObject\UIObjects\00.Manager\00.Tutorial Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UITutorial_Pannel_Image.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\Pannel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_PopUp_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_Pannel_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\Pannel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_PopUp_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_PopUp_Clear_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_PopUp_Clear_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp</Filter>
     </ClInclude>
     <ClInclude Include="..\public\SkillProjectile.h">
       <Filter>03. GameObject\HybridGameObject\SkillObject\Projectile</Filter>
@@ -1269,6 +1305,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\SocketObject.h">
       <Filter>03. GameObject\PartObjects\SocektObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITutorial_Manager.h">
+      <Filter>03. GameObject\UIObjects\00.Manager\00.Tutorial Manager</Filter>
+	</ClInclude>
+	<ClInclude Include="..\Public\UIMinimap_Manager.h">
+      <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Xibi_GateSpawner.h">
+      <Filter>03. GameObject\Spawner</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Condemn.h">
       <Filter>06. FSM\Player\Condemn</Filter>
@@ -1328,7 +1373,7 @@
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
-      <Filter>03. GameObject\ContainerObjects\Camera</Filter>
+      <Filter>03. GameObject\Camera</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>99. ETC\pch</Filter>
@@ -1826,11 +1871,26 @@
     <ClCompile Include="..\Private\UIWeakness_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\08.Weakness Text</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UITutorial_Pannel_Text.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text</Filter>
+    <ClCompile Include="..\Private\UITutorial_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\00.Manager\00.Tutorial Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UITutorial_Pannel_Image.cpp">
-      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial</Filter>
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\Pannel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_PopUp_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_Pannel_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\Pannel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_PopUp_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_PopUp_Clear_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\09.Tutorial Text\PopUp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_PopUp_Clear_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\12.Tutorial\PopUp</Filter>
     </ClCompile>
     <ClCompile Include="..\private\SkillProjectile.cpp">
       <Filter>03. GameObject\HybridGameObject\SkillObject\Projectile</Filter>
@@ -1843,6 +1903,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\SocketObject.cpp">
       <Filter>03. GameObject\PartObjects\SocektObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITutorial_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\00.Manager\00.Tutorial Manager</Filter>
+	</ClCompile>
+	<ClCompile Include="..\Private\UIMinimap_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_GateSpawner.cpp">
+      <Filter>03. GameObject\Spawner</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Condemn.cpp">
       <Filter>06. FSM\Player\Condemn</Filter>

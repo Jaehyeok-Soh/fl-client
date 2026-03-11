@@ -39,6 +39,7 @@ namespace Tool
         "condition_normal_groggy",
         "condition_final_groggy",
         "condition_not_groggy",
+        "condition_phase_two",
         "param_condition_IsTrackPositionBetween",
         "param_condition_IsTrackPositionAt",
 
@@ -77,6 +78,9 @@ namespace Tool
 
         "feat_set_cct_collision_enable",
         "feat_set_cct_collision_disable",
+
+        "feat_set_on_ragdoll",
+        "feat_set_off_ragdoll",
     };
 
     inline constexpr int kConditionCount = (int)(sizeof(kConditionNames) / sizeof(kConditionNames[0]));

@@ -149,6 +149,7 @@ PS_OUT PS_DISOLVE(PS_IN_POS_TEX input)
     output.vColor = vBaseColor;
     output.vColor.a *= Edge;
     output.vColor.a *= Alpha;
+    output.vColor.a *= g_fAlphaRatio;
     return output;
 }
 

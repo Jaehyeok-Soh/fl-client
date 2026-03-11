@@ -104,6 +104,8 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_not_groggy", CONDITION{ return MONSTERCC(state)->IsNotGroggy(); });
 
+	REGISTER_CONDITION("condition_phase_two", CONDITION{ return MONSTERCC(state)->IsPhaseTwo(); });
+
 	REGISTER_CONDITION("param_condition_IsTrackPositionBetween", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionBetweenRaw(param.fParam[0], param.fParam[1]); });
 
 	REGISTER_CONDITION("param_condition_IsTrackPositionAt", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionAtRaw(param.fParam[0]); });
@@ -141,6 +143,9 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_set_deadprocess", FEATURE{ MONSTERCC(state)->Set_Dead_Process(); });
 	REGISTER_FEATURE("feat_set_cct_collision_enable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Enable(); });
 	REGISTER_FEATURE("feat_set_cct_collision_disable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Disable(); });
+
+	REGISTER_FEATURE("feat_set_on_ragdoll", FEATURE{ MONSTERCC(state)->Set_On_Ragdoll(); });
+	REGISTER_FEATURE("feat_set_off_ragdoll", FEATURE{ MONSTERCC(state)->Set_Off_Ragdoll(); });
 
 	return S_OK;
 }

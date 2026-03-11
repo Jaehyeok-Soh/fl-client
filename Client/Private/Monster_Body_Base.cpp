@@ -12,6 +12,7 @@
 #include "Model.h"
 #include "ComputeShader.h"
 #include "PhysicsCCT.h"
+#include "PhysicsRagdoll.h"
 
 #include "UI_Manager.h"
 #include "GameInstance.h"
@@ -65,6 +66,13 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 void CMonster_Body_Base::Update_Priority(_float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
+
+	if (m_pGameInstance->CheckRagdollState(Get_ID()))
+	{
+		auto model = Get_Component<CModel>();
+		auto animIdx = model->Get_CurrentAnimationIndex();
+		m_pGameInstance->RagdollSyncStates(Get_ID(), model->Get_Animation(animIdx)->Get_Channels());
+	}
 }
 
 void CMonster_Body_Base::Update(_float fTimeDelta)
@@ -94,6 +102,10 @@ void CMonster_Body_Base::Ready_Before_Render(_float fTimeDelta)
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
+
+#ifdef _DEBUG
+	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRagdoll>());
+#endif // _DEBUG
 }
 
 void CMonster_Body_Base::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -185,6 +197,9 @@ HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)
 		return E_FAIL;
 
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
+		return E_FAIL;
+	
+	if (FAILED(Add_Component<CPhysicsRagdoll>(0/*static*/, L"Prototype_Component_Ragdoll", this)))
 		return E_FAIL;
 
 	return S_OK;

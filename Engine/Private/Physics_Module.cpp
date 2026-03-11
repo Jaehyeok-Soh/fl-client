@@ -10,6 +10,7 @@
 #include "Physics_ShapeFactory.h"
 #include "Physics_CCTManager.h"
 #include "Physics_ActorFactory.h"
+#include "Physics_RagdollSystem.h"
 #include "Physics_FilterEventCallback.h"
 
 CPhysics_Module::CPhysics_Module(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -195,6 +196,12 @@ HRESULT CPhysics_Module::Initialize()
 			MSG_BOX("Failed to created : physics cct manager");
 			return E_FAIL;
 		}
+
+		if (!(m_pRagdollSystem = CPhysics_RagdollSystem::Create(m_pDevice, m_pDeviceContext, m_pPhysics, m_pScene)))
+		{
+			MSG_BOX("Failed to created : physics ragdoll system");
+			return E_FAIL;
+		}
 	}
 
 	return S_OK;
@@ -224,6 +231,16 @@ void CPhysics_Module::StepPhysics(_float fTimeDelta)
 void CPhysics_Module::AddActor(PxRigidActor* actor)
 {
 	m_pScene->addActor(*actor);
+}
+
+void CPhysics_Module::AddRagdoll(PxArticulationReducedCoordinate* pArticulation)
+{
+	m_pScene->addArticulation(*pArticulation);
+}
+
+void CPhysics_Module::RemoveRagdoll(PxArticulationReducedCoordinate* pArticulation)
+{
+	m_pScene->removeArticulation(*pArticulation);
 }
 
 PxTransform CPhysics_Module::XMMatrixToPxTransform(Matrix mat)
@@ -302,6 +319,11 @@ void CPhysics_Module::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTa
 	m_pResourceManager->RegisterPhysicsMesh(levelIndex, prototypeTag);
 }
 
+PxMaterial* CPhysics_Module::GetPhysicsMaterial(EPhysicsMaterial eMaterial)
+{
+	return m_pResourceManager->GetMaterial(eMaterial);
+}
+
 vector<PxShape*> CPhysics_Module::GetShape(PHYSICSCOLLIDER_DESC* pDesc)
 {
 	return m_pShapeFactory->GetShape(pDesc);
@@ -322,6 +344,11 @@ vector<PxRigidActor*> CPhysics_Module::GetActor(PHYSICSRIGIDBODY_DESC* rigidBody
 	return m_pActorFactory->GetActor(rigidBodyDesc, colliderDesc, shapes);
 }
 
+RAGDOLLELEMENTS CPhysics_Module::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc)
+{
+	return m_pRagdollSystem->CreateRagdoll(arrRagdollBoneDesc);
+}
+
 PxController* CPhysics_Module::GetController(PHYSICSCCT_DESC* pDesc)
 {
 	return m_pCCTManager->GetController(pDesc);
@@ -332,11 +359,51 @@ CPhysics_CCTFilterCallback* CPhysics_Module::GetCCTFilterCallback()
 	return m_pCCTManager->GetCCTFilterCallback();
 }
 
+_bool CPhysics_Module::CheckRagdollState(int64 objID)
+{
+	return m_pRagdollSystem->CheckRagdollState(objID);
+}
+
+void CPhysics_Module::RagdollRegister(CGameObject* obj)
+{
+	m_pRagdollSystem->Register(obj);
+}
+
+void CPhysics_Module::RagdollUnregister(int64 objID)
+{
+	m_pRagdollSystem->Unregister(objID);
+}
+
+void CPhysics_Module::RagdollRequestStart(uint64 objID)
+{
+	m_pRagdollSystem->RequestStart(objID);
+}
+
+void CPhysics_Module::RagdollSyncStates(uint64 objID, vector<class CChannel*>& vecChannels)
+{
+	m_pRagdollSystem->SyncStates(objID, vecChannels);
+}
+
+void CPhysics_Module::RagdollFinish(uint64 objID)
+{
+	m_pRagdollSystem->Finish(objID);
+}
+
 PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes0, PxFilterData filterData0,
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
+	if ((filterData0.word0 & PHYSICSFILTERGROUP::RAGDOLL)
+		|| (filterData1.word0 & PHYSICSFILTERGROUP::RAGDOLL))
+	{
+		_bool isMap0 = filterData0.word0 & PHYSICSFILTERGROUP::MAP;
+		_bool isMap1 = filterData1.word0 & PHYSICSFILTERGROUP::MAP;
+
+		if (!isMap0 && !isMap1)
+			return PxFilterFlag::eSUPPRESS;
+	}
+
 	_bool bPass0 = ((filterData0.word0 & filterData1.word1) != 0);
 	_bool bPass1 = ((filterData1.word0 & filterData0.word1) != 0);
 	// Pair°¡ ¾Æ´Ò ¶§
@@ -508,6 +575,7 @@ CPhysics_Module* CPhysics_Module::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 
 void CPhysics_Module::Free()
 {
+	Safe_Release(m_pRagdollSystem);
 	Safe_Release(m_pCCTManager);
 	Safe_Release(m_pActorFactory);
 	Safe_Release(m_pShapeFactory);

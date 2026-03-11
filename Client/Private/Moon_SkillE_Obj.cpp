@@ -92,7 +92,7 @@ HRESULT CMoon_SkillE_Obj::Ready_Modules()
 	{
 		PHYSICSCOLLIDER_DESC colliderDesc{};
 		colliderDesc.eShape = EPhysicsShape::BOX;
-		colliderDesc.eFilterLayer = tagPhysicsFilterGroup::ATTACK;
+		colliderDesc.eFilterLayer = PHYSICSFILTERGROUP::ATTACK;
 		//cloneDesc.bIsSkillTrigger = true;
 		colliderDesc.iFilterMask =
 		{

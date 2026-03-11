@@ -215,6 +215,7 @@ namespace Engine
 		PX_CCT,
 		PX_ATTACKOVERLAP,
 		PX_ATTACKRAYCAST,
+		PX_RAGDOLL,
 		// 이펙트
 		EF_ANIMHANDLER,
 		//
@@ -398,7 +399,7 @@ namespace Engine
 		END
 	};
 
-	typedef struct tagCollisionEvent
+	typedef struct ECollisionEvent
 	{
 		enum Enum
 		{
@@ -411,7 +412,7 @@ namespace Engine
 		};
 	}COLLISIONEVENT;
 
-	typedef struct tagPhysicsFilterGroup
+	typedef struct EPhysicsFilterGroup
 	{
 		enum Enum : unsigned int
 		{
@@ -438,11 +439,12 @@ namespace Engine
 			TRIGGER_DIRECTION = 1 << 16,
 			TRIGGER_BOX = 1 << 17,
 
-			
 			INVISIBLE_WALL = 1 << 18,
 			DETECT_MONSTER = 1 << 19,
 
-			NONE = 1 << 20,
+			RAGDOLL = 1 << 20,
+
+			NONE = 1 << 21,
 			END
 		};
 
@@ -578,5 +580,29 @@ namespace Engine
 	// EFFECT Type
 	//===================
 	enum class E_EFFECT_TYPE { LOCAL, WORLD, END }; // skill의 타입
+
+	//===================
+	// Physics ragdoll joint
+	//===================
+	typedef struct ERagdollJoint
+	{
+		enum Enum
+		{
+			PELVIS,
+			SPINE_02,
+			HEAD,
+			UPPERARM_L,
+			LOWERARM_L,
+			UPPERARM_R,
+			LOWERARM_R,
+			THIGH_L,
+			CALF_L,
+			FOOT_L,
+			THIGH_R,
+			CALF_R,
+			FOOT_R,
+			END
+		};
+	}RAGDOLLJOINT;
 }
 #endif // Engine_Enum_h__

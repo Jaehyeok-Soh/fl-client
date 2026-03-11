@@ -144,6 +144,15 @@ void CMonsterActionState::Update_CooldownTime(_float fTimeDelta)
 	}
 }
 
+_int CMonsterActionState::Get_StateIndex(const string& strStateName)
+{
+	auto itr = m_umapState.find(strStateName);
+	if (itr == m_umapState.end())
+		return -1;
+
+	return itr->second;
+}
+
 _bool CMonsterActionState::IsStateReady(_uint iIdx)
 {
 	return static_cast<CStateBase_Monster*>(m_vecStates[iIdx])->IsCooldownTimeSatisfy();

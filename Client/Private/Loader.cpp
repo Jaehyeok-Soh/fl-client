@@ -27,6 +27,7 @@
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 #include "PhysicsAttackRaycast.h"
+#include "PhysicsRagdoll.h"
 //=================
 // Builder
 //=================
@@ -75,6 +76,7 @@
 #include "ProjectileSpawner_Fan.h"
 #include "SkillObjectSpawner_RandomXZ.h"
 #include "ProjectileSpawner_Radial360.h"
+#include "Xibi_GateSpawner.h"
 // xibi
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
@@ -139,6 +141,8 @@
 #include "UIBossAction_Text.h"
 #include "UIWeakness_Text.h"
 #include "UITutorial_Pannel_Text.h"
+#include "UITutorial_PopUp_Text.h"
+#include "UITutorial_PopUp_Clear_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -157,6 +161,8 @@
 #include "UIBossAction_Image.h"
 #include "UIWeakness_Image.h"
 #include "UITutorial_Pannel_Image.h"
+#include "UITutorial_PopUp_Image.h"
+#include "UITutorial_PopUp_Clear_Image.h"
 //=================
 // Resource
 //=================
@@ -753,6 +759,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma region PHYSICS
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_AttackRaycast", CPhysicsAttackRaycast::Create(m_pDevice, m_pDeviceContext, nullptr));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Ragdoll", CPhysicsRagdoll::Create());
 #pragma endregion
 
 #pragma region UI
@@ -785,6 +792,10 @@ HRESULT CLoader::Loading_For_Logo()
 	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelImage",		CUITutorial_Pannel_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelText",		CUITutorial_Pannel_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpImage",		CUITutorial_PopUp_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpText",		CUITutorial_PopUp_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearImage",	CUITutorial_PopUp_Clear_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearText",	CUITutorial_PopUp_Clear_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;
@@ -1152,6 +1163,7 @@ HRESULT CLoader::Ready_Spawner()
 		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
 		desc.fLifeTime = 5.f;
 		desc.fInterval = 0.05f;
+		desc.fSpeed = 6.5f;
 		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
 		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360CircleProjectile,
 			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
@@ -1180,6 +1192,20 @@ HRESULT CLoader::Ready_Spawner()
 
 		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
 			CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// 8GateSpawner
+	{
+		CXibi_GateSpawner::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = iLevelID;
+		desc.fLifeTime = 7.f;
+		desc.fInterval = 0.6f;
+		desc.fSpeed = 4.5f;
+		desc.fMaxDistance = 30.f;
+		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiGate,
+			CXibi_GateSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}
 

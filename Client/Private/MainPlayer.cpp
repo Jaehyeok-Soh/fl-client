@@ -337,15 +337,17 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
         // Hit 데미지 폰트 // 색 변경은 가능 //
         {
             UI_PREFAB_DATA tPrefabData = {};
-            tPrefabData.DamageFontData.iDamage = static_cast<_uint>(fDamage);
+            UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+            Desc.iDamage = static_cast<_uint>(fDamage);
             if (hitDesc.bHasHitPoint)
-                tPrefabData.DamageFontData.vHitPos = hitDesc.vHitPoint;
+                Desc.vHitPos = hitDesc.vHitPoint;
             else
             {
-                tPrefabData.DamageFontData.vHitPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-                tPrefabData.DamageFontData.vHitPos.y += 0.4f;
+                Desc.vHitPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+                Desc.vHitPos.y += 0.4f;
             }
                 
+            tPrefabData.Data = Desc;
             CUI_Manager::GetInstance()->Request_Add_Prefab(
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
         }

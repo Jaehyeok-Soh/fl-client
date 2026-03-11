@@ -206,22 +206,24 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+	if (auto* pNamePlate = std::get_if<UI_NAMEPLATE_PREFAB_DATA>(&pDesc->Data))
+	{
+		auto* pComp = Get_Script_Component(L"WorldUIComponent");
+		if (nullptr == pComp)
+			return E_FAIL;
 
-	auto* pComp = Get_Script_Component(L"WorldUIComponent");
-	if (nullptr == pComp)
-		return E_FAIL;
+		m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
+		if (nullptr == m_pWorldUIComp)
+			return E_FAIL;
 
-	m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
-	if (nullptr == m_pWorldUIComp)
-		return E_FAIL;
+		m_pWorldUIComp->Set_Target(pNamePlate->pTarget);
+		m_pTargetMoster = pNamePlate->pTarget;
+		m_pWorldUIComp->Set_TargetWorldOffset(pNamePlate->vOffset);
 
-	m_pWorldUIComp->Set_Target(pDesc->pTarget);
-	m_pTargetMoster = pDesc->pTarget;
-	m_pWorldUIComp->Set_TargetWorldOffset(pDesc->NamePlateData.vOffset);
-
-	m_pTargetStat = pDesc->pTarget->Get_Component<CMyStat>();
-	if (nullptr == m_pTargetStat)
-		return E_FAIL;
+		m_pTargetStat = pNamePlate->pTarget->Get_Component<CMyStat>();
+		if (nullptr == m_pTargetStat)
+			return E_FAIL;
+	}
 
 	m_isSpawned = true;
 	m_isDeadRequest = false;
