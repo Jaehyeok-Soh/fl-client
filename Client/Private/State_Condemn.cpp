@@ -2,6 +2,7 @@
 #include "State_Condemn.h"
 
 #include "Player.h"
+#include "Weapon.h"
 #include "PhysicsCCT.h"
 
 #include "GameInstance.h"
@@ -55,6 +56,9 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	// boss¸¦ ÃÄ´Ù º½
 	pPlayerTransform->Look_At_XZ(vBossPos);
 
+
+	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+
 	return S_OK;
 }
 
@@ -67,6 +71,8 @@ HRESULT CState_Condemn::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }
