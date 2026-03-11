@@ -31,7 +31,8 @@ HRESULT CPhysicsSpringArm::Initialize(void* pArg)
 {
 	m_filterData.data.word0 = 0;
 	m_filterData.data.word1 = PHYSICSFILTERGROUP::MAP;
-	m_filterData.flags = PxQueryFlag::eSTATIC;
+	m_filterData.flags = PxQueryFlag::eSTATIC
+		| physx::PxQueryFlag::ePREFILTER;
 
 	m_pxCameraSphere = PxSphereGeometry(0.5f);
 

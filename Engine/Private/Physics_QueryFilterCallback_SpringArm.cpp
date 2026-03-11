@@ -23,15 +23,18 @@ PxQueryHitType::Enum CPhysics_QueryFilterCallback_SpringArm::preFilter(const PxF
 
 	PxFilterData shapeFilter = shape->getQueryFilterData();
 
+	if ((shapeFilter.word0 & PHYSICSFILTERGROUP::TRIGGER_BOX) != 0)
+		return PxQueryHitType::eNONE;
+
 	_bool isMap = (shapeFilter.word0 & PHYSICSFILTERGROUP::MAP) != 0;
 
 	if (!isMap)
 		return PxQueryHitType::eNONE;
 
-	if (isMap)
-		return PxQueryHitType::eBLOCK;
+	//if (isMap)
+	//	return PxQueryHitType::eBLOCK;
 
-	return PxQueryHitType::eNONE;
+	return PxQueryHitType::eBLOCK;
 }
 
 CPhysics_QueryFilterCallback_SpringArm::CPhysics_QueryFilterCallback_SpringArm()
