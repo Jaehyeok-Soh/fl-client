@@ -260,7 +260,8 @@ CMonster_Dog::MONSTER_DESC CMonster_Dog::Get_PreSetDesc(_uint iLevelId)
 			| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 			| PHYSICSFILTERGROUP::Enum::MAP
 			| PHYSICSFILTERGROUP::Enum::OBJECT1
-			| PHYSICSFILTERGROUP::Enum::OBJECT2;
+			| PHYSICSFILTERGROUP::Enum::OBJECT2
+			| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 		desc.bGravity = { true };
 		desc.fGravity = { -35.f };

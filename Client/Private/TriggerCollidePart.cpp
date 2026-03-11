@@ -12,6 +12,7 @@ CTriggerCollidePart::CTriggerCollidePart(ID3D11Device* pDevice, ID3D11DeviceCont
 CTriggerCollidePart::CTriggerCollidePart(const CTriggerCollidePart& rhs)
 	: Super(rhs)
 	, m_vColliedPos(rhs.m_vColliedPos)
+	, m_iColliedID(rhs.m_iColliedID)
 {
 }
 
@@ -109,13 +110,14 @@ void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLa
 {
 	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
-	if (pOther)
+	if (pOther && pOther->IsAlive())
 	{
 		CTransform* pTrans = pOther->Get_Component<CTransform>();
 
 		if (pTrans)
 		{
 			m_vColliedPos = pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
+			m_iColliedID = pOther->Get_ID();
 		}
 	}
 }
@@ -125,7 +127,8 @@ void CTriggerCollidePart::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLay
 	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 
 	// 충돌 position 리셋
-	m_vColliedPos = Vec3::Zero;
+	if(pOther && pOther->Get_ID() == m_iColliedID)
+		m_vColliedPos = Vec3::Zero;
 }
 
 HRESULT CTriggerCollidePart::Render()

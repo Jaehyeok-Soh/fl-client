@@ -41,8 +41,10 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 		CTransform* pPlayerTransform = Get_OwnerObject()->Get_Component<CTransform>();
 		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
-		Vec3 vLook = (pCamTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
-		Vec3 vPos = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+		Vec3 vLook	= (pCamTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+		Vec3 vPos	= pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+		vLook.Normalize();
 
 		pPlayerTransform->Look_At(vPos + vLook);
 

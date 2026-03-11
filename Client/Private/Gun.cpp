@@ -103,25 +103,25 @@ void CGun::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* p
 
 void CGun::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	COLLIDED_DESC desc{};
-	desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
-	desc.iRequesterLayer = iMyColliderLayer;
-	desc.iOtherLayer = iOtherLayer;
-	desc.pRequester = this;
-	desc.pOther = pOther;
-	desc.tHitInfo = tHitInfo;
+	//COLLIDED_DESC desc{};
+	//desc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
+	//desc.iRequesterLayer = iMyColliderLayer;
+	//desc.iOtherLayer = iOtherLayer;
+	//desc.pRequester = this;
+	//desc.pOther = pOther;
+	//desc.tHitInfo = tHitInfo;
 
-	desc.tExtraDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::GUN);
+	//desc.tExtraDesc.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::GUN);
 
-	CPlayer::PLAYER_TYPE tType = static_cast<CPlayer*>(Get_Parent())->Get_PlayerType();
-	switch (tType)
-	{
-	case CPlayer::PLAYER_TYPE::MOON:
-		desc.tExtraDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::MOON);
-		break;
-	}
+	//CPlayer::PLAYER_TYPE tType = static_cast<CPlayer*>(Get_Parent())->Get_PlayerType();
+	//switch (tType)
+	//{
+	//case CPlayer::PLAYER_TYPE::MOON:
+	//	desc.tExtraDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::MOON);
+	//	break;
+	//}
 
-	m_pGameInstance->Push_CollidedData(desc);
+	//m_pGameInstance->Push_CollidedData(desc);
 
 	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
