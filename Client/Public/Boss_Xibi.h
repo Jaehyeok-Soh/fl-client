@@ -9,9 +9,10 @@ class CBoss_Xibi final : public CMonster_Base
 public:
 	enum EStateForDirecting
 	{
-		Condemned_Die = 0,
+		Idle = 0,
+		Condemned_Die,
 		Condemned_End,
-		DirectiongState,
+		Direction,
 		COUNT
 	};
 private:
@@ -39,8 +40,7 @@ public:
 
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
-	HRESULT Change_CondemnedDie();
-	HRESULT Change_CondemnedEnd();
+	HRESULT Change_State_ForDirecting(EStateForDirecting eState);
 private:
 	HRESULT Ready_Ability();
 	HRESULT Ready_Weapon();

@@ -57,6 +57,8 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 	if (FAILED(Get_Component<CGimmikController>()->Bind_Events()))
 		return E_FAIL;
 
+	if (FAILED(Ready_StateIndexForDirecting()))
+		return E_FAIL;
 	
 	return S_OK;
 }
@@ -80,6 +82,10 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 		ePrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
 	}
+
+	if (FAILED(Change_State_ForDirecting(EStateForDirecting::Idle)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -175,25 +181,16 @@ void CBoss_Xibi::Try_Attack(const HIT_DESC& hitDesc)
 	Super::Try_Attack(hitDesc);
 }
 
-HRESULT CBoss_Xibi::Change_CondemnedDie()
+HRESULT CBoss_Xibi::Change_State_ForDirecting(EStateForDirecting eState)
 {
+	if (eState < 0 || eState >= COUNT)
+		return E_FAIL;
+
 	CActionState* pActionState = Get_Component<CActionState>();
 	if (pActionState == nullptr)
 		return E_FAIL;
 
-	if(FAILED(pActionState->Change_State(m_arrStateIndex[EStateForDirecting::Condemned_Die], true)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CBoss_Xibi::Change_CondemnedEnd()
-{
-	CActionState* pActionState = Get_Component<CActionState>();
-	if (pActionState == nullptr)
-		return E_FAIL;
-	
-	if (FAILED(pActionState->Change_State(m_arrStateIndex[EStateForDirecting::Condemned_End], true)))
+	if (FAILED(pActionState->Change_State(m_arrStateIndex[eState], true)))
 		return E_FAIL;
 
 	return S_OK;
@@ -311,11 +308,15 @@ HRESULT CBoss_Xibi::Ready_StateIndexForDirecting()
 			return true;
 		};
 
+	if (setStateIndex(EStateForDirecting::Idle, "Idle") == false)
+		return E_FAIL;
 	if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemned_Die") == false)
 		return E_FAIL;
 	if (setStateIndex(EStateForDirecting::Condemned_End, "Condemned_End") == false)
 		return E_FAIL;
-	// setStateIndex(EStateForDirecting::DirectiongState, "???");
+	if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
+		return E_FAIL;
+
 	return S_OK;
 }
 
