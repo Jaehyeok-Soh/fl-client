@@ -57,6 +57,11 @@ PxMaterial* CPhysics_ResourceManager::GetMaterial(PHYSICSMATERIAL_DESC* pDesc)
 	return m_Materials[ENUM_TO_UINT(pDesc->eMaterial)];
 }
 
+PxMaterial* CPhysics_ResourceManager::GetMaterial(EPhysicsMaterial eMaterial)
+{
+	return m_Materials[ENUM_TO_UINT(eMaterial)];
+}
+
 PxMaterial* CPhysics_ResourceManager::CreateMaterial(PHYSICSMATERIAL_DESC* pDesc)
 {
 	return m_pPhysics->createMaterial(pDesc->fStaticFriction, pDesc->fDynamicFriction, pDesc->fRestitution);

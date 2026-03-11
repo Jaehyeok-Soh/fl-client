@@ -166,6 +166,7 @@
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
     <ClCompile Include="..\Private\ColliderModule.cpp" />
+    <ClCompile Include="..\Private\PhysicsRagdoll.cpp" />
     <ClCompile Include="..\Private\EffectBase.cpp" />
     <ClCompile Include="..\private\EffectHandler.cpp" />
     <ClCompile Include="..\Private\AsTypes.cpp" />
@@ -285,6 +286,7 @@
     <ClCompile Include="..\Private\Physics_FilterEventCallback.cpp" />
     <ClCompile Include="..\Private\Physics_Module.cpp" />
     <ClCompile Include="..\Private\Physics_QueryFilterCallback_Gun.cpp" />
+    <ClCompile Include="..\Private\Physics_RagdollSystem.cpp" />
     <ClCompile Include="..\Private\Physics_ResourceManager.cpp" />
     <ClCompile Include="..\Private\Physics_ShapeFactory.cpp" />
     <ClCompile Include="..\Private\Physics_Utils.cpp" />
@@ -454,6 +456,7 @@
     <ClInclude Include="..\Public\PhysicsAttackOverlap.h" />
     <ClInclude Include="..\Public\PhysicsAttackRaycast.h" />
     <ClInclude Include="..\Public\PhysicsCCT.h" />
+    <ClInclude Include="..\Public\PhysicsRagdoll.h" />
     <ClInclude Include="..\Public\Physics_CCTFilterCallback.h" />
     <ClInclude Include="..\Public\PhysicsCollider.h" />
     <ClInclude Include="..\Public\PhysicsRigidBody.h" />
@@ -465,6 +468,7 @@
     <ClInclude Include="..\Public\Physics_FilterEventCallback.h" />
     <ClInclude Include="..\Public\Physics_Module.h" />
     <ClInclude Include="..\Public\Physics_QueryFilterCallback_Gun.h" />
+    <ClInclude Include="..\Public\Physics_RagdollSystem.h" />
     <ClInclude Include="..\Public\Physics_ResourceManager.h" />
     <ClInclude Include="..\Public\Physics_ShapeFactory.h" />
     <ClInclude Include="..\Public\Physics_Utils.h" />

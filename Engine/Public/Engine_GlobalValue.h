@@ -46,4 +46,20 @@ const int				 NONE_BONE_INDEX = -1;
 
 static bool				 g_ToolDebugRender = { true };
 
+const std::string PhysicsJointNames[RAGDOLLJOINT::END] = {
+    "pelvis",
+    "spine_02",
+    "head",
+    "upperarm_l",
+    "lowerarm_l",
+    "upperarm_r",
+    "lowerarm_r",
+    "thigh_l",
+    "calf_l",
+    "foot_l",
+    "thigh_r",
+    "calf_r",
+    "foot_r",
+};
+
 NS_END

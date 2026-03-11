@@ -142,6 +142,9 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_set_cct_collision_enable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Enable(); });
 	REGISTER_FEATURE("feat_set_cct_collision_disable", FEATURE{ MONSTERCC(state)->Set_CCT_Collision_Disable(); });
 
+	REGISTER_FEATURE("feat_set_on_ragdoll", FEATURE{ MONSTERCC(state)->Set_On_Ragdoll(); });
+	REGISTER_FEATURE("feat_set_off_ragdoll", FEATURE{ MONSTERCC(state)->Set_Off_Ragdoll(); });
+
 	return S_OK;
 }
 
