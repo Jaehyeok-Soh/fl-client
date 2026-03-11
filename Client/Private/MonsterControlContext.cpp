@@ -2,6 +2,7 @@
 #include "MonsterControlContext.h"
 #include "Client_Defines.h"
 #include "Monster_Base.h"
+#include "MyStat.h"
 #include "MonsterActionState.h"
 #include "PhysicsCCT.h"
 #include "PhysicsRagdoll.h"
@@ -51,6 +52,7 @@ HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 
 	m_iOwnerID = Get_Owner()->Get_ID();
 
+	m_bPhaseTwo = false;
 	return S_OK;
 }
 
@@ -200,11 +202,6 @@ _bool CMonsterControlContext::IsTargetFOV()
 }
 
 _bool CMonsterControlContext::IsCliffAhead()
-{
-	return _bool();
-}
-
-_bool CMonsterControlContext::IsPhaseTwo()
 {
 	return _bool();
 }

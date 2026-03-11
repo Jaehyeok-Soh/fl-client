@@ -44,23 +44,29 @@ HRESULT CSkillObjectSpawnerBase::Initialize(void* pArg)
 
 void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec3& vDir)
 {
+	Spawn_SkillObject(vSpawnPos, vDir, vDir);
+}
+
+void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec3& vMoveDir, const Vec3& vLookDir)
+{
 	if (m_pOriginDesc->wstrSkillPoolTag.empty())
 		return;
-	
+
 	CSkillObjectBase::SKILLOBJECT_SPAWN_DESC desc{};
 	desc.pRequester = m_desc.pRequester;
 	desc.pTarget = m_desc.pTarget;
 
-	desc.iFlags				= m_pOriginDesc->iSkillObjectFlags;
-	desc.fLifeTime			= m_pOriginDesc->fLifeTime;
-	desc.fMaxDistance		= m_pOriginDesc->fMaxDistance;
-	desc.fHomingStrength	= m_pOriginDesc->fHomingStrength;
+	desc.iFlags = m_pOriginDesc->iSkillObjectFlags;
+	desc.fLifeTime = m_pOriginDesc->fLifeTime;
+	desc.fMaxDistance = m_pOriginDesc->fMaxDistance;
+	desc.fHomingStrength = m_pOriginDesc->fHomingStrength;
 
-    desc.vSpawnPos			= vSpawnPos;
-    desc.vDirection			= vDir;
+	desc.vSpawnPos = vSpawnPos;
+	desc.vDirection = vMoveDir;
+	desc.vLookDir = vLookDir;
 
 	// eunbi 초반에 셋팅한 속도 == transform speed
-	desc.fSpeed				= m_pOriginDesc->fSpeed;
+	desc.fSpeed = m_pOriginDesc->fSpeed;
 
 	// 이펙트 회전관련
 	if ((std::abs)(m_desc.fEffect_Rotation_Degree) > g_XMEpsilon.f[0])
@@ -72,7 +78,6 @@ void CSkillObjectSpawnerBase::Spawn_SkillObject(const Vec3& vSpawnPos, const Vec
 	CGameInstance::GetInstance()->Request_AddObject(
 		m_pOriginDesc->iPoolLevelIndex, m_pOriginDesc->wstrSkillPoolTag,
 		m_pGameInstance->Get_CurrentLevelIndex(), &desc);
-		//m_desc.iSpawnLevelIndex, &desc);
 }
 
 HRESULT CSkillObjectSpawnerBase::Awake(const _uint iCurrentLevelID)

@@ -294,7 +294,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 			iLevelId,
 			g_wszXibiProjectile_Prototype_Tag,
 			&desc,
-			30)))
+			100)))
 			return E_FAIL;
 	}
 	{

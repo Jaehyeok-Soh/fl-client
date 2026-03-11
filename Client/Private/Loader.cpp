@@ -76,6 +76,7 @@
 #include "ProjectileSpawner_Fan.h"
 #include "SkillObjectSpawner_RandomXZ.h"
 #include "ProjectileSpawner_Radial360.h"
+#include "Xibi_GateSpawner.h"
 // xibi
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
@@ -1162,6 +1163,7 @@ HRESULT CLoader::Ready_Spawner()
 		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
 		desc.fLifeTime = 5.f;
 		desc.fInterval = 0.05f;
+		desc.fSpeed = 6.5f;
 		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
 		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360CircleProjectile,
 			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
@@ -1190,6 +1192,20 @@ HRESULT CLoader::Ready_Spawner()
 
 		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
 			CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
+			return E_FAIL;
+	}
+	// 8GateSpawner
+	{
+		CXibi_GateSpawner::SPAWNER_ORIGIN_DESC desc{};
+		desc.iPoolLevelIndex = iLevelID;
+		desc.fLifeTime = 7.f;
+		desc.fInterval = 0.6f;
+		desc.fSpeed = 4.5f;
+		desc.fMaxDistance = 30.f;
+		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
+		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiGate,
+			CXibi_GateSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}
 

@@ -703,6 +703,9 @@
     <Filter Include="03. GameObject\UIObjects\00.Manager\01.Minimap Manager">
       <UniqueIdentifier>{6c9a8bf9-b442-48de-a00f-913c231209ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\Spawner">
+      <UniqueIdentifier>{e8909b6c-2fe3-4a23-a845-27745c5f1495}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1306,6 +1309,9 @@
 	<ClInclude Include="..\Public\UIMinimap_Manager.h">
       <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Xibi_GateSpawner.h">
+      <Filter>03. GameObject\Spawner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1897,6 +1903,9 @@
 	</ClCompile>
 	<ClCompile Include="..\Private\UIMinimap_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Xibi_GateSpawner.cpp">
+      <Filter>03. GameObject\Spawner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

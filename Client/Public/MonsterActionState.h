@@ -34,6 +34,7 @@ public:
 	CControlContext* GetOwnerControlContext() { return m_pOwnerControlContext; }
 
 	unordered_map<string, _int>& GetUmapState() { return m_umapState; }
+	_int Get_StateIndex(const string& strStateName);
 
 	_bool IsStateReady(_uint iIdx);
 

@@ -39,6 +39,7 @@ namespace Tool
         "condition_normal_groggy",
         "condition_final_groggy",
         "condition_not_groggy",
+        "condition_phase_two",
         "param_condition_IsTrackPositionBetween",
         "param_condition_IsTrackPositionAt",
 
