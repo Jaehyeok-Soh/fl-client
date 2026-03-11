@@ -6,6 +6,8 @@
 
 #include "DataStruct_AttackPreset.h"
 
+#include "GameInstance.h"
+
 CPlayerActionState::CPlayerActionState()
     : Super()
 {
@@ -13,6 +15,7 @@ CPlayerActionState::CPlayerActionState()
 
 CPlayerActionState::CPlayerActionState(const CPlayerActionState& rhs)
     : Super(rhs)
+    , m_tFKeyData(rhs.m_tFKeyData)
 {
 }
 
@@ -135,6 +138,21 @@ Vec3 CPlayerActionState::Get_VicPosition() const
     }
 
     return Vec3::Zero;
+}
+
+_bool CPlayerActionState::Can_FKeyEvent()
+{
+    if (m_tFKeyData.bEventCheckOn &&
+        KEY_BUTTON_DOWN(DIK_F))
+        return true;
+
+    return false;
+}
+
+void CPlayerActionState::Set_FKeyEvent(_uint iEvnet, _bool bOn)
+{
+    m_tFKeyData.bEventCheckOn = bOn;
+    m_tFKeyData.iKeyEvent = iEvnet;
 }
 
 CPlayerActionState* CPlayerActionState::Create()

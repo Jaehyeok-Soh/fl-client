@@ -611,6 +611,10 @@ CModelAnimation* CModel::Get_Animation(_uint iIndex)
 
 	return m_vecAnimations[iIndex];
 }
+CModelAnimation* CModel::Get_CurrentAnimation()
+{
+	return m_vecAnimations[m_iCurrentAnimIndex];
+}
 CMesh* CModel::Get_Mesh(_uint iIndex)
 {
 	if (iIndex >= m_vecMeshes.size())

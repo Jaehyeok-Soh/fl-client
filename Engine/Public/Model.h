@@ -177,6 +177,7 @@ public:
 	class CBone*						Get_Bone(_uint iIndex);
 	class CMaterialInstance*			Get_MaterialInstance(_uint iIndex);
 	class CModelAnimation*				Get_Animation(_uint iIndex);
+	class CModelAnimation*				Get_CurrentAnimation();
 
 	// animations
 	_bool								Is_AnimFinished() const { return m_bIsAnimFinished; }

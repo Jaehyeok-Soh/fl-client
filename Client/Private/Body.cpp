@@ -14,6 +14,7 @@
 #include "PhysicsCCT.h"
 #include "EffectHandler.h"
 #include "ComputeShader.h"
+#include "RenderFx.h"
 
 #include "GameInstance.h"
 
@@ -94,7 +95,7 @@ HRESULT CBody::Awake(const _uint iCurrentLevelIndex)
 	// ÇÏÃ¼ ¹Í½º´Â ²ô±â À§ÇÔ
 	CModel* pMyModel = Get_Component<CModel>();
 	pMyModel->Set_MixAnim_AnimIndex(1, -1);
-
+	Get_Component<CShader>()->Set_Pass(3);
 	return S_OK;
 }
 
@@ -111,9 +112,7 @@ void CBody::Update(_float fTimeDelta)
 
 	Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
 		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS, m_pAdditiveMixCS);
-
-	if(CCollider* pCollider = Get_Component<CCollider>())
-		pCollider->Update(m_matCombinedWorld);
+	Get_Component<CRenderFx>()->Update(fTimeDelta);
 }
 
 
@@ -176,9 +175,11 @@ HRESULT CBody::Render()
 		return E_FAIL;
 
 	CShader* pShader = Get_Component<CShader>();
+	CRenderFx* pRenderFx = Get_Component<CRenderFx>();
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
 
+	pRenderFx->Bind_Resources(pShader);
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
@@ -368,6 +369,19 @@ HRESULT CBody::Ready_Components(BODY_DESC* pDesc)
 
 	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 		return E_FAIL;
+
+	// RenderFx
+	{
+		CRenderFx::RENDER_FX_COPY_DESC desc{};
+		desc.vEmissiveColor = Vec3{ 0.55f, 0.82f, 1.00f };
+		desc.fEmissiveDefaultIntensity = 0.8f;
+		desc.fShakeAmpX = 0.015f;
+		desc.fShakeAmpY = 0.030f;
+		desc.fShakeFreq = 9.0f;
+		desc.fShakePhase = 0.0f;
+		if (FAILED(Add_Component<CRenderFx>(0, L"Prototype_Component_RenderFx", &desc)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

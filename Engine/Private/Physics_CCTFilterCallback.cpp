@@ -14,10 +14,10 @@ bool CPhysics_CCTFilterCallback::filter(const PxController& a, const PxControlle
 	if (a.getUserData() == nullptr || b.getUserData() == nullptr)
 		return false;
 
-	_bool aIsDead = static_cast<CGameObject*>(a.getUserData())->IsDead();
-	_bool bIsDead = static_cast<CGameObject*>(b.getUserData())->IsDead();
+	_bool aIsAlive = static_cast<CGameObject*>(a.getUserData())->IsAlive();
+	_bool bIsAlive = static_cast<CGameObject*>(b.getUserData())->IsAlive();
 
-	if (aIsDead || bIsDead)
+	if (!aIsAlive || !bIsAlive)
 		return false;
 
 	return true;

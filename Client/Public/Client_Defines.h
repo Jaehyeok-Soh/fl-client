@@ -60,11 +60,7 @@ namespace Client
 	{
 		None = 0,
 		Middle = 1 << 0,
-		Final = 1 << 1,
-		PartBreak_1 = 1 << 2,
-		PartBreak_2 = 1 << 3,
-		PartBreak_3 = 1 << 4,
-		PartBreak_4 = 1 << 5
+		Final = 1 << 1
 	};
 
 	enum class EDir : unsigned int
@@ -747,6 +743,7 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360CircleProjectile[]				{ L"Prototype_Spawner_Xibi360CircleProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
+	inline constexpr wchar_t g_wszSpawner_XibiGate[]							{ L"Prototype_Spawner_XibiGate" };
 
 	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]							{ L"Prototype_Spawner_PlayerMoon_SkillE" };
 	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };

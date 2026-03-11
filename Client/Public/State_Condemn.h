@@ -2,13 +2,12 @@
 #include "StateBase_Player.h"
 
 NS_BEGIN(Client)
-
-class CState_JumpBullet final : public CStateBase_Player
+class CState_Condemn final : public CStateBase_Player
 {
 	using Super = CStateBase_Player;
 private:
-	CState_JumpBullet(CActionState* pOwnerComponent);
-	virtual ~CState_JumpBullet() = default;
+	CState_Condemn(CActionState* pOwnerComponent);
+	virtual ~CState_Condemn() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
@@ -17,14 +16,8 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
-protected:
-	virtual void Set_NextStateDesc(_uint iNextState) override;
-
-private:
-	Vec3 m_vDir = { Vec3::Zero };
-
 public:
-	static CState_JumpBullet* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
+	static CState_Condemn* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
 };
 

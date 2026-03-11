@@ -54,18 +54,18 @@ RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAG
 	PxMaterial* material = m_pGameInstance->GetPhysicsMaterial(EPhysicsMaterial::PLAYER);
 
 	PxRigidBodyExt::updateMassAndInertia(*link, 10.f /*arrRagdollBoneDesc[i].fMass*/);
-	//PxRigidActorExt::createExclusiveShape(*link, PxCapsuleGeometry(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fRadius, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fHeight), *material);
-	{
-		PxShape* pShape = m_pPhysics->createShape(PxCapsuleGeometry(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fRadius, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fHeight), *material, true);
+	PxShape* pShape = PxRigidActorExt::createExclusiveShape(*link, PxCapsuleGeometry(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fRadius, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fHeight), *material);
+	//{
+	//	PxShape* pShape = m_pPhysics->createShape(PxCapsuleGeometry(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fRadius, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fHeight), *material, true);
 
 		pShape->setLocalPose(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].matOffsetTransform);
 
 		pShape->setSimulationFilterData(filterData);
 		pShape->setQueryFilterData(filterData);
 
-		link->attachShape(*pShape);
-		PX_RELEASE(pShape);
-	}
+	//	link->attachShape(*pShape);
+	//	PX_RELEASE(pShape);
+	//}
 
 	elements.vecPhysicsLink[arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].eJoint] = std::make_pair(link, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS]);
 
@@ -147,18 +147,18 @@ void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<
 	PxMaterial* material = m_pGameInstance->GetPhysicsMaterial(EPhysicsMaterial::PLAYER);
 
 	PxRigidBodyExt::updateMassAndInertia(*link, arrRagdollBoneDesc[index].fMass);
-	//PxRigidActorExt::createExclusiveShape(*link, PxCapsuleGeometry(arrRagdollBoneDesc[index].fRadius, arrRagdollBoneDesc[index].fHeight), *material);
-	{
-		PxShape* pShape = m_pPhysics->createShape(PxCapsuleGeometry(arrRagdollBoneDesc[index].fRadius, arrRagdollBoneDesc[index].fHeight), *material, true);
+	PxShape* pShape = PxRigidActorExt::createExclusiveShape(*link, PxCapsuleGeometry(arrRagdollBoneDesc[index].fRadius, arrRagdollBoneDesc[index].fHeight), *material);
+	//{
+	//	PxShape* pShape = m_pPhysics->createShape(PxCapsuleGeometry(arrRagdollBoneDesc[index].fRadius, arrRagdollBoneDesc[index].fHeight), *material, true);
 
 		pShape->setLocalPose(arrRagdollBoneDesc[index].matOffsetTransform);
 
 		pShape->setSimulationFilterData(filterData);
 		pShape->setQueryFilterData(filterData);
 
-		link->attachShape(*pShape);
-		PX_RELEASE(pShape);
-	}
+	//	link->attachShape(*pShape);
+	//	PX_RELEASE(pShape);
+	//}
 
 	PxArticulationJointReducedCoordinate* articulationJoint = static_cast<PxArticulationJointReducedCoordinate*>(link->getInboundJoint());
 	

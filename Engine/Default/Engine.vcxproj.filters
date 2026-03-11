@@ -481,6 +481,9 @@
     <Filter Include="00. System\12. PhysX\Ragdoll">
       <UniqueIdentifier>{dd97fd37-fd0e-4dd8-9622-b7b1aca7487b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\RenderFx">
+      <UniqueIdentifier>{71972e3a-d106-4efe-a1cb-d2c6761712f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -966,6 +969,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Physics_RagdollSystem.cpp">
       <Filter>00. System\12. PhysX\Ragdoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RenderFx.cpp">
+      <Filter>00. System\05. Component\RenderFx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1500,6 +1506,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Physics_RagdollSystem.h">
       <Filter>00. System\12. PhysX\Ragdoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RenderFx.h">
+      <Filter>00. System\05. Component\RenderFx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

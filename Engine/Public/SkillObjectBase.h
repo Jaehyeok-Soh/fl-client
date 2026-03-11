@@ -49,7 +49,8 @@ public:
 		_float          fHomingStrength = { 5.f }; // 호밍 정도
 
 		Vec3            vSpawnPos = {}; // 스폰 위치
-		Vec3            vDirection = {}; // 날아가는 방향
+		Vec3            vDirection = {}; // 이동 방향
+		Vec3			vLookDir = {Vec3::Zero}; // 보여줄 방향
 		Vec3			vScale = {};
 	}SKILLOBJECT_SPAWN_DESC;
 protected:

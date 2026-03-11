@@ -179,6 +179,7 @@
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_EventDefine.h" />
+    <ClInclude Include="..\Public\State_Condemn.h" />
     <ClInclude Include="..\Public\TriggerCollidePart.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Builder_Effect.h" />
@@ -356,6 +357,7 @@
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="..\Public\WorldUI_Component.h" />
     <ClInclude Include="..\public\Boss_Xibi_Body.h" />
+    <ClInclude Include="..\public\Xibi_GateSpawner.h" />
     <ClInclude Include="..\public\Xibi_GimmikController.h" />
     <ClInclude Include="..\public\Xibi_Loop_Thunder.h" />
     <ClInclude Include="..\public\Xibi_Oneshot_Thunder.h" />
@@ -383,6 +385,7 @@
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\InvisibleWall.cpp" />
+    <ClCompile Include="..\Private\State_Condemn.cpp" />
     <ClCompile Include="..\Private\TriggerCollidePart.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Builder_Effect.cpp" />
@@ -584,6 +587,7 @@
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Private\WorldUI_Component.cpp" />
     <ClCompile Include="..\private\Boss_Xibi_Body.cpp" />
+    <ClCompile Include="..\private\Xibi_GateSpawner.cpp" />
     <ClCompile Include="..\private\Xibi_GimmikController.cpp" />
     <ClCompile Include="..\private\Xibi_Loop_Thunder.cpp" />
     <ClCompile Include="..\private\Xibi_Oneshot_Thunder.cpp" />

@@ -124,8 +124,6 @@ void CLevel_Test::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	Spawn_HybridObject();
-
 	static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
 	{

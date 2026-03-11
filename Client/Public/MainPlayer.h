@@ -43,8 +43,8 @@ public:
 	virtual void	OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void	OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
-	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
-	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
+	virtual _bool	On_Hit(const HIT_DESC& hitDesc) override;
+	virtual void	Try_Attack(const HIT_DESC& hitDesc) override;
 
 private:
 	// void Movement_Ground(const _float fTimeDelta);
@@ -57,6 +57,9 @@ private:
 	HRESULT Ready_EffectEvent();
 
 	HRESULT Ready_AttackStates();
+
+private:
+	void	Count_Combo();
 
 private:
 	CRay* m_pFootRay = { nullptr };

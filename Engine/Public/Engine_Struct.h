@@ -234,6 +234,17 @@ namespace Engine
 		Matrix matWorld = Matrix::Identity;
 	}SHADER_TRANSFORMDESC;
 
+	typedef struct tagShaderRenderFxDesc
+	{
+		unsigned int iFlags = 0;
+		float fEmissiveIntensity = 0.f;
+		float fOffsetX = 0.f;
+		float fOffsetY = 0.f;
+
+		SimpleMath::Vector3   vEmissiveColor = { SimpleMath::Vector3::One};
+		float fReserved0 = 0.f;
+	}SHADER_RENDER_FX_DESC;
+
 	typedef struct tagLightDesc
 	{
 		LIGHT_TYPE				eType = { LIGHT_TYPE::END };

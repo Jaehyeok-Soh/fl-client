@@ -3,6 +3,7 @@
 #include "ComputeShader.h"
 #include "Model.h"
 #include "EffectHandler.h"
+#include "RenderFx.h"
 #include "GameInstance.h"
 
 CBoss_Xibi_Body::CBoss_Xibi_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -55,6 +56,11 @@ HRESULT CBoss_Xibi_Body::Awake(const _uint iCurrentLevelIndex)
 		pMyModle->Set_Animtion_MotionOffset_All(0.01f);
 	}
 
+	if (CRenderFx* pRenderFx = Get_Component<CRenderFx>())
+	{
+		pRenderFx->Change_EmissiveColor(Vec3{0.62f, 0.30f, 1.00f});
+	}
+
 	return S_OK;
 }
 
@@ -76,31 +82,6 @@ void CBoss_Xibi_Body::Update_Late(_float fTimeDelta)
 void CBoss_Xibi_Body::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-}
-
-void CBoss_Xibi_Body::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
-void CBoss_Xibi_Body::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
-{
-}
-
-void CBoss_Xibi_Body::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
-void CBoss_Xibi_Body::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
-{
-}
-
-void CBoss_Xibi_Body::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
-{
-}
-
-_bool CBoss_Xibi_Body::On_Hit(const HIT_DESC& hitDesc)
-{
-	return true;
 }
 
 HRESULT CBoss_Xibi_Body::Render()
