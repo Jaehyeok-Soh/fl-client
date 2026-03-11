@@ -1177,8 +1177,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
 
 
-            weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
-            weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+            weaponDesc.matHandOffsetMatrix  = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+            weaponDesc.matHoldOffsetMatrix  = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+            weaponDesc.matConOffsetMatrix   = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(-70.f), XMConvertToRadians(180.f), 0.f);
 
             if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
                 return E_FAIL;

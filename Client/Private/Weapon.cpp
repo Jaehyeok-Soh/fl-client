@@ -57,6 +57,7 @@ HRESULT CWeapon::Initialize(void* pArg)
 
 	m_matHandOffsetMatrix = pDesc->matHandOffsetMatrix;
 	m_matHoldOffsetMatrix = pDesc->matHoldOffsetMatrix;
+	m_matConOffsetMatrix = pDesc->matConOffsetMatrix;
 
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
@@ -170,6 +171,12 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 		Super::Update_CombinedWorldMatrix(m_matHandOffsetMatrix * matfinalMat * (*m_pMatParent));
 	}
 		break;
+
+	case State::CONDEMN:
+	{
+		Super::Update_CombinedWorldMatrix(m_matConOffsetMatrix * (*m_pMatHandSocket) * (*m_pMatParent));
+	}
+	break;
 	}
 
 #ifdef _DEBUG
