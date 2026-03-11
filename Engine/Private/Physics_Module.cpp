@@ -394,12 +394,6 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	_bool bPass0 = ((filterData0.word0 & filterData1.word1) != 0);
-	_bool bPass1 = ((filterData1.word0 & filterData0.word1) != 0);
-	// Pair°¡ ¾Æ´Ò ¶§
-	if ((bPass0 && bPass1) == false)
-		return PxFilterFlag::eSUPPRESS;
-
 	if ((filterData0.word0 & PHYSICSFILTERGROUP::RAGDOLL)
 		|| (filterData1.word0 & PHYSICSFILTERGROUP::RAGDOLL))
 	{
@@ -410,6 +404,11 @@ PxFilterFlags CPhysics_Module::FilterShader(
 			return PxFilterFlag::eSUPPRESS;
 	}
 
+	_bool bPass0 = ((filterData0.word0 & filterData1.word1) != 0);
+	_bool bPass1 = ((filterData1.word0 & filterData0.word1) != 0);
+	// Pair°¡ ¾Æ´Ò ¶§
+	if ((bPass0 && bPass1) == false)
+		return PxFilterFlag::eSUPPRESS;
 
 	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 	{

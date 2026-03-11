@@ -1295,7 +1295,7 @@ HRESULT CPlayer::Ready_PartCollider()
             tPColliDesc.vCenter = { 0.f,0.f,0.f };
             tPColliDesc.fRadius = { 5.f };
             tPColliDesc.bIsTrigger = { true };
-            tPColliDesc.eFilterLayer = tagPhysicsFilterGroup::DETECT_MONSTER; 
+            tPColliDesc.eFilterLayer = PHYSICSFILTERGROUP::DETECT_MONSTER;
             tPColliDesc.iFilterMask =
             {
                 PHYSICSFILTERGROUP::Enum::MONSTER
