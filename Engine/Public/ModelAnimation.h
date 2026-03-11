@@ -110,6 +110,7 @@ public:
 		if (m_vecNotifies[ENUM_TO_UINT(ePhase)].size() <= iIndex) return;
 		m_iNextNotifyIndices[ENUM_TO_UINT(ePhase)] = (_uint)iIndex;
 	}
+	void Clear_Notifies(EAnimNotifyId eID);
 	void Clear_Notifies() { for (auto& notifies : m_vecNotifies) notifies.clear(); }
 private:
 	_uint m_iChannelCount = { 0 };

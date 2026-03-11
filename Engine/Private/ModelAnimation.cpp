@@ -535,6 +535,18 @@ void CModelAnimation::Sort_Notifies()
 	}
 }
 
+void CModelAnimation::Clear_Notifies(EAnimNotifyId eID)
+{
+	for (size_t i = 0; i < ENUM_TO_UINT(EAnimNotifyPhase::END); ++i)
+	{
+		auto itr = std::remove_if(m_vecNotifies[i].begin(), m_vecNotifies[i].end(), [&](const AnimNotifyKey& element)->_bool
+			{
+				return element.eID == eID;
+			});
+		m_vecNotifies[i].erase(itr, m_vecNotifies[i].end());
+	}
+}
+
 CModelAnimation* CModelAnimation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
 {
 	CModelAnimation* pInstance = new CModelAnimation(pDevice, pDeviceContext);

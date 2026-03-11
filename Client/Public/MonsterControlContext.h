@@ -145,7 +145,7 @@ public:
 	_bool IsNotGroggy() const { return (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE) == 0) && (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ) == 0); }
 	_bool IsNormalGroggyRequested() const { return (m_eCurrentGroggyState != EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ); }
 	_bool IsFinalGroggyRequested() const { return (m_eCurrentGroggyState == EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ); }
-	_bool IsGroggy() const { return (m_eCurrentGroggyState != EGroggyState::None) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
+	_bool IsGroggy() const { return Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 	_bool IsNormalGroggy() const { return(m_eCurrentGroggyState != EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 	_bool IsFinalGroggy() const { return (m_eCurrentGroggyState == EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 
