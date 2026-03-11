@@ -497,8 +497,6 @@ HRESULT CLoader::Loading_For_Logo()
 	////////// Ready Texture Splating Data Load ///////////
 	///////////////////////////////////////////////////////
 
-
-
 	/* Texture Loading */
 
 	/* Defualt »çÁø */
