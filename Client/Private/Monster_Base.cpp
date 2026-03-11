@@ -384,13 +384,13 @@ void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
 		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
 		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
 
-		//if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
-		//{
-		//	m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
-		//}
+		if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+		{
+			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+		}
 
 
-		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+		else if (hitDesc.attackDesc.iAttackerLayer == PHYSICSFILTERGROUP::ATTACK_PROJECTTILE)
 		{
 			m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
 		}

@@ -6,7 +6,7 @@
 #include "EffectObject.h"
 #include "GameInstance.h"
 
-#define MAX_EFFECTPART 10
+#define MAX_EFFECTPART 20
 
 Effect::Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:Super(pDevice, pDeviceContext)
@@ -42,6 +42,8 @@ HRESULT Effect::Ready_PartsData(void* pArg)
 	EFFECT_CONTAINERDESC* pDesc = static_cast<EFFECT_CONTAINERDESC*>(pArg);
 	if (pDesc == nullptr) return E_FAIL;
 
+	m_eDesc._Effect_SimulationType = pDesc->_Effect_SimulationType;
+	m_eDesc._IsPoolingEffect = pDesc->_IsPoolingEffect;
 	auto& ChildDataList = pDesc->_childData; 
 
 	m_vecPartObjects.resize(ChildDataList.size(), nullptr);

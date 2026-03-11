@@ -497,8 +497,6 @@ HRESULT CLoader::Loading_For_Logo()
 	////////// Ready Texture Splating Data Load ///////////
 	///////////////////////////////////////////////////////
 
-
-
 	/* Texture Loading */
 
 	/* Defualt »çÁø */
@@ -859,7 +857,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Xibi";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = { 3, 59, 375 };
+		desc.vecStageBoneIndices = { 3, 59, 375, 380 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;

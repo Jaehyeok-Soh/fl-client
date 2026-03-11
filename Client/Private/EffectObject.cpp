@@ -94,12 +94,16 @@ HRESULT CEffectObject::Ready_Component(void* pArg)
             pSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(DTO::Gravity_CurveKey), 
                 static_cast<_uint>(m_tEffectDesc.Data._vecGlobalGravityCurve.size()));
 
-        else
-            pSB = StructuredBuffer::Create(m_pDevice, m_pDeviceContext, sizeof(DTO::Gravity_CurveKey), 1);
+        if (pSB)
+        {
+            pSRV->SetResource(pSB->Get_SRV());
+            m_pComputeShader->Bind_InputStructuredBuffer(1, pSRV, pSB);
+        }
 
-        pSRV->SetResource(pSB->Get_SRV());
     }
-    m_pComputeShader->Bind_InputStructuredBuffer(1, pSRV, pSB);
+
+
+    Bind_Curve_To_GPU();
 
     return S_OK;
 }
@@ -412,14 +416,18 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
 HRESULT CEffectObject::Bind_Curve_To_GPU()
 {
-    auto& vecCurve = m_tEffectDesc.Data._vecGlobalGravityCurve; // CPU에 있는 커브 데이터
-    if (vecCurve.empty()) return E_FAIL;
+    if (pSB)
+    {
+        auto& vecCurve = m_tEffectDesc.Data._vecGlobalGravityCurve; // CPU에 있는 커브 데이터
+        if (vecCurve.empty()) return E_FAIL;
 
-    m_pComputeShader->Bind_InputStructuredBuffer_Data(1, vecCurve.data(), sizeof(DTO::Gravity_CurveKey), (_uint)vecCurve.size());
+        m_pComputeShader->Bind_InputStructuredBuffer_Data(1, vecCurve.data(), sizeof(DTO::Gravity_CurveKey), (_uint)vecCurve.size());
 
-    EFFECT_CURVEINFO desc;
-    desc.g_iGravityKeyCount = static_cast<_int>(vecCurve.size());
-    m_pComputeShader->Bind_Compute_EffectCurveData(desc);
+        EFFECT_CURVEINFO desc;
+        desc.g_iGravityKeyCount = static_cast<_int>(vecCurve.size());
+        m_pComputeShader->Bind_Compute_EffectCurveData(desc);
+
+    }
 
     return S_OK;
 }
@@ -433,14 +441,15 @@ HRESULT CEffectObject::Awake(const _uint iCurrentLevelID)
 
 void CEffectObject::Update_Priority(const _float fDT)
 {
-    Super::Update_Priority(fDT);
+    _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * m_tEffectDesc.Data._Effect_AnimSpeed * fDT;
+    Super::Update_Priority(TimeT);
 }
 
 void CEffectObject::Update(const _float fTimeDelta)
 {
     // 시간 누적 (Timeflag가 PLAY일 때만,)
     float TimeFlag = (m_tEffectDesc.Data._Effect_TimeFlag == PLAY) ? 1.f : 0.f;
-    _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * fTimeDelta * TimeFlag;
+    _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * m_tEffectDesc.Data._Effect_AnimSpeed * fTimeDelta * TimeFlag ;
     _float fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
     _float fRatio = fActiveTime / m_tEffectDesc.Data._Effect_Duration/*_Effect_LifeTime*/;
 
@@ -473,7 +482,7 @@ void CEffectObject::Update(const _float fTimeDelta)
 
         else /*if (m_tEffectDesc.Data._Use_Effect_Continue == false || m_tEffectDesc.Data._Effect_Looping == false)*/
         {
-            if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime)
+            if (fActiveTime >= /*m_tEffectDesc.Data._Effect_Duration + */m_tEffectDesc.Data._Effect_LifeTime)
             {
                 m_bIsEffectFinish = true;
             }
@@ -497,8 +506,6 @@ void CEffectObject::Update(const _float fTimeDelta)
        // 스케일 보간 함수
     Apply_Scaling_Dynamics(fRatio);
 
-    // GPU에 백터 바인딩.
-    Bind_Curve_To_GPU();
     TimeCalculate(TimeT);
     Update_UV_Scroll_Curve(fScrollRatio);
     Update_Rotation_Lerp(TimeT, fRatio);
@@ -516,12 +523,14 @@ void CEffectObject::Update(const _float fTimeDelta)
 
 void CEffectObject::Update_Late(const _float fTimeDelta)
 {
-    Super::Update_Late(fTimeDelta);
+    _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * m_tEffectDesc.Data._Effect_AnimSpeed * fTimeDelta;
+    Super::Update_Late(TimeT);
 }
 
 void CEffectObject::Ready_Before_Render(const _float fTimeDelta)
 {
-    Super::Ready_Before_Render(fTimeDelta);
+    _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * m_tEffectDesc.Data._Effect_AnimSpeed * fTimeDelta;
+    Super::Ready_Before_Render(TimeT);
 
     if (m_tEffectDesc.Data._Effect_ShaderPass != 3)
         m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONELIGHT, this);
@@ -555,6 +564,7 @@ HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 
     RESET_ForSpawn();
     Process_InitializeDesc(pArg);
+    Bind_Curve_To_GPU();
 
     return S_OK;
 }
@@ -576,6 +586,7 @@ HRESULT CEffectObject::Enable_VFX(void* pArg)
 
     RESET_ForSpawn();
     Process_InitializeDesc(pArg);
+    Bind_Curve_To_GPU();
 
     return S_OK;
 }
@@ -640,7 +651,7 @@ HRESULT CEffectObject::Process_InitializeDesc(void* pArg)
         }
     }
 
-    m_tEffectDesc.Data._Effect_PlayBackSpeed = EffectDesc->VFX_fSpeed;
+    m_tEffectDesc.Data._Effect_AnimSpeed = EffectDesc->VFX_fSpeed;
 
     return S_OK;
 }
