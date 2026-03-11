@@ -20,6 +20,7 @@ enum class TargeterState : _uint
 	GUN,			// tps cam
 	SKILL_SEQUENCE,
 	CINEMATIC,
+	TURN,
 	END
 };
 
@@ -29,6 +30,19 @@ class CCameraMan_Targeter final : public CCameraMan
 
 public:
 	enum class DISTANCE_DATA { RIGHT, UP, LOOK , END };
+
+	typedef struct tagTurnData
+	{
+		_float	fTurnHalfTime	= {};	// 처음 돌아갈 시간
+		_float	fTurnHoldTime	= {};	// 다시 제자리로 돌아갈 시간
+
+		_float	fDistance		= {};	// pivot 과의 거리
+
+		Vec3	vPivot			= {};	// 회전 시킬 중심
+
+		_float	fSpeed			= {};	// 움직임 속도
+
+	}TURNCAM_DATA;
 
 private:
 	CCameraMan_Targeter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -49,8 +63,10 @@ public:
 
 	HRESULT	Ready_GlobalEvent();
 
+	// getter setter
 public:
-	_float Get_Pitch() const { return m_fPitch; }
+	_float	Get_Pitch() const { return m_fPitch; }
+	void	Set_TurnData(TURNCAM_DATA& tData) { m_tTurnData = tData; }
 
 private:
 	void Update_Priority_State(const _float fTimeDelta);
@@ -78,6 +94,11 @@ private:
 	void Skill_SequeneCam_Update(const _float fTimeDelta);
 	void Skill_SequeneCam_End();
 
+	void TurnCam_Begin();
+	void TurnCam_Update_Priority(const _float fTimeDelta);
+	void TurnCam_Update(const _float fTimeDelta);
+	void TurnCam_End();
+
 private:
 	void Update_Input(const _float fTimeDelta);
 	void Chase_Actor(const _float fTimeDelta);
@@ -88,6 +109,9 @@ private:
 	_bool Change_Distance(_float fTargetDistance,_float fPreDistance, _float& fCurDistanxe, const _float fTimeDelta);
 
 	void Change_DistancesAll(const _float fTimeDelta);
+
+	void Update_TurnOn(const _float fTimeDelta);
+	void Update_TurnOff(const _float fTimeDelta);
 
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
@@ -120,8 +144,8 @@ private:
 	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrCurDistances;
 	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrPreDistances;
 
-	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrNormalDistances; // r : 0  , l : 3
-	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrGunDistances; // r : 0.6, l : 1
+	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrNormalDistances;	// r : 0  , l : 3
+	array<_float, ENUM_TO_SZET(DISTANCE_DATA::END)> m_arrGunDistances;		// r : 0.6, l : 1
 
 	_float m_fMoveDistanceTime	= { 0.28f };
 
@@ -132,8 +156,9 @@ private:
 
 	_bool m_bChangeFirst = { true }; // 초기 change 값
 
+	TURNCAM_DATA	m_tTurnData = {};
 
-	TargeterState m_ePreState = { TargeterState::NORMAL };
+	TargeterState	m_ePreState = { TargeterState::NORMAL };
 
 public:
 	static CCameraMan_Targeter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -17,6 +17,12 @@ HRESULT CState_Condemn::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_tTurnData.fDistance		= 3.5f;
+
+	m_tTurnData.fSpeed			= 3.f;
+	m_tTurnData.fTurnHalfTime	= 1.f;
+	m_tTurnData.fTurnHoldTime	= 2.f;
+
 	return S_OK;
 }
 
@@ -38,7 +44,8 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	if (pBoss == nullptr)
 		return S_OK;
 	CTransform* pBossTransform = pBoss->Get_Component<CTransform>();
-	CTransform* pPlayerTransform = Get_OwnerObject()->Get_Component<CTransform>();
+	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
+	CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
 	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 	if(pBossTransform == nullptr ||
 		pPlayerTransform == nullptr ||
@@ -51,8 +58,11 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	vBossLook.Normalize();
 
 	// boss 위치 + look 방향으로 밀어낸 위치
-	Vec3 vNewPos = vBossPos + vBossLook * 5.f;
+	Vec3 vNewPos = vBossPos + vBossLook * 2.f;
 	pCCT->SetFootPosition(vNewPos);
+
+	m_tTurnData.vPivot = (vBossPos + vNewPos) * 0.5f;
+	m_tTurnData.vPivot.y += 1.f;
 
 	vNewPos.y = 0.f;
 	vBossPos.y = 0.f;
@@ -61,6 +71,10 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	pPlayerTransform->Look_At_Dir(vBossPos - vNewPos);
 
 	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::CONDEMN));
+
+
+	static_cast<CCameraMan_Targeter*>(pPlayer->Get_CameraTargeter())->Set_TurnData(m_tTurnData);
+	pPlayer->Change_CamState(ENUM_TO_UINT(Client::TargeterState::TURN));
 
 	return S_OK;
 }

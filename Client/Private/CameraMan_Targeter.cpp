@@ -197,6 +197,10 @@ void CCameraMan_Targeter::Update_Priority_State(const _float fTimeDelta)
     case Client::TargeterState::SKILL_SEQUENCE:
         Skill_SequeneCam_Update_Priority(fTimeDelta);
         break;
+
+    case Client::TargeterState::TURN:
+        TurnCam_Update_Priority(fTimeDelta);
+        break;
     }
 }
 
@@ -219,6 +223,10 @@ void CCameraMan_Targeter::Update_State(const _float fTimeDelta)
     case Client::TargeterState::SKILL_SEQUENCE:
         Skill_SequeneCam_Update(fTimeDelta);
         break;
+
+    case Client::TargeterState::TURN:
+        TurnCam_Update(fTimeDelta);
+        break;
     }
 }
 
@@ -237,6 +245,10 @@ void CCameraMan_Targeter::State_Begin(TargeterState eState)
         break;
     case Client::TargeterState::SKILL_SEQUENCE:
         Skill_SequeneCam_Begin();
+        break;
+
+    case Client::TargeterState::TURN:
+        TurnCam_Begin();
         break;
     }
 }
@@ -258,6 +270,10 @@ void CCameraMan_Targeter::State_End(TargeterState eState)
 
     case Client::TargeterState::SKILL_SEQUENCE:
         Skill_SequeneCam_End();
+        break;
+
+    case Client::TargeterState::TURN:
+        TurnCam_End();
         break;
     }
 }
@@ -432,6 +448,119 @@ void CCameraMan_Targeter::Skill_SequeneCam_Update(const _float fTimeDelta)
 void CCameraMan_Targeter::Skill_SequeneCam_End()
 {
     //m_fCurDistance = 0.f;
+}
+
+void CCameraMan_Targeter::TurnCam_Begin()
+{
+    CGameObject* pActor = Get_Actor();
+    if (!pActor)
+        return;
+
+    CTransform* pPlayerTransform = pActor->Get_Component<CTransform>();
+    CContainerObject* pPlayer = dynamic_cast<CContainerObject*>(pActor);
+    if (!pPlayer)
+        return;
+
+    Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pPlayer->Get_Part<CBody>(0), pPlayerTransform);
+
+    Vec3 vPlayerLook = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+    vPlayerLook.y = 0.0f;
+
+    if (vPlayerLook.LengthSquared() <= g_XMEpsilon.f[0])
+        return;
+
+    vPlayerLook.Normalize();
+
+    const _float fYawTarget = std::atan2(vPlayerLook.x, vPlayerLook.z);
+    _float fT_Rot = 1.f - std::exp(0.1f / m_fTau_Rotate);
+
+    Quat qCurrent = Quat::CreateFromYawPitchRoll(Vec3(m_fPitch, m_fYaw, 0.f));
+    Quat qTarget = Quat::CreateFromYawPitchRoll(Vec3(m_fPitch, fYawTarget, 0.f));
+
+    if (qCurrent.Dot(qTarget) < 0.f)
+        qTarget = -qTarget;
+
+    Quat qNew = Quat::Slerp(qCurrent, qTarget, fT_Rot);
+    qNew.Normalize();
+
+    Matrix matRotation = Matrix::CreateFromQuaternion(qNew);
+
+    Vec3 vRight = Vec3::TransformNormal(Vec3::Right, matRotation);
+    Vec3 vUp = Vec3::TransformNormal(Vec3::Up, matRotation);
+    Vec3 vLook = Vec3::TransformNormal(Vec3::Backward, matRotation);
+    vRight.Normalize();
+    vUp.Normalize();
+    vLook.Normalize();
+
+    m_fYaw = std::atan2(vLook.x, vLook.z);
+    m_fPitch = std::asin(std::clamp(vLook.y, -1.f, 1.f)) * -1.f;
+
+    Vec3 vDesiredPos = vChasePositionRaw - vLook * m_fCurLookDistance;
+
+    CTransform* pCameraTransform = Get_Component<CTransform>();
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::UP, vUp);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, vLook);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vDesiredPos);
+}
+
+void CCameraMan_Targeter::TurnCam_Update_Priority(const _float fTimeDelta)
+{
+
+}
+
+void CCameraMan_Targeter::TurnCam_Update(const _float fTimeDelta)
+{
+    if (m_fStateTime < m_tTurnData.fTurnHalfTime)
+    {
+        Update_TurnOn(fTimeDelta);
+    }
+
+    else if (m_fStateTime < (m_tTurnData.fTurnHalfTime  + m_tTurnData.fTurnHoldTime))
+    {
+        return;
+    }
+
+    else if (m_fStateTime < (m_tTurnData.fTurnHalfTime * 2.f + m_tTurnData.fTurnHoldTime))
+    {
+        Update_TurnOn(fTimeDelta * -1.f);
+    }
+
+    else
+        Change_CamState(TargeterState::NORMAL);
+}
+
+void CCameraMan_Targeter::TurnCam_End()
+{
+    CGameObject* pActor = { nullptr };
+    if (!(pActor = Get_Actor()))
+        return;
+
+    _float fLength = {};
+
+    if (CContainerObject* pObject = dynamic_cast<CContainerObject*>(pActor))
+    {
+        // 플레이어의 바디를 들고 온다
+        CBody* pBodyOfPlayer = nullptr;
+        if (!(pBodyOfPlayer = pObject->Get_Part<CBody>(CPlayer::BODY)))
+            return;
+
+        // 플레이어의 transform을 들고 온다
+        CTransform* pPlayerTransform = nullptr;
+        if (!(pPlayerTransform = pObject->Get_Component<CTransform>()))
+            return;
+
+        Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
+        vChasePositionRaw.y = 0.f;
+
+        Vec3 vCurCamPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+        vCurCamPos.y = 0.f;
+
+
+        fLength = Vec3::Distance(vCurCamPos, vChasePositionRaw);
+    }
+
+    m_arrPreDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)] = fLength;
 }
 
 void CCameraMan_Targeter::Update_Input(const _float fTimeDelta)
@@ -649,6 +778,40 @@ void CCameraMan_Targeter::Change_DistancesAll(const _float fTimeDelta)
 
         break;
     }
+}
+
+void CCameraMan_Targeter::Update_TurnOn(const _float fTimeDelta)
+{
+    CTransform* pTransform = Get_Component<CTransform>();
+    Vec3 vRight = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    vRight.Normalize();
+
+    // right로 움직여
+    pTransform->Add_Position(vRight * m_tTurnData.fSpeed * fTimeDelta);
+
+    // pivot을 봐
+    pTransform->Look_At(m_tTurnData.vPivot);
+
+
+    //Vec3 vNewPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+
+    pTransform->Chase(m_tTurnData.vPivot, m_tTurnData.fDistance, fTimeDelta);
+
+}
+
+void CCameraMan_Targeter::Update_TurnOff(const _float fTimeDelta)
+{
+    CTransform* pTransform = Get_Component<CTransform>();
+    Vec3 vRight = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    vRight.Normalize();
+
+    // right로 움직여
+    pTransform->Add_Position(vRight * m_tTurnData.fSpeed * fTimeDelta * -1.f);
+
+    // pivot을 봐
+    pTransform->Look_At(m_tTurnData.vPivot);
+
+    pTransform->Chase(m_tTurnData.vPivot, m_tTurnData.fDistance, fTimeDelta);
 }
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
