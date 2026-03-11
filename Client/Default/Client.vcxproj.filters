@@ -562,9 +562,6 @@
     <Filter Include="05. Component\Skill\Moon">
       <UniqueIdentifier>{967b52e8-d189-41cf-b480-c8f0f6d3fe01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Component\WorldUI">
-      <UniqueIdentifier>{8e22024d-4e3d-4939-938e-33aa2af517cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05. Component\Monster">
       <UniqueIdentifier>{B1DED375-A417-4FAC-A147-06883C162BC9}</UniqueIdentifier>
     </Filter>
@@ -702,6 +699,15 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\00.Manager\01.Minimap Manager">
       <UniqueIdentifier>{6c9a8bf9-b442-48de-a00f-913c231209ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\UI">
+      <UniqueIdentifier>{8e22024d-4e3d-4939-938e-33aa2af517cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\UI\WorldUI">
+      <UniqueIdentifier>{30bbb9e8-d4fd-4117-a3a3-a1d7b06871c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\UI\Icon">
+      <UniqueIdentifier>{6d1fe885-8e88-4301-8307-be2f4f183588}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1093,9 +1099,6 @@
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LandScape.h" />
-    <ClInclude Include="..\Public\WorldUI_Component.h">
-      <Filter>05. Component\WorldUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Builder_UIPrefabs.h">
       <Filter>07. System\01. Builder\UI</Filter>
     </ClInclude>
@@ -1305,6 +1308,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIMinimap_Manager.h">
       <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WorldUI_Component.h">
+      <Filter>05. Component\UI\WorldUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIIcon_Component.h">
+      <Filter>05. Component\UI\Icon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1685,9 +1694,6 @@
     <ClCompile Include="..\private\Builder_AttackPreset.cpp">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\WorldUI_Component.cpp">
-      <Filter>05. Component\WorldUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Builder_UIPrefabs.cpp">
       <Filter>07. System\01. Builder\UI</Filter>
     </ClCompile>
@@ -1897,6 +1903,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIMinimap_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\01.Minimap Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WorldUI_Component.cpp">
+      <Filter>05. Component\UI\WorldUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIIcon_Component.cpp">
+      <Filter>05. Component\UI\Icon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

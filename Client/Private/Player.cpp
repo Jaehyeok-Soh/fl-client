@@ -1291,9 +1291,10 @@ HRESULT CPlayer::Ready_PartCollider()
 
         PHYSICSCOLLIDER_DESC tPColliDesc = {};
         {
-            tPColliDesc.eShape  = EPhysicsShape::SPHERE;
+            tPColliDesc.eShape  = EPhysicsShape::CAPSULE;
+            tPColliDesc.fHeight = 100.f;
             tPColliDesc.vCenter = { 0.f,0.f,0.f };
-            tPColliDesc.fRadius = { 5.f };
+            tPColliDesc.fRadius = { 20.f };
             tPColliDesc.bIsTrigger = { true };
             tPColliDesc.eFilterLayer = PHYSICSFILTERGROUP::DETECT_MONSTER;
             tPColliDesc.iFilterMask =

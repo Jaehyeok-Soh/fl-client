@@ -332,6 +332,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CWorldUI_Component::Create())))
 			return E_FAIL;
 	}
+	
 
 	// For. UI Texture
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/Loading/")))

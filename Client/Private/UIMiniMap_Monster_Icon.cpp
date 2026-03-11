@@ -11,6 +11,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UIIcon_Component.h"
 #include "UIMinimap_Manager.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
@@ -61,7 +62,7 @@ void CUIMiniMap_Monster_Icon::Update_Priority(const _float fTimeDelta)
 void CUIMiniMap_Monster_Icon::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	CUIMinimap_Manager::GetInstance()->WorldLook_Convert_To_Radian(
+	m_fRadian = CUIMinimap_Manager::GetInstance()->WorldLook_Convert_To_Radian(
 		m_pTarget->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK));
 
 	Rotate_MonsterIcon();
@@ -117,7 +118,14 @@ HRESULT CUIMiniMap_Monster_Icon::Attach_Personal_Info()
 
 void CUIMiniMap_Monster_Icon::Tick_By_Type(const _float fTimeDelta)
 {
+	if (!m_pTargetIconComp->Get_isRanged())
+	{
+		Set_Invisible();
+		Set_Dead();
+	}
+	m_vMoveOffset = m_pTargetIconComp->Get_ScreenPos();
 }
+
 
 void CUIMiniMap_Monster_Icon::Bind_Events()
 {
@@ -149,6 +157,8 @@ void CUIMiniMap_Monster_Icon::Initialize_Visible_Event()
 
 _bool CUIMiniMap_Monster_Icon::Tick_Visible_Event(const _float fTimeDelta)
 {
+	m_isFin_Event = true;
+	m_isActive = true;
 	return true;
 }
 
@@ -176,15 +186,20 @@ HRESULT CUIMiniMap_Monster_Icon::Spawn_FromPool(void* pArg)
 		m_pTarget = pMinimapMonster->pTarget;
 		if (nullptr == m_pTarget)
 			return E_FAIL;
+
+		m_pTargetIconComp = dynamic_cast<CUIIcon_Component*>(m_pTarget->Get_Script_Component(L"UIIconComp"));
+		if (nullptr == m_pTargetIconComp)
+			return E_FAIL;
+
 	}
 
-	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	if (nullptr == pResult)
-		return E_FAIL;
+	//CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	//if (nullptr == pResult)
+	//	return E_FAIL;
 
-	m_pPlayer = static_cast<CMainPlayer*>(pResult);
-	if (nullptr == m_pPlayer)
-		return E_FAIL;
+	//m_pPlayer = static_cast<CMainPlayer*>(pResult);
+	//if (nullptr == m_pPlayer)
+	//	return E_FAIL;
 
 	Set_Visible();
 	Set_Active(true);
