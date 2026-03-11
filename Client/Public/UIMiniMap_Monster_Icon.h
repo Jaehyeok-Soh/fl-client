@@ -40,7 +40,6 @@ private:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 
-	void Proj_World_To_Screen(const Vec3& vLook);
 	void Rotate_MonsterIcon();
 private:
 	CGameObject* m_pTarget = { nullptr };

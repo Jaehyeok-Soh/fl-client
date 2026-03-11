@@ -291,6 +291,10 @@ void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGa
         {
         // ui에게 충돌 된 monster 객체 pointer 넘겨주기
         // to UI담당자 : tHitInfo랑 pOther 잘 이용해서 하면 되지 않을까
+
+        // 충돌이 되면 이게 불림 pOther
+
+
         }
         break;
     }
@@ -556,7 +560,7 @@ HRESULT CMainPlayer::Ready_Ability()
         desc.fMental    = 105.f;
         desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate;
 
-        desc.fComboCoolTime     = 2.f;
+        desc.fComboCoolTime     = 7.f;
         desc.fDashCoolTime      = 2.f;
 
         desc.fMeleeAttack       = 20.f;

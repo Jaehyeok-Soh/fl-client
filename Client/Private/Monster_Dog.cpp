@@ -67,7 +67,7 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 	}
 	{
 		UI_PREFAB_DATA tPrefabData = {};
-		UI_NAMEPLATE_PREFAB_DATA Desc = {};
+		UI_MINIMAP_MONSTER_ICON_PREFAB_DATA Desc = {};
 		Desc.pTarget = this;
 		tPrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MINIMAP_MONSTER_ICON, iCurrentLevelID, &tPrefabData);

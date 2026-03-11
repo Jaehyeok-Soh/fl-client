@@ -11,6 +11,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "UIMinimap_Manager.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
@@ -60,7 +61,9 @@ void CUIMiniMap_Monster_Icon::Update_Priority(const _float fTimeDelta)
 void CUIMiniMap_Monster_Icon::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	Proj_World_To_Screen(m_pTarget->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+	CUIMinimap_Manager::GetInstance()->WorldLook_Convert_To_Radian(
+		m_pTarget->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+
 	Rotate_MonsterIcon();
 }
 
@@ -183,6 +186,9 @@ HRESULT CUIMiniMap_Monster_Icon::Spawn_FromPool(void* pArg)
 	if (nullptr == m_pPlayer)
 		return E_FAIL;
 
+	Set_Visible();
+	Set_Active(true);
+
 	return S_OK;
 }
 
@@ -191,15 +197,8 @@ HRESULT CUIMiniMap_Monster_Icon::Despawn_FromPool()
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
 
+	Set_Active(false);
 	return S_OK;
-}
-
-void CUIMiniMap_Monster_Icon::Proj_World_To_Screen(const Vec3& vLook)
-{
-	Vec2 vDir2D = Vec2{ vLook.x, vLook.z };
-	if (vDir2D.Length() > 1e-6f)
-		vDir2D.Normalize();
-	m_fRadian = atan2f(vDir2D.x, vDir2D.y);
 }
 
 void CUIMiniMap_Monster_Icon::Rotate_MonsterIcon()

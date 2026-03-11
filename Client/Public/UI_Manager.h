@@ -48,7 +48,7 @@ private:
 	CUI_Manager();
 	virtual ~CUI_Manager() = default;
 public:
-	HRESULT Initialize_UIManager();
+	HRESULT Initialize_UIManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 
 public:
 	HRESULT Regist_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePrefab, const _wstring& wstrPrototype, const _wstring& wstrPooltag,const _uint iPrototypeLevel, void* pArg, _uint iNumPrefab);
@@ -68,7 +68,6 @@ private:
 
 private:
 	class CUITutorial_Manager* m_pTutorialManager = { nullptr };
-	class CUIMinimap_Manager* m_pMinimapManager = { nullptr };
 
 private:
 	// UI 전달 변수 
