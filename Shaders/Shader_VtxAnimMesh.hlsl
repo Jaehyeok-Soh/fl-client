@@ -2,13 +2,41 @@
 #include "Animation_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
+#define RENDERFX_EMISSIVE (1<<0)
+#define RENDERFX_SHAKE (1<<1)
+
+bool Has_RenderFx(uint iFlags, uint iMask)
+{
+    return (iFlags & iMask) != 0;
+}
+
+float3 Apply_Shake(float3 vWorldPos)
+{
+    float3 cameraRight = normalize(InvV[0].xyz);
+    float3 cameraUp = normalize(InvV[1].xyz);
+    
+    if (Has_RenderFx(renderFx.iFalgs, RENDERFX_SHAKE) == false)
+        return vWorldPos;
+    
+    return vWorldPos
+        + cameraRight * renderFx.fShakeAmpX
+        + cameraUp * renderFx.fShakeAmpY;
+}
+
+float3 Apply_Emissive(float3 vBaseColor)
+{
+    if (Has_RenderFx(renderFx.iFalgs, RENDERFX_EMISSIVE) == false)
+        return vBaseColor;
+    
+    return vBaseColor + renderFx.vEmissiveColor * renderFx.fEmissiveIntensity;
+}
+
 cbuffer CB_MAPPING_RGB
 {
     float4 Color_R = { 1.f, 1.f, 1.f, 1.f };
     float4 Color_G = { 1.f, 1.f, 1.f, 1.f };
     float4 Color_B = { 1.f, 1.f, 1.f, 1.f };
 };
-
 
 VS_OUT_SKELETON VS_MAIN(VS_IN_SKELECTON input)
 {
@@ -17,6 +45,32 @@ VS_OUT_SKELETON VS_MAIN(VS_IN_SKELECTON input)
     
     float4 vWorldPosition = mul(float4(input.vPosition, 1.f), matBone);
     vWorldPosition = mul(vWorldPosition, W);
+    float4 vProjPosition = mul(vWorldPosition, VP);
+    
+    input.vNormal = normalize(mul(input.vNormal, (float3x3) matBone));
+    input.vTangent = normalize(mul(input.vTangent, (float3x3) matBone));
+    input.vBinormal = normalize(mul(input.vBinormal, (float3x3) matBone));
+    
+    output.vPosition = vProjPosition;
+    output.vUV = input.vUV;
+    output.vNormal = normalize(mul(input.vNormal, (float3x3) W));
+    output.vTangent = normalize(mul(input.vTangent, (float3x3) W));
+    output.vBinormal = normalize(mul(input.vBinormal, (float3x3) W));
+    
+    output.vWorldPos = vWorldPosition;
+    output.vProjPos = vProjPosition;
+    return output;
+}
+
+VS_OUT_SKELETON VS_WITHSHAKE(VS_IN_SKELECTON input)
+{
+    VS_OUT_SKELETON output;
+    float4x4 matBone = Get_BoneMatrix(input);
+    
+    float4 vWorldPosition = mul(float4(input.vPosition, 1.f), matBone);
+    vWorldPosition = mul(vWorldPosition, W);
+    vWorldPosition.xyz = Apply_Shake(vWorldPosition.xyz);
+    
     float4 vProjPosition = mul(vWorldPosition, VP);
     
     input.vNormal = normalize(mul(input.vNormal, (float3x3) matBone));
@@ -99,6 +153,28 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_SKELETON input)
     return output;
 }
 
+PS_OUT_DEFFERED PS_WITHEMISSIVE(PS_IN_SKELETON input)
+{
+    PS_OUT_DEFFERED output;
+    
+    output.vDiffuse = 1.f;
+    Compute_Diffse(output.vDiffuse, input.vUV);
+    output.vDiffuse.rgb = Apply_Emissive(output.vDiffuse.rgb);
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+    return output;
+}
+
 technique11 T0
 {
     PASS_RS_DS_BS_VP(P0, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
@@ -106,4 +182,7 @@ technique11 T0
 
     // RGB mapping : weapon 쪽에서 쓰임
 	PASS_RS_DS_BS_VP(RGBMapping, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
+
+    // Shake / Emissive
+    PASS_RS_DS_BS_VP(WithRenderFx, RS_Default, DS_Default, BS_Default, VS_WITHSHAKE, PS_WITHEMISSIVE)
 };

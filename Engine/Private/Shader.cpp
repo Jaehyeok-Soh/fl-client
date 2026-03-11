@@ -28,6 +28,7 @@ CShader::CShader(const CShader& rhs)
 	, m_pEffect_CBuffer(rhs.m_pEffect_CBuffer)
 	, m_pObjectInfo_CBuffer(rhs.m_pObjectInfo_CBuffer)
 	, m_pRGB_CBuffer(rhs.m_pRGB_CBuffer)
+	, m_pRenderFx_CBuffer(rhs.m_pRenderFx_CBuffer)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -40,6 +41,7 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pEffect_CBuffer);
 	Safe_AddRef(m_pObjectInfo_CBuffer);
 	Safe_AddRef(m_pRGB_CBuffer);
+	Safe_AddRef(m_pRenderFx_CBuffer);
 }
 
 HRESULT CShader::Initialize_Prototype(void* pArg)
@@ -242,6 +244,11 @@ HRESULT CShader::Bind_RGBColorData(const SHADER_RGBCOLOR_DESC& RGBColorDesc)
 	return m_pRGB_CBuffer->Copy_Data(RGBColorDesc);
 }
 
+HRESULT CShader::Bind_RenderFxData(const SHADER_RENDER_FX_DESC& renderFxDesc)
+{
+	return m_pRenderFx_CBuffer->Copy_Data(renderFxDesc);
+}
+
 HRESULT CShader::Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer)
 {
 	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
@@ -306,6 +313,13 @@ void CShader::Create_ConstantBuffer()
 		m_pRGB_CBuffer = CConstant_Buffer<SHADER_RGBCOLOR_DESC>::Create(m_pDevice, m_pDeviceContext);
 		pCache->CB[iSlot]->SetConstantBuffer(m_pRGB_CBuffer->Get_Buffer());
 	}
+
+	iSlot = ENUM_TO_UINT(EFXCB::RenderFx);
+	if (pCache->CB[iSlot])
+	{
+		m_pRenderFx_CBuffer = CConstant_Buffer<SHADER_RENDER_FX_DESC>::Create(m_pDevice, m_pDeviceContext);
+		pCache->CB[iSlot]->SetConstantBuffer(m_pRenderFx_CBuffer->Get_Buffer());
+	}
 }
 
 CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
@@ -340,6 +354,7 @@ void CShader::Clear_ConstantBuffer()
 	Safe_Release(m_pBone_CBuffer);
 	Safe_Release(m_pObjectInfo_CBuffer);
 	Safe_Release(m_pRGB_CBuffer);
+	Safe_Release(m_pRenderFx_CBuffer);
 }
 
 void CShader::Free()

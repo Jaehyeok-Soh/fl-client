@@ -87,6 +87,20 @@ struct ObjectInfoDesc
     uint iFlags;
     float2 vPadding;
 };
+
+#define FX_EMISSIVE 1
+#define FX_SHAKE 2
+
+struct RenderFxDesc
+{
+    uint iFalgs;
+    float fEmissiveIntensity;
+    float fShakeAmpX;
+    float fShakeAmpY;
+    
+    float3 vEmissiveColor;
+    float fReserved0;
+};
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -133,6 +147,10 @@ cbuffer OUTLINEParamBuffer
 cbuffer ObjectInfoBuffer
 {
     ObjectInfoDesc objectInfo;
+};
+cbuffer RenderFxParamBuffer
+{
+    RenderFxDesc renderFx;
 };
 //////////
 // Func //

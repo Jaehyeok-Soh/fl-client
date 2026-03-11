@@ -15,6 +15,7 @@
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
 #include "EffectHandler.h"
+#include "RenderFx.h"
 
 #include "UI_Manager.h"
 #include "GameInstance.h"
@@ -217,10 +218,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 
 		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 		if (vHp.x <= 0)
-		{
-			Get_Component<CMonsterControlContext>()->Set_Dead();
 			Set_Dying();
-		}
 	}
 
 #ifdef _DEBUG
@@ -430,6 +428,15 @@ void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
 				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
 		}
 	}
+
+	// Shake & Emissive
+	if (CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(Part::Enum::BODY))
+	{
+		CRenderFx* pRenderFx = pBody->Get_Component<CRenderFx>();
+		pRenderFx->Play_Shake(0.35f);
+		pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
+
+	}
 }
 
 void CMonster_Base::SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc)
@@ -480,7 +487,7 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 			desc.bIsPlayer = false;
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
+			desc.fRadius = 0.5f;
 			desc.fHeight = 0.1f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 
@@ -536,7 +543,7 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
 			desc.fRadius = 1.f;
-			desc.fHeight = 1.5f;
+			desc.fHeight = 1.f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 
 			PHYSICSMATERIAL_DESC mtrlDesc{};
@@ -584,8 +591,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 			desc.bIsPlayer = false;
 			desc.eType = EPhysicsCCTType::CAPSULE;
 			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
-			desc.fHeight = 1.f;
+			desc.fRadius = 0.7f;
+			desc.fHeight = 0.7f;
 			desc.vExtens = { 2.f, 2.f, 2.f };
 
 			PHYSICSMATERIAL_DESC mtrlDesc{};

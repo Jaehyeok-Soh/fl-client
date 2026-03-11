@@ -21,6 +21,7 @@
 #include "Bounds.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "RenderFx.h"
 #include "Transform.h"
 #include "SkillBase_MoonE.h"
 #include "SkillBase_MoonQ.h"
@@ -630,6 +631,8 @@ HRESULT CLoader::Loading_For_Logo()
 	}
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
+	// For. Prototype_Component_RenderFx
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_RenderFx", CRenderFx::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_ActionState_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_ActionState_Player", CPlayerActionState::Create());
 	// For. Prototype_Component_ControlContext_Player

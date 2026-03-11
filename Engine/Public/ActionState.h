@@ -80,6 +80,7 @@ public:
 	void			Move(Vec3 vAccelation);					// 지속적으로 매프레임 적용할 가속도
 	void			SetCCTInputDirection(Vec3 vInputDir);	// 이동 방향을 셋팅 해준다
 	void			SetCCTImpuls(Vec3 vImpuls);				// 순간적인 가속도 : 한프레임 적용
+	void			SetCCTImpuls_Conversion(Vec3 vLocal);
 	/* animation funcs*/
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);

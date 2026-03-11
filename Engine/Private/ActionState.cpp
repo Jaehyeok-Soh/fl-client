@@ -305,6 +305,31 @@ void CActionState::SetCCTImpuls(Vec3 vImpuls)
 		cct->SetImpulsAccelation(vImpuls);
 }
 
+void CActionState::SetCCTImpuls_Conversion(Vec3 vLocal)
+{
+	CPhysicsCCT* cct = m_pOwner->Get_Component<CPhysicsCCT>();
+	if (cct == nullptr)
+		return;
+
+	CTransform* pTransform = m_pOwner->Get_Component<CTransform>();
+	Matrix matWorld = pTransform->Get_WorldMatrix();
+
+	Vec3 vRight = matWorld.Right();
+	Vec3 vLook = matWorld.Forward();
+
+	vRight.y = 0.f;
+	vLook.y = 0.f;
+
+	vRight.Normalize();
+	vLook.Normalize();
+
+	Vec3 vGlobalUp = Vec3(0.f, 1.f, 0.f);
+
+	Vec3 vImpuls = (vRight * vLocal.x) + (vGlobalUp * vLocal.y) + (vLook * vLocal.z);
+
+	cct->SetImpulsAccelation(vImpuls);
+}
+
 HRESULT CActionState::Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx)
 {
 	if (m_pOwnerModel == nullptr)

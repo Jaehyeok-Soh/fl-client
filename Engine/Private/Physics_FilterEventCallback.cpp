@@ -15,7 +15,7 @@ void CPhysics_FilterEventCallback::onContact(const PxContactPairHeader& pairHead
 	CGameObject* leftObject = Conversion_GameObject(pairHeader.actors[0]->userData);
 	CGameObject* rightObject = Conversion_GameObject(pairHeader.actors[1]->userData);
 
-	if (leftObject == nullptr || rightObject == nullptr || leftObject->IsDead() || rightObject->IsDead())
+	if (leftObject == nullptr || rightObject == nullptr || !leftObject->IsAlive() || !rightObject->IsAlive())
 		return;
 
 	GAMEOBJECTINFO info = Get_GameObject(pairHeader.actors[0]->userData, pairHeader.actors[1]->userData);
@@ -71,7 +71,7 @@ void CPhysics_FilterEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 		CGameObject* leftObject = Conversion_GameObject(pairs[i].triggerActor->userData);
 		CGameObject* rightObject = Conversion_GameObject(pairs[i].otherActor->userData);
 
-		if (leftObject == nullptr || rightObject == nullptr || leftObject->IsDead() || rightObject->IsDead())
+		if (leftObject == nullptr || rightObject == nullptr || !leftObject->IsAlive() || !rightObject->IsAlive())
 			continue;
 
 		GAMEOBJECTINFO info = Get_GameObject(pairs[i].triggerActor->userData, pairs[i].otherActor->userData);
@@ -92,6 +92,12 @@ void CPhysics_FilterEventCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
 
 void CPhysics_FilterEventCallback::ProcessOverlap(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc)
 {
+	CGameObject* leftObject = pOwner;
+	CGameObject* rightObject = Conversion_GameObject(pOverlapHit->actor->userData);
+
+	if (leftObject == nullptr || rightObject == nullptr || !leftObject->IsAlive() || !rightObject->IsAlive())
+		return;
+
 	GAMEOBJECTINFO info = Get_GameObject(pOwner, Conversion_GameObject(pOverlapHit->actor->userData));
 
 	info.leftColliderDesc.eFilterLayer = hitboxDesc->eFilterLayer;
@@ -159,6 +165,12 @@ void CPhysics_FilterEventCallback::ProcessOverlap(CGameObject* pOwner, const PxV
 
 void CPhysics_FilterEventCallback::ProcessRaycast(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc)
 {
+	CGameObject* leftObject = pOwner;
+	CGameObject* rightObject = Conversion_GameObject(pRaycastHitBuffer->block.actor->userData);
+
+	if (leftObject == nullptr || rightObject == nullptr || !leftObject->IsAlive() || !rightObject->IsAlive())
+		return;
+
 	GAMEOBJECTINFO info = Get_GameObject(pOwner, Conversion_GameObject(pRaycastHitBuffer->block.actor->userData));
 
 	info.leftColliderDesc.eFilterLayer = raycastDesc->eFilterLayer;

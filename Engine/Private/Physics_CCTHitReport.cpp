@@ -70,6 +70,9 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 
 	GAMEOBJECTINFO info = Get_GameObject(hit.controller->getUserData(), hit.other->getUserData());
 
+	if (!info.leftObject->IsAlive() || !info.rightObject->IsAlive())
+		return;
+
 	auto pCCT = static_cast<CGameObject*>(hit.controller->getUserData())->Get_Component<CPhysicsCCT>();
 
 	if (hit.worldNormal.y > 0.3f)
