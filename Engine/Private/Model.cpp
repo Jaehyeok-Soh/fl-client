@@ -4,7 +4,6 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Bone.h"
-#include "Engine_Utils.h"
 #include "Material.h"
 #include "MaterialInstance.h"
 #include "ModelAnimation.h"
@@ -220,7 +219,7 @@ HRESULT CModel::Initialize(void* pArg)
 	{
 		for (size_t i = 0; i < iMaterialCount; ++i)
 		{
-			if (FAILED(Change_MI((_uint)i, Engine_Utils::MI_ToWString(EMaterialInstanceType::Default))))
+			if (FAILED(Change_MI((_uint)i, EMaterialInstanceType::Default)))
 				return E_FAIL;
 		}
 
@@ -235,7 +234,7 @@ HRESULT CModel::Initialize(void* pArg)
 
 			for (size_t i = 0; i < iMaterialCount; ++i)
 			{
-				if (FAILED(Change_MI((_uint)i, Engine_Utils::MI_ToWString(pDesc->spanMIs[i]))))
+				if (FAILED(Change_MI((_uint)i, pDesc->spanMIs[i])))
 					return E_FAIL;
 
 				m_vecPasses[i] = pDesc->spanShaderPassesByMesh[i];
@@ -559,12 +558,12 @@ _int CModel::Get_PassByMesh(_uint iMeshIndex)
 	return m_vecPasses[iMeshIndex];
 }
 
-HRESULT CModel::Change_MI(_uint iIndex, const wstring& wstrMITag)
+HRESULT CModel::Change_MI(_uint iIndex, EMaterialInstanceType eChangeType)
 {
 	if (iIndex >= m_vecMaterialInstances.size())
 		return E_FAIL;
 
-	CMaterialInstance* pMI = m_pGameInstance->Get_Resource<CMaterialInstance>(wstrMITag);
+	CMaterialInstance* pMI = m_pGameInstance->Get_Resource<CMaterialInstance>( Engine_Utils::MI_ToWString(eChangeType) );
 	Safe_Release(m_vecMaterialInstances[iIndex]);
 	m_vecMaterialInstances[iIndex] = pMI;
 
@@ -773,6 +772,20 @@ void CModel::Set_Animtion_MotionOffset_All(_float fOffset)
 	{
 		pAnim->Set_MotionOffset(fOffset);
 	}
+}
+
+HRESULT CModel::Set_MI_TintColor(_uint iIndex, const Vec4& vColor)
+{
+	if (iIndex >= m_vecMaterialInstances.size()) return E_FAIL;
+
+	if (m_vecMaterialInstances[iIndex]->Get_MIType() != EMaterialInstanceType::Free)
+	{
+		MSG_BOX(" Material Instance Type이 Free가 아니라면 Setting 불가능 ");
+	}
+
+	m_vecMaterialInstances[iIndex]->Set_TintColor(vColor);
+
+	return S_OK;
 }
 
 void CModel::Set_AnimTrackPosition(_float fValue)
@@ -1068,7 +1081,7 @@ void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimE
 		if (pOwnerTransform)
 			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditive);
 		else
-			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS, pAdditive);
+			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS, pAdditive);
 			//Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS);
 	}
 	else

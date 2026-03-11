@@ -66,7 +66,7 @@ public:
 	const _bool Get_isFire()const { return m_isFire; }
 
 	void Set_FireTimer(_bool bCount) { m_tFireTimeCounter.bCountTime = bCount; }
-	void Reset_FireTimer() { m_tFireTimeCounter.fTimeAcc = m_tFireTimeCounter.fMaxTime; m_tFireTimeCounter.bCountTime = false; }
+	void Reset_FireTimer() { m_tFireTimeCounter.fTimeAcc = m_tFireTimeCounter.fMaxTime * 0.5f; m_tFireTimeCounter.bCountTime = false; }
 
 	_bool Get_OnTarget() { return m_bOnTarget; }
 

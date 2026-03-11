@@ -19,7 +19,7 @@
 // objects
 #include "CameraMan_Targeter.h"
 #include "Camera.h"
-#include "ColliderPart.h"
+#include "TriggerCollidePart.h"
 #include "PhysicsCCT.h"
 #include "PhysicsCollider.h"
 #include "PhysicsAttackOverlap.h"
@@ -57,13 +57,13 @@
 
 
 CMainPlayer::CMainPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-    : Super(pDevice, pDeviceContext)
+    : Super(pDevice, pDeviceContext), m_isCinematic{false}
 {
     m_vecPartObjects.resize(Part::END, nullptr);
 }
 
 CMainPlayer::CMainPlayer(const CMainPlayer& rhs)
-    : Super(rhs)
+    : Super(rhs) , m_isCinematic(rhs.m_isCinematic)
 {
     m_vecPartObjects.resize(Part::END, nullptr);
 }
@@ -99,9 +99,6 @@ HRESULT CMainPlayer::Initialize(void* pArg)
     if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", &tDesc)))
         return E_FAIL;
 
-    if (FAILED(Ready_Colliders()))
-        return E_FAIL;
-
     if (FAILED(Ready_Ray()))
         return E_FAIL;
 
@@ -119,6 +116,12 @@ HRESULT CMainPlayer::Initialize(void* pArg)
 
     Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
     Get_Component<CEffectHandler>()->Setup_ForOwner(this, Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>());
+
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Register_GlobalEvent()
+{
 
     return S_OK;
 }
@@ -168,6 +171,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
     if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
         return E_FAIL;
     if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
+        return E_FAIL;
+
+    if (FAILED(Register_GlobalEvent()))
         return E_FAIL;
 
     Get_Component<CPhysicsCCT>()->Ready_Position();
@@ -279,12 +285,15 @@ void CMainPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CG
 
 void CMainPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-    COLLIDED_DESC desc{};
-    desc.iCollisionType = COLLISIONEVENT::ON_TRIGGER_ENTER;
-    desc.iRequesterLayer = iMyColliderLayer;
-    desc.iOtherLayer = iOtherLayer;
-    desc.pRequester = this;
-    desc.pOther = pOther;
+    switch (iMyColliderLayer)
+    {
+    case ENUM_TO_UINT(PHYSICSFILTERGROUP::Enum::DETECT_MONSTER):
+        {
+        // ui에게 충돌 된 monster 객체 pointer 넘겨주기
+        // to UI담당자 : tHitInfo랑 pOther 잘 이용해서 하면 되지 않을까
+        }
+        break;
+    }
 }
 
 void CMainPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -375,42 +384,6 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
 
     default:
         pStat->Reset_ComboCount();
-    }
-
-    // damage 폰트 : iDamageFlag에 따라 크리티컬 || 일반 판정
-
-    if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::NORMAL)))
-    {
-        // 일반 공격 데미지 폰트
-        UI_PREFAB_DATA tPrefabData = {};
-        UI_DAMAGEFONT_PREFAB_DATA Desc = {};
-        Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-        Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
-        Desc.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
-        Desc.vRandOffset = Vec3{
-            m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
-        tPrefabData.Data = Desc;
-        CUI_Manager::GetInstance()->Request_Add_Prefab(
-            m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
-    }
-
-    else if(Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
-    {
-        UI_PREFAB_DATA tPrefabData = {};
-        UI_DAMAGEFONT_PREFAB_DATA Desc = {};
-        Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);
-        Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };
-        Desc.vHitPos = hitDesc.vHitPoint;
-        Desc.vRandOffset = Vec3{
-            m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f),
-            m_pGameInstance->Rand_Float(-1.f, 1.f)
-        };
-        tPrefabData.Data = Desc;
-        CUI_Manager::GetInstance()->Request_Add_Prefab(
-            m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
     }
 }
 
@@ -578,16 +551,16 @@ HRESULT CMainPlayer::Ready_Ability()
     // stat
     {
         CStatCom_Player::PLAYER_STATCOMP_DESC desc = {};
-        desc.fMaxHp = 320.f;
-        desc.fDefense = 400.f;
-        desc.fMental = 105.f;
+        desc.fMaxHp     = 320.f;
+        desc.fDefense   = 400.f;
+        desc.fMental    = 105.f;
         desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate;
 
-        desc.fComboCoolTime = 2.f;
-        desc.fDashCoolTime = 2.f;
+        desc.fComboCoolTime     = 2.f;
+        desc.fDashCoolTime      = 2.f;
 
-        desc.fMeleeAttack = 20.f;
-        desc.fGunAttack = 20.f;
+        desc.fMeleeAttack       = 20.f;
+        desc.fGunAttack         = 20.f;
 
         desc.pESkill = pESkill;
         desc.pQSkill = pQSkill;
@@ -602,8 +575,8 @@ HRESULT CMainPlayer::Ready_Ability()
         }
 
         desc.vecExtraComputeOrder = vecComputeOrder;
-        desc.fCriticalAttack = 30.f;
-        desc.fCriticalRate = 0.3f;
+        desc.fCriticalAttack    = 30.f;
+        desc.fCriticalRate      = 0.1f;
 
         if (FAILED(Add_Component<CMyStat>(0/* STATIC */, L"Prototype_Component_Stat_Player", &desc)))
             return E_FAIL;
@@ -711,122 +684,6 @@ HRESULT CMainPlayer::Ready_Ability()
 
     //    pActionState->Add_State(ENUM_TO_UINT(CPlayer::State::LEFTMELEE), pContainer);
     //}
-    return S_OK;
-}
-
-HRESULT CMainPlayer::Ready_Colliders()
-{
-    CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
-    if (!pBody)
-        return E_FAIL;
-    
-    //CWeapon* pWeapon = Get_Part<CWeapon>(ENUM_TO_UINT(Part::WEAPON));
-    //if (!pWeapon)
-    //    return E_FAIL;
-
-    //CColliderPart* pLeftHand = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::LEFTHAND));
-    //if (!pLeftHand)
-    //    return E_FAIL;
-
-    //CColliderPart* pRightHand = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::RIGHTHAND));
-    //if (!pRightHand)
-    //    return E_FAIL;
-
-    //CColliderPart* pLeftFoot = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::LEFTFOOT));
-    //if (!pLeftFoot)
-    //    return E_FAIL;
-
-    //CColliderPart* pRightFoot = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::RIGHTFOOT));
-    //if (!pRightFoot)
-    //    return E_FAIL;
-
-    //// Body
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_BODY);
-    //    boundingDesc.fRadius = 0.7f;
-    //    boundingDesc.vCenter = { 0.f, boundingDesc.fRadius, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pBody->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// Weapon
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_WEAPON);
-    //    boundingDesc.fRadius = 0.4f;
-    //    boundingDesc.vCenter = { 0.f, -boundingDesc.fRadius, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pWeapon->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// LeftHand
-    //{
-    //    CColliderPart* pLeftHand = Get_Part<CColliderPart>(ENUM_TO_UINT(Part::LEFTHAND));
-    //    if (!pLeftHand)
-    //        return E_FAIL;
-
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_LEFTHAND);
-    //    boundingDesc.fRadius = 0.3f;
-    //    boundingDesc.vCenter = { 0.f, 0.f, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pLeftHand->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// RightHand
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_RIGHTHAND);
-    //    boundingDesc.fRadius = 0.3f;
-    //    boundingDesc.vCenter = { 0.f, 0.f, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pRightHand->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// LeftFoot
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_LEFTFOOT);
-    //    boundingDesc.fRadius = 0.3f;
-    //    boundingDesc.vCenter = { 0.f, 0.f, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pLeftFoot->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //// RightFoot
-    //{
-    //    CCollider::COLLIDER_DESC colliderDesc = {};
-    //    CBounding_Sphere::BOUNDING_SPHERE_DESC boundingDesc = {};
-    //    colliderDesc.iLayer = ENUM_TO_UINT(ECollideLayer::PLAYER_RIGHTFOOT);
-    //    boundingDesc.fRadius = 0.45f;
-    //    boundingDesc.vCenter = { 0.f, 0.f, 0.f };
-    //    colliderDesc.pBoundingDesc = &boundingDesc;
-    //    if (FAILED(pRightFoot->Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_Sphere", &colliderDesc)))
-    //        return E_FAIL;
-    //}
-
-    //m_pGameInstance->Register_Collider(pBody->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pWeapon->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pLeftHand->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pRightHand->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pLeftFoot->Get_Component<CCollider>());
-    //m_pGameInstance->Register_Collider(pRightFoot->Get_Component<CCollider>());
-    //pWeapon->Get_Component<CCollider>()->Set_Active(false);
-    //pLeftHand->Get_Component<CCollider>()->Set_Active(false);
-    //pRightHand->Get_Component<CCollider>()->Set_Active(false);
-    //pLeftFoot->Get_Component<CCollider>()->Set_Active(false);
-    //pRightFoot->Get_Component<CCollider>()->Set_Active(false);
     return S_OK;
 }
 
@@ -1050,7 +907,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime = 1.3f;
+        tDesc.fKeyCoolTime = 1.f;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
 

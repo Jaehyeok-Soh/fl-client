@@ -94,7 +94,7 @@ using namespace SimpleMath;
 #include "Client_Defines.h"
 #include "Client_EventDefine.h"
 #include "DataDefine_Json.h"
-
+#include "Engine_Utils.h"
 #pragma region MONSTER_STATE
 #include "MonsterStateFactoryRegisterer.h"
 #pragma endregion

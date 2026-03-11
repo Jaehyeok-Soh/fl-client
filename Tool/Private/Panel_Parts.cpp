@@ -31,8 +31,18 @@ HRESULT CPanel_Parts::Render(CToolObject* pGo)
 
 void CPanel_Parts::Update(const _float fTimeDelta)
 {
-	if(m_pAnimToolManager->Get_AnimControllInfo().pCurrentObject)
+	if (m_pAnimToolManager->Get_AnimControllInfo().pCurrentObject)
+	{
 		m_iPartNums = _uint(m_pAnimToolManager->Get_AnimControllInfo().pCurrentObject->Get_PartList().size());
+
+		if (m_pSelectedWeapon)
+		{
+			CModel* pModel = m_pSelectedWeapon->Get_Component<CModel>();
+
+			if(pModel)
+				m_iCurAnimationIdx = pModel->Get_CurrentAnimationIndex();
+		}
+	}
 }
 
 void CPanel_Parts::Render_SelectPart()
@@ -63,6 +73,9 @@ void CPanel_Parts::Render_PartInfo()
 		ImGui::Separator();
 
 		SRT_Info();
+		ImGui::Separator();
+
+		Animation_Info();
 	}
 }
 
@@ -126,6 +139,26 @@ void CPanel_Parts::SRT_Info()
 		Set_SRT(CTool_Weapon::SRT::Scale);
 	}
 	ImGui::Spacing();
+}
+
+void CPanel_Parts::Animation_Info()
+{
+	// ref info
+	{
+		ImGui::Text("Current Anim Index : %d", m_iCurAnimationIdx);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(120);
+		ImGui::InputInt("Select AnimIdx##PartAnim", &m_iSelecAnimationIdx, 1);
+		// 최소값 -1 제한
+		if (m_iSelecAnimationIdx < 0)
+			m_iSelecAnimationIdx = 0;
+		ImGui::SameLine();
+		if (ImGui::Button("Apply##PartAnim"))
+		{
+			if (m_pSelectedWeapon)
+				m_pSelectedWeapon->Change_Animation(m_iSelecAnimationIdx);
+		}
+	}
 }
 
 void CPanel_Parts::Set_PartObj()
