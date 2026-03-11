@@ -315,14 +315,17 @@ void CActionState::SetCCTImpuls_Conversion(Vec3 vLocal)
 	Matrix matWorld = pTransform->Get_WorldMatrix();
 
 	Vec3 vRight = matWorld.Right();
-	Vec3 vUp = matWorld.Up();
 	Vec3 vLook = matWorld.Forward();
 
+	vRight.y = 0.f;
+	vLook.y = 0.f;
+
 	vRight.Normalize();
-	vUp.Normalize();
 	vLook.Normalize();
 
-	Vec3 vImpuls = (vRight * vLocal.x) + (vUp * vLocal.y) + (vLook * vLook.z);
+	Vec3 vGlobalUp = Vec3(0.f, 1.f, 0.f);
+
+	Vec3 vImpuls = (vRight * vLocal.x) + (vGlobalUp * vLocal.y) + (vLook * vLocal.z);
 
 	cct->SetImpulsAccelation(vImpuls);
 }

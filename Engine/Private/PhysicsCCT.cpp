@@ -148,7 +148,7 @@ void CPhysicsCCT::AddFixedMove(Vec3 vVelocity)
 
 void CPhysicsCCT::SetImpulsAccelation(Vec3 vImpuls)
 {
-	m_tMoveState.vImpulsAccelation = ToPxVec3(vImpuls);
+	m_tMoveState.vImpulsAccelation += ToPxVec3(vImpuls);
 }
 
 void CPhysicsCCT::SetZeroVelocity()
