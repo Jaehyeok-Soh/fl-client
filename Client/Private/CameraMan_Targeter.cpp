@@ -626,7 +626,7 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
                     + Vec3{0.f,1.f,0.f} * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
         break;
     case TargeterState::GUN:
-        vDesiredPos = m_vChaseFiltered
+        vDesiredPos = vChasePositionRaw
                     + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
                     - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
                     + Vec3{ 0.f,1.f,0.f } *m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
