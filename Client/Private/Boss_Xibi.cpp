@@ -2,6 +2,7 @@
 #include "Client_EventDefine.h"
 #include "Boss_Xibi.h"
 #include "Sword.h"
+#include "MainPlayer.h"
 #include "Model.h"
 #include "Boss_Xibi_Body.h"
 #include "Bone.h"
@@ -46,7 +47,7 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 	if (FAILED(Ready_Ability()))
 		return E_FAIL;
 
-	Set_Name("시빌라");
+	Set_Name("악몽의 군단장 시빌라");
 
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
@@ -60,6 +61,37 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 	if (FAILED(Ready_StateIndexForDirecting()))
 		return E_FAIL;
 	
+	return S_OK;
+}
+
+HRESULT CBoss_Xibi::Ready_GlobalEvent()
+{
+	m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT>([this](){
+		Set_Render(true);
+		});
+
+	/* Xibi_Cinematic Event 구독 */
+	m_pGameInstance->Subscribe<XIBI_CHANGE_STATE_BOSS_DIRECTION>([this]() {
+		Set_Render(true);
+		if (FAILED(Change_State_ForDirecting(CBoss_Xibi::EStateForDirecting::Direction)))
+		{
+			MSG_BOX(" Boss 연출 Direction 실패 ");
+			return E_FAIL;
+		}
+
+		return S_OK;
+		});
+
+	m_pGameInstance->Subscribe<XIBI_CHANGE_STATE_BOSS_IDLE>([this]() {
+		if (FAILED(Change_State_ForDirecting(CBoss_Xibi::EStateForDirecting::Idle)))
+		{
+			MSG_BOX(" Boss 연출 Idle 변경 실패 ");
+			return E_FAIL;
+		}
+		return S_OK;
+		});
+
+
 	return S_OK;
 }
 
@@ -86,32 +118,32 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Change_State_ForDirecting(EStateForDirecting::Idle)))
 		return E_FAIL;
 
+
+	if (FAILED(Ready_GlobalEvent()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CBoss_Xibi::Update_Priority(const _float fTimeDelta)
 {
-	const _float fLocalTimeDelta = Get_Component<CMonsterControlContext>()->IsPhaseTwo() == true ? fTimeDelta * 1.4f : fTimeDelta;
-	Super::Update_Priority(fLocalTimeDelta);
+	Super::Update_Priority(fTimeDelta);
 }
 
 void CBoss_Xibi::Update(const _float fTimeDelta)
 {
-	const _float fLocalTimeDelta = Get_Component<CMonsterControlContext>()->IsPhaseTwo() == true ? fTimeDelta * 1.4f : fTimeDelta;
-	Super::Update(fLocalTimeDelta);
-	Get_Component<CXibi_GimmikController>()->Update(fLocalTimeDelta);
+	Super::Update(fTimeDelta);
+	Get_Component<CXibi_GimmikController>()->Update(fTimeDelta);
 }
 
 void CBoss_Xibi::Update_Late(const _float fTimeDelta)
 {
-	const _float fLocalTimeDelta = Get_Component<CMonsterControlContext>()->IsPhaseTwo() == true ? fTimeDelta * 1.4f : fTimeDelta;
-	Super::Update_Late(fLocalTimeDelta);
+	Super::Update_Late(fTimeDelta);
 }
 
 void CBoss_Xibi::Ready_Before_Render(const _float fTimeDelta)
 {
-	const _float fLocalTimeDelta = Get_Component<CMonsterControlContext>()->IsPhaseTwo() == true ? fTimeDelta * 1.4f : fTimeDelta;
-	Super::Ready_Before_Render(fLocalTimeDelta);
+	Super::Ready_Before_Render(fTimeDelta);
 }
 
 HRESULT CBoss_Xibi::Render()
@@ -168,10 +200,47 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 	_bool result = Super::On_Hit(hitDesc);
 	if (result == true)
 	{
-		EGroggyState eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
-		if (eGroggy != EGroggyState::None)
-			if (_bool bSucess = Get_Component<CMonsterControlContext>()->Set_Groggy(eGroggy))
-				m_pGameInstance->Broadcast<BOSS_GROGGY>();
+		CMonsterControlContext *pControlContext = Get_Component<CMonsterControlContext>();
+		CStatCom_Boss* pComBoss = Get_Component<CStatCom_Boss>();
+		// 그로기 일때
+		if (pControlContext->IsGroggy() == true)
+		{
+			// 플레이어 공격이라면
+			if (hitDesc.attackDesc.iAttackerLayer == EPhysicsFilterGroup::ATTACK)
+			{
+				// 확정 static_cast<>
+				if (CMainPlayer* pMainPlayer = dynamic_cast<CMainPlayer*>(hitDesc.attackDesc.pAttacker))
+				{
+					CActionState* pActionState = pMainPlayer->Get_Component<CActionState>();
+					// Condemn
+					if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::CONDEMN))
+					{
+						pComBoss->Add_Health(-500.f);
+						_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
+						if (fHpRatio <= g_XMEpsilon.f[0])
+							Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
+						else
+							Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
+					}
+				}
+			}
+		}
+		else
+		{
+			EGroggyState eGroggy{ EGroggyState::None };
+			if(Engine_Utils::Has_Flag( hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.25f);
+			else
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
+
+			// 그로기 세팅하고 !!리턴!!
+			if (eGroggy != EGroggyState::None)
+			{
+				if (_bool bRequstedSucess = pControlContext->Set_Groggy(eGroggy))
+					m_pGameInstance->Broadcast<BOSS_GROGGY>();
+
+			}
+		}		
 	}
 	return result;
 }
@@ -179,6 +248,8 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 void CBoss_Xibi::Try_Attack(const HIT_DESC& hitDesc)
 {
 	Super::Try_Attack(hitDesc);
+
+	Get_Component<CMonsterControlContext>()->Set_AttackLanded();
 }
 
 HRESULT CBoss_Xibi::Change_State_ForDirecting(EStateForDirecting eState)
@@ -201,7 +272,7 @@ HRESULT CBoss_Xibi::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 3000.f;
+	desc.fMaxHp = 4500.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 
@@ -266,7 +337,7 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
 	desc.fMeleeRange = 2.f;
-	desc.fAttackRange = 4.f;
+	desc.fAttackRange = 8.f;
 	desc.fCloseRange = 1.f;
 	desc.fDetectionRange = 15.f;
 	desc.fSpeed = 1.f;
@@ -312,11 +383,11 @@ HRESULT CBoss_Xibi::Ready_StateIndexForDirecting()
 		return E_FAIL;
 	if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemned_Die") == false)
 		return E_FAIL;
-	if (setStateIndex(EStateForDirecting::Condemned_End, "Condemned_End") == false)
+	if (setStateIndex(EStateForDirecting::Condemned_Attacked, "Condemned_Attacked") == false)
 		return E_FAIL;
 	if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
 		return E_FAIL;
-
+	 
 	return S_OK;
 }
 

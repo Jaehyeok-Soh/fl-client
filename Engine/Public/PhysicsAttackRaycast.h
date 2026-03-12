@@ -49,7 +49,8 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext;
 
 	PxScene* m_pScene = { nullptr };
-	class CPhysics_QueryFilterCallback_Gun* m_pFilterCallback = { nullptr };
+	class CPhysics_QueryFilterCallback* m_pFilterCallback = { nullptr };
+	class CPhysics_QueryFilterCallback_Gun* m_pFilterCallback_Aim = { nullptr };
 	PxQueryFilterData m_filterData = { PxQueryFilterData() };
 
 	ATTACKRAYCASTDESC m_tDesc{};

@@ -29,6 +29,7 @@
 #include "PhysicsRigidBody.h"
 #include "PhysicsAttackRaycast.h"
 #include "PhysicsRagdoll.h"
+#include "PhysicsSpringArm.h"
 //=================
 // Builder
 //=================
@@ -106,6 +107,7 @@
 #include "TriggerBox_LevelChange.h"
 #include "TriggerBox_MonsterSpawner.h"
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
+#include "TriggerBox_TutorialUIEvent.h"
 
 /* --------------------- */
 //=================
@@ -322,6 +324,12 @@ HRESULT CLoader::Loading_For_Logo()
 
 	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
 	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
+
+
+
+	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_DIRECTION);
+	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_IDLE);
+
 
 #pragma endregion
 
@@ -726,6 +734,7 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_ChangeLevel_Prototype_Tag,			CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterSapwner_Prototype_Tag,			CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, CTriggerBox_GlobalEvent_BroadCaster::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_TutorialUIEvent_PrototypeTag,			CTriggerBox_TutorialUIEvent::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 		/* Weapons */
@@ -770,6 +779,7 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region PHYSICS
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_AttackRaycast", CPhysicsAttackRaycast::Create(m_pDevice, m_pDeviceContext, nullptr));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Ragdoll", CPhysicsRagdoll::Create());
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_SpringArm", CPhysicsSpringArm::Create(nullptr));
 #pragma endregion
 
 #pragma region UI

@@ -47,6 +47,9 @@ HRESULT CUILoading_Text::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
+
+	Set_Visible();
+
 	return S_OK;
 }
 
@@ -136,20 +139,20 @@ HRESULT CUILoading_Text::Attach_Personal_Info()
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::LOADING_TEXT_TITLE:
-		m_vecText.push_back(L"강병준");
-		m_vecText.push_back(L"소재혁");
-		m_vecText.push_back(L"최정우");
-		m_vecText.push_back(L"민건희");
-		m_vecText.push_back(L"김은비");
-		m_vecText.push_back(L"백승민");
+		m_vecText.push_back(L"아스크의 징벌");
+		m_vecText.push_back(L"악마의 쐐기");
+		m_vecText.push_back(L"카론");
+		m_vecText.push_back(L"필토이드");
+		m_vecText.push_back(L"아이스레이크 시티");
+		m_vecText.push_back(L"주조 마스터 대장장이");
 		break;
 	case DTO::EUITextSubClassType::LOADING_TEXT_CONTENTS:
-		m_vecText.push_back(L"팀장 / 프레임워크");
-		m_vecText.push_back(L"소방관 / 피직스");
-		m_vecText.push_back(L"이펙트");
-		m_vecText.push_back(L"맵");
-		m_vecText.push_back(L"플레이어");
-		m_vecText.push_back(L"UI");
+		m_vecText.push_back(L"강적의 전투 태세가 완전히 무너지면 아스크의 징벌로 대량의 대미지를 입힐 수 있습니다.\n아스크는 카론의 신앙 속 아버지 신의 이름입니다.");
+		m_vecText.push_back(L"악마의 쐐기를 캐릭터와 무기에 장착하면 캐릭터와 무기의 능력을 크게 향상시킬 수 있습니다. 일부 진귀한 악마의 쐐기는 캐릭터의 스킬 효과에 변화를 줄 수도 있습니다.");
+		m_vecText.push_back(L"'마법'을 가진 이들은 카론이라 불리는데, 아트라시아 대륙의 각 나라마다 차이가 있다. 휘페르보레아 제국에서는 카론을 '악마의 아이'라고 부른다.");
+		m_vecText.push_back(L"도시 바깥에 넓게 분포하는 몬스터로, 보통 무리 지어 출몰한다. 일반인에게 있어 결코 무시할 수 없을 정도로 위험하다.");
+		m_vecText.push_back(L"휘페르보레아 제국 북쪽 지대에 있는 도시로 제국의 기원과 밀접한 관계를 가졌으며, 과거에는 월석의 주요 산지이기도 했다. 기나긴 혹한과 눈보라가 이곳을 지켜준다.");
+		m_vecText.push_back(L"대장장이 루나에게서 무기와 아이템을 주조할 수 있습니다.");
 		break;
 	}
 	return S_OK;
@@ -202,8 +205,7 @@ void CUILoading_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
-	m_vFontColor.w = 0.f;
-	m_fLoadingTimeAcc = 0.f;
+	Ready_Fade_Text(1.f, 0.f, 1.f, m_fDelay);
 }
 
 void CUILoading_Text::Initialize_InVisible_Event()
@@ -212,15 +214,10 @@ void CUILoading_Text::Initialize_InVisible_Event()
 
 _bool CUILoading_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_fLoadingTimeAcc += fTimeDelta;
+	_bool isFade = Tick_Fade_Text(fTimeDelta);
 
-	if (m_fLoadingTimeAcc < m_fDelay)
-		return false;
-
-	m_vFontColor.w += fTimeDelta;
-	if (m_vFontColor.w > 1.f)
+	if (isFade)
 	{
-		m_vFontColor.w = 1.f;
 		m_isActive = true;
 		m_isFin_Event = true;
 		return true;

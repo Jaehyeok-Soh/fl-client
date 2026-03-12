@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "Level_Loading.h"
 #include "GameInstance.h"
+#include "TriggerBox_TutorialUIEvent.h"
 
 CTriggerBox_GlobalEvent_BroadCaster::CTriggerBox_GlobalEvent_BroadCaster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CTriggerBox(pDevice ,pContext) 
@@ -35,6 +36,7 @@ HRESULT CTriggerBox_GlobalEvent_BroadCaster::Initialize(void* pArg)
     TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pDesc = static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pArg);
 
     m_vecGlobalBroadcastType = pDesc->vecGlobalBroadcastType;
+
 
     if (FAILED(Ready_Component(pDesc)))
         return E_FAIL;
@@ -97,6 +99,7 @@ HRESULT CTriggerBox_GlobalEvent_BroadCaster::BroadCast()
 
     return S_OK;
 }
+
 
 void CTriggerBox_GlobalEvent_BroadCaster::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {

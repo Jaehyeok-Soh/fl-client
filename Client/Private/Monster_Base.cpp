@@ -16,7 +16,7 @@
 #include "PhysicsAttackOverlap.h"
 #include "EffectHandler.h"
 #include "RenderFx.h"
-
+#include "UIMinimap_Manager.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
@@ -218,7 +218,10 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 
 		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 		if (vHp.x <= 0)
+		{
+			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();
+		}
 	}
 
 #ifdef _DEBUG
@@ -248,6 +251,11 @@ void CMonster_Base::Try_Attack(const HIT_DESC& hitDesc)
 
 	CLOG_INFO(infoContant);
 #endif // _DEBUG
+}
+
+void CMonster_Base::Set_RootMotion_Apply(_bool bApply)
+{
+	Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>()->Set_CurAnimation_RootApply(bApply);
 }
 
 HRESULT CMonster_Base::Ready_BaseStates()

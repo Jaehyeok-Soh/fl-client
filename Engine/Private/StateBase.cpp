@@ -46,17 +46,21 @@ HRESULT CStateBase::Start(void *pArg, _bool bForce)
 {
 	m_iMainAnimIdx = 0;
 
+	_bool bPreCheck = true;
+
 	// desc을 받았다면 mainAnimIdx 변경 : 이전 state가 결정권을 가짐. 자기 내부에서 결정하기에는 정보가 적기 때문
 	if (pArg)
 	{
 		STATE_START_DESC *pDesc = static_cast<STATE_START_DESC*>(pArg);
 		m_bMainForce = bForce;
 		m_iMainAnimIdx = pDesc->iMainAnimIdx;
+
+		bPreCheck = pDesc->bCheckPre;
 	}
 
 	// 만약 preAni가 있는 state라면
 	// vecPreAnims 탐색 후 preAni 결정
-	if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_HasPreAni))
+	if (bPreCheck && Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_HasPreAni))
 	{
 		_int iIndex{ 0 };
 		for (auto& pAniData : m_vecPreAnims)

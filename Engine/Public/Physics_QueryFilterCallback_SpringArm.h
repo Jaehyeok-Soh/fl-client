@@ -8,13 +8,13 @@ NS_BEGIN(Engine)
 
 class CGameObject;
 
-class ENGINE_DLL CPhysics_QueryFilterCallback final : public CBase, public PxQueryFilterCallback
+class ENGINE_DLL CPhysics_QueryFilterCallback_SpringArm final : public CBase, public PxQueryFilterCallback
 {
     using Super = CBase;
 
 private:
-    CPhysics_QueryFilterCallback();
-    virtual ~CPhysics_QueryFilterCallback() = default;
+    CPhysics_QueryFilterCallback_SpringArm();
+    virtual ~CPhysics_QueryFilterCallback_SpringArm() = default;
 
     HRESULT Initialize();
 
@@ -25,7 +25,7 @@ private:
     CGameObject* m_pOwner = { nullptr };
 
 public:
-    static CPhysics_QueryFilterCallback* Create();
+    static CPhysics_QueryFilterCallback_SpringArm* Create();
     virtual void Free() override;
 
 

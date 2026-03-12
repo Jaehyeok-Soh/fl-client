@@ -1,11 +1,12 @@
 #include "pch.h"
-#include "Client_Defines.h"
+#include "CameraMan_Targeter.h"
 #include "ContainerObject.h"
 #include "Player.h"
 #include "Body.h"
 #include "Model.h"
 #include "Bone.h"
-#include "CameraMan_Targeter.h"
+#include "PhysicsCCT.h"
+#include "PhysicsSpringArm.h"
 
 #include "GameInstance.h"
 
@@ -48,6 +49,9 @@ HRESULT CCameraMan_Targeter::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
+    if (FAILED(Add_Component<CPhysicsSpringArm>(0 /*static*/, L"Prototype_Component_SpringArm", nullptr)))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -56,7 +60,7 @@ HRESULT CCameraMan_Targeter::Awake(const _uint iCurrentLevelID)
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
-    Change_CamState(TargeterState::NORMAL);
+    Change_CamState(TargeterState::TARGETSYNC);
     //m_fK_SpeedTodist = m_fMaxDistanceDelta / m_fMaxSpeed;
 
     if (FAILED(Ready_GlobalEvent()))
@@ -161,12 +165,29 @@ HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
         m_pGameInstance->Play_CameraCinematic(L"Xibi_Cinematic_Cuve");
         Change_CamState(TargeterState::CINEMATIC);
         m_pActor->Set_Active(false);
+
+        return S_OK;
         });
 
     /* Xibi_Cinematic Event 구독 */
     m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT_END>([this]() {
         Change_CamState(TargeterState::NORMAL);
         m_pActor->Set_Active(true);
+        Vec3 vChangePos = Vec3(339.393f, 270.5f, -323.06f);
+        m_pActor->Get_Component<CPhysicsCCT>()->SetFootPosition(vChangePos);
+
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevelIndex() , g_wszBossLayer , 0 );
+        if (pBoss == nullptr) return E_FAIL;
+        Vec3 BossPos = pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+        BossPos.y = 0.f;
+        vChangePos.y = 0.f;
+        m_pActor->Get_Component<CTransform>()->Look_At_Dir(BossPos - vChangePos);
+
+        static_cast<CPlayer*>(m_pActor)->Change_IdleForce();
+
+        this->Change_CamState(TargeterState::TARGETSYNC);
+
+        return S_OK;
         });
 
 
@@ -192,6 +213,10 @@ void CCameraMan_Targeter::Update_Priority_State(const _float fTimeDelta)
     case Client::TargeterState::SKILL_SEQUENCE:
         Skill_SequeneCam_Update_Priority(fTimeDelta);
         break;
+
+    case Client::TargeterState::TURN:
+        TurnCam_Update_Priority(fTimeDelta);
+        break;
     }
 }
 
@@ -214,6 +239,10 @@ void CCameraMan_Targeter::Update_State(const _float fTimeDelta)
     case Client::TargeterState::SKILL_SEQUENCE:
         Skill_SequeneCam_Update(fTimeDelta);
         break;
+
+    case Client::TargeterState::TURN:
+        TurnCam_Update(fTimeDelta);
+        break;
     }
 }
 
@@ -232,6 +261,10 @@ void CCameraMan_Targeter::State_Begin(TargeterState eState)
         break;
     case Client::TargeterState::SKILL_SEQUENCE:
         Skill_SequeneCam_Begin();
+        break;
+
+    case Client::TargeterState::TURN:
+        TurnCam_Begin();
         break;
     }
 }
@@ -253,6 +286,10 @@ void CCameraMan_Targeter::State_End(TargeterState eState)
 
     case Client::TargeterState::SKILL_SEQUENCE:
         Skill_SequeneCam_End();
+        break;
+
+    case Client::TargeterState::TURN:
+        TurnCam_End();
         break;
     }
 }
@@ -340,7 +377,10 @@ void CCameraMan_Targeter::TargetSync_Update_Priority(const _float fTimeDelta)
     m_fYaw = std::atan2(vLook.x, vLook.z);
     m_fPitch = std::asin(std::clamp(vLook.y, -1.f, 1.f)) * -1.f; 
 
-    Vec3 vDesiredPos = vChaseFiltered - vLook * m_fCurLookDistance;
+    Vec3 vDesiredPos =       vChasePositionRaw
+        + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
+        - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
+            + Vec3{ 0.f,1.f,0.f } *m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
 
     CTransform* pCameraTransform = Get_Component<CTransform>();
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
@@ -363,6 +403,8 @@ void CCameraMan_Targeter::TargetSync_End()
     m_fPitch_Target = m_fPitch;
     m_bImpactInit = false;
     m_fStateTime = 0.f;
+
+    m_arrPreDistances = m_arrNormalDistances;
 }
 
 void CCameraMan_Targeter::GunCam_Begin()
@@ -427,6 +469,76 @@ void CCameraMan_Targeter::Skill_SequeneCam_Update(const _float fTimeDelta)
 void CCameraMan_Targeter::Skill_SequeneCam_End()
 {
     //m_fCurDistance = 0.f;
+}
+
+void CCameraMan_Targeter::TurnCam_Begin()
+{
+    CTransform* pTransform = Get_Component<CTransform>();
+
+    pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_tTurnData.vPivot - m_tTurnData.vFirstLookDir * m_tTurnData.fDistance);
+
+    Vec3 vNewPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+    pTransform->Look_At_Dir(m_tTurnData.vPivot - vNewPos);
+}
+
+void CCameraMan_Targeter::TurnCam_Update_Priority(const _float fTimeDelta)
+{
+
+}
+
+void CCameraMan_Targeter::TurnCam_Update(const _float fTimeDelta)
+{
+    if (m_fStateTime < m_tTurnData.fTurnHalfTime)
+    {
+        Update_TurnOn(fTimeDelta);
+    }
+
+    else if (m_fStateTime < (m_tTurnData.fTurnHalfTime  + m_tTurnData.fTurnHoldTime))
+    {
+        return;
+    }
+
+    else if (m_fStateTime < (m_tTurnData.fTurnHalfTime * 2.f + m_tTurnData.fTurnHoldTime))
+    {
+        Update_TurnOn(fTimeDelta * -1.f);
+    }
+
+    else
+        Change_CamState(TargeterState::NORMAL);
+}
+
+void CCameraMan_Targeter::TurnCam_End()
+{
+    CGameObject* pActor = { nullptr };
+    if (!(pActor = Get_Actor()))
+        return;
+
+    _float fLength = {};
+
+    if (CContainerObject* pObject = dynamic_cast<CContainerObject*>(pActor))
+    {
+        // 플레이어의 바디를 들고 온다
+        CBody* pBodyOfPlayer = nullptr;
+        if (!(pBodyOfPlayer = pObject->Get_Part<CBody>(CPlayer::BODY)))
+            return;
+
+        // 플레이어의 transform을 들고 온다
+        CTransform* pPlayerTransform = nullptr;
+        if (!(pPlayerTransform = pObject->Get_Component<CTransform>()))
+            return;
+
+        Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pBodyOfPlayer, pPlayerTransform);
+        vChasePositionRaw.y = 0.f;
+
+        Vec3 vCurCamPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+        vCurCamPos.y = 0.f;
+
+
+        fLength = Vec3::Distance(vCurCamPos, vChasePositionRaw);
+    }
+
+    m_arrPreDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)] = fLength;
 }
 
 void CCameraMan_Targeter::Update_Input(const _float fTimeDelta)
@@ -508,18 +620,20 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     switch (m_eCurrentState)
     {
     case TargeterState::NORMAL:
-        vDesiredPos = vChasePositionRaw 
+        vDesiredPos = m_vChaseFiltered
                     + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
                     - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
                     + Vec3{0.f,1.f,0.f} * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
         break;
     case TargeterState::GUN:
-        vDesiredPos = vChasePositionRaw 
+        vDesiredPos = vChasePositionRaw
                     + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
                     - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
                     + Vec3{ 0.f,1.f,0.f } *m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
     break;
     }
+
+    vDesiredPos = CheckCameraCollision(vDesiredPos, m_vChaseFiltered);
 
     // RUL & P 다시 재조립
     CTransform* pCameraTransform = Get_Component<CTransform>();
@@ -644,6 +758,45 @@ void CCameraMan_Targeter::Change_DistancesAll(const _float fTimeDelta)
 
         break;
     }
+}
+
+void CCameraMan_Targeter::Update_TurnOn(const _float fTimeDelta)
+{
+    CTransform* pTransform = Get_Component<CTransform>();
+    Vec3 vRight = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    vRight.Normalize();
+
+    // right로 움직여
+    pTransform->Add_Position(vRight * m_tTurnData.fSpeed * fTimeDelta);
+
+    // pivot을 봐
+    pTransform->Look_At(m_tTurnData.vPivot);
+
+
+    //Vec3 vNewPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+
+    pTransform->Chase(m_tTurnData.vPivot, m_tTurnData.fDistance, fTimeDelta);
+
+}
+
+void CCameraMan_Targeter::Update_TurnOff(const _float fTimeDelta)
+{
+    CTransform* pTransform = Get_Component<CTransform>();
+    Vec3 vRight = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    vRight.Normalize();
+
+    // right로 움직여
+    pTransform->Add_Position(vRight * m_tTurnData.fSpeed * fTimeDelta * -1.f);
+
+    // pivot을 봐
+    pTransform->Look_At(m_tTurnData.vPivot);
+
+    pTransform->Chase(m_tTurnData.vPivot, m_tTurnData.fDistance, fTimeDelta);
+}
+
+Vec3 CCameraMan_Targeter::CheckCameraCollision(Vec3 vCameraPos, Vec3 vTargetPos)
+{
+    return Get_Component<CPhysicsSpringArm>()->CheckResolveCollision(vCameraPos, vTargetPos);
 }
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -170,8 +170,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 
     CGameInstance::GetInstance()->Add_Actor_Object(this);
 
-    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE))))
+    if (FAILED(Change_IdleForce()))
         return E_FAIL;
+
     if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
         return E_FAIL;
 
@@ -179,6 +180,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
         return E_FAIL;
 
     Get_Component<CPhysicsCCT>()->Ready_Position();
+    Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 320.f);
+    Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::MENTAL, 105.f);
+    Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::DEFENSE, 400.f);
 
 #ifdef _DEBUG
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
@@ -799,7 +803,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     // combo state
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
-        _float fAttackSpeed = { 1.4f };
+        _float fAttackSpeed = { 1.2f };
         tDesc.vCombo_CheckTimes = Vec4{ 0.45f / fAttackSpeed,0.45f / fAttackSpeed,0.95f / fAttackSpeed ,1.f / fAttackSpeed };
         tDesc.fSlide_CheckTime = 0.7f;
 
@@ -962,7 +966,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
         tDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly
+            | CStateBase_Player::COLLISIONFLAGS::C_CheckF;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNIDLE), CState_GunIdle::Create(pActionState, &tDesc))))
             return E_FAIL;
@@ -978,7 +983,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
         tDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly 
+            | CStateBase_Player::COLLISIONFLAGS::C_CheckF;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNWALK), CState_GunWalk::Create(pActionState, &tDesc))))
             return E_FAIL;

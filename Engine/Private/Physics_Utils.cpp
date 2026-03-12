@@ -5,6 +5,7 @@
 #include "Physics_Utils.h"
 #include "Physics_QueryFilterCallback.h"
 #include "Physics_QueryFilterCallback_Gun.h"
+#include "Physics_QueryFilterCallback_SpringArm.h"
 
 #include "DebugDraw.h"
 
@@ -380,6 +381,11 @@ CPhysics_QueryFilterCallback* CPhysics_Utils::GetQueryFilterCallback()
 CPhysics_QueryFilterCallback_Gun* CPhysics_Utils::GetQueryFilterCallback_Gun()
 {
 	return CPhysics_QueryFilterCallback_Gun::Create();
+}
+
+CPhysics_QueryFilterCallback_SpringArm* CPhysics_Utils::GetQueryFilterCallback_SpringArm()
+{
+	return CPhysics_QueryFilterCallback_SpringArm::Create();
 }
 
 #ifdef _DEBUG

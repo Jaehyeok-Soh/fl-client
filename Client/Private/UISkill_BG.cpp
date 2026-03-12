@@ -260,6 +260,17 @@ void CUISkill_BG::Bind_Events()
 				}
 			})
 	);
+
+	m_pGameInstance->Subscribe<CINEMATIC_START>(
+		[this]()
+		{
+			this->Set_Invisible();
+		});
+	m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
+		{
+			this->Set_Visible();
+		});
+
 }
 
 CUISkill_BG* CUISkill_BG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

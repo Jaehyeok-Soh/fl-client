@@ -418,6 +418,7 @@ namespace Tool
 		TriggerBox_ChangeLevel,
 		TriggerBox_MonsterSpawner,
 		TriggerBox_GlobalEvent_BroadCaster,
+		TriggerBox_TutorialUIEvent,
 
 
 
@@ -470,6 +471,7 @@ namespace Tool
 		case Tool::EClientMakePath::TriggerBox_ChangeLevel:					return "TriggerBox_ChangeLevel";
 		case Tool::EClientMakePath::TriggerBox_MonsterSpawner:				return "TriggerBox_MonsterSpawner";
 		case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:		return "TriggerBox_GlobalEvent_BroadCaster";
+		case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:				return "TriggerBox_TutorialUIEvent";
 
 
 			/* -------------- Invisible Wall ----------- */
@@ -502,6 +504,7 @@ namespace Tool
 		if (strType == "TriggerBox_ChangeLevel")							return EClientMakePath::TriggerBox_ChangeLevel;
 		if (strType == "TriggerBox_MonsterSpawner")							return EClientMakePath::TriggerBox_MonsterSpawner;
 		if (strType == "TriggerBox_GlobalEvent_BroadCaster")				return EClientMakePath::TriggerBox_GlobalEvent_BroadCaster;
+		if (strType == "TriggerBox_TutorialUIEvent")						return EClientMakePath::TriggerBox_TutorialUIEvent;
 
 
 
@@ -875,6 +878,11 @@ namespace Tool
 		XIBILA_BOSS_UI_ON,
 		XIBILA_BOSS_UI_OFF,
 
+
+		/* 보스 연출위해 임시방편 추후에 사라질 예정 */
+		XIBI_CHANGE_STATE_BOSS_DIRECTION,
+		XIBI_CHANGE_STATE_BOSS_IDLE,
+
 		END,
 	};
 
@@ -889,6 +897,10 @@ namespace Tool
 		"XIBILA_BOSS_ACTION_OFF",
 		"XIBILA_BOSS_UI_ON",
 		"XIBILA_BOSS_UI_OFF",
+
+		"XIBI_CHANGE_STATE_BOSS_DIRECTION",
+		"XIBI_CHANGE_STATE_BOSS_IDLE",
+
 	};
 	inline string Global_Broadcast_Type_ToString(EGlobal_Broadcast_Type eType)
 	{
@@ -909,6 +921,64 @@ namespace Tool
 	}
 
 #pragma endregion
+
+
+	enum class EUITutorialPopUpTypeID
+	{
+		TUTORIAL_POPUP_1,	// [Space] 를 눌러 점프
+		TUTORIAL_POPUP_2,	// [LCtrl] 를 눌러 슬라이드로 구멍 지나가기
+		TUTORIAL_POPUP_3,	// [LCtrl] 를 길게 눌러 앉기/슬라이드 상태 진입
+		TUTORIAL_POPUP_3_1,	// [Space] 를 다시 눌러 스파이럴 점프로 절벽 넘기
+		TUTORIAL_POPUP_4,	// 마우스를 움직여 시야를 올린 후 대각선으로 뛰어오르기
+		TUTORIAL_POPUP_4_1,	// [LCtrl] 를 길게 누른 상태에서 [Space] 를 눌러 스파이럴 점프로 절벽을 넘거나 원거리 이동할 수 있습니다.
+		TUTORIAL_POPUP_5,	// 벽에 다가가서 [Space] 를 연속으로 눌러 벽 오르기
+		TUTORIAL_POPUP_6,	// [V] 버튼을 눌러 가이드 포인트를 확인할 수 있습니다.
+		TUTORIAL_POPUP_7,	// [Mouse L] 을 눌러 근접 공격
+		TUTORIAL_POPUP_8,	// [LShift] 버튼을 눌러 적의 공격 회피
+		TUTORIAL_POPUP_9,	// [Mouse R] 를 눌러 원거리 공격
+		TUTORIAL_POPUP_10,	// [R] 버튼을 눌러 탄환 장전
+		TUTORIAL_POPUP_11,	// [E] 버튼을 눌러 스킬 시전
+		TUTORIAL_POPUP_12,	// 보스를 조준하고 [Mouse Wheel] 마우스 휠 버튼을 눌러 시점 고정, 다시 눌러서 고정 해제
+		TUTORIAL_POPUP_13,	// [Q] 버튼을 눌러 종결 스킬 시전
+		END,
+	};
+
+	// 헤더 파일의 Enum 선언 바로 밑이나, cpp 파일 상단에 선언해 둡니다.
+	static const char* g_szTutorialUIEvent[(int)EUITutorialPopUpTypeID::END] = {
+		"TUTORIAL_POPUP_1",
+		"TUTORIAL_POPUP_2",
+		"TUTORIAL_POPUP_3",
+		"TUTORIAL_POPUP_3_1",
+		"TUTORIAL_POPUP_4",
+		"TUTORIAL_POPUP_4_1",
+		"TUTORIAL_POPUP_5",
+		"TUTORIAL_POPUP_6",
+		"TUTORIAL_POPUP_7",
+		"TUTORIAL_POPUP_8",
+		"TUTORIAL_POPUP_9",
+		"TUTORIAL_POPUP_10",
+		"TUTORIAL_POPUP_11",
+		"TUTORIAL_POPUP_12",
+		"TUTORIAL_POPUP_13",
+	};
+	inline string UITutorialPopUpTypeID_ToString(EUITutorialPopUpTypeID eType)
+	{
+		// 인덱스 초과 방지 안전장치
+		if (eType >= EUITutorialPopUpTypeID::TUTORIAL_POPUP_1 && eType < EUITutorialPopUpTypeID::END)
+			return g_szTutorialUIEvent[(int)eType];
+
+		return "Unknown";
+	}
+	inline EUITutorialPopUpTypeID UITutorialPopUpTypeID_ToEnum(const string& strType)
+	{
+		for (int i = 0; i < (int)EUITutorialPopUpTypeID::END; ++i)
+		{
+			if (strType == g_szTutorialUIEvent[i])
+				return (EUITutorialPopUpTypeID)i;
+		}
+		return EUITutorialPopUpTypeID::END;
+	}
+
 
 #pragma region Struct
 #pragma endregion

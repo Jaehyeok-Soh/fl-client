@@ -245,7 +245,11 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	Vec3 finalPos = GetFootPosition();
 	Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 30.f);
+	_float fLerpAmount = fTimeDelta * 15.f;
+	if (fLerpAmount > 1.f)
+		fLerpAmount = 1.f;
+
+	_float yLerp = std::lerp(currentPos.y, finalPos.y, fLerpAmount);
 	finalPos.y = yLerp;
 
 	transform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);

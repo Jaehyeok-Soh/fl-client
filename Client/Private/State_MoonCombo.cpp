@@ -84,7 +84,7 @@ void CState_MoonCombo::Update(const _float fTimeDelta)
 	if (m_iComboCount == 4)
 	{
 		// 속도 조절 필요
-		if (m_bShakeActived  == false && m_fStateElapsed >= 0.8f / 1.4f)
+		if (m_bShakeActived  == false && m_fStateElapsed >= 0.8f / 1.2f)
 		{
 			CAM_SHAKING_DATA data{};
 			data.fTime = 0.2f;

@@ -10,6 +10,7 @@ class CPhysics_ActorFactory;
 class CPhysics_CCTManager;
 class CPhysics_RagdollSystem;
 class CPhysics_FilterEventCallback;
+class CPhysics_QueryFilterCallback_SpringArm;
 
 class CPhysics_Module final : public CBase
 {
@@ -44,8 +45,9 @@ public:
     PxQuat GetPureRotation(Matrix mat);
     PxVec3 GetPureScale(Matrix mat);
     _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
-    class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
-    class CPhysics_QueryFilterCallback_Gun* GetQueryFilterCallback_Gun();
+    CPhysics_QueryFilterCallback* GetQueryFilterCallback();
+    CPhysics_QueryFilterCallback_Gun* GetQueryFilterCallback_Gun();
+    CPhysics_QueryFilterCallback_SpringArm* GetQueryFilterCallback_SpringArm();
 #ifdef _DEBUG
     HRESULT Render(PxRigidActor* pActor, XMVECTOR color = DirectX::Colors::White);
     HRESULT Render(const PxGeometry& geom, const PxTransform& transform, XMVECTOR color = DirectX::Colors::White);

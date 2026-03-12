@@ -29,6 +29,7 @@
 #include "TriggerBox_LevelChange.h"
 #include "TriggerBox_MonsterSpawner.h"
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
+#include "TriggerBox_TutorialUIEvent.h"
 #pragma endregion
 
 
@@ -118,6 +119,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::TriggerBox_ChangeLevel:				Create_TriggerBox_ChangeLevel(tData); break;
 			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			Create_TriggerBox_MonsterSpawner(tData); break;
 			case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	Create_TriggerBox_GlobalEvent_BroadCaster(tData); break;
+			case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			Create_TriggerBox_TutorialUIEvent(tData); break;
 
 
 
@@ -703,24 +705,50 @@ HRESULT CBuilder_Map::Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_
 
 
 	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
-	CTriggerBox_GlobalEvent_BroadCaster::TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC  pDesc{};
+	CTriggerBox_GlobalEvent_BroadCaster::TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC  tDesc{};
 	CTransform::TRANSFORM_DESC transformDesc = {};
 	transformDesc.TranslationMatrix = { tSRT.Get_World() };
 
-	pDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-	pDesc.pSRTData = &tSRT;
-	pDesc.pTransform_Desc = &transformDesc;
-	pDesc.vTriggerBox_Extents = pTriggerBox_GlobalEvent_BroadCaster->vExtents;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.pSRTData = &tSRT;
+	tDesc.pTransform_Desc = &transformDesc;
+	tDesc.vTriggerBox_Extents = pTriggerBox_GlobalEvent_BroadCaster->vExtents;
 
-	pDesc.vecGlobalBroadcastType.reserve(pTriggerBox_GlobalEvent_BroadCaster->vecGlobalEventBroadCasetNames.size());
+	tDesc.vecGlobalBroadcastType.reserve(pTriggerBox_GlobalEvent_BroadCaster->vecGlobalEventBroadCasetNames.size());
 	for (auto& str : pTriggerBox_GlobalEvent_BroadCaster->vecGlobalEventBroadCasetNames)
 	{
-		pDesc.vecGlobalBroadcastType.push_back(Global_Broadcast_Type_ToEnum(str));
+		tDesc.vecGlobalBroadcastType.push_back(Global_Broadcast_Type_ToEnum(str));
 	}
 
 	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), 
 									g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
-									g_wszTriggerBoxLayer, &pDesc);
+									g_wszTriggerBoxLayer, &tDesc);
+
+	return S_OK;
+}
+HRESULT CBuilder_Map::Create_TriggerBox_TutorialUIEvent(const DTO::TMap_MapObjectData& tData)
+{
+	if (tData.vecSRTs.empty()) return E_FAIL;
+	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
+
+	Engine::TRIGGERBOX_TUTORIALUIEVENT_DESC* pOrigin = static_cast<Engine::TRIGGERBOX_TUTORIALUIEVENT_DESC*>(tData.vecClientMakePathDesc.front());
+	if (pOrigin == nullptr) return E_FAIL;
+
+
+	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
+	CTriggerBox_TutorialUIEvent::TRIGGERBOX_TUTORIALUIEVENT_DESC tDesc{};
+	CTransform::TRANSFORM_DESC transformDesc = {};
+	transformDesc.TranslationMatrix = { tSRT.Get_World() };
+
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.pSRTData				= &tSRT;
+	tDesc.pTransform_Desc		= &transformDesc;
+	tDesc.vTriggerBox_Extents	= pOrigin->vExtents;
+	tDesc.eType					= UITutorialPopUpTypeID_ToEnum(pOrigin->strEventName);
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+		g_wszTriggerBox_TutorialUIEvent_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
+		g_wszTriggerBoxLayer, &tDesc);
 
 	return S_OK;
 }

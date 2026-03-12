@@ -60,6 +60,8 @@ HRESULT CLevel_Loading::Awake(const _uint iLevelID)
 {
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
+
+	m_pGameInstance->Request_CursorMode(ECursorMode::LockedHiddenCenter);
 	return S_OK;
 }
 
