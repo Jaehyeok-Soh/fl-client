@@ -64,6 +64,37 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 	return S_OK;
 }
 
+HRESULT CBoss_Xibi::Ready_GlobalEvent()
+{
+	m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT>([this](){
+		Set_Render(true);
+		});
+
+	/* Xibi_Cinematic Event 구독 */
+	m_pGameInstance->Subscribe<XIBI_CHANGE_STATE_BOSS_DIRECTION>([this]() {
+		Set_Render(true);
+		if (FAILED(Change_State_ForDirecting(CBoss_Xibi::EStateForDirecting::Direction)))
+		{
+			MSG_BOX(" Boss 연출 Direction 실패 ");
+			return E_FAIL;
+		}
+
+		return S_OK;
+		});
+
+	m_pGameInstance->Subscribe<XIBI_CHANGE_STATE_BOSS_IDLE>([this]() {
+		if (FAILED(Change_State_ForDirecting(CBoss_Xibi::EStateForDirecting::Idle)))
+		{
+			MSG_BOX(" Boss 연출 Idle 변경 실패 ");
+			return E_FAIL;
+		}
+		return S_OK;
+		});
+
+
+	return S_OK;
+}
+
 HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
@@ -83,6 +114,13 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 		ePrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
 	}
+
+	if (FAILED(Change_State_ForDirecting(EStateForDirecting::Idle)))
+		return E_FAIL;
+
+
+	if (FAILED(Ready_GlobalEvent()))
+		return E_FAIL;
 
 	return S_OK;
 }

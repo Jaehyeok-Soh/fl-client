@@ -113,6 +113,7 @@ void from_json(const json& LoadJson, OVERRIDE_MATERIALS& tData)
 		}
 	}
 }
+
 void to_json(json& SaveJson, const OVERRIDE_MATERIALS& tData)
 {
 	SaveJson["Name"] = Engine_Utils::ToString(tData.wstrMtl_JsonFile_Name);
@@ -125,6 +126,7 @@ void to_json(json& SaveJson, const OVERRIDE_MATERIALS& tData)
 		SaveJson["Textures"].push_back({ Engine_Utils::ToString(pairTextureInfo.first), Engine_Utils::ToString(pairTextureInfo.second) });
 	}
 }
+
 #pragma endregion
 
 #pragma region USING MODEL INFO
@@ -368,6 +370,7 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	case DTO::EClientMakePath::TriggerBox_ChangeLevel:				return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC				: new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC			: new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	return pSource == nullptr ? new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC : new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC(*static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			return pSource == nullptr ? new TRIGGERBOX_TUTORIALUIEVENT_DESC			: new TRIGGERBOX_TUTORIALUIEVENT_DESC(*static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pSource));
 
 
 
@@ -899,7 +902,7 @@ void TRIGGERBOX_DESC::to_Json(json& SaveJson)
 {
 	Engine_Utils::write_vec3_xyz(SaveJson["Extents"], this->vExtents);
 }
-
+#pragma endregion
 
 
 #pragma region Change Level
@@ -919,8 +922,9 @@ void TRIGGERBOX_CHANGELEVEL_DESC::to_Json(json& SaveJson)
 
 	SaveJson["Change Level Type Name"] = this->strChangeLevelTypeName;
 }
-
 #pragma endregion
+
+
 
 #pragma region Monster Spawner 
 
@@ -1042,6 +1046,29 @@ void TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC::to_Json(json& SaveJson)
 	Super::to_Json(SaveJson);
 
 	SaveJson["Global Event Broadcast Names"] = this->vecGlobalEventBroadCasetNames;
+}
+
+#pragma endregion
+
+
+#pragma region TutorialUIEvent Desc
+
+
+void TRIGGERBOX_TUTORIALUIEVENT_DESC::from_Json(const json& LoadJson)
+{
+	Super::from_Json(LoadJson);
+
+	if (LoadJson.contains("Tutorial UI Event ID"))
+	{
+		this->strEventName = LoadJson["Tutorial UI Event ID"];
+	}
+}
+
+void TRIGGERBOX_TUTORIALUIEVENT_DESC::to_Json(json& SaveJson)
+{
+	Super::to_Json(SaveJson);
+
+	SaveJson["Tutorial UI Event ID"] = this->strEventName;
 }
 
 #pragma endregion

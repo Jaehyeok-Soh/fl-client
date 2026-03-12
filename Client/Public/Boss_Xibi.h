@@ -23,6 +23,7 @@ private:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 
+	HRESULT				Ready_GlobalEvent();
 public:
 	virtual HRESULT		Awake(const _uint iCurrentLevelID) override;
 	virtual void		Update_Priority(const _float fTimeDelta) override;

@@ -458,6 +458,38 @@ namespace Client
 		END,
 	};
 
+	// 헤더 파일의 Enum 선언 바로 밑이나, cpp 파일 상단에 선언해 둡니다.
+	static const char* g_szTutorialUIEvent[(int)EUITutorialPopUpTypeID::END] = {
+		"TUTORIAL_POPUP_1",
+		"TUTORIAL_POPUP_2",
+		"TUTORIAL_POPUP_3",
+		"TUTORIAL_POPUP_3_1",
+		"TUTORIAL_POPUP_4",
+		"TUTORIAL_POPUP_4_1",
+		"TUTORIAL_POPUP_5",
+		"TUTORIAL_POPUP_6",
+		"TUTORIAL_POPUP_7",
+		"TUTORIAL_POPUP_8",
+		"TUTORIAL_POPUP_9",
+		"TUTORIAL_POPUP_10",
+		"TUTORIAL_POPUP_11",
+		"TUTORIAL_POPUP_12",
+		"TUTORIAL_POPUP_13"
+	};
+
+	inline std::string UITutorialPopUpTypeID_ToString(EUITutorialPopUpTypeID eType)
+	{
+		// 인덱스 초과 방지 안전장치
+		if (eType >= EUITutorialPopUpTypeID::TUTORIAL_POPUP_1 && eType < EUITutorialPopUpTypeID::END)
+			return g_szTutorialUIEvent[(int)eType];
+
+		return "Unknown";
+	}
+
+
+
+
+
 	enum class EUIPrefabType {
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
@@ -486,6 +518,19 @@ namespace Client
 
 		END
 	};
+
+
+	inline EUITutorialPopUpTypeID UITutorialPopUpTypeID_ToEnum(const std::string& strType)
+	{
+		for (int i = 0; i < (int)EUITutorialPopUpTypeID::END; ++i)
+		{
+			if (strType == g_szTutorialUIEvent[i])
+				return (EUITutorialPopUpTypeID)i;
+		}
+		return EUITutorialPopUpTypeID::END;
+	}
+
+
 
 	inline _wstring UIPrefabtypeToWstring(EUIPrefabType eType)
 	{
@@ -521,6 +566,9 @@ namespace Client
 		}
 		return L"NOT_PREFAB";
 	}
+
+
+
 
 	typedef struct tagUINamePlatePrefabData
 	{
@@ -628,6 +676,11 @@ namespace Client
 		XIBILA_BOSS_UI_ON,
 		XIBILA_BOSS_UI_OFF,
 
+
+		/* 보스 연출위해 임시방편 추후에 사라질 예정 */
+		XIBI_CHANGE_STATE_BOSS_DIRECTION,
+		XIBI_CHANGE_STATE_BOSS_IDLE,
+
 		END,
 	};
 
@@ -642,6 +695,10 @@ namespace Client
 		"XIBILA_BOSS_ACTION_OFF",
 		"XIBILA_BOSS_UI_ON",
 		"XIBILA_BOSS_UI_OFF",
+
+		"XIBI_CHANGE_STATE_BOSS_DIRECTION",
+		"XIBI_CHANGE_STATE_BOSS_IDLE",
+
 	};
 	inline string Global_Broadcast_Type_ToString(EGlobal_Broadcast_Type eType)
 	{
@@ -776,6 +833,7 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBox_MonsterSapwner_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_MonsterSpawner" };
 	inline constexpr wchar_t g_wszTriggerBox_PhysicsColliderBox_PrototypeTag[]{ L"Prototype_Component_Physics_Collider_TriggerBox" };
 	inline constexpr wchar_t g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_GlobalEvent_BroadCaster" };
+	inline constexpr wchar_t g_wszTriggerBox_TutorialUIEvent_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_TutorialUIEvent" };
 #pragma endregion
 
 #pragma region Monster 관련	
