@@ -5,6 +5,7 @@
 #include "ControlContext.h"
 #include "PhysicsCCT.h"
 #include "CameraMan_Targeter.h"
+#include "PlayerActionState.h"
 
 #include "GameInstance.h"
 
@@ -88,13 +89,14 @@ void CState_GunBase::Update(const _float fTimeDelta)
     // 항시 hit 판정 먼저
     if (Check_Hit(fTimeDelta))
     {
-        Request_MixAnimation(1, -1);
+        Setting_BeforeNormalState();
+
         End_MoveState(m_eMoveState);
         return;
     }
 
     // 0. 만약 r button 눌림이 끝났다면 gun state 탈출
-    if (m_fStateElapsed > 0.3f &&
+    if (m_fStateElapsed > 0.45f &&
         !(MOUSE_RBUTTON_DOWN || MOUSE_RBUTTON_HOLD)) // 최소 유지 타임 : 0.5f if you need it? desc
     {
         // move 상태에 따라
@@ -105,9 +107,9 @@ void CState_GunBase::Update(const _float fTimeDelta)
     // 1. shif, mouse L, skill 키 검사
     if (Check_BaseKey(fTimeDelta))
     {
-        Request_MixAnimation(1, -1);
-        End_MoveState(m_eMoveState);
+        Setting_BeforeNormalState();
 
+        End_MoveState(m_eMoveState);
         return;
     }
 
@@ -382,8 +384,6 @@ void CState_GunBase::Start_MoveState(MoveState eNextState)
 
 void CState_GunBase::End_MoveState(MoveState ePreState)
 {
-    Request_MixAnimation(1, -1);
-
     switch (ePreState)
     {
     case MoveState::GROUND:
@@ -401,8 +401,7 @@ void CState_GunBase::End_MoveState(MoveState ePreState)
 
 void CState_GunBase::GunEnd()
 {
-    // 1번 mix 정보를 죽인다
-    Request_MixAnimation(1, -1);
+    Setting_BeforeNormalState();
 
     End_MoveState(m_eMoveState);
 
@@ -460,6 +459,12 @@ void CState_GunBase::Look_Control(_float fTimeDelta)
         Additive_DataSetting(true, m_Aim_Indicex[ENUM_TO_SZET(Aim_MixAnim::MIDDLE)], 1.f);
     }
 
+}
+
+void CState_GunBase::Setting_BeforeNormalState()
+{
+    static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Set_GunTimerOn();
+    Request_MixAnimation(1, -1);
 }
 
 void CState_GunBase::GunMove(const _float fTimeDelta)

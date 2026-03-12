@@ -38,27 +38,40 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
+	virtual void Update(const _float fTImeDelta) override;
+
+	// hit 관련 funcs
+public:
 	void Set_Flag(Flags FActionFlag, _bool bOn);
 	void Set_HitDesc(const HIT_DESC& tHit);
 
-	_bool Is_OnHit();
-	Flags Get_AttackFlag() const { return m_fAttackFlag; }
-	Vec3 Get_HitNormal() const { return m_tPreHitDesc.vHitNormal; }
-	Vec3 Get_VicPosition() const;
+	_bool	Is_OnHit();
+	Flags	Get_AttackFlag() const { return m_fAttackFlag; }
+	Vec3	Get_HitNormal() const { return m_tPreHitDesc.vHitNormal; }
+	Vec3	Get_VicPosition() const;
 
-	void Reset_HitDesc() { m_tPreHitDesc = {};  m_fAttackFlag = 0; }
+	void	Reset_HitDesc() { m_tPreHitDesc = {};  m_fAttackFlag = 0; }
 
-	_bool Can_FKeyEvent();
-	_uint Get_CurFKeyEvent() const { return m_tFKeyData.iKeyEvent; }
-
+	// Fkey 관련 funcs
 public:
-	void		Set_FKeyEvent(_uint iEvnet, _bool bOn);
+	void	Set_FKeyEvent(_uint iEvnet, _bool bOn);
+	_bool	Can_FKeyEvent();
+	_uint	Get_CurFKeyEvent() const { return m_tFKeyData.iKeyEvent; }
+
+	// timer 관련 funcs
+public:
+	_bool Can_ChangeGunState();
+	void  Set_GunTimerOn() { m_tGunCoolTimer.bCountTime = true; m_tGunCoolTimer.fTimeAcc = 0.f; }
 
 private:
-	Flags			m_fAttackFlag = {};
-	HIT_DESC		m_tPreHitDesc = {};
+	Flags			m_fAttackFlag	= {};
+	HIT_DESC		m_tPreHitDesc	= {};
 
-	FKEY_DATA		m_tFKeyData = {};
+	FKEY_DATA		m_tFKeyData		= {};
+
+private:
+	TIME_COUNTER	m_tGunCoolTimer = {};
+
 
 public:
 	static CPlayerActionState* Create();
