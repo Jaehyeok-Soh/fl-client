@@ -1381,11 +1381,25 @@ HRESULT CPlayer::Ready_PartCollider()
            tPartColliDesc.pColliderDesc = &tPColliDesc;
         }
 
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_TriggerCall);
         tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
-    }
 
-    if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
-        return E_FAIL;
+        // mini map에게 감지할 part ui
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER_UI, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
+
+        {
+            tPColliDesc.eShape = EPhysicsShape::SPHERE;
+            tPColliDesc.fRadius = { 2.f };
+            tPartColliDesc.pColliderDesc = &tPColliDesc;
+        }
+
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_PosUpdate);
+
+        // player가 감지할 part ui
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
+    }
 
     return S_OK;
 }
