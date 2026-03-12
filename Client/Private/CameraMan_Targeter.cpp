@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "Client_Defines.h"
+#include "CameraMan_Targeter.h"
 #include "ContainerObject.h"
 #include "Player.h"
 #include "Body.h"
 #include "Model.h"
 #include "Bone.h"
-#include "CameraMan_Targeter.h"
+#include "PhysicsCCT.h"
 
 #include "GameInstance.h"
 
@@ -161,12 +161,26 @@ HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
         m_pGameInstance->Play_CameraCinematic(L"Xibi_Cinematic_Cuve");
         Change_CamState(TargeterState::CINEMATIC);
         m_pActor->Set_Active(false);
+
+        return S_OK;
         });
 
     /* Xibi_Cinematic Event ±¸µ¶ */
     m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT_END>([this]() {
         Change_CamState(TargeterState::NORMAL);
         m_pActor->Set_Active(true);
+        Vec3 vChangePos = Vec3(339.393f, 270.5f, -323.06f);
+        m_pActor->Get_Component<CPhysicsCCT>()->SetFootPosition(vChangePos);
+
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevelIndex() , g_wszBossLayer , 0 );
+        if (pBoss == nullptr) return E_FAIL;
+        Vec3 BossPos = pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+        BossPos.y = 0.f;
+        vChangePos.y = 0.f;
+        m_pActor->Get_Component<CTransform>()->Look_At_Dir(BossPos - vChangePos);
+        this->Change_CamState(TargeterState::TARGETSYNC);
+
+        return S_OK;
         });
 
 

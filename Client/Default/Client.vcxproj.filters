@@ -715,6 +715,9 @@
     <Filter Include="05. Component\UI\Icon">
       <UniqueIdentifier>{6d1fe885-8e88-4301-8307-be2f4f183588}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent">
+      <UniqueIdentifier>{4b4564f1-e6dd-444c-9a16-0eecb5e95c9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1327,6 +1330,9 @@
     <ClInclude Include="..\Public\UIIcon_Component.h">
       <Filter>05. Component\UI\Icon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_TutorialUIEvent.h">
+      <Filter>03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1927,6 +1933,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIIcon_Component.cpp">
       <Filter>05. Component\UI\Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_TutorialUIEvent.cpp">
+      <Filter>03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

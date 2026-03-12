@@ -516,7 +516,7 @@ static const char* g_szWaterTextureType[(int)EWaterTextureType::END] = {
 
 	"Deco3_D",
 	"Deco3_N",
-	"Deco3_ORH",
+	"Deco3_ORH"
 };
 
 inline std::string WaterTextureType_ToString(EWaterTextureType eType)
@@ -721,7 +721,30 @@ public:
 	virtual void to_Json(json& SaveJson);
 };
 
+#pragma endregion
 
+
+#pragma region TutorialUIEvent
+
+struct ENGINE_DLL TRIGGERBOX_TUTORIALUIEVENT_DESC : public TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	string		strEventName{};
+public:
+	TRIGGERBOX_TUTORIALUIEVENT_DESC()
+		: TRIGGERBOX_DESC(), strEventName{}
+	{
+	}
+	TRIGGERBOX_TUTORIALUIEVENT_DESC(const TRIGGERBOX_TUTORIALUIEVENT_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs), strEventName{rhs.strEventName }
+	{
+	}
+	virtual ~TRIGGERBOX_TUTORIALUIEVENT_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
 
 #pragma endregion
 
@@ -788,6 +811,7 @@ enum class EClientMakePath
 	TriggerBox_ChangeLevel,
 	TriggerBox_MonsterSpawner,
 	TriggerBox_GlobalEvent_BroadCaster,
+	TriggerBox_TutorialUIEvent,
 
 
 	/* ¸Ê ±â´É °ü·Ã */
@@ -856,6 +880,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::TriggerBox_ChangeLevel,				"TriggerBox_ChangeLevel"},
 			{EClientMakePath::TriggerBox_MonsterSpawner,			"TriggerBox_MonsterSpawner"},
 			{EClientMakePath::TriggerBox_GlobalEvent_BroadCaster,	"TriggerBox_GlobalEvent_BroadCaster"},
+			{EClientMakePath::TriggerBox_TutorialUIEvent,			"TriggerBox_TutorialUIEvent"},
 
 			{EClientMakePath::Invisible_Wall,						"Invisible_Wall"},
 			{EClientMakePath::Static_Light,							"Static_Light"},

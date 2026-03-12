@@ -13,7 +13,14 @@ struct Test2 { using Signature = void(unsigned int iCount); };
 struct TUTORIAL_BOSS_CONTATCT		{ using Signature = void(); };
 struct TUTORIAL_BOSS_CONTATCT_END	{ using Signature = void(); };
 
+
+/* Xibi */
+
+struct XIBI_CHANGE_STATE_BOSS_DIRECTION { using Signature = void();};
+struct XIBI_CHANGE_STATE_BOSS_IDLE		{ using Signature = void();};
+
 /* Ä«¸Þ¶ó */
+
 
 #pragma endregion
 
