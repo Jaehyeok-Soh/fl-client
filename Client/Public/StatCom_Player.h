@@ -63,6 +63,8 @@ public:
 	// getter setter func
 public:
 
+	void Toggle_Invincible() { m_bInvincible = !m_bInvincible; }
+
 	// to UI 담당자 : 만약 const 때문에 귀찮다면 빼도 괜찮음.. from 플레이어 담당자
 	// to UI 담당자 : getter func 필요에 따라 바꿔도 좋고, 추가해도 상관없을듯. from 플레이어 담당자
 	// to UI 담당자 : cool time은 항상 0에서 1로 채우는 형식으로 갈거임.
@@ -171,6 +173,9 @@ private:
 private:
 	TIME_COUNTER	m_tDashTimeCounter	= { };			// 여기는 리셋 해야함
 	TIME_COUNTER	m_tComboTimeCounter	= { };
+
+private:
+	_bool m_bInvincible = { false };
 
 private:
 	virtual void Sub_Hp(_float iHealth) override;		// 매게변수 값이 음수일때

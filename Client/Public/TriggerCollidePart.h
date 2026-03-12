@@ -20,8 +20,8 @@ public:
 		//  maskes
 		Default = Call_ParentTirggerEnter | Call_ParentTirggerExit | Check_CollidedPos_In | Check_CollidedPos_Out,
 
-		Only_PosUpdate		= Check_CollidedPos_In | Check_CollidedPos_Out,
-		Only_TriggerCall	= Call_ParentTirggerEnter | Call_ParentTirggerExit,
+		Only_PosUpdate		= Check_CollidedPos_In | Check_CollidedPos_Out,		// 24
+		Only_TriggerCall	= Call_ParentTirggerEnter | Call_ParentTirggerExit, // 6
 	};
 
 	typedef struct tagColliderPartDesc : public CPartObject::PARTOBJ_DESC

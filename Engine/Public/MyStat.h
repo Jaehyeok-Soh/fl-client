@@ -55,6 +55,8 @@ public:
 
 	void Set_Stat(STAT_TYPE eType, _float fValue);
 
+	void Fill_StatFull(STAT_TYPE eType);
+
 	const Vec2& Get_Stat_Vec2(STAT_TYPE eType) const
 	{
 		//HP, DEFENSE, MENTAL

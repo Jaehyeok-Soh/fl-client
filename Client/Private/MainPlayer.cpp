@@ -191,6 +191,12 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
+    if (KEY_BUTTON_DOWN(DIK_B))
+    {
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
+    }
+
+
     //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
 }
 
@@ -930,7 +936,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime = 1.f;
+        tDesc.fKeyCoolTime = 0.8f;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
 

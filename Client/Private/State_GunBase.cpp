@@ -83,6 +83,8 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 
 void CState_GunBase::Update(const _float fTimeDelta)
 {
+    m_fStateElapsed += fTimeDelta;
+
     // 항시 hit 판정 먼저
     if (Check_Hit(fTimeDelta))
     {
@@ -92,7 +94,8 @@ void CState_GunBase::Update(const _float fTimeDelta)
     }
 
     // 0. 만약 r button 눌림이 끝났다면 gun state 탈출
-    if (MOUSE_RBUTTON_UP)
+    if (m_fStateElapsed > 0.3f &&
+        !(MOUSE_RBUTTON_DOWN || MOUSE_RBUTTON_HOLD)) // 최소 유지 타임 : 0.5f if you need it? desc
     {
         // move 상태에 따라
         GunEnd();

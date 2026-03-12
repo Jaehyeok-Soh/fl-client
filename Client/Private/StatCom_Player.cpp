@@ -22,6 +22,7 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 	, m_pESkillBase(rhs.m_pESkillBase)
 	, m_pQSkillBase(rhs.m_pQSkillBase)
 	, m_tExtra_AttackDesc(rhs.m_tExtra_AttackDesc)
+	, m_bInvincible(rhs.m_bInvincible)
 {
 }
 
@@ -73,6 +74,13 @@ void CStatCom_Player::Update_Stat(const _float fTimeDelta)
 
 	Count_Dash(fTimeDelta);
 	Count_Combo(fTimeDelta);
+
+	if (m_bInvincible)
+	{
+		Fill_StatFull(STAT_TYPE::DEFENSE);
+		Fill_StatFull(STAT_TYPE::HP);
+		Fill_StatFull(STAT_TYPE::MENTAL);
+	}
 }
 
 const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
