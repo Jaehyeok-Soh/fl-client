@@ -122,6 +122,9 @@ public:
 public:
 	PLAYER_TYPE Get_PlayerType() const { return m_ePlayerType; }
 
+public:
+	HRESULT Change_IdleForce();
+
 	// state funcs
 public:
 	void	Change_Weapon(_uint iPart, _uint iState); // 어떤 weapon을 어떤 state로

@@ -60,7 +60,7 @@ HRESULT CCameraMan_Targeter::Awake(const _uint iCurrentLevelID)
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
-    Change_CamState(TargeterState::NORMAL);
+    Change_CamState(TargeterState::TARGETSYNC);
     //m_fK_SpeedTodist = m_fMaxDistanceDelta / m_fMaxSpeed;
 
     if (FAILED(Ready_GlobalEvent()))
@@ -182,6 +182,9 @@ HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
         BossPos.y = 0.f;
         vChangePos.y = 0.f;
         m_pActor->Get_Component<CTransform>()->Look_At_Dir(BossPos - vChangePos);
+
+        static_cast<CPlayer*>(m_pActor)->Change_IdleForce();
+
         this->Change_CamState(TargeterState::TARGETSYNC);
 
         return S_OK;
@@ -374,7 +377,10 @@ void CCameraMan_Targeter::TargetSync_Update_Priority(const _float fTimeDelta)
     m_fYaw = std::atan2(vLook.x, vLook.z);
     m_fPitch = std::asin(std::clamp(vLook.y, -1.f, 1.f)) * -1.f; 
 
-    Vec3 vDesiredPos = vChaseFiltered - vLook * m_fCurLookDistance;
+    Vec3 vDesiredPos =       vChasePositionRaw
+        + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
+        - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
+            + Vec3{ 0.f,1.f,0.f } *m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
 
     CTransform* pCameraTransform = Get_Component<CTransform>();
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
@@ -397,6 +403,8 @@ void CCameraMan_Targeter::TargetSync_End()
     m_fPitch_Target = m_fPitch;
     m_bImpactInit = false;
     m_fStateTime = 0.f;
+
+    m_arrPreDistances = m_arrNormalDistances;
 }
 
 void CCameraMan_Targeter::GunCam_Begin()

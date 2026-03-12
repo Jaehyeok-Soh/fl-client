@@ -126,7 +126,7 @@ private:
 	Vec3 m_vChaseFiltered = { 0.f, 0.f, 0.f };
 
 	_bool m_bImpactInit = { false };
-	const _float m_fImpactDuration = { 0.14f };
+	const _float m_fImpactDuration = { 0.2f };
 
 	_float m_fTau_Chase = { 0.12f };
 	_float m_fTau_Pos = { 0.07f };

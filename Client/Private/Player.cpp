@@ -226,6 +226,17 @@ _wstring CPlayer::Get_AnimationName(_uint iAniIndex)
     return L"";
 }
 
+HRESULT CPlayer::Change_IdleForce()
+{
+    CStateBase::STATE_START_DESC tDesc = {};
+    tDesc.bCheckPre = false;
+
+    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE), false, &tDesc)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 void CPlayer::Change_Weapon(_uint iPart, _uint iState)
 {
     // 우선 다 none으로 바꾼다음
