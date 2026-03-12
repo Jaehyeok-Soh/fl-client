@@ -42,24 +42,31 @@ struct IMMU_ELEMENT
 // 가변 데이터
 struct MU_ELEMENT
 {
+    // 1 
     float fTimeDelta;
     float fTotalTime;
     float fDuration;
     float fStartDelay;
     
+    // 2
     uint iMoveState;
     int bIsLoop;
     uint iTimeFlag;
     float fPadding4;
     
+    // 3
     float3 vFinalGravity; // 계산된 최종 중력 벡터 (방향 * 세기)
     float fExternalStrength; // 외부 중력장 강도
     
+    // 4
     float3 vPivot;
     float fPadding1;
+    
+    // 5
     float3 vLook;
     float fPadding2;
     
+    // 6
     float fStartSpeed;
     float fSpiralRadius;
     float fSpiralSpeed;
@@ -89,6 +96,9 @@ RWStructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
 StructuredBuffer<VTXPARTICLE> INSTANCE_RESULT_SRV;
 
 // 중력을 전체적으로 관리하니까 난리가 나서 개별적으로 뺀다.
+
+// TODO : Initialize 때 Curve를 무조건 하나 생성하는 것 떄문에 터짐.
+
 float SampleCurve(StructuredBuffer<CurveKey> curve, uint keyCount, float fRatio)
 {
     // 키가 없으면 기본값 1.0 반환

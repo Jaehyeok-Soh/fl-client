@@ -69,6 +69,7 @@ HRESULT CPhysics_Module::Initialize()
 	{
 		PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.f, -9.81f, 0.f);
+		sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;
 		sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 		sceneDesc.flags |= PxSceneFlag::eENABLE_ACTIVE_ACTORS;
 		//sceneDesc.flags |= PxSceneFlag::eREQUIRE_RW_LOCK;
@@ -276,6 +277,11 @@ CPhysics_QueryFilterCallback* CPhysics_Module::GetQueryFilterCallback()
 CPhysics_QueryFilterCallback_Gun* CPhysics_Module::GetQueryFilterCallback_Gun()
 {
 	return m_pUtils->GetQueryFilterCallback_Gun();
+}
+
+CPhysics_QueryFilterCallback_SpringArm* CPhysics_Module::GetQueryFilterCallback_SpringArm()
+{
+	return m_pUtils->GetQueryFilterCallback_SpringArm();
 }
 
 #ifdef _DEBUG

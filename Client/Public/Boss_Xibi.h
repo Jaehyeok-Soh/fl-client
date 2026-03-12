@@ -11,7 +11,7 @@ public:
 	{
 		Idle = 0,
 		Condemned_Die,
-		Condemned_End,
+		Condemned_Attacked,
 		Direction,
 		COUNT
 	};

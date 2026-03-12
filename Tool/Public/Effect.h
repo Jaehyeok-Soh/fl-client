@@ -18,6 +18,7 @@ public:
 	typedef struct tagToolObjectDesc : public Super::TOOLOBJECT_DESC
 	{
 		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::WORLD;
+		_bool	_IsPoolingEffect = true;
 		vector<DTO::TEFFECT_PartsData>	_childData = {};
 	}EFFECT_CONTAINERDESC;
 
@@ -43,9 +44,10 @@ public:
 	virtual _bool Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument) override;
 	virtual void Draw_ImGui() override;
 public:
-	virtual void Set_SimulationSpace(DTO::E_SIMULATION_SPACE Space) { m_eDesc._Effect_SimulationType = Space; }
+	void Set_SimulationSpace(DTO::E_SIMULATION_SPACE Space) { m_eDesc._Effect_SimulationType = Space; }
+	const DTO::E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eDesc._Effect_SimulationType; }
 
-	virtual const DTO::E_SIMULATION_SPACE& Get_SimulationSpace() { return m_eDesc._Effect_SimulationType; }
+	EFFECT_CONTAINERDESC* Get_ContainerData() { return &m_eDesc; }
 
 protected:
 	void Update_CombinedWorldMatrix(const Matrix* pMatParent);

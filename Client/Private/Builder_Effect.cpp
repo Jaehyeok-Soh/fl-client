@@ -58,11 +58,16 @@ HRESULT CBuilder_Effect::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 
 	Effect::EFFECT_CONTAINERDESC pDesc = {};
 	pDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pData._Effect_SimulationType;
+	pDesc._IsPoolingEffect = pData._IsPoolingEffect;
 	pDesc.iLevelIndex = m_iLevelID;
 	pDesc.pTransform_Desc = &pTransDesc;
 	pDesc._childData = pData._ChildData;
 
-	Regist_pool(&pDesc, pData.EffectContainerName);
+	m_pGameInstance->Push_EffectData(Engine_Utils::ToHash(pData.EffectContainerName.c_str()), &pDesc);
+
+	// Ç® Çì¾ÖÈú ÀÌÆåÆ®¶ó¸é.
+	if (pData._IsPoolingEffect)
+		Regist_pool(&pDesc, pData.EffectContainerName);
 
 	return S_OK;
 }
@@ -88,10 +93,14 @@ void CBuilder_Effect::Regist_pool(void* pArg, string& PrefabEffectTag)
 	wstring LayTag = L"Effect_Layer";
 	wstring PrototypeTag = Create_PrototypeTag(PrefabEffectTag);
 
-	m_pGameInstance->Push_EffectData(Engine_Utils::ToHash(PrefabEffectTag.c_str()), pArg);
-
 	if (PrefabEffectTag == "Boss_Xibi_Lightning_Oneshot")
-		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 100);
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 200);
+
+	else if (PrefabEffectTag == "Boss_Xibi_Bullet_Spawn")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 200);
+
+	else if (PrefabEffectTag == "Boss_Xibi_Bullet_Dead")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 200);
 
 	else
 		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 30);

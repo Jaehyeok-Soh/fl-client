@@ -69,7 +69,7 @@ void CEffectHandler::Set_Desc(const ANIM_EFFECT_HANDLER_DESC& Desc)
              if (iAnimIndex >= vecAnimations.size()) continue;
 
              auto pAnimation = vecAnimations[iAnimIndex];
-             pAnimation->Clear_Notifies();
+             pAnimation->Clear_Notifies(EAnimNotifyId::Vfx_Oneshot);
          }
 
          Ready_AnimState();

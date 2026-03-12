@@ -107,7 +107,7 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
 	{
-		if (iIndex == m_iRootBoneIdx && !m_bApplyRootMotion)
+		if (iIndex == m_iRootChannelIdx && !m_bApplyRootMotion)
 		{
  			pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset);
 			continue;
@@ -143,7 +143,7 @@ void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSr
 	_uint iIndex = { 0 };
 	for (auto& pChannel : m_vecChannels)
 	{
-		if (iIndex == m_iRootBoneIdx && !m_bApplyRootMotion)
+		if (iIndex == m_iRootChannelIdx && !m_bApplyRootMotion)
 		{
 			pChannel->SetUp_PoseData(spanLocalSrtData, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset);
 			continue;
@@ -187,7 +187,7 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 		_uint iBondIdx = pChannel->Get_BoneIndex();
 		if (m_vecMixRatios[(size_t)iBondIdx] != 0.f)
 		{
-			if (iIndex == m_iRootBoneIdx && !m_bApplyRootMotion)
+			if (iIndex == m_iRootChannelIdx && !m_bApplyRootMotion)
 			{
 				pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, nullptr, fTimeDelta, m_fRootMotionOffset);
 				continue;
@@ -532,6 +532,18 @@ void CModelAnimation::Sort_Notifies()
 				return a.fTrackPosition < b.fTrackPosition;
 			});
 		m_iNextNotifyIndices[iIndex++] = 0;
+	}
+}
+
+void CModelAnimation::Clear_Notifies(EAnimNotifyId eID)
+{
+	for (size_t i = 0; i < ENUM_TO_UINT(EAnimNotifyPhase::END); ++i)
+	{
+		auto itr = std::remove_if(m_vecNotifies[i].begin(), m_vecNotifies[i].end(), [&](const AnimNotifyKey& element)->_bool
+			{
+				return element.eID == eID;
+			});
+		m_vecNotifies[i].erase(itr, m_vecNotifies[i].end());
 	}
 }
 

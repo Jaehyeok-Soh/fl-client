@@ -25,6 +25,7 @@ public:
 			DIE_POSE = 1 << 6,
 			GROGGY_REQ = 1 << 7,
 			GROGGY_ACTIVE = 1 << 8,
+			ATTACK_LANDED = 1 << 9,
 			END
 		};
 	}SUB_STATE;
@@ -101,6 +102,7 @@ public:
 	_bool Set_Groggy(EGroggyState eState, _bool bRequest = true, _float fGroggyDuration = 10.f);
 	void Set_DieProcess() { Engine_Utils::Add_Flag(m_iSubState, SUB_STATE::DIE_PROCESS); }
 	void Set_DiePose() { Engine_Utils::Add_Flag(m_iSubState, SUB_STATE::DIE_POSE); }
+	void Set_AttackLanded() { Engine_Utils::Add_Flag(m_iSubState, SUB_STATE::ATTACK_LANDED); }
 /// <summary>
 /// Condition
 /// </summary>
@@ -143,7 +145,7 @@ public:
 	_bool IsNotGroggy() const { return (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE) == 0) && (Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ) == 0); }
 	_bool IsNormalGroggyRequested() const { return (m_eCurrentGroggyState != EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ); }
 	_bool IsFinalGroggyRequested() const { return (m_eCurrentGroggyState == EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_REQ); }
-	_bool IsGroggy() const { return (m_eCurrentGroggyState != EGroggyState::None) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
+	_bool IsGroggy() const { return Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 	_bool IsNormalGroggy() const { return(m_eCurrentGroggyState != EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 	_bool IsFinalGroggy() const { return (m_eCurrentGroggyState == EGroggyState::Final) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::GROGGY_ACTIVE); }
 
@@ -156,6 +158,7 @@ public:
 	_bool IsDamageRecently();
 
 	// 공격 여부
+	_bool IsAttackLanded();
 	_bool IsComboPossible();
 	_bool CanAttackMelee();
 	_bool CanAttackRanged();
@@ -190,6 +193,9 @@ public:
 
 	void Consume_GroggyRequest();
 	void End_Groggy();
+
+	void Set_RootMotion_Apply(_bool bApply);
+
 private:
 	void Clear_RuntimeDesc();
 

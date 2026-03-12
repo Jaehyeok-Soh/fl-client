@@ -357,6 +357,7 @@ void CImGui_Dockspace_MenuBar::Load_EffectData(const wstring& wstrFilePath)
 
 		Effect::EFFECT_CONTAINERDESC pDesc = {};
 		pDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pData._Effect_SimulationType;
+		pDesc._IsPoolingEffect = pData._IsPoolingEffect;
 		pDesc.wstrLayerTag = L"Effect_Layer";
 		pDesc.iLevelIndex = iLevelID;
 		pDesc.pTransform_Desc = &pTransDesc;

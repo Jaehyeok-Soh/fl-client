@@ -754,7 +754,6 @@ void CEffectObject::Ready_Before_Render(const _float fTimeDelta)
 {
     // 임시 방편 
     _float TimeT = m_tEffectDesc.Data._Effect_PlayBackSpeed * fTimeDelta;
-
     Super::Ready_Before_Render(TimeT);
 
     if (m_tEffectDesc.Data._Effect_ShaderPass != 3)
