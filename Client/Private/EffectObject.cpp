@@ -500,9 +500,6 @@ void CEffectObject::Update(const _float fTimeDelta)
             fRatio = 0.5f;
     }
 
-    //Vec3 vCurrentScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale, m_tEffectDesc.Data._Effect_EndScale, fRatio);
-    //Get_Component<CTransform>()->Set_Scale(vCurrentScale);
-    // 
        // 스케일 보간 함수
     Apply_Scaling_Dynamics(fRatio);
 
