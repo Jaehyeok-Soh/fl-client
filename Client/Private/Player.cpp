@@ -226,6 +226,17 @@ _wstring CPlayer::Get_AnimationName(_uint iAniIndex)
     return L"";
 }
 
+HRESULT CPlayer::Change_IdleForce()
+{
+    CStateBase::STATE_START_DESC tDesc = {};
+    tDesc.bCheckPre = false;
+
+    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE), false, &tDesc)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 void CPlayer::Change_Weapon(_uint iPart, _uint iState)
 {
     // 우선 다 none으로 바꾼다음
@@ -1370,11 +1381,25 @@ HRESULT CPlayer::Ready_PartCollider()
            tPartColliDesc.pColliderDesc = &tPColliDesc;
         }
 
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_TriggerCall);
         tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
-    }
 
-    if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
-        return E_FAIL;
+        // mini map에게 감지할 part ui
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER_UI, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
+
+        {
+            tPColliDesc.eShape = EPhysicsShape::SPHERE;
+            tPColliDesc.fRadius = { 2.f };
+            tPartColliDesc.pColliderDesc = &tPColliDesc;
+        }
+
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_PosUpdate);
+
+        // player가 감지할 part ui
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
+    }
 
     return S_OK;
 }

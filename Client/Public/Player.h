@@ -42,7 +42,8 @@ public:
 		SWORD2,
 
 		EFFECT,
-		DETECTCOLLIDER, // 몬스터 감지용 collider
+		DETECTCOLLIDER_UI, // 몬스터 감지용 collider
+		DETECTCOLLIDER,
 		CLOAK,
 		END
 	};
@@ -121,6 +122,9 @@ public:
 
 public:
 	PLAYER_TYPE Get_PlayerType() const { return m_ePlayerType; }
+
+public:
+	HRESULT Change_IdleForce();
 
 	// state funcs
 public:

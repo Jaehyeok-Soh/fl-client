@@ -83,6 +83,7 @@ public:
 		_float	fForceAbs		= { 0.f };
 		_float	fDragK			= { 0.f };
 		_uint	iMainAnimIdx	= { 0 };					// main animation 중 어떤거 쓸건데?
+		_bool	bCheckPre		= { true };
 	}STATE_START_DESC;
 
 protected:
