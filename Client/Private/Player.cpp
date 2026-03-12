@@ -1366,7 +1366,7 @@ HRESULT CPlayer::Ready_PartCollider()
             tPColliDesc.eShape  = EPhysicsShape::BOX;
             //tPColliDesc.fHeight = 100.f;
             tPColliDesc.vCenter = { 0.f,0.f,0.f };
-            tPColliDesc.vExtents = {20.f, 100.f, 20.f};
+            tPColliDesc.vExtents = {40.f, 100.f, 40.f};
 
             //tPColliDesc.fRadius = { 20.f };
             tPColliDesc.bIsTrigger = { true };

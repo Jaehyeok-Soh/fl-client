@@ -57,9 +57,9 @@ HRESULT CUIWeakness_Image::Attach_Personal_Info()
 	{
 		m_vNoiseUVScale = Vec2{ 1.5f, 1.5f };
 		m_vNoiseUVScroll = Vec2{ 0.f, -0.5f };
-		m_fGlowDistort = 0.02f;
+		m_fGlowDistort = 0.03f;
 		m_fGlowPulseSpeed = 0.f;
-		m_fGlowIntensity = 1.6f;
+		m_fGlowIntensity = 2.f;
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BSTTLE_WEAKNESS_END:
@@ -206,20 +206,15 @@ void CUIWeakness_Image::Initialize_Visible_Event()
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON:
-		Ready_LerpChange(1.f, 0.f, 1.f, 3.f, 0.3f);
-		m_fAlpha_Ratio = 0.f;
-		m_fWidth = 0.f;
-		m_fHeight = 0.f;
+		Ready_LerpChange(0.5f, 0.1f, m_vOriginSize.x, 3.f, 0.3f);
 		Ready_Fade(0.5f, 0.f, 1.f, 0.5f);
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
-		Ready_LerpChange(0.5f, 0.f, 1.f, 1.f, m_fDelay);
-		m_fAlpha_Ratio = 0.f;
-		m_fHeight = 0.f;
-		Ready_Fade(1.f, 0.f, 1.f, m_fDelay);
+		Ready_LerpChange(0.5f, 0.1f, m_vOriginSize.y, 1.f, m_fDelay);
+		Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:
-		Ready_Fade(1.f, 0.f, 1.f, 0.5f);
+		Ready_Fade(0.3f, 0.f, 1.f, 0.5f);
 		break;
 	case DTO::EUIDImageSubClassType::BSTTLE_WEAKNESS_END:
 		break;
@@ -233,11 +228,11 @@ void CUIWeakness_Image::Initialize_InVisible_Event()
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON:
-		Ready_LerpChange(0.5f, 1.f, 0.f, 3.f, 1.f);
+		Ready_LerpChange(0.5f, m_fWidth, 0.1f, 3.f, 1.f);
 		Ready_Fade(0.5f, 1.f, 0.f, 1.f);
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
-		Ready_LerpChange(0.5f, 1.f, 0.f, 1.f, 1.f);
+		Ready_LerpChange(0.5f, m_fHeight, 0.1f, 1.f, 1.f);
 		Ready_Fade(1.f, 1.f, 0.f, 1.f);
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:
@@ -256,22 +251,26 @@ _bool CUIWeakness_Image::Tick_Visible_Event(const _float fTimeDelta)
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON:
 	{
-		_bool is = Tick_LerpChange(&m_fScale, fTimeDelta);
+		_float f = {};
+
+		_bool is = Tick_LerpChange(&f, fTimeDelta);
 		_bool isFade = Tick_Fade(fTimeDelta);
+
+		m_fWidth = f;
+		m_fHeight = f;
 
 		if (is && isFade)
 		{
 			UIEVENT_DESC Desc = {};
 			Desc.eEventID = EUIEventID::WEAKNESS_FIN;
 			m_pUIManager->Get_UIEvents().Broadcast(Desc);
-
 			return true;
 		}
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
 	{
-		_bool is = Tick_LerpChange(&m_fScale, fTimeDelta);
+		_bool is = Tick_LerpChange(&m_fHeight, fTimeDelta);
 		_bool isFade = Tick_Fade(fTimeDelta);
 
 		if (is && isFade)
@@ -297,22 +296,24 @@ _bool CUIWeakness_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON:
 	{
-		_bool is = Tick_LerpChange(&m_fScale, fTimeDelta);
+		_float f = {};
+
+		_bool is = Tick_LerpChange(&f, fTimeDelta);
 		_bool isFade = Tick_Fade(fTimeDelta);
+
+		m_fWidth = f;
+		m_fHeight = f;
 
 		if (is && isFade)
 		{
-			m_fWidth = 0.f;
-			m_fHeight = 0.f;
+			Move_Size(m_fWidth * m_fScale, m_fHeight * m_fScale);
 			return true;
 		}
-		m_fWidth = m_vOriginSize.x * m_fScale;
-		m_fHeight = m_vOriginSize.y * m_fScale;
 	}
 	break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
 	{
-		_bool is = Tick_LerpChange(&m_fScale, fTimeDelta);
+		_bool is = Tick_LerpChange(&m_fHeight, fTimeDelta);
 		_bool isFade = Tick_Fade(fTimeDelta);
 
 		if (is && isFade)
