@@ -1007,6 +1007,7 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	case Tool::EClientMakePath::TriggerBox_ChangeLevel:				ImGuiUpdate_TriggerBox_ChanageLevel_Desc			(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));						return S_OK;
 	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner				(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
 	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster		(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
+	case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:			ImGuiUpdate_TriggerBox_TutorialUIEvent				(static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pDesc));					return S_OK;
 	default:																																													return S_OK;
 	}
 
@@ -1621,6 +1622,26 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(TRIGGE
 	}
 
 	ImGui::Separator();
+}
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUTORIALUIEVENT_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGuiUpdate_TriggerBox(pDesc);
+
+	ImGui::Text("Event Name => [ %s ]", pDesc->strEventName.c_str());
+
+	EUITutorialPopUpTypeID eID = UITutorialPopUpTypeID_ToEnum(pDesc->strEventName);
+	_int				   iID = static_cast<_int>(eID);
+
+	ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 40.f);
+
+	if (ImGui::Combo("##EventCombo", &iID, g_szTutorialUIEvent, (int)EUITutorialPopUpTypeID::END))
+	{
+		pDesc->strEventName = UITutorialPopUpTypeID_ToString(static_cast<EUITutorialPopUpTypeID>(iID));
+	}
+
+
 }
 #pragma endregion
 
