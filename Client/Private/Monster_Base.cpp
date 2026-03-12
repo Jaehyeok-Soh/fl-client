@@ -16,7 +16,7 @@
 #include "PhysicsAttackOverlap.h"
 #include "EffectHandler.h"
 #include "RenderFx.h"
-
+#include "UIMinimap_Manager.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
@@ -218,7 +218,10 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 
 		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 		if (vHp.x <= 0)
+		{
+			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();
+		}
 	}
 
 #ifdef _DEBUG

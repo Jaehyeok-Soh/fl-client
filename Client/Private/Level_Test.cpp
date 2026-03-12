@@ -151,11 +151,15 @@ void CLevel_Test::Update(const _float fTimeDelta)
 
 	if (KEY_BUTTON_DOWN(DIK_4))
 	{
-		m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>((EUITutorialPopUpTypeID::TUTORIAL_POPUP_1));
+		m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>((EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1));
 	}
 	if (KEY_BUTTON_DOWN(DIK_5))
 	{
 		m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>((EUITutorialPopUpTypeID::TUTORIAL_POPUP_1));
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		m_pGameInstance->Broadcast<BOSS_GROGGY>();
 	}
 	if (KEY_BUTTON_DOWN(DIK_0))
 	{

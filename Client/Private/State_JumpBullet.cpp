@@ -2,6 +2,7 @@
 #include "State_JumpBullet.h"
 
 #include "Player.h"
+#include "CameraMan.h"
 
 #include "PhysicsCCT.h"
 
@@ -33,20 +34,31 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 
 	Set_ApplyGravity(false);
 
-	CStateBase::SetupLook_CameraSameLook();
+	//CStateBase::SetupLook_CameraSameLook();
 
 	// 03/05 ¼ÒÀçÇõ Ãß°¡
 	{
-		CTransform* pCamTransform = Get_CamTransform();
-		CTransform* pPlayerTransform = Get_OwnerObject()->Get_Component<CTransform>();
-		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+
+		CPlayer* pOwner = static_cast<CPlayer*>(Get_OwnerObject());
+		if (pOwner == nullptr)
+			return E_FAIL;
+
+		CTransform* pPlayerTransform = pOwner->Get_Component<CTransform>();
+		CPhysicsCCT* pCCT = pOwner->Get_Component<CPhysicsCCT>();
+		CTransform* pCamTransform = (pOwner->Get_CameraTargeter())->Get_Component<CTransform>();
+
+
+		if (pPlayerTransform == nullptr ||
+			pCCT == nullptr ||
+			pCamTransform == nullptr)
+			return E_FAIL;
 
 		Vec3 vLook	= (pCamTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK));
 		Vec3 vPos	= pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
 		vLook.Normalize();
 
-		pPlayerTransform->Look_At(vPos + vLook);
+		pPlayerTransform->Look_At(vPos+vLook);
 
 		m_vDir = vLook;
 		SetCCTInputDirection(m_vDir);
@@ -63,13 +75,13 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	CStateBase::SetupLook_CameraLookLerp(fTimeDelta, 3.f);
-
 	if (Get_AnimElpasedTimeSeconds() > 0.8f)
 	{
 		Set_ApplyGravity(true);
 
 		Set_RootMotion_Apply(false);
+
+		//CStateBase::SetupLook_CameraLookLerp(fTimeDelta, 1.f);
 
 		if(Check_OnGround(0.3f))
 		{
@@ -94,6 +106,7 @@ HRESULT CState_JumpBullet::End()
 
 	//CStateBase::SetupLook_CameraLookLerp(0.7f, 10.f);
 
+	Set_RootMotion_Apply(true);
 	Set_ApplyGravity(true);
 	Reset_DeAccelRate();
 
