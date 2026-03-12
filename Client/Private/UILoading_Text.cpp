@@ -47,6 +47,9 @@ HRESULT CUILoading_Text::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
+
+	Set_Visible();
+
 	return S_OK;
 }
 
@@ -202,8 +205,7 @@ void CUILoading_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
-	m_vFontColor.w = 0.f;
-	m_fLoadingTimeAcc = 0.f;
+	Ready_Fade_Text(1.f, 0.f, 1.f, m_fDelay);
 }
 
 void CUILoading_Text::Initialize_InVisible_Event()
@@ -212,15 +214,10 @@ void CUILoading_Text::Initialize_InVisible_Event()
 
 _bool CUILoading_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_fLoadingTimeAcc += fTimeDelta;
+	_bool isFade = Tick_Fade_Text(fTimeDelta);
 
-	if (m_fLoadingTimeAcc < m_fDelay)
-		return false;
-
-	m_vFontColor.w += fTimeDelta;
-	if (m_vFontColor.w > 1.f)
+	if (isFade)
 	{
-		m_vFontColor.w = 1.f;
 		m_isActive = true;
 		m_isFin_Event = true;
 		return true;

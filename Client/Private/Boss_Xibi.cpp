@@ -47,7 +47,7 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 	if (FAILED(Ready_Ability()))
 		return E_FAIL;
 
-	Set_Name("Ω√∫Ù∂Û");
+	Set_Name("æ«∏˘¿« ±∫¥‹¿Â Ω√∫Ù∂Û");
 
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;

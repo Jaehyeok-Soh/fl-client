@@ -124,7 +124,7 @@ void CUIText::Sync_FontDesc()
 	m_tFontDesc.strFontTag = m_wstrFontTag;
 	m_tFontDesc.strText = m_wstrText;
 	Vec2 fontPos = Vec2{ m_vFontPos.x, m_vFontPos.y };
-	m_tFontDesc.vPosition = fontPos;
+	m_tFontDesc.vPosition = fontPos + m_vMoveOffset;
 	m_tFontDesc.vColor = m_vFontColor;
 	m_tFontDesc.ePivot = m_ePivot;
 	m_tFontDesc.fRotate = m_fFontRotate;
