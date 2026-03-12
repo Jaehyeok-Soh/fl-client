@@ -180,6 +180,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
         return E_FAIL;
 
     Get_Component<CPhysicsCCT>()->Ready_Position();
+    Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 320.f);
+    Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::MENTAL, 105.f);
+    Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::DEFENSE, 400.f);
 
 #ifdef _DEBUG
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
