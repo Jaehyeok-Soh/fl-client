@@ -99,6 +99,8 @@ protected:
 
 	// state가 변환 했다면 true
 protected:
+	_bool Check_Keys(const _float fTimeDelta);
+
 	_bool Check_MoveKey(const _float fTimeDelta);
 	_bool Check_JumpKey(const _float fTimeDelta);
 	_bool Check_DashKey(const _float fTimeDelta);
@@ -108,11 +110,10 @@ protected:
 	_bool Check_RangeKey(const _float fTimeDelta);
 	_bool Check_SkillKey(const _float fTimeDelta);
 
-	_bool Check_Hit(const _float fTimeDelta);
-
 	_bool Check_FKey(const _float fTimeDelta);
 
 protected:
+	_bool Check_Hit(const _float fTimeDelta);
 	_bool Check_Collis(const _float fTimeDelta);
 
 	void Jump_Impuls(_float fOffset = 1.f);

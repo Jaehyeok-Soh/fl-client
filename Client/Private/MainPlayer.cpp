@@ -727,9 +727,10 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.fRadius = 0.35f;
     desc.fHeight = 0.7f;
     desc.vExtens = { 0.f, 0.f, 0.f };
+    desc.MDeAccelRate = { 0.f,10.f };
 
     PHYSICSMATERIAL_DESC mtrlDesc{};
-    mtrlDesc.eMaterial = EPhysicsMaterial::ICE;
+    mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
     desc.tMaterial = mtrlDesc;
 
     desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::PLAYER;

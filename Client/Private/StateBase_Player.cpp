@@ -73,43 +73,19 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 	if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreNonEvent) &&
 		!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
 		return;
+
+	if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면
+	{
+		if (Check_Keys(fTimeDelta))
+			return;
+
+		Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
+		return;
+	}
 	 
 	// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
-	if (Can_CheckKey(fTimeDelta))
-	{
-		if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면
-		{
-			Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
-			return;
-		}
-
-		if (Check_MoveKey(fTimeDelta))
-			return;
-
-		if (Check_JumpKey(fTimeDelta))
-			return;
-
-		if (Check_DashKey(fTimeDelta))
-			return;
-
-		if (Check_CtrlPressKey(fTimeDelta))
-			return;
-
-		if (Check_CtrlUpKey(fTimeDelta))
-			return;
-
-		if (Check_MeleeKey(fTimeDelta))
-			return;
-
-		if (Check_RangeKey(fTimeDelta))
-			return;
-
-		if (Check_SkillKey(fTimeDelta))
-			return;
-
-		if (Check_FKey(fTimeDelta))
-			return;
-	}
+	if (Check_Keys(fTimeDelta))
+		return;
 
 	Check_Collis(fTimeDelta);
 }
@@ -140,6 +116,42 @@ void CStateBase_Player::Change_PlayerState(_uint iState)
 void CStateBase_Player::Change_PlayerHitState(_uint iState, void* pArg)
 {
 	Request_Change_State(iState, pArg);
+}
+
+_bool CStateBase_Player::Check_Keys(const _float fTimeDelta)
+{
+	// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
+	if (Can_CheckKey(fTimeDelta))
+	{
+		if (Check_MoveKey(fTimeDelta))
+			return true;
+
+		if (Check_JumpKey(fTimeDelta))
+			return true;
+
+		if (Check_DashKey(fTimeDelta))
+			return true;
+
+		if (Check_CtrlPressKey(fTimeDelta))
+			return true;
+
+		if (Check_CtrlUpKey(fTimeDelta))
+			return true;
+
+		if (Check_MeleeKey(fTimeDelta))
+			return true;
+
+		if (Check_RangeKey(fTimeDelta))
+			return true;
+
+		if (Check_SkillKey(fTimeDelta))
+			return true;
+
+		if (Check_FKey(fTimeDelta))
+			return true;
+	}
+
+	return false;
 }
 
 _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
