@@ -83,7 +83,6 @@ VS_OUT_INST_MESH VS_MAIN(VS_IN_INST_MESH input)
     Out.vNormal = normalize(mul(input.vNormal, (float3x3) input.matTransform));
     Out.vTangent = normalize(mul(input.vTangent, (float3x3) input.matTransform));
     Out.vBinormal = normalize(mul(input.vBinormal, (float3x3) input.matTransform));
-   
     
     return Out;
 }
@@ -91,31 +90,31 @@ VS_OUT_INST_MESH VS_MAIN(VS_IN_INST_MESH input)
 
 VS_OUT_INST_MESH VS_GRASS(VS_IN_INST_MESH input)
 {
-    VS_OUT_INST_MESH output = (VS_OUT_INST_MESH)0;
+    VS_OUT_INST_MESH output = (VS_OUT_INST_MESH) 0;
     
     // LocalY 좌표를 현재 모델의 Max의 Y좌표를 나눠주어 현재 Y값의 비율을 알려준다
     float fSwayWeight = saturate(input.vPosition.y / g_fGrassMaxHeight);
-    float2 vInstancePosXZ = float2(W._41, W._43);
+    float2 vInstancePosXZ = float2(input.matTransform._41, input.matTransform._43);
     float fRandom = frac(sin(dot(vInstancePosXZ, float2(12.9898f, 78.233f))) * 43758.5453f);
     
     //월드 좌표
-    output.vPosition = mul(float4(input.vPosition, 1.f), W);
+    output.vPosition = mul(float4(input.vPosition, 1.f), input.matTransform);
    
     
     // 괄호 안에는 '간격(Size)'을 곱하고!
-    float fWindPhase = (g_fGrassDT * g_fGrassSwaySpeed) + (output.vPosition.x * g_fGrassWaveSize) + (output.vPosition.z * g_fGrassWaveSize) + (fRandom * 3.141592f); 
+    float fWindPhase = (g_fGrassDT * g_fGrassSwaySpeed) + (output.vPosition.x * g_fGrassWaveSize) + (output.vPosition.z * g_fGrassWaveSize) + (fRandom * 3.141592f);
     
     float fRandomPower = fWindPower * (0.5f + (fRandom * 0.5f));
-    float fSway = sin(fWindPhase) * fRandomPower;    
+    float fSway = sin(fWindPhase) * fRandomPower;
     
     output.vPosition.xyz += (vWindDirection * fSway * fSwayWeight);
     output.vWorldPos = output.vPosition;
     
     output.vPosition = mul(output.vPosition, VP);
     output.vUV = input.vUV;
-    output.vNormal = normalize(mul(input.vNormal, (float3x3) W));
-    output.vTangent = normalize(mul(input.vTangent, (float3x3) W));
-    output.vBinormal = normalize(mul(input.vBinormal, (float3x3) W));
+    output.vNormal = normalize(mul(input.vNormal, (float3x3) input.matTransform));
+    output.vTangent = normalize(mul(input.vTangent, (float3x3) input.matTransform));
+    output.vBinormal = normalize(mul(input.vBinormal, (float3x3) input.matTransform));
     
     output.vProjPos = output.vPosition;
     

@@ -117,6 +117,10 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	REGISTER_CONDITION("param_condition_IsTrackPositionBetween", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionBetweenRaw(param.fParam[0], param.fParam[1]); });
 
 	REGISTER_CONDITION("param_condition_IsTrackPositionAt", CONDITION{ return MONSTERACTIONSTATE(state)->Is_AnimTrackPositionAtRaw(param.fParam[0]); });
+	
+	REGISTER_CONDITION("condition_attack_landed", CONDITION{ return MONSTERCC(state)->IsAttackLanded(); });
+	
+	REGISTER_CONDITION("condition_attack_none_landed", CONDITION{ return !MONSTERCC(state)->IsAttackLanded(); });
 
 	return S_OK;
 }
@@ -170,6 +174,8 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_set_impuls_right", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(param.fParam[0], 0.f, 0.f)); });
 	REGISTER_FEATURE("feat_set_impuls_up", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(0.f, param.fParam[0], 0.f)); });
 	REGISTER_FEATURE("feat_set_impuls_front", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(0.f, 0.f, -param.fParam[0])); });
+
+	REGISTER_FEATURE("feat_set_root_motion_apply", FEATURE{ MONSTERCC(state)->Set_RootMotion_Apply(param.bParam[0]); });
 
 	return S_OK;
 }

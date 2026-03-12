@@ -61,8 +61,7 @@ HRESULT CGrass::Ready_Component(GRASS_DESC* pDesc)
 	if (pModel == nullptr) return E_FAIL;
 	const Vec3* pMinMax =pModel->Get_StaticModelMinMax();
 	if (pMinMax == nullptr) return E_FAIL;
-
-	m_tGrassData.g_fGrassMaxHeight =  pMinMax->y;
+	m_tGrassData.g_fGrassMaxHeight =  pMinMax[1].y;
 
 	return S_OK;
 }
@@ -115,7 +114,7 @@ HRESULT CGrass::Render()
 		_uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
 
 		/* Client Make Path를 이용한다 */
-		ENUM_TO_UINT(EMapObjectShaderPass::Grass);
+		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));
 
 		if (m_pCBGrassData == nullptr) return E_FAIL;
 		if (FAILED(m_pCBGrassData->SetRawValue(&m_tGrassData, 0, sizeof(CB_GrassData))))
@@ -150,7 +149,7 @@ HRESULT CGrass::Render()
 		pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
 
 		/* Client Make Path를 이용한다 */
-		ENUM_TO_UINT(EMapObjectShaderPass::Grass);
+		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));
 
 
 		pInstanceMesh->Bind_Instance(1);

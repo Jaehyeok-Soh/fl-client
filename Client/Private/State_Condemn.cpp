@@ -47,7 +47,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
 	CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
 	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
-	if(pBossTransform == nullptr ||
+	if (pBossTransform == nullptr ||
 		pPlayerTransform == nullptr ||
 		pCCT == nullptr)
 		return S_OK;
@@ -58,7 +58,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	vBossLook.Normalize();
 
 	// boss 위치 + look 방향으로 밀어낸 위치
-	Vec3 vNewPos = vBossPos + vBossLook * 2.f;
+	Vec3 vNewPos = vBossPos + vBossLook * 1.3f;
 	pCCT->SetFootPosition(vNewPos);
 
 	m_tTurnData.vPivot = (vBossPos + vNewPos) * 0.5f;
@@ -83,6 +83,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 
 	return S_OK;
 }
+
 
 void CState_Condemn::Update(const _float fTimeDelta)
 {

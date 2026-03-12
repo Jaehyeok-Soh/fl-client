@@ -29,6 +29,7 @@
 #include "PhysicsRigidBody.h"
 #include "PhysicsAttackRaycast.h"
 #include "PhysicsRagdoll.h"
+#include "PhysicsSpringArm.h"
 //=================
 // Builder
 //=================
@@ -310,6 +311,7 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 	/* Global */
 	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
+
 	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
 	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
 
@@ -495,8 +497,6 @@ HRESULT CLoader::Loading_For_Logo()
 	///////////////////////////////////////////////////////
 	////////// Ready Texture Splating Data Load ///////////
 	///////////////////////////////////////////////////////
-
-
 
 	/* Texture Loading */
 
@@ -771,6 +771,7 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region PHYSICS
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_AttackRaycast", CPhysicsAttackRaycast::Create(m_pDevice, m_pDeviceContext, nullptr));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_Ragdoll", CPhysicsRagdoll::Create());
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_Component_SpringArm", CPhysicsSpringArm::Create(nullptr));
 #pragma endregion
 
 #pragma region UI
@@ -858,7 +859,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Xibi";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = { 3, 59, 375 };
+		desc.vecStageBoneIndices = { 3, 59, 375, 380 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;

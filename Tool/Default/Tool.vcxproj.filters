@@ -576,7 +576,6 @@
     <ClInclude Include="..\Public\Level_Effect.h">
       <Filter>03. Level\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Animation_Struct.h" />
     <ClInclude Include="..\Public\Panel_AnimationController.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_Animation</Filter>
     </ClInclude>
@@ -651,6 +650,9 @@
     </ClInclude>
     <ClInclude Include="CPanel_Camera.h">
       <Filter>06. ImGui\01. Panel\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Animation_Struct.h">
+      <Filter>98. Defines\Tool_Struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

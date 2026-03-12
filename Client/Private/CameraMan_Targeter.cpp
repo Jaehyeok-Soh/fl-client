@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "Bone.h"
 #include "CameraMan_Targeter.h"
+#include "PhysicsSpringArm.h"
 
 #include "GameInstance.h"
 
@@ -46,6 +47,9 @@ HRESULT CCameraMan_Targeter::Initialize_Prototype()
 HRESULT CCameraMan_Targeter::Initialize(void* pArg)
 {
     if (FAILED(Super::Initialize(pArg)))
+        return E_FAIL;
+
+    if (FAILED(Add_Component<CPhysicsSpringArm>(0 /*static*/, L"Prototype_Component_SpringArm", nullptr)))
         return E_FAIL;
 
     return S_OK;
@@ -158,19 +162,14 @@ HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
 {
     /* Xibi_Cinematic Event 구독 */
     m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT>([this]() {
-        m_pGameInstance->Play_CameraCinematic(L"Xibi_Cinematic");
+        m_pGameInstance->Play_CameraCinematic(L"Xibi_Cinematic_Cuve");
         Change_CamState(TargeterState::CINEMATIC);
-        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::CINEMATIC_START));
-        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::XIBILA_BOSS_ACTION_ON));
         m_pActor->Set_Active(false);
         });
 
     /* Xibi_Cinematic Event 구독 */
     m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT_END>([this]() {
         Change_CamState(TargeterState::NORMAL);
-        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::CINEMATIC_END));
-        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::XIBILA_BOSS_ACTION_OFF));
-        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(EGlobal_Broadcast_Type::XIBILA_BOSS_UI_ON));
         m_pActor->Set_Active(true);
         });
 
@@ -612,6 +611,8 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     break;
     }
 
+    vDesiredPos = CheckCameraCollision(vDesiredPos, vChasePositionRaw);
+
     // RUL & P 다시 재조립
     CTransform* pCameraTransform = Get_Component<CTransform>();
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
@@ -769,6 +770,11 @@ void CCameraMan_Targeter::Update_TurnOff(const _float fTimeDelta)
     pTransform->Look_At(m_tTurnData.vPivot);
 
     pTransform->Chase(m_tTurnData.vPivot, m_tTurnData.fDistance, fTimeDelta);
+}
+
+Vec3 CCameraMan_Targeter::CheckCameraCollision(Vec3 vCameraPos, Vec3 vTargetPos)
+{
+    return Get_Component<CPhysicsSpringArm>()->CheckResolveCollision(vCameraPos, vTargetPos);
 }
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

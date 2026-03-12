@@ -219,6 +219,7 @@ namespace Engine
 		PX_ATTACKOVERLAP,
 		PX_ATTACKRAYCAST,
 		PX_RAGDOLL,
+		PX_SPRINGARM,
 		// ¿Ã∆Â∆Æ
 		EF_ANIMHANDLER,
 		//

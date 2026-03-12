@@ -46,7 +46,8 @@ namespace Tool
         "condition_phase_two",
         "param_condition_IsTrackPositionBetween",
         "param_condition_IsTrackPositionAt",
-
+        "condition_attack_landed",
+        "condition_attack_none_landed",
 
         // param examples
         "param_condition_distance_over",
@@ -100,6 +101,8 @@ namespace Tool
         "feat_set_impuls_right",
         "feat_set_impuls_up",
         "feat_set_impuls_front",
+
+        "feat_set_root_motion_apply",
     };
 
     inline constexpr int kConditionCount = (int)(sizeof(kConditionNames) / sizeof(kConditionNames[0]));

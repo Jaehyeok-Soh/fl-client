@@ -619,7 +619,7 @@ void CGameInstance::Setup_Inv_ToCBuffer()
 	m_pCamera_Manager->Setup_Inv_ToCBuffer();
 }
 
-HRESULT CGameInstance::Play_CameraCinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence)
+HRESULT CGameInstance::Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence)
 {
 	return m_pCamera_Manager->Play_CameraCinematic(pCameraCinematicSequence);
 }
@@ -1107,6 +1107,11 @@ CPhysics_QueryFilterCallback* CGameInstance::GetQueryFilterCallback()
 CPhysics_QueryFilterCallback_Gun* CGameInstance::GetQueryFilterCallback_Gun()
 {
 	return m_pPhysics_Module->GetQueryFilterCallback_Gun();
+}
+
+CPhysics_QueryFilterCallback_SpringArm* CGameInstance::GetQueryFilterCallback_SpringArm()
+{
+	return m_pPhysics_Module->GetQueryFilterCallback_SpringArm();
 }
 
 void CGameInstance::SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes)

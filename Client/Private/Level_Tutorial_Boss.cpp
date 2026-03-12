@@ -294,7 +294,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 			iLevelId,
 			g_wszXibiProjectile_Prototype_Tag,
 			&desc,
-			100)))
+			200)))
 			return E_FAIL;
 	}
 	{
@@ -318,7 +318,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 			iLevelId,
 			g_wszXibiOneshotThunder_Prototype_Tag,
 			&desc,
-			100)))
+			200)))
 			return E_FAIL;
 	}
 	return S_OK;
@@ -492,7 +492,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_Map()
 		return E_FAIL;
 
 	/* Dev Map */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Tutorial_Boss.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Boss/Tutorial_Boss.json";
 
 
 	if (!std::filesystem::exists(FilePath))

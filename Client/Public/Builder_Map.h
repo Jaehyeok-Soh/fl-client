@@ -56,6 +56,7 @@ private:
 
 private:
 	CShader*		m_pMeshShader{nullptr};
+	CShader*		m_pInstMeshShader{nullptr};
 
 	ELevelType		m_eLevelType{};
 

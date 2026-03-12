@@ -111,6 +111,8 @@ private:
 
 	void Change_DistancesAll(const _float fTimeDelta);
 
+	Vec3 CheckCameraCollision(Vec3 vCameraPos, Vec3 vTargetPos);
+
 	void Update_TurnOn(const _float fTimeDelta);
 	void Update_TurnOff(const _float fTimeDelta);
 

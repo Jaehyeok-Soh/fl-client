@@ -104,7 +104,7 @@ HRESULT CCamera_Manager::Camera_Shaking(const CAM_SHAKING_DATA& tData)
 	return S_OK;
 }
 
-HRESULT CCamera_Manager::Play_CameraCinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence)
+HRESULT CCamera_Manager::Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence)
 {
 	if (pCameraCinematicSequence == nullptr) return E_FAIL;
 

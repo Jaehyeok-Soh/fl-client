@@ -193,7 +193,7 @@ public:
 	void Setup_UIViewProj_ToCBuffer();
 	void Setup_Inv_ToCBuffer();
 
-	HRESULT Play_CameraCinematic(const Camera_Cinematic_Sequence* pCameraCinematicSequence);
+	HRESULT Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence);
 	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
 #pragma endregion
 	
@@ -364,6 +364,7 @@ public:
 	_bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
 	class CPhysics_QueryFilterCallback* GetQueryFilterCallback();
 	class CPhysics_QueryFilterCallback_Gun* GetQueryFilterCallback_Gun();
+	class CPhysics_QueryFilterCallback_SpringArm* GetQueryFilterCallback_SpringArm();
 	void SerializeStaticMesh(std::filesystem::path path, vector<PxTriangleMesh*> meshes);
 	PxCollection* DeserializeStaticMesh(std::filesystem::path path);
 	void SerializeConvexMesh(std::filesystem::path path, vector<PxConvexMesh*> meshes);

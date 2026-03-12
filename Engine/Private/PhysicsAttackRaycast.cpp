@@ -77,8 +77,11 @@ HRESULT CPhysicsAttackRaycast::Initialize(void* pArg)
 	if (m_tDesc.strAttackPresetTag.size() > 0)
 		m_tDesc.iAttackPresetID = m_pGameInstance->Get_AttackPresetIdByTag(m_tDesc.strAttackPresetTag);
 
-	m_pFilterCallback = m_pGameInstance->GetQueryFilterCallback_Gun();
+	m_pFilterCallback = m_pGameInstance->GetQueryFilterCallback();
 	m_pFilterCallback->SetOwner(Get_Owner());
+
+	m_pFilterCallback_Aim = m_pGameInstance->GetQueryFilterCallback_Gun();
+	m_pFilterCallback_Aim->SetOwner(Get_Owner());
 
 	m_pScene = m_pGameInstance->GetPhysicsScene();
 	return S_OK;
@@ -125,7 +128,7 @@ _bool CPhysicsAttackRaycast::Aimming(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist,
 
 	m_pScene->lockRead();
 	_bool result = { false };
-	result = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer, PxHitFlag::eDEFAULT, m_filterData, m_pFilterCallback);
+	result = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer, PxHitFlag::eDEFAULT, m_filterData, m_pFilterCallback_Aim);
 	m_pScene->unlockRead();
 
 	return result;
@@ -180,6 +183,7 @@ CComponent* CPhysicsAttackRaycast::Clone(void* pArg)
 void CPhysicsAttackRaycast::Free()
 {
 	Safe_Release(m_pFilterCallback);
+	Safe_Release(m_pFilterCallback_Aim);
 	
 #ifdef _DEBUG
 	if (false == IsClone())

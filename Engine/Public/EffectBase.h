@@ -15,6 +15,7 @@ public:
 	{
 		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::LOCAL;
 		std::vector<DTO::TEFFECT_PartsData>	_childData = {};
+		_bool	_IsPoolingEffect = true;
 	}EFFECT_CONTAINERDESC;
 
 public:
