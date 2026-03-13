@@ -19,6 +19,7 @@ public:
 		,	PRESS_CHANGE	= 0x0002 // state change : press
 		,	UP_CHANGE		= 0x0004 // state change : up
 		,	OWN				= 0x0008 // 자신만의 움직임
+		,	LOOP_DONE		= 0x0010 // loop done일때 만약 키가 눌렸다면
 	};
 
 	enum COLLISIONFLAGS : Flags
@@ -40,7 +41,7 @@ public:
 		Vec3 vVicPos = {};
 	}HITSTATE_START_DESC;
 
-	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
+	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE ,LOOPDONEMOVEKEY, END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
 	// 최소 desc
 	typedef struct tagBaseDesc : public CStateBase::STATE_DESC
@@ -117,6 +118,7 @@ protected:
 	_bool	Check_Collis(const _float fTimeDelta);
 
 	void	Jump_Impuls(_float fOffset = 1.f);
+	void	Look_Impuls(_float fOffset = 1.f);
 
 	void	LookAt_Monser();
 
@@ -145,6 +147,8 @@ protected:
 	void	Reload_Gun();
 
 protected:
+	virtual _bool Change_State_WhenLoopDone(const _float fTimeDelta);
+
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
 	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
 

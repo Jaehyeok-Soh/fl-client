@@ -24,6 +24,7 @@ public:
 private:
 	void Update_ModelInfo();
 
+	void Render_AnimationList();
 	void Render_AnimationInfo();
 	void Render_ChangeAnimInfo();
 		
@@ -35,8 +36,8 @@ private:
 
 	_wstring m_wstrSelectAnimName = {};
 
-	_int m_iSelectAnimation = {};
-	_int m_iChageAnimation = {};
+	_int	m_iSelectAnimation = {};
+	_int	m_iChageAnimation = {};
 
 	_float m_fSelectSpeed = {0.f};
 	_float m_fChnageSpeed = { 0.f };

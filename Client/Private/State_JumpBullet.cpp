@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "CameraMan.h"
+#include "ControlContext.h"
 
 #include "PhysicsCCT.h"
 
@@ -92,7 +93,14 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 		if(Check_OnGround(0.3f))
 		{
 			//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
-			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
+
+			if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE)))
+			{
+				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::WALK));
+				return;
+			}
+
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 			return;
 		}
 	}

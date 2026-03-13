@@ -103,13 +103,13 @@ void CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
 {
 	SetupLook_CameraLook();
 
-	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime - 0.3f)
+	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime - 0.3f / 1.2f)
 	{
 		Set_ApplyGravity(true);
 		m_FCollisions |= COLLISIONFLAGS::C_DOWN;
 	}
 
-	if (m_fStateElapsed >= 2.5f)
+	if (m_fStateElapsed >= 2.5f / 1.2f)
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
 	}
@@ -117,19 +117,19 @@ void CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
 
 void CState_MoonSkill::SkillQ_Update(const _float fTimeDelta)
 {
-	if (m_fStateElapsed >= 5.f)
+	if (m_fStateElapsed >= 5.f / 1.2f)
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
 		return;
 	}
 
-	if (m_fStateElapsed >= 1.5f)
+	if (m_fStateElapsed >= 1.5f / 1.2f)
 	{
 		static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::NORMAL));
 		return;
 	}
 
-	if (m_fStateElapsed >= 0.35f)
+	if (m_fStateElapsed >= (0.35f / 1.2f))
 	{
 		static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::SKILL_SEQUENCE));
 	}

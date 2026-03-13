@@ -80,6 +80,15 @@ HRESULT CBody::Initialize(void* pArg)
 
 		pMyModel->Set_AdditiveRef_AnimIdx(99);					// middle aim을 ref 애니메이션으로 잡는다
 
+		// motion offset
+		_uint iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop_Acc");
+		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(0.6f);
+		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dodge_InAir");
+		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.2f);
+		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dodge_To_Run");
+		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.2f);
+
+		pMyModel->Set_Animation_SpeedOffset_All(1.2f);
 	}
 
 	Set_RenderInfoFlag(OF_Outline, true);

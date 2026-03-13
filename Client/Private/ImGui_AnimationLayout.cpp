@@ -31,6 +31,8 @@ void CImGui_AnimationLayout::Render(CGameObject* pGo)
 
 	ImGui::BeginGroup();
 
+	Render_AnimationList();
+
 	Render_AnimationInfo();
 
 	Render_ChangeAnimInfo();
@@ -45,8 +47,37 @@ void CImGui_AnimationLayout::Update_ModelInfo()
 		m_iAnimNums = m_pPlayerModel->Get_AnimationCount();
 
 		m_wstrSelectAnimName = m_pPlayerModel->Get_AnimationName(m_iSelectAnimation);
-		m_fSelectSpeed = (m_pPlayerModel->Get_Animation(m_iSelectAnimation))->Get_AnimationSpeed();
+		m_fSelectSpeed = (m_pPlayerModel->Get_Animation(m_iSelectAnimation))->Get_MotionOffset();
 	}
+}
+
+void CImGui_AnimationLayout::Render_AnimationList()
+{
+	ImGui::Separator();
+	ImGui::Text("Animation List");
+	ImGui::Spacing();
+
+	if (ImGui::BeginListBox("##AnimationList", ImVec2(300.f, 300.f)))
+	{
+		for (_uint i = 0; i < m_iAnimNums; ++i)
+		{
+			std::wstring wstrName = m_pPlayerModel->Get_AnimationName(i);
+			std::string strName(wstrName.begin(), wstrName.end());
+
+			std::string label = std::to_string(i) + " : " + strName;
+
+			if (ImGui::Selectable(label.c_str()))
+			{
+				m_iSelectAnimation = i;
+				//m_iChageAnimation = i;
+				Update_ModelInfo();
+			}
+		}
+
+		ImGui::EndListBox();
+	}
+
+	ImGui::Separator();
 }
 
 void CImGui_AnimationLayout::Render_AnimationInfo()
@@ -66,7 +97,7 @@ void CImGui_AnimationLayout::Render_AnimationInfo()
 
 	////////////// speed ////////////////////////
 
-	ImGui::Text("Selected Anim SpeedOffset : %f", m_fSelectSpeed);
+	ImGui::Text("Selected Anim MotionOffset : %f", m_fSelectSpeed);
 	ImGui::SetNextItemWidth(120.f);  // 원하는 픽셀 길이
 	ImGui::InputFloat("Change Speed", &m_fChnageSpeed, 0.01f, 1.0f, "%.3f");
 	ImGui::SameLine();
@@ -74,7 +105,7 @@ void CImGui_AnimationLayout::Render_AnimationInfo()
 	{
 		if (m_pPlayerModel)
 		{
-			m_pPlayerModel->Get_Animation(m_iSelectAnimation)->Set_AnimationSpeed(m_fChnageSpeed);
+			m_pPlayerModel->Get_Animation(m_iSelectAnimation)->Set_MotionOffset(m_fChnageSpeed);
 			Update_ModelInfo();
 		}
 	}

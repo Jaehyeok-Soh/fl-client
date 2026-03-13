@@ -752,7 +752,7 @@ HRESULT CMainPlayer::Ready_CCT()
 
     desc.bGravity = { true };
     desc.fGravity = { -35.f };
-    desc.MSpeed = { 0.f, 8.f };
+    desc.MSpeed = { 0.f, 5.f };
     desc.MAccelRate = { 0.f, 10.f };
     desc.MDeAccelRate = { 0.f, 10.f };
 
@@ -817,7 +817,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
         _float fAttackSpeed = { 1.2f };
-        tDesc.vCombo_CheckTimes = Vec4{ 0.45f / fAttackSpeed,0.45f / fAttackSpeed,0.95f / fAttackSpeed ,1.f / fAttackSpeed };
+        tDesc.vCombo_CheckTimes = Vec4{ 0.5f / fAttackSpeed,0.5f / fAttackSpeed,1.f / fAttackSpeed ,1.5f / fAttackSpeed };
         tDesc.fSlide_CheckTime = 0.7f;
 
         _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
