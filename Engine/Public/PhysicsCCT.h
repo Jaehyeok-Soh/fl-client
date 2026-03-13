@@ -219,6 +219,8 @@ private:
 
     _float m_fGravityOffset = { 0.f };
 
+    _bool m_bEnableCollision = { true };
+
 private:
     Vec3 m_vPoolingPosition{};
 

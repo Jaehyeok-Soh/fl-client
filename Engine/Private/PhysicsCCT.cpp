@@ -223,7 +223,7 @@ void CPhysicsCCT::SetHeight(_float height)
 
 const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, _float fTimeDelta)
 {
-	if (m_pGameInstance->Is_ChangeLevelSequence())
+	if (m_pGameInstance->Is_ChangeLevelSequence() || m_bEnableCollision == false)
 	{
 		PxControllerCollisionFlags collisionFlag;
 		return collisionFlag;
@@ -410,6 +410,8 @@ void CPhysicsCCT::EnableCollision(_bool bEnable)
 {
 	if (m_pController == nullptr)
 		return;
+
+	m_bEnableCollision = bEnable;
 
 	PxRigidDynamic* pActor = m_pController->getActor();
 	if (pActor)
