@@ -49,7 +49,7 @@ HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 		//Vec3 vDir = vLook + (vUp * (-1.5f));
 		//vDir.Normalize();
 
-		Vec3 vDir = vLook - vUp * 2.f;
+		Vec3 vDir = vLook * 1.5f - vUp * 2.f;
 
 		//Vec3 accelation = vDir * 50.f;
 
@@ -76,13 +76,13 @@ void CState_JumpAttStart::Update(const _float fTimeDelta)
 	//Vec3 vDir = vLook + (vUp * (-1.5f));
 	//vDir.Normalize();
 
-	Vec3 vDir = vLook - vUp * 3.f;
+	Vec3 vDir = vLook * 4.f - vUp * 3.f;
 
 	Move(vDir);
 
 	// 벽이랑 충돌했는지 먼저 검사
 	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES) ||
-		IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+		Check_OnGround(0.7f))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
 		return;

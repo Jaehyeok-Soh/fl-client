@@ -629,7 +629,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.3f;
+        tKeyTimer.fMaxTime = 0.32f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -697,8 +697,9 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
 
-        tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 0.4f;
+        tKeyTimer.bCountTime    = false;
+        tKeyTimer.fMaxTime      = 15.f / (24.f * 1.2f);//0.4f;
+
         desc.tKeyTimer          = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -735,7 +736,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.4f;
+        tKeyTimer.fMaxTime == 15.f/( 24.f * 1.2f);// (0.7f);
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -972,7 +973,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey                                                       = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime   = 0.3f;
+        tKeyTimer.fMaxTime = 0.1f; // (24.f / 36.f) / (36.f / 24.f) / 1.2f;
         desc.tKeyTimer       = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -986,7 +987,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.FAniFlags = 0;
         desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_WallJump_LU") };
         desc.bBlend = true;
-        desc.bLoop = false;
+        desc.bLoop  = false;
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
@@ -1139,7 +1140,7 @@ HRESULT CPlayer::Ready_HitStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.2f;
+        tKeyTimer.fMaxTime = 25.f / (24.f * 1.2f);
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -1163,7 +1164,7 @@ HRESULT CPlayer::Ready_HitStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 2.f;
+        tKeyTimer.fMaxTime = 60.f / (24.f * 1.2f);//2.f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 

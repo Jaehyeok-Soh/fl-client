@@ -57,6 +57,8 @@
 // Test
 #include "ImGui_ClientDebug.h"
 
+#define ANIMTIC (24.f * 1.2f)
+
 
 CMainPlayer::CMainPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext), m_isCinematic{false}
@@ -817,8 +819,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
         _float fAttackSpeed = { 1.2f };
-        tDesc.vCombo_CheckTimes = Vec4{ 0.5f / fAttackSpeed,0.5f / fAttackSpeed,1.f / fAttackSpeed ,1.5f / fAttackSpeed };
-        tDesc.fSlide_CheckTime = 0.7f / fAttackSpeed;
+        tDesc.vCombo_CheckTimes = Vec4{ 15.f/ ANIMTIC ,15.f / ANIMTIC,20.f / ANIMTIC ,25.f / ANIMTIC };
+        tDesc.fSlide_CheckTime = 15.f / ANIMTIC;
 
         _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
         _int iCombo1 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
@@ -826,19 +828,19 @@ HRESULT CMainPlayer::Ready_AttackStates()
         _int iCombo3 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03");
         _int iCombo4 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04");
 
-        pModel->Set_Animation_Speed(iSlide,     fAttackSpeed);
-        pModel->Set_Animation_Speed(iCombo1,    fAttackSpeed);
-        pModel->Set_Animation_Speed(iCombo2,    fAttackSpeed);
-        pModel->Set_Animation_Speed(iCombo3,    fAttackSpeed);
-        pModel->Set_Animation_Speed(iCombo4,    fAttackSpeed);
+        //pModel->Set_Animation_Speed(iSlide,     fAttackSpeed);
+        //pModel->Set_Animation_Speed(iCombo1,    fAttackSpeed);
+        //pModel->Set_Animation_Speed(iCombo2,    fAttackSpeed);
+        //pModel->Set_Animation_Speed(iCombo3,    fAttackSpeed);
+        //pModel->Set_Animation_Speed(iCombo4,    fAttackSpeed);
 
         tDesc.iSlideAnimIdx = iSlide;
         tDesc.iFirstAnimIdx = iCombo1;
         tDesc.iSecondAnimIdx = iCombo2;
-        tDesc.iThirdAnimIdx = iCombo3;
+        tDesc.iThirdAnimIdx  = iCombo3;
         tDesc.iFourthAnimIdx = iCombo4;
         tDesc.iEndStateIndex = ENUM_TO_UINT(State::END);
-        tDesc.pOwnerGun = pMyGun;
+        tDesc.pOwnerGun      = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::COMBO), CState_MoonCombo::Create(pActionState, &tDesc))))
             return E_FAIL;
@@ -896,7 +898,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.55f ;
+        tKeyTimer.fMaxTime = 21.f / ANIMTIC;//0.55f ;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;
@@ -933,7 +935,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.5f;
+        tKeyTimer.fMaxTime = 1.f;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;
@@ -946,7 +948,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime = 0.8f;
+        tDesc.fKeyCoolTime = 28.f / ANIMTIC;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
 
@@ -960,7 +962,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime  = 4.5f;
+        tDesc.fKeyCoolTime = 70.f / ANIMTIC;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill02_Red");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL2);
         tDesc.pOwnerGun = pMyGun;
