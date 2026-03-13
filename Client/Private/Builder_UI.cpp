@@ -492,6 +492,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UI::Make_DefaultInfo(const DTO::TUI_Generic
 	Desc.fAlpha					= data.fAlphaRatio;
 	Desc.iFlip					= data.iFlip;
 	Desc.pCanvasCache			= m_pCanvasCache;
+
 	return Desc;
 }
 

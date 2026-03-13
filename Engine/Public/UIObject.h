@@ -20,7 +20,7 @@ public:
 		_float fZ;
 		_float fWidth;
 		_float fHeight;
-		_float fScale;
+		_float fScale = {1.f};
 		_float fRotate;
 
 	}UIOBJECT_DESC;
