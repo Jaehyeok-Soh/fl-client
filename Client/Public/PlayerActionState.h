@@ -52,6 +52,8 @@ public:
 
 	void	Reset_HitDesc() { m_tPreHitDesc = {};  m_fAttackFlag = 0; }
 
+	_bool	Is_AttackLanded();
+
 	// Fkey ฐüทร funcs
 public:
 	void	Set_FKeyEvent(_uint iEvnet, _bool bOn);

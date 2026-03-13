@@ -2,6 +2,7 @@
 #include "State_MoonCombo.h"
 
 #include "Player.h"
+#include "PlayerActionState.h"
 
 #include "GameInstance.h"
 CState_MoonCombo::CState_MoonCombo(CActionState* pOwnerComponent)
@@ -81,6 +82,7 @@ HRESULT CState_MoonCombo::Start(void* pArg, _bool bForce)
 void CState_MoonCombo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
 	if (m_iComboCount == 4)
 	{
 		// 속도 조절 필요

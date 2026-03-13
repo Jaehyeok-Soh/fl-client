@@ -52,4 +52,10 @@ struct GUN_ON_HIT { using Signature = void(); };	// 총알을 적중했을 때
 struct TUTORIAL_POPUP_TRIGGER{ using Signature = void(EUITutorialPopUpTypeID ID); }; // 튜토리얼 팝업 띄우기
 struct TUTORIAL_POPUP_CLEAR{ using Signature = void(EUITutorialPopUpTypeID ID); }; // 튜토리얼 팝업 내리고 클리어 띄우기
 
+// 퀘스트 이벤트
+struct QUEST_NOTIFY{ using Signature = void(QUEST_EVENT_SIGNATURE ID); }; // 퀘스트 업데이트
+struct QUEST_CHANGE_SCENARIO_NOTIFY{ using Signature = void(QUEST_INFOBUCKET ID); }; // 퀘스트 시나리오 바뀜
+struct QUEST_CHANGE_CHAPTER_NOTIFY{ using Signature = void(QUEST_CHAPTERDESC ID); }; // 퀘스트 챕터 바뀜
+struct QUEST_ALL_COMPLETE{ using Signature = void(); }; // 모든 퀘스트 완료
+
 #pragma endregion

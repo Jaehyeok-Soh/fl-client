@@ -4,6 +4,9 @@
 #include "EngineConsole.h"
 #include <windows.h>
 
+NS_BEGIN(Engine)
+class CGameObject;
+NS_END
 
 extern HWND			g_hWnd;
 extern HINSTANCE	g_hInstance;
@@ -884,6 +887,99 @@ namespace Client
 	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
 #pragma endregion
 }
+
+// Äù½ºÆ® Á¤º¸
+#pragma region Quest Infoes
+typedef struct EQuestEvent
+{
+	enum Enum
+	{
+		MONSTER_KILL,
+		NPC_TALK,
+		AREA_ENTER,
+		OBJECT_INTERACT
+	};
+}QUESTEVENT;
+
+typedef struct EQuestLayer
+{
+	enum Enum
+	{
+		SCENARIO,
+		CHAPTER
+	};
+}QUESTLAYER;
+
+typedef struct EQuestState
+{
+	enum Enum
+	{
+		LOCKED,
+		AVAILABLE,
+		IN_PROGRESS,
+		COMPLETE
+	};
+}QUESTSTATE;
+
+typedef struct EQuestObjectType
+{
+	enum Enum
+	{
+		TRIGGER_BOX,
+		MONSTER_DOG,
+		MONSTER_FLY,
+		MONSTER_BOOMER,
+		NPC_TALK
+	};
+}QUEST_TARGETTYPE;
+
+typedef struct tagQuestDesc
+{
+	QUESTLAYER::Enum eType = QUESTLAYER::SCENARIO;
+	QUESTSTATE::Enum eState = QUESTSTATE::LOCKED;
+	_int iId = { -1 };
+	_int iPrevId = { -1 };
+	_int iNextId = { -1 };
+
+	_int iParentId = { -1 };
+
+	wstring wstrTitle = { L"" };
+	wstring wstrSubTitle = { L"" };
+	wstring wstrExplain = { L"" };
+
+	wstring wstrDescription = { L"" };
+}QUESTDESC;
+
+typedef struct tagQuestChapterDesc
+{
+	QUESTEVENT::Enum eEvent = QUESTEVENT::AREA_ENTER;
+	QUEST_TARGETTYPE::Enum eTargetType = QUEST_TARGETTYPE::TRIGGER_BOX;
+	_int iCount = {};
+
+	QUESTDESC tQuestDesc = {};
+
+	uint64 iObjectId = {};
+	CGameObject* pObject = { nullptr };
+	wstring wstrObjectLayer = {};
+	Vec3 vObjectPosition = {};
+
+	_int iCurrentCount = {};
+}QUEST_CHAPTERDESC;
+
+typedef struct tagQuestEventSignature
+{
+	QUESTEVENT::Enum eEvent = QUESTEVENT::AREA_ENTER;
+	QUEST_TARGETTYPE::Enum eTargetType = QUEST_TARGETTYPE::TRIGGER_BOX;
+	_int iCount = { 0 };
+}QUEST_EVENT_SIGNATURE;
+
+typedef struct tagQuestInfoBucket
+{
+	QUESTDESC tScenarioInfo = {};
+	QUEST_CHAPTERDESC tChapterInfo = {};
+}QUEST_INFOBUCKET;
+
+#pragma endregion
 
 #pragma endregion
 

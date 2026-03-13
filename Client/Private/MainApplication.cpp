@@ -29,6 +29,9 @@
 #include "UILoading_Progress.h"
 #include "UILoading_Image.h"
 
+// Quest
+#include "QuestManager.h"
+
 USING(Client)
 
 CMainApplication::CMainApplication()
@@ -74,6 +77,8 @@ HRESULT CMainApplication::Initialize()
 		return E_FAIL;	
 
 	CMonsterState_Factory::GetInstance()->Initialize();
+
+	Register_Quest_Scenario();
 
 	return S_OK;
 }
@@ -568,9 +573,25 @@ HRESULT CMainApplication::Loading_Textures(const wstring& wstrFolder)
 	return S_OK;
 }
 
+void CMainApplication::Register_Quest_Scenario()
+{
+	auto qm = CQuestManager::GetInstance();
+
+	QUESTDESC s1;
+	s1.iId = 0;
+	s1.iPrevId = -1;
+	s1.iNextId = 1;
+	s1.wstrTitle = L"연옥도 탈출";
+	s1.wstrSubTitle = L"";
+	s1.wstrExplain = L"마령과 함께 베레니카를 구출하고 연옥도를 탈출하자";
+	s1.wstrDescription = L"개발자 설명란 입니다.";
+	qm->Register_Scenario(s1);
+}
+
 void CMainApplication::Free()
 {	
 	CMonsterState_Factory::DestroyInstance();
+	CQuestManager::DestroyInstance();
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

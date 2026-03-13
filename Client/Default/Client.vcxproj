@@ -179,6 +179,10 @@
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_EventDefine.h" />
+    <ClInclude Include="..\public\IQuest.h" />
+    <ClInclude Include="..\Public\QuestManager.h" />
+    <ClInclude Include="..\Public\Quest_Chapter.h" />
+    <ClInclude Include="..\Public\Quest_Scenario.h" />
     <ClInclude Include="..\Public\State_Condemn.h" />
     <ClInclude Include="..\Public\TriggerBox_TutorialUIEvent.h" />
     <ClInclude Include="..\Public\TriggerCollidePart.h" />
@@ -386,6 +390,10 @@
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\InvisibleWall.cpp" />
+    <ClCompile Include="..\Private\IQuest.cpp" />
+    <ClCompile Include="..\Private\QuestManager.cpp" />
+    <ClCompile Include="..\Private\Quest_Chapter.cpp" />
+    <ClCompile Include="..\Private\Quest_Scenario.cpp" />
     <ClCompile Include="..\Private\State_Condemn.cpp" />
     <ClCompile Include="..\Private\TriggerBox_TutorialUIEvent.cpp" />
     <ClCompile Include="..\Private\TriggerCollidePart.cpp" />

@@ -400,6 +400,8 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     CLOG_INFO(infoContant);
 #endif // _DEBUG
 
+    Get_Component<CPlayerControlContext>()->Set_AttackLanded();
+
     if (hitDesc.pVictim->IsAlive())
     {
         Count_Combo();
