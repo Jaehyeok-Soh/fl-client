@@ -9,6 +9,7 @@ VS_OUT_POS_GS_PARTICLE VS_Particle(VS_IN_POS_GS_PARTICLE In)
     
     vector vPosition = mul(vector(In.vPosition, 1.f), matInst);
     vPosition = mul(vPosition, W);
+    float4 vViewPos = mul(vPosition, V);
     
     float2 pSize = float2(length(matInst._11_12_13), length(matInst._21_22_23));
 
@@ -18,6 +19,7 @@ VS_OUT_POS_GS_PARTICLE VS_Particle(VS_IN_POS_GS_PARTICLE In)
     Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
     Out.vInstID = In.vInstID;
     Out.matTransform = W;
+    Out.vViewZ = vViewPos.z;
     
     return Out;
 }
@@ -64,6 +66,7 @@ void GS_Particle(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT
         Out[i].vPosition = mul(float4(vPos[i], 1.f), matVP);
         Out[i].vUV = vUV[i];
         Out[i].vLifeTime = In[0].vLifeTime;
+        Out[i].vViewZ = In[0].vViewZ;
         OutStream.Append(Out[i]);
     }
     OutStream.RestartStrip();
@@ -126,8 +129,15 @@ PS_OUT_WBOIT PS_Particle(GS_OUT_POS_PARTICLE In) : SV_TARGET0
     if (finalAlpha < g_Effect.g_DiscardValue)
         discard;
     
-    Out.vAccum = float4(finalRGB * finalAlpha, finalAlpha);
-    Out.vReveal = finalAlpha;
+    float3 srcRGB = finalRGB;
+    float srcAlpha = finalAlpha;
+
+    float w = saturate(1.0f - In.vViewZ / 1000.0f);
+    w = clamp(w, 0.1f, 1.0f); // 0.1 ~ 1.0 사이에서만 놀게 해. 10.0까지 가지 말고.
+
+    Out.vAccum = float4(srcRGB * srcAlpha, srcAlpha) * w;
+    Out.vReveal = saturate(srcAlpha);
+
     return Out;
 }
 
@@ -138,7 +148,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Particle()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Particle()));
         SetPixelShader(CompileShader(ps_5_0, PS_Particle()));
@@ -148,7 +158,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Disabled, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Particle()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Particle()));
         SetPixelShader(CompileShader(ps_5_0, PS_Particle()));

@@ -200,6 +200,8 @@ struct VS_OUT_POS_GS_PARTICLE
     float2 vLifeTime : TEXCOORD0;
     uint vInstID : TEXCOORD1;
     row_major float4x4 matTransform : WORLD;
+    
+    float vViewZ : TEXCOORD2;
 };
 
 struct VS_OUT_INST_MESH_PARTICLE
@@ -236,6 +238,7 @@ struct GS_OUT_POS_PARTICLE
     float4 vPosition : SV_POSITION;
     float2 vUV : TEXCOORD0;
     float2 vLifeTime : TEXCOORD1;
+    float vViewZ : TEXCOORD2;
 };
 
 struct GS_OUT_EFFECT_PARTICLE
@@ -244,6 +247,7 @@ struct GS_OUT_EFFECT_PARTICLE
     float2 vUV : TEXCOORD0;
     float2 vSpriteUV : TEXCOORD1;
     float2 vLifeTime : TEXCOORD2;
+    float vViewZ : TEXCOORD3;
 };
 
 ////////////////

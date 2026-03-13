@@ -278,27 +278,13 @@ PS_OUT_WBOIT PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In)
     if (finalAlpha <= g_Effect.g_DiscardValue)
         discard;
     
-    ////float weight = McGuire_CalculateWeight(In.vViewZ, finalAlpha);
-    //float weight = clamp(10.0f / (1e-5 + pow(In.vViewZ / 100, 2.0)), 0.01, 1.0);
-    
-    //Out.vAccum = float4(finalRGB * finalAlpha, finalAlpha) * weight;
-    //Out.vReveal = (finalAlpha);
-    
     float3 srcRGB = finalRGB;
     float srcAlpha = finalAlpha;
+    float w = saturate(1.0f - In.vViewZ / 1000.0f);
+    w = clamp(w, 0.1f, 1.0f); // 0.1 ~ 1.0 사이에서만 놀게 해. 10.0까지 가지 말고.
 
-    // 가이드라인 방식의 가중치 w 계산
-    // viewZ 기반으로 튜닝 (In.vViewZ가 작을수록/가까울수록 큰 값)
-    float w = pow(saturate(1.0f - In.vViewZ / 1000.0f), 3.0f) * 100.0f;
-    w = clamp(w, 0.01f, 300.0f); // 너무 커져서 타버리는 것 방지
-
-    // accum.rgb += (src.rgb * src.a) * w
-    // accum.a += src.a * w
     Out.vAccum = float4(srcRGB * srcAlpha, srcAlpha) * w;
-
-    // reveal *= (1 - src.a)
-    // 블렌드 스테이트에서 INV_SRC_COLOR를 썼기 때문에, 여기서는 그냥 알파만 내보내면 됨
-    Out.vReveal = srcAlpha;
+    Out.vReveal = saturate(srcAlpha);
 
     return Out;
 }
@@ -496,16 +482,16 @@ PS_OUT_WBOIT PS_BloomHard(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
         {
             float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
             scrolledUV += g_Effect.g_ScrollOffset * g_Effect.GlowTexture_ScrollWeight;
-            GlowSample = GradationTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
+            GlowSample = GlowTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
         }
         else if (HasTextureSprite(g_Effect.GlowTexture_SpriteInfo))
         {
             float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.GlowTexture_SpriteInfo);
-            GlowSample = GradationTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
+            GlowSample = GlowTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
         }
         else
         {
-            GlowSample = GradationTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
+            GlowSample = GlowTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
         }
 
     }
@@ -621,9 +607,15 @@ PS_OUT_WBOIT PS_BloomHard(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     if (finalAlpha <= g_Effect.g_DiscardValue)
         discard;
     
-    Out.vAccum = float4(finalRGB * finalAlpha, finalAlpha);
-    Out.vReveal = (finalAlpha);
-    
+    float3 srcRGB = finalRGB;
+    float srcAlpha = finalAlpha;
+
+    float w = saturate(1.0f - In.vViewZ / 1000.0f);
+    w = clamp(w, 0.1f, 1.0f); // 0.1 ~ 1.0 사이에서만 놀게 해. 10.0까지 가지 말고.
+
+    Out.vAccum = float4(srcRGB * srcAlpha, srcAlpha) * w;
+    Out.vReveal = saturate(srcAlpha);
+
     return Out;
 }
 

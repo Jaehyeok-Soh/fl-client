@@ -729,7 +729,8 @@ PS_OUT_HDR PS_MAIN_WBOIT(PS_IN_POS_TEX input) : SV_Target0
         discard;
     
     // 가중치 색상 복원
-    float3 vTransparentColor = vOITAccum.rgb / max(vOITAccum.a, 0.00001f);
+    float3 vTransparentColor = vOITAccum.rgb / max(vOITAccum.a, 0.01f);
+    vTransparentColor = clamp(vTransparentColor, 0.0f, 10.0f);
     
     // 최종 투명도 (1- 배경 투과율)
     float fAlpha = 1.0f - vOITReveal;
