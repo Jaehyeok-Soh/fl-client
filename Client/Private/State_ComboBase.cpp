@@ -25,6 +25,8 @@ HRESULT CState_ComboBase::Initialize(void* pArg)
 
 	m_fSlide_KeyCoolTime = pDesc->fSlide_CheckTime;
 
+	m_ComboEndTimes = pDesc->arrCombo_EndTimes;
+
 	return S_OK;
 }
 
@@ -159,7 +161,7 @@ void CState_ComboBase::Count_ComboTime(const _float fTimeDelta)
 void CState_ComboBase::Check_Combo()
 {
 	// 너무 시간이 지나면 combo end
-	if (m_fStateElapsed > m_ComboTimes[m_iComboCount - 1] +1.52f)
+	if (m_fStateElapsed > m_ComboEndTimes[m_iMainAnimIdx])
 	{
 		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 		return;

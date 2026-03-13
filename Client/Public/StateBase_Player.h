@@ -95,7 +95,7 @@ protected:
 
 	STATE_START_DESC		m_tNextStateDesc	= {};
 
-	TimeCount				m_TFallingCount		= { 0.f,0.3f }; // 예전 값 : 0.4f
+	TimeCount				m_TFallingCount		= { 0.f,0.38f }; // 예전 값 : 0.4f
 	TimeCount				m_TChargeCount		= { 0.f,0.15f };
 
 	// state가 변환 했다면 true

@@ -828,6 +828,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         _int iCombo3 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03");
         _int iCombo4 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04");
 
+        tDesc.arrCombo_EndTimes = { 50.f / ANIMTIC ,33.f / ANIMTIC,39.f / ANIMTIC ,60.f / ANIMTIC ,70.f / ANIMTIC };
+
         //pModel->Set_Animation_Speed(iSlide,     fAttackSpeed);
         //pModel->Set_Animation_Speed(iCombo1,    fAttackSpeed);
         //pModel->Set_Animation_Speed(iCombo2,    fAttackSpeed);
