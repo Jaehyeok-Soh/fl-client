@@ -693,9 +693,6 @@ void CEffectObject::Update(const _float fTimeDelta)
     }
     m_bIsStarted = true;
 
-
-
-
     // Duration 및 Loop 제어 설정
     if (fActiveTime >= m_tEffectDesc.Data._Effect_Duration)
     {
