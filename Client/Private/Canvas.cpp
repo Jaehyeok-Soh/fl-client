@@ -137,6 +137,8 @@ HRESULT CCanvas::Ready_Prefab(_uint iPoolLevel, _uint iSpawnLevel)
 				if (nullptr == pUI)
 					return;
 				(this->Get_UIVector())->push_back(pUI);
+
+				pUI->Set_ParentCanvas(this);
 			});
 	}
 	m_isAllDead = false;

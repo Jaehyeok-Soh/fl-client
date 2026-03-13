@@ -12,6 +12,7 @@ class CUITutorial_Pannel_Image final : public  CUIDynamic_Image
 public:
 	typedef struct tagUITutorialPannelImageDesc : public DIMAGE_DESC
 	{
+		_uint iNumbering = {};
 	}TUTORIAL_PANNEL_IMAGE_DESC;
 private:
 	CUITutorial_Pannel_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -46,7 +47,16 @@ private:
 
 	DelegateHandle m_tEventHandle = {};
 
-	//TUTORIAL_PANNEL_TOP_BG
+	//TUTORIAL_PANNEL_TOP_BG Values
+	Vec2 m_vOriginSize = {};
+
+	// TUTORIAL_PANNEL_BUTTON_FX Values
+	_bool m_isHoverEnter = { false };
+	_bool m_isHoverExit = { false };
+	_float m_fPannelBrightNess = {};
+
+	_uint m_iNumbering = {}; // 0이 Prev 버튼, 1이 Next 버튼 
+
 public:
 	static CUITutorial_Pannel_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
