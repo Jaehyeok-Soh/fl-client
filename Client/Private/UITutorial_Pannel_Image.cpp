@@ -13,8 +13,10 @@
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
-// fParam0 -> 왼쪽 버튼		// Hover 이펙트 밝기 조절용으로 사용중 
-// fParam1 -> 오른쪽 버튼	// Hover 이펙트 밝기 조절용으로 사용중 
+// fParam0 -> Prev 버튼		// Hover 이펙트 밝기 조절용으로 사용중 
+// fParam1 -> Next 버튼		// Hover 이펙트 밝기 조절용으로 사용중 
+// isParam0 -> Prev 버튼	// 누르고 땐 순간 true Trigger
+// isParam1 -> Next 버튼	// 누르고 땐 순간 true Trigger
 
 #define PREV_BUTTON 0
 #define NEXT_BUTTON 1
@@ -57,6 +59,7 @@ HRESULT CUITutorial_Pannel_Image::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -168,6 +171,9 @@ void CUITutorial_Pannel_Image::Bind_Events()
 
 void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 {
+	m_pParentCanvasCache->Get_CommonParam_bool_Ref()[PREV_BUTTON] = false;
+	m_pParentCanvasCache->Get_CommonParam_bool_Ref()[NEXT_BUTTON] = false;
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_BG:		// 윗 배경
@@ -179,7 +185,10 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_ICON:		// ? 아이콘
 		break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_ICON:			// 설명 이미지
-		break;
+	{
+
+	}
+	break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON:		// 버튼 0이 Prev, 1이 Next
 	{
 		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::HOVER_ENTER))
@@ -191,6 +200,18 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 		{
 			m_isHoverEnter = false;
 			m_isHoverExit = true;
+		}
+
+		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_EXIT))
+		{
+			if (m_iNumbering == PREV_BUTTON)
+			{
+				m_pParentCanvasCache->Get_CommonParam_bool_Ref()[PREV_BUTTON] = true;
+			}
+			else if (m_iNumbering == NEXT_BUTTON)
+			{
+				m_pParentCanvasCache->Get_CommonParam_bool_Ref()[NEXT_BUTTON] = true;
+			}
 		}
 
 		if (m_isHoverEnter)
@@ -210,11 +231,11 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 
 		if (m_iNumbering == PREV_BUTTON)
 		{
-			m_pParentCanvasCache->Set_fParams0(m_fPannelBrightNess);
+			m_pParentCanvasCache->Get_CommonParam_float_Ref()[PREV_BUTTON] = m_fPannelBrightNess;
 		}
 		else if (m_iNumbering == NEXT_BUTTON)
 		{
-			m_pParentCanvasCache->Set_fParams1(m_fPannelBrightNess);
+			m_pParentCanvasCache->Get_CommonParam_float_Ref()[NEXT_BUTTON] = m_fPannelBrightNess;
 		}
 
 	}
@@ -224,11 +245,11 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 	{
 		if (m_iNumbering == PREV_BUTTON)
 		{
-			m_fBrightness = m_pParentCanvasCache->Get_fParams0();
+			m_fBrightness = m_pParentCanvasCache->Get_CommonParam_float()[PREV_BUTTON];
 		}
 		else if (m_iNumbering == NEXT_BUTTON)
 		{
-			m_fBrightness = m_pParentCanvasCache->Get_fParams1();
+			m_fBrightness = m_pParentCanvasCache->Get_CommonParam_float()[NEXT_BUTTON];
 		}
 	}
 	break;
@@ -476,9 +497,13 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 
-	if (auto* pDamageFont = std::get_if<UI_TUTORIAL_PANNEL_PREFAB_DATA>(&pDesc->Data))
+	if (auto* pPannel = std::get_if<UI_TUTORIAL_PANNEL_PREFAB_DATA>(&pDesc->Data))
 	{
+		m_pParentCanvasCache = pDesc->pCanvas;
 
+		m_pParentCanvasCache->Get_CommonParam_uint_Ref().resize(2);
+		m_pParentCanvasCache->Get_CommonParam_float_Ref().resize(2);
+		m_pParentCanvasCache->Get_CommonParam_bool_Ref().resize(2);
 	}
 	m_isSpawned = true;
 	m_isDeadRequest = false;

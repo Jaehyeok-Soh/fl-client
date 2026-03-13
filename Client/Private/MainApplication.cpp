@@ -23,6 +23,7 @@
 
 // UI
 #include "UI_Manager.h"
+#include "UIMinimap_Manager.h"
 #include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "UILoading_Text.h"
@@ -575,6 +576,7 @@ void CMainApplication::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();	// 오브젝트 삭제 이후 삭제해야되는데 / 오브젝트에서 Addref 하고 있어서 안터짐
+	CUIMinimap_Manager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();
 

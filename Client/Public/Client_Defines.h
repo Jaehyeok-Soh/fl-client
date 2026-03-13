@@ -620,6 +620,7 @@ namespace Client
 	typedef struct tagUIPrefabData
 	{
 		UI_PREFAB_VARIANT Data;
+		class CCanvas* pCanvas = {nullptr};
 	} UI_PREFAB_DATA;
 
 

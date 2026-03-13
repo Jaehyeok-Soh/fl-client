@@ -343,7 +343,7 @@ HRESULT CCanvas::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	m_pPrefabData = *static_cast<UI_PREFAB_DATA*>(pArg);
-
+	m_pPrefabData.pCanvas = this;
 
 	return S_OK;
 }

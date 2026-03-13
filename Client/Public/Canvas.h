@@ -76,11 +76,13 @@ public:
 	virtual HRESULT Despawn_FromPool()override;
 
 public:
-	_float Get_fParams0() const { return m_fParams0; }
-	_float Get_fParams1() const { return m_fParams1; }
+	vector<_uint>&  Get_CommonParam_uint_Ref() { return m_vecCommonParams_uint; }
+	vector<_float>&  Get_CommonParam_float_Ref() { return m_vecCommonParams_float; }
+	vector<_bool>&  Get_CommonParam_bool_Ref() { return m_vecCommonParams_bool; }
 
-	void Set_fParams0(_float f) { m_fParams0 = f; }
-	void Set_fParams1(_float f) { m_fParams1 = f; }
+	const vector<_uint>&  Get_CommonParam_uint()	const { return m_vecCommonParams_uint; }
+	const vector<_float>&  Get_CommonParam_float()	const { return m_vecCommonParams_float; }
+	const vector<_bool>&  Get_CommonParam_bool()	const { return m_vecCommonParams_bool; }
 
 private:
 	// ÀÏ¹Ý Äµ¹ö½º
@@ -98,9 +100,9 @@ private:
 	UI_PREFAB_DATA m_pPrefabData;
 
 private:
-	_float m_fParams0 = {}; 
-	_float m_fParams1 = {}; 
-
+	vector<_uint> m_vecCommonParams_uint;
+	vector<_float> m_vecCommonParams_float;
+	vector<_bool> m_vecCommonParams_bool;
 
 protected:
 	CMulticastDelegate<void(const UI_LOCAL_EVENT_DESC&)> m_vLocalEvents = {};
