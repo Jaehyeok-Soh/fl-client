@@ -37,8 +37,10 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	m_tMoveState.fGravity = m_tDesc.fGravity;
 	m_tMoveState.CMSpeed.y = m_tDesc.MSpeed.x;
 	m_tMoveState.CMSpeed.z = m_tDesc.MSpeed.y;
+	m_tMoveState.CMAccelRate.x = m_tDesc.MAccelRate.y;
 	m_tMoveState.CMAccelRate.y = m_tDesc.MAccelRate.x;
 	m_tMoveState.CMAccelRate.z = m_tDesc.MAccelRate.y;
+	m_tMoveState.CMDeAccelRate.x = m_tDesc.MDeAccelRate.y;
 	m_tMoveState.CMDeAccelRate.y = m_tDesc.MDeAccelRate.x;
 	m_tMoveState.CMDeAccelRate.z = m_tDesc.MDeAccelRate.y;
 

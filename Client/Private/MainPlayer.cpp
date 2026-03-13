@@ -750,6 +750,12 @@ HRESULT CMainPlayer::Ready_CCT()
         | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION
         | PHYSICSFILTERGROUP::Enum::TRIGGER_BOX;
 
+    desc.bGravity = { true };
+    desc.fGravity = { -35.f };
+    desc.MSpeed = { 0.f, 8.f };
+    desc.MAccelRate = { 0.f, 10.f };
+    desc.MDeAccelRate = { 0.f, 10.f };
+
     if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
         return E_FAIL;
 

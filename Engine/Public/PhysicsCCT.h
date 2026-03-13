@@ -14,7 +14,7 @@ public:
         _float fGravity = { -35.f };
         
         CurMinMax CMSpeed{ 0.f, 0.f, 8.f};
-        CurMinMax CMVerticalSpeed{ 0.f, -10.f, 10.f};
+        CurMinMax CMVerticalSpeed{ 0.f, -30.f, 30.f};
         CurMinMax CMAccelRate{ 10.f, 0.f, 10.f };
         CurMinMax CMDeAccelRate{ 5.f, 0.f, 5.f };
 
