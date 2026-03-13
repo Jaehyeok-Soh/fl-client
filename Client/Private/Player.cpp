@@ -480,7 +480,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 0.065f;
+        tKeyTimer.fMaxTime      = 0.07f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -1005,6 +1005,9 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 0.1f;
+
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -1089,6 +1092,29 @@ HRESULT CPlayer::Ready_HitStates()
             return E_FAIL;
     }
 
+    //CONDEMN
+    {
+        CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Condemn_End_01") };
+        desc.bBlend = true;
+        desc.bLoop = false;
+
+        desc.FCollis = 0;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::LOOP_DONE;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONEMOVEKEY)] = ENUM_TO_UINT(State::WALK);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 4.f;
+        desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CONDEMN), CState_Condemn::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
     // HITSTRONG
     {
         CState_HitStrong::PLAYER_STATEBASE_DESC  desc = {};
@@ -1142,29 +1168,6 @@ HRESULT CPlayer::Ready_HitStates()
         desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::HITFLYEND), CState_HitFlyEnd::Create(pActionState, &desc))))
-            return E_FAIL;
-    }
-
-    //CONDEMN
-    {
-        CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags = 0;
-        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Condemn_End_01") };
-        desc.bBlend = true;
-        desc.bLoop = false;
-
-        desc.FCollis = 0;
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::LOOP_DONE;
-        vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(State::END));
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONEMOVEKEY)] = ENUM_TO_UINT(State::WALK);
-        desc.vecChangeState_ByKey = vecChangeState_ByKey;
-
-        tKeyTimer.bCountTime = false;
-        desc.tKeyTimer = tKeyTimer;
-        desc.pOwnerGun = pMyGun;
-
-        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CONDEMN), CState_Condemn::Create(pActionState, &desc))))
             return E_FAIL;
     }
 

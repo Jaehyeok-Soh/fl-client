@@ -818,7 +818,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
         _float fAttackSpeed = { 1.2f };
         tDesc.vCombo_CheckTimes = Vec4{ 0.5f / fAttackSpeed,0.5f / fAttackSpeed,1.f / fAttackSpeed ,1.5f / fAttackSpeed };
-        tDesc.fSlide_CheckTime = 0.7f;
+        tDesc.fSlide_CheckTime = 0.7f / fAttackSpeed;
 
         _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
         _int iCombo1 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
