@@ -577,6 +577,7 @@ void CMainApplication::Register_Quest_Scenario()
 {
 	auto qm = CQuestManager::GetInstance();
 
+	// 시나리오-s1
 	QUESTDESC s1;
 	s1.iId = 0;
 	s1.iPrevId = -1;
@@ -586,6 +587,17 @@ void CMainApplication::Register_Quest_Scenario()
 	s1.wstrExplain = L"마령과 함께 베레니카를 구출하고 연옥도를 탈출하자";
 	s1.wstrDescription = L"개발자 설명란 입니다.";
 	qm->Register_Scenario(s1);
+
+	// 시나리오-s2
+	QUESTDESC s2;
+	s2.iId = 1;
+	s2.iPrevId = 0;
+	s2.iNextId = 2;
+	s2.wstrTitle = L"";
+	s2.wstrSubTitle = L"";
+	s2.wstrExplain = L"";
+	s2.wstrDescription = L"개발자 설명란 입니다.";
+	qm->Register_Scenario(s2);
 }
 
 void CMainApplication::Free()

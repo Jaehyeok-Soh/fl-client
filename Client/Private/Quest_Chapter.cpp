@@ -29,7 +29,8 @@ void CQuest_Chapter::Enter()
 {
 	if (m_tDesc.pObject == nullptr || !m_tDesc.pObject->IsAlive())
 	{
-		m_tDesc.pObject = m_pGameInstance->Get_GameObject_By_ID(m_tDesc.iObjectId);
+		
+		m_tDesc.pObject = m_pGameInstance->Get_GameObject_By_ID(m_pGameInstance->Get_CurrentLevelIndex(), m_tDesc.wstrObjectLayer, m_tDesc.iObjectId);
 		if (m_tDesc.pObject == nullptr)
 			return;
 	}
