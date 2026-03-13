@@ -32,6 +32,8 @@ HRESULT CState_RunShort::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	m_bCanRunLoop = true;
+
 	Set_ApplyYLerp(true);
 
 	return S_OK;
@@ -44,6 +46,21 @@ void CState_RunShort::Update(const _float fTimeDelta)
 	//{
 	//	Change_PlayerState(STATEKEY::LOOPDONE);
 	//}
+
+	if(m_bCanRunLoop)
+	{
+		if (m_fStateElapsed <= 0.5f &&
+			KEY_BUTTON_UP(DIK_LSHIFT))
+		{
+			m_bCanRunLoop = false;
+		}
+
+		else if(m_fStateElapsed > 0.5f)
+		{
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::RUNLOOP));
+			return;
+		}
+	}
 
 	Super::Update(fTimeDelta);
 }
