@@ -180,6 +180,9 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
         return E_FAIL;
 
     Get_Component<CPhysicsCCT>()->Ready_Position();
+    Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 320.f);
+    Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::MENTAL, 105.f);
+    Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::DEFENSE, 400.f);
 
 #ifdef _DEBUG
     CImGui_ClientDebug::GetInstance()->Set_Player(this);
@@ -190,6 +193,12 @@ HRESULT CMainPlayer::Awake(const _uint iCurrentLevelID)
 void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
+
+    if (KEY_BUTTON_DOWN(DIK_B))
+    {
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
+    }
+
 
     //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
 }
@@ -718,9 +727,10 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.fRadius = 0.35f;
     desc.fHeight = 0.7f;
     desc.vExtens = { 0.f, 0.f, 0.f };
+    desc.MDeAccelRate = { 0.f,10.f };
 
     PHYSICSMATERIAL_DESC mtrlDesc{};
-    mtrlDesc.eMaterial = EPhysicsMaterial::ICE;
+    mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
     desc.tMaterial = mtrlDesc;
 
     desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::PLAYER;
@@ -739,6 +749,12 @@ HRESULT CMainPlayer::Ready_CCT()
         | PHYSICSFILTERGROUP::Enum::TRIGGER_SPAWN
         | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION
         | PHYSICSFILTERGROUP::Enum::TRIGGER_BOX;
+
+    desc.bGravity = { true };
+    desc.fGravity = { -35.f };
+    desc.MSpeed = { 0.f, 8.f };
+    desc.MAccelRate = { 0.f, 10.f };
+    desc.MDeAccelRate = { 0.f, 10.f };
 
     if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
         return E_FAIL;
@@ -930,7 +946,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime = 1.f;
+        tDesc.fKeyCoolTime = 0.8f;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
 

@@ -37,8 +37,10 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	m_tMoveState.fGravity = m_tDesc.fGravity;
 	m_tMoveState.CMSpeed.y = m_tDesc.MSpeed.x;
 	m_tMoveState.CMSpeed.z = m_tDesc.MSpeed.y;
+	m_tMoveState.CMAccelRate.x = m_tDesc.MAccelRate.y;
 	m_tMoveState.CMAccelRate.y = m_tDesc.MAccelRate.x;
 	m_tMoveState.CMAccelRate.z = m_tDesc.MAccelRate.y;
+	m_tMoveState.CMDeAccelRate.x = m_tDesc.MDeAccelRate.y;
 	m_tMoveState.CMDeAccelRate.y = m_tDesc.MDeAccelRate.x;
 	m_tMoveState.CMDeAccelRate.z = m_tDesc.MDeAccelRate.y;
 
@@ -221,7 +223,7 @@ void CPhysicsCCT::SetHeight(_float height)
 
 const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, _float fTimeDelta)
 {
-	if (m_pGameInstance->Is_ChangeLevelSequence())
+	if (m_pGameInstance->Is_ChangeLevelSequence() || m_bEnableCollision == false)
 	{
 		PxControllerCollisionFlags collisionFlag;
 		return collisionFlag;
@@ -245,7 +247,11 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	Vec3 finalPos = GetFootPosition();
 	Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	_float yLerp = std::lerp(currentPos.y, finalPos.y, fTimeDelta * 30.f);
+	_float fLerpAmount = fTimeDelta * 15.f;
+	if (fLerpAmount > 1.f)
+		fLerpAmount = 1.f;
+
+	_float yLerp = std::lerp(currentPos.y, finalPos.y, fLerpAmount);
 	finalPos.y = yLerp;
 
 	transform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
@@ -404,6 +410,8 @@ void CPhysicsCCT::EnableCollision(_bool bEnable)
 {
 	if (m_pController == nullptr)
 		return;
+
+	m_bEnableCollision = bEnable;
 
 	PxRigidDynamic* pActor = m_pController->getActor();
 	if (pActor)

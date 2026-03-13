@@ -51,7 +51,7 @@ HRESULT CMyStat::Initialize(void* pArg)
 
 void CMyStat::Add_Health(_float fHealth)
 {
-	if (fHealth > 0)
+	if (fHealth >= 0)
 		Add_Hp(fHealth);
 
 	else
@@ -123,6 +123,24 @@ void CMyStat::Set_Stat(STAT_TYPE eType, _float fValue)
 
 	// 안에서 검사 한번 돌도록
 	Add_Stat(eType, 0.f);
+}
+
+void CMyStat::Fill_StatFull(STAT_TYPE eType)
+{
+	switch (eType)
+	{
+	case STAT_TYPE::HP:
+		m_vHealth.x = m_vHealth.y;
+		break;
+
+	case STAT_TYPE::DEFENSE:
+		m_vDefense.x = m_vDefense.y;
+		break;
+
+	case STAT_TYPE::MENTAL:
+		m_vMental.x = m_vMental.y;
+		break;
+	}
 }
 
 void CMyStat::Update_Stat(const _float fTimeDelta)

@@ -111,6 +111,8 @@ protected:
 
 	void	Look_Control(_float fTimeDelta);
 
+	void	Setting_BeforeNormalState();
+
 	// 움직임 관련 함수
 private:
 	void GunMove(const _float fTimeDelta);
