@@ -121,7 +121,7 @@ void CUIMiniMap_Monster_Icon::Tick_By_Type(const _float fTimeDelta)
 	if (!m_pTargetIconComp->Get_isRanged())
 	{
 		Set_Invisible();
-		Set_Dead();
+		Request_SetDead();
 	}
 	m_vMoveOffset = m_pTargetIconComp->Get_ScreenPos();
 }
