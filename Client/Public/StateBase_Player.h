@@ -113,12 +113,12 @@ protected:
 	_bool Check_FKey(const _float fTimeDelta);
 
 protected:
-	_bool Check_Hit(const _float fTimeDelta);
-	_bool Check_Collis(const _float fTimeDelta);
+	_bool	Check_Hit(const _float fTimeDelta);
+	_bool	Check_Collis(const _float fTimeDelta);
 
-	void Jump_Impuls(_float fOffset = 1.f);
+	void	Jump_Impuls(_float fOffset = 1.f);
 
-	void LookAt_Monser();
+	void	LookAt_Monser();
 
 	// player 객체 연결 함수들
 protected:
@@ -156,7 +156,7 @@ private:
 	CGun*					m_pOwnerGun = { nullptr };
 
 private:
-	_bool Has_ChangeState(STATEKEY eKey);
+	_bool	Has_ChangeState(STATEKEY eKey);
 
 	_bool	Check_ColliWithMonster();
 	void	Count_Combo();

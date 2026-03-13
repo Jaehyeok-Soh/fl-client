@@ -718,6 +718,9 @@
     <Filter Include="03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent">
       <UniqueIdentifier>{4b4564f1-e6dd-444c-9a16-0eecb5e95c9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Animation">
+      <UniqueIdentifier>{f2ac30ac-8cc6-4e1a-91a2-0a36094fcd50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1333,6 +1336,9 @@
     <ClInclude Include="..\Public\TriggerBox_TutorialUIEvent.h">
       <Filter>03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ImGui_AnimationLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1936,6 +1942,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_TutorialUIEvent.cpp">
       <Filter>03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_AnimationLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
