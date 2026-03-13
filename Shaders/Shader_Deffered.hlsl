@@ -116,28 +116,6 @@ float3 ToneMap_ACES(float3 x)
     return saturate((x * (a * x + b)) / (x * (c * x + d) + e));
 }
 
-float3 DecodeWorldNormal(float2 vUV)
-{
-    float4 vNormalDesc = g_RenderTargetNormalTexture.Sample(PointClampSampler, vUV);
-    return normalize(vNormalDesc.xyz * 2.f - 1.f);
-}
-
-void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
-{
-    float4 vDepthDesc = g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV);
-    fNDCZ = vDepthDesc.x;
-    fViewZ = vDepthDesc.y;
-}
-
-void DecodeSpecularMask(float2 vUV, out float fAO, out float fRough, out float fMetal)
-{
-    float4 vSpecularMaskDesc = g_RenderTargetSpecularMaskTexture.Sample(LinearSampler, vUV);
-    fAO = vSpecularMaskDesc.x <= EPSILON  ? 1.f : vSpecularMaskDesc.x;
-    
-    fRough = vSpecularMaskDesc.y;
-    fMetal = vSpecularMaskDesc.z;
-}
-
 float SilhouetteEdge(float2 vUV)
 {
     float2 vInvSize = OutlineParam.vInvSize;
@@ -215,44 +193,6 @@ float Blur5Tap(float2 vUV, float2 vDir, float2 vInvHalf)
     float c4 = g_RenderTargetAOTexture.SampleLevel(PointClampSampler, vUV - vOff2, 0).r;
 
     return c0 * w0 + (c1 + c2) * w1 + (c3 + c4) * w2;
-}
-
-float GetViewZ(float2 vUV)
-{
-    return g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV).y;
-}
-
-float2 UV_ToNDC(float2 vUV)
-{
-    // [0, 0] ==> [-1, 1]
-    // [1, 1] ==> [1, -1]
-    return float2(vUV.x * 2.f - 1.f, vUV.y * -2.f + 1.f);
-}
-
-float2 NDC_ToUV(float2 vNDC)
-{
-    // [-1, 1] ==> [0, 0]
-    // [1, -1] ==> [1, 1]
-    return float2(vNDC.x * 0.5f + 0.5f, -vNDC.y * 0.5f + 0.5f);
-}
-
-float3 WorldToViewNormal(float3 vNormalWorld)
-{
-    return normalize(mul(vNormalWorld, (float3x3)CamV));
-}
-
-float4 ReconstructProjPosition(float2 vUV, float fNDCZ, float fViewZ)
-{
-    float4 vProjPos;
-    /* 투영공간상의 좌표를 구한다. */
-    /* 로컬위치 * 월드 * 뷰 * 투영 / V.z ( 현재 Clip 좌표계 )*/
-    vProjPos.xy = UV_ToNDC(vUV);
-    vProjPos.z = fNDCZ;
-    vProjPos.w = 1.f;
-    /* 투영행렬까지 곱한 상태를 만들어준다. */ 
-    /* 로컬위치 * 월드 * 뷰 * 투영 / V.z  * V.z */ 
-    vProjPos *= fViewZ;
-    return vProjPos;
 }
 
 VS_OUT_POS_TEX VS_MAIN(VS_IN_POS_TEX input)

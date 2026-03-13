@@ -28,6 +28,15 @@ private:
 	virtual ~CRender_Manager() = default;
 
 	HRESULT Initialize();
+private:
+	struct FogPass
+	{
+		enum
+		{
+			Distance = 0,
+			Height
+		};
+	};
 public:
 	HRESULT Set_ShaderResources();
 	HRESULT Render();
@@ -41,6 +50,7 @@ private:
 	HRESULT Render_Lights();
 	HRESULT Render_CombinedHDR();
 	HRESULT Render_Environment();
+	HRESULT Render_Fog();
 	HRESULT Render_Outline();
 	HRESULT Render_NonLights();
 	// 이펙트 전용 (디스토션)
@@ -54,6 +64,7 @@ private:
 private:
 	array<Vec4, SSAO_KERNAL> Build_SSAO_Kernal16();
 	HRESULT Create_SSAO_NoiseSRV();
+	HRESULT Create_Perlin_NoiseSRV();
 	HRESULT Set_ConstantBuffer();
 	void Request_SortUI();
 private:
@@ -84,6 +95,12 @@ private:
 	CConstant_Buffer<SHADER_BLOOMPARAM_DESC>* m_pCB_Bloomparam{ nullptr };
 	CConstant_Buffer<SHADER_OUTLINE_DESC>* m_pCB_Outlineparam{ nullptr };
 	CTextureBase* m_pLUTTexture{ nullptr };
+
+	// Fog
+	class CShader* m_pFogShader = { nullptr };
+	SHADER_FOG_DESC m_tFogDesc{};
+	CConstant_Buffer<SHADER_FOG_DESC>* m_pCB_Fog{ nullptr };
+	ID3D11ShaderResourceView* m_pPerlinNoiseSRV{ nullptr };
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
@@ -110,6 +127,11 @@ public:
 	SHADER_OUTLINE_DESC& Get_OutlineParamDesc() { return m_tOutlineparamDesc; }
 	const SHADER_OUTLINE_DESC& Get_OutlineParamDesc() const { return m_tOutlineparamDesc; }
 	HRESULT Commit_OutlineParam();
+
+	// Fog
+	SHADER_FOG_DESC& Get_FogParamDesc() { return m_tFogDesc; }
+	const SHADER_FOG_DESC& Get_FogParamDesc() const { return m_tFogDesc; }
+	HRESULT Commit_FogParam();
 
 	HRESULT Commit_AllPostParams();
 private:

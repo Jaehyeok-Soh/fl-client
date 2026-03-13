@@ -97,6 +97,7 @@ namespace Engine
 		Outlineparam,
 		RGBMapping,
 		RenderFx,
+		Fogparam,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -117,7 +118,8 @@ namespace Engine
 		"BLOOMParamBuffer",
 		"OUTLINEParamBuffer",
 		"CB_MAPPING_RGB",
-		"RenderFxParamBuffer"
+		"RenderFxParamBuffer",
+		"FogParamBuffer"
 	};
 	//===================
 	// FX SRV
@@ -142,6 +144,7 @@ namespace Engine
 		Textures,
 		Cube,
 		SSAONoise,
+		PerlinNoise,
 		COUNT
 	};
 	constexpr const char* g_SRVNames[static_cast<unsigned int>(EFXSRV::COUNT)] =
@@ -163,7 +166,8 @@ namespace Engine
 		"g_MaterialTextures",
 		"g_DefaultTextures",
 		"g_TextureCube",
-		"g_SSAONoiseTexture"
+		"g_SSAONoiseTexture",
+		"g_PerlinNoise"
 	};
 	//===================
 	// AnimEvent

@@ -11,6 +11,8 @@
 #include "Octree_Manager.h"
 #include "EngineConsole.h"
 #include "UIObject.h"
+#define STB_PERLIN_IMPLEMENTATION
+#include "stb_perlin.h"
 #include "GameInstance.h"
 
 CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -350,11 +352,21 @@ HRESULT CRender_Manager::Set_ShaderResources()
 	{
 		if (!(m_pVIBuffer = CVIBuffer_Rect_Tex::Create(m_pDevice, m_pDeviceContext, nullptr)))
 			return E_FAIL;
-
+	}
+	// For. MainShader
+	{
 		CShader::SHADER_ORIGIN_DESC desc = {};
 		desc.pShaderFilePath = L"../../Shaders/Shader_Deffered.hlsl";
 		desc.eLayout = EVtxLayout::VTXPOSTEX;
 		if (!(m_pShader = CShader::Create(m_pDevice, m_pDeviceContext, &desc)))
+			return E_FAIL;
+	}
+	// For. FogShader
+	{
+		CShader::SHADER_ORIGIN_DESC desc = {};
+		desc.pShaderFilePath = L"../../Shaders/Shader_Fog.hlsl";
+		desc.eLayout = EVtxLayout::VTXPOSTEX;
+		if (!(m_pFogShader = CShader::Create(m_pDevice, m_pDeviceContext, &desc)))
 			return E_FAIL;
 	}
 
@@ -371,6 +383,9 @@ HRESULT CRender_Manager::Set_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(Create_SSAO_NoiseSRV()))
+		return E_FAIL;
+
+	if (FAILED(Create_Perlin_NoiseSRV()))
 		return E_FAIL;
 
 	// SSAOkernelDesc
@@ -435,6 +450,29 @@ HRESULT CRender_Manager::Set_ShaderResources()
 		if (FAILED(m_pCB_Outlineparam->Copy_Data(m_tOutlineparamDesc)))
 			return E_FAIL;
 	}
+	// FogDesc
+	{
+		m_tFogDesc.vColor = Vec4(0.45f, 0.6f, 0.78f, 1.f);    // 짙은 청색
+		m_tFogDesc.vHighColor = Vec4(0.6f, 0.72f, 0.85f, 1.f);    // 하늘 쪽 밝은 청색
+
+		// Distance
+		m_tFogDesc.fFogStart = 20.f;     // 20m부터 시작
+		m_tFogDesc.fFogEnd = 80.f;     // 80m에서 최대
+		m_tFogDesc.fFogDensity = 0.f;      // linear (0이면 linear)
+		m_tFogDesc.fFogMaxOpacity = 0.55f;    // 최대 55% - 멀어도 어느정도 보임
+
+		// Height
+		m_tFogDesc.fFogBaseHeight = -3.f;     // 지면 약간 아래
+		m_tFogDesc.fFogHeightFalloff = 0.08f;    // 천천히 감소 - 낮은 곳에 안개 깔림
+		m_tFogDesc.fFogHeightDensity = 0.015f;   // 옅게
+
+		// Noise
+		m_tFogDesc.fFogNoiseScale = 0.15f;    // 미세한 변동만
+		m_tFogDesc.fFogNoiseSpeed = 0.2f;     // 느리게 흐름
+
+		if (FAILED(m_pCB_Fog->Copy_Data(m_tFogDesc)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -474,6 +512,9 @@ HRESULT CRender_Manager::Render()
 			return E_FAIL;
 
 		m_pGameInstance->Setup_UIViewProj_ToCBuffer();
+
+		if (FAILED(Render_Fog()))
+			return E_FAIL;
 
 		if (FAILED(Render_Outline()))
 			return E_FAIL;
@@ -1040,6 +1081,24 @@ HRESULT CRender_Manager::Render_Environment()
 	return S_OK;
 }
 
+HRESULT CRender_Manager::Render_Fog()
+{
+	if (FAILED(m_pFogShader->Bind_TransformData(m_matWorld_RT)))
+		return E_FAIL;
+
+	if(FAILED(m_pFogShader->Bind_SRV(EFXSRV::PerlinNoise, m_pPerlinNoiseSRV)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pFogShader)))
+		return E_FAIL;
+
+	m_pFogShader->Set_Pass(0);
+	m_pFogShader->Apply();
+	m_pVIBuffer->Bind_Resource();
+	m_pVIBuffer->Render();
+	return S_OK;
+}
+
 HRESULT CRender_Manager::Render_Outline()
 {
 	m_pShader->Bind_TransformData(m_matWorld_RT);
@@ -1206,6 +1265,87 @@ HRESULT CRender_Manager::Create_SSAO_NoiseSRV()
 	return S_OK;
 }
 
+HRESULT CRender_Manager::Create_Perlin_NoiseSRV()
+{
+	constexpr _uint iSize = 64;
+	vector<_float> vecData(iSize * iSize * iSize);
+
+	constexpr _int  iTile = 4;  // 타일링 주기
+
+	for (_uint z = 0; z < iSize; ++z)
+	{
+		for (_uint y = 0; y < iSize; ++y)
+		{
+			for (_uint x = 0; x < iSize; ++x)
+			{
+				_float fx = (_float)x / (_float)iSize * (_float)iTile;
+				_float fy = (_float)y / (_float)iSize * (_float)iTile;
+				_float fz = (_float)z / (_float)iSize * (_float)iTile;
+
+				// 수동 fBM with wrap
+				_float fValue = 0.f;
+				_float fAmplitude = 1.f;
+				_float fFrequency = 1.f;
+				_float fMax = 0.f;
+
+				for (_uint oct = 0; oct < 4; ++oct)
+				{
+					_int iWrap = iTile * (_int)fFrequency;
+
+					fValue += stb_perlin_noise3_seed(
+						fx * fFrequency,
+						fy * fFrequency,
+						fz * fFrequency,
+						iWrap, iWrap, iWrap,   // ★ 각 축 wrap
+						0                       // seed
+					) * fAmplitude;
+
+					fMax += fAmplitude;
+					fAmplitude *= 0.5f;     // persistence
+					fFrequency *= 2.f;      // lacunarity
+				}
+
+				fValue /= fMax;
+
+				// [-1, 1] → [0, 1]
+				vecData[z * iSize * iSize + y * iSize + x] = fValue * 0.5f + 0.5f;
+			}
+		}
+	}
+
+	D3D11_TEXTURE3D_DESC desc{};
+	desc.Width = iSize;
+	desc.Height = iSize;
+	desc.Depth = iSize;
+	desc.MipLevels = 1;
+	desc.Format = DXGI_FORMAT_R32_FLOAT;
+	desc.Usage = D3D11_USAGE_IMMUTABLE;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+	D3D11_SUBRESOURCE_DATA init{};
+	init.pSysMem = vecData.data();
+	init.SysMemPitch = sizeof(_float) * iSize;
+	init.SysMemSlicePitch = sizeof(_float) * iSize * iSize;
+
+	ID3D11Texture3D* pTexture = nullptr;
+	if (FAILED(m_pDevice->CreateTexture3D(&desc, &init, &pTexture)))
+		return E_FAIL;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = desc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
+	srvDesc.Texture3D.MipLevels = 1;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(pTexture, &srvDesc, &m_pPerlinNoiseSRV)))
+	{
+		Safe_Release(pTexture);
+		return E_FAIL;
+	}
+
+	Safe_Release(pTexture);
+	return S_OK;
+}
+
 HRESULT CRender_Manager::Set_ConstantBuffer()
 {
 	m_pCB_SSAOkernel = CConstant_Buffer<SHADER_SSAOKERNEL_DESC>::Create(m_pDevice, m_pDeviceContext);
@@ -1213,8 +1353,9 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	m_pCB_HDRparam = CConstant_Buffer<SHADER_HDRPARAM_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Bloomparam = CConstant_Buffer<SHADER_BLOOMPARAM_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Outlineparam = CConstant_Buffer<SHADER_OUTLINE_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_Fog = CConstant_Buffer<SHADER_FOG_DESC>::Create(m_pDevice, m_pDeviceContext);
 	if (m_pCB_SSAOkernel == nullptr || m_pCB_SSAOparam == nullptr || m_pCB_HDRparam == nullptr ||
-		m_pCB_Bloomparam == nullptr || m_pCB_Outlineparam == nullptr)
+		m_pCB_Bloomparam == nullptr || m_pCB_Outlineparam == nullptr || m_pCB_Fog == nullptr)
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::SSAOkernal, m_pCB_SSAOkernel->Get_Buffer())))
@@ -1230,6 +1371,9 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 		return E_FAIL;
 
 	if(FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Outlineparam, m_pCB_Outlineparam->Get_Buffer())))
+		return E_FAIL;
+
+	if (FAILED(m_pFogShader->Set_ConstantBuffer(EFXCB::Fogparam, m_pCB_Fog->Get_Buffer())))
 		return E_FAIL;
 
 	return S_OK;
@@ -1264,12 +1408,15 @@ void CRender_Manager::Free()
 
 	Safe_Release(m_pLUTTexture);
 	Safe_Release(m_pSSAONoiseSRV);
+	Safe_Release(m_pPerlinNoiseSRV);
 	Safe_Release(m_pCB_Outlineparam);
 	Safe_Release(m_pCB_Bloomparam);
 	Safe_Release(m_pCB_HDRparam);
 	Safe_Release(m_pCB_SSAOkernel);
 	Safe_Release(m_pCB_SSAOparam);
+	Safe_Release(m_pCB_Fog);
 	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pFogShader);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDeviceContext);
@@ -1309,12 +1456,18 @@ HRESULT CRender_Manager::Commit_OutlineParam()
 	return m_pCB_Outlineparam ? m_pCB_Outlineparam->Copy_Data(m_tOutlineparamDesc) : E_FAIL;
 }
 
+HRESULT CRender_Manager::Commit_FogParam()
+{
+	return m_pCB_Fog ? m_pCB_Fog->Copy_Data(m_tFogDesc) : E_FAIL;
+}
+
 HRESULT CRender_Manager::Commit_AllPostParams()
 {
 	if (FAILED(Commit_SSAOParam()))    return E_FAIL;
 	if (FAILED(Commit_HDRParam()))     return E_FAIL;
 	if (FAILED(Commit_BloomParam()))   return E_FAIL;
 	if (FAILED(Commit_OutlineParam())) return E_FAIL;
+	if (FAILED(Commit_FogParam()))	   return E_FAIL;
 	return S_OK;
 }
 

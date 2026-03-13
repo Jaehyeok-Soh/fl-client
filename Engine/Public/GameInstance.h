@@ -332,6 +332,9 @@ public:
 	SHADER_OUTLINE_DESC& Get_OutlineParamDesc();
 	const SHADER_OUTLINE_DESC& Get_OutlineParamDesc() const;
 	HRESULT Commit_OutlineParam();
+	SHADER_FOG_DESC& Get_FogParamDesc();
+	const SHADER_FOG_DESC& Get_FogParamDesc() const;
+	HRESULT Commit_FogParam();
 	HRESULT Commit_AllPostParams();
 #endif
 #pragma endregion

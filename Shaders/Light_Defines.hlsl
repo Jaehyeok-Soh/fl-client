@@ -101,9 +101,49 @@ struct RenderFxDesc
     float3 vEmissiveColor;
     float fReserved0;
 };
+
+struct FogParam
+{
+    float4 vColor;
+    float4 vHighColor;
+    
+    float fFogStart;
+    float fFogEnd;
+    float fFogDensity;
+    float fFogHeightFalloff;
+    
+    float fFogBaseHeight;
+    float fFogMaxOpacity;
+    float fFogHeightDensity;
+    float fFogNoiseScale;
+
+    float fFogNoiseSpeed;
+    float3 vPad;
+};
 /////////////////
 // ConstBuffer //
 /////////////////
+cbuffer GlobalBuffer
+{
+    row_major float4x4 V;
+    row_major float4x4 P;
+    row_major float4x4 VP;
+    float fAccTime;
+    float3 vPadd;
+};
+
+cbuffer InvBuffer
+{
+    row_major float4x4 CamV;
+    row_major float4x4 CamP;
+    row_major float4x4 InvV;
+    row_major float4x4 InvP;
+};
+
+cbuffer TransformBuffer
+{
+    row_major float4x4 W;
+};
 cbuffer LightBuffer
 {
     LightDesc Light;
@@ -152,6 +192,10 @@ cbuffer RenderFxParamBuffer
 {
     RenderFxDesc renderFx;
 };
+cbuffer FogParamBuffer
+{
+    FogParam fogParam;
+};
 //////////
 // Func //
 //////////
@@ -192,6 +236,11 @@ float4 Compute_Diffuse_Ambient(float3 _vWorldSpace_Normal, float2 _vUV)
     return fShade * Light.vDiffuse * vDiffuse;
 }
 
+float3 CameraPosition()
+{
+    return InvV._41_42_43;
+}
+
 float4 Compute_Specular(float2 _vUV, float3 _vWorldSpace_Normal, float3 _vWorldPosition)
 {
     // float3 vReflect = -GlobalLight.vDirection + (2 * _vWorldSpace_Normal * dot(-GlobalLight.vDirection, _vWorldSpace_Normal));
@@ -218,7 +267,6 @@ float4 Compute_StandardLight(float3 _vWorldSpace_Normal, float2 _vUV, float3 _vW
 {
     return Compute_Diffuse_Ambient(_vWorldSpace_Normal, _vUV) + Compute_Specular(_vUV, _vWorldSpace_Normal, _vWorldPosition) /* + Compute_Emissive(_vUV)*/;
 }
-
 uint UnpackFlags8(uint iPacked)
 {
     return (iPacked >> 24) & 0xFF;
@@ -243,5 +291,58 @@ uint LoadObjectInfo(float2 vUV, float2 vInvSize)
 {
     int2 iPix = int2(vUV / vInvSize);
     return g_RenderTargetObjInfoTexture.Load(int3(iPix, 0));
+}
+
+float2 UV_ToNDC(float2 vUV)
+{
+    // [0, 0] ==> [-1, 1]
+    // [1, 1] ==> [1, -1]
+    return float2(vUV.x * 2.f - 1.f, vUV.y * -2.f + 1.f);
+}
+
+float2 NDC_ToUV(float2 vNDC)
+{
+    // [-1, 1] ==> [0, 0]
+    // [1, -1] ==> [1, 1]
+    return float2(vNDC.x * 0.5f + 0.5f, -vNDC.y * 0.5f + 0.5f);
+}
+
+float4 ReconstructProjPosition(float2 vUV, float fNDCZ, float fViewZ)
+{
+    float4 vProjPos;
+    /* 투영공간상의 좌표를 구한다. */
+    /* 로컬위치 * 월드 * 뷰 * 투영 / V.z ( 현재 Clip 좌표계 )*/
+    vProjPos.xy = UV_ToNDC(vUV);
+    vProjPos.z = fNDCZ;
+    vProjPos.w = 1.f;
+    /* 투영행렬까지 곱한 상태를 만들어준다. */ 
+    /* 로컬위치 * 월드 * 뷰 * 투영 / V.z  * V.z */ 
+    vProjPos *= fViewZ;
+    return vProjPos;
+}
+
+float4 ReconstructWorldPos(float2 vUV, float fNDCZ, float fViewZ)
+{
+    float4 vProjPos;
+    vProjPos.xy = UV_ToNDC(vUV);
+    vProjPos.z = fNDCZ;
+    vProjPos.w = 1.f;
+    vProjPos *= fViewZ;
+    
+    float4 vViewPos = mul(vProjPos, InvP);
+    vViewPos.xyz /= max(0.0001f, vViewPos.w);
+    vViewPos.w = 1.f;
+    
+    return mul(vViewPos, InvV);
+}
+
+float GetViewZ(float2 vUV)
+{
+    return g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV).y;
+}
+
+float3 WorldToViewNormal(float3 vNormalWorld)
+{
+    return normalize(mul(vNormalWorld, (float3x3) CamV));
 }
 #endif

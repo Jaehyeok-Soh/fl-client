@@ -42,6 +42,7 @@ public:
 	const Matrix& Get_UI_ViewMatrix() const { return m_matView_UI; }
 	const Matrix& Get_UI_ProjMatrix() const { return m_matProjection_UI; }
 
+	void Update_AccTime_ForShader(const _float fTimeDelta);
 	void Update_ViewMatrix();
 
 	void Setup_ViewProj_ToCBuffer();

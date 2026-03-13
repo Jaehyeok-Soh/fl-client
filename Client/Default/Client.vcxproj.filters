@@ -4,9 +4,6 @@
     <Filter Include="99. ETC">
       <UniqueIdentifier>{abc407db-dd3f-4180-a2f9-ea688f8ce102}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. MainApplication">
-      <UniqueIdentifier>{1c92be80-c5c7-419a-81e5-19643d43a155}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00. Default">
       <UniqueIdentifier>{1cc99351-da81-4feb-a1cf-61546807521f}</UniqueIdentifier>
     </Filter>
@@ -717,6 +714,9 @@
     </Filter>
     <Filter Include="03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent">
       <UniqueIdentifier>{4b4564f1-e6dd-444c-9a16-0eecb5e95c9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. MainApplication">
+      <UniqueIdentifier>{1c92be80-c5c7-419a-81e5-19643d43a155}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

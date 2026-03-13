@@ -219,6 +219,8 @@ namespace Engine
 		Matrix matView = Matrix::Identity;
 		Matrix matProj = Matrix::Identity;
 		Matrix matVP = Matrix::Identity;
+		float fAccTime = { 0.f };
+		SimpleMath::Vector3 vPadding = { SimpleMath::Vector3::Zero };
 	}SHADER_GLOBALDESC;
 
 	typedef struct tagShaderInvDesc
@@ -341,6 +343,25 @@ namespace Engine
 		float fFadeEnd{0.f};
 		SimpleMath::Vector2 vPadding{ SimpleMath::Vector2::Zero };
 	}SHADER_OUTLINE_DESC;
+
+	typedef struct tagShaderFogParamDesc
+	{
+		SimpleMath::Vector4 vColor = { 0.6f, 0.75f, 0.9f, 1.f };
+		SimpleMath::Vector4 vHighColor = { 0.7f, 0.8f, 0.95f, 1.f };
+
+		float fFogStart = { 15.f };
+		float fFogEnd = { 80.f };
+		float fFogDensity = { 0.f };
+		float fFogHeightFalloff = { 0.15f };
+
+		float fFogBaseHeight = { 0.f };
+		float fFogMaxOpacity = { 0.85f };
+		float fFogHeightDensity = { 0.02f };
+		float fFogNoiseScale = { 0.f };
+
+		float fFogNoiseSpeed = { 0.f };
+		SimpleMath::Vector3 vPad = { SimpleMath::Vector3::Zero };
+	}SHADER_FOG_DESC;
 
 	typedef struct tagShaderEffectDesc
 	{

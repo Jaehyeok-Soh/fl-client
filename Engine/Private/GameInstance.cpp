@@ -155,6 +155,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pJudgementSystem->Flush_CollidedEvent();
 
 	// 메인카메라 업데이트#ifdef _DEBUG
+	m_pCamera_Manager->Update_AccTime_ForShader(fScaledTimeDelta);
 	m_pCamera_Manager->Update_ViewMatrix();
 	m_pFrustrum->Update();
 
@@ -833,6 +834,18 @@ const SHADER_OUTLINE_DESC& CGameInstance::Get_OutlineParamDesc() const
 HRESULT CGameInstance::Commit_OutlineParam()
 {
 	return m_pRender_Manager->Commit_OutlineParam();
+}
+SHADER_FOG_DESC& CGameInstance::Get_FogParamDesc()
+{
+	return m_pRender_Manager->Get_FogParamDesc();
+}
+const SHADER_FOG_DESC& CGameInstance::Get_FogParamDesc() const
+{
+	return m_pRender_Manager->Get_FogParamDesc();
+}
+HRESULT CGameInstance::Commit_FogParam()
+{
+	return m_pRender_Manager->Commit_FogParam();
 }
 HRESULT CGameInstance::Commit_AllPostParams()
 {

@@ -26,6 +26,7 @@ private:
 	SHADER_HDRPARAM_DESC   m_defHDR{};
 	SHADER_BLOOMPARAM_DESC m_defBloom{};
 	SHADER_OUTLINE_DESC    m_defOutline{};
+	SHADER_FOG_DESC		   m_defFog{};
 public:
 	static CImGui_ShaderLayout* Create();
 	virtual void Free() override;

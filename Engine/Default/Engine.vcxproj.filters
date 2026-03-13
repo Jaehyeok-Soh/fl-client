@@ -1530,5 +1530,8 @@
     <FxCompile Include="..\..\Shaders\Shader_Deffered.hlsl">
       <Filter>01. Utility\98. Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_Fog.hlsl">
+      <Filter>01. Utility\98. Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
