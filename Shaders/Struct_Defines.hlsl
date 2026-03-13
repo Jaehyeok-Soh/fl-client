@@ -380,6 +380,12 @@ struct PS_OUT_BAKESHADOW
     float4 vDepth : SV_TARGET0;
 };
 
+struct PS_OUT_WBOIT
+{
+    float4 vAccum : SV_TARGET0; // g_RenderTargetOITAccumTexture에 저장함.
+    float vReveal : SV_TARGET1; // g_RenderTargetOITRevealTexture에 저장함.
+};
+
 struct PS_OUT_HDR
 {
     float4 vColor : SV_TARGET0;

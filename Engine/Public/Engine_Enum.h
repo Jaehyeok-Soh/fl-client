@@ -14,7 +14,7 @@ namespace Engine
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
 	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND , COMPUTELIGHT_BLEND , NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, END };
-	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, OUTLINE, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, END };
+	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, OUTLINE, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, WBOIT, END };
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,
@@ -142,6 +142,8 @@ namespace Engine
 		Textures,
 		Cube,
 		SSAONoise,
+		RT_OIT_Accum,
+		RT_OIT_REVEAL,
 		COUNT
 	};
 	constexpr const char* g_SRVNames[static_cast<unsigned int>(EFXSRV::COUNT)] =
@@ -163,7 +165,9 @@ namespace Engine
 		"g_MaterialTextures",
 		"g_DefaultTextures",
 		"g_TextureCube",
-		"g_SSAONoiseTexture"
+		"g_SSAONoiseTexture",
+		"g_RenderTargetOITAccumTexture",
+		"g_RenderTargetOITRevealTexture"
 	};
 	//===================
 	// AnimEvent

@@ -716,6 +716,29 @@ PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
     return output;
 }
 
+PS_OUT_HDR PS_MAIN_WBOIT(PS_IN_POS_TEX input) : SV_Target0
+{
+    PS_OUT_HDR output;
+    
+    // 누적 색상 Accum 
+    float4 vOITAccum = g_RenderTargetOITAccumTexture.Sample(LinearSampler, input.vUV);
+    float vOITReveal = g_RenderTargetOITRevealTexture.Sample(LinearSampler, input.vUV).r;
+    
+    // 투명 물체가 없는 픽셀은 처리하지 않는다.
+    if (vOITReveal >= 0.999)
+        discard;
+    
+    // 가중치 색상 복원
+    float3 vTransprentColor = vOITAccum.rgb / max(vOITAccum.a, 1e-5f);
+    
+    // 최종 투명도 (1- 배경 투과율)
+    float fAlpha = 1.0f - vOITReveal;
+    
+    output.vColor = float4(vTransprentColor, fAlpha);
+   
+    return output;
+}
+
 technique11 T0
 {
     PASS_RS_DS_BS_VP(Debug, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN_DEBUG)
@@ -731,4 +754,5 @@ technique11 T0
     PASS_RS_DS_BS_VP(BloomPing, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_BLOOM_PING)
     PASS_RS_DS_BS_VP(BloomPong, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_BLOOM_PONG)
     PASS_RS_DS_BS_VP(Tonemap, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_TONEMAP)
+    PASS_RS_DS_BS_VP(WBOIT, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN_WBOIT)
 };

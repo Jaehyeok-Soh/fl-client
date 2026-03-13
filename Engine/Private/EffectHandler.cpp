@@ -471,6 +471,7 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
+    if(m_pOwnerModel)
     tEngineDesc.VFX_fSpeed = m_pOwnerModel->Get_Animatioin_MotionOffset(script.iAnimIndex);
 
     // 이펙트 생성 요청
@@ -501,6 +502,7 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
+    if (m_pOwnerModel)
     tEngineDesc.VFX_fSpeed = m_pOwnerModel->Get_Animatioin_MotionOffset(script.iAnimIndex);
   
     // 이펙트 생성 요청
