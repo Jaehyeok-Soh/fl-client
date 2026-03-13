@@ -340,7 +340,7 @@ HRESULT CRender_Manager::Ready_BlendStates()
 	// RT 1: Revealage (D = D * (1 - S.a))
 	blendDesc.RenderTarget[1].BlendEnable = TRUE;
 	blendDesc.RenderTarget[1].SrcBlend = D3D11_BLEND_ZERO;
-	blendDesc.RenderTarget[1].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[1].DestBlend = D3D11_BLEND_INV_SRC_COLOR;
 	blendDesc.RenderTarget[1].BlendOp = D3D11_BLEND_OP_ADD;
 	blendDesc.RenderTarget[1].SrcBlendAlpha = D3D11_BLEND_ZERO;
 	blendDesc.RenderTarget[1].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;

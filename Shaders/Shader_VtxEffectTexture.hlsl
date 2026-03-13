@@ -87,8 +87,10 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
 }
 
 
-float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
+PS_OUT_WBOIT PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
 {
+    PS_OUT_WBOIT Out;
+    
     if (In.vLifeTime.x < 0.0f)
         discard;
    // =======              ³ëÀÌÁî ÅØ½ºÃ³ »ùÇÃ¸µ             ===========
@@ -307,13 +309,13 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
 
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 2.5f;
+            CurvePowerStrength *= 1.6f;
         }
         else
         {
             CurveSample = CurveTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, CURVETEXTURE));
             CurvePowerStrength = CurveSample.r;
-            CurvePowerStrength *= 2.5f;
+            CurvePowerStrength *= 1.6f;
         }
 
     }
@@ -332,11 +334,19 @@ float4 PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
 
     if (HasLifeDissolve())
         finalAlpha *= lifeAlpha;
+
+    // 7. ÈÖµµ ÄÆÆÃ (±ò²ûÇÑ ¸¶¹«¸®)
+    //float luminance = dot(finalRGB, float3(0.2126f, 0.7152f, 0.0722f));
+    //if (luminance < 0.1f)
+    //    discard;
     
     if (finalAlpha <= g_Effect.g_DiscardValue)
         discard;
     
-    return float4(finalRGB, finalAlpha);
+    Out.vAccum = float4(finalRGB * finalAlpha, finalAlpha);
+    Out.vReveal = finalAlpha;
+    return Out;
+
 }
 
 
@@ -609,7 +619,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
-        //SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_Texture()));
@@ -618,8 +628,8 @@ technique11 T0
     pass Texture_BlendEffect
     {
         SetRasterizerState(RS_Default_CullNone);
-        SetDepthStencilState(DS_Default, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetDepthStencilState(DS_ReadOnly, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_Texture()));
@@ -629,7 +639,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
-        //SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_TextureBloomHard()));
@@ -639,7 +649,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture())); 
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_TextureBloomHard()));
@@ -649,7 +659,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Disabled, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_Texture()));

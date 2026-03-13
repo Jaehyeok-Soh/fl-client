@@ -725,16 +725,16 @@ PS_OUT_HDR PS_MAIN_WBOIT(PS_IN_POS_TEX input) : SV_Target0
     float vOITReveal = g_RenderTargetOITRevealTexture.Sample(LinearSampler, input.vUV).r;
     
     // 투명 물체가 없는 픽셀은 처리하지 않는다.
-    if (vOITReveal >= 0.999)
+    if (vOITReveal >= 0.99f)
         discard;
     
     // 가중치 색상 복원
-    float3 vTransprentColor = vOITAccum.rgb / max(vOITAccum.a, 1e-5f);
+    float3 vTransparentColor = vOITAccum.rgb / max(vOITAccum.a, 0.00001f);
     
     // 최종 투명도 (1- 배경 투과율)
     float fAlpha = 1.0f - vOITReveal;
     
-    output.vColor = float4(vTransprentColor, fAlpha);
+    output.vColor = float4(vTransparentColor, fAlpha);
    
     return output;
 }

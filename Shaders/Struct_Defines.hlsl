@@ -216,6 +216,7 @@ struct VS_OUT_INST_MESH_PARTICLE
     float2 vPSize : PSIZE;
     float2 vLifeTime : TEXCOORD3;
 
+    float vViewZ : TEXCOORD4;
 };
 ///////////////////
 // GeometryInput //
