@@ -306,7 +306,7 @@ HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, const wstring&
 	if (bBlend)
 	{
 		m_iPrevAnimIndex = m_iCurrentAnimIndex;
-		Change_AnimationPlayState(AnimationPlayState::BLEND, nullptr, iAnimIdx);
+		Change_AnimationPlayState(AnimationPlayState::BLEND, nullptr, iAnimIdx,false);
 	}
 	else
 		Change_AnimationPlayState(AnimationPlayState::PLAY, pAnimEComShader, iAnimIdx);
@@ -1044,7 +1044,7 @@ void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex, _boo
 
 	m_vecAnimations[iAnimationIndex]->Reset_NotifyCursor();
 
-	if (bChannelReset)
+	if (m_eCurrentAnimationState != BLEND)
 		m_vecAnimations[iAnimationIndex]->Reset_PrePosition(m_vPreMainPosition);
 
 	else
@@ -1067,11 +1067,11 @@ void CModel::Play_End(AnimationPlayState eNextState)
 {
 	m_bIsAnimFinished = false;
 
-	if (eNextState != BLEND)
-		m_vecAnimations[m_iCurrentAnimIndex]->Reset_PrePosition(m_vPreMainPosition);
+	//if (eNextState != BLEND)
+	//	m_vecAnimations[m_iCurrentAnimIndex]->Reset_PrePosition(m_vPreMainPosition);
 
-	else
-		int a = 0;
+	//else
+	//	int a = 0;
 }
 
 void CModel::Blend_Begin(_uint CurAnimationIndex)
@@ -1079,7 +1079,12 @@ void CModel::Blend_Begin(_uint CurAnimationIndex)
 	m_fBlendedTime = 0.f;
 
 	m_vecAnimations[CurAnimationIndex]->Reset_NotifyCursor();
-	//m_vecAnimations[CurAnimationIndex]->Reset_PrePosition(m_vPreBlendPosition);
+	//m_vecAnimations[CurAnimationIndex]->Reset_PrePosition(m_vPreBlendPosition); 
+
+	//if (m_iRootBoneIdx >= 0)
+	//{
+	//	m_vPreMainPosition = m_vecBones[m_iRootBoneIdx]->Get_Transform().Translation();
+	//}
 }
 
 void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditive)
@@ -1237,7 +1242,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 			pAnimEvalCS->Set_OutputStructuredBuffer(m_pPreSB);
 
 			// channel 업데이트
-			m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreMainPosition);
+			m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreMixPosition);
 
 			// animation 결과 blendCS에 bind
 			pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_PRESRT),
@@ -1250,7 +1255,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 			pAnimEvalCS->Set_OutputStructuredBuffer(m_pCurSB);
 
 			// channel 업데이트
-			m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreMainPosition);
+			m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreMixPosition);
 
 			// animation 결과 blendCS에 bind
 			pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_CURSRT),
@@ -1342,24 +1347,25 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio, CTransf
 				if (pOwnerPhyCCT && pOwnerTransform &&
 					m_vecAnimations[m_iCurrentAnimIndex]->Get_ApplyRoot() && m_vecAnimations[m_iPrevAnimIndex]->Get_ApplyRoot())
 				{
-	
 					Vec3 vDelta = m_vPreMainPosition - vTranslation;
-					m_vPreMainPosition = vTranslation;
 
-					Vec3 vOwnerRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
-					Vec3 vOwnerUp = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
-					Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+					//if (vDelta.Length() < 1.0f) 
+					{
+						Vec3 vOwnerRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+						Vec3 vOwnerUp = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+						Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
-					vOwnerRight.Normalize();
-					vOwnerUp.Normalize();
-					vOwnerLook.Normalize();
+						vOwnerRight.Normalize();
+						vOwnerUp.Normalize();
+						vOwnerLook.Normalize();
 
-					Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
+						Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
 
-					pOwnerPhyCCT->AddFixedMove(moveDistance * m_vecAnimations[m_iCurrentAnimIndex]->Get_MotionOffset());
+						pOwnerPhyCCT->AddFixedMove(moveDistance * m_vecAnimations[m_iCurrentAnimIndex]->Get_MotionOffset());
+
+						m_vPreMainPosition = vTranslation;
+					}
 				}
-
-
 				vTranslation = Vec3::Zero;
 			}
 

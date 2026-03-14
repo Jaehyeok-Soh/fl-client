@@ -115,7 +115,7 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 		if (fCurrentTrackPosition <= 0.f)
 		{
 			*pCurrentKeyFrameIndex = 0;
-			Reset_PreTranslation(vPrepos);
+			//Reset_PreTranslation(vPrepos);
 		}
 
 		Matrix matTransformation = {};
@@ -168,8 +168,30 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 		spanLocalSrtData[m_iBoneIndex].vTranslation = vTranslation;
 	}
 
-	//else if (m_bRootBone)
-	//	Move_OnwerTransform(fCurrentTrackPosition, pCurrentKeyFrameIndex, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, vPrepos);
+	if (m_bRootBone)
+	{
+		if (fCurrentTrackPosition <= 0.f)
+		{
+			*pCurrentKeyFrameIndex = 0;
+			//Reset_PreTranslation(vPrepos);
+		}
+
+		KEYFRAME lastKeyFrame = m_vecKeyframes.back();
+		if (fCurrentTrackPosition >= lastKeyFrame.fTrackPosition)
+		{
+			return;
+		}
+
+		if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
+			++(*pCurrentKeyFrameIndex);
+
+		Vec3 vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
+		Vec3 vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
+
+		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
+			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
+
+	}
 
 }
 
