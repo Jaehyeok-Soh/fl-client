@@ -14,7 +14,6 @@ void IQuest::OnQuestEnter(DTO::QUEST_CHAPTERDESC desc)
 	m_iChapterId = desc.tQuestDesc.iId;
 
 	m_eQuestEvent = desc.eEvent;
-	m_eTargetType = desc.eTargetType;
 
 	QuestEnter();
 }

@@ -31,6 +31,7 @@
 
 // Quest
 #include "QuestManager.h"
+#include "Quest_DataModel.h"
 
 USING(Client)
 
@@ -578,7 +579,7 @@ void CMainApplication::Register_Quest_Scenario()
 	auto qm = CQuestManager::GetInstance();
 
 	// 시나리오-s1
-	QUESTDESC s1;
+	DTO::QUESTDESC s1;
 	s1.iId = 0;
 	s1.iPrevId = -1;
 	s1.iNextId = 1;
@@ -589,7 +590,7 @@ void CMainApplication::Register_Quest_Scenario()
 	qm->Register_Scenario(s1);
 
 	// 시나리오-s2
-	QUESTDESC s2;
+	DTO::QUESTDESC s2;
 	s2.iId = 1;
 	s2.iPrevId = 0;
 	s2.iNextId = 2;

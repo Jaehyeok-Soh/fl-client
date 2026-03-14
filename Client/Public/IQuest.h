@@ -23,7 +23,6 @@ public:
 
 private:
 	DTO::QUESTEVENT::Enum m_eQuestEvent = DTO::QUESTEVENT::AREA_ENTER;
-	DTO::QUEST_TARGETTYPE::Enum m_eTargetType = DTO::QUEST_TARGETTYPE::TRIGGER_BOX;
 
 	_int m_iScenarioId = { -1 };
 	_int m_iChapterId = { -1 };

@@ -7,6 +7,7 @@ using json = nlohmann::json;
 #pragma pop_macro("new")
 #include <string>
 #include "Quest_DataModel.h"
+#include "Engine_Enum.h"
 
 void DTO::to_json(json& j, const QUESTDESC& d)
 {

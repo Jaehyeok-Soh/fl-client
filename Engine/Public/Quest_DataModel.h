@@ -1,5 +1,6 @@
 #pragma once
 #include "json_forward.h"
+#include <set>
 
 namespace DTO
 {
