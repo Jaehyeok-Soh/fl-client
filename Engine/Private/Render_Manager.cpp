@@ -513,8 +513,8 @@ HRESULT CRender_Manager::Render()
 
 		m_pGameInstance->Setup_UIViewProj_ToCBuffer();
 
-		if (FAILED(Render_Fog()))
-			return E_FAIL;
+		//if (FAILED(Render_Fog()))
+		//	return E_FAIL;
 
 		if (FAILED(Render_Outline()))
 			return E_FAIL;

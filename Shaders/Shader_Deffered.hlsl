@@ -422,7 +422,7 @@ PS_OUT_AO PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
     // Noise -> ·£´ý È¸Àü º¤ÅÍ(View)
     //============================
     float2 vNoiseUV = input.vUV * SSAOkernel.vNoiseScale;
-    float3 vRand = g_SSAONoiseTexture.Sample(PointSampler, vNoiseUV).xyz * 2.f - 1.f;
+    float3 vRand = g_SSAONoiseTexture.Sample(PointSampler, vNoiseUV).xyz;
     vRand.z = 0.f;
     vRand = normalize(vRand);
     
