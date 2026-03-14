@@ -24,14 +24,21 @@ HRESULT CQuestManager::Initialize()
 
 void CQuestManager::Start_Quest(_int iFirstScenarioId)
 {
+	if (m_bHasStarted)
+		return;
+
 	if (m_scenario.find(iFirstScenarioId) == m_scenario.end())
 		return;
+
+	Initialize();
 
 	m_iCurScenarioId = iFirstScenarioId;
 	m_pCurScenario = m_scenario[iFirstScenarioId];
 	m_pCurScenario->Enter();
 
-	m_pGameInstance->Broadcast<QUEST_CHANGE_SCENARIO_NOTIFY>(Get_QuestInfo());
+	m_bHasStarted = true;
+
+	m_pGameInstance->Broadcast<QUEST_CHANGE_SCENARIO_NOTIFY>();
 }
 
 void CQuestManager::Register_Scenario(DTO::QUESTDESC scenarioDesc)
@@ -77,7 +84,7 @@ void CQuestManager::Change_Scenario()
 	m_pCurScenario = m_scenario[m_iCurScenarioId];
 	m_pCurScenario->Enter();
 
-	m_pGameInstance->Broadcast<QUEST_CHANGE_SCENARIO_NOTIFY>(Get_QuestInfo());
+	m_pGameInstance->Broadcast<QUEST_CHANGE_SCENARIO_NOTIFY>();
 }
 
 DTO::QUEST_INFOBUCKET CQuestManager::Get_QuestInfo()

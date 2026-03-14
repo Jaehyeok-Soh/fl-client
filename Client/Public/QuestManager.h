@@ -21,12 +21,12 @@ private:
 	virtual ~CQuestManager() = default;
 
 private:
-	HRESULT Initialize();
-
 	void Bind_Events();
 	void EventCallback(DTO::QUEST_EVENT_SIGNATURE ID);
 
 public:
+	HRESULT Initialize();
+
 	void Start_Quest(_int iFirstScenarioId);
 
 	void Register_Scenario(DTO::QUESTDESC scenarioDesc);
@@ -39,7 +39,8 @@ public:
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
-	
+	_bool m_bHasStarted = { false };
+
 	vector<DelegateHandle> m_vecEventHandles;
 
 	_int m_iCurScenarioId = { -1 };

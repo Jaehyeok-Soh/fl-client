@@ -53,7 +53,7 @@ void CQuest_Scenario::Change_Chapter()
 	m_pCurChapter = m_chapter[m_iCurChapterId];
 	m_pCurChapter->Enter();
 
-	m_pGameInstance->Broadcast<QUEST_CHANGE_CHAPTER_NOTIFY>(m_pCurChapter->GetDesc());
+	m_pGameInstance->Broadcast<QUEST_CHANGE_CHAPTER_NOTIFY>();
 }
 
 _bool CQuest_Scenario::IsComplete()

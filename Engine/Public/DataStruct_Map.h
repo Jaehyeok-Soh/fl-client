@@ -2,7 +2,7 @@
 #include "ObjectDataBase.h"
 #include "DataEnum.h"
 #include "json_forward.h"
-
+#include "Quest_DataModel.h"
 
 NS_BEGIN(DTO)
 #pragma region Make Monster Type
@@ -590,13 +590,21 @@ struct ENGINE_DLL TRIGGERBOX_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
 public:
 	Vec3		 vExtents{0.5f,0.5f ,0.5f};
+
+	_bool		 bHasQuest = { false };
+	DTO::QUEST_CHAPTERDESC		tQuestObjectDesc = {};
 public:
 	explicit TRIGGERBOX_DESC()
-		: vExtents{ 0.5f,0.5f ,0.5f }
+		: vExtents{ 0.5f,0.5f ,0.5f },
+		bHasQuest(false),
+		tQuestObjectDesc()
 	{
 	}
 	explicit TRIGGERBOX_DESC(const TRIGGERBOX_DESC& rhs)
-		: CLIENT_MAKEPATH_DESC_BASE(rhs) , vExtents(rhs.vExtents)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs),
+		vExtents(rhs.vExtents),
+		bHasQuest(rhs.bHasQuest),
+		tQuestObjectDesc(rhs.tQuestObjectDesc)
 	{
 		return;
 	}

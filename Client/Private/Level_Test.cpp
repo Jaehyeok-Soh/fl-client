@@ -66,6 +66,11 @@
 //=================
 #include "GameInstance.h"
 
+//=================
+// Quest
+//=================
+#include "QuestManager.h"
+
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
@@ -117,6 +122,9 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
+	CQuestManager::GetInstance()->Start_Quest(0);
+
 	return S_OK;
 }
 

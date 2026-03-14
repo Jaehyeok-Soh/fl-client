@@ -21,7 +21,10 @@ public:
 	virtual void QuestEnter() PURE;
 	virtual void QuestExit() PURE;
 
-private:
+protected:
+	void CallQuestEvent(OBJECT_ENUM_TAG::Enum eTag, _int iCount);
+
+protected:
 	DTO::QUESTEVENT::Enum m_eQuestEvent = DTO::QUESTEVENT::AREA_ENTER;
 
 	_int m_iScenarioId = { -1 };

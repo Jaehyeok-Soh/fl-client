@@ -2,6 +2,8 @@
 #include "Engine_Define.h"
 #include "IQuest.h"
 
+#include "GameInstance.h"
+
 IQuest::IQuest()
 {
 }
@@ -37,4 +39,17 @@ void IQuest::Set_Quest_Disable()
 _bool IQuest::Is_Quest_Enabled()
 {
 	return m_bIsEnabled;
+}
+
+void IQuest::CallQuestEvent(OBJECT_ENUM_TAG::Enum eTag, _int iCount)
+{
+	if (Is_Quest_Enabled() == false)
+		return;
+
+	DTO::QUEST_EVENT_SIGNATURE callback;
+	callback.eEvent = m_eQuestEvent;
+	callback.eTargetType = eTag;
+	callback.iCount = iCount;
+
+	CGameInstance::GetInstance()->Broadcast<QUEST_NOTIFY>(callback);
 }
