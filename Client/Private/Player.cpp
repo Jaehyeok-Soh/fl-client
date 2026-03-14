@@ -374,7 +374,7 @@ const Vec3& CPlayer::Get_CollidedMonster_Position()
 {
     if (CTriggerCollidePart* pCollider = Get_Part<CTriggerCollidePart>(Part::DETECTCOLLIDER))
     {
-        return pCollider->Get_CollidedPos();
+        return pCollider->Get_Collided_ObjPos();
     }
 
     return Vec3::Zero;
@@ -1457,11 +1457,11 @@ HRESULT CPlayer::Ready_PartCollider()
 
         {
             tPColliDesc.eShape = EPhysicsShape::SPHERE;
-            tPColliDesc.fRadius = { 2.f };
+            tPColliDesc.fRadius = { 4.5f };
             tPartColliDesc.pColliderDesc = &tPColliDesc;
         }
 
-        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_PosUpdate);
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_ObjChache);
 
         // player가 감지할 part ui
         if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))

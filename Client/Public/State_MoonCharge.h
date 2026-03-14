@@ -18,6 +18,7 @@ public:
 	virtual HRESULT End() override;
 private:
 	_bool m_bShakeActived = { false };
+	_bool m_bLookMonsterYet = { true };
 
 public:
 	static CState_MoonCharge* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
