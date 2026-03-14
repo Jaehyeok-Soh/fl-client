@@ -62,7 +62,7 @@ void CImGui_AnimationLayout::Render_AnimationList()
 		for (_uint i = 0; i < m_iAnimNums; ++i)
 		{
 			std::wstring wstrName = m_pPlayerModel->Get_AnimationName(i);
-			std::string strName(wstrName.begin(), wstrName.end());
+			std::string strName  = Engine_Utils::ToString(wstrName);
 
 			std::string label = std::to_string(i) + " : " + strName;
 
