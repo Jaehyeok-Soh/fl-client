@@ -39,6 +39,8 @@ HRESULT CMonster_Base::Initialize_Prototype()
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_DEFAULT);
+
 	return S_OK;
 }
 
@@ -61,6 +63,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 	Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
 	m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
+
 	return S_OK;
 }
 

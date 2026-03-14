@@ -1,4 +1,5 @@
 #pragma once
+#include "Quest_DataModel.h"
 
 NS_BEGIN(Client)
 
@@ -9,7 +10,7 @@ public:
 	~IQuest() = default;
 
 public:
-	void OnQuestEnter(QUEST_CHAPTERDESC desc);
+	void OnQuestEnter(DTO::QUEST_CHAPTERDESC desc);
 	void OnQuestExit();
 
 	void Set_Quest_Enable();
@@ -21,8 +22,8 @@ public:
 	virtual void QuestExit() PURE;
 
 private:
-	QUESTEVENT::Enum m_eQuestEvent = QUESTEVENT::AREA_ENTER;
-	QUEST_TARGETTYPE::Enum m_eTargetType = QUEST_TARGETTYPE::TRIGGER_BOX;
+	DTO::QUESTEVENT::Enum m_eQuestEvent = DTO::QUESTEVENT::AREA_ENTER;
+	DTO::QUEST_TARGETTYPE::Enum m_eTargetType = DTO::QUEST_TARGETTYPE::TRIGGER_BOX;
 
 	_int m_iScenarioId = { -1 };
 	_int m_iChapterId = { -1 };

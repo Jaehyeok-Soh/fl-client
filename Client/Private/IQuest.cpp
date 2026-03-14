@@ -6,7 +6,7 @@ IQuest::IQuest()
 {
 }
 
-void IQuest::OnQuestEnter(QUEST_CHAPTERDESC desc)
+void IQuest::OnQuestEnter(DTO::QUEST_CHAPTERDESC desc)
 {
 	Set_Quest_Enable();
 

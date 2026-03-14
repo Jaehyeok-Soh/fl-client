@@ -11,11 +11,11 @@ CQuest_Chapter::CQuest_Chapter()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CQuest_Chapter::Initialize(QUEST_CHAPTERDESC desc, class CGameObject* pObj)
+HRESULT CQuest_Chapter::Initialize(DTO::QUEST_CHAPTERDESC desc, class CGameObject* pObj)
 {
 	m_tDesc = desc;
-	m_tDesc.tQuestDesc.eType = QUESTLAYER::CHAPTER;
-	m_tDesc.tQuestDesc.eState = QUESTSTATE::LOCKED;
+	m_tDesc.tQuestDesc.eType = DTO::QUESTLAYER::CHAPTER;
+	m_tDesc.tQuestDesc.eState = DTO::QUESTSTATE::LOCKED;
 
 	m_tDesc.iObjectId = pObj->Get_ID();
 	m_tDesc.pObject = pObj;
@@ -35,7 +35,7 @@ void CQuest_Chapter::Enter()
 			return;
 	}
 
-	m_tDesc.tQuestDesc.eState = QUESTSTATE::IN_PROGRESS;
+	m_tDesc.tQuestDesc.eState = DTO::QUESTSTATE::IN_PROGRESS;
 
 	IQuest* pQuestObject = dynamic_cast<IQuest*>(m_tDesc.pObject);
 
@@ -48,7 +48,7 @@ void CQuest_Chapter::Exit()
 	if (m_tDesc.pObject == nullptr || !m_tDesc.pObject->IsAlive())
 		return;
 
-	m_tDesc.tQuestDesc.eState = QUESTSTATE::COMPLETE;
+	m_tDesc.tQuestDesc.eState = DTO::QUESTSTATE::COMPLETE;
 
 	IQuest* pQuestObject = dynamic_cast<IQuest*>(m_tDesc.pObject);
 
@@ -56,9 +56,13 @@ void CQuest_Chapter::Exit()
 		pQuestObject->OnQuestExit();
 }
 
-void CQuest_Chapter::UpdateProgress(QUEST_EVENT_SIGNATURE ID)
+void CQuest_Chapter::UpdateProgress(DTO::QUEST_EVENT_SIGNATURE ID)
 {
-	if (m_tDesc.eEvent == ID.eEvent && m_tDesc.eTargetType == ID.eTargetType)
+	if (m_tDesc.eEvent != ID.eEvent)
+		return;
+
+	auto iter = std::find(m_tDesc.eTargetType.begin(), m_tDesc.eTargetType.end(), ID.eTargetType);
+	if (iter != m_tDesc.eTargetType.end())
 		m_tDesc.iCurrentCount += ID.iCount;
 }
 
@@ -67,7 +71,7 @@ _bool CQuest_Chapter::IsComplete()
 	return m_tDesc.iCurrentCount >= m_tDesc.iCount;
 }
 
-CQuest_Chapter* CQuest_Chapter::Create(QUEST_CHAPTERDESC desc, class CGameObject* pObj)
+CQuest_Chapter* CQuest_Chapter::Create(DTO::QUEST_CHAPTERDESC desc, class CGameObject* pObj)
 {
 	CQuest_Chapter* pInstance = new CQuest_Chapter();
 	if (FAILED(pInstance->Initialize(desc, pObj)))

@@ -11,11 +11,11 @@ CQuest_Scenario::CQuest_Scenario()
 {
 	Safe_AddRef(m_pGameInstance);
 }
-HRESULT CQuest_Scenario::Initialize(QUESTDESC desc)
+HRESULT CQuest_Scenario::Initialize(DTO::QUESTDESC desc)
 {
 	m_tQuestDesc = desc;
-	m_tQuestDesc.eType = QUESTLAYER::SCENARIO;
-	m_tQuestDesc.eState = QUESTSTATE::LOCKED;
+	m_tQuestDesc.eType = DTO::QUESTLAYER::SCENARIO;
+	m_tQuestDesc.eState = DTO::QUESTSTATE::LOCKED;
 
 	return S_OK;
 }
@@ -25,7 +25,7 @@ void CQuest_Scenario::Enter()
 	m_iCurChapterId = m_iFirstChapterId;
 	m_pCurChapter = m_chapter[m_iFirstChapterId];
 
-	m_tQuestDesc.eState = QUESTSTATE::IN_PROGRESS;
+	m_tQuestDesc.eState = DTO::QUESTSTATE::IN_PROGRESS;
 
 	if (m_pCurChapter)
 		m_pCurChapter->Enter();
@@ -33,7 +33,7 @@ void CQuest_Scenario::Enter()
 
 void CQuest_Scenario::Exit()
 {
-	m_tQuestDesc.eState = QUESTSTATE::COMPLETE;
+	m_tQuestDesc.eState = DTO::QUESTSTATE::COMPLETE;
 }
 
 void CQuest_Scenario::Change_Chapter()
@@ -61,7 +61,7 @@ _bool CQuest_Scenario::IsComplete()
 	return m_isComplete;
 }
 
-void CQuest_Scenario::Register_QuestObject(QUEST_CHAPTERDESC chapterDesc, CGameObject* pObj)
+void CQuest_Scenario::Register_QuestObject(DTO::QUEST_CHAPTERDESC chapterDesc, CGameObject* pObj)
 {
 	if (chapterDesc.tQuestDesc.iId < 0 || m_chapter.find(chapterDesc.tQuestDesc.iId) != m_chapter.end())
 	{
@@ -72,7 +72,7 @@ void CQuest_Scenario::Register_QuestObject(QUEST_CHAPTERDESC chapterDesc, CGameO
 	m_chapter[chapterDesc.tQuestDesc.iId] = CQuest_Chapter::Create(chapterDesc, pObj);
 }
 
-void CQuest_Scenario::UpdateProgress(QUEST_EVENT_SIGNATURE ID)
+void CQuest_Scenario::UpdateProgress(DTO::QUEST_EVENT_SIGNATURE ID)
 {
 	m_chapter[m_iCurChapterId]->UpdateProgress(ID);
 	if (m_chapter[m_iCurChapterId]->IsComplete())
@@ -81,7 +81,7 @@ void CQuest_Scenario::UpdateProgress(QUEST_EVENT_SIGNATURE ID)
 	}
 }
 
-CQuest_Scenario* CQuest_Scenario::Create(QUESTDESC desc)
+CQuest_Scenario* CQuest_Scenario::Create(DTO::QUESTDESC desc)
 {
 	CQuest_Scenario* pInstance = new CQuest_Scenario();
 	if (FAILED(pInstance->Initialize(desc)))

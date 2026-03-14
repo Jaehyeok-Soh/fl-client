@@ -34,7 +34,7 @@ void CQuestManager::Start_Quest(_int iFirstScenarioId)
 	m_pGameInstance->Broadcast<QUEST_CHANGE_SCENARIO_NOTIFY>(Get_QuestInfo());
 }
 
-void CQuestManager::Register_Scenario(QUESTDESC scenarioDesc)
+void CQuestManager::Register_Scenario(DTO::QUESTDESC scenarioDesc)
 {
 	if (scenarioDesc.iId < 0 || m_scenario.find(scenarioDesc.iId) != m_scenario.end())
 	{
@@ -45,7 +45,7 @@ void CQuestManager::Register_Scenario(QUESTDESC scenarioDesc)
 	m_scenario[scenarioDesc.iId] = CQuest_Scenario::Create(scenarioDesc);
 }
 
-void CQuestManager::Register_QuestObject(QUEST_CHAPTERDESC chapterDesc, CGameObject* pObj)
+void CQuestManager::Register_QuestObject(DTO::QUEST_CHAPTERDESC chapterDesc, CGameObject* pObj)
 {
 	if (chapterDesc.tQuestDesc.iParentId < 0 || m_scenario.find(chapterDesc.tQuestDesc.iParentId) == m_scenario.end())
 	{
@@ -80,9 +80,9 @@ void CQuestManager::Change_Scenario()
 	m_pGameInstance->Broadcast<QUEST_CHANGE_SCENARIO_NOTIFY>(Get_QuestInfo());
 }
 
-QUEST_INFOBUCKET CQuestManager::Get_QuestInfo()
+DTO::QUEST_INFOBUCKET CQuestManager::Get_QuestInfo()
 {
-	QUEST_INFOBUCKET desc;
+	DTO::QUEST_INFOBUCKET desc;
 
 	if (m_pCurScenario == nullptr)
 		return desc;
@@ -99,14 +99,14 @@ QUEST_INFOBUCKET CQuestManager::Get_QuestInfo()
 void CQuestManager::Bind_Events()
 {
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<QUEST_NOTIFY>([this](QUEST_EVENT_SIGNATURE ID)
+		m_pGameInstance->Subscribe<QUEST_NOTIFY>([this](DTO::QUEST_EVENT_SIGNATURE ID)
 			{
 				this->EventCallback(ID);
 			})
 	);
 }
 
-void CQuestManager::EventCallback(QUEST_EVENT_SIGNATURE ID)
+void CQuestManager::EventCallback(DTO::QUEST_EVENT_SIGNATURE ID)
 {
 	if (m_scenario.find(m_iCurScenarioId) == m_scenario.end())
 		return;

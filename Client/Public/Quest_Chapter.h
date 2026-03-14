@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "Quest_DataModel.h"
 
 NS_BEGIN(Client)
 
@@ -11,26 +12,26 @@ private:
 	virtual ~CQuest_Chapter() = default;
 
 public:
-	HRESULT Initialize(QUEST_CHAPTERDESC desc, class CGameObject* pObj);
+	HRESULT Initialize(DTO::QUEST_CHAPTERDESC desc, class CGameObject* pObj);
 
 public:
 	void Enter();
 	void Exit();
 
-	void UpdateProgress(QUEST_EVENT_SIGNATURE ID);
+	void UpdateProgress(DTO::QUEST_EVENT_SIGNATURE ID);
 
 	_bool IsComplete();
 
 public:
-	QUEST_CHAPTERDESC GetDesc() { return m_tDesc; }
+	DTO::QUEST_CHAPTERDESC GetDesc() { return m_tDesc; }
 
 private:
 	class CGameInstance* m_pGameInstance = { nullptr };
 
-	QUEST_CHAPTERDESC m_tDesc = {};
+	DTO::QUEST_CHAPTERDESC m_tDesc = {};
 
 public:
-	static CQuest_Chapter* Create(QUEST_CHAPTERDESC desc, class CGameObject* pObj);
+	static CQuest_Chapter* Create(DTO::QUEST_CHAPTERDESC desc, class CGameObject* pObj);
 	virtual void Free() override;
 };
 
