@@ -2059,5 +2059,8 @@
     <FxCompile Include="..\..\Shaders\ComShader_AnimAdditiveMix.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">
+      <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

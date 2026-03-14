@@ -630,6 +630,12 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />
+    <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_CPT_Effect_Particle.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
