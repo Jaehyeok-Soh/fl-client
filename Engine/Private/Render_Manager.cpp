@@ -96,6 +96,16 @@ HRESULT CRender_Manager::Initialize()
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::ObjectInfo, &desc)))
 			return E_FAIL;
 	}
+	// For. Target_Emissive
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Emissive, &desc)))
+			return E_FAIL;
+	}
 	// For. Target_AO_Ping
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
@@ -198,6 +208,8 @@ HRESULT CRender_Manager::Initialize()
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Depth)))
 			return E_FAIL;
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::ObjectInfo)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Emissive)))
 			return E_FAIL;
 	}
 
@@ -1151,6 +1163,9 @@ HRESULT CRender_Manager::Render_CombinedHDR()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Emissive, m_pShader)))
 		return E_FAIL;
 
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::COMBINED));

@@ -42,6 +42,7 @@ Texture2D g_RenderTargetTexture;
 Texture2D g_RenderTargetDiffuseTexture;
 Texture2D g_RenderTargetNormalTexture;
 Texture2D g_RenderTargetShadeTexture;
+Texture2D g_RenderTargetEmissiveTexture;
 Texture2D g_RenderTargetDepthTexture;
 Texture2D<uint> g_RenderTargetObjInfoTexture;
 Texture2D g_RenderTargetSpecularTexture;

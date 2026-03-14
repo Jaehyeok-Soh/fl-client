@@ -373,6 +373,7 @@ struct PS_OUT_DEFFERED
     float4 vSpecularMask : SV_TARGET2;
     float4 vDepth : SV_TARGET3;
     uint4 vObjectInfo : SV_Target4;
+    float4 vEmissive : SV_Target5;
 };
 
 struct PS_OUT_BAKESHADOW

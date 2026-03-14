@@ -738,7 +738,9 @@ PS_OUT_HDR PS_MAIN_COMBINED(PS_IN_POS_TEX input)
     
     float4 vShade = g_RenderTargetShadeTexture.Sample(LinearSampler, input.vUV);
     
-    output.vColor = vDiffuse * vShade + vSpecular;
+    float4 vEmissive = g_RenderTargetEmissiveTexture.Sample(LinearSampler, input.vUV);
+    
+    output.vColor = float4(vDiffuse.rgb * vShade.rgb + vSpecular.rgb + vEmissive.rgb, 1.f);
     return output;
 }
 

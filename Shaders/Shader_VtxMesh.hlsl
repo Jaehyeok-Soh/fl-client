@@ -194,8 +194,14 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
-
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     return output;
 }
@@ -365,6 +371,14 @@ PS_OUT_DEFFERED PS_TREE(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     return output;
 }
@@ -393,7 +407,14 @@ PS_OUT_DEFFERED PS_MOSS(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
    
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
 
@@ -423,6 +444,14 @@ PS_OUT_DEFFERED PS_VINE(PS_IN_MESH input)
     
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse, input.iCurInstanceID);
     
@@ -457,6 +486,14 @@ PS_OUT_DEFFERED PS_GRASS(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
@@ -500,6 +537,14 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
@@ -542,6 +587,14 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     return output;
 }
 

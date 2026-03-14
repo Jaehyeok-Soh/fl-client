@@ -36,6 +36,7 @@ void CImGui_ShaderDebugLayout::Render(CGameObject* pGo)
 		{"Shade", ERenderTarget::Shade},
 		{"SpecularMask", ERenderTarget::SpecularMask},
 		{"Specular", ERenderTarget::Specular},
+        {"Emissive", ERenderTarget::Emissive},
 		{"Depth", ERenderTarget::Depth},
 		{"SSAO_Full", ERenderTarget::SSAO_Full},
 		{"SceneHDR", ERenderTarget::SceneHDR},

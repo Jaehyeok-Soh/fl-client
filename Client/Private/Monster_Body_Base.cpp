@@ -213,7 +213,7 @@ HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)
 	// RenderFx
 	{
 		CRenderFx::RENDER_FX_COPY_DESC desc{};
-		desc.vEmissiveColor = Vec3{ 1.00f, 0.45f, 0.45f };
+		desc.vEmissiveColor = Vec3{ 1.00f, 0.25f, 0.25f };
 		desc.fEmissiveDefaultIntensity = 1.2f;
 		desc.fShakeAmpX = 0.015f;
 		desc.fShakeAmpY = 0.030f;

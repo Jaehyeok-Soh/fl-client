@@ -111,6 +111,8 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         eSlot = EFXSRV::RT_Depth; break;
     case Engine::ERenderTarget::ObjectInfo:
         eSlot = EFXSRV::RT_ObjectInfo; break;
+    case Engine::ERenderTarget::Emissive:
+        eSlot = EFXSRV::RT_Emissive; break;
     case Engine::ERenderTarget::SSAO_Ping:
     case Engine::ERenderTarget::SSAO_Pong:
     case Engine::ERenderTarget::SSAO_Full:

@@ -23,14 +23,6 @@ float3 Apply_Shake(float3 vWorldPos)
         + cameraUp * renderFx.fShakeAmpY;
 }
 
-float3 Apply_Emissive(float3 vBaseColor)
-{
-    if (Has_RenderFx(renderFx.iFalgs, RENDERFX_EMISSIVE) == false)
-        return vBaseColor;
-    
-    return vBaseColor + renderFx.vEmissiveColor * renderFx.fEmissiveIntensity;
-}
-
 cbuffer CB_MAPPING_RGB
 {
     float4 Color_R = { 1.f, 1.f, 1.f, 1.f };
@@ -105,7 +97,33 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
     output.vSpecularMask = float4(vSpecMask, 1.f); 
     output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    // 텍스쳐 Emissive
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
     
+    // 피격 Emissive
+    if (Has(renderFx.iFalgs, RENDERFX_EMISSIVE))
+    {
+        float3 vV = normalize(CameraPosition() - input.vWorldPos.xyz);
+        float fNdotV = saturate(dot(vNormal, vV));
+
+        // 외곽
+        float fRim = 1.f - fNdotV;
+        fRim = smoothstep(0.35f, 0.80f, fRim);
+        fRim = pow(fRim, 1.2f);
+
+        float3 vFlash = renderFx.vEmissiveColor.rgb * fRim * renderFx.fEmissiveIntensity;
+
+        vEmissive += vFlash;
+
+    }
+    
+    output.vEmissive = float4(vEmissive, 1.f);
     return output;
 }
 
@@ -149,29 +167,14 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_SKELETON input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
-    return output;
-}
-
-PS_OUT_DEFFERED PS_WITHEMISSIVE(PS_IN_SKELETON input)
-{
-    PS_OUT_DEFFERED output;
-    
-    output.vDiffuse = 1.f;
-    Compute_Diffse(output.vDiffuse, input.vUV);
-    output.vDiffuse.rgb = Apply_Emissive(output.vDiffuse.rgb);
-    
-    float3 vNormal = input.vNormal;
-    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
-    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
-    
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
-    if (Has(g_iMaterialMask, METALNESS))
-        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
-    output.vSpecularMask = float4(vSpecMask, 1.f);
-    output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
-    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     return output;
 }
 
@@ -183,6 +186,6 @@ technique11 T0
     // RGB mapping : weapon 쪽에서 쓰임
 	PASS_RS_DS_BS_VP(RGBMapping, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
 
-    // Shake / Emissive
-    PASS_RS_DS_BS_VP(WithRenderFx, RS_Default, DS_Default, BS_Default, VS_WITHSHAKE, PS_WITHEMISSIVE)
+    // Shake
+    PASS_RS_DS_BS_VP(WithRenderFx, RS_Default, DS_Default, BS_Default, VS_WITHSHAKE, PS_MAIN)
 };
