@@ -52,6 +52,7 @@ CModel::CModel(const CModel& rhs)
 	, m_arrRagdollBoneDesc(rhs.m_arrRagdollBoneDesc)
 	, m_vPreMainPosition(rhs.m_vPreMainPosition)
 	, m_vPreMixPosition(rhs.m_vPreMixPosition)
+	, m_vPreBlendPosition(rhs.m_vPreBlendPosition)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -1085,6 +1086,9 @@ void CModel::Blend_Begin(_uint CurAnimationIndex)
 	//{
 	//	m_vPreMainPosition = m_vecBones[m_iRootBoneIdx]->Get_Transform().Translation();
 	//}
+
+	m_vPreBlendPosition = m_vPreMainPosition;
+	m_vecAnimations[CurAnimationIndex]->Reset_PrePosition(m_vPreMainPosition);
 }
 
 void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditive)
@@ -1242,7 +1246,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 			pAnimEvalCS->Set_OutputStructuredBuffer(m_pPreSB);
 
 			// channel 업데이트
-			m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreMixPosition);
+			m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreBlendPosition);
 
 			// animation 결과 blendCS에 bind
 			pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_PRESRT),
@@ -1255,7 +1259,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 			pAnimEvalCS->Set_OutputStructuredBuffer(m_pCurSB);
 
 			// channel 업데이트
-			m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreMixPosition);
+			m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreMainPosition);
 
 			// animation 결과 blendCS에 bind
 			pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_CURSRT),
@@ -1347,7 +1351,8 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio, CTransf
 				if (pOwnerPhyCCT && pOwnerTransform &&
 					m_vecAnimations[m_iCurrentAnimIndex]->Get_ApplyRoot() && m_vecAnimations[m_iPrevAnimIndex]->Get_ApplyRoot())
 				{
-					Vec3 vDelta = m_vPreMainPosition - vTranslation;
+					// 3. 두 Delta를 블렌딩 비율에 따라 섞음
+					Vec3 vDelta = Vec3::Lerp(m_vPreBlendPosition, m_vPreMainPosition, fRatio);
 
 					//if (vDelta.Length() < 1.0f) 
 					{
@@ -1362,9 +1367,9 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio, CTransf
 						Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
 
 						pOwnerPhyCCT->AddFixedMove(moveDistance * m_vecAnimations[m_iCurrentAnimIndex]->Get_MotionOffset());
-
-						m_vPreMainPosition = vTranslation;
 					}
+
+					//m_vPreMainPosition
 				}
 				vTranslation = Vec3::Zero;
 			}

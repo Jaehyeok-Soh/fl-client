@@ -343,6 +343,7 @@ private:
 private:
 	_int								m_iRootBoneIdx				= { -1 };
 	Vec3								m_vPreMainPosition = { Vec3::Zero };
+	Vec3								m_vPreBlendPosition = { Vec3::Zero };
 	Vec3								m_vPreMixPosition = { Vec3::Zero };
 
 	// mix anim
