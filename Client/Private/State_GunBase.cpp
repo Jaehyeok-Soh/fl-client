@@ -140,7 +140,7 @@ HRESULT CState_GunBase::End()
     return S_OK;
 }
 
-void CState_GunBase::Change_PlayerState(STATEKEY eKey)
+void CState_GunBase::Change_PlayerState(STATEKEY eKey, _bool bForce)
 {
     if (eKey == STATEKEY::SHIFT &&
         (m_eMoveState == MoveState::GROUND) &&

@@ -152,6 +152,14 @@ HRESULT CStateBase::Request_Change_State(_uint iIndex, void* pArg)
 	return m_pOwnerStateComp->Change_State(iIndex, false, pArg);
 }
 
+HRESULT CStateBase::Request_Change_StateForce(_uint iIndex, void* pArg)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return E_FAIL;
+
+	return m_pOwnerStateComp->Change_State(iIndex, true, pArg);
+}
+
 CGameObject* CStateBase::Get_OwnerObject()
 {
 	if (m_pOwnerStateComp == nullptr)

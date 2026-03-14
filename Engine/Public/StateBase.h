@@ -122,6 +122,7 @@ protected:
 	HRESULT Request_ChangeAnimation(_uint iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
 	HRESULT Request_Change_WeaponAnimation(_int iAnimationIndex, _bool bBlend, _bool bLoop, _bool bForce = false);
 	HRESULT Request_Change_State(_uint iIndex, void *pArg = nullptr);
+	HRESULT Request_Change_StateForce(_uint iIndex, void* pArg = nullptr);
 	CGameObject* Get_OwnerObject();
 	_float Get_AnimElpasedTimeSeconds();
 	_float Get_AnimNormalizedTime();

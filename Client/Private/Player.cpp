@@ -1251,7 +1251,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
             weaponDesc.fAllBullet           = 1000.f;
             weaponDesc.fCurBullet           = 500.f;
-            weaponDesc.fAttackCoolTime      = 0.18f; // 0.15 넘 빠름 // 0.3 너무 느림
+            weaponDesc.fAttackCoolTime      = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));
