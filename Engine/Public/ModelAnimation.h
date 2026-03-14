@@ -87,6 +87,7 @@ public:
 	};
 	_bool Get_ApplyRoot() const { return m_bApplyRootMotion; }
 	void Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed_Offset = fSpeed; if (m_fAnimationSpeed_Offset <= 0.f) m_fAnimationSpeed_Offset = 1.f; }
+	_float Get_AnimationSpeed() const { return m_fAnimationSpeed_Offset; }
 	void Set_MixType(_uint iMixType) { if (iMixType > 1) return; m_iMixType = iMixType; }
 
 	_uint Get_KeyFrameStart() const { return m_iKeyFrameStart; }

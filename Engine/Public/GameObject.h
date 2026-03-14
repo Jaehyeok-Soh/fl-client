@@ -112,6 +112,10 @@ public:
 	void Set_Layer(const wstring& wstrLayerTag) { m_wstrLayerTag = wstrLayerTag; }
 	uint64 Get_ID() { return m_iObjectID; }
 	void Clear_Components_WhenChangeLevel();
+
+	OBJECT_ENUM_TAG::Enum Get_Object_Enum_Tag() { return m_eObject_Enum_Tag; }
+	void Set_Object_Enum_Tag(OBJECT_ENUM_TAG::Enum eTag) { m_eObject_Enum_Tag = eTag; }
+
 public:
 	void Mark_Pooled();
 	virtual void Set_Active(_bool b);
@@ -151,6 +155,9 @@ protected:
 	uint64 m_iObjectID = { 0 };
 	string m_strName = { "" };
 	SHADER_OBJECTINFO_DESC m_tObjectInfoDesc{};
+
+	OBJECT_ENUM_TAG::Enum m_eObject_Enum_Tag = OBJECT_ENUM_TAG::DEFAULT;
+
 private:
 	_bool m_bAwaked = { false };
 	ELifeState m_eState = { ELifeState::Alive };

@@ -469,6 +469,10 @@ CGameObject* CGameInstance::Get_GameObject(_uint iLevelIndex, const wstring& wst
 {
 	return m_pObject_Manager->Get_GameObject(iLevelIndex, wstrLayerTag, iObjectIndex);
 }
+CGameObject* CGameInstance::Get_GameObject_By_ID(_uint iLevelIndex, const wstring& wstrLayerTag, uint64 iObjectID)
+{
+	return m_pObject_Manager->Get_GameObject_By_ID(iLevelIndex, wstrLayerTag, iObjectID);
+}
 CGameObject* CGameInstance::Get_GameObject_Front(_uint iLayerIndex, const wstring& wstrLayerTag)
 {
 	return m_pObject_Manager->Get_GameObject_Front(iLayerIndex, wstrLayerTag);

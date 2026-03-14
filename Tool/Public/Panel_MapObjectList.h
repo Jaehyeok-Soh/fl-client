@@ -1,6 +1,7 @@
 #pragma once
 #include "ImGui_Panel.h"
 #include "DataStruct_Map.h"
+#include "Quest_DataModel.h"
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -90,6 +91,8 @@ private:
 	void						ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUTORIALUIEVENT_DESC* pDesc);
 
+	/* Quest ฐüทร */
+	void						ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc);
 
 	/* Mosnter Spawn ImGuiUpdate */
 	void						ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData* pMonsterSpawnData);

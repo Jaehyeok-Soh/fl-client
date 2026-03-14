@@ -63,6 +63,11 @@ CGameObject* CLayer::Get_GameObject(_uint iIndex)
 	return Find_GameObject(iIndex);
 }
 
+CGameObject* CLayer::Get_GameObject_By_ID(uint64 iID)
+{
+	return Find_GameObject_By_ID(iID);
+}
+
 void CLayer::Delete_GameObject(CGameObject* pGo)
 {
 	if (!pGo)
@@ -113,6 +118,17 @@ CGameObject* CLayer::Find_GameObject(_uint iIndex)
 	auto itr = m_pGameObjects.begin();
 	std::advance(itr, iIndex);
 	return *itr;
+}
+
+CGameObject* CLayer::Find_GameObject_By_ID(uint64 iID)
+{
+	for (auto& object : m_pGameObjects)
+	{
+		if (object->Get_ID() == iID)
+			return object;
+	}
+
+	return nullptr;
 }
 
 CLayer* CLayer::Create()

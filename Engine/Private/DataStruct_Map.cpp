@@ -977,11 +977,24 @@ void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
 	{
 		Engine_Utils::read_vec3_xyz(LoadJson["Extents"], this->vExtents);
 	}
+
+	if (LoadJson.contains("bHasQuest"))
+		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
+	else
+		this->bHasQuest = false;
+
+	if (LoadJson.contains("tQuestObjectDesc"))
+		LoadJson.at("tQuestObjectDesc").get_to(this->tQuestObjectDesc);
 }
 
 void TRIGGERBOX_DESC::to_Json(json& SaveJson)
 {
 	Engine_Utils::write_vec3_xyz(SaveJson["Extents"], this->vExtents);
+
+	SaveJson["bHasQuest"] = this->bHasQuest;
+
+	if (this->bHasQuest)
+		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
 }
 #pragma endregion
 

@@ -40,6 +40,8 @@ void CImGui_ShaderDebugLayout::Render(CGameObject* pGo)
 		{"SSAO_Full", ERenderTarget::SSAO_Full},
 		{"SceneHDR", ERenderTarget::SceneHDR},
 		{"Bloom_Ping", ERenderTarget::Bloom_Ping},
+        {"OIT_Accum", ERenderTarget::OIT_Accum},
+        {"OIT_Reveal", ERenderTarget::OIT_Reveal},
 	};
 
     ImGuiTableFlags flags =

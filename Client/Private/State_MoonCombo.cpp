@@ -2,6 +2,7 @@
 #include "State_MoonCombo.h"
 
 #include "Player.h"
+#include "PlayerActionState.h"
 
 #include "GameInstance.h"
 CState_MoonCombo::CState_MoonCombo(CActionState* pOwnerComponent)
@@ -17,6 +18,7 @@ HRESULT CState_MoonCombo::Initialize(void* pArg)
 	tMyDesc.vCombo_CheckTimes = pDesc->vCombo_CheckTimes;
 	tMyDesc.pOwnerGun = pDesc->pOwnerGun;
 
+	tMyDesc.arrCombo_EndTimes = pDesc->arrCombo_EndTimes;
 	tMyDesc.fSlide_CheckTime = pDesc->fSlide_CheckTime;
 
 	tMyDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
@@ -81,10 +83,11 @@ HRESULT CState_MoonCombo::Start(void* pArg, _bool bForce)
 void CState_MoonCombo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
 	if (m_iComboCount == 4)
 	{
 		// 속도 조절 필요
-		if (m_bShakeActived  == false && m_fStateElapsed >= 0.8f / 1.4f)
+		if (m_bShakeActived  == false && m_fStateElapsed >= 0.8f / 1.2f)
 		{
 			CAM_SHAKING_DATA data{};
 			data.fTime = 0.2f;

@@ -45,12 +45,16 @@ private:
 	HRESULT Render_NonLights();
 	// 이펙트 전용 (디스토션)
 	HRESULT Render_Distotion();
+	HRESULT Render_WBOIT(); // 가중치 블랜딩 (Weighted OIT)
 	HRESULT Render_Blend();
 	HRESULT Render_Bloom();
 	HRESULT Render_ToneMap();
 	HRESULT Render_BlendUI();
 	HRESULT Render_UI();
 	void Sort_UI();
+
+private:
+	HRESULT Ready_BlendStates(); // (Weighted OIT) 전용.
 private:
 	array<Vec4, SSAO_KERNAL> Build_SSAO_Kernal16();
 	HRESULT Create_SSAO_NoiseSRV();
@@ -72,6 +76,10 @@ private:
 	D3D11_VIEWPORT m_defaultViewport{};
 	D3D11_VIEWPORT m_halfViewport{};
 	ID3D11ShaderResourceView* m_pSSAONoiseSRV{ nullptr };
+
+	// WBOIT 누적용 스테이트
+	ID3D11BlendState* m_pWBOIT_AccumulateBS = { nullptr };
+	ID3D11BlendState* m_pAlphaBlendBS = { nullptr };
 
 	SHADER_SSAOKERNEL_DESC m_tSSAOkernelDesc{};
 	SHADER_SSAOPARAM_DESC m_tSSAOparamDesc{};

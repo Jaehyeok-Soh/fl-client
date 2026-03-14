@@ -8,6 +8,8 @@
 
 #include "GameInstance.h"
 
+#include "PlayerControlContext.h"
+
 CPlayerActionState::CPlayerActionState()
     : Super()
 {
@@ -16,6 +18,7 @@ CPlayerActionState::CPlayerActionState()
 CPlayerActionState::CPlayerActionState(const CPlayerActionState& rhs)
     : Super(rhs)
     , m_tFKeyData(rhs.m_tFKeyData)
+    , m_tGunCoolTimer(rhs.m_tGunCoolTimer)
 {
 }
 
@@ -23,6 +26,12 @@ HRESULT CPlayerActionState::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
+
+    m_tGunCoolTimer.bCountTime = false;
+    m_tGunCoolTimer.bTimeReset = false;
+
+    m_tGunCoolTimer.fMaxTime = 0.15f;
+    m_tGunCoolTimer.fTimeAcc = 0.f;
 
 	return S_OK;
 }
@@ -33,6 +42,13 @@ HRESULT CPlayerActionState::Initialize(void* pArg)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CPlayerActionState::Update(const _float fTImeDelta)
+{
+    m_tGunCoolTimer.CountTime(fTImeDelta);
+
+    Super::Update(fTImeDelta);
 }
 
 void CPlayerActionState::Set_Flag(Flags FActionFlag, _bool bOn)
@@ -146,10 +162,27 @@ Vec3 CPlayerActionState::Get_VicPosition() const
     return Vec3::Zero;
 }
 
+_bool CPlayerActionState::Is_AttackLanded()
+{
+    return static_cast<CPlayerControlContext*>(m_pOwnerControlContext)->Is_AttackLanded();
+}
+
 _bool CPlayerActionState::Can_FKeyEvent()
 {
     if (m_tFKeyData.bEventCheckOn &&
         KEY_BUTTON_DOWN(DIK_F))
+        return true;
+
+    return false;
+}
+
+_bool CPlayerActionState::Can_ChangeGunState()
+{
+    /*
+    count time을 하지 않고 있거나 rate가 1.f가 되었을때
+    */
+    if (m_tGunCoolTimer.bCountTime == false ||
+        m_tGunCoolTimer.Get_Rate() == 1.f)
         return true;
 
     return false;

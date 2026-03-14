@@ -29,6 +29,8 @@ private:
 
 	HRESULT Loading_Textures(const wstring& wstrFolder);
 
+	void Register_Quest_Scenario();
+
 private:
 	ID3D11Device*			m_pDevice			= { nullptr };
 	ID3D11DeviceContext*	m_pDeviceContext	= { nullptr };

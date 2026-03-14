@@ -658,7 +658,12 @@ enum class EUIDImageSubClassType
 	PLAYER_E,
 	PLAYER_Q,
 	PLAYER_Z,
+	PLAYER_E_ICON,
+	PLAYER_Q_ICON,
+	PLAYER_Z_ICON,
 	PLAYER_GUN,
+	PLAYER_GUN_ICON,
+	PLAYER_BULLET_TYPE,
 	PLAYER_DODGE,
 	PLAYER_SKILL_END,
 
@@ -785,7 +790,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::PLAYER_E,								"PLAYER_E" },
 	{ EUIDImageSubClassType::PLAYER_Q,								"PLAYER_Q" },
 	{ EUIDImageSubClassType::PLAYER_Z,								"PLAYER_Z" },
+	{ EUIDImageSubClassType::PLAYER_E_ICON,							"PLAYER_E_ICON" },
+	{ EUIDImageSubClassType::PLAYER_Q_ICON,							"PLAYER_Q_ICON" },
+	{ EUIDImageSubClassType::PLAYER_Z_ICON,							"PLAYER_Z_ICON" },
 	{ EUIDImageSubClassType::PLAYER_GUN,							"PLAYER_GUN" },
+	{ EUIDImageSubClassType::PLAYER_GUN_ICON,							"PLAYER_GUN_ICON" },
+	{ EUIDImageSubClassType::PLAYER_BULLET_TYPE,							"PLAYER_BULLET_TYPE" },
 	{ EUIDImageSubClassType::PLAYER_DODGE,							"PLAYER_DODGE" },
 	{ EUIDImageSubClassType::PLAYER_SKILL_END,						"PLAYER_SKILL_END" },
 
@@ -897,7 +907,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "PLAYER_E")								return EUIDImageSubClassType::PLAYER_E;
 	if (str == "PLAYER_Q")								return EUIDImageSubClassType::PLAYER_Q;
 	if (str == "PLAYER_Z")								return EUIDImageSubClassType::PLAYER_Z;
+	if (str == "PLAYER_E_ICON")							return EUIDImageSubClassType::PLAYER_E_ICON;
+	if (str == "PLAYER_Q_ICON")							return EUIDImageSubClassType::PLAYER_Q_ICON;
+	if (str == "PLAYER_Z_ICON")							return EUIDImageSubClassType::PLAYER_Z_ICON;
 	if (str == "PLAYER_GUN")							return EUIDImageSubClassType::PLAYER_GUN;
+	if (str == "PLAYER_GUN_ICON")						return EUIDImageSubClassType::PLAYER_GUN_ICON;
+	if (str == "PLAYER_BULLET_TYPE")					return EUIDImageSubClassType::PLAYER_BULLET_TYPE;
 	if (str == "PLAYER_DODGE")							return EUIDImageSubClassType::PLAYER_DODGE;
 	if (str == "PLAYER_SKILL_END")						return EUIDImageSubClassType::PLAYER_SKILL_END;
 
@@ -1011,7 +1026,12 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::PLAYER_E:								return "PLAYER_E";
 	case EUIDImageSubClassType::PLAYER_Q:								return "PLAYER_Q";
 	case EUIDImageSubClassType::PLAYER_Z:								return "PLAYER_Z";
+	case EUIDImageSubClassType::PLAYER_E_ICON:							return "PLAYER_E_ICON";
+	case EUIDImageSubClassType::PLAYER_Q_ICON:							return "PLAYER_Q_ICON";
+	case EUIDImageSubClassType::PLAYER_Z_ICON:							return "PLAYER_Z_ICON";
 	case EUIDImageSubClassType::PLAYER_GUN:								return "PLAYER_GUN";
+	case EUIDImageSubClassType::PLAYER_GUN_ICON:						return "PLAYER_GUN_ICON";
+	case EUIDImageSubClassType::PLAYER_BULLET_TYPE:						return "PLAYER_BULLET_TYPE";
 	case EUIDImageSubClassType::PLAYER_DODGE:							return "PLAYER_DODGE";
 	case EUIDImageSubClassType::PLAYER_SKILL_END:						return "PLAYER_SKILL_END";
 

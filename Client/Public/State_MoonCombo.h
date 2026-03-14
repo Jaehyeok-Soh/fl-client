@@ -22,6 +22,8 @@ public:
 
 		_float fSlide_CheckTime = { 0.f };
 
+		std::array<_float, 5> arrCombo_EndTimes;
+
 	}MOONCOMBO_DESC;
 
 private:

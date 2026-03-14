@@ -16,7 +16,7 @@
 #include "PhysicsAttackOverlap.h"
 #include "EffectHandler.h"
 #include "RenderFx.h"
-
+#include "UIMinimap_Manager.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
@@ -38,6 +38,8 @@ HRESULT CMonster_Base::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
+
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_DEFAULT);
 
 	return S_OK;
 }
@@ -61,6 +63,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 	Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
 	m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
+
 	return S_OK;
 }
 
@@ -218,7 +221,11 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 
 		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 		if (vHp.x <= 0)
+		{
+			Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
+			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();
+		}
 	}
 
 #ifdef _DEBUG

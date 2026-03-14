@@ -21,7 +21,8 @@ HRESULT CState_GunWalk::Initialize(void* pArg)
 
 	tSuperDesc.FCollis = COLLISIONFLAGS::C_DOWN
 		| CStateBase_Player::COLLISIONFLAGS::C_Strong
-		| CStateBase_Player::COLLISIONFLAGS::C_Fly;
+		| CStateBase_Player::COLLISIONFLAGS::C_Fly
+		| CStateBase_Player::COLLISIONFLAGS::C_CheckF;
 
 	tSuperDesc.FMoves = MOVEFLAGS::NORMAL;
 
@@ -31,7 +32,7 @@ HRESULT CState_GunWalk::Initialize(void* pArg)
 	vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]			= ENUM_TO_UINT(CPlayer::State::GUNIDLE);
 	vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]			= ENUM_TO_UINT(CPlayer::State::JUMP);
 	vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]			= ENUM_TO_UINT(CPlayer::State::RUNSHORT);
-	vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]	= ENUM_TO_UINT(CPlayer::State::CROUCH);
+	vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]	= ENUM_TO_UINT(CPlayer::State::SLIDE);
 	vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]		= ENUM_TO_UINT(CPlayer::State::END);
 	vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]				= ENUM_TO_UINT(CPlayer::State::SKILL1);
 	vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]				= ENUM_TO_UINT(CPlayer::State::SKILL2);

@@ -251,6 +251,17 @@ _wstring CPlayer::Get_AnimationName(_uint iAniIndex)
     return L"";
 }
 
+HRESULT CPlayer::Change_IdleForce()
+{
+    CStateBase::STATE_START_DESC tDesc = {};
+    tDesc.bCheckPre = false;
+
+    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE), false, &tDesc)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 void CPlayer::Change_Weapon(_uint iPart, _uint iState)
 {
     // 우선 다 none으로 바꾼다음
@@ -523,7 +534,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 0.065f;
+        tKeyTimer.fMaxTime      = 0.07f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -653,12 +664,12 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bLoop      = false;
 
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
             | CStateBase_Player::COLLISIONFLAGS::C_Fly;
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBULLET);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::RUNSHORT);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::END);
@@ -672,7 +683,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.3f;
+        tKeyTimer.fMaxTime = 0.32f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -688,11 +699,11 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend         = true;
         desc.bLoop          = false;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
             | CStateBase_Player::COLLISIONFLAGS::C_Fly;
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::END);
@@ -706,7 +717,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.1f;
+        tKeyTimer.fMaxTime = (3.f / 5.f / 1.2f);
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -740,8 +751,9 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
 
-        tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 0.4f;
+        tKeyTimer.bCountTime    = false;
+        tKeyTimer.fMaxTime      = 15.f / (24.f * 1.2f);//0.4f;
+
         desc.tKeyTimer          = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -759,28 +771,33 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::UP_CHANGE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::UP_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
             | CStateBase_Player::COLLISIONFLAGS::C_Fly;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::RUNLOOP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]       = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::CHARGE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONEMOVEKEY)] = ENUM_TO_UINT(State::WALK);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime == 15.f/( 24.f * 1.2f);// (0.7f);
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::RUNSHORT), CState_RunShort::Create(pActionState, &desc))))
             return E_FAIL;
+
+        tKeyTimer.bCountTime = false;
     }
 
     // RunLoop
@@ -805,6 +822,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::CHARGE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONEMOVEKEY)] = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         desc.tKeyTimer = tKeyTimer;
@@ -873,7 +891,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
 
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -993,7 +1011,7 @@ HRESULT CPlayer::Ready_BaseStates()
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
             | CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
@@ -1009,7 +1027,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey                                                       = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime   = 0.3f;
+        tKeyTimer.fMaxTime = 0.1f; // (24.f / 36.f) / (36.f / 24.f) / 1.2f;
         desc.tKeyTimer       = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -1023,7 +1041,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.FAniFlags = 0;
         desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_WallJump_LU") };
         desc.bBlend = true;
-        desc.bLoop = false;
+        desc.bLoop  = false;
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
@@ -1041,6 +1059,9 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 0.1f;
 
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
@@ -1101,7 +1122,7 @@ HRESULT CPlayer::Ready_HitStates()
         desc.bLoop = false;
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
 
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]       = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]      = ENUM_TO_UINT(State::JUMP);
@@ -1126,6 +1147,29 @@ HRESULT CPlayer::Ready_HitStates()
             return E_FAIL;
     }
 
+    //CONDEMN
+    {
+        CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Condemn_End_01") };
+        desc.bBlend = true;
+        desc.bLoop = false;
+
+        desc.FCollis = 0;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::LOOP_DONE;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONEMOVEKEY)] = ENUM_TO_UINT(State::WALK);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = true;
+        tKeyTimer.fMaxTime = 4.f;
+        desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CONDEMN), CState_Condemn::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
     // HITSTRONG
     {
         CState_HitStrong::PLAYER_STATEBASE_DESC  desc = {};
@@ -1143,13 +1187,14 @@ HRESULT CPlayer::Ready_HitStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         // key additive와 동일
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONEMOVEKEY)] = ENUM_TO_UINT(State::WALK);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.2f;
+        tKeyTimer.fMaxTime = 25.f / (24.f * 1.2f);
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -1166,39 +1211,18 @@ HRESULT CPlayer::Ready_HitStates()
         desc.bLoop = false;
 
         desc.FCollis    = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
-        desc.FMoves     = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+        desc.FMoves     = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         // key additive와 동일
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONEMOVEKEY)] = ENUM_TO_UINT(State::WALK);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 2.f;
+        tKeyTimer.fMaxTime = 60.f / (24.f * 1.2f);//2.f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::HITFLYEND), CState_HitFlyEnd::Create(pActionState, &desc))))
-            return E_FAIL;
-    }
-
-    //CONDEMN
-    {
-        CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
-        desc.FAniFlags = 0;
-        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Condemn_End_01") };
-        desc.bBlend = true;
-        desc.bLoop = false;
-
-        desc.FCollis = 0;
-        desc.FMoves = 0;
-        vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(State::END));
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
-        desc.vecChangeState_ByKey = vecChangeState_ByKey;
-
-        tKeyTimer.bCountTime = false;
-        desc.tKeyTimer = tKeyTimer;
-        desc.pOwnerGun = pMyGun;
-
-        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CONDEMN), CState_Condemn::Create(pActionState, &desc))))
             return E_FAIL;
     }
 
@@ -1281,7 +1305,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
             weaponDesc.fAllBullet           = 1000.f;
             weaponDesc.fCurBullet           = 500.f;
-            weaponDesc.fAttackCoolTime      = 0.18f; // 0.15 넘 빠름 // 0.3 너무 느림
+            weaponDesc.fAttackCoolTime      = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));
@@ -1409,7 +1433,7 @@ HRESULT CPlayer::Ready_PartCollider()
             tPColliDesc.eShape  = EPhysicsShape::BOX;
             //tPColliDesc.fHeight = 100.f;
             tPColliDesc.vCenter = { 0.f,0.f,0.f };
-            tPColliDesc.vExtents = {20.f, 100.f, 20.f};
+            tPColliDesc.vExtents = {40.f, 100.f, 40.f};
 
             //tPColliDesc.fRadius = { 20.f };
             tPColliDesc.bIsTrigger = { true };
@@ -1424,11 +1448,25 @@ HRESULT CPlayer::Ready_PartCollider()
            tPartColliDesc.pColliderDesc = &tPColliDesc;
         }
 
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_TriggerCall);
         tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
-    }
 
-    if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
-        return E_FAIL;
+        // mini map에게 감지할 part ui
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER_UI, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
+
+        {
+            tPColliDesc.eShape = EPhysicsShape::SPHERE;
+            tPColliDesc.fRadius = { 2.f };
+            tPartColliDesc.pColliderDesc = &tPColliDesc;
+        }
+
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_PosUpdate);
+
+        // player가 감지할 part ui
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
+    }
 
     return S_OK;
 }

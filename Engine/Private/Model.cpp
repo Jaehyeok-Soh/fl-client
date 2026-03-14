@@ -781,6 +781,14 @@ void CModel::Set_Animtion_MotionOffset_All(_float fOffset)
 	}
 }
 
+void CModel::Set_Animation_SpeedOffset_All(_float fOffset)
+{
+	for (auto& pAnim : m_vecAnimations)
+	{
+		pAnim->Set_AnimationSpeed(fOffset);
+	}
+}
+
 HRESULT CModel::Set_MI_TintColor(_uint iIndex, const Vec4& vColor)
 {
 	if (iIndex >= m_vecMaterialInstances.size()) return E_FAIL;

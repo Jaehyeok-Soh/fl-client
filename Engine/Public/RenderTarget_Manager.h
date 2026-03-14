@@ -19,6 +19,8 @@ enum class ERenderTarget : _uint
 	SceneHDR_Copy,	// 유니티에서 SceneTexture라고 함. Effect 전용
 	Bloom_Ping,
 	Bloom_Pong,
+	OIT_Accum,		// 가중치가 적용된 색상 누적
+	OIT_Reveal,		// 배경 투과율 누적
 	END,
 };
 
@@ -36,6 +38,7 @@ enum class EMRTLayer : _uint
 	Bloom_Extract,
 	Bloom_BlurH,
 	Bloom_BlurV,
+	OIT_Render,	// OIT_Accum + OIT_Reveal를 묶는 MRT
 	END,
 };
 

@@ -154,6 +154,34 @@ HRESULT CRender_Manager::Initialize()
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR, &desc)))
 			return E_FAIL;
 	}
+
+	// For. Targert_OIT_ACCUM
+	{
+		// 누적 색상 버퍼
+		// 역할 : 화면의 모든 픽셀에 겹쳐진 모든 투명 물체들의 색상을 다 더해놓는 곳.
+		// 수식 : 시그마(Color * Alpha * Weight)
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if(FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::OIT_Accum, &desc)))
+			return E_FAIL;
+	}
+
+	// For. Target_OIT_Reveal
+	{
+		// 배경 투과율 버퍼
+		// 역할 : 배경이 이 투명 물체들에 의해 얼마나 가려졌는가? // 얼마나 살아있는가?를 저장하는 곳.
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT; // 투과율만 저장하므로 단일 채널에 저장을 한다.
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::OIT_Reveal, &desc)))
+			return E_FAIL;
+	}
+
 	// For. Target_Scene
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
@@ -244,6 +272,15 @@ HRESULT CRender_Manager::Initialize()
 			return E_FAIL;
 	}
 
+	// For. MRT_OIT_RENDER
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::OIT_Render, ERenderTarget::OIT_Accum)))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::OIT_Render, ERenderTarget::OIT_Reveal)))
+			return E_FAIL;
+	}
+
 	// For. MRT_Bloom_extract
 	{
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_Extract, ERenderTarget::Bloom_Ping)))
@@ -267,6 +304,12 @@ HRESULT CRender_Manager::Initialize()
 	{
 	}
 
+	// ========== WBOIT 전용 BlendState ==========
+	{
+		if (FAILED(Ready_BlendStates()))
+			return E_FAIL;
+	}
+
 	m_matWorld_RT = Matrix::CreateScale(m_defaultViewport.Width, m_defaultViewport.Height, 1.f);
 #ifdef _DEBUG
 	if (FAILED(Ready_Debug()))
@@ -274,6 +317,59 @@ HRESULT CRender_Manager::Initialize()
 #endif
 	return S_OK;
 }
+
+HRESULT CRender_Manager::Ready_BlendStates()
+{
+	D3D11_BLEND_DESC blendDesc = {};
+	blendDesc.AlphaToCoverageEnable = FALSE;
+	blendDesc.IndependentBlendEnable = TRUE;
+
+	//---------------------------------------------------------
+	// WBOIT Accumulate State (정보 수집용)
+	//---------------------------------------------------------
+	// RT 0: Accumulation (D = S + D)
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	// RT 1: Revealage (D = D * (1 - S.a))
+	blendDesc.RenderTarget[1].BlendEnable = TRUE;
+	blendDesc.RenderTarget[1].SrcBlend = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[1].DestBlend = D3D11_BLEND_INV_SRC_COLOR;
+	blendDesc.RenderTarget[1].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[1].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[1].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[1].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[1].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_RED;
+
+	if (FAILED(m_pDevice->CreateBlendState(&blendDesc, &m_pWBOIT_AccumulateBS)))
+		return E_FAIL;
+
+	//---------------------------------------------------------
+	// Alpha Blend State (WBOIT 합성 및 일반 UI용)
+	//---------------------------------------------------------
+	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+	blendDesc.IndependentBlendEnable = FALSE; // 모든 RT 공통 적용
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	if (FAILED(m_pDevice->CreateBlendState(&blendDesc, &m_pAlphaBlendBS)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 
 void CRender_Manager::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO)
 {
@@ -467,28 +563,65 @@ HRESULT CRender_Manager::Render()
 
 	// SceneHDR에 누적
 	{
-		if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SceneHDR_Acc, false, true)))
-			return E_FAIL;
+		// SceneHDR 연산 - 1
+		{
+			if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SceneHDR_Acc, false, true)))
+				return E_FAIL;
 
-		if (FAILED(Render_Environment()))
-			return E_FAIL;
+			if (FAILED(Render_Environment()))
+				return E_FAIL;
 
-		m_pGameInstance->Setup_UIViewProj_ToCBuffer();
+			m_pGameInstance->Setup_UIViewProj_ToCBuffer();
 
-		if (FAILED(Render_Outline()))
-			return E_FAIL;
+			if (FAILED(Render_Outline()))
+				return E_FAIL;
 
-		m_pGameInstance->Setup_ViewProj_ToCBuffer();		
+			m_pGameInstance->Setup_ViewProj_ToCBuffer();
 
-		if (FAILED(Render_NonLights()))
-			return E_FAIL;
+			if (FAILED(m_pGameInstance->End_MRT())) return E_FAIL;
+		}
 
-	if (FAILED(Render_Distotion()))
-		return E_FAIL;
+		// WBOIT 정보 수집
+		{
+			// Accum:0, Reveal:1
+			if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::OIT_Render, true, true)))
+				return E_FAIL;
 
-	if (FAILED(Render_Blend()))
-		return E_FAIL;
+			//// 블랜드 State 바인딩
+			m_pDeviceContext->OMSetBlendState(m_pWBOIT_AccumulateBS, nullptr, 0xffffffff);
 
+			// 투명 물체들 값 저장.
+			if (FAILED(Render_NonLights())) return E_FAIL;
+			if (FAILED(Render_Blend())) return E_FAIL;
+
+			if (FAILED(m_pGameInstance->End_MRT())) return E_FAIL;
+		}
+
+		// SceneHDR + WBOIT 합성 연산
+		{
+			m_pGameInstance->Setup_UIViewProj_ToCBuffer();
+
+			if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SceneHDR_Acc, false, true)))
+				return E_FAIL;
+
+			//// 블랜드 State 바인딩
+			m_pDeviceContext->OMSetBlendState(m_pAlphaBlendBS, nullptr, 0xffffffff);
+
+			// 가중치 Blend 기법
+			if (FAILED(Render_WBOIT())) return E_FAIL;
+
+			m_pGameInstance->Setup_ViewProj_ToCBuffer();
+			//// 블렌드 해제
+			m_pDeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+		}
+
+		// SceneHDR Copy하기
+		{
+			if (FAILED(Render_Distotion()))
+				return E_FAIL;
+		}
+
+		// SceneHDR 종료
 		if (FAILED(m_pGameInstance->End_MRT()))
 			return E_FAIL;
 	}
@@ -766,6 +899,27 @@ HRESULT CRender_Manager::Render_Distotion()
 		Safe_Release(pElement);
 	}
 	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::DISTOTION)].clear();
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Render_WBOIT()
+{
+	//if (FAILED(m_pShader->Bind_TransformData(m_matWorld_RT)))
+	//	return E_FAIL;
+
+	// OIT 텍스처들을 셰이더 SRV로 바인딩.
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::OIT_Accum, m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::OIT_Reveal, m_pShader)))
+		return E_FAIL;
+
+	// WBOIT 합성 패스
+	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::WBOIT));
+	m_pShader->Apply();
+	m_pVIBuffer->Bind_Resource();
+	m_pVIBuffer->Render();
 
 	return S_OK;
 }
@@ -1262,6 +1416,10 @@ void CRender_Manager::Free()
 		RenderObjects.clear();
 	}
 
+	// === WBOIT 전용 blend 캐싱 변수 === 
+	Safe_Release(m_pWBOIT_AccumulateBS);
+	Safe_Release(m_pAlphaBlendBS);
+	//
 	Safe_Release(m_pLUTTexture);
 	Safe_Release(m_pSSAONoiseSRV);
 	Safe_Release(m_pCB_Outlineparam);

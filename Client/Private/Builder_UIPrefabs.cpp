@@ -369,6 +369,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			CUITutorial_Pannel_Image::TUTORIAL_PANNEL_IMAGE_DESC Desc = {};
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
 			Desc.eSubClassType = Type;
+			Desc.iNumbering = iter->second.iParams0;
 			wstrProtoTag = L"Prototype_UI_TutorialPannelImage";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
 			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))

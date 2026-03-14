@@ -42,7 +42,8 @@ public:
 		SWORD2,
 
 		EFFECT,
-		DETECTCOLLIDER, // 몬스터 감지용 collider
+		DETECTCOLLIDER_UI, // 몬스터 감지용 collider
+		DETECTCOLLIDER,
 		CLOAK,
 		END
 	};
@@ -122,6 +123,9 @@ public:
 public:
 	PLAYER_TYPE Get_PlayerType() const { return m_ePlayerType; }
 
+public:
+	HRESULT Change_IdleForce();
+
 	// state funcs
 public:
 	void	Change_Weapon(_uint iPart, _uint iState); // 어떤 weapon을 어떤 state로
@@ -155,14 +159,14 @@ protected:
 	_bool				m_bMainPlayer = { false };
 	SHADER_PLAYER_INFO	m_tCBPlayerInfo{};
 private:
-	HRESULT Ready_BaseStates();
-	HRESULT Ready_HitStates();
-	HRESULT Ready_PartObjects(PLAYER_DESC* pDesc);
-	HRESULT Ready_Components(PLAYER_DESC* pDesc);
-	HRESULT Ready_PartCollider();
+	HRESULT		Ready_BaseStates();
+	HRESULT		Ready_HitStates();
+	HRESULT		Ready_PartObjects(PLAYER_DESC* pDesc);
+	HRESULT		Ready_Components(PLAYER_DESC* pDesc);
+	HRESULT		Ready_PartCollider();
 
 private:
-	void	Count_DoubleJump(const _float fTimeDelta);
+	void		Count_DoubleJump(const _float fTimeDelta);
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

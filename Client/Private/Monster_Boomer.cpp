@@ -29,6 +29,8 @@ HRESULT CMonster_Boomer::Initialize_Prototype()
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_BOOMER);
+
 	return S_OK;
 }
 
@@ -71,7 +73,11 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 	{
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 600.f);
 	}
-
+	{
+		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -218,12 +224,6 @@ HRESULT CMonster_Boomer::Ready_Components(void* pArg)
 
 	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
 		return E_FAIL;
-
-	{
-		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
-		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
-			return E_FAIL;
-	}
 
 	return S_OK;
 }

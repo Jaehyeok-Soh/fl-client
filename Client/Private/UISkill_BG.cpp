@@ -6,6 +6,7 @@
 // Component
 //=================
 #include "StatCom_Player.h"
+#include "MainPlayer.h"
 #include "StateBase_Player.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -13,6 +14,12 @@
 #include "MyStat.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
+
+#define MOON_Q_SKILL_ICON L"Texture_T_Skill_Zhujue02"
+#define MOON_E_SKILL_ICON L"Texture_T_Skill_Zhujue01"
+#define BERENICA_E_SKILL_ICON L"Texture_T_Skill_Heitao01"
+#define BERENICA_Q_SKILL_ICON L"Texture_T_Skill_Heitao03"
+#define BERENICA_Q_SKILL_ACTIVE_ICON L"Texture_T_Skill_Heitao02"
 
 CUISkill_BG::CUISkill_BG(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIDynamic_Image(pDevice, pDeviceContext)
@@ -171,6 +178,11 @@ HRESULT CUISkill_BG::Attach_Personal_Info()
 	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
 	if (nullptr == pResult)
 		return E_FAIL;
+
+	m_pPlayer = dynamic_cast<CMainPlayer*>(pResult);
+	if (nullptr == m_pPlayer)
+		return E_FAIL;
+
 	m_pPlayerStatCom = static_cast<CStatCom_Player*>(pResult->Get_Component<CMyStat>());
 	if (nullptr == m_pPlayerStatCom)
 		return E_FAIL;
@@ -205,7 +217,55 @@ HRESULT CUISkill_BG::Attach_Personal_Info()
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_Z:
 		break;
+	case DTO::EUIDImageSubClassType::PLAYER_Q_ICON:
+	{
+		switch (m_pPlayer->Get_PlayerType())
+		{
+		case CPlayer::PLAYER_TYPE::MOON:
+		{
+			m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::DEFAULT)].back() = MOON_Q_SKILL_ICON;
+			if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::DEFAULT)].back(), ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
+				return E_FAIL;
+		}
+		break;
+		
+		default:
+			break;
+		}
+	}
+	break;
+	case DTO::EUIDImageSubClassType::PLAYER_E_ICON:
+	{
+		switch (m_pPlayer->Get_PlayerType())
+		{
+		case CPlayer::PLAYER_TYPE::MOON:
+		{
+			m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::DEFAULT)].back() = MOON_E_SKILL_ICON;
+			if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_ArrTextures[ENUM_TO_UINT(EUITextureSlot::DEFAULT)].back(), ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
+				return E_FAIL;
+		}
+		break;
+		default:
+			break;
+		}
+	}
+	break;
+	case DTO::EUIDImageSubClassType::PLAYER_Z_ICON:
+	{
+		switch (m_pPlayer->Get_PlayerType())
+		{
+		case CPlayer::PLAYER_TYPE::MOON:
+			break;
+		default:
+			break;
+		}
+	}
+	break;
 	case DTO::EUIDImageSubClassType::PLAYER_GUN:
+		break;
+	case DTO::EUIDImageSubClassType::PLAYER_GUN_ICON:
+		break;
+	case DTO::EUIDImageSubClassType::PLAYER_BULLET_TYPE:
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
 		m_fMaxCoolTime = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fMaxTime;
@@ -260,6 +320,17 @@ void CUISkill_BG::Bind_Events()
 				}
 			})
 	);
+
+	m_pGameInstance->Subscribe<CINEMATIC_START>(
+		[this]()
+		{
+			this->Set_Invisible();
+		});
+	m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
+		{
+			this->Set_Visible();
+		});
+
 }
 
 CUISkill_BG* CUISkill_BG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

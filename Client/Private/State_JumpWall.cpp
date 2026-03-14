@@ -46,6 +46,7 @@ HRESULT CState_JumpWall::Start(void* pArg, _bool bForce)
 	//	Set_ZeroVerticalVelocity();
 	//}
 	Jump_Impuls(0.5f);
+	Look_Impuls(-5.f);
 	Set_ZeroVerticalVelocity();
 
 	return S_OK;

@@ -65,7 +65,7 @@ void CSkillBase_MoonE::Update(const _float fTimeDelta, CMyStat* pStatCom)
 	if (!m_bSpawn_First)
 	{
 		// 0.5초 지났다면 생성
-		if (m_fAccTime >= 0.1f)
+		if (m_fAccTime >= (0.3f / 1.2f))
 		{
 			Spawn_SkillObj(pStatCom, true);
 			m_bSpawn_First = true;
@@ -77,7 +77,7 @@ void CSkillBase_MoonE::Update(const _float fTimeDelta, CMyStat* pStatCom)
 	else if (!m_bSpawn_Second)
 	{
 		// 0.5초 지났다면 생성
-		if (m_fAccTime >= 0.3f)
+		if (m_fAccTime >= (0.3f / 1.2f))
 		{
 			Spawn_SkillObj(pStatCom, false);
 			m_bSpawn_Second = true;

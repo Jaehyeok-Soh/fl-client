@@ -13,6 +13,7 @@ CTriggerCollidePart::CTriggerCollidePart(const CTriggerCollidePart& rhs)
 	: Super(rhs)
 	, m_vColliedPos(rhs.m_vColliedPos)
 	, m_iColliedID(rhs.m_iColliedID)
+	, m_FUpdate_Flags(rhs.m_FUpdate_Flags)
 {
 }
 
@@ -33,6 +34,8 @@ HRESULT CTriggerCollidePart::Initialize(void* pArg)
 		return E_FAIL;
 
 	TRIGGER_COLLIDEPART_DESC* pDesc = static_cast<TRIGGER_COLLIDEPART_DESC*>(pArg);
+	m_FUpdate_Flags = pDesc->FUpdate_Flags;
+
 	if (pDesc->pMatSocket)
 	{
 		m_eState = EState::WithBone;
@@ -108,9 +111,12 @@ void CTriggerCollidePart::Ready_Before_Render(_float fTimeDelta)
 
 void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+	if(Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Call_ParentTirggerEnter)))
+		Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
-	if (pOther && pOther->IsAlive())
+	if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Check_CollidedPos_In)) &&
+		pOther && pOther->IsAlive()
+		)
 	{
 		CTransform* pTrans = pOther->Get_Component<CTransform>();
 
@@ -124,10 +130,12 @@ void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLa
 
 void CTriggerCollidePart::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
+	if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Call_ParentTirggerExit)))
+		Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 
 	// 충돌 position 리셋
-	if(pOther && pOther->Get_ID() == m_iColliedID)
+	if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Check_CollidedPos_Out)) &&
+		pOther && pOther->Get_ID() == m_iColliedID)
 		m_vColliedPos = Vec3::Zero;
 }
 

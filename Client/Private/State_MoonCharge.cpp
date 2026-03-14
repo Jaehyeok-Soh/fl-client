@@ -37,7 +37,7 @@ void CState_MoonCharge::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_bShakeActived == false && m_fStateElapsed >= 1.f)
+	if (m_bShakeActived == false && m_fStateElapsed >= (1.f / 1.2f))
 	{
 		CAM_SHAKING_DATA data{};
 		data.fTime = 0.2f;

@@ -14,7 +14,7 @@ namespace Engine
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
 	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND , COMPUTELIGHT_BLEND , NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, END };
-	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, OUTLINE, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, END };
+	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, OUTLINE, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, WBOIT, END };
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,
@@ -144,6 +144,8 @@ namespace Engine
 		Textures,
 		Cube,
 		SSAONoise,
+		RT_OIT_Accum,
+		RT_OIT_REVEAL,
 		COUNT
 	};
 	constexpr const char* g_SRVNames[static_cast<unsigned int>(EFXSRV::COUNT)] =
@@ -165,7 +167,9 @@ namespace Engine
 		"g_MaterialTextures",
 		"g_DefaultTextures",
 		"g_TextureCube",
-		"g_SSAONoiseTexture"
+		"g_SSAONoiseTexture",
+		"g_RenderTargetOITAccumTexture",
+		"g_RenderTargetOITRevealTexture"
 	};
 	//===================
 	// AnimEvent
@@ -610,5 +614,73 @@ namespace Engine
 			END
 		};
 	}RAGDOLLJOINT;
+
+	//===================
+	// Object enum tag
+	//===================
+	// https://docs.google.com/spreadsheets/d/1CGzyk6tjHByXM0LA-vXfRlovtc3Dpag1Fr7vBfB51BE/edit?usp=sharing
+	typedef struct EObjectEnumTag
+	{
+		enum Enum
+		{
+			// 0 플레이어
+			PLAYER = 0,
+
+			// 1 ~ 999 NPC
+			// NPC_
+			NPC_DEFAULT = 1,
+			NPC_FAIRY = 2,
+			NPC_BERENICA = 3,
+
+			// 1000 ~ 1999 오브젝트
+			// OBJECT_
+			OBJECT_DEFAULT = 1000,
+
+			// 2000 ~ 2499 채집형 오브젝트
+			// OBJECT_PICKING_
+			OBJECT_PICKING_DEFAULT = 2000,
+			OBJECT_PICKING_FLOWER_1 = 2001,
+
+			// 2500 ~ 2999 상호작용 오브젝트
+			// OBJECT_INTERACT_
+			OBJECT_INTERACT_DEFAULT = 2500,
+			OBJECT_INTERACT_TUTORIAL_WEAPON = 2501,
+			OBJECT_INTERACT_TUTORIAL_GUN = 2502,
+
+			// 3000 ~ 3999 TRIGGER BOX
+			// 3100 ~ 3199 TRIGGER BOX : LEVEL CAHNGE
+			// 3200 ~ 3299 TRIGGER BOX : GLOBAL EVENT BROAD CASTER
+			// 3300 ~ 3399 TRIGGER BOX : TUTORIAL UI EVENT
+			// 3400 ~ 3499 TRIGGER BOX : MILESTONE 퀘스트 이정표
+			// TRIGGER_BOX_
+			TRIGGER_BOX_DEFAULT = 3000,
+
+			TRIGGER_BOX_TO_DEFAULT = 3100,
+			TRIGGER_BOX_TO_TUTORIAL_BOSS = 3101,
+
+			TRIGGER_BOX_GLOBAL_EVENT_DEFAULT = 3200,
+
+			TRIGGER_BOX_TUTORIAL_UI_EVENT_DEFAULT = 3300,
+
+			TRIGGER_BOX_MILESTONE_DEFAULT = 3400,
+			
+			// 10000 ~ 19999 몬스터
+			// MONSTER_
+			MONSTER_DEFAULT = 10000,
+			MONSTER_DOG = 10001,
+			MONSTER_FLY = 10002,
+			MONSTER_BOOMER = 10003,
+
+			// 30000 ~ 39999 앨리트 몬스터
+			MONSTER_ELITE_DEFAULT = 30000,
+
+			// 40000 ~ 49999 보스 몬스터
+			MONSTER_BOSS_DEFAULT = 40000,
+			MONSTER_BOSS_XIBI = 40001,
+
+			// 99999 Default
+			DEFAULT = 99999,
+		};
+	}OBJECT_ENUM_TAG;
 }
 #endif // Engine_Enum_h__
