@@ -673,7 +673,7 @@ PS_OUT_DEFFERED PS_FOG(PS_IN_MESH input)
         float2 vNoiseUVPower = g_vFogUV[FOG_NOISE].xy;
         
         float2 vNoiseUV = (vInputUV * vNoiseUVPower) + vNoiseUVSpeed * g_fFogDT;
-        float4 vNoiseTex = g_FogTexture[FOG_NOISE].Sample(LinearSampler, vNoiseUVSpeed);
+        float4 vNoiseTex = g_FogTexture[FOG_NOISE].Sample(LinearSampler, vNoiseUV);
         
         // 디졸브에서는 방향(xy)이 아니라 노이즈의 '밝기(r채널)' 값 자체가 필요함!
         fNoiseVal = vNoiseTex.r;
