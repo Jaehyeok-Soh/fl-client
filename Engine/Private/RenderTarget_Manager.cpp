@@ -122,6 +122,10 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
     case Engine::ERenderTarget::Bloom_Ping:
     case Engine::ERenderTarget::Bloom_Pong:
         eSlot = EFXSRV::RT_Bloom; break;
+    case Engine::ERenderTarget::OIT_Accum:
+        eSlot = EFXSRV::RT_OIT_Accum; break;
+    case Engine::ERenderTarget::OIT_Reveal:
+        eSlot = EFXSRV::RT_OIT_REVEAL; break;
     default:
         return E_FAIL; 
     }

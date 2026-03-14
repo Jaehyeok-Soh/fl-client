@@ -21,8 +21,8 @@ public:
 
 private:
 	virtual void OwnMove(const _float fTimeDelta) override;
-	virtual void Change_PlayerState(STATEKEY eKey) override;
-
+	virtual void Change_PlayerState(STATEKEY eKey, _bool bForce = false) override;
+	
 	virtual void Set_NextStateDesc(_uint iNextState)override;
 
 public:

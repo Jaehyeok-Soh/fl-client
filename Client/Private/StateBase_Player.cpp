@@ -93,19 +93,25 @@ HRESULT CStateBase_Player::End()
 	return S_OK;
 }
 
-void CStateBase_Player::Change_PlayerState(STATEKEY eKey)
+void CStateBase_Player::Change_PlayerState(STATEKEY eKey, _bool bForce)
 {
 	_uint iNextState = m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
-	Request_Change_State(iNextState, &m_tNextStateDesc);	
 
-	/* 플레이어가 이런 state를 이런 애니메이션으로 바꿨다 */
+	if (bForce)
+		Request_Change_StateForce(iNextState, &m_tNextStateDesc);
+	else
+		Request_Change_State(iNextState, &m_tNextStateDesc);
 }
 
-void CStateBase_Player::Change_PlayerState(_uint iState)
+void CStateBase_Player::Change_PlayerState(_uint iState, _bool bForce)
 {
 	Set_NextStateDesc(iState);
-	Request_Change_State(iState, &m_tNextStateDesc);
+
+	if(bForce)
+		Request_Change_StateForce(iState,  &m_tNextStateDesc);
+	else
+		Request_Change_State(iState, &m_tNextStateDesc);
 }
 
 void CStateBase_Player::Change_PlayerHitState(_uint iState, void* pArg)
@@ -375,7 +381,7 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 	{
 		m_pGameInstance->Broadcast<PLAYER_SKILL_TRIGGERED>(ENUM_TO_UINT(STATEKEY::E));
 
-		Change_PlayerState(STATEKEY::E);
+		Change_PlayerState(STATEKEY::E, true);
 		return true;
 	}
 
@@ -385,7 +391,7 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 	{
 		m_pGameInstance->Broadcast<PLAYER_SKILL_TRIGGERED>(ENUM_TO_UINT(STATEKEY::Q));
 
-		Change_PlayerState(STATEKEY::Q);
+		Change_PlayerState(STATEKEY::Q, true);
 		return true;
 	}
 

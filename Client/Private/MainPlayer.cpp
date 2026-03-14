@@ -952,7 +952,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime = 28.f / ANIMTIC;
+        tDesc.fKeyCoolTime = 24.f / ANIMTIC;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
 
@@ -966,7 +966,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime = 70.f / ANIMTIC;
+        tDesc.fKeyCoolTime = 60.f / ANIMTIC;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill02_Red");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL2);
         tDesc.pOwnerGun = pMyGun;

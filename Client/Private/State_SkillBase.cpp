@@ -22,7 +22,7 @@ HRESULT CState_SkillBase::Initialize(void* pArg)
 	tMyDesc.bBlend = true;
 	tMyDesc.bLoop = false;
 	tMyDesc.FAniFlags = 0;
-	tMyDesc.FMoves = MOVEFLAGS::PRESS_CHANGE;
+	tMyDesc.FMoves = MOVEFLAGS::PRESS_CHANGE | MOVEFLAGS::LOOP_DONE;
 	tMyDesc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Strong
 					| CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
@@ -30,6 +30,7 @@ HRESULT CState_SkillBase::Initialize(void* pArg)
 	if (pDesc->bKeyInput)
 	{
 		tKey.bCountTime = true;
+		tKey.bTimeReset = false;
 		tKey.fMaxTime = pDesc->fKeyCoolTime;
 	}
 	else
@@ -85,7 +86,7 @@ void CState_SkillBase::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime + 0.8f)
+	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime + 0.6f)
 	{
 		Change_Weapon(CPlayer::Part::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
 	}

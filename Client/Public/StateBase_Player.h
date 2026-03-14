@@ -80,8 +80,8 @@ public:
 	}
 
 public:
-	virtual void Change_PlayerState(STATEKEY eKey);	// change 랩핑 함수 : 필요시 오버라이드
-	virtual void Change_PlayerState(_uint iState);	// change 함수2 : 키 없이 state 기준으로
+	virtual void Change_PlayerState(STATEKEY eKey, _bool bForce = false);	// change 랩핑 함수 : 필요시 오버라이드
+	virtual void Change_PlayerState(_uint iState, _bool bForce = false);	// change 함수2 : 키 없이 state 기준으로
 	virtual void Change_PlayerHitState(_uint iState, void* pArg = nullptr);
 	
 protected:
