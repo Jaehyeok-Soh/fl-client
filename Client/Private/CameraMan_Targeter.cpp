@@ -620,7 +620,7 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     switch (m_eCurrentState)
     {
     case TargeterState::NORMAL:
-        vDesiredPos = m_vChaseFiltered
+        vDesiredPos = vChasePositionRaw // m_vChaseFiltered : 보간으로 쓰고 싶다면
                     + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
                     - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
                     + Vec3{0.f,1.f,0.f} * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
@@ -633,7 +633,7 @@ void CCameraMan_Targeter::Chase_Player(CContainerObject* pPlayer, const _float f
     break;
     }
 
-    vDesiredPos = CheckCameraCollision(vDesiredPos, m_vChaseFiltered);
+    vDesiredPos = CheckCameraCollision(vDesiredPos, vChasePositionRaw); // m_vChaseFiltered : 보간으로 쓰고 싶다면
 
     // RUL & P 다시 재조립
     CTransform* pCameraTransform = Get_Component<CTransform>();

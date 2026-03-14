@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "CameraMan.h"
+#include "ControlContext.h"
 
 #include "PhysicsCCT.h"
 
@@ -58,11 +59,11 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 
 		vLook.Normalize();
 
-		pPlayerTransform->Look_At(vPos+vLook);
+		pPlayerTransform->Look_At_Dir(vLook);
 
 		m_vDir = vLook;
 		SetCCTInputDirection(m_vDir);
-		SetCCTImpuls(m_vDir * 5.f);
+		SetCCTImpuls(m_vDir * 10.f);
 
 		// ¸¶ÂûÀ» ¾ø¾ÖÁÜ
 		Set_ZeroDeAccelRate();
@@ -81,12 +82,25 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 
 		Set_RootMotion_Apply(false);
 
-		//CStateBase::SetupLook_CameraLookLerp(fTimeDelta, 1.f);
+		CPlayer* pOwner = static_cast<CPlayer*>(Get_OwnerObject());
+		if (pOwner == nullptr)
+			return;
+
+		CTransform* pPlayerTransform = pOwner->Get_Component<CTransform>();
+		m_vDir.y = 0.f;
+		pPlayerTransform->Look_At_Dir(m_vDir);
 
 		if(Check_OnGround(0.3f))
 		{
 			//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
-			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
+
+			if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE)))
+			{
+				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::WALK));
+				return;
+			}
+
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 			return;
 		}
 	}
@@ -102,7 +116,15 @@ HRESULT CState_JumpBullet::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	CStateBase::SetupLook_CameraLook();
+	//CStateBase::SetupLook_CameraLook();
+
+	CPlayer* pOwner = static_cast<CPlayer*>(Get_OwnerObject());
+	if (pOwner == nullptr)
+		return E_FAIL;
+
+	CTransform* pPlayerTransform = pOwner->Get_Component<CTransform>();
+	m_vDir.y = 0.f;
+	pPlayerTransform->Look_At_Dir(m_vDir);
 
 	//CStateBase::SetupLook_CameraLookLerp(0.7f, 10.f);
 

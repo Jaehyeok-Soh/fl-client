@@ -58,6 +58,8 @@ public:
 	void Set_AllKeyFlag(_bool bOn); // 외부에서 onoff를 해야할 시
 	void Set_PreKeyFlag();
 
+	void Set_AttackLanded();
+
 public:
 	virtual _bool Is_LeftAttackPressed() override;
 	virtual _bool Is_RightAttackPressed() override;
@@ -79,6 +81,9 @@ public:
 	virtual _bool Is_InteractionPressed() override;
 
 	virtual _bool Is_ChargingAttackPressed() override;
+
+	_bool Is_AttackLanded();
+
 	virtual Vec3  Get_MoveDir() override;
 
 	virtual void Clear_WhenChangeLevel() override;
@@ -94,6 +99,8 @@ private:
 private:
 	Flags				m_FKeys				= { 0 };
 	Flags				m_FPreKeys			= { 0 };
+
+	_bool				m_bIsAttackLanded = { false };
 
 public:
 	static CPlayerControlContext* Create();

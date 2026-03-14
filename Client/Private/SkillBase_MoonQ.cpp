@@ -61,8 +61,8 @@ void CSkillBase_MoonQ::Update(const _float fTimeDelta, CMyStat* pStatCom )
 {
 	Super::Update(fTimeDelta, pStatCom);
 
-	// defense ∞Ëº” ¥ı«ÿ¡‹
-	static_cast<CStatCom_Player*>(pStatCom)->Add_Stat(CMyStat::STAT_TYPE::DEFENSE, fTimeDelta * 2.f);
+	// defense ∞Ëº” √§¡‡¡‹
+	pStatCom->Fill_StatFull(CMyStat::STAT_TYPE::DEFENSE);
 
 	if (!m_bSkillAttackOn)
 	{

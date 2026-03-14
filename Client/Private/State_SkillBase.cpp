@@ -85,7 +85,7 @@ void CState_SkillBase::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime)
+	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime + 0.8f)
 	{
 		Change_Weapon(CPlayer::Part::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
 	}

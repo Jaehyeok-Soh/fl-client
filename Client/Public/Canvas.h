@@ -75,6 +75,13 @@ public:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 
+public:
+	_float Get_fParams0() const { return m_fParams0; }
+	_float Get_fParams1() const { return m_fParams1; }
+
+	void Set_fParams0(_float f) { m_fParams0 = f; }
+	void Set_fParams1(_float f) { m_fParams1 = f; }
+
 private:
 	// ÀÏ¹Ý Äµ¹ö½º
 	vector<CGenericUI*> m_vecUI;
@@ -89,6 +96,11 @@ private:
 	_bool m_isAllDead = { false };
 
 	UI_PREFAB_DATA m_pPrefabData;
+
+private:
+	_float m_fParams0 = {}; 
+	_float m_fParams1 = {}; 
+
 
 protected:
 	CMulticastDelegate<void(const UI_LOCAL_EVENT_DESC&)> m_vLocalEvents = {};

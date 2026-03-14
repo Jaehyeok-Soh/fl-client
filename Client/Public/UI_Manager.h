@@ -25,6 +25,7 @@ enum class EUIEventID {
 	WEAKNESS_FIN, // 약점대비 이벤트가 끝났을 때 다같이 없애려고 
 	
 	TUTORIAL_PANNEL_START,	// 튜토리얼 패널 나왔을 때 
+	TUTORIAL_PANNEL_END,	// 튜토리얼 패널 나왔을 때 
 
 	TUTORIAL_POPUP_EVENT1,	// V 표시 서클 다 채워졌을 때	// 내부 이벤트
 	TUTORIAL_POPUP_EVENT2,	// 이벤트 다 끝났을 때			// 내부 이벤트

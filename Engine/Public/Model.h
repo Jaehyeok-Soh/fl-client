@@ -215,6 +215,7 @@ public:
 	void								Set_ApplyRootMotionAll(_bool bRootApply);
 
 	void								Set_Animtion_MotionOffset_All(_float fOffset);
+	void								Set_Animation_SpeedOffset_All(_float fOffset);
 public:
 	HRESULT								Set_MI_TintColor(_uint iIndex, const Vec4& vColor );
 public:

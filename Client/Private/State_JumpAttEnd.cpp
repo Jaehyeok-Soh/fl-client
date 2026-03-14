@@ -45,7 +45,7 @@ void CState_JumpAttEnd::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_fStateElapsed >= 2.3f)
+	if (m_fStateElapsed >= (2.3f / 1.2f))
 	{
 		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
 	}
