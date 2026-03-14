@@ -26,7 +26,7 @@ public:
 	typedef struct tagCanvasDesc : public UIOBJECT_DESC
 	{
 		_string strName;
-		// std::move로 넘기기
+		// std::move로 넘기기Builder
 		vector<_wstring> vecPrefabs;
 	}CANVAS_DESC;
 private:
@@ -100,9 +100,9 @@ private:
 	UI_PREFAB_DATA m_pPrefabData;
 
 private:
-	vector<_uint> m_vecCommonParams_uint;
-	vector<_float> m_vecCommonParams_float;
-	vector<_bool> m_vecCommonParams_bool;
+	vector<_uint>	m_vecCommonParams_uint;
+	vector<_float>	m_vecCommonParams_float;
+	vector<_bool>	m_vecCommonParams_bool;
 
 protected:
 	CMulticastDelegate<void(const UI_LOCAL_EVENT_DESC&)> m_vLocalEvents = {};

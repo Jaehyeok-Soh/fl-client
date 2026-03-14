@@ -161,7 +161,9 @@ void CLevel_Test::Update(const _float fTimeDelta)
 	{
 		UI_PREFAB_DATA Desc = {};
 		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
 		Desc.Data = PrefabDesc;		
+
 		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
 
 	}

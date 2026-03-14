@@ -49,6 +49,8 @@ private:
 
 	DelegateHandle m_tEventHandle = {};
 
+	EUITutorialPannelTypeID m_eTutorialID = {};
+
 	//TUTORIAL_PANNEL_TOP_BG Values
 	Vec2 m_vOriginSize = {};
 
@@ -57,8 +59,11 @@ private:
 	_bool m_isHoverExit = { false };
 	_float m_fPannelBrightNess = { 0.5f };
 
-	_uint m_iNumPage = {};
-	_uint m_iCurPage = {};
+	// TUTORIAL_PANNEL_ICON Values
+	vector<_wstring> m_vecTextureTags;
+
+	_uint m_iMaxPage = {};	// 페이지 갯수
+	_uint m_iCurPage = {};	// 현재 페이지
 
 public:
 	static CUITutorial_Pannel_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

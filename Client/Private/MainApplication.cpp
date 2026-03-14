@@ -342,6 +342,8 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	// For. UI Texture
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
 		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/Tutorial")))
+		return E_FAIL;
 
 	// For. Prototype_Component_Transform
 	{

@@ -345,6 +345,10 @@ HRESULT CCanvas::Spawn_FromPool(void* pArg)
 	m_pPrefabData = *static_cast<UI_PREFAB_DATA*>(pArg);
 	m_pPrefabData.pCanvas = this;
 
+	m_vecCommonParams_uint.resize(2);
+	m_vecCommonParams_float.resize(2);
+	m_vecCommonParams_bool.resize(2);
+
 	return S_OK;
 }
 
