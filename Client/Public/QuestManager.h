@@ -35,6 +35,7 @@ public:
 	void Change_Scenario();
 
 	DTO::QUEST_INFOBUCKET Get_QuestInfo();
+	DTO::QUEST_CHAPTERDESC Get_QuestChapterInfo();
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };

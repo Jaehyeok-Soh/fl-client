@@ -96,6 +96,21 @@ DTO::QUEST_INFOBUCKET CQuestManager::Get_QuestInfo()
 	return desc;
 }
 
+DTO::QUEST_CHAPTERDESC CQuestManager::Get_QuestChapterInfo()
+{
+	DTO::QUEST_CHAPTERDESC desc;
+
+	if (m_pCurScenario == nullptr)
+		return desc;
+
+	if (m_pCurScenario->GetCurrentChapter() == nullptr)
+		return desc;
+
+	desc = m_pCurScenario->GetCurrentChapter()->GetDesc();
+
+	return desc;
+}
+
 void CQuestManager::Bind_Events()
 {
 	m_vecEventHandles.push_back(

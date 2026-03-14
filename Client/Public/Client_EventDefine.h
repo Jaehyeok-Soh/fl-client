@@ -55,8 +55,12 @@ struct TUTORIAL_POPUP_CLEAR{ using Signature = void(EUITutorialPopUpTypeID ID); 
 
 // Äù½ºÆ® ÀÌº¥Æ®
 struct QUEST_NOTIFY{ using Signature = void(DTO::QUEST_EVENT_SIGNATURE ID); }; // Äù½ºÆ® ¾÷µ¥ÀÌÆ®
-struct QUEST_CHANGE_SCENARIO_NOTIFY{ using Signature = void(DTO::QUEST_INFOBUCKET ID); }; // Äù½ºÆ® ½Ã³ª¸®¿À ¹Ù²ñ
-struct QUEST_CHANGE_CHAPTER_NOTIFY{ using Signature = void(DTO::QUEST_CHAPTERDESC ID); }; // Äù½ºÆ® Ã©ÅÍ ¹Ù²ñ
+struct QUEST_CHANGE_SCENARIO_NOTIFY{ using Signature = void(); }; // Äù½ºÆ® ½Ã³ª¸®¿À ¹Ù²ñ
+// CQuestManager::GetInstance()->Get_QuestInfo();
+
+struct QUEST_CHANGE_CHAPTER_NOTIFY{ using Signature = void(); }; // Äù½ºÆ® Ã©ÅÍ ¹Ù²ñ
+// CQuestManager::GetInstance()->Get_QuestChapterInfo();
+
 struct QUEST_ALL_COMPLETE{ using Signature = void(); }; // ¸ðµç Äù½ºÆ® ¿Ï·á
 
 #pragma endregion
