@@ -1,5 +1,6 @@
 #include "Engine_pch.h"
 #include "ActionState.h"
+
 #include "StateBase.h"
 #include "GameObject.h"
 #include "ContainerObject.h"
@@ -8,6 +9,7 @@
 #include "Model.h"
 #include "Transform.h"
 #include "PhysicsCCT.h"
+#include "ModelAnimation.h"
 
 CActionState::CActionState()
 {
@@ -129,8 +131,18 @@ HRESULT CActionState::Change_State(_uint iIndex, _bool bForce, void* pArg)
 		return E_FAIL;
 
 	// 같은 state 방어
-	if (m_iCurrentState == iIndex && bForce == false)
-		return S_OK;
+	if (m_iCurrentState == iIndex)
+	{
+		if(bForce == false)
+			return S_OK;
+
+		// 같은거 재생할때는 한번 리셋을 하고
+		else
+		{
+			//Get_CurrentAnimation()->Reset_PrePosition();
+		}
+	}
+
 
 	// 이전 state end 호출
 	if (m_iCurrentState >= 0 && m_iCurrentState < m_vecStates.size())
