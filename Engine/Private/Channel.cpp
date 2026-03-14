@@ -153,9 +153,9 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 
 			if (m_bRootBone)
 			{
-				Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos);
-				vLeftTranslation = { 0.f,0.f,0.f };
-				vRightTranslation = { 0.f,0.f,0.f };
+				//Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos);
+				//vLeftTranslation = { 0.f,0.f,0.f };
+				//vRightTranslation = { 0.f,0.f,0.f };
 			}
 
 			vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
@@ -168,8 +168,8 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 		spanLocalSrtData[m_iBoneIndex].vTranslation = vTranslation;
 	}
 
-	else if (m_bRootBone)
-		Move_OnwerTransform(fCurrentTrackPosition, pCurrentKeyFrameIndex, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, vPrepos);
+	//else if (m_bRootBone)
+	//	Move_OnwerTransform(fCurrentTrackPosition, pCurrentKeyFrameIndex, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, vPrepos);
 
 }
 
