@@ -140,6 +140,8 @@ public:
 	void	Set_FKeyEvent(_uint iEvenet, _bool bOn); // f event 활성화 onoff
 	const Vec3& Get_CollidedMonster_Position();
 
+	HRESULT				Bind_PlayerInfo(class CShader* pShader = nullptr);
+	SHADER_PLAYER_INFO* Get_PlayerInfo() { return &m_tCBPlayerInfo; }		/* 임시용 */
 public:
 	_bool	Start_Attack(State iState);
 	void	End_Attack(State iState);
@@ -148,10 +150,10 @@ protected:
 	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 
 protected:
-	TIME_COUNTER	m_tDoubleJumpCount = {};
-	PLAYER_TYPE		m_ePlayerType = { PLAYER_TYPE::END };
-	_bool			m_bMainPlayer = { false };
-
+	TIME_COUNTER		m_tDoubleJumpCount = {};
+	PLAYER_TYPE			m_ePlayerType = { PLAYER_TYPE::END };
+	_bool				m_bMainPlayer = { false };
+	SHADER_PLAYER_INFO	m_tCBPlayerInfo{};
 private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_HitStates();

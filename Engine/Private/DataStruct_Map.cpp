@@ -363,6 +363,7 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	case DTO::EClientMakePath::Bush:								return pSource == nullptr ? new BUSH_DESC			: new BUSH_DESC(*static_cast<BUSH_DESC*>(pSource));
 
 	case DTO::EClientMakePath::Water:								return pSource == nullptr ? new WATER_DESC			: new WATER_DESC(*static_cast<WATER_DESC*>(pSource));
+	case DTO::EClientMakePath::Fog:									return pSource == nullptr ? new FOG_DESC			: new FOG_DESC(*static_cast<FOG_DESC*>(pSource));
 		/* Batch Object 관련 */
 	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC	: new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
 	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC	: new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
@@ -684,7 +685,6 @@ void WATER_DESC::from_Json(const json& LoadJson)
 		}
 	}
 }
-
 void WATER_DESC::to_Json(json& SaveJson)
 {
 	
@@ -726,6 +726,87 @@ void WATER_DESC::to_Json(json& SaveJson)
 }
 
 #pragma endregion
+
+#pragma region Fog Desc
+
+FOG_DESC::FOG_DESC(const FOG_DESC& rhs)
+	: CLIENT_MAKEPATH_DESC_BASE(rhs), vMI_TintColor{ rhs.vMI_TintColor }
+	, arrayTextureBase{rhs.arrayTextureBase}
+	, fDistortionPower{1.f}
+{
+	for (auto& Tex : arrayTextureBase)
+		Safe_AddRef(Tex);
+	memcpy(this->vUV, this->vUV, sizeof(Vec4) * ENUM_TO_UINT(EFogTextureType::END));
+}
+
+FOG_DESC::~FOG_DESC()
+{
+	for (auto& Texture : arrayTextureBase)
+		Safe_Release(Texture);
+}
+
+void FOG_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Color"))
+	{
+		Engine_Utils::read_vec4_xyzw(LoadJson["Color"], this->vMI_TintColor);
+	}
+
+	if (LoadJson.contains("Distortion Power"))
+	{
+		this->fDistortionPower = LoadJson["Distortion Power"];
+	}
+
+
+	auto* pGameInstance = CGameInstance::GetInstance();
+	for (_uint i = 0; i < static_cast<_uint>(EFogTextureType::END); ++i)
+	{
+		string strFindKey = g_szFogTextureType[i];
+		if (LoadJson.contains(strFindKey))
+		{
+			const json& KeyJson = LoadJson[strFindKey];
+			if (KeyJson.contains("UV"))
+			{
+				Engine_Utils::read_vec4_xyzw(LoadJson["UV"], this->vUV[i]);
+			}
+			if (KeyJson.contains("Texture"))
+			{
+				string strTextureName = KeyJson["Texture"];
+				if (strTextureName != "None")
+				{
+					CTextureBase* pTexBase = pGameInstance->GetOrAddTexture(L"Texture_" + Engine_Utils::ToWString(strTextureName), nullptr);
+					if (pTexBase == nullptr)
+					{
+						MSG_BOX("Water Texture 연동중 문제 발생");
+						continue;
+					}
+					this->arrayTextureBase[i] = pTexBase;
+				}
+			}
+		}
+	}
+}
+
+void FOG_DESC::to_Json(json& SaveJson)
+{
+	Engine_Utils::write_vec4_xyzw(SaveJson["Color"], this->vMI_TintColor);
+
+	SaveJson["Distortion Power"] =  this->fDistortionPower ;
+
+	for (_uint i = 0; i < ENUM_TO_UINT(EFogTextureType::END); ++i)
+	{
+		json& KeyJson = SaveJson[g_szFogTextureType[i]];
+		Engine_Utils::write_vec4_xyzw(KeyJson["UV"], this->vUV[i]);
+		string strTextureName{"None"};
+		if(this->arrayTextureBase[i])
+			strTextureName = Engine_Utils::ToString(this->arrayTextureBase[i]->Get_Name());
+		KeyJson["Texture"] = strTextureName;
+	}
+}
+
+#pragma endregion
+
+
 
 #pragma endregion
 

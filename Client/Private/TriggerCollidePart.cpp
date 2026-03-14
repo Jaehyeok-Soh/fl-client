@@ -117,7 +117,7 @@ void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLa
 		if (pTrans)
 		{
 			m_vColliedPos = pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
-			m_iColliedID = pOther->Get_ID();
+			m_iColliedID = static_cast<_int>(pOther->Get_ID());
 		}
 	}
 }

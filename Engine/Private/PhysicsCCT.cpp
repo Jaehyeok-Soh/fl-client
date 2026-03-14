@@ -49,7 +49,7 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	SetUserData(static_cast<void*>(m_tDesc.pOwner));
 
 	auto initPos = m_pController->getFootPosition();
-	m_vPoolingPosition = Vec3(initPos.x, initPos.y, initPos.z);
+	m_vPoolingPosition = Vec3(static_cast<_float>(initPos.x), static_cast<_float>(initPos.y), static_cast<_float>(initPos.z));
 
 	SetCollisionFilter();
 

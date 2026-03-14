@@ -999,6 +999,7 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	case Tool::EClientMakePath::Bush:								ImGuiUpdate_Bush_Desc								(static_cast<BUSH_DESC*>(pDesc));										return S_OK;
 
 	case Tool::EClientMakePath::Water:								ImGuiUpdate_Water_Desc								(static_cast<WATER_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Fog:								ImGuiUpdate_Fog_Desc								(static_cast<FOG_DESC*>(pDesc));										return S_OK;
 
 
 	case Tool::EClientMakePath::Batch_Monster:						ImGuiUpdate_Batch_Monster_Desc						(static_cast<BATCH_MONSTER_DESC*>(pDesc));								return S_OK;
@@ -1268,6 +1269,76 @@ void CPanel_MapObjectList::ImGuiUpdate_Water_Desc(WATER_DESC* pDesc)
 	}
 }
 
+void CPanel_MapObjectList::ImGuiUpdate_Fog_Desc(FOG_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	// 1. 공통 속성 (컬러)
+	ImGui::SeparatorText(" Fog Global Settings ");
+	ImGui::NewLine();
+	ImGui::ColorEdit4(" Tint Color ", (float*)&pDesc->vMI_TintColor);
+	ImGui::NewLine();
+	ImGui::DragFloat(" Distortion Power ",&pDesc->fDistortionPower,0.001f,0.f,10000.f,"%.3f");
+	ImGui::NewLine();
+	// 2. 텍스처 배열 순회
+	string strTextureSlotName{};
+	string strTextureName{};
+
+	for (_uint i = 0; i < ENUM_TO_UINT(EFogTextureType::END); ++i)
+	{
+		// ID가 겹치지 않게 무조건 PushID로 감싼다!
+		ImGui::PushID(i);
+
+		CTextureBase* pTextureBase = pDesc->arrayTextureBase[i];
+		strTextureSlotName = FogTextureType_ToString(static_cast<EFogTextureType>(i));
+		strTextureName = (pTextureBase == nullptr) ? "None" : Engine_Utils::ToString(pTextureBase->Get_Name());
+
+		ImGui::SeparatorText(strTextureSlotName.c_str());
+
+		// ----------------------------------------------------
+		// [왼쪽 영역] 텍스처 이미지 버튼
+		// ----------------------------------------------------
+		ImGui::BeginGroup();
+		ID3D11ShaderResourceView* pSRV = (pTextureBase == nullptr) ? m_pMapToolManager->m_pDefaultWhiteSRV : pTextureBase->Get_SRV();
+
+		// 이미지 크기를 64x64 정도로 좀 키우면 클릭하기도 편하고 보기 좋아!
+		if (ImGui::ImageButton("TextureBtn", ImTextureRef(pSRV), ImVec2(64, 64)))
+		{
+			m_pMapToolManager->m_ppTargetSlot = &pDesc->arrayTextureBase[i];
+			m_pMapToolManager->m_isTexArraySelect = false;
+			m_pMapToolManager->m_isTex_DH_ArraySelect = false;
+			m_pMapToolManager->m_isTex_NBR_ArraySelect = false;
+
+			ImGui::OpenPopup("Texture_Select_Modal");
+		}
+		ImGui::EndGroup();
+
+		// 줄바꿈 하지 말고 바로 옆에 붙여라!
+		ImGui::SameLine();
+
+		// ----------------------------------------------------
+		// [오른쪽 영역] 텍스처 정보 및 조절 슬라이더
+		// ----------------------------------------------------
+		ImGui::BeginGroup();
+		ImGui::Text("Name : %s", strTextureName.c_str());
+
+		// 핵심! 인덱스 [i]를 넣어서 각 텍스처마다 개별적인 Speed와 Power를 조작하게 만듦!
+		// DragFloat2 앞의 글자 길이 맞추려고 띄어쓰기 살짝 넣으면 더 이쁨
+		ImGui::DragFloat2("UV Speed", (float*)&pDesc->vUV[i].x, 0.001f, -100.f, 100.f, "%.3f");
+		ImGui::DragFloat2("UV Power", (float*)&pDesc->vUV[i].z, 0.01f, 0.f, 1000.f, "%.2f");
+		ImGui::EndGroup();
+
+		// 다음 텍스처 슬롯과의 구분을 위해 약간의 여백 추가
+		ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+		// 팝업 모달 (기존 로직 유지)
+		m_pMapToolManager->Select_MapTexture();
+
+		ImGui::PopID();
+	}
+
+}
+
 #pragma endregion
 
 #pragma endregion
@@ -1297,10 +1368,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pD
 		}
 		ImGui::EndCombo();
 	}
-
-
 	return;
-
 }
 
 #pragma region Batch Object Desc

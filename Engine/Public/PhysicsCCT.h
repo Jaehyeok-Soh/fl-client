@@ -95,6 +95,7 @@ private:
     void ApplyImpuls(const _float fTimeDelta);
 
 public:
+    const PHYSICSCCT_DESC& Get_Desc() const { return m_tDesc; }
     /// <summary>
     /// 충돌체 높이 조절
     /// </summary>

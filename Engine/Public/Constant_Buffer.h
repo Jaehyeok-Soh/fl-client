@@ -64,9 +64,14 @@ inline HRESULT CConstant_Buffer<T>::Copy_Data(const T& data)
 	m_bHasLast = true;
 	D3D11_MAPPED_SUBRESOURCE SubResource;
 	::ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	m_pDeviceContext->Map(m_pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+
+	if (FAILED(m_pDeviceContext->Map(m_pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource)))
+		return E_FAIL;
+
 	::memcpy(SubResource.pData, &data, sizeof(T));
+	
 	m_pDeviceContext->Unmap(m_pBuffer, 0);
+	
 
 	return S_OK;
 }

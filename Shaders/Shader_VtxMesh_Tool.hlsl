@@ -39,6 +39,10 @@
 #define Water_Deco3_ORH   13
 #define MAX_WATER_TEXTURE_COUNT 14
 
+#define FOG_MASK               0
+#define FOG_NOISE              1
+#define MAX_FOG_TEXTURE_COUNT  2
+
 
 //  전체적인 지형이들어갈 Base Texture
 Texture2D       g_Base_Texture;
@@ -51,6 +55,10 @@ Texture2D g_Mix_RGBA_Texture[MAX_RGBA_TEXTURE_COUNT];
 
 
 Texture2D g_WaterTexture[MAX_WATER_TEXTURE_COUNT];
+Texture2D g_FogTexture[MAX_FOG_TEXTURE_COUNT];
+
+
+
 
 
 cbuffer CB_EnvData
@@ -66,6 +74,8 @@ cbuffer CB_GrassData
     float g_fGrassSwaySpeed = 1.f; //이 잔디가 Sway = 흔들리는 Speed
     float g_fGrassWaveSize = 1.f; //이 잔디가 Power = 흔들리는 힘
 };
+
+
 
 cbuffer CB_WaterData
 {
@@ -90,6 +100,15 @@ cbuffer CB_WaterData
     
 };
 
+
+cbuffer CB_FogData
+{
+    uint   g_FogTexBindingFlags     = 0;
+    float  g_fFogDT                 = 0.f;
+    float  g_fFogDistortionPower    = 1.f;
+    float  g_vFogDataDummy          = 1.f;
+    float4 g_vFogUV[MAX_FOG_TEXTURE_COUNT];
+};
 
 
 struct MIX_RGBA_DATA
@@ -492,6 +511,7 @@ PS_OUT_DEFFERED PS_GRASS(PS_IN_MESH input)
     
     return output;
 }
+
 PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
 {
     PS_OUT_DEFFERED output;
@@ -635,6 +655,67 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
 }
 
 
+PS_OUT_DEFFERED PS_FOG(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float2 vInputUV = float2(input.vUV.x ,input.vUV.y);
+    float4 vDiffuse = 1.f;
+   
+    
+    vDiffuse *= MIDesc.vTintColor;
+    
+    
+    float fNoiseVal = 0.0f; // 노이즈 밝기 값 저장용
+    if (Has(g_FogTexBindingFlags, FOG_NOISE))
+    {
+        float2 vNoiseUVSpeed = g_vFogUV[FOG_NOISE].zw;
+        float2 vNoiseUVPower = g_vFogUV[FOG_NOISE].xy;
+        
+        float2 vNoiseUV = (vInputUV * vNoiseUVPower) + vNoiseUVSpeed * g_fFogDT;
+        float4 vNoiseTex = g_FogTexture[FOG_NOISE].Sample(LinearSampler, vNoiseUVSpeed);
+        
+        // 디졸브에서는 방향(xy)이 아니라 노이즈의 '밝기(r채널)' 값 자체가 필요함!
+        fNoiseVal = vNoiseTex.r;
+    }
+    
+    
+    if (Has(g_FogTexBindingFlags, FOG_MASK))
+    {
+        float2 vMaskUVSpeed = g_vFogUV[FOG_MASK].xy;
+        float2 vMaskUVPower = g_vFogUV[FOG_MASK].zw;
+        
+        float2 vMaskUV = (vInputUV * vMaskUVPower) + vMaskUVSpeed * g_fFogDT;
+        float4 vMaskTex = g_FogTexture[FOG_MASK].Sample(LinearSampler, vMaskUV);
+        float fFinalAlpha = vMaskTex.r - (fNoiseVal * g_fDistortionPower);
+        
+        // 투명도는 0 밑으로 내려가면 안 되니까 saturate(0~1로 제한)로 묶어서 적용
+        vDiffuse.a *= saturate(fFinalAlpha);
+    }
+  
+    
+    if (vDiffuse.a < 0.05f)
+        discard;
+   
+    output.vDiffuse = vDiffuse;
+        
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    
+    
+    return output;
+}
+
+
 
 technique11 T0
 {
@@ -654,6 +735,7 @@ technique11 T0
     // 환경요소
 	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone , DS_Default , BS_AlphaBlend , VS_MAIN, PS_WATER)
+	PASS_RS_DS_BS_VP(Fog, RS_Default_CullNone , DS_Default , BS_AlphaBlend , VS_MAIN, PS_FOG)
 
     //EXT
     PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)

@@ -58,6 +58,10 @@
 
 #include "State_Condemn.h"
 
+#include "PhysicsCCT.h"
+#include "PhysicsRigidBody.h"
+#include "PhysicsCollider.h"
+
 #pragma endregion
 
 #include "GameInstance.h"
@@ -73,6 +77,7 @@ CPlayer::CPlayer(const CPlayer& rhs)
     , m_pPhysic_QueryFilter(rhs.m_pPhysic_QueryFilter)
     , m_tDoubleJumpCount(rhs.m_tDoubleJumpCount)
     , m_bMainPlayer(rhs.m_bMainPlayer)
+    , m_tCBPlayerInfo{rhs.m_tCBPlayerInfo }
 {
     m_vecPartObjects.resize(Part::END, nullptr);
     Safe_AddRef(m_pPhysic_QueryFilter);
@@ -171,6 +176,26 @@ void CPlayer::Update_Late(const _float fTimeDelta)
 void CPlayer::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
+
+    /* Main Player ¿œ∂ß∏∏ Setting */
+    //if (m_bMainPlayer)
+    //{
+    //    CTransform* pTs = Get_Component<CTransform>();
+    //    if (pTs == nullptr) return;
+    //    m_tCBPlayerInfo.PlayerMatrix = pTs->Get_WorldMatrix();  /* Matrix */
+
+    //    CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>();
+    //    if (pCCT == nullptr) return;
+    //    const PHYSICSCCT_DESC& tDesc = pCCT->GetDesc();
+    //    m_tCBPlayerInfo.fCollisionHeight    = tDesc.fHeight;
+    //    m_tCBPlayerInfo.fCollisionRange     = tDesc.fRadius;
+
+    //    CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(BODY));
+    //    if (pBody == nullptr) return;
+    //    CShader* pShader = pBody->Get_Component<CShader>();
+    //    if (pShader == nullptr) return;
+    //    pShader->Bind_PlayerInfo(m_tCBPlayerInfo);
+    //}
 
 #ifdef _DEBUG
     CTransform* pTrans = Get_Component<CTransform>();
@@ -342,6 +367,35 @@ const Vec3& CPlayer::Get_CollidedMonster_Position()
     }
 
     return Vec3::Zero;
+}
+
+HRESULT CPlayer::Bind_PlayerInfo(class CShader* pShader)
+{
+    if (!pShader) return E_FAIL;
+
+    CTransform* pTs = Get_Component<CTransform>();
+    if (pTs == nullptr) return E_FAIL;
+    m_tCBPlayerInfo.PlayerMatrix = pTs->Get_WorldMatrix();  /* Matrix */
+
+    CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>();
+    if (pCCT == nullptr) return E_FAIL;
+    const PHYSICSCCT_DESC& tDesc = pCCT->Get_Desc();
+    CPhysicsCCT::CCTMOVEMENTSTATE* tCCTMovementState = pCCT->GetMoveState();
+    m_tCBPlayerInfo.fCurSpeed = tCCTMovementState->vVelocity.magnitude();
+    m_tCBPlayerInfo.fCollisionHeight    = tDesc.fHeight;
+    m_tCBPlayerInfo.fCollisionRange     = tDesc.fRadius;
+
+
+    CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(BODY));
+    if (pBody == nullptr) return E_FAIL;
+
+    CShader* pPlayerShader = pShader == nullptr ? pBody->Get_Component<CShader>() : pShader;
+    if (pPlayerShader == nullptr) return E_FAIL;;
+
+    if (FAILED(pPlayerShader->Bind_PlayerInfo(m_tCBPlayerInfo)))
+        return E_FAIL;
+
+    return S_OK;
 }
 
 _bool CPlayer::Start_Attack(State iState)

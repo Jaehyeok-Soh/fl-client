@@ -126,6 +126,15 @@ namespace Tool
     };
 
 
+    struct CB_FogData
+    {
+        _uint  g_FogTexBindingFlags{ 0 };                           // Texture가 바인딩되었는지 안되어있는지 Flag값
+        float  g_fFogDT{ 0.f };                                     // 움직이는 UV좌표를 위한 DT값
+        float  g_fDistortionPower{1.f};
+        float  g_fDummy{1};
+        Vec4   g_vUV[2];                                            //
+    };
+
 
     void to_json(json& SaveJson, const    SRT_DATA& tData);
     void to_json(json& SaveJson, const    OVERRIDE_MATERIALS& tData);
