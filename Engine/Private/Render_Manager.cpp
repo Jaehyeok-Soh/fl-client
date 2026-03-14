@@ -473,6 +473,19 @@ HRESULT CRender_Manager::Set_ShaderResources()
 		if (FAILED(m_pCB_Fog->Copy_Data(m_tFogDesc)))
 			return E_FAIL;
 	}
+	// ToonDesc
+	{
+		m_tToonparamDesc.fWrap = 0.65f;
+		m_tToonparamDesc.fShadowMid = 0.58f;
+		m_tToonparamDesc.fShadowSoftness = 0.15f;
+		m_tToonparamDesc.fShadowStrength = 0.45f;
+		m_tToonparamDesc.fDiffuseStrength = 1.0f;
+		m_tToonparamDesc.fRimThreshold = 0.65f;
+		m_tToonparamDesc.fRimSoftness = 0.125f;
+		m_tToonparamDesc.fRimStrength = 0.7f;
+		if (FAILED(m_pCB_Toonparam->Copy_Data(m_tToonparamDesc)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -513,9 +526,6 @@ HRESULT CRender_Manager::Render()
 
 		m_pGameInstance->Setup_UIViewProj_ToCBuffer();
 
-		//if (FAILED(Render_Fog()))
-		//	return E_FAIL;
-
 		if (FAILED(Render_Outline()))
 			return E_FAIL;
 
@@ -535,6 +545,9 @@ HRESULT CRender_Manager::Render()
 	}
 
 	m_pGameInstance->Setup_UIViewProj_ToCBuffer();
+
+	//if (FAILED(Render_Fog()))
+	//	return E_FAIL;
 
 	if (FAILED(Render_Bloom()))
 		return E_FAIL;
@@ -1046,6 +1059,9 @@ HRESULT CRender_Manager::Render_Lights()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SpecularMask, m_pShader)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::ObjectInfo, m_pShader)))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Diffuse, m_pShader)))
 		return E_FAIL;
 
@@ -1354,8 +1370,10 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	m_pCB_Bloomparam = CConstant_Buffer<SHADER_BLOOMPARAM_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Outlineparam = CConstant_Buffer<SHADER_OUTLINE_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Fog = CConstant_Buffer<SHADER_FOG_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_Toonparam = CConstant_Buffer<SHADER_TOON_DESC>::Create(m_pDevice, m_pDeviceContext);
 	if (m_pCB_SSAOkernel == nullptr || m_pCB_SSAOparam == nullptr || m_pCB_HDRparam == nullptr ||
-		m_pCB_Bloomparam == nullptr || m_pCB_Outlineparam == nullptr || m_pCB_Fog == nullptr)
+		m_pCB_Bloomparam == nullptr || m_pCB_Outlineparam == nullptr || m_pCB_Fog == nullptr ||
+		m_pCB_Toonparam == nullptr)
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::SSAOkernal, m_pCB_SSAOkernel->Get_Buffer())))
@@ -1367,13 +1385,16 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::HDRparam, m_pCB_HDRparam->Get_Buffer())))
 		return E_FAIL;
 
-	if(FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Bloomparam, m_pCB_Bloomparam->Get_Buffer())))
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Bloomparam, m_pCB_Bloomparam->Get_Buffer())))
 		return E_FAIL;
 
-	if(FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Outlineparam, m_pCB_Outlineparam->Get_Buffer())))
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Outlineparam, m_pCB_Outlineparam->Get_Buffer())))
 		return E_FAIL;
 
 	if (FAILED(m_pFogShader->Set_ConstantBuffer(EFXCB::Fogparam, m_pCB_Fog->Get_Buffer())))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Toonparam, m_pCB_Toonparam->Get_Buffer())))
 		return E_FAIL;
 
 	return S_OK;
@@ -1417,6 +1438,7 @@ void CRender_Manager::Free()
 	Safe_Release(m_pCB_Fog);
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pFogShader);
+	Safe_Release(m_pCB_Toonparam);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDeviceContext);
@@ -1461,6 +1483,11 @@ HRESULT CRender_Manager::Commit_FogParam()
 	return m_pCB_Fog ? m_pCB_Fog->Copy_Data(m_tFogDesc) : E_FAIL;
 }
 
+HRESULT CRender_Manager::Commit_ToonParam()
+{
+	return m_pCB_Toonparam ? m_pCB_Toonparam->Copy_Data(m_tToonparamDesc) : E_FAIL;
+}
+
 HRESULT CRender_Manager::Commit_AllPostParams()
 {
 	if (FAILED(Commit_SSAOParam()))    return E_FAIL;
@@ -1468,6 +1495,7 @@ HRESULT CRender_Manager::Commit_AllPostParams()
 	if (FAILED(Commit_BloomParam()))   return E_FAIL;
 	if (FAILED(Commit_OutlineParam())) return E_FAIL;
 	if (FAILED(Commit_FogParam()))	   return E_FAIL;
+	if (FAILED(Commit_ToonParam()))    return E_FAIL;
 	return S_OK;
 }
 

@@ -89,11 +89,13 @@ private:
 	SHADER_HDRPARAM_DESC m_tHDRparamDesc{};
 	SHADER_BLOOMPARAM_DESC m_tBloomparamDesc{};
 	SHADER_OUTLINE_DESC m_tOutlineparamDesc{};
+	SHADER_TOON_DESC m_tToonparamDesc{};
 	CConstant_Buffer<SHADER_SSAOKERNEL_DESC>* m_pCB_SSAOkernel{ nullptr };
 	CConstant_Buffer<SHADER_SSAOPARAM_DESC>* m_pCB_SSAOparam{ nullptr };
 	CConstant_Buffer<SHADER_HDRPARAM_DESC>* m_pCB_HDRparam{ nullptr };
 	CConstant_Buffer<SHADER_BLOOMPARAM_DESC>* m_pCB_Bloomparam{ nullptr };
 	CConstant_Buffer<SHADER_OUTLINE_DESC>* m_pCB_Outlineparam{ nullptr };
+	CConstant_Buffer<SHADER_TOON_DESC>* m_pCB_Toonparam{ nullptr };
 	CTextureBase* m_pLUTTexture{ nullptr };
 
 	// Fog
@@ -132,6 +134,11 @@ public:
 	SHADER_FOG_DESC& Get_FogParamDesc() { return m_tFogDesc; }
 	const SHADER_FOG_DESC& Get_FogParamDesc() const { return m_tFogDesc; }
 	HRESULT Commit_FogParam();
+	
+	// Toon
+	SHADER_TOON_DESC& Get_ToonParamDesc() { return m_tToonparamDesc; }
+	const SHADER_TOON_DESC& Get_ToonParamDesc() const { return m_tToonparamDesc; }
+	HRESULT Commit_ToonParam();
 
 	HRESULT Commit_AllPostParams();
 private:

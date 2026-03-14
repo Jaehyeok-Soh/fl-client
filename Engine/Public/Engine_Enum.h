@@ -98,6 +98,7 @@ namespace Engine
 		RGBMapping,
 		RenderFx,
 		Fogparam,
+		Toonparam,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -119,7 +120,8 @@ namespace Engine
 		"OUTLINEParamBuffer",
 		"CB_MAPPING_RGB",
 		"RenderFxParamBuffer",
-		"FogParamBuffer"
+		"FogParamBuffer",
+		"ToonParamBuffer"
 	};
 	//===================
 	// FX SRV

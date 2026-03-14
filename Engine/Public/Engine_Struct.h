@@ -363,6 +363,22 @@ namespace Engine
 		SimpleMath::Vector3 vPad = { SimpleMath::Vector3::Zero };
 	}SHADER_FOG_DESC;
 
+	typedef struct tagShaderToonParamDesc
+	{
+		float fWrap = { 0.25f };
+		float fShadowMid = { 0.55f };
+		float fShadowSoftness = { 0.10f };
+		float fShadowStrength{ 0.85f };
+		
+		float fRimThreshold = { 0.65f };
+		float fRimSoftness = { 0.10f };
+		float fRimStrength = { 0.0f };
+		float fPad = { 0.f };
+
+		float fDiffuseStrength = { 1.0f };
+		SimpleMath::Vector3 vPad { 0.f, 0.f, 0.f };
+	}SHADER_TOON_DESC;
+
 	typedef struct tagShaderEffectDesc
 	{
 		// Row 0

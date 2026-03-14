@@ -847,6 +847,18 @@ HRESULT CGameInstance::Commit_FogParam()
 {
 	return m_pRender_Manager->Commit_FogParam();
 }
+SHADER_TOON_DESC& CGameInstance::Get_ToonParamDesc()
+{
+	return m_pRender_Manager->Get_ToonParamDesc();
+}
+const SHADER_TOON_DESC& CGameInstance::Get_ToonParamDesc() const
+{
+	return m_pRender_Manager->Get_ToonParamDesc();
+}
+HRESULT CGameInstance::Commit_ToonParam()
+{
+	return m_pRender_Manager->Commit_ToonParam();
+}
 HRESULT CGameInstance::Commit_AllPostParams()
 {
 	return m_pRender_Manager->Commit_AllPostParams();

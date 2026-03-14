@@ -120,6 +120,21 @@ struct FogParam
     float fFogNoiseSpeed;
     float3 vPad;
 };
+struct ToonParam
+{
+    float fWrap;
+    float fShadowMid;
+    float fShadowSoftness;
+    float fShadowStrength;
+    
+    float fRimThreshold;
+    float fRimSoftness;
+    float fRimStrength;
+    float fPad;
+
+    float fDiffuseStrength;
+    float3 vPad;
+};
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -195,6 +210,10 @@ cbuffer RenderFxParamBuffer
 cbuffer FogParamBuffer
 {
     FogParam fogParam;
+};
+cbuffer ToonParamBuffer
+{
+    ToonParam toonParam;
 };
 //////////
 // Func //
@@ -279,6 +298,12 @@ uint UnpackID24(uint iPacked)
 bool HasOutline(uint iFlags8)
 {
     return (iFlags8 & 1u) != 0;
+}
+
+bool HasRim(uint iFlags8)
+{
+    return (iFlags8 & (1u << 1)) != 0;
+
 }
 
 uint PackObjectInfo(uint iID, uint iFlags)

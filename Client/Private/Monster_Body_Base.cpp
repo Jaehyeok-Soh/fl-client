@@ -53,6 +53,7 @@ HRESULT CMonster_Body_Base::Initialize(void* pArg)
 		return E_FAIL;
 
 	Set_RenderInfoFlag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Rim, true);
 	return S_OK;
 }
 

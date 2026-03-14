@@ -335,6 +335,9 @@ public:
 	SHADER_FOG_DESC& Get_FogParamDesc();
 	const SHADER_FOG_DESC& Get_FogParamDesc() const;
 	HRESULT Commit_FogParam();
+	SHADER_TOON_DESC& Get_ToonParamDesc();
+	const SHADER_TOON_DESC& Get_ToonParamDesc() const;
+	HRESULT Commit_ToonParam();
 	HRESULT Commit_AllPostParams();
 #endif
 #pragma endregion

@@ -33,6 +33,7 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         m_defBloom = m_pGameInstance->Get_BloomParamDesc();
         m_defOutline = m_pGameInstance->Get_OutlineParamDesc();
         m_defFog = m_pGameInstance->Get_FogParamDesc();
+        m_defToon = m_pGameInstance->Get_ToonParamDesc();
         m_bDefaultCached = true;
     }
 
@@ -53,6 +54,7 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         m_pGameInstance->Get_BloomParamDesc() = m_defBloom;
         m_pGameInstance->Get_OutlineParamDesc() = m_defOutline;
         m_pGameInstance->Get_FogParamDesc() = m_defFog;
+        m_pGameInstance->Get_ToonParamDesc() = m_defToon;
         m_pGameInstance->Commit_AllPostParams();
     }
 
@@ -324,6 +326,46 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         {
             fog = m_defFog;
             m_pGameInstance->Commit_FogParam();
+        }
+        ImGui::PopID();
+    }
+    // -----------------------
+    // Toon
+    // -----------------------
+    if (ImGui::CollapsingHeader("Toon", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::PushID("Toon");
+        auto& toon = m_pGameInstance->Get_ToonParamDesc();
+
+        _bool bChanged = false;
+
+        ImGui::SeparatorText("Diffuse");
+        bChanged |= ImGui::SliderFloat("Wrap", &toon.fWrap, 0.f, 1.f, "%.2f");
+        bChanged |= ImGui::SliderFloat("ShadowMid", &toon.fShadowMid, 0.f, 1.f, "%.2f");
+        bChanged |= ImGui::SliderFloat("ShadowSoftness", &toon.fShadowSoftness, 0.f, 0.5f, "%.3f");
+        bChanged |= ImGui::SliderFloat("ShadowStrength", &toon.fShadowStrength, 0.f, 1.f, "%.2f");
+        bChanged |= ImGui::SliderFloat("DiffuseStrength", &toon.fDiffuseStrength, 0.f, 3.f, "%.2f");
+
+        ImGui::SeparatorText("Rim");
+        bChanged |= ImGui::SliderFloat("RimThreshold", &toon.fRimThreshold, 0.f, 1.f, "%.2f");
+        bChanged |= ImGui::SliderFloat("RimSoftness", &toon.fRimSoftness, 0.f, 0.5f, "%.3f");
+        bChanged |= ImGui::SliderFloat("RimStrength", &toon.fRimStrength, 0.f, 3.f, "%.2f");
+
+        if (m_bAutoApply == false)
+        {
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Apply##Toon"))
+                m_pGameInstance->Commit_ToonParam();
+        }
+        else if (bChanged)
+        {
+            m_pGameInstance->Commit_ToonParam();
+        }
+
+        if (ImGui::SmallButton("Reset##Toon"))
+        {
+            toon = m_defToon;
+            m_pGameInstance->Commit_ToonParam();
         }
         ImGui::PopID();
     }

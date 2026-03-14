@@ -115,7 +115,7 @@ HRESULT CGrass::Render()
 
 		/* Client Make Path를 이용한다 */
 		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));
-
+		pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 		if (m_pCBGrassData == nullptr) return E_FAIL;
 		if (FAILED(m_pCBGrassData->SetRawValue(&m_tGrassData, 0, sizeof(CB_GrassData))))
 			return E_FAIL;
@@ -147,7 +147,7 @@ HRESULT CGrass::Render()
 		_uint iInstanceCount = pInstanceMesh->Get_InstanceCount();
 
 		pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
-
+		pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 		/* Client Make Path를 이용한다 */
 		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));
 
