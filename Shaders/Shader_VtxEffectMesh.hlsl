@@ -280,11 +280,11 @@ PS_OUT_WBOIT PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In)
     
     float3 srcRGB = finalRGB;
     float srcAlpha = finalAlpha;
-    float w = saturate(1.0f - In.vViewZ / 1000.0f);
-    w = clamp(w, 0.1f, 1.0f); // 0.1 ~ 1.0 사이에서만 놀게 해. 10.0까지 가지 말고.
+    float w = pow(saturate(1.0f - In.vViewZ / 1000.0f), 3.0f); // 3승으로 변화율 조절
+    w = clamp(w, 0.01f, 3000.0f); // 상한선을 적당히 열어주되, 하한선으로 방어
 
     Out.vAccum = float4(srcRGB * srcAlpha, srcAlpha) * w;
-    Out.vReveal = saturate(srcAlpha);
+    Out.vReveal = srcAlpha;
 
     return Out;
 }
@@ -610,8 +610,8 @@ PS_OUT_WBOIT PS_BloomHard(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     float3 srcRGB = finalRGB;
     float srcAlpha = finalAlpha;
 
-    float w = saturate(1.0f - In.vViewZ / 1000.0f);
-    w = clamp(w, 0.1f, 1.0f); // 0.1 ~ 1.0 사이에서만 놀게 해. 10.0까지 가지 말고.
+    float w = pow(saturate(1.0f - In.vViewZ / 1000.0f), 3.0f); // 3승으로 변화율 조절
+    w = clamp(w, 0.01f, 3000.0f); // 상한선을 적당히 열어주되, 하한선으로 방어
 
     Out.vAccum = float4(srcRGB * srcAlpha, srcAlpha) * w;
     Out.vReveal = saturate(srcAlpha);
@@ -845,7 +845,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_SPRITEMESH()));
@@ -875,7 +875,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_UnityConvert()));
@@ -885,7 +885,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Disabled, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_DefaultMesh()));

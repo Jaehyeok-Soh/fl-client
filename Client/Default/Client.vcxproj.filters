@@ -718,6 +718,9 @@
     <Filter Include="03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent">
       <UniqueIdentifier>{4b4564f1-e6dd-444c-9a16-0eecb5e95c9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect\EffectAfterImage">
+      <UniqueIdentifier>{778f405b-a9b1-48f9-9ca2-7bcf2e4d2b20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

@@ -132,8 +132,8 @@ PS_OUT_WBOIT PS_Particle(GS_OUT_POS_PARTICLE In) : SV_TARGET0
     float3 srcRGB = finalRGB;
     float srcAlpha = finalAlpha;
 
-    float w = saturate(1.0f - In.vViewZ / 1000.0f);
-    w = clamp(w, 0.1f, 1.0f); // 0.1 ~ 1.0 사이에서만 놀게 해. 10.0까지 가지 말고.
+    float w = pow(saturate(1.0f - In.vViewZ / 1000.0f), 3.0f); // 3승으로 변화율 조절
+    w = clamp(w, 0.01f, 3000.0f); // 상한선을 적당히 열어주되, 하한선으로 방어
 
     Out.vAccum = float4(srcRGB * srcAlpha, srcAlpha) * w;
     Out.vReveal = saturate(srcAlpha);
