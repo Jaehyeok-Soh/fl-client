@@ -14,14 +14,18 @@ public:
 		Call_ParentTirggerEnter = 1 << 1,
 		Call_ParentTirggerExit = 1 << 2,
 
-		Check_CollidedPos_In = 1 << 3,
-		Check_CollidedPos_Out = 1 << 4,
+		Check_CollidedPos_Enter = 1 << 3,
+		Check_CollidedPos_Exit = 1 << 4,
+
+		Check_CollidedObj_Enter = 1 << 5,
+		Check_CollidedObj_Exit = 1 << 6,
 		
 		//  maskes
-		Default = Call_ParentTirggerEnter | Call_ParentTirggerExit | Check_CollidedPos_In | Check_CollidedPos_Out,
+		Default = Call_ParentTirggerEnter | Call_ParentTirggerExit | Check_CollidedPos_Enter | Check_CollidedPos_Exit,
 
-		Only_PosUpdate		= Check_CollidedPos_In | Check_CollidedPos_Out,		// 24
 		Only_TriggerCall	= Call_ParentTirggerEnter | Call_ParentTirggerExit, // 6
+		Only_PosUpdate		= Check_CollidedPos_Enter | Check_CollidedPos_Exit,		// 24
+		Only_ObjChache		= Check_CollidedObj_Enter | Check_CollidedObj_Exit, // 6
 	};
 
 	typedef struct tagColliderPartDesc : public CPartObject::PARTOBJ_DESC
@@ -53,6 +57,7 @@ private:
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelIndex) override;
+	virtual HRESULT Clear_WhenChangeLevel() override;
 	virtual void Update_Priority(_float fTimeDelta) override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Update_Late(_float fTimeDelta) override;
@@ -64,7 +69,8 @@ public:
 
 	// getter setter funcs
 public:
-	const Vec3& Get_CollidedPos() const { return m_vColliedPos; }
+	const Vec3& Get_CollidedPos() const { return m_vCollidedPos; }
+	const Vec3& Get_Collided_ObjPos();
 
 private:
 	HRESULT Ready_Components(TRIGGER_COLLIDEPART_DESC* pDesc);
@@ -75,10 +81,14 @@ private:
 	Matrix m_matPreScale{ Matrix::Identity };
 
 private:
-	Vec3	m_vColliedPos	= { Vec3::Zero };
-	_int	m_iColliedID	= {-1};
+	Vec3	m_vCollidedPos	= { Vec3::Zero };
+	_int	m_iCollidedID	= {-1};
 
 	Flags	m_FUpdate_Flags = {};
+
+private:
+	CGameObject* m_pCollidedObj = { nullptr };
+	_bool		m_bDeadObj = { false };
 
 public:
 	static CTriggerCollidePart* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

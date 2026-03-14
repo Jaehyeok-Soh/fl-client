@@ -30,12 +30,19 @@ HRESULT CState_MoonCharge::Start(void* pArg, _bool bForce)
 		return E_FAIL;
 
 	m_bShakeActived = false;
+	m_bLookMonsterYet = true;
 	return S_OK;
 }
 
 void CState_MoonCharge::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	if (m_bLookMonsterYet && Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
+	{
+		LookAt_Monser();
+		m_bLookMonsterYet = false;
+	}
 
 	if (m_bShakeActived == false && m_fStateElapsed >= (1.f / 1.2f))
 	{
