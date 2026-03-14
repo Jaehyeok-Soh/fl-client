@@ -149,6 +149,7 @@ public:
 	void					Request_DeleteGameObject(_uint iCloneLevelIndex, CGameObject* pGo);
 
 	CGameObject*			Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex);
+	CGameObject*			Get_GameObject_By_ID(_uint iLevelIndex, const wstring& wstrLayerTag, uint64 iObjectID);
 	CGameObject*			Get_GameObject_Front(_uint iLevelIndex, const wstring& wstrLayerTag);
 	CGameObject*			Get_GameObject_Back(_uint iLevelIndex, const wstring& wstrLayerTag);
 	list<CGameObject*>*		Get_GameObject_List(_uint iLevelIndex, const wstring& wstrLayerTag);

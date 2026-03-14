@@ -36,6 +36,7 @@ private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual void Bind_Events()override;
 private:
+	class CMainPlayer* m_pPlayer = { nullptr };
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 
 	_bool m_isUsingE			= { false };

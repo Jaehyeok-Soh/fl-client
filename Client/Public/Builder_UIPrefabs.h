@@ -32,6 +32,7 @@ private:
 	CGenericUI::GENERIC_UI_DESC Make_DefaultInfo(const DTO::TUI_GenericUIData& data);
 
 private:
+
 	EUIPrefabType m_eUIPrefabType = {};
 	// Data Cache 
 	unordered_map<_string, DTO::TUI_TextData> m_MapTextDataCache;

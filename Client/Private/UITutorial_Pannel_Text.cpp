@@ -132,7 +132,7 @@ void CUITutorial_Pannel_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
-				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
 				{
 					this->Set_Invisible();
 				}
@@ -148,7 +148,7 @@ void CUITutorial_Pannel_Text::Initialize_Visible_Event()
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:
-		Ready_Lerp_Movement(Vec2{ 0.f, 235.5 }, Vec2{ 0.f, 0.f }, 1.5f, 3.f, 0.5f, true);
+		Ready_Lerp_Movement(Vec2{ 0.f, 235.5 }, Vec2{ 0.f, 0.f }, 1.f, 3.f, 0.5f, true);
 		Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
@@ -167,8 +167,7 @@ void CUITutorial_Pannel_Text::Initialize_InVisible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
-
-	Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
+	Ready_Fade_Text(0.4f, 1.f, 0.f, m_fDelay);
 }
 
 _bool CUITutorial_Pannel_Text::Tick_Visible_Event(const _float fTimeDelta)
@@ -234,10 +233,9 @@ _bool CUITutorial_Pannel_Text::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUITutorial_Pannel_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	if (Tick_Fade(fTimeDelta))
+	if (Tick_Fade_Text(fTimeDelta))
 	{
 		Request_SetDead();
-		m_fAlpha_Ratio = 1.f;
 		m_isFin_Event = true;
 		m_isActive = true;
 		return true;

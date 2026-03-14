@@ -718,6 +718,18 @@
     <Filter Include="03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent">
       <UniqueIdentifier>{4b4564f1-e6dd-444c-9a16-0eecb5e95c9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\02. Quest">
+      <UniqueIdentifier>{e5b6436e-4aa4-472b-a196-2874a9dbadf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Quest\Scenario">
+      <UniqueIdentifier>{6fec49a0-7d91-4de3-a4c5-a5ae551bb0ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Quest\Chapter">
+      <UniqueIdentifier>{2338547c-019d-4c84-aa4f-dbb6b6c8cb85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\02. Quest\IQuest">
+      <UniqueIdentifier>{22871574-32e8-4ed9-9209-1982bfac16c0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Layout\Animation">
       <UniqueIdentifier>{f2ac30ac-8cc6-4e1a-91a2-0a36094fcd50}</UniqueIdentifier>
     </Filter>
@@ -1336,6 +1348,18 @@
     <ClInclude Include="..\Public\TriggerBox_TutorialUIEvent.h">
       <Filter>03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\QuestManager.h">
+      <Filter>07. System\02. Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Quest_Scenario.h">
+      <Filter>07. System\02. Quest\Scenario</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Quest_Chapter.h">
+      <Filter>07. System\02. Quest\Chapter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\IQuest.h">
+      <Filter>07. System\02. Quest\IQuest</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\ImGui_AnimationLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>
     </ClInclude>
@@ -1942,6 +1966,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_TutorialUIEvent.cpp">
       <Filter>03. GameObject\TriggerBox\03. TriggerBox_TutorialUIEvent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\QuestManager.cpp">
+      <Filter>07. System\02. Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Quest_Scenario.cpp">
+      <Filter>07. System\02. Quest\Scenario</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Quest_Chapter.cpp">
+      <Filter>07. System\02. Quest\Chapter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\IQuest.cpp">
+      <Filter>07. System\02. Quest\IQuest</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_AnimationLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>

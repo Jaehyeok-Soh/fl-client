@@ -10,6 +10,7 @@ class CUITutorial_Pannel_Text final : public CUIText
 public:
 	typedef struct tagUITutorialPannelTextDesc : public UI_TEXT_DESC
 	{
+
 	}TUTORIAL_PANNEL_TEXT_DESC;
 
 private:
