@@ -255,12 +255,12 @@ private:
 	HRESULT								Build_AnimationIndexTable();
 	void								Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
 	void								Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
-	void								End_AnimationPlayState(AnimationPlayState eState);
+	void								End_AnimationPlayState(AnimationPlayState eState, AnimationPlayState eNextState);
 	void								Change_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
 
 	void								Play_Begin(CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
 	void								Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
-	void								Play_End();
+	void								Play_End(AnimationPlayState eNextState);
 
 	void								Blend_Begin(_uint CurAnimationIndex);
 	void								Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
@@ -286,7 +286,7 @@ private:
 	// cs update funcs
 private:
 	void								Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS);
-	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
+	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
 	void								DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pAnimMixCS);
 	void								Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta);
 	_bool								Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta ,CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
@@ -345,6 +345,7 @@ private:
 	Vec3								m_vPreMainPosition = { Vec3::Zero };
 	Vec3								m_vPreBlendPosition = { Vec3::Zero };
 	Vec3								m_vPreMixPosition = { Vec3::Zero };
+	Vec3								m_vPrePosNon = { Vec3::Zero };
 
 	// mix anim
 	vector<_int>						m_vecMixAnimIndices;

@@ -153,9 +153,9 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 
 			if (m_bRootBone)
 			{
-				Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos);
-				vLeftTranslation = { 0.f,0.f,0.f };
-				vRightTranslation = { 0.f,0.f,0.f };
+				//Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos);
+				//vLeftTranslation = { 0.f,0.f,0.f };
+				//vRightTranslation = { 0.f,0.f,0.f };
 			}
 
 			vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
@@ -175,7 +175,7 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 
 void CChannel::Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos)
 {
-	if (m_bRootBone)
+	//if (m_bRootBone)
 	{
 		if (fCurrentTrackPosition <= 0.f)
 		{
@@ -306,6 +306,8 @@ void CChannel::Reset_PreTranslation(OUT Vec3& vPrepos)
 
 void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, _float fRatio, OUT Vec3& vPrepos)
 {
+
+
 	if (pOwnerTransform == nullptr ||
 		pOwnerPhyCCT == nullptr)
 		return;
@@ -319,6 +321,7 @@ void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform*
 	Vec3 vLerp = Vec3::Lerp(vLeftTrans, vRightTrans, fRatio);
 	Vec3 vDelta = vPrepos - vLerp;
 	vPrepos = vLerp;
+
 
 	//if (fLocalRight == 0
 	//	&& fLocalUp == 0

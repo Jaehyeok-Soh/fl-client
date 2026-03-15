@@ -549,7 +549,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices	= {3,5,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
+		desc.vecStageBoneIndices	= {2,3,5,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
 
 		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
@@ -613,7 +613,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform = &(matPreTransformIdentity);
 		desc.wstrModelFolderName = L"Monster_Dog";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = {150, 152};
+		desc.vecStageBoneIndices = {3,150, 152};
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
@@ -630,7 +630,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform = &(matPreTransformScale150);
 		desc.wstrModelFolderName = L"Monster_Boomer";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = {4, 114, 116 };
+		desc.vecStageBoneIndices = {3,4, 114, 116 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
