@@ -78,6 +78,32 @@ HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _boo
     return S_OK;
 }
 
+HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV)
+{
+    list<CRenderTarget*>* pMRTList = Get_MRT(eMRTLayer);
+    if (nullptr == pMRTList)
+        return E_FAIL;
+
+    m_pDeviceContext->OMGetRenderTargets(1, &m_pBackBuffer, &m_pDSV);
+    m_pDeviceContext->VSSetShaderResources(0, 128, m_pNullSRVs);
+    m_pDeviceContext->PSSetShaderResources(0, 128, m_pNullSRVs);
+
+    m_pDeviceContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+    ID3D11RenderTargetView* pRTVs[8]{ nullptr };
+    _uint   iRenderTargetCount = { 0 };
+
+    for (auto& pRenderTarget : *pMRTList)
+    {
+        if (bClear == true)
+            pRenderTarget->Clear();
+        pRTVs[iRenderTargetCount++] = pRenderTarget->Get_RTV();
+    }
+
+    m_pDeviceContext->OMSetRenderTargets(iRenderTargetCount, pRTVs, pDSV);
+    return S_OK;
+}
+
 HRESULT CRenderTarget_Manager::End_MRT()
 {
     ID3D11RenderTargetView* pRenderTargets[8]{nullptr};

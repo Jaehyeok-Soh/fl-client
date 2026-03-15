@@ -257,6 +257,7 @@ public:
 
 #pragma region RENDER_MANAGER
 	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
+	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
 #ifdef _DEBUG
 	inline void Push_DebugComponent(class CComponent* pComp);
 #endif
@@ -313,6 +314,7 @@ public:
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true, _bool bUseDSV = true);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
@@ -338,6 +340,9 @@ public:
 	SHADER_TOON_DESC& Get_ToonParamDesc();
 	const SHADER_TOON_DESC& Get_ToonParamDesc() const;
 	HRESULT Commit_ToonParam();
+	SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc();
+	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const;
+	HRESULT Commit_CascadeParam();
 	HRESULT Commit_AllPostParams();
 #endif
 #pragma endregion

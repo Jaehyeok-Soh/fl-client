@@ -34,6 +34,7 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         m_defOutline = m_pGameInstance->Get_OutlineParamDesc();
         m_defFog = m_pGameInstance->Get_FogParamDesc();
         m_defToon = m_pGameInstance->Get_ToonParamDesc();
+        m_defCascade = m_pGameInstance->Get_CascadeParamDesc();
         m_bDefaultCached = true;
     }
 
@@ -55,6 +56,7 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         m_pGameInstance->Get_OutlineParamDesc() = m_defOutline;
         m_pGameInstance->Get_FogParamDesc() = m_defFog;
         m_pGameInstance->Get_ToonParamDesc() = m_defToon;
+        m_pGameInstance->Get_CascadeParamDesc() = m_defCascade;
         m_pGameInstance->Commit_AllPostParams();
     }
 
@@ -366,6 +368,44 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         {
             toon = m_defToon;
             m_pGameInstance->Commit_ToonParam();
+        }
+        ImGui::PopID();
+    }
+    // -----------------------
+    // Cascade
+    // -----------------------
+    if (ImGui::CollapsingHeader("Cascade Shadow", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::PushID("CascadeShadow");
+        auto& shadow = m_pGameInstance->Get_CascadeParamDesc();
+        _bool bChanged = false;
+
+        ImGui::SeparatorText("Cascade Split");
+        bChanged |= ImGui::SliderFloat("Cascade0 End", &shadow.fCascadeEnd0, 3.f, 30.f, "%.1f");
+        bChanged |= ImGui::SliderFloat("Cascade1 End", &shadow.fCascadeEnd1, 10.f, 100.f, "%.1f");
+
+        ImGui::SeparatorText("Bias");
+        bChanged |= ImGui::SliderFloat("ShadowBias", &shadow.fShadowBias, 0.0001f, 0.02f, "%.4f");
+        bChanged |= ImGui::SliderFloat("NormalBias", &shadow.fNormalBias, 0.f, 0.1f, "%.3f");
+
+        ImGui::SeparatorText("Appearance");
+        bChanged |= ImGui::SliderFloat("Strength", &shadow.fShadowStrength, 0.f, 1.f, "%.2f");
+
+        if (m_bAutoApply == false)
+        {
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Apply##Shadow"))
+                m_pGameInstance->Commit_CascadeParam();
+        }
+        else if (bChanged)
+        {
+            m_pGameInstance->Commit_CascadeParam();
+        }
+
+        if (ImGui::SmallButton("Reset##Shadow"))
+        {
+            shadow = m_defCascade;
+            m_pGameInstance->Commit_CascadeParam();
         }
         ImGui::PopID();
     }

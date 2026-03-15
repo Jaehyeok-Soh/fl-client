@@ -82,6 +82,10 @@ HRESULT CBody::Initialize(void* pArg)
 
 	}
 
+	// CascadeBuffer Shader¿¡ ¿¬°á
+	if (FAILED(m_pGameInstance->Set_CascadeShadowConstantBuffer(Get_Component<CShader>())))
+		return E_FAIL;
+
 	Set_RenderInfoFlag(OF_Outline, true);
 	Set_RenderInfoFlag(OF_Rim, true);
 	return S_OK;

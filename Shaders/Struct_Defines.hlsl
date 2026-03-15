@@ -107,8 +107,6 @@ struct VS_IN_INST_MESH
     uint iCurInstanceID : SV_InstanceID;
 };
 
-
-
 //////////////////
 // VertexOutput //
 //////////////////
@@ -408,7 +406,7 @@ struct PS_OUT_SPRITEFONT
   
 struct PS_OUT_SHADOW
 {
-    float4 vColor : SV_TARGET0;
+    float4 vDepth : SV_TARGET0;
 };
 /////////////////////
 // Compute Shader ///

@@ -349,13 +349,13 @@ namespace Engine
 		// Light View × Proj 
 		SimpleMath::Matrix matLightVP[SHADOW_CASCADE_COUNT] = {};
 		// ViewZ 기준 분할 거리
-		float fCascadeEnd0 = { 15.f };
-		float fCascadeEnd1 = { 60.f };
-		float  fShadowBias = { 0.002f };
-		float  fNormalBias = { 0.01f };
+		float fCascadeEnd0 = { 8.0f };
+		float fCascadeEnd1 = { 40.f };
+		float  fShadowBias = { 0.0002f };
+		float  fNormalBias = { 0.04f };
 
 		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
-		float fShadowStrength = { 0.5f };
+		float fShadowStrength = { 0.4f };
 		float fCascadeIndex = { 0.f };
 	}SHADER_CASCADE_SHADOW_DESC;
 

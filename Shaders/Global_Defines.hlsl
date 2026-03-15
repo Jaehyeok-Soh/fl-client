@@ -3,6 +3,9 @@
 
 #include "Common_Defines.hlsl"
 
+#define DEFAULT_SPECMASK_FLOAT4 float4(0.7f, 1.f, 0.f, 1.f)
+#define DEFAULT_SPECMASK_FLOAT3 float3(0.7f, 1.f, 0.f)
+
 ///////////////////
 // Static Scalar //
 ///////////////////

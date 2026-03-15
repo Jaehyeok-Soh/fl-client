@@ -67,6 +67,7 @@ private:
 	_int m_iCamSocket_Index = { 0 }; // cam ¿¬°á »À idx
 	_int m_iRootMotion_Index	= { 0 }; // rootmotion »À idx
 
+	_int m_iFaceMesh_Index = { 0 };
 private:
 	CComputeShader* m_pBoneMeshCS			= { nullptr };
 	CComputeShader* m_pBoneCombineCS		= { nullptr };

@@ -28,6 +28,7 @@ private:
 	SHADER_OUTLINE_DESC    m_defOutline{};
 	SHADER_FOG_DESC		   m_defFog{};
 	SHADER_TOON_DESC       m_defToon{};
+	SHADER_CASCADE_SHADOW_DESC m_defCascade{};
 public:
 	static CImGui_ShaderLayout* Create();
 	virtual void Free() override;

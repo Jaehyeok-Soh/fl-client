@@ -42,6 +42,7 @@ public:
 	HRESULT Render();
 	void Clear();
 	void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
+	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
 private:	
 	HRESULT Render_Priority();
 	HRESULT Render_NoneBlend();
@@ -69,6 +70,7 @@ private:
 	HRESULT Set_ConstantBuffer();
 	HRESULT Ready_RT();
 	HRESULT Ready_MRT();
+	HRESULT Create_ShadowResource();
 	HRESULT Compute_ShadowCascade();
 	void Request_SortUI();
 private:
@@ -109,10 +111,11 @@ private:
 	ID3D11ShaderResourceView* m_pPerlinNoiseSRV{ nullptr };
 
 	// Shadow
-	class CShader* m_pShadowShader = { nullptr };
 	D3D11_VIEWPORT m_tShadowViewport{};
 	SHADER_CASCADE_SHADOW_DESC m_tCascadeShadowDesc{};
 	CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>* m_pCB_CascadeShadow{ nullptr };
+	ID3D11Texture2D* m_pShadowDSTexture{ nullptr };
+	ID3D11DepthStencilView* m_pShadowDSV{ nullptr };
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
@@ -149,6 +152,12 @@ public:
 	SHADER_TOON_DESC& Get_ToonParamDesc() { return m_tToonparamDesc; }
 	const SHADER_TOON_DESC& Get_ToonParamDesc() const { return m_tToonparamDesc; }
 	HRESULT Commit_ToonParam();
+
+	// Cascade
+	// Toon
+	SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() { return m_tCascadeShadowDesc; }
+	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const { return m_tCascadeShadowDesc; }
+	HRESULT Commit_CascadeParam();
 
 	HRESULT Commit_AllPostParams();
 private:

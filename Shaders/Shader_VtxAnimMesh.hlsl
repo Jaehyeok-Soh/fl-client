@@ -189,10 +189,54 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_SKELETON input)
     return output;
 }
 
+PS_OUT_DEFFERED PS_FACE(PS_IN_SKELETON input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float4 vDiffuse = 1.f;
+    Compute_Diffse(vDiffuse, input.vUV);
+
+    float3 final =
+        (vDiffuse.r * Color_R.rgb) +
+        (vDiffuse.g * Color_G.rgb) +
+        (vDiffuse.b * Color_B.rgb);
+     //saturate(vDiffuse.r * Color_R) +
+    // saturate(vDiffuse.g * Color_G) +
+     //saturate(vDiffuse.b * Color_B);
+    
+    float luminance = dot(final, float3(0.3, 0.59, 0.11));
+
+    float3 finalRGB = final * luminance;
+    
+    float4 finalDiffuse = float4(saturate(finalRGB), vDiffuse.a);
+    
+    output.vDiffuse = finalDiffuse;
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+    return output;
+}
+
 PS_OUT_SHADOW PS_SHADOW(VS_OUT_SHADOW input)
 {
     PS_OUT_SHADOW output;
-    output.vColor = float4(input.vPosition.z / input.vPosition.w, 0.f, 0.f, 1.f);
+    output.vDepth = float4(input.vPosition.z, 0.f, 0.f, 1.f);
     return output;
 }
 
@@ -210,4 +254,8 @@ technique11 T0
     // Index - 4
     // Shadow - 이거추가되면 Render_Shadow에서 Set_Pass Index 바꿔줘야함
     PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_SHADOW, PS_SHADOW)
+    
+    // Index - 5
+    // Face - 위와 같은 이유로 Body 및 얼굴이 포함된 PartObject의 Initialize 시점에 FaceIndex를 잧아서 Set_Pass해주는 부분 Index 바꿔줘야함
+    PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_FACE)
 };

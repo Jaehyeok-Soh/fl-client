@@ -1,6 +1,54 @@
 #include "Struct_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
+float SampleCascadeShadowPCF(float3 vWorldPos, float3 vWorldNormal, float fNDotL, float fViewZ)
+{
+    int iCascade = (fViewZ > cascadeParam.fCascadeEnd0) ? 1 : 0;
+    
+    // 스치는 입사각일수록 더 크게
+    float fNormalOffset = cascadeParam.fNormalBias * (1.0f - fNDotL);
+    
+    float3 vBiasedPos = vWorldPos + vWorldNormal * fNormalOffset;
+    
+    // World -> LightClip
+    float4 vLightClip = mul(float4(vBiasedPos, 1.f), cascadeParam.matLightVP[iCascade]);
+    float3 vLightNDC = vLightClip.xyz / vLightClip.w;
+    
+    // NDC -> UV
+    float2 vShadowUV = NDC_ToUV(vLightNDC.xy);
+    
+    // 범위 밖 커트
+    if (vShadowUV.x < 0.f || vShadowUV.x > 1.f ||
+        vShadowUV.y < 0.f || vShadowUV.y > 1.f ||
+        vLightNDC.z < 0.f || vLightNDC.z > 1.f)
+        return 1.f;
+    
+    float fCurrentDepth = vLightNDC.z;
+    
+    // 3x3 PCF
+    float fShadow = 0.f;
+    [unroll]
+    for (int y = -1; y <= 1; ++y)
+    {
+        [unroll]
+        for (int x = -1; x <= 1; ++x)
+        {
+            float2 vOffset = float2(x, y) * cascadeParam.vShadowMapInvSize;
+            float fStoredDepth;
+            
+            if (iCascade == 0)
+                fStoredDepth = g_RenderTargetCascadeShadowmap0.Sample(PointClampSampler, vShadowUV + vOffset, 0).r;
+            else
+                fStoredDepth = g_RenderTargetCascadeShadowmap1.Sample(PointClampSampler, vShadowUV + vOffset, 0).r;
+            
+            fShadow += ((fCurrentDepth - cascadeParam.fShadowBias) > fStoredDepth) ? 0.f : 1.f;
+        }
+    }
+    
+    fShadow /= 9.f;
+    return lerp(1.f - cascadeParam.fShadowStrength, 1.f, fShadow);
+}
+
 float GetRimMask(float2 vUV)
 {
     uint packed = LoadObjectInfo(vUV, OutlineParam.vInvSize);
@@ -267,8 +315,8 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
     DecodeDepth(input.vUV, fNDCZ, fViewZ);
 
     // AO / Roughness / Metal 값을 읽는다.
-    float fAO = 1.0f;
-    float fRough = 0.0f;
+    float fAO = 0.7f;
+    float fRough = 0.5f;
     float fMetal = 0.0f;
     DecodeSpecularMask(input.vUV, fAO, fRough, fMetal);
 
@@ -296,7 +344,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
 
     // 카메라에서 현재 픽셀을 향하는 view 방향을 구한다.
     float3 vViewDir = normalize(CameraPosition() - vWorldPos.xyz);
-
+    
     // Half vector를 구한다.
     float3 vHalfDir = normalize(vViewDir + vLightDir);
 
@@ -305,6 +353,9 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
     float fNdotV = saturate(dot(vNormal, vViewDir));
     float fNdotH = saturate(dot(vNormal, vHalfDir));
     float fVdotH = saturate(dot(vViewDir, vHalfDir));
+
+    // Shadow
+    float fShadow = SampleCascadeShadowPCF(vWorldPos.xyz, vNormal, fNdotL, fViewZ);
 
     // Roughness를 alpha로 변환한다.
     float fClampedRough = saturate(fRough);
@@ -351,11 +402,11 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
     float3 vRadiance = Light.vDiffuse.rgb;
 
     // 최종 Toon diffuse를 만든다.
-    float3 vShade = vAmbient + (vRadiance * (fToonDiffuse * fDirectOcc)) * vDiffuseBRDF;
+    float3 vShade = vAmbient + (vRadiance * (fToonDiffuse * fDirectOcc * fShadow)) * vDiffuseBRDF;
 
     // Specular는 예전 PBR 공식을 그대로 유지한다.
     float fSpecOcc = lerp(1.0f, fOcc, 0.2f);
-    float3 vSpecular = (vSpecularBRDF * vRadiance) * (fNdotL * fSpecOcc);
+    float3 vSpecular = (vSpecularBRDF * vRadiance) * (fNdotL * fSpecOcc * fShadow);
 
     // Rim은 지정된 오브젝트에만 적용한다.
     float fRimMask = GetRimMask(input.vUV);

@@ -145,7 +145,7 @@ HRESULT CPlants::Render_Plnats(_uint iShaderPassIndex)
 
         /* Client Make Path를 이용한다 */
         pShader->Set_Pass(iShaderPassIndex);;
-
+        pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
         pInstanceMesh->Bind_Instance(1);
         for (_uint i = 0; i < iMeshCount; ++i)
         {
