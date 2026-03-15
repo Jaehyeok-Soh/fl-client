@@ -73,6 +73,8 @@ public:
 		vector<CHECK_ANIMATION>	vecPreAnims;				// 프리 애니메이션들 저장
 		vector<_int>			vecMainAnims;				// 메인 애니메이션들 저장
 
+		vector<_int>			vecWeaponAnims; // weapon anims
+
 		_bool bBlend = { false };
 		_bool bLoop = { false };
 	}STATE_DESC;

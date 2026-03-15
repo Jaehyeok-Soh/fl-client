@@ -1304,9 +1304,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
             weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
 
-            weaponDesc.fAllBullet           = 1000.f;
-            weaponDesc.fCurBullet           = 500.f;
-            weaponDesc.fAttackCoolTime      = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
+            weaponDesc.fAllBullet = 1000.f;
+            weaponDesc.fCurBullet = 500.f;
+            weaponDesc.fAttackCoolTime = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));
@@ -1315,9 +1315,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
                 return E_FAIL;
         }
 
-        switch (m_ePlayerType)
-        {
-        case PLAYER_TYPE::MOON:
+        //switch (m_ePlayerType)
+        //{
+        //case PLAYER_TYPE::MOON:
         {
             CPartEffect::PART_EFFECT_DESC tDesc;
             tDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
@@ -1373,20 +1373,27 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             if (FAILED(Add_Part(Part::EFFECT, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Effect_Prototype_Tag, &tDesc)))
                 return E_FAIL;
         }
-        break;
-        }
+        /*break;
+        }*/
     }
 
-    // parts
-
+    // CLOAK : weapon은 아니지만, weapon에 다 기능이 있기 때문에 빌려 씀
     {
-        //CSocketObject::SOCEKT_DESC SocketDesc = {};
-        //SocketDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        //SocketDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-        //SocketDesc.iLevelIndex = pDesc->iLevelIndex;
-        //SocketDesc.wstrModelPrototypeName = pDesc->wstrBodyModelTag;
-        //if (FAILED(Add_Part(Part::CLOAK, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Socket_Prototype_Tag, &SocketDesc)))
-        //    return E_FAIL;
+        CWeapon::WEAPON_DESC weaponDesc = {};
+        weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonClock";
+        weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket = Get_Part<CBody>(Part::BODY)->Get_PosMatrix(285);
+        weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
+        weaponDesc.eState = CWeapon::State::HAND_ONLY_POS;
+        weaponDesc.eAnimState = CWeapon::AnimState::PLAY;
+
+        weaponDesc.bMianWeapon = true;
+        weaponDesc.FDescFlag = 0;
+
+        weaponDesc.matHandOffsetMatrix = Matrix::CreateTranslation(0.f, -0.71f, 0.12f);
+
+        if (FAILED(Add_Part(Part::CLOAK, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+            return E_FAIL;
     }
 
 
@@ -1400,6 +1407,9 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
         desc.iStateCount = ENUM_TO_UINT(State::END);
         desc.pOwnerModel = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
         desc.pOwnerAnimECS =static_cast<CComputeShader*>(Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+        desc.pOwnerWeaponModel = Get_Part<CWeapon>(ENUM_TO_UINT(Part::CLOAK))->Get_Component<CModel>();
+        desc.pOwnerWeaponAnimECS = static_cast<CComputeShader*>(Get_Part<CWeapon>(ENUM_TO_UINT(Part::CLOAK))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+
         if (FAILED(Add_Component<CPlayerActionState>(0, L"Prototype_Component_ActionState_Player", &desc)))
             return E_FAIL;
     }
