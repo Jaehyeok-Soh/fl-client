@@ -153,7 +153,7 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 
 			if (m_bRootBone)
 			{
-				Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos);
+				//Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos);
 				//vLeftTranslation = { 0.f,0.f,0.f };
 				//vRightTranslation = { 0.f,0.f,0.f };
 			}

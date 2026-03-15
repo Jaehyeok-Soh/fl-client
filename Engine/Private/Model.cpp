@@ -328,7 +328,7 @@ HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, _uint iAnimati
 	if (bBlend)
 	{
 		m_iPrevAnimIndex = m_iCurrentAnimIndex;
-		Change_AnimationPlayState(AnimationPlayState::BLEND,nullptr, iAnimationIndex);
+		Change_AnimationPlayState(AnimationPlayState::BLEND,nullptr, iAnimationIndex,false);
 	}
 	else
 		Change_AnimationPlayState(AnimationPlayState::PLAY, pAnimEComShader, iAnimationIndex);
