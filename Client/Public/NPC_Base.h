@@ -1,7 +1,7 @@
 #pragma once
 #include "ContainerObject.h"
-
-#include "Builder_Map.h"
+#include "IQuest.h"
+#include "IInteractable.h"
 
 NS_BEGIN(Engine)
 class CEffectHandler;
@@ -9,21 +9,25 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CMonster_Base abstract : public CContainerObject
+class CNPC_Base abstract :
+	public CContainerObject,
+	public IQuest,
+	public IInteractable
 {
 	using Super = CContainerObject;
 
 public:
-	typedef struct tagMonsterDesc : public Super::GAMEOBJECT_DESC
+	typedef struct tagNPCDesc : public Super::GAMEOBJECT_DESC
 	{
 		wstring wstrBodyModelTag = {};
 		wstring wstrPartBodyPrototypeTag = {};
-		wstring wstrAttackOverlapPrototypeTag = {};
+		wstring wstrNavigationPrototypeTag = {};
+		_int iNavigationCellIndex = { -1 };
 		Vec3 vSpawnPosition = {};
-		wstring wstrMonsterStateTag = {};
+		wstring wstrNPCStateTag = {};
 		std::span<std::pair<_uint, string>> spanBoneNames;
 		PHYSICSCCT_DESC tCCTDesc{};
-	}MONSTER_DESC;
+	}NPC_DESC;
 
 	struct Part
 	{
@@ -36,54 +40,10 @@ public:
 		};
 	};
 
-	struct State
-	{
-		enum Enum : _uint
-		{
-			IDLE,
-
-			WALK,
-			RUN,
-			JUMP,
-
-			FALL,
-			LAND,
-
-			ATTACK,
-			HIT,
-			DOWN,
-			AIR_BORNE,
-			KNOCK_BACK,
-
-			ENCOUNT,
-			MISS_TARGET,
-			CHASING,
-
-			COMBO,
-			GUN,
-			CHARGE,
-			SKILL1,
-			SKILL2,
-
-			LOOPDONE,
-
-			END
-		};
-	};
-	struct SubState
-	{
-		enum Enum
-		{
-			PHASE_1,
-			PHASE_2,
-			END
-		};
-	};
-
 protected:
-	CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CMonster_Base(const CMonster_Base& rhs);
-	virtual ~CMonster_Base() = default;
+	CNPC_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CNPC_Base(const CNPC_Base& rhs);
+	virtual ~CNPC_Base() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -95,12 +55,12 @@ public:
 	virtual void		Update_Late(const _float fTimeDelta) override;
 	virtual void		Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT		Render() override;
-	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;	
+	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
 public:
 	virtual void		OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void		OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo) override;
+	virtual void		OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void		OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void		OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void		OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
@@ -114,22 +74,24 @@ protected:
 	HRESULT				Ready_BaseStates();
 	HRESULT				Ready_PartObjects(void* pArg);
 	HRESULT				Ready_Components(void* pArgs);
-	HRESULT				Ready_AttackOverlap(wstring prototypeName);
 	HRESULT				Ready_EffectHandler(void* pArgs);
 	HRESULT				Ready_CCT(void* pArgs);
 
 protected:
-	void				OnHit_PlayerMoon(const HIT_DESC& hitDesc); //플레이어 별 처리를 위함.. 필요하다면 virtual로 빼도 될지도
+	// IQuest을(를) 통해 상속됨
+	virtual void QuestEnter() override;
+	virtual void QuestExit() override;
+
+	// IInteractable을(를) 통해 상속됨
+	virtual void Interact() override;
 
 protected:
-	EMonster_Type			m_eMonsterType{ EMonster_Type::END};
-	class CEffectHandler*	m_pEffectHandler = { nullptr };
+	class CEffectHandler* m_pEffectHandler = { nullptr };
+
 public:
-	void SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc);
-public:
-	static  HRESULT			Create_Mosnter(EMonster_Type eCreateMonsterType , _uint iFindPrototypeLevelType , _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc = nullptr);
+	static  HRESULT			Create_NPC(OBJECT_ENUM_TAG::Enum eTag, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc = nullptr);
 	virtual CGameObject*	Clone(void* pArg) PURE;
-	virtual void Free() override;
+	virtual void			Free() override;
 };
 
 NS_END

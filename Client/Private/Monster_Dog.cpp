@@ -225,7 +225,6 @@ HRESULT CMonster_Dog::Ready_Components(void* pArg)
 	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 

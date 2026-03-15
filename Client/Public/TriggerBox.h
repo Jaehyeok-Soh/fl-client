@@ -31,7 +31,7 @@ protected:
 		const DTO::SRT_DATA*	pSRTData{nullptr};
 
 		_bool					bHasQuest = { false };
-		DTO::QUEST_CHAPTERDESC	tQuestObjectDesc = {};
+		vector<DTO::QUEST_CHAPTERDESC>	tQuestObjectDesc = {};
 	}TRIGGERBOX_DESC;
 protected:
 	CTriggerBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -41,7 +41,7 @@ public:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Component(TRIGGERBOX_DESC* pDesc);
-	void					Ready_Quest(DTO::QUEST_CHAPTERDESC* pQuestDesc);
+	void					Ready_Quest(vector<DTO::QUEST_CHAPTERDESC>* pQuestDesc);
 public:
 	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
 	virtual void			Update_Priority(const _float fTimeDelta)		override;

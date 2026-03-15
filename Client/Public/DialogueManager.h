@@ -23,6 +23,7 @@ private:
 	void EventCallback();
 
 public:
+	void Start_Dialogue(_int iId);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
