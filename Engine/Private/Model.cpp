@@ -1260,7 +1260,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 			pAnimEvalCS->Set_OutputStructuredBuffer(m_pCurSB);
 
 			// channel 업데이트
-			m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreMainPosition);
+			m_vecAnimations[m_iCurrentAnimIndex]->SetUp_PoseDatasForBlending(m_vecCurrAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPrePosNon);
 
 			// animation 결과 blendCS에 bind
 			pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_CURSRT),
@@ -1352,9 +1352,16 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio, CTransf
 				if (pOwnerPhyCCT && pOwnerTransform &&
 					m_vecAnimations[m_iCurrentAnimIndex]->Get_ApplyRoot() && m_vecAnimations[m_iPrevAnimIndex]->Get_ApplyRoot())
 				{
-					// 3. 두 Delta를 블렌딩 비율에 따라 섞음
-					Vec3 vDelta = m_vPreBlendPosition - vTranslation;
-					m_vPreBlendPosition = vTranslation;
+					Vec3 vBlendvDelta = m_vPreBlendPosition - m_vecPrevAnimationPose[i].vTranslation;
+					Vec3 vMainDelta = m_vPreMainPosition - m_vecCurrAnimationPose[i].vTranslation;
+					m_vPreBlendPosition = m_vecPrevAnimationPose[i].vTranslation;
+					m_vPreMainPosition = m_vecCurrAnimationPose[i].vTranslation;
+
+					Vec3 vDelta = Vec3::Lerp(vBlendvDelta, vMainDelta, fRatio);
+
+					//// 3. 두 Delta를 블렌딩 비율에 따라 섞음
+					//Vec3 vDelta = m_vPreBlendPosition - vTranslation;
+					//m_vPreBlendPosition = vTranslation;
 
 					//if (vDelta.Length() < 1.0f) 
 					{
