@@ -356,7 +356,7 @@ namespace Engine
 
 		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
 		float fShadowStrength = { 0.5f };
-		float fPadding = { 0.f };
+		float fCascadeIndex = { 0.f };
 	}SHADER_CASCADE_SHADOW_DESC;
 
 	typedef struct tagShaderFogParamDesc

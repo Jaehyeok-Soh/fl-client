@@ -146,7 +146,7 @@ struct CascadeParam
     
     float2 vShadowMapInvSize;
     float fShadowStrength;
-    float fPadding;
+    float fCascadeIndex;
 };
 /////////////////
 // ConstBuffer //

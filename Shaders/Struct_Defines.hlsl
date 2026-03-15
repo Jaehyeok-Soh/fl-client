@@ -186,6 +186,11 @@ struct VS_OUT_SKELETON
     float4 vProjPos : TEXCOORD2;
 };
 
+struct VS_OUT_SHADOW
+{
+    float4 vPosition : SV_POSITION;
+};
+
 struct VS_OUT_POS_TEX_PARTICLE
 {
     float4 vPosition : SV_POSITION;
@@ -400,10 +405,14 @@ struct PS_OUT_SPRITEFONT
 {
     float4 vColor : SV_TARGET0;
 };
-    
-////////////////////
-// Compute Shader//
-//////////////////
+  
+struct PS_OUT_SHADOW
+{
+    float4 vColor : SV_TARGET0;
+};
+/////////////////////
+// Compute Shader ///
+/////////////////////
 
 struct VTXPARTICLE
 {

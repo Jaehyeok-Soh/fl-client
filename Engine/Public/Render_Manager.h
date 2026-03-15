@@ -49,7 +49,7 @@ private:
 	HRESULT Render_SSAO();
 	HRESULT Render_Lights();
 	HRESULT Render_CombinedHDR();
-	HRESULT Render_CascadeShadowMap();
+	HRESULT Render_CascadeShadow();
 	HRESULT Render_Environment();
 	HRESULT Render_Fog();
 	HRESULT Render_Outline();
@@ -67,6 +67,9 @@ private:
 	HRESULT Create_SSAO_NoiseSRV();
 	HRESULT Create_Perlin_NoiseSRV();
 	HRESULT Set_ConstantBuffer();
+	HRESULT Ready_RT();
+	HRESULT Ready_MRT();
+	HRESULT Compute_ShadowCascade();
 	void Request_SortUI();
 private:
 	ID3D11Device* m_pDevice = { nullptr };
@@ -107,6 +110,7 @@ private:
 
 	// Shadow
 	class CShader* m_pShadowShader = { nullptr };
+	D3D11_VIEWPORT m_tShadowViewport{};
 	SHADER_CASCADE_SHADOW_DESC m_tCascadeShadowDesc{};
 	CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>* m_pCB_CascadeShadow{ nullptr };
 public:

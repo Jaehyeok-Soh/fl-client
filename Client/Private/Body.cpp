@@ -131,6 +131,7 @@ void CBody::Ready_Before_Render(_float fTimeDelta)
 
 	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 	//Get_Component<CModel>()->Get_BoneMatrix(pGetBoneCS);
 
@@ -190,6 +191,32 @@ HRESULT CBody::Render()
 		pModel->Render(i);
 	}
 
+	return S_OK;
+}
+
+HRESULT CBody::Render_Shadow()
+{
+	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	CShader* pShader = Get_Component<CShader>();
+	_uint iPrevPass = pShader->Get_CurrentPass();
+
+	constexpr _uint iShadowPass = 4;
+
+	// Set Shadow Pass
+	pShader->Set_Pass(iShadowPass);
+	CModel* pModel = Get_Component<CModel>();
+	_uint iMeshCount = pModel->Get_MeshCount();
+	pShader->Bind_TransformData(m_matCombinedWorld);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		pModel->Bind_Bones(pShader, i, m_pBoneMeshCS, m_pBoneCombineCS);
+		pShader->Apply();
+		pModel->Render(i);
+	}
+
+	pShader->Set_Pass(iPrevPass);
 	return S_OK;
 }
 

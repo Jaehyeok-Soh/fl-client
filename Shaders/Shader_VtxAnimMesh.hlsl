@@ -80,6 +80,17 @@ VS_OUT_SKELETON VS_WITHSHAKE(VS_IN_SKELECTON input)
     return output;
 }
 
+VS_OUT_SHADOW VS_SHADOW(VS_IN_SKELECTON input)
+{
+    VS_OUT_SHADOW output;
+    int iCascadeIndex = (int)cascadeParam.fCascadeIndex;    
+    float4x4 matBone = Get_BoneMatrix(input);
+    float4 vWorldPosition = mul(float4(input.vPosition, 1.f), matBone);
+    vWorldPosition = mul(vWorldPosition, W);    
+    output.vPosition = mul(vWorldPosition, cascadeParam.matLightVP[iCascadeIndex]);
+    return output;
+}
+
 PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
 {
     PS_OUT_DEFFERED output;
@@ -178,6 +189,13 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_SKELETON input)
     return output;
 }
 
+PS_OUT_SHADOW PS_SHADOW(VS_OUT_SHADOW input)
+{
+    PS_OUT_SHADOW output;
+    output.vColor = float4(input.vPosition.z / input.vPosition.w, 0.f, 0.f, 1.f);
+    return output;
+}
+
 technique11 T0
 {
     PASS_RS_DS_BS_VP(P0, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
@@ -188,4 +206,8 @@ technique11 T0
 
     // Shake
     PASS_RS_DS_BS_VP(WithRenderFx, RS_Default, DS_Default, BS_Default, VS_WITHSHAKE, PS_MAIN)
+    
+    // Index - 4
+    // Shadow - 이거추가되면 Render_Shadow에서 Set_Pass Index 바꿔줘야함
+    PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_SHADOW, PS_SHADOW)
 };

@@ -27,6 +27,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 public:
 	void Apply();
+	_uint Get_CurrentPass() const { return m_iPass; }
 	void Set_Pass(_uint iPass) { m_iPass = iPass; }
 
 	ID3DX11EffectVariable* Get_Variable(string name);

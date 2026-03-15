@@ -83,6 +83,11 @@ HRESULT CGameObject::Render()
     return S_OK;
 }
 
+HRESULT CGameObject::Render_Shadow()
+{
+    return S_OK;
+}
+
 HRESULT CGameObject::Spawn_FromPool(void *pArg)
 {
     Set_Awake(false);

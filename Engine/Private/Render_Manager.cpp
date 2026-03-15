@@ -7,6 +7,8 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "Shader.h"
 #include "Bounds.h"
+#include "CameraMan.h"
+#include "Light.h"
 #include "RenderTarget.h"
 #include "Octree_Manager.h"
 #include "EngineConsole.h"
@@ -31,257 +33,19 @@ CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 
 HRESULT CRender_Manager::Initialize()
 {
-	//========================
-	// Viewport Save / Set Half
-	//========================
-	_uint iViewportsCount = { 1 };
-	m_pDeviceContext->RSGetViewports(&iViewportsCount, &m_defaultViewport);
-	m_halfViewport = m_defaultViewport;
-	m_halfViewport.Width *= 0.5f;
-	m_halfViewport.Height *= 0.5f;
+	if (FAILED(Ready_RT()))
+		return E_FAIL;
 
-	const _uint& iWidth = (_uint)m_defaultViewport.Width;
-	const _uint& iHeight = (_uint)m_defaultViewport.Height;
-	const _uint& iHalfWidth = (_uint)m_halfViewport.Width;
-	const _uint& iHalfHeight = (_uint)m_halfViewport.Height;
+	if (FAILED(Ready_MRT()))
+		return E_FAIL;	
 
-
-	// For. Target_Diffuse
 	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Diffuse, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Normal
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4{ 0.f,0.f,0.f,1.f };
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Normal, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_SpecularMask
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SpecularMask, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Depth
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R32G32_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Depth, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_ObjectInfo
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R32_UINT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::ObjectInfo, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Emissive
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Emissive, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Ping
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Ping, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Pong
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Pong, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Full
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Full, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Shade
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Shade, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Specular
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Specular, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_SceneHDR
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Scene
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR_Copy, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Bloom_Ping
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Bloom_Ping, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Bloom_Pong
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Bloom_Pong, &desc)))
-			return E_FAIL;
+		m_tShadowViewport.Width = (_float)SHADOW_MAP_SIZE;
+		m_tShadowViewport.Height = (_float)SHADOW_MAP_SIZE;
+		m_tShadowViewport.MinDepth = 0.f;
+		m_tShadowViewport.MaxDepth = 1.f;
 	}
 
-	// For. MRT_GameObjects
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Diffuse)))
-			return E_FAIL;
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Normal)))
-			return E_FAIL;
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::SpecularMask)))
-			return E_FAIL;
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Depth)))
-			return E_FAIL;
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::ObjectInfo)))
-			return E_FAIL;
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Emissive)))
-			return E_FAIL;
-	}
-
-	// For. MRT_LightAcc
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Shade)))
-			return E_FAIL;
-
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Specular)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SSAO_Gen
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Gen, ERenderTarget::SSAO_Ping)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SSAO_BlurH
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurH, ERenderTarget::SSAO_Pong)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SSAO_BlurV
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurV, ERenderTarget::SSAO_Ping)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SSAO_Upsample
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Upsample, ERenderTarget::SSAO_Full)))
-			return E_FAIL;
-	}
-	
-	// For. MRT_CombinedHDR
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::CombineHDR, ERenderTarget::SceneHDR)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SceneHDR_Acc
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SceneHDR_Acc, ERenderTarget::SceneHDR)))
-			return E_FAIL;
-	}
-
-	// For. MRT_Bloom_extract
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_Extract, ERenderTarget::Bloom_Ping)))
-			return E_FAIL;
-	}
-
-	// For. MRT_Bloom_BlurH
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_BlurH, ERenderTarget::Bloom_Pong)))
-			return E_FAIL;
-	}
-
-	// For. MRT_Bloom_BlurV
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_BlurV, ERenderTarget::Bloom_Ping)))
-			return E_FAIL;
-	}
-
-
-	// For. MRT_Shadow
-	{
-	}
-
-	m_matWorld_RT = Matrix::CreateScale(m_defaultViewport.Width, m_defaultViewport.Height, 1.f);
 #ifdef _DEBUG
 	if (FAILED(Ready_Debug()))
 		return E_FAIL;
@@ -300,64 +64,6 @@ void CRender_Manager::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* 
 	Safe_AddRef(pGO);
 	m_renderObjects[ENUM_TO_UINT(eCategory)].push_back(pGO);
 }
-
-#pragma region Legacy
-//if (CMesh_Renderer* pMesh_Renderer = pElement->Get_MeshRenderer())
-//{
-//	Bind_TransformData(pElement->Get_Transform()->Get_WorldMatrix());
-//	pMesh_Renderer->Render();
-//	//	if (CAnimator* pAnimator = pElement->Get_Animator())
-//	//	{
-//	//		const ANIM_KEYFRAME& Keyframe = pAnimator->Get_CurrentAnimationKeyFrame();
-//	//		m_tAnimationData.vSpriteOffset = Keyframe.vOffset;
-//	//		m_tAnimationData.vSpriteSize = Keyframe.vSize;
-//	//		m_tAnimationData.vTextureSize = pAnimator->Get_CurrentAnimation()->Get_TextureSize();
-//	//		m_tAnimationData.fUseAnimation = 1.f;
-//	//		Push_AnimationData();
-
-//	//		m_pPipeline->Set_ConstantBuffer(SS_VertexShader, 2, m_pAnimation_CBuffer);
-//	//		m_pPipeline->Set_Texture(SS_PixelShader, 0, pAnimator->Get_CurrentAnimation()->Get_Texture());
-
-//	//		if (!m_bAnimDataDirty) m_bAnimDataDirty = true;
-//	//	}
-//	//	else
-//	//	{
-//	//		if (m_bAnimDataDirty)
-//	//		{
-//	//			m_tAnimationData.vSpriteOffset = { 0.0f, 0.0f };
-//	//			m_tAnimationData.vSpriteSize = { 0.0f, 0.0f };
-//	//			m_tAnimationData.vTextureSize = { 0.0f, 0.0f };
-//	//			m_tAnimationData.fUseAnimation = 0.0f;
-//	//			Push_AnimationData();
-//	//			m_bAnimDataDirty = false;
-//	//		}
-
-//	//		m_pPipeline->Set_Texture(SS_PixelShader, 0, pMesh_Renderer->Get_Texture());
-//	//	}
-
-//	//	PIPELINE_INFO info;
-//	//	info.pInputLayout = pMesh_Renderer->Get_InputLayout();
-//	//	info.pVertexShader = pMesh_Renderer->Get_VertexShader();
-//	//	info.pPixelShader = pMesh_Renderer->Get_PixelShader();
-//	//	info.pRasterizerState = m_pRasterizerState;
-//	//	info.pBlendState = m_pBlendState;
-//	//	m_pPipeline->Update_Pipeline(info);
-
-//	//	m_pPipeline->Set_VertexBuffer(pMesh_Renderer->Get_VertexBuffer());
-//	//	m_pPipeline->Set_IndexBuffer(pMesh_Renderer->Get_IndexBuffer());
-//	//	m_pPipeline->Set_ConstantBuffer(SS_VertexShader, 1, m_pTransform_CBuffer);
-//	//	m_pPipeline->Set_ConstantBuffer(SS_VertexShader, 0, m_pCamera_CBuffer);
-//	//	//m_pPipeline->Set_Texture(SS_PixelShader, 0, pMesh_Renderer->Get_Texture());
-//	//	m_pPipeline->Set_SamplerState(SS_PixelShader, 0, m_pSamplerState);
-
-//	//	m_pPipeline->Draw_Indexed(pMesh_Renderer->Get_Mesh()->Get_IndicesCount(), 0, 0);
-//}
-//else if(CModel_Renderer* pModel_Renderer = pElement->Get_ModelRenderer())
-//{
-//	Bind_TransformData(pElement->Get_Transform()->Get_WorldMatrix());
-//	pModel_Renderer->Render();
-//}
-#pragma endregion
 
 HRESULT CRender_Manager::Set_ShaderResources()
 {
@@ -515,6 +221,9 @@ HRESULT CRender_Manager::Render()
 	m_pGameInstance->Setup_Inv_ToCBuffer();
 
 	if (FAILED(Render_Priority()))
+		return E_FAIL;
+
+	if (FAILED(Render_CascadeShadow()))
 		return E_FAIL;
 
 	if (FAILED(Render_NoneBlend()))
@@ -1187,11 +896,46 @@ HRESULT CRender_Manager::Render_CombinedHDR()
 	return S_OK;
 }
 
-HRESULT CRender_Manager::Render_CascadeShadowMap()
+HRESULT CRender_Manager::Render_CascadeShadow()
 {
+	if (FAILED(Compute_ShadowCascade()))
+		return E_FAIL;
 
+	m_pDeviceContext->RSSetViewports(1, &m_tShadowViewport);
 
+	for (_uint i = 0; i < SHADOW_CASCADE_COUNT; ++i)
+	{
+		EMRTLayer eMRT = (i == 0)
+			? EMRTLayer::Shadow_Cascade0
+			: EMRTLayer::Shadow_Cascade1;
+
+		if(FAILED(m_pGameInstance->Begin_MRT(eMRT)))
+			goto FAIL;
+
+		// CascadeIndex
+		m_tCascadeShadowDesc.fCascadeIndex = (_float)i;
+		if (FAILED(m_pCB_CascadeShadow->Copy_Data(m_tCascadeShadowDesc)))
+			goto FAIL;
+
+		// 동적 오브젝터만 렌더
+		for (auto& pObject : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::SHADOW_DYNAMIC)])
+			pObject->Render_Shadow();
+
+		if (FAILED(m_pGameInstance->End_MRT()))
+			goto FAIL;
+	}
+
+	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+
+	// Shadow카테고리 안전하게 일괄 정리
+	for (auto& pObject : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::SHADOW_DYNAMIC)])
+		Safe_Release(pObject);
+
+	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::SHADOW_DYNAMIC)].clear();
 	return S_OK;
+FAIL:
+	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+	return E_FAIL;	
 }
 
 HRESULT CRender_Manager::Render_BlendUI()
@@ -1433,6 +1177,403 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	if(FAILED(m_pShadowShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer())))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Ready_RT()
+{
+	//========================
+	// Viewport Save / Set Half
+	//========================
+	_uint iViewportsCount = { 1 };
+	m_pDeviceContext->RSGetViewports(&iViewportsCount, &m_defaultViewport);
+	m_halfViewport = m_defaultViewport;
+	m_halfViewport.Width *= 0.5f;
+	m_halfViewport.Height *= 0.5f;
+
+	m_matWorld_RT = Matrix::CreateScale(m_defaultViewport.Width, m_defaultViewport.Height, 1.f);
+
+	const _uint& iWidth = (_uint)m_defaultViewport.Width;
+	const _uint& iHeight = (_uint)m_defaultViewport.Height;
+	const _uint& iHalfWidth = (_uint)m_halfViewport.Width;
+	const _uint& iHalfHeight = (_uint)m_halfViewport.Height;
+
+
+	// For. Target_Diffuse
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Diffuse, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Normal
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4{ 0.f,0.f,0.f,1.f };
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Normal, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_SpecularMask
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SpecularMask, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Depth
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32G32_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Depth, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_ObjectInfo
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32_UINT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::ObjectInfo, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Emissive
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Emissive, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_AO_Ping
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Ping, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_AO_Pong
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Pong, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_AO_Full
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Full, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Shade
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Shade, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Specular
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Specular, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_SceneHDR
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Scene
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR_Copy, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Bloom_Ping
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Bloom_Ping, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Bloom_Pong
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Bloom_Pong, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Shadow_Cascade_0
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32_FLOAT;
+		desc.iWidth = SHADOW_MAP_SIZE;
+		desc.iHeight = SHADOW_MAP_SIZE;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Cascade_0, &desc)))
+			return E_FAIL;
+	}
+
+	// For. Target_Shadow_Cascade_1
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32_FLOAT;
+		desc.iWidth = SHADOW_MAP_SIZE;
+		desc.iHeight = SHADOW_MAP_SIZE;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Cascade_1, &desc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Ready_MRT()
+{
+	// For. MRT_GameObjects
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Diffuse)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Normal)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::SpecularMask)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Depth)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::ObjectInfo)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Emissive)))
+			return E_FAIL;
+	}
+
+	// For. MRT_LightAcc
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Shade)))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Specular)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_Gen
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Gen, ERenderTarget::SSAO_Ping)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_BlurH
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurH, ERenderTarget::SSAO_Pong)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_BlurV
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurV, ERenderTarget::SSAO_Ping)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_Upsample
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Upsample, ERenderTarget::SSAO_Full)))
+			return E_FAIL;
+	}
+
+	// For. MRT_CombinedHDR
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::CombineHDR, ERenderTarget::SceneHDR)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SceneHDR_Acc
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SceneHDR_Acc, ERenderTarget::SceneHDR)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Bloom_extract
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_Extract, ERenderTarget::Bloom_Ping)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Bloom_BlurH
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_BlurH, ERenderTarget::Bloom_Pong)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Bloom_BlurV
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_BlurV, ERenderTarget::Bloom_Ping)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Shadow_Cascade_0
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Shadow_Cascade0, ERenderTarget::Cascade_0)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Shadow_Cascade_1
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Shadow_Cascade1, ERenderTarget::Cascade_1)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Shadow
+	{
+	}
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Compute_ShadowCascade()
+{
+	// 매 프레임 시행
+	CCameraMan* pCamera = m_pGameInstance->Get_MainCamera();
+	
+	// MainCamera 세팅안됬을때 스킵
+	if (pCamera == nullptr)
+		return S_OK;
+
+	// MainCamera View, Proj
+	CCamera* pCameraComponent = pCamera->Get_Component<CCamera>();
+	Matrix matView = pCameraComponent->Get_ViewMatrix();
+	Matrix matProj = pCameraComponent->Get_ProjectionMatrix();
+	_float fNear = pCameraComponent->Get_Near();
+
+	CLight* pDirLight = m_pGameInstance->Get_Light(LIGHT_TYPE::DIRECTIONAL);
+	// DirLight 세팅안됬을때 스킵
+	if (pDirLight == nullptr)
+		return S_OK;
+	Vec3 vLightDir = pDirLight->Get_LightDesc().vDirection;
+	vLightDir.Normalize();
+
+	// Cascade 분할 거리 (ViewZ 기준으로)
+	// 근거리
+	m_tCascadeShadowDesc.fCascadeEnd0 = 15.f;
+	// 원거리
+	m_tCascadeShadowDesc.fCascadeEnd1 = 60.f;
+
+	_float fSplits[3] =
+	{
+		fNear,
+		m_tCascadeShadowDesc.fCascadeEnd0,
+		m_tCascadeShadowDesc.fCascadeEnd1
+	};
+
+	for (_uint i = 0; i < SHADOW_CASCADE_COUNT; ++i)
+	{
+		//===========================================
+		// Cascade View Frustum 코너 (NDC에서 World로)
+		//===========================================
+		_float fSplitNear = fSplits[i];
+		_float fSplitFar = fSplits[i + 1];
+
+		// NDC z를 구하기 위해 임시 Proj
+		_float fNdcNear = (fSplitNear * matProj._33 + matProj._43) / fSplitNear;
+		_float fNdcFar = (fSplitFar * matProj._33 + matProj._43) / fSplitFar;
+
+		// NDC 8코너
+		Vec3 corners[8] =
+		{
+			{ -1, -1, fNdcNear }, {  1, -1, fNdcNear },
+			{ -1,  1, fNdcNear }, {  1,  1, fNdcNear },
+			{ -1, -1, fNdcFar  }, {  1, -1, fNdcFar  },
+			{ -1,  1, fNdcFar  }, {  1,  1, fNdcFar  },
+		};
+
+		Matrix matInvVP = (matView * matProj).Invert();
+
+		Vec3 vCenter = Vec3::Zero;
+		for (_int c = 0; c < 8; ++c)
+		{
+			Vec4 vWorld = Vec4::Transform(Vec4(corners[c].x, corners[c].y, corners[c].z, 1.f), matInvVP);
+			corners[c] = Vec3(vWorld.x, vWorld.y, vWorld.z) / vWorld.w;
+			vCenter += corners[c];
+		}
+		vCenter /= 8.f;
+
+		//================
+		// Light View 행렬
+		//================
+		Matrix matLightView = ::XMMatrixLookAtLH(
+			vCenter - vLightDir * 50.f,  // 뒤로 50m 물러남
+			vCenter,
+			Vec3::Up
+		);
+
+		//=================================
+		// Light Space AABB에서 Ortho Proj로
+		//=================================
+		Vec3 vMin(FLT_MAX), vMax(-FLT_MAX);
+		for (_int c = 0; c < 8; ++c)
+		{
+			Vec3 vLS = Vec3::Transform(corners[c], matLightView);
+			vMin = Vec3::Min(vMin, vLS);
+			vMax = Vec3::Max(vMax, vLS);
+		}
+
+		// 약간 여유
+		float fZPad = 20.f;
+		vMin.z -= fZPad;
+		vMax.z += fZPad;
+
+		Matrix matLightProj = XMMatrixOrthographicOffCenterLH(
+			vMin.x, vMax.x, vMin.y, vMax.y, vMin.z, vMax.z
+		);
+
+		m_tCascadeShadowDesc.matLightVP[i] = matLightView * matLightProj;
+	}
+
+	m_tCascadeShadowDesc.vShadowMapInvSize = { 1.f / SHADOW_MAP_SIZE, 1.f / SHADOW_MAP_SIZE };
 	return S_OK;
 }
 
