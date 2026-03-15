@@ -418,6 +418,10 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
         if (FAILED(Ready_Water()))
             return E_FAIL;
         break;
+    case Tool::EClientMakePath::Fog:
+        if (FAILED(Ready_Fog()))
+            return E_FAIL;
+        break;
 
     case Tool::EClientMakePath::Bush:
     case Tool::EClientMakePath::Grass:
@@ -607,6 +611,19 @@ HRESULT CMapObject::Ready_Water()
     for (_uint i = 0; i < pModel->Get_MaterialCount(); ++i)
     {
         pModel->Change_MI(i , EMaterialInstanceType::Free);
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_Fog()
+{
+    CModel* pModel = Get_Component<CModel>();
+    if (!pModel) return E_FAIL;
+
+    for (_uint i = 0; i < pModel->Get_MaterialCount(); ++i)
+    {
+        pModel->Change_MI(i, EMaterialInstanceType::Free);
     }
 
     return S_OK;
@@ -1263,6 +1280,9 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::Rock:                
         hr = Render_Rock();
         break;
+    case Tool::EClientMakePath::Fog:                
+        hr = Render_Fog();
+        break;
 
     case Tool::EClientMakePath::Batch_Player:
         hr = Render_Batch_Player();
@@ -1293,6 +1313,7 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::Static_Light:
         hr = Render_StaticObject();
         break;
+
     default:
         break;
     }
@@ -1472,8 +1493,9 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::Tree:
     case Tool::EClientMakePath::Moss:
     case Tool::EClientMakePath::Bush:
-    case Tool::EClientMakePath::Water:
     case Tool::EClientMakePath::Rock:
+    case Tool::EClientMakePath::Water:
+    case Tool::EClientMakePath::Fog:
         return S_OK;
 
 
@@ -2109,6 +2131,148 @@ HRESULT CMapObject::Render_Water()
 
         /* Client Make Path를 이용한다 */
         pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Water));
+
+        if (FAILED(Set_GPU_MapObjectState(pShader)))
+            return E_FAIL;
+
+        pInstanceMesh->Bind_Instance(1);
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Set_MI_TintColor(i, pDesc->vMI_TintColor);
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pShader->Apply();
+            pModel->Render_Instance(i, iInstanceCount);
+        }
+        pInstanceMesh->Unbind_Resource(1);
+    }
+    else
+        return E_FAIL;
+
+    return S_OK;
+}
+HRESULT CMapObject::Render_Fog()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
+    {
+        CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)         return E_FAIL;
+        CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)          return E_FAIL;
+        CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)      return E_FAIL;
+        FOG_DESC* pDesc = static_cast<FOG_DESC*>(m_vecClientMakePathDesc.front());          if (pDesc == nullptr)           return E_FAIL;
+
+        /* Fog CB 가져오기 */
+        ID3DX11EffectConstantBuffer* pCB = pShader->Get_ConstantBuffer(g_szCB_FogrData);
+        if (!pCB->IsValid())
+        {
+            MSG_BOX("Fog CB 생성 실패");
+            return E_FAIL;
+        }
+
+        if (m_fDT >= 1000.f)        /* 일정값 이상 넘어가면 다시재생 */
+            m_fDT = 0.f;
+        CB_FogData tData{};
+        tData.g_fFogDT = m_fDT;
+        tData.g_FogTexBindingFlags = 0;
+        tData.g_fDistortionPower = pDesc->fDistortionPower;
+        ::memcpy(tData.g_vUV , pDesc->vUV, sizeof(Vec4) * ENUM_TO_UINT(EFogTextureType::END));
+
+        array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EFogTextureType::END)>  arraySRVs;
+        arraySRVs.fill(nullptr);
+
+        /* Water Texture Binding */
+        for (_uint i = 0; i < ENUM_TO_UINT(EFogTextureType::END); ++i)
+        {
+            /* Texture가 바인딩 되어있다면 */
+            if (pDesc->arrayTextureBase[i])
+            {
+                arraySRVs[i] = pDesc->arrayTextureBase[i]->Get_SRV();
+                Engine_Utils::Add_Flag(tData.g_FogTexBindingFlags, 1 << i); //걍써
+            }
+        }
+
+        pCB->SetRawValue(&tData, 0, sizeof(CB_FogData));
+
+        pShader->Get_SRV(g_szFogTexture)->SetResourceArray(&arraySRVs[0], 0, ENUM_TO_UINT(EFogTextureType::END));
+
+        /* 월드 매트릭스 바인딩 */
+        const Matrix& pMatrix = pTransform->Get_WorldMatrix();
+        pShader->Bind_TransformData(pMatrix);
+
+        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+        /* Client Make Path를 이용한다 */
+        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Fog));
+
+        /* MapObject State 바인딩 */
+        if (FAILED(Set_GPU_MapObjectState(pShader)))
+            return E_FAIL;
+
+        /* Render 호출 */
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Set_MI_TintColor(i, pDesc->vMI_TintColor);
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pShader->Apply();
+            pModel->Render(i);
+        }
+    }
+
+    else if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+    {
+        CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)             return E_FAIL;
+        CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)              return E_FAIL;
+        CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)          return E_FAIL;
+        CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();                      if (pInstanceMesh == nullptr)       return E_FAIL;
+        FOG_DESC*       pDesc = static_cast<FOG_DESC*>(m_vecClientMakePathDesc.front());          if (pDesc == nullptr)               return E_FAIL;
+ 
+        /* Fog CB 가져오기 */
+        ID3DX11EffectConstantBuffer* pCB = pShader->Get_ConstantBuffer(g_szCB_FogrData);
+        if (!pCB->IsValid())
+        {
+            MSG_BOX("Fog CB 생성 실패");
+            return E_FAIL;
+        }
+
+        if (m_fDT >= 1000.f)        /* 일정값 이상 넘어가면 다시재생 */
+            m_fDT = 0.f;
+        CB_FogData tData{};
+        tData.g_fFogDT = m_fDT;
+        tData.g_FogTexBindingFlags = 0;
+        tData.g_fDistortionPower = pDesc->fDistortionPower;
+        ::memcpy(tData.g_vUV, pDesc->vUV, sizeof(Vec4) * ENUM_TO_UINT(EFogTextureType::END));
+
+        array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EFogTextureType::END)>  arraySRVs;
+        arraySRVs.fill(nullptr);
+
+        /* Water Texture Binding */
+        for (_uint i = 0; i < ENUM_TO_UINT(EFogTextureType::END); ++i)
+        {
+            /* Texture가 바인딩 되어있다면 */
+            if (pDesc->arrayTextureBase[i])
+            {
+                arraySRVs[i] = pDesc->arrayTextureBase[i]->Get_SRV();
+                Engine_Utils::Add_Flag(tData.g_FogTexBindingFlags, 1 << i); //걍써
+            }
+        }
+
+        pCB->SetRawValue(&tData, 0, sizeof(CB_FogData));
+
+        pShader->Get_SRV(g_szFogTexture)->SetResourceArray(&arraySRVs[0], 0, ENUM_TO_UINT(EFogTextureType::END));
+
+
+        /* 월드 매트릭스 바인딩 */
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+
+        pShader->Get_Scalar("g_iSelectInstanceID")->SetRawValue(&m_iSelectedInstanceID, 0, sizeof(m_iSelectedInstanceID));
+        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+        _uint iInstanceCount = Get_InstanceCount();
+
+
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+
+        /* Client Make Path를 이용한다 */
+        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Fog));
 
         if (FAILED(Set_GPU_MapObjectState(pShader)))
             return E_FAIL;

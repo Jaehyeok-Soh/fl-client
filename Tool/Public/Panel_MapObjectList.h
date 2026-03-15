@@ -73,6 +73,8 @@ private:
 
 	/* Water */
 	void						ImGuiUpdate_Water_Desc(WATER_DESC* pDesc);
+	/* Fog */
+	void						ImGuiUpdate_Fog_Desc(FOG_DESC* pDesc);
 
 	/* Batch ฐüทร */
 	void						ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pDesc);

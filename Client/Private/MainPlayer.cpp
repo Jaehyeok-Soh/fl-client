@@ -245,7 +245,7 @@ void CMainPlayer::Update_Late(const _float fTimeDelta)
 
 void CMainPlayer::Ready_Before_Render(const _float fTimeDelta)
 {
-    Super::Ready_Before_Render(fTimeDelta);
+    this->Super::Ready_Before_Render(fTimeDelta);
 
 #ifdef _DEBUG
     m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());

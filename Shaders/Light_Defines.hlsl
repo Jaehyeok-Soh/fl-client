@@ -101,6 +101,17 @@ struct RenderFxDesc
     float3 vEmissiveColor;
     float fReserved0;
 };
+
+struct PlayerInfo
+{
+    row_major Matrix matWorld;
+    float fCollisionRange;
+    float fCollisionHeight;
+    
+    float fCurSpeed;//캐릭터의 현재속도
+    float fMaxSpeed;//캐릭터의 Speed값 값 조절 가능하게
+};
+
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -151,6 +162,11 @@ cbuffer ObjectInfoBuffer
 cbuffer RenderFxParamBuffer
 {
     RenderFxDesc renderFx;
+};
+
+cbuffer PlayerInfoBuffer
+{
+    PlayerInfo tPlayerInfo;
 };
 //////////
 // Func //

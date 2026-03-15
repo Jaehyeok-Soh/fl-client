@@ -75,8 +75,6 @@ private:
 	HRESULT								Ready_ColliderTypeComponet();
 	HRESULT								Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT								Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
-
-
 public:
 	HRESULT								Ready_PlusData_ByClientMakePath();
 
@@ -88,6 +86,7 @@ public:
 	HRESULT								Ready_TriggerBox_MonsterSpawner();
 
 	HRESULT								Ready_Water();
+	HRESULT								Ready_Fog();
 
 
 	HRESULT								Ready_InvisibleWall();
@@ -215,6 +214,7 @@ public:
 	HRESULT								Render_Rock();
 
 	HRESULT								Render_Water();
+	HRESULT								Render_Fog();
 
 	HRESULT								Render_Batch_Player();
 	HRESULT								Render_Batch_Monster();

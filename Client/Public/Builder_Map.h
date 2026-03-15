@@ -61,7 +61,7 @@ private:
 
 	ELevelType		m_eLevelType{};
 
-	CGameInstance* m_pGameInstance{ nullptr };
+	CGameInstance*	m_pGameInstance{ nullptr };
 public:
 	static EMonster_Type Change_MakeMonsterType_To_MonsterType(DTO::EMakeMonsterType eMakeMonsterType);
 	static CBuilder_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);

@@ -66,7 +66,9 @@ private:
 	CRay* m_pMoveRay = { nullptr };
 
 
+
 	_bool	m_isCinematic{false};
+
 public:
 	static CMainPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

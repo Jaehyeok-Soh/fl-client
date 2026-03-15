@@ -11,9 +11,10 @@ CTriggerCollidePart::CTriggerCollidePart(ID3D11Device* pDevice, ID3D11DeviceCont
 
 CTriggerCollidePart::CTriggerCollidePart(const CTriggerCollidePart& rhs)
 	: Super(rhs)
-	, m_vColliedPos(rhs.m_vColliedPos)
-	, m_iColliedID(rhs.m_iColliedID)
+	, m_vCollidedPos(rhs.m_vCollidedPos)
+	, m_iCollidedID(rhs.m_iCollidedID)
 	, m_FUpdate_Flags(rhs.m_FUpdate_Flags)
+	, m_bDeadObj(rhs.m_bDeadObj)
 {
 }
 
@@ -70,6 +71,12 @@ HRESULT CTriggerCollidePart::Awake(const _uint iCurrentLevelIndex)
 	return S_OK;
 }
 
+HRESULT CTriggerCollidePart::Clear_WhenChangeLevel()
+{
+	m_pCollidedObj = nullptr;
+	return S_OK;
+}
+
 void CTriggerCollidePart::Update_Priority(_float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
@@ -104,6 +111,14 @@ void CTriggerCollidePart::Update_Late(_float fTimeDelta)
 void CTriggerCollidePart::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+
+	// render 전에 캐싱 유효 검사
+	if (m_pCollidedObj && !(m_pCollidedObj->IsAlive()))
+	{
+		m_pCollidedObj = nullptr;
+		//Safe_Release(m_pCollidedObj);
+	}
+
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRigidBody>());
 #endif
@@ -114,16 +129,32 @@ void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLa
 	if(Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Call_ParentTirggerEnter)))
 		Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
-	if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Check_CollidedPos_In)) &&
-		pOther && pOther->IsAlive()
-		)
+	if (pOther && pOther->IsAlive())
 	{
-		CTransform* pTrans = pOther->Get_Component<CTransform>();
-
-		if (pTrans)
+		if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Check_CollidedPos_Enter)))
 		{
-			m_vColliedPos = pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
-			m_iColliedID = pOther->Get_ID();
+			CTransform* pTrans = pOther->Get_Component<CTransform>();
+
+			if (pTrans)
+			{
+				m_vCollidedPos = pTrans->Get_Info(TRANSFORM_INFO_STATE::POS);
+				m_iCollidedID = static_cast<_int>(pOther->Get_ID());
+			}
+		}
+
+
+		if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Check_CollidedObj_Enter)))
+		{
+			if (m_pCollidedObj != pOther)
+			{
+				if (m_pCollidedObj)
+				{
+					//Safe_Release(m_pCollidedObj);
+				}
+
+				m_pCollidedObj = pOther;
+				//Safe_AddRef(m_pCollidedObj);
+			}
 		}
 	}
 }
@@ -134,9 +165,18 @@ void CTriggerCollidePart::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLay
 		Get_Parent()->OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 
 	// 충돌 position 리셋
-	if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Check_CollidedPos_Out)) &&
-		pOther && pOther->Get_ID() == m_iColliedID)
-		m_vColliedPos = Vec3::Zero;
+	if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Check_CollidedPos_Exit)) &&
+		pOther && pOther->Get_ID() == m_iCollidedID)
+		m_vCollidedPos = Vec3::Zero;
+
+
+	if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Check_CollidedObj_Exit)) &&
+		m_pCollidedObj == pOther
+		)
+	{
+		m_pCollidedObj = nullptr;
+		//Safe_Release(m_pCollidedObj);
+	}
 }
 
 HRESULT CTriggerCollidePart::Render()
@@ -145,6 +185,19 @@ HRESULT CTriggerCollidePart::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+const Vec3& CTriggerCollidePart::Get_Collided_ObjPos()
+{
+	// render 전에 캐싱 유효 검사
+	if (m_pCollidedObj)
+	{
+		if((m_pCollidedObj->IsAlive()))
+			return m_pCollidedObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	}
+
+	return Vec3::Zero;
 }
 
 HRESULT CTriggerCollidePart::Ready_Components(TRIGGER_COLLIDEPART_DESC* pDesc)
@@ -192,5 +245,8 @@ CGameObject* CTriggerCollidePart::Clone(void* pArg)
 void CTriggerCollidePart::Free()
 {
 	Super::Free();
+
+	//if (m_pCollidedObj)
+	//	Safe_Release(m_pCollidedObj);
 }
 

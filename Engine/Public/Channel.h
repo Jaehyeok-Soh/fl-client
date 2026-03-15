@@ -37,9 +37,9 @@ public:
 	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, _float fMotionOffset);
 
 	// motion anim
-	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset);
-	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset);
-	void Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset);
+	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos);
+	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos);
+	void Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos);
 
 	void Update_Addtive(const vector<class CBone*>& vecBones, const vector<KEYFRAME>& RefKeyFrame, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset);
 
@@ -51,7 +51,7 @@ public:
 public:
 	void	Check_UpdateCpu(const vector<class CBone*>& vecBones);
 	_bool	Set_MotionBone(_int iBoneIdx);
-	void	Reset_PreTranslation();
+	void	Reset_PreTranslation(OUT Vec3& vPrepos);
 
 	// 기본 channel 정보
 private:
@@ -63,14 +63,14 @@ private:
 private:
 	_bool				m_bRootBone		= { false };
 	Matrix				m_matTrans = {};
-	Vec3				m_vPreRootLocal = Vec3::Zero;
+
 	_bool				m_bFirst = { true };
 
 private:
 	_bool				m_bUpdateCpu = { false };
 
 private:
-	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans , CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset,_float fRatio);
+	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans , CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset,_float fRatio, OUT Vec3& vPrepos);
 
 public:
 	static CChannel* Create(const CHANNEL_DESC &desc);

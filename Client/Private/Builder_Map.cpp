@@ -800,7 +800,7 @@ void CBuilder_Map::Free()
 {
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pMeshShader);
-
+	Safe_Release(m_pInstMeshShader);
 
 	Super::Free();
 }
