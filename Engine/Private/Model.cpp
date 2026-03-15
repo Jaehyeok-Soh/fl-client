@@ -53,6 +53,7 @@ CModel::CModel(const CModel& rhs)
 	, m_vPreMainPosition(rhs.m_vPreMainPosition)
 	, m_vPreMixPosition(rhs.m_vPreMixPosition)
 	, m_vPreBlendPosition(rhs.m_vPreBlendPosition)
+	, m_vPrePosNon(rhs.m_vPrePosNon)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -1246,7 +1247,7 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 			pAnimEvalCS->Set_OutputStructuredBuffer(m_pPreSB);
 
 			// channel 업데이트
-			m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPreBlendPosition);
+			m_vecAnimations[m_iPrevAnimIndex]->SetUp_PoseDatasForBlending(m_vecPrevAnimationPose, fTimeDelta, nullptr, pOwnerPhyCCT, Get_BoneCount(), pAnimEvalCS, m_vPrePosNon);
 
 			// animation 결과 blendCS에 bind
 			pAnimBlendCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(BLENDCS_SB_IDX::MU_PRESRT),
@@ -1352,7 +1353,8 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio, CTransf
 					m_vecAnimations[m_iCurrentAnimIndex]->Get_ApplyRoot() && m_vecAnimations[m_iPrevAnimIndex]->Get_ApplyRoot())
 				{
 					// 3. 두 Delta를 블렌딩 비율에 따라 섞음
-					Vec3 vDelta = Vec3::Lerp(m_vPreBlendPosition, m_vPreMainPosition, fRatio);
+					Vec3 vDelta = m_vPreBlendPosition - vTranslation;
+					m_vPreBlendPosition = vTranslation;
 
 					//if (vDelta.Length() < 1.0f) 
 					{
@@ -1455,7 +1457,6 @@ HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader
 
 void CModel::Get_BoneMatrix(CComputeShader* pAnimMixCS)
 {
-
 	//// 2. Gpu -> Cpu
 	//{
 	//	uint32_t writeIndex = m_iFrameIndex % 2;

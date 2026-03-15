@@ -345,6 +345,7 @@ private:
 	Vec3								m_vPreMainPosition = { Vec3::Zero };
 	Vec3								m_vPreBlendPosition = { Vec3::Zero };
 	Vec3								m_vPreMixPosition = { Vec3::Zero };
+	Vec3								m_vPrePosNon = { Vec3::Zero };
 
 	// mix anim
 	vector<_int>						m_vecMixAnimIndices;
