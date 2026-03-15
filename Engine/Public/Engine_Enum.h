@@ -99,6 +99,7 @@ namespace Engine
 		RenderFx,
 		Fogparam,
 		Toonparam,
+		Cascadeparam,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -121,7 +122,8 @@ namespace Engine
 		"CB_MAPPING_RGB",
 		"RenderFxParamBuffer",
 		"FogParamBuffer",
-		"ToonParamBuffer"
+		"ToonParamBuffer",
+		"CascadeParamBuffer"
 	};
 	//===================
 	// FX SRV
@@ -141,6 +143,8 @@ namespace Engine
 		RT_SceneHDR,
 		RT_SceneHDR_Copy,
 		RT_Bloom,
+		RT_Cascade0,
+		RT_Cascade1,
 		LUT_Stand,
 		Transform,
 		Materials,
@@ -165,6 +169,8 @@ namespace Engine
 		"g_RenderTargetSceneHDRTexture",
 		"g_RenderTargetSceneHDRCopyTexture",
 		"g_RenderTargetBloomTexture",
+		"g_RenderTargetCascadeShadowmap0",
+		"g_RenderTargetCascadeShadowmap1",
 		"g_LUT_Stand",
 		"g_TransformMap",
 		"g_MaterialTextures",

@@ -49,6 +49,7 @@ private:
 	HRESULT Render_SSAO();
 	HRESULT Render_Lights();
 	HRESULT Render_CombinedHDR();
+	HRESULT Render_CascadeShadowMap();
 	HRESULT Render_Environment();
 	HRESULT Render_Fog();
 	HRESULT Render_Outline();
@@ -103,6 +104,11 @@ private:
 	SHADER_FOG_DESC m_tFogDesc{};
 	CConstant_Buffer<SHADER_FOG_DESC>* m_pCB_Fog{ nullptr };
 	ID3D11ShaderResourceView* m_pPerlinNoiseSRV{ nullptr };
+
+	// Shadow
+	class CShader* m_pShadowShader = { nullptr };
+	SHADER_CASCADE_SHADOW_DESC m_tCascadeShadowDesc{};
+	CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>* m_pCB_CascadeShadow{ nullptr };
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

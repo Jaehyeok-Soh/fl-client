@@ -381,6 +381,14 @@ HRESULT CRender_Manager::Set_ShaderResources()
 		if (!(m_pFogShader = CShader::Create(m_pDevice, m_pDeviceContext, &desc)))
 			return E_FAIL;
 	}
+	// For. ShadowShader
+	{
+		CShader::SHADER_ORIGIN_DESC desc = {};
+		desc.pShaderFilePath = L"../../Shaders/Shader_Shadow.hlsl";
+		desc.eLayout = EVtxLayout::VTXPOSTEX;
+		if (!(m_pShader = CShader::Create(m_pDevice, m_pDeviceContext, &desc)))
+			return E_FAIL;
+	}
 
 	{
 		CTextureBase::RESOURCE_BASE_DESC desc{};
@@ -1179,6 +1187,13 @@ HRESULT CRender_Manager::Render_CombinedHDR()
 	return S_OK;
 }
 
+HRESULT CRender_Manager::Render_CascadeShadowMap()
+{
+
+
+	return S_OK;
+}
+
 HRESULT CRender_Manager::Render_BlendUI()
 {
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::BLENDUI)])
@@ -1386,9 +1401,10 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	m_pCB_Outlineparam = CConstant_Buffer<SHADER_OUTLINE_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Fog = CConstant_Buffer<SHADER_FOG_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Toonparam = CConstant_Buffer<SHADER_TOON_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_CascadeShadow = CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>::Create(m_pDevice, m_pDeviceContext);
 	if (m_pCB_SSAOkernel == nullptr || m_pCB_SSAOparam == nullptr || m_pCB_HDRparam == nullptr ||
 		m_pCB_Bloomparam == nullptr || m_pCB_Outlineparam == nullptr || m_pCB_Fog == nullptr ||
-		m_pCB_Toonparam == nullptr)
+		m_pCB_Toonparam == nullptr || m_pCB_CascadeShadow == nullptr)
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::SSAOkernal, m_pCB_SSAOkernel->Get_Buffer())))
@@ -1406,10 +1422,15 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Outlineparam, m_pCB_Outlineparam->Get_Buffer())))
 		return E_FAIL;
 
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Toonparam, m_pCB_Toonparam->Get_Buffer())))
+		return E_FAIL;
+	
+	// Fog
 	if (FAILED(m_pFogShader->Set_ConstantBuffer(EFXCB::Fogparam, m_pCB_Fog->Get_Buffer())))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Toonparam, m_pCB_Toonparam->Get_Buffer())))
+	// Shadow
+	if(FAILED(m_pShadowShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer())))
 		return E_FAIL;
 
 	return S_OK;
@@ -1451,10 +1472,12 @@ void CRender_Manager::Free()
 	Safe_Release(m_pCB_SSAOkernel);
 	Safe_Release(m_pCB_SSAOparam);
 	Safe_Release(m_pCB_Fog);
-	Safe_Release(m_pVIBuffer);
-	Safe_Release(m_pFogShader);
 	Safe_Release(m_pCB_Toonparam);
+	Safe_Release(m_pCB_CascadeShadow);
+	Safe_Release(m_pShadowShader);
+	Safe_Release(m_pFogShader);
 	Safe_Release(m_pShader);
+	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

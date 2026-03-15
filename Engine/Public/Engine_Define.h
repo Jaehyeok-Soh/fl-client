@@ -8,6 +8,8 @@
 #define HITSTOP_TIME 0.1f
 #define CAST_VOID_P(p) reinterpret_cast<void*>(p)
 #define CAST_VOID_PP(p) reinterpret_cast<void**>(p)
+#define SHADOW_CASCADE_COUNT 2
+#define SHADOW_MAP_SIZE 2048
 
 // PhysX
 #define PVD_HOST "127.0.0.1"

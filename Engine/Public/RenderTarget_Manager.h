@@ -20,6 +20,8 @@ enum class ERenderTarget : _uint
 	SceneHDR_Copy,	// 유니티에서 SceneTexture라고 함. Effect 전용
 	Bloom_Ping,
 	Bloom_Pong,
+	Cascade_0,
+	Cascade_1,
 	END,
 };
 
@@ -37,6 +39,8 @@ enum class EMRTLayer : _uint
 	Bloom_Extract,
 	Bloom_BlurH,
 	Bloom_BlurV,
+	Shadow_Cascade0,
+	Shadow_Cascade1,
 	END,
 };
 

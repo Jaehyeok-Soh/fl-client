@@ -344,6 +344,21 @@ namespace Engine
 		SimpleMath::Vector2 vPadding{ SimpleMath::Vector2::Zero };
 	}SHADER_OUTLINE_DESC;
 
+	typedef struct tagShaderCascadeShadowDesc
+	{
+		// Light View × Proj 
+		SimpleMath::Matrix matLightVP[SHADOW_CASCADE_COUNT] = {};
+		// ViewZ 기준 분할 거리
+		float fCascadeEnd0 = { 15.f };
+		float fCascadeEnd1 = { 60.f };
+		float  fShadowBias = { 0.002f };
+		float  fNormalBias = { 0.01f };
+
+		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
+		float fShadowStrength = { 0.5f };
+		float fPadding = { 0.f };
+	}SHADER_CASCADE_SHADOW_DESC;
+
 	typedef struct tagShaderFogParamDesc
 	{
 		SimpleMath::Vector4 vColor = { 0.6f, 0.75f, 0.9f, 1.f };

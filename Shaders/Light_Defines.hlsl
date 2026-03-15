@@ -135,6 +135,19 @@ struct ToonParam
     float fDiffuseStrength;
     float3 vPad;
 };
+struct CascadeParam
+{
+    row_major float4x4 matLightVP[SHADOW_CASCADE_COUNT];
+    
+    float fCascadeEnd0;
+    float fCascadeEnd1;
+    float fShadowBias;
+    float fNormalBias;
+    
+    float2 vShadowMapInvSize;
+    float fShadowStrength;
+    float fPadding;
+};
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -214,6 +227,10 @@ cbuffer FogParamBuffer
 cbuffer ToonParamBuffer
 {
     ToonParam toonParam;
+};
+cbuffer CascadeParamBuffer
+{
+    CascadeParam cascadeParam;
 };
 //////////
 // Func //

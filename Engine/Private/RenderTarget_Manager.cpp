@@ -124,6 +124,10 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
     case Engine::ERenderTarget::Bloom_Ping:
     case Engine::ERenderTarget::Bloom_Pong:
         eSlot = EFXSRV::RT_Bloom; break;
+    case Engine::ERenderTarget::Cascade_0:
+        eSlot = EFXSRV::RT_Cascade0; break;
+    case Engine::ERenderTarget::Cascade_1:
+        eSlot = EFXSRV::RT_Cascade1; break;
     default:
         return E_FAIL; 
     }

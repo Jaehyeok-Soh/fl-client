@@ -2014,5 +2014,8 @@
     <FxCompile Include="..\..\Shaders\ComShader_AnimAdditiveMix.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shaders\Shader_Shadow.hlsl">
+      <Filter>04. Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

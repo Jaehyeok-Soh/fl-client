@@ -628,6 +628,7 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Global_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\Light_Defines.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_Shadow.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_SpriteFont.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\..\Shaders\Shader_VtxCol.hlsl" />
