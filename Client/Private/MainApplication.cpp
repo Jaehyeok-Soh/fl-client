@@ -597,7 +597,7 @@ void CMainApplication::Register_Quest_Scenario()
 	s2.iId = 1;
 	s2.iPrevId = 0;
 	s2.iNextId = 2;
-	s2.wstrTitle = L"";
+	s2.wstrTitle = L"세월에 뭍힌 땅";
 	s2.wstrSubTitle = L"";
 	s2.wstrExplain = L"";
 	s2.wstrDescription = L"개발자 설명란 입니다.";
