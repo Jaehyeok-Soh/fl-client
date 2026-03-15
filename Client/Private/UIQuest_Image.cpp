@@ -108,16 +108,24 @@ HRESULT CUIQuest_Image::Attach_Personal_Info()
 void CUIQuest_Image::Bind_Events()
 {
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<TUTORIAL_POPUP_TRIGGER>([this](EUITutorialPopUpTypeID ID)
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
 			})
 	);
 
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<TUTORIAL_POPUP_CLEAR>([this](EUITutorialPopUpTypeID ID)
-			{
-			})
-	);
 }
 
 void CUIQuest_Image::Tick_By_Type(const _float fTimeDelta)

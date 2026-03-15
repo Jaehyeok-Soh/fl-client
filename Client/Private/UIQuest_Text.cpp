@@ -116,14 +116,21 @@ HRESULT CUIQuest_Text::Convert_Stat_To_Text()
 void CUIQuest_Text::Bind_Events()
 {
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<TUTORIAL_POPUP_TRIGGER>([this](EUITutorialPopUpTypeID ID)
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					this->Set_Visible();
+				}
 			})
 	);
-
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<TUTORIAL_POPUP_CLEAR>([this](EUITutorialPopUpTypeID ID)
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
 			})
 	);
 
