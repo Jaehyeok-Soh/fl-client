@@ -58,24 +58,55 @@ HRESULT CBuilder_Effect::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 
 	Effect::EFFECT_CONTAINERDESC pDesc = {};
 	pDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pData._Effect_SimulationType;
+	pDesc._IsPoolingEffect = pData._IsPoolingEffect;
 	pDesc.iLevelIndex = m_iLevelID;
 	pDesc.pTransform_Desc = &pTransDesc;
 	pDesc._childData = pData._ChildData;
 
-	wstring PoolTag = L"POOL_" + Engine_Utils::ToWString(pData.EffectContainerName);
-	wstring LayTag = L"Effect_Layer";
-	wstring PrototypeTag = L"Prototype_GameObject_Effect";
-
 	m_pGameInstance->Push_EffectData(Engine_Utils::ToHash(pData.EffectContainerName.c_str()), &pDesc);
 
-	if(pData.EffectContainerName == "Boss_Xibi_Lightning_Oneshot")
-		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 150);
-
-	else
-		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, &pDesc, 50);
+	// Ç® Çì¾ÖÈú ÀÌÆåÆ®¶ó¸é.
+	if (pData._IsPoolingEffect)
+		Regist_pool(&pDesc, pData.EffectContainerName);
 
 	return S_OK;
 }
+
+const wstring CBuilder_Effect::Create_PrototypeTag(const string Tag)
+{
+	wstring PoolTag = {};
+	wstring LayTag = {};
+	wstring PrototypeTag = {};
+
+	//if (Tag.find("Warning") != std::string::npos)
+	//	PrototypeTag = L"Prototype_GameObject_Effect_WarningCircle";
+
+	//else
+	PrototypeTag = L"Prototype_GameObject_Effect";
+
+	return PrototypeTag;
+}
+
+void CBuilder_Effect::Regist_pool(void* pArg, string& PrefabEffectTag)
+{
+	wstring PoolTag = L"POOL_" + Engine_Utils::ToWString(PrefabEffectTag);
+	wstring LayTag = L"Effect_Layer";
+	wstring PrototypeTag = Create_PrototypeTag(PrefabEffectTag);
+
+	if (PrefabEffectTag == "Boss_Xibi_Lightning_Oneshot")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 200);
+
+	else if (PrefabEffectTag == "Boss_Xibi_Bullet_Spawn")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 200);
+
+	else if (PrefabEffectTag == "Boss_Xibi_Bullet_Dead")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 200);
+
+	else
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 30);
+
+}
+
 
 
 CBuilder_Effect* CBuilder_Effect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)

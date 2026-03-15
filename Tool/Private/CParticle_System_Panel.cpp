@@ -585,8 +585,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 	}
 
 	// ===============================//
-//        Scale Curve Setting     //
-// ===============================//
+	//        Scale Curve Setting     //
+	// ===============================//
 
 	if (ImGui::CollapsingHeader("Scale Curve Settings"))
 	{
@@ -694,6 +694,87 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			}
 		}
 	}
+
+	// ===============================//
+	//      Glow Power Curve Setting  //
+	// ===============================//
+
+	if (ImGui::CollapsingHeader("Glow Power Curve Settings"))
+	{
+		ImGui::Spacing();
+
+		// 커브 사용 여부
+		m_bModified |= ImGui::Checkbox("Use Glow Power Curve", &m_tCurrentDesc.Data._bUseGlowPowerCurve);
+
+		if (m_tCurrentDesc.Data._bUseGlowPowerCurve)
+		{
+			static float fMaxGlowView = 20.0f;
+			ImGui::SetNextItemWidth(100.f);
+			ImGui::DragFloat("Glow Max View", &fMaxGlowView, 1.0f, 1.0f, 500.0f, "Max: %.f");
+			ImGui::SameLine();
+			ImGui::TextDisabled("(?) Adjust vertical height for Glow Intensity");
+
+			ImVec2 canvas_size = ImVec2(ImGui::GetContentRegionAvail().x, 150.0f);
+			ImGui::InvisibleButton("GlowCurveCanvas", canvas_size);
+			ImVec2 canvas_p0 = ImGui::GetItemRectMin();
+			ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_size.x, canvas_p0.y + canvas_size.y);
+			ImVec2 mouse_pos = ImGui::GetMousePos();
+
+			ImDrawList* draw_list = ImGui::GetWindowDrawList();
+			draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(30, 30, 40, 255)); // 글로우 느낌의 푸르스름한 배경
+
+			float y_base = canvas_p0.y + (1.0f - (m_tCurrentDesc.Data._Effect_GlowPower / fMaxGlowView)) * canvas_size.y;
+			draw_list->AddLine(ImVec2(canvas_p0.x, y_base), ImVec2(canvas_p1.x, y_base), IM_COL32(200, 200, 100, 100));
+			draw_list->AddText(ImVec2(canvas_p0.x + 5, y_base - 15), IM_COL32(200, 200, 100, 200), "Base Power");
+
+			auto& pVec = m_tCurrentDesc.Data._vecGlowPowerCurve;
+			ImU32 glowColor = IM_COL32(255, 255, 150, 255); // 황금색/빛나는 색
+
+			for (size_t j = 0; j < pVec.size(); ++j)
+			{
+				float fNormalizedVal = pVec[j].fValue / fMaxGlowView;
+				ImVec2 point_pos = ImVec2(
+					canvas_p0.x + pVec[j].fTimeKey * canvas_size.x,
+					canvas_p0.y + (1.0f - fNormalizedVal) * canvas_size.y
+				);
+
+				float dist = sqrtf(powf(mouse_pos.x - point_pos.x, 2) + powf(mouse_pos.y - point_pos.y, 2));
+				if (dist < 8.0f && ImGui::IsMouseClicked(0) && ImGui::GetIO().KeyCtrl)
+				{
+					pVec.erase(pVec.begin() + j);
+					m_bModified = true; break;
+				}
+
+				if (j < pVec.size() - 1)
+				{
+					float fNextNorm = pVec[j + 1].fValue / fMaxGlowView;
+					ImVec2 next_point = ImVec2(
+						canvas_p0.x + pVec[j + 1].fTimeKey * canvas_size.x,
+						canvas_p0.y + (1.0f - fNextNorm) * canvas_size.y
+					);
+					draw_list->AddLine(point_pos, next_point, glowColor, 2.0f);
+				}
+				draw_list->AddCircleFilled(point_pos, 4.0f, IM_COL32(255, 255, 255, 255));
+
+				char buf[16]; sprintf_s(buf, "%.1f", pVec[j].fValue);
+				draw_list->AddText(ImVec2(point_pos.x + 5, point_pos.y - 15), IM_COL32(255, 255, 255, 200), buf);
+			}
+
+			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(1))
+			{
+				DTO::Rotation_CurveKey newKey;
+				newKey.fTimeKey = (mouse_pos.x - canvas_p0.x) / canvas_size.x;
+				float fRatio = 1.0f - (mouse_pos.y - canvas_p0.y) / canvas_size.y;
+				newKey.fValue = fRatio * fMaxGlowView;
+
+				pVec.push_back(newKey);
+				std::sort(pVec.begin(), pVec.end(), [](auto& a, auto& b) { return a.fTimeKey < b.fTimeKey; });
+				m_bModified = true;
+			}
+		}
+	}
+
+
 
 	// ==================//
    //     Emission      //
@@ -1033,6 +1114,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			DrawTextureScrollUI("Glow", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Glow, 1 << 11, m_tCurrentDesc.Data._Effect_GlowTexture_ScrollWeight);
 			// 7. CurveTexture(1 << 12)
 			DrawTextureScrollUI("Curve", m_tCurrentDesc.Data._Effect_Tool_UseScroll_Curve, 1 << 12, m_tCurrentDesc.Data._Effect_CurveTexture_ScrollWeight);
+			// 8. SubMaskTexture(1 << 14)
+			DrawTextureScrollUI("SubMask", m_tCurrentDesc.Data._Effect_Tool_UseSCroll_SubMask, 1 << 14, m_tCurrentDesc.Data._Effect_SubMaskTexture_ScrollWeight);
 			
 			ImGui::TreePop();
 		}
@@ -1155,6 +1238,19 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			m_bModified = true;
 		}
 		Draw_TextureSelectorPopup("TextureSelector##Glow", m_tCurrentDesc.Data._Effect_GlowTexture_Tag);
+
+
+		// 6. SubMasking Texture 
+		ImGui::Text("SubMask Texture"); ImGui::SameLine(130);
+		if (ImGui::Button("Select##SubMask")) ImGui::OpenPopup("TextureSelector##SubMask");
+		ImGui::SameLine();
+		if (ImGui::Checkbox("Use##SubMask", &m_tCurrentDesc.Data._Effect_Tool_SubMaskTexture)) {
+			if (m_tCurrentDesc.Data._Effect_Tool_SubMaskTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 6); // SubMaskTexture 8
+			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 8);
+			m_bModified = true;
+		}
+		Draw_TextureSelectorPopup("TextureSelector##SubMask", m_tCurrentDesc.Data._Effect_SubMaskTexture_Tag);
+
 
 		// ===========  Texture Rotation  ================
 	// 
@@ -1570,10 +1666,10 @@ void CParticle_System_Panel::Draw_Rotation_Texture(CToolObject* pGo)
 	{
 		if (ImGui::BeginTable("RotationTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
 		{
-			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Curve", "Normal","Glow"};
+			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Curve", "Normal", "Glow", "SubMasking"};
 			const char* rotationLabels[] = { "0", "90", "180", "270" };
 
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < 8; i++)
 			{
 				ImGui::TableNextColumn();
 				ImGui::Text("%s", textureNames[i]);
@@ -1728,6 +1824,9 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 
 	// Curve
 	DrawSpriteSlotUI("Curve Texture Sprite", m_tCurrentDesc.Data._Effect_CurveTexture_SpriteInfo);
+
+	// SubMask
+	DrawSpriteSlotUI("SubMask Texture Sprite", m_tCurrentDesc.Data._Effect_SubMaskTexture_SpriteInfo);
 
 	// 닫기 버튼
 	if (ImGui::Button("Close Modal", ImVec2(ImGui::GetContentRegionAvail().x, 40)))

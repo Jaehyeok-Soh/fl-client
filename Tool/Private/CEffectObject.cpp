@@ -209,6 +209,8 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
 
         if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
             return E_FAIL;
+
+        m_pParticleBuffer = Get_Component<CVIBuffer_Particle_Point>();
         break;
     }
     case (_uint)DTO::E_PARTICLETYPE::MESH:
@@ -237,6 +239,8 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
 
             if (FAILED(Add_Component<CVIBuffer_Particle_Mesh>(static_cast<CVIBuffer_Particle_Mesh*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_VIBuffer_Particle_Mesh", &MeshBufferDesc)))))
                 return E_FAIL;
+
+            m_pParticleBuffer = Get_Component<CVIBuffer_Particle_Mesh>();
         }
         break;
     }
@@ -260,6 +264,8 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
 
         if (FAILED(Add_Component<CVIBuffer_Particle_Point>(static_cast<CVIBuffer_Particle_Point*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, m_pGameInstance->Get_CurrentLevelIndex(), L"Prototype_Component_VIBuffer_Particle_Point", &pParticleDesc)))))
             return E_FAIL;
+
+        m_pParticleBuffer = Get_Component<CVIBuffer_Particle_Point>();
     }
     }
 
@@ -467,6 +473,7 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_SubMaskTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::SUB_MASKING));
         }
     }
 
@@ -484,6 +491,7 @@ void CEffectObject::Texture_Setting(const wstring& TextureName)
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_SubMaskTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::SUB_MASKING));
         }
     }
 }
@@ -549,15 +557,17 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
         pDesc.vDistortionScale = m_tEffectDesc.Data._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc.Data._Effect_Color;
+        pDesc.fGlowPower = m_fCurrentGlowPower;
         pDesc.vScrollOffset = m_vScrollOffset;
 
         pDesc.DiffuseTexture_ScrollWeight = m_tEffectDesc.Data._Effect_DiffuseTexture_ScrollWeight;
         pDesc.NoiseTexture_ScrollWeight = m_tEffectDesc.Data._Effect_NoiseTexture_ScrollWeight;
         pDesc.GradationTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GradationTexture_ScrollWeight;
         pDesc.DissolveTexture_ScrollWeight = m_tEffectDesc.Data._Effect_DissolveTexture_ScrollWeight;
-        pDesc.GlowTexture_ScrollWeight= m_tEffectDesc.Data._Effect_GlowTexture_ScrollWeight;
+        pDesc.GlowTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GlowTexture_ScrollWeight;
         pDesc.CurveTexture_ScrollWeight= m_tEffectDesc.Data._Effect_CurveTexture_ScrollWeight;
         pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_MaskingTexture_ScrollWeight;
+        pDesc.SubMaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_SubMaskTexture_ScrollWeight;
 
         pDesc.DiffuseTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.x, 
             m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.y, 
@@ -593,6 +603,11 @@ HRESULT CEffectObject::Bind_ShaderResource()
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.z,
             (_float)m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE)]);
+
+        pDesc.SubMaskTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.x,
+            m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.y,
+            m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.z,
+            (_float)m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::SUB_MASKTEXTURE)]);
 
         pShader->Bind_EffectData(pDesc);
 
@@ -721,7 +736,7 @@ void CEffectObject::Update(const _float fTimeDelta)
 
    // 스케일 보간 함수
    Apply_Scaling_Dynamics(fRatio);
-
+   Apply_Luminous_Flux(fRatio);
     // GPU에 백터 바인딩.
     Bind_Curve_To_GPU();
     TimeCalculate(TimeT);
@@ -807,21 +822,63 @@ void CEffectObject::Draw_ImGui()
     Super::Draw_ImGui();
 }
 
+
 HRESULT CEffectObject::Spawn_FromPool(void* pArg)
 {
+    if (nullptr == pArg) return E_FAIL;
     if (FAILED(Super::Spawn_FromPool(pArg)))
         return E_FAIL;
 
-    m_tEffectDesc = m_tOriginEffectDesc;
-    TimeFlagRequest(RESET);
+    RESET_ForSpawn();
+    Process_InitializeDesc(pArg);
+    Bind_Curve_To_GPU();
 
     return S_OK;
 }
+
 HRESULT CEffectObject::Despawn_FromPool()
 {
     if (FAILED(Super::Despawn_FromPool()))
         return E_FAIL;
 
+    RESET_ForDesPawn();
+
+    return S_OK;
+}
+
+HRESULT CEffectObject::Enable_VFX(void* pArg)
+{
+    RESET_ForSpawn();
+    Process_InitializeDesc(pArg);
+    Bind_Curve_To_GPU();
+
+    return S_OK;
+}
+
+HRESULT CEffectObject::Disable_VFX()
+{
+    RESET_ForDesPawn();
+
+    return S_OK;
+}
+
+void CEffectObject::RESET_ForSpawn()
+{
+    Set_Active(true);
+    Set_Render(true);
+
+    m_bDespawnFlag = false;
+    m_tEffectDesc = m_tOriginEffectDesc;
+
+    // 초기 상태로 되돌려준다.
+    if (m_pParticleBuffer)
+        m_pParticleBuffer->Particle_Reset();
+
+    TimeFlagRequest(RESET);
+}
+
+void CEffectObject::RESET_ForDesPawn()
+{
     TimeFlagRequest(RESET);
 
     for (_uint i = 0; i < ENUM_TO_UINT(DTO::TEXTURE_INFO::END); i++)
@@ -834,8 +891,32 @@ HRESULT CEffectObject::Despawn_FromPool()
         m_iSpriteCurrentNumber[i] = 0;
     }
 
+    Set_Active(false);
+    Set_Render(false);
+}
+
+HRESULT CEffectObject::Process_InitializeDesc(void* pArg)
+{
+    auto EffectDesc = static_cast<EFFECT_SPAWN_DESC*>(pArg);
+    if (EffectDesc == nullptr) return E_FAIL;
+
+    switch (EffectDesc->VFX_COLORTYPE)
+    {
+    case EFFECT_SPAWN_DESC::E_VFX_COLORMODE::COLOR_NONCHANGE:
+        break;
+
+    case EFFECT_SPAWN_DESC::E_VFX_COLORMODE::COLOR_CHANGE:
+    {
+        m_tEffectDesc.Data._Effect_Color = Vec4(EffectDesc->VFX_Color.x, EffectDesc->VFX_Color.y, EffectDesc->VFX_Color.z, m_tEffectDesc.Data._Effect_Color.w);
+        break;
+    }
+    }
+
+    m_tEffectDesc.Data._Effect_AnimSpeed = EffectDesc->VFX_fSpeed;
+
     return S_OK;
 }
+
 
 void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 {
@@ -848,6 +929,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
         m_fTimeAccumulation = 0.f;
         m_vScrollOffset = Vec2{ 0.f, 0.f };
         m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
+        m_fCurrentGlowPower = 1.f;
         m_vScrollOffset = { 0.f, 0.f }; // 스크롤 값도 완전 초기화
 
         auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
@@ -865,6 +947,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
         m_bIsStarted = false;
         m_fTimeAccumulation = 0.f;
         m_vScrollOffset = Vec2{ 0.f, 0.f };
+        m_fCurrentGlowPower = 1.f;
         m_vAccumulatedRotation = { 0.f, 0.f, 0.f }; 
 
         auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
@@ -903,6 +986,7 @@ void CEffectObject::TimeCalculate(const _float fDT)
         case ENUM_TO_UINT(DTO::TEXTURE_INFO::DISSOLVETEXTURE):  pSpriteInfo = &m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo; break;
         case ENUM_TO_UINT(DTO::TEXTURE_INFO::GLOWTEXTURE):      pSpriteInfo = &m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo; break;
         case ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE):     pSpriteInfo = &m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::SUB_MASKTEXTURE):  pSpriteInfo = &m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo; break;
             // 필요에 따라 추가 케이스 확장
         default: continue;
         }
@@ -1080,6 +1164,26 @@ void CEffectObject::Apply_Scaling_Dynamics(const _float fRatio)
 
     // 트랜스폼 컴포넌트에 최종 스케일 반영
     m_pTransform->Set_Scale(vFinalScale);
+}
+
+
+void CEffectObject::Apply_Luminous_Flux(const _float fRatio)
+{
+    if (!m_tEffectDesc.Data._bUseGlowPowerCurve)
+    {
+        m_fCurrentGlowPower = m_tEffectDesc.Data._Effect_GlowPower;
+        return;
+    }
+
+    auto& vecCurve = m_tEffectDesc.Data._vecGlowPowerCurve;
+
+    if (vecCurve.empty())
+    {
+        m_fCurrentGlowPower = m_tEffectDesc.Data._Effect_GlowPower;
+        return;
+    }
+
+    m_fCurrentGlowPower = Sample_RotationCurve(vecCurve, fRatio);
 }
 
 CEffectObject* CEffectObject::Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
