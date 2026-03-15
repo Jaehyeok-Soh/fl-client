@@ -629,7 +629,7 @@ namespace Engine
 			// 1 ~ 999 NPC
 			// NPC_
 			NPC_DEFAULT = 1,
-			NPC_FAIRY = 2,
+			NPC_PAN = 2,
 			NPC_BERENICA = 3,
 
 			// 1000 ~ 1999 오브젝트

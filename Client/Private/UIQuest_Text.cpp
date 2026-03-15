@@ -61,6 +61,8 @@ void CUIQuest_Text::Update_Priority(const _float fTimeDelta)
 void CUIQuest_Text::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	Tick_By_Type(fTimeDelta);
 }
 
 void CUIQuest_Text::Update_Late(const _float fTimeDelta)
@@ -105,6 +107,25 @@ HRESULT CUIQuest_Text::Bind_ShaderResources()
 
 HRESULT CUIQuest_Text::Attach_Personal_Info()
 {
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::QUEST_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:
+	break;
+	case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
+		break;
+	case DTO::EUITextSubClassType::QUEST_CONTENTS_TEXT:
+		break;
+	case DTO::EUITextSubClassType::QUEST_TRACKING_TEXT:
+		break;
+	case DTO::EUITextSubClassType::QUEST_END:
+		break;
+	case DTO::EUITextSubClassType::END:
+	default:
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -139,6 +160,8 @@ void CUIQuest_Text::Bind_Events()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				desc.tScenarioInfo.wstrSubTitle;
+				desc.tChapterInfo.tQuestDesc.wstrTitle;
+				int a = 0;
 			})
 	);
 
@@ -146,7 +169,27 @@ void CUIQuest_Text::Bind_Events()
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
-				desc.tScenarioInfo.wstrSubTitle;
+				
+
+				switch (this->m_eTextSubClassType)
+				{
+				case DTO::EUITextSubClassType::QUEST_BEGIN:
+					break;
+				case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:
+					break;
+				case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
+					m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
+					break;
+				case DTO::EUITextSubClassType::QUEST_CONTENTS_TEXT:
+					break;
+				case DTO::EUITextSubClassType::QUEST_TRACKING_TEXT:
+					break;
+				case DTO::EUITextSubClassType::QUEST_END:
+					break;
+				case DTO::EUITextSubClassType::END:
+				default:
+					return E_FAIL;
+				}
 			})
 	);
 }
@@ -168,6 +211,32 @@ _bool CUIQuest_Text::Tick_Visible_Event(const _float fTimeDelta)
 _bool CUIQuest_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	return true;
+}
+
+void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
+{
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::QUEST_BEGIN:
+		break;
+	case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:
+	{
+		auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+		m_wstrText = desc.tScenarioInfo.wstrTitle;
+	}
+	break;
+	case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
+		break;
+	case DTO::EUITextSubClassType::QUEST_CONTENTS_TEXT:
+		break;
+	case DTO::EUITextSubClassType::QUEST_TRACKING_TEXT:
+		break;
+	case DTO::EUITextSubClassType::QUEST_END:
+		break;
+	case DTO::EUITextSubClassType::END:
+	default:
+		break;
+	}
 }
 
 CUIQuest_Text* CUIQuest_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

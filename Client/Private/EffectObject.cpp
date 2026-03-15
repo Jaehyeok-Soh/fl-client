@@ -160,6 +160,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_SubMaskTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::SUB_MASKING));
         }
     }
 
@@ -177,6 +178,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_SubMaskTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::SUB_MASKING));
         }
     }
 
@@ -327,6 +329,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
 
         pDesc.vDistortionScale = m_tEffectDesc.Data._Effect_DistortionScale;
         pDesc.vEffectColor = m_tEffectDesc.Data._Effect_Color;
+        pDesc.fGlowPower = m_fCurrentGlowPower;
         pDesc.vScrollOffset = m_vScrollOffset;
 
         pDesc.DiffuseTexture_ScrollWeight = m_tEffectDesc.Data._Effect_DiffuseTexture_ScrollWeight;
@@ -334,6 +337,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
         pDesc.MaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_MaskingTexture_ScrollWeight;
         pDesc.GradationTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GradationTexture_ScrollWeight;
         pDesc.GlowTexture_ScrollWeight = m_tEffectDesc.Data._Effect_GlowTexture_ScrollWeight;
+        pDesc.SubMaskingTexture_ScrollWeight = m_tEffectDesc.Data._Effect_SubMaskTexture_ScrollWeight;
 
         pDesc.DiffuseTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.x,
             m_tEffectDesc.Data._Effect_DiffuseTexture_SpriteInfo.y,
@@ -369,6 +373,11 @@ HRESULT CEffectObject::Bind_ShaderResource()
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_MaskTexture_SpriteInfo.z,
             static_cast<_float>(m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::MASKINGTEXTURE)]));
+
+        pDesc.SubMaskTexture_SpriteInfo = Vec4(m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.x,
+            m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.y,
+            m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.z,
+            (_float)m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::SUB_MASKTEXTURE)]);
 
         m_pShader->Bind_EffectData(pDesc);
 
@@ -502,6 +511,7 @@ void CEffectObject::Update(const _float fTimeDelta)
 
        // 스케일 보간 함수
     Apply_Scaling_Dynamics(fRatio);
+    Apply_Luminous_Flux(fRatio);
 
     TimeCalculate(TimeT);
     Update_UV_Scroll_Curve(fScrollRatio);
@@ -738,6 +748,7 @@ void CEffectObject::TimeCalculate(const _float fDT)
         case ENUM_TO_UINT(DTO::TEXTURE_INFO::DISSOLVETEXTURE):  pSpriteInfo = &m_tEffectDesc.Data._Effect_DissolveTexture_SpriteInfo; break;
         case ENUM_TO_UINT(DTO::TEXTURE_INFO::GLOWTEXTURE):      pSpriteInfo = &m_tEffectDesc.Data._Effect_GlowTexture_SpriteInfo; break;
         case ENUM_TO_UINT(DTO::TEXTURE_INFO::CURVETEXTURE):     pSpriteInfo = &m_tEffectDesc.Data._Effect_CurveTexture_SpriteInfo; break;
+        case ENUM_TO_UINT(DTO::TEXTURE_INFO::SUB_MASKTEXTURE):  pSpriteInfo = &m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo; break;
             // 필요에 따라 추가 케이스 확장
         default: continue;
         }
@@ -915,6 +926,25 @@ void CEffectObject::Apply_Scaling_Dynamics(const _float fRatio)
 
     // 트랜스폼 컴포넌트에 최종 스케일 반영
     m_pTransform->Set_Scale(vFinalScale);
+}
+
+void CEffectObject::Apply_Luminous_Flux(const _float fRatio)
+{
+    if (!m_tEffectDesc.Data._bUseGlowPowerCurve)
+    {
+        m_fCurrentGlowPower = m_tEffectDesc.Data._Effect_GlowPower;
+        return;
+    }
+
+    auto& vecCurve = m_tEffectDesc.Data._vecGlowPowerCurve;
+
+    if (vecCurve.empty())
+    {
+        m_fCurrentGlowPower = m_tEffectDesc.Data._Effect_GlowPower;
+        return;
+    }
+
+    m_fCurrentGlowPower = Sample_RotationCurve(vecCurve, fRatio);
 }
 
 CEffectObject* CEffectObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -33,6 +33,10 @@ void CDialogueManager::EventCallback()
 {
 }
 
+void CDialogueManager::Start_Dialogue(_int iId)
+{
+}
+
 void CDialogueManager::Free()
 {
 	for (auto& handle : m_vecEventHandles)
