@@ -841,7 +841,7 @@ HRESULT CEffectObject::Despawn_FromPool()
     if (FAILED(Super::Despawn_FromPool()))
         return E_FAIL;
 
-    RESET_ForDesPawn();
+    //RESET_ForDesPawn();
 
     return S_OK;
 }
@@ -857,7 +857,7 @@ HRESULT CEffectObject::Enable_VFX(void* pArg)
 
 HRESULT CEffectObject::Disable_VFX()
 {
-    RESET_ForDesPawn();
+    //RESET_ForDesPawn();
 
     return S_OK;
 }
