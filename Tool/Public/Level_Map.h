@@ -64,7 +64,7 @@ private:
 
 	CUEMapdataParser*										m_pUEMapDataParser{nullptr};
 	CMapToolManager*										m_pMapToolManager{nullptr};
-
+	class CEffect_DataManager*								m_pEffectDataManager = { nullptr };
 private:
 
 public:

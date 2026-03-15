@@ -9,6 +9,7 @@ NS_BEGIN(Client)
 class CUITutorial_Pannel_Image final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
+
 public:
 	typedef struct tagUITutorialPannelImageDesc : public DIMAGE_DESC
 	{
@@ -44,8 +45,11 @@ private:
 private:
 	CGameObject* m_pTargetMoster = { nullptr };
 	_bool m_isSpawned = { false };
+	_uint m_iNumbering = {}; // 0이 Prev 버튼, 1이 Next 버튼 
 
 	DelegateHandle m_tEventHandle = {};
+
+	EUITutorialPannelTypeID m_eTutorialID = {};
 
 	//TUTORIAL_PANNEL_TOP_BG Values
 	Vec2 m_vOriginSize = {};
@@ -53,14 +57,21 @@ private:
 	// TUTORIAL_PANNEL_BUTTON_FX Values
 	_bool m_isHoverEnter = { false };
 	_bool m_isHoverExit = { false };
-	_float m_fPannelBrightNess = {};
+	_float m_fPannelBrightNess = { 0.5f };
 
-	_uint m_iNumbering = {}; // 0이 Prev 버튼, 1이 Next 버튼 
+	// TUTORIAL_PANNEL_ICON Values
+	vector<_wstring> m_vecTextureTags;
+
+	_uint m_iMaxPage = {};	// 페이지 갯수
+	_uint m_iCurPage = {};	// 현재 페이지
+
+	_bool m_isNotVisible = { false };
 
 public:
 	static CUITutorial_Pannel_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };
+
 
 NS_END

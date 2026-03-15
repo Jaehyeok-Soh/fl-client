@@ -4,10 +4,6 @@
 
 #include "GameInstance.h"
 
-IQuest::IQuest()
-{
-}
-
 void IQuest::OnQuestEnter(DTO::QUEST_CHAPTERDESC desc)
 {
 	Set_Quest_Enable();
@@ -24,21 +20,6 @@ void IQuest::OnQuestExit()
 {
 	Set_Quest_Disable();
 	QuestExit();
-}
-
-void IQuest::Set_Quest_Enable()
-{
-	m_bIsEnabled = true;
-}
-
-void IQuest::Set_Quest_Disable()
-{
-	m_bIsEnabled = false;
-}
-
-_bool IQuest::Is_Quest_Enabled()
-{
-	return m_bIsEnabled;
 }
 
 void IQuest::CallQuestEvent(OBJECT_ENUM_TAG::Enum eTag, _int iCount)

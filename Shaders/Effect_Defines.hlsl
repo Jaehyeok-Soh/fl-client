@@ -11,6 +11,7 @@
 #define NORMALTEXTURE 5
 #define GLOWTEXTURE 6
 #define DISSOLVETEXTURE 7
+#define SUBMASKINGTEXTURE 8
 
 texture2D g_EffectTexture;
 
@@ -35,6 +36,7 @@ texture2D g_EffectTexture;
 #define SCROLL_DISSOLVE 1 << 10
 #define SCROLL_GLOW 1 << 11
 #define SCROLL_CURVE 1 << 12
+#define SCROLL_SUBMASKING 1 << 14
 
 #define USE_LIFEDISSOLVE 1 << 13
         
@@ -53,6 +55,8 @@ texture2D g_EffectTexture;
 #define ROTATE_CURVE        (1 << 4)
 #define ROTATE_NORMAL       (1 << 5)
 #define ROTATE_GLOW         (1 << 6)
+
+#define ROTATE_SUBMASK      (1 << 8)
 
 // 산술 연산자 
 #define ADD 1 << 0      // Add          더하기
@@ -75,7 +79,8 @@ struct EffectDesc
     float2 g_UVOffset;
 
     // Row 2
-    float3 Padding0;
+    float2 Padding0;
+    float g_GlowPower;
     float g_AppearRatio;
 
     // Row 3
@@ -99,7 +104,7 @@ struct EffectDesc
     
     // Row 8
     float2 CurveTexture_ScrollWeight;
-    float2 Padding1;
+    float2 SubMaskTexture_ScrollWeight;
     
     // Row 9
     float4 DiffuseTexture_SpriteInfo;
@@ -115,6 +120,8 @@ struct EffectDesc
     float4 CurveTexture_SpriteInfo;
     // Row 15
     float4 MaskTexture_SpriteInfo;
+    // Row 16
+    float4 SubMaskTexture_SpriteInfo;
 };
 
 // ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
@@ -350,6 +357,11 @@ float4 DissolveTextureSample(float2 UV)
 float GlowTextureSample(float2 UV)
 {
     return SampleTextureWithFlags(g_DefaultTextures[GLOWTEXTURE], g_Effect.g_StateFlags, 18, UV);
+}
+
+float SubMaskTextureSample(float2 UV)
+{
+    return SampleTextureWithFlags(g_DefaultTextures[SUBMASKINGTEXTURE], g_Effect.g_StateFlags, 0, UV);
 }
 
 float4 SceneTextureSample(float2 UV, uint Flag)

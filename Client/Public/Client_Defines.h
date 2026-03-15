@@ -356,12 +356,12 @@ namespace Client
 
 	NLOHMANN_JSON_SERIALIZE_ENUM(EUIInteract,
 		{
-			{EUIInteract::NONE,		"NONE"},
-			{EUIInteract::HOVER_ENTER, "HOVER_ENTER"},
-			{EUIInteract::HOVERING,	"HOVERING"},
+			{EUIInteract::NONE,			"NONE"},
+			{EUIInteract::HOVER_ENTER,	"HOVER_ENTER"},
+			{EUIInteract::HOVERING,		"HOVERING"},
 			{EUIInteract::HOVER_EXIT,	"HOVER_EXIT"},
-			{EUIInteract::PRESS_ENTER, "PRESS_ENTER"},
-			{EUIInteract::PRESSING,	"PRESSING"},
+			{EUIInteract::PRESS_ENTER,	"PRESS_ENTER"},
+			{EUIInteract::PRESSING,		"PRESSING"},
 			{EUIInteract::PRESS_EXIT,	"PRESS_EXIT"},
 			{EUIInteract::INVOKED,		"INVOKED"},
 		})
@@ -370,12 +370,12 @@ namespace Client
 	{
 		switch (eType)
 		{
-		case EUIInteract::NONE:		return "NONE";
-		case EUIInteract::HOVER_ENTER: return "HOVER_ENTER";
-		case EUIInteract::HOVERING:	return "HOVERING";
+		case EUIInteract::NONE:			return "NONE";
+		case EUIInteract::HOVER_ENTER:	return "HOVER_ENTER";
+		case EUIInteract::HOVERING:		return "HOVERING";
 		case EUIInteract::HOVER_EXIT:	return "HOVER_EXIT";
-		case EUIInteract::PRESS_ENTER: return "PRESS_ENTER";
-		case EUIInteract::PRESSING:	return "PRESSING";
+		case EUIInteract::PRESS_ENTER:	return "PRESS_ENTER";
+		case EUIInteract::PRESSING:		return "PRESSING";
 		case EUIInteract::PRESS_EXIT:	return "PRESS_EXIT";
 		case EUIInteract::INVOKED:		return "INVOKED";
 		default: return "";
@@ -440,6 +440,16 @@ namespace Client
 
 		END
 	};
+
+	enum class EUITutorialPannelTypeID
+	{
+		TUTORIAL_PANNEL_1,	// 쉴드 / HP
+		TUTORIAL_PANNEL_2,	// 원거리 무기
+		TUTORIAL_PANNEL_3,	// 캐릭터 매커니즘: 아스크의 징벌
+		TUTORIAL_PANNEL_4,	// 캐릭터 종결 스킬: 어둠의 불꽃
+		END
+	};
+
 
 	enum class EUITutorialPopUpTypeID
 	{
@@ -519,6 +529,11 @@ namespace Client
 		TUTORIAL_POPUP_12,
 		TUTORIAL_POPUP_13,
 
+		TUTORIAL_PANNEL_1,
+		TUTORIAL_PANNEL_2,
+		TUTORIAL_PANNEL_3,
+		TUTORIAL_PANNEL_4,
+
 		END
 	};
 
@@ -563,6 +578,11 @@ namespace Client
 		case Client::EUIPrefabType::TUTORIAL_POPUP_12:		return L"TUTORIAL_POPUP_12";
 		case Client::EUIPrefabType::TUTORIAL_POPUP_13:		return L"TUTORIAL_POPUP_13";
 
+		case Client::EUIPrefabType::TUTORIAL_PANNEL_1:		return L"TUTORIAL_PANNEL_1";
+		case Client::EUIPrefabType::TUTORIAL_PANNEL_2:		return L"TUTORIAL_PANNEL_2";
+		case Client::EUIPrefabType::TUTORIAL_PANNEL_3:		return L"TUTORIAL_PANNEL_3";
+		case Client::EUIPrefabType::TUTORIAL_PANNEL_4:		return L"TUTORIAL_PANNEL_4";
+
 		case Client::EUIPrefabType::END:
 		default:
 			break;
@@ -600,7 +620,7 @@ namespace Client
 
 	typedef struct tagUITutorialPannelPrefabData
 	{
-
+		EUITutorialPannelTypeID eTutorialTypeID = {};
 
 	} UI_TUTORIAL_PANNEL_PREFAB_DATA;
 
@@ -623,6 +643,7 @@ namespace Client
 	typedef struct tagUIPrefabData
 	{
 		UI_PREFAB_VARIANT Data;
+		class CCanvas* pCanvas = {nullptr};
 	} UI_PREFAB_DATA;
 
 

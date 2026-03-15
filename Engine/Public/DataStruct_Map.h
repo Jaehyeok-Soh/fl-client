@@ -652,7 +652,7 @@ public:
 	Vec3		 vExtents{0.5f,0.5f ,0.5f};
 
 	_bool		 bHasQuest = { false };
-	DTO::QUEST_CHAPTERDESC		tQuestObjectDesc = {};
+	vector<DTO::QUEST_CHAPTERDESC>		tQuestObjectDesc = {};
 public:
 	explicit TRIGGERBOX_DESC()
 		: vExtents{ 0.5f,0.5f ,0.5f },

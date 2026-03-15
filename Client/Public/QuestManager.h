@@ -12,7 +12,6 @@ class CQuest_Scenario;
 
 class CQuestManager final : public CBase
 {
-private:
 	DECLARE_SINGLETON(CQuestManager);
 
 	using Super = CBase;

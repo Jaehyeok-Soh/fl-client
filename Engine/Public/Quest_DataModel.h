@@ -53,6 +53,10 @@ namespace DTO
 		wstring wstrExplain = { L"" };
 
 		wstring wstrDescription = { L"" };
+
+		int iEnterDialogueId = { -1 };
+		int iExitDialogueId = { -1 };
+		int iInteractDialogueId = { -1 };
 	}QUESTDESC;
 
 	inline void to_json(json& j, const QUESTDESC& d)
@@ -65,6 +69,9 @@ namespace DTO
 		j["wstrSubTitle"] = Engine_Utils::ToString(d.wstrSubTitle);
 		j["wstrExplain"] = Engine_Utils::ToString(d.wstrExplain);
 		j["wstrDescription"] = Engine_Utils::ToString(d.wstrDescription);
+		j["iEnterDialogueId"] = d.iEnterDialogueId;
+		j["iExitDialogueId"] = d.iExitDialogueId;
+		j["iInteractDialogueId"] = d.iInteractDialogueId;
 	}
 
 	inline void from_json(const json& j, QUESTDESC& d)
@@ -86,6 +93,21 @@ namespace DTO
 
 		j.at("wstrDescription").get_to(strBuffer);
 		d.wstrDescription = Engine_Utils::ToWString(strBuffer);
+
+		if (j.contains("iEnterDialogueId"))
+			j.at("iEnterDialogueId").get_to(d.iEnterDialogueId);
+		else
+			d.iEnterDialogueId = -1;
+
+		if (j.contains("iExitDialogueId"))
+			j.at("iExitDialogueId").get_to(d.iExitDialogueId);
+		else
+			d.iExitDialogueId = -1;
+
+		if (j.contains("iInteractDialogueId"))
+			j.at("iInteractDialogueId").get_to(d.iInteractDialogueId);
+		else
+			d.iInteractDialogueId = -1;
 	}
 
 	typedef struct tagQuestChapterDesc

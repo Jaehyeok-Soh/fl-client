@@ -51,17 +51,25 @@ HRESULT CAnimObj::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
+	Get_Component<CPhysicsCCT>()->EnableCollision(true);
+	Get_Component<CPhysicsCCT>()->SetApplyGravity(false);
+
 	return S_OK;
 }
 
 void CAnimObj::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
+
+	if (Get_Component<CModel>()->Is_AnimFinished())
+		Get_Component<CPhysicsCCT>()->SetFootPosition(Vec3(0.f, 0.f, 0.f));
 }
 
 void CAnimObj::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	Get_Component<CPhysicsCCT>()->UpdateMove(fTimeDelta);
 }
 
 void CAnimObj::Update_Late(const _float fTimeDelta)

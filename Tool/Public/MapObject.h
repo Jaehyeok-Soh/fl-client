@@ -11,6 +11,7 @@ NS_END
 
 NS_BEGIN(Tool)
 class CMapToolManager;
+class CEffect_Env;
 
 class CMapObject final : public CToolObject
 {
@@ -75,6 +76,7 @@ private:
 	HRESULT								Ready_ColliderTypeComponet();
 	HRESULT								Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT								Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
+
 public:
 	HRESULT								Ready_PlusData_ByClientMakePath();
 
@@ -236,7 +238,7 @@ public:
 	HRESULT								Render_Instance(_int iPass = 0);
 
 protected:
-	static constexpr	Vec3			m_vDefaultMinMax[2] = { Vec3(-5.f,-5.f, -5.f),Vec3(+5.f,+5.f, +5.f) };
+	static constexpr	Vec3			m_vDefaultMinMax[2] = { Vec3(-5.f,-5.f, -5.f), Vec3(+5.f,+5.f, +5.f) };
 protected:
 	wstring								m_wstrUERawDataPath{L""};
 	_uint								m_iSectionNum{};
@@ -286,6 +288,16 @@ protected:
 	/* Instance Draw 컬링용 Min Max들고있기 */
 	Vec3								m_vInstanceWorldMinMax[2]{ Vec3(FLT_MAX,FLT_MAX,FLT_MAX) , Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX)};
 
+public:
+	// pair로 이펙트를 key값으로 가지고 value로 SpawnDesc을 가지고 있는다 
+	void								Add_EnvEffect(const string& EffectTag);
+	CEffect_Env*						Get_EnvEffect(_uint iIndex);
+	EFFECT_ENV_DESC						Get_EnvEffectDesc(_uint iIndex);
+	void								Set_EnvEffectDesc(_uint iIndex, const EFFECT_ENV_DESC& Desc);
+
+	const Matrix*						m_pWorldMatPtr = {nullptr};	// 이거 이중포인터 때문에 반 강제적으로 캐싱해서 들고 있어야함ㅋ
+																	// 폭파의 신 최정우 강림. (클라쪽에서 한번 Awake나 이떄 캐싱해서 들고있어라.)
+	std::vector<std::pair<CEffect_Env*, EFFECT_ENV_DESC>>	m_vEnvEffectList = {};
 public:
 	static CMapObject*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 

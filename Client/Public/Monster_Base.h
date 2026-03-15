@@ -4,7 +4,6 @@
 #include "Builder_Map.h"
 
 NS_BEGIN(Engine)
-class CRay;
 class CEffectHandler;
 NS_END
 
@@ -19,9 +18,7 @@ public:
 	{
 		wstring wstrBodyModelTag = {};
 		wstring wstrPartBodyPrototypeTag = {};
-		wstring wstrNavigationPrototypeTag = {};
 		wstring wstrAttackOverlapPrototypeTag = {};
-		_int iNavigationCellIndex = { -1 };
 		Vec3 vSpawnPosition = {};
 		wstring wstrMonsterStateTag = {};
 		std::span<std::pair<_uint, string>> spanBoneNames;
@@ -119,8 +116,7 @@ protected:
 	HRESULT				Ready_Components(void* pArgs);
 	HRESULT				Ready_AttackOverlap(wstring prototypeName);
 	HRESULT				Ready_EffectHandler(void* pArgs);
-protected:
-	HRESULT Ready_CCT(void* pArgs);
+	HRESULT				Ready_CCT(void* pArgs);
 
 protected:
 	void				OnHit_PlayerMoon(const HIT_DESC& hitDesc); //플레이어 별 처리를 위함.. 필요하다면 virtual로 빼도 될지도

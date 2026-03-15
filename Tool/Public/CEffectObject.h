@@ -9,6 +9,7 @@ class CComponent;
 class CTexture;
 class CModel;
 class CShader;
+class CVIBuffer_Particle;
 
 NS_END
 
@@ -65,6 +66,10 @@ public:
     virtual HRESULT Spawn_FromPool(void* pArg);
     virtual HRESULT Despawn_FromPool();
 
+
+    virtual HRESULT Enable_VFX(void* pArg);
+    virtual HRESULT Disable_VFX();
+
 public:
     _bool IsEffectfinish() { return m_bIsEffectFinish; }
 
@@ -83,9 +88,13 @@ private:
     void Update_Rotation_Lerp(float fDT, float fRatio);
     void Update_UV_Scroll_Curve(float fRatio);
     void Apply_Scaling_Dynamics(const _float fRatio);
+    void Apply_Luminous_Flux(const _float fRatio);
 
 public:
     void TimeFlagRequest(_uint TimeFlag);
+    void RESET_ForSpawn();
+    void RESET_ForDesPawn();
+    HRESULT Process_InitializeDesc(void* pArg);
 
 public:
     const DTO::E_EffectSystemType& Get_EffectType() { return (DTO::E_EffectSystemType)m_tEffectDesc.Data.eEffectSystemType; }
@@ -121,6 +130,7 @@ private:
     //  ========= 회전 속도 ===========
     Vec3      m_vAccumulatedRotation = { 0.f, 0.f, 0.f };
     Vec3      m_vFinalGravity = { 0.f, 0.f, 0.f }; 
+    float     m_fCurrentGlowPower = 1.f;
 
     //  ========== 현재 이펙트 sprite Number  ===========
 private:
@@ -131,6 +141,7 @@ private:
     CShader* m_pShader = { nullptr };
     CComputeShader* m_pComputeShader = { nullptr };
     CTransform* m_pTransform = { nullptr };
+    CVIBuffer_Particle* m_pParticleBuffer = { nullptr };
     _bool       m_bIsTool = { false };
 
     vector<_uint>           m_iSpriteCurrentNumber = {};
@@ -138,6 +149,7 @@ private:
 
 private:
     _bool       m_bIsEffectFinish = { false };
+    _bool                     m_bDespawnFlag = { false };
 };
 
 NS_END
