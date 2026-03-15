@@ -65,6 +65,8 @@ private:
 	_uint m_iMaxPage = {};	// 페이지 갯수
 	_uint m_iCurPage = {};	// 현재 페이지
 
+	_bool m_isNotVisible = { false };
+
 public:
 	static CUITutorial_Pannel_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -169,7 +169,8 @@ void CUITutorial_Pannel_Text::Tick_By_Type(const _float fTimeDelta)
 	{
 		if (m_iCurPageIdx <= 0)
 		{
-			m_vFontColor = Vec4{ 0.7f, 0.7f, 0.7f, 0.7f };
+			if(m_isFin_Event)
+				m_vFontColor = Vec4{ 0.7f, 0.7f, 0.7f, 1.f };
 		}
 		else
 		{
@@ -205,13 +206,13 @@ void CUITutorial_Pannel_Text::Initialize_Visible_Event()
 		Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
-		Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
+		Ready_Fade_Text(0.4f, 0.f, 1.f, 1.f);
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_PREV_BTN_TEXT:
-		Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
+		Ready_Fade_Text(0.4f, 0.f, 1.f, 1.f);
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_NEXT_BTN_TEXT:
-		Ready_Fade_Text(0.4f, 0.f, 1.f, m_fDelay);
+		Ready_Fade_Text(0.4f, 0.f, 1.f, 1.f);
 		break;
 	}
 }
@@ -324,8 +325,8 @@ HRESULT CUITutorial_Pannel_Text::Spawn_FromPool(void* pArg)
 		}
 	}
 
-	m_isSpawned = true;
-	m_isDeadRequest = false;
+	m_isSpawned			= true;
+	m_isDeadRequest		= false;
 	return S_OK;
 }
 
@@ -334,9 +335,9 @@ HRESULT CUITutorial_Pannel_Text::Despawn_FromPool()
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
 
-	m_isVisible = false;
-	m_isVisibleTrigger = false;
-	m_isPreVisible = false;
+	m_isVisible			= false;
+	m_isVisibleTrigger	= false;
+	m_isPreVisible		= false;
 	return S_OK;
 }
 

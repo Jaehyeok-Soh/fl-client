@@ -151,21 +151,24 @@ void CLevel_Test::Update(const _float fTimeDelta)
 
 	if (KEY_BUTTON_DOWN(DIK_4))
 	{
-		m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>((EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1));
 	}
 	if (KEY_BUTTON_DOWN(DIK_5))
 	{
-		m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>((EUITutorialPopUpTypeID::TUTORIAL_POPUP_1));
+		UI_PREFAB_DATA Desc = {};
+		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
+		Desc.Data = PrefabDesc;
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
 	}
 	if (KEY_BUTTON_DOWN(DIK_6))
 	{
 		UI_PREFAB_DATA Desc = {};
 		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
-		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
-		Desc.Data = PrefabDesc;		
+		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
+		Desc.Data = PrefabDesc;
 
 		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-
 	}
 	if (KEY_BUTTON_DOWN(DIK_7))
 	{

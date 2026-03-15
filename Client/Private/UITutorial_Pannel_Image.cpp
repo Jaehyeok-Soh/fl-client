@@ -154,6 +154,7 @@ HRESULT CUITutorial_Pannel_Image::Attach_Personal_Info()
 		Set_Visible();
 		m_isSpawned = false;
 	}
+
 	return S_OK;
 }
 
@@ -184,6 +185,9 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 {
 	m_pParentCanvasCache->Get_CommonParam_bool_Ref()[PREV_BUTTON] = false;
 	m_pParentCanvasCache->Get_CommonParam_bool_Ref()[NEXT_BUTTON] = false;
+
+	// 부모 캔버스의 현재 페이지를 받아옴
+	m_iCurPage = m_pParentCanvasCache->Get_CommonParam_uint()[CUR_PAGE];
 
 	switch (m_eDImageSubClass)
 	{
@@ -239,8 +243,6 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 			}
 		}
 
-		// 부모 캔버스의 현재 페이지를 받아옴
-		m_iCurPage = m_pParentCanvasCache->Get_CommonParam_uint()[CUR_PAGE];
 
 		// 눌렀다 땠을 때 
 		{
@@ -307,6 +309,12 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 	}
 	break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_NUM_PAGE_ICON:
+	{
+		if (m_iNumbering == m_iCurPage)
+			m_fBrightness = 3.f;
+		else
+			m_fBrightness = 1.f;
+	}
 		break;
 	}
 }
@@ -356,9 +364,18 @@ void CUITutorial_Pannel_Image::Initialize_Visible_Event()
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_NUM_PAGE_ICON:
-		Ready_Fade(0.5f, 0.f, 1.f, 1.f);
+	{
+		if (m_isNotVisible)
+		{
+			Ready_Fade(0.5f, 0.f, 0.f, 1.f);
+		}
+		else
+		{
+			Ready_Fade(0.5f, 0.f, 1.f, 1.f);
+		}
 		break;
-
+	}
+		
 	}
 }
 
@@ -491,7 +508,7 @@ void CUITutorial_Pannel_Image::Initialize_InVisible_Event()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BG:			// 디졸브 배경
-		Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
+		Ready_Fade(0.5f, m_fAlpha_Ratio, 0.f, m_fDelay);
 		Ready_LerpChange(0.5f, 0.f, 1.f, 1.f, m_fDelay);
 		break;
 
@@ -503,7 +520,7 @@ void CUITutorial_Pannel_Image::Initialize_InVisible_Event()
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_FX:
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_OUTLINE:
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_NUM_PAGE_ICON:
-		Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
+		Ready_Fade(0.5f, m_fAlpha_Ratio, 0.f, m_fDelay);
 		break;
 	}
 }
@@ -562,11 +579,7 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 	if (auto* pPannel = std::get_if<UI_TUTORIAL_PANNEL_PREFAB_DATA>(&pDesc->Data))
 	{
 		m_pParentCanvasCache = pDesc->pCanvas;
-
-
-	
 		m_eTutorialID = pPannel->eTutorialTypeID;
-
 
 		switch (m_eTutorialID)
 		{
@@ -602,6 +615,39 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 			if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_vecTextureTags.front(), ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
 				return E_FAIL;
 		}
+
+		switch (m_iMaxPage)
+		{
+		case 0:
+		{
+			if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_NUM_PAGE_ICON)
+			{
+				if (0 == m_iNumbering)
+				{
+				}
+				else if (1 == m_iNumbering)
+				{
+					m_isNotVisible = true;
+				}
+			}
+		}
+		break;
+		case 1:
+		{
+			if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_NUM_PAGE_ICON)
+			{
+				if (0 == m_iNumbering)
+				{
+					m_vMoveOffset = Vec2{ -20.f, 0.f };
+				}
+				else if (1 == m_iNumbering)
+				{
+					m_vMoveOffset = Vec2{ 20.f, 0.f };
+				}
+			}
+		}
+		break;
+		}
 	}
 
 	m_isSpawned = true;
@@ -617,8 +663,10 @@ HRESULT CUITutorial_Pannel_Image::Despawn_FromPool()
 	m_isVisible = false;
 	m_isVisibleTrigger = false;
 	m_isPreVisible = false;
+	m_isNotVisible = false;
 
 	this->Set_Active(false);
+	m_vecTextureTags.clear();
 	return S_OK;
 }
 
