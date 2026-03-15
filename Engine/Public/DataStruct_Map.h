@@ -2,7 +2,7 @@
 #include "ObjectDataBase.h"
 #include "DataEnum.h"
 #include "json_forward.h"
-
+#include "Quest_DataModel.h"
 
 NS_BEGIN(DTO)
 #pragma region Make Monster Type
@@ -469,8 +469,6 @@ BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectT
 
 #pragma endregion
 
-
-
 #pragma region Water
 
 /* 나중에 Engine으로 옮길수도? Water관련 */
@@ -576,12 +574,74 @@ public:
 	virtual void to_Json(json& SaveJson)			override;
 };
 
+
+#pragma region Fog Texture
+
+enum class EFogTextureType
+{
+	MASK,
+	Noise,
+	END,
+};
+
+// 헤더 파일의 Enum 선언 바로 밑이나, cpp 파일 상단에 선언해 둡니다.
+static const char* g_szFogTextureType[(int)EWaterTextureType::END] = {
+	"MASK",
+	"Noise",
+};
+
+inline std::string FogTextureType_ToString(EFogTextureType eType)
+{
+	// 인덱스 초과 방지 안전장치
+	if (eType >= EFogTextureType::MASK && eType < EFogTextureType::END)
+		return g_szFogTextureType[(int)eType];
+
+	return "Unknown";
+}
+
+inline EFogTextureType FogTextureType_ToEnum(const std::string& strType)
+{
+	for (int i = 0; i < (int)EFogTextureType::END; ++i)
+	{
+		if (strType == g_szFogTextureType[i])
+			return (EFogTextureType)i;
+	}
+	return EFogTextureType::END;
+}
+
+
+struct FOG_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+	/* Binding 시켜주고있을 TextureBase 슬롯  */
+	Vec4	vMI_TintColor{ 1.f,1.f,1.f,1.f };
+
+	std::array<class CTextureBase*, ENUM_TO_UINT(EFogTextureType::END)>	arrayTextureBase{};
+	Vec4	vUV[ENUM_TO_UINT(EFogTextureType::END)];
+
+	float	fDistortionPower{ 1.f };
+
+public:
+	FOG_DESC()
+		: vMI_TintColor{ 1.f , 1.f , 1.f , 1.f }
+		, arrayTextureBase{}
+		, fDistortionPower{ 1.f }
+	{
+		arrayTextureBase.fill(nullptr);
+		for (_uint i = 0; i < ENUM_TO_UINT(EFogTextureType::END); ++i)
+		{
+			vUV[i] = Vec4(1.f,1.f,1.f,1.f);
+		}
+	}
+	FOG_DESC(const FOG_DESC& rhs);
+	virtual ~FOG_DESC();
+public:
+	virtual void from_Json(const json& LoadJson)	override;
+	virtual void to_Json(json& SaveJson)			override;
+};
 #pragma endregion
 
 
-
-
-#pragma region 
+#pragma endregion
 
 
 #pragma region Trigger Box
@@ -590,13 +650,21 @@ struct ENGINE_DLL TRIGGERBOX_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
 public:
 	Vec3		 vExtents{0.5f,0.5f ,0.5f};
+
+	_bool		 bHasQuest = { false };
+	DTO::QUEST_CHAPTERDESC		tQuestObjectDesc = {};
 public:
 	explicit TRIGGERBOX_DESC()
-		: vExtents{ 0.5f,0.5f ,0.5f }
+		: vExtents{ 0.5f,0.5f ,0.5f },
+		bHasQuest(false),
+		tQuestObjectDesc()
 	{
 	}
 	explicit TRIGGERBOX_DESC(const TRIGGERBOX_DESC& rhs)
-		: CLIENT_MAKEPATH_DESC_BASE(rhs) , vExtents(rhs.vExtents)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs),
+		vExtents(rhs.vExtents),
+		bHasQuest(rhs.bHasQuest),
+		tQuestObjectDesc(rhs.tQuestObjectDesc)
 	{
 		return;
 	}
@@ -799,7 +867,7 @@ enum class EClientMakePath
 	Vine,
 	Rock,
 	Water,
-
+	Fog,
 
 
 	/* 몬스터 , Player 위치잡는 용도  */
@@ -870,6 +938,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::Vine,									"Vine"},
 			{EClientMakePath::Rock,									"Rock"},
 			{EClientMakePath::Water,								"Water"},
+			{EClientMakePath::Fog,									"Fog"},
 
 
 			{EClientMakePath::Batch_Player,							"Batch_Player"},
@@ -987,6 +1056,7 @@ typedef struct TLevelData
 #pragma endregion
 
 /////////////////-------------------  to_json, from_json  -------------------/////////////////
+
 #pragma region SRT Data
 inline void to_json(json& SaveJson, const SRT_DATA& tData);
 inline void from_json(const json& LoadJson, SRT_DATA& tdata);
@@ -1013,10 +1083,8 @@ inline void from_json(const json& LoadJson, TMap_MapObjectData& tData);
 
 
 #pragma region Level Data
-
 inline void to_json(json& SaveJson, const TLevelData& tData);
 inline void from_json(const json& LoadJson, TLevelData& tData);
-
 #pragma endregion
 
 NS_END
@@ -1049,6 +1117,7 @@ public:
 	static CData_MapObject* Create() { return new CData_MapObject(); }
 	virtual void Free() override;
 };
+
 #pragma endregion
 
 #pragma region Level Data

@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "Quest_DataModel.h"
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -11,7 +12,6 @@ class CQuest_Scenario;
 
 class CQuestManager final : public CBase
 {
-private:
 	DECLARE_SINGLETON(CQuestManager);
 
 	using Super = CBase;
@@ -20,24 +20,26 @@ private:
 	virtual ~CQuestManager() = default;
 
 private:
-	HRESULT Initialize();
-
 	void Bind_Events();
-	void EventCallback(QUEST_EVENT_SIGNATURE ID);
+	void EventCallback(DTO::QUEST_EVENT_SIGNATURE ID);
 
 public:
+	HRESULT Initialize();
+
 	void Start_Quest(_int iFirstScenarioId);
 
-	void Register_Scenario(QUESTDESC scenarioDesc);
-	void Register_QuestObject(QUEST_CHAPTERDESC chapterDesc, class CGameObject* pObj);
+	void Register_Scenario(DTO::QUESTDESC scenarioDesc);
+	void Register_QuestObject(DTO::QUEST_CHAPTERDESC chapterDesc, class CGameObject* pObj);
 
 	void Change_Scenario();
 
-	QUEST_INFOBUCKET Get_QuestInfo();
+	DTO::QUEST_INFOBUCKET Get_QuestInfo();
+	DTO::QUEST_CHAPTERDESC Get_QuestChapterInfo();
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
-	
+	_bool m_bHasStarted = { false };
+
 	vector<DelegateHandle> m_vecEventHandles;
 
 	_int m_iCurScenarioId = { -1 };

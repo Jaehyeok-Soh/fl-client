@@ -733,6 +733,9 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\Animation">
       <UniqueIdentifier>{f2ac30ac-8cc6-4e1a-91a2-0a36094fcd50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\03 Dialogue">
+      <UniqueIdentifier>{9ff56111-a531-4668-8c29-235fc9a498ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1363,6 +1366,9 @@
     <ClInclude Include="..\Public\ImGui_AnimationLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DialogueManager.h">
+      <Filter>07. System\03 Dialogue</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1981,6 +1987,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_AnimationLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DialogueManager.cpp">
+      <Filter>07. System\03 Dialogue</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

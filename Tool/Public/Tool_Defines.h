@@ -330,7 +330,10 @@ namespace Tool
 	inline constexpr _char	g_szUse_Mix_RGBA_Map_Count		[]{"g_iUse_Mix_RGBA_Count"};
 
 	inline constexpr _char	g_szCB_WaterData[]{ "CB_WaterData" };
+	inline constexpr _char	g_szCB_FogrData[]{ "CB_FogData" };
+
 	inline constexpr _char	g_szWaterTexture[]{ "g_WaterTexture" };
+	inline constexpr _char	g_szFogTexture[]{ "g_FogTexture" };
 
 
 
@@ -407,6 +410,7 @@ namespace Tool
 		Vine,
 		Rock,
 		Water,
+		Fog,
 
 		/*  생성 위치 잡아주는 역할  */
 		Batch_Player,
@@ -441,6 +445,7 @@ namespace Tool
 		Vine,
 		Rock,
 		Water,
+		Fog,
 		END,
 	};
 
@@ -451,14 +456,18 @@ namespace Tool
 		case Tool::EClientMakePath::StaticObject:							return "StaticObject";
 		case Tool::EClientMakePath::LandScape:								return "LandScape";
 
-			/* ------------------환경 요소---------------- */
+			/* ------------------식생 요소---------------- */
 		case Tool::EClientMakePath::Bush:									return "Bush";
 		case Tool::EClientMakePath::Grass:									return "Grass";
 		case Tool::EClientMakePath::Tree:									return "Tree";
 		case Tool::EClientMakePath::Vine:									return "Vine";
 		case Tool::EClientMakePath::Moss:									return "Moss";
 		case Tool::EClientMakePath::Rock:									return "Rock";
+
+
+			/* ------------------환경 요소---------------- */
 		case Tool::EClientMakePath::Water:									return "Water";
+		case Tool::EClientMakePath::Fog:									return "Fog";
 			/* ------------------------------------------- */
 
 			/*  --------- 생성 위치 잡아주는 역할 ---------*/
@@ -494,6 +503,7 @@ namespace Tool
 		if (strType == "Vine")												return EClientMakePath::Vine;
 		if (strType == "Rock")												return EClientMakePath::Rock;
 		if (strType == "Water")												return EClientMakePath::Water;
+		if (strType == "Fog")												return EClientMakePath::Fog;
 
 		/* 생성 위치관련 */
 		if (strType == "Batch_Player")										return EClientMakePath::Batch_Player;

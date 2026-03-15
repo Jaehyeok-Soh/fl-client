@@ -36,6 +36,8 @@ HRESULT CBoss_Xibi::Initialize_Prototype()
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI);
+
 	return S_OK;
 }
 

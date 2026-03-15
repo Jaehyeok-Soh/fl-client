@@ -91,7 +91,7 @@ protected:
 	TimeCount m_TLandTime = { 0.f, 1.f };
 
 protected:
-	virtual void Change_PlayerState(STATEKEY eKey) override;
+	virtual void Change_PlayerState(STATEKEY eKey, _bool bForce = false) override;
 
 protected:
 	void Check_KeyFlag(const _float fTimeDelta);

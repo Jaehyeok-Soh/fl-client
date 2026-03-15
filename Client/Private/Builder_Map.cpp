@@ -662,6 +662,8 @@ HRESULT CBuilder_Map::Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectDat
 	pDesc.vTriggerBox_Extents = pTriggerBox_ChangeLevel_Desc->vExtents;
 	pDesc.eChangeLevelType = StringToClientleveltype(pTriggerBox_ChangeLevel_Desc->strChangeLevelTypeName);
 
+	if (pDesc.bHasQuest = pTriggerBox_ChangeLevel_Desc->bHasQuest)
+		pDesc.tQuestObjectDesc = pTriggerBox_ChangeLevel_Desc->tQuestObjectDesc;
 
 	m_pGameInstance->Add_GameObject( ENUM_TO_UINT(ELevelType::STATIC) , g_wszTriggerBox_ChangeLevel_Prototype_Tag , ENUM_TO_UINT(m_eLevelType) , g_wszTriggerBoxLayer ,&pDesc);
 
@@ -689,6 +691,10 @@ HRESULT CBuilder_Map::Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObject
 	pDesc.pTransform_Desc = &transformDesc;
 	pDesc.vTriggerBox_Extents = pTriggerBox_MonsterSpawner->vExtents;
 	pDesc.vecMonsterSpawnData = pTriggerBox_MonsterSpawner->vecMonsterSpawnData;
+
+	if (pDesc.bHasQuest = pTriggerBox_MonsterSpawner->bHasQuest)
+		pDesc.tQuestObjectDesc = pTriggerBox_MonsterSpawner->tQuestObjectDesc;
+
 	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszTriggerBox_MonsterSapwner_Prototype_Tag , ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &pDesc);
 	return S_OK;
 }
@@ -720,6 +726,9 @@ HRESULT CBuilder_Map::Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_
 		tDesc.vecGlobalBroadcastType.push_back(Global_Broadcast_Type_ToEnum(str));
 	}
 
+	if (tDesc.bHasQuest = pTriggerBox_GlobalEvent_BroadCaster->bHasQuest)
+		tDesc.tQuestObjectDesc = pTriggerBox_GlobalEvent_BroadCaster->tQuestObjectDesc;
+
 	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), 
 									g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
 									g_wszTriggerBoxLayer, &tDesc);
@@ -745,6 +754,9 @@ HRESULT CBuilder_Map::Create_TriggerBox_TutorialUIEvent(const DTO::TMap_MapObjec
 	tDesc.pTransform_Desc		= &transformDesc;
 	tDesc.vTriggerBox_Extents	= pOrigin->vExtents;
 	tDesc.eType					= UITutorialPopUpTypeID_ToEnum(pOrigin->strEventName);
+
+	if (tDesc.bHasQuest = pOrigin->bHasQuest)
+		tDesc.tQuestObjectDesc = pOrigin->tQuestObjectDesc;
 
 	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
 		g_wszTriggerBox_TutorialUIEvent_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
@@ -788,7 +800,7 @@ void CBuilder_Map::Free()
 {
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pMeshShader);
-
+	Safe_Release(m_pInstMeshShader);
 
 	Super::Free();
 }

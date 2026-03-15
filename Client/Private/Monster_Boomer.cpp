@@ -29,6 +29,8 @@ HRESULT CMonster_Boomer::Initialize_Prototype()
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_BOOMER);
+
 	return S_OK;
 }
 

@@ -66,6 +66,11 @@
 //=================
 #include "GameInstance.h"
 
+//=================
+// Quest
+//=================
+#include "QuestManager.h"
+
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
@@ -117,6 +122,9 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
+	CQuestManager::GetInstance()->Start_Quest(0);
+
 	return S_OK;
 }
 
@@ -149,23 +157,33 @@ void CLevel_Test::Update(const _float fTimeDelta)
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 
-	//if (KEY_BUTTON_DOWN(DIK_4))
-	//{
-	//	m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>((EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1));
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_5))
-	//{
-	//	m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>((EUITutorialPopUpTypeID::TUTORIAL_POPUP_1));
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_6))
-	//{
-	//	m_pGameInstance->Broadcast<BOSS_GROGGY>();
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_0))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}	
+	if (KEY_BUTTON_DOWN(DIK_4))
+	{
+	}
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		UI_PREFAB_DATA Desc = {};
+		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
+		Desc.Data = PrefabDesc;
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		UI_PREFAB_DATA Desc = {};
+		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
+		Desc.Data = PrefabDesc;
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		UIEVENT_DESC Desc = {};
+		Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
+		CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
+	}
 }
 
 HRESULT CLevel_Test::Render()

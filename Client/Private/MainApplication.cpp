@@ -23,6 +23,7 @@
 
 // UI
 #include "UI_Manager.h"
+#include "UIMinimap_Manager.h"
 #include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "UILoading_Text.h"
@@ -31,6 +32,7 @@
 
 // Quest
 #include "QuestManager.h"
+#include "Quest_DataModel.h"
 
 USING(Client)
 
@@ -346,6 +348,8 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 	// For. UI Texture
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
 		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/Tutorial")))
+		return E_FAIL;
 
 	// For. Prototype_Component_Transform
 	{
@@ -578,7 +582,7 @@ void CMainApplication::Register_Quest_Scenario()
 	auto qm = CQuestManager::GetInstance();
 
 	// 시나리오-s1
-	QUESTDESC s1;
+	DTO::QUESTDESC s1;
 	s1.iId = 0;
 	s1.iPrevId = -1;
 	s1.iNextId = 1;
@@ -589,7 +593,7 @@ void CMainApplication::Register_Quest_Scenario()
 	qm->Register_Scenario(s1);
 
 	// 시나리오-s2
-	QUESTDESC s2;
+	DTO::QUESTDESC s2;
 	s2.iId = 1;
 	s2.iPrevId = 0;
 	s2.iNextId = 2;
@@ -608,6 +612,7 @@ void CMainApplication::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();	// 오브젝트 삭제 이후 삭제해야되는데 / 오브젝트에서 Addref 하고 있어서 안터짐
+	CUIMinimap_Manager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();
 

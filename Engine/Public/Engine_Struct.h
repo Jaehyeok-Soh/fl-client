@@ -480,6 +480,17 @@ namespace Engine
 		SimpleMath::Vector4 vColorG = { 1.f, 1.f,1.f, 1.f };
 		SimpleMath::Vector4 vColorB = { 1.f, 1.f,1.f, 1.f };
 	}SHADER_RGBCOLOR_DESC;
+
+	typedef struct tagPlayerInfo
+	{
+		Matrix		PlayerMatrix{Matrix::Identity};		/* 플레이어 월드 메트릭스 */
+		float		fCollisionRange{ 1.f };				/* 플레이어의 충돌범위 */
+		float		fCollisionHeight{1.f};				/* 플레이어의 충돔높이 */
+
+		float		fCurSpeed{0.f};						/* 가속도? */
+		float		fMaxSpeed{5.f};						/* 시각적 효과를 위한 MaxSpeed 조절가능 */
+	}SHADER_PLAYER_INFO;
+
 #pragma endregion
 
 #pragma region Shader_StructuredBuffer
@@ -538,6 +549,7 @@ namespace Engine
 		unsigned int g_iGravityKeyCount = {0};
 		SimpleMath::Vector3 g_vPadding = {0.f, 0.f, 0.f};
 	}EFFECT_CURVEINFO;
+
 #pragma endregion
 
 #pragma region Model_ComShader_Structures

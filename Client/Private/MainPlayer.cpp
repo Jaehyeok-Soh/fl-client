@@ -245,7 +245,7 @@ void CMainPlayer::Update_Late(const _float fTimeDelta)
 
 void CMainPlayer::Ready_Before_Render(const _float fTimeDelta)
 {
-    Super::Ready_Before_Render(fTimeDelta);
+    this->Super::Ready_Before_Render(fTimeDelta);
 
 #ifdef _DEBUG
     m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());
@@ -952,7 +952,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime = 28.f / ANIMTIC;
+        tDesc.fKeyCoolTime = 24.f / ANIMTIC;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
 
@@ -966,7 +966,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime = 70.f / ANIMTIC;
+        tDesc.fKeyCoolTime = 60.f / ANIMTIC;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill02_Red");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL2);
         tDesc.pOwnerGun = pMyGun;

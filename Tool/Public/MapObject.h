@@ -88,6 +88,7 @@ public:
 	HRESULT								Ready_TriggerBox_MonsterSpawner();
 
 	HRESULT								Ready_Water();
+	HRESULT								Ready_Fog();
 
 
 	HRESULT								Ready_InvisibleWall();
@@ -215,6 +216,7 @@ public:
 	HRESULT								Render_Rock();
 
 	HRESULT								Render_Water();
+	HRESULT								Render_Fog();
 
 	HRESULT								Render_Batch_Player();
 	HRESULT								Render_Batch_Monster();
