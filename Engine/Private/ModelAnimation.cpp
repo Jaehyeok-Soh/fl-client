@@ -275,8 +275,11 @@ _bool CModelAnimation::Is_TrackPositionBetweenRaw(_float fTrackPositionA, _float
 
 void CModelAnimation::Bind_AnimationEData(CComputeShader* pAnimEShader)
 {
-	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME),	m_pInputKeySB_SRV,		m_pKeyFrameBuffer);
-	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), m_pInputChannelSB_SRV,	m_pChannelDataBuffer);
+	auto pKeySRV = pAnimEShader->Get_SRV("IMMU_KEYFRAMS");
+	auto pChannelSRV = pAnimEShader->Get_SRV("IMMU_CHANNELDATAS");
+
+	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_KEYFRAME), pKeySRV,		m_pKeyFrameBuffer);
+	pAnimEShader->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::IMMU_CHANNELDATA), pChannelSRV,	m_pChannelDataBuffer);
 }
 
 void CModelAnimation::Bind_AnimationMixData(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS)

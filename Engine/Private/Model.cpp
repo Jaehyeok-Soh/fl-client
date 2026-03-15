@@ -1312,6 +1312,13 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 			pBoneComBineCS->Get_SRV("MU_SRTS"), pAdditiveCS->Get_Output_Buffer());
 	}
 
+	// blend 만 할때
+	else
+	{
+		pBoneComBineCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_SB_IDX::MU_SRTS),
+			pBoneComBineCS->Get_SRV("MU_SRTS"), pAnimBlendCS->Get_Output_Buffer());
+	}
+
 	Update_BoneCombineTransformMatrix(pBoneComBineCS);
 
 	//if (m_bStageBones)
@@ -1422,8 +1429,6 @@ HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader
 				return E_FAIL;
 		}
 
-		Ready_SB(pAnimEvalCS);
-
 
 		// 1. CHANNEL_OUTPUT 초기화
 		CS_SRT* pIniailData = new CS_SRT[Get_BoneCount()];
@@ -1436,7 +1441,7 @@ HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader
 			matBind.Decompose(vScale, vQuat, vTranslation);
 
 			pIniailData[i].vScale = vScale;
-			pIniailData[i].vQuat = vQuat;
+			pIniailData[i].vQuat = Vec4{ vQuat.x,vQuat.y ,vQuat.z ,vQuat.w };
 			pIniailData[i].vTranslation = vTranslation;
 			pIniailData[i].Padding0 = 0.f;
 			pIniailData[i].Padding1 = 0.f;
@@ -1444,8 +1449,12 @@ HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader
 
 		pAnimEvalCS->Get_Output_Buffer()->Copy_Data(pIniailData, sizeof(CS_SRT), Get_BoneCount());
 
+		Ready_SB(pAnimEvalCS); 
+
 		if (pAnimBlendCS)
 			pAnimBlendCS->Get_Output_Buffer()->Copy_Data(pIniailData, sizeof(CS_SRT), Get_BoneCount());
+		else
+			int a = 0;
 
 		if (pAnimMixCS)
 			pAnimMixCS->Get_Output_Buffer()->Copy_Data(pIniailData, sizeof(CS_SRT), Get_BoneCount());

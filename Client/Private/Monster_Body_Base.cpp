@@ -88,7 +88,7 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
 
 	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta,
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pAnimMix);
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS);
 
 	// Shake & Emissive ¿¬Ãâ¿ë
 	Get_Component<CRenderFx>()->Update(fTimeDelta);
