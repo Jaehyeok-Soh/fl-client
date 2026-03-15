@@ -346,6 +346,8 @@
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
+    <ClInclude Include="..\Public\UIQuest_Image.h" />
+    <ClInclude Include="..\Public\UIQuest_Text.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
     <ClInclude Include="..\Public\UITutorial_Manager.h" />
@@ -583,6 +585,8 @@
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
+    <ClCompile Include="..\Private\UIQuest_Image.cpp" />
+    <ClCompile Include="..\Private\UIQuest_Text.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="..\Private\UITutorial_Manager.cpp" />

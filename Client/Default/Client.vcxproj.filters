@@ -736,6 +736,12 @@
     <Filter Include="07. System\03 Dialogue">
       <UniqueIdentifier>{9ff56111-a531-4668-8c29-235fc9a498ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\10.Quest">
+      <UniqueIdentifier>{96adf82f-db81-40b0-9a66-0689de401dbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest">
+      <UniqueIdentifier>{b9efb574-6096-4b17-8af9-23ea111f5146}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1369,6 +1375,12 @@
     <ClInclude Include="..\Public\DialogueManager.h">
       <Filter>07. System\03 Dialogue</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIQuest_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQuest_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1990,6 +2002,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\DialogueManager.cpp">
       <Filter>07. System\03 Dialogue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuest_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuest_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
