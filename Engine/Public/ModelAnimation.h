@@ -44,9 +44,9 @@ private:
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	_bool	Update_TransformationMatrices(const vector<class CBone*>& vecBones,_bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS);
-	void	SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS);
-	void	Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _bool bFirst);
+	_bool	Update_TransformationMatrices(const vector<class CBone*>& vecBones,_bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS, OUT Vec3& vPrepos);
+	void	SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS, OUT Vec3& vPrepos);
+	void	Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _bool bFirst, OUT Vec3& vPrepos);
 	void	Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, const vector<class CChannel*>& vRefChannels, CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float  fRatioOffset);
 	
 	void Clear();
@@ -75,7 +75,7 @@ public:
 
 	// test
 	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
-	void Reset_PrePosition();
+	void Reset_PrePosition(OUT Vec3& vPrepos);
 
 public:
 	void Set_MotionBone(_int iBondIdx);
@@ -87,6 +87,7 @@ public:
 	};
 	_bool Get_ApplyRoot() const { return m_bApplyRootMotion; }
 	void Set_AnimationSpeed(_float fSpeed) { m_fAnimationSpeed_Offset = fSpeed; if (m_fAnimationSpeed_Offset <= 0.f) m_fAnimationSpeed_Offset = 1.f; }
+	_float Get_AnimationSpeed() const { return m_fAnimationSpeed_Offset; }
 	void Set_MixType(_uint iMixType) { if (iMixType > 1) return; m_iMixType = iMixType; }
 
 	_uint Get_KeyFrameStart() const { return m_iKeyFrameStart; }

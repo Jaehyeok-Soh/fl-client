@@ -140,7 +140,7 @@ HRESULT CState_GunBase::End()
     return S_OK;
 }
 
-void CState_GunBase::Change_PlayerState(STATEKEY eKey)
+void CState_GunBase::Change_PlayerState(STATEKEY eKey, _bool bForce)
 {
     if (eKey == STATEKEY::SHIFT &&
         (m_eMoveState == MoveState::GROUND) &&
@@ -287,15 +287,6 @@ void CState_GunBase::Ground_Update(const _float fTimeDelta)
 
 void CState_GunBase::Jump_Update(const _float fTimeDelta)
 {
-    if (Engine_Utils::Has_Flag(m_FKeyFlags, KeyMask::Mask_Jump))
-    {
-        Request_MixAnimation(1, -1);
-        Request_Change_State(ENUM_TO_UINT(CPlayer::State::JUMPDOUBLE));
-        return;
-    }
-
-    //Jump(fTimeDelta);
-
     // cool 타임 검사 -> fall
     m_TJumpTime.x += fTimeDelta;
     if (m_TJumpTime.x >= m_TJumpTime.y)

@@ -4,6 +4,9 @@
 #include "EngineConsole.h"
 #include <windows.h>
 
+NS_BEGIN(Engine)
+class CGameObject;
+NS_END
 
 extern HWND			g_hWnd;
 extern HINSTANCE	g_hInstance;

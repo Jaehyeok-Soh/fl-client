@@ -239,4 +239,6 @@ void CMonsterState_Factory::Free()
 {
 	m_mapCondition.clear();
 	m_mapFeature.clear();
+
+	Super::Free();
 }

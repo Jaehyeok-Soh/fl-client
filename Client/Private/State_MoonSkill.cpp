@@ -4,6 +4,8 @@
 #include "Player.h"
 #include "CameraMan_Targeter.h"
 
+#define ANIMTIC (24.f * 1.2f)
+
 CState_MoonSkill::CState_MoonSkill(CActionState* pOwnerComponent, const string& strName)
 	:Super(pOwnerComponent, strName)
 {
@@ -36,11 +38,14 @@ HRESULT CState_MoonSkill::Start(void* pArg, _bool bForce)
 		// 처음에는 바닥 충돌 검사를 하지 않음
 		m_FCollisions &= ~COLLISIONFLAGS::C_DOWN;
 		Set_ApplyGravity(false);
+
+		m_vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(CPlayer::State::END);
+
 		break;
 
 	case ENUM_TO_UINT(CPlayer::State::SKILL2):
 		//static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::SKILL));
-
+		m_vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(CPlayer::State::END);
 		break;
 	}
 
@@ -49,18 +54,22 @@ HRESULT CState_MoonSkill::Start(void* pArg, _bool bForce)
 
 void CState_MoonSkill::Update(const _float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
-
+	_bool bChange = false;
 	switch (m_iPlayerState)
 	{
 	case ENUM_TO_UINT(CPlayer::State::SKILL1):
-		SkillE_Update(fTimeDelta);
+		bChange = SkillE_Update(fTimeDelta);
 		break;
 
 	case ENUM_TO_UINT(CPlayer::State::SKILL2):
-		SkillQ_Update(fTimeDelta);
+		bChange = SkillQ_Update(fTimeDelta);
 		break;
 	}
+
+	if (bChange)
+		return;
+
+	Super::Update(fTimeDelta);
 }
 
 HRESULT CState_MoonSkill::End()
@@ -99,40 +108,103 @@ _uint CState_MoonSkill::Get_Capabilities() const
 	return 0;
 }
 
-void CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
+_bool CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
 {
-	SetupLook_CameraLook();
+	SetupLook_CameraLookLerp(fTimeDelta, 10.f);
 
-	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime - 0.3f)
+	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime - (0.3f / 1.2f))
 	{
 		Set_ApplyGravity(true);
 		m_FCollisions |= COLLISIONFLAGS::C_DOWN;
 	}
 
-	if (m_fStateElapsed >= 2.5f)
+	if (m_fStateElapsed >= (70.f / (ANIMTIC)))
 	{
-		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
+		{
+			if (Check_MoveKey(fTimeDelta))
+				return true;
+
+			if (Check_JumpKey(fTimeDelta))
+				return true;
+
+			if (Check_DashKey(fTimeDelta))
+				return true;
+
+			if (Check_CtrlPressKey(fTimeDelta))
+				return true;
+
+			if (Check_CtrlUpKey(fTimeDelta))
+				return true;
+
+			if (Check_MeleeKey(fTimeDelta))
+				return true;
+
+			if (Check_RangeKey(fTimeDelta))
+				return true;
+
+			if (Check_SkillKey(fTimeDelta))
+				return true;
+
+			if (Check_FKey(fTimeDelta))
+				return true;
+
+			Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
+			return true;
+		}
 	}
+
+	return false;
 }
 
-void CState_MoonSkill::SkillQ_Update(const _float fTimeDelta)
+_bool CState_MoonSkill::SkillQ_Update(const _float fTimeDelta)
 {
-	if (m_fStateElapsed >= 5.f)
+	if (m_fStateElapsed >= (130.f / (ANIMTIC)))
 	{
-		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
-		return;
+		{
+			if (Check_MoveKey(fTimeDelta))
+				return true;
+
+			if (Check_JumpKey(fTimeDelta))
+				return true;
+
+			if (Check_DashKey(fTimeDelta))
+				return true;
+
+			if (Check_CtrlPressKey(fTimeDelta))
+				return true;
+
+			if (Check_CtrlUpKey(fTimeDelta))
+				return true;
+
+			if (Check_MeleeKey(fTimeDelta))
+				return true;
+
+			if (Check_RangeKey(fTimeDelta))
+				return true;
+
+			if (Check_SkillKey(fTimeDelta))
+				return true;
+
+			if (Check_FKey(fTimeDelta))
+				return true;
+
+			Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
+			return true;
+		}
 	}
 
-	if (m_fStateElapsed >= 1.5f)
+	if (m_fStateElapsed >= (1.5f / 1.2f))
 	{
 		static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::NORMAL));
-		return;
+		return false;
 	}
 
-	if (m_fStateElapsed >= 0.35f)
+	if (m_fStateElapsed >= (0.35f / 1.2f))
 	{
 		static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::SKILL_SEQUENCE));
 	}
+
+	return false;
 }
 
 CState_MoonSkill* CState_MoonSkill::Create(CActionState* pOwnerComponent, const string& strName, void* pArg)

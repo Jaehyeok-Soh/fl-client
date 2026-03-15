@@ -10,6 +10,7 @@
 #include "StateBase_Player.h"
 #include "StatCom_Player.h"
 #include "Player.h"
+#include "PhysicsCCT.h"
 
 #include "GameInstance.h"
 
@@ -40,6 +41,9 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	Vector3 vCamBonePos = pModel->Get_Bone(417)->Get_CombinedTransformMatrix().Translation();
 	_uint iDashCount = pStat->Get_Count(CStatCom_Player::TIMER_TYPE::DASH);
 	_float fMental = pStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::MENTAL).x;
+
+	CPhysicsCCT* pCCT = pGo->Get_Component<CPhysicsCCT>();
+
 
 	CTransform* pTrans = pGo->Get_Component<CTransform>();
 
@@ -89,6 +93,21 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 	ImGui::Text("State Time : ");
 	ImGui::SameLine();
 	ImGui::Text("%f", fStateTime);
+
+
+	ImGui::Text("Cur Speed : ");
+	ImGui::SameLine();
+	ImGui::Text("%f", pCCT->GetMoveState()->vVelocity.magnitude());
+
+	if (ImGui::TreeNode(" PlayerInfo "))
+	{
+		SHADER_PLAYER_INFO* pInfo = static_cast<CPlayer*>(pGo)->Get_PlayerInfo();
+		if (!pInfo)
+			ImGui::TreePop();
+		ImGui::DragFloat(" MaxSpeed " , &pInfo->fMaxSpeed, 0.001f, 0.f, 100.f);
+		ImGui::TreePop();
+	}
+
 
 	ImGui::EndGroup();
 }

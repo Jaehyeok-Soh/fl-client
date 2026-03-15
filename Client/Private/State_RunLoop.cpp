@@ -32,6 +32,8 @@ HRESULT CState_RunLoop::Start(void* pArg, _bool bForce)
 
 	Set_ApplyYLerp(true);
 
+	Look_Impuls();
+
 	return S_OK;
 }
 

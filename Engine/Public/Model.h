@@ -215,6 +215,7 @@ public:
 	void								Set_ApplyRootMotionAll(_bool bRootApply);
 
 	void								Set_Animtion_MotionOffset_All(_float fOffset);
+	void								Set_Animation_SpeedOffset_All(_float fOffset);
 public:
 	HRESULT								Set_MI_TintColor(_uint iIndex, const Vec4& vColor );
 public:
@@ -341,6 +342,9 @@ private:
 
 private:
 	_int								m_iRootBoneIdx				= { -1 };
+	Vec3								m_vPreMainPosition = { Vec3::Zero };
+	Vec3								m_vPreBlendPosition = { Vec3::Zero };
+	Vec3								m_vPreMixPosition = { Vec3::Zero };
 
 	// mix anim
 	vector<_int>						m_vecMixAnimIndices;

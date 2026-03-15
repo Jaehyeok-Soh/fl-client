@@ -1,9 +1,12 @@
 #include "pch.h"
 #include "ImGui_PlayerInspector.h"
+
 #include "ImGui_TransformLayout.h"
 #include "ImGui_StateLayout.h"
 #include "ImGui_FrameLayout.h"
 #include "ImGui_MoveStateLayout.h"
+#include "ImGui_AnimationLayout.h"
+
 #include "GameObject.h"
 #include "GameInstance.h"
 
@@ -26,6 +29,9 @@ HRESULT CImGui_PlayerInspector::Initialize()
 	if (FAILED(Add_Layout(ELayoutType::MoveState, CImGui_MoveStateLayout::Create())))
 		return E_FAIL;
 
+	if (FAILED(Add_Layout(ELayoutType::Animation, CImGui_AnimationLayout::Create())))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -45,6 +51,7 @@ void CImGui_PlayerInspector::Render(CGameObject* pGo)
 		Render_Layout(ELayoutType::Transform, pGo);
 		Render_Layout(ELayoutType::State, pGo);
 		Render_Layout(ELayoutType::MoveState, pGo);
+		Render_Layout(ELayoutType::Animation, pGo);
 	}
 	
 	ImGui::End();

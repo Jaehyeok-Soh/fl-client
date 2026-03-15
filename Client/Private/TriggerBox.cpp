@@ -5,7 +5,7 @@
 #include "PhysicsCollider.h"
 #include "GameInstance.h"
 #include "TriggerBox_LevelChange.h"
-
+#include "QuestManager.h"
 
 
 CTriggerBox::CTriggerBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -23,6 +23,8 @@ HRESULT CTriggerBox::Initialize_Prototype()
     if (FAILED(Super::Initialize_Prototype()))
         return E_FAIL;
 
+    Set_Object_Enum_Tag(OBJECT_ENUM_TAG::TRIGGER_BOX_DEFAULT);
+
     return S_OK;
 }
 
@@ -38,6 +40,8 @@ HRESULT CTriggerBox::Initialize(void* pArg)
     if (FAILED(Ready_Component(pDesc)))
         return E_FAIL;
 
+    if (pDesc->bHasQuest)
+        Ready_Quest(&pDesc->tQuestObjectDesc);
 
     return S_OK;
 }
@@ -97,6 +101,11 @@ HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
     }
 
     return S_OK;
+}
+
+void CTriggerBox::Ready_Quest(DTO::QUEST_CHAPTERDESC* pQuestDesc)
+{
+    CQuestManager::GetInstance()->Register_QuestObject(*pQuestDesc, this);
 }
 
 HRESULT CTriggerBox::Awake(const _uint iCurrentLevelID)
@@ -164,6 +173,5 @@ void CTriggerBox::Free()
 {
     Super::Free();
 }
-
 
 

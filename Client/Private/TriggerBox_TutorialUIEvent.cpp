@@ -2,6 +2,7 @@
 #include "TriggerBox_TutorialUIEvent.h"
 
 #include "GameInstance.h"
+#include "QuestManager.h"
 
 CTriggerBox_TutorialUIEvent::CTriggerBox_TutorialUIEvent(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox(pDevice, pContext), m_eUITutorialPopUpTypeID{EUITutorialPopUpTypeID::END}
@@ -17,6 +18,8 @@ HRESULT CTriggerBox_TutorialUIEvent::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
+
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::TRIGGER_BOX_MILESTONE_DEFAULT);
 
 	return S_OK;
 }
@@ -100,6 +103,11 @@ void CTriggerBox_TutorialUIEvent::OnTrigger_Enter(_uint iMyColliderLayer, _uint 
 	{
 		m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>(m_eUITutorialPopUpTypeID);
 	}
+
+	if (m_eQuestEvent == DTO::QUESTEVENT::AREA_ENTER)
+	{
+		CallQuestEvent(Get_Object_Enum_Tag(), 1);
+	}
 }
 
 void CTriggerBox_TutorialUIEvent::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -107,6 +115,11 @@ void CTriggerBox_TutorialUIEvent::OnTrigger_Exit(_uint iMyColliderLayer, _uint i
 	if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
 	{
 		m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>(m_eUITutorialPopUpTypeID);
+	}
+
+	if (m_eQuestEvent == DTO::QUESTEVENT::AREA_EXIT)
+	{
+		CallQuestEvent(Get_Object_Enum_Tag(), 1);
 	}
 }
 

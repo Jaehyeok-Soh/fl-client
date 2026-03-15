@@ -29,6 +29,8 @@ HRESULT CMonster_Dog::Initialize_Prototype()
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_DOG);
+
 	return S_OK;
 }
 

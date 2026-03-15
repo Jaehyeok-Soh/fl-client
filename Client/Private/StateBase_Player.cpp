@@ -65,6 +65,9 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+	if (Check_Collis(fTimeDelta))
+		return;
+
 	// hit 충돌 처리 먼저
 	if (Check_Hit(fTimeDelta))
 		return;
@@ -74,20 +77,12 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 		!Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
 		return;
 
-	if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면
-	{
-		if (Check_Keys(fTimeDelta))
-			return;
-
-		Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
+	if (Change_State_WhenLoopDone(fTimeDelta))
 		return;
-	}
 	 
 	// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
 	if (Check_Keys(fTimeDelta))
 		return;
-
-	Check_Collis(fTimeDelta);
 }
 
 HRESULT CStateBase_Player::End()
@@ -98,19 +93,25 @@ HRESULT CStateBase_Player::End()
 	return S_OK;
 }
 
-void CStateBase_Player::Change_PlayerState(STATEKEY eKey)
+void CStateBase_Player::Change_PlayerState(STATEKEY eKey, _bool bForce)
 {
 	_uint iNextState = m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
-	Request_Change_State(iNextState, &m_tNextStateDesc);	
 
-	/* 플레이어가 이런 state를 이런 애니메이션으로 바꿨다 */
+	if (bForce)
+		Request_Change_StateForce(iNextState, &m_tNextStateDesc);
+	else
+		Request_Change_State(iNextState, &m_tNextStateDesc);
 }
 
-void CStateBase_Player::Change_PlayerState(_uint iState)
+void CStateBase_Player::Change_PlayerState(_uint iState, _bool bForce)
 {
 	Set_NextStateDesc(iState);
-	Request_Change_State(iState, &m_tNextStateDesc);
+
+	if(bForce)
+		Request_Change_StateForce(iState,  &m_tNextStateDesc);
+	else
+		Request_Change_State(iState, &m_tNextStateDesc);
 }
 
 void CStateBase_Player::Change_PlayerHitState(_uint iState, void* pArg)
@@ -187,6 +188,28 @@ _bool CStateBase_Player::Check_MoveKey(const _float fTimeDelta)
 		{
 			Change_PlayerState(STATEKEY::MOVE);
 			return true;
+		}
+	}
+
+	if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면
+	{
+		// move key intput이 있고, 키 맵핑이 되어 있고, 땅에 있다면
+		if (Engine_Utils::Has_Flag(m_FMoves, MOVEFLAGS::LOOP_DONE) &&
+			Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE))&&
+			Check_OnGround(0.3f))
+		{
+			if (Has_ChangeState(STATEKEY::LOOPDONEMOVEKEY))
+			{
+				Change_PlayerState(STATEKEY::LOOPDONEMOVEKEY);
+				return true;
+			}
+
+			else if (Has_ChangeState(STATEKEY::MOVE))
+			{
+				Change_PlayerState(STATEKEY::MOVE);
+				return true;
+			}
+
 		}
 	}
 
@@ -358,7 +381,7 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 	{
 		m_pGameInstance->Broadcast<PLAYER_SKILL_TRIGGERED>(ENUM_TO_UINT(STATEKEY::E));
 
-		Change_PlayerState(STATEKEY::E);
+		Change_PlayerState(STATEKEY::E, true);
 		return true;
 	}
 
@@ -368,7 +391,7 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 	{
 		m_pGameInstance->Broadcast<PLAYER_SKILL_TRIGGERED>(ENUM_TO_UINT(STATEKEY::Q));
 
-		Change_PlayerState(STATEKEY::Q);
+		Change_PlayerState(STATEKEY::Q, true);
 		return true;
 	}
 
@@ -460,8 +483,11 @@ _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 		else
 			m_TFallingCount.x += fTimeDelta;
 
-		if(m_TFallingCount.x > m_TFallingCount.y)
+		if (m_TFallingCount.x > m_TFallingCount.y)
+		{
 			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::FALL));
+			return true;
+		}
 	}
 
 	return false;
@@ -476,6 +502,19 @@ void CStateBase_Player::Jump_Impuls(_float fOffset)
 	vUp.Normalize();
 
 	Vec3 accelation = vUp * moveps * fOffset; //  방향 * 속도
+
+	SetCCTImpuls(accelation);
+}
+
+void CStateBase_Player::Look_Impuls(_float fOffset)
+{
+	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+	_float moveps = pPlayerTrans->Get_MovePerSec(); // 속도
+
+	Vec3 vLook= (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+	vLook.Normalize();
+
+	Vec3 accelation = vLook * moveps * fOffset; //  방향 * 속도
 
 	SetCCTImpuls(accelation);
 }
@@ -576,6 +615,23 @@ void CStateBase_Player::Reset_GunTimer()
 void CStateBase_Player::Reload_Gun()
 {
 	m_pOwnerGun->Reload_Bullet();
+}
+
+_bool CStateBase_Player::Change_State_WhenLoopDone(const _float fTimeDelta)
+{
+	if (!m_bLoop && Is_MainAnimFinished())		// loop가 아닌데 애니메이션이 끝났다면
+	{
+		if (Check_Collis(fTimeDelta))
+			return true;
+
+		if (Check_Keys(fTimeDelta))
+			return true;
+
+		Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
+		return true;
+	}
+
+	return false;
 }
 
 _bool CStateBase_Player::Can_CheckKey(const _float fTimeDelta)

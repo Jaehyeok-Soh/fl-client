@@ -35,7 +35,11 @@ public:
 	virtual void			OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void			OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)override;
 	virtual void			OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
+
 public:
+	virtual void			QuestEnter() override {};
+	virtual void			QuestExit() override {};
+
 protected:
 	vector<EGlobal_Broadcast_Type>	m_vecGlobalBroadcastType{};
 public:
