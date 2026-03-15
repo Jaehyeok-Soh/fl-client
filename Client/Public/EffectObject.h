@@ -75,6 +75,7 @@ private:
     void Update_Rotation_Lerp(float fDT, float fRatio);
     void Update_UV_Scroll_Curve(float fRatio);
     void Apply_Scaling_Dynamics(const _float fRatio);
+    void Apply_Luminous_Flux(const _float fRatio);
 
 public:
     void TimeFlagRequest(_uint iTimeFlag);
@@ -104,6 +105,7 @@ private:
     //  ========== 스크롤 OffSet ========
     Vec2      m_vScrollOffset = { 0.f, 0.f };
     _float    m_fTimeAccumulation = 0.f;
+    _float    m_fCurrentGlowPower = 1.f;
     _bool     m_bIsStarted = { false }; // 타임 딜레이 지났는지에 대한 bool값
 
     //  ========= 회전 속도 ===========

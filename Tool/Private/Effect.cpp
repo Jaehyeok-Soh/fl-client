@@ -130,56 +130,8 @@ void Effect::Update_Priority(const _float fTimeDelta)
 void Effect::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
-	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL && m_pBoneMatrix != nullptr)
-	{
-
-		Matrix matBone = *m_pBoneMatrix;
-		Matrix matCustom = XMMatrixIdentity();
-
-		Vector3 vBoneScale;
-		Quat vBoneQuat;
-		Vector3 vBonePos;
-
-		matBone.Decompose(vBoneScale, vBoneQuat, vBonePos);
-
-		if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_SCALE))
-			matCustom *= Matrix::CreateScale(vBoneScale);
-
-		if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_ROTATAION))
-			matCustom *= Matrix::CreateFromQuaternion(vBoneQuat);
-
-		if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_POS))
-		{
-			matCustom.Translation(Vec3(vBonePos.x * 0.01f, vBonePos.y * 0.01f, vBonePos.z * 0.01f));
-		}
-
-		Matrix matBoneOwner = *m_pBoneOwnerMatrix;
-		Matrix matCustom2 = XMMatrixIdentity();
-
-		Vector3 vBoneScale2;
-		Quat vBoneQuat2;
-		Vector3 vBonePos2;
-
-		matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
-		matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
-		matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
-		
-		m_matCombinedWorld = m_pOffsetMartix * (matCustom) *(matCustom2);
-	}
-	else
-	{
-		m_matCombinedWorld = Get_Component<CTransform>()->Get_WorldMatrix();
-	}
-
-	CBounds* pBounds = Get_Component<CBounds>();
-	if (pBounds != nullptr)
-	{
-		pBounds->Update_BoundingDesc(m_matCombinedWorld);
-	}
-
-	if(m_pGameInstance->Get_CurrentLevelIndex() != (ENUM_TO_UINT(ELevelType::EFFECT)))
-		IsEffectFinish();
+	Update_CombinedWorldMatrix();
+	Update_FinishState();
 }
 
 void Effect::Update_Late(const _float fTimeDelta)
@@ -209,8 +161,6 @@ _bool Effect::Picking(OUT Vec3& vOut)
 
 	return true;
 }
-
-
 
 _bool Effect::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocument)
 {
@@ -255,13 +205,79 @@ void Effect::Draw_ImGui()
 	Super::Draw_ImGui();
 }
 
-void Effect::Update_CombinedWorldMatrix(const Matrix* pBoneMatrix)
+void Effect::Update_CombinedWorldMatrix()
 {
-	if(pBoneMatrix != nullptr)
-		m_matCombinedWorld = m_pOffsetMartix * (*pBoneMatrix);
+	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL && m_pBoneMatrix != nullptr)
+	{
+		Update_Bone_Attached_Matrix();
+	}
+
+	else if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL && m_pBoneMatrix == nullptr)
+	{
+		if (m_pBoneOwnerMatrix == nullptr)
+			return;
+
+		Matrix matBoneOwner = *m_pBoneOwnerMatrix;
+		Matrix matCustom2 = XMMatrixIdentity();
+
+		Vector3 vBoneScale2;
+		Quat vBoneQuat2;
+		Vector3 vBonePos2;
+
+		matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
+		matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
+		matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
+
+		m_matCombinedWorld = m_pOffsetMartix * (matCustom2);
+	}
+	else
+	{
+		m_matCombinedWorld = Get_Component<CTransform>()->Get_WorldMatrix();
+	}
 }
 
-void Effect::IsEffectFinish()
+void Effect::Update_Bone_Attached_Matrix()
+{
+	Matrix matBone = *m_pBoneMatrix;
+	Matrix matCustom = XMMatrixIdentity();
+
+	Vector3 vBoneScale;
+	Quat vBoneQuat;
+	Vector3 vBonePos;
+
+	const float fToolToEngine = 0.01f;
+
+	matBone.Decompose(vBoneScale, vBoneQuat, vBonePos);
+
+	if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_SCALE))
+		matCustom *= Matrix::CreateScale(vBoneScale);
+
+	if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_ROTATAION))
+		matCustom *= Matrix::CreateFromQuaternion(vBoneQuat);
+
+	if (Engine_Utils::Has_Flag(m_iBoneFlag, DTO::BONE_POS))
+	{
+		matCustom.Translation(Vec3(vBonePos * fToolToEngine));
+	}
+
+	if (m_pBoneOwnerMatrix == nullptr)
+		return;
+
+	Matrix matBoneOwner = *m_pBoneOwnerMatrix;
+	Matrix matCustom2 = XMMatrixIdentity();
+
+	Vector3 vBoneScale2;
+	Quat vBoneQuat2;
+	Vector3 vBonePos2;
+
+	matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
+	matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
+	matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
+
+	m_matCombinedWorld = m_pOffsetMartix * (matCustom) * (matCustom2);
+}
+
+void Effect::Update_FinishState()
 {
 	_uint FinishCount = 0;
 
@@ -273,7 +289,52 @@ void Effect::IsEffectFinish()
 
 	if (FinishCount == m_vecPartObjects.size())
 	{
-		Set_Dead();
+		if (Is_FromPool())
+		{
+			m_bIsEffectFinish = true;
+			Set_Dead();
+		}
+
+		else
+		{
+			m_bIsEffectFinish = true;
+			for (auto effectObject : m_vecPartObjects)
+			{
+				if (effectObject != nullptr)
+				{
+					auto Object = static_cast<CEffectObject*>(effectObject);
+					Object->Disable_VFX();
+				}
+			}
+		}
+	}
+}
+
+void Effect::Spawn_PositionCalculate(void* pArg)
+{
+	Matrix matTargetWorld = XMMatrixIdentity();
+	Get_Component<CTransform>()->Set_WorldMatrix(matTargetWorld);
+
+	// Engine에서 던진 범용 Desc로 캐스팅
+	EFFECT_SPAWN_DESC* pEngineDesc = static_cast<EFFECT_SPAWN_DESC*>(pArg);
+
+	// Engine 데이터를 기반으로 Client의 데이터 갱신
+	m_eDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pEngineDesc->iSimulationType;
+
+	if (pEngineDesc->pTargetBoneMatrix)
+		m_pBoneMatrix = *pEngineDesc->pTargetBoneMatrix;
+
+	if (pEngineDesc->pTransformMatrix)
+		m_pBoneOwnerMatrix = *pEngineDesc->pTransformMatrix;
+
+	m_iBoneFlag = pEngineDesc->iBoneFlag;
+
+	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::WORLD)
+		Get_Component<CTransform>()->Set_WorldMatrix(pEngineDesc->matWorld);
+
+	else if ((m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL))
+	{
+		m_pOffsetMartix = pEngineDesc->matWorld;
 	}
 }
 
@@ -284,28 +345,7 @@ HRESULT Effect::Spawn_FromPool(void* pArg)
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
 
-	Matrix matTargetWorld = XMMatrixIdentity();
-	Get_Component<CTransform>()->Set_WorldMatrix(matTargetWorld);
-
-	// Engine에서 던진 범용 Desc로 캐스팅
-	EFFECT_SPAWN_DESC* pEngineDesc = static_cast<EFFECT_SPAWN_DESC*>(pArg);
-
-	// Engine 데이터를 기반으로 Client의 데이터 갱신
-	m_eDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pEngineDesc->iSimulationType;
-
-	if(pEngineDesc->pTargetBoneMatrix)
-		m_pBoneMatrix = *pEngineDesc->pTargetBoneMatrix;
-
-	if(pEngineDesc->pTransformMatrix)
-		m_pBoneOwnerMatrix = *pEngineDesc->pTransformMatrix;
-
-	m_iBoneFlag = pEngineDesc->iBoneFlag;
-
-	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::WORLD)
-		Get_Component<CTransform>()->Set_WorldMatrix(pEngineDesc->matWorld);
-
-	else if ((m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL))
-		m_pOffsetMartix = pEngineDesc->matWorld;
+	Spawn_PositionCalculate(pArg);
 
 	// 타이머 및 자식들 초기화
 	for (auto effectObject : m_vecPartObjects)
@@ -326,6 +366,33 @@ HRESULT Effect::Despawn_FromPool()
 	{
 		if (effectObject != nullptr)
 			effectObject->Despawn_FromPool();
+	}
+
+	return S_OK;
+}
+
+HRESULT Effect::Enable_VFX(void* pArg)
+{
+	m_bIsEffectFinish = false;
+	Spawn_PositionCalculate(pArg);
+
+	// 타이머 및 자식들 초기화
+	for (auto effectObject : m_vecPartObjects)
+	{
+		if (effectObject != nullptr)
+			static_cast<CEffectObject*>(effectObject)->Enable_VFX(pArg);
+	}
+	return S_OK;
+}
+
+HRESULT Effect::Disable_VFX()
+{
+	m_bIsEffectFinish = false;
+
+	for (auto effectObject : m_vecPartObjects)
+	{
+		if (effectObject != nullptr)
+			static_cast<CEffectObject*>(effectObject)->Disable_VFX();
 	}
 
 	return S_OK;

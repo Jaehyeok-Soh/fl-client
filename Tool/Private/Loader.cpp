@@ -22,6 +22,7 @@
 #include "Tool_PartObject.h"
 #include "AnimObj.h"
 #include "Effect.h"
+#include "Effect_Env.h"
 #include "CEffectObject.h"
 #include "Gravity_Force.h"
 #include "Tool_Weapon.h"
@@ -143,7 +144,6 @@ HRESULT CLoader::Loading_For_Map()
 	Safe_Release(pMapDataLoader);
 
 
-
 	std::filesystem::path mapFolderPath = L"../../Resources/Models/DebugCamera/";
 	if (std::filesystem::exists(mapFolderPath))
 	{
@@ -158,13 +158,67 @@ HRESULT CLoader::Loading_For_Map()
 		Safe_Release(pMapDataLoader);
 	}
 
-
 	//=================
 	// CGameObject
 	//=================
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_MapObject", CMapObject::Create(EToolObjectType::MAPOBJECT,m_pDevice, m_pDeviceContext));
 
+#pragma region EFFECT
+	// For. Prototype_Component_Collider_OBB
+	CVIBuffer_Particle_Point::PARTICLE_POINT_ORIGIN_DESC	ExploDesc{};
+	ExploDesc.iInstnaceCount = 30;
+	ExploDesc.vCenter = Vec3(0.f, 0.f, 0.f);
+	ExploDesc.vSize = Vec2(0.05f, 0.15f);
+	ExploDesc.vRange = Vec3(0.5f, 0.5f, 0.5f);
+	ExploDesc.vSpeed = Vec2(2.f, 5.f);
+	ExploDesc.vLifeTime = Vec2(1.f, 5.5f);
+	ExploDesc.isLoop = false;
+	ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
 
+	pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_Effect", Effect::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_Effect_Env", CEffect_Env::Create(m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_Effect_Part_Particle", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_Effect_Part_ForceField", CGravity_Force::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
+
+	if (pMapDataLoader == nullptr) return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/blade/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Circle/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Cone/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Object/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Object_Chain/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Object_Female_Character/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Rock/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Tornado/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Lightning/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Twist/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Plane/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Claw/Model/")))
+		return E_FAIL;
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Sphere/Model/")))
+		return E_FAIL;
+
+	Safe_Release(pMapDataLoader);
+
+	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
+
+
+#pragma endregion
 
 	m_isFinished = true;
 	return S_OK;

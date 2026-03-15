@@ -82,6 +82,7 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"NormalTexture_Tag", Engine_Utils::ToString(data._Effect_NormalTexture_Tag)},
         {"DissolveTexture_Tag", Engine_Utils::ToString(data._Effect_DissolveTexture_Tag)},
         {"GlowTexture_Tag", Engine_Utils::ToString(data._Effect_GlowTexture_Tag)},
+        {"_Effect_SubMaskTexture_Tag", Engine_Utils::ToString(data._Effect_SubMaskTexture_Tag)},
         {"Shader_Path", Engine_Utils::ToString(data._Effect_Shader_Path)},
         {"Shader_Tag", Engine_Utils::ToString(data._Effect_Shader_Tag)},
         {"Shader_Pass", data._Effect_ShaderPass},
@@ -127,7 +128,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             {"Dissolve",  {{"x", data._Effect_DissolveTexture_SpriteInfo.x},  {"y", data._Effect_DissolveTexture_SpriteInfo.y},  {"z", data._Effect_DissolveTexture_SpriteInfo.z},  {"w", data._Effect_DissolveTexture_SpriteInfo.w}}},
             {"Glow",      {{"x", data._Effect_GlowTexture_SpriteInfo.x},      {"y", data._Effect_GlowTexture_SpriteInfo.y},      {"z", data._Effect_GlowTexture_SpriteInfo.z},      {"w", data._Effect_GlowTexture_SpriteInfo.w}}},
              {"Curve",      {{"x", data._Effect_CurveTexture_SpriteInfo.x},      {"y", data._Effect_CurveTexture_SpriteInfo.y},      {"z", data._Effect_CurveTexture_SpriteInfo.z},      {"w", data._Effect_CurveTexture_SpriteInfo.w}}},
-             {"Mask",      {{"x", data._Effect_MaskTexture_SpriteInfo.x},      {"y", data._Effect_MaskTexture_SpriteInfo.y},      {"z", data._Effect_MaskTexture_SpriteInfo.z},      {"w", data._Effect_MaskTexture_SpriteInfo.w}}}
+             {"Mask",      {{"x", data._Effect_MaskTexture_SpriteInfo.x},      {"y", data._Effect_MaskTexture_SpriteInfo.y},      {"z", data._Effect_MaskTexture_SpriteInfo.z},      {"w", data._Effect_MaskTexture_SpriteInfo.w}}},
+             {"SubMask",      {{"x", data._Effect_SubMaskTexture_SpriteInfo.x},      {"y", data._Effect_SubMaskTexture_SpriteInfo.y},      {"z", data._Effect_SubMaskTexture_SpriteInfo.z},      {"w", data._Effect_SubMaskTexture_SpriteInfo.w}}}
         
          }},
 
@@ -139,7 +141,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             {"Gradation", {{"x", data._Effect_GradationTexture_ScrollWeight.x}, {"y", data._Effect_GradationTexture_ScrollWeight.y}}},
             {"Dissolve", {{"x", data._Effect_DissolveTexture_ScrollWeight.x}, {"y", data._Effect_DissolveTexture_ScrollWeight.y}}},
             {"Glow", {{"x", data._Effect_GlowTexture_ScrollWeight.x}, {"y", data._Effect_GlowTexture_ScrollWeight.y}}},
-            {"Curve", {{"x", data._Effect_CurveTexture_ScrollWeight.x}, {"y", data._Effect_CurveTexture_ScrollWeight.y}}}
+            {"Curve", {{"x", data._Effect_CurveTexture_ScrollWeight.x}, {"y", data._Effect_CurveTexture_ScrollWeight.y}}},
+            {"SubMasking", {{"x", data._Effect_SubMaskTexture_ScrollWeight.x}, {"y", data._Effect_SubMaskTexture_ScrollWeight.y}}}
         }},
         {"Tool_ScrollFlags", {
             {"Diffuse", data._Effect_Tool_UseScroll_Diffuse},
@@ -148,7 +151,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             {"Gradation", data._Effect_Tool_UseScroll_Gradation},
             {"Dissolve", data._Effect_Tool_UseScroll_Dissolve},
             {"Glow", data._Effect_Tool_UseScroll_Glow},
-            {"Curve", data._Effect_Tool_UseScroll_Curve}
+            {"Curve", data._Effect_Tool_UseScroll_Curve},
+            {"SubMasking", data._Effect_Tool_UseSCroll_SubMask},
         }},
 
         // --- Physics & Gravity ---
@@ -160,6 +164,10 @@ void to_json(json& j, const TEFFECT_PartsData& data)
 
         // --- UV Scroll Curves  ---
         {"UseUVScrollCurve", data._bUseUVScrollCurve},
+
+        // --- Glow Power Curves ---
+        {"UseGlowPowerCurve", data._bUseGlowPowerCurve},
+        {"Effect_GlowPower", data._Effect_GlowPower},
 
         // --- Rotation Settings ---
         {"StartRotation", {{"x", data._Effect_StartRotation.x}, {"y", data._Effect_StartRotation.y}, {"z", data._Effect_StartRotation.z}}},
@@ -185,7 +193,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             {"Gradation", data._Effect_Tool_GradationTexture},
             {"Dissolve", data._Effect_Tool_DissolveTexture},
             {"Glow", data._Effect_Tool_GlowTexture},
-            {"Curve", data._Effect_Tool_CurveTexture}
+            {"Curve", data._Effect_Tool_CurveTexture},
+            {"SubMasking", data._Effect_Tool_SubMaskTexture}
         }},
         {"Tool_Render", {
             {"Billboard", data._Effect_Tool_UseBillboard},
@@ -219,6 +228,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
     j["ScaleCurveX"] = CurveToJson(data._vecScaleCurveX);
     j["ScaleCurveY"] = CurveToJson(data._vecScaleCurveY);
     j["ScaleCurveZ"] = CurveToJson(data._vecScaleCurveZ);
+
+    j["GlowPowerCurve"] = CurveToJson(data._vecGlowPowerCurve);
 }
 
 // ==========  Parts (from_json)  ==========
@@ -254,6 +265,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     data._Effect_NormalTexture_Tag = Engine_Utils::ToWString(j.at("NormalTexture_Tag").get<string>());
     if (j.contains("DissolveTexture_Tag")) data._Effect_DissolveTexture_Tag = Engine_Utils::ToWString(j.at("DissolveTexture_Tag").get<string>());
     if (j.contains("GlowTexture_Tag")) data._Effect_GlowTexture_Tag = Engine_Utils::ToWString(j.at("GlowTexture_Tag").get<string>());
+    if (j.contains("SubMaskTexture_Tag")) data._Effect_SubMaskTexture_Tag = Engine_Utils::ToWString(j.at("SubMaskTexture_Tag").get<string>());
     if (j.contains("Shader_Path")) data._Effect_Shader_Path = Engine_Utils::ToWString(j.at("Shader_Path").get<string>());
     data._Effect_Shader_Tag = Engine_Utils::ToWString(j.at("Shader_Tag").get<string>());
     j.at("Shader_Pass").get_to(data._Effect_ShaderPass);
@@ -307,6 +319,9 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     j.at("AnimationSpeed").get_to(data._Effect_AnimSpeed);
     if (j.contains("AppearRatio")) j.at("AppearRatio").get_to(data._Effect_ApearRatio);
 
+    if (j.contains("UseGlowPowerCurve")) j.at("UseGlowPowerCurve").get_to(data._bUseGlowPowerCurve);
+    if (j.contains("Effect_GlowPower")) j.at("Effect_GlowPower").get_to(data._Effect_GlowPower);
+
     // 스크롤 가중치 복구
     if (j.contains("ScrollWeights")) {
         auto& sw = j.at("ScrollWeights");
@@ -317,6 +332,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         if (sw.contains("Dissolve")) data._Effect_DissolveTexture_ScrollWeight = { sw["Dissolve"]["x"], sw["Dissolve"]["y"] };
         if (sw.contains("Glow")) data._Effect_GlowTexture_ScrollWeight = { sw["Glow"]["x"], sw["Glow"]["y"] };
         if (sw.contains("Curve")) data._Effect_CurveTexture_ScrollWeight = { sw["Curve"]["x"], sw["Curve"]["y"] };
+        if (sw.contains("SubMasking")) data._Effect_SubMaskTexture_ScrollWeight = { sw["SubMasking"]["x"], sw["SubMasking"]["y"] };
     }
 
     // 스프라이트 전용 값들
@@ -345,6 +361,9 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         if (si.contains("Mask"))
             data._Effect_MaskTexture_SpriteInfo = { si["Mask"]["x"], si["Mask"]["y"], si["Mask"]["z"], si["Mask"]["w"] };
 
+        if (si.contains("SubMask"))
+            data._Effect_MaskTexture_SpriteInfo = { si["SubMask"]["x"], si["SubMask"]["y"], si["SubMask"]["z"], si["SubMask"]["w"] };
+
     }
 
     // 툴 전용 스크롤 체크박스 상태 로드
@@ -360,6 +379,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         if (tf.contains("_Effect_Tool_UseLifeDissolve")) tf.at("_Effect_Tool_UseLifeDissolve").get_to(data._Effect_Tool_UseLifeDissolve);
         if (tf.contains("Glow")) tf.at("Glow").get_to(data._Effect_Tool_UseScroll_Glow);
         if (tf.contains("Curve")) tf.at("Curve").get_to(data._Effect_Tool_UseScroll_Curve);
+        if (tf.contains("SubMasking")) tf.at("SubMasking").get_to(data._Effect_Tool_UseSCroll_SubMask);
     }
 
     // 물리 및 커브 설정 로드
@@ -397,6 +417,8 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     JsonToCurve("ScaleCurveY", data._vecScaleCurveY);
     JsonToCurve("ScaleCurveZ", data._vecScaleCurveZ);
 
+    JsonToCurve("GlowPowerCurve", data._vecGlowPowerCurve);
+
     // 플래그 및 Tool_Render/Tool_Samplers 복구
     j.at("TextureFlag").get_to(data._Effect_TextureFlag);
     j.at("RenderFlag").get_to(data._Effect_RenderFlag);
@@ -433,6 +455,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         if (res.contains("Dissolve")) res.at("Dissolve").get_to(data._Effect_Tool_DissolveTexture);
         if (res.contains("Glow")) res.at("Glow").get_to(data._Effect_Tool_GlowTexture);
         if (res.contains("Curve")) res.at("Curve").get_to(data._Effect_Tool_CurveTexture);
+        if (res.contains("SubMasking")) res.at("SubMasking").get_to(data._Effect_Tool_SubMaskTexture);
     }
 }
 
