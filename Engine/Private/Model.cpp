@@ -561,47 +561,6 @@ _int CModel::Get_PassByMesh(_uint iMeshIndex)
 	return m_vecPasses[iMeshIndex];
 }
 
-_int CModel::Find_FaceMeshIndex(_uint iCharCount, const wstring& wstrCompareTag)
-{
-	m_iFaceMeshIndex = -1;
-
-	_uint iMaterialCount = Get_MaterialCount();
-	if (iMaterialCount <= 0)
-		return -1;
-
-	_int iFindedFaceMaterialIndex = -1;
-	for (_uint i = 0; i < iMaterialCount; ++i)
-	{
-		const wstring& wstrName = m_vecMaterials[i]->Get_Name();
-		if (wstrName.length() < 5)
-			continue;
-
-		if (wstrName.compare(wstrName.length() - iCharCount, iCharCount, wstrCompareTag) == 0)
-		{
-			iFindedFaceMaterialIndex = (_int)i;
-			break;
-		}
-	}
-
-	if (iFindedFaceMaterialIndex < 0)
-		return -1;
-
-	_uint iMeshCount = Get_MeshCount();
-	if (iMeshCount <= 0)
-		return -1;
-
-	for (_uint i = 0; i < iMeshCount; ++i)
-	{
-		if (m_vecMeshes[i]->Get_MaterialIndex() == iFindedFaceMaterialIndex)
-		{
-			m_iFaceMeshIndex = (_int)i;
-			break;
-		}
-	}
-
-	return m_iFaceMeshIndex;
-}
-
 HRESULT CModel::Change_MI(_uint iIndex, EMaterialInstanceType eChangeType)
 {
 	if (iIndex >= m_vecMaterialInstances.size())

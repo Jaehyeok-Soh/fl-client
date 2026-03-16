@@ -157,8 +157,6 @@ public:
 
 	// meshes
 	_int								Get_PassByMesh(_uint iMeshIndex);
-	_int								Find_FaceMeshIndex(_uint iCharCount = 5, const wstring& wstrCompareTag = L"_Face");
-	_int								Get_FaceMeshIndex() const { return m_iFaceMeshIndex; }
 	// counts
 	_uint								Get_AnimationCount()	const { return static_cast<_uint>(m_vecAnimations.size()); }
 	_uint								Get_MaterialCount()		const { return static_cast<_uint>(m_vecMaterials.size()); }
@@ -318,9 +316,8 @@ private:
 	ID3D11DeviceContext*				m_pDeviceContext			= { nullptr };
 
 	/* Model Minmax */
-	Vec3*								m_pStaticModel_MinMax		= {nullptr};
-	/* Model FaceIndex */
-	_int								m_iFaceMeshIndex			= -1;
+	Vec3*								m_pStaticModel_MinMax		= { nullptr };
+
 	vector<_uint>						m_vecPasses;
 	vector<class CBone*>				m_vecBones;
 	vector<class CMesh*>				m_vecMeshes;
