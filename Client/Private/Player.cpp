@@ -374,7 +374,7 @@ const Vec3& CPlayer::Get_CollidedMonster_Position()
 {
     if (CTriggerCollidePart* pCollider = Get_Part<CTriggerCollidePart>(Part::DETECTCOLLIDER))
     {
-        return pCollider->Get_CollidedPos();
+        return pCollider->Get_Collided_ObjPos();
     }
 
     return Vec3::Zero;
@@ -1277,9 +1277,10 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
             weaponDesc.bMianWeapon = false;
             weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-            weaponDesc.vColorR = Vec4(1.f, 1.f, 1.f, 1.f);//Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
-            weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+            weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
             weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
+            weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
@@ -1457,11 +1458,11 @@ HRESULT CPlayer::Ready_PartCollider()
 
         {
             tPColliDesc.eShape = EPhysicsShape::SPHERE;
-            tPColliDesc.fRadius = { 2.f };
+            tPColliDesc.fRadius = { 4.5f };
             tPartColliDesc.pColliderDesc = &tPColliDesc;
         }
 
-        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_PosUpdate);
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_ObjChache);
 
         // player가 감지할 part ui
         if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))

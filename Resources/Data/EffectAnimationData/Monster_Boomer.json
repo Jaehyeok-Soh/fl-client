@@ -1,0 +1,162 @@
+{
+    "Category": "EFFECTEVENT",
+    "Objects": [
+        {
+            "Type": 2,
+            "iNumPool": 0,
+            "strOwnerTag": "Monster_Boomer",
+            "vecEffectEvents": [
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 22.0,
+                    "iAnimIndex": 0,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Monster_Boomer_Attack_01",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_Attack2",
+                    "vOffset": {
+                        "x": -0.20000000298023224,
+                        "y": 0.0,
+                        "z": -0.5299999713897705
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 25.0,
+                    "iAnimIndex": 1,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Boomer_Attack_02",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.20000000298023224,
+                        "z": 0.10000000149011612
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 17.19512367248535,
+                    "iAnimIndex": 2,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Boomer_C01_Skill01_End",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_SplashAttack_Explosion",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.699999988079071,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 90.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 3,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Boomer_C01_Skill01_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_Drain",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 90.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 3,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Boomer_C01_Skill01_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_SplashAttack_Range",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.05000000074505806,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 36,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 4,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Monster_Boomer_Skill_01_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_Roll_Loop",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": -0.3,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            ]
+        }
+    ]
+}

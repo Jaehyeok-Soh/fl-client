@@ -107,9 +107,10 @@ HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
     return S_OK;
 }
 
-void CTriggerBox::Ready_Quest(DTO::QUEST_CHAPTERDESC* pQuestDesc)
+void CTriggerBox::Ready_Quest(vector<DTO::QUEST_CHAPTERDESC>* pQuestDesc)
 {
-    CQuestManager::GetInstance()->Register_QuestObject(*pQuestDesc, this);
+    for (auto desc : *pQuestDesc)
+        CQuestManager::GetInstance()->Register_QuestObject(desc, this);
 }
 
 HRESULT CTriggerBox::Awake(const _uint iCurrentLevelID)

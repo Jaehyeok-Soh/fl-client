@@ -18,6 +18,10 @@
 #include "Bounding_Sphere.h"
 #include "Light.h"
 
+// Manager
+#include "Effect_DataManager.h"
+#include "Effect_Env.h"
+
 #include "GameInstance.h"
 USING(Tool)
 
@@ -215,6 +219,13 @@ HRESULT CMapObject::Ready_Component()
 
 HRESULT CMapObject::Ready_ColliderType()
 {
+        CCollider::COLLIDER_DESC tColliderDesc{};
+        tColliderDesc.pBoundingDesc = &tAABBDesc;
+
+        if (FAILED(CGameObject::Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", &tColliderDesc)))
+            return E_FAIL;
+    }
+
     /* Collider 면 Collider 박스 달아주기 */
     if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
         return S_OK;
@@ -1693,6 +1704,13 @@ void CMapObject::Free()
     for (auto& Desc : m_vecClientMakePathDesc)
         Safe_Delete(Desc);
 
+    for (auto& EnvEffect : m_vEnvEffectList)
+    {
+        if (EnvEffect.first)
+            Safe_Release(EnvEffect.first);
+    }
+
+    m_vEnvEffectList.clear();
     Super::Free();
 }
 
@@ -2515,9 +2533,6 @@ HRESULT CMapObject::Render_TriggerBox_MonsterSpawner()
 
     }
 
-
-
-
     return S_OK;
 }
 
@@ -2563,8 +2578,66 @@ HRESULT CMapObject::Render_Collider()
 #pragma endregion
 
 #pragma endregion
-
-
-
-
 #pragma endregion
+
+// CEffect_DataManager::GetInstance()로 EFfectList 받아와서
+// 해당 리스트 Tag를 MapObject에 넣을 수 있게 설계하긴 했는데 뭐 알아서 해라.
+void CMapObject::Add_EnvEffect(const string& EffectTag)
+{
+    // 프로토타입 생성
+    CGameObject* pGo = CEffect_DataManager::GetInstance()->Make_EffectPrototype(EEFFECT_DATATYPE::ENVIRONMENT, EffectTag);
+    CEffect_Env* pEnvEffect = static_cast<CEffect_Env*>(pGo);
+
+    // 초기 Desc 설정
+    EFFECT_ENV_DESC Desc = {};
+    Desc.iSimulationType = (_uint)EFFECT_ENV_DESC::E_VFX_SIMULTYPE::VFX_LOCAL;
+
+    // MapObject의 Transform 행렬 주소를 넘겨줌
+    m_pWorldMatPtr = Get_Component<CTransform>()->Get_WorldMatrixPtr();
+    Desc.pTransformMatrix = &m_pWorldMatPtr;
+
+    // 이펙트 초기화 및 활성화
+    pEnvEffect->Set_EnvDesc(Desc);
+    pEnvEffect->Enable_VFX(&Desc);
+
+    m_vEnvEffectList.push_back({ pEnvEffect, Desc });
+}
+
+
+// 객체마다 따로 Scale이나 Pos, Rotation 돌리고 싶으면
+// EFFECT_ENV_DESC Desc 넘겨주는 수 밖에 없다.
+/*
+    EFFECT_ENV_DESC Desc = {};
+    Desc.VFX_Scale = {};
+    Desc.VFX_Rotation = {};
+    Desc.VFX_Target_Position = {};
+    여기값 작성해주면 됨.
+
+    Get()으로 들고와서 Set()하는 수 밖에.
+*/
+void CMapObject::Set_EnvEffectDesc(_uint iIndex, const EFFECT_ENV_DESC& Desc)
+{
+    if (iIndex >= m_vEnvEffectList.size()) return;
+
+    // 리스트 내의 데이터 갱신
+    m_vEnvEffectList[iIndex].second = Desc;
+
+    // 실제 이펙트 객체에 반영
+    m_vEnvEffectList[iIndex].first->Set_EnvDesc(Desc);
+}
+
+
+CEffect_Env* CMapObject::Get_EnvEffect(_uint iIndex)
+{
+    if (m_vEnvEffectList.size() <= iIndex)
+        return nullptr;
+
+    return m_vEnvEffectList[iIndex].first;
+}
+
+EFFECT_ENV_DESC CMapObject::Get_EnvEffectDesc(_uint iIndex)
+{
+    assert(iIndex < m_vEnvEffectList.size());
+
+    return m_vEnvEffectList[iIndex].second;
+}

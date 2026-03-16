@@ -1,0 +1,4041 @@
+{
+  "Category": "OVERLAP_SCRIPT",
+  "Objects": [
+    {
+      "iNumPool": 32,
+      "strTag": "PlayerMoon",
+      "attackEvents": [
+        {
+          "fAnimIndex": 0,
+          "strDescription": "=== [0] Poison Punch ===",
+          "fStartTrackPosition": 1.03,
+          "tHitboxDesc": {
+            "strName": "Poison_Punch_0",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.1,
+              "y": 0.1,
+              "z": 0.2
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.7,
+              "y": 0.5,
+              "z": 0.3
+            },
+            "fDuration": 0.37,
+            "fTickTime": -1.0,
+            "fDamage": 79.6,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 1,
+          "strDescription": "=== [1] Fire Slam ===",
+          "fStartTrackPosition": 0.66,
+          "tHitboxDesc": {
+            "strName": "Fire_Slam_1",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.5,
+              "y": 0.2,
+              "z": 0.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.4,
+              "y": 1.2,
+              "z": 1.0
+            },
+            "fDuration": 0.93,
+            "fTickTime": -1.0,
+            "fDamage": 61.2,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 2,
+          "strDescription": "=== [2] Poison Explosion ===",
+          "fStartTrackPosition": 1.55,
+          "tHitboxDesc": {
+            "strName": "Poison_Explosion_2",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.9,
+            "vOffset": {
+              "x": -0.6,
+              "y": 0.3,
+              "z": 1.7
+            },
+            "fDuration": 1.88,
+            "fTickTime": -1.0,
+            "fDamage": 27.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 3,
+          "strDescription": "=== [3] Holy Kick ===",
+          "fStartTrackPosition": 0.5,
+          "tHitboxDesc": {
+            "strName": "Holy_Kick_3",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.5,
+              "y": 1.6,
+              "z": 0.1
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.8,
+              "y": 1.6,
+              "z": 0.4
+            },
+            "fDuration": 0.61,
+            "fTickTime": -1.0,
+            "fDamage": 30.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 4,
+          "strDescription": "=== [4] Quick Breath ===",
+          "fStartTrackPosition": 0.85,
+          "tHitboxDesc": {
+            "strName": "Quick_Breath_4",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.7,
+              "y": 1.8,
+              "z": 1.3
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.8,
+              "y": 0.5,
+              "z": 1.6
+            },
+            "fDuration": 1.01,
+            "fTickTime": -1.0,
+            "fDamage": 42.1,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 5,
+          "strDescription": "=== [5] Dark Slam ===",
+          "fStartTrackPosition": 1.92,
+          "tHitboxDesc": {
+            "strName": "Dark_Slam_5",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.6,
+              "y": 1.0,
+              "z": 0.2
+            },
+            "fDuration": 0.74,
+            "fTickTime": 0.45,
+            "fDamage": 98.4,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 6,
+          "strDescription": "=== [6] Dark Kick ===",
+          "fStartTrackPosition": 0.54,
+          "tHitboxDesc": {
+            "strName": "Dark_Kick_6",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.2,
+            "vOffset": {
+              "x": 0.4,
+              "y": 0.3,
+              "z": 0.5
+            },
+            "fDuration": 0.48,
+            "fTickTime": -1.0,
+            "fDamage": 41.7,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 7,
+          "strDescription": "=== [7] Lightning Punch ===",
+          "fStartTrackPosition": 1.28,
+          "tHitboxDesc": {
+            "strName": "Lightning_Punch_7",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.6,
+              "y": 0.7,
+              "z": 0.6
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.5,
+              "y": 1.2,
+              "z": 1.8
+            },
+            "fDuration": 1.66,
+            "fTickTime": 0.19,
+            "fDamage": 34.9,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 8,
+          "strDescription": "=== [8] Poison Stab ===",
+          "fStartTrackPosition": 0.9,
+          "tHitboxDesc": {
+            "strName": "Poison_Stab_8",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.8,
+              "y": 0.7,
+              "z": 1.1
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.9,
+              "y": 0.8,
+              "z": 1.6
+            },
+            "fDuration": 1.15,
+            "fTickTime": -1.0,
+            "fDamage": 77.1,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 9,
+          "strDescription": "=== [9] Holy Slam ===",
+          "fStartTrackPosition": 2.78,
+          "tHitboxDesc": {
+            "strName": "Holy_Slam_9",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.7,
+              "y": 0.6,
+              "z": 0.8
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.4,
+              "y": 0.5,
+              "z": 0.2
+            },
+            "fDuration": 1.67,
+            "fTickTime": -1.0,
+            "fDamage": 96.0,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 10,
+          "strDescription": "=== [10] Ice Slam ===",
+          "fStartTrackPosition": 2.54,
+          "tHitboxDesc": {
+            "strName": "Ice_Slam_10",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.0,
+              "y": 1.3,
+              "z": 0.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.8,
+              "y": 1.9,
+              "z": 1.7
+            },
+            "fDuration": 1.94,
+            "fTickTime": -1.0,
+            "fDamage": 28.6,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 11,
+          "strDescription": "=== [11] Charged Slash ===",
+          "fStartTrackPosition": 2.36,
+          "tHitboxDesc": {
+            "strName": "Charged_Slash_11",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.4,
+              "y": 0.1,
+              "z": 0.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.5,
+              "y": 0.1,
+              "z": 1.2
+            },
+            "fDuration": 0.46,
+            "fTickTime": -1.0,
+            "fDamage": 67.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 12,
+          "strDescription": "=== [12] Air Uppercut ===",
+          "fStartTrackPosition": 2.29,
+          "tHitboxDesc": {
+            "strName": "Air_Uppercut_12",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.8,
+            "vOffset": {
+              "x": 1.8,
+              "y": 0.6,
+              "z": 0.5
+            },
+            "fDuration": 1.35,
+            "fTickTime": 0.17,
+            "fDamage": 23.8,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 13,
+          "strDescription": "=== [13] Magic Explosion ===",
+          "fStartTrackPosition": 0.71,
+          "tHitboxDesc": {
+            "strName": "Magic_Explosion_13",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.4,
+              "y": 0.8,
+              "z": 0.8
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.2,
+              "y": 1.4,
+              "z": 0.6
+            },
+            "fDuration": 0.73,
+            "fTickTime": -1.0,
+            "fDamage": 49.8,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 14,
+          "strDescription": "=== [14] Spinning Kick ===",
+          "fStartTrackPosition": 1.3,
+          "tHitboxDesc": {
+            "strName": "Spinning_Kick_14",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.1,
+              "y": 0.8,
+              "z": 1.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.5,
+              "y": 0.3,
+              "z": 1.4
+            },
+            "fDuration": 1.3,
+            "fTickTime": 0.48,
+            "fDamage": 24.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 15,
+          "strDescription": "=== [15] Ground Uppercut ===",
+          "fStartTrackPosition": 0.77,
+          "tHitboxDesc": {
+            "strName": "Ground_Uppercut_15",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.5,
+            "vOffset": {
+              "x": -1.8,
+              "y": 1.1,
+              "z": 0.6
+            },
+            "fDuration": 1.1,
+            "fTickTime": -1.0,
+            "fDamage": 16.9,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 16,
+          "strDescription": "=== [16] Lightning Slash ===",
+          "fStartTrackPosition": 1.25,
+          "tHitboxDesc": {
+            "strName": "Lightning_Slash_16",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.4,
+            "vOffset": {
+              "x": 0.4,
+              "y": 1.3,
+              "z": 1.1
+            },
+            "fDuration": 1.87,
+            "fTickTime": -1.0,
+            "fDamage": 64.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 17,
+          "strDescription": "=== [17] Poison Beam ===",
+          "fStartTrackPosition": 2.49,
+          "tHitboxDesc": {
+            "strName": "Poison_Beam_17",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.8,
+            "vOffset": {
+              "x": -0.1,
+              "y": 1.9,
+              "z": 1.7
+            },
+            "fDuration": 1.68,
+            "fTickTime": 0.37,
+            "fDamage": 26.9,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 18,
+          "strDescription": "=== [18] Charged Explosion ===",
+          "fStartTrackPosition": 0.06,
+          "tHitboxDesc": {
+            "strName": "Charged_Explosion_18",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.4,
+              "y": 0.3,
+              "z": 1.3
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.1,
+              "y": 1.1,
+              "z": 0.7
+            },
+            "fDuration": 1.19,
+            "fTickTime": -1.0,
+            "fDamage": 88.1,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 19,
+          "strDescription": "=== [19] Fire Explosion ===",
+          "fStartTrackPosition": 0.23,
+          "tHitboxDesc": {
+            "strName": "Fire_Explosion_19",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.8,
+              "y": 2.0,
+              "z": 1.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.5,
+              "y": 0.1,
+              "z": 1.5
+            },
+            "fDuration": 1.47,
+            "fTickTime": -1.0,
+            "fDamage": 51.7,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 20,
+          "strDescription": "=== [20] Light Dash ===",
+          "fStartTrackPosition": 0.02,
+          "tHitboxDesc": {
+            "strName": "Light_Dash_20",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.2,
+              "y": 1.8,
+              "z": 0.5
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.6,
+              "y": 0.2,
+              "z": 1.9
+            },
+            "fDuration": 1.45,
+            "fTickTime": -1.0,
+            "fDamage": 96.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 21,
+          "strDescription": "=== [21] Poison Slash ===",
+          "fStartTrackPosition": 2.19,
+          "tHitboxDesc": {
+            "strName": "Poison_Slash_21",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.5,
+              "y": 1.9,
+              "z": 1.6
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.4,
+              "y": 1.8,
+              "z": 0.8
+            },
+            "fDuration": 1.31,
+            "fTickTime": 0.34,
+            "fDamage": 97.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 22,
+          "strDescription": "=== [22] Spinning Explosion ===",
+          "fStartTrackPosition": 2.22,
+          "tHitboxDesc": {
+            "strName": "Spinning_Explosion_22",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.9,
+              "y": 1.6,
+              "z": 1.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.5,
+              "y": 1.0,
+              "z": 0.8
+            },
+            "fDuration": 1.82,
+            "fTickTime": -1.0,
+            "fDamage": 89.2,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 23,
+          "strDescription": "=== [23] Magic Dash ===",
+          "fStartTrackPosition": 2.29,
+          "tHitboxDesc": {
+            "strName": "Magic_Dash_23",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.7,
+              "y": 1.0,
+              "z": 1.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.1,
+              "y": 0.4,
+              "z": 1.3
+            },
+            "fDuration": 1.38,
+            "fTickTime": 0.24,
+            "fDamage": 50.6,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 24,
+          "strDescription": "=== [24] Magic Punch ===",
+          "fStartTrackPosition": 0.59,
+          "tHitboxDesc": {
+            "strName": "Magic_Punch_24",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.3,
+              "y": 0.7,
+              "z": 0.3
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.0,
+              "y": 1.6,
+              "z": 0.1
+            },
+            "fDuration": 0.45,
+            "fTickTime": -1.0,
+            "fDamage": 20.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 25,
+          "strDescription": "=== [25] Fire Slam ===",
+          "fStartTrackPosition": 1.25,
+          "tHitboxDesc": {
+            "strName": "Fire_Slam_25",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.9,
+            "vOffset": {
+              "x": -0.8,
+              "y": 1.9,
+              "z": 1.2
+            },
+            "fDuration": 1.8,
+            "fTickTime": -1.0,
+            "fDamage": 70.2,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 26,
+          "strDescription": "=== [26] Light Explosion ===",
+          "fStartTrackPosition": 2.7,
+          "tHitboxDesc": {
+            "strName": "Light_Explosion_26",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.3,
+            "vOffset": {
+              "x": -1.0,
+              "y": 0.9,
+              "z": 0.4
+            },
+            "fDuration": 1.83,
+            "fTickTime": -1.0,
+            "fDamage": 52.4,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 27,
+          "strDescription": "=== [27] Dark Slash ===",
+          "fStartTrackPosition": 0.71,
+          "tHitboxDesc": {
+            "strName": "Dark_Slash_27",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.6,
+              "y": 0.9,
+              "z": 0.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.2,
+              "y": 0.9,
+              "z": 0.8
+            },
+            "fDuration": 1.8,
+            "fTickTime": -1.0,
+            "fDamage": 79.4,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 28,
+          "strDescription": "=== [28] Fire Breath ===",
+          "fStartTrackPosition": 1.92,
+          "tHitboxDesc": {
+            "strName": "Fire_Breath_28",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 0.3,
+            "vOffset": {
+              "x": 0.7,
+              "y": 1.4,
+              "z": 0.8
+            },
+            "fDuration": 1.06,
+            "fTickTime": -1.0,
+            "fDamage": 6.8,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 29,
+          "strDescription": "=== [29] Quick Beam ===",
+          "fStartTrackPosition": 2.86,
+          "tHitboxDesc": {
+            "strName": "Quick_Beam_29",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.8,
+            "vOffset": {
+              "x": -0.9,
+              "y": 0.5,
+              "z": 1.2
+            },
+            "fDuration": 0.59,
+            "fTickTime": -1.0,
+            "fDamage": 98.1,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 30,
+          "strDescription": "=== [30] Charged Slash ===",
+          "fStartTrackPosition": 2.74,
+          "tHitboxDesc": {
+            "strName": "Charged_Slash_30",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.0,
+            "vOffset": {
+              "x": -1.7,
+              "y": 0.6,
+              "z": 0.6
+            },
+            "fDuration": 1.48,
+            "fTickTime": -1.0,
+            "fDamage": 19.6,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 31,
+          "strDescription": "=== [31] Magic Punch ===",
+          "fStartTrackPosition": 0.54,
+          "tHitboxDesc": {
+            "strName": "Magic_Punch_31",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.7,
+            "vOffset": {
+              "x": 0.5,
+              "y": 0.8,
+              "z": 1.3
+            },
+            "fDuration": 0.39,
+            "fTickTime": -1.0,
+            "fDamage": 11.8,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 32,
+          "strDescription": "=== [32] Dark Slam ===",
+          "fStartTrackPosition": 0.2,
+          "tHitboxDesc": {
+            "strName": "Dark_Slam_32",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.2,
+            "vOffset": {
+              "x": -0.8,
+              "y": 0.5,
+              "z": 0.9
+            },
+            "fDuration": 1.23,
+            "fTickTime": 0.44,
+            "fDamage": 47.9,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 33,
+          "strDescription": "=== [33] Dark Dash ===",
+          "fStartTrackPosition": 2.92,
+          "tHitboxDesc": {
+            "strName": "Dark_Dash_33",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.6,
+              "y": 0.1,
+              "z": 0.3
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.7,
+              "y": 1.1,
+              "z": 0.9
+            },
+            "fDuration": 1.18,
+            "fTickTime": 0.44,
+            "fDamage": 19.5,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 34,
+          "strDescription": "=== [34] Flying Uppercut ===",
+          "fStartTrackPosition": 0.7,
+          "tHitboxDesc": {
+            "strName": "Flying_Uppercut_34",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.9,
+              "y": 0.9,
+              "z": 0.2
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.8,
+              "y": 0.9,
+              "z": 0.6
+            },
+            "fDuration": 0.44,
+            "fTickTime": -1.0,
+            "fDamage": 64.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 35,
+          "strDescription": "=== [35] Quick Stab ===",
+          "fStartTrackPosition": 2.66,
+          "tHitboxDesc": {
+            "strName": "Quick_Stab_35",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.2,
+            "vOffset": {
+              "x": 0.4,
+              "y": 1.5,
+              "z": 0.1
+            },
+            "fDuration": 1.12,
+            "fTickTime": -1.0,
+            "fDamage": 38.5,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 36,
+          "strDescription": "=== [36] Fire Slam ===",
+          "fStartTrackPosition": 0.88,
+          "tHitboxDesc": {
+            "strName": "Fire_Slam_36",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.9,
+              "y": 1.2,
+              "z": 1.6
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.3,
+              "y": 0.4,
+              "z": 0.3
+            },
+            "fDuration": 0.83,
+            "fTickTime": -1.0,
+            "fDamage": 60.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 37,
+          "strDescription": "=== [37] Quick Punch ===",
+          "fStartTrackPosition": 0.86,
+          "tHitboxDesc": {
+            "strName": "Quick_Punch_37",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.9,
+              "y": 0.0,
+              "z": 1.8
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.7,
+              "y": 0.7,
+              "z": 0.4
+            },
+            "fDuration": 0.38,
+            "fTickTime": 0.19,
+            "fDamage": 30.1,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 38,
+          "strDescription": "=== [38] Dark Beam ===",
+          "fStartTrackPosition": 2.28,
+          "tHitboxDesc": {
+            "strName": "Dark_Beam_38",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 0.8,
+            "vOffset": {
+              "x": -1.5,
+              "y": 1.5,
+              "z": 1.4
+            },
+            "fDuration": 0.67,
+            "fTickTime": -1.0,
+            "fDamage": 20.7,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 39,
+          "strDescription": "=== [39] Lightning Uppercut ===",
+          "fStartTrackPosition": 1.92,
+          "tHitboxDesc": {
+            "strName": "Lightning_Uppercut_39",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.6,
+              "y": 2.0,
+              "z": 0.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.9,
+              "y": 1.6,
+              "z": 0.3
+            },
+            "fDuration": 0.74,
+            "fTickTime": -1.0,
+            "fDamage": 27.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 40,
+          "strDescription": "=== [40] Flying Beam ===",
+          "fStartTrackPosition": 0.38,
+          "tHitboxDesc": {
+            "strName": "Flying_Beam_40",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.3,
+            "vOffset": {
+              "x": 1.6,
+              "y": 0.2,
+              "z": 1.8
+            },
+            "fDuration": 1.06,
+            "fTickTime": -1.0,
+            "fDamage": 63.5,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 41,
+          "strDescription": "=== [41] Holy Slash ===",
+          "fStartTrackPosition": 0.25,
+          "tHitboxDesc": {
+            "strName": "Holy_Slash_41",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.2,
+              "y": 1.7,
+              "z": 0.3
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.2,
+              "y": 0.1,
+              "z": 0.4
+            },
+            "fDuration": 0.56,
+            "fTickTime": -1.0,
+            "fDamage": 50.7,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 42,
+          "strDescription": "=== [42] Air Slash ===",
+          "fStartTrackPosition": 2.51,
+          "tHitboxDesc": {
+            "strName": "Air_Slash_42",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.0,
+              "y": 1.2,
+              "z": 0.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.6,
+              "y": 1.9,
+              "z": 0.9
+            },
+            "fDuration": 0.47,
+            "fTickTime": 0.44,
+            "fDamage": 58.6,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 43,
+          "strDescription": "=== [43] Light Breath ===",
+          "fStartTrackPosition": 0.84,
+          "tHitboxDesc": {
+            "strName": "Light_Breath_43",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.9,
+              "y": 0.3,
+              "z": 0.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.6,
+              "y": 1.2,
+              "z": 1.8
+            },
+            "fDuration": 0.85,
+            "fTickTime": -1.0,
+            "fDamage": 12.2,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 44,
+          "strDescription": "=== [44] Dark Uppercut ===",
+          "fStartTrackPosition": 2.11,
+          "tHitboxDesc": {
+            "strName": "Dark_Uppercut_44",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.8,
+            "vOffset": {
+              "x": -1.5,
+              "y": 0.5,
+              "z": 1.0
+            },
+            "fDuration": 0.44,
+            "fTickTime": -1.0,
+            "fDamage": 62.1,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 45,
+          "strDescription": "=== [45] Quick Uppercut ===",
+          "fStartTrackPosition": 1.88,
+          "tHitboxDesc": {
+            "strName": "Quick_Uppercut_45",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.5,
+              "y": 1.0,
+              "z": 1.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.9,
+              "y": 1.0,
+              "z": 0.6
+            },
+            "fDuration": 0.45,
+            "fTickTime": -1.0,
+            "fDamage": 17.8,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 46,
+          "strDescription": "=== [46] Poison Punch ===",
+          "fStartTrackPosition": 0.19,
+          "tHitboxDesc": {
+            "strName": "Poison_Punch_46",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.6,
+              "y": 0.1,
+              "z": 0.6
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.1,
+              "y": 1.1,
+              "z": 0.4
+            },
+            "fDuration": 1.07,
+            "fTickTime": -1.0,
+            "fDamage": 45.4,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 47,
+          "strDescription": "=== [47] Dark Uppercut ===",
+          "fStartTrackPosition": 1.29,
+          "tHitboxDesc": {
+            "strName": "Dark_Uppercut_47",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.0,
+            "vOffset": {
+              "x": 0.2,
+              "y": 0.4,
+              "z": 0.3
+            },
+            "fDuration": 1.99,
+            "fTickTime": -1.0,
+            "fDamage": 47.4,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 48,
+          "strDescription": "=== [48] Light Kick ===",
+          "fStartTrackPosition": 0.26,
+          "tHitboxDesc": {
+            "strName": "Light_Kick_48",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.6,
+              "y": 0.6,
+              "z": 0.3
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.0,
+              "y": 1.6,
+              "z": 1.5
+            },
+            "fDuration": 1.11,
+            "fTickTime": 0.19,
+            "fDamage": 40.2,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 49,
+          "strDescription": "=== [49] Light Stab ===",
+          "fStartTrackPosition": 0.37,
+          "tHitboxDesc": {
+            "strName": "Light_Stab_49",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.1,
+            "vOffset": {
+              "x": 1.2,
+              "y": 0.9,
+              "z": 1.7
+            },
+            "fDuration": 0.6,
+            "fTickTime": -1.0,
+            "fDamage": 51.6,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 50,
+          "strDescription": "=== [50] Charged Slam ===",
+          "fStartTrackPosition": 2.12,
+          "tHitboxDesc": {
+            "strName": "Charged_Slam_50",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.8,
+            "vOffset": {
+              "x": 2.0,
+              "y": 1.0,
+              "z": 1.3
+            },
+            "fDuration": 0.18,
+            "fTickTime": 0.12,
+            "fDamage": 18.7,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 51,
+          "strDescription": "=== [51] Quick Kick ===",
+          "fStartTrackPosition": 2.21,
+          "tHitboxDesc": {
+            "strName": "Quick_Kick_51",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.5,
+            "vOffset": {
+              "x": -1.1,
+              "y": 2.0,
+              "z": 1.1
+            },
+            "fDuration": 1.35,
+            "fTickTime": -1.0,
+            "fDamage": 81.8,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 52,
+          "strDescription": "=== [52] Flying Kick ===",
+          "fStartTrackPosition": 0.62,
+          "tHitboxDesc": {
+            "strName": "Flying_Kick_52",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.2,
+              "y": 1.6,
+              "z": 0.6
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.9,
+              "y": 1.9,
+              "z": 0.3
+            },
+            "fDuration": 0.69,
+            "fTickTime": -1.0,
+            "fDamage": 73.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 53,
+          "strDescription": "=== [53] Poison Beam ===",
+          "fStartTrackPosition": 1.74,
+          "tHitboxDesc": {
+            "strName": "Poison_Beam_53",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.2,
+            "vOffset": {
+              "x": -1.6,
+              "y": 0.1,
+              "z": 1.0
+            },
+            "fDuration": 0.56,
+            "fTickTime": -1.0,
+            "fDamage": 73.8,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 54,
+          "strDescription": "=== [54] Light Uppercut ===",
+          "fStartTrackPosition": 1.4,
+          "tHitboxDesc": {
+            "strName": "Light_Uppercut_54",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.7,
+              "y": 0.4,
+              "z": 1.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.6,
+              "y": 0.4,
+              "z": 0.2
+            },
+            "fDuration": 0.77,
+            "fTickTime": -1.0,
+            "fDamage": 85.2,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 55,
+          "strDescription": "=== [55] Quick Beam ===",
+          "fStartTrackPosition": 1.58,
+          "tHitboxDesc": {
+            "strName": "Quick_Beam_55",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.9,
+              "y": 1.5,
+              "z": 0.1
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.1,
+              "y": 1.2,
+              "z": 0.8
+            },
+            "fDuration": 1.41,
+            "fTickTime": 0.32,
+            "fDamage": 11.7,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 56,
+          "strDescription": "=== [56] Light Breath ===",
+          "fStartTrackPosition": 1.62,
+          "tHitboxDesc": {
+            "strName": "Light_Breath_56",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.9,
+              "y": 1.6,
+              "z": 0.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.9,
+              "y": 1.0,
+              "z": 1.2
+            },
+            "fDuration": 1.25,
+            "fTickTime": -1.0,
+            "fDamage": 43.2,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 57,
+          "strDescription": "=== [57] Poison Slash ===",
+          "fStartTrackPosition": 0.04,
+          "tHitboxDesc": {
+            "strName": "Poison_Slash_57",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.1,
+            "vOffset": {
+              "x": -1.3,
+              "y": 0.7,
+              "z": 0.7
+            },
+            "fDuration": 1.11,
+            "fTickTime": -1.0,
+            "fDamage": 69.6,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 58,
+          "strDescription": "=== [58] Lightning Stab ===",
+          "fStartTrackPosition": 2.09,
+          "tHitboxDesc": {
+            "strName": "Lightning_Stab_58",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.1,
+            "vOffset": {
+              "x": 0.7,
+              "y": 0.5,
+              "z": 1.8
+            },
+            "fDuration": 0.64,
+            "fTickTime": -1.0,
+            "fDamage": 19.1,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 59,
+          "strDescription": "=== [59] Holy Explosion ===",
+          "fStartTrackPosition": 1.4,
+          "tHitboxDesc": {
+            "strName": "Holy_Explosion_59",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.3,
+            "vOffset": {
+              "x": 1.4,
+              "y": 0.6,
+              "z": 1.6
+            },
+            "fDuration": 0.28,
+            "fTickTime": -1.0,
+            "fDamage": 9.7,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 60,
+          "strDescription": "=== [60] Fire Breath ===",
+          "fStartTrackPosition": 0.04,
+          "tHitboxDesc": {
+            "strName": "Fire_Breath_60",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.8,
+              "y": 1.4,
+              "z": 2.0
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.6,
+              "y": 0.1,
+              "z": 1.6
+            },
+            "fDuration": 1.65,
+            "fTickTime": -1.0,
+            "fDamage": 77.2,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 61,
+          "strDescription": "=== [61] Dark Stab ===",
+          "fStartTrackPosition": 0.66,
+          "tHitboxDesc": {
+            "strName": "Dark_Stab_61",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.3,
+            "vOffset": {
+              "x": 1.4,
+              "y": 0.9,
+              "z": 0.2
+            },
+            "fDuration": 1.09,
+            "fTickTime": 0.33,
+            "fDamage": 9.3,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 62,
+          "strDescription": "=== [62] Air Beam ===",
+          "fStartTrackPosition": 1.63,
+          "tHitboxDesc": {
+            "strName": "Air_Beam_62",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.3,
+            "vOffset": {
+              "x": -1.9,
+              "y": 1.1,
+              "z": 1.7
+            },
+            "fDuration": 1.66,
+            "fTickTime": -1.0,
+            "fDamage": 60.5,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 63,
+          "strDescription": "=== [63] Flying Stab ===",
+          "fStartTrackPosition": 0.82,
+          "tHitboxDesc": {
+            "strName": "Flying_Stab_63",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.1,
+              "y": 0.2,
+              "z": 1.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.7,
+              "y": 0.3,
+              "z": 1.5
+            },
+            "fDuration": 0.12,
+            "fTickTime": -1.0,
+            "fDamage": 7.8,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 64,
+          "strDescription": "=== [64] Heavy Slash ===",
+          "fStartTrackPosition": 2.28,
+          "tHitboxDesc": {
+            "strName": "Heavy_Slash_64",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.3,
+            "vOffset": {
+              "x": -1.6,
+              "y": 1.0,
+              "z": 0.3
+            },
+            "fDuration": 1.03,
+            "fTickTime": -1.0,
+            "fDamage": 89.3,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 65,
+          "strDescription": "=== [65] Magic Beam ===",
+          "fStartTrackPosition": 1.75,
+          "tHitboxDesc": {
+            "strName": "Magic_Beam_65",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.8,
+              "y": 1.4,
+              "z": 0.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.7,
+              "y": 1.8,
+              "z": 1.6
+            },
+            "fDuration": 0.78,
+            "fTickTime": -1.0,
+            "fDamage": 42.5,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 66,
+          "strDescription": "=== [66] Quick Uppercut ===",
+          "fStartTrackPosition": 0.24,
+          "tHitboxDesc": {
+            "strName": "Quick_Uppercut_66",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.9,
+            "vOffset": {
+              "x": 0.2,
+              "y": 1.1,
+              "z": 1.0
+            },
+            "fDuration": 0.94,
+            "fTickTime": -1.0,
+            "fDamage": 87.2,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 67,
+          "strDescription": "=== [67] Air Slash ===",
+          "fStartTrackPosition": 2.89,
+          "tHitboxDesc": {
+            "strName": "Air_Slash_67",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.4,
+              "y": 0.9,
+              "z": 1.2
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.3,
+              "y": 1.4,
+              "z": 1.9
+            },
+            "fDuration": 0.13,
+            "fTickTime": -1.0,
+            "fDamage": 27.2,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 68,
+          "strDescription": "=== [68] Quick Beam ===",
+          "fStartTrackPosition": 2.39,
+          "tHitboxDesc": {
+            "strName": "Quick_Beam_68",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.6,
+            "vOffset": {
+              "x": -1.0,
+              "y": 1.6,
+              "z": 1.8
+            },
+            "fDuration": 1.21,
+            "fTickTime": -1.0,
+            "fDamage": 43.1,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 69,
+          "strDescription": "=== [69] Magic Slam ===",
+          "fStartTrackPosition": 2.22,
+          "tHitboxDesc": {
+            "strName": "Magic_Slam_69",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.0,
+            "vOffset": {
+              "x": 1.9,
+              "y": 1.4,
+              "z": 0.7
+            },
+            "fDuration": 0.49,
+            "fTickTime": 0.47,
+            "fDamage": 99.1,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 70,
+          "strDescription": "=== [70] Air Beam ===",
+          "fStartTrackPosition": 1.64,
+          "tHitboxDesc": {
+            "strName": "Air_Beam_70",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.1,
+              "y": 0.4,
+              "z": 1.2
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.8,
+              "y": 1.2,
+              "z": 0.5
+            },
+            "fDuration": 1.3,
+            "fTickTime": -1.0,
+            "fDamage": 76.8,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 71,
+          "strDescription": "=== [71] Ground Explosion ===",
+          "fStartTrackPosition": 0.26,
+          "tHitboxDesc": {
+            "strName": "Ground_Explosion_71",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.3,
+            "vOffset": {
+              "x": -2.0,
+              "y": 1.9,
+              "z": 0.1
+            },
+            "fDuration": 1.43,
+            "fTickTime": -1.0,
+            "fDamage": 10.5,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 72,
+          "strDescription": "=== [72] Quick Beam ===",
+          "fStartTrackPosition": 2.1,
+          "tHitboxDesc": {
+            "strName": "Quick_Beam_72",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.2,
+            "vOffset": {
+              "x": 0.6,
+              "y": 1.9,
+              "z": 0.8
+            },
+            "fDuration": 1.23,
+            "fTickTime": -1.0,
+            "fDamage": 60.8,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 73,
+          "strDescription": "=== [73] Magic Slam ===",
+          "fStartTrackPosition": 1.57,
+          "tHitboxDesc": {
+            "strName": "Magic_Slam_73",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.0,
+            "vOffset": {
+              "x": 1.7,
+              "y": 1.5,
+              "z": 0.5
+            },
+            "fDuration": 0.99,
+            "fTickTime": -1.0,
+            "fDamage": 12.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 74,
+          "strDescription": "=== [74] Quick Kick ===",
+          "fStartTrackPosition": 0.05,
+          "tHitboxDesc": {
+            "strName": "Quick_Kick_74",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.3,
+              "y": 0.8,
+              "z": 1.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.0,
+              "y": 1.7,
+              "z": 0.7
+            },
+            "fDuration": 0.62,
+            "fTickTime": -1.0,
+            "fDamage": 30.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 75,
+          "strDescription": "=== [75] Flying Breath ===",
+          "fStartTrackPosition": 0.19,
+          "tHitboxDesc": {
+            "strName": "Flying_Breath_75",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.9,
+              "y": 1.9,
+              "z": 1.1
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.6,
+              "y": 1.3,
+              "z": 0.0
+            },
+            "fDuration": 1.21,
+            "fTickTime": 0.32,
+            "fDamage": 77.8,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 76,
+          "strDescription": "=== [76] Holy Beam ===",
+          "fStartTrackPosition": 0.4,
+          "tHitboxDesc": {
+            "strName": "Holy_Beam_76",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.2,
+              "y": 0.3,
+              "z": 0.5
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.6,
+              "y": 0.5,
+              "z": 1.5
+            },
+            "fDuration": 0.9,
+            "fTickTime": -1.0,
+            "fDamage": 95.7,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 77,
+          "strDescription": "=== [77] Magic Slam ===",
+          "fStartTrackPosition": 2.76,
+          "tHitboxDesc": {
+            "strName": "Magic_Slam_77",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.9,
+            "vOffset": {
+              "x": 0.3,
+              "y": 1.0,
+              "z": 1.2
+            },
+            "fDuration": 0.18,
+            "fTickTime": -1.0,
+            "fDamage": 26.4,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 78,
+          "strDescription": "=== [78] Magic Slash ===",
+          "fStartTrackPosition": 0.28,
+          "tHitboxDesc": {
+            "strName": "Magic_Slash_78",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.0,
+            "vOffset": {
+              "x": -1.6,
+              "y": 1.7,
+              "z": 0.9
+            },
+            "fDuration": 1.18,
+            "fTickTime": -1.0,
+            "fDamage": 99.3,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 79,
+          "strDescription": "=== [79] Ground Breath ===",
+          "fStartTrackPosition": 0.95,
+          "tHitboxDesc": {
+            "strName": "Ground_Breath_79",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.4,
+            "vOffset": {
+              "x": 1.2,
+              "y": 0.4,
+              "z": 0.8
+            },
+            "fDuration": 1.7,
+            "fTickTime": -1.0,
+            "fDamage": 39.1,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 80,
+          "strDescription": "=== [80] Holy Kick ===",
+          "fStartTrackPosition": 1.98,
+          "tHitboxDesc": {
+            "strName": "Holy_Kick_80",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.9,
+            "vOffset": {
+              "x": 1.5,
+              "y": 2.0,
+              "z": 1.7
+            },
+            "fDuration": 1.08,
+            "fTickTime": 0.14,
+            "fDamage": 63.3,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 81,
+          "strDescription": "=== [81] Fire Breath ===",
+          "fStartTrackPosition": 1.49,
+          "tHitboxDesc": {
+            "strName": "Fire_Breath_81",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.2,
+              "z": 0.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.2,
+              "y": 1.1,
+              "z": 1.2
+            },
+            "fDuration": 1.46,
+            "fTickTime": -1.0,
+            "fDamage": 21.7,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 82,
+          "strDescription": "=== [82] Poison Breath ===",
+          "fStartTrackPosition": 2.3,
+          "tHitboxDesc": {
+            "strName": "Poison_Breath_82",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.2,
+              "y": 0.4,
+              "z": 0.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.7,
+              "y": 0.9,
+              "z": 1.1
+            },
+            "fDuration": 1.7,
+            "fTickTime": 0.32,
+            "fDamage": 60.0,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 83,
+          "strDescription": "=== [83] Ground Punch ===",
+          "fStartTrackPosition": 1.41,
+          "tHitboxDesc": {
+            "strName": "Ground_Punch_83",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.7,
+              "y": 0.0,
+              "z": 1.1
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.2,
+              "y": 1.2,
+              "z": 0.8
+            },
+            "fDuration": 1.88,
+            "fTickTime": -1.0,
+            "fDamage": 32.1,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 84,
+          "strDescription": "=== [84] Dark Dash ===",
+          "fStartTrackPosition": 1.12,
+          "tHitboxDesc": {
+            "strName": "Dark_Dash_84",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.9,
+              "y": 0.8,
+              "z": 1.3
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.0,
+              "y": 0.4,
+              "z": 1.8
+            },
+            "fDuration": 1.46,
+            "fTickTime": -1.0,
+            "fDamage": 97.7,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 85,
+          "strDescription": "=== [85] Spinning Slash ===",
+          "fStartTrackPosition": 2.72,
+          "tHitboxDesc": {
+            "strName": "Spinning_Slash_85",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.2,
+            "vOffset": {
+              "x": 0.4,
+              "y": 0.8,
+              "z": 0.0
+            },
+            "fDuration": 0.92,
+            "fTickTime": -1.0,
+            "fDamage": 51.6,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 86,
+          "strDescription": "=== [86] Magic Dash ===",
+          "fStartTrackPosition": 2.69,
+          "tHitboxDesc": {
+            "strName": "Magic_Dash_86",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.2,
+              "y": 0.6,
+              "z": 1.5
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.7,
+              "y": 0.1,
+              "z": 0.4
+            },
+            "fDuration": 1.79,
+            "fTickTime": -1.0,
+            "fDamage": 59.3,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 87,
+          "strDescription": "=== [87] Air Explosion ===",
+          "fStartTrackPosition": 0.44,
+          "tHitboxDesc": {
+            "strName": "Air_Explosion_87",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.3,
+              "y": 1.8,
+              "z": 1.6
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.3,
+              "y": 0.4,
+              "z": 1.3
+            },
+            "fDuration": 2.0,
+            "fTickTime": -1.0,
+            "fDamage": 66.3,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 88,
+          "strDescription": "=== [88] Ice Slam ===",
+          "fStartTrackPosition": 1.14,
+          "tHitboxDesc": {
+            "strName": "Ice_Slam_88",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.2,
+            "vOffset": {
+              "x": -0.7,
+              "y": 0.2,
+              "z": 0.9
+            },
+            "fDuration": 1.96,
+            "fTickTime": -1.0,
+            "fDamage": 47.4,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 89,
+          "strDescription": "=== [89] Poison Punch ===",
+          "fStartTrackPosition": 0.35,
+          "tHitboxDesc": {
+            "strName": "Poison_Punch_89",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.4,
+            "vOffset": {
+              "x": 0.9,
+              "y": 0.4,
+              "z": 0.2
+            },
+            "fDuration": 1.25,
+            "fTickTime": -1.0,
+            "fDamage": 50.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 90,
+          "strDescription": "=== [90] Ice Beam ===",
+          "fStartTrackPosition": 0.76,
+          "tHitboxDesc": {
+            "strName": "Ice_Beam_90",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.9,
+              "y": 1.8,
+              "z": 1.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.5,
+              "y": 1.6,
+              "z": 1.2
+            },
+            "fDuration": 1.14,
+            "fTickTime": -1.0,
+            "fDamage": 56.6,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 91,
+          "strDescription": "=== [91] Spinning Slash ===",
+          "fStartTrackPosition": 1.5,
+          "tHitboxDesc": {
+            "strName": "Spinning_Slash_91",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 0.2,
+            "vOffset": {
+              "x": 1.3,
+              "y": 1.7,
+              "z": 0.4
+            },
+            "fDuration": 0.68,
+            "fTickTime": 0.1,
+            "fDamage": 81.1,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 92,
+          "strDescription": "=== [92] Air Breath ===",
+          "fStartTrackPosition": 1.84,
+          "tHitboxDesc": {
+            "strName": "Air_Breath_92",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.3,
+            "vOffset": {
+              "x": -0.9,
+              "y": 1.3,
+              "z": 0.5
+            },
+            "fDuration": 0.67,
+            "fTickTime": -1.0,
+            "fDamage": 42.7,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 93,
+          "strDescription": "=== [93] Heavy Kick ===",
+          "fStartTrackPosition": 1.32,
+          "tHitboxDesc": {
+            "strName": "Heavy_Kick_93",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.9,
+            "vOffset": {
+              "x": 1.9,
+              "y": 0.7,
+              "z": 1.9
+            },
+            "fDuration": 0.41,
+            "fTickTime": -1.0,
+            "fDamage": 61.9,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 94,
+          "strDescription": "=== [94] Ice Dash ===",
+          "fStartTrackPosition": 0.55,
+          "tHitboxDesc": {
+            "strName": "Ice_Dash_94",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.3,
+              "y": 0.3,
+              "z": 2.0
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.2,
+              "y": 1.0,
+              "z": 2.0
+            },
+            "fDuration": 0.31,
+            "fTickTime": -1.0,
+            "fDamage": 50.2,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 95,
+          "strDescription": "=== [95] Ice Slash ===",
+          "fStartTrackPosition": 0.29,
+          "tHitboxDesc": {
+            "strName": "Ice_Slash_95",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 0.5,
+            "vOffset": {
+              "x": -1.7,
+              "y": 1.6,
+              "z": 0.1
+            },
+            "fDuration": 0.64,
+            "fTickTime": 0.43,
+            "fDamage": 73.3,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 96,
+          "strDescription": "=== [96] Holy Kick ===",
+          "fStartTrackPosition": 0.87,
+          "tHitboxDesc": {
+            "strName": "Holy_Kick_96",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.2,
+            "vOffset": {
+              "x": 0.4,
+              "y": 0.9,
+              "z": 1.4
+            },
+            "fDuration": 1.59,
+            "fTickTime": 0.29,
+            "fDamage": 14.4,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 97,
+          "strDescription": "=== [97] Ground Slash ===",
+          "fStartTrackPosition": 0.89,
+          "tHitboxDesc": {
+            "strName": "Ground_Slash_97",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.9,
+              "y": 0.7,
+              "z": 0.1
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.1,
+              "y": 0.1,
+              "z": 1.2
+            },
+            "fDuration": 0.56,
+            "fTickTime": -1.0,
+            "fDamage": 80.1,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 98,
+          "strDescription": "=== [98] Ice Slam ===",
+          "fStartTrackPosition": 0.29,
+          "tHitboxDesc": {
+            "strName": "Ice_Slam_98",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 0.4,
+            "vOffset": {
+              "x": -0.0,
+              "y": 0.3,
+              "z": 2.0
+            },
+            "fDuration": 1.48,
+            "fTickTime": -1.0,
+            "fDamage": 73.2,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 99,
+          "strDescription": "=== [99] Holy Beam ===",
+          "fStartTrackPosition": 0.13,
+          "tHitboxDesc": {
+            "strName": "Holy_Beam_99",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.3,
+              "y": 1.5,
+              "z": 1.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.9,
+              "y": 0.5,
+              "z": 1.4
+            },
+            "fDuration": 1.0,
+            "fTickTime": -1.0,
+            "fDamage": 77.5,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 100,
+          "strDescription": "=== [100] Light Beam ===",
+          "fStartTrackPosition": 1.09,
+          "tHitboxDesc": {
+            "strName": "Light_Beam_100",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.7,
+            "vOffset": {
+              "x": 0.8,
+              "y": 0.4,
+              "z": 0.8
+            },
+            "fDuration": 1.37,
+            "fTickTime": -1.0,
+            "fDamage": 81.1,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 101,
+          "strDescription": "=== [101] Poison Slam ===",
+          "fStartTrackPosition": 1.58,
+          "tHitboxDesc": {
+            "strName": "Poison_Slam_101",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.0,
+              "y": 0.8,
+              "z": 1.3
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.4,
+              "y": 0.6,
+              "z": 0.2
+            },
+            "fDuration": 1.42,
+            "fTickTime": 0.37,
+            "fDamage": 51.8,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 102,
+          "strDescription": "=== [102] Lightning Uppercut ===",
+          "fStartTrackPosition": 2.35,
+          "tHitboxDesc": {
+            "strName": "Lightning_Uppercut_102",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.1,
+              "y": 1.8,
+              "z": 0.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.9,
+              "y": 1.6,
+              "z": 1.5
+            },
+            "fDuration": 1.2,
+            "fTickTime": -1.0,
+            "fDamage": 91.2,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 103,
+          "strDescription": "=== [103] Ground Explosion ===",
+          "fStartTrackPosition": 1.32,
+          "tHitboxDesc": {
+            "strName": "Ground_Explosion_103",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.9,
+              "y": 1.3,
+              "z": 1.8
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.9,
+              "y": 1.7,
+              "z": 0.2
+            },
+            "fDuration": 0.37,
+            "fTickTime": -1.0,
+            "fDamage": 83.5,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 104,
+          "strDescription": "=== [104] Air Dash ===",
+          "fStartTrackPosition": 1.54,
+          "tHitboxDesc": {
+            "strName": "Air_Dash_104",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.2,
+            "vOffset": {
+              "x": -1.4,
+              "y": 1.5,
+              "z": 1.0
+            },
+            "fDuration": 1.81,
+            "fTickTime": -1.0,
+            "fDamage": 10.1,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 105,
+          "strDescription": "=== [105] Air Explosion ===",
+          "fStartTrackPosition": 2.75,
+          "tHitboxDesc": {
+            "strName": "Air_Explosion_105",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.1,
+            "vOffset": {
+              "x": 1.6,
+              "y": 1.1,
+              "z": 0.2
+            },
+            "fDuration": 0.45,
+            "fTickTime": -1.0,
+            "fDamage": 63.3,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 106,
+          "strDescription": "=== [106] Fire Explosion ===",
+          "fStartTrackPosition": 0.85,
+          "tHitboxDesc": {
+            "strName": "Fire_Explosion_106",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.2,
+            "vOffset": {
+              "x": -0.9,
+              "y": 0.9,
+              "z": 1.3
+            },
+            "fDuration": 0.24,
+            "fTickTime": -1.0,
+            "fDamage": 35.1,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 107,
+          "strDescription": "=== [107] Flying Uppercut ===",
+          "fStartTrackPosition": 2.97,
+          "tHitboxDesc": {
+            "strName": "Flying_Uppercut_107",
+            "eType": 0,
+            "vExtents": {
+              "x": 2.0,
+              "y": 0.4,
+              "z": 0.5
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.1,
+              "y": 1.3,
+              "z": 1.2
+            },
+            "fDuration": 0.67,
+            "fTickTime": -1.0,
+            "fDamage": 24.9,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 108,
+          "strDescription": "=== [108] Flying Kick ===",
+          "fStartTrackPosition": 1.55,
+          "tHitboxDesc": {
+            "strName": "Flying_Kick_108",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.1,
+              "y": 1.6,
+              "z": 0.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.8,
+              "y": 0.6,
+              "z": 1.7
+            },
+            "fDuration": 1.37,
+            "fTickTime": -1.0,
+            "fDamage": 20.1,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 109,
+          "strDescription": "=== [109] Holy Slash ===",
+          "fStartTrackPosition": 1.63,
+          "tHitboxDesc": {
+            "strName": "Holy_Slash_109",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.6,
+            "vOffset": {
+              "x": 0.6,
+              "y": 0.6,
+              "z": 1.5
+            },
+            "fDuration": 1.7,
+            "fTickTime": -1.0,
+            "fDamage": 32.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 110,
+          "strDescription": "=== [110] Flying Slam ===",
+          "fStartTrackPosition": 1.63,
+          "tHitboxDesc": {
+            "strName": "Flying_Slam_110",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.1,
+            "vOffset": {
+              "x": 1.7,
+              "y": 0.7,
+              "z": 1.6
+            },
+            "fDuration": 0.84,
+            "fTickTime": -1.0,
+            "fDamage": 59.1,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 111,
+          "strDescription": "=== [111] Flying Slash ===",
+          "fStartTrackPosition": 2.92,
+          "tHitboxDesc": {
+            "strName": "Flying_Slash_111",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.9,
+            "vOffset": {
+              "x": -0.5,
+              "y": 2.0,
+              "z": 1.0
+            },
+            "fDuration": 0.19,
+            "fTickTime": -1.0,
+            "fDamage": 28.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 112,
+          "strDescription": "=== [112] Fire Punch ===",
+          "fStartTrackPosition": 1.36,
+          "tHitboxDesc": {
+            "strName": "Fire_Punch_112",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.7,
+            "vOffset": {
+              "x": -0.5,
+              "y": 0.5,
+              "z": 1.9
+            },
+            "fDuration": 1.14,
+            "fTickTime": -1.0,
+            "fDamage": 11.8,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 113,
+          "strDescription": "=== [113] Ground Stab ===",
+          "fStartTrackPosition": 1.01,
+          "tHitboxDesc": {
+            "strName": "Ground_Stab_113",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.3,
+              "y": 1.2,
+              "z": 0.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.4,
+              "y": 1.0,
+              "z": 1.6
+            },
+            "fDuration": 0.59,
+            "fTickTime": -1.0,
+            "fDamage": 69.8,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 114,
+          "strDescription": "=== [114] Air Beam ===",
+          "fStartTrackPosition": 2.62,
+          "tHitboxDesc": {
+            "strName": "Air_Beam_114",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.7,
+            "vOffset": {
+              "x": 1.6,
+              "y": 1.1,
+              "z": 0.8
+            },
+            "fDuration": 1.42,
+            "fTickTime": -1.0,
+            "fDamage": 80.2,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 115,
+          "strDescription": "=== [115] Dark Explosion ===",
+          "fStartTrackPosition": 2.88,
+          "tHitboxDesc": {
+            "strName": "Dark_Explosion_115",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.0,
+              "y": 0.6,
+              "z": 0.6
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.9,
+              "y": 0.0,
+              "z": 0.2
+            },
+            "fDuration": 1.01,
+            "fTickTime": -1.0,
+            "fDamage": 15.4,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 116,
+          "strDescription": "=== [116] Dark Stab ===",
+          "fStartTrackPosition": 1.57,
+          "tHitboxDesc": {
+            "strName": "Dark_Stab_116",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.5,
+              "y": 1.7,
+              "z": 0.8
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.2,
+              "y": 0.1,
+              "z": 0.4
+            },
+            "fDuration": 1.12,
+            "fTickTime": -1.0,
+            "fDamage": 35.8,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 117,
+          "strDescription": "=== [117] Heavy Uppercut ===",
+          "fStartTrackPosition": 0.5,
+          "tHitboxDesc": {
+            "strName": "Heavy_Uppercut_117",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.9,
+            "vOffset": {
+              "x": -1.4,
+              "y": 1.9,
+              "z": 0.6
+            },
+            "fDuration": 0.7,
+            "fTickTime": -1.0,
+            "fDamage": 28.5,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 118,
+          "strDescription": "=== [118] Charged Breath ===",
+          "fStartTrackPosition": 1.62,
+          "tHitboxDesc": {
+            "strName": "Charged_Breath_118",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.0,
+            "vOffset": {
+              "x": -1.1,
+              "y": 0.5,
+              "z": 1.5
+            },
+            "fDuration": 1.22,
+            "fTickTime": -1.0,
+            "fDamage": 99.9,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 119,
+          "strDescription": "=== [119] Dark Punch ===",
+          "fStartTrackPosition": 2.05,
+          "tHitboxDesc": {
+            "strName": "Dark_Punch_119",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.6,
+              "y": 1.2,
+              "z": 0.6
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.2,
+              "y": 1.5,
+              "z": 0.7
+            },
+            "fDuration": 1.41,
+            "fTickTime": -1.0,
+            "fDamage": 87.6,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 120,
+          "strDescription": "=== [120] Air Dash ===",
+          "fStartTrackPosition": 1.65,
+          "tHitboxDesc": {
+            "strName": "Air_Dash_120",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.5,
+            "vOffset": {
+              "x": -1.7,
+              "y": 0.4,
+              "z": 1.4
+            },
+            "fDuration": 1.32,
+            "fTickTime": -1.0,
+            "fDamage": 84.4,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 121,
+          "strDescription": "=== [121] Light Breath ===",
+          "fStartTrackPosition": 0.37,
+          "tHitboxDesc": {
+            "strName": "Light_Breath_121",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.2,
+              "y": 1.6,
+              "z": 1.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.7,
+              "y": 0.9,
+              "z": 1.9
+            },
+            "fDuration": 1.52,
+            "fTickTime": -1.0,
+            "fDamage": 26.7,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 122,
+          "strDescription": "=== [122] Air Breath ===",
+          "fStartTrackPosition": 2.69,
+          "tHitboxDesc": {
+            "strName": "Air_Breath_122",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.9,
+              "y": 1.1,
+              "z": 1.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.5,
+              "y": 0.6,
+              "z": 1.1
+            },
+            "fDuration": 1.9,
+            "fTickTime": 0.44,
+            "fDamage": 29.2,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 123,
+          "strDescription": "=== [123] Ground Punch ===",
+          "fStartTrackPosition": 1.2,
+          "tHitboxDesc": {
+            "strName": "Ground_Punch_123",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.3,
+            "vOffset": {
+              "x": -1.4,
+              "y": 0.7,
+              "z": 1.4
+            },
+            "fDuration": 1.5,
+            "fTickTime": 0.48,
+            "fDamage": 87.9,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 124,
+          "strDescription": "=== [124] Quick Slash ===",
+          "fStartTrackPosition": 2.4,
+          "tHitboxDesc": {
+            "strName": "Quick_Slash_124",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.7,
+              "y": 1.1,
+              "z": 0.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.6,
+              "y": 0.6,
+              "z": 1.2
+            },
+            "fDuration": 1.73,
+            "fTickTime": 0.36,
+            "fDamage": 25.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 125,
+          "strDescription": "=== [125] Charged Stab ===",
+          "fStartTrackPosition": 0.84,
+          "tHitboxDesc": {
+            "strName": "Charged_Stab_125",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.6,
+              "y": 1.6,
+              "z": 1.5
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.2,
+              "y": 1.9,
+              "z": 1.6
+            },
+            "fDuration": 0.79,
+            "fTickTime": -1.0,
+            "fDamage": 12.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 126,
+          "strDescription": "=== [126] Flying Kick ===",
+          "fStartTrackPosition": 0.51,
+          "tHitboxDesc": {
+            "strName": "Flying_Kick_126",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.1,
+            "vOffset": {
+              "x": 0.1,
+              "y": 1.7,
+              "z": 1.3
+            },
+            "fDuration": 1.13,
+            "fTickTime": -1.0,
+            "fDamage": 67.1,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 127,
+          "strDescription": "=== [127] Light Dash ===",
+          "fStartTrackPosition": 1.67,
+          "tHitboxDesc": {
+            "strName": "Light_Dash_127",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.7,
+            "vOffset": {
+              "x": 1.2,
+              "y": 0.6,
+              "z": 0.9
+            },
+            "fDuration": 1.67,
+            "fTickTime": -1.0,
+            "fDamage": 65.2,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 128,
+          "strDescription": "=== [128] Heavy Uppercut ===",
+          "fStartTrackPosition": 0.87,
+          "tHitboxDesc": {
+            "strName": "Heavy_Uppercut_128",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.4,
+              "y": 1.3,
+              "z": 0.0
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -2.0,
+              "y": 0.6,
+              "z": 0.7
+            },
+            "fDuration": 0.68,
+            "fTickTime": -1.0,
+            "fDamage": 69.4,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 129,
+          "strDescription": "=== [129] Lightning Kick ===",
+          "fStartTrackPosition": 1.82,
+          "tHitboxDesc": {
+            "strName": "Lightning_Kick_129",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.6,
+              "y": 1.9,
+              "z": 0.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.3,
+              "y": 0.4,
+              "z": 1.7
+            },
+            "fDuration": 0.6,
+            "fTickTime": -1.0,
+            "fDamage": 90.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 130,
+          "strDescription": "=== [130] Lightning Breath ===",
+          "fStartTrackPosition": 1.03,
+          "tHitboxDesc": {
+            "strName": "Lightning_Breath_130",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.8
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.9,
+              "y": 1.5,
+              "z": 0.9
+            },
+            "fDuration": 1.85,
+            "fTickTime": -1.0,
+            "fDamage": 64.2,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 131,
+          "strDescription": "=== [131] Flying Punch ===",
+          "fStartTrackPosition": 2.42,
+          "tHitboxDesc": {
+            "strName": "Flying_Punch_131",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.5,
+            "vOffset": {
+              "x": -1.0,
+              "y": 0.6,
+              "z": 0.8
+            },
+            "fDuration": 1.15,
+            "fTickTime": -1.0,
+            "fDamage": 90.4,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 132,
+          "strDescription": "=== [132] Fire Explosion ===",
+          "fStartTrackPosition": 0.72,
+          "tHitboxDesc": {
+            "strName": "Fire_Explosion_132",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.8,
+              "y": 2.0,
+              "z": 1.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.3,
+              "y": 0.5,
+              "z": 0.9
+            },
+            "fDuration": 1.46,
+            "fTickTime": -1.0,
+            "fDamage": 81.9,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 133,
+          "strDescription": "=== [133] Ground Explosion ===",
+          "fStartTrackPosition": 1.01,
+          "tHitboxDesc": {
+            "strName": "Ground_Explosion_133",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.3,
+            "vOffset": {
+              "x": 1.5,
+              "y": 1.2,
+              "z": 1.9
+            },
+            "fDuration": 0.27,
+            "fTickTime": 0.46,
+            "fDamage": 68.6,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 134,
+          "strDescription": "=== [134] Magic Stab ===",
+          "fStartTrackPosition": 2.48,
+          "tHitboxDesc": {
+            "strName": "Magic_Stab_134",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.3,
+              "y": 0.8,
+              "z": 1.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.5,
+              "y": 0.1,
+              "z": 0.4
+            },
+            "fDuration": 0.14,
+            "fTickTime": -1.0,
+            "fDamage": 83.7,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 135,
+          "strDescription": "=== [135] Quick Punch ===",
+          "fStartTrackPosition": 2.64,
+          "tHitboxDesc": {
+            "strName": "Quick_Punch_135",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.0,
+              "y": 0.9,
+              "z": 0.2
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.5,
+              "y": 1.1,
+              "z": 1.1
+            },
+            "fDuration": 1.33,
+            "fTickTime": -1.0,
+            "fDamage": 14.2,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 136,
+          "strDescription": "=== [136] Spinning Slam ===",
+          "fStartTrackPosition": 1.3,
+          "tHitboxDesc": {
+            "strName": "Spinning_Slam_136",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 5.0,
+            "vOffset": {
+              "x": 1.3,
+              "y": 1.4,
+              "z": 1.0
+            },
+            "fDuration": 0.24,
+            "fTickTime": -1.0,
+            "fDamage": 65.1,
+            "iMaxHit": 5,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 137,
+          "strDescription": "=== [137] Charged Slam ===",
+          "fStartTrackPosition": 2.69,
+          "tHitboxDesc": {
+            "strName": "Charged_Slam_137",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.8,
+            "vOffset": {
+              "x": -2.0,
+              "y": 0.1,
+              "z": 0.0
+            },
+            "fDuration": 0.26,
+            "fTickTime": 0.35,
+            "fDamage": 26.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 138,
+          "strDescription": "=== [138] Light Slash ===",
+          "fStartTrackPosition": 2.51,
+          "tHitboxDesc": {
+            "strName": "Light_Slash_138",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.7,
+              "y": 1.9,
+              "z": 0.8
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.6,
+              "y": 1.9,
+              "z": 0.5
+            },
+            "fDuration": 0.63,
+            "fTickTime": -1.0,
+            "fDamage": 58.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 139,
+          "strDescription": "=== [139] Ground Uppercut ===",
+          "fStartTrackPosition": 0.07,
+          "tHitboxDesc": {
+            "strName": "Ground_Uppercut_139",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.5,
+            "vOffset": {
+              "x": 1.0,
+              "y": 0.6,
+              "z": 0.4
+            },
+            "fDuration": 1.01,
+            "fTickTime": -1.0,
+            "fDamage": 35.6,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 140,
+          "strDescription": "=== [140] Magic Stab ===",
+          "fStartTrackPosition": 2.64,
+          "tHitboxDesc": {
+            "strName": "Magic_Stab_140",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 1.9,
+            "vOffset": {
+              "x": -2.0,
+              "y": 1.3,
+              "z": 0.3
+            },
+            "fDuration": 0.4,
+            "fTickTime": -1.0,
+            "fDamage": 91.6,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 141,
+          "strDescription": "=== [141] Spinning Explosion ===",
+          "fStartTrackPosition": 0.19,
+          "tHitboxDesc": {
+            "strName": "Spinning_Explosion_141",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.1,
+              "y": 1.8,
+              "z": 0.7
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.4,
+              "y": 1.0,
+              "z": 1.5
+            },
+            "fDuration": 1.95,
+            "fTickTime": -1.0,
+            "fDamage": 97.6,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 142,
+          "strDescription": "=== [142] Spinning Slam ===",
+          "fStartTrackPosition": 0.28,
+          "tHitboxDesc": {
+            "strName": "Spinning_Slam_142",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.6,
+              "y": 1.6,
+              "z": 0.2
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.9,
+              "y": 1.1,
+              "z": 0.9
+            },
+            "fDuration": 0.21,
+            "fTickTime": -1.0,
+            "fDamage": 13.8,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 143,
+          "strDescription": "=== [143] Ice Punch ===",
+          "fStartTrackPosition": 2.57,
+          "tHitboxDesc": {
+            "strName": "Ice_Punch_143",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.0,
+              "y": 1.4,
+              "z": 1.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.3,
+              "y": 1.6,
+              "z": 1.3
+            },
+            "fDuration": 0.48,
+            "fTickTime": 0.15,
+            "fDamage": 73.2,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 144,
+          "strDescription": "=== [144] Holy Slam ===",
+          "fStartTrackPosition": 1.38,
+          "tHitboxDesc": {
+            "strName": "Holy_Slam_144",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.1,
+            "vOffset": {
+              "x": -1.5,
+              "y": 1.2,
+              "z": 1.0
+            },
+            "fDuration": 1.79,
+            "fTickTime": -1.0,
+            "fDamage": 69.8,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 145,
+          "strDescription": "=== [145] Magic Slash ===",
+          "fStartTrackPosition": 0.2,
+          "tHitboxDesc": {
+            "strName": "Magic_Slash_145",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 0.8,
+            "vOffset": {
+              "x": -1.9,
+              "y": 0.3,
+              "z": 1.0
+            },
+            "fDuration": 1.93,
+            "fTickTime": -1.0,
+            "fDamage": 75.6,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 146,
+          "strDescription": "=== [146] Charged Punch ===",
+          "fStartTrackPosition": 0.72,
+          "tHitboxDesc": {
+            "strName": "Charged_Punch_146",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.5,
+              "y": 0.7,
+              "z": 0.6
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.7,
+              "y": 0.8,
+              "z": 0.9
+            },
+            "fDuration": 1.61,
+            "fTickTime": -1.0,
+            "fDamage": 32.1,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 147,
+          "strDescription": "=== [147] Quick Kick ===",
+          "fStartTrackPosition": 2.71,
+          "tHitboxDesc": {
+            "strName": "Quick_Kick_147",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.9,
+            "vOffset": {
+              "x": -1.3,
+              "y": 0.2,
+              "z": 0.1
+            },
+            "fDuration": 1.12,
+            "fTickTime": -1.0,
+            "fDamage": 81.1,
+            "iMaxHit": 10,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 148,
+          "strDescription": "=== [148] Light Uppercut ===",
+          "fStartTrackPosition": 2.93,
+          "tHitboxDesc": {
+            "strName": "Light_Uppercut_148",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.6,
+            "vOffset": {
+              "x": 1.6,
+              "y": 0.7,
+              "z": 1.0
+            },
+            "fDuration": 1.41,
+            "fTickTime": -1.0,
+            "fDamage": 94.9,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 149,
+          "strDescription": "=== [149] Dark Slash ===",
+          "fStartTrackPosition": 2.29,
+          "tHitboxDesc": {
+            "strName": "Dark_Slash_149",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.2,
+            "vOffset": {
+              "x": 2.0,
+              "y": 1.2,
+              "z": 0.3
+            },
+            "fDuration": 0.26,
+            "fTickTime": -1.0,
+            "fDamage": 75.3,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 150,
+          "strDescription": "=== [150] Charged Explosion ===",
+          "fStartTrackPosition": 2.95,
+          "tHitboxDesc": {
+            "strName": "Charged_Explosion_150",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.5,
+              "y": 0.9,
+              "z": 0.2
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -0.5,
+              "y": 0.8,
+              "z": 1.7
+            },
+            "fDuration": 0.48,
+            "fTickTime": -1.0,
+            "fDamage": 43.1,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 151,
+          "strDescription": "=== [151] Poison Slam ===",
+          "fStartTrackPosition": 1.65,
+          "tHitboxDesc": {
+            "strName": "Poison_Slam_151",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.1,
+              "y": 1.3,
+              "z": 1.4
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.6,
+              "y": 1.0,
+              "z": 1.5
+            },
+            "fDuration": 1.33,
+            "fTickTime": -1.0,
+            "fDamage": 76.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 39
+          }
+        },
+        {
+          "fAnimIndex": 152,
+          "strDescription": "=== [152] Ground Kick ===",
+          "fStartTrackPosition": 1.21,
+          "tHitboxDesc": {
+            "strName": "Ground_Kick_152",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 2.9,
+            "vOffset": {
+              "x": -2.0,
+              "y": 0.6,
+              "z": 1.4
+            },
+            "fDuration": 1.47,
+            "fTickTime": -1.0,
+            "fDamage": 34.4,
+            "iMaxHit": 32,
+            "eFilterLayer": 2,
+            "iFilterMask": 37
+          }
+        },
+        {
+          "fAnimIndex": 153,
+          "strDescription": "=== [153] Spinning Slam ===",
+          "fStartTrackPosition": 1.21,
+          "tHitboxDesc": {
+            "strName": "Spinning_Slam_153",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.2,
+              "y": 0.6,
+              "z": 1.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 1.3,
+              "y": 0.1,
+              "z": 0.4
+            },
+            "fDuration": 1.51,
+            "fTickTime": -1.0,
+            "fDamage": 70.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 33
+          }
+        },
+        {
+          "fAnimIndex": 154,
+          "strDescription": "=== [154] Heavy Explosion ===",
+          "fStartTrackPosition": 2.3,
+          "tHitboxDesc": {
+            "strName": "Heavy_Explosion_154",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.1,
+              "y": 1.2,
+              "z": 1.9
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": -1.3,
+              "y": 1.1,
+              "z": 0.5
+            },
+            "fDuration": 1.07,
+            "fTickTime": 0.22,
+            "fDamage": 11.3,
+            "iMaxHit": 1,
+            "eFilterLayer": 3,
+            "iFilterMask": 37
+          }
+        }
+      ]
+    }
+  ]
+}

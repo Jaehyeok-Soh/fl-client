@@ -106,9 +106,6 @@
     <Filter Include="08. UIData\Manager">
       <UniqueIdentifier>{6d36fbe4-59ee-4223-946d-8f5f4bc5d255}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06. ImGui\01. Panel\Map\File">
-      <UniqueIdentifier>{052f47e7-8ad0-46fe-9e82-68a1541c2501}</UniqueIdentifier>
-    </Filter>
     <Filter Include="10. Folder">
       <UniqueIdentifier>{4df4c641-6c22-41c1-a9af-09c6188b9065}</UniqueIdentifier>
     </Filter>
@@ -331,6 +328,18 @@
     <Filter Include="02. GameObjects\ToolObject">
       <UniqueIdentifier>{c95f2943-627a-427c-975c-f24173dcaca5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. ImGui\01. Panel\Map\File">
+      <UniqueIdentifier>{052f47e7-8ad0-46fe-9e82-68a1541c2501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Map\01. Manager">
+      <UniqueIdentifier>{3dfd38c4-4a8d-433b-9bf7-651bc041fb50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect\Container\Effect">
+      <UniqueIdentifier>{ad2ac275-aeb2-4df6-87b4-0df0d4736067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Effect\Container\Effect_Env">
+      <UniqueIdentifier>{4d94e339-a37b-40c2-9b6e-f177fd39bcdb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -552,9 +561,6 @@
     <ClInclude Include="..\Public\UIProgress_Component.h">
       <Filter>04. Component\UI\Progress</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Effect.h">
-      <Filter>02. GameObjects\Effect\Container</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CEffectObject.h">
       <Filter>02. GameObjects\Effect\Part</Filter>
     </ClInclude>
@@ -653,6 +659,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Animation_Struct.h">
       <Filter>98. Defines\Tool_Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_DataManager.h">
+      <Filter>03. Level\Map\01. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>02. GameObjects\Effect\Container\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Env.h">
+      <Filter>02. GameObjects\Effect\Container\Effect_Env</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -867,9 +882,6 @@
     <ClCompile Include="..\Private\UIProgress_Component.cpp">
       <Filter>04. Component\UI\Progress</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Effect.cpp">
-      <Filter>02. GameObjects\Effect\Container</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CEffectObject.cpp">
       <Filter>02. GameObjects\Effect\Part</Filter>
     </ClCompile>
@@ -959,6 +971,15 @@
     </ClCompile>
     <ClCompile Include="CPanel_Camera.cpp">
       <Filter>06. ImGui\01. Panel\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_DataManager.cpp">
+      <Filter>03. Level\Map\01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>02. GameObjects\Effect\Container\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Env.cpp">
+      <Filter>02. GameObjects\Effect\Container\Effect_Env</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

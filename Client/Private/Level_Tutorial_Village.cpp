@@ -30,7 +30,6 @@
 #include "DataDocument_Map.h"
 #include "DataDocument_UI.h"
 
-
 //=================
 // UI
 //=================
@@ -42,7 +41,6 @@
 //=================
 #include "Bounds.h"
 #include "PhysicsCCT.h"
-
 
 //=================
 // Game Object
@@ -129,9 +127,9 @@ HRESULT CLevel_Tutorial_Village::Ready_Lights()
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vDirection = Vec3{ 0.228f, -0.655f, 0.721f };
+		desc.vDiffuse = Vec4(0.8f, 0.7f, 0.55f, 1.f);
+		desc.vAmbient = Vec4(0.2f, 0.17f, 0.25f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))

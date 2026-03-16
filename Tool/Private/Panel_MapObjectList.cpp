@@ -1514,7 +1514,7 @@ void CPanel_MapObjectList::ImGuiUpdate_PointLight_Desc(POINTLIHGT_DESC* pDesc)
 
 void CPanel_MapObjectList::ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc)
 {
-	ImGui::SeparatorText(" Trigger Box Desc ");
+	ImGui::SeparatorText(" 'Trigger Box Desc' ");
 
 	if (ImGui::DragFloat3("Extents##TriggerBox_Extents", &pDesc->vExtents.x, 0.1f, 0.1f, 100.f, "%.2f"))
 	{
@@ -1532,12 +1532,49 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc)
 
 	ImGui::Separator();
 
-	// 퀘스트 오브젝트 여부 결정 체크박스
 	ImGui::Checkbox("Is Quest Object", &pDesc->bHasQuest);
 
-	// 퀘스트일 경우에만 상세 정보 UI 노출
 	if (pDesc->bHasQuest)
-		ImGuiUpdate_Quest(&pDesc->tQuestObjectDesc);
+	{
+		ImGui::Indent();
+		ImGui::SeparatorText(" Quest List Configuration ");
+
+		if (ImGui::Button(" + Add New Quest "))
+		{
+			pDesc->tQuestObjectDesc.push_back(DTO::QUEST_CHAPTERDESC());
+		}
+
+		ImGui::Spacing();
+
+		for (int i = 0; i < pDesc->tQuestObjectDesc.size(); )
+		{
+			ImGui::PushID(i);
+
+			string strNodeName = "Quest Index [" + std::to_string(i) + "] - Chap ID: "
+				+ std::to_string(pDesc->tQuestObjectDesc[i].tQuestDesc.iId);
+
+			bool bNodeOpen = ImGui::TreeNode((void*)(intptr_t)i, strNodeName.c_str());
+
+			ImGui::SameLine(ImGui::GetWindowWidth() - 80.f);
+			if (ImGui::Button("Delete"))
+			{
+				pDesc->tQuestObjectDesc.erase(pDesc->tQuestObjectDesc.begin() + i);
+				if (bNodeOpen) ImGui::TreePop();
+				ImGui::PopID();
+				continue;
+			}
+
+			if (bNodeOpen)
+			{
+				ImGuiUpdate_Quest(&pDesc->tQuestObjectDesc[i]);
+				ImGui::TreePop();
+			}
+
+			ImGui::PopID();
+			++i;
+		}
+		ImGui::Unindent();
+	}
 
 	ImGui::Separator();
 }
@@ -1786,14 +1823,13 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUT
 }
 void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 {
-	ImGui::Indent(); // 시각적 구분을 위해 들여쓰기
+	ImGui::Indent();
 	ImGui::SeparatorText(" Quest Configuration ");
 
 	DTO::QUEST_CHAPTERDESC& chapterDesc = *pDesc;
 	DTO::QUESTDESC& questDesc = chapterDesc.tQuestDesc;
 
-	// --- [1] 열거형(Enum) 콤보 박스 ---
-	const char* eventTypes[] = { "MONSTER_KILL", "NPC_TALK", "AREA_ENTER", "OBJECT_INTERACT" };
+	const char* eventTypes[] = { "MONSTER_KILL", "NPC_TALK", "AREA_ENTER", "AREA_EXIT", "OBJECT_INTERACT" };
 	ImGui::Combo("Event Type", (int*)&chapterDesc.eEvent, eventTypes, IM_ARRAYSIZE(eventTypes));
 
 	const char* layerTypes[] = { "SCENARIO", "CHAPTER" };
@@ -1802,14 +1838,12 @@ void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 	const char* stateTypes[] = { "LOCKED", "AVAILABLE", "IN_PROGRESS", "COMPLETE" };
 	ImGui::Combo("Initial State", (int*)&questDesc.eState, stateTypes, IM_ARRAYSIZE(stateTypes));
 
-	// --- [2] 기본 데이터 (ID, 카운트 등) ---
 	ImGui::InputInt("Chapter ID", &questDesc.iId);
 	ImGui::InputInt("Parent (Scenario) ID", &questDesc.iParentId);
 	ImGui::InputInt("Prev ID", &questDesc.iPrevId);
 	ImGui::InputInt("Next ID", &questDesc.iNextId);
 	ImGui::InputInt("Target Count", &chapterDesc.iCount);
 
-	// --- [3] std::set 타겟 타입 추가/삭제 UI ---
 	ImGui::SeparatorText(" Target Types ");
 
 	static int addTargetEnum = 0;
@@ -1818,11 +1852,9 @@ void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 	ImGui::SameLine();
 	if (ImGui::Button("Add Target"))
 	{
-		// (OBJECT_ENUM_TAG::Enum) 으로 캐스팅하여 set에 삽입
 		chapterDesc.eTargetType.insert(static_cast<OBJECT_ENUM_TAG::Enum>(addTargetEnum));
 	}
 
-	// 현재 삽입된 타겟 리스트 박스 및 개별 삭제 버튼
 	if (ImGui::BeginListBox("##TargetList", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
 	{
 		for (auto it = chapterDesc.eTargetType.begin(); it != chapterDesc.eTargetType.end(); )
@@ -1830,10 +1862,9 @@ void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 			ImGui::Text("Enum ID: %d", *it);
 			ImGui::SameLine(ImGui::GetWindowWidth() - 50.f);
 
-			// 고유 ID 생성을 위해 PushID 사용
 			ImGui::PushID(*it);
 			if (ImGui::Button("Del"))
-				it = chapterDesc.eTargetType.erase(it); // 삭제 후 반복자 갱신
+				it = chapterDesc.eTargetType.erase(it);
 			else
 				++it;
 			ImGui::PopID();
@@ -1841,20 +1872,16 @@ void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 		ImGui::EndListBox();
 	}
 
-	// --- [4] 문자열(wstring) 변환 및 입력 ---
 	ImGui::SeparatorText(" Quest Texts ");
 
-	// ImGui는 UTF-8(char*)만 지원하므로, wstring을 임시 버퍼로 꺼내서 편집 후 다시 넣어야 합니다.
 	auto ImGuiInputWString = [](const char* label, std::wstring& wstrTarget)
 		{
-			// wstring -> string (단순 변환, 한글 지원을 위해서는 WideCharToMultiByte 권장)
 			std::string tempStr(wstrTarget.begin(), wstrTarget.end());
 			char buffer[256];
 			strcpy_s(buffer, tempStr.c_str());
 
 			if (ImGui::InputText(label, buffer, sizeof(buffer)))
 			{
-				// 편집되었다면 string -> wstring 복구
 				std::string newStr(buffer);
 				wstrTarget = std::wstring(newStr.begin(), newStr.end());
 			}
@@ -1865,7 +1892,11 @@ void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 	ImGuiInputWString("Explain", questDesc.wstrExplain);
 	ImGuiInputWString("Description", questDesc.wstrDescription);
 
-	ImGui::Unindent(); // 들여쓰기 복구
+	ImGui::InputInt("Enter Dialogue ID", &chapterDesc.tQuestDesc.iEnterDialogueId);
+	ImGui::InputInt("Exit Dialogue ID", &chapterDesc.tQuestDesc.iExitDialogueId);
+	ImGui::InputInt("Interact Dialogue ID", &chapterDesc.tQuestDesc.iInteractDialogueId);
+
+	ImGui::Unindent();
 }
 #pragma endregion
 

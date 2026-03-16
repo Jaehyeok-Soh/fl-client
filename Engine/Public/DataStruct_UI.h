@@ -286,7 +286,14 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	TUTORIAL_POPUP_TEXT2,
 	TUTORIAL_POPUP_END,
 	TUTORIAL_POPUP_CLEAR_TEXT,
-
+	
+	// Äù½ºÆ® 
+	QUEST_BEGIN,
+	QUEST_SCENARIO_TEXT,
+	QUEST_TITLE_TEXT,
+	QUEST_CONTENTS_TEXT,
+	QUEST_TRACKING_TEXT,
+	QUEST_END,
 	END
 };
 
@@ -377,6 +384,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::TUTORIAL_POPUP_TEXT2,			  	"TUTORIAL_POPUP_TEXT2" },
 		{ EUITextSubClassType::TUTORIAL_POPUP_END,					"TUTORIAL_POPUP_END" },
 		{ EUITextSubClassType::TUTORIAL_POPUP_CLEAR_TEXT,			"TUTORIAL_POPUP_CLEAR_TEXT" },
+		
+		{ EUITextSubClassType::QUEST_BEGIN,							"QUEST_BEGIN" },
+		{ EUITextSubClassType::QUEST_SCENARIO_TEXT,					"QUEST_SCENARIO_TEXT" },
+		{ EUITextSubClassType::QUEST_TITLE_TEXT,					"QUEST_TITLE_TEXT" },
+		{ EUITextSubClassType::QUEST_CONTENTS_TEXT,					"QUEST_CONTENTS_TEXT" },
+		{ EUITextSubClassType::QUEST_TRACKING_TEXT,					"QUEST_TRACKING_TEXT" },
+		{ EUITextSubClassType::QUEST_END,							"QUEST_END" },
 
 		{ EUITextSubClassType::END,									"END" },
 	})
@@ -466,6 +480,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "TUTORIAL_POPUP_TEXT2")						return EUITextSubClassType::TUTORIAL_POPUP_TEXT2;
 	else if (str == "TUTORIAL_POPUP_END")						return EUITextSubClassType::TUTORIAL_POPUP_END;
 	else if (str == "TUTORIAL_POPUP_CLEAR_TEXT")				return EUITextSubClassType::TUTORIAL_POPUP_CLEAR_TEXT;
+	
+	else if (str == "QUEST_BEGIN")								return EUITextSubClassType::QUEST_BEGIN;
+	else if (str == "QUEST_SCENARIO_TEXT")						return EUITextSubClassType::QUEST_SCENARIO_TEXT;
+	else if (str == "QUEST_TITLE_TEXT")							return EUITextSubClassType::QUEST_TITLE_TEXT;
+	else if (str == "QUEST_CONTENTS_TEXT")						return EUITextSubClassType::QUEST_CONTENTS_TEXT;
+	else if (str == "QUEST_TRACKING_TEXT")						return EUITextSubClassType::QUEST_TRACKING_TEXT;
+	else if (str == "QUEST_END")								return EUITextSubClassType::QUEST_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -560,6 +581,13 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::TUTORIAL_POPUP_TEXT2:					return "TUTORIAL_POPUP_TEXT2";
 	case EUITextSubClassType::TUTORIAL_POPUP_END:					return "TUTORIAL_POPUP_END";
 	case EUITextSubClassType::TUTORIAL_POPUP_CLEAR_TEXT:			return "TUTORIAL_POPUP_CLEAR_TEXT";
+
+	case EUITextSubClassType::QUEST_BEGIN:							return "QUEST_BEGIN";
+	case EUITextSubClassType::QUEST_SCENARIO_TEXT:					return "QUEST_SCENARIO_TEXT";
+	case EUITextSubClassType::QUEST_TITLE_TEXT:						return "QUEST_TITLE_TEXT";
+	case EUITextSubClassType::QUEST_CONTENTS_TEXT:					return "QUEST_CONTENTS_TEXT";
+	case EUITextSubClassType::QUEST_TRACKING_TEXT:					return "QUEST_TRACKING_TEXT";
+	case EUITextSubClassType::QUEST_END:							return "QUEST_END";
 	
 	default:														return "END";
 	}
@@ -778,6 +806,11 @@ enum class EUIDImageSubClassType
 	TUTORIAL_POPUP_CLEAR_ICON,
 	TUTORIAL_POPUP_CLEAR_CIRCLE_FX,
 
+	QUEST_BEGIN,
+	QUEST_TITLE_ICON,
+	QUEST_CONTENTS_ICON,
+	QUEST_TRACKING_ICON,
+	QUEST_END,
 
 	END
 };
@@ -894,6 +927,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG,					"TUTORIAL_POPUP_CLEAR_BG" },
 	{ EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_ICON,					"TUTORIAL_POPUP_CLEAR_ICON" },
 	{ EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX,					"TUTORIAL_POPUP_CLEAR_CIRCLE_FX" },
+	
+	{ EUIDImageSubClassType::QUEST_BEGIN,							"QUEST_BEGIN" },
+	{ EUIDImageSubClassType::QUEST_TITLE_ICON,						"QUEST_TITLE_ICON" },
+	{ EUIDImageSubClassType::QUEST_CONTENTS_ICON,					"QUEST_CONTENTS_ICON" },
+	{ EUIDImageSubClassType::QUEST_TRACKING_ICON,					"QUEST_TRACKING_ICON" },
+	{ EUIDImageSubClassType::QUEST_END,								"QUEST_END" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1011,6 +1050,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "TUTORIAL_POPUP_CLEAR_BG")				return EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG;
 	if (str == "TUTORIAL_POPUP_CLEAR_ICON")				return EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_ICON;
 	if (str == "TUTORIAL_POPUP_CLEAR_CIRCLE_FX")		return EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX;
+	
+	if (str == "QUEST_BEGIN")							return EUIDImageSubClassType::QUEST_BEGIN;
+	if (str == "QUEST_TITLE_ICON")						return EUIDImageSubClassType::QUEST_TITLE_ICON;
+	if (str == "QUEST_CONTENTS_ICON")					return EUIDImageSubClassType::QUEST_CONTENTS_ICON;
+	if (str == "QUEST_TRACKING_ICON")					return EUIDImageSubClassType::QUEST_TRACKING_ICON;
+	if (str == "QUEST_END")								return EUIDImageSubClassType::QUEST_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1130,6 +1175,12 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG:				return "TUTORIAL_POPUP_CLEAR_BG";
 	case EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_ICON:				return "TUTORIAL_POPUP_CLEAR_ICON";
 	case EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX:			return "TUTORIAL_POPUP_CLEAR_CIRCLE_FX";
+	
+	case EUIDImageSubClassType::QUEST_BEGIN:							return "QUEST_BEGIN";
+	case EUIDImageSubClassType::QUEST_TITLE_ICON:						return "QUEST_TITLE_ICON";
+	case EUIDImageSubClassType::QUEST_CONTENTS_ICON:					return "QUEST_CONTENTS_ICON";
+	case EUIDImageSubClassType::QUEST_TRACKING_ICON:					return "QUEST_TRACKING_ICON";
+	case EUIDImageSubClassType::QUEST_END:								return "QUEST_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

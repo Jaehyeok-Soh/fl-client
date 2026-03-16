@@ -1,0 +1,108 @@
+{
+    "Category": "EFFECTEVENT",
+    "Objects": [
+        {
+            "Type": 2,
+            "iNumPool": 0,
+            "strOwnerTag": "Monster_Dog",
+            "vecEffectEvents": [
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 14.5,
+                    "iAnimIndex": 1,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Dog_Attack_02",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Dog_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.30000001192092896,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 13.5,
+                    "iAnimIndex": 0,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Dog_Attack_01",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Dog_Attack2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": -10.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 23.0,
+                    "iAnimIndex": 2,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Dog_Attack_03",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Dog_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.20000000298023224,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 13.5,
+                    "iAnimIndex": 2,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Dog_Attack_03",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Dog_Attack2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.10000000149011612,
+                        "z": 0.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": -5.0
+                    }
+                }
+            ]
+        }
+    ]
+}

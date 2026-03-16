@@ -1,0 +1,166 @@
+{
+    "Category": "OVERLAP_SCRIPT",
+    "Objects": [
+        {
+            "attackEvents": [
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 25.0,
+                    "iAnimIndex": 0,
+                    "strAnimTag": "Animation_Monster_Boomer_Attack_01",
+                    "strDescription": "right_juk_bbang",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 1.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Boomer_Attack01",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 2.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 25.0,
+                    "iAnimIndex": 1,
+                    "strAnimTag": "Animation_Monster_Boomer_Attack_02",
+                    "strDescription": "left_juk_bbang",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 1.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Boomer_Attack02",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 2.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 0.009999999776482582,
+                    "iAnimIndex": 36,
+                    "strAnimTag": "Animation_Monster_Boomer_Skill_01_Loop",
+                    "strDescription": "rall",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.4000000059604645,
+                        "fHeight": 0.0,
+                        "fRadius": 1.5,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Boomer_Skill01",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.5
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 15.0,
+                    "iAnimIndex": 2,
+                    "strAnimTag": "Animation_Monster_Boomer_C01_Skill01_End",
+                    "strDescription": "booooooooom",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 33,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Boomer_Skill01",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 50.0,
+                    "iAnimIndex": 38,
+                    "strAnimTag": "Animation_Monster_Boomer_Skill_02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Boomer_Skill01",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                }
+            ],
+            "iNumPool": 5,
+            "strTag": "Monster_Boomer"
+        }
+    ]
+}

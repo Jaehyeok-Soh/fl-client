@@ -198,4 +198,26 @@ float4x4 CreateTranslation(float3 Translation)
     );
 }
 
+float4 Slerp(float4 q0, float4 q1, float t)
+{
+    float cosTheta = dot(q0, q1);
+
+    if (cosTheta < 0.0f)
+    {
+        q1 = -q1;
+        cosTheta = -cosTheta;
+    }
+
+    if (cosTheta > 0.9995)
+        return normalize(lerp(q0, q1, t));
+
+    float angle = acos(cosTheta);
+    float sinTheta = sin(angle);
+
+    float w1 = sin((1 - t) * angle) / sinTheta;
+    float w2 = sin(t * angle) / sinTheta;
+
+    return q0 * w1 + q1 * w2;
+}
+
 #endif

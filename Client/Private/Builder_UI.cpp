@@ -19,6 +19,7 @@
 #include "UIWeakness_Text.h"
 #include "UITutorial_PopUp_Text.h"
 #include "UITutorial_PopUp_Clear_Text.h"
+#include "UIQuest_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -34,6 +35,7 @@
 #include "UIWeakness_Image.h"
 #include "UITutorial_PopUp_Image.h"
 #include "UITutorial_PopUp_Clear_Image.h"
+#include "UIQuest_Image.h"
 
 #include "WorldUI_Component.h"
 
@@ -238,6 +240,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isWeakness			= (Type >= DTO::EUITextSubClassType::BATTLE_WEAKNESS_BEGIN && Type <= DTO::EUITextSubClassType::BSTTLE_WEAKNESS_END);
 		const _bool isTutorialPopUp		= (Type >= DTO::EUITextSubClassType::TUTORIAL_POPUP_BEGIN && Type <= DTO::EUITextSubClassType::TUTORIAL_POPUP_END);
 		const _bool isTutorialPopUpClear= (Type == DTO::EUITextSubClassType::TUTORIAL_POPUP_CLEAR_TEXT);
+		const _bool isQuest				= (Type >= DTO::EUITextSubClassType::QUEST_BEGIN && Type <= DTO::EUITextSubClassType::QUEST_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -300,6 +303,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(TutorialPopUpClearDesc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpClearText", m_iLevelID, g_wszUILayer, &TutorialPopUpClearDesc);
 		}
+		else if (isQuest)
+		{
+			CUIQuest_Text::QUEST_TEXT_DESC QuestText = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(QuestText) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestText", m_iLevelID, g_wszUILayer, &QuestText);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -340,6 +349,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isWeakness			= (Type >= DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN && Type <= DTO::EUIDImageSubClassType::BSTTLE_WEAKNESS_END);
 		const _bool isTutorialPopUp		= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BEGIN && Type <= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_END);
 		const _bool isTutorialPopUpClear= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG && Type <= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX);
+		const _bool isQuest				= (Type >= DTO::EUIDImageSubClassType::QUEST_BEGIN && Type <= DTO::EUIDImageSubClassType::QUEST_END);
 
 		if (isPlayerSkill)
 		{
@@ -435,7 +445,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(TutorialPopUpClearImageDesc) = DefaultDesc;
 			TutorialPopUpClearImageDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpClearImage", m_iLevelID, g_wszUILayer, &TutorialPopUpClearImageDesc);
-
+		}
+		else if (isQuest)
+		{
+			CUIQuest_Image::QUEST_IMAGE_DESC QuestDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(QuestDesc) = DefaultDesc;
+			QuestDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestImage", m_iLevelID, g_wszUILayer, &QuestDesc);
 		}
 		else
 		{

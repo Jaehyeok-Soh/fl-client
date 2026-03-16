@@ -664,8 +664,8 @@ public:
 	Vec3		 vExtents{0.5f,0.5f ,0.5f};
 	Vec3		 vRotation{0.f,0.f,0.f};
 
-	_bool						bHasQuest = { false };
-	DTO::QUEST_CHAPTERDESC		tQuestObjectDesc = {};
+	_bool		 bHasQuest = { false };
+	vector<DTO::QUEST_CHAPTERDESC>		tQuestObjectDesc = {};
 public:
 	explicit TRIGGERBOX_DESC()
 		: CLIENT_MAKEPATH_DESC_BASE()

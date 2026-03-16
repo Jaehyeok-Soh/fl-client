@@ -212,14 +212,20 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
-
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     return output;
 }
@@ -354,7 +360,8 @@ PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_MESH input)
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     //output.vNormal = float4(1.f,0.f,0.f,0.f);
     output.vNormal = float4(finalWorldNormal * 0.5f + 0.5f, 1.f);
-    output.vSpecularMask = float4(0.f, fNBR_Tile_Roughness, 0.f, 0.f);
+    output.vSpecularMask = DEFAULT_SPECMASK_FLOAT4;
+    output.vSpecularMask.y = fNBR_Tile_Roughness;
     //output.vSpecularMask = float4(1.f, 0.f, 0.f, 0.f);
     
     return output;
@@ -383,12 +390,20 @@ PS_OUT_DEFFERED PS_TREE(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     return output;
 }
@@ -411,13 +426,20 @@ PS_OUT_DEFFERED PS_MOSS(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
    
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
 
@@ -430,7 +452,7 @@ PS_OUT_DEFFERED PS_VINE(PS_IN_MESH input)
     
     float4 vDiffuse = 1.f;
     
-    float4 vMask = float4(1.f, 1.f, 1.f, 1.f);
+    float4 vMask = DEFAULT_SPECMASK_FLOAT4;
     
     if (Has(g_iMaterialMask, METALNESS))
         vMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV);
@@ -447,6 +469,14 @@ PS_OUT_DEFFERED PS_VINE(PS_IN_MESH input)
     
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse, input.iCurInstanceID);
     
@@ -475,12 +505,20 @@ PS_OUT_DEFFERED PS_GRASS(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
@@ -513,7 +551,7 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     
     if (Has(g_iMaterialMask, METALNESS))
     {
@@ -529,7 +567,17 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-        
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+    
+    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    
     return output;
 }
 
@@ -563,12 +611,20 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     return output;
 }
 
@@ -650,7 +706,7 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_WaterTexBindingFlags, Water_Lighting))
     {
         float2 vSparkleUV = input.vUV * g_vSparkleUVPower;

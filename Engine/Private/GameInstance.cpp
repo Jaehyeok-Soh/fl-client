@@ -155,6 +155,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pJudgementSystem->Flush_CollidedEvent();
 
 	// 메인카메라 업데이트#ifdef _DEBUG
+	m_pCamera_Manager->Update_AccTime_ForShader(fScaledTimeDelta);
 	m_pCamera_Manager->Update_ViewMatrix();
 	m_pFrustrum->Update();
 
@@ -780,6 +781,10 @@ void CGameInstance::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pG
 {
 	m_pRender_Manager->Push_RenderObject(eCategory, pGO);
 }
+HRESULT CGameInstance::Set_CascadeShadowConstantBuffer(CShader* pShader)
+{
+	return m_pRender_Manager->Set_CascadeShadowConstantBuffer(pShader);
+}
 #ifdef _DEBUG
 ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
 {
@@ -837,6 +842,42 @@ const SHADER_OUTLINE_DESC& CGameInstance::Get_OutlineParamDesc() const
 HRESULT CGameInstance::Commit_OutlineParam()
 {
 	return m_pRender_Manager->Commit_OutlineParam();
+}
+SHADER_FOG_DESC& CGameInstance::Get_FogParamDesc()
+{
+	return m_pRender_Manager->Get_FogParamDesc();
+}
+const SHADER_FOG_DESC& CGameInstance::Get_FogParamDesc() const
+{
+	return m_pRender_Manager->Get_FogParamDesc();
+}
+HRESULT CGameInstance::Commit_FogParam()
+{
+	return m_pRender_Manager->Commit_FogParam();
+}
+SHADER_TOON_DESC& CGameInstance::Get_ToonParamDesc()
+{
+	return m_pRender_Manager->Get_ToonParamDesc();
+}
+const SHADER_TOON_DESC& CGameInstance::Get_ToonParamDesc() const
+{
+	return m_pRender_Manager->Get_ToonParamDesc();
+}
+HRESULT CGameInstance::Commit_ToonParam()
+{
+	return m_pRender_Manager->Commit_ToonParam();
+}
+SHADER_CASCADE_SHADOW_DESC& CGameInstance::Get_CascadeParamDesc()
+{
+	return m_pRender_Manager->Get_CascadeParamDesc();
+}
+const SHADER_CASCADE_SHADOW_DESC& CGameInstance::Get_CascadeParamDesc() const
+{
+	return m_pRender_Manager->Get_CascadeParamDesc();
+}
+HRESULT CGameInstance::Commit_CascadeParam()
+{
+	return m_pRender_Manager->Commit_CascadeParam();
 }
 HRESULT CGameInstance::Commit_AllPostParams()
 {
@@ -1008,6 +1049,11 @@ HRESULT CGameInstance::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget)
 HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _bool bUseDSV)
 {
 	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear, bUseDSV);
+}
+
+HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV)
+{
+	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear, pDSV);
 }
 
 HRESULT CGameInstance::End_MRT()

@@ -1098,7 +1098,20 @@ void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
 		this->bHasQuest = false;
 
 	if (LoadJson.contains("tQuestObjectDesc"))
-		LoadJson.at("tQuestObjectDesc").get_to(this->tQuestObjectDesc);
+	{
+		const auto& questJson = LoadJson.at("tQuestObjectDesc");
+
+		if (questJson.is_array())
+		{
+			questJson.get_to(this->tQuestObjectDesc);
+		}
+		else if(questJson.is_object())
+		{
+			DTO::QUEST_CHAPTERDESC oldFormatDesc;
+			questJson.get_to(oldFormatDesc);
+			this->tQuestObjectDesc.push_back(oldFormatDesc);
+		}
+	}
 }
 
 void TRIGGERBOX_DESC::to_Json(json& SaveJson)
@@ -1110,7 +1123,7 @@ void TRIGGERBOX_DESC::to_Json(json& SaveJson)
 
 	SaveJson["bHasQuest"] = this->bHasQuest;
 
-	if (this->bHasQuest)
+	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
 		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
 }
 #pragma endregion

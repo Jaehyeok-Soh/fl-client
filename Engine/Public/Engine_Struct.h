@@ -219,6 +219,8 @@ namespace Engine
 		Matrix matView = Matrix::Identity;
 		Matrix matProj = Matrix::Identity;
 		Matrix matVP = Matrix::Identity;
+		float fAccTime = { 0.f };
+		SimpleMath::Vector3 vPadding = { SimpleMath::Vector3::Zero };
 	}SHADER_GLOBALDESC;
 
 	typedef struct tagShaderInvDesc
@@ -342,6 +344,56 @@ namespace Engine
 		SimpleMath::Vector2 vPadding{ SimpleMath::Vector2::Zero };
 	}SHADER_OUTLINE_DESC;
 
+	typedef struct tagShaderCascadeShadowDesc
+	{
+		// Light View × Proj 
+		SimpleMath::Matrix matLightVP[SHADOW_CASCADE_COUNT] = {};
+		// ViewZ 기준 분할 거리
+		float fCascadeEnd0 = { 8.0f };
+		float fCascadeEnd1 = { 40.f };
+		float  fShadowBias = { 0.0002f };
+		float  fNormalBias = { 0.04f };
+
+		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
+		float fShadowStrength = { 0.4f };
+		float fCascadeIndex = { 0.f };
+	}SHADER_CASCADE_SHADOW_DESC;
+
+	typedef struct tagShaderFogParamDesc
+	{
+		SimpleMath::Vector4 vColor = { 0.6f, 0.75f, 0.9f, 1.f };
+		SimpleMath::Vector4 vHighColor = { 0.7f, 0.8f, 0.95f, 1.f };
+
+		float fFogStart = { 15.f };
+		float fFogEnd = { 80.f };
+		float fFogDensity = { 0.f };
+		float fFogHeightFalloff = { 0.15f };
+
+		float fFogBaseHeight = { 0.f };
+		float fFogMaxOpacity = { 0.85f };
+		float fFogHeightDensity = { 0.02f };
+		float fFogNoiseScale = { 0.f };
+
+		float fFogNoiseSpeed = { 0.f };
+		SimpleMath::Vector3 vPad = { SimpleMath::Vector3::Zero };
+	}SHADER_FOG_DESC;
+
+	typedef struct tagShaderToonParamDesc
+	{
+		float fWrap = { 0.25f };
+		float fShadowMid = { 0.55f };
+		float fShadowSoftness = { 0.10f };
+		float fShadowStrength{ 0.85f };
+		
+		float fRimThreshold = { 0.65f };
+		float fRimSoftness = { 0.10f };
+		float fRimStrength = { 0.0f };
+		float fPad = { 0.f };
+
+		float fDiffuseStrength = { 1.0f };
+		SimpleMath::Vector3 vPad { 0.f, 0.f, 0.f };
+	}SHADER_TOON_DESC;
+
 	typedef struct tagShaderEffectDesc
 	{
 		// Row 0
@@ -356,7 +408,8 @@ namespace Engine
 		SimpleMath::Vector2 vUVOffset;
 
 		// Row 2
-		SimpleMath::Vector3 vPadding0;
+		SimpleMath::Vector2 vPadding0;
+		float fGlowPower;
 		float fLifeRatio;
 
 		// Row 3
@@ -380,7 +433,7 @@ namespace Engine
 
 		// Row 8
 		SimpleMath::Vector2 CurveTexture_ScrollWeight;
-		SimpleMath::Vector2 Padding1;
+		SimpleMath::Vector2 SubMaskingTexture_ScrollWeight;
 
 		// Row 9
 		SimpleMath::Vector4 DiffuseTexture_SpriteInfo;
@@ -396,6 +449,8 @@ namespace Engine
 		SimpleMath::Vector4 CurveTexture_SpriteInfo;
 		// Row 15
 		SimpleMath::Vector4 MaskTexture_SpriteInfo;
+		// Row 16
+		SimpleMath::Vector4 SubMaskTexture_SpriteInfo;
 
 	} SHADER_EFFECT_DESC;
 
@@ -1029,8 +1084,8 @@ namespace Engine
 		};
 	public:
 		SimpleMath::Matrix matWorld = {};							// 계산된 최종 행렬
-		const SimpleMath::Matrix** pTargetBoneMatrix = { nullptr };	// 실시간 추적용 본 행렬 주소
-		const SimpleMath::Matrix** pTransformMatrix = { nullptr };	// 실시간 추적용 본 행렬 주소
+		const SimpleMath::Matrix** pTargetBoneMatrix = { nullptr };	// 실시간 로컬용 부모 본 행렬 주소
+		const SimpleMath::Matrix** pTransformMatrix = { nullptr };	// 실시간 로컬용 부모 행렬 주소
 		int iBoneFlag;
 		int iSimulationType = (int)E_VFX_SIMULTYPE::VFX_WORLD;		// LOCAL(0) or WORLD(1)
 
@@ -1046,8 +1101,15 @@ namespace Engine
 		//SimpleMath::Vector3 VFX_Attacker_Position = { 0.f, 0.f, 0.f };
 		SimpleMath::Vector3 VFX_Scale = { 1.f, 1.f, 1.f };
 		SimpleMath::Vector3 VFX_Rotation = { 0.f, 0.f, 0.f };
-
 	}EFFECT_WARNING_DESC;
+
+	typedef struct tagEnvironmentEffectDesc : public EFFECT_SPAWN_DESC
+	{
+		SimpleMath::Vector3 VFX_Target_Position = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3 VFX_Scale = { 1.f, 1.f, 1.f };
+		SimpleMath::Vector3 VFX_Rotation = { 0.f, 0.f, 0.f };
+	}EFFECT_ENV_DESC;
+
 #pragma endregion
 
 #pragma region CameraShaking_Data

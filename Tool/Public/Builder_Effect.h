@@ -21,6 +21,8 @@ public:
 	virtual HRESULT Build(const CDataDocumentBase& document) override;
 private:
 	HRESULT Create_Effect(const DTO::TEFFECT_ContainerData& data);
+	const wstring Create_PrototypeTag(const string Tag);
+	void Regist_pool(void* pArg, string& PrefabEffectTag);
 public:
 	static CBuilder_Effect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID);
 	virtual void Free() override;

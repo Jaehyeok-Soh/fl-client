@@ -3,29 +3,8 @@
 
 #include "Common_Defines.hlsl"
 
-/////////////////
-// ConstBuffer //
-/////////////////
-
-cbuffer GlobalBuffer
-{
-    row_major float4x4 V;
-    row_major float4x4 P; 
-    row_major float4x4 VP;
-};
-
-cbuffer InvBuffer
-{
-    row_major float4x4 CamV;
-    row_major float4x4 CamP;
-    row_major float4x4 InvV;
-    row_major float4x4 InvP;
-};
-
-cbuffer TransformBuffer
-{
-    row_major float4x4 W;
-};
+#define DEFAULT_SPECMASK_FLOAT4 float4(0.7f, 1.f, 0.f, 1.f)
+#define DEFAULT_SPECMASK_FLOAT3 float3(0.7f, 1.f, 0.f)
 
 ///////////////////
 // Static Scalar //
@@ -36,11 +15,6 @@ static const float EPSILON = 1e-5f;
 ////////////
 // vector //
 ////////////
-float3 CameraPosition()
-{
-    return InvV._41_42_43;
-}
-
 float4 g_vColor_R;
 float4 g_vColor_G;
 float4 g_vColor_B;
@@ -71,6 +45,7 @@ Texture2D g_RenderTargetTexture;
 Texture2D g_RenderTargetDiffuseTexture;
 Texture2D g_RenderTargetNormalTexture;
 Texture2D g_RenderTargetShadeTexture;
+Texture2D g_RenderTargetEmissiveTexture;
 Texture2D g_RenderTargetDepthTexture;
 Texture2D<uint> g_RenderTargetObjInfoTexture;
 Texture2D g_RenderTargetSpecularTexture;
@@ -79,8 +54,33 @@ Texture2D g_RenderTargetAOTexture;
 Texture2D g_RenderTargetSceneHDRTexture;
 Texture2D g_RenderTargetSceneHDRCopyTexture;
 Texture2D g_RenderTargetBloomTexture;
+Texture2D g_RenderTargetCascadeShadowmap0;
+Texture2D g_RenderTargetCascadeShadowmap1;
 Texture2D g_LUT_Stand;
+Texture3D g_PerlinNoise;
 Texture2D g_RenderTargetOITAccumTexture;
 Texture2D g_RenderTargetOITRevealTexture;
+
+void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
+{
+    float4 vDepthDesc = g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV);
+    fNDCZ = vDepthDesc.x;
+    fViewZ = vDepthDesc.y;
+}
+
+float3 DecodeWorldNormal(float2 vUV)
+{
+    float4 vNormalDesc = g_RenderTargetNormalTexture.Sample(PointClampSampler, vUV);
+    return normalize(vNormalDesc.xyz * 2.f - 1.f);
+}
+
+void DecodeSpecularMask(float2 vUV, out float fAO, out float fRough, out float fMetal)
+{
+    float4 vSpecularMaskDesc = g_RenderTargetSpecularMaskTexture.Sample(LinearSampler, vUV);
+    fAO = vSpecularMaskDesc.x <= EPSILON ? 1.f : vSpecularMaskDesc.x;
+    
+    fRough = vSpecularMaskDesc.y;
+    fMetal = vSpecularMaskDesc.z;
+}
 
 #endif

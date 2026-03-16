@@ -197,7 +197,7 @@ string Engine_Utils::ToString(wstring value)
     if (iRequire <= 0)
         return string();
 
-    string strReturn(static_cast<size_t>(iRequire), L'\0');
+    string strReturn(static_cast<size_t>(iRequire), '\0');
 
     _int iWritten = ::WideCharToMultiByte(
         CP_UTF8, WC_ERR_INVALID_CHARS,

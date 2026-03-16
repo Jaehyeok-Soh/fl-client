@@ -97,7 +97,7 @@ void CState_ComboBase::Change_NextCombo()
 	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
 
 	// 먼저 monster를 바라보도록 설정
-	//LookAt_Monser();
+	LookAt_Monser();
 
 	Vec3 vDir = Get_MoveDir();
 	if (vDir.LengthSquared() > 0.f)

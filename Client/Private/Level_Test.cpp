@@ -161,23 +161,33 @@ void CLevel_Test::Update(const _float fTimeDelta)
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 
-	//if (KEY_BUTTON_DOWN(DIK_4))
-	//{
-	//	m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>((EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1));
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_5))
-	//{
-	//	m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>((EUITutorialPopUpTypeID::TUTORIAL_POPUP_1));
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_6))
-	//{
-	//	m_pGameInstance->Broadcast<BOSS_GROGGY>();
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_0))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}	
+	if (KEY_BUTTON_DOWN(DIK_4))
+	{
+	}
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		UI_PREFAB_DATA Desc = {};
+		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
+		Desc.Data = PrefabDesc;
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		UI_PREFAB_DATA Desc = {};
+		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
+		Desc.Data = PrefabDesc;
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		UIEVENT_DESC Desc = {};
+		Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
+		CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
+	}
 }
 
 HRESULT CLevel_Test::Render()
@@ -393,7 +403,7 @@ HRESULT CLevel_Test::Ready_Lights()
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
 		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
 		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vAmbient = Vec4(0.1f, 0.1f, 0.1f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))

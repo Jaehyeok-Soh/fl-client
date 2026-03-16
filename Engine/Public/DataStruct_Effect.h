@@ -17,6 +17,7 @@ enum class TEXTURE_INFO
     NORMALTEXTURE = 5,
     GLOWTEXTURE = 6,
     DISSOLVETEXTURE = 7,
+    SUB_MASKTEXTURE = 8,
     END
 };
 
@@ -33,6 +34,7 @@ enum class E_TEXTURETYPE {
     NORMAL = 5,
     GLOW = 6,
     DISSOLVE = 7,
+    SUB_MASKING = 8,
 };
 enum class E_EffectSystemType { NONE = 0, Particle, ForceField, Line, Trail };
 enum class E_SHAPETYPE {
@@ -102,6 +104,7 @@ struct TEFFECT_PartsData
     wstring     _Effect_NormalTexture_Tag = {};
     wstring     _Effect_DissolveTexture_Tag = {};
     wstring     _Effect_GlowTexture_Tag = {};
+    wstring     _Effect_SubMaskTexture_Tag = {};
 
     wstring     _Effect_Shader_Path = {};
     wstring     _Effect_Shader_Tag = {};
@@ -177,6 +180,11 @@ struct TEFFECT_PartsData
     vector<Rotation_CurveKey> _vecUVScrollCurveX;
     vector<Rotation_CurveKey> _vecUVScrollCurveY;
 
+    // =============  Glow Power 커브 ==========
+    bool                    _bUseGlowPowerCurve = false;
+    float                   _Effect_GlowPower = 1.0f;
+    vector<Rotation_CurveKey> _vecGlowPowerCurve;
+
     // ==============  회전 값들   ==============
    // 3D Start Rotation 값
     Vec3                    _Effect_StartRotation = { 0.f, 0.f, 0.f };    // 초기 회전각을 얼마로 고정할건데?
@@ -215,6 +223,7 @@ struct TEFFECT_PartsData
     _bool               _Effect_Tool_DissolveTexture = { false };
     _bool               _Effect_Tool_GlowTexture = { false };
     _bool               _Effect_Tool_CurveTexture = { false };
+    _bool               _Effect_Tool_SubMaskTexture = { false };
 
     // 빌보드는 있니, 스크롤은 먹이니
     _bool               _Effect_Tool_UseBillboard = { false };
@@ -231,6 +240,7 @@ struct TEFFECT_PartsData
     Vec2                _Effect_DissolveTexture_ScrollWeight = { 1.f, 1.f };
     Vec2                _Effect_GlowTexture_ScrollWeight = { 1.f, 1.f };
     Vec2                _Effect_CurveTexture_ScrollWeight = { 1.f, 1.f };
+    Vec2                _Effect_SubMaskTexture_ScrollWeight = { 1.f, 1.f };
 
     // 스프라이트 전용 값 적용
         //    x(Enable Flag) : 0 : 사용 안 함 / 1 : 고정 인덱스 사용 / 2 : 애니메이션 재생
@@ -245,6 +255,7 @@ struct TEFFECT_PartsData
     Vec4                _Effect_GlowTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
     Vec4                _Effect_CurveTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
     Vec4                _Effect_MaskTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
+    Vec4                _Effect_SubMaskTexture_SpriteInfo = { 0.f, 0.f, 0.f, 0.f };
 
     // 툴용 텍스처 스크롤 
     _bool               _Effect_Tool_UseScroll_Diffuse = { false };
@@ -255,6 +266,7 @@ struct TEFFECT_PartsData
     _bool               _Effect_Tool_UseScroll_Glow = { false };
     _bool               _Effect_Tool_UseScroll_Curve = { false };
     _bool               _Effect_Tool_UseLifeDissolve = { false };
+    _bool               _Effect_Tool_UseSCroll_SubMask = { false };
 
     // SamplerState 몇번 쓸거니
     int               _Effect_Tool_DiffuseSamplerState_Flag = {};

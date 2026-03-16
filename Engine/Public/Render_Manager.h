@@ -28,11 +28,21 @@ private:
 	virtual ~CRender_Manager() = default;
 
 	HRESULT Initialize();
+private:
+	struct FogPass
+	{
+		enum
+		{
+			Distance = 0,
+			Height
+		};
+	};
 public:
 	HRESULT Set_ShaderResources();
 	HRESULT Render();
 	void Clear();
 	void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
+	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
 private:	
 	HRESULT Render_Priority();
 	HRESULT Render_NoneBlend();
@@ -40,7 +50,9 @@ private:
 	HRESULT Render_SSAO();
 	HRESULT Render_Lights();
 	HRESULT Render_CombinedHDR();
+	HRESULT Render_CascadeShadow();
 	HRESULT Render_Environment();
+	HRESULT Render_Fog();
 	HRESULT Render_Outline();
 	HRESULT Render_NonLights();
 	// 이펙트 전용 (디스토션)
@@ -58,7 +70,12 @@ private:
 private:
 	array<Vec4, SSAO_KERNAL> Build_SSAO_Kernal16();
 	HRESULT Create_SSAO_NoiseSRV();
+	HRESULT Create_Perlin_NoiseSRV();
 	HRESULT Set_ConstantBuffer();
+	HRESULT Ready_RT();
+	HRESULT Ready_MRT();
+	HRESULT Create_ShadowResource();
+	HRESULT Compute_ShadowCascade();
 	void Request_SortUI();
 private:
 	ID3D11Device* m_pDevice = { nullptr };
@@ -86,12 +103,27 @@ private:
 	SHADER_HDRPARAM_DESC m_tHDRparamDesc{};
 	SHADER_BLOOMPARAM_DESC m_tBloomparamDesc{};
 	SHADER_OUTLINE_DESC m_tOutlineparamDesc{};
+	SHADER_TOON_DESC m_tToonparamDesc{};
 	CConstant_Buffer<SHADER_SSAOKERNEL_DESC>* m_pCB_SSAOkernel{ nullptr };
 	CConstant_Buffer<SHADER_SSAOPARAM_DESC>* m_pCB_SSAOparam{ nullptr };
 	CConstant_Buffer<SHADER_HDRPARAM_DESC>* m_pCB_HDRparam{ nullptr };
 	CConstant_Buffer<SHADER_BLOOMPARAM_DESC>* m_pCB_Bloomparam{ nullptr };
 	CConstant_Buffer<SHADER_OUTLINE_DESC>* m_pCB_Outlineparam{ nullptr };
+	CConstant_Buffer<SHADER_TOON_DESC>* m_pCB_Toonparam{ nullptr };
 	CTextureBase* m_pLUTTexture{ nullptr };
+
+	// Fog
+	class CShader* m_pFogShader = { nullptr };
+	SHADER_FOG_DESC m_tFogDesc{};
+	CConstant_Buffer<SHADER_FOG_DESC>* m_pCB_Fog{ nullptr };
+	ID3D11ShaderResourceView* m_pPerlinNoiseSRV{ nullptr };
+
+	// Shadow
+	D3D11_VIEWPORT m_tShadowViewport{};
+	SHADER_CASCADE_SHADOW_DESC m_tCascadeShadowDesc{};
+	CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>* m_pCB_CascadeShadow{ nullptr };
+	ID3D11Texture2D* m_pShadowDSTexture{ nullptr };
+	ID3D11DepthStencilView* m_pShadowDSV{ nullptr };
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
@@ -118,6 +150,22 @@ public:
 	SHADER_OUTLINE_DESC& Get_OutlineParamDesc() { return m_tOutlineparamDesc; }
 	const SHADER_OUTLINE_DESC& Get_OutlineParamDesc() const { return m_tOutlineparamDesc; }
 	HRESULT Commit_OutlineParam();
+
+	// Fog
+	SHADER_FOG_DESC& Get_FogParamDesc() { return m_tFogDesc; }
+	const SHADER_FOG_DESC& Get_FogParamDesc() const { return m_tFogDesc; }
+	HRESULT Commit_FogParam();
+	
+	// Toon
+	SHADER_TOON_DESC& Get_ToonParamDesc() { return m_tToonparamDesc; }
+	const SHADER_TOON_DESC& Get_ToonParamDesc() const { return m_tToonparamDesc; }
+	HRESULT Commit_ToonParam();
+
+	// Cascade
+	// Toon
+	SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() { return m_tCascadeShadowDesc; }
+	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const { return m_tCascadeShadowDesc; }
+	HRESULT Commit_CascadeParam();
 
 	HRESULT Commit_AllPostParams();
 private:

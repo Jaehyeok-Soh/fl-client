@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "BossProjectile",
+            "eColliderType": "Overlap",
+            "iID": 1,
+            "strTag": "TestBossProjectile1",
+            "tCombat": {
+                "DamageType": "Fire",
+                "HitType": "Launch",
+                "fBaseDamage": 12.600000381469727,
+                "fHitStopSec": 0.3700000047683716,
+                "fHitStunSec": 0.5,
+                "fImpulse": 49.0,
+                "fPushPower": 5.5
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

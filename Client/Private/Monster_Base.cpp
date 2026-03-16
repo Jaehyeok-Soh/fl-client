@@ -1,11 +1,9 @@
 #include "pch.h"
 #include "Monster_Base.h"
 
-
 #include "EngineConsole.h"
 
 #include "Monster_Body_Base.h"
-#include "Ray.h"
 
 #include "MonsterControlContext.h"
 #include "MonsterActionState.h"
@@ -482,7 +480,6 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 	CMonster_Base::MONSTER_DESC monsterDesc = {};
 	monsterDesc.iLevelIndex = iAddLevelType;
 	monsterDesc.pTransform_Desc = pTransformDesc;
-
 
 	switch (eCreateMonsterType)
 	{
