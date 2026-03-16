@@ -1,0 +1,76 @@
+{
+    "Category": "MAP",
+    "Level Data": {
+        "Level Type": "SQUARE",
+        "Texture Splating Info": "IceLake",
+        "strTag": "LevelData0"
+    },
+    "Objects": [
+        {
+            "Client Level Type": "LOGO",
+            "Client Make Path": "StaticObject",
+            "Client Make Path Desc": [
+                {
+                    "Test": ""
+                },
+                {
+                    "Test": ""
+                }
+            ],
+            "Draw Type": "Instance",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -80.85330963134766,
+                        "Y": -8.210095405578613,
+                        "Z": 88.82963562011719
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                },
+                {
+                    "Position": {
+                        "X": -70.2599105834961,
+                        "Y": -7.864418983459473,
+                        "Z": 87.83102416992188
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": false,
+            "UE Raw Data Path": "",
+            "strTag": "Cube985"
+        }
+    ]
+}
