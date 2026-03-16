@@ -105,6 +105,10 @@ void CGrass::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CGrass::Render()
 {
+	if (FAILED(Super::Binding_PlantBuffer()))
+		return E_FAIL;
+
+
 	SHADER_PLAYER_INFO tInfo{};
 	CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer));
 	if (pPlayer == nullptr)

@@ -16,7 +16,7 @@ private:
 	HRESULT Initialize();
 public:
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
-	HRESULT Push_DynamicLight(class CLight* pLight);
+	HRESULT Push_Light(class CLight* pLight);
 	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
 	ID3D11Buffer* Get_Light_ConstantBuffer() const;
 	CLight* Get_Light(LIGHT_TYPE eType, _uint iIndex = 0);

@@ -33,9 +33,6 @@ CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 
 HRESULT CRender_Manager::Initialize()
 {
-	if (FAILED(Ready_BlendStates()))
-		return E_FAIL;
-
 	if (FAILED(Ready_RT()))
 		return E_FAIL;
 
@@ -1321,7 +1318,7 @@ HRESULT CRender_Manager::Ready_RT()
 	// For. Target_Diffuse
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
 		desc.vClearColor = Vec4::Zero;

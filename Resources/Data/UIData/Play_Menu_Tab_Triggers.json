@@ -1,0 +1,1008 @@
+{
+    "Category": "UI",
+    "Objects": [
+        {
+            "Type": "CANVAS",
+            "fHeight": 1032.0,
+            "fPosX": 960.0,
+            "fPosY": 516.0,
+            "fPosZ": 0.0,
+            "fWidth": 1920.0,
+            "iEditorSizeX": 1920,
+            "iEditorSizeY": 1032,
+            "iLevelIndex": 0,
+            "strTag": "Play_Menu_Tab_Triggers"
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 165.0,
+            "fPosY": 400.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_01_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 275.0,
+            "fPosY": 400.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_02_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 385.0,
+            "fPosY": 400.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_03_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 495.0,
+            "fPosY": 400.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_04_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 165.0,
+            "fPosY": 500.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_05_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 275.0,
+            "fPosY": 500.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_06_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 385.0,
+            "fPosY": 500.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_07_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 495.0,
+            "fPosY": 500.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_08_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 165.0,
+            "fPosY": 600.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_09_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 275.0,
+            "fPosY": 600.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_10_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 385.0,
+            "fPosY": 600.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_11_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 495.0,
+            "fPosY": 600.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_12_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 165.0,
+            "fPosY": 700.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_13_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 275.0,
+            "fPosY": 700.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_14_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 385.0,
+            "fPosY": 700.0,
+            "fPosZ": 0.0,
+            "fWidth": 90.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_15_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 220.0,
+            "fPosY": 300.0,
+            "fPosZ": 0.0,
+            "fWidth": 200.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_Shop_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "TRIGGER",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 90.0,
+            "fPosX": 440.0,
+            "fPosY": 300.0,
+            "fPosZ": 0.0,
+            "fWidth": 200.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 0,
+            "iShaderPass": 0,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Play_Menu_Tab_Triggers",
+            "strNoiseTextureTag": "",
+            "strTag": "Menu_Tab_Event_Trigger",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_01_Trigger",
+            "strTag": "Menu_Tab_01_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_01_OutLine",
+                "Menu_Tab_Icon_01_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_01_OutLine",
+                "Menu_Tab_Icon_01_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [
+                "Play_Menu_Tab",
+                "Play_Menu_Tab_Top",
+                "Play_Menu_Tab_SideBar",
+                "Play_Menu_Hover_Icons"
+            ],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_02_Trigger",
+            "strTag": "Menu_Tab_02_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_02_OutLine",
+                "Menu_Tab_Icon_02_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_02_OutLine",
+                "Menu_Tab_Icon_02_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_03_Trigger",
+            "strTag": "Menu_Tab_03_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_03_OutLine",
+                "Menu_Tab_Icon_03_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_03_OutLine",
+                "Menu_Tab_Icon_03_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_04_Trigger",
+            "strTag": "Menu_Tab_04_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_04_OutLine",
+                "Menu_Tab_Icon_04_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_04_OutLine",
+                "Menu_Tab_Icon_04_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_05_Trigger",
+            "strTag": "Menu_Tab_05_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_05_OutLine",
+                "Menu_Tab_Icon_05_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_05_OutLine",
+                "Menu_Tab_Icon_05_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_06_Trigger",
+            "strTag": "Menu_Tab_06_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_06_OutLine",
+                "Menu_Tab_Icon_06_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_06_OutLine",
+                "Menu_Tab_Icon_06_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_07_Trigger",
+            "strTag": "Menu_Tab_07_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_07_OutLine",
+                "Menu_Tab_Icon_07_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_07_OutLine",
+                "Menu_Tab_Icon_07_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_08_Trigger",
+            "strTag": "Menu_Tab_08_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_08_OutLine",
+                "Menu_Tab_Icon_08_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_08_OutLine",
+                "Menu_Tab_Icon_08_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_09_Trigger",
+            "strTag": "Menu_Tab_09_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_09_OutLine",
+                "Menu_Tab_Icon_09_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_09_OutLine",
+                "Menu_Tab_Icon_09_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_10_Trigger",
+            "strTag": "Menu_Tab_10_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_10_OutLine",
+                "Menu_Tab_Icon_10_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_10_OutLine",
+                "Menu_Tab_Icon_10_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_11_Trigger",
+            "strTag": "Menu_Tab_11_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_11_OutLine",
+                "Menu_Tab_Icon_11_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_11_OutLine",
+                "Menu_Tab_Icon_11_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_12_Trigger",
+            "strTag": "Menu_Tab_12_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_12_OutLine",
+                "Menu_Tab_Icon_12_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_12_OutLine",
+                "Menu_Tab_Icon_12_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_13_Trigger",
+            "strTag": "Menu_Tab_13_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_13_OutLine",
+                "Menu_Tab_Icon_13_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_13_OutLine",
+                "Menu_Tab_Icon_13_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_14_Trigger",
+            "strTag": "Menu_Tab_14_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_14_OutLine",
+                "Menu_Tab_Icon_14_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_14_OutLine",
+                "Menu_Tab_Icon_14_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_15_Trigger",
+            "strTag": "Menu_Tab_15_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_15_OutLine",
+                "Menu_Tab_Icon_15_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+            "vecHoverExitTriggerUI": [
+                "Menu_Tab_Icon_15_OutLine",
+                "Menu_Tab_Icon_15_Deco"
+            ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_Shop_Trigger",
+            "strTag": "Menu_Tab_Shop_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_Shop_OutLine",
+                "Menu_Tab_Icon_Shop_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+          "vecHoverExitTriggerUI": [
+            "Menu_Tab_Icon_Shop_OutLine",
+            "Menu_Tab_Icon_Shop_Deco"
+          ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        },
+        {
+            "Type": "TRIGGER",
+            "eTriggerSubClassType": "NONE_OWNER",
+            "strOwnerName": "Menu_Tab_Event_Trigger",
+            "strTag": "Menu_Tab_Event_Trigger_TriggerData",
+            "vecHoverEnterTriggerCanvas": [],
+            "vecHoverEnterTriggerUI": [
+                "Menu_Tab_Icon_Event_OutLine",
+                "Menu_Tab_Icon_Event_Deco"
+            ],
+            "vecHoverExitTriggerCanvas": [],
+          "vecHoverExitTriggerUI": [
+            "Menu_Tab_Icon_Event_OutLine",
+            "Menu_Tab_Icon_Event_Deco"
+          ],
+            "vecPressEnterTriggerCanvas": [],
+            "vecPressEnterTriggerUI": [],
+            "vecPressExitTriggerCanvas": [],
+            "vecPressExitTriggerUI": []
+        }
+    ]
+}

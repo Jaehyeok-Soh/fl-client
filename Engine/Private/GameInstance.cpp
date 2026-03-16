@@ -895,10 +895,11 @@ HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_Light(LightDesc);
 }
-HRESULT CGameInstance::Push_DynamicLight(CLight* pLight)
+HRESULT CGameInstance::Push_Light(CLight* pLight)
 {
-	return m_pLight_Manager->Push_DynamicLight(pLight);
+	return m_pLight_Manager->Push_Light(pLight);
 }
+
 HRESULT CGameInstance::Render_Lights(CShader* pShader, CVIBuffer_Rect_Tex* pVIBuffer)
 {
 	return m_pLight_Manager->Render(pShader, pVIBuffer);

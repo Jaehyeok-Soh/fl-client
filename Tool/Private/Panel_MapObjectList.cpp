@@ -13,6 +13,7 @@
 #include "AsTypes.h"
 #include "Mesh.h"
 #include "MapObject.h"
+#include "Light.h"
 #include "DataStruct_Map.h"
 #include "GameInstance.h"
 
@@ -1109,6 +1110,12 @@ void CPanel_MapObjectList::ImGuiUpdate_Plants_Desc(PLANTS_DESC* pDesc)
 
 	ImGui::NewLine();
 
+	ImGui::NewLine();
+
+	ImGui::DragFloat("Plant Diffuse Color Power", &pDesc->fDiffuseColorPower,0.001f,0.f,100.f,"%.3f");
+
+	ImGui::NewLine();
+
 	ImGui::Separator();
 
 	return;
@@ -1385,6 +1392,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDes
 	m_strBuffer = DTO::MakeObjectType_ToString(pDesc->eBatchObjectType);
 	m_iBuffer = _int(pDesc->eBatchObjectType);
 
+	_bool isChange{false};
 	if (ImGui::BeginCombo("Batch Object Type List##Batch Object Desc", m_strBuffer.c_str()))
 	{
 		for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeObjectType::END); ++i)
@@ -1392,9 +1400,10 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDes
 			bool isSelected = i == m_iBuffer;
 			if (ImGui::Selectable(m_szMakeObjectTypeName[i], &isSelected))
 			{
-				pDesc->eBatchObjectType= DTO::EMakeObjectType(i);
-				pDesc->Change_BatchObjecType(pDesc->eBatchObjectType);
+				pDesc->Change_BatchObjecType(DTO::EMakeObjectType(i));
 				m_pSelectMapObject->Ready_Batch_Object();
+				isChange = true;
+				break;
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -1406,10 +1415,15 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDes
 
 	DTO::EMakeObjectType eType = pDesc->eBatchObjectType;
 
-	switch (eType)
+
+	if (isChange == false)
 	{
-	case DTO::EMakeObjectType::Battle_Field: ImGuiUpdate_Battle_Field_Desc(static_cast<BATTLE_FIELD_DESC*>(pDesc->pBatchObjectDesc));	break;
-	default:																															return;
+		switch (eType)
+		{
+		case DTO::EMakeObjectType::Battle_Field:		ImGuiUpdate_Battle_Field_Desc(static_cast<BATTLE_FIELD_DESC*>(pDesc->pBatchObjectDesc));	break;
+		case DTO::EMakeObjectType::PointLight:			ImGuiUpdate_PointLight_Desc(static_cast<POINTLIHGT_DESC*>(pDesc->pBatchObjectDesc));	break;
+		default:																															return;
+		}
 	}
 
 	return;
@@ -1454,6 +1468,48 @@ void CPanel_MapObjectList::ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDes
 	return;
 }
 
+void CPanel_MapObjectList::ImGuiUpdate_PointLight_Desc(POINTLIHGT_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+	
+	ImGui::SeparatorText("Point Light Settings");
+
+	// 1. 색상 관련 설정 (Diffuse, Ambient, Specular)
+	// Vector4의 x, y, z, w를 float*로 캐스팅하여 사용합니다.
+	ImGui::ColorEdit4("Diffuse", (float*)&pDesc->tLightDesc.vDiffuse);
+	ImGui::ColorEdit4("Ambient", (float*)&pDesc->tLightDesc.vAmbient);
+	ImGui::ColorEdit4("Specular", (float*)&pDesc->tLightDesc.vSpecular);
+
+	ImGui::Separator();
+
+	// Flicker 중일 때는 BaseRange를 건드려야 원본이 유지됩니다.
+	if (ImGui::DragFloat("Base Range", &pDesc->fBaseRange, 0.1f, 0.0f, 500.0f))
+	{
+		// 깜빡이지 않을 때는 즉시 적용되도록 처리
+		if (!pDesc->isFlicker)
+		{
+			pDesc->tLightDesc.fRange = pDesc->fBaseRange;
+		}
+	}
+
+	ImGui::SeparatorText("Flicker Options");
+
+	// 3. 깜빡임(Flicker) 관련 설정
+	ImGui::Checkbox("Enable Flicker", (bool*)&pDesc->isFlicker);
+
+	if (pDesc->isFlicker)
+	{
+		ImGui::Indent(); // 옵션 구분을 위해 들여쓰기
+		ImGui::DragFloat("Speed", &pDesc->fFlickerSpeed, 0.001f,0.f,1000.f,"%.3f");
+		ImGui::DragFloat("Min Ratio", &pDesc->fFlickerMin,0.0001f, 0.f,1.f,"%.4f");
+
+		// 현재 적용 중인 실시간 Range 확인 (Read Only)
+		ImGui::Text("Current Range: %.2f", pDesc->pDebugLight->Get_LightDesc().fRange);
+		ImGui::Unindent();
+	}
+	return;
+}
+
 #pragma endregion
 
 #pragma region Trigger Box
@@ -1464,6 +1520,14 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc)
 
 	if (ImGui::DragFloat3("Extents##TriggerBox_Extents", &pDesc->vExtents.x, 0.1f, 0.1f, 100.f, "%.2f"))
 	{
+		if (m_pSelectMapObject == nullptr) return;
+		m_pSelectMapObject->Update_Collider();
+	}
+
+	Vec3 vDegree = Vec3( XMConvertToDegrees(pDesc->vRotation.x), XMConvertToDegrees(pDesc->vRotation.y), XMConvertToDegrees(pDesc->vRotation.z));
+	if (ImGui::DragFloat3("Rotation##TriggerBox_Rotation", &vDegree.x, 0.1f,-360.f,360.f, "%.2f"))
+	{
+		pDesc->vRotation = Vec3(XMConvertToRadians(vDegree.x), XMConvertToRadians(vDegree.y), XMConvertToRadians(vDegree.z));
 		if (m_pSelectMapObject == nullptr) return;
 		m_pSelectMapObject->Update_Collider();
 	}

@@ -36,6 +36,7 @@ private:
 	/* ------ */
 	HRESULT Create_Water(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_Rock(const DTO::TMap_MapObjectData& tData);
+	HRESULT Create_Fog(const DTO::TMap_MapObjectData& tData);
 
 	/* Batch Player */
 	HRESULT Batch_Player(const DTO::TMap_MapObjectData& tData);

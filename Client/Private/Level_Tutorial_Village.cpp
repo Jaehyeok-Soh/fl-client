@@ -54,7 +54,7 @@
 #include "Monster_Dog_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
-
+#include "SkyBox.h"
 #include "PlayerSkillObj_Headers.h"
 
 //=================
@@ -112,6 +112,13 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 		MSG_BOX("CLevel_Tutorial_Village::Initialize, Ready_Map Create Failed");
 		return E_FAIL;
 	}
+
+	if (FAILED(Ready_SkyBox()))
+	{
+		MSG_BOX("CLevel_Tutorial_Village::Initialize, Ready_SkyBox Create Failed");
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -131,6 +138,24 @@ HRESULT CLevel_Tutorial_Village::Ready_Lights()
 
 	return S_OK;
 }
+
+HRESULT CLevel_Tutorial_Village::Ready_SkyBox()
+{
+	_uint iAddLevelType = ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE);
+
+	CSkyBox::SKYBOX_DESC tDesc{};
+	tDesc.iLevelIndex = iAddLevelType;
+	tDesc.wstrModelTag = L"SM_Sky_ba01";
+	tDesc.wstrTextureTag = L"T_Sky_ba01";
+
+
+	CGameObject* pResult{ nullptr };
+	pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszSkyBox_Prototype_Tag, iAddLevelType, g_wszSkyBoxLayer, &tDesc);
+	if (pResult == nullptr) return E_FAIL;
+
+	return S_OK;
+}
+
 
 HRESULT CLevel_Tutorial_Village::Build_Prototype()
 {

@@ -10,18 +10,19 @@
 #include "InstanceMesh.h"
 #include "DataDocument_Map.h"
 #include "DataStruct_Map.h"
-#include "GameInstance.h"
 #include "CameraMan.h"
 #include "Collider.h"
 #include "Bounding.h"
 #include "Bounding_AABB.h"
 #include "Bounding_Obb.h"
 #include "Bounding_Sphere.h"
+#include "Light.h"
 
 // Manager
 #include "Effect_DataManager.h"
 #include "Effect_Env.h"
 
+#include "GameInstance.h"
 USING(Tool)
 
 
@@ -60,7 +61,7 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_tUsingModelInfo{ rhs.m_tUsingModelInfo}
     , m_fDT{rhs.m_fDT }
 {
-    /*  Description을 어케해주는게 좋을려나...  */
+    /* Description을 어케해주는게 좋을려나... */
 } 
 
 HRESULT CMapObject::Initialize_Prototype()
@@ -117,9 +118,8 @@ HRESULT CMapObject::Initialize(void* pArg)
     if (FAILED(Check_DrawType_ByClientPath()))
         return E_FAIL;
 
-    if (FAILED(Ready_ColliderTypeName()))
+    if (FAILED(Ready_ColliderType()))
         return E_FAIL;
-
 
     if (FAILED(Ready_PlusData_ByClientMakePath()))
         return E_FAIL;
@@ -162,8 +162,6 @@ HRESULT CMapObject::Ready_Component()
     /* Collider 면 Collider 박스 달아주기 */
     if (m_eMapObjectDrawType == EMapObject_DrawType::Collider)
     {
-        if (FAILED(Ready_ColliderTypeComponet()))
-            return E_FAIL;
         return S_OK;
     }
 
@@ -219,23 +217,11 @@ HRESULT CMapObject::Ready_Component()
     return S_OK;
 }
 
-HRESULT CMapObject::Ready_ColliderTypeComponet()
+HRESULT CMapObject::Ready_ColliderType()
 {
-    if (m_eClientMakePath == EClientMakePath::TriggerBox_TutorialUIEvent)
-    {
-        CBounding_OBB::BOUNDING_OBB_DESC tAABBDesc{};
-        tAABBDesc.vExtents = Vec3{1.f, 1.f, 1.f};
-
-        CCollider::COLLIDER_DESC tColliderDesc{};
-        tColliderDesc.pBoundingDesc = &tAABBDesc;
-
-        if (FAILED(CGameObject::Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", &tColliderDesc)))
-            return E_FAIL;
-    }
-
     /* Collider 면 Collider 박스 달아주기 */
     if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
-        return E_FAIL;
+        return S_OK;
 
     if (m_vecSRTs.size() > 1)
     {
@@ -265,18 +251,23 @@ HRESULT CMapObject::Ready_ColliderTypeComponet()
 
     /* Extents 지정 */
     /* Center는 Offset이라 상관없음 */
-    CBounding_AABB::BOUNDING_AABB_DESC tAABBDesc{};
-    tAABBDesc.vExtens = pTriggerBoxDesc->vExtents;
+    CBounding_OBB::BOUNDING_OBB_DESC tOBBDesc{};
+    tOBBDesc.vExtents = pTriggerBoxDesc->vExtents;
+    tOBBDesc.vAngles = pTriggerBoxDesc->vRotation;    /* Radian */
 
     CCollider::COLLIDER_DESC tColliderDesc{};
-    tColliderDesc.pBoundingDesc = &tAABBDesc;
+    tColliderDesc.pBoundingDesc = &tOBBDesc;
 
-    if (FAILED(CGameObject::Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", &tColliderDesc)))
+    if (FAILED(CGameObject::Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_OBB_Prototype_Tag , &tColliderDesc)))
         return E_FAIL;
 
 
     /* Shader 는 기본으로 Mesh를 들고있어준다 */
     Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool", nullptr);
+
+
+    if (FAILED(Ready_ColliderTypeName()))
+        return E_FAIL;
 
 
     return S_OK;
@@ -591,8 +582,13 @@ HRESULT CMapObject::Ready_Batch_Object()
         if (pBattleFieldDesc->pBattleFieldColliderBox == nullptr) return E_FAIL;
 
         m_strName = "Battle_Field";
+        break;
     }
-    break;
+    case DTO::EMakeObjectType::PointLight:
+    {
+        m_strName = "Point_Light";
+        break;
+    }
     default:                                    break;
     }
 
@@ -669,7 +665,6 @@ HRESULT CMapObject::Ready_ColliderTypeName()
     /* Collider Type */
     if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
         return S_OK;
-
 
     switch (m_eClientMakePath)
     {
@@ -851,14 +846,17 @@ void CMapObject::Update_Collider()
 
     CBounding* pBounding = pCollider->Get_Bounding();
     if (pBounding == nullptr) return;
-    CBounding_AABB* pAABB = dynamic_cast<CBounding_AABB*>(pBounding);
-    if (pAABB == nullptr) return;
-    BoundingBox* pBoundingBox = pAABB->Get_OriginalDesc();
-    if (pBoundingBox == nullptr) return;
+    CBounding_OBB* pOBB = dynamic_cast<CBounding_OBB*>(pBounding);
+    if (pOBB == nullptr) return;
+    BoundingOrientedBox* pBoundingOBB = pOBB->Get_OriginalDesc();
+    if (pBoundingOBB == nullptr) return;
 
     TRIGGERBOX_DESC* pDesc = dynamic_cast<TRIGGERBOX_DESC*>(m_vecClientMakePathDesc.front());
     if (pDesc == nullptr) return;
-    pBoundingBox->Extents = pDesc->vExtents;
+
+    pBoundingOBB->Extents = pDesc->vExtents;
+    pBoundingOBB->Orientation = Quat::CreateFromYawPitchRoll(pDesc->vRotation.y, pDesc->vRotation.x, pDesc->vRotation.z);
+
 }
 
 bool CMapObject::Get_SRT(OUT Vec3& vOutScale, OUT Quat& vQuat, OUT Vec3& vPosition)
@@ -1245,7 +1243,11 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
 
     switch (m_eClientMakePath)
     {
-    case Tool::EClientMakePath::Water:  eCategroy = RENDER_CATEGORY::COMPUTELIGHT_BLEND;  break;
+    case Tool::EClientMakePath::Water:          eCategroy = RENDER_CATEGORY::COMPUTELIGHT_BLEND;  break;
+
+    case Tool::EClientMakePath::Batch_Object:
+        BatchObject_BeforeRender(fTimeDelta);
+        break;
     default:                            break;
     }
 
@@ -1320,12 +1322,7 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:
         hr = Render_Collider();
         break;
-
-
     case Tool::EClientMakePath::Invisible_Wall:
-        hr = Render_StaticObject();
-        break;
-    case Tool::EClientMakePath::Static_Light:
         hr = Render_StaticObject();
         break;
 
@@ -1535,6 +1532,59 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     }
 
     return S_OK;
+}
+
+void CMapObject::BatchObject_BeforeRender(const _float fTimeDelta)
+{
+    if (m_vecClientMakePathDesc.empty()) return;
+
+    BATCH_OBJECT_DESC* pDesc = static_cast<BATCH_OBJECT_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return;
+  
+    DTO::EMakeObjectType eType{ pDesc->eBatchObjectType };
+
+    switch (eType)
+    {
+    case DTO::EMakeObjectType::Battle_Field:
+    {
+
+
+        break;
+    }
+    case DTO::EMakeObjectType::PointLight:
+    {
+        POINTLIHGT_DESC* pPointLightDesc = static_cast<POINTLIHGT_DESC*>(pDesc->pBatchObjectDesc);
+        if (!pPointLightDesc)
+            break;
+        /* 로직 */
+
+        /* 깜빡거리는 애들이라면 프레임단위로 계산해준다 */
+        float fFinalLightRangeRatio{ 1.f };
+        if (pPointLightDesc->isFlicker)
+        {
+            float fSinValue = sinf(m_fDT * pPointLightDesc->fFlickerSpeed);	/* -1 ~ 1 사이 값 */
+            fSinValue = (fSinValue + 1.f) * 0.5f;			/* 0.f ~ 1.f 사이값으로 변환 */
+            fFinalLightRangeRatio = pPointLightDesc->fFlickerMin + fSinValue * (1.f - pPointLightDesc->fFlickerMin);
+        }
+
+        if (pPointLightDesc->pDebugLight)
+        {
+            /* Update를 해주자 */
+            const Vec3& vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+            pPointLightDesc->Update_Light(Vec4(vPos.x, vPos.y, vPos.z,1.f));
+            pPointLightDesc->pDebugLight->Setup_Range(pPointLightDesc->fBaseRange * fFinalLightRangeRatio);
+            m_pGameInstance->Push_Light(pPointLightDesc->pDebugLight);
+        }
+
+        
+        break;
+    }
+    default:
+        break;
+    }
+
+
+    return;
 }
 
 _int CMapObject::Get_InstanceCount()
@@ -1806,6 +1856,10 @@ HRESULT CMapObject::Render_LandScape()
 
 HRESULT CMapObject::Render_Plants(_uint iPassIndex)
 {
+    if (FAILED(Bind_PlantBuffer()))
+        return E_FAIL;
+
+
     if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
     {
 
@@ -1879,8 +1933,25 @@ HRESULT CMapObject::Render_Plants(_uint iPassIndex)
 
 #pragma region Grass
 
+HRESULT CMapObject::Bind_PlantBuffer(CShader* pShader)
+{
+    CShader* pFinalShader = pShader == nullptr ? Get_Component<CShader>() : pShader;
+    if (pFinalShader == nullptr) return E_FAIL;
+    PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(m_vecClientMakePathDesc.front());    if (pDesc == nullptr)       return E_FAIL;
+
+    CB_PlantData tDeac{};
+    tDeac.g_fDiffuseColorPower = pDesc->fDiffuseColorPower;
+    if (FAILED(pFinalShader->Get_ConstantBuffer("CB_PlantData")->SetRawValue(&tDeac, 0, sizeof(CB_PlantData))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 HRESULT CMapObject::Render_Grass()
 {
+    if (FAILED(Bind_PlantBuffer()))
+        return E_FAIL;
+
     if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
     {
 
@@ -2385,6 +2456,11 @@ HRESULT CMapObject::Render_Batch_Object()
 
 
     }
+    case DTO::EMakeObjectType::PointLight:
+    {
+        if (FAILED(Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject))))
+            return E_FAIL;
+    }
     break;
     default:                            return E_FAIL;;
     }
@@ -2489,8 +2565,9 @@ HRESULT CMapObject::Render_Collider()
     if (pTransform == nullptr) return E_FAIL;
     if (pCollider == nullptr) return E_FAIL;
 
-    /* Update전 콜라이더 업데이트해주기 별로안되니까 상관없을듯? */
-    pCollider->Update(pTransform->Get_WorldMatrix());
+    /* Update전 콜라이더 위치값만 업데이트해주기 */
+    Vec3 vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+    pCollider->Update(Matrix::CreateTranslation(vPos));
     pCollider->Render();
 
     return S_OK;

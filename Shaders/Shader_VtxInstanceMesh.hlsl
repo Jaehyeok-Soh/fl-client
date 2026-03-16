@@ -35,6 +35,12 @@ cbuffer CB_EnvData
     float fWindPower = 1.f; //바람이 부는 새기
 };
 
+cbuffer CB_PlantData
+{
+    float g_fPlantDiffuseColorPower = 1.f;
+    float3 g_fPlantDummy;
+};
+
 cbuffer CB_GrassData
 {
     float   g_fGrassDT = 0.f;
@@ -347,13 +353,19 @@ PS_OUT_DEFFERED PS_GRASS(PS_IN_INST_MESH input)
     
     Compute_Diffse(vDiffuse, input.vUV);
     
-    if (length(vDiffuse.rgb) < 0.1f)
+    if (length(vDiffuse.rgb) < 0.01f)
         discard;
     
-    if (vDiffuse.a < 0.3f)
+    if (vDiffuse.a < 0.25f)
         discard;
     
-    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    float3 vBaseColor = vDiffuse.rgb * MIDesc.vTintColor.rgb;
+      
+    float fLuminance = dot(vBaseColor, float3(0.299f, 0.587f, 0.114f));
+    float fSaturationBoost = 1.0f + max(0.0f, (g_fPlantDiffuseColorPower - 1.0f) * 0.5f);
+    float3 vVibrantColor = lerp(float3(fLuminance, fLuminance, fLuminance), vBaseColor, fSaturationBoost);
+    
+    vDiffuse.rgb = vVibrantColor * g_fPlantDiffuseColorPower;
     output.vDiffuse = vDiffuse;
     
     
@@ -367,9 +379,7 @@ PS_OUT_DEFFERED PS_GRASS(PS_IN_INST_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
-    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
-    
+        
     return output;
 }
 
@@ -387,7 +397,12 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_INST_MESH input)
     if (vDiffuse.a < 0.3f)
         discard;
     
-    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    float3 vBaseColor = vDiffuse.rgb * MIDesc.vTintColor.rgb;
+    float fLuminance = dot(vBaseColor, float3(0.299f, 0.587f, 0.114f));
+    float fSaturationBoost = 1.0f + max(0.0f, (g_fPlantDiffuseColorPower - 1.0f) * 0.5f);
+    float3 vVibrantColor = lerp(float3(fLuminance, fLuminance, fLuminance), vBaseColor, fSaturationBoost);
+    
+    vDiffuse.rgb = vVibrantColor * g_fPlantDiffuseColorPower;
     output.vDiffuse = vDiffuse;
     
     float3 vNormal = input.vNormal;
@@ -410,8 +425,6 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_INST_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
-    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
     return output;
 }
@@ -539,4 +552,5 @@ technique11 T0
     //EXT
     PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 	PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(SkyBox, RS_Wire, DS_ReadOnly , BS_Default, VS_MAIN, PS_MAIN)
 };
