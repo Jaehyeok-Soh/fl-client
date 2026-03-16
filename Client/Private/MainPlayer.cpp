@@ -902,7 +902,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 21.f / ANIMTIC;//0.55f ;
+        tKeyTimer.fMaxTime = 19.f / ANIMTIC;//0.55f ;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;
