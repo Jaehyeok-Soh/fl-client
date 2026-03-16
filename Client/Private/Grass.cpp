@@ -105,6 +105,10 @@ void CGrass::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CGrass::Render()
 {
+	if (FAILED(Super::Binding_PlantBuffer()))
+		return E_FAIL;
+
+
 	SHADER_PLAYER_INFO tInfo{};
 	CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer));
 	if (pPlayer == nullptr)
@@ -126,7 +130,7 @@ HRESULT CGrass::Render()
 
 		/* Client Make Path를 이용한다 */
 		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));
-
+		pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 		if (m_pCBGrassData == nullptr) return E_FAIL;
 		if (FAILED(m_pCBGrassData->SetRawValue(&m_tGrassData, 0, sizeof(CB_GrassData))))
 			return E_FAIL;
@@ -161,6 +165,7 @@ HRESULT CGrass::Render()
 		pPlayer->Bind_PlayerInfo(pShader);
 
 
+		pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 		/* Client Make Path를 이용한다 */
 		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));
 

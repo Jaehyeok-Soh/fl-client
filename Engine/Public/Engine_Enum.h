@@ -10,10 +10,10 @@ namespace Engine
 	enum class MOUSEMOVESTATE : unsigned int { X, Y, WHEEL, END };
 	enum class WINMODE { FULL, WIN };
 	enum class TRANSFORM_INFO_STATE { RIGHT, UP, LOOK, POS, END };
-	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, STATICPOINT, DYNAMICPOINT, END };
+	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, POINT , END };
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
-	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND , COMPUTELIGHT_BLEND , NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, END };
+	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND , COMPUTELIGHT_BLEND , NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, SHADOW_DYNAMIC, END };
 	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, OUTLINE, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, WBOIT, END };
 	enum class ECursorMode : unsigned int
 	{
@@ -97,6 +97,9 @@ namespace Engine
 		Outlineparam,
 		RGBMapping,
 		RenderFx,
+		Fogparam,
+		Toonparam,
+		Cascadeparam,
 		PlayerInfoBuffer,
 		COUNT
 	};
@@ -119,6 +122,9 @@ namespace Engine
 		"OUTLINEParamBuffer",
 		"CB_MAPPING_RGB",
 		"RenderFxParamBuffer",
+		"FogParamBuffer",
+		"ToonParamBuffer",
+		"CascadeParamBuffer",
 		"PlayerInfoBuffer"
 	};
 	//===================
@@ -134,16 +140,20 @@ namespace Engine
 		RT_Specular,
 		RT_Depth,
 		RT_ObjectInfo,
+		RT_Emissive,
 		RT_AO,
 		RT_SceneHDR,
 		RT_SceneHDR_Copy,
 		RT_Bloom,
+		RT_Cascade0,
+		RT_Cascade1,
 		LUT_Stand,
 		Transform,
 		Materials,
 		Textures,
 		Cube,
 		SSAONoise,
+		PerlinNoise,
 		RT_OIT_Accum,
 		RT_OIT_REVEAL,
 		COUNT
@@ -158,16 +168,20 @@ namespace Engine
 		"g_RenderTargetSpecularTexture",
 		"g_RenderTargetDepthTexture",
 		"g_RenderTargetObjInfoTexture",
+		"g_RenderTargetEmissiveTexture",
 		"g_RenderTargetAOTexture",
 		"g_RenderTargetSceneHDRTexture",
 		"g_RenderTargetSceneHDRCopyTexture",
 		"g_RenderTargetBloomTexture",
+		"g_RenderTargetCascadeShadowmap0",
+		"g_RenderTargetCascadeShadowmap1",
 		"g_LUT_Stand",
 		"g_TransformMap",
 		"g_MaterialTextures",
 		"g_DefaultTextures",
 		"g_TextureCube",
 		"g_SSAONoiseTexture",
+		"g_PerlinNoise",
 		"g_RenderTargetOITAccumTexture",
 		"g_RenderTargetOITRevealTexture"
 	};
@@ -454,7 +468,9 @@ namespace Engine
 
 			RAGDOLL = 1 << 20,
 
-			NONE = 1 << 21,
+			NPC = 1 << 21,
+
+			NONE = 1 << 22,
 			END
 		};
 

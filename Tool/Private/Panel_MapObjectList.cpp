@@ -13,6 +13,7 @@
 #include "AsTypes.h"
 #include "Mesh.h"
 #include "MapObject.h"
+#include "Light.h"
 #include "DataStruct_Map.h"
 #include "GameInstance.h"
 
@@ -1009,6 +1010,8 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner				(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
 	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster		(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
 	case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:			ImGuiUpdate_TriggerBox_TutorialUIEvent				(static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pDesc));					return S_OK;
+	
+	case Tool::EClientMakePath::Batch_NPC:							ImGuiUpdate_NPC										(static_cast<BATCH_NPC_DESC*>(pDesc));									return S_OK;
 	default:																																													return S_OK;
 	}
 
@@ -1104,6 +1107,12 @@ void CPanel_MapObjectList::ImGuiUpdate_Plants_Desc(PLANTS_DESC* pDesc)
 	ImGui::NewLine();
 
 	ImGui::ColorEdit4("Plant Color", (float*)&pDesc->vMITint_Color);
+
+	ImGui::NewLine();
+
+	ImGui::NewLine();
+
+	ImGui::DragFloat("Plant Diffuse Color Power", &pDesc->fDiffuseColorPower,0.001f,0.f,100.f,"%.3f");
 
 	ImGui::NewLine();
 
@@ -1383,6 +1392,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDes
 	m_strBuffer = DTO::MakeObjectType_ToString(pDesc->eBatchObjectType);
 	m_iBuffer = _int(pDesc->eBatchObjectType);
 
+	_bool isChange{false};
 	if (ImGui::BeginCombo("Batch Object Type List##Batch Object Desc", m_strBuffer.c_str()))
 	{
 		for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeObjectType::END); ++i)
@@ -1390,9 +1400,10 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDes
 			bool isSelected = i == m_iBuffer;
 			if (ImGui::Selectable(m_szMakeObjectTypeName[i], &isSelected))
 			{
-				pDesc->eBatchObjectType= DTO::EMakeObjectType(i);
-				pDesc->Change_BatchObjecType(pDesc->eBatchObjectType);
+				pDesc->Change_BatchObjecType(DTO::EMakeObjectType(i));
 				m_pSelectMapObject->Ready_Batch_Object();
+				isChange = true;
+				break;
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -1404,10 +1415,15 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDes
 
 	DTO::EMakeObjectType eType = pDesc->eBatchObjectType;
 
-	switch (eType)
+
+	if (isChange == false)
 	{
-	case DTO::EMakeObjectType::Battle_Field: ImGuiUpdate_Battle_Field_Desc(static_cast<BATTLE_FIELD_DESC*>(pDesc->pBatchObjectDesc));	break;
-	default:																															return;
+		switch (eType)
+		{
+		case DTO::EMakeObjectType::Battle_Field:		ImGuiUpdate_Battle_Field_Desc(static_cast<BATTLE_FIELD_DESC*>(pDesc->pBatchObjectDesc));	break;
+		case DTO::EMakeObjectType::PointLight:			ImGuiUpdate_PointLight_Desc(static_cast<POINTLIHGT_DESC*>(pDesc->pBatchObjectDesc));	break;
+		default:																															return;
+		}
 	}
 
 	return;
@@ -1452,6 +1468,48 @@ void CPanel_MapObjectList::ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDes
 	return;
 }
 
+void CPanel_MapObjectList::ImGuiUpdate_PointLight_Desc(POINTLIHGT_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+	
+	ImGui::SeparatorText("Point Light Settings");
+
+	// 1. 색상 관련 설정 (Diffuse, Ambient, Specular)
+	// Vector4의 x, y, z, w를 float*로 캐스팅하여 사용합니다.
+	ImGui::ColorEdit4("Diffuse", (float*)&pDesc->tLightDesc.vDiffuse);
+	ImGui::ColorEdit4("Ambient", (float*)&pDesc->tLightDesc.vAmbient);
+	ImGui::ColorEdit4("Specular", (float*)&pDesc->tLightDesc.vSpecular);
+
+	ImGui::Separator();
+
+	// Flicker 중일 때는 BaseRange를 건드려야 원본이 유지됩니다.
+	if (ImGui::DragFloat("Base Range", &pDesc->fBaseRange, 0.1f, 0.0f, 500.0f))
+	{
+		// 깜빡이지 않을 때는 즉시 적용되도록 처리
+		if (!pDesc->isFlicker)
+		{
+			pDesc->tLightDesc.fRange = pDesc->fBaseRange;
+		}
+	}
+
+	ImGui::SeparatorText("Flicker Options");
+
+	// 3. 깜빡임(Flicker) 관련 설정
+	ImGui::Checkbox("Enable Flicker", (bool*)&pDesc->isFlicker);
+
+	if (pDesc->isFlicker)
+	{
+		ImGui::Indent(); // 옵션 구분을 위해 들여쓰기
+		ImGui::DragFloat("Speed", &pDesc->fFlickerSpeed, 0.001f,0.f,1000.f,"%.3f");
+		ImGui::DragFloat("Min Ratio", &pDesc->fFlickerMin,0.0001f, 0.f,1.f,"%.4f");
+
+		// 현재 적용 중인 실시간 Range 확인 (Read Only)
+		ImGui::Text("Current Range: %.2f", pDesc->pDebugLight->Get_LightDesc().fRange);
+		ImGui::Unindent();
+	}
+	return;
+}
+
 #pragma endregion
 
 #pragma region Trigger Box
@@ -1462,6 +1520,14 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc)
 
 	if (ImGui::DragFloat3("Extents##TriggerBox_Extents", &pDesc->vExtents.x, 0.1f, 0.1f, 100.f, "%.2f"))
 	{
+		if (m_pSelectMapObject == nullptr) return;
+		m_pSelectMapObject->Update_Collider();
+	}
+
+	Vec3 vDegree = Vec3( XMConvertToDegrees(pDesc->vRotation.x), XMConvertToDegrees(pDesc->vRotation.y), XMConvertToDegrees(pDesc->vRotation.z));
+	if (ImGui::DragFloat3("Rotation##TriggerBox_Rotation", &vDegree.x, 0.1f,-360.f,360.f, "%.2f"))
+	{
+		pDesc->vRotation = Vec3(XMConvertToRadians(vDegree.x), XMConvertToRadians(vDegree.y), XMConvertToRadians(vDegree.z));
 		if (m_pSelectMapObject == nullptr) return;
 		m_pSelectMapObject->Update_Collider();
 	}
@@ -1614,6 +1680,84 @@ void CPanel_MapObjectList::ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData
 }
 #pragma endregion
 
+void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
+{
+	ImGui::SeparatorText(" NPC Desc ");
+
+	std::string currentTypeName = DTO::MakeNPCType_ToString(pDesc->eBatchNPCType);
+
+	if (ImGui::BeginCombo("NPC Type", currentTypeName.c_str()))
+	{
+		OBJECT_ENUM_TAG::Enum allTypes[] = {
+			OBJECT_ENUM_TAG::NPC_DEFAULT,
+			OBJECT_ENUM_TAG::NPC_PAN,
+			OBJECT_ENUM_TAG::NPC_BERENICA
+		};
+
+		for (int i = 0; i < IM_ARRAYSIZE(allTypes); i++)
+		{
+			std::string typeName = DTO::MakeNPCType_ToString(allTypes[i]);
+			bool is_selected = (pDesc->eBatchNPCType == allTypes[i]);
+
+			if (ImGui::Selectable(typeName.c_str(), is_selected))
+			{
+				pDesc->eBatchNPCType = allTypes[i];
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator();
+
+	ImGui::Checkbox("Is Quest Object", &pDesc->bHasQuest);
+
+	if (pDesc->bHasQuest)
+	{
+		ImGui::Indent();
+		ImGui::SeparatorText(" Quest List Configuration ");
+
+		if (ImGui::Button(" + Add New Quest "))
+		{
+			pDesc->tQuestObjectDesc.push_back(DTO::QUEST_CHAPTERDESC());
+		}
+
+		ImGui::Spacing();
+
+		for (int i = 0; i < pDesc->tQuestObjectDesc.size(); )
+		{
+			ImGui::PushID(i);
+
+			string strNodeName = "Quest Index [" + std::to_string(i) + "] - Chap ID: "
+				+ std::to_string(pDesc->tQuestObjectDesc[i].tQuestDesc.iId);
+
+			bool bNodeOpen = ImGui::TreeNode((void*)(intptr_t)i, strNodeName.c_str());
+
+			ImGui::SameLine(ImGui::GetWindowWidth() - 80.f);
+			if (ImGui::Button("Delete"))
+			{
+				pDesc->tQuestObjectDesc.erase(pDesc->tQuestObjectDesc.begin() + i);
+				if (bNodeOpen) ImGui::TreePop();
+				ImGui::PopID();
+				continue;
+			}
+
+			if (bNodeOpen)
+			{
+				ImGuiUpdate_Quest(&pDesc->tQuestObjectDesc[i]);
+				ImGui::TreePop();
+			}
+
+			ImGui::PopID();
+			++i;
+		}
+		ImGui::Unindent();
+	}
+
+	ImGui::Separator();
+}
 
 void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc)
 {
@@ -1810,23 +1954,23 @@ void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 
 	ImGui::SeparatorText(" Quest Texts ");
 
-	auto ImGuiInputWString = [](const char* label, std::wstring& wstrTarget)
+	auto ImGuiInputWString = [](const char* label, std::string& strTarget)
 		{
-			std::string tempStr(wstrTarget.begin(), wstrTarget.end());
+			std::string tempStr(strTarget.begin(), strTarget.end());
 			char buffer[256];
 			strcpy_s(buffer, tempStr.c_str());
 
 			if (ImGui::InputText(label, buffer, sizeof(buffer)))
 			{
 				std::string newStr(buffer);
-				wstrTarget = std::wstring(newStr.begin(), newStr.end());
+				strTarget = std::string(newStr.begin(), newStr.end());
 			}
 		};
 
-	ImGuiInputWString("Title", questDesc.wstrTitle);
-	ImGuiInputWString("SubTitle", questDesc.wstrSubTitle);
-	ImGuiInputWString("Explain", questDesc.wstrExplain);
-	ImGuiInputWString("Description", questDesc.wstrDescription);
+	ImGuiInputWString("Title", questDesc.strTitle);
+	ImGuiInputWString("SubTitle", questDesc.strSubTitle);
+	ImGuiInputWString("Explain", questDesc.strExplain);
+	ImGuiInputWString("Description", questDesc.strDescription);
 
 	ImGui::InputInt("Enter Dialogue ID", &chapterDesc.tQuestDesc.iEnterDialogueId);
 	ImGui::InputInt("Exit Dialogue ID", &chapterDesc.tQuestDesc.iExitDialogueId);

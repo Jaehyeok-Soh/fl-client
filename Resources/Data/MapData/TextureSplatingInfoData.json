@@ -1,0 +1,199 @@
+{
+    "Clouds": {
+        "Base Texture": "Texture_T_AL_Clo_Land03_DH_2",
+        "Mix DH Tile Texture": "Texture_T_AL_Clo_Land03_DH_Array",
+        "Mix NBR Tile Texture": "Texture_T_AL_Clo_Land03_NBR_Array",
+        "Mix RGBA Info": [
+            {
+                "A": {
+                    "RGBA Connected Tile Index": 2,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 100.0,
+                    "Use Flags": 1
+                },
+                "B": {
+                    "RGBA Connected Tile Index": 2,
+                    "RGBA Mix Force": 49.900001525878906,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 1
+                },
+                "G": {
+                    "RGBA Connected Tile Index": 1,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 70.0,
+                    "Use Flags": 1
+                },
+                "R": {
+                    "RGBA Connected Tile Index": 3,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 0.009999999776482582,
+                    "Use Flags": 0
+                },
+                "RGBA Texture": "Texture_T_Clouds_Tint"
+            }
+        ]
+    },
+    "IceLake": {
+        "Base Texture": "Texture_LandScape_Default_White",
+        "Mix DH Tile Texture": "Texture_T_Ail_Land01_DH_Array",
+        "Mix NBR Tile Texture": "Texture_T_Ail_Land01_NBR_Array",
+        "Mix RGBA Info": [
+            {
+                "A": {
+                    "RGBA Connected Tile Index": 0,
+                    "RGBA Mix Force": 1.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 0
+                },
+                "B": {
+                    "RGBA Connected Tile Index": 2,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 1
+                },
+                "G": {
+                    "RGBA Connected Tile Index": 4,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 1
+                },
+                "R": {
+                    "RGBA Connected Tile Index": 0,
+                    "RGBA Mix Force": 1.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 0
+                },
+                "RGBA Texture": "Texture_T_Icelake_LandscapeLayer1"
+            }
+        ]
+    },
+    "Kuangkeng": {
+        "Base Texture": "Texture_LandScape_Default_White",
+        "Mix DH Tile Texture": "Texture_T_AL_Clo_Land03_DH_Array",
+        "Mix NBR Tile Texture": "Texture_T_AL_Clo_Land03_NBR_Array",
+        "Mix RGBA Info": [
+            {
+                "A": {
+                    "RGBA Connected Tile Index": 0,
+                    "RGBA Mix Force": 1.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 0
+                },
+                "B": {
+                    "RGBA Connected Tile Index": 0,
+                    "RGBA Mix Force": 1.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 0
+                },
+                "G": {
+                    "RGBA Connected Tile Index": 0,
+                    "RGBA Mix Force": 1.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 0
+                },
+                "R": {
+                    "RGBA Connected Tile Index": 2,
+                    "RGBA Mix Force": 1.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 1
+                },
+                "RGBA Texture": "Texture_LandScape_Default_Red"
+            }
+        ]
+    },
+    "Lianhuo": {
+        "Base Texture": "Texture_LandScape_Default_White",
+        "Mix DH Tile Texture": "Texture_T_EX01_Fort02A_Land01_D_Array",
+        "Mix NBR Tile Texture": "Texture_T_EX01_Fort02A_Land01_N_Array",
+        "Mix RGBA Info": [
+            {
+                "A": {
+                    "RGBA Connected Tile Index": 7,
+                    "RGBA Mix Force": 4.0,
+                    "RGBA Mix Height Force": 100.0,
+                    "Use Flags": 1
+                },
+                "B": {
+                    "RGBA Connected Tile Index": 8,
+                    "RGBA Mix Force": 4.0,
+                    "RGBA Mix Height Force": 100.0,
+                    "Use Flags": 1
+                },
+                "G": {
+                    "RGBA Connected Tile Index": 8,
+                    "RGBA Mix Force": 4.0,
+                    "RGBA Mix Height Force": 100.0,
+                    "Use Flags": 1
+                },
+                "R": {
+                    "RGBA Connected Tile Index": 7,
+                    "RGBA Mix Force": 4.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 1
+                },
+                "RGBA Texture": "Texture_T_EX01_Fort01A_LandLayer_03"
+            }
+        ]
+    },
+    "Village": {
+        "Base Texture": "Texture_Test_Tint3",
+        "Mix DH Tile Texture": "Texture_T_JH_JJD_DH",
+        "Mix NBR Tile Texture": "Texture_T_JH_JJD_NBR",
+        "Mix RGBA Info": [
+            {
+                "A": {
+                    "RGBA Connected Tile Index": 0,
+                    "RGBA Mix Force": 1.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 0
+                },
+                "B": {
+                    "RGBA Connected Tile Index": 6,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 1
+                },
+                "G": {
+                    "RGBA Connected Tile Index": 5,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 5.0,
+                    "Use Flags": 1
+                },
+                "R": {
+                    "RGBA Connected Tile Index": 3,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 5.0,
+                    "Use Flags": 1
+                },
+                "RGBA Texture": "Texture_T_Village01_Tint"
+            },
+            {
+                "A": {
+                    "RGBA Connected Tile Index": 3,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 4.0,
+                    "Use Flags": 1
+                },
+                "B": {
+                    "RGBA Connected Tile Index": 0,
+                    "RGBA Mix Force": 1.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 0
+                },
+                "G": {
+                    "RGBA Connected Tile Index": 3,
+                    "RGBA Mix Force": 100.0,
+                    "RGBA Mix Height Force": 4.0,
+                    "Use Flags": 1
+                },
+                "R": {
+                    "RGBA Connected Tile Index": 0,
+                    "RGBA Mix Force": 1.0,
+                    "RGBA Mix Height Force": 1.0,
+                    "Use Flags": 0
+                },
+                "RGBA Texture": "Texture_T_Village_Tint"
+            }
+        ]
+    }
+}

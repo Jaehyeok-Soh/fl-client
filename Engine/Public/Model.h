@@ -163,7 +163,6 @@ public:
 
 	// meshes
 	_int								Get_PassByMesh(_uint iMeshIndex);
-	
 	// counts
 	_uint								Get_AnimationCount()	const { return static_cast<_uint>(m_vecAnimations.size()); }
 	_uint								Get_MaterialCount()		const { return static_cast<_uint>(m_vecMaterials.size()); }
@@ -325,7 +324,7 @@ private:
 	ID3D11DeviceContext*				m_pDeviceContext			= { nullptr };
 
 	/* Model Minmax */
-	Vec3*								m_pStaticModel_MinMax		= {nullptr};
+	Vec3*								m_pStaticModel_MinMax		= { nullptr };
 
 	vector<_uint>						m_vecPasses;
 	vector<class CBone*>				m_vecBones;

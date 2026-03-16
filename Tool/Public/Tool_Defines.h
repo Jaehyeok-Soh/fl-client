@@ -429,7 +429,8 @@ namespace Tool
 
 		/* 맵 기능 관련 */
 		Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
-		Static_Light,			/* Static 점 조명 */
+
+		Batch_NPC,
 
 		END,
 	};
@@ -485,7 +486,8 @@ namespace Tool
 
 			/* -------------- Invisible Wall ----------- */
 		case Tool::EClientMakePath::Invisible_Wall:							return "Invisible_Wall";
-		case Tool::EClientMakePath::Static_Light:							return "Static_Light";
+
+		case Tool::EClientMakePath::Batch_NPC:								return "Batch_NPC";
 
 		default:															return "Unknown";
 		}
@@ -519,7 +521,8 @@ namespace Tool
 
 
 		if (strType == "Invisible_Wall")									return EClientMakePath::Invisible_Wall;
-		if (strType == "Static_Light")										return EClientMakePath::Static_Light;
+
+		if (strType == "Batch_NPC")											return EClientMakePath::Batch_NPC;
 
 
 		return EClientMakePath::END;

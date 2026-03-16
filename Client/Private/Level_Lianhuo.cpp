@@ -321,30 +321,6 @@ HRESULT CLevel_Lianhuo::Ready_Lights()
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;
 	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.5f, 0.3f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.2f, 0.1f, 0.3f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 18.f, 0.f, 1.f);
-		desc.fRange = 10.f;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.3f, 0.6f, 0.4f, 1.f);
-		desc.vAmbient = Vec4(0.1f, 0.3f, 0.2f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 14.5f, 25.f, 1.f);
-		desc.fRange = 10.f;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
 
 	return S_OK;
 }

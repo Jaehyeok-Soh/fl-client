@@ -56,6 +56,7 @@ HRESULT CBoss_Xibi_Body::Awake(const _uint iCurrentLevelIndex)
 		pMyModle->Set_Animtion_MotionOffset_All(0.01f);
 	}
 
+	// 피격 Emissive 색상
 	if (CRenderFx* pRenderFx = Get_Component<CRenderFx>())
 	{
 		pRenderFx->Change_EmissiveColor(Vec3{0.62f, 0.30f, 1.00f});

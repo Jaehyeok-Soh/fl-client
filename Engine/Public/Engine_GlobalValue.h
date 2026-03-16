@@ -38,6 +38,7 @@ inline constexpr _char	g_szUse_Mix_RGBA_Map_Count[]{ "g_iUse_Mix_RGBA_Count" };
 
 
 inline constexpr _uint OF_Outline = 1u << 0;
+inline constexpr _uint OF_Rim = 1u << 1;
 
 const unsigned int		 MIN = 0;
 const unsigned int		 MAX = 1;

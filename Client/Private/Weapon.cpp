@@ -84,6 +84,7 @@ HRESULT CWeapon::Initialize(void* pArg)
 	//Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, ::XMVectorSet(0.8f, 0.f, 0.f, 1.f));
 
 	Set_RenderInfoFlag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Rim, true);
 	return S_OK;
 }
 

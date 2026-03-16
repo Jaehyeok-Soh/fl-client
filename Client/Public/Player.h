@@ -152,6 +152,7 @@ public:
 	_bool	Start_Attack(State iState);
 	void	End_Attack(State iState);
 
+	State Get_CurState();
 protected:
 	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 

@@ -82,6 +82,7 @@ private:
 #pragma region Batch Object Desc 관련
 	void						ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDesc);
 	void						ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDesc);
+	void						ImGuiUpdate_PointLight_Desc(POINTLIHGT_DESC* pDesc);
 #pragma endregion
 
 	/* Trigger Box 관련 */
@@ -96,6 +97,9 @@ private:
 
 	/* Mosnter Spawn ImGuiUpdate */
 	void						ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData* pMonsterSpawnData);
+
+	/* NPC 관련 */
+	void						ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc);
 
 public:
 

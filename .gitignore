@@ -1,6 +1,10 @@
 # === Project-specific ignores (put this block at the TOP) ===
 
 /Resources/**
+!/Resources/Data/  
+!/Resources/Data/**
+/Resources/Data/ModelData/** 
+/Resources/Data/MapData/RawData/** 
 
 # Bin outputs (but keep game resources)
 #/Client

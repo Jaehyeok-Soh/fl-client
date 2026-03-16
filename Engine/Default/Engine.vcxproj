@@ -528,6 +528,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_Deffered.hlsl" />
+    <FxCompile Include="..\..\Shaders\Shader_Fog.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -20,6 +20,7 @@ protected:
 	typedef struct Plants_Desc : public CMapObject::MAPOBJECT_DESC
 	{
 		Vec4	vMI_TintColor{ 1.f,1.f,1.f,1.f};
+		float	fDiffuseColorPower{1.f};
 	}PLANTS_DESC;
 protected:
 	CPlants(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -38,11 +39,14 @@ public:
 	virtual HRESULT			Render()										override;
 protected:
 	HRESULT					Render_Plnats(_uint iShaderPassIndex);
+	HRESULT					Binding_PlantBuffer(CShader* pShader = nullptr);
 public:
 	CPlants::Type			Get_PlantsType()  const { return m_ePlantsType; }
 public:
 	CPlants::Type			m_ePlantsType{};
 	Vec4					m_vMI_TintColor{1.f,1.f,1.f,1.f};
+	CB_PlantData			m_tPlantData{};
+	ID3DX11EffectConstantBuffer* m_pCB{nullptr};
 public:
 	virtual					void Free() override;
 };

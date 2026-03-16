@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "PlayerBasic",
+            "eColliderType": "PhysicsCollider",
+            "iID": 1,
+            "strTag": "TestPlayerAttack1",
+            "tCombat": {
+                "DamageType": "Physical",
+                "HitType": "Light",
+                "fBaseDamage": 1.0,
+                "fHitStopSec": 0.1599999964237213,
+                "fHitStunSec": 0.5,
+                "fImpulse": 33.0,
+                "fPushPower": 2.799999952316284
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

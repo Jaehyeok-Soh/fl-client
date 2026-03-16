@@ -479,6 +479,13 @@ void CPlayer::End_Attack(State iState)
     }
 }
 
+CPlayer::State CPlayer::Get_CurState()
+{
+    CActionState* pAction = Get_Component<CActionState>();
+
+    return static_cast<CPlayer::State>(pAction->Get_CurrentStateIndex());
+}
+
 HRESULT CPlayer::Ready_BaseStates()
 {
     CPlayerActionState* pActionState = { nullptr };

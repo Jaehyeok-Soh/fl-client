@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Rock.h"
 
-
-
 CRock::CRock(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CMapObject(pDevice ,pDeviceContext)
 {

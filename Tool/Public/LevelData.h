@@ -57,9 +57,13 @@ private:
 	CB_EnvData			m_tCB_EnvData{};
 	std::string			m_strTextureSplatingInfoName{"None"};
 
+
+	/* SkyBox¿ë ¹× Texture */
+	//CTexture*			m_pTexture{nullptr};
+	//CModel*				m_pModel{nullptr};
 public:
-	CShader*		m_pMeshShader{};
-	CShader*		m_pInstMeshSahder{};
+	CShader*			m_pMeshShader{};
+	CShader*			m_pInstMeshSahder{};
 public:
 	static	CLevelData*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg)override;

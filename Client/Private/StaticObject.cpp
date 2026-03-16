@@ -38,6 +38,7 @@ HRESULT CStaticObject::Initialize(void* pArg)
 	if (FAILED(CStaticObject::Ready_Component(pDesc)))
 		return E_FAIL;
 
+	Set_RenderInfoFlag(OF_Outline, true);
 	return S_OK;
 }
 
@@ -81,6 +82,8 @@ HRESULT CStaticObject::Render()
 {
 	if (FAILED(Super::Render()))
 		return E_FAIL;
+
+
 
 
 	return S_OK;

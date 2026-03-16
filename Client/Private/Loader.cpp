@@ -70,6 +70,8 @@
 #include "Moon_SkillE_Obj.h"
 #include "SkillWarningSpace.h"
 #include "SocketObject.h"
+#include "SkyBox.h"
+#include "PointLight.h"
 #include "BonePart.h"
 
 //=================
@@ -123,6 +125,12 @@
 //=================
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
+
+//=================
+// NPC
+//=================
+#include "NPC_Pan.h"
+#include "NPC_Pan_Body.h"
 
 //=================
 // UI
@@ -416,10 +424,13 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Sphere")))
 			return E_FAIL;
-
-
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Twist")))
 			return E_FAIL;
+
+
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/SkyBox")))
+			return E_FAIL;
+
 	}
 	m_fLoadingRatio = 0.13f;
 	// For. Prototype_Component_Button_Test_Texture
@@ -486,6 +497,11 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. UI Texture
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
 		return E_FAIL;
+
+	// For. SkyBox
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/SkyBox/")))
+		return E_FAIL;
+
 
 #pragma endregion
 
@@ -646,6 +662,24 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Boomer_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
+	// For.Prototype_Component_Model_NPC_Pan
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.wstrModelFolderName = L"NPC_Pan";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.vecStageBoneIndices = {};
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Pan_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_RenderFx
@@ -686,6 +720,7 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 	}
 
+
 #pragma endregion
 
 	///////////////////////////////////////
@@ -720,7 +755,10 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
-
+		/* Sky Box */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszSkyBox_Prototype_Tag ,					CSkyBox::Create(m_pDevice, m_pDeviceContext));
+		/* Point Light */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPointLight_Prototype_Tag ,				CPointLight::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region Map Object
 		/* Map Object */
@@ -749,14 +787,19 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
-		// For. Prototype_GameObject_Monster_Dummy
+		// For. Prototype_GameObject_Monster_Dog
 		ADD_PROTOTYPE(ELevelType::STATIC , g_wszMonster_Dog_Prototype_Tag , CMonster_Dog::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy_Body
+		// For. Prototype_GameObject_Monster_Dog_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Dog_Body_Prototype_Tag, CMonster_Dog_Body::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy
+		// For. Prototype_GameObject_Monster_Boomer
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy_Body
+		// For. Prototype_GameObject_Monster_Boomer_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+
+		// For. Prototype_GameObject_NPC_Pan
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Prototype_Tag, CNPC_Pan::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Pan_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Body_Prototype_Tag, CNPC_Pan_Body::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
@@ -833,8 +876,6 @@ HRESULT CLoader::Loading_For_Logo()
 	m_isFinished = true;
 	return S_OK;
 }
-
-
 
 HRESULT CLoader::Loading_For_Tutorial_Village()
 {

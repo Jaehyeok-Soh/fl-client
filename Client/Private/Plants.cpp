@@ -7,12 +7,12 @@
 #include "GameInstance.h"
 
 CPlants::CPlants(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-    : CMapObject(pDevice, pDeviceContext), m_ePlantsType{ Type::END }, m_vMI_TintColor{1.f,1.f,1.f,1.f}
+    : CMapObject(pDevice, pDeviceContext), m_ePlantsType{ Type::END }, m_vMI_TintColor{ 1.f,1.f,1.f,1.f }, m_pCB{nullptr}
 {
 }
 
 CPlants::CPlants(const CPlants& rhs)
-	: CMapObject(rhs) , m_ePlantsType(rhs.m_ePlantsType) , m_vMI_TintColor{rhs.m_vMI_TintColor}
+    : CMapObject(rhs), m_ePlantsType(rhs.m_ePlantsType), m_vMI_TintColor{ rhs.m_vMI_TintColor }, m_pCB{nullptr}
 { 
 }
 
@@ -34,11 +34,15 @@ HRESULT CPlants::Initialize(void* pArg)
     PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(pArg);
 
     this->m_vMI_TintColor = pDesc->vMI_TintColor;
-
+    this->m_tPlantData.g_DiffuseColorPower = pDesc->fDiffuseColorPower;
 
     if (FAILED(Ready_Component(pDesc)))
         return E_FAIL;
 
+    CShader* pShader = Get_Component<CShader>();    if (pShader == nullptr) return E_FAIL;
+    m_pCB = pShader->Get_ConstantBuffer("CB_PlantData");
+    if (m_pCB == nullptr) return E_FAIL;
+    if (!m_pCB->IsValid()) return E_FAIL;
 
 	return S_OK;
 }
@@ -57,6 +61,9 @@ HRESULT CPlants::Ready_Component(PLANTS_DESC* pDesc)
     {
         pModel->Change_MI(i,Engine::EMaterialInstanceType::Free);
     }
+
+
+    /* Shader에서 Constante Buffer 미리 할당 */
 
 
 	return S_OK;
@@ -105,6 +112,8 @@ HRESULT CPlants::Render()
 
 HRESULT CPlants::Render_Plnats(_uint iShaderPassIndex)
 {
+    Binding_PlantBuffer();
+
     if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
     {
 
@@ -112,14 +121,14 @@ HRESULT CPlants::Render_Plnats(_uint iShaderPassIndex)
         CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)          return E_FAIL;
         CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)      return E_FAIL;
         /* 제일 앞에있는 친구의 Desc을 참고해서 해준다 모든애들을 가져올수없음 */
-
+        if(m_pCB == nullptr) return E_FAIL;
 
         pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
         _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
 
         /* Client Make Path를 이용한다 */
         pShader->Set_Pass(iShaderPassIndex);
-
+        pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
         for (_uint i = 0; i < iMeshCount; ++i)
         {
             pModel->Set_MI_TintColor(i,m_vMI_TintColor);
@@ -145,7 +154,7 @@ HRESULT CPlants::Render_Plnats(_uint iShaderPassIndex)
 
         /* Client Make Path를 이용한다 */
         pShader->Set_Pass(iShaderPassIndex);;
-
+        pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
         pInstanceMesh->Bind_Instance(1);
         for (_uint i = 0; i < iMeshCount; ++i)
         {
@@ -161,6 +170,18 @@ HRESULT CPlants::Render_Plnats(_uint iShaderPassIndex)
         return E_FAIL;
 
 	return S_OK;
+}
+
+HRESULT CPlants::Binding_PlantBuffer(CShader* pShader)
+{
+    if (m_pCB == nullptr) return E_FAIL;
+    CShader* pFinalShader = pShader == nullptr ? Get_Component<CShader>() : pShader;
+    if (!pFinalShader) return E_FAIL;
+
+
+    if (FAILED(m_pCB->SetRawValue(&m_tPlantData, 0, sizeof(CB_PlantData))))
+        return E_FAIL;
+    return S_OK;
 }
 
 void CPlants::Free()

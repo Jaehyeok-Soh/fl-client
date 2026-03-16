@@ -1,0 +1,90 @@
+{
+    "Category": "MAP",
+    "Level Data": {
+        "Env Data": {
+            "Wind Data": {
+                "Direction": {
+                    "X": 1.0,
+                    "Y": 0.0,
+                    "Z": 1.0
+                },
+                "Power": 0.25
+            }
+        },
+        "Level Type": "TUTORIAL_VILLAGE",
+        "Texture Splating Info": "Village",
+        "strTag": "LevelData0"
+    },
+    "Objects": [
+        {
+            "Client Level Type": "LOGO",
+            "Client Make Path": "Batch_Object",
+            "Client Make Path Desc": [
+                {
+                    "Batch Object Info": {
+                        "Desc": {
+                            "Light Data": {
+                                "Ambient": {
+                                    "W": 1.0,
+                                    "X": 0.0,
+                                    "Y": 1.0,
+                                    "Z": 0.0
+                                },
+                                "Diffuse": {
+                                    "W": 1.0,
+                                    "X": 1.0,
+                                    "Y": 0.0,
+                                    "Z": 0.0
+                                },
+                                "Flicker": {
+                                    "Min": 0.18000000715255737,
+                                    "Speed": 9.821999549865723
+                                },
+                                "Range": 5.0,
+                                "Specular": {
+                                    "W": 1.0,
+                                    "X": 0.0,
+                                    "Y": 0.0,
+                                    "Z": 1.0
+                                },
+                                "Type": "POINT"
+                            }
+                        },
+                        "Type": "PointLight"
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 75.86123657226563,
+                        "Y": -9.647558212280273,
+                        "Z": 73.10172271728516
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": false,
+            "UE Raw Data Path": "",
+            "strTag": "Point_Light805"
+        }
+    ]
+}

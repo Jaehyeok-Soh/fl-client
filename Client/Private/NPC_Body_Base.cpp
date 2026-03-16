@@ -5,6 +5,7 @@
 #include "NPC_Base.h"
 
 #include "GameInstance.h"
+
 ////////////
 // State, Animation, Render
 ////////////

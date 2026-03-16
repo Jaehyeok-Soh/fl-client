@@ -60,6 +60,7 @@
 #include "Moon_SkillE_Obj.h"
 #include "SkillWarningSpace.h"
 #include "PlayerSkillObj_Headers.h"
+#include "SkyBox.h"
 
 //=================
 // GameInstance
@@ -103,6 +104,9 @@ HRESULT CLevel_Test::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_HybridObject()))
+		return E_FAIL;
+
+	if (FAILED(Ready_SkyBox()))
 		return E_FAIL;
 
 	return S_OK;
@@ -399,32 +403,8 @@ HRESULT CLevel_Test::Ready_Lights()
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
 		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
 		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vAmbient = Vec4(0.1f, 0.1f, 0.1f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.5f, 0.3f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.2f, 0.1f, 0.3f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 18.f, 0.f, 1.f);
-		desc.fRange = 10.f;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.3f, 0.6f, 0.4f, 1.f);
-		desc.vAmbient = Vec4(0.1f, 0.3f, 0.2f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 14.5f, 25.f, 1.f);
-		desc.fRange = 10.f;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;
@@ -500,7 +480,8 @@ HRESULT CLevel_Test::Ready_Monster()
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::NPC;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
@@ -558,7 +539,8 @@ HRESULT CLevel_Test::Ready_Monster()
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::NPC;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
@@ -626,7 +608,8 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::NPC;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
@@ -721,6 +704,22 @@ HRESULT CLevel_Test::Ready_Octree()
 			*vecWillRegistBounds[i])))
 			return E_FAIL;
 	}
+
+	return S_OK;
+}
+HRESULT CLevel_Test::Ready_SkyBox()
+{
+	_uint iAddLevelType = ENUM_TO_UINT(ELevelType::TEST);
+
+	CSkyBox::SKYBOX_DESC tDesc{};
+	tDesc.iLevelIndex = iAddLevelType;
+	tDesc.wstrModelTag = L"SM_Sky_ba01";
+	tDesc.wstrTextureTag = L"T_Sky_ba01";
+
+
+	CGameObject* pResult{nullptr};
+	pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC) , g_wszSkyBox_Prototype_Tag , iAddLevelType , g_wszSkyBoxLayer , &tDesc);
+	if (pResult == nullptr) return E_FAIL;
 
 	return S_OK;
 }

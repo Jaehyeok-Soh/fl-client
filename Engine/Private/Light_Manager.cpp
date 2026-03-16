@@ -33,16 +33,14 @@ HRESULT CLight_Manager::Add_Light(const LIGHT_DESC& LightDesc)
 	return S_OK;
 }
 
-HRESULT CLight_Manager::Push_DynamicLight(CLight* pLight)
+HRESULT CLight_Manager::Push_Light(CLight* pLight)
 {
-	if (pLight == nullptr)
-		return E_FAIL;
+	if (pLight == nullptr)							return E_FAIL;
+	if (pLight->Get_Type() != LIGHT_TYPE::POINT)	return E_FAIL;
 
-	if (pLight->Get_Type() != LIGHT_TYPE::DYNAMICPOINT)
-		return E_FAIL;
+	m_Lights[ENUM_TO_UINT(LIGHT_TYPE::POINT)].push_back(pLight);
 
-	m_Lights[ENUM_TO_UINT(LIGHT_TYPE::DYNAMICPOINT)].push_back(pLight);
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CLight_Manager::Render(CShader* pShader, CVIBuffer_Rect_Tex* pVIBuffer)
@@ -58,7 +56,9 @@ HRESULT CLight_Manager::Render(CShader* pShader, CVIBuffer_Rect_Tex* pVIBuffer)
 			pVIBuffer->Render();
 		}
 	}
-	m_Lights[ENUM_TO_UINT(LIGHT_TYPE::DYNAMICPOINT)].clear();
+
+	/* 점조명은 Push 해주기 */
+	m_Lights[ENUM_TO_UINT(LIGHT_TYPE::POINT)].clear();
 	return S_OK;
 }
 
@@ -104,8 +104,7 @@ void CLight_Manager::Setup_Pass(CShader* pShader, LIGHT_TYPE eType)
 	case Engine::LIGHT_TYPE::DIRECTIONAL:
 		pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::DIRECTIONAL));
 		break;
-	case Engine::LIGHT_TYPE::STATICPOINT:
-	case Engine::LIGHT_TYPE::DYNAMICPOINT:
+	case Engine::LIGHT_TYPE::POINT:
 		pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::POINT));
 		break;
 	}

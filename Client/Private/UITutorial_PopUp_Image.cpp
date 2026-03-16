@@ -5,6 +5,7 @@
 //=================
 // Component
 //=================
+#include "Player.h"
 #include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -53,6 +54,9 @@ HRESULT CUITutorial_PopUp_Image::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	m_vMoveOffset = Vec2{ 0.f, -200.f };
+
+	Set_Active(false);
+
 	return S_OK;
 }
 
@@ -64,6 +68,7 @@ void CUITutorial_PopUp_Image::Update_Priority(const _float fTimeDelta)
 void CUITutorial_PopUp_Image::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	Tick_By_Type(fTimeDelta);
 }
 
 void CUITutorial_PopUp_Image::Update_Late(const _float fTimeDelta)
@@ -106,6 +111,16 @@ HRESULT CUITutorial_PopUp_Image::Bind_ShaderResources()
 
 HRESULT CUITutorial_PopUp_Image::Attach_Personal_Info()
 {
+	m_fOriginWidth = m_fWidth;
+
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayer = dynamic_cast<CPlayer*>(pResult);
+	if (nullptr == m_pPlayer)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -116,8 +131,11 @@ void CUITutorial_PopUp_Image::Bind_Events()
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
-					this->Set_Visible();
-					this->Set_Active(true);
+					if (!m_isFirstEntered)
+					{
+						this->Set_Visible();
+						this->Set_Active(true);
+					}
 				}
 			})
 	);
@@ -135,6 +153,70 @@ void CUITutorial_PopUp_Image::Bind_Events()
 
 void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 {
+	switch (m_eTutorialTypeID)
+	{
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_1:
+	{
+		if (KEY_BUTTON_DOWN(DIK_SPACE))
+		{
+			if (!m_isFirstEntered)
+			{
+				m_isFirstEntered = true;
+
+				m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>(m_eTutorialTypeID);
+			}
+		}
+	}
+	break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_2:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::JUMP)
+		{
+			if (!m_isFirstEntered)
+			{
+				m_isFirstEntered = true;
+
+				m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>(m_eTutorialTypeID);
+			}
+		}
+	}
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3:
+	{
+
+	}
+	break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3_1:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_5:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_6:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_7:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_8:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_9:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_10:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_11:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_12:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_13:
+		break;
+	case Client::EUITutorialPopUpTypeID::END:
+	default:
+		break;
+	}
+
+
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_ICON:
@@ -215,9 +297,8 @@ void CUITutorial_PopUp_Image::Initialize_InVisible_Event()
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BG:
-		m_fOriginWidth = m_fWidth;
 		Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
-		Ready_LerpChange(0.5f, m_fWidth, 0.f, 1.f, m_fDelay);
+		Ready_LerpChange(0.5f, m_fWidth, 0.1f, 1.f, m_fDelay);
 		break;
 	}
 }
@@ -242,6 +323,7 @@ _bool CUITutorial_PopUp_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		{
 			m_fWidth = m_fOriginWidth;
 			m_isFin_Event = true;
+			Set_Active(false);
 			return true;
 		}
 	}

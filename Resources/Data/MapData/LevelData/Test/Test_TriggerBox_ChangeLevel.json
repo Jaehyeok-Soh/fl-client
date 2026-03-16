@@ -1,0 +1,55 @@
+{
+    "Category": "MAP",
+    "Level Data": {
+        "Level Type": "STATIC",
+        "Texture Splating Info": "None",
+        "strTag": "LevelData0"
+    },
+    "Objects": [
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 12,
+            "Client Make Path Desc": [
+                {
+                    "Change Level Type Name": "TUTORIAL_BOSS",
+                    "Extents": {
+                        "X": 2.299999952316284,
+                        "Y": 2.0999999046325684,
+                        "Z": 2.299999952316284
+                    }
+                }
+            ],
+            "Draw Type": 0,
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -0.5351513624191284,
+                        "Y": 3.8963260650634766,
+                        "Z": -3.794215679168701
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": false,
+            "UE Raw Data Path": "",
+            "strTag": "TriggerBox_ChangeLevel3"
+        }
+    ]
+}

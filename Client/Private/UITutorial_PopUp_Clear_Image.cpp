@@ -158,14 +158,22 @@ void CUITutorial_PopUp_Clear_Image::Bind_Events()
 	break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX:
 	{
+		//m_vecEventHandles.push_back(
+		//	m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+		//		{
+		//			if (EUIEventID::TUTORIAL_POPUP_EVENT1 == Desc.eEventID)
+		//			{
+		//				this->Set_Visible();
+		//				this->Set_Active(true);
+		//			}
+		//		})
+		//);
+
 		m_vecEventHandles.push_back(
-			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			m_pGameInstance->Subscribe<TUTORIAL_POPUP_CLEAR>([this](EUITutorialPopUpTypeID ID)
 				{
-					if (EUIEventID::TUTORIAL_POPUP_EVENT1 == Desc.eEventID)
-					{
-						this->Set_Visible();
-						this->Set_Active(true);
-					}
+					this->Set_Visible();
+					this->Set_Active(true);
 				})
 		);
 	}
@@ -199,8 +207,15 @@ void CUITutorial_PopUp_Clear_Image::Initialize_Visible_Event()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG:
-		Ready_Fade(0.3f, 0.f, 1.f, 0.f);
+	{
+		Ready_Fade(0.5f, 0.f, 1.f, 0.f);
+		Ready_ChageColor(0.2f, 
+			Vec4{ 0.f, 0.f, 0.f, 0.f }, Vec4{ 0.f, 0.f, 0.f, 0.f }, 
+			Vec4{ 1.f, 0.98f, 0.8f, 0.f }, Vec4{ 1.f, 0.98f, 0.8f, 0.f },
+			3.f, m_fDelay);
+
 		m_fProgress_Ratio = 0.f;
+	}
 		break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_ICON:
 	{
@@ -211,7 +226,7 @@ void CUITutorial_PopUp_Clear_Image::Initialize_Visible_Event()
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX:
 	{
-		Ready_LerpChange(0.3f, 0.f, 200.f, 5.f, 0.f);
+		Ready_LerpChange(0.3f, 0.f, 400.f, 3.f, 0.f);
 		m_fWidth = 0.1f;
 		m_fHeight = 0.1f;
 		m_fAlpha_Ratio = 1.f;
@@ -227,12 +242,23 @@ _bool CUITutorial_PopUp_Clear_Image::Tick_Visible_Event(const _float fTimeDelta)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG:
 	{
-
 		_bool isFade = Tick_Fade(fTimeDelta);
+		_bool isColor = Tick_ChageColor(fTimeDelta);
 
-		if (isFade)
+		if (isColor && !m_isPaulse)
+		{
+			Ready_ChageColor(0.2f,
+				Vec4{ 1.f, 0.98f, 0.8f, 0.f }, Vec4{ 1.f, 0.98f, 0.8f, 0.f },
+				Vec4{ 0.f, 0.f, 0.f, 0.f }, Vec4{ 0.f, 0.f, 0.f, 0.f },
+				3.f, m_fDelay);
+
+			m_isPaulse = true;
+		}
+
+		if (isFade && isColor && m_isPaulse)
 		{
 			m_isFin_Event = true;
+			m_isPaulse = false;
 			return true;
 		}
 

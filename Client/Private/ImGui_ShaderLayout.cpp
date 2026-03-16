@@ -32,6 +32,9 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         m_defHDR = m_pGameInstance->Get_HDRParamDesc();
         m_defBloom = m_pGameInstance->Get_BloomParamDesc();
         m_defOutline = m_pGameInstance->Get_OutlineParamDesc();
+        m_defFog = m_pGameInstance->Get_FogParamDesc();
+        m_defToon = m_pGameInstance->Get_ToonParamDesc();
+        m_defCascade = m_pGameInstance->Get_CascadeParamDesc();
         m_bDefaultCached = true;
     }
 
@@ -51,6 +54,9 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         m_pGameInstance->Get_HDRParamDesc() = m_defHDR;
         m_pGameInstance->Get_BloomParamDesc() = m_defBloom;
         m_pGameInstance->Get_OutlineParamDesc() = m_defOutline;
+        m_pGameInstance->Get_FogParamDesc() = m_defFog;
+        m_pGameInstance->Get_ToonParamDesc() = m_defToon;
+        m_pGameInstance->Get_CascadeParamDesc() = m_defCascade;
         m_pGameInstance->Commit_AllPostParams();
     }
 
@@ -264,6 +270,145 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         ImGui::PopID();
     }
 
+    // -----------------------
+    // Fog
+    // -----------------------
+    if (ImGui::CollapsingHeader("Fog", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::PushID("Fog");
+        auto& fog = m_pGameInstance->Get_FogParamDesc();
+
+        _bool bChanged = false;
+
+        _float col[4] = { fog.vColor.x, fog.vColor.y, fog.vColor.z, fog.vColor.w };
+        if (ImGui::ColorEdit3("FogColor", col))
+        {
+            fog.vColor = { col[0], col[1], col[2], col[3] };
+            bChanged = true;
+        }
+
+        _float colH[4] = { fog.vHighColor.x, fog.vHighColor.y, fog.vHighColor.z, fog.vHighColor.w };
+        if (ImGui::ColorEdit3("HighColor", colH))
+        {
+            fog.vHighColor = { colH[0], colH[1], colH[2], colH[3] };
+            bChanged = true;
+        }
+
+        ImGui::SeparatorText("Distance Fog");
+        bChanged |= ImGui::SliderFloat("Start", &fog.fFogStart, 0.f, 200.f);
+        bChanged |= ImGui::SliderFloat("End", &fog.fFogEnd, 1.f, 500.f);
+        bChanged |= ImGui::SliderFloat("Density", &fog.fFogDensity, 0.f, 0.5f, "%.4f");
+        bChanged |= ImGui::SliderFloat("MaxOpacity", &fog.fFogMaxOpacity, 0.f, 1.f);
+
+        ImGui::TextDisabled("Density=0: Linear, >0: Exponential");
+
+        ImGui::SeparatorText("Height Fog");
+        bChanged |= ImGui::SliderFloat("BaseHeight", &fog.fFogBaseHeight, -50.f, 50.f);
+        bChanged |= ImGui::SliderFloat("HeightFalloff", &fog.fFogHeightFalloff, 0.01f, 1.f, "%.3f");
+        bChanged |= ImGui::SliderFloat("HeightDensity", &fog.fFogHeightDensity, 0.f, 0.2f, "%.4f");
+
+        ImGui::SeparatorText("Noise");
+        bChanged |= ImGui::SliderFloat("NoiseScale", &fog.fFogNoiseScale, 0.f, 1.f);
+        bChanged |= ImGui::SliderFloat("NoiseSpeed", &fog.fFogNoiseSpeed, 0.f, 2.f);
+
+        ImGui::TextDisabled("NoiseScale=0: Noise Off");
+
+        if (m_bAutoApply == false)
+        {
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Apply##Fog"))
+                m_pGameInstance->Commit_FogParam();
+        }
+        else if (bChanged)
+        {
+            m_pGameInstance->Commit_FogParam();
+        }
+
+        if (ImGui::SmallButton("Reset##Fog"))
+        {
+            fog = m_defFog;
+            m_pGameInstance->Commit_FogParam();
+        }
+        ImGui::PopID();
+    }
+    // -----------------------
+    // Toon
+    // -----------------------
+    if (ImGui::CollapsingHeader("Toon", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::PushID("Toon");
+        auto& toon = m_pGameInstance->Get_ToonParamDesc();
+
+        _bool bChanged = false;
+
+        ImGui::SeparatorText("Diffuse");
+        bChanged |= ImGui::SliderFloat("Wrap", &toon.fWrap, 0.f, 1.f, "%.2f");
+        bChanged |= ImGui::SliderFloat("ShadowMid", &toon.fShadowMid, 0.f, 1.f, "%.2f");
+        bChanged |= ImGui::SliderFloat("ShadowSoftness", &toon.fShadowSoftness, 0.f, 0.5f, "%.3f");
+        bChanged |= ImGui::SliderFloat("ShadowStrength", &toon.fShadowStrength, 0.f, 1.f, "%.2f");
+        bChanged |= ImGui::SliderFloat("DiffuseStrength", &toon.fDiffuseStrength, 0.f, 3.f, "%.2f");
+
+        ImGui::SeparatorText("Rim");
+        bChanged |= ImGui::SliderFloat("RimThreshold", &toon.fRimThreshold, 0.f, 1.f, "%.2f");
+        bChanged |= ImGui::SliderFloat("RimSoftness", &toon.fRimSoftness, 0.f, 0.5f, "%.3f");
+        bChanged |= ImGui::SliderFloat("RimStrength", &toon.fRimStrength, 0.f, 3.f, "%.2f");
+
+        if (m_bAutoApply == false)
+        {
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Apply##Toon"))
+                m_pGameInstance->Commit_ToonParam();
+        }
+        else if (bChanged)
+        {
+            m_pGameInstance->Commit_ToonParam();
+        }
+
+        if (ImGui::SmallButton("Reset##Toon"))
+        {
+            toon = m_defToon;
+            m_pGameInstance->Commit_ToonParam();
+        }
+        ImGui::PopID();
+    }
+    // -----------------------
+    // Cascade
+    // -----------------------
+    if (ImGui::CollapsingHeader("Cascade Shadow", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::PushID("CascadeShadow");
+        auto& shadow = m_pGameInstance->Get_CascadeParamDesc();
+        _bool bChanged = false;
+
+        ImGui::SeparatorText("Cascade Split");
+        bChanged |= ImGui::SliderFloat("Cascade0 End", &shadow.fCascadeEnd0, 3.f, 30.f, "%.1f");
+        bChanged |= ImGui::SliderFloat("Cascade1 End", &shadow.fCascadeEnd1, 10.f, 100.f, "%.1f");
+
+        ImGui::SeparatorText("Bias");
+        bChanged |= ImGui::SliderFloat("ShadowBias", &shadow.fShadowBias, 0.0001f, 0.02f, "%.4f");
+        bChanged |= ImGui::SliderFloat("NormalBias", &shadow.fNormalBias, 0.f, 0.1f, "%.3f");
+
+        ImGui::SeparatorText("Appearance");
+        bChanged |= ImGui::SliderFloat("Strength", &shadow.fShadowStrength, 0.f, 1.f, "%.2f");
+
+        if (m_bAutoApply == false)
+        {
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Apply##Shadow"))
+                m_pGameInstance->Commit_CascadeParam();
+        }
+        else if (bChanged)
+        {
+            m_pGameInstance->Commit_CascadeParam();
+        }
+
+        if (ImGui::SmallButton("Reset##Shadow"))
+        {
+            shadow = m_defCascade;
+            m_pGameInstance->Commit_CascadeParam();
+        }
+        ImGui::PopID();
+    }
     ImGui::EndGroup();
 #endif
 }

@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "MonsterSkill",
+            "eColliderType": "Overlap",
+            "iID": 4,
+            "strTag": "Boomer_Attack02",
+            "tCombat": {
+                "DamageType": "Physical",
+                "HitType": "Light",
+                "fBaseDamage": 20.0,
+                "fHitStopSec": 0.0,
+                "fHitStunSec": 0.0,
+                "fImpulse": 0.0,
+                "fPushPower": 0.0
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

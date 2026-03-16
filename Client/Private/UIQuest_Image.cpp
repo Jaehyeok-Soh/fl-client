@@ -126,6 +126,20 @@ void CUIQuest_Image::Bind_Events()
 			})
 	);
 
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_START>(
+			[this]()
+			{
+				this->Set_Invisible();
+			})
+	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
+			{
+				this->Set_Visible();
+			})
+	);
 }
 
 void CUIQuest_Image::Tick_By_Type(const _float fTimeDelta)
@@ -134,20 +148,43 @@ void CUIQuest_Image::Tick_By_Type(const _float fTimeDelta)
 
 void CUIQuest_Image::Initialize_Visible_Event()
 {
+	Ready_Lerp_Movement(Vec2{ -20.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
 }
 
 _bool CUIQuest_Image::Tick_Visible_Event(const _float fTimeDelta)
 {
-	return true;
+	_bool isFade = Tick_Fade(fTimeDelta);
+	_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+
+	if (isFade && isMove)
+	{
+		m_isFin_Event = true;
+		return true;
+	}
+
+	return false;
 }
 
 void CUIQuest_Image::Initialize_InVisible_Event()
 {
+	m_isFin_Event = false;
+	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -20.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
 }
 
 _bool CUIQuest_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return true;
+	_bool isFade = Tick_Fade(fTimeDelta);
+	_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+
+	if (isFade && isMove)
+	{
+		m_isFin_Event = true;
+		return true;
+	}
+
+	return false;
 }
 
 CUIQuest_Image* CUIQuest_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -30,7 +30,6 @@
 #include "DataDocument_Map.h"
 #include "DataDocument_UI.h"
 
-
 //=================
 // UI
 //=================
@@ -42,7 +41,6 @@
 //=================
 #include "Bounds.h"
 #include "PhysicsCCT.h"
-
 
 //=================
 // Game Object
@@ -56,7 +54,7 @@
 #include "Monster_Dog_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
-
+#include "SkyBox.h"
 #include "PlayerSkillObj_Headers.h"
 
 //=================
@@ -114,6 +112,13 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 		MSG_BOX("CLevel_Tutorial_Village::Initialize, Ready_Map Create Failed");
 		return E_FAIL;
 	}
+
+	if (FAILED(Ready_SkyBox()))
+	{
+		MSG_BOX("CLevel_Tutorial_Village::Initialize, Ready_SkyBox Create Failed");
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -122,34 +127,10 @@ HRESULT CLevel_Tutorial_Village::Ready_Lights()
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vDirection = Vec3{ 0.228f, -0.655f, 0.721f };
+		desc.vDiffuse = Vec4(0.8f, 0.7f, 0.55f, 1.f);
+		desc.vAmbient = Vec4(0.2f, 0.17f, 0.25f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.5f, 0.3f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.2f, 0.1f, 0.3f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 18.f, 0.f, 1.f);
-		desc.fRange = 10.f;
-
-		if (FAILED(m_pGameInstance->Add_Light(desc)))
-			return E_FAIL;
-	}
-	{
-		LIGHT_DESC desc = {};
-		desc.eType = LIGHT_TYPE::STATICPOINT;
-		desc.vDiffuse = Vec4(0.3f, 0.6f, 0.4f, 1.f);
-		desc.vAmbient = Vec4(0.1f, 0.3f, 0.2f, 1.f);
-		desc.vSpecular = desc.vDiffuse;
-		desc.vPosition = Vec4(21.f, 14.5f, 25.f, 1.f);
-		desc.fRange = 10.f;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;
@@ -157,6 +138,24 @@ HRESULT CLevel_Tutorial_Village::Ready_Lights()
 
 	return S_OK;
 }
+
+HRESULT CLevel_Tutorial_Village::Ready_SkyBox()
+{
+	_uint iAddLevelType = ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE);
+
+	CSkyBox::SKYBOX_DESC tDesc{};
+	tDesc.iLevelIndex = iAddLevelType;
+	tDesc.wstrModelTag = L"SM_Sky_ba01";
+	tDesc.wstrTextureTag = L"T_Sky_ba01";
+
+
+	CGameObject* pResult{ nullptr };
+	pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszSkyBox_Prototype_Tag, iAddLevelType, g_wszSkyBoxLayer, &tDesc);
+	if (pResult == nullptr) return E_FAIL;
+
+	return S_OK;
+}
+
 
 HRESULT CLevel_Tutorial_Village::Build_Prototype()
 {
