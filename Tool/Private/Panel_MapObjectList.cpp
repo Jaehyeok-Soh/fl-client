@@ -1460,7 +1460,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDes
 
 void CPanel_MapObjectList::ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc)
 {
-	ImGui::SeparatorText(" Trigger Box Desc ");
+	ImGui::SeparatorText(" 'Trigger Box Desc' ");
 
 	if (ImGui::DragFloat3("Extents##TriggerBox_Extents", &pDesc->vExtents.x, 0.1f, 0.1f, 100.f, "%.2f"))
 	{

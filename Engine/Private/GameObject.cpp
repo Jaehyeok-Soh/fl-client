@@ -79,11 +79,6 @@ void CGameObject::Ready_Before_Render(const _float fTimeDelta)
 
 }
 
-HRESULT CGameObject::Render()
-{
-    return S_OK;
-}
-
 HRESULT CGameObject::Spawn_FromPool(void *pArg)
 {
     Set_Awake(false);

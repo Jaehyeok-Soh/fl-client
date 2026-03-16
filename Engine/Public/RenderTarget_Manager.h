@@ -12,6 +12,7 @@ enum class ERenderTarget : _uint
 	Specular,
 	Depth,
 	ObjectInfo,
+	Emissive,
 	SSAO_Ping,
 	SSAO_Pong,
 	SSAO_Full,
@@ -19,6 +20,8 @@ enum class ERenderTarget : _uint
 	SceneHDR_Copy,	// 유니티에서 SceneTexture라고 함. Effect 전용
 	Bloom_Ping,
 	Bloom_Pong,
+	Cascade_0,
+	Cascade_1,
 	OIT_Accum,		// 가중치가 적용된 색상 누적
 	OIT_Reveal,		// 배경 투과율 누적
 	END,
@@ -38,6 +41,8 @@ enum class EMRTLayer : _uint
 	Bloom_Extract,
 	Bloom_BlurH,
 	Bloom_BlurV,
+	Shadow_Cascade0,
+	Shadow_Cascade1,
 	OIT_Render,	// OIT_Accum + OIT_Reveal를 묶는 MRT
 	END,
 };
@@ -53,6 +58,7 @@ public:
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _bool bUseDSV);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV);
 	HRESULT End_MRT();
 	HRESULT Bind_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);

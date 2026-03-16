@@ -212,13 +212,6 @@ float2 GetStaticSpriteUV(float2 InUV, float4 spriteInfo)
     return spriteUV;
 }
 
-void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
-{
-    float4 vDepthDesc = g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV);
-    fNDCZ = vDepthDesc.x;
-    fViewZ = vDepthDesc.y;
-}
-
 float Float_Operation(float Src1, float Src2, uint Operator)        // 부동 소수점 연산
 {
     float dest;

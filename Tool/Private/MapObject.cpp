@@ -221,6 +221,17 @@ HRESULT CMapObject::Ready_Component()
 
 HRESULT CMapObject::Ready_ColliderTypeComponet()
 {
+    if (m_eClientMakePath == EClientMakePath::TriggerBox_TutorialUIEvent)
+    {
+        CBounding_OBB::BOUNDING_OBB_DESC tAABBDesc{};
+        tAABBDesc.vExtents = Vec3{1.f, 1.f, 1.f};
+
+        CCollider::COLLIDER_DESC tColliderDesc{};
+        tColliderDesc.pBoundingDesc = &tAABBDesc;
+
+        if (FAILED(CGameObject::Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Collider_AABB", &tColliderDesc)))
+            return E_FAIL;
+    }
 
     /* Collider 면 Collider 박스 달아주기 */
     if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)

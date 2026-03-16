@@ -1277,9 +1277,10 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
             weaponDesc.bMianWeapon = false;
             weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-            weaponDesc.vColorR = Vec4(1.f, 1.f, 1.f, 1.f);//Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
-            weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+            weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
             weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
+            weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));

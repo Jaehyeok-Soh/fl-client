@@ -205,7 +205,7 @@ void CUILoading_Text::Initialize_Visible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
-	Ready_Fade_Text(1.f, 0.f, 1.f, m_fDelay);
+	Ready_Fade_Text(1.f, 0.f, 1.f, 1.f);
 }
 
 void CUILoading_Text::Initialize_InVisible_Event()
