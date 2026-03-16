@@ -72,6 +72,7 @@
 #include "SocketObject.h"
 #include "SkyBox.h"
 #include "PointLight.h"
+#include "BonePart.h"
 
 //=================
 // SkillObject
@@ -611,17 +612,22 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
-	//// For. Prototype_Component_Model_MoonCloak
-	//{
-	//	CModel::MODEL_ORIGIN_DESC desc = {};
-	//	desc.eType = EModelType::ANIM;
-	//	desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-	//	desc.pMatPreTransform = &(matPreTransformScale);
-	//	desc.wstrModelFolderName = L"PlayerMoon_Cloak";
-	//	desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+	// For. Prototype_Component_Model_MoonCloak
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"PlayerMang";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
-	//	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-	//}
+		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 
 	// For.Prototype_Component_Model_Monster_Dog
 	{
@@ -797,6 +803,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Bone_Prototype_Tag,		CBonePart::Create(m_pDevice, m_pDeviceContext));
 
 		//ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Socket_Prototype_Tag, CSocketObject::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion

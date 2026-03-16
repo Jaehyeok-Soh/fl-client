@@ -40,9 +40,8 @@ HRESULT CState_HitFlyStart::Start(void* pArg, _bool bForce)
 		pOwnerTransform->Look_At_XZ(vTargetPos);
 	}
 
-	Vec3 vLookDir = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	vLookDir.Normalize();
-	SetCCTImpuls(vLookDir * 5.f);
+	Look_Impuls(-10.f);
+	Jump_Impuls(1.f);
 
 	return S_OK;
 }

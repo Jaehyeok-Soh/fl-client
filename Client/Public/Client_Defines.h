@@ -898,6 +898,7 @@ namespace Client
 
 	inline constexpr wchar_t g_wszPartObj_Effect_Prototype_Tag[]{ L"Prototype_GameObject_Part_Effect" }; // static
 	inline constexpr wchar_t g_wszPartObj_Socket_Prototype_Tag[]{ L"Prototype_GameObject_Part_Socket" }; // static
+	inline constexpr wchar_t g_wszPartObj_Bone_Prototype_Tag[]{ L"Prototype_GameObject_Part_Socket" }; // static
 
 #pragma endregion
 

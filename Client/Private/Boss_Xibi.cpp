@@ -359,6 +359,12 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
+	{
+		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
+			return E_FAIL;
+	}
+
 
 	return S_OK;
 }

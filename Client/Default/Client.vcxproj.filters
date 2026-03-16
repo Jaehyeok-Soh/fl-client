@@ -775,6 +775,9 @@
     <Filter Include="03. GameObject\PartObjects\NPC\Body\Pan">
       <UniqueIdentifier>{20ca04a6-e624-479c-ba98-36f81accee48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PartObjects\BonePart">
+      <UniqueIdentifier>{83efcc27-26a0-41e7-9849-ac303486e5a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1164,7 +1167,6 @@
     <ClInclude Include="..\public\Builder_AttackPreset.h">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\Builder_UIPrefabs.h">
       <Filter>07. System\01. Builder\UI</Filter>
     </ClInclude>
@@ -1440,6 +1442,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\NPC_Pan_Body.h">
       <Filter>03. GameObject\PartObjects\NPC\Body\Pan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BonePart.h">
+      <Filter>03. GameObject\PartObjects\BonePart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2096,6 +2104,9 @@
     <ClCompile Include="..\Private\NPC_Pan_Body.cpp">
       <Filter>03. GameObject\PartObjects\NPC\Body\Pan</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\BonePart.cpp">
+      <Filter>03. GameObject\PartObjects\BonePart</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">
@@ -2175,6 +2186,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">
       <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_BoneCombinePart.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
