@@ -757,9 +757,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest">
       <UniqueIdentifier>{b9efb574-6096-4b17-8af9-23ea111f5146}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\PartObjects\BonePart">
-      <UniqueIdentifier>{2715bd51-aa6f-46a4-b945-d8396339ca2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. MainApplication">
       <UniqueIdentifier>{1c92be80-c5c7-419a-81e5-19643d43a155}</UniqueIdentifier>
     </Filter>
@@ -777,6 +774,9 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\NPC\Body\Pan">
       <UniqueIdentifier>{20ca04a6-e624-479c-ba98-36f81accee48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\BonePart">
+      <UniqueIdentifier>{83efcc27-26a0-41e7-9849-ac303486e5a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1167,7 +1167,6 @@
     <ClInclude Include="..\public\Builder_AttackPreset.h">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\Builder_UIPrefabs.h">
       <Filter>07. System\01. Builder\UI</Filter>
     </ClInclude>
@@ -1446,6 +1445,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\BonePart.h">
       <Filter>03. GameObject\PartObjects\BonePart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
