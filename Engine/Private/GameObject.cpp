@@ -51,6 +51,7 @@ HRESULT CGameObject::Initialize(void* pArg)
     if (FAILED(Add_Component<CTransform>(0/* STATIC */, L"Prototype_Component_Transform", pArg)))
         return E_FAIL;
 
+
     return S_OK;
 }
 
@@ -77,11 +78,6 @@ void CGameObject::Update_Late(const _float fTimeDelta)
 void CGameObject::Ready_Before_Render(const _float fTimeDelta)
 {
 
-}
-
-HRESULT CGameObject::Render()
-{
-    return S_OK;
 }
 
 HRESULT CGameObject::Spawn_FromPool(void *pArg)

@@ -1,0 +1,78 @@
+{
+    "Category": "UI",
+    "Objects": [
+        {
+            "Type": "CANVAS",
+            "fHeight": 900.0,
+            "fPosX": 960.0,
+            "fPosY": 516.0,
+            "fPosZ": 0.0,
+            "fWidth": 1600.0,
+            "iEditorSizeX": 1600,
+            "iEditorSizeY": 900,
+            "iLevelIndex": 0,
+            "iNumPrefabs": 15,
+            "iPrefabType": 4,
+            "strTag": "Battle_DamageFont_Hit"
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "UI_TEXT",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 87.20930480957031,
+            "fPosX": 0.0,
+            "fPosY": 0.0,
+            "fPosZ": 0.0,
+            "fRotate": 0.0,
+            "fScale": 1.0,
+            "fWidth": 83.33332824707031,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 4,
+            "iShaderPass": 0,
+            "isActivate": true,
+            "isInteract": true,
+            "isUseColorTint": false,
+            "isVisible": false,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Battle_DamageFont_Hit",
+            "strGlowTextureTag": "",
+            "strNoiseTextureTag": "",
+            "strTag": "DamageFont_Hit",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "UI_TEXT",
+            "ePivot": 0,
+            "eShaderType": 8,
+            "eTextSubClassType": "BATTLE_DAMAGE_TEXT_HIT",
+            "fRotate": 0.0,
+            "fScale": 0.8333333134651184,
+            "strFontTag": "ContentsNum32",
+            "strOwnerName": "DamageFont_Hit",
+            "strTag": "DamageFont_Hit_TextData",
+            "strText": "156",
+            "vFontColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        }
+    ]
+}

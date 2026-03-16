@@ -219,6 +219,8 @@ namespace Engine
 		Matrix matView = Matrix::Identity;
 		Matrix matProj = Matrix::Identity;
 		Matrix matVP = Matrix::Identity;
+		float fAccTime = { 0.f };
+		SimpleMath::Vector3 vPadding = { SimpleMath::Vector3::Zero };
 	}SHADER_GLOBALDESC;
 
 	typedef struct tagShaderInvDesc
@@ -341,6 +343,56 @@ namespace Engine
 		float fFadeEnd{0.f};
 		SimpleMath::Vector2 vPadding{ SimpleMath::Vector2::Zero };
 	}SHADER_OUTLINE_DESC;
+
+	typedef struct tagShaderCascadeShadowDesc
+	{
+		// Light View × Proj 
+		SimpleMath::Matrix matLightVP[SHADOW_CASCADE_COUNT] = {};
+		// ViewZ 기준 분할 거리
+		float fCascadeEnd0 = { 8.0f };
+		float fCascadeEnd1 = { 40.f };
+		float  fShadowBias = { 0.0002f };
+		float  fNormalBias = { 0.04f };
+
+		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
+		float fShadowStrength = { 0.4f };
+		float fCascadeIndex = { 0.f };
+	}SHADER_CASCADE_SHADOW_DESC;
+
+	typedef struct tagShaderFogParamDesc
+	{
+		SimpleMath::Vector4 vColor = { 0.6f, 0.75f, 0.9f, 1.f };
+		SimpleMath::Vector4 vHighColor = { 0.7f, 0.8f, 0.95f, 1.f };
+
+		float fFogStart = { 15.f };
+		float fFogEnd = { 80.f };
+		float fFogDensity = { 0.f };
+		float fFogHeightFalloff = { 0.15f };
+
+		float fFogBaseHeight = { 0.f };
+		float fFogMaxOpacity = { 0.85f };
+		float fFogHeightDensity = { 0.02f };
+		float fFogNoiseScale = { 0.f };
+
+		float fFogNoiseSpeed = { 0.f };
+		SimpleMath::Vector3 vPad = { SimpleMath::Vector3::Zero };
+	}SHADER_FOG_DESC;
+
+	typedef struct tagShaderToonParamDesc
+	{
+		float fWrap = { 0.25f };
+		float fShadowMid = { 0.55f };
+		float fShadowSoftness = { 0.10f };
+		float fShadowStrength{ 0.85f };
+		
+		float fRimThreshold = { 0.65f };
+		float fRimSoftness = { 0.10f };
+		float fRimStrength = { 0.0f };
+		float fPad = { 0.f };
+
+		float fDiffuseStrength = { 1.0f };
+		SimpleMath::Vector3 vPad { 0.f, 0.f, 0.f };
+	}SHADER_TOON_DESC;
 
 	typedef struct tagShaderEffectDesc
 	{

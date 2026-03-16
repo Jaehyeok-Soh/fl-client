@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "PlayerSkill",
+            "eColliderType": "Overlap",
+            "iID": 4,
+            "strTag": "Condemn",
+            "tCombat": {
+                "DamageType": "Physical",
+                "HitType": "Knockdown",
+                "fBaseDamage": 500.0,
+                "fHitStopSec": 0.0,
+                "fHitStunSec": 0.0,
+                "fImpulse": 0.0,
+                "fPushPower": 0.0
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

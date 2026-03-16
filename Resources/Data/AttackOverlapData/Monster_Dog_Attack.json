@@ -1,0 +1,166 @@
+{
+    "Category": "OVERLAP_SCRIPT",
+    "Objects": [
+        {
+            "attackEvents": [
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 11.954771995544434,
+                    "iAnimIndex": 0,
+                    "strAnimTag": "Animation_Monster_Dog_Attack_01",
+                    "strDescription": "attack_01",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 10.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 1.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Dog_Attack01",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.5,
+                            "z": 1.9600000381469727
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 11.949999809265137,
+                    "iAnimIndex": 1,
+                    "strAnimTag": "Animation_Monster_Dog_Attack_02",
+                    "strDescription": "attack_02",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 10.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 1.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Dog_Attack02",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.5,
+                            "z": 1.9600000381469727
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 11.949999809265137,
+                    "iAnimIndex": 2,
+                    "strAnimTag": "Animation_Monster_Dog_Attack_03",
+                    "strDescription": "attack_03-1",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 1.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Dog_Attack03",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.5,
+                            "z": 1.9600000381469727
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 22.0,
+                    "iAnimIndex": 2,
+                    "strAnimTag": "Animation_Monster_Dog_Attack_03",
+                    "strDescription": "attack_03-2",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 1.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Dog_Attack03",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.5,
+                            "z": 1.9600000381469727
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 30.0,
+                    "iAnimIndex": 44,
+                    "strAnimTag": "Animation_Monster_Dog_Skill01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 1.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Dog_Skill01",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.5,
+                            "z": 0.30000001192092896
+                        }
+                    }
+                }
+            ],
+            "iNumPool": 10,
+            "strTag": "Monster_Dog"
+        }
+    ]
+}

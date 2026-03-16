@@ -511,7 +511,9 @@ CModel* CMapToolManager::Get_BatchObjectModel(DTO::EMakeObjectType eType)
 
 	switch (eType)
 	{
-	case DTO::EMakeObjectType::Battle_Field:	wstrModelName = L"Cube"; break;
+	case DTO::EMakeObjectType::Battle_Field:
+	case DTO::EMakeObjectType::PointLight:		
+		wstrModelName = L"Cube"; break;
 	break;
 	default:									return nullptr;
 	}

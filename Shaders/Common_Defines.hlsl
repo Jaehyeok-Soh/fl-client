@@ -8,6 +8,8 @@
 
 #define SSAO_KERNEL_COUNT 16
 
+#define SHADOW_CASCADE_COUNT 2
+
 //////////////////
 // MaterialSlot //
 //////////////////

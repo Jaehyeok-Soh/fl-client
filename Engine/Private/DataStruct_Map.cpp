@@ -6,6 +6,7 @@
 #include "Bounding_Sphere.h"
 #include "Bounding_Obb.h"
 #include "TextureBase.h"
+#include "Light.h"
 
 #pragma push_macro("new")
 #undef new
@@ -463,6 +464,11 @@ void PLANTS_DESC::from_Json(const json& LoadJson)
 			Engine_Utils::read_vec4_xyzw(Plants_LoadJson["Color"],this->vMITint_Color);
 		}
 	}
+
+	if (LoadJson.contains("Diffuse Color Power"))
+	{
+		this->fDiffuseColorPower = LoadJson["Diffuse Color Power"];
+	}
 }
 
 void PLANTS_DESC::to_Json(json& SaveJson)
@@ -471,6 +477,7 @@ void PLANTS_DESC::to_Json(json& SaveJson)
 
 	Engine_Utils::write_vec4_xyzw(Plants_SaveJson["Color"],this->vMITint_Color);
 
+	SaveJson["Diffuse Color Power"] = this->fDiffuseColorPower;
 }
 
 #pragma region Tree
@@ -767,7 +774,7 @@ void FOG_DESC::from_Json(const json& LoadJson)
 			const json& KeyJson = LoadJson[strFindKey];
 			if (KeyJson.contains("UV"))
 			{
-				Engine_Utils::read_vec4_xyzw(LoadJson["UV"], this->vUV[i]);
+				Engine_Utils::read_vec4_xyzw(KeyJson["UV"], this->vUV[i]);
 			}
 			if (KeyJson.contains("Texture"))
 			{
@@ -856,11 +863,13 @@ void BATCH_OBJECT_DESC::from_Json(const json& LoadJson)
 		
 		if(BatchObjectDesc_LoadJson.contains("Type"))
 		{
-			this->eBatchObjectType = DTO::MakeObjectType_ToEnum(BatchObjectDesc_LoadJson["Type"].get<string>());
+			this->Change_BatchObjecType(DTO::MakeObjectType_ToEnum(BatchObjectDesc_LoadJson["Type"].get<string>()));
 		}
 
 		if (pBatchObjectDesc)
+		{
 			pBatchObjectDesc->from_Json(BatchObjectDesc_LoadJson["Desc"]);
+		}
 	}
 }
 
@@ -874,7 +883,6 @@ void BATCH_OBJECT_DESC::to_Json(json& SaveJson)
 		pBatchObjectDesc->to_Json(BatchObjectDesc_SaveJson["Desc"]);
 }
 
-#pragma endregion
 
 #pragma region Battle Field
 
@@ -964,6 +972,105 @@ void BATTLE_FIELD_DESC::to_Json(json& SaveJson)
 		SaveJson["Radius"] = this->fRadius;
 	}
 }
+#pragma endregion
+
+#pragma region Batch Point Light
+
+POINTLIHGT_DESC::POINTLIHGT_DESC()
+	:BATCH_OBJECT_DESC_BASE()
+	, isFlicker{ false }
+	, fFlickerSpeed{ 1.f }
+	, fFlickerMin{ 1.f }
+	, fBaseRange{1.f}
+	, pDebugLight{ nullptr }
+	, tLightDesc{}
+{
+	this->tLightDesc.eType = LIGHT_TYPE::POINT;
+	this->tLightDesc.vDiffuse  = {1.f,1.f,1.f,1.f};
+	this->tLightDesc.vAmbient  = {1.f,1.f,1.f,1.f};
+	this->tLightDesc.vSpecular = {1.f,1.f,1.f,1.f};
+	pDebugLight = CLight::Create(this->tLightDesc);
+}
+
+POINTLIHGT_DESC::POINTLIHGT_DESC(const POINTLIHGT_DESC& rhs)
+	: BATCH_OBJECT_DESC_BASE(rhs)
+	, tLightDesc{rhs.tLightDesc}
+	, isFlicker{ rhs.isFlicker }
+	, fFlickerSpeed{ rhs.fFlickerSpeed }
+	, fFlickerMin{ rhs.fFlickerMin }
+	, fBaseRange{rhs.fBaseRange}
+	, pDebugLight{ rhs.pDebugLight }
+{
+	/* 이때 생성 */
+	pDebugLight = CLight::Create(this->tLightDesc);
+}
+POINTLIHGT_DESC::~POINTLIHGT_DESC()
+{
+	Safe_Release(pDebugLight);
+}
+
+void POINTLIHGT_DESC::Update_Light(const Vec4& vPos)
+{
+	if (this->pDebugLight)
+	{
+		pDebugLight->Setup_Diffuse(this->tLightDesc.vDiffuse);
+		pDebugLight->Setup_Ambient(this->tLightDesc.vAmbient);
+		pDebugLight->Setup_Specular(this->tLightDesc.vSpecular);
+		pDebugLight->Setup_Range(this->fBaseRange);
+		pDebugLight->Setup_Position(vPos);
+	}
+}
+
+void POINTLIHGT_DESC::from_Json(const json& LoadJson)
+{
+	if (!LoadJson.contains("Light Data")) return;
+	const auto& LightData_LoadJson = LoadJson["Light Data"];
+
+	this->tLightDesc.eType = Engine_Utils::LIGHTTYPE_ToEnum(LightData_LoadJson["Type"]);
+
+	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Diffuse"], this->tLightDesc.vDiffuse);
+	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Ambient"], this->tLightDesc.vAmbient);
+	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Specular"], this->tLightDesc.vSpecular);
+
+	if (LightData_LoadJson.contains("Range"))
+	{
+		this->fBaseRange = LightData_LoadJson["Range"];
+		this->tLightDesc.fRange = this->fBaseRange; // 로드 시점엔 일단 원본 크기로 세팅
+	}
+
+	// 4. Flicker 데이터 복원
+	if (LightData_LoadJson.contains("Flicker"))
+	{
+		this->isFlicker = true;
+		const auto& FlickerData_LoadJson = LightData_LoadJson["Flicker"];
+
+		this->fFlickerSpeed = FlickerData_LoadJson.value("Speed", 1.0f);
+		this->fFlickerMin = FlickerData_LoadJson.value("Min", 0.5f);
+	}
+	else
+	{
+		this->isFlicker = false;
+	}
+}
+
+void POINTLIHGT_DESC::to_Json(json& SaveJson)
+{
+	auto& LightData_SaveJson = SaveJson["Light Data"];
+	LightData_SaveJson["Type"] = Engine_Utils::LIGHTTYPE_ToString(this->tLightDesc.eType);
+
+	Engine_Utils::write_vec4_xyzw(LightData_SaveJson["Diffuse"],this->tLightDesc.vDiffuse);
+	Engine_Utils::write_vec4_xyzw(LightData_SaveJson["Ambient"],this->tLightDesc.vAmbient);
+	Engine_Utils::write_vec4_xyzw(LightData_SaveJson["Specular"],this->tLightDesc.vSpecular);
+	LightData_SaveJson["Range"] = this->fBaseRange;			/* 아마 Desc안에있는 Range는 업데이트때마다 달라진다 */
+
+	if (this->isFlicker == true)
+	{
+		auto& FlickerData_SaveJson = LightData_SaveJson["Flicker"];
+		FlickerData_SaveJson["Speed"]	= this->fFlickerSpeed;
+		FlickerData_SaveJson["Min"]		= this->fFlickerMin;
+	}
+}
+
 
 #pragma endregion
 
@@ -977,6 +1084,13 @@ void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
 	{
 		Engine_Utils::read_vec3_xyz(LoadJson["Extents"], this->vExtents);
 	}
+	if (LoadJson.contains("Rotation"))
+	{
+		Vec3 vDegree{};
+		Engine_Utils::read_vec3_xyz(LoadJson["Rotation"], vDegree);
+		this->vRotation = Vec3(XMConvertToRadians(vDegree.x), XMConvertToRadians(vDegree.y), XMConvertToRadians(vDegree.z));
+	}
+
 
 	if (LoadJson.contains("bHasQuest"))
 		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
@@ -1003,6 +1117,9 @@ void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
 void TRIGGERBOX_DESC::to_Json(json& SaveJson)
 {
 	Engine_Utils::write_vec3_xyz(SaveJson["Extents"], this->vExtents);
+
+	Vec3 vDegree = Vec3(XMConvertToDegrees(vRotation.x), XMConvertToDegrees(vRotation.y), XMConvertToDegrees(vRotation.z));
+	Engine_Utils::write_vec3_xyz(SaveJson["Rotation"], vDegree );
 
 	SaveJson["bHasQuest"] = this->bHasQuest;
 
@@ -1184,9 +1301,21 @@ void TRIGGERBOX_TUTORIALUIEVENT_DESC::to_Json(json& SaveJson)
 #pragma endregion
 
 
-
-
-
 #pragma endregion
+
+#pragma region Make_BatchObject_Desc cpp구현부
+BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType, BATCH_OBJECT_DESC_BASE* pBase)
+{
+	switch (eBatchObjectType)
+	{
+	case DTO::EMakeObjectType::Battle_Field:	return pBase == nullptr ? new BATTLE_FIELD_DESC		:	new BATTLE_FIELD_DESC(*static_cast<BATTLE_FIELD_DESC*>(pBase));
+	case DTO::EMakeObjectType::PointLight:		return pBase == nullptr ? new POINTLIHGT_DESC		:	new POINTLIHGT_DESC(*static_cast<POINTLIHGT_DESC*>(pBase));
+	default:									return nullptr;
+	}
+
+	return nullptr;
+}
+#pragma endregion
+
 
 NS_END

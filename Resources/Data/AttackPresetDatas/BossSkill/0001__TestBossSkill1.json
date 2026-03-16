@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "BossSkill",
+            "eColliderType": "Overlap",
+            "iID": 1,
+            "strTag": "TestBossSkill1",
+            "tCombat": {
+                "DamageType": "Physical",
+                "HitType": "Launch",
+                "fBaseDamage": 6.699999809265137,
+                "fHitStopSec": 0.5799999833106995,
+                "fHitStunSec": 0.36000001430511475,
+                "fImpulse": 43.0,
+                "fPushPower": 4.300000190734863
+            },
+            "tPolicy": {
+                "PolicyType": "Interval",
+                "fIntervalSec": 0.7699999809265137
+            }
+        }
+    ]
+}

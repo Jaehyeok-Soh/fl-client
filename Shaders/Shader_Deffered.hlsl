@@ -1,6 +1,100 @@
 #include "Struct_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
+float SampleCascadeShadowPCF(float3 vWorldPos, float3 vWorldNormal, float fNDotL, float fViewZ)
+{
+    int iCascade = (fViewZ > cascadeParam.fCascadeEnd0) ? 1 : 0;
+    
+    // 스치는 입사각일수록 더 크게
+    float fNormalOffset = cascadeParam.fNormalBias * (1.0f - fNDotL);
+    
+    float3 vBiasedPos = vWorldPos + vWorldNormal * fNormalOffset;
+    
+    // World -> LightClip
+    float4 vLightClip = mul(float4(vBiasedPos, 1.f), cascadeParam.matLightVP[iCascade]);
+    float3 vLightNDC = vLightClip.xyz / vLightClip.w;
+    
+    // NDC -> UV
+    float2 vShadowUV = NDC_ToUV(vLightNDC.xy);
+    
+    // 범위 밖 커트
+    if (vShadowUV.x < 0.f || vShadowUV.x > 1.f ||
+        vShadowUV.y < 0.f || vShadowUV.y > 1.f ||
+        vLightNDC.z < 0.f || vLightNDC.z > 1.f)
+        return 1.f;
+    
+    float fCurrentDepth = vLightNDC.z;
+    
+    // 3x3 PCF
+    float fShadow = 0.f;
+    [unroll]
+    for (int y = -1; y <= 1; ++y)
+    {
+        [unroll]
+        for (int x = -1; x <= 1; ++x)
+        {
+            float2 vOffset = float2(x, y) * cascadeParam.vShadowMapInvSize;
+            float fStoredDepth;
+            
+            if (iCascade == 0)
+                fStoredDepth = g_RenderTargetCascadeShadowmap0.Sample(PointClampSampler, vShadowUV + vOffset, 0).r;
+            else
+                fStoredDepth = g_RenderTargetCascadeShadowmap1.Sample(PointClampSampler, vShadowUV + vOffset, 0).r;
+            
+            fShadow += ((fCurrentDepth - cascadeParam.fShadowBias) > fStoredDepth) ? 0.f : 1.f;
+        }
+    }
+    
+    fShadow /= 9.f;
+    return lerp(1.f - cascadeParam.fShadowStrength, 1.f, fShadow);
+}
+
+float GetRimMask(float2 vUV)
+{
+    uint packed = LoadObjectInfo(vUV, OutlineParam.vInvSize);
+    uint flags = UnpackFlags8(packed);
+    return HasRim(flags) ? 1.0f : 0.0f;
+}
+
+float ComputeToonDiffuse(float3 vNormal, float3 vLightDir)
+{
+    // 기본 Lambert의 NdotL을 구함
+    float NdotL = saturate(dot(vNormal, vLightDir));
+    
+    // 곡면에서 끊기지않게 Wrap Lighting을 적용
+    float fWrapped = saturate((NdotL + toonParam.fWrap) / (1.0f + toonParam.fWrap));
+
+    // 밝은 면과 그림자 면의 경계를 부드럽게 만듦
+    float fToonLight = smoothstep(
+        toonParam.fShadowMid - toonParam.fShadowSoftness,
+        toonParam.fShadowMid + toonParam.fShadowSoftness, fWrapped);
+    
+    // 그림자 최소 밝기와 밝은면 1.0 사이를 보간
+    return lerp(toonParam.fShadowStrength, 1.0f, fToonLight);
+}
+
+float ComputeToonRim(float3 vNormal, float3 vViewDir, float3 vLightDir)
+{
+    // 카메라 기준 외곽 성분을 구함
+    float fRimBase = 1.0f - saturate(dot(vNormal, vViewDir));
+    
+    // threshold와 softness로 얇은 rim 밴드 형성
+    float fRim = smoothstep(
+        toonParam.fRimThreshold - toonParam.fRimSoftness,
+        toonParam.fRimThreshold + toonParam.fRimSoftness, fRimBase);
+    
+    // Rim이 밝은 면 전체에 퍼지지 않게 어두운 쪽에서만 조금 더 살림
+    float fShadowSide = 1.0f - saturate(dot(vNormal, vLightDir));
+    float fShadowMask = smoothstep(0.25f, 0.85f, fShadowSide);
+    
+    return fRim * fShadowMask * toonParam.fRimStrength;
+}
+
+float Luma(float3 vC)
+{
+    return dot(vC, float3(0.216, 0.7152, 0.0722));
+}
+
 // 16^3 LUT (256 x 16)
 float3 ApplyLUT_16(float3 vC)
 {
@@ -48,11 +142,6 @@ float G_Smith(float fNdotV, float fNdotL, float fAlpha)
     float fK = fAlpha + 1.0f;
     fK = (fK * fK) / 8.0f;
     return G_SchlickGGX(fNdotV, fK) * G_SchlickGGX(fNdotL, fK);
-}
-
-float Luma(float3 vC)
-{
-    return dot(vC, float3(0.216, 0.7152, 0.0722));
 }
 
 // Soft Threshold
@@ -114,28 +203,6 @@ float3 ToneMap_ACES(float3 x)
     const float d = 0.59f;
     const float e = 0.14f;
     return saturate((x * (a * x + b)) / (x * (c * x + d) + e));
-}
-
-float3 DecodeWorldNormal(float2 vUV)
-{
-    float4 vNormalDesc = g_RenderTargetNormalTexture.Sample(PointClampSampler, vUV);
-    return normalize(vNormalDesc.xyz * 2.f - 1.f);
-}
-
-void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
-{
-    float4 vDepthDesc = g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV);
-    fNDCZ = vDepthDesc.x;
-    fViewZ = vDepthDesc.y;
-}
-
-void DecodeSpecularMask(float2 vUV, out float fAO, out float fRough, out float fMetal)
-{
-    float4 vSpecularMaskDesc = g_RenderTargetSpecularMaskTexture.Sample(LinearSampler, vUV);
-    fAO = vSpecularMaskDesc.x <= EPSILON  ? 1.f : vSpecularMaskDesc.x;
-    
-    fRough = vSpecularMaskDesc.y;
-    fMetal = vSpecularMaskDesc.z;
 }
 
 float SilhouetteEdge(float2 vUV)
@@ -217,44 +284,6 @@ float Blur5Tap(float2 vUV, float2 vDir, float2 vInvHalf)
     return c0 * w0 + (c1 + c2) * w1 + (c3 + c4) * w2;
 }
 
-float GetViewZ(float2 vUV)
-{
-    return g_RenderTargetDepthTexture.Sample(PointClampSampler, vUV).y;
-}
-
-float2 UV_ToNDC(float2 vUV)
-{
-    // [0, 0] ==> [-1, 1]
-    // [1, 1] ==> [1, -1]
-    return float2(vUV.x * 2.f - 1.f, vUV.y * -2.f + 1.f);
-}
-
-float2 NDC_ToUV(float2 vNDC)
-{
-    // [-1, 1] ==> [0, 0]
-    // [1, -1] ==> [1, 1]
-    return float2(vNDC.x * 0.5f + 0.5f, -vNDC.y * 0.5f + 0.5f);
-}
-
-float3 WorldToViewNormal(float3 vNormalWorld)
-{
-    return normalize(mul(vNormalWorld, (float3x3)CamV));
-}
-
-float4 ReconstructProjPosition(float2 vUV, float fNDCZ, float fViewZ)
-{
-    float4 vProjPos;
-    /* 투영공간상의 좌표를 구한다. */
-    /* 로컬위치 * 월드 * 뷰 * 투영 / V.z ( 현재 Clip 좌표계 )*/
-    vProjPos.xy = UV_ToNDC(vUV);
-    vProjPos.z = fNDCZ;
-    vProjPos.w = 1.f;
-    /* 투영행렬까지 곱한 상태를 만들어준다. */ 
-    /* 로컬위치 * 월드 * 뷰 * 투영 / V.z  * V.z */ 
-    vProjPos *= fViewZ;
-    return vProjPos;
-}
-
 VS_OUT_POS_TEX VS_MAIN(VS_IN_POS_TEX input)
 {
     VS_OUT_POS_TEX output;
@@ -275,146 +304,249 @@ PS_OUT_BACKBUFFER PS_MAIN_DEBUG(PS_IN_POS_TEX input)
 PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
 {
     PS_OUT_LIGHT output;
-    output.vShade = float4(0, 0, 0, 1);
-    output.vSpecular = float4(0, 0, 0, 1);
 
-    float fNDCZ, fViewZ;
+    // 기본 출력은 검정으로 시작한다.
+    output.vShade = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    output.vSpecular = float4(0.0f, 0.0f, 0.0f, 1.0f);
+
+    // 현재 픽셀의 NDC Z와 View Z를 읽는다.
+    float fNDCZ = 0.0f;
+    float fViewZ = 0.0f;
     DecodeDepth(input.vUV, fNDCZ, fViewZ);
 
-    float fAO, fRough, fMetal;
+    // AO / Roughness / Metal 값을 읽는다.
+    float fAO = 0.7f;
+    float fRough = 0.5f;
+    float fMetal = 0.0f;
     DecodeSpecularMask(input.vUV, fAO, fRough, fMetal);
 
+    // SSAO 결과를 읽는다.
     float fSSAO = g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV).r;
+
+    // Material AO와 SSAO를 곱해서 최종 AO를 만든다.
     float fOcc = saturate(fAO * fSSAO);
 
-    // baseColor 추가 (PBR 핵심 입력)
-    float3 baseColor = g_RenderTargetDiffuseTexture.Sample(LinearSampler, input.vUV).rgb;
+    // BaseColor를 GBuffer에서 읽는다.
+    float3 vBaseColor = g_RenderTargetDiffuseTexture.Sample(LinearSampler, input.vUV).rgb;
 
-    float3 N = DecodeWorldNormal(input.vUV);
-    float3 L = normalize(Light.vDirection * -1.f);
+    // World normal을 읽고 정규화한다.
+    float3 vNormal = normalize(DecodeWorldNormal(input.vUV));
 
-    // WorldPos 재구성(기존 유지)
+    // Directional light 방향을 정규화한다.
+    float3 vLightDir = normalize(Light.vDirection * -1.0f);
+
+    // 현재 픽셀의 월드 위치를 재구성한다.
     float4 vProjPos = ReconstructProjPosition(input.vUV, fNDCZ, fViewZ);
     float4 vViewPos = mul(vProjPos, InvP);
     vViewPos.xyz /= max(EPSILON, vViewPos.w);
-    vViewPos.w = 1.f;
+    vViewPos.w = 1.0f;
     float4 vWorldPos = mul(vViewPos, InvV);
 
-    float3 V = normalize(CameraPosition() - vWorldPos.xyz);
-    float3 H = normalize(V + L);
+    // 카메라에서 현재 픽셀을 향하는 view 방향을 구한다.
+    float3 vViewDir = normalize(CameraPosition() - vWorldPos.xyz);
+    
+    // Half vector를 구한다.
+    float3 vHalfDir = normalize(vViewDir + vLightDir);
 
-    float NdotL = saturate(dot(N, L));
-    float NdotV = saturate(dot(N, V));
-    float NdotH = saturate(dot(N, H));
-    float VdotH = saturate(dot(V, H));
+    // PBR specular 계산에 필요한 각도를 구한다.
+    float fNdotL = saturate(dot(vNormal, vLightDir));
+    float fNdotV = saturate(dot(vNormal, vViewDir));
+    float fNdotH = saturate(dot(vNormal, vHalfDir));
+    float fVdotH = saturate(dot(vViewDir, vHalfDir));
 
-    // Roughness -> alpha
-    float rough = saturate(fRough);
-    float alpha = max(0.045f, rough * rough);
+    // Shadow
+    float fShadow = SampleCascadeShadowPCF(vWorldPos.xyz, vNormal, fNdotL, fViewZ);
 
-    // F0: metal이면 baseColor가 spec 색
-    float metal = saturate(fMetal);
-    float3 F0 = lerp(float3(0.04f, 0.04f, 0.04f), baseColor, metal);
+    // Roughness를 alpha로 변환한다.
+    float fClampedRough = saturate(fRough);
+    float fAlpha = max(0.045f, fClampedRough * fClampedRough);
 
-    float3 F = Fresnel_Schlick(VdotH, F0);
-    float D = D_GGX(NdotH, alpha);
-    float G = G_Smith(NdotV, NdotL, alpha);
+    // Metal 값을 정리한다.
+    float fClampedMetal = saturate(fMetal);
 
-    float3 specBRDF = (D * G) * F / max(4.0f * NdotV * NdotL, 1e-6f);
+    // 금속이면 BaseColor를 F0로 쓰고, 아니면 0.04를 사용한다.
+    float3 vF0 = lerp(float3(0.04f, 0.04f, 0.04f), vBaseColor, fClampedMetal);
 
-    // Diffuse 계수(kD): baseColor는 Combined에서 곱해질 것이므로 "계수만" 내보냄
-    float3 kS = F;
-    float3 kD = (1.0f - kS) * (1.0f - metal);
+    // Fresnel term을 계산한다.
+    float3 vF = Fresnel_Schlick(fVdotH, vF0);
 
-    // 기존 느낌 유지용(밝기 덜 죽게): 1/PI를 강제하지 않고 시작
-    // 좀 더 물리적으로 가려면: diffFactor = kD * (1.0f / PI);
-    float3 diffFactor = kD / PI;
+    // GGX NDF를 계산한다.
+    float fD = D_GGX(fNdotH, fAlpha);
 
-    // 기존 AO/DirectOcc 스타일 유지
-    float3 ambient = Light.vAmbient.rgb * fOcc;
+    // Smith geometry term을 계산한다.
+    float fG = G_Smith(fNdotV, fNdotL, fAlpha);
+
+    // 최종 PBR specular BRDF를 계산한다.
+    float3 vSpecularBRDF = (fD * fG) * vF / max(4.0f * fNdotV * fNdotL, 1e-6f);
+
+    // 에너지 보존을 위해 specular 비율을 계산한다.
+    float3 vKS = vF;
+
+    // diffuse 비율은 metal이 높을수록 줄인다.
+    float3 vKD = (1.0f - vKS) * (1.0f - fClampedMetal);
+
+    // toon 명암 값을 계산한다.
+    float fToonDiffuse = ComputeToonDiffuse(vNormal, vLightDir);
+
+    // 기존 PBR diffuse와 같은 의미로 1/PI를 유지한다.
+    float3 vDiffuseBRDF = vKD / PI;
+
+    // Ambient는 AO를 그대로 반영한다.
+    float3 vAmbient = Light.vAmbient.rgb * fOcc;
+
+    // Direct diffuse는 AO를 약하게 반영한다.
     const float fDirectOccStrength = 0.35f;
-    float fDirectOcc = lerp(1.f, fOcc, fDirectOccStrength);
+    float fDirectOcc = lerp(1.0f, fOcc, fDirectOccStrength);
 
-    float3 radiance = Light.vDiffuse.rgb;
+    // 광원 색을 가져온다.
+    float3 vRadiance = Light.vDiffuse.rgb;
 
-    float3 shade = ambient + (radiance * (NdotL * fDirectOcc)) * diffFactor;
+    // 최종 Toon diffuse를 만든다.
+    float3 vShade = vAmbient + (vRadiance * (fToonDiffuse * fDirectOcc * fShadow)) * vDiffuseBRDF;
 
-    // Specular도 약하게 AO 적용(완전히 죽지 않게)
-    float specOcc = lerp(1.f, fOcc, 0.2f);
-    float3 specContrib = (specBRDF * radiance) * (NdotL * specOcc);
+    // Specular는 예전 PBR 공식을 그대로 유지한다.
+    float fSpecOcc = lerp(1.0f, fOcc, 0.2f);
+    float3 vSpecular = (vSpecularBRDF * vRadiance) * (fNdotL * fSpecOcc * fShadow);
 
-    output.vShade = float4(shade, 1.f);
-    output.vSpecular = float4(specContrib, 1.f);
+    // Rim은 지정된 오브젝트에만 적용한다.
+    float fRimMask = GetRimMask(input.vUV);
+
+    // Rim 기본값을 계산한다.
+    float fRim = ComputeToonRim(vNormal, vViewDir, vLightDir) * fRimMask;
+
+    // Rim은 diffuse에 섞지 않고 specular 쪽에 얹어서 더 얇고 선명하게 보이게 한다.
+    float3 vRim = vRadiance * fRim * 0.25f;
+
+    // 최종 shade를 기록한다.
+    output.vShade = float4(vShade, 1.0f);
+
+    // 최종 specular + rim을 기록한다.
+    output.vSpecular = float4(vSpecular + vRim, 1.0f);
+
     return output;
 }
 
 PS_OUT_LIGHT PS_MAIN_POINT(PS_IN_POS_TEX input)
 {
     PS_OUT_LIGHT output;
-    output.vShade = float4(0, 0, 0, 1);
-    output.vSpecular = float4(0, 0, 0, 1);
 
-    float fNDCZ, fViewZ;
+    // 기본 출력은 검정으로 시작한다.
+    output.vShade = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    output.vSpecular = float4(0.0f, 0.0f, 0.0f, 1.0f);
+
+    // 현재 픽셀의 NDC Z와 View Z를 읽는다.
+    float fNDCZ = 0.0f;
+    float fViewZ = 0.0f;
     DecodeDepth(input.vUV, fNDCZ, fViewZ);
 
-    float fAO, fRough, fMetal;
+    // AO / Roughness / Metal 값을 읽는다.
+    float fAO = 1.0f;
+    float fRough = 0.0f;
+    float fMetal = 0.0f;
     DecodeSpecularMask(input.vUV, fAO, fRough, fMetal);
 
+    // SSAO 결과를 읽는다.
     float fSSAO = g_RenderTargetAOTexture.Sample(LinearSampler, input.vUV).r;
+
+    // Material AO와 SSAO를 곱해서 최종 AO를 만든다.
     float fOcc = saturate(fAO * fSSAO);
 
-    float3 baseColor = g_RenderTargetDiffuseTexture.Sample(LinearSampler, input.vUV).rgb;
+    // BaseColor를 GBuffer에서 읽는다.
+    float3 vBaseColor = g_RenderTargetDiffuseTexture.Sample(LinearSampler, input.vUV).rgb;
 
-    float3 N = DecodeWorldNormal(input.vUV);
+    // World normal을 읽고 정규화한다.
+    float3 vNormal = normalize(DecodeWorldNormal(input.vUV));
 
-    // WorldPos 재구성
+    // 현재 픽셀의 월드 위치를 재구성한다.
     float4 vProjPos = ReconstructProjPosition(input.vUV, fNDCZ, fViewZ);
     float4 vViewPos = mul(vProjPos, InvP);
     vViewPos.xyz /= max(EPSILON, vViewPos.w);
-    vViewPos.w = 1.f;
+    vViewPos.w = 1.0f;
     float4 vWorldPos = mul(vViewPos, InvV);
 
-    float3 V = normalize(CameraPosition() - vWorldPos.xyz);
+    // 카메라에서 현재 픽셀을 향하는 view 방향을 구한다.
+    float3 vViewDir = normalize(CameraPosition() - vWorldPos.xyz);
 
-    // Point light 벡터/감쇠(기존 유지)
-    float3 toL = (Light.vPosition.xyz - vWorldPos.xyz);
-    float dist = length(toL);
-    float3 L = toL / max(dist, 1e-6f);
-    float fAtt = saturate((Light.fRange - dist) / max(Light.fRange, 1e-6f));
+    // Point light 방향과 거리를 구한다.
+    float3 vToLight = Light.vPosition.xyz - vWorldPos.xyz;
+    float fDistance = length(vToLight);
+    float3 vLightDir = vToLight / max(fDistance, 1e-6f);
 
-    float3 H = normalize(V + L);
+    // Point light 감쇠를 계산한다.
+    float fAtt = saturate((Light.fRange - fDistance) / max(Light.fRange, 1e-6f));
 
-    float NdotL = saturate(dot(N, L));
-    float NdotV = saturate(dot(N, V));
-    float NdotH = saturate(dot(N, H));
-    float VdotH = saturate(dot(V, H));
+    // Half vector를 구한다.
+    float3 vHalfDir = normalize(vViewDir + vLightDir);
 
-    float rough = saturate(fRough);
-    float alpha = max(0.045f, rough * rough);
+    // PBR specular 계산에 필요한 각도를 구한다.
+    float fNdotL = saturate(dot(vNormal, vLightDir));
+    float fNdotV = saturate(dot(vNormal, vViewDir));
+    float fNdotH = saturate(dot(vNormal, vHalfDir));
+    float fVdotH = saturate(dot(vViewDir, vHalfDir));
 
-    float metal = saturate(fMetal);
-    float3 F0 = lerp(float3(0.04f, 0.04f, 0.04f), baseColor, metal);
+    // Roughness를 alpha로 변환한다.
+    float fClampedRough = saturate(fRough);
+    float fAlpha = max(0.045f, fClampedRough * fClampedRough);
 
-    float3 F = Fresnel_Schlick(VdotH, F0);
-    float D = D_GGX(NdotH, alpha);
-    float G = G_Smith(NdotV, NdotL, alpha);
+    // Metal 값을 정리한다.
+    float fClampedMetal = saturate(fMetal);
 
-    float3 specBRDF = (D * G) * F / max(4.0f * NdotV * NdotL, 1e-6f);
+    // 금속이면 BaseColor를 F0로 쓰고, 아니면 0.04를 사용한다.
+    float3 vF0 = lerp(float3(0.04f, 0.04f, 0.04f), vBaseColor, fClampedMetal);
 
-    float3 kS = F;
-    float3 kD = (1.0f - kS) * (1.0f - metal);
-    float3 diffFactor = kD;
-    
-    float3 radiance = Light.vDiffuse.rgb * fAtt;
+    // Fresnel term을 계산한다.
+    float3 vF = Fresnel_Schlick(fVdotH, vF0);
 
-    float fDirectOcc = lerp(1.f, fOcc, 0.35f);
-    float3 shade = (radiance * (NdotL * fDirectOcc)) * diffFactor;
+    // GGX NDF를 계산한다.
+    float fD = D_GGX(fNdotH, fAlpha);
 
-    float specOcc = lerp(1.f, fOcc, 0.2f);
-    float3 specContrib = (specBRDF * radiance) * (NdotL * specOcc);
+    // Smith geometry term을 계산한다.
+    float fG = G_Smith(fNdotV, fNdotL, fAlpha);
 
-    output.vShade = float4(shade, 1.f);
-    output.vSpecular = float4(specContrib, 1.f);
+    // 최종 PBR specular BRDF를 계산한다.
+    float3 vSpecularBRDF = (fD * fG) * vF / max(4.0f * fNdotV * fNdotL, 1e-6f);
+
+    // 에너지 보존을 위해 specular 비율을 계산한다.
+    float3 vKS = vF;
+
+    // diffuse 비율은 metal이 높을수록 줄인다.
+    float3 vKD = (1.0f - vKS) * (1.0f - fClampedMetal);
+
+    // toon 명암 값을 계산한다.
+    float fToonDiffuse = ComputeToonDiffuse(vNormal, vLightDir);
+
+    // 기존 PBR diffuse와 같은 의미로 1/PI를 유지한다.
+    float3 vDiffuseBRDF = vKD / PI;
+
+    // Point light radiance를 만든다.
+    float3 vRadiance = Light.vDiffuse.rgb * fAtt;
+
+    // Direct diffuse는 AO를 약하게 반영한다.
+    const float fDirectOccStrength = 0.35f;
+    float fDirectOcc = lerp(1.0f, fOcc, fDirectOccStrength);
+
+    // 최종 Toon diffuse를 만든다.
+    float3 vShade = (vRadiance * (fToonDiffuse * fDirectOcc)) * vDiffuseBRDF;
+
+    // Specular는 예전 PBR 공식을 그대로 유지한다.
+    float fSpecOcc = lerp(1.0f, fOcc, 0.2f);
+    float3 vSpecular = (vSpecularBRDF * vRadiance) * (fNdotL * fSpecOcc);
+
+    // Rim은 지정된 오브젝트에만 적용한다.
+    float fRimMask = GetRimMask(input.vUV);
+
+    // Rim 기본값을 계산한다.
+    float fRim = ComputeToonRim(vNormal, vViewDir, vLightDir) * fRimMask;
+
+    // Rim은 diffuse에 섞지 않고 specular 쪽에 얹는다.
+    float3 vRim = vRadiance * fRim * 0.25f;
+
+    // 최종 shade를 기록한다.
+    output.vShade = float4(vShade, 1.0f);
+
+    // 최종 specular + rim을 기록한다.
+    output.vSpecular = float4(vSpecular + vRim, 1.0f);
+
     return output;
 }
 
@@ -482,7 +614,7 @@ PS_OUT_AO PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
     // Noise -> 랜덤 회전 벡터(View)
     //============================
     float2 vNoiseUV = input.vUV * SSAOkernel.vNoiseScale;
-    float3 vRand = g_SSAONoiseTexture.Sample(PointSampler, vNoiseUV).xyz * 2.f - 1.f;
+    float3 vRand = g_SSAONoiseTexture.Sample(PointSampler, vNoiseUV).xyz;
     vRand.z = 0.f;
     vRand = normalize(vRand);
     
@@ -657,7 +789,9 @@ PS_OUT_HDR PS_MAIN_COMBINED(PS_IN_POS_TEX input)
     
     float4 vShade = g_RenderTargetShadeTexture.Sample(LinearSampler, input.vUV);
     
-    output.vColor = vDiffuse * vShade + vSpecular;
+    float4 vEmissive = g_RenderTargetEmissiveTexture.Sample(LinearSampler, input.vUV);
+    
+    output.vColor = float4(vDiffuse.rgb * vShade.rgb + vSpecular.rgb + vEmissive.rgb, 1.f);
     return output;
 }
 
@@ -703,14 +837,14 @@ PS_OUT_BACKBUFFER PS_MAIN_TONEMAP(PS_IN_POS_TEX input)
     float3 vLDR = ToneMap_ACES(vHDR.rgb);
     
     // 대비
-    //vLDR = max(vLDR, 0.0.xxx);
-    //vLDR /= 0.18f;
-    //vLDR = pow(vLDR, HDRparam.fGamma);
-    //vLDR *= 0.18f;
+    vLDR = max(vLDR, 0.0.xxx);
+    vLDR /= 0.18f;
+    vLDR = pow(vLDR, HDRparam.fGamma);
+    vLDR *= 0.18f;
     
     vLDR = ApplyLUT_16(vLDR);
     
-    float3 invGamma = 1.f / max(0.001f, 2.2f);
+    float3 invGamma = 1.f / 2.2f;
     vLDR = pow(saturate(vLDR), invGamma);
     output.vColor = float4(vLDR, 1.f);
     return output;

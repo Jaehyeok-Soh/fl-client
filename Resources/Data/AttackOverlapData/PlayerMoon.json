@@ -1,0 +1,271 @@
+{
+  "Category": "OVERLAP_SCRIPT",
+  "Objects": [
+    {
+      "iNumPool": 32,
+      "strTag": "PlayerMoon",
+      "attackEvents": [
+        {
+          "fAnimIndex": 0,
+          "strDescription": "=== [1] 단순: 라이트 잽 (Sphere) ===",
+          "fStartTrackPosition": 0.2,
+          "tHitboxDesc": {
+            "strName": "Jab_Right",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 0.3,
+            "vOffset": {
+              "x": 0.0,
+              "y": 1.5,
+              "z": 0.5
+            },
+            "fDuration": 0.1,
+            "fTickTime": -1.0,
+            "fDamage": 10.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 5
+          }
+        },
+        {
+          "fAnimIndex": 1,
+          "strDescription": "=== [2] 단순: 검 횡베기 (Box) ===",
+          "fStartTrackPosition": 0.45,
+          "tHitboxDesc": {
+            "strName": "Sword_Slash_H",
+            "eType": 0,
+            "vExtents": {
+              "x": 1.5,
+              "y": 0.2,
+              "z": 1.0
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.0,
+              "y": 1.2,
+              "z": 1.0
+            },
+            "fDuration": 0.2,
+            "fTickTime": -1.0,
+            "fDamage": 25.0,
+            "iMaxHit": 5,
+            "eFilterLayer": 2,
+            "iFilterMask": 5
+          }
+        },
+        {
+          "fAnimIndex": 2,
+          "strDescription": "=== [3] 단순: 앞차기 (Sphere) ===",
+          "fStartTrackPosition": 0.3,
+          "tHitboxDesc": {
+            "strName": "Kick_Front",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 0.4,
+            "vOffset": {
+              "x": 0.0,
+              "y": 0.5,
+              "z": 0.8
+            },
+            "fDuration": 0.15,
+            "fTickTime": -1.0,
+            "fDamage": 15.0,
+            "iMaxHit": 1,
+            "eFilterLayer": 2,
+            "iFilterMask": 1
+          }
+        },
+        {
+          "fAnimIndex": 10,
+          "strDescription": "=== [4] 화려: 독구름 장판 (Sphere, DoT) ===",
+          "fStartTrackPosition": 0.8,
+          "tHitboxDesc": {
+            "strName": "Skill_PoisonCloud",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 3.5,
+            "vOffset": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fDuration": 5.0,
+            "fTickTime": 1.0,
+            "fDamage": 5.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 5
+          }
+        },
+        {
+          "fAnimIndex": 11,
+          "strDescription": "=== [5] 화려: 휠윈드 (Box, Rapid Tick) ===",
+          "fStartTrackPosition": 0.1,
+          "tHitboxDesc": {
+            "strName": "Skill_Whirlwind",
+            "eType": 0,
+            "vExtents": {
+              "x": 2.5,
+              "y": 1.0,
+              "z": 2.5
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0
+            },
+            "fDuration": 3.0,
+            "fTickTime": 0.2,
+            "fDamage": 8.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 5
+          }
+        },
+        {
+          "fAnimIndex": 12,
+          "strDescription": "=== [6] 화려: 레이저 빔 (Box, Long Range) ===",
+          "fStartTrackPosition": 1.2,
+          "tHitboxDesc": {
+            "strName": "Skill_LaserBeam",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.5,
+              "y": 0.5,
+              "z": 10.0
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.0,
+              "y": 1.5,
+              "z": 10.0
+            },
+            "fDuration": 0.1,
+            "fTickTime": -1.0,
+            "fDamage": 100.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 7
+          }
+        },
+        {
+          "fAnimIndex": 13,
+          "strDescription": "=== [7] 화려: 지진 (Sphere, Burst) ===",
+          "fStartTrackPosition": 0.9,
+          "tHitboxDesc": {
+            "strName": "Skill_Earthquake",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 6.0,
+            "vOffset": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fDuration": 0.5,
+            "fTickTime": -1.0,
+            "fDamage": 50.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 5
+          }
+        },
+        {
+          "fAnimIndex": 14,
+          "strDescription": "=== [8] 화려: 화염 장벽 (Box, Static Wall) ===",
+          "fStartTrackPosition": 0.5,
+          "tHitboxDesc": {
+            "strName": "Skill_FireWall",
+            "eType": 0,
+            "vExtents": {
+              "x": 4.0,
+              "y": 2.0,
+              "z": 0.5
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.0,
+              "y": 2.0,
+              "z": 4.0
+            },
+            "fDuration": 4.0,
+            "fTickTime": 0.5,
+            "fDamage": 15.0,
+            "iMaxHit": 10,
+            "eFilterLayer": 3,
+            "iFilterMask": 1
+          }
+        },
+        {
+          "fAnimIndex": 15,
+          "strDescription": "=== [9] 화려: 블랙홀 (Sphere, Pulling) ===",
+          "fStartTrackPosition": 2.0,
+          "tHitboxDesc": {
+            "strName": "Skill_BlackHole",
+            "eType": 1,
+            "vExtents": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "fRadius": 4.0,
+            "vOffset": {
+              "x": 0.0,
+              "y": 3.0,
+              "z": 0.0
+            },
+            "fDuration": 3.0,
+            "fTickTime": 0.05,
+            "fDamage": 2.0,
+            "iMaxHit": 32,
+            "eFilterLayer": 3,
+            "iFilterMask": 7
+          }
+        },
+        {
+          "fAnimIndex": 16,
+          "strDescription": "=== [10] 화려: 십자 베기 (Box, Vertical) ===",
+          "fStartTrackPosition": 0.3,
+          "tHitboxDesc": {
+            "strName": "Skill_CrossCut_V",
+            "eType": 0,
+            "vExtents": {
+              "x": 0.3,
+              "y": 3.0,
+              "z": 1.5
+            },
+            "fRadius": 0.0,
+            "vOffset": {
+              "x": 0.0,
+              "y": 1.5,
+              "z": 2.0
+            },
+            "fDuration": 0.2,
+            "fTickTime": -1.0,
+            "fDamage": 40.0,
+            "iMaxHit": 8,
+            "eFilterLayer": 2,
+            "iFilterMask": 1
+          }
+        }
+      ]
+    }
+  ]
+}

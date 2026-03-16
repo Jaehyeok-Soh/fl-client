@@ -9,6 +9,7 @@
 #include "PhysicsRigidBody.h"
 #include "GameInstance.h"
 #include "TriggerBox.h"
+#include "EnvObject.h"
 
 CMapObject::CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject(pDevice, pContext), m_eMapObjectType{ EMapObject_Type::END }, m_iShaderPass{0}

@@ -1,0 +1,1127 @@
+{
+    "Category": "OVERLAP_SCRIPT",
+    "Objects": [
+        {
+            "attackEvents": [
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 47.0,
+                    "iAnimIndex": 15,
+                    "strAnimTag": "Animation_Xibi_Skill01_02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 2.5,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.5,
+                            "z": 0.699999988079071
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 69.0,
+                    "iAnimIndex": 15,
+                    "strAnimTag": "Animation_Xibi_Skill01_02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 2.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.5,
+                            "y": 0.5,
+                            "z": 0.800000011920929
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 64.0,
+                    "iAnimIndex": 14,
+                    "strAnimTag": "Animation_Xibi_Skill01_01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 2.5,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.6000000238418579,
+                            "z": 1.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 86.0,
+                    "iAnimIndex": 14,
+                    "strAnimTag": "Animation_Xibi_Skill01_01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 2.5,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.6000000238418579,
+                            "z": 1.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 41.5,
+                    "iAnimIndex": 31,
+                    "strAnimTag": "Animation_Xibi_Skill08_02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 2,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 1.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.6000000238418579,
+                            "z": 0.5
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 45.0,
+                    "iAnimIndex": 31,
+                    "strAnimTag": "Animation_Xibi_Skill08_02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 1.600000023841858,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.6000000238418579,
+                            "z": 1.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 49.0,
+                    "iAnimIndex": 30,
+                    "strAnimTag": "Animation_Xibi_Skill08_01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 4.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.75,
+                            "z": 0.10000000149011612
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 58.0,
+                    "iAnimIndex": 30,
+                    "strAnimTag": "Animation_Xibi_Skill08_01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.75,
+                            "z": 0.20000000298023224
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 28.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.5,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 93.0,
+                    "iAnimIndex": 16,
+                    "strAnimTag": "Animation_Xibi_Skill02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 130.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 5.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_HeavyXibi_Attack_HeavyXibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 8.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": -8.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 8.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": -8.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 6.0,
+                            "y": 0.0,
+                            "z": 6.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 6.0,
+                            "y": 0.0,
+                            "z": -6.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": -6.0,
+                            "y": 0.0,
+                            "z": -6.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": -6.0,
+                            "y": 0.0,
+                            "z": 6.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 177.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 17.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 177.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": -17.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 177.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 17.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 177.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": -17.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 177.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 13.0,
+                            "y": 0.0,
+                            "z": 13.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 177.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 13.0,
+                            "y": 0.0,
+                            "z": -13.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 177.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": -13.0,
+                            "y": 0.0,
+                            "z": 13.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 177.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": -13.0,
+                            "y": 0.0,
+                            "z": -13.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 8.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": -8.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 8.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": -8.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 6.0,
+                            "y": 0.0,
+                            "z": 6.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": -6.0,
+                            "y": 0.0,
+                            "z": 6.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": -6.0,
+                            "y": 0.0,
+                            "z": -6.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 6.0,
+                            "y": 0.0,
+                            "z": -6.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 223.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 128,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 5.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack_Heavy",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                }
+            ],
+            "iNumPool": 100,
+            "strTag": "Xibi"
+        }
+    ]
+}

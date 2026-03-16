@@ -53,6 +53,7 @@ HRESULT CMonster_Body_Base::Initialize(void* pArg)
 		return E_FAIL;
 
 	Set_RenderInfoFlag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Rim, true);
 	return S_OK;
 }
 
@@ -82,13 +83,8 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
-	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
-
-	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, fTimeDelta,
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pAnimMix);
+	Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS);
 
 	// Shake & Emissive ¿¬Ãâ¿ë
 	Get_Component<CRenderFx>()->Update(fTimeDelta);
@@ -104,9 +100,11 @@ void CMonster_Body_Base::Update_Late(_float fTimeDelta)
 void CMonster_Body_Base::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+	Super::Update_CombinedWorldMatrix(m_pMatParent);
+
 	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-	Super::Update_CombinedWorldMatrix(m_pMatParent);
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsRagdoll>());
@@ -152,8 +150,6 @@ HRESULT CMonster_Body_Base::Render()
 	CRenderFx* pRenderFx = Get_Component<CRenderFx>();
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
-	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
-	CComputeShader* pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 
 	pRenderFx->Bind_Resources(pShader);
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
@@ -161,11 +157,37 @@ HRESULT CMonster_Body_Base::Render()
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
 		pModel->Bind_Material(pShader, i);
-		pModel->Bind_Bones(pShader, i, pBoneMeshCS, pBoneCombineCS);
+		pModel->Bind_Bones(pShader, i, m_pBoneMeshCS, m_pBoneCombineCS);
 		pShader->Apply();
 		pModel->Render(i);
 	}
 
+	return S_OK;
+}
+
+HRESULT CMonster_Body_Base::Render_Shadow()
+{
+	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	CShader* pShader = Get_Component<CShader>();
+	_uint iPrevPass = pShader->Get_CurrentPass();
+
+	constexpr _uint iShadowPass = 4;
+
+	// Set Shadow Pass
+	pShader->Set_Pass(iShadowPass);
+	CModel* pModel = Get_Component<CModel>();
+	_uint iMeshCount = pModel->Get_MeshCount();
+	pShader->Bind_TransformData(m_matCombinedWorld);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		pModel->Bind_Bones(pShader, i, m_pBoneMeshCS, m_pBoneCombineCS);
+		pShader->Apply();
+		pModel->Render(i);
+	}
+
+	pShader->Set_Pass(iPrevPass);
 	return S_OK;
 }
 
@@ -212,7 +234,7 @@ HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)
 	// RenderFx
 	{
 		CRenderFx::RENDER_FX_COPY_DESC desc{};
-		desc.vEmissiveColor = Vec3{ 1.00f, 0.45f, 0.45f };
+		desc.vEmissiveColor = Vec3{ 1.00f, 0.25f, 0.25f };
 		desc.fEmissiveDefaultIntensity = 1.2f;
 		desc.fShakeAmpX = 0.015f;
 		desc.fShakeAmpY = 0.030f;
@@ -251,7 +273,7 @@ HRESULT CMonster_Body_Base::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc, CAST_VOID_PP(&m_pBoneMeshCS))))
 			return E_FAIL;
 	}
 
@@ -271,7 +293,7 @@ HRESULT CMonster_Body_Base::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc, CAST_VOID_PP(&m_pBoneCombineCS))))
 			return E_FAIL;
 	}
 
@@ -292,7 +314,7 @@ HRESULT CMonster_Body_Base::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc, CAST_VOID_PP(&m_pBoneAnimEvaluateCS))))
 			return E_FAIL;
 	}
 
@@ -313,7 +335,7 @@ HRESULT CMonster_Body_Base::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc, CAST_VOID_PP(&m_pBoneAnimBlendCS))))
 			return E_FAIL;
 	}
 
@@ -334,17 +356,11 @@ HRESULT CMonster_Body_Base::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
-		if (FAILED(Add_Script_Component(L"ComputeShader_AnimMix", L"Prototype_Component_Shader_AnimMix", &ShaderDesc)))
+		if (FAILED(Add_Script_Component(L"ComputeShader_AnimMix", L"Prototype_Component_Shader_AnimMix", &ShaderDesc, CAST_VOID_PP(&m_pBoneAnimMixCS))))
 			return E_FAIL;
 	}
 
-	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
-	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
-	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
-	CComputeShader* pAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
-	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
-
-	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(pBoneMeshCS, pBonCombineCS, pAnimECS, pAnimBlendCS, pAnimMix)))
+	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pBoneAnimEvaluateCS, m_pBoneAnimBlendCS, m_pBoneAnimMixCS)))
 		return E_FAIL;
 
 	return S_OK;

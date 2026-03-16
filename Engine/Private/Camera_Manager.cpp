@@ -168,6 +168,13 @@ void CCamera_Manager::Remove_Camera(CameraType eType, const wstring& wstrTag)
 	m_Cameras[ENUM_TO_UINT(eType)].erase(itr);
 }
 
+void CCamera_Manager::Update_AccTime_ForShader(const _float fTimeDelta)
+{
+	m_tGlobalDesc.fAccTime += fTimeDelta;
+	if (m_tGlobalDesc.fAccTime > 10000.f)
+		m_tGlobalDesc.fAccTime -= 10000.f;
+}
+
 void CCamera_Manager::Update_ViewMatrix()
 {
 	if (!m_pMainCamera)

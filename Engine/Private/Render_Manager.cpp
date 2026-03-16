@@ -7,10 +7,14 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "Shader.h"
 #include "Bounds.h"
+#include "CameraMan.h"
+#include "Light.h"
 #include "RenderTarget.h"
 #include "Octree_Manager.h"
 #include "EngineConsole.h"
 #include "UIObject.h"
+#define STB_PERLIN_IMPLEMENTATION
+#include "stb_perlin.h"
 #include "GameInstance.h"
 
 CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -29,288 +33,18 @@ CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 
 HRESULT CRender_Manager::Initialize()
 {
-	//========================
-	// Viewport Save / Set Half
-	//========================
-	_uint iViewportsCount = { 1 };
-	m_pDeviceContext->RSGetViewports(&iViewportsCount, &m_defaultViewport);
-	m_halfViewport = m_defaultViewport;
-	m_halfViewport.Width *= 0.5f;
-	m_halfViewport.Height *= 0.5f;
+	if (FAILED(Ready_BlendStates()))
+		return E_FAIL;
 
-	const _uint& iWidth = (_uint)m_defaultViewport.Width;
-	const _uint& iHeight = (_uint)m_defaultViewport.Height;
-	const _uint& iHalfWidth = (_uint)m_halfViewport.Width;
-	const _uint& iHalfHeight = (_uint)m_halfViewport.Height;
+	if (FAILED(Ready_RT()))
+		return E_FAIL;
 
+	if (FAILED(Ready_MRT()))
+		return E_FAIL;	
 
-	// For. Target_Diffuse
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Diffuse, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Normal
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4{ 0.f,0.f,0.f,1.f };
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Normal, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_SpecularMask
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SpecularMask, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Depth
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R32G32_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Depth, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_ObjectInfo
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R32_UINT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::ObjectInfo, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Ping
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Ping, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Pong
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Pong, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Full
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Full, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Shade
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Shade, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Specular
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Specular, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_SceneHDR
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR, &desc)))
-			return E_FAIL;
-	}
+	if (FAILED(Create_ShadowResource()))
+		return E_FAIL;
 
-	// For. Targert_OIT_ACCUM
-	{
-		// 누적 색상 버퍼
-		// 역할 : 화면의 모든 픽셀에 겹쳐진 모든 투명 물체들의 색상을 다 더해놓는 곳.
-		// 수식 : 시그마(Color * Alpha * Weight)
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if(FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::OIT_Accum, &desc)))
-			return E_FAIL;
-	}
-
-	// For. Target_OIT_Reveal
-	{
-		// 배경 투과율 버퍼
-		// 역할 : 배경이 이 투명 물체들에 의해 얼마나 가려졌는가? // 얼마나 살아있는가?를 저장하는 곳.
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT; // 투과율만 저장하므로 단일 채널에 저장을 한다.
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::OIT_Reveal, &desc)))
-			return E_FAIL;
-	}
-
-	// For. Target_Scene
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR_Copy, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Bloom_Ping
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Bloom_Ping, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Bloom_Pong
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Bloom_Pong, &desc)))
-			return E_FAIL;
-	}
-
-	// For. MRT_GameObjects
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Diffuse)))
-			return E_FAIL;
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Normal)))
-			return E_FAIL;
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::SpecularMask)))
-			return E_FAIL;
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Depth)))
-			return E_FAIL;
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::ObjectInfo)))
-			return E_FAIL;
-	}
-
-	// For. MRT_LightAcc
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Shade)))
-			return E_FAIL;
-
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Specular)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SSAO_Gen
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Gen, ERenderTarget::SSAO_Ping)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SSAO_BlurH
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurH, ERenderTarget::SSAO_Pong)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SSAO_BlurV
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurV, ERenderTarget::SSAO_Ping)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SSAO_Upsample
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Upsample, ERenderTarget::SSAO_Full)))
-			return E_FAIL;
-	}
-	
-	// For. MRT_CombinedHDR
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::CombineHDR, ERenderTarget::SceneHDR)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SceneHDR_Acc
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SceneHDR_Acc, ERenderTarget::SceneHDR)))
-			return E_FAIL;
-	}
-
-	// For. MRT_OIT_RENDER
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::OIT_Render, ERenderTarget::OIT_Accum)))
-			return E_FAIL;
-
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::OIT_Render, ERenderTarget::OIT_Reveal)))
-			return E_FAIL;
-	}
-
-	// For. MRT_Bloom_extract
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_Extract, ERenderTarget::Bloom_Ping)))
-			return E_FAIL;
-	}
-
-	// For. MRT_Bloom_BlurH
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_BlurH, ERenderTarget::Bloom_Pong)))
-			return E_FAIL;
-	}
-
-	// For. MRT_Bloom_BlurV
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_BlurV, ERenderTarget::Bloom_Ping)))
-			return E_FAIL;
-	}
-
-
-	// For. MRT_Shadow
-	{
-	}
-
-	// ========== WBOIT 전용 BlendState ==========
-	{
-		if (FAILED(Ready_BlendStates()))
-			return E_FAIL;
-	}
-
-	m_matWorld_RT = Matrix::CreateScale(m_defaultViewport.Width, m_defaultViewport.Height, 1.f);
 #ifdef _DEBUG
 	if (FAILED(Ready_Debug()))
 		return E_FAIL;
@@ -383,74 +117,34 @@ void CRender_Manager::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* 
 	m_renderObjects[ENUM_TO_UINT(eCategory)].push_back(pGO);
 }
 
-#pragma region Legacy
-//if (CMesh_Renderer* pMesh_Renderer = pElement->Get_MeshRenderer())
-//{
-//	Bind_TransformData(pElement->Get_Transform()->Get_WorldMatrix());
-//	pMesh_Renderer->Render();
-//	//	if (CAnimator* pAnimator = pElement->Get_Animator())
-//	//	{
-//	//		const ANIM_KEYFRAME& Keyframe = pAnimator->Get_CurrentAnimationKeyFrame();
-//	//		m_tAnimationData.vSpriteOffset = Keyframe.vOffset;
-//	//		m_tAnimationData.vSpriteSize = Keyframe.vSize;
-//	//		m_tAnimationData.vTextureSize = pAnimator->Get_CurrentAnimation()->Get_TextureSize();
-//	//		m_tAnimationData.fUseAnimation = 1.f;
-//	//		Push_AnimationData();
+HRESULT CRender_Manager::Set_CascadeShadowConstantBuffer(CShader* pShader)
+{
+	if (pShader == nullptr)
+		return E_FAIL;
 
-//	//		m_pPipeline->Set_ConstantBuffer(SS_VertexShader, 2, m_pAnimation_CBuffer);
-//	//		m_pPipeline->Set_Texture(SS_PixelShader, 0, pAnimator->Get_CurrentAnimation()->Get_Texture());
-
-//	//		if (!m_bAnimDataDirty) m_bAnimDataDirty = true;
-//	//	}
-//	//	else
-//	//	{
-//	//		if (m_bAnimDataDirty)
-//	//		{
-//	//			m_tAnimationData.vSpriteOffset = { 0.0f, 0.0f };
-//	//			m_tAnimationData.vSpriteSize = { 0.0f, 0.0f };
-//	//			m_tAnimationData.vTextureSize = { 0.0f, 0.0f };
-//	//			m_tAnimationData.fUseAnimation = 0.0f;
-//	//			Push_AnimationData();
-//	//			m_bAnimDataDirty = false;
-//	//		}
-
-//	//		m_pPipeline->Set_Texture(SS_PixelShader, 0, pMesh_Renderer->Get_Texture());
-//	//	}
-
-//	//	PIPELINE_INFO info;
-//	//	info.pInputLayout = pMesh_Renderer->Get_InputLayout();
-//	//	info.pVertexShader = pMesh_Renderer->Get_VertexShader();
-//	//	info.pPixelShader = pMesh_Renderer->Get_PixelShader();
-//	//	info.pRasterizerState = m_pRasterizerState;
-//	//	info.pBlendState = m_pBlendState;
-//	//	m_pPipeline->Update_Pipeline(info);
-
-//	//	m_pPipeline->Set_VertexBuffer(pMesh_Renderer->Get_VertexBuffer());
-//	//	m_pPipeline->Set_IndexBuffer(pMesh_Renderer->Get_IndexBuffer());
-//	//	m_pPipeline->Set_ConstantBuffer(SS_VertexShader, 1, m_pTransform_CBuffer);
-//	//	m_pPipeline->Set_ConstantBuffer(SS_VertexShader, 0, m_pCamera_CBuffer);
-//	//	//m_pPipeline->Set_Texture(SS_PixelShader, 0, pMesh_Renderer->Get_Texture());
-//	//	m_pPipeline->Set_SamplerState(SS_PixelShader, 0, m_pSamplerState);
-
-//	//	m_pPipeline->Draw_Indexed(pMesh_Renderer->Get_Mesh()->Get_IndicesCount(), 0, 0);
-//}
-//else if(CModel_Renderer* pModel_Renderer = pElement->Get_ModelRenderer())
-//{
-//	Bind_TransformData(pElement->Get_Transform()->Get_WorldMatrix());
-//	pModel_Renderer->Render();
-//}
-#pragma endregion
+	return pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer());
+}
 
 HRESULT CRender_Manager::Set_ShaderResources()
 {
 	{
 		if (!(m_pVIBuffer = CVIBuffer_Rect_Tex::Create(m_pDevice, m_pDeviceContext, nullptr)))
 			return E_FAIL;
-
+	}
+	// For. MainShader
+	{
 		CShader::SHADER_ORIGIN_DESC desc = {};
 		desc.pShaderFilePath = L"../../Shaders/Shader_Deffered.hlsl";
 		desc.eLayout = EVtxLayout::VTXPOSTEX;
 		if (!(m_pShader = CShader::Create(m_pDevice, m_pDeviceContext, &desc)))
+			return E_FAIL;
+	}
+	// For. FogShader
+	{
+		CShader::SHADER_ORIGIN_DESC desc = {};
+		desc.pShaderFilePath = L"../../Shaders/Shader_Fog.hlsl";
+		desc.eLayout = EVtxLayout::VTXPOSTEX;
+		if (!(m_pFogShader = CShader::Create(m_pDevice, m_pDeviceContext, &desc)))
 			return E_FAIL;
 	}
 
@@ -467,6 +161,9 @@ HRESULT CRender_Manager::Set_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(Create_SSAO_NoiseSRV()))
+		return E_FAIL;
+
+	if (FAILED(Create_Perlin_NoiseSRV()))
 		return E_FAIL;
 
 	// SSAOkernelDesc
@@ -531,6 +228,42 @@ HRESULT CRender_Manager::Set_ShaderResources()
 		if (FAILED(m_pCB_Outlineparam->Copy_Data(m_tOutlineparamDesc)))
 			return E_FAIL;
 	}
+	// FogDesc
+	{
+		m_tFogDesc.vColor = Vec4(0.45f, 0.6f, 0.78f, 1.f);    // 짙은 청색
+		m_tFogDesc.vHighColor = Vec4(0.6f, 0.72f, 0.85f, 1.f);    // 하늘 쪽 밝은 청색
+
+		// Distance
+		m_tFogDesc.fFogStart = 20.f;     // 20m부터 시작
+		m_tFogDesc.fFogEnd = 80.f;     // 80m에서 최대
+		m_tFogDesc.fFogDensity = 0.f;      // linear (0이면 linear)
+		m_tFogDesc.fFogMaxOpacity = 0.55f;    // 최대 55% - 멀어도 어느정도 보임
+
+		// Height
+		m_tFogDesc.fFogBaseHeight = -3.f;     // 지면 약간 아래
+		m_tFogDesc.fFogHeightFalloff = 0.08f;    // 천천히 감소 - 낮은 곳에 안개 깔림
+		m_tFogDesc.fFogHeightDensity = 0.015f;   // 옅게
+
+		// Noise
+		m_tFogDesc.fFogNoiseScale = 0.15f;    // 미세한 변동만
+		m_tFogDesc.fFogNoiseSpeed = 0.2f;     // 느리게 흐름
+
+		if (FAILED(m_pCB_Fog->Copy_Data(m_tFogDesc)))
+			return E_FAIL;
+	}
+	// ToonDesc
+	{
+		m_tToonparamDesc.fWrap = 0.65f;
+		m_tToonparamDesc.fShadowMid = 0.58f;
+		m_tToonparamDesc.fShadowSoftness = 0.15f;
+		m_tToonparamDesc.fShadowStrength = 0.45f;
+		m_tToonparamDesc.fDiffuseStrength = 1.0f;
+		m_tToonparamDesc.fRimThreshold = 0.65f;
+		m_tToonparamDesc.fRimSoftness = 0.125f;
+		m_tToonparamDesc.fRimStrength = 0.7f;
+		if (FAILED(m_pCB_Toonparam->Copy_Data(m_tToonparamDesc)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -540,6 +273,9 @@ HRESULT CRender_Manager::Render()
 	m_pGameInstance->Setup_Inv_ToCBuffer();
 
 	if (FAILED(Render_Priority()))
+		return E_FAIL;
+
+	if (FAILED(Render_CascadeShadow()))
 		return E_FAIL;
 
 	if (FAILED(Render_NoneBlend()))
@@ -627,6 +363,9 @@ HRESULT CRender_Manager::Render()
 	}
 
 	m_pGameInstance->Setup_UIViewProj_ToCBuffer();
+
+	//if (FAILED(Render_Fog()))
+	//	return E_FAIL;
 
 	if (FAILED(Render_Bloom()))
 		return E_FAIL;
@@ -1159,6 +898,9 @@ HRESULT CRender_Manager::Render_Lights()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SpecularMask, m_pShader)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::ObjectInfo, m_pShader)))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Diffuse, m_pShader)))
 		return E_FAIL;
 
@@ -1166,6 +908,12 @@ HRESULT CRender_Manager::Render_Lights()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Cascade_0, m_pShader)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Cascade_1, m_pShader)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Render_Lights(m_pShader, m_pVIBuffer)))
@@ -1191,6 +939,24 @@ HRESULT CRender_Manager::Render_Environment()
 		Safe_Release(pElement);
 	}
 	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::ENVIRONMENT)].clear();
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Render_Fog()
+{
+	if (FAILED(m_pFogShader->Bind_TransformData(m_matWorld_RT)))
+		return E_FAIL;
+
+	if(FAILED(m_pFogShader->Bind_SRV(EFXSRV::PerlinNoise, m_pPerlinNoiseSRV)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pFogShader)))
+		return E_FAIL;
+
+	m_pFogShader->Set_Pass(0);
+	m_pFogShader->Apply();
+	m_pVIBuffer->Bind_Resource();
+	m_pVIBuffer->Render();
 	return S_OK;
 }
 
@@ -1232,6 +998,9 @@ HRESULT CRender_Manager::Render_CombinedHDR()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Emissive, m_pShader)))
+		return E_FAIL;
+
 	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::COMBINED));
 	m_pShader->Apply();
 	m_pVIBuffer->Bind_Resource();
@@ -1241,6 +1010,48 @@ HRESULT CRender_Manager::Render_CombinedHDR()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+HRESULT CRender_Manager::Render_CascadeShadow()
+{
+	if (FAILED(Compute_ShadowCascade()))
+		return E_FAIL;
+
+	m_pDeviceContext->RSSetViewports(1, &m_tShadowViewport);
+
+	for (_uint i = 0; i < SHADOW_CASCADE_COUNT; ++i)
+	{
+		EMRTLayer eMRT = (i == 0)
+			? EMRTLayer::Shadow_Cascade0
+			: EMRTLayer::Shadow_Cascade1;
+
+		if(FAILED(m_pGameInstance->Begin_MRT(eMRT, true, m_pShadowDSV)))
+			goto FAIL;
+
+		// CascadeIndex
+		m_tCascadeShadowDesc.fCascadeIndex = (_float)i;
+		if (FAILED(m_pCB_CascadeShadow->Copy_Data(m_tCascadeShadowDesc)))
+			goto FAIL;
+
+		// 동적 오브젝터만 렌더
+		for (auto& pObject : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::SHADOW_DYNAMIC)])
+			pObject->Render_Shadow();
+
+		if (FAILED(m_pGameInstance->End_MRT()))
+			goto FAIL;
+	}
+
+	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+
+	// Shadow카테고리 안전하게 일괄 정리
+	for (auto& pObject : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::SHADOW_DYNAMIC)])
+		Safe_Release(pObject);
+
+	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::SHADOW_DYNAMIC)].clear();
+	return S_OK;
+FAIL:
+	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+	return E_FAIL;	
 }
 
 HRESULT CRender_Manager::Render_BlendUI()
@@ -1360,6 +1171,87 @@ HRESULT CRender_Manager::Create_SSAO_NoiseSRV()
 	return S_OK;
 }
 
+HRESULT CRender_Manager::Create_Perlin_NoiseSRV()
+{
+	constexpr _uint iSize = 64;
+	vector<_float> vecData(iSize * iSize * iSize);
+
+	constexpr _int  iTile = 4;  // 타일링 주기
+
+	for (_uint z = 0; z < iSize; ++z)
+	{
+		for (_uint y = 0; y < iSize; ++y)
+		{
+			for (_uint x = 0; x < iSize; ++x)
+			{
+				_float fx = (_float)x / (_float)iSize * (_float)iTile;
+				_float fy = (_float)y / (_float)iSize * (_float)iTile;
+				_float fz = (_float)z / (_float)iSize * (_float)iTile;
+
+				// 수동 fBM with wrap
+				_float fValue = 0.f;
+				_float fAmplitude = 1.f;
+				_float fFrequency = 1.f;
+				_float fMax = 0.f;
+
+				for (_uint oct = 0; oct < 4; ++oct)
+				{
+					_int iWrap = iTile * (_int)fFrequency;
+
+					fValue += stb_perlin_noise3_seed(
+						fx * fFrequency,
+						fy * fFrequency,
+						fz * fFrequency,
+						iWrap, iWrap, iWrap,   // ★ 각 축 wrap
+						0                       // seed
+					) * fAmplitude;
+
+					fMax += fAmplitude;
+					fAmplitude *= 0.5f;     // persistence
+					fFrequency *= 2.f;      // lacunarity
+				}
+
+				fValue /= fMax;
+
+				// [-1, 1] → [0, 1]
+				vecData[z * iSize * iSize + y * iSize + x] = fValue * 0.5f + 0.5f;
+			}
+		}
+	}
+
+	D3D11_TEXTURE3D_DESC desc{};
+	desc.Width = iSize;
+	desc.Height = iSize;
+	desc.Depth = iSize;
+	desc.MipLevels = 1;
+	desc.Format = DXGI_FORMAT_R32_FLOAT;
+	desc.Usage = D3D11_USAGE_IMMUTABLE;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+	D3D11_SUBRESOURCE_DATA init{};
+	init.pSysMem = vecData.data();
+	init.SysMemPitch = sizeof(_float) * iSize;
+	init.SysMemSlicePitch = sizeof(_float) * iSize * iSize;
+
+	ID3D11Texture3D* pTexture = nullptr;
+	if (FAILED(m_pDevice->CreateTexture3D(&desc, &init, &pTexture)))
+		return E_FAIL;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = desc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
+	srvDesc.Texture3D.MipLevels = 1;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(pTexture, &srvDesc, &m_pPerlinNoiseSRV)))
+	{
+		Safe_Release(pTexture);
+		return E_FAIL;
+	}
+
+	Safe_Release(pTexture);
+	return S_OK;
+}
+
 HRESULT CRender_Manager::Set_ConstantBuffer()
 {
 	m_pCB_SSAOkernel = CConstant_Buffer<SHADER_SSAOKERNEL_DESC>::Create(m_pDevice, m_pDeviceContext);
@@ -1367,8 +1259,12 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	m_pCB_HDRparam = CConstant_Buffer<SHADER_HDRPARAM_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Bloomparam = CConstant_Buffer<SHADER_BLOOMPARAM_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Outlineparam = CConstant_Buffer<SHADER_OUTLINE_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_Fog = CConstant_Buffer<SHADER_FOG_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_Toonparam = CConstant_Buffer<SHADER_TOON_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_CascadeShadow = CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>::Create(m_pDevice, m_pDeviceContext);
 	if (m_pCB_SSAOkernel == nullptr || m_pCB_SSAOparam == nullptr || m_pCB_HDRparam == nullptr ||
-		m_pCB_Bloomparam == nullptr || m_pCB_Outlineparam == nullptr)
+		m_pCB_Bloomparam == nullptr || m_pCB_Outlineparam == nullptr || m_pCB_Fog == nullptr ||
+		m_pCB_Toonparam == nullptr || m_pCB_CascadeShadow == nullptr)
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::SSAOkernal, m_pCB_SSAOkernel->Get_Buffer())))
@@ -1380,12 +1276,483 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::HDRparam, m_pCB_HDRparam->Get_Buffer())))
 		return E_FAIL;
 
-	if(FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Bloomparam, m_pCB_Bloomparam->Get_Buffer())))
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Bloomparam, m_pCB_Bloomparam->Get_Buffer())))
 		return E_FAIL;
 
-	if(FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Outlineparam, m_pCB_Outlineparam->Get_Buffer())))
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Outlineparam, m_pCB_Outlineparam->Get_Buffer())))
 		return E_FAIL;
 
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Toonparam, m_pCB_Toonparam->Get_Buffer())))
+		return E_FAIL;
+	
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer())))
+		return E_FAIL;
+
+	// Fog
+	if (FAILED(m_pFogShader->Set_ConstantBuffer(EFXCB::Fogparam, m_pCB_Fog->Get_Buffer())))
+		return E_FAIL;
+
+	// Shadow
+	if(FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Ready_RT()
+{
+	//========================
+	// Viewport Save / Set Half
+	//========================
+	_uint iViewportsCount = { 1 };
+	m_pDeviceContext->RSGetViewports(&iViewportsCount, &m_defaultViewport);
+	m_halfViewport = m_defaultViewport;
+	m_halfViewport.Width *= 0.5f;
+	m_halfViewport.Height *= 0.5f;
+
+	m_matWorld_RT = Matrix::CreateScale(m_defaultViewport.Width, m_defaultViewport.Height, 1.f);
+
+	const _uint& iWidth = (_uint)m_defaultViewport.Width;
+	const _uint& iHeight = (_uint)m_defaultViewport.Height;
+	const _uint& iHalfWidth = (_uint)m_halfViewport.Width;
+	const _uint& iHalfHeight = (_uint)m_halfViewport.Height;
+
+
+	// For. Target_Diffuse
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Diffuse, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Normal
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4{ 0.f,0.f,0.f,1.f };
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Normal, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_SpecularMask
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SpecularMask, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Depth
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32G32_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Depth, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_ObjectInfo
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32_UINT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::ObjectInfo, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Emissive
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Emissive, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_AO_Ping
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Ping, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_AO_Pong
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Pong, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_AO_Full
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Full, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Shade
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Shade, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Specular
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Specular, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_SceneHDR
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Scene
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR_Copy, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Bloom_Ping
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Bloom_Ping, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Bloom_Pong
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iHalfWidth;
+		desc.iHeight = iHalfHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Bloom_Pong, &desc)))
+			return E_FAIL;
+	}
+	// For. Target_Shadow_Cascade_0
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32_FLOAT;
+		desc.iWidth = SHADOW_MAP_SIZE;
+		desc.iHeight = SHADOW_MAP_SIZE;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Cascade_0, &desc)))
+			return E_FAIL;
+	}
+
+	// For. Target_Shadow_Cascade_1
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32_FLOAT;
+		desc.iWidth = SHADOW_MAP_SIZE;
+		desc.iHeight = SHADOW_MAP_SIZE;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Cascade_1, &desc)))
+			return E_FAIL;
+	}
+	// For. Targert_OIT_ACCUM
+	{
+		// 누적 색상 버퍼
+		// 역할 : 화면의 모든 픽셀에 겹쳐진 모든 투명 물체들의 색상을 다 더해놓는 곳.
+		// 수식 : 시그마(Color * Alpha * Weight)
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::OIT_Accum, &desc)))
+			return E_FAIL;
+	}
+
+	// For. Target_OIT_Reveal
+	{
+		// 배경 투과율 버퍼
+		// 역할 : 배경이 이 투명 물체들에 의해 얼마나 가려졌는가? // 얼마나 살아있는가?를 저장하는 곳.
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT; // 투과율만 저장하므로 단일 채널에 저장을 한다.
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::OIT_Reveal, &desc)))
+			return E_FAIL;
+	}
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Ready_MRT()
+{
+	// For. MRT_GameObjects
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Diffuse)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Normal)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::SpecularMask)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Depth)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::ObjectInfo)))
+			return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::GameObjects, ERenderTarget::Emissive)))
+			return E_FAIL;
+	}
+
+	// For. MRT_LightAcc
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Shade)))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::LightAcc, ERenderTarget::Specular)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_Gen
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Gen, ERenderTarget::SSAO_Ping)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_BlurH
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurH, ERenderTarget::SSAO_Pong)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_BlurV
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurV, ERenderTarget::SSAO_Ping)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SSAO_Upsample
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Upsample, ERenderTarget::SSAO_Full)))
+			return E_FAIL;
+	}
+
+	// For. MRT_CombinedHDR
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::CombineHDR, ERenderTarget::SceneHDR)))
+			return E_FAIL;
+	}
+
+	// For. MRT_SceneHDR_Acc
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SceneHDR_Acc, ERenderTarget::SceneHDR)))
+			return E_FAIL;
+	}
+
+	// For. MRT_OIT_RENDER
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::OIT_Render, ERenderTarget::OIT_Accum)))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::OIT_Render, ERenderTarget::OIT_Reveal)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Bloom_extract
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_Extract, ERenderTarget::Bloom_Ping)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Bloom_BlurH
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_BlurH, ERenderTarget::Bloom_Pong)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Bloom_BlurV
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Bloom_BlurV, ERenderTarget::Bloom_Ping)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Shadow_Cascade_0
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Shadow_Cascade0, ERenderTarget::Cascade_0)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Shadow_Cascade_1
+	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Shadow_Cascade1, ERenderTarget::Cascade_1)))
+			return E_FAIL;
+	}
+
+	// For. MRT_Shadow
+	{
+	}
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Create_ShadowResource()
+{
+	// ViewPort
+	{
+		m_tShadowViewport.Width = (_float)SHADOW_MAP_SIZE;
+		m_tShadowViewport.Height = (_float)SHADOW_MAP_SIZE;
+		m_tShadowViewport.MinDepth = 0.f;
+		m_tShadowViewport.MaxDepth = 1.f;
+	}
+
+	// DSV
+	{
+		D3D11_TEXTURE2D_DESC desc = {};
+		desc.Width = SHADOW_MAP_SIZE;
+		desc.Height = SHADOW_MAP_SIZE;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		desc.SampleDesc.Count = 1;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+		if (FAILED(m_pDevice->CreateTexture2D(&desc, nullptr, &m_pShadowDSTexture)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateDepthStencilView(m_pShadowDSTexture, nullptr, &m_pShadowDSV)))
+			return E_FAIL;
+	}	
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Compute_ShadowCascade()
+{
+	// 매 프레임 시행
+	CCameraMan* pCamera = m_pGameInstance->Get_MainCamera();
+	
+	// MainCamera 세팅안됬을때 스킵
+	if (pCamera == nullptr)
+		return S_OK;
+
+	// MainCamera View, Proj
+	CCamera* pCameraComponent = pCamera->Get_Component<CCamera>();
+	Matrix matView = pCameraComponent->Get_ViewMatrix();
+	Matrix matProj = pCameraComponent->Get_ProjectionMatrix();
+	_float fNear = pCameraComponent->Get_Near();
+
+	CLight* pDirLight = m_pGameInstance->Get_Light(LIGHT_TYPE::DIRECTIONAL);
+	// DirLight 세팅안됬을때 스킵
+	if (pDirLight == nullptr)
+		return S_OK;
+	Vec3 vLightDir = pDirLight->Get_LightDesc().vDirection;
+	vLightDir.Normalize();
+
+	_float fSplits[3] =
+	{
+		fNear,
+		m_tCascadeShadowDesc.fCascadeEnd0,
+		m_tCascadeShadowDesc.fCascadeEnd1
+	};
+
+	for (_uint i = 0; i < SHADOW_CASCADE_COUNT; ++i)
+	{
+		//===========================================
+		// Cascade View Frustum 코너 (NDC에서 World로)
+		//===========================================
+		_float fSplitNear = fSplits[i];
+		_float fSplitFar = fSplits[i + 1];
+
+		// NDC z를 구하기 위해 임시 Proj
+		_float fNdcNear = (fSplitNear * matProj._33 + matProj._43) / fSplitNear;
+		_float fNdcFar = (fSplitFar * matProj._33 + matProj._43) / fSplitFar;
+
+		// NDC 8코너
+		Vec3 corners[8] =
+		{
+			{ -1, -1, fNdcNear }, {  1, -1, fNdcNear },
+			{ -1,  1, fNdcNear }, {  1,  1, fNdcNear },
+			{ -1, -1, fNdcFar  }, {  1, -1, fNdcFar  },
+			{ -1,  1, fNdcFar  }, {  1,  1, fNdcFar  },
+		};
+
+		Matrix matInvVP = (matView * matProj).Invert();
+
+		Vec3 vCenter = Vec3::Zero;
+		for (_int c = 0; c < 8; ++c)
+		{
+			Vec4 vWorld = Vec4::Transform(Vec4(corners[c].x, corners[c].y, corners[c].z, 1.f), matInvVP);
+			corners[c] = Vec3(vWorld.x, vWorld.y, vWorld.z) / vWorld.w;
+			vCenter += corners[c];
+		}
+		vCenter /= 8.f;
+
+		//================
+		// Light View 행렬
+		//================
+		Matrix matLightView = ::XMMatrixLookAtLH(
+			vCenter - vLightDir * 50.f,  // 뒤로 50m 물러남
+			vCenter,
+			Vec3::Up
+		);
+
+		//=================================
+		// Light Space AABB에서 Ortho Proj로
+		//=================================
+		Vec3 vMin(FLT_MAX), vMax(-FLT_MAX);
+		for (_int c = 0; c < 8; ++c)
+		{
+			Vec3 vLS = Vec3::Transform(corners[c], matLightView);
+			vMin = Vec3::Min(vMin, vLS);
+			vMax = Vec3::Max(vMax, vLS);
+		}
+
+		// 약간 여유
+		float fZPad = 20.f;
+		vMin.z -= fZPad;
+		vMax.z += fZPad;
+
+		Matrix matLightProj = XMMatrixOrthographicOffCenterLH(
+			vMin.x, vMax.x, vMin.y, vMax.y, vMin.z, vMax.z
+		);
+
+		m_tCascadeShadowDesc.matLightVP[i] = matLightView * matLightProj;
+	}
+
+	m_tCascadeShadowDesc.vShadowMapInvSize = { 1.f / SHADOW_MAP_SIZE, 1.f / SHADOW_MAP_SIZE };
 	return S_OK;
 }
 
@@ -1422,13 +1789,20 @@ void CRender_Manager::Free()
 	//
 	Safe_Release(m_pLUTTexture);
 	Safe_Release(m_pSSAONoiseSRV);
+	Safe_Release(m_pPerlinNoiseSRV);
+	Safe_Release(m_pShadowDSTexture);
+	Safe_Release(m_pShadowDSV);
 	Safe_Release(m_pCB_Outlineparam);
 	Safe_Release(m_pCB_Bloomparam);
 	Safe_Release(m_pCB_HDRparam);
 	Safe_Release(m_pCB_SSAOkernel);
 	Safe_Release(m_pCB_SSAOparam);
-	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pCB_Fog);
+	Safe_Release(m_pCB_Toonparam);
+	Safe_Release(m_pCB_CascadeShadow);
+	Safe_Release(m_pFogShader);
 	Safe_Release(m_pShader);
+	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
@@ -1467,12 +1841,28 @@ HRESULT CRender_Manager::Commit_OutlineParam()
 	return m_pCB_Outlineparam ? m_pCB_Outlineparam->Copy_Data(m_tOutlineparamDesc) : E_FAIL;
 }
 
+HRESULT CRender_Manager::Commit_FogParam()
+{
+	return m_pCB_Fog ? m_pCB_Fog->Copy_Data(m_tFogDesc) : E_FAIL;
+}
+
+HRESULT CRender_Manager::Commit_ToonParam()
+{
+	return m_pCB_Toonparam ? m_pCB_Toonparam->Copy_Data(m_tToonparamDesc) : E_FAIL;
+}
+HRESULT CRender_Manager::Commit_CascadeParam()
+{
+	return m_pCB_CascadeShadow ? m_pCB_CascadeShadow->Copy_Data(m_tCascadeShadowDesc) : E_FAIL;
+}
 HRESULT CRender_Manager::Commit_AllPostParams()
 {
-	if (FAILED(Commit_SSAOParam()))    return E_FAIL;
-	if (FAILED(Commit_HDRParam()))     return E_FAIL;
-	if (FAILED(Commit_BloomParam()))   return E_FAIL;
-	if (FAILED(Commit_OutlineParam())) return E_FAIL;
+	if (FAILED(Commit_SSAOParam()))		 return E_FAIL;
+	if (FAILED(Commit_HDRParam()))		 return E_FAIL;
+	if (FAILED(Commit_BloomParam()))	 return E_FAIL;
+	if (FAILED(Commit_OutlineParam()))	 return E_FAIL;
+	if (FAILED(Commit_FogParam()))		 return E_FAIL;
+	if (FAILED(Commit_ToonParam()))		 return E_FAIL;
+	if (FAILED(Commit_CascadeParam()))	 return E_FAIL;
 	return S_OK;
 }
 

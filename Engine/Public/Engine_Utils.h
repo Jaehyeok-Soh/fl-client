@@ -96,8 +96,8 @@ public:
 
 
 #pragma endregion
-
-	
+	static string				LIGHTTYPE_ToString(LIGHT_TYPE eType);
+	static LIGHT_TYPE			LIGHTTYPE_ToEnum(const string& strType);
 	static string				MaterialTextureType_ToString(EMaterialTextureType eType);
 	static EMaterialTextureType MaterialTextureType_ToEnum(string strType);
 
