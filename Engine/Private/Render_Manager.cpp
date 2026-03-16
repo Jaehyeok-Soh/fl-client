@@ -42,6 +42,9 @@ HRESULT CRender_Manager::Initialize()
 	if (FAILED(Create_ShadowResource()))
 		return E_FAIL;
 
+	if (FAILED(Ready_BlendStates()))
+		return E_FAIL;
+
 #ifdef _DEBUG
 	if (FAILED(Ready_Debug()))
 		return E_FAIL;
@@ -1318,7 +1321,7 @@ HRESULT CRender_Manager::Ready_RT()
 	// For. Target_Diffuse
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
 		desc.vClearColor = Vec4::Zero;

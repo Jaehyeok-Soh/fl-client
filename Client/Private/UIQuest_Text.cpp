@@ -169,7 +169,7 @@ void CUIQuest_Text::Bind_Events()
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
-				
+
 
 				switch (this->m_eTextSubClassType)
 				{
@@ -191,7 +191,10 @@ void CUIQuest_Text::Bind_Events()
 					return E_FAIL;
 				}
 			})
+
 	);
+
+	return;
 }
 
 void CUIQuest_Text::Initialize_Visible_Event()
