@@ -752,7 +752,8 @@ HRESULT CMainPlayer::Ready_CCT()
         | PHYSICSFILTERGROUP::Enum::TRIGGER_QUEST
         | PHYSICSFILTERGROUP::Enum::TRIGGER_SPAWN
         | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION
-        | PHYSICSFILTERGROUP::Enum::TRIGGER_BOX;
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_BOX
+        | PHYSICSFILTERGROUP::Enum::NPC;
 
     desc.bGravity = { true };
     desc.fGravity = { -35.f };

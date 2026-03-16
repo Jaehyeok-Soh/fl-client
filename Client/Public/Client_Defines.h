@@ -772,6 +772,8 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]{ L"Monster_Boomer" };
 	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
 
+	inline constexpr wchar_t g_wszNPC_Pan_State_Tag[]{ L"NPC_Pan" };
+
 #pragma endregion 
 
 #pragma region Model Protototype Tag
@@ -780,6 +782,8 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Monster_Dog"};
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
+	
+	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
 
 #pragma endregion
 
@@ -878,6 +882,12 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
 #pragma endregion
 
+#pragma region Npc ฐüทร
+	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan" };
+
+	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan_Body" };
+#pragma endregion
+
 #pragma region Part Objects
 
 	inline constexpr wchar_t g_wszPartObj_Effect_Prototype_Tag[]{ L"Prototype_GameObject_Part_Effect" }; // static
@@ -906,6 +916,7 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
 	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
+	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
 #pragma endregion
 }
 

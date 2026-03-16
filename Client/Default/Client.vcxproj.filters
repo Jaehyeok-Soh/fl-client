@@ -754,6 +754,9 @@
     <Filter Include="05. Component\Monster\MonsterControlContext">
       <UniqueIdentifier>{9F6A9D98-F1E9-4E08-A76F-50B9DCAADF19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\Pan">
+      <UniqueIdentifier>{20ca04a6-e624-479c-ba98-36f81accee48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1399,6 +1402,9 @@
     <ClInclude Include="..\Public\NPC_Pan.h">
       <Filter>03. GameObject\ContainerObjects\NPC\Pan</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\NPC_Pan_Body.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\Pan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2032,6 +2038,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\NPC_Pan.cpp">
       <Filter>03. GameObject\ContainerObjects\NPC\Pan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Pan_Body.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\Pan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

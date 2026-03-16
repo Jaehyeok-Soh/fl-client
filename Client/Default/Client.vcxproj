@@ -186,6 +186,7 @@
     <ClInclude Include="..\Public\NPC_Base.h" />
     <ClInclude Include="..\Public\NPC_Body_Base.h" />
     <ClInclude Include="..\Public\NPC_Pan.h" />
+    <ClInclude Include="..\Public\NPC_Pan_Body.h" />
     <ClInclude Include="..\Public\QuestManager.h" />
     <ClInclude Include="..\Public\Quest_Chapter.h" />
     <ClInclude Include="..\Public\Quest_Scenario.h" />
@@ -403,6 +404,7 @@
     <ClCompile Include="..\Private\NPC_Base.cpp" />
     <ClCompile Include="..\Private\NPC_Body_Base.cpp" />
     <ClCompile Include="..\Private\NPC_Pan.cpp" />
+    <ClCompile Include="..\Private\NPC_Pan_Body.cpp" />
     <ClCompile Include="..\Private\QuestManager.cpp" />
     <ClCompile Include="..\Private\Quest_Chapter.cpp" />
     <ClCompile Include="..\Private\Quest_Scenario.cpp" />

@@ -97,6 +97,9 @@ private:
 	/* Mosnter Spawn ImGuiUpdate */
 	void						ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData* pMonsterSpawnData);
 
+	/* NPC ฐüทร */
+	void						ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc);
+
 public:
 
 private:

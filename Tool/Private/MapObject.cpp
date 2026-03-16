@@ -1318,7 +1318,12 @@ HRESULT CMapObject::Render()
         hr = Render_StaticObject();
         break;
 
+    case Tool::EClientMakePath::Batch_NPC:
+        hr = Render_Collider();
+        break;
+
     default:
+        hr = Render_StaticObject();
         break;
     }
 

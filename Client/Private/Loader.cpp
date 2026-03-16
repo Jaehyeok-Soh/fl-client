@@ -124,6 +124,12 @@
 #include "Boss_Xibi_Body.h"
 
 //=================
+// NPC
+//=================
+#include "NPC_Pan.h"
+#include "NPC_Pan_Body.h"
+
+//=================
 // UI
 //=================
 #include "GenericUI.h"
@@ -638,6 +644,24 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Boomer_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
+	// For.Prototype_Component_Model_NPC_Pan
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.wstrModelFolderName = L"NPC_Pan";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.vecStageBoneIndices = {};
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Pan_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_RenderFx
@@ -741,14 +765,19 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
-		// For. Prototype_GameObject_Monster_Dummy
+		// For. Prototype_GameObject_Monster_Dog
 		ADD_PROTOTYPE(ELevelType::STATIC , g_wszMonster_Dog_Prototype_Tag , CMonster_Dog::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy_Body
+		// For. Prototype_GameObject_Monster_Dog_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Dog_Body_Prototype_Tag, CMonster_Dog_Body::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy
+		// For. Prototype_GameObject_Monster_Boomer
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy_Body
+		// For. Prototype_GameObject_Monster_Boomer_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+
+		// For. Prototype_GameObject_NPC_Pan
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Prototype_Tag, CNPC_Pan::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Pan_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Body_Prototype_Tag, CNPC_Pan_Body::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
