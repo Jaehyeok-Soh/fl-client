@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "MonsterBasic",
+            "eColliderType": "Overlap",
+            "iID": 2,
+            "strTag": "Dog_Attack01",
+            "tCombat": {
+                "DamageType": "Physical",
+                "HitType": "Light",
+                "fBaseDamage": 10.0,
+                "fHitStopSec": 0.0,
+                "fHitStunSec": 0.0,
+                "fImpulse": 0.0,
+                "fPushPower": 0.0
+            },
+            "tPolicy": {
+                "PolicyType": "END",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

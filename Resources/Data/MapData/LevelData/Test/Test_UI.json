@@ -1,0 +1,65 @@
+{
+    "Category": "MAP",
+    "Level Data": {
+        "Env Data": {
+            "Wind Data": {
+                "Direction": {
+                    "X": 1.0,
+                    "Y": 0.0,
+                    "Z": 1.0
+                },
+                "Power": 1.0
+            }
+        },
+        "Level Type": "STATIC",
+        "Texture Splating Info": "None",
+        "strTag": "LevelData0"
+    },
+    "Objects": [
+        {
+            "Client Level Type": "LOGO",
+            "Client Make Path": "TriggerBox_TutorialUIEvent",
+            "Client Make Path Desc": [
+                {
+                    "Extents": {
+                        "X": 0.5,
+                        "Y": 0.5,
+                        "Z": 0.5
+                    },
+                    "Tutorial UI Event ID": "TUTORIAL_POPUP_1"
+                }
+            ],
+            "Draw Type": "Collider",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 0.10720830410718918,
+                        "Y": 4.181209564208984,
+                        "Z": -4.436007499694824
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": false,
+            "UE Raw Data Path": "",
+            "strTag": "TriggerBox_TutorialUIEvent3"
+        }
+    ]
+}

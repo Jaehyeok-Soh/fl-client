@@ -1,0 +1,19 @@
+{
+    "Category": "MAP",
+    "Objects": [
+        {
+            "Type": "STATICMODEL",
+            "iValue": 3,
+            "iValue2": 2.0,
+            "iValue3": -3,
+            "strTag": "model1"
+        },
+        {
+            "Type": "LIGHT",
+            "iValue": 2,
+            "iValue2": 1.0,
+            "iValue3": -2,
+            "strTag": "Light1"
+        }
+    ]
+}

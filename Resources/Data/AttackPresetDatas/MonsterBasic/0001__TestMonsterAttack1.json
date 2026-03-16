@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "MonsterBasic",
+            "eColliderType": "Overlap",
+            "iID": 1,
+            "strTag": "TestMonsterAttack1",
+            "tCombat": {
+                "DamageType": "Fire",
+                "HitType": "Light",
+                "fBaseDamage": 16.799999237060547,
+                "fHitStopSec": 0.6899999976158142,
+                "fHitStunSec": 0.8299999833106995,
+                "fImpulse": 66.0,
+                "fPushPower": 4.300000190734863
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

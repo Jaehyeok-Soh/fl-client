@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "PlayerBasic",
+            "eColliderType": "Overlap",
+            "iID": 2,
+            "strTag": "TestPlayerAttack2",
+            "tCombat": {
+                "DamageType": "Fire",
+                "HitType": "Heavy",
+                "fBaseDamage": 17.100000381469727,
+                "fHitStopSec": 1.0,
+                "fHitStunSec": 1.2999999523162842,
+                "fImpulse": 29.0,
+                "fPushPower": 2.299999952316284
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

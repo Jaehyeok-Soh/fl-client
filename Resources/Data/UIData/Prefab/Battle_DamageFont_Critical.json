@@ -1,0 +1,137 @@
+{
+    "Category": "UI",
+    "Objects": [
+        {
+            "Type": "CANVAS",
+            "fHeight": 900.0,
+            "fPosX": 800.0,
+            "fPosY": 450.0,
+            "fPosZ": 0.5,
+            "fWidth": 1600.0,
+            "iEditorSizeX": 1600,
+            "iEditorSizeY": 900,
+            "iLevelIndex": 0,
+            "iNumPrefabs": 30,
+            "iPrefabType": 3,
+            "strTag": "Battle_DamageFont_Critical"
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "UI_TEXT",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 87.20930480957031,
+            "fPosX": 0.0,
+            "fPosY": -31.395349502563477,
+            "fPosZ": 0.0,
+            "fRotate": 0.0,
+            "fScale": 1.0,
+            "fWidth": 83.33332824707031,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 4,
+            "iShaderPass": 0,
+            "isActivate": true,
+            "isInteract": true,
+            "isUseColorTint": false,
+            "isVisible": false,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Battle_DamageFont_Critical",
+            "strGlowTextureTag": "",
+            "strNoiseTextureTag": "",
+            "strTag": "DamageFont_CriticalText",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "UI_TEXT",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.0,
+            "fDelay": 0.0,
+            "fHeight": 87.20930480957031,
+            "fPosX": 0.0,
+            "fPosY": 0.0,
+            "fPosZ": 0.0,
+            "fRotate": 0.0,
+            "fScale": 1.0,
+            "fWidth": 83.33332824707031,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 4,
+            "iShaderPass": 0,
+            "isActivate": true,
+            "isInteract": true,
+            "isUseColorTint": false,
+            "isVisible": false,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "Battle_DamageFont_Critical",
+            "strGlowTextureTag": "",
+            "strNoiseTextureTag": "",
+            "strTag": "DamageFont_CriticalNum",
+            "strTextureTag": "Prototype_Component_Texture_Empty",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "UI_TEXT",
+            "ePivot": 0,
+            "eShaderType": 7,
+            "eTextSubClassType": "BATTLE_DAMAGE_TEXT_CRITCAL",
+            "fRotate": 0.0,
+            "fScale": 0.8333333134651184,
+            "strFontTag": "TitleEng24_Italian",
+            "strOwnerName": "DamageFont_CriticalText",
+            "strTag": "DamageFont_CriticalText_TextData",
+            "strText": "CRITICAL",
+            "vFontColor": {
+                "w": 1.0,
+                "x": 0.24705882370471954,
+                "y": 0.9764705896377563,
+                "z": 0.8274509906768799
+            }
+        },
+        {
+            "Type": "UI_TEXT",
+            "ePivot": 0,
+            "eShaderType": 7,
+            "eTextSubClassType": "BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE",
+            "fRotate": 0.0,
+            "fScale": 0.8333333134651184,
+            "strFontTag": "ContentsNum32",
+            "strOwnerName": "DamageFont_CriticalNum",
+            "strTag": "DamageFont_CriticalNum_TextData",
+            "strText": "156!",
+            "vFontColor": {
+                "w": 1.0,
+                "x": 0.24705882370471954,
+                "y": 0.9764705896377563,
+                "z": 0.8274509906768799
+            }
+        }
+    ]
+}

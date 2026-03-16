@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "MonsterPorjectile",
+            "eColliderType": "Overlap",
+            "iID": 1,
+            "strTag": "TestMonsterProjectile1",
+            "tCombat": {
+                "DamageType": "Electric",
+                "HitType": "Knockdown",
+                "fBaseDamage": 2.0999999046325684,
+                "fHitStopSec": 0.4300000071525574,
+                "fHitStunSec": 0.4399999976158142,
+                "fImpulse": 40.0,
+                "fPushPower": 1.100000023841858
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}
