@@ -51,6 +51,7 @@ HRESULT CGameObject::Initialize(void* pArg)
     if (FAILED(Add_Component<CTransform>(0/* STATIC */, L"Prototype_Component_Transform", pArg)))
         return E_FAIL;
 
+
     return S_OK;
 }
 

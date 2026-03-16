@@ -266,10 +266,11 @@ public:
 #pragma region LIGHT_MANAGER
 	ID3D11Buffer* Get_Light_ConstantBuffer();
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
-	HRESULT Push_DynamicLight(class CLight* pLight);
+	HRESULT Push_Light(class CLight* pLight);
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
 	class CLight* Get_Light(LIGHT_TYPE eType, _uint iIndex = 0);
 	void Clear_Lights();
+
 #pragma endregion
 
 #pragma region EVENT_MANAGER

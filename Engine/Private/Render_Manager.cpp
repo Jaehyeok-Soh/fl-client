@@ -47,7 +47,7 @@ HRESULT CRender_Manager::Initialize()
 	// For. Target_Diffuse
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
 		desc.vClearColor = Vec4::Zero;

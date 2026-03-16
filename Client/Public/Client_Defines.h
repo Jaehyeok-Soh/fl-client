@@ -216,6 +216,11 @@ namespace Client
 		_float  g_fGrassWaveSize	{1.f};		//이 잔디가 Power = 흔들리는 힘		Tool에서 지정
 	};
 
+	struct CB_PlantData
+	{
+		_float	g_DiffuseColorPower{1.f};
+		Vec3	g_Dummy{};
+	};
 
 
 	static ELevelType StringToClientleveltype(const _string& str)
@@ -286,6 +291,7 @@ namespace Client
 		RGBMapping,
 		SHADOW_BAKE,
 		DEBUG,
+		SkyBox,
 		END,
 	};
 
@@ -865,7 +871,9 @@ namespace Client
 #pragma endregion
 
 #pragma region 기타
-	inline constexpr wchar_t g_wszBattleField_Prototype_Tag[]					{ L"Prototype_GameObject_BattleField" };
+	inline constexpr wchar_t g_wszBattleField_Prototype_Tag[]					{ L"Prototype_GameObject_BattleField"};
+	inline constexpr wchar_t g_wszSkyBox_Prototype_Tag[]						{ L"Prototype_GameObject_SkyBox" };
+	inline constexpr wchar_t g_wszPointLight_Prototype_Tag[]					{ L"Prototype_GameObject_PointLight"};
 #pragma endregion
 
 #pragma endregion
@@ -885,6 +893,8 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
 	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
+	inline constexpr wchar_t g_wszSkyBoxLayer[]									{ L"SkyBox_Layer" };
+	inline constexpr wchar_t g_wszPointLightLayer[]								{ L"PointLight_Layer" };
 #pragma endregion
 }
 

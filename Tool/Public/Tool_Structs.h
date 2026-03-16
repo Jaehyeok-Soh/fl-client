@@ -100,6 +100,12 @@ namespace Tool
     };
 
 
+    struct CB_PlantData
+    {
+        _float      g_fDiffuseColorPower{ 1.f }; //바람이 부는 새기
+        Vec3        g_vDummy{1.f,1.f,1.f};
+    };
+
     struct CB_GrassData
     {
         _float g_fGrassDT{0.f};

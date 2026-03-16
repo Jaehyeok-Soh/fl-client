@@ -10,7 +10,7 @@ namespace Engine
 	enum class MOUSEMOVESTATE : unsigned int { X, Y, WHEEL, END };
 	enum class WINMODE { FULL, WIN };
 	enum class TRANSFORM_INFO_STATE { RIGHT, UP, LOOK, POS, END };
-	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, STATICPOINT, DYNAMICPOINT, END };
+	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, POINT , END };
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
 	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND , COMPUTELIGHT_BLEND , NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, END };

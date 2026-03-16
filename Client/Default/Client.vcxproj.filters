@@ -733,6 +733,18 @@
     <Filter Include="07. System\99. Debug_ImGui\Layout\Animation">
       <UniqueIdentifier>{f2ac30ac-8cc6-4e1a-91a2-0a36094fcd50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\SkyBox">
+      <UniqueIdentifier>{99918c3e-fd8c-43b0-a581-c9c381bd8543}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\07. EnvObject">
+      <UniqueIdentifier>{3c576829-7611-438f-8913-4851f5db15b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\07. EnvObject\08. Fog">
+      <UniqueIdentifier>{d60575dc-b385-48f0-ba05-2f3bff77d47e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PointLight">
+      <UniqueIdentifier>{a0f8084c-c1b0-4b67-9681-7691de4c94e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1363,6 +1375,18 @@
     <ClInclude Include="..\Public\ImGui_AnimationLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SkyBox.h">
+      <Filter>03. GameObject\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EnvObject.h">
+      <Filter>03. GameObject\MapObject\07. EnvObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fog.h">
+      <Filter>03. GameObject\MapObject\07. EnvObject\08. Fog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PointLight.h">
+      <Filter>03. GameObject\PointLight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1981,6 +2005,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_AnimationLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkyBox.cpp">
+      <Filter>03. GameObject\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EnvObject.cpp">
+      <Filter>03. GameObject\MapObject\07. EnvObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Fog.cpp">
+      <Filter>03. GameObject\MapObject\07. EnvObject\08. Fog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PointLight.cpp">
+      <Filter>03. GameObject\PointLight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

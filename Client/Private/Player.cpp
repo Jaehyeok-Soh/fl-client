@@ -790,7 +790,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime == 15.f/( 24.f * 1.2f);// (0.7f);
+        tKeyTimer.fMaxTime = 15.f/( 24.f * 1.2f);// (0.7f);
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 

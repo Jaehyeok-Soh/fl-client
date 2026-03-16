@@ -72,7 +72,7 @@ private:
 	virtual HRESULT						Initialize(void* pArg)							override;
 	HRESULT								Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT								Ready_Component();
-	HRESULT								Ready_ColliderTypeComponet();
+	HRESULT								Ready_ColliderType();
 	HRESULT								Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT								Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
 public:
@@ -198,6 +198,10 @@ private:
 	HRESULT								Check_DrawType_ByClientPath();
 public:
 
+#pragma region BeforeRender
+	void								BatchObject_BeforeRender(const _float fTimeDelta);
+#pragma endregion
+
 #pragma region Render 함수 모음
 
 	HRESULT								Render_MapObject();
@@ -206,6 +210,8 @@ public:
 
 	HRESULT								Render_Plants(_uint iPassIndex);
 
+
+	HRESULT								Bind_PlantBuffer(CShader* pShader = nullptr);
 	HRESULT								Render_Grass();
 	HRESULT								Render_Tree();
 	HRESULT								Render_Moss();
@@ -272,6 +278,7 @@ protected:
 
 
 	/* 임시 패기처분 */
+	/* 다시 살리기 프로젝트 */
 	/* Override Material을 담아줄 변수 */
 	vector<CMaterial*>					m_vecOverrideMaterials;
 	bool								m_isUseOverrideMaterials{ false };

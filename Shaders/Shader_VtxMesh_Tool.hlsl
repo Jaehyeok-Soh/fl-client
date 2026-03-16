@@ -59,13 +59,19 @@ Texture2D g_FogTexture[MAX_FOG_TEXTURE_COUNT];
 
 
 
-
-
 cbuffer CB_EnvData
 {
     float3 vWindDirection   = float3(1.f,-1.f,1.f);     //바람이 부는 방향
     float  fWindPower       = 1.f;                      //바람이 부는 새기
 };
+
+
+cbuffer CB_PlantData
+{
+    float   g_fPlantDiffuseColorPower = 1.f;
+    float3  g_fPlantDummy;
+}
+
 
 cbuffer CB_GrassData
 {
@@ -74,6 +80,7 @@ cbuffer CB_GrassData
     float g_fGrassSwaySpeed = 1.f; //이 잔디가 Sway = 흔들리는 Speed
     float g_fGrassWaveSize = 1.f; //이 잔디가 Power = 흔들리는 힘
 };
+
 
 
 
@@ -179,6 +186,25 @@ VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
     output.vProjPos = output.vPosition;
     return output;
 }
+
+VS_OUT_MESH_VIEWZ VS_FOG(VS_IN_MESH input)
+{
+    VS_OUT_MESH_VIEWZ output;
+    
+    output.vPosition = mul(float4(input.vPosition, 1.f), W);
+    output.vPosition = mul(output.vPosition, V);
+    output.fViewZ = output.vPosition.w;
+    output.vPosition = mul(output.vPosition, P);
+    output.vUV = input.vUV;
+    output.vNormal = normalize(mul(input.vNormal, (float3x3) W));
+    output.vTangent = normalize(mul(input.vTangent, (float3x3) W));
+    output.vBinormal = normalize(mul(input.vBinormal, (float3x3) W));
+    
+    output.vWorldPos = mul(float4(input.vPosition, 1.f), W);
+    output.vProjPos = output.vPosition;
+    return output;
+}
+
 
 VS_OUT_MESH VS_GRASS(VS_IN_MESH input)
 {
@@ -486,13 +512,19 @@ PS_OUT_DEFFERED PS_GRASS(PS_IN_MESH input)
     
     Compute_Diffse(vDiffuse, input.vUV);
     
-    if (length(vDiffuse.rgb) < 0.1f)
+    if (length(vDiffuse.rgb) < 0.01f)
         discard;
     
-    if (vDiffuse.a < 0.3f)
+    if (vDiffuse.a < 0.25f)
         discard;
     
-    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    float3 vBaseColor = vDiffuse.rgb * MIDesc.vTintColor.rgb;
+      
+    float fLuminance = dot(vBaseColor, float3(0.299f, 0.587f, 0.114f));
+    float fSaturationBoost = 1.0f + max(0.0f, (g_fPlantDiffuseColorPower - 1.0f) * 0.5f);
+    float3 vVibrantColor = lerp(float3(fLuminance, fLuminance, fLuminance), vBaseColor, fSaturationBoost);
+    
+    vDiffuse.rgb = vVibrantColor * g_fPlantDiffuseColorPower;
     output.vDiffuse = vDiffuse;
     
     
@@ -526,7 +558,12 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     if (vDiffuse.a < 0.3f)
         discard;
     
-    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    float3 vBaseColor = vDiffuse.rgb * MIDesc.vTintColor.rgb;    
+    float fLuminance = dot(vBaseColor, float3(0.299f, 0.587f, 0.114f));
+    float fSaturationBoost = 1.0f + max(0.0f, (g_fPlantDiffuseColorPower - 1.0f) * 0.5f);
+    float3 vVibrantColor = lerp(float3(fLuminance, fLuminance, fLuminance), vBaseColor, fSaturationBoost);
+    
+    vDiffuse.rgb = vVibrantColor * g_fPlantDiffuseColorPower;
     output.vDiffuse = vDiffuse;
     
     float3 vNormal = input.vNormal;
@@ -549,9 +586,7 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
-    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
-    
+        
     return output;
 }
 
@@ -655,22 +690,21 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
 }
 
 
-PS_OUT_DEFFERED PS_FOG(PS_IN_MESH input)
+PS_OUT_WBOIT PS_FOG(VS_OUT_MESH_VIEWZ input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_WBOIT output;
+   
+    float4 vColor = 1.f;
     
     float2 vInputUV = float2(input.vUV.x ,input.vUV.y);
-    float4 vDiffuse = 1.f;
    
-    
-    vDiffuse *= MIDesc.vTintColor;
-    
+    vColor *= MIDesc.vTintColor;
     
     float fNoiseVal = 0.0f; // 노이즈 밝기 값 저장용
     if (Has(g_FogTexBindingFlags, FOG_NOISE))
     {
-        float2 vNoiseUVSpeed = g_vFogUV[FOG_NOISE].zw;
-        float2 vNoiseUVPower = g_vFogUV[FOG_NOISE].xy;
+        float2 vNoiseUVSpeed = g_vFogUV[FOG_NOISE].xy;
+        float2 vNoiseUVPower = g_vFogUV[FOG_NOISE].zw;
         
         float2 vNoiseUV = (vInputUV * vNoiseUVPower) + vNoiseUVSpeed * g_fFogDT;
         float4 vNoiseTex = g_FogTexture[FOG_NOISE].Sample(LinearSampler, vNoiseUV);
@@ -687,30 +721,21 @@ PS_OUT_DEFFERED PS_FOG(PS_IN_MESH input)
         
         float2 vMaskUV = (vInputUV * vMaskUVPower) + vMaskUVSpeed * g_fFogDT;
         float4 vMaskTex = g_FogTexture[FOG_MASK].Sample(LinearSampler, vMaskUV);
-        float fFinalAlpha = vMaskTex.r - (fNoiseVal * g_fDistortionPower);
+        float fFlowingAlpha = vMaskTex.r * fNoiseVal * g_fFogDistortionPower;
+        vColor.a *= fFlowingAlpha;
+        
+        //vColor.rgb *= vMaskTex.rgb;
         
         // 투명도는 0 밑으로 내려가면 안 되니까 saturate(0~1로 제한)로 묶어서 적용
-        vDiffuse.a *= saturate(fFinalAlpha);
     }
   
+    float3 srcRGB = vColor.rgb;
+    float srcAlpha = vColor.a;
+    float w = pow(saturate(1.0f - input.fViewZ / 1000.0f), 3.0f); // 3승으로 변화율 조절
+    w = clamp(w, 0.01f, 3000.0f); // 상한선을 적당히 열어주되, 하한선으로 방어
     
-    if (vDiffuse.a < 0.05f)
-        discard;
-   
-    output.vDiffuse = vDiffuse;
-        
-    
-    float3 vNormal = input.vNormal;
-    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
-    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
-    
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
-    if (Has(g_iMaterialMask, METALNESS))
-        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
-    output.vSpecularMask = float4(vSpecMask, 1.f);
-    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
-    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
+    output.vAccum = float4(srcRGB * srcAlpha,srcAlpha) * w ;
+    output.vReveal = srcAlpha;
     
     return output;
 }
@@ -735,7 +760,18 @@ technique11 T0
     // 환경요소
 	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone , DS_Default , BS_AlphaBlend , VS_MAIN, PS_WATER)
-	PASS_RS_DS_BS_VP(Fog, RS_Default_CullNone , DS_Default , BS_AlphaBlend , VS_MAIN, PS_FOG)
+
+    pass Fog
+    {
+
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_Default, 0);
+        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
+        SetVertexShader(CompileShader(vs_5_0, VS_FOG()));
+        GeometryShader = NULL;
+        SetPixelShader(CompileShader(ps_5_0,PS_FOG()));
+    }
+
 
     //EXT
     PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)

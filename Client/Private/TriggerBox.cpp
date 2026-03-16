@@ -96,9 +96,13 @@ HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
 
         if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", &desc)))
             return E_FAIL;
-
-        return S_OK;
     }
+
+
+    CTransform* pTs = Get_Component<CTransform>();
+    if (pTs == nullptr) return E_FAIL;
+    /* 이 오브젝트에 회전값을 적용시켜준다 */
+    pTs->Rotation( pDesc->vTriggerBox_Rotation.x , pDesc->vTriggerBox_Rotation.y, pDesc->vTriggerBox_Rotation.z);
 
     return S_OK;
 }

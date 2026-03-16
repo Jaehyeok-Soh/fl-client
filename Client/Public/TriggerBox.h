@@ -27,6 +27,7 @@ protected:
 	{
 		/* Trigger Box */
 		Vec3					vTriggerBox_Extents{1.f,1.f,1.f};
+		Vec3					vTriggerBox_Rotation{ 0.f,0.f,0.f }; //Degree값 받아오기  Json에는 Degree로 써져있음
 		/* 필수 */
 		const DTO::SRT_DATA*	pSRTData{nullptr};
 

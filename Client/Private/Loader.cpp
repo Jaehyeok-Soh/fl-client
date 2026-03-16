@@ -70,6 +70,8 @@
 #include "Moon_SkillE_Obj.h"
 #include "SkillWarningSpace.h"
 #include "SocketObject.h"
+#include "SkyBox.h"
+#include "PointLight.h"
 
 //=================
 // SkillObject
@@ -413,10 +415,13 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Sphere")))
 			return E_FAIL;
-
-
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Twist")))
 			return E_FAIL;
+
+
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/SkyBox")))
+			return E_FAIL;
+
 	}
 	m_fLoadingRatio = 0.13f;
 	// For. Prototype_Component_Button_Test_Texture
@@ -483,6 +488,11 @@ HRESULT CLoader::Loading_For_Logo()
 	// For. UI Texture
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
 		return E_FAIL;
+
+	// For. SkyBox
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/SkyBox/")))
+		return E_FAIL;
+
 
 #pragma endregion
 
@@ -678,6 +688,7 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 	}
 
+
 #pragma endregion
 
 	///////////////////////////////////////
@@ -712,7 +723,10 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
-
+		/* Sky Box */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszSkyBox_Prototype_Tag ,					CSkyBox::Create(m_pDevice, m_pDeviceContext));
+		/* Point Light */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPointLight_Prototype_Tag ,				CPointLight::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region Map Object
 		/* Map Object */
@@ -821,8 +835,6 @@ HRESULT CLoader::Loading_For_Logo()
 	m_isFinished = true;
 	return S_OK;
 }
-
-
 
 HRESULT CLoader::Loading_For_Tutorial_Village()
 {
