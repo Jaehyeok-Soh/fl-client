@@ -63,11 +63,11 @@ struct QUEST_ALL_COMPLETE{ using Signature = void(); }; // 모든 퀘스트 완료
 
 // 대화 이벤트
 struct DIALOGUE_BEGIN { using Signature = void(_int iId); }; // 대화 시작
-struct DIALOGUE_CHOICE { using Signature = void(_int iIndex); };
+struct DIALOGUE_SELECT { using Signature = void(_int iIndex); };
 struct DIALOGUE_NEXT { using Signature = void(); };
 struct DIALOGUE_PREV { using Signature = void(); };
-struct DIALOGUE_END { using Siganture = void(); };
-struct DIALOGUE_CANCEL { using Siganture = void(); }; // 대화 매니저만 사용
+struct DIALOGUE_END { using Signature = void(); };
+struct DIALOGUE_CANCEL { using Signature = void(); }; // 대화 매니저만 사용
 
 
 #pragma endregion

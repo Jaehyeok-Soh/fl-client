@@ -37,28 +37,28 @@ void CDialogueManager::Ready_Dialogue()
 
 void CDialogueManager::Bind_Events()
 {
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<DIALOGUE_CHOICE>([this](_int iIndex)
+	m_arrEventHandles[EDialogueInnerEvent::SELECT] = (
+		m_pGameInstance->Subscribe<DIALOGUE_SELECT>([this](_int iIndex)
 			{
 				this->OnSelectChoice(iIndex);
 			})
 	);
 
-	m_vecEventHandles.push_back(
+	m_arrEventHandles[EDialogueInnerEvent::NEXT] = (
 		m_pGameInstance->Subscribe<DIALOGUE_NEXT>([this]()
 			{
 				this->OnInputNext();
 			})
 	);
 
-	m_vecEventHandles.push_back(
+	m_arrEventHandles[EDialogueInnerEvent::PREV] = (
 		m_pGameInstance->Subscribe<DIALOGUE_PREV>([this]()
 			{
 				this->OnInputPrev();
 			})
 	);
 
-	m_vecEventHandles.push_back(
+	m_arrEventHandles[EDialogueInnerEvent::CANCEL] = (
 		m_pGameInstance->Subscribe<DIALOGUE_CANCEL>([this]()
 			{
 				this->CancelCallback();
@@ -172,9 +172,10 @@ DIALOGUE_NODE& CDialogueManager::CreateNode(_int key, _int nodeId, _int prevId, 
 
 void CDialogueManager::Free()
 {
-	for (auto& handle : m_vecEventHandles)
-		m_pGameInstance->Unsubscribe<QUEST_NOTIFY>(handle);
-	m_vecEventHandles.clear();
+	m_pGameInstance->Unsubscribe<DIALOGUE_SELECT>(m_arrEventHandles[EDialogueInnerEvent::SELECT]);
+	m_pGameInstance->Unsubscribe<DIALOGUE_NEXT>(m_arrEventHandles[EDialogueInnerEvent::NEXT]);
+	m_pGameInstance->Unsubscribe<DIALOGUE_PREV>(m_arrEventHandles[EDialogueInnerEvent::PREV]);
+	m_pGameInstance->Unsubscribe<DIALOGUE_CANCEL>(m_arrEventHandles[EDialogueInnerEvent::CANCEL]);
 
 	Safe_Release(m_pGameInstance);
 

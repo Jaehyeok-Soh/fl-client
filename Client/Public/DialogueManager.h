@@ -11,6 +11,18 @@ class CDialogueManager final : public CBase
 {
 	DECLARE_SINGLETON(CDialogueManager);
 
+	struct EDialogueInnerEvent
+	{
+		enum Enum
+		{
+			SELECT,
+			NEXT,
+			PREV,
+			CANCEL,
+			END
+		};
+	};
+
 	using Super = CBase;
 private:
 	CDialogueManager();
@@ -47,7 +59,7 @@ private:
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 
-	vector<DelegateHandle> m_vecEventHandles;
+	array<DelegateHandle, EDialogueInnerEvent::END> m_arrEventHandles;
 
 	_int m_iCurrentNode = { -1 };
 	DIALOGUE_NODE* m_pCurrentNode = { nullptr };
