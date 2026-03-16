@@ -125,6 +125,109 @@ HRESULT CRender_Manager::Set_CascadeShadowConstantBuffer(CShader* pShader)
 	return pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer());
 }
 
+HRESULT CRender_Manager::Set_BakedShadowConstantBuffer(CShader* pShader)
+{
+	if (pShader == nullptr)
+		return E_FAIL;
+
+	return pShader->Set_ConstantBuffer(EFXCB::BakedShadowparam, m_pCB_BakedShadow->Get_Buffer());
+}
+
+HRESULT CRender_Manager::Bake_StaticShadow()
+{
+	//=================
+	// 레벨 AABB 구하기
+	//=================
+	BoundingBox levelAABB = m_pGameInstance->m_pOctree_Manager->Get_RootBounds();
+	Vec3 vCenter = Vec3(levelAABB.Center.x, levelAABB.Center.y, levelAABB.Center.z);
+	Vec3 vExtents = Vec3(levelAABB.Extents.x, levelAABB.Extents.y, levelAABB.Extents.z);
+
+	//===============
+	// 고정 Light VP
+	//===============
+	CLight* pDirLight = m_pGameInstance->Get_Light(LIGHT_TYPE::DIRECTIONAL);
+	if (pDirLight == nullptr)
+		return S_OK;
+
+	Vec3 vLightDir = pDirLight->Get_LightDesc().vDirection;
+	vLightDir.Normalize();
+
+	// Light View
+	Matrix matLightView = ::XMMatrixLookAtLH(
+		vCenter - vLightDir * vExtents.Length(),
+		vCenter,
+		Vec3::Up
+	);
+
+	// Light Space AABB
+	Vec3 vCorners[8];
+	levelAABB.GetCorners(vCorners);
+
+	Vec3 vMin(FLT_MAX), vMax(-FLT_MAX);
+	for (int i = 0; i < 8; ++i)
+	{
+		Vec3 vLS = Vec3::Transform(vCorners[i], matLightView);
+		vMin = Vec3::Min(vMin, vLS);
+		vMax = Vec3::Max(vMax, vLS);
+	}
+
+	float fPad = 5.f;
+	vMin.z -= fPad;
+	vMax.z += fPad;
+
+	Matrix matLightProj = XMMatrixOrthographicOffCenterLH(
+		vMin.x, vMax.x, vMin.y, vMax.y, vMin.z, vMax.z
+	);
+
+	m_tBakedShadowDesc.matLightVP = matLightView * matLightProj;
+	m_tBakedShadowDesc.fShadowBias = 0.002f;
+	m_tBakedShadowDesc.fShadowStrength = 0.6f;
+	m_tBakedShadowDesc.vShadowMapInvSize = { 1.f / SHADOW_BAEK_SIZE, 1.f / SHADOW_BAEK_SIZE };
+
+	if (FAILED(m_pCB_BakedShadow->Copy_Data(m_tBakedShadowDesc)))
+		return E_FAIL;
+
+	//=====================
+	// Static 오브젝트 렌더
+	//=====================
+	m_tBakedShadowViewport.Width = (float)SHADOW_BAEK_SIZE;
+	m_tBakedShadowViewport.Height = (float)SHADOW_BAEK_SIZE;
+	m_tBakedShadowViewport.MinDepth = 0.f;
+	m_tBakedShadowViewport.MaxDepth = 1.f;
+	m_pDeviceContext->RSSetViewports(1, &m_tBakedShadowViewport);
+
+	m_pDeviceContext->ClearDepthStencilView(m_pBakedShadowDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::Shadow_Baked, true, m_pBakedShadowDSV)))
+	{
+		m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+		return E_FAIL;
+	}
+
+	vector<CGameObject*> vecStatics;
+	m_pGameInstance->m_pOctree_Manager->Query_All(RENDER_CATEGORY::NONEBLEND, vecStatics);
+
+	for (auto& pObj : vecStatics)
+	{
+		if (pObj->Is_BakedShadow() == true)
+		{
+			if (FAILED(pObj->Render_Shadow()))
+				return E_FAIL;
+		}
+	}
+
+	vecStatics.clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+	{
+		m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+		return E_FAIL;
+	}
+
+	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+	return S_OK;
+}
+
 HRESULT CRender_Manager::Set_ShaderResources()
 {
 	{
@@ -916,6 +1019,9 @@ HRESULT CRender_Manager::Render_Lights()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Cascade_1, m_pShader)))
 		return E_FAIL;
 
+	if(FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Shadow_Baked, m_pShader)))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Render_Lights(m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 
@@ -1262,9 +1368,10 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	m_pCB_Fog = CConstant_Buffer<SHADER_FOG_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Toonparam = CConstant_Buffer<SHADER_TOON_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_CascadeShadow = CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_BakedShadow = CConstant_Buffer< SHADER_BAKED_SHADOW_DESC>::Create(m_pDevice, m_pDeviceContext);
 	if (m_pCB_SSAOkernel == nullptr || m_pCB_SSAOparam == nullptr || m_pCB_HDRparam == nullptr ||
 		m_pCB_Bloomparam == nullptr || m_pCB_Outlineparam == nullptr || m_pCB_Fog == nullptr ||
-		m_pCB_Toonparam == nullptr || m_pCB_CascadeShadow == nullptr)
+		m_pCB_Toonparam == nullptr || m_pCB_CascadeShadow == nullptr || m_pCB_BakedShadow == nullptr)
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::SSAOkernal, m_pCB_SSAOkernel->Get_Buffer())))
@@ -1284,9 +1391,6 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Toonparam, m_pCB_Toonparam->Get_Buffer())))
 		return E_FAIL;
-	
-	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer())))
-		return E_FAIL;
 
 	// Fog
 	if (FAILED(m_pFogShader->Set_ConstantBuffer(EFXCB::Fogparam, m_pCB_Fog->Get_Buffer())))
@@ -1294,6 +1398,9 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 
 	// Shadow
 	if(FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer())))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::BakedShadowparam, m_pCB_BakedShadow->Get_Buffer())))
 		return E_FAIL;
 
 	return S_OK;
@@ -1489,6 +1596,18 @@ HRESULT CRender_Manager::Ready_RT()
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Cascade_1, &desc)))
 			return E_FAIL;
 	}
+
+	// For. Target_Shadow_Baked
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32_FLOAT;
+		desc.iWidth = SHADOW_BAEK_SIZE;
+		desc.iHeight = SHADOW_BAEK_SIZE;
+		desc.vClearColor = Vec4::One;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Shadow_Baked, &desc)))
+			return E_FAIL;
+	}
+
 	// For. Targert_OIT_ACCUM
 	{
 		// 누적 색상 버퍼
@@ -1620,8 +1739,10 @@ HRESULT CRender_Manager::Ready_MRT()
 			return E_FAIL;
 	}
 
-	// For. MRT_Shadow
+	// For. MRT_Shadow_Baked
 	{
+		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::Shadow_Baked, ERenderTarget::Shadow_Baked)))
+			return E_FAIL;
 	}
 
 	return S_OK;
@@ -1635,6 +1756,11 @@ HRESULT CRender_Manager::Create_ShadowResource()
 		m_tShadowViewport.Height = (_float)SHADOW_MAP_SIZE;
 		m_tShadowViewport.MinDepth = 0.f;
 		m_tShadowViewport.MaxDepth = 1.f;
+
+		m_tBakedShadowViewport.Width = (_float)SHADOW_BAEK_SIZE;
+		m_tBakedShadowViewport.Height = (_float)SHADOW_BAEK_SIZE;
+		m_tBakedShadowViewport.MinDepth = 0.f;
+		m_tBakedShadowViewport.MaxDepth = 1.f;
 	}
 
 	// DSV
@@ -1656,6 +1782,23 @@ HRESULT CRender_Manager::Create_ShadowResource()
 			return E_FAIL;
 	}	
 
+	{
+		D3D11_TEXTURE2D_DESC desc = {};
+		desc.Width = SHADOW_BAEK_SIZE;
+		desc.Height = SHADOW_BAEK_SIZE;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		desc.SampleDesc.Count = 1;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+		if (FAILED(m_pDevice->CreateTexture2D(&desc, nullptr, &m_pBakedShadowDSTexture)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateDepthStencilView(m_pBakedShadowDSTexture, nullptr, &m_pBakedShadowDSV)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -1741,7 +1884,7 @@ HRESULT CRender_Manager::Compute_ShadowCascade()
 		}
 
 		// 약간 여유
-		float fZPad = 20.f;
+		_float fZPad = 20.f;
 		vMin.z -= fZPad;
 		vMax.z += fZPad;
 
@@ -1791,7 +1934,9 @@ void CRender_Manager::Free()
 	Safe_Release(m_pSSAONoiseSRV);
 	Safe_Release(m_pPerlinNoiseSRV);
 	Safe_Release(m_pShadowDSTexture);
+	Safe_Release(m_pBakedShadowDSTexture);
 	Safe_Release(m_pShadowDSV);
+	Safe_Release(m_pBakedShadowDSV);
 	Safe_Release(m_pCB_Outlineparam);
 	Safe_Release(m_pCB_Bloomparam);
 	Safe_Release(m_pCB_HDRparam);
@@ -1800,6 +1945,7 @@ void CRender_Manager::Free()
 	Safe_Release(m_pCB_Fog);
 	Safe_Release(m_pCB_Toonparam);
 	Safe_Release(m_pCB_CascadeShadow);
+	Safe_Release(m_pCB_BakedShadow);
 	Safe_Release(m_pFogShader);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
@@ -1854,15 +2000,20 @@ HRESULT CRender_Manager::Commit_CascadeParam()
 {
 	return m_pCB_CascadeShadow ? m_pCB_CascadeShadow->Copy_Data(m_tCascadeShadowDesc) : E_FAIL;
 }
+HRESULT CRender_Manager::Commit_BakedShadowParam()
+{
+	return m_pCB_BakedShadow ? m_pCB_BakedShadow->Copy_Data(m_tBakedShadowDesc) : E_FAIL;
+}
 HRESULT CRender_Manager::Commit_AllPostParams()
 {
-	if (FAILED(Commit_SSAOParam()))		 return E_FAIL;
-	if (FAILED(Commit_HDRParam()))		 return E_FAIL;
-	if (FAILED(Commit_BloomParam()))	 return E_FAIL;
-	if (FAILED(Commit_OutlineParam()))	 return E_FAIL;
-	if (FAILED(Commit_FogParam()))		 return E_FAIL;
-	if (FAILED(Commit_ToonParam()))		 return E_FAIL;
-	if (FAILED(Commit_CascadeParam()))	 return E_FAIL;
+	if (FAILED(Commit_SSAOParam()))			return E_FAIL;
+	if (FAILED(Commit_HDRParam()))			return E_FAIL;
+	if (FAILED(Commit_BloomParam()))		return E_FAIL;
+	if (FAILED(Commit_OutlineParam()))		return E_FAIL;
+	if (FAILED(Commit_FogParam()))			return E_FAIL;
+	if (FAILED(Commit_ToonParam()))			return E_FAIL;
+	if (FAILED(Commit_CascadeParam()))		return E_FAIL;
+	if (FAILED(Commit_BakedShadowParam()))	return E_FAIL;
 	return S_OK;
 }
 

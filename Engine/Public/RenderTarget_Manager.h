@@ -22,6 +22,7 @@ enum class ERenderTarget : _uint
 	Bloom_Pong,
 	Cascade_0,
 	Cascade_1,
+	Shadow_Baked,
 	OIT_Accum,		// 가중치가 적용된 색상 누적
 	OIT_Reveal,		// 배경 투과율 누적
 	END,
@@ -43,6 +44,7 @@ enum class EMRTLayer : _uint
 	Bloom_BlurV,
 	Shadow_Cascade0,
 	Shadow_Cascade1,
+	Shadow_Baked,
 	OIT_Render,	// OIT_Accum + OIT_Reveal를 묶는 MRT
 	END,
 };

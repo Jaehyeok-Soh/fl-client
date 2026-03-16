@@ -785,6 +785,15 @@ HRESULT CGameInstance::Set_CascadeShadowConstantBuffer(CShader* pShader)
 {
 	return m_pRender_Manager->Set_CascadeShadowConstantBuffer(pShader);
 }
+HRESULT CGameInstance::Set_BakedShadowConstantBuffer(CShader* pShader)
+{
+	return m_pRender_Manager->Set_BakedShadowConstantBuffer(pShader);
+}
+
+HRESULT CGameInstance::Bake_StaticShadow()
+{
+	return m_pRender_Manager->Bake_StaticShadow();
+}
 #ifdef _DEBUG
 ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
 {

@@ -43,6 +43,8 @@ public:
 	void Clear();
 	void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
+	HRESULT Set_BakedShadowConstantBuffer(class CShader* pShader);
+	HRESULT Bake_StaticShadow();
 private:	
 	HRESULT Render_Priority();
 	HRESULT Render_NoneBlend();
@@ -124,6 +126,13 @@ private:
 	CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>* m_pCB_CascadeShadow{ nullptr };
 	ID3D11Texture2D* m_pShadowDSTexture{ nullptr };
 	ID3D11DepthStencilView* m_pShadowDSV{ nullptr };
+
+	// Shadow_Baked
+	D3D11_VIEWPORT m_tBakedShadowViewport{};
+	SHADER_BAKED_SHADOW_DESC m_tBakedShadowDesc{};
+	CConstant_Buffer<SHADER_BAKED_SHADOW_DESC>* m_pCB_BakedShadow{ nullptr };
+	ID3D11Texture2D* m_pBakedShadowDSTexture{ nullptr };
+	ID3D11DepthStencilView* m_pBakedShadowDSV{ nullptr };
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
@@ -162,10 +171,14 @@ public:
 	HRESULT Commit_ToonParam();
 
 	// Cascade
-	// Toon
 	SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() { return m_tCascadeShadowDesc; }
 	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const { return m_tCascadeShadowDesc; }
 	HRESULT Commit_CascadeParam();
+
+	// Static Baked Shadow
+	SHADER_BAKED_SHADOW_DESC& Get_BakedShadowParamDesc() { return m_tBakedShadowDesc; }
+	const SHADER_BAKED_SHADOW_DESC& Get_BakedShadowParamDesc() const { return m_tBakedShadowDesc; }
+	HRESULT Commit_BakedShadowParam();
 
 	HRESULT Commit_AllPostParams();
 private:

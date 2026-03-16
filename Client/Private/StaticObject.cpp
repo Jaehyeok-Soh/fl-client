@@ -12,12 +12,13 @@ CStaticObject::CStaticObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice
 	: CMapObject(pDevice, pDeviceContext)
 {
 	m_eMapObjectType = EMapObject_Type::StaticObject;
+	m_bBakedShadow = true;
 }
 
 CStaticObject::CStaticObject(const CStaticObject& rhs)
 	: CMapObject(rhs)
 {
-
+	m_bBakedShadow = true;
 }
 
 HRESULT CStaticObject::Initialize_Prototype()
@@ -88,8 +89,6 @@ HRESULT CStaticObject::Render()
 
 	return S_OK;
 }
-
-
 
 CStaticObject* CStaticObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

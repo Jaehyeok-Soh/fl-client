@@ -347,7 +347,7 @@ namespace Engine
 	typedef struct tagShaderCascadeShadowDesc
 	{
 		// Light View × Proj 
-		SimpleMath::Matrix matLightVP[SHADOW_CASCADE_COUNT] = {};
+		SimpleMath::Matrix matLightVP[SHADOW_CASCADE_COUNT]{ SimpleMath::Matrix::Identity };
 		// ViewZ 기준 분할 거리
 		float fCascadeEnd0 = { 8.0f };
 		float fCascadeEnd1 = { 40.f };
@@ -358,6 +358,14 @@ namespace Engine
 		float fShadowStrength = { 0.4f };
 		float fCascadeIndex = { 0.f };
 	}SHADER_CASCADE_SHADOW_DESC;
+
+	typedef struct tagShaderBakedShadowDesc
+	{
+		SimpleMath::Matrix matLightVP{ SimpleMath::Matrix::Identity };
+		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
+		float fShadowBias = { 0.0002f };
+		float fShadowStrength = { 0.4f };
+	}SHADER_BAKED_SHADOW_DESC;
 
 	typedef struct tagShaderFogParamDesc
 	{

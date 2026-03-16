@@ -17,7 +17,7 @@ CMapObject::CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CMapObject::CMapObject(const CMapObject& rhs)
-	: CGameObject(rhs), m_eMapObjectType(rhs.m_eMapObjectType) 
+	: CGameObject(rhs), m_eMapObjectType(rhs.m_eMapObjectType)
     , m_eMapObjectDrawType{ rhs.m_eMapObjectDrawType }
     , m_isUELoaded{rhs.m_isUELoaded}
     , m_vecMatrix{rhs.m_vecMatrix }
@@ -57,6 +57,10 @@ HRESULT	CMapObject::Initialize(void* pArg)
         return E_FAIL;
 
     if (FAILED(Ready_PhysicsComponent(pDesc)))
+        return E_FAIL;
+
+    // BakedConstantBuffer를 현재 Shader에 연결
+    if (FAILED(m_pGameInstance->Set_BakedShadowConstantBuffer(Get_Component<CShader>())))
         return E_FAIL;
 
 	return S_OK;
@@ -273,7 +277,15 @@ HRESULT	CMapObject::Render()
 		return E_FAIL;
 
     return m_eMapObjectDrawType == EMapObject_DrawType::Instance ? Render_Instance() : m_eMapObjectDrawType == EMapObject_DrawType::Default ? Render_Default() : S_OK ;
+}
 
+HRESULT CMapObject::Render_Shadow()
+{
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
+        return Render_ShadowInstance(ENUM_TO_UINT(EMapObjectShaderPass::Shadow));
+    else if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
+        return Render_ShadowDefault(ENUM_TO_UINT(EMapObjectShaderPass::Shadow));
+    return S_OK;
 }
 
 HRESULT	CMapObject::Render_Instance(_uint iPassIndex)
@@ -324,6 +336,47 @@ HRESULT	CMapObject::Render_Default(_uint iPassIndex)
     {
         pModel->Bind_Material(pShader, i);
         pModel->Bind_MaterialInstance(pShader, i);
+        pShader->Apply();
+        pModel->Render(i);
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Render_ShadowInstance(_uint iPassIndex)
+{
+    CShader* pShader = Get_Component<CShader>();                    if (pShader == nullptr)             return E_FAIL;
+    CModel* pModel = Get_Component<CModel>();                       if (pModel == nullptr)              return E_FAIL;
+    CTransform* pTransform = Get_Component<CTransform>();           if (pTransform == nullptr)          return E_FAIL;
+    CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();  if (pInstanceMesh == nullptr)       return E_FAIL;
+    _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+    _uint iInstanceCount = static_cast<_uint>(pInstanceMesh->Get_InstanceCount());
+
+    if (FAILED(Update_InstanceBuffer(pInstanceMesh, true)))
+        return E_FAIL;
+
+    pShader->Set_Pass(iPassIndex);
+    pInstanceMesh->Bind_Instance(1);
+    for (_uint i = 0; i < iMeshCount; ++i)
+    {
+        pShader->Apply();
+        pModel->Render_Instance(i, iInstanceCount);
+    }
+    pInstanceMesh->Unbind_Resource(1);
+    return S_OK;
+}
+
+HRESULT CMapObject::Render_ShadowDefault(_uint iPassIndex)
+{
+    CShader* pShader = Get_Component<CShader>();                if (pShader == nullptr)         return E_FAIL;
+    CModel* pModel = Get_Component<CModel>();                   if (pModel == nullptr)          return E_FAIL;
+    CTransform* pTransform = Get_Component<CTransform>();       if (pTransform == nullptr)      return E_FAIL;
+
+    pShader->Set_Pass(iPassIndex);
+    pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+    _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+    for (_uint i = 0; i < iMeshCount; ++i)
+    {
         pShader->Apply();
         pModel->Render(i);
     }
@@ -410,17 +463,23 @@ void CMapObject::Filtering_Visible(OUT _uint& iInstanceCount)
     iInstanceCount = (_uint)m_vecVisibleIndex.size();
 }
 
-HRESULT CMapObject::Update_InstanceBuffer(CInstanceMesh* pMesh)
+HRESULT CMapObject::Update_InstanceBuffer(CInstanceMesh* pMesh, _bool bForce)
 {
-    size_t iInstanceCount = m_vecVisibleIndex.size();
-    m_vecVisibleMatrix.resize(iInstanceCount);
-    for (size_t i = 0; i < m_vecVisibleIndex.size(); ++i)
+    if (bForce == false)
     {
-        const _uint& iVisibleIndex = m_vecVisibleIndex[i];
-        m_vecVisibleMatrix[i] = m_vecMatrix[iVisibleIndex];
-    }
+        size_t iInstanceCount = m_vecVisibleIndex.size();
+        m_vecVisibleMatrix.resize(iInstanceCount);
+        for (size_t i = 0; i < m_vecVisibleIndex.size(); ++i)
+        {
+            const _uint& iVisibleIndex = m_vecVisibleIndex[i];
+            m_vecVisibleMatrix[i] = m_vecMatrix[iVisibleIndex];
+        }
 
-    pMesh->Update_Matrix(m_vecVisibleMatrix);
+        pMesh->Update_Matrix(m_vecVisibleMatrix);
+    }
+    else
+        pMesh->Update_Matrix(m_vecMatrix);
+
     return S_OK;
 }
 

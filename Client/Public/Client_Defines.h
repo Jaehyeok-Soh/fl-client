@@ -289,9 +289,9 @@ namespace Client
 		Rock,
 		Water,
 		RGBMapping,
-		SHADOW_BAKE,
 		DEBUG,
 		SkyBox,
+		Shadow,
 		END,
 	};
 

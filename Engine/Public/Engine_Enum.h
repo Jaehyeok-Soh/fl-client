@@ -100,6 +100,7 @@ namespace Engine
 		Fogparam,
 		Toonparam,
 		Cascadeparam,
+		BakedShadowparam,
 		PlayerInfoBuffer,
 		COUNT
 	};
@@ -125,6 +126,7 @@ namespace Engine
 		"FogParamBuffer",
 		"ToonParamBuffer",
 		"CascadeParamBuffer",
+		"BakedShadowParamBuffer",
 		"PlayerInfoBuffer"
 	};
 	//===================
@@ -147,6 +149,7 @@ namespace Engine
 		RT_Bloom,
 		RT_Cascade0,
 		RT_Cascade1,
+		RT_ShadowBaked,
 		LUT_Stand,
 		Transform,
 		Materials,
@@ -175,6 +178,7 @@ namespace Engine
 		"g_RenderTargetBloomTexture",
 		"g_RenderTargetCascadeShadowmap0",
 		"g_RenderTargetCascadeShadowmap1",
+		"g_RenderTargetShadowBaked",
 		"g_LUT_Stand",
 		"g_TransformMap",
 		"g_MaterialTextures",

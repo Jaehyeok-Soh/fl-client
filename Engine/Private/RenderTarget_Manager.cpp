@@ -154,6 +154,8 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         eSlot = EFXSRV::RT_Cascade0; break;
     case Engine::ERenderTarget::Cascade_1:
         eSlot = EFXSRV::RT_Cascade1; break;
+    case Engine::ERenderTarget::Shadow_Baked:
+        eSlot = EFXSRV::RT_ShadowBaked; break;
     case Engine::ERenderTarget::OIT_Accum:
         eSlot = EFXSRV::RT_OIT_Accum; break;
     case Engine::ERenderTarget::OIT_Reveal:
