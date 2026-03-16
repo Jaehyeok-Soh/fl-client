@@ -240,14 +240,17 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 
 void CNPC_Pan::QuestEnter()
 {
+	Super::QuestEnter();
 }
 
 void CNPC_Pan::QuestExit()
 {
+	Super::QuestExit();
 }
 
 void CNPC_Pan::Interact()
 {
+	Super::Interact();
 }
 
 CNPC_Pan* CNPC_Pan::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
