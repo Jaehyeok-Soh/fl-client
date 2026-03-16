@@ -251,6 +251,15 @@ void CWeapon::Set_DefaultSocket()
 	m_eState = State::NONE;
 }
 
+_int CWeapon::Get_AnimationIndex(const wstring& wstrName)
+{
+	if (CModel* pModel = Get_Component<CModel>())
+	{
+		return pModel->Get_AnimationIndex(wstrName);
+	}
+	return -1;
+}
+
 HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 {
 	if (FAILED(Add_Component<CModel>(0/*static*/, pDesc->wstrModelPrototypeName, nullptr)))

@@ -37,7 +37,7 @@ HRESULT CState_MoonCombo::Initialize(void* pArg)
 	tKeyTimer.fMaxTime		= 1.5f;
 	tMyDesc.tKeyTimer		= tKeyTimer;
 
-	tMyDesc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
+	tMyDesc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
 	vector<_uint> vecChangeState_ByKey{};
 	vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), pDesc->iEndStateIndex);
 

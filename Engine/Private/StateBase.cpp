@@ -36,11 +36,7 @@ HRESULT CStateBase::Initialize(void* pArg)
 		if(Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_WeaponAni) &&
 			!(pDesc->vecWeaponAnims.empty()))
 		{
-			m_vecWeaponAnims.reserve((size_t)pDesc->vecMainAnims.size());
-			for (auto& pWeapAni : pDesc->vecMainAnims)
-			{
-				m_vecWeaponAnims.push_back(pWeapAni);
-			}
+			m_vecWeaponAnims = std::move(pDesc->vecWeaponAnims);
 		}
 	}
 
