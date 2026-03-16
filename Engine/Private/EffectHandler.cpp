@@ -468,7 +468,7 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matTargetWorld;
     tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
-    tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
+    tEngineDesc.pTargetBoneMatrix = ((script.bFollowBone || script.bUseChildBone) ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
     //if(m_pOwnerModel)
@@ -499,7 +499,7 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matTargetWorld;
     tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
-    tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
+    tEngineDesc.pTargetBoneMatrix = ((script.bFollowBone || script.bUseChildBone) ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
  /*   if (m_pOwnerModel)
@@ -527,12 +527,36 @@ DTO::EFFECTEVENT CEffectHandler::Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STA
 
 void CEffectHandler::BoneMatrix_CalCulator(const DTO::EFFECTEVENT& script, OUT const SimpleMath::Matrix*& BoneMatrix)
 {
-    if (script.iBoneIndex != -1 && script.bFollowBone)
+    if (script.iChildBoneIndex != -1 && script.bUseChildBone)
     {
-        if (m_pOwnerModel == nullptr)
+        if (Get_Owner() == nullptr)
             return;
 
-        (BoneMatrix) = &m_pOwnerModel->Get_Bone(script.iBoneIndex)->Get_CombinedTransformMatrix();
+        if (dynamic_cast<CContainerObject*>(Get_Owner()))
+        {
+            // 플레이어 총 무기
+            if (script.ChildPartNumber == -1) return;
+
+            auto pWeapon = static_cast<CContainerObject*>(Get_Owner())->Get_Part<CPartObject>(script.ChildPartNumber);
+            if (pWeapon == nullptr)
+                return;
+
+            CModel* pWeaponModel = pWeapon->Get_Component<CModel>();
+            if (pWeaponModel == nullptr)
+                return;
+
+            (BoneMatrix) = &pWeaponModel->Get_Bone(script.iChildBoneIndex)->Get_CombinedTransformMatrix();
+        }
+    }
+    else
+    {
+        if (script.iBoneIndex != -1 && script.bFollowBone)
+        {
+            if (m_pOwnerModel == nullptr)
+                return;
+
+            (BoneMatrix) = &m_pOwnerModel->Get_Bone(script.iBoneIndex)->Get_CombinedTransformMatrix();
+        }
     }
 }
 
