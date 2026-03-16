@@ -6,6 +6,7 @@ struct DelegateHandle;
 NS_END
 
 NS_BEGIN(Client)
+class CPlayer;
 class CUITutorial_PopUp_Image final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
@@ -48,6 +49,9 @@ private:
 
 	_float m_fOriginWidth = {};
 
+	_bool m_isFirstEntered = { false };
+
+	CPlayer* m_pPlayer = { nullptr };
 public:
 	static CUITutorial_PopUp_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

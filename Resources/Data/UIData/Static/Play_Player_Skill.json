@@ -237,7 +237,7 @@
             "iFillDir": 0,
             "iFlip": 0,
             "iRectTransformType": 8,
-            "iShaderPass": 0,
+            "iShaderPass": 1,
             "isActivate": true,
             "isInteract": false,
             "isUseColorTint": false,
@@ -250,15 +250,15 @@
             "strTextureTag": "Texture_T_Com_HudEliteBG",
             "vColorTint": {
                 "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 1.0,
+                "y": 0.9700000286102295,
+                "z": 0.8500000238418579
             },
             "vGradiantColorTint": {
                 "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 1.0,
+                "y": 0.9700000286102295,
+                "z": 0.8500000238418579
             }
         },
         {
@@ -524,7 +524,7 @@
             "iFillDir": 0,
             "iFlip": 0,
             "iRectTransformType": 8,
-            "iShaderPass": 0,
+            "iShaderPass": 1,
             "isActivate": true,
             "isInteract": false,
             "isUseColorTint": false,
@@ -537,15 +537,15 @@
             "strTextureTag": "Texture_T_Com_HudEliteBG",
             "vColorTint": {
                 "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 1.0,
+                "y": 0.9700000286102295,
+                "z": 0.8500000238418579
             },
             "vGradiantColorTint": {
                 "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 1.0,
+                "y": 0.9700000286102295,
+                "z": 0.8500000238418579
             }
         },
         {
@@ -1539,40 +1539,40 @@
                 "z": 0.0
             }
         },
-      {
-        "Type": "DYNAMIC_IMAGE",
-        "eDISubClassType": "PLAYER_E_ICON",
-        "iParams0": 0,
-        "strOwnerName": "Player_ESkill_ICon",
-        "strTag": "Player_ESkill_ICon_DImageData"
-      },
-      {
-        "Type": "DYNAMIC_IMAGE",
-        "eDISubClassType": "PLAYER_GUN_ICON",
-        "iParams0": 0,
-        "strOwnerName": "Player_Gun_Icon",
-        "strTag": "Player_Gun_Icon_DImageData"
-      },
-      {
-        "Type": "DYNAMIC_IMAGE",
-        "eDISubClassType": "PLAYER_Q_ICON",
-        "iParams0": 0,
-        "strOwnerName": "Player_QSkill_Icon",
-        "strTag": "Player_QSkill_Icon_DImageData"
-      },
-      {
-        "Type": "DYNAMIC_IMAGE",
-        "eDISubClassType": "PLAYER_Z_ICON",
-        "iParams0": 0,
-        "strOwnerName": "Player_ZSkill_Icon",
-        "strTag": "Player_ZSkill_Icon_DImageData"
-      },
-      {
-        "Type": "DYNAMIC_IMAGE",
-        "eDISubClassType": "PLAYER_BULLET_TYPE",
-        "iParams0": 0,
-        "strOwnerName": "Player_Bullet_Type_Icon",
-        "strTag": "Player_Bullet_Type_Icon_DImageData"
-      }
+        {
+            "Type": "DYNAMIC_IMAGE",
+            "eDISubClassType": "PLAYER_E_ICON",
+            "iParams0": 0,
+            "strOwnerName": "Player_ESkill_ICon",
+            "strTag": "Player_ESkill_ICon_DImageData"
+        },
+        {
+            "Type": "DYNAMIC_IMAGE",
+            "eDISubClassType": "PLAYER_GUN_ICON",
+            "iParams0": 0,
+            "strOwnerName": "Player_Gun_Icon",
+            "strTag": "Player_Gun_Icon_DImageData"
+        },
+        {
+            "Type": "DYNAMIC_IMAGE",
+            "eDISubClassType": "PLAYER_Q_ICON",
+            "iParams0": 0,
+            "strOwnerName": "Player_QSkill_Icon",
+            "strTag": "Player_QSkill_Icon_DImageData"
+        },
+        {
+            "Type": "DYNAMIC_IMAGE",
+            "eDISubClassType": "PLAYER_Z_ICON",
+            "iParams0": 0,
+            "strOwnerName": "Player_ZSkill_Icon",
+            "strTag": "Player_ZSkill_Icon_DImageData"
+        },
+        {
+            "Type": "DYNAMIC_IMAGE",
+            "eDISubClassType": "PLAYER_BULLET_TYPE",
+            "iParams0": 0,
+            "strOwnerName": "Player_Bullet_Type_Icon",
+            "strTag": "Player_Bullet_Type_Icon_DImageData"
+        }
     ]
 }

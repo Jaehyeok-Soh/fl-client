@@ -6,6 +6,7 @@
 //=================
 // Component
 //=================
+#include "Player.h"
 #include "WorldUI_Component.h"
 #include "MyStat.h"
 #include "Texture.h"
@@ -50,7 +51,9 @@ HRESULT CUITutorial_PopUp_Text::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
+
 	m_vMoveOffset = Vec2{ 0.f, -200.f };
+
 	return S_OK;
 }
 
@@ -116,6 +119,13 @@ HRESULT CUITutorial_PopUp_Text::Attach_Personal_Info()
 	default:
 		return E_FAIL;
 	}
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayer = dynamic_cast<CPlayer*>(pResult);
+	if (nullptr == m_pPlayer)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -132,8 +142,11 @@ void CUITutorial_PopUp_Text::Bind_Events()
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
-					this->Set_Visible();
-					this->Set_Active(true);
+					if (!m_isFirstEntered)
+					{
+						this->Set_Visible();
+						this->Set_Active(true);
+					}
 				}
 			})
 	);
@@ -143,6 +156,7 @@ void CUITutorial_PopUp_Text::Bind_Events()
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
+					m_isFirstEntered = true;
 					this->Set_Invisible();
 				}
 			})
