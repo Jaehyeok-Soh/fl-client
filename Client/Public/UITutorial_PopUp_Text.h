@@ -41,6 +41,7 @@ private:
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
+	void Tick_By_Type(const _float fTimeDelta)override;
 private:
 	_bool m_isSpawned = { false };
 	EUITutorialPopUpTypeID m_eTutorialTypeID = { EUITutorialPopUpTypeID::END };

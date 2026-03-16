@@ -50,6 +50,8 @@ private:
 	_float m_fOriginWidth = {};
 
 	_bool m_isFirstEntered = { false };
+	_bool m_isFirstTriggered = { false };
+
 
 	CPlayer* m_pPlayer = { nullptr };
 public:
