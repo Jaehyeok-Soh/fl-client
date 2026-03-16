@@ -696,6 +696,17 @@ namespace Engine
 
 #pragma endregion
 
+#pragma region PART_COMBINEBONE
+	// 가변 데이터
+	typedef struct tagPartCombineBone
+	{
+		unsigned int						iParentIdx = { 0 }; // root motion일 경우 tralation을 0으로 만들기 위함
+		unsigned int						iBoneNums = { 0 }; // root motion일 경우 tralation을 0으로 만들기 위함
+		SimpleMath::Vector2		Padding0 = {};
+	}CS_IMMU_PARTBONE;
+
+#pragma endregion
+
 #pragma endregion
 
 	union COLLIDER_ID

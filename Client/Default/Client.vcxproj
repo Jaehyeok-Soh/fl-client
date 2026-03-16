@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\BattleField.h" />
     <ClInclude Include="..\Public\Body.h" />
+    <ClInclude Include="..\Public\BonePart.h" />
     <ClInclude Include="..\Public\BossControlContext.h" />
     <ClInclude Include="..\public\Boss_Xibi.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
@@ -384,6 +385,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\BattleField.cpp" />
     <ClCompile Include="..\Private\Body.cpp" />
+    <ClCompile Include="..\Private\BonePart.cpp" />
     <ClCompile Include="..\Private\BossControlContext.cpp" />
     <ClCompile Include="..\private\Boss_Xibi.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
@@ -642,6 +644,7 @@
     <FxCompile Include="..\..\Shaders\ComShader_AnimEvaluate.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_AnimMix.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_BoneCombinePart.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">

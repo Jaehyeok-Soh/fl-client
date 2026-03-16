@@ -88,6 +88,11 @@ private:
 		IMMU_BONEINDICES, MU_BONEMATS
 	};
 
+	enum class CS_PARTBONE_IDX : _uint
+	{
+		IMMU_BONE, MU_PARENTTRANSFORM
+	};
+
 private:
 	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CModel(const CModel& rhs);
@@ -108,6 +113,7 @@ public:
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
 	// Transform과 CCT를 바인딩 안할 시 RootMotion적용은 되나, 포지션을 반영안한다.
 	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
+	void								Update_PartModel(CComputeShader* pParentBoneComBineCS, CComputeShader* pChildBonePartCS);
 
 	// bind funcs
 public:
@@ -225,6 +231,7 @@ public:
 
 public:
 	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr);
+	HRESULT								Ready_PartComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBonePartCS, CModel* pParentModel);
 	void								Get_BoneMatrix(CComputeShader* pAnimMixCS);
 
 	// load func

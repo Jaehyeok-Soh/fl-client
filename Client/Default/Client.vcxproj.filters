@@ -760,6 +760,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest">
       <UniqueIdentifier>{b9efb574-6096-4b17-8af9-23ea111f5146}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PartObjects\BonePart">
+      <UniqueIdentifier>{2715bd51-aa6f-46a4-b945-d8396339ca2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1411,6 +1414,9 @@
     <ClInclude Include="..\Public\UIQuest_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BonePart.h">
+      <Filter>03. GameObject\PartObjects\BonePart</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2051,6 +2057,9 @@
     <ClCompile Include="..\Private\UIQuest_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\BonePart.cpp">
+      <Filter>03. GameObject\PartObjects\BonePart</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">
@@ -2130,6 +2139,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">
       <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_BoneCombinePart.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

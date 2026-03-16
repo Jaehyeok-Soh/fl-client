@@ -70,6 +70,7 @@
 #include "Moon_SkillE_Obj.h"
 #include "SkillWarningSpace.h"
 #include "SocketObject.h"
+#include "BonePart.h"
 
 //=================
 // SkillObject
@@ -759,6 +760,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Bone_Prototype_Tag,		CBonePart::Create(m_pDevice, m_pDeviceContext));
 
 		//ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Socket_Prototype_Tag, CSocketObject::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion

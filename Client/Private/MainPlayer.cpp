@@ -30,6 +30,7 @@
 #include "Body.h"
 #include "Weapon.h"
 #include "Gun.h"
+#include "BonePart.h"
 
 #include "StateBase_Player.h"
 
@@ -374,6 +375,8 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
         }
 
+        //if(pPlayerState->Get_AttackFlag())
+
         // Shake & Emissive
         if (CBody* pBody = Get_Part<CBody>(Part::BODY))
         {
@@ -381,6 +384,14 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
             pRenderFx->Play_Shake(0.35f);
             pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
 
+        }
+
+        // Shake & Emissive
+        if (CBonePart* pCloak = Get_Part<CBonePart>(Part::CLOAK))
+        {
+            CRenderFx* pRenderFx = pCloak->Get_Component<CRenderFx>();
+            pRenderFx->Play_Shake(0.35f);
+            pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
         }
         return true;
     }

@@ -25,6 +25,7 @@
 #include "PartEffect.h"
 #include "SocketObject.h"
 #include "TriggerCollidePart.h"
+#include "BonePart.h"
 
 #include "CameraMan_Targeter.h"
 
@@ -790,7 +791,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime == 15.f/( 24.f * 1.2f);// (0.7f);
+        tKeyTimer.fMaxTime = 15.f/( 24.f * 1.2f);// (0.7f);
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -1377,22 +1378,17 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
         }*/
     }
 
-    // CLOAK : weapon은 아니지만, weapon에 다 기능이 있기 때문에 빌려 씀
+    // CLOAK
     {
-        CWeapon::WEAPON_DESC weaponDesc = {};
-        weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonClock";
-        weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        weaponDesc.pMatHandSocket = Get_Part<CBody>(Part::BODY)->Get_PosMatrix(285);
-        weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
-        weaponDesc.eState = CWeapon::State::HAND_ONLY_POS;
-        weaponDesc.eAnimState = CWeapon::AnimState::PLAY;
+        CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
+        CBonePart::BONEPART_DESC desc = {};
+        desc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonClock";
+        desc.pMatParent             = &Get_Component<CTransform>()->Get_WorldMatrix();
+        desc.pParentBoneCombineCS   = pBody->Get_BoneCombineCS();
+        desc.pParentModel           = pBody->Get_Component<CModel>();
+        desc.FFlags                 = ENUM_TO_UINT(CBonePart::BonePartFlag::VSShakeOn);
 
-        weaponDesc.bMianWeapon = true;
-        weaponDesc.FDescFlag = 0;
-
-        weaponDesc.matHandOffsetMatrix = Matrix::CreateTranslation(0.f, -0.71f, 0.12f);
-
-        if (FAILED(Add_Part(Part::CLOAK, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+        if (FAILED(Add_Part(Part::CLOAK, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Bone_Prototype_Tag, &desc)))
             return E_FAIL;
     }
 
