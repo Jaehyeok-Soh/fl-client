@@ -111,6 +111,8 @@ HRESULT CEffect_DataManager::Ready_Builder()
 
 	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::MAP)))))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CEffect_DataManager::Ready_BuildFiles()

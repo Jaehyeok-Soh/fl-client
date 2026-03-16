@@ -33,132 +33,6 @@ CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 
 HRESULT CRender_Manager::Initialize()
 {
-	//========================
-	// Viewport Save / Set Half
-	//========================
-	_uint iViewportsCount = { 1 };
-	m_pDeviceContext->RSGetViewports(&iViewportsCount, &m_defaultViewport);
-	m_halfViewport = m_defaultViewport;
-	m_halfViewport.Width *= 0.5f;
-	m_halfViewport.Height *= 0.5f;
-
-	const _uint& iWidth = (_uint)m_defaultViewport.Width;
-	const _uint& iHeight = (_uint)m_defaultViewport.Height;
-	const _uint& iHalfWidth = (_uint)m_halfViewport.Width;
-	const _uint& iHalfHeight = (_uint)m_halfViewport.Height;
-
-
-	// For. Target_Diffuse
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Diffuse, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Normal
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4{ 0.f,0.f,0.f,1.f };
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Normal, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_SpecularMask
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SpecularMask, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Depth
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R32G32_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Depth, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_ObjectInfo
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R32_UINT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::ObjectInfo, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Ping
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Ping, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Pong
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Pong, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Full
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Full, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Shade
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Shade, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_Specular
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Specular, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_SceneHDR
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.iWidth = iWidth;
-		desc.iHeight = iHeight;
-		desc.vClearColor = Vec4::Zero;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SceneHDR, &desc)))
-			return E_FAIL;
-	}
-
 	if (FAILED(Ready_RT()))
 		return E_FAIL;
 
@@ -1444,7 +1318,7 @@ HRESULT CRender_Manager::Ready_RT()
 	// For. Target_Diffuse
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.ePixelFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
 		desc.vClearColor = Vec4::Zero;
