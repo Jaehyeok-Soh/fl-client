@@ -172,6 +172,9 @@
     <ClInclude Include="..\Public\Bush.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\DialogueManager.h" />
+    <ClInclude Include="..\Public\IInteractable.h" />
+    <ClInclude Include="..\Public\ImGui_AnimationLayout.h" />
     <ClInclude Include="..\Public\InvisibleWall.h" />
     <ClInclude Include="..\Public\Gun.h" />
     <ClInclude Include="..\Public\Grass.h" />
@@ -179,6 +182,13 @@
     <ClInclude Include="..\public\ImGui_ClientDebug.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_EventDefine.h" />
+    <ClInclude Include="..\public\IQuest.h" />
+    <ClInclude Include="..\Public\NPC_Base.h" />
+    <ClInclude Include="..\Public\NPC_Body_Base.h" />
+    <ClInclude Include="..\Public\NPC_Pan.h" />
+    <ClInclude Include="..\Public\QuestManager.h" />
+    <ClInclude Include="..\Public\Quest_Chapter.h" />
+    <ClInclude Include="..\Public\Quest_Scenario.h" />
     <ClInclude Include="..\Public\State_Condemn.h" />
     <ClInclude Include="..\Public\TriggerBox_TutorialUIEvent.h" />
     <ClInclude Include="..\Public\TriggerCollidePart.h" />
@@ -340,6 +350,8 @@
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
+    <ClInclude Include="..\Public\UIQuest_Image.h" />
+    <ClInclude Include="..\Public\UIQuest_Text.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
     <ClInclude Include="..\Public\UIText.h" />
     <ClInclude Include="..\Public\UITutorial_Manager.h" />
@@ -385,7 +397,17 @@
     <ClCompile Include="..\Private\Bush.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
+    <ClCompile Include="..\Private\DialogueManager.cpp" />
+    <ClCompile Include="..\Private\IInteractable.cpp" />
+    <ClCompile Include="..\Private\ImGui_AnimationLayout.cpp" />
     <ClCompile Include="..\Private\InvisibleWall.cpp" />
+    <ClCompile Include="..\Private\IQuest.cpp" />
+    <ClCompile Include="..\Private\NPC_Base.cpp" />
+    <ClCompile Include="..\Private\NPC_Body_Base.cpp" />
+    <ClCompile Include="..\Private\NPC_Pan.cpp" />
+    <ClCompile Include="..\Private\QuestManager.cpp" />
+    <ClCompile Include="..\Private\Quest_Chapter.cpp" />
+    <ClCompile Include="..\Private\Quest_Scenario.cpp" />
     <ClCompile Include="..\Private\State_Condemn.cpp" />
     <ClCompile Include="..\Private\TriggerBox_TutorialUIEvent.cpp" />
     <ClCompile Include="..\Private\TriggerCollidePart.cpp" />
@@ -571,6 +593,8 @@
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
+    <ClCompile Include="..\Private\UIQuest_Image.cpp" />
+    <ClCompile Include="..\Private\UIQuest_Text.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="..\Private\UITutorial_Manager.cpp" />
@@ -620,6 +644,12 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />
+    <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\..\Shaders\Shader_CPT_Effect_Particle.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

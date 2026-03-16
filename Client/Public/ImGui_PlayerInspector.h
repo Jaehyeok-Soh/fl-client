@@ -13,6 +13,7 @@ private:
 		Transform,
 		State,
 		MoveState,
+		Animation,
 		COUNT
 	};
 private:

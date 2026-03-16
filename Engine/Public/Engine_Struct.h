@@ -408,7 +408,8 @@ namespace Engine
 		SimpleMath::Vector2 vUVOffset;
 
 		// Row 2
-		SimpleMath::Vector3 vPadding0;
+		SimpleMath::Vector2 vPadding0;
+		float fGlowPower;
 		float fLifeRatio;
 
 		// Row 3
@@ -432,7 +433,7 @@ namespace Engine
 
 		// Row 8
 		SimpleMath::Vector2 CurveTexture_ScrollWeight;
-		SimpleMath::Vector2 Padding1;
+		SimpleMath::Vector2 SubMaskingTexture_ScrollWeight;
 
 		// Row 9
 		SimpleMath::Vector4 DiffuseTexture_SpriteInfo;
@@ -448,6 +449,8 @@ namespace Engine
 		SimpleMath::Vector4 CurveTexture_SpriteInfo;
 		// Row 15
 		SimpleMath::Vector4 MaskTexture_SpriteInfo;
+		// Row 16
+		SimpleMath::Vector4 SubMaskTexture_SpriteInfo;
 
 	} SHADER_EFFECT_DESC;
 
@@ -529,6 +532,17 @@ namespace Engine
 		SimpleMath::Vector4 vColorG = { 1.f, 1.f,1.f, 1.f };
 		SimpleMath::Vector4 vColorB = { 1.f, 1.f,1.f, 1.f };
 	}SHADER_RGBCOLOR_DESC;
+
+	typedef struct tagPlayerInfo
+	{
+		Matrix		PlayerMatrix{Matrix::Identity};		/* 플레이어 월드 메트릭스 */
+		float		fCollisionRange{ 1.f };				/* 플레이어의 충돌범위 */
+		float		fCollisionHeight{1.f};				/* 플레이어의 충돔높이 */
+
+		float		fCurSpeed{0.f};						/* 가속도? */
+		float		fMaxSpeed{5.f};						/* 시각적 효과를 위한 MaxSpeed 조절가능 */
+	}SHADER_PLAYER_INFO;
+
 #pragma endregion
 
 #pragma region Shader_StructuredBuffer
@@ -587,6 +601,7 @@ namespace Engine
 		unsigned int g_iGravityKeyCount = {0};
 		SimpleMath::Vector3 g_vPadding = {0.f, 0.f, 0.f};
 	}EFFECT_CURVEINFO;
+
 #pragma endregion
 
 #pragma region Model_ComShader_Structures
@@ -1069,8 +1084,8 @@ namespace Engine
 		};
 	public:
 		SimpleMath::Matrix matWorld = {};							// 계산된 최종 행렬
-		const SimpleMath::Matrix** pTargetBoneMatrix = { nullptr };	// 실시간 추적용 본 행렬 주소
-		const SimpleMath::Matrix** pTransformMatrix = { nullptr };	// 실시간 추적용 본 행렬 주소
+		const SimpleMath::Matrix** pTargetBoneMatrix = { nullptr };	// 실시간 로컬용 부모 본 행렬 주소
+		const SimpleMath::Matrix** pTransformMatrix = { nullptr };	// 실시간 로컬용 부모 행렬 주소
 		int iBoneFlag;
 		int iSimulationType = (int)E_VFX_SIMULTYPE::VFX_WORLD;		// LOCAL(0) or WORLD(1)
 
@@ -1086,8 +1101,15 @@ namespace Engine
 		//SimpleMath::Vector3 VFX_Attacker_Position = { 0.f, 0.f, 0.f };
 		SimpleMath::Vector3 VFX_Scale = { 1.f, 1.f, 1.f };
 		SimpleMath::Vector3 VFX_Rotation = { 0.f, 0.f, 0.f };
-
 	}EFFECT_WARNING_DESC;
+
+	typedef struct tagEnvironmentEffectDesc : public EFFECT_SPAWN_DESC
+	{
+		SimpleMath::Vector3 VFX_Target_Position = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3 VFX_Scale = { 1.f, 1.f, 1.f };
+		SimpleMath::Vector3 VFX_Rotation = { 0.f, 0.f, 0.f };
+	}EFFECT_ENV_DESC;
+
 #pragma endregion
 
 #pragma region CameraShaking_Data

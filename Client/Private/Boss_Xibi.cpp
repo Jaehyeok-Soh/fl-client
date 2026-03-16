@@ -36,6 +36,8 @@ HRESULT CBoss_Xibi::Initialize_Prototype()
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI);
+
 	return S_OK;
 }
 
@@ -114,6 +116,13 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 		ePrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
 	}
+
+	{
+		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
+			return E_FAIL;
+	}
+
 
 	if (FAILED(Change_State_ForDirecting(EStateForDirecting::Idle)))
 		return E_FAIL;
@@ -355,11 +364,6 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
-	{
-		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
-		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
-			return E_FAIL;
-	}
 
 	return S_OK;
 }

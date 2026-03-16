@@ -28,6 +28,7 @@ public:
 	void Update_Late(const _float fTimeDelta);
 	void Ready_Before_Render(const _float fTimeDelta);
 	CGameObject* Get_GameObject(_uint iIndex);
+	CGameObject* Get_GameObject_By_ID(uint64 iID);
 	void Delete_GameObject(class CGameObject* pGo);
 	HRESULT Add_GameObject(class CGameObject* pGO);
 	CGameObject* Get_GameObject_Front();
@@ -35,6 +36,7 @@ public:
 	list<CGameObject*>* Get_GameObject_List() { return &m_pGameObjects; }
 private:
 	CGameObject* Find_GameObject(_uint iIndex);
+	CGameObject* Find_GameObject_By_ID(uint64 iID);
 private:
 	ETimeDomain m_eTimeDomain{ ETimeDomain::Scaled };
 	_float m_fTimeScale{ 1.f };

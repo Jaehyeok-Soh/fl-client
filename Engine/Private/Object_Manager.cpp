@@ -240,6 +240,14 @@ CGameObject* CObject_Manager::Get_GameObject(_uint iLevelIndex, const wstring& w
 	return nullptr;
 }
 
+CGameObject* CObject_Manager::Get_GameObject_By_ID(_uint iLevelIndex, const wstring& wstrLayerTag, uint64 iObjectID)
+{
+	if (CLayer* pFindLayer = Find_Layer(iLevelIndex, wstrLayerTag))
+	{
+		return pFindLayer->Get_GameObject(iObjectID);
+	}
+}
+
 CGameObject* CObject_Manager::Get_GameObject_Front(_uint iLayerIndex, const wstring& wstrLayerTag)
 {
 	if (CLayer* pFindLayer = Find_Layer(iLayerIndex, wstrLayerTag))

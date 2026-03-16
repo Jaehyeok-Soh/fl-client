@@ -50,12 +50,17 @@ public:
 	EFFECT_CONTAINERDESC* Get_ContainerData() { return &m_eDesc; }
 
 protected:
-	void Update_CombinedWorldMatrix(const Matrix* pMatParent);
-	void IsEffectFinish();
-
-protected:
 	virtual HRESULT Spawn_FromPool(void* pArg) override;
 	virtual HRESULT Despawn_FromPool() override;
+
+	virtual HRESULT Enable_VFX(void* pArg);
+	virtual HRESULT Disable_VFX();
+
+protected:
+	virtual void Update_Bone_Attached_Matrix();
+	virtual void Update_CombinedWorldMatrix();
+	virtual void Spawn_PositionCalculate(void* pArg);
+	virtual void Update_FinishState();
 
 public:
 	static Effect* Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -69,6 +74,9 @@ protected:
 	const Matrix*					m_pBoneOwnerMatrix = { nullptr };
 	_uint							m_iBoneFlag = {};
 	Matrix							m_matCombinedWorld = {};
+
+protected:
+	_bool							m_bIsEffectFinish = false;
 };
 
 NS_END

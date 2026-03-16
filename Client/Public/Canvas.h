@@ -26,7 +26,7 @@ public:
 	typedef struct tagCanvasDesc : public UIOBJECT_DESC
 	{
 		_string strName;
-		// std::move로 넘기기
+		// std::move로 넘기기Builder
 		vector<_wstring> vecPrefabs;
 	}CANVAS_DESC;
 private:
@@ -75,6 +75,15 @@ public:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 
+public:
+	vector<_uint>&  Get_CommonParam_uint_Ref() { return m_vecCommonParams_uint; }
+	vector<_float>&  Get_CommonParam_float_Ref() { return m_vecCommonParams_float; }
+	vector<_bool>&  Get_CommonParam_bool_Ref() { return m_vecCommonParams_bool; }
+
+	const vector<_uint>&  Get_CommonParam_uint()	const { return m_vecCommonParams_uint; }
+	const vector<_float>&  Get_CommonParam_float()	const { return m_vecCommonParams_float; }
+	const vector<_bool>&  Get_CommonParam_bool()	const { return m_vecCommonParams_bool; }
+
 private:
 	// 일반 캔버스
 	vector<CGenericUI*> m_vecUI;
@@ -89,6 +98,11 @@ private:
 	_bool m_isAllDead = { false };
 
 	UI_PREFAB_DATA m_pPrefabData;
+
+private:
+	vector<_uint>	m_vecCommonParams_uint;
+	vector<_float>	m_vecCommonParams_float;
+	vector<_bool>	m_vecCommonParams_bool;
 
 protected:
 	CMulticastDelegate<void(const UI_LOCAL_EVENT_DESC&)> m_vLocalEvents = {};

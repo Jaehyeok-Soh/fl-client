@@ -8,6 +8,8 @@
 
 #include "GameInstance.h"
 
+#include "PlayerControlContext.h"
+
 CPlayerActionState::CPlayerActionState()
     : Super()
 {
@@ -158,6 +160,11 @@ Vec3 CPlayerActionState::Get_VicPosition() const
     }
 
     return Vec3::Zero;
+}
+
+_bool CPlayerActionState::Is_AttackLanded()
+{
+    return static_cast<CPlayerControlContext*>(m_pOwnerControlContext)->Is_AttackLanded();
 }
 
 _bool CPlayerActionState::Can_FKeyEvent()

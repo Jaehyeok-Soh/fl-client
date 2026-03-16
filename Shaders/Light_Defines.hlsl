@@ -148,6 +148,17 @@ struct CascadeParam
     float fShadowStrength;
     float fCascadeIndex;
 };
+
+struct PlayerInfo
+{
+    row_major Matrix matWorld;
+    float fCollisionRange;
+    float fCollisionHeight;
+    
+    float fCurSpeed;//캐릭터의 현재속도
+    float fMaxSpeed;//캐릭터의 Speed값 값 조절 가능하게
+};
+
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -231,6 +242,11 @@ cbuffer ToonParamBuffer
 cbuffer CascadeParamBuffer
 {
     CascadeParam cascadeParam;
+};
+
+cbuffer PlayerInfoBuffer
+{
+    PlayerInfo tPlayerInfo;
 };
 //////////
 // Func //

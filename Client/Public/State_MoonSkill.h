@@ -22,8 +22,8 @@ public:
 	virtual _uint	Get_Capabilities() const override;
 
 private:
-	void SkillE_Update(const _float fTimeDelta);
-	void SkillQ_Update(const _float fTimeDelta);
+	_bool SkillE_Update(const _float fTimeDelta);
+	_bool SkillQ_Update(const _float fTimeDelta);
 	
 public:
 	static CState_MoonSkill* Create(CActionState* pOwnerComponent, const string& strName, void* pArg = nullptr);

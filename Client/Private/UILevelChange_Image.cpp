@@ -57,18 +57,24 @@ void CUILevelChange_Image::Update_Priority(const _float fTimeDelta)
 
 void CUILevelChange_Image::Update(const _float fTimeDelta)
 {
+	FONT_DESC Desc = {};
+	Desc.eFontShaderType	= EFontShaderType::OUTLINE_NOISE;
+	Desc.strFontTag			= L"ContentsKO24";
+	Desc.strText			= m_wstrText;
+	Desc.vPosition			= Vec2{ m_vRenderPos.x - 50.f, m_vRenderPos.y };
+	Desc.fRotate			= 0.f;
+	Desc.fScale				= 0.7f;
+	Desc.vColor				= m_vFontColor;
+	Desc.ePivot				= EFontPivotType::RIGHT;
+	m_pGameInstance->Request_DrawFont(Desc);
+
 	if (m_isHover)
 	{
-		FONT_DESC Desc = {};
-		Desc.eFontShaderType	= EFontShaderType::OUTLINE_NOISE;
-		Desc.strFontTag			= L"ContentsKO24";
-		Desc.strText			= m_wstrText;
-		Desc.vPosition			= Vec2{ m_vRenderPos.x - 50.f, m_vRenderPos.y };
-		Desc.fRotate			= 0.f;
-		Desc.fScale				= 0.7f;
-		Desc.vColor				= m_vFontColor;
-		Desc.ePivot				= EFontPivotType::RIGHT;
-		m_pGameInstance->Request_DrawFont(Desc);
+		m_fAlpha_Ratio = 0.5f;
+	}
+	else
+	{
+		m_fAlpha_Ratio = 1.f;
 	}
 
 	Super::Update(fTimeDelta);

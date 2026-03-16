@@ -247,6 +247,7 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
     // 안전한 데이터 접근
     if (key.iParam0 >= iterMap->second.size()) return;
     auto& tEffectData = iterMap->second[key.iParam0];
+    tEffectData.iAnimIndex = key.iParam0;
 
     // 고유 키 생성 (애니메이션 인덱스와 데이터 순번 조합)
     string strUniqueKey = key.strParam + "_" + std::to_string(key.iParam0);
@@ -470,6 +471,8 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
+    //if(m_pOwnerModel)
+    //tEngineDesc.VFX_fSpeed = m_pOwnerModel->Get_Animatioin_MotionOffset(script.iAnimIndex);
 
     // 이펙트 생성 요청
     m_pGameInstance->Request_Effect(this, EffectTag, script.strEffectTag, tEngineDesc);
@@ -499,7 +502,9 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
-
+ /*   if (m_pOwnerModel)
+    tEngineDesc.VFX_fSpeed = m_pOwnerModel->Get_Animatioin_MotionOffset(script.iAnimIndex);*/
+  
     // 이펙트 생성 요청
     m_pGameInstance->Request_Effect(script.strEffectTag, tEngineDesc);
 }

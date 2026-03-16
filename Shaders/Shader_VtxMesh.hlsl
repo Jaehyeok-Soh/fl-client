@@ -147,10 +147,9 @@ VS_OUT_MESH VS_GRASS(VS_IN_MESH input)
     
     //월드 좌표
     output.vPosition = mul(float4(input.vPosition, 1.f), W);
-   
-    
-    // 괄호 안에는 '간격(Size)'을 곱하고!
     float fWindPhase = (g_fGrassDT * g_fGrassSwaySpeed) + (output.vPosition.x * g_fGrassWaveSize) + (output.vPosition.z * g_fGrassWaveSize) + (fRandom * 3.141592f);
+    
+    
     
     float fRandomPower = fWindPower * (0.5f + (fRandom * 0.5f));
     float fSway = sin(fWindPhase) * fRandomPower;

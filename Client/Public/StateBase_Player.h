@@ -19,6 +19,7 @@ public:
 		,	PRESS_CHANGE	= 0x0002 // state change : press
 		,	UP_CHANGE		= 0x0004 // state change : up
 		,	OWN				= 0x0008 // 자신만의 움직임
+		,	LOOP_DONE		= 0x0010 // loop done일때 만약 키가 눌렸다면
 	};
 
 	enum COLLISIONFLAGS : Flags
@@ -40,7 +41,7 @@ public:
 		Vec3 vVicPos = {};
 	}HITSTATE_START_DESC;
 
-	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE , END}; //END에는 키가 없을떄 바꿀 state를 넣자
+	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE ,LOOPDONEMOVEKEY, END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
 	// 최소 desc
 	typedef struct tagBaseDesc : public CStateBase::STATE_DESC
@@ -79,8 +80,8 @@ public:
 	}
 
 public:
-	virtual void Change_PlayerState(STATEKEY eKey);	// change 랩핑 함수 : 필요시 오버라이드
-	virtual void Change_PlayerState(_uint iState);	// change 함수2 : 키 없이 state 기준으로
+	virtual void Change_PlayerState(STATEKEY eKey, _bool bForce = false);	// change 랩핑 함수 : 필요시 오버라이드
+	virtual void Change_PlayerState(_uint iState, _bool bForce = false);	// change 함수2 : 키 없이 state 기준으로
 	virtual void Change_PlayerHitState(_uint iState, void* pArg = nullptr);
 	
 protected:
@@ -94,7 +95,7 @@ protected:
 
 	STATE_START_DESC		m_tNextStateDesc	= {};
 
-	TimeCount				m_TFallingCount		= { 0.f,0.3f }; // 예전 값 : 0.4f
+	TimeCount				m_TFallingCount		= { 0.f,0.38f }; // 예전 값 : 0.4f
 	TimeCount				m_TChargeCount		= { 0.f,0.15f };
 
 	// state가 변환 했다면 true
@@ -113,12 +114,13 @@ protected:
 	_bool Check_FKey(const _float fTimeDelta);
 
 protected:
-	_bool Check_Hit(const _float fTimeDelta);
-	_bool Check_Collis(const _float fTimeDelta);
+	_bool	Check_Hit(const _float fTimeDelta);
+	_bool	Check_Collis(const _float fTimeDelta);
 
-	void Jump_Impuls(_float fOffset = 1.f);
+	void	Jump_Impuls(_float fOffset = 1.f);
+	void	Look_Impuls(_float fOffset = 1.f);
 
-	void LookAt_Monser();
+	void	LookAt_Monser();
 
 	// player 객체 연결 함수들
 protected:
@@ -145,6 +147,8 @@ protected:
 	void	Reload_Gun();
 
 protected:
+	virtual _bool Change_State_WhenLoopDone(const _float fTimeDelta);
+
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
 	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
 
@@ -156,7 +160,7 @@ private:
 	CGun*					m_pOwnerGun = { nullptr };
 
 private:
-	_bool Has_ChangeState(STATEKEY eKey);
+	_bool	Has_ChangeState(STATEKEY eKey);
 
 	_bool	Check_ColliWithMonster();
 	void	Count_Combo();

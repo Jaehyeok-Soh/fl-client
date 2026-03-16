@@ -1,6 +1,7 @@
 #pragma once
 #include "ImGui_Panel.h"
 #include "DataStruct_Map.h"
+#include "Quest_DataModel.h"
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -72,6 +73,8 @@ private:
 
 	/* Water */
 	void						ImGuiUpdate_Water_Desc(WATER_DESC* pDesc);
+	/* Fog */
+	void						ImGuiUpdate_Fog_Desc(FOG_DESC* pDesc);
 
 	/* Batch 관련 */
 	void						ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pDesc);
@@ -88,6 +91,8 @@ private:
 	void						ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUTORIALUIEVENT_DESC* pDesc);
 
+	/* Quest 관련 */
+	void						ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc);
 
 	/* Mosnter Spawn ImGuiUpdate */
 	void						ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData* pMonsterSpawnData);

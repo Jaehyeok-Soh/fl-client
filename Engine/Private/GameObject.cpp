@@ -30,6 +30,7 @@ CGameObject::CGameObject(const CGameObject& rhs)
     : m_pDevice(rhs.m_pDevice)
     , m_pDeviceContext(rhs.m_pDeviceContext)
     , m_pGameInstance(CGameInstance::GetInstance())
+    , m_eObject_Enum_Tag(rhs.m_eObject_Enum_Tag)
     , m_bClone(true)
     , m_iObjectID(++s_iNextID)
 {

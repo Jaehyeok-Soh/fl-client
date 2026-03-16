@@ -12,6 +12,7 @@ private:
 public:
 	virtual _bool Can_Render(CGameObject* pGo) override;
 	virtual void Render(CGameObject* pGo) override;
+
 public:
 	static CImGui_StateLayout* Create();
 	virtual void Free() override;

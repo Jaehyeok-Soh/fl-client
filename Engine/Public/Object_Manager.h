@@ -31,6 +31,7 @@ public:
 	CGameObject* Spawn_GameObject(_uint iCloneLevelIndex, _uint iPoolLevelIndex, const wstring& wstrPoolTag, void* pArg);
 
 	CGameObject* Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iIndex);
+	CGameObject* Get_GameObject_By_ID(_uint iLevelIndex, const wstring& wstrLayerTag, uint64 iObjectID);
 	CGameObject* Get_GameObject_Front(_uint iLayerIndex, const wstring& wstrLayerTag);
 	CGameObject* Get_GameObject_Back(_uint iLayerIndex, const wstring& wstrLayerTag);
 	list<CGameObject*>* Get_GameObject_List(_uint iLayerIndex, const wstring& wstrLayerTag);

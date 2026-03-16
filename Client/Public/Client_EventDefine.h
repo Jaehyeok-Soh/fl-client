@@ -1,4 +1,5 @@
 #pragma once
+#include "Quest_DataModel.h"
 
 namespace Engine
 {
@@ -51,5 +52,15 @@ struct GUN_ON_HIT { using Signature = void(); };	// ÃÑ¾ËÀ» ÀûÁßÇßÀ» ¶§
 
 struct TUTORIAL_POPUP_TRIGGER{ using Signature = void(EUITutorialPopUpTypeID ID); }; // Æ©Åä¸®¾ó ÆË¾÷ ¶ç¿ì±â
 struct TUTORIAL_POPUP_CLEAR{ using Signature = void(EUITutorialPopUpTypeID ID); }; // Æ©Åä¸®¾ó ÆË¾÷ ³»¸®°í Å¬¸®¾î ¶ç¿ì±â
+
+// Äù½ºÆ® ÀÌº¥Æ®
+struct QUEST_NOTIFY{ using Signature = void(DTO::QUEST_EVENT_SIGNATURE ID); }; // Äù½ºÆ® ¾÷µ¥ÀÌÆ®
+struct QUEST_CHANGE_SCENARIO_NOTIFY{ using Signature = void(); }; // Äù½ºÆ® ½Ã³ª¸®¿À ¹Ù²ñ
+// CQuestManager::GetInstance()->Get_QuestInfo();
+
+struct QUEST_CHANGE_CHAPTER_NOTIFY{ using Signature = void(); }; // Äù½ºÆ® Ã©ÅÍ ¹Ù²ñ
+// CQuestManager::GetInstance()->Get_QuestChapterInfo();
+
+struct QUEST_ALL_COMPLETE{ using Signature = void(); }; // ¸ðµç Äù½ºÆ® ¿Ï·á
 
 #pragma endregion

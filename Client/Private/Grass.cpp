@@ -3,6 +3,9 @@
 #include "Shader.h"
 #include "Model.h"
 #include "InstanceMesh.h"
+#include "Body.h"
+#include "Player.h"
+#include "PhysicsCCT.h"
 
 #include "GameInstance.h"
 
@@ -102,6 +105,12 @@ void CGrass::Ready_Before_Render(const _float fTimeDelta)
 
 HRESULT CGrass::Render()
 {
+	SHADER_PLAYER_INFO tInfo{};
+	CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer));
+	if (pPlayer == nullptr)
+		return E_FAIL;
+
+
 	if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
 	{
 
@@ -112,6 +121,8 @@ HRESULT CGrass::Render()
 
 		pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
 		_uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+		pPlayer->Bind_PlayerInfo(pShader);
 
 		/* Client Make Path를 이용한다 */
 		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));
@@ -147,6 +158,9 @@ HRESULT CGrass::Render()
 		_uint iInstanceCount = pInstanceMesh->Get_InstanceCount();
 
 		pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+		pPlayer->Bind_PlayerInfo(pShader);
+
+
 		pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 		/* Client Make Path를 이용한다 */
 		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Grass));

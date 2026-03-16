@@ -49,15 +49,7 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
     // ownMove에서 이동함
     // 03/05 소재혁
     {
-        CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-        CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
-
-        Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
-        vLook.Normalize();
-
-        Vec3 accelation = vLook * 10.f;
-
-        SetCCTImpuls(accelation);
+        Look_Impuls(1.f);
         Set_DeAccelRate(0.5f);
     }
 
@@ -108,17 +100,17 @@ void CState_Slide::OwnMove(const _float fTimeDelta)
 {
     //CStateBase::Move_Front(fTimeDelta);
 
-    CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-    CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+    //CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+    //CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
-    Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+    //Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
 
-    Vec3 accelation = vLook * pPlayerTrans->Get_MovePerSec();
+    //Vec3 accelation = vLook * pPlayerTrans->Get_MovePerSec();
 
-    Move(accelation);
+    //Move(accelation);
 }
 
-void CState_Slide::Change_PlayerState(STATEKEY eKey)
+void CState_Slide::Change_PlayerState(STATEKEY eKey, _bool bForce)
 {
     if (ENUM_TO_UINT(ANI::SKY) == m_iMainAnimIdx)
     {

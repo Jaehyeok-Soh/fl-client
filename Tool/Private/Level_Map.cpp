@@ -14,6 +14,7 @@
 #include "CameraMan_Free.h"
 #include "UEMapDataLoader.h"
 #include "MapObject.h"
+
 ///////////
 // ImGui //
 ///////////
@@ -36,6 +37,7 @@
 
 #include "UEMapdataParser.h"
 #include "MapToolManager.h"
+#include "Effect_DataManager.h"
 
 CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -43,10 +45,12 @@ CLevel_Map::CLevel_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContex
 	, m_pPickingManager(CPicking_ToolManager::GetInstance())
 	, m_pUEMapDataParser(CUEMapdataParser::GetInstance())
 	, m_pMapToolManager(CMapToolManager::GetInstance())
+	, m_pEffectDataManager(CEffect_DataManager::GetInstance())
 {
 	Safe_AddRef(m_pMapToolManager);
 	Safe_AddRef(m_pImGuiManager);
 	Safe_AddRef(m_pPickingManager);
+	Safe_AddRef(m_pEffectDataManager);
 	m_arrayImGuiPanel.fill(nullptr);
 }
 
@@ -69,7 +73,6 @@ HRESULT CLevel_Map::Initialize()
 
 
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
-
 	m_pMapToolManager->Set_LevelMap(this);
 
 
@@ -91,6 +94,7 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 		return E_FAIL;
 
 	MSG_BOX("Map");
+	m_pEffectDataManager->Initialize_EffectDataManager(m_pDevice, m_pDeviceContext);
 
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
@@ -354,6 +358,7 @@ void CLevel_Map::Free()
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
+	Safe_Release(m_pEffectDataManager);
 
 	m_pMapToolManager->Set_LevelMap(nullptr);
 	Safe_Release(m_pMapToolManager);

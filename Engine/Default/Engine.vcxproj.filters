@@ -487,6 +487,12 @@
     <Filter Include="00. System\05. Component\PhysicsSpringArm">
       <UniqueIdentifier>{38bdd281-8246-42ef-ab21-d1685740c5b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Quest">
+      <UniqueIdentifier>{1254b30a-f6bc-46b9-ae3c-5f7da298ffc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Quest\DataModel">
+      <UniqueIdentifier>{799c19ba-5ac4-4248-9b7c-6e2b9abfc44e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -981,6 +987,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Physics_QueryFilterCallback_SpringArm.cpp">
       <Filter>00. System\12. PhysX\EventCallback\SceneQuery</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Quest_DataModel.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Quest\DataModel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1524,6 +1533,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Physics_QueryFilterCallback_SpringArm.h">
       <Filter>00. System\12. PhysX\EventCallback\SceneQuery</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Quest_DataModel.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Quest\DataModel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

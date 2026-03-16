@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-
+#include "IQuest.h"
 
 NS_BEGIN(DTO)
 
@@ -10,7 +10,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CTriggerBox : public CGameObject
+class CTriggerBox abstract : public CGameObject, public IQuest
 {
 public:
 	enum class Type
@@ -29,6 +29,9 @@ protected:
 		Vec3					vTriggerBox_Extents{1.f,1.f,1.f};
 		/* ÇÊ¼ö */
 		const DTO::SRT_DATA*	pSRTData{nullptr};
+
+		_bool					bHasQuest = { false };
+		vector<DTO::QUEST_CHAPTERDESC>	tQuestObjectDesc = {};
 	}TRIGGERBOX_DESC;
 protected:
 	CTriggerBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -38,6 +41,7 @@ public:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Component(TRIGGERBOX_DESC* pDesc);
+	void					Ready_Quest(vector<DTO::QUEST_CHAPTERDESC>* pQuestDesc);
 public:
 	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
 	virtual void			Update_Priority(const _float fTimeDelta)		override;
@@ -47,6 +51,9 @@ public:
 	virtual HRESULT			Render()										override;
 public:
 	CTriggerBox::Type		Get_TriggerBoxType() const { return m_eTriggerBoxType; }
+
+	virtual void			QuestEnter() override {};
+	virtual void			QuestExit() override {};
 
 protected:
 	_bool					m_isTriggerEventPlay{false};

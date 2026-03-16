@@ -114,6 +114,11 @@ void CPlayerControlContext::Set_PreKeyFlag()
 	m_FKeys = m_FPreKeys;
 }
 
+void CPlayerControlContext::Set_AttackLanded()
+{
+	m_bIsAttackLanded = true;
+}
+
 _bool CPlayerControlContext::Is_LeftAttackPressed()
 {
 	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::COMBO) &&
@@ -259,6 +264,14 @@ _bool CPlayerControlContext::Is_Skill2Pressed()
 _bool CPlayerControlContext::Is_ChargingAttackPressed()
 {
 	return m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB);
+}
+
+_bool CPlayerControlContext::Is_AttackLanded()
+{
+	_bool result = m_bIsAttackLanded;
+	m_bIsAttackLanded = { false };
+
+	return result;
 }
 
 Vec3 CPlayerControlContext::Get_MoveDir()

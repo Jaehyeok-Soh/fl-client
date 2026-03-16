@@ -10,6 +10,7 @@ class CUITutorial_Pannel_Text final : public CUIText
 public:
 	typedef struct tagUITutorialPannelTextDesc : public UI_TEXT_DESC
 	{
+
 	}TUTORIAL_PANNEL_TEXT_DESC;
 
 private:
@@ -35,6 +36,8 @@ private:
 	HRESULT Attach_Personal_Info();
 	HRESULT Convert_Stat_To_Text();
 	virtual void Bind_Events()override;
+	virtual void Tick_By_Type(const _float fTimeDelta)override;
+
 private:
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;
@@ -45,6 +48,12 @@ private:
 
 private:
 	_bool m_isSpawned = { false };
+	EUITutorialPannelTypeID m_eTutorialID = {};
+
+	vector<_wstring> m_vecTexts;
+
+	_uint m_iCurPageIdx = {};
+	_uint m_iMaxPageIdx = {};
 
 public:
 	static CUITutorial_Pannel_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

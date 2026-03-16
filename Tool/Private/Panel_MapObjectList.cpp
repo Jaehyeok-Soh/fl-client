@@ -999,6 +999,7 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	case Tool::EClientMakePath::Bush:								ImGuiUpdate_Bush_Desc								(static_cast<BUSH_DESC*>(pDesc));										return S_OK;
 
 	case Tool::EClientMakePath::Water:								ImGuiUpdate_Water_Desc								(static_cast<WATER_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Fog:								ImGuiUpdate_Fog_Desc								(static_cast<FOG_DESC*>(pDesc));										return S_OK;
 
 
 	case Tool::EClientMakePath::Batch_Monster:						ImGuiUpdate_Batch_Monster_Desc						(static_cast<BATCH_MONSTER_DESC*>(pDesc));								return S_OK;
@@ -1268,6 +1269,76 @@ void CPanel_MapObjectList::ImGuiUpdate_Water_Desc(WATER_DESC* pDesc)
 	}
 }
 
+void CPanel_MapObjectList::ImGuiUpdate_Fog_Desc(FOG_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	// 1. 공통 속성 (컬러)
+	ImGui::SeparatorText(" Fog Global Settings ");
+	ImGui::NewLine();
+	ImGui::ColorEdit4(" Tint Color ", (float*)&pDesc->vMI_TintColor);
+	ImGui::NewLine();
+	ImGui::DragFloat(" Distortion Power ",&pDesc->fDistortionPower,0.001f,0.f,10000.f,"%.3f");
+	ImGui::NewLine();
+	// 2. 텍스처 배열 순회
+	string strTextureSlotName{};
+	string strTextureName{};
+
+	for (_uint i = 0; i < ENUM_TO_UINT(EFogTextureType::END); ++i)
+	{
+		// ID가 겹치지 않게 무조건 PushID로 감싼다!
+		ImGui::PushID(i);
+
+		CTextureBase* pTextureBase = pDesc->arrayTextureBase[i];
+		strTextureSlotName = FogTextureType_ToString(static_cast<EFogTextureType>(i));
+		strTextureName = (pTextureBase == nullptr) ? "None" : Engine_Utils::ToString(pTextureBase->Get_Name());
+
+		ImGui::SeparatorText(strTextureSlotName.c_str());
+
+		// ----------------------------------------------------
+		// [왼쪽 영역] 텍스처 이미지 버튼
+		// ----------------------------------------------------
+		ImGui::BeginGroup();
+		ID3D11ShaderResourceView* pSRV = (pTextureBase == nullptr) ? m_pMapToolManager->m_pDefaultWhiteSRV : pTextureBase->Get_SRV();
+
+		// 이미지 크기를 64x64 정도로 좀 키우면 클릭하기도 편하고 보기 좋아!
+		if (ImGui::ImageButton("TextureBtn", ImTextureRef(pSRV), ImVec2(64, 64)))
+		{
+			m_pMapToolManager->m_ppTargetSlot = &pDesc->arrayTextureBase[i];
+			m_pMapToolManager->m_isTexArraySelect = false;
+			m_pMapToolManager->m_isTex_DH_ArraySelect = false;
+			m_pMapToolManager->m_isTex_NBR_ArraySelect = false;
+
+			ImGui::OpenPopup("Texture_Select_Modal");
+		}
+		ImGui::EndGroup();
+
+		// 줄바꿈 하지 말고 바로 옆에 붙여라!
+		ImGui::SameLine();
+
+		// ----------------------------------------------------
+		// [오른쪽 영역] 텍스처 정보 및 조절 슬라이더
+		// ----------------------------------------------------
+		ImGui::BeginGroup();
+		ImGui::Text("Name : %s", strTextureName.c_str());
+
+		// 핵심! 인덱스 [i]를 넣어서 각 텍스처마다 개별적인 Speed와 Power를 조작하게 만듦!
+		// DragFloat2 앞의 글자 길이 맞추려고 띄어쓰기 살짝 넣으면 더 이쁨
+		ImGui::DragFloat2("UV Speed", (float*)&pDesc->vUV[i].x, 0.001f, -100.f, 100.f, "%.3f");
+		ImGui::DragFloat2("UV Power", (float*)&pDesc->vUV[i].z, 0.01f, 0.f, 1000.f, "%.2f");
+		ImGui::EndGroup();
+
+		// 다음 텍스처 슬롯과의 구분을 위해 약간의 여백 추가
+		ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+		// 팝업 모달 (기존 로직 유지)
+		m_pMapToolManager->Select_MapTexture();
+
+		ImGui::PopID();
+	}
+
+}
+
 #pragma endregion
 
 #pragma endregion
@@ -1297,10 +1368,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pD
 		}
 		ImGui::EndCombo();
 	}
-
-
 	return;
-
 }
 
 #pragma region Batch Object Desc
@@ -1390,12 +1458,58 @@ void CPanel_MapObjectList::ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDes
 
 void CPanel_MapObjectList::ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc)
 {
-	ImGui::SeparatorText(" Trigger Box Desc ");
+	ImGui::SeparatorText(" 'Trigger Box Desc' ");
 
 	if (ImGui::DragFloat3("Extents##TriggerBox_Extents", &pDesc->vExtents.x, 0.1f, 0.1f, 100.f, "%.2f"))
 	{
 		if (m_pSelectMapObject == nullptr) return;
 		m_pSelectMapObject->Update_Collider();
+	}
+
+	ImGui::Separator();
+
+	ImGui::Checkbox("Is Quest Object", &pDesc->bHasQuest);
+
+	if (pDesc->bHasQuest)
+	{
+		ImGui::Indent();
+		ImGui::SeparatorText(" Quest List Configuration ");
+
+		if (ImGui::Button(" + Add New Quest "))
+		{
+			pDesc->tQuestObjectDesc.push_back(DTO::QUEST_CHAPTERDESC());
+		}
+
+		ImGui::Spacing();
+
+		for (int i = 0; i < pDesc->tQuestObjectDesc.size(); )
+		{
+			ImGui::PushID(i);
+
+			string strNodeName = "Quest Index [" + std::to_string(i) + "] - Chap ID: "
+				+ std::to_string(pDesc->tQuestObjectDesc[i].tQuestDesc.iId);
+
+			bool bNodeOpen = ImGui::TreeNode((void*)(intptr_t)i, strNodeName.c_str());
+
+			ImGui::SameLine(ImGui::GetWindowWidth() - 80.f);
+			if (ImGui::Button("Delete"))
+			{
+				pDesc->tQuestObjectDesc.erase(pDesc->tQuestObjectDesc.begin() + i);
+				if (bNodeOpen) ImGui::TreePop();
+				ImGui::PopID();
+				continue;
+			}
+
+			if (bNodeOpen)
+			{
+				ImGuiUpdate_Quest(&pDesc->tQuestObjectDesc[i]);
+				ImGui::TreePop();
+			}
+
+			ImGui::PopID();
+			++i;
+		}
+		ImGui::Unindent();
 	}
 
 	ImGui::Separator();
@@ -1642,6 +1756,83 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUT
 	}
 
 
+}
+void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
+{
+	ImGui::Indent();
+	ImGui::SeparatorText(" Quest Configuration ");
+
+	DTO::QUEST_CHAPTERDESC& chapterDesc = *pDesc;
+	DTO::QUESTDESC& questDesc = chapterDesc.tQuestDesc;
+
+	const char* eventTypes[] = { "MONSTER_KILL", "NPC_TALK", "AREA_ENTER", "AREA_EXIT", "OBJECT_INTERACT" };
+	ImGui::Combo("Event Type", (int*)&chapterDesc.eEvent, eventTypes, IM_ARRAYSIZE(eventTypes));
+
+	const char* layerTypes[] = { "SCENARIO", "CHAPTER" };
+	ImGui::Combo("Quest Layer", (int*)&questDesc.eType, layerTypes, IM_ARRAYSIZE(layerTypes));
+
+	const char* stateTypes[] = { "LOCKED", "AVAILABLE", "IN_PROGRESS", "COMPLETE" };
+	ImGui::Combo("Initial State", (int*)&questDesc.eState, stateTypes, IM_ARRAYSIZE(stateTypes));
+
+	ImGui::InputInt("Chapter ID", &questDesc.iId);
+	ImGui::InputInt("Parent (Scenario) ID", &questDesc.iParentId);
+	ImGui::InputInt("Prev ID", &questDesc.iPrevId);
+	ImGui::InputInt("Next ID", &questDesc.iNextId);
+	ImGui::InputInt("Target Count", &chapterDesc.iCount);
+
+	ImGui::SeparatorText(" Target Types ");
+
+	static int addTargetEnum = 0;
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputInt("##AddTargetEnum", &addTargetEnum);
+	ImGui::SameLine();
+	if (ImGui::Button("Add Target"))
+	{
+		chapterDesc.eTargetType.insert(static_cast<OBJECT_ENUM_TAG::Enum>(addTargetEnum));
+	}
+
+	if (ImGui::BeginListBox("##TargetList", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+	{
+		for (auto it = chapterDesc.eTargetType.begin(); it != chapterDesc.eTargetType.end(); )
+		{
+			ImGui::Text("Enum ID: %d", *it);
+			ImGui::SameLine(ImGui::GetWindowWidth() - 50.f);
+
+			ImGui::PushID(*it);
+			if (ImGui::Button("Del"))
+				it = chapterDesc.eTargetType.erase(it);
+			else
+				++it;
+			ImGui::PopID();
+		}
+		ImGui::EndListBox();
+	}
+
+	ImGui::SeparatorText(" Quest Texts ");
+
+	auto ImGuiInputWString = [](const char* label, std::wstring& wstrTarget)
+		{
+			std::string tempStr(wstrTarget.begin(), wstrTarget.end());
+			char buffer[256];
+			strcpy_s(buffer, tempStr.c_str());
+
+			if (ImGui::InputText(label, buffer, sizeof(buffer)))
+			{
+				std::string newStr(buffer);
+				wstrTarget = std::wstring(newStr.begin(), newStr.end());
+			}
+		};
+
+	ImGuiInputWString("Title", questDesc.wstrTitle);
+	ImGuiInputWString("SubTitle", questDesc.wstrSubTitle);
+	ImGuiInputWString("Explain", questDesc.wstrExplain);
+	ImGuiInputWString("Description", questDesc.wstrDescription);
+
+	ImGui::InputInt("Enter Dialogue ID", &chapterDesc.tQuestDesc.iEnterDialogueId);
+	ImGui::InputInt("Exit Dialogue ID", &chapterDesc.tQuestDesc.iExitDialogueId);
+	ImGui::InputInt("Interact Dialogue ID", &chapterDesc.tQuestDesc.iInteractDialogueId);
+
+	ImGui::Unindent();
 }
 #pragma endregion
 

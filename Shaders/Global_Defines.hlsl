@@ -58,6 +58,8 @@ Texture2D g_RenderTargetCascadeShadowmap0;
 Texture2D g_RenderTargetCascadeShadowmap1;
 Texture2D g_LUT_Stand;
 Texture3D g_PerlinNoise;
+Texture2D g_RenderTargetOITAccumTexture;
+Texture2D g_RenderTargetOITRevealTexture;
 
 void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
 {
