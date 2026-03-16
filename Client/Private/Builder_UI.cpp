@@ -20,6 +20,7 @@
 #include "UITutorial_PopUp_Text.h"
 #include "UITutorial_PopUp_Clear_Text.h"
 #include "UIQuest_Text.h"
+#include "UIQuestNavi_Text.h"	
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -36,6 +37,7 @@
 #include "UITutorial_PopUp_Image.h"
 #include "UITutorial_PopUp_Clear_Image.h"
 #include "UIQuest_Image.h"
+#include "UIQuestNavi_Image.h"
 
 #include "WorldUI_Component.h"
 
@@ -241,6 +243,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isTutorialPopUp		= (Type >= DTO::EUITextSubClassType::TUTORIAL_POPUP_BEGIN && Type <= DTO::EUITextSubClassType::TUTORIAL_POPUP_END);
 		const _bool isTutorialPopUpClear= (Type == DTO::EUITextSubClassType::TUTORIAL_POPUP_CLEAR_TEXT);
 		const _bool isQuest				= (Type >= DTO::EUITextSubClassType::QUEST_BEGIN && Type <= DTO::EUITextSubClassType::QUEST_END);
+		const _bool isQuestNavi			= (Type == DTO::EUITextSubClassType::QUEST_NAVI_DISTANCE);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -309,6 +312,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(QuestText) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestText", m_iLevelID, g_wszUILayer, &QuestText);
 		}
+		else if (isQuestNavi)
+		{
+			CUIQuestNavi_Text::QUEST_NAVI_TEXT_DESC QuestNaviText = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(QuestNaviText) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestNaviText", m_iLevelID, g_wszUILayer, &QuestNaviText);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -350,6 +359,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isTutorialPopUp		= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BEGIN && Type <= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_END);
 		const _bool isTutorialPopUpClear= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG && Type <= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX);
 		const _bool isQuest				= (Type >= DTO::EUIDImageSubClassType::QUEST_BEGIN && Type <= DTO::EUIDImageSubClassType::QUEST_END);
+		const _bool isQuestNavi			= (Type >= DTO::EUIDImageSubClassType::QUEST_NAVI_BEGIN && Type <= DTO::EUIDImageSubClassType::QUEST_NAVI_END);
 
 		if (isPlayerSkill)
 		{
@@ -452,6 +462,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(QuestDesc) = DefaultDesc;
 			QuestDesc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestImage", m_iLevelID, g_wszUILayer, &QuestDesc);
+		}
+		else if (isQuestNavi)
+		{
+			CUIQuestNavi_Image::QUEST_NAVI_IMAGE_DESC QuestNaviDesc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(QuestNaviDesc) = DefaultDesc;
+			QuestNaviDesc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestNaviImage", m_iLevelID, g_wszUILayer, &QuestNaviDesc);
 		}
 		else
 		{
