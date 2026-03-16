@@ -1954,23 +1954,23 @@ void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 
 	ImGui::SeparatorText(" Quest Texts ");
 
-	auto ImGuiInputWString = [](const char* label, std::wstring& wstrTarget)
+	auto ImGuiInputWString = [](const char* label, std::string& strTarget)
 		{
-			std::string tempStr(wstrTarget.begin(), wstrTarget.end());
+			std::string tempStr(strTarget.begin(), strTarget.end());
 			char buffer[256];
 			strcpy_s(buffer, tempStr.c_str());
 
 			if (ImGui::InputText(label, buffer, sizeof(buffer)))
 			{
 				std::string newStr(buffer);
-				wstrTarget = std::wstring(newStr.begin(), newStr.end());
+				strTarget = std::string(newStr.begin(), newStr.end());
 			}
 		};
 
-	ImGuiInputWString("Title", questDesc.wstrTitle);
-	ImGuiInputWString("SubTitle", questDesc.wstrSubTitle);
-	ImGuiInputWString("Explain", questDesc.wstrExplain);
-	ImGuiInputWString("Description", questDesc.wstrDescription);
+	ImGuiInputWString("Title", questDesc.strTitle);
+	ImGuiInputWString("SubTitle", questDesc.strSubTitle);
+	ImGuiInputWString("Explain", questDesc.strExplain);
+	ImGuiInputWString("Description", questDesc.strDescription);
 
 	ImGui::InputInt("Enter Dialogue ID", &chapterDesc.tQuestDesc.iEnterDialogueId);
 	ImGui::InputInt("Exit Dialogue ID", &chapterDesc.tQuestDesc.iExitDialogueId);

@@ -344,6 +344,9 @@ HRESULT CNPC_Base::Create_NPC(OBJECT_ENUM_TAG::Enum eTag, _uint iFindPrototypeLe
 	case Engine::EObjectEnumTag::NPC_PAN:
 	{
 		npcDesc = CNPC_Pan::Get_PreSetDesc(npcDesc.iLevelIndex);
+		npcDesc.iLevelIndex = iAddLevelType;
+		npcDesc.pTransform_Desc = pTransformDesc;
+
 		wstrFindPrototypeName = g_wszNPC_Pan_Prototype_Tag;
 		wstrAddLayerName = g_wszNPCeLayer;
 	}

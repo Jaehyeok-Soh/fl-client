@@ -489,6 +489,9 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 	case EMonster_Type::Dog:
 	{
 		monsterDesc = CMonster_Dog::Get_PreSetDesc(monsterDesc.iLevelIndex);
+		monsterDesc.iLevelIndex = iAddLevelType;
+		monsterDesc.pTransform_Desc = pTransformDesc;
+
 		wstrFindPrototypeName	= g_wszMonster_Dog_Prototype_Tag;
 		wstrAddLayerName		= g_wszMonstereLayer;
 	}
@@ -505,6 +508,9 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		// MONSTER BOOMER //
 		////////////////////
 		monsterDesc = CMonster_Boomer::Get_PreSetDesc(monsterDesc.iLevelIndex);
+		monsterDesc.iLevelIndex = iAddLevelType;
+		monsterDesc.pTransform_Desc = pTransformDesc;
+
 		wstrFindPrototypeName		= g_wszMonster_Boomer_Prototype_Tag;
 		wstrAddLayerName			= g_wszMonstereLayer;
 	}

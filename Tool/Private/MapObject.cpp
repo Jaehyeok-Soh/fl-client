@@ -1327,7 +1327,7 @@ HRESULT CMapObject::Render()
         break;
 
     case Tool::EClientMakePath::Batch_NPC:
-        hr = Render_Collider();
+        hr = Render_StaticObject();
         break;
 
     default:

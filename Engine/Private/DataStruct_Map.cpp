@@ -1303,7 +1303,6 @@ void TRIGGERBOX_TUTORIALUIEVENT_DESC::to_Json(json& SaveJson)
 
 #pragma endregion
 
-#pragma endregion
 #pragma region NPC Desc
 
 void BATCH_NPC_DESC::from_Json(const json& LoadJson)
@@ -1315,15 +1314,6 @@ void BATCH_NPC_DESC::from_Json(const json& LoadJson)
 	else
 		this->eBatchNPCType = OBJECT_ENUM_TAG::NPC_DEFAULT;
 
-#pragma region Make_BatchObject_Desc cpp备泅何
-BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType, BATCH_OBJECT_DESC_BASE* pBase)
-{
-	switch (eBatchObjectType)
-	{
-	case DTO::EMakeObjectType::Battle_Field:	return pBase == nullptr ? new BATTLE_FIELD_DESC		:	new BATTLE_FIELD_DESC(*static_cast<BATTLE_FIELD_DESC*>(pBase));
-	case DTO::EMakeObjectType::PointLight:		return pBase == nullptr ? new POINTLIHGT_DESC		:	new POINTLIHGT_DESC(*static_cast<POINTLIHGT_DESC*>(pBase));
-	default:									return nullptr;
-	}
 	if (LoadJson.contains("bHasQuest"))
 		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
 	else
@@ -1333,8 +1323,6 @@ BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectT
 	{
 		const auto& questJson = LoadJson.at("tQuestObjectDesc");
 
-	return nullptr;
-}
 		if (questJson.is_array())
 		{
 			questJson.get_to(this->tQuestObjectDesc);
@@ -1357,6 +1345,22 @@ void BATCH_NPC_DESC::to_Json(json& SaveJson)
 	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
 		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
 }
+#pragma endregion
+
+#pragma region Make_BatchObject_Desc cpp备泅何
+BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType, BATCH_OBJECT_DESC_BASE* pBase)
+{
+	switch (eBatchObjectType)
+	{
+	case DTO::EMakeObjectType::Battle_Field:	return pBase == nullptr ? new BATTLE_FIELD_DESC		:	new BATTLE_FIELD_DESC(*static_cast<BATTLE_FIELD_DESC*>(pBase));
+	case DTO::EMakeObjectType::PointLight:		return pBase == nullptr ? new POINTLIHGT_DESC		:	new POINTLIHGT_DESC(*static_cast<POINTLIHGT_DESC*>(pBase));
+	default:									return nullptr;
+	}
+
+	return nullptr;
+}
+
+
 #pragma endregion
 
 NS_END
