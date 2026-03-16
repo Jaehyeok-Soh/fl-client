@@ -138,13 +138,13 @@ void CUITutorial_PopUp_Clear_Text::Bind_Events()
 void CUITutorial_PopUp_Clear_Text::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;
-	Ready_Fade_Text(0.5f, 0.f, 1.f, m_fDelay);
+	Ready_Fade_Text(0.5f, 0.f, 0.8f, m_fDelay);
 }
 
 void CUITutorial_PopUp_Clear_Text::Initialize_InVisible_Event()
 {
 	m_isFin_Event = false;
-	Ready_Fade_Text(0.5f, 1.f, 0.f, m_fDelay);
+	Ready_Fade_Text(0.5f, 0.8f, 0.f, m_fDelay);
 }
 
 _bool CUITutorial_PopUp_Clear_Text::Tick_Visible_Event(const _float fTimeDelta)

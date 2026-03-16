@@ -117,11 +117,6 @@ HRESULT CBoss_Xibi::Awake(const _uint iCurrentLevelID)
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
 	}
 
-	{
-		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
-		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
-			return E_FAIL;
-	}
 
 
 	if (FAILED(Change_State_ForDirecting(EStateForDirecting::Idle)))

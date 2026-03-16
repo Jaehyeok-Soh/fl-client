@@ -78,11 +78,7 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 	//	CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	//}
 
-	//{
-	//	CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
-	//	if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
-	//		return E_FAIL;
-	//}
+
 
 	return S_OK;
 }
@@ -191,7 +187,11 @@ HRESULT CNPC_Pan::Ready_Components(void* pArg)
 
 	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_NPC", &desc)))
 		return E_FAIL;
-
+	//{
+//	CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+//	if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
+//		return E_FAIL;
+//}
 	return S_OK;
 }
 
