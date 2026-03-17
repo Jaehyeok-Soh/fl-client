@@ -44,7 +44,9 @@ public:
 		EFFECT,
 		DETECTCOLLIDER_UI, // 몬스터 감지용 collider
 		DETECTCOLLIDER,
+
 		CLOAK,
+
 		END
 	};
 
@@ -150,6 +152,7 @@ public:
 	_bool	Start_Attack(State iState);
 	void	End_Attack(State iState);
 
+	State Get_CurState();
 protected:
 	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 
@@ -159,10 +162,12 @@ protected:
 	_bool				m_bMainPlayer = { false };
 	SHADER_PLAYER_INFO	m_tCBPlayerInfo{};
 private:
-	HRESULT		Ready_BaseStates();
-	HRESULT		Ready_HitStates();
 	HRESULT		Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT		Ready_Components(PLAYER_DESC* pDesc);
+
+	HRESULT		Ready_BaseStates();
+	HRESULT		Ready_HitStates();
+
 	HRESULT		Ready_PartCollider();
 
 private:

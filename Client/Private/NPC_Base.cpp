@@ -41,6 +41,11 @@
 ////////////
 #include "DialogueManager.h"
 
+////////////
+// NPC
+////////////
+#include "NPC_Pan.h"
+
 CNPC_Base::CNPC_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
@@ -74,8 +79,8 @@ HRESULT CNPC_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_EffectHandler(pArg)))
-		return E_FAIL;
+	//if (FAILED(Ready_EffectHandler(pArg)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -224,7 +229,7 @@ void CNPC_Base::Set_RootMotion_Apply(_bool bApply)
 
 HRESULT CNPC_Base::Ready_BaseStates()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CNPC_Base::Ready_PartObjects(void* pArg)
@@ -334,17 +339,26 @@ HRESULT CNPC_Base::Create_NPC(OBJECT_ENUM_TAG::Enum eTag, _uint iFindPrototypeLe
 
 	switch (eTag)
 	{
-	case Engine::EObjectEnumTag::PLAYER:
-		break;
 	case Engine::EObjectEnumTag::NPC_DEFAULT:
 		break;
 	case Engine::EObjectEnumTag::NPC_PAN:
+	{
+		npcDesc = CNPC_Pan::Get_PreSetDesc(npcDesc.iLevelIndex);
+		npcDesc.iLevelIndex = iAddLevelType;
+		npcDesc.pTransform_Desc = pTransformDesc;
+
+		wstrFindPrototypeName = g_wszNPC_Pan_Prototype_Tag;
+		wstrAddLayerName = g_wszNPCeLayer;
+	}
 		break;
 	case Engine::EObjectEnumTag::NPC_BERENICA:
 		break;
 	default:
 		return E_FAIL;
 	}
+
+	if (!(pResult = CGameInstance::GetInstance()->Add_GameObject(iFindPrototypeIndex, wstrFindPrototypeName, iAddLevelType, wstrAddLayerName, &npcDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

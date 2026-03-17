@@ -55,7 +55,7 @@ public:
 	_bool			IsOn_CCTFlag(PxControllerCollisionFlag::Enum eFlag);
 
 	_int			Get_PrevState() const	{ return m_iPrevState;  }
-	_int			Get_CurrentStateIndex() { return m_iCurrentState; }
+	_int			Get_CurrentStateIndex() { return m_iCurrentState; } // State
 	CStateBase*		Get_CurrentState();
 	_uint			Get_CurrentCapabilities() { return Get_CurrentState()->Get_Capabilities(); }
 	const char*		Get_CurrentStateName() const;

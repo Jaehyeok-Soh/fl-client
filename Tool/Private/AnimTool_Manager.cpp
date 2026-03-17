@@ -256,7 +256,7 @@ void CAnimTool_Manager::ChangeAnimation(_uint iIndex)
 void CAnimTool_Manager::Set_RootBone(_int iBoneIdx)
 {
 	m_tAnimControllInfo.pModel->Set_RootBone(iBoneIdx);
-	m_tAnimControllInfo.pModel->Set_CurAnimation_RootApply(true);
+	m_tAnimControllInfo.pModel->Set_ApplyRootMotionAll(true);
 }
 
 void CAnimTool_Manager::Set_RootOffset(_uint iAnimIdx, _float fOffset)

@@ -25,6 +25,9 @@
 #include "BattleField.h"
 #include "PointLight.h"
 
+/* Batch NPC */
+#include "NPC_Base.h"
+
 #pragma endregion
 
 #pragma region Trigger Box
@@ -127,6 +130,9 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 
 
 			case DTO::EClientMakePath::Invisible_Wall:						Create_InvisibleWall(tData); break;
+
+
+			case DTO::EClientMakePath::Batch_NPC:							Batch_NPC(tData); break;
 
 
 			default:									return E_FAIL;
@@ -586,6 +592,35 @@ HRESULT CBuilder_Map::Create_InvisibleWall(const DTO::TMap_MapObjectData& tData)
 		g_wszInvisibleWall_Prototype_Tag, ENUM_TO_UINT(m_eLevelType),
 		g_wszInvisibleWallLayer, &tDesc);
 
+
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Batch_NPC(const DTO::TMap_MapObjectData& tData)
+{
+	/* EObject Enum Tag 별로 Batch */
+
+	if (tData.vecClientMakePathDesc.empty())		return E_FAIL;
+	if (tData.vecSRTs.empty())						return E_FAIL;
+
+	CGameObject* pResult{ nullptr };
+
+	_uint iFindPrototypeIndex = ENUM_TO_UINT(ELevelType::STATIC);
+	wstring wstrAddLayerName{};
+	wstring wstrFindPrototypeName{};
+	_uint iCurLevelIndex = ENUM_TO_UINT(m_eLevelType);
+
+	/* SRT Data를 들고온다 */
+	DTO::SRT_DATA tSRT = tData.vecSRTs.front();
+	CTransform::TRANSFORM_DESC tTransformDesc = {};
+	tTransformDesc.TranslationMatrix = tSRT.Get_World();
+
+	/* Description 제일 맨앞 */
+	BATCH_NPC_DESC* pDesc = static_cast<BATCH_NPC_DESC*>(tData.vecClientMakePathDesc.front());
+	if (pDesc == nullptr) return E_FAIL;
+
+	if (FAILED(CNPC_Base::Create_NPC(pDesc->eBatchNPCType, iFindPrototypeIndex, iCurLevelIndex, &tTransformDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

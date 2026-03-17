@@ -306,8 +306,6 @@ void CChannel::Reset_PreTranslation(OUT Vec3& vPrepos)
 
 void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, _float fRatio, OUT Vec3& vPrepos)
 {
-
-
 	if (pOwnerTransform == nullptr ||
 		pOwnerPhyCCT == nullptr)
 		return;

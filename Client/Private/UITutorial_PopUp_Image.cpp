@@ -5,12 +5,19 @@
 //=================
 // Component
 //=================
+#include "CameraMan.h"
+#include "Canvas.h"
+#include "Player.h"
 #include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
 #include "GameInstance.h"
+
+// Common Params Bool
+#define POPUP_3 0
+#define POPUP_4 1
 
 CUITutorial_PopUp_Image::CUITutorial_PopUp_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIDynamic_Image(pDevice, pDeviceContext)
@@ -53,6 +60,11 @@ HRESULT CUITutorial_PopUp_Image::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	m_vMoveOffset = Vec2{ 0.f, -200.f };
+
+	Set_Active(false);
+	m_pParentCanvasCache->Get_CommonParam_bool_Ref().reserve(2);
+	m_pParentCanvasCache->Get_CommonParam_bool_Ref().push_back(false);
+	m_pParentCanvasCache->Get_CommonParam_bool_Ref().push_back(false);
 	return S_OK;
 }
 
@@ -64,6 +76,7 @@ void CUITutorial_PopUp_Image::Update_Priority(const _float fTimeDelta)
 void CUITutorial_PopUp_Image::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	Tick_By_Type(fTimeDelta);
 }
 
 void CUITutorial_PopUp_Image::Update_Late(const _float fTimeDelta)
@@ -106,6 +119,16 @@ HRESULT CUITutorial_PopUp_Image::Bind_ShaderResources()
 
 HRESULT CUITutorial_PopUp_Image::Attach_Personal_Info()
 {
+	m_fOriginWidth = m_fWidth;
+
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayer = dynamic_cast<CPlayer*>(pResult);
+	if (nullptr == m_pPlayer)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -116,8 +139,11 @@ void CUITutorial_PopUp_Image::Bind_Events()
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
-					this->Set_Visible();
-					this->Set_Active(true);
+					if (!m_isFirstEntered)
+					{
+						this->Set_Visible();
+						this->Set_Active(true);
+					}
 				}
 			})
 	);
@@ -135,6 +161,108 @@ void CUITutorial_PopUp_Image::Bind_Events()
 
 void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 {
+	_bool is = { false };
+
+	switch (m_eTutorialTypeID)
+	{
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_1:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::JUMP)
+			is = true;
+	}
+	break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_2:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::SLIDE)
+			is = true;
+	}
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::CROUCH)
+		{
+			if (!m_isFirstTriggered)
+			{
+				Set_Invisible();
+				m_pParentCanvasCache->Get_CommonParam_bool_Ref()[POPUP_3] = true;
+				m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>(EUITutorialPopUpTypeID::TUTORIAL_POPUP_3_1);
+				m_isFirstTriggered = true;
+			}
+		}
+	}
+	break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3_1:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::JUMPBULLET)
+		{
+			is = true;
+		}
+	}
+	break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4:
+	{
+		Vec3 vLook = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+		_float f = vLook.Dot(Vec3{ 0.f, 1.f, 0.f });
+
+		if (f > 0.7f)
+		{
+			if (!m_isFirstTriggered)
+			{
+				Set_Invisible();
+				m_pParentCanvasCache->Get_CommonParam_bool_Ref()[POPUP_4] = true;
+				m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>(EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1);
+				m_isFirstTriggered = true;
+			}
+		}
+	}
+	break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::JUMPBULLET)
+		{
+			is = true;
+		}
+	}
+	break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_5:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::JUMPWALL)
+		{
+			is = true;
+		}
+	}
+	break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_6:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_7:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_8:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_9:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_10:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_11:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_12:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_13:
+		break;
+	case Client::EUITutorialPopUpTypeID::END:
+	default:
+		break;
+	}
+	if (is)
+	{
+		if (!m_isFirstEntered)
+		{
+			m_isFirstEntered = true;
+
+			m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>(m_eTutorialTypeID);
+		}
+	}
+
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_ICON:
@@ -215,9 +343,8 @@ void CUITutorial_PopUp_Image::Initialize_InVisible_Event()
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BG:
-		m_fOriginWidth = m_fWidth;
 		Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
-		Ready_LerpChange(0.5f, m_fWidth, 0.f, 1.f, m_fDelay);
+		Ready_LerpChange(0.5f, m_fWidth, 0.1f, 1.f, m_fDelay);
 		break;
 	}
 }
@@ -242,6 +369,7 @@ _bool CUITutorial_PopUp_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		{
 			m_fWidth = m_fOriginWidth;
 			m_isFin_Event = true;
+			Set_Active(false);
 			return true;
 		}
 	}

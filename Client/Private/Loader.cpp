@@ -73,6 +73,7 @@
 #include "SkyBox.h"
 #include "PointLight.h"
 #include "EnvObject.h"
+#include "BonePart.h"
 
 //=================
 // SkillObject
@@ -127,6 +128,12 @@
 #include "Boss_Xibi_Body.h"
 
 //=================
+// NPC
+//=================
+#include "NPC_Pan.h"
+#include "NPC_Pan_Body.h"
+
+//=================
 // UI
 //=================
 #include "GenericUI.h"
@@ -152,6 +159,7 @@
 #include "UITutorial_PopUp_Text.h"
 #include "UITutorial_PopUp_Clear_Text.h"
 #include "UIQuest_Text.h"
+#include "UIQuestNavi_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -173,6 +181,7 @@
 #include "UITutorial_PopUp_Image.h"
 #include "UITutorial_PopUp_Clear_Image.h"
 #include "UIQuest_Image.h"
+#include "UIQuestNavi_Image.h"
 //=================
 // Resource
 //=================
@@ -300,7 +309,8 @@ HRESULT CLoader::Loading_For_Test()
 	Sleep(1000);
 
 	m_fLoadingRatio = 1.f;
-	Sleep(5000);
+	Sleep(3000);
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -606,17 +616,22 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
-	//// For. Prototype_Component_Model_MoonCloak
-	//{
-	//	CModel::MODEL_ORIGIN_DESC desc = {};
-	//	desc.eType = EModelType::ANIM;
-	//	desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-	//	desc.pMatPreTransform = &(matPreTransformScale);
-	//	desc.wstrModelFolderName = L"PlayerMoon_Cloak";
-	//	desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+	// For. Prototype_Component_Model_MoonCloak
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"PlayerMang";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
-	//	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-	//}
+		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 
 	// For.Prototype_Component_Model_Monster_Dog
 	{
@@ -651,6 +666,24 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Boomer_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
+	// For.Prototype_Component_Model_NPC_Pan
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.wstrModelFolderName = L"NPC_Pan";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.vecStageBoneIndices = {};
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Pan_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_RenderFx
@@ -761,17 +794,23 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
-		// For. Prototype_GameObject_Monster_Dummy
+		// For. Prototype_GameObject_Monster_Dog
 		ADD_PROTOTYPE(ELevelType::STATIC , g_wszMonster_Dog_Prototype_Tag , CMonster_Dog::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy_Body
+		// For. Prototype_GameObject_Monster_Dog_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Dog_Body_Prototype_Tag, CMonster_Dog_Body::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy
+		// For. Prototype_GameObject_Monster_Boomer
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy_Body
+		// For. Prototype_GameObject_Monster_Boomer_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+
+		// For. Prototype_GameObject_NPC_Pan
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Prototype_Tag, CNPC_Pan::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Pan_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Body_Prototype_Tag, CNPC_Pan_Body::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Bone_Prototype_Tag,		CBonePart::Create(m_pDevice, m_pDeviceContext));
 
 		//ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Socket_Prototype_Tag, CSocketObject::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
@@ -839,6 +878,8 @@ HRESULT CLoader::Loading_For_Logo()
 	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestImage",				CUIQuest_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestText",				CUIQuest_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviImage",			CUIQuestNavi_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviText",			CUIQuestNavi_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;
@@ -849,13 +890,11 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 {
 	/* Tutorial Village */
 	m_fLoadingRatio = 0.f;
-		
-	// 오브젝트
+	Sleep(1000);
 	
-	// 이펙트 Object
+	
 	m_fLoadingRatio = 1.f;
 	Sleep(3000);
-
 	m_isFinished = true;
 	return S_OK;
 }
@@ -864,6 +903,8 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 {
 	/* Tutorial Boss */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
@@ -921,7 +962,8 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiOneshotThunder_Prototype_Tag, CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(1000);
+	Sleep(3000);
+
 
 	m_isFinished = true;
 	return S_OK;
@@ -931,6 +973,7 @@ HRESULT CLoader::Loading_For_Square()
 {
 	/* Square */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
 
 	// 오브젝트
 
@@ -939,7 +982,7 @@ HRESULT CLoader::Loading_For_Square()
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(5000);
+	Sleep(3000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -948,6 +991,7 @@ HRESULT CLoader::Loading_For_Tavern()
 {
 	/* Square */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
 
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TAVERN);
 
@@ -955,9 +999,9 @@ HRESULT CLoader::Loading_For_Tavern()
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
-	Sleep(5000);
-
 	m_fLoadingRatio = 1.f;
+	Sleep(3000);
+
 
 
 	m_isFinished = true;
@@ -969,6 +1013,7 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 {
 	/* Square */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
 
 
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::KUANGKENG);
@@ -979,9 +1024,9 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
-	Sleep(5000);
-
 	m_fLoadingRatio = 1.f;
+	Sleep(3000);
+
 
 
 	m_isFinished = true;
@@ -994,6 +1039,7 @@ HRESULT CLoader::Loading_For_Lianhuo()
 
 	/* Square */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
 
 
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
@@ -1004,9 +1050,9 @@ HRESULT CLoader::Loading_For_Lianhuo()
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
-	Sleep(5000);
 
 	m_fLoadingRatio = 1.f;
+	Sleep(3000);
 
 	m_isFinished = true;
 

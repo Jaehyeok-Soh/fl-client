@@ -140,7 +140,7 @@ private:
 	_int m_iRootBoneIdx = { -1 };
 	_int m_iRootChannelIdx = { -1 };
 
-	_bool m_bApplyRootMotion		= { true };
+	_bool	m_bApplyRootMotion		= { true };
 	_float m_fRootMotionOffset		= { 1.f };
 	_float m_fAnimationSpeed_Offset = { 1.f };
 

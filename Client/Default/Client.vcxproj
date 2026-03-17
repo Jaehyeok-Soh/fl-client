@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\BattleField.h" />
     <ClInclude Include="..\Public\Body.h" />
+    <ClInclude Include="..\Public\BonePart.h" />
     <ClInclude Include="..\Public\BossControlContext.h" />
     <ClInclude Include="..\public\Boss_Xibi.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="..\Public\NPC_Base.h" />
     <ClInclude Include="..\Public\NPC_Body_Base.h" />
     <ClInclude Include="..\Public\NPC_Pan.h" />
+    <ClInclude Include="..\Public\NPC_Pan_Body.h" />
     <ClInclude Include="..\Public\QuestManager.h" />
     <ClInclude Include="..\Public\Quest_Chapter.h" />
     <ClInclude Include="..\Public\Quest_Scenario.h" />
@@ -355,6 +357,8 @@
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h" />
     <ClInclude Include="..\Public\UIPlayerStat_Text.h" />
     <ClInclude Include="..\Public\UIProgress_Bar.h" />
+    <ClInclude Include="..\Public\UIQuestNavi_Image.h" />
+    <ClInclude Include="..\Public\UIQuestNavi_Text.h" />
     <ClInclude Include="..\Public\UIQuest_Image.h" />
     <ClInclude Include="..\Public\UIQuest_Text.h" />
     <ClInclude Include="..\Public\UISkill_BG.h" />
@@ -389,6 +393,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\BattleField.cpp" />
     <ClCompile Include="..\Private\Body.cpp" />
+    <ClCompile Include="..\Private\BonePart.cpp" />
     <ClCompile Include="..\Private\BossControlContext.cpp" />
     <ClCompile Include="..\private\Boss_Xibi.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
@@ -414,6 +419,7 @@
     <ClCompile Include="..\Private\NPC_Body_Base.cpp" />
     <ClCompile Include="..\Private\NPC_Pan.cpp" />
     <ClCompile Include="..\Private\PointLight.cpp" />
+    <ClCompile Include="..\Private\NPC_Pan_Body.cpp" />
     <ClCompile Include="..\Private\QuestManager.cpp" />
     <ClCompile Include="..\Private\Quest_Chapter.cpp" />
     <ClCompile Include="..\Private\Quest_Scenario.cpp" />
@@ -603,6 +609,8 @@
     <ClCompile Include="..\Private\UIPlayerStat_Progress.cpp" />
     <ClCompile Include="..\Private\UIPlayerStat_Text.cpp" />
     <ClCompile Include="..\Private\UIProgress_Bar.cpp" />
+    <ClCompile Include="..\Private\UIQuestNavi_Image.cpp" />
+    <ClCompile Include="..\Private\UIQuestNavi_Text.cpp" />
     <ClCompile Include="..\Private\UIQuest_Image.cpp" />
     <ClCompile Include="..\Private\UIQuest_Text.cpp" />
     <ClCompile Include="..\Private\UISkill_BG.cpp" />
@@ -652,6 +660,7 @@
     <FxCompile Include="..\..\Shaders\ComShader_AnimEvaluate.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_AnimMix.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_BoneCombinePart.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">

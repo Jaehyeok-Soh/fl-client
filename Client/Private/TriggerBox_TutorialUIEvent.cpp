@@ -112,11 +112,6 @@ void CTriggerBox_TutorialUIEvent::OnTrigger_Enter(_uint iMyColliderLayer, _uint 
 
 void CTriggerBox_TutorialUIEvent::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
-	{
-		m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>(m_eUITutorialPopUpTypeID);
-	}
-
 	if (m_eQuestEvent == DTO::QUESTEVENT::AREA_EXIT)
 	{
 		CallQuestEvent(Get_Object_Enum_Tag(), 1);

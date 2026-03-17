@@ -1,0 +1,324 @@
+{
+    "Category": "MONSTER_STATE",
+    "Objects": [
+        {
+            "setStates": [
+                "Appear",
+                "Disappear",
+                "Idle",
+                "Interact"
+            ],
+            "strTag": "NPC_Pan",
+            "vecMonsterStateDesc": [
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Appear",
+                        "Disappear",
+                        "Idle",
+                        "Interact"
+                    ],
+                    "strName": "Idle",
+                    "tStateCoolDownTime": {
+                        "bCountTime": false,
+                        "bTimeReset": false,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 1.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [
+                        {
+                            "strFeature": "feat_chase",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        }
+                    ],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_NPC_Pan_PetPan_Idle"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_true_always",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Appear",
+                        "Disappear",
+                        "Idle",
+                        "Interact"
+                    ],
+                    "strName": "Appear",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_NPC_Pan_PetPan_Born"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Appear",
+                        "Disappear",
+                        "Idle",
+                        "Interact"
+                    ],
+                    "strName": "Disappear",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_NPC_Pan_PetPan_Disappear"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Appear",
+                        "Disappear",
+                        "Idle",
+                        "Interact"
+                    ],
+                    "strName": "Interact",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_NPC_Pan_PetPan_Idle_random2"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                }
+            ]
+        }
+    ]
+}

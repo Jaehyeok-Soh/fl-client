@@ -468,7 +468,9 @@ namespace Engine
 
 			RAGDOLL = 1 << 20,
 
-			NONE = 1 << 21,
+			NPC = 1 << 21,
+
+			NONE = 1 << 22,
 			END
 		};
 

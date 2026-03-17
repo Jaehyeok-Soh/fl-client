@@ -86,8 +86,11 @@ HRESULT CState_ComboBase::End()
 
 _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 {
-	if (!m_bNextCombo && m_tKeyTimer.CountTime(fTimeDelta) == 1.f)
+	if (m_tKeyTimer.CountTime(fTimeDelta) == 1.f &&
+		!m_bNextCombo)
+	{
 		return true;
+	}
 
 	return false;
 }

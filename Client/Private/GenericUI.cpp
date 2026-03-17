@@ -110,6 +110,9 @@ HRESULT CGenericUI::Awake(const _uint iCurrentLevelID)
 	m_fBrightness = 1.f;
 	m_iInteractState = static_cast<uint32_t>(EUIInteract_Flag::NONE);
 
+	m_vChangeColor_OriginColor = m_vColorTint;
+	m_vChangeColor_OriginGradColor = m_vGradiantColorTint;
+
 	Bind_Events();
 
 	return S_OK;
@@ -281,6 +284,20 @@ void CGenericUI::Ready_LerpChange(const _float fDuration, const _float fStartVal
 	m_fLerpChange_EaseValue = fEaseValue;
 	m_isLerpChange_EaseOut = isEaseOut;
 }
+void CGenericUI::Ready_ChageColor(const _float fDuration, const Vec4& vStartColor, const Vec4& vStartGradColor, const Vec4& vTargetColor, const Vec4& vTargetGradColor, const _float fEaseValue, const _float fDelay, _bool isEaseOut)
+{
+	m_fChangeColor_TimeAcc = 0.f;
+	m_fChangeColor_DelayTimeAcc = 0.f;
+
+	m_fChangeColor_Delay = fDelay;
+	m_fChangeColor_Duration = fDuration;
+	m_vChangeColor_StartColor = vStartColor;
+	m_vChangeColor_StartGradColor = vStartGradColor;
+	m_vChangeColor_TargetColor = vTargetColor;
+	m_vChangeColor_TargetGradColor = vTargetGradColor;
+	m_fChangeColor_EaseValue = fEaseValue;
+	m_isChangeColor_EaseOut = isEaseOut;
+}
 
 _bool CGenericUI::Tick_Lerp_Movement(const _float fTimeDelta)
 {
@@ -364,6 +381,70 @@ _bool CGenericUI::Tick_LerpChange(_float* p, const _float fTimeDelta)
 	}
 
 	*p = m_fLerpChange_StartValue + (m_fLerpChange_TargetValue - m_fLerpChange_StartValue) * eased;
+	return false;
+}
+
+_bool CGenericUI::Tick_ChageColor(const _float fTimeDelta)
+{
+	m_fChangeColor_DelayTimeAcc += fTimeDelta;
+	if (m_fChangeColor_DelayTimeAcc < m_fChangeColor_Delay)
+		return false;
+
+	m_fChangeColor_TimeAcc += fTimeDelta;
+
+	_float t = m_fChangeColor_TimeAcc / m_fChangeColor_Duration;
+
+	if (t >= 1.f)
+	{
+		m_vColorTint = m_vChangeColor_TargetColor;
+		m_vGradiantColorTint = m_vChangeColor_TargetGradColor;
+		return true;
+	}
+
+	_float eased = t;
+
+	if (m_fChangeColor_EaseValue > 0.f)
+	{
+		if (m_isChangeColor_EaseOut)
+			eased = 1.f - powf(1.f - t, m_fChangeColor_EaseValue);
+		else
+			eased = powf(t, m_fChangeColor_EaseValue);
+	}
+
+	m_vColorTint = m_vChangeColor_StartColor + (m_vChangeColor_TargetColor - m_vChangeColor_StartColor) * eased;
+	m_vGradiantColorTint = m_vChangeColor_StartGradColor + (m_vChangeColor_TargetGradColor - m_vChangeColor_StartGradColor) * eased;
+	return false;
+}
+
+_bool CGenericUI::Tick_ChangeOriginColor(const _float fTimeDelta)
+{
+	m_fChangeColor_DelayTimeAcc += fTimeDelta;
+	if (m_fChangeColor_DelayTimeAcc < m_fChangeColor_Delay)
+		return false;
+
+	m_fChangeColor_TimeAcc += fTimeDelta;
+
+	_float t = m_fChangeColor_TimeAcc / m_fChangeColor_Duration;
+
+	if (t >= 1.f)
+	{
+		m_vColorTint = m_vChangeColor_OriginColor;
+		m_vGradiantColorTint = m_vChangeColor_OriginGradColor;
+		return true;
+	}
+
+	_float eased = t;
+
+	if (m_fChangeColor_EaseValue > 0.f)
+	{
+		if (m_isChangeColor_EaseOut)
+			eased = 1.f - powf(1.f - t, m_fChangeColor_EaseValue);
+		else
+			eased = powf(t, m_fChangeColor_EaseValue);
+	}
+
+	m_vColorTint = m_vChangeColor_StartColor + (m_vChangeColor_OriginColor - m_vChangeColor_StartColor) * eased;
+	m_vGradiantColorTint = m_vChangeColor_StartGradColor + (m_vChangeColor_OriginGradColor - m_vChangeColor_StartGradColor) * eased;
 	return false;
 }
 

@@ -1011,6 +1011,8 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner				(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
 	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster		(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
 	case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:			ImGuiUpdate_TriggerBox_TutorialUIEvent				(static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pDesc));					return S_OK;
+	
+	case Tool::EClientMakePath::Batch_NPC:							ImGuiUpdate_NPC										(static_cast<BATCH_NPC_DESC*>(pDesc));									return S_OK;
 	default:																																													return S_OK;
 	}
 
@@ -1787,6 +1789,84 @@ void CPanel_MapObjectList::ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData
 }
 #pragma endregion
 
+void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
+{
+	ImGui::SeparatorText(" NPC Desc ");
+
+	std::string currentTypeName = DTO::MakeNPCType_ToString(pDesc->eBatchNPCType);
+
+	if (ImGui::BeginCombo("NPC Type", currentTypeName.c_str()))
+	{
+		OBJECT_ENUM_TAG::Enum allTypes[] = {
+			OBJECT_ENUM_TAG::NPC_DEFAULT,
+			OBJECT_ENUM_TAG::NPC_PAN,
+			OBJECT_ENUM_TAG::NPC_BERENICA
+		};
+
+		for (int i = 0; i < IM_ARRAYSIZE(allTypes); i++)
+		{
+			std::string typeName = DTO::MakeNPCType_ToString(allTypes[i]);
+			bool is_selected = (pDesc->eBatchNPCType == allTypes[i]);
+
+			if (ImGui::Selectable(typeName.c_str(), is_selected))
+			{
+				pDesc->eBatchNPCType = allTypes[i];
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator();
+
+	ImGui::Checkbox("Is Quest Object", &pDesc->bHasQuest);
+
+	if (pDesc->bHasQuest)
+	{
+		ImGui::Indent();
+		ImGui::SeparatorText(" Quest List Configuration ");
+
+		if (ImGui::Button(" + Add New Quest "))
+		{
+			pDesc->tQuestObjectDesc.push_back(DTO::QUEST_CHAPTERDESC());
+		}
+
+		ImGui::Spacing();
+
+		for (int i = 0; i < pDesc->tQuestObjectDesc.size(); )
+		{
+			ImGui::PushID(i);
+
+			string strNodeName = "Quest Index [" + std::to_string(i) + "] - Chap ID: "
+				+ std::to_string(pDesc->tQuestObjectDesc[i].tQuestDesc.iId);
+
+			bool bNodeOpen = ImGui::TreeNode((void*)(intptr_t)i, strNodeName.c_str());
+
+			ImGui::SameLine(ImGui::GetWindowWidth() - 80.f);
+			if (ImGui::Button("Delete"))
+			{
+				pDesc->tQuestObjectDesc.erase(pDesc->tQuestObjectDesc.begin() + i);
+				if (bNodeOpen) ImGui::TreePop();
+				ImGui::PopID();
+				continue;
+			}
+
+			if (bNodeOpen)
+			{
+				ImGuiUpdate_Quest(&pDesc->tQuestObjectDesc[i]);
+				ImGui::TreePop();
+			}
+
+			ImGui::PopID();
+			++i;
+		}
+		ImGui::Unindent();
+	}
+
+	ImGui::Separator();
+}
 
 void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc)
 {
@@ -1983,23 +2063,23 @@ void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 
 	ImGui::SeparatorText(" Quest Texts ");
 
-	auto ImGuiInputWString = [](const char* label, std::wstring& wstrTarget)
+	auto ImGuiInputWString = [](const char* label, std::string& strTarget)
 		{
-			std::string tempStr(wstrTarget.begin(), wstrTarget.end());
+			std::string tempStr(strTarget.begin(), strTarget.end());
 			char buffer[256];
 			strcpy_s(buffer, tempStr.c_str());
 
 			if (ImGui::InputText(label, buffer, sizeof(buffer)))
 			{
 				std::string newStr(buffer);
-				wstrTarget = std::wstring(newStr.begin(), newStr.end());
+				strTarget = std::string(newStr.begin(), newStr.end());
 			}
 		};
 
-	ImGuiInputWString("Title", questDesc.wstrTitle);
-	ImGuiInputWString("SubTitle", questDesc.wstrSubTitle);
-	ImGuiInputWString("Explain", questDesc.wstrExplain);
-	ImGuiInputWString("Description", questDesc.wstrDescription);
+	ImGuiInputWString("Title", questDesc.strTitle);
+	ImGuiInputWString("SubTitle", questDesc.strSubTitle);
+	ImGuiInputWString("Explain", questDesc.strExplain);
+	ImGuiInputWString("Description", questDesc.strDescription);
 
 	ImGui::InputInt("Enter Dialogue ID", &chapterDesc.tQuestDesc.iEnterDialogueId);
 	ImGui::InputInt("Exit Dialogue ID", &chapterDesc.tQuestDesc.iExitDialogueId);
