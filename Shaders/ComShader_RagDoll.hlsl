@@ -53,7 +53,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     DecomposeMatrix(RAGDOLL_LOCAL_TRANSFORMS[index].matBoneTransform, vFinalScale, vFinalQuat, vFinalTranslation);
    
     // 결과 바인딩
-    RAGDOLL_FINALSRT[iBoneIdx].vScale           = vFinalScale;
+    //RAGDOLL_FINALSRT[iBoneIdx].vScale           = vFinalScale;
     RAGDOLL_FINALSRT[iBoneIdx].vQuat            = vFinalQuat;
     RAGDOLL_FINALSRT[iBoneIdx].vTranslation     = vFinalTranslation;
 }

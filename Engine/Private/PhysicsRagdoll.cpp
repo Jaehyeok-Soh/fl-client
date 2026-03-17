@@ -124,30 +124,40 @@ void CPhysicsRagdoll::Awake(vector<CChannel*>& vecChannels)
 
 void CPhysicsRagdoll::Update()
 {
-	Matrix objectWorldInverse = Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrix_Inverse();
-
-	// struct buffer에 값을 다시 쓰기 위함
+	Matrix objectWorldInverse = static_cast<CPartObject*>(Get_Owner())->Get_Component<CTransform>()->Get_WorldMatrix_Inverse();
 	_uint iRagDollSize = ENUM_TO_UINT(ERagdollJoint::END);
 	CS_OUT_BONE* pInitialData = new CS_OUT_BONE[iRagDollSize];
-
-	// 피직스를 통해 업데이트
+	// 1패스: 오브젝트 공간 combined 먼저 전부 계산
 	for (_int i = 0; i < RAGDOLLJOINT::END; i++)
 	{
 		auto& link = m_tRagdollElements.vecPhysicsLink[i];
-		if (!link.first)
-			continue;
-
-		PxTransform pose = link.first->getGlobalPose(); // *link.second.matOffsetTransform.getInverse();
+		if (!link.first) continue;
+		PxTransform pose = link.first->getGlobalPose();
 		Matrix matGlobal = m_pGameInstance->PxTransformToXMMatrix(pose);
-
-		Matrix matLocal = matGlobal * objectWorldInverse;
-
-		m_tRagdollElements.vecRagdollLiveTransform[i] = matLocal;
-
-		pInitialData[i].matCombinedTransform = matLocal;
+		m_tRagdollElements.vecRagdollLiveTransform[i] = objectWorldInverse *matGlobal ;
+	}
+	// 2패스: combined → bone-local 변환
+	for (_int i = 0; i < RAGDOLLJOINT::END; i++)
+	{
+		auto& link = m_tRagdollElements.vecPhysicsLink[i];
+		RAGDOLLJOINT::Enum eParentJoint = link.second.eParentJoint;
+		Matrix matCombined = m_tRagdollElements.vecRagdollLiveTransform[i];
+		Matrix matBoneLocal;
+		if (eParentJoint < 0 || i == RAGDOLLJOINT::PELVIS)
+		{
+			// 루트는 그냥 combined = bone-local
+			matBoneLocal = matCombined;
+		}
+		else
+		{
+			// 부모 combined 역행렬 * 자신 combined = bone-local
+			Matrix matParentCombined = m_tRagdollElements.vecRagdollLiveTransform[eParentJoint];
+			matBoneLocal = matParentCombined.Invert() * matCombined;
+		}
+		pInitialData[i].matCombinedTransform = matBoneLocal;
 	}
 
-	m_pMatrixBuffer->Resize(pInitialData, sizeof(CS_OUT_BONE), iRagDollSize);
+	m_pMatrixBuffer->Copy_Data(pInitialData, sizeof(CS_OUT_BONE), iRagDollSize);
 	Safe_Delete_Array(pInitialData);
 }
 
