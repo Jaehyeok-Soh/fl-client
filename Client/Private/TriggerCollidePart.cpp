@@ -98,9 +98,7 @@ void CTriggerCollidePart::Update(_float fTimeDelta)
 		break;
 	}
 
-	Get_Component<CPhysicsRigidBody>()->Move(
-		Vec3{ m_matCombinedWorld._41, m_matCombinedWorld._42,m_matCombinedWorld._43 },
-		fTimeDelta);
+	Get_Component<CPhysicsRigidBody>()->SetTransform(m_matCombinedWorld);
 }
 
 void CTriggerCollidePart::Update_Late(_float fTimeDelta)
@@ -126,6 +124,9 @@ void CTriggerCollidePart::Ready_Before_Render(_float fTimeDelta)
 
 void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+	if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Only_Detect)))
+		return;
+
 	if(Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Call_ParentTirggerEnter)))
 		Get_Parent()->OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 

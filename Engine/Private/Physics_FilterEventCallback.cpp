@@ -303,6 +303,7 @@ void CPhysics_FilterEventCallback::Ready_EventCallChain()
 		hitInfo.iRequester_AttackPresetID = info.leftColliderDesc.iAttackPresetID;
 		hitInfo.iOther_AttackPresetID = info.rightColliderDesc.iAttackPresetID;
 		info.leftObject->OnTrigger_Enter(info.leftColliderDesc.eFilterLayer, info.rightColliderDesc.eFilterLayer, info.rightObject, hitInfo);
+		info.rightObject->OnTrigger_Enter(info.rightColliderDesc.eFilterLayer, info.leftColliderDesc.eFilterLayer, info.leftObject, hitInfo);
 #ifdef _DEBUG
 		Debug_Log(COLLISIONEVENT::Enum::ON_TRIGGER_ENTER, info);
 #endif // _DEBUG
@@ -310,6 +311,7 @@ void CPhysics_FilterEventCallback::Ready_EventCallChain()
 
 	m_arrCollisionEvent[COLLISIONEVENT::Enum::ON_TRIGGER_EXIT] = [=](GAMEOBJECTINFO& info) {
 		info.leftObject->OnTrigger_Exit(info.leftColliderDesc.eFilterLayer, info.rightColliderDesc.eFilterLayer, info.rightObject);
+		info.rightObject->OnTrigger_Exit(info.rightColliderDesc.eFilterLayer, info.leftColliderDesc.eFilterLayer, info.leftObject);
 #ifdef _DEBUG
 		Debug_Log(COLLISIONEVENT::Enum::ON_TRIGGER_EXIT, info);
 #endif // _DEBUG
