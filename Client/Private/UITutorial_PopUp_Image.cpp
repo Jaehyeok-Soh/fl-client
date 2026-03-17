@@ -15,6 +15,7 @@
 #include "UI_Manager.h"
 #include "GameInstance.h"
 
+// Common Params Bool
 #define POPUP_3 0
 #define POPUP_4 1
 

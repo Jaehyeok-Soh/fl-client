@@ -20,6 +20,9 @@
 #define CLAMP_MIN_Y 150.f
 #define CLAMP_MAX_Y 750.f
 
+#define ICON_X 0
+#define ICON_Y 1
+
 CUIQuestNavi_Image::CUIQuestNavi_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIDynamic_Image(pDevice, pDeviceContext)
 {
@@ -219,16 +222,18 @@ void CUIQuestNavi_Image::Proj_World_To_Screen()
 		vCameraLook.Normalize();
 		vCameraRight.Normalize();
 
+		// -1 ~ 1
+		// fx == 0 카메라 기준 센터 // > 0 카메라 기준 오른쪽 // < 0 카메라 기준 왼쪽
 		_float fx = vDir.Dot(vCameraRight);
 		_float fy = vDir.Dot(vCameraLook);
 
-		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::QUEST_NAVI_DIR)
-		{
-			m_vMoveOffset = Vec2{ 0.f, 20.f };
-			_float fAngle = atan2f(fy, fx);
+		//if (m_eDImageSubClass == DTO::EUIDImageSubClassType::QUEST_NAVI_DIR)
+		//{
+		//	m_vMoveOffset = Vec2{ 0.f, 20.f };
+		//	_float fAngle = atan2f(fy, fx);
 
-			Move_Rotate(fAngle + XM_PIDIV2);
-		}
+		//	Move_Rotate(fAngle + XM_PIDIV2);
+		//}
 
 		m_vScreenPos.x = (g_iWinSizeX / 2.f) + (fx * 533.5f);
 		m_vScreenPos.y = (g_iWinSizeY / 2.f) - (fy * 250.f);
@@ -237,6 +242,12 @@ void CUIQuestNavi_Image::Proj_World_To_Screen()
 			m_vScreenPos.x = CLAMP_MIN_X;
 		else if (m_vScreenPos.x > CLAMP_MAX_X)
 			m_vScreenPos.x = CLAMP_MAX_X;
+
+		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::QUEST_NAVI_DIR)
+		{
+			m_vScreenPos.x += (fx * 20.f);
+			m_vScreenPos.y += (fy* 20.f);
+		}
 	}
 	else
 	{
@@ -254,6 +265,9 @@ void CUIQuestNavi_Image::Proj_World_To_Screen()
 			m_vScreenPos.y = CLAMP_MIN_Y;
 		else if (m_vScreenPos.y > CLAMP_MAX_Y)
 			m_vScreenPos.y = CLAMP_MAX_Y;
+
+
+
 	}
 }
 
