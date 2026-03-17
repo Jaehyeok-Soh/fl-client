@@ -1,5 +1,6 @@
 #pragma once
 #include "RenderTarget.h"
+#include "RenderTargetArray.h"
 
 NS_BEGIN(Engine)
 
@@ -58,17 +59,24 @@ private:
 
 public:
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
+	HRESULT Add_RenderTargetArray(ERenderTarget eTarget, const CRenderTargetArray::RENDERTARGET_ARR_DESC* pDesc);
+
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
+
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _bool bUseDSV);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV);
+
+	HRESULT Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, _bool bUseDSV);
+	HRESULT Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, ID3D11DepthStencilView* pDSV);
+
 	HRESULT End_MRT();
 	HRESULT Bind_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
 
 public:
-	class CRenderTarget* Get_RenderTarget(ERenderTarget eTarget) { return m_arrRenderTargets[ENUM_TO_UINT(eTarget)]; }
-	class list<class CRenderTarget*>* Get_MRT(EMRTLayer eMRTLayer) { return &m_arrMRTs[ENUM_TO_UINT(eMRTLayer)]; }
-
+	CRenderTarget* Get_RenderTarget(ERenderTarget eTarget) { return m_arrRenderTargets[ENUM_TO_UINT(eTarget)]; }
+	CRenderTargetArray* Get_RenderTargetArray(ERenderTarget eTarget) { return m_arrRenderTargetArrays[ENUM_TO_UINT(eTarget)]; }
+	list<class CRenderTarget*>* Get_MRT(EMRTLayer eMRTLayer) { return &m_arrMRTs[ENUM_TO_UINT(eMRTLayer)]; }
 #ifdef _DEBUG
 public:
 	ID3D11ShaderResourceView* Get_RenderTargetSRV(ERenderTarget eTarget);
@@ -79,8 +87,9 @@ public:
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
-	array<class CRenderTarget*, ENUM_TO_SZET(ERenderTarget::END)>		m_arrRenderTargets;
-	array<list<class CRenderTarget*>, ENUM_TO_SZET(EMRTLayer::END)>		m_arrMRTs;
+	array<CRenderTarget*, ENUM_TO_SZET(ERenderTarget::END)>		m_arrRenderTargets;
+	array<CRenderTargetArray*, ENUM_TO_SZET(ERenderTarget::END)>	m_arrRenderTargetArrays;
+	array<list<CRenderTarget*>, ENUM_TO_SZET(EMRTLayer::END)>		m_arrMRTs;
 
 	ID3D11ShaderResourceView* m_pNullSRVs[128]{ nullptr };
 	ID3D11RenderTargetView* m_pBackBuffer = { nullptr };

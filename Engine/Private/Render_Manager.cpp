@@ -182,7 +182,7 @@ HRESULT CRender_Manager::Bake_StaticShadow()
 	m_tBakedShadowDesc.matLightVP = matLightView * matLightProj;
 	m_tBakedShadowDesc.fShadowBias = 0.002f;
 	m_tBakedShadowDesc.fShadowStrength = 0.6f;
-	m_tBakedShadowDesc.vShadowMapInvSize = { 1.f / SHADOW_BAEK_SIZE, 1.f / SHADOW_BAEK_SIZE };
+	m_tBakedShadowDesc.vShadowMapInvSize = { 1.f / s_iBakedSectionSize, 1.f / s_iBakedSectionSize };
 
 	if (FAILED(m_pCB_BakedShadow->Copy_Data(m_tBakedShadowDesc)))
 		return E_FAIL;
@@ -190,8 +190,8 @@ HRESULT CRender_Manager::Bake_StaticShadow()
 	//=====================
 	// Static 오브젝트 렌더
 	//=====================
-	m_tBakedShadowViewport.Width = (float)SHADOW_BAEK_SIZE;
-	m_tBakedShadowViewport.Height = (float)SHADOW_BAEK_SIZE;
+	m_tBakedShadowViewport.Width = (_float)s_iBakedSectionSize;
+	m_tBakedShadowViewport.Height = (_float)s_iBakedSectionSize;
 	m_tBakedShadowViewport.MinDepth = 0.f;
 	m_tBakedShadowViewport.MaxDepth = 1.f;
 	m_pDeviceContext->RSSetViewports(1, &m_tBakedShadowViewport);
@@ -225,6 +225,73 @@ HRESULT CRender_Manager::Bake_StaticShadow()
 	}
 
 	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Build_BakedShadowSections()
+{
+	if (FAILED(Build_BakedShadowSectionJobs()))
+		return E_FAIL;
+
+	if (FAILED(Execute_BakedShadowSectionJobs()))
+		return E_FAIL;
+
+	m_bBakedSectionInitialized = true;
+	m_bActiveBakedSectionDirty = true;
+
+	m_vecBakedSection.clear();
+	BoundingBox rootBounds = m_pGameInstance->m_pOctree_Manager->Get_RootBounds();
+
+	Vec3 vCenter{ rootBounds.Center };
+	Vec3 vExtension{ rootBounds.Extents };
+	
+	Vec3 vMin{ vCenter - vExtension };
+	Vec3 vMax{ vCenter + vExtension };
+
+	constexpr _int SECTION_COUNT_X{ 6 };
+	constexpr _int SECTION_COUNT_Z{ 6 };
+
+	m_vBakedSectionOrigin = vMin;
+	m_fBakedSectionSizeX = (vMax.x - vMin.x) / SECTION_COUNT_X;
+	m_fBakedSectionSizeZ = (vMax.z - vMin.z) / SECTION_COUNT_Z;
+
+	// 히스테리시스는 약 30%
+	m_fSectionUpdateHysteresisX = m_fBakedSectionSizeX * 0.3f;
+	m_fSectionUpdateHysteresisZ = m_fBakedSectionSizeZ * 0.3f;
+
+	_uint iSlice = 0;
+
+	for (_int z = 0; z < SECTION_COUNT_Z; ++z)
+	{
+		for (_int x = 0; x < SECTION_COUNT_X; ++x)
+		{
+			BAKED_SHADOW_SECTION tSection{};
+			tSection.iSectionX = x;
+			tSection.iSectionZ = z;
+			tSection.iArraySlice = iSlice++;
+
+			// XZ는 섹션 크기 기준으로, Y는 그냥 root
+			Vec3 vSecMin = {
+				vMin.x + x * m_fBakedSectionSizeX,
+				vMin.y,
+				vMin.z + z * m_fBakedSectionSizeZ
+			};
+			Vec3 vSecMax = {
+				vMin.x + (x + 1) * m_fBakedSectionSizeX,
+				vMax.y,
+				vMin.z + (z + 1) * m_fBakedSectionSizeZ
+			};
+
+			BoundingBox::CreateFromPoints(
+				tSection.worldBounds,
+				vSecMin,
+				vSecMax
+			);
+
+			if(SUCCEEDED(B))
+		}
+	}
+
 	return S_OK;
 }
 
@@ -1601,8 +1668,8 @@ HRESULT CRender_Manager::Ready_RT()
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
 		desc.ePixelFormat = DXGI_FORMAT_R32_FLOAT;
-		desc.iWidth = SHADOW_BAEK_SIZE;
-		desc.iHeight = SHADOW_BAEK_SIZE;
+		desc.iWidth = s_iBakedSectionSize;
+		desc.iHeight = s_iBakedSectionSize;
 		desc.vClearColor = Vec4::One;
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Shadow_Baked, &desc)))
 			return E_FAIL;
@@ -1756,11 +1823,6 @@ HRESULT CRender_Manager::Create_ShadowResource()
 		m_tShadowViewport.Height = (_float)SHADOW_MAP_SIZE;
 		m_tShadowViewport.MinDepth = 0.f;
 		m_tShadowViewport.MaxDepth = 1.f;
-
-		m_tBakedShadowViewport.Width = (_float)SHADOW_BAEK_SIZE;
-		m_tBakedShadowViewport.Height = (_float)SHADOW_BAEK_SIZE;
-		m_tBakedShadowViewport.MinDepth = 0.f;
-		m_tBakedShadowViewport.MaxDepth = 1.f;
 	}
 
 	// DSV
@@ -1779,24 +1841,6 @@ HRESULT CRender_Manager::Create_ShadowResource()
 			return E_FAIL;
 
 		if (FAILED(m_pDevice->CreateDepthStencilView(m_pShadowDSTexture, nullptr, &m_pShadowDSV)))
-			return E_FAIL;
-	}	
-
-	{
-		D3D11_TEXTURE2D_DESC desc = {};
-		desc.Width = SHADOW_BAEK_SIZE;
-		desc.Height = SHADOW_BAEK_SIZE;
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		desc.SampleDesc.Count = 1;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-
-		if (FAILED(m_pDevice->CreateTexture2D(&desc, nullptr, &m_pBakedShadowDSTexture)))
-			return E_FAIL;
-
-		if (FAILED(m_pDevice->CreateDepthStencilView(m_pBakedShadowDSTexture, nullptr, &m_pBakedShadowDSV)))
 			return E_FAIL;
 	}
 	return S_OK;
@@ -1899,6 +1943,154 @@ HRESULT CRender_Manager::Compute_ShadowCascade()
 	return S_OK;
 }
 
+
+
+HRESULT CRender_Manager::Bake_Section(OUT BAKED_SHADOW_SECTION& section, const Vec3& vLightDir)
+{
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Bind_ActiveBakedSections()
+{
+	if (m_pBakedShadowArraySRV == nullptr)
+		return E_FAIL;
+
+	m_pDeviceContext->PSSetShaderResources();
+	
+	if (FAILED(m_pCB_ActiveBakedSections->Bind(PIPELINE_STAGE::PS, SLOT_BAKED_SECTION_CB)))
+		return E_FAIL;
+	return S_OK;
+}
+
+_uint CRender_Manager::Compute_BakedSectionIndex(_int x, _int z) const
+{
+	return static_cast<_uint>(z * s_iBakedSectionCountX + x);
+}
+
+HRESULT CRender_Manager::Render_BakedSection_ToArray(const BAKED_SECTION_BUILD_RESULT& job)
+{
+	if (job.iSectionX < 0 || job.iSectionZ < 0)
+		return E_FAIL;
+
+	_uint iSlice = static_cast<_uint>(job.iSectionZ * s_iBakedSectionCountX+ job.iSectionX);
+	if (iSlice >= s_iBakedSectionCountX * s_iBakedSectionCountZ)
+		return E_FAIL;
+
+	ID3D11RenderTargetView* pRTV = m_pBakedShadowArrayRTV[iSlice];
+	if (pRTV == nullptr)
+		return E_FAIL;
+
+	m_pDeviceContext->RSSetViewports(1, &m_tBakedShadowViewport);
+
+	const FLOAT clearColor[4] = { 1.f, 1.f, 1.f, 1.f };
+	m_pDeviceContext->ClearRenderTargetView(pRTV, clearColor);
+	m_pDeviceContext->ClearDepthStencilView(m_pBakedShadowDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+	m_pDeviceContext->OMSetRenderTargets(1, &pRTV, m_pBakedShadowDSV);
+
+	// baked shadow 전용 CB 바인딩
+	// baked shadow pass 설정
+	// vecCasters 렌더
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Create_BakedShadowArrayResources()
+{
+	Release_BakedShadowArrayResources();
+
+	// TextureArray
+	D3D11_TEXTURE2D_DESC textureDesc = {};
+	textureDesc.Width = s_iBakedSectionSize;
+	textureDesc.Height = s_iBakedSectionSize;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = s_iBakedSectionCountX * s_iBakedSectionCountZ;
+	textureDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+
+	if (FAILED(m_pDevice->CreateTexture2D(&textureDesc, nullptr, &m_pBakedShadowArrayTexture)))
+		return E_FAIL;
+
+	// SRV
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = textureDesc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		srvDesc.Texture2DArray.MostDetailedMip = 0;
+		srvDesc.Texture2DArray.MipLevels = 1;
+		srvDesc.Texture2DArray.FirstArraySlice = 0;
+		srvDesc.Texture2DArray.ArraySize = s_iBakedSectionCountX * s_iBakedSectionCountZ;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(m_pBakedShadowArrayTexture, &srvDesc, &m_pBakedShadowArraySRV)))
+			return E_FAIL;
+	}
+
+	// RTV
+	{
+		for (_uint i = 0; i < s_iBakedSectionCountX * s_iBakedSectionCountZ; ++i)
+		{
+			D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+			rtvDesc.Format = textureDesc.Format;
+			rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+			rtvDesc.Texture2DArray.MipSlice = 0;
+			rtvDesc.Texture2DArray.FirstArraySlice = i;
+			rtvDesc.Texture2DArray.ArraySize = 1;
+
+			if (FAILED(m_pDevice->CreateRenderTargetView(m_pBakedShadowArrayTexture, &rtvDesc, &m_pBakedShadowArrayRTV[i])))
+				return E_FAIL;
+		}
+	}
+
+	// DSV
+	{
+		D3D11_TEXTURE2D_DESC dsDesc = {};
+		dsDesc.Width = s_iBakedSectionSize;
+		dsDesc.Height = s_iBakedSectionSize;
+		dsDesc.MipLevels = 1;
+		dsDesc.ArraySize = 1;
+		dsDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		dsDesc.SampleDesc.Count = 1;
+		dsDesc.Usage = D3D11_USAGE_DEFAULT;
+		dsDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+		ID3D11Texture2D* pDSTex = nullptr;
+		if (FAILED(m_pDevice->CreateTexture2D(&dsDesc, nullptr, &pDSTex)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateDepthStencilView(pDSTex, nullptr, &m_pBakedShadowDSV)))
+		{
+			Safe_Release(pDSTex);
+			return E_FAIL;
+		}
+
+		Safe_Release(pDSTex);
+	}
+
+	// Viewport
+	{
+		::ZeroMemory(&m_tBakedShadowViewport, sizeof(D3D11_VIEWPORT));
+		m_tBakedShadowViewport.Width = (_float)s_iBakedSectionSize;
+		m_tBakedShadowViewport.Height = (_float)s_iBakedSectionSize;
+		m_tBakedShadowViewport.MinDepth = 0.f;
+		m_tBakedShadowViewport.MaxDepth = 1.f;
+	}
+
+	return S_OK;
+}
+
+void CRender_Manager::Release_BakedShadowArrayResources()
+{
+	Safe_Release(m_pBakedShadowArraySRV);
+	Safe_Release(m_pBakedShadowArrayTexture);
+	Safe_Release(m_pBakedShadowDSV);
+
+	for (_uint i = 0; i < s_iBakedSectionCountX * s_iBakedSectionCountZ; ++i)
+		Safe_Release(m_pBakedShadowArrayRTV[i]);
+}
+
 CRender_Manager* CRender_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CRender_Manager* pInstance = new CRender_Manager(pDevice, pDeviceContext);
@@ -1926,6 +2118,7 @@ void CRender_Manager::Free()
 		RenderObjects.clear();
 	}
 
+	Release_BakedShadowArrayResources();
 	// === WBOIT 전용 blend 캐싱 변수 === 
 	Safe_Release(m_pWBOIT_AccumulateBS);
 	Safe_Release(m_pAlphaBlendBS);
@@ -1936,7 +2129,6 @@ void CRender_Manager::Free()
 	Safe_Release(m_pShadowDSTexture);
 	Safe_Release(m_pBakedShadowDSTexture);
 	Safe_Release(m_pShadowDSV);
-	Safe_Release(m_pBakedShadowDSV);
 	Safe_Release(m_pCB_Outlineparam);
 	Safe_Release(m_pCB_Bloomparam);
 	Safe_Release(m_pCB_HDRparam);
