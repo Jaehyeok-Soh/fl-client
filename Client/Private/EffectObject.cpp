@@ -524,7 +524,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     {
         // Object의 TimeFlag가 PLAY라면 그대로 전달하여 CS가 멈추지 않게 함
         //CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
-        if (m_pParticleBuffer) m_pParticleBuffer->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
+        if (m_pParticleBuffer) m_pParticleBuffer->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, m_fTimeAccumulation, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
     }
 }
 
@@ -703,7 +703,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
         if (pInstance && m_pComputeShader)
-            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, 0.f, RESET, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
+            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, 0.f, 0.f, RESET, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
 
         // 리셋 직후 바로 PLAY 상태로 전이시켜서 셰이더가 다음 루프를 돌게 함
         m_tEffectDesc.Data._Effect_TimeFlag = PLAY;
@@ -719,7 +719,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
         if (pInstance && m_pComputeShader)
-            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, 0.f, STOP, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
+            pInstance->Update_Simulation(m_pComputeShader, Vec3{}, m_vFinalGravity, 0.f, 0.f, STOP, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
 
         m_fTimeAccumulation = 0.f;
         // Stop은 PLAY로 바꾸지 않고 그대로 둠

@@ -57,6 +57,7 @@ protected:
 	const Matrix*					m_pBoneMatrix = { nullptr };
 	const Matrix*					m_pBoneOwnerMatrix = { nullptr };
 	_uint							m_iBoneFlag = {};
+	_bool							m_bUseChildBone = { false };
 	Matrix							m_matCombinedWorld = {};
 
 };

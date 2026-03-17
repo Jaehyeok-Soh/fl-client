@@ -465,12 +465,19 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
         matTargetWorld = OffsetMat * OwnerMatrix;
     }
 
+
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matTargetWorld;
     tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
     tEngineDesc.pTargetBoneMatrix = ((script.bFollowBone || script.bUseChildBone) ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
+
+    if (script.iChildBoneIndex != -1 && script.bUseChildBone)
+    {
+        tEngineDesc.bUseChildBone = true;
+    }
+
     //if(m_pOwnerModel)
     //tEngineDesc.VFX_fSpeed = m_pOwnerModel->Get_Animatioin_MotionOffset(script.iAnimIndex);
 
@@ -502,6 +509,12 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     tEngineDesc.pTargetBoneMatrix = ((script.bFollowBone || script.bUseChildBone) ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
+
+    if (script.iChildBoneIndex != -1 && script.bUseChildBone)
+    {
+        tEngineDesc.bUseChildBone = true;
+    }
+
  /*   if (m_pOwnerModel)
     tEngineDesc.VFX_fSpeed = m_pOwnerModel->Get_Animatioin_MotionOffset(script.iAnimIndex);*/
   
@@ -544,7 +557,7 @@ void CEffectHandler::BoneMatrix_CalCulator(const DTO::EFFECTEVENT& script, OUT c
             CModel* pWeaponModel = pWeapon->Get_Component<CModel>();
             if (pWeaponModel == nullptr)
                 return;
-
+             
             (BoneMatrix) = &pWeaponModel->Get_Bone(script.iChildBoneIndex)->Get_CombinedTransformMatrix();
         }
     }
@@ -565,7 +578,40 @@ SimpleMath::Matrix CEffectHandler::Offset_CalCulator(const DTO::EFFECTEVENT& scr
     // 오프셋 적용
     Matrix matOffset = XMMatrixTranslation(script.vOffset.x, script.vOffset.y, script.vOffset.z);
     Matrix matRotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(script.vRotation.x), XMConvertToRadians(script.vRotation.y), XMConvertToRadians(script.vRotation.z));
-    return (matOffset * matRotation);
+
+    Matrix ResultMatrix = {};
+
+    ResultMatrix = (matOffset * matRotation);
+
+    if (script.iChildBoneIndex != -1 && script.bUseChildBone)
+    {
+        if (Get_Owner() == nullptr)
+            return ResultMatrix;
+
+        if (dynamic_cast<CContainerObject*>(Get_Owner()))
+        {
+            // 플레이어 총 무기
+            if (script.ChildPartNumber == -1) return ResultMatrix;
+
+            auto pWeapon = static_cast<CContainerObject*>(Get_Owner())->Get_Part<CPartObject>(script.ChildPartNumber);
+            if (pWeapon == nullptr)
+                return ResultMatrix;
+
+            Matrix WeaponCombinedMatrix = pWeapon->Get_CombinedMatrix();
+            Matrix matCustom2 = XMMatrixIdentity();
+
+            Vector3 vBoneScale2;
+            Quat vBoneQuat2;
+            Vector3 vBonePos2;
+
+            WeaponCombinedMatrix.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
+            matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
+            matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
+            (ResultMatrix) *= matCustom2;
+        }
+    }
+
+    return ResultMatrix;
 }
 
 SimpleMath::Matrix CEffectHandler::Delete_ScaleMatrix(SimpleMath::Matrix Mat)

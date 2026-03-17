@@ -8,11 +8,12 @@
 #define DROP 1
 #define RISE 2
 #define SPREAD 3 
-#define STARIGHT 4
+#define STOP 4
 #define SPIRAL 5
 #define DNA 6
 #define GATHER 7    // 가운데로 모이기 (Spread 반대)
 #define FOUNTAIN 8  // 분수 (튀어올랐다 낙하)
+#define LEAF 9
 
 // 시간 데이터
 #define PLAY 0
@@ -24,6 +25,13 @@
 #define CONTINUE_NONE 0
 #define CONTINUE_PLAY 1
 #define CONTINUE_DISTROY 2
+
+// RandomSeed
+
+ #define  RAND_POS  1 << 0
+ #define  RAND_LIFE  1 << 1
+ #define  RAND_SIZE  1 << 2
+ #define  RAND_SPEED 1 << 3
 
 struct IMMU_ELEMENT
 {
@@ -71,6 +79,10 @@ struct MU_ELEMENT
     float fSpiralRadius;
     float fSpiralSpeed;
     int  UseContinueFlag;
+    
+    // 7
+    float3 vRange;
+    uint   vRandomSeed;
 };
 
 struct CurveKey
@@ -130,6 +142,11 @@ float SampleCurve(StructuredBuffer<CurveKey> curve, uint keyCount, float fRatio)
     return curve[keyCount - 1].fValue;
 }
 
+float GetRandom(float2 seed)
+{
+    return frac(sin(dot(seed, float2(12.9898f, 78.223f))) * 4378.5453);
+}
+
 // Read Write가 둘다 된다고 해서 RWStructuredBuffer
 // Warp/Wavefront는 32명씩 묶여서 연산을 한다.
 [numthreads(32, 1, 1)]
@@ -148,8 +165,10 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         return;
     }
   
-    // 수명 업데이트 (누적)
+    // 수명 업데이트
     currentData.vLifeTime.x += g_InputB.fTimeDelta;
+    float fLife = currentData.vLifeTime.x;
+    float fMaxLife = currentData.vLifeTime.y;
 
     // 그 이후에 fRatio 계산
     float fRatio = saturate(currentData.vLifeTime.x / currentData.vLifeTime.y);
@@ -172,8 +191,54 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     // currentData.vLifeTime.y는 툴에서 준 개별 파티클의 최대 수명
     if ((g_InputB.UseContinueFlag != CONTINUE_DISTROY) && g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
     {
-        currentData.vLifeTime.x = 0.0f; // 리셋 후에는 대기 없이 0부터 시작
+        //[기존 위치 공식]
+        //currentData.vLifeTime.x = 0.0f; // 리셋 후에는 대기 없이 0부터 시작
+        //currentData.matTransform = input.vOriginMatrix;
+        //INSTANCE_OUTPUT[dtid.x] = currentData;
+        //return;
+        
+        currentData.vLifeTime.x = 0.0f; // 시간 리셋
+        
+        float baseSeed = (float) dtid.x + (float) g_InputB.vRandomSeed + g_InputB.fTotalTime;
+        
+        float3 vOriginPos = input.vOriginMatrix._41_42_43;
+        float3 vFinalPos = vOriginPos;
+        if (g_InputB.vRandomSeed & RAND_POS)
+        {
+            float3 vRandOffset;
+            vRandOffset.x = (GetRandom(float2(baseSeed, 1.1f)) - 0.5f) * g_InputB.vRange.x;
+            vRandOffset.y = (GetRandom(float2(baseSeed, 2.2f)) - 0.5f) * g_InputB.vRange.y;
+            vRandOffset.z = (GetRandom(float2(baseSeed, 3.3f)) - 0.5f) * g_InputB.vRange.z;
+            
+            vFinalPos = vOriginPos + vRandOffset;
+        }
+        
+        float fNewMaxLife = input.vLifeTime.y;
+        if (g_InputB.vRandomSeed & RAND_LIFE)
+        {
+            // input.vLifeTime.x와 y 사이의 값으로 보간
+            float randRatio = GetRandom(float2(baseSeed, 4.4f));
+            fNewMaxLife = lerp(input.vLifeTime.x, input.vLifeTime.y, randRatio);
+            if (fNewMaxLife < 0.1f)
+                fNewMaxLife = 0.1f;
+        }
+        currentData.vLifeTime.y = fNewMaxLife;
+
+        float3 vScale = float3(length(input.vRight.xyz), length(input.vUp.xyz), length(input.vLook.xyz));
+        if (g_InputB.vRandomSeed & RAND_SIZE)
+        {
+            // 기준 크기(vScale)의 0.5 ~ 1.5배 사이로 조절
+            float sizeRatio = GetRandom(float2(baseSeed, 5.5f)) + 0.5f;
+            vScale *= sizeRatio;
+        }
+        
         currentData.matTransform = input.vOriginMatrix;
+        currentData.matTransform._41_42_43 = vFinalPos;
+        
+        currentData.matTransform[0].xyz = normalize(currentData.matTransform[0].xyz) * vScale.x;
+        currentData.matTransform[1].xyz = normalize(currentData.matTransform[1].xyz) * vScale.y;
+        currentData.matTransform[2].xyz = normalize(currentData.matTransform[2].xyz) * vScale.z;
+
         INSTANCE_OUTPUT[dtid.x] = currentData;
         return;
     }
@@ -193,7 +258,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     else if (g_InputB.iMoveState == RISE)
     {
         vVelocity = float3(0.f, input.vSpeed, 0.f);
-        currentData.matTransform._42 += vVelocity.y * g_InputB.fTimeDelta;
+        currentData.matTransform._42 += vVelocity.y * g_InputB.fTimeDelta * g_InputB.fStartSpeed;
     }
     else if (g_InputB.iMoveState == GATHER)
     {
@@ -210,7 +275,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         float3 vStartVelocity = float3(0.f, g_InputB.fStartSpeed, 0.f);
         float3 vSideDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
         vSideDir.y = 0.f;
-        
+          
         // 수직 속도와 수평 속도를 합산하여 vVelocity 계산
         vVelocity = (vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x)) * input.vSpeed;
         vVelocity += vSideDir * (g_InputB.fStartSpeed * 0.3f);
@@ -226,6 +291,55 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         vVelocity = vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x);
         currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }
+    
+    if (g_InputB.iMoveState == LEAF)
+    {
+        float fTime = currentData.vLifeTime.x;
+        
+        // 1. 중력 및 커브 반영 하강 속도 계산
+        // vAppliedGravity는 g_InputB.vFinalGravity * 커브값입니다.
+        // 물리 공식: 위치 = 초기속도 * t + 0.5 * 가속도 * t^2
+        // 하지만 여기선 매 프레임 위치를 더해주므로 '속도' 개념으로 접근합니다.
+        
+        float3 vGravityEffect = vAppliedGravity * fTime; // 시간에 따라 증가하는 중력 속도
+        float fVerticalSpeed = (input.vSpeed + length(vGravityEffect)) * g_InputB.fTimeDelta;
+
+        // 2. 좌우 흔들림 (Swaying) 강화
+        // sin 곡선에 따라 좌우로 움직이되, 하강 속도와 연동되면 더 자연스럽습니다.
+        float fSwayAmplitude = 1.2f; // 흔들림 범위 (툴 변수로 빼면 좋음)
+        float fSwayFreq = 2.5f; // 흔들림 속도
+        float fSway = cos(fTime * fSwayFreq + dtid.x) * fSwayAmplitude;
+        
+        // 3. 최종 위치 적용
+        // _41(X), _43(Z)에 흔들림을 주고, _42(Y)는 중력 방향으로 뺍니다.
+        currentData.matTransform._41 += fSway * g_InputB.fTimeDelta;
+        currentData.matTransform._42 -= fVerticalSpeed;
+
+        // 4. 자전 (Rotation) - 낙엽이 팔랑거리는 느낌
+        // 단순히 Y축 회전만 하는 게 아니라, 흔들림(Sway) 방향에 맞춰 살짝 기울어지게 처리
+        float fRoll = fSway * 0.5f; // 좌우 이동 방향으로 기울기
+        float fPitch = fTime * 2.0f; // 떨어지면서 계속 도는 회전
+        
+        // 간단한 회전 행렬 생성 (Pitch & Roll 조합)
+        float sp, cp, sr, cr;
+        sincos(fPitch, sp, cp);
+        sincos(fRoll, sr, cr);
+
+        // Y축 중심 회전 + X축 살짝 기울기 조합 (3x3)
+        float3x3 rotMat =
+        {
+            cr, sr * sp, sr * cp,
+            0, cp, -sp,
+           -sr, cr * sp, cr * cp
+        };
+        
+        // 기존 스케일 유지하며 회전 적용
+        float3 vScale = float3(length(input.vRight.xyz), length(input.vUp.xyz), length(input.vLook.xyz));
+        currentData.matTransform[0].xyz = mul(float3(1, 0, 0), rotMat) * vScale.x;
+        currentData.matTransform[1].xyz = mul(float3(0, 1, 0), rotMat) * vScale.y;
+        currentData.matTransform[2].xyz = mul(float3(0, 0, 1), rotMat) * vScale.z;
+    }
+    
 
     if (g_InputB.iMoveState == SPREAD || g_InputB.iMoveState == FOUNTAIN || g_InputB.iMoveState == GATHER)
     {

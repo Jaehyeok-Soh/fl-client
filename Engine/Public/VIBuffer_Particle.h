@@ -55,7 +55,7 @@ public:
 	virtual void Render() override;
 
 public:
-	virtual void Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, Vec3 finalGravity, _float fTImeDelta, _uint TimeFlag, DTO::E_SHAPETYPE eType);
+	virtual void Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, Vec3 finalGravity, _float fTotalTimeDelta, _float fTImeDelta, _uint TimeFlag, DTO::E_SHAPETYPE eType);
 	virtual void Reset_Simulation();
 
 public:

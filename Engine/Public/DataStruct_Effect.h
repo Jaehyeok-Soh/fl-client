@@ -46,7 +46,8 @@ enum class E_SHAPETYPE {
     SPIRAL,
     DNA,
     GATHER,   // 중앙으로 모이기
-    FOUNTAIN  // 분수 효과
+    FOUNTAIN,  // 분수 효과
+    LEAF
 };
 enum class E_SIMULATION_SPACE { LOCAL, WORLD };
 enum class E_EMISSION_TYPE { BOX = 0, CIRCLE, SPHERE, CONE };

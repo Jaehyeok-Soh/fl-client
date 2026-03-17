@@ -1025,7 +1025,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		if (ImGui::TreeNode("Shape_EffectList##Effect_List"))
 		{
-			vector<string> m_pShapeList = {"NONE", "DROP", "RISE", "SPREAD", "STOP", "SPIRAL", "DNA","GATHER", "FOUNTAIN"};
+			vector<string> m_pShapeList = {"NONE", "DROP", "RISE", "SPREAD", "STOP", "SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF"};
 
 			std::vector<const char*> iTems;
 			iTems.reserve(static_cast<int>(m_pShapeList.size()));
@@ -1047,6 +1047,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::FOUNTAIN): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::FOUNTAIN); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::LEAF): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::LEAF); break;
 				}
 			}
 
@@ -1056,7 +1057,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				return;
 			}
 
-			const char* shapeNames[] = { "NONE", "DROP", "RISE", "SPREAD", "STRAIGHT", "SPIRAL", "DNA", "GATHER", "FOUNTAIN" };
+			const char* shapeNames[] = { "NONE", "DROP", "RISE", "SPREAD", "STOP", "SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF"};
 			int currentIndex = (int)m_tCurrentDesc.Data._Effect_ShapeType;
 
 			ImGui::Spacing();
