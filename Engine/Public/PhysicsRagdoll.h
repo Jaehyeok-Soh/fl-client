@@ -4,6 +4,7 @@
 NS_BEGIN(Engine)
 
 class CComputeShader;
+class StructuredBuffer;
 
 class ENGINE_DLL CPhysicsRagdoll final : public CComponent
 {
@@ -34,7 +35,8 @@ public:
 
 	// cs func
 public:
-	HRESULT Bind_RagDollCS_ImmuData(CComputeShader* pRagDollCS);
+	HRESULT Setting_CS(CComputeShader* pRagDollCS, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	void	Bind_RagDollCS_MuData(CComputeShader* pRagDollCS);
 
 
 #ifdef _DEBUG
@@ -45,10 +47,17 @@ private:
 	void CombinedJoint(RAGDOLLJOINT::Enum eJoint, PxTransform ObjectWorldTransform, PxTransform parentTransform, vector<CChannel*>& vecChannels, vector<class CBone*>& vecBone);
 	PxTransform BoneCombine(class CBone* pCurrentBone, PxTransform pxLocal, class CBone* pParentBone, vector<CChannel*>& vecChannels, vector<class CBone*>& vecBone);
 
+	HRESULT Bind_RagDollCS_ImmuData(CComputeShader* pRagDollCS);
+	HRESULT Setting_SB(CComputeShader* pRagDollCS, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+
 private:
 	RAGDOLLELEMENTS m_tRagdollElements = {};
 	class CModel* m_pSharedModel = { nullptr };
 	uint64 m_iObjectID = {};
+
+private:
+	StructuredBuffer*						m_pMatrixBuffer { nullptr };
+	ID3DX11EffectShaderResourceVariable*	m_pMatrixSB_SRV { nullptr };
 
 public:
 	static CPhysicsRagdoll* Create();

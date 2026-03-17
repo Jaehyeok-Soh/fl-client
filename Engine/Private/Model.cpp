@@ -1059,6 +1059,8 @@ void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAni
 		// dispatch
 		_uint iGroupX = (ENUM_TO_UINT(ERagdollJoint::END) + 31) / 32;
 		pRagDollCS->Dispatch(iGroupX, 1, 1);
+
+		m_eAnim_UpdateState = AnimUpdateState::RAGDOLL;
 	}
 
 	// combine에 값 바인딩
@@ -1386,6 +1388,8 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 		// dispatch
 		_uint iGroupX = (ENUM_TO_UINT(ERagdollJoint::END) + 31) / 32;
 		pRagDollCS->Dispatch(iGroupX, 1, 1);
+
+		m_eAnim_UpdateState = AnimUpdateState::RAGDOLL;
 	}
 
 	// combine에 값 바인딩

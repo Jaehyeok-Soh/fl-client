@@ -126,6 +126,11 @@ void CPhysicsRagdoll::Update()
 {
 	Matrix objectWorldInverse = Get_Owner()->Get_Component<CTransform>()->Get_WorldMatrix_Inverse();
 
+	// struct buffer에 값을 다시 쓰기 위함
+	_uint iRagDollSize = ENUM_TO_UINT(ERagdollJoint::END);
+	CS_OUT_BONE* pInitialData = new CS_OUT_BONE[iRagDollSize];
+
+	// 피직스를 통해 업데이트
 	for (_int i = 0; i < RAGDOLLJOINT::END; i++)
 	{
 		auto& link = m_tRagdollElements.vecPhysicsLink[i];
@@ -138,7 +143,12 @@ void CPhysicsRagdoll::Update()
 		Matrix matLocal = matGlobal * objectWorldInverse;
 
 		m_tRagdollElements.vecRagdollLiveTransform[i] = matLocal;
+
+		pInitialData[i].matCombinedTransform = matLocal;
 	}
+
+	m_pMatrixBuffer->Resize(pInitialData, sizeof(CS_OUT_BONE), iRagDollSize);
+	Safe_Delete_Array(pInitialData);
 }
 
 _int CPhysicsRagdoll::FindRagdollJointByBoneIndex(_uint boneIdx)
@@ -157,6 +167,17 @@ void CPhysicsRagdoll::Sleep()
 
 	PxTransform resetPose(PxVec3(0.f, -1000.f, 0.f), PxQuat(PxIdentity));
 	m_tRagdollElements.pArticulation->setRootGlobalPose(resetPose, false);
+}
+
+HRESULT CPhysicsRagdoll::Setting_CS(CComputeShader* pRagDollCS, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	if (FAILED(Bind_RagDollCS_ImmuData(pRagDollCS)))
+		return E_FAIL;
+
+	if (FAILED(Setting_SB(pRagDollCS, pDevice, pDeviceContext)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CPhysicsRagdoll::Bind_RagDollCS_ImmuData(CComputeShader* pRagDollCS)
@@ -182,6 +203,40 @@ HRESULT CPhysicsRagdoll::Bind_RagDollCS_ImmuData(CComputeShader* pRagDollCS)
 	Safe_Delete_Array(pInitialData);
 
 	return S_OK;
+}
+
+HRESULT CPhysicsRagdoll::Setting_SB(CComputeShader* pRagDollCS, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	_uint iRagDollSize = ENUM_TO_UINT(ERagdollJoint::END);
+
+	if (m_pMatrixBuffer)
+		Safe_Release(m_pMatrixBuffer);
+	if (m_pMatrixSB_SRV)
+		Safe_Release(m_pMatrixSB_SRV);
+
+	// 3. struct buffer class 생성
+	m_pMatrixBuffer = StructuredBuffer::Create(pDevice, pDeviceContext, sizeof(CS_OUT_BONE), iRagDollSize);
+
+	CS_OUT_BONE* pInitialData = new CS_OUT_BONE[iRagDollSize];
+	for (size_t i = 0; i < (size_t)iRagDollSize; i++)
+	{
+		pInitialData[i].matCombinedTransform = m_tRagdollElements.vecRagdollLiveTransform[i];
+	}
+
+	m_pMatrixBuffer->Copy_Data(pInitialData, sizeof(CS_OUT_BONE), iRagDollSize);
+
+	Safe_Delete_Array(pInitialData);
+
+	// 4. SRV 연결
+	m_pMatrixSB_SRV = pRagDollCS->Get_SRV("RAGDOLL_LOCAL_TRANSFORMS");
+	m_pMatrixSB_SRV->SetResource(m_pMatrixBuffer->Get_SRV());
+
+	return S_OK;
+}
+
+void CPhysicsRagdoll::Bind_RagDollCS_MuData(CComputeShader* pRagDollCS)
+{
+	pRagDollCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_IDX::MU_MATRIX), m_pMatrixSB_SRV, m_pMatrixBuffer);
 }
 
 #ifdef _DEBUG
@@ -310,4 +365,7 @@ CComponent* CPhysicsRagdoll::Clone(void* pArg)
 void CPhysicsRagdoll::Free()
 {
 	Super::Free();
+
+	Safe_Release(m_pMatrixBuffer);
+	Safe_Release(m_pMatrixSB_SRV);
 }

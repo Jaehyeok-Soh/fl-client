@@ -72,28 +72,31 @@ void CMonster_Body_Base::Update_Priority(_float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 
+	auto model = Get_Component<CModel>();
 	// 어 근데 부모의 id를 넣어줘야 하는거 아님? 
 	if (m_bRagDollOn = m_pGameInstance->CheckRagdollState(Get_ID()))
 	{
-		auto model = Get_Component<CModel>();
 		auto animIdx = model->Get_CurrentAnimationIndex();
 		m_pGameInstance->RagdollSyncStates(Get_ID(), model->Get_Animation(animIdx)->Get_Channels());
 	}
+
+	// model 쪽에 ragdoll onoff
+	model->Set_ApplyRagDoll(m_bRagDollOn);
 }
 
 void CMonster_Body_Base::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	//if (m_bRagDollOn)
-	//{
-	//	//Get_Component<CPhysicsRagdoll>()
-	//}
+	if (m_bRagDollOn)
+	{
+		// ragdoll 값 바인딩
+		Get_Component<CPhysicsRagdoll>()->Bind_RagDollCS_MuData(m_pRagDollCS);
+	}
 
-	//else
 	{
 		Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
-			Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS);
+			Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS, nullptr, m_pRagDollCS);
 	}
 
 	// Shake & Emissive 연출용
@@ -397,7 +400,7 @@ HRESULT CMonster_Body_Base::Ready_ComputeShader()
 	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pBoneAnimEvaluateCS, m_pBoneAnimBlendCS, m_pBoneAnimMixCS)))
 		return E_FAIL;
 
-	if (FAILED(Get_Component<CPhysicsRagdoll>()->Bind_RagDollCS_ImmuData(m_pRagDollCS)))
+	if (FAILED(Get_Component<CPhysicsRagdoll>()->Setting_CS(m_pRagDollCS, m_pDevice, m_pDeviceContext)))
 		return E_FAIL;
 
 	return S_OK;
