@@ -69,5 +69,10 @@ struct DIALOGUE_PREV { using Signature = void(); };
 struct DIALOGUE_END { using Signature = void(); };
 struct DIALOGUE_CANCEL { using Signature = void(); }; // 대화 매니저만 사용
 
+// 상호작용 이벤트
+struct INTERACT_DETECT { using Signature = void(class CGameObject* pObj); }; // 상호작용 오브젝트 감지
+struct INTERACT_LOST { using Signature = void(class CGameObject* pObj); }; // 상호작용 오브젝트 감지 벗어남
+struct INTERACT_ENTER { using Signature = void(class CGameObject* pObj); }; // 상호작용 시작
+struct INTERACT_EXIT { using Signature = void(class CGameObject* pObj); }; // 상호작용 종료
 
 #pragma endregion

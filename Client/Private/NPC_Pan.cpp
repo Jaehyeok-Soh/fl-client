@@ -224,7 +224,8 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 			PHYSICSFILTERGROUP::Enum::NPC
 			| PHYSICSFILTERGROUP::Enum::PLAYER
 			| PHYSICSFILTERGROUP::Enum::MONSTER
-			| PHYSICSFILTERGROUP::Enum::MAP;
+			| PHYSICSFILTERGROUP::Enum::MAP
+			| PHYSICSFILTERGROUP::Enum::DETECT_INTERACT;
 
 		desc.bGravity = { true };
 		desc.fGravity = { -35.f };

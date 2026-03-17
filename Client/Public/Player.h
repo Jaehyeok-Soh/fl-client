@@ -47,6 +47,8 @@ public:
 
 		CLOAK,
 
+		DETECTCOLLIDER_INTERACT,
+
 		END
 	};
 
@@ -169,6 +171,7 @@ private:
 	HRESULT		Ready_HitStates();
 
 	HRESULT		Ready_PartCollider();
+	HRESULT		Ready_Interact_PartCollider();
 
 private:
 	void		Count_DoubleJump(const _float fTimeDelta);

@@ -123,6 +123,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 
     if (FAILED(Ready_PartCollider()))
         return E_FAIL;
+    
+    if (FAILED(Ready_Interact_PartCollider()))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -1479,6 +1482,49 @@ HRESULT CPlayer::Ready_PartCollider()
 
         // player가 감지할 part ui
         if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
+    }
+
+    return S_OK;
+}
+
+HRESULT CPlayer::Ready_Interact_PartCollider()
+{
+    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc;
+    {
+        PHYSICSRIGIDBODY_DESC tRigiDesc = {};
+        {
+            tRigiDesc.eType = EPhysicsActorType::KINEMATIC;
+            tRigiDesc.bUseGravity = false;
+            tRigiDesc.pOwnerMatrix = nullptr;
+
+            tPartColliDesc.pRigidbodyDesc = &tRigiDesc;
+        }
+
+        PHYSICSCOLLIDER_DESC tPColliDesc = {};
+        {
+            tPColliDesc.eShape = EPhysicsShape::BOX;
+            //tPColliDesc.fHeight = 100.f;
+            tPColliDesc.vCenter = { 0.f, 0.5f, 0.3f };
+            tPColliDesc.vExtents = { 0.5f, 1.5f, 0.5f };
+
+            //tPColliDesc.fRadius = { 20.f };
+            tPColliDesc.bIsTrigger = { true };
+            tPColliDesc.eFilterLayer = PHYSICSFILTERGROUP::DETECT_INTERACT;
+            tPColliDesc.iFilterMask =
+            {
+                PHYSICSFILTERGROUP::Enum::NPC
+                | PHYSICSFILTERGROUP::Enum::OBJECT1
+                | PHYSICSFILTERGROUP::Enum::OBJECT2
+            };
+
+            tPartColliDesc.pColliderDesc = &tPColliDesc;
+        }
+
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_Detect);
+        tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
+
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER_INTERACT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
             return E_FAIL;
     }
 
