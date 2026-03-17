@@ -929,6 +929,59 @@ namespace Client
 	inline constexpr wchar_t g_wszPointLightLayer[]								{ L"PointLight_Layer" };
 	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
 #pragma endregion
+
+#pragma region Dialogue
+	//typedef struct EDialogueChoice
+	//{
+	//	enum Enum
+	//	{
+	//		NONE,
+	//		CONFIRM,
+	//		CANCEL,
+	//		BACK,
+	//		END
+	//	};
+	//}DIALOGUE_CHOICE;
+
+	typedef struct tagDialogueChoice
+	{
+		wstring wstrText = {};
+		_int iTransitionId = { -1 };
+	}DIALOGUE_CHOICE;
+
+	typedef struct tagDialogueNode
+	{
+		_int iNodeId = { -1 };
+		_int iPrevId = { -1 };
+		_int iNextId = { -1 };
+
+		//OBJECT_ENUM_TAG::Enum eSpeakerTag = OBJECT_ENUM_TAG::NPC_PAN;
+		wstring wstrSpeakerName = {};
+		wstring wstrContentText = {};
+
+		vector<_int> vecTriggerEvent;
+		vector<DIALOGUE_CHOICE> vecChoices;
+
+		tagDialogueNode& AddTrigger(_int eventId)
+		{
+			vecTriggerEvent.push_back(eventId);
+			return *this;
+		}
+
+		tagDialogueNode& AddChoice(const wstring& text, _int transitionId)
+		{
+			vecChoices.push_back({ text, transitionId });
+			return *this;
+		}
+
+		vector<DIALOGUE_CHOICE>* GetChoices()
+		{
+			return &vecChoices;
+		}
+
+	}DIALOGUE_NODE;
+#pragma endregion
+
 }
 
 #pragma endregion
