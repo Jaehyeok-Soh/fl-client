@@ -8,50 +8,61 @@
                     "Y": 0.0,
                     "Z": 1.0
                 },
-                "Power": 0.25
+                "Power": 1.0
             }
         },
-        "Level Type": "TUTORIAL_VILLAGE",
-        "Texture Splating Info": "Village",
+        "Level Type": "STATIC",
+        "Texture Splating Info": "None",
         "strTag": "LevelData0"
     },
     "Objects": [
         {
             "Client Level Type": "LOGO",
-            "Client Make Path": "Batch_Object",
+            "Client Make Path": "Env",
             "Client Make Path Desc": [
                 {
-                    "Batch Object Info": {
-                        "Desc": {
-                            "Light Data": {
-                                "Ambient": {
-                                    "W": 1.0,
+                    "Effect Infos": [
+                        {
+                            "Desc": {
+                                "Pos": {
                                     "X": 0.0,
-                                    "Y": 1.0,
+                                    "Y": 0.0,
                                     "Z": 0.0
                                 },
-                                "Diffuse": {
-                                    "W": 1.0,
+                                "Rot": {
+                                    "X": 0.0,
+                                    "Y": 0.0,
+                                    "Z": 0.0
+                                },
+                                "Scale": {
                                     "X": 1.0,
+                                    "Y": 1.0,
+                                    "Z": 1.0
+                                }
+                            },
+                            "Tag": "ENV_FOG1"
+                        },
+                        {
+                            "Desc": {
+                                "Pos": {
+                                    "X": 15.600000381469727,
                                     "Y": 0.0,
                                     "Z": 0.0
                                 },
-                                "Flicker": {
-                                    "Min": 0.18000000715255737,
-                                    "Speed": 9.821999549865723
-                                },
-                                "Range": 5.0,
-                                "Specular": {
-                                    "W": 1.0,
+                                "Rot": {
                                     "X": 0.0,
                                     "Y": 0.0,
-                                    "Z": 1.0
+                                    "Z": 0.0
                                 },
-                                "Type": "POINT"
-                            }
-                        },
-                        "Type": "PointLight"
-                    }
+                                "Scale": {
+                                    "X": 1.0,
+                                    "Y": 1.0,
+                                    "Z": 1.0
+                                }
+                            },
+                            "Tag": "ENV_FOG1"
+                        }
+                    ]
                 }
             ],
             "Draw Type": "Default",
@@ -59,9 +70,9 @@
             "SRT": [
                 {
                     "Position": {
-                        "X": 75.86123657226563,
-                        "Y": -9.647558212280273,
-                        "Z": 73.10172271728516
+                        "X": 0.20725464820861816,
+                        "Y": 3.721555233001709,
+                        "Z": -3.37241792678833
                     },
                     "Quaternion": {
                         "W": 1.0,
@@ -84,7 +95,7 @@
             "Section Number": 0,
             "UE Loaded": false,
             "UE Raw Data Path": "",
-            "strTag": "Point_Light805"
+            "strTag": "Cube158"
         }
     ]
 }

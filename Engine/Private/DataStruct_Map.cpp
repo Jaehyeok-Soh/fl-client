@@ -364,7 +364,7 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	case DTO::EClientMakePath::Bush:								return pSource == nullptr ? new BUSH_DESC			: new BUSH_DESC(*static_cast<BUSH_DESC*>(pSource));
 
 	case DTO::EClientMakePath::Water:								return pSource == nullptr ? new WATER_DESC			: new WATER_DESC(*static_cast<WATER_DESC*>(pSource));
-	case DTO::EClientMakePath::Fog:									return pSource == nullptr ? new FOG_DESC			: new FOG_DESC(*static_cast<FOG_DESC*>(pSource));
+	case DTO::EClientMakePath::Env:									return pSource == nullptr ? new ENV_DESC			: new ENV_DESC(*static_cast<ENV_DESC*>(pSource));
 		/* Batch Object 관련 */
 	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC	: new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
 	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC	: new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
@@ -595,6 +595,64 @@ void BUSH_DESC::to_Json(json& SaveJson)
 #pragma endregion
 
 #pragma region Env
+
+#pragma region ENV Desc
+
+void ENV_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Effect Infos"))
+	{
+		this->vecEnvEffectInfo.clear(); // 기존 데이터 초기화
+		auto& EffectInfos = LoadJson["Effect Infos"];
+
+		for (auto& InfoJson : EffectInfos)
+		{
+			if (InfoJson.is_null()) continue;
+
+			ENV_EFFECT_INFO tInfo{};
+
+			// 1. 태그 읽기
+			if (InfoJson.contains("Tag"))
+				tInfo.strTags = InfoJson["Tag"].get<string>();
+
+			// 2. Desc (Transform 데이터) 읽기
+			if (InfoJson.contains("Desc"))
+			{
+				auto& DescJson = InfoJson["Desc"];
+				Engine_Utils::read_vec3_xyz(DescJson["Pos"]  , tInfo.tDesc.VFX_Target_Position);
+				Engine_Utils::read_vec3_xyz(DescJson["Rot"]  , tInfo.tDesc.VFX_Rotation);
+				Engine_Utils::read_vec3_xyz(DescJson["Scale"], tInfo.tDesc.VFX_Scale);
+			}
+
+			this->vecEnvEffectInfo.push_back(tInfo);
+		}
+	}
+}
+
+void ENV_DESC::to_Json(json& SaveJson)
+{
+	json EffectInfos_SaveJson = json::array(); // 배열 형태로 생성
+
+	for (auto& tInfo : vecEnvEffectInfo)
+	{
+		json InfoObj;
+		InfoObj["Tag"] = tInfo.strTags;
+
+		// Desc 데이터를 JSON 객체로 변환
+		json DescObj;
+		Engine_Utils::write_vec3_xyz(DescObj["Pos"],tInfo.tDesc.VFX_Target_Position);
+		Engine_Utils::write_vec3_xyz(DescObj["Rot"],tInfo.tDesc.VFX_Rotation);
+		Engine_Utils::write_vec3_xyz(DescObj["Scale"],tInfo.tDesc.VFX_Scale);
+
+		InfoObj["Desc"] = DescObj;
+		EffectInfos_SaveJson.push_back(InfoObj);
+	}
+
+	SaveJson["Effect Infos"] = EffectInfos_SaveJson;
+}
+#pragma endregion
+
+
 
 #pragma region Water
 
@@ -1319,3 +1377,5 @@ BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectT
 
 
 NS_END
+
+

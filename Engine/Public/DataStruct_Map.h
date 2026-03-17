@@ -258,7 +258,7 @@ public:
 	_float fGrassDT{ 0.f };
 	_float fGrassMaxHeight{ 1.f }; //ÀÌ ¸ðµ¨ÀÇ ÀÜµð MinMaxÁß MaxÀÇ  Y°ª
 	_float fGrassSwaySpeed{ 1.f }; //ÀÌ ÀÜµð°¡ Sway = Èçµé¸®´Â Speed
-	_float fGrassWaveSize{ 1.f }; //ÀÌ ÀÜµð°¡ Power = Èçµé¸®´Â Èû
+	_float fGrassWaveSize{ 1.f };  //ÀÌ ÀÜµð°¡ Power = Èçµé¸®´Â Èû
 public:
 	GRASS_DESC()
 		:PLANTS_DESC()
@@ -588,6 +588,35 @@ public:
 	virtual void to_Json(json& SaveJson)			override;
 };
 #pragma endregion
+
+
+struct ENV_EFFECT_INFO
+{
+	EFFECT_ENV_DESC tDesc{};
+	string			strTags{};
+};
+
+
+#pragma region Env Desc
+struct ENGINE_DLL ENV_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	vector<ENV_EFFECT_INFO>		vecEnvEffectInfo{};
+public:
+	ENV_DESC()
+		: vecEnvEffectInfo{}
+	{ 
+	}
+	ENV_DESC(const ENV_DESC& rhs)
+		: vecEnvEffectInfo{rhs.vecEnvEffectInfo }
+	{
+
+	}
+	virtual ~ENV_DESC() {}
+public:
+	virtual void from_Json(const json& LoadJson)override;
+	virtual void to_Json(json& SaveJson)override;
+};
 #pragma region Fog
 
 enum class EFogTextureType
@@ -887,7 +916,7 @@ enum class EClientMakePath
 	Vine,
 	Rock,
 	Water,
-	Fog,
+	Env,
 
 
 	/* ¸ó½ºÅÍ , Player À§Ä¡Àâ´Â ¿ëµµ  */
@@ -957,7 +986,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::Vine,									"Vine"},
 			{EClientMakePath::Rock,									"Rock"},
 			{EClientMakePath::Water,								"Water"},
-			{EClientMakePath::Fog,									"Fog"},
+			{EClientMakePath::Env,									"Env"},
 
 
 			{EClientMakePath::Batch_Player,							"Batch_Player"},

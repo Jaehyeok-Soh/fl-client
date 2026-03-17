@@ -90,10 +90,6 @@ private:
 
 	char					m_szLevelTypeName[ENUM_TO_UINT(EClientLevelType::END)][MAX_PATH];
 
-
-	/* 카메라 쉐이킹 임시 Debuging 용 */
-
-
 public:
 	static  CPanel_MapTool* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

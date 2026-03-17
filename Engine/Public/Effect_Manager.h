@@ -28,6 +28,7 @@ public:
 	// EffectObject가 본인이 반환이 될 때 EffectHandler에게 알려줄 수 있도록 한다.
 	void Notify_EffectDespawn(_uint iEffectID);
 	void Push_EffectData(_uint HashTag, void* Desc);
+
 	void* Find_EffectData(_uint HashTag);
 	
 private:

@@ -410,7 +410,7 @@ namespace Tool
 		Vine,
 		Rock,
 		Water,
-		Fog,
+		Env,
 
 		/*  생성 위치 잡아주는 역할  */
 		Batch_Player,
@@ -466,7 +466,7 @@ namespace Tool
 
 			/* ------------------환경 요소---------------- */
 		case Tool::EClientMakePath::Water:									return "Water";
-		case Tool::EClientMakePath::Fog:									return "Fog";
+		case Tool::EClientMakePath::Env:									return "Env";
 			/* ------------------------------------------- */
 
 			/*  --------- 생성 위치 잡아주는 역할 ---------*/
@@ -501,7 +501,7 @@ namespace Tool
 		if (strType == "Vine")												return EClientMakePath::Vine;
 		if (strType == "Rock")												return EClientMakePath::Rock;
 		if (strType == "Water")												return EClientMakePath::Water;
-		if (strType == "Fog")												return EClientMakePath::Fog;
+		if (strType == "Env")												return EClientMakePath::Env;
 
 		/* 생성 위치관련 */
 		if (strType == "Batch_Player")										return EClientMakePath::Batch_Player;
