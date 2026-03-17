@@ -2190,5 +2190,8 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombinePart.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_RagDoll.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

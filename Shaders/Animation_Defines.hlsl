@@ -220,4 +220,65 @@ float4 Slerp(float4 q0, float4 q1, float t)
     return q0 * w1 + q1 * w2;
 }
 
+float4 RotMatToQuat(float3x3 m)
+{
+    float4 q;
+    float trace = m[0][0] + m[1][1] + m[2][2];
+    
+    if (trace > 0.0f)
+    {
+        float s = 0.5f / sqrt(trace + 1.0f);
+        q.w = 0.25f / s;
+        q.x = (m[2][1] - m[1][2]) * s;
+        q.y = (m[0][2] - m[2][0]) * s;
+        q.z = (m[1][0] - m[0][1]) * s;
+    }
+    else if (m[0][0] > m[1][1] && m[0][0] > m[2][2])
+    {
+        float s = 2.0f * sqrt(1.0f + m[0][0] - m[1][1] - m[2][2]);
+        q.w = (m[2][1] - m[1][2]) / s;
+        q.x = 0.25f * s;
+        q.y = (m[0][1] + m[1][0]) / s;
+        q.z = (m[0][2] + m[2][0]) / s;
+    }
+    else if (m[1][1] > m[2][2])
+    {
+        float s = 2.0f * sqrt(1.0f + m[1][1] - m[0][0] - m[2][2]);
+        q.w = (m[0][2] - m[2][0]) / s;
+        q.x = (m[0][1] + m[1][0]) / s;
+        q.y = 0.25f * s;
+        q.z = (m[1][2] + m[2][1]) / s;
+    }
+    else
+    {
+        float s = 2.0f * sqrt(1.0f + m[2][2] - m[0][0] - m[1][1]);
+        q.w = (m[1][0] - m[0][1]) / s;
+        q.x = (m[0][2] + m[2][0]) / s;
+        q.y = (m[1][2] + m[2][1]) / s;
+        q.z = 0.25f * s;
+    }
+    
+    return normalize(q);
+}
+
+
+void DecomposeMatrix(float4x4 m, out float3 outScale, out float4 outQuat, out float3 outTranslation)
+{
+    // Translation
+    outTranslation = float3(m._41, m._42, m._43);
+    
+    // Scale
+    outScale.x = length(float3(m._11, m._12, m._13));
+    outScale.y = length(float3(m._21, m._22, m._23));
+    outScale.z = length(float3(m._31, m._32, m._33));
+    
+    // Rotation (scale 제거 후 quaternion 변환)
+    float3x3 rotMat;
+    rotMat[0] = float3(m._11, m._12, m._13) / outScale.x;
+    rotMat[1] = float3(m._21, m._22, m._23) / outScale.y;
+    rotMat[2] = float3(m._31, m._32, m._33) / outScale.z;
+    
+    outQuat = RotMatToQuat(rotMat);
+}
+
 #endif
