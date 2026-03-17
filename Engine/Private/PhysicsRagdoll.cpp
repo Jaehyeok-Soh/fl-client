@@ -53,9 +53,6 @@ void CPhysicsRagdoll::Awake(vector<CChannel*>& vecChannels)
 	if (m_pGameInstance->CheckRagdollState(m_iObjectID) == false)
 		return;
 
-	// TODO : 프로토타입이후
-	return;
-
 	m_pGameInstance->RemoveRagdoll(m_tRagdollElements.pArticulation);
 
 	Matrix objectWorld = static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
@@ -157,6 +154,9 @@ _int CPhysicsRagdoll::FindRagdollJointByBoneIndex(_uint boneIdx)
 void CPhysicsRagdoll::Sleep()
 {
 	m_tRagdollElements.pArticulation->putToSleep();
+
+	PxTransform resetPose(PxVec3(0.f, -1000.f, 0.f), PxQuat(PxIdentity));
+	m_tRagdollElements.pArticulation->setRootGlobalPose(resetPose, false);
 }
 
 HRESULT CPhysicsRagdoll::Bind_RagDollCS_ImmuData(CComputeShader* pRagDollCS)

@@ -9,7 +9,7 @@
             "strTag": "MoonAttack_Normal",
             "tCombat": {
                 "DamageType": "END",
-                "HitType": "END",
+                "HitType": "Light",
                 "fBaseDamage": 20.0,
                 "fHitStopSec": 0.0,
                 "fHitStunSec": 0.0,

@@ -56,6 +56,7 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	SetCollisionFilter();
 
 	m_pCCTFilterCallback = m_pGameInstance->GetCCTFilterCallback();
+	m_pQueryFilterCallback = m_pGameInstance->GetQueryFilterCallback();
 
 	m_fContactOffset = m_pController->getContactOffset();
 
@@ -229,8 +230,14 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 		return collisionFlag;
 	}
 
+	PxFilterData queryFilterData;
+	queryFilterData.word0 = m_tDesc.eFilterLayer;
+	queryFilterData.word1 = ~(PHYSICSFILTERGROUP::RAGDOLL);
+
 	PxControllerFilters filters;
 	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
+	filters.mFilterCallback = m_pQueryFilterCallback;
+
 	PxControllerCollisionFlags collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
 
 	if (m_bIsSteppingOnCCT)
@@ -472,6 +479,8 @@ CComponent* CPhysicsCCT::Clone(void* pArg)
 
 void CPhysicsCCT::Free()
 {
+	Safe_Release(m_pQueryFilterCallback);
+
 	ReleaseController();
 
 	Safe_Release(m_pDevice);

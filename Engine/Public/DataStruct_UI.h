@@ -294,6 +294,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	QUEST_CONTENTS_TEXT,
 	QUEST_TRACKING_TEXT,
 	QUEST_END,
+
+	QUEST_NAVI_DISTANCE,
 	END
 };
 
@@ -392,6 +394,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::QUEST_TRACKING_TEXT,					"QUEST_TRACKING_TEXT" },
 		{ EUITextSubClassType::QUEST_END,							"QUEST_END" },
 
+		{ EUITextSubClassType::QUEST_NAVI_DISTANCE,							"QUEST_NAVI_DISTANCE" },
+
 		{ EUITextSubClassType::END,									"END" },
 	})
 	inline EUITextSubClassType StringToUITextSubClassType(const std::string& str)
@@ -487,6 +491,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "QUEST_CONTENTS_TEXT")						return EUITextSubClassType::QUEST_CONTENTS_TEXT;
 	else if (str == "QUEST_TRACKING_TEXT")						return EUITextSubClassType::QUEST_TRACKING_TEXT;
 	else if (str == "QUEST_END")								return EUITextSubClassType::QUEST_END;
+	
+	else if (str == "QUEST_NAVI_DISTANCE")						return EUITextSubClassType::QUEST_NAVI_DISTANCE;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -588,6 +594,8 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::QUEST_CONTENTS_TEXT:					return "QUEST_CONTENTS_TEXT";
 	case EUITextSubClassType::QUEST_TRACKING_TEXT:					return "QUEST_TRACKING_TEXT";
 	case EUITextSubClassType::QUEST_END:							return "QUEST_END";
+	
+	case EUITextSubClassType::QUEST_NAVI_DISTANCE:					return "QUEST_NAVI_DISTANCE";
 	
 	default:														return "END";
 	}
@@ -812,6 +820,11 @@ enum class EUIDImageSubClassType
 	QUEST_TRACKING_ICON,
 	QUEST_END,
 
+	QUEST_NAVI_BEGIN,
+	QUEST_NAVI_ICON,
+	QUEST_NAVI_FX,
+	QUEST_NAVI_DIR,
+	QUEST_NAVI_END,
 	END
 };
 
@@ -933,6 +946,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::QUEST_CONTENTS_ICON,					"QUEST_CONTENTS_ICON" },
 	{ EUIDImageSubClassType::QUEST_TRACKING_ICON,					"QUEST_TRACKING_ICON" },
 	{ EUIDImageSubClassType::QUEST_END,								"QUEST_END" },
+
+	{ EUIDImageSubClassType::QUEST_NAVI_BEGIN,								"QUEST_NAVI_BEGIN" },
+	{ EUIDImageSubClassType::QUEST_NAVI_ICON,								"QUEST_NAVI_ICON" },
+	{ EUIDImageSubClassType::QUEST_NAVI_FX,								"QUEST_NAVI_FX" },
+	{ EUIDImageSubClassType::QUEST_NAVI_DIR,								"QUEST_NAVI_DIR" },
+	{ EUIDImageSubClassType::QUEST_NAVI_END,								"QUEST_NAVI_END" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1056,6 +1075,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "QUEST_CONTENTS_ICON")					return EUIDImageSubClassType::QUEST_CONTENTS_ICON;
 	if (str == "QUEST_TRACKING_ICON")					return EUIDImageSubClassType::QUEST_TRACKING_ICON;
 	if (str == "QUEST_END")								return EUIDImageSubClassType::QUEST_END;
+
+	if (str == "QUEST_NAVI_BEGIN")						return EUIDImageSubClassType::QUEST_NAVI_BEGIN;
+	if (str == "QUEST_NAVI_ICON")						return EUIDImageSubClassType::QUEST_NAVI_ICON;
+	if (str == "QUEST_NAVI_FX")							return EUIDImageSubClassType::QUEST_NAVI_FX;
+	if (str == "QUEST_NAVI_DIR")						return EUIDImageSubClassType::QUEST_NAVI_DIR;
+	if (str == "QUEST_NAVI_END")						return EUIDImageSubClassType::QUEST_NAVI_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1181,6 +1206,12 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::QUEST_CONTENTS_ICON:					return "QUEST_CONTENTS_ICON";
 	case EUIDImageSubClassType::QUEST_TRACKING_ICON:					return "QUEST_TRACKING_ICON";
 	case EUIDImageSubClassType::QUEST_END:								return "QUEST_END";
+	
+	case EUIDImageSubClassType::QUEST_NAVI_BEGIN:						return "QUEST_NAVI_BEGIN";
+	case EUIDImageSubClassType::QUEST_NAVI_ICON:						return "QUEST_NAVI_ICON";
+	case EUIDImageSubClassType::QUEST_NAVI_FX:							return "QUEST_NAVI_FX";
+	case EUIDImageSubClassType::QUEST_NAVI_DIR:							return "QUEST_NAVI_DIR";
+	case EUIDImageSubClassType::QUEST_NAVI_END:							return "QUEST_NAVI_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

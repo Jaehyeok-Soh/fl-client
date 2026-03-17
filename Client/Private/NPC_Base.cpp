@@ -82,6 +82,12 @@ HRESULT CNPC_Base::Initialize(void* pArg)
 	//if (FAILED(Ready_EffectHandler(pArg)))
 	//	return E_FAIL;
 
+	// 상호작용
+	{
+		// Interact_SetDefaultDialogue(0);
+		Set_Interact_DefaultEnable();
+	}
+
 	return S_OK;
 }
 
@@ -298,10 +304,45 @@ HRESULT CNPC_Base::Ready_CCT(void* pArgs)
 
 void CNPC_Base::QuestEnter()
 {
+	if (Is_Quest_Enabled() && m_eQuestEvent == DTO::QUESTEVENT::NPC_TALK)
+	{
+		auto chapterDesc = CQuestManager::GetInstance()->Get_QuestChapterInfo();
+
+		auto iter = std::find(chapterDesc.eTargetType.begin(), chapterDesc.eTargetType.end(), m_eObject_Enum_Tag);
+
+		if (iter != chapterDesc.eTargetType.end() && chapterDesc.tQuestDesc.iEnterDialogueId != -1)
+		{
+			CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iEnterDialogueId);
+
+			CallQuestEvent(m_eObject_Enum_Tag, 1);
+
+			return;
+		}
+	}
+
+	Set_Interact_Enable();
 }
 
 void CNPC_Base::QuestExit()
 {
+	if (Is_Quest_Enabled() && m_eQuestEvent == DTO::QUESTEVENT::NPC_TALK)
+	{
+		auto chapterDesc = CQuestManager::GetInstance()->Get_QuestChapterInfo();
+
+		auto iter = std::find(chapterDesc.eTargetType.begin(), chapterDesc.eTargetType.end(), m_eObject_Enum_Tag);
+
+		if (iter != chapterDesc.eTargetType.end() && chapterDesc.tQuestDesc.iExitDialogueId != -1)
+		{
+			CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iExitDialogueId);
+
+			CallQuestEvent(m_eObject_Enum_Tag, 1);
+
+			return;
+		}
+	}
+
+	if (Is_Interact_DefaultEnabled() == false)
+		Set_Interact_Disable();
 }
 
 void CNPC_Base::Interact()
@@ -321,8 +362,10 @@ void CNPC_Base::Interact()
 			return;
 		}
 	}
-
-	CDialogueManager::GetInstance()->Start_Dialogue(m_iDefaultDialogueId);
+	else
+	{
+		CDialogueManager::GetInstance()->Start_Dialogue(m_iDefaultDialogueId);
+	}
 }
 
 HRESULT CNPC_Base::Create_NPC(OBJECT_ENUM_TAG::Enum eTag, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc)
