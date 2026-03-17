@@ -19,7 +19,7 @@ private:
 	CRenderTargetArray(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual ~CRenderTargetArray() = default;
 
-	HRESULT Initialize(const RENDERTARGET_ARR_DESC& desc);
+	HRESULT Initialize(const RENDERTARGET_ARR_DESC* pDesc);
 public:
 	HRESULT Bind_Slice(_uint iSlice, ID3D11DepthStencilView* pDSV);
 	HRESULT Clear(_uint iSlice);
@@ -50,7 +50,7 @@ private:
 
 	RENDERTARGET_ARR_DESC m_tDesc{};
 public:
-	CRenderTargetArray* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const RENDERTARGET_ARR_DESC& desc);
+	static CRenderTargetArray* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const RENDERTARGET_ARR_DESC* pDesc);
 	virtual void Free() override;
 };
 

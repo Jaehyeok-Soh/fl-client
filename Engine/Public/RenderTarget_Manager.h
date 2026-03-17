@@ -45,7 +45,6 @@ enum class EMRTLayer : _uint
 	Bloom_BlurV,
 	Shadow_Cascade0,
 	Shadow_Cascade1,
-	Shadow_Baked,
 	OIT_Render,	// OIT_Accum + OIT_Reveal¸¦ ¹­´Â MRT
 	END,
 };

@@ -101,6 +101,7 @@ namespace Engine
 		Toonparam,
 		Cascadeparam,
 		BakedShadowparam,
+		SectionShadowparam,
 		PlayerInfoBuffer,
 		COUNT
 	};
@@ -127,6 +128,7 @@ namespace Engine
 		"ToonParamBuffer",
 		"CascadeParamBuffer",
 		"BakedShadowParamBuffer",
+		"ShaderBakedSectionBuffer",
 		"PlayerInfoBuffer"
 	};
 	//===================

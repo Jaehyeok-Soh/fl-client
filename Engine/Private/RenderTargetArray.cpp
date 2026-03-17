@@ -10,12 +10,12 @@ CRenderTargetArray::CRenderTargetArray(ID3D11Device* pDevice, ID3D11DeviceContex
 	Safe_AddRef(m_pDeviceContext);
 }
 
-HRESULT CRenderTargetArray::Initialize(const RENDERTARGET_ARR_DESC& desc)
+HRESULT CRenderTargetArray::Initialize(const RENDERTARGET_ARR_DESC* pDesc)
 {
-	if (desc.iWidth <= 0 || desc.iHeight <= 0)
-		return;
+	if (pDesc == nullptr || pDesc->iWidth <= 0 || pDesc->iHeight <= 0)
+		return E_FAIL;
 
-	m_tDesc = desc;
+	m_tDesc = *pDesc;
 
 	if (FAILED(Create_Texture()))
 		return E_FAIL;
@@ -104,10 +104,10 @@ HRESULT CRenderTargetArray::Create_RTVs()
 	return S_OK;
 }
 
-CRenderTargetArray* CRenderTargetArray::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const RENDERTARGET_ARR_DESC& desc)
+CRenderTargetArray* CRenderTargetArray::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const RENDERTARGET_ARR_DESC* pDesc)
 {
 	CRenderTargetArray* pInstance = new CRenderTargetArray(pDevice, pDeviceContext);
-	if (FAILED(pInstance->Initialize(desc)))
+	if (FAILED(pInstance->Initialize(pDesc)))
 	{
 		MSG_BOX("CRenderTargetArray::Create, Failed");
 		Safe_Release(pInstance);

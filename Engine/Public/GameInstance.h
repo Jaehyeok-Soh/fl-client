@@ -316,9 +316,12 @@ public:
 
 #pragma region RENDERTARGET_MANAGER
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
+	HRESULT Add_RenderTargetArray(ERenderTarget eTarget, const CRenderTargetArray::RENDERTARGET_ARR_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true, _bool bUseDSV = true);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV);
+	HRESULT Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, _bool bUseDSV);
+	HRESULT Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, ID3D11DepthStencilView* pDSV);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
@@ -348,6 +351,9 @@ public:
 	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const;
 	HRESULT Commit_CascadeParam();
 	HRESULT Commit_AllPostParams();
+	ID3D11ShaderResourceView* Get_BakedShadowDebugSRV();
+	const ACTIVE_BAKED_SET& Get_ActiveBakedSectionSet() const;
+	void Update_BakedShadowDebugTexture(_uint iSlice);
 #endif
 #pragma endregion
 
@@ -462,6 +468,7 @@ public:
 	_bool Is_TearDownSequence() { return m_bChangeLevelSequence || m_bDestroyEngineSequence; }
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
+	class CThreadPool* m_pThreadPool = { nullptr };
 	class CDataRepository* m_pDataRepository = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CTimeScale_Manager* m_pTimeScale_Manager = { nullptr };

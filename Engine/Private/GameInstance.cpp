@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Frustrum.h"
 #include "Font_Manager.h"
+#include "ThreadPool.h"
 #include "Event_Manager.h"
 #include "ObjectPool_Manager.h"
 #include "Octree_Manager.h"
@@ -107,6 +108,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 		return E_FAIL;
 
 	if (!(m_pFont_Manager = CFont_Manager::Create(*ppDevice, *ppContext)))
+		return E_FAIL;
+
+	if (!(m_pThreadPool = CThreadPool::Create()))
 		return E_FAIL;
 
 	if (!(m_pFrustrum = CFrustrum::Create()))
@@ -792,7 +796,13 @@ HRESULT CGameInstance::Set_BakedShadowConstantBuffer(CShader* pShader)
 
 HRESULT CGameInstance::Bake_StaticShadow()
 {
-	return m_pRender_Manager->Bake_StaticShadow();
+	if (FAILED(m_pRender_Manager->Initialize_BakedShadowSections()))
+		return E_FAIL;
+
+	if (FAILED(m_pRender_Manager->Build_BakedShadowSections()))
+		return E_FAIL;
+
+	return S_OK;
 }
 #ifdef _DEBUG
 ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
@@ -891,6 +901,18 @@ HRESULT CGameInstance::Commit_CascadeParam()
 HRESULT CGameInstance::Commit_AllPostParams()
 {
 	return m_pRender_Manager->Commit_AllPostParams();
+}
+ID3D11ShaderResourceView* CGameInstance::Get_BakedShadowDebugSRV()
+{
+	return m_pRender_Manager->Get_BakedShadowDebugSRV();
+}
+const ACTIVE_BAKED_SET& CGameInstance::Get_ActiveBakedSectionSet() const
+{
+	return m_pRender_Manager->Get_ActiveBakedSectionSet();
+}
+void CGameInstance::Update_BakedShadowDebugTexture(_uint iSlice)
+{
+	m_pRender_Manager->Update_BakedShadowDebugTexture(iSlice);
 }
 #endif
 #pragma endregion
@@ -1002,6 +1024,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
+	Safe_Release(m_pThreadPool);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
@@ -1425,6 +1448,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
+	Safe_Release(m_pThreadPool);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);

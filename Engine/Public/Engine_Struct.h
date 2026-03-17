@@ -142,6 +142,49 @@ namespace Engine
 
 	}COLLIDED_DESC;
 
+	typedef struct tagBakedSectionBuildInput
+	{
+		int                    iSectionX{ 0 };
+		int                    iSectionZ{ 0 };
+		BoundingBox            sectionBounds{};
+		SimpleMath::Vector3    vLightDir{ SimpleMath::Vector3::Zero };
+		const vector<class CGameObject*>* pStaticCasters{ nullptr };
+	}BAKED_SECTION_BUILD_INPUT;
+
+	typedef struct tagBakedSectionBuildResult
+	{
+		int                    iSectionX{ 0 };
+		int                    iSectionZ{ 0 };
+		BoundingBox            sectionBounds{};
+		BoundingBox            casterBounds{};
+		SimpleMath::Matrix     matLightVP{ SimpleMath::Matrix::Identity };
+		SimpleMath::Vector4    vShadowParams{};
+		vector<class CGameObject*> vecCasters;
+		bool                   bValid{ false };
+	}BAKED_SECTION_BUILD_RESULT;
+
+	typedef struct tagBakedShadowSection
+	{
+		int iSectionX{ 0 };
+		int iSectionZ{ 0 };
+		BoundingBox sectionBounds{};
+		BoundingBox casterBounds{};
+		SimpleMath::Matrix matLightVP{ SimpleMath::Matrix::Identity };
+		// x = bias
+		// y = strength
+		// z = InvSizeX
+		// w = InvSizeY
+		SimpleMath::Vector4 vShadowParams{ SimpleMath::Vector4::One };
+		unsigned int iArraySlice{ 0 };
+		bool bValid{ false };
+	}BAKED_SHADOW_SECTION;
+
+	typedef struct tagActiveBakedSet
+	{
+		BAKED_SHADOW_SECTION sections[ACTIVE_SECTION_MAX]{};
+		unsigned int iCount = 0;
+	}ACTIVE_BAKED_SET;
+
 	typedef struct tagTimeline
 	{
 		float fDuration{ 0.f };
@@ -416,7 +459,7 @@ namespace Engine
 	{
 		unsigned int iActiveCount{ 0 };
 		SimpleMath::Vector3 vPadding{ SimpleMath::Vector3::Zero };
-		SHADER_TOON_DESC sections[s_iActiveBakedSectionCount]{};
+		SHADER_BAKED_SECTION sections[ACTIVE_SECTION_MAX]{};
 	}SHADER_BAKED_SECTION_DESC;
 
 	typedef struct tagShaderEffectDesc

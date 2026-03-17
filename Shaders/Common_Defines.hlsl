@@ -10,6 +10,8 @@
 
 #define SHADOW_CASCADE_COUNT 2
 
+#define ACTIVE_BAKED_SECTION_COUNT 9
+
 //////////////////
 // MaterialSlot //
 //////////////////

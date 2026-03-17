@@ -10,8 +10,10 @@
 #define CAST_VOID_PP(p) reinterpret_cast<void**>(p)
 #define SHADOW_CASCADE_COUNT 2
 #define SHADOW_MAP_SIZE 2048
-#define SHADOW_BAEK_SIZE 2048
-#define ACTIVE_BAKED_SECTION_COUNT 9
+#define SHADOW_BAKE_SIZE 2048
+#define BAKED_SECTION_COUNT_X 6
+#define BAKED_SECTION_COUNT_Z 6
+#define ACTIVE_SECTION_MAX 9
 
 // PhysX
 #define PVD_HOST "127.0.0.1"
