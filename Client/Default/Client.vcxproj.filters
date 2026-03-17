@@ -784,6 +784,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi">
       <UniqueIdentifier>{439ea3b6-89a6-432a-b9f5-d6082c69fff5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community">
+      <UniqueIdentifier>{ab11963d-fca7-461e-86bb-401d946db20c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\11.Community">
+      <UniqueIdentifier>{f9fbc5dc-3cc4-4c8d-868e-968f0ddb333e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1461,6 +1467,12 @@
     <ClInclude Include="..\Public\UIQuestNavi_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UICommunity_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UICommunity_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2124,6 +2136,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIQuestNavi_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommunity_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommunity_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -334,6 +334,8 @@
     <ClInclude Include="..\Public\UIBossStat_Text.h" />
     <ClInclude Include="..\Public\UICombo_Image.h" />
     <ClInclude Include="..\Public\UICombo_Text.h" />
+    <ClInclude Include="..\Public\UICommunity_Image.h" />
+    <ClInclude Include="..\Public\UICommunity_Text.h" />
     <ClInclude Include="..\Public\UIDamageFont_Text.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIHover_Image.h" />
@@ -585,6 +587,8 @@
     <ClCompile Include="..\Private\UIBossStat_Text.cpp" />
     <ClCompile Include="..\Private\UICombo_Image.cpp" />
     <ClCompile Include="..\Private\UICombo_Text.cpp" />
+    <ClCompile Include="..\Private\UICommunity_Image.cpp" />
+    <ClCompile Include="..\Private\UICommunity_Text.cpp" />
     <ClCompile Include="..\Private\UIDamageFont_Text.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIHover_Image.cpp" />

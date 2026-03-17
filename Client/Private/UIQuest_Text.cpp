@@ -176,7 +176,6 @@ void CUIQuest_Text::Bind_Events()
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				desc.tScenarioInfo.wstrSubTitle;
 				desc.tChapterInfo.tQuestDesc.wstrTitle;
-				int a = 0;
 			})
 	);
 
@@ -184,12 +183,9 @@ void CUIQuest_Text::Bind_Events()
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
-				
 
 				switch (this->m_eTextSubClassType)
 				{
-				case DTO::EUITextSubClassType::QUEST_BEGIN:
-					break;
 				case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:
 					break;
 				case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
@@ -201,9 +197,6 @@ void CUIQuest_Text::Bind_Events()
 					break;
 				case DTO::EUITextSubClassType::QUEST_END:
 					break;
-				case DTO::EUITextSubClassType::END:
-				default:
-					return E_FAIL;
 				}
 			})
 	);
@@ -254,6 +247,7 @@ _bool CUIQuest_Text::Tick_InVisible_Event(const _float fTimeDelta)
 		m_isFin_Event = true;
 		return true;
 	}
+	return false;
 }
 
 void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
@@ -269,7 +263,17 @@ void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 	}
 	break;
 	case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
-		break;
+	{
+		auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+		if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
+		{
+
+			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle + L"(" + std::to_wstring(desc.tChapterInfo.iCurrentCount) + L"/10)";
+		}
+		else
+			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
+	}
+	break;
 	case DTO::EUITextSubClassType::QUEST_CONTENTS_TEXT:
 		break;
 	case DTO::EUITextSubClassType::QUEST_TRACKING_TEXT:

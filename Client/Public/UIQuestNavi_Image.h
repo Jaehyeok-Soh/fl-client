@@ -61,6 +61,7 @@ private:
 	Vec2 m_vScreenPos = {};
 
 	_bool m_isChange = { false };
+	_bool m_isMonsterKill = { false };
 
 public:
 	static CUIQuestNavi_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -295,6 +295,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	QUEST_TRACKING_TEXT,
 	QUEST_END,
 
+	// 상호작용 
+	COMMUNITY_TEXT,
+
 	QUEST_NAVI_DISTANCE,
 	END
 };
@@ -394,7 +397,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::QUEST_TRACKING_TEXT,					"QUEST_TRACKING_TEXT" },
 		{ EUITextSubClassType::QUEST_END,							"QUEST_END" },
 
-		{ EUITextSubClassType::QUEST_NAVI_DISTANCE,							"QUEST_NAVI_DISTANCE" },
+		{ EUITextSubClassType::QUEST_NAVI_DISTANCE,					"QUEST_NAVI_DISTANCE" },
+		{ EUITextSubClassType::COMMUNITY_TEXT,						"COMMUNITY_TEXT" },
 
 		{ EUITextSubClassType::END,									"END" },
 	})
@@ -493,6 +497,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "QUEST_END")								return EUITextSubClassType::QUEST_END;
 	
 	else if (str == "QUEST_NAVI_DISTANCE")						return EUITextSubClassType::QUEST_NAVI_DISTANCE;
+	else if (str == "COMMUNITY_TEXT")							return EUITextSubClassType::COMMUNITY_TEXT;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -596,6 +601,7 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::QUEST_END:							return "QUEST_END";
 	
 	case EUITextSubClassType::QUEST_NAVI_DISTANCE:					return "QUEST_NAVI_DISTANCE";
+	case EUITextSubClassType::COMMUNITY_TEXT:						return "COMMUNITY_TEXT";
 	
 	default:														return "END";
 	}
@@ -825,6 +831,17 @@ enum class EUIDImageSubClassType
 	QUEST_NAVI_FX,
 	QUEST_NAVI_DIR,
 	QUEST_NAVI_END,
+
+	// 상호작용
+	COMMUNITY_BEGIN,
+	COMMUNITY_KEY,
+	COMMUNITY_ICON,
+	COMMUNITY_ARROW,
+	COMMUNITY_BG,
+	COMMUNITY_OUTLINE,
+	COMMUNITY_DECO,
+	COMMUNITY_END,
+
 	END
 };
 
@@ -937,9 +954,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::TUTORIAL_POPUP_KEY_ICON2,				"TUTORIAL_POPUP_KEY_ICON2" },
 	{ EUIDImageSubClassType::TUTORIAL_POPUP_END,					"TUTORIAL_POPUP_END" },
 
-	{ EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG,					"TUTORIAL_POPUP_CLEAR_BG" },
-	{ EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_ICON,					"TUTORIAL_POPUP_CLEAR_ICON" },
-	{ EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX,					"TUTORIAL_POPUP_CLEAR_CIRCLE_FX" },
+	{ EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG,				"TUTORIAL_POPUP_CLEAR_BG" },
+	{ EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_ICON,				"TUTORIAL_POPUP_CLEAR_ICON" },
+	{ EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX,		"TUTORIAL_POPUP_CLEAR_CIRCLE_FX" },
 	
 	{ EUIDImageSubClassType::QUEST_BEGIN,							"QUEST_BEGIN" },
 	{ EUIDImageSubClassType::QUEST_TITLE_ICON,						"QUEST_TITLE_ICON" },
@@ -947,11 +964,20 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::QUEST_TRACKING_ICON,					"QUEST_TRACKING_ICON" },
 	{ EUIDImageSubClassType::QUEST_END,								"QUEST_END" },
 
-	{ EUIDImageSubClassType::QUEST_NAVI_BEGIN,								"QUEST_NAVI_BEGIN" },
-	{ EUIDImageSubClassType::QUEST_NAVI_ICON,								"QUEST_NAVI_ICON" },
-	{ EUIDImageSubClassType::QUEST_NAVI_FX,								"QUEST_NAVI_FX" },
-	{ EUIDImageSubClassType::QUEST_NAVI_DIR,								"QUEST_NAVI_DIR" },
-	{ EUIDImageSubClassType::QUEST_NAVI_END,								"QUEST_NAVI_END" },
+	{ EUIDImageSubClassType::QUEST_NAVI_BEGIN,						"QUEST_NAVI_BEGIN" },
+	{ EUIDImageSubClassType::QUEST_NAVI_ICON,						"QUEST_NAVI_ICON" },
+	{ EUIDImageSubClassType::QUEST_NAVI_FX,							"QUEST_NAVI_FX" },
+	{ EUIDImageSubClassType::QUEST_NAVI_DIR,						"QUEST_NAVI_DIR" },
+	{ EUIDImageSubClassType::QUEST_NAVI_END,						"QUEST_NAVI_END" },
+
+	{ EUIDImageSubClassType::COMMUNITY_BEGIN,						"COMMUNITY_BEGIN" },
+	{ EUIDImageSubClassType::COMMUNITY_KEY,							"COMMUNITY_KEY" },
+	{ EUIDImageSubClassType::COMMUNITY_ICON,						"COMMUNITY_ICON" },
+	{ EUIDImageSubClassType::COMMUNITY_ARROW,						"COMMUNITY_ARROW" },
+	{ EUIDImageSubClassType::COMMUNITY_BG,							"COMMUNITY_BG" },
+	{ EUIDImageSubClassType::COMMUNITY_OUTLINE,						"COMMUNITY_OUTLINE" },
+	{ EUIDImageSubClassType::COMMUNITY_DECO,						"COMMUNITY_DECO" },
+	{ EUIDImageSubClassType::COMMUNITY_END,							"COMMUNITY_END" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1081,6 +1107,15 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "QUEST_NAVI_FX")							return EUIDImageSubClassType::QUEST_NAVI_FX;
 	if (str == "QUEST_NAVI_DIR")						return EUIDImageSubClassType::QUEST_NAVI_DIR;
 	if (str == "QUEST_NAVI_END")						return EUIDImageSubClassType::QUEST_NAVI_END;
+
+	if (str == "COMMUNITY_BEGIN")						return EUIDImageSubClassType::COMMUNITY_BEGIN;
+	if (str == "COMMUNITY_KEY")							return EUIDImageSubClassType::COMMUNITY_KEY;
+	if (str == "COMMUNITY_ICON")						return EUIDImageSubClassType::COMMUNITY_ICON;
+	if (str == "COMMUNITY_ARROW")						return EUIDImageSubClassType::COMMUNITY_ARROW;
+	if (str == "COMMUNITY_BG")							return EUIDImageSubClassType::COMMUNITY_BG;
+	if (str == "COMMUNITY_OUTLINE")						return EUIDImageSubClassType::COMMUNITY_OUTLINE;
+	if (str == "COMMUNITY_DECO")						return EUIDImageSubClassType::COMMUNITY_DECO;
+	if (str == "COMMUNITY_END")							return EUIDImageSubClassType::COMMUNITY_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1212,6 +1247,15 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::QUEST_NAVI_FX:							return "QUEST_NAVI_FX";
 	case EUIDImageSubClassType::QUEST_NAVI_DIR:							return "QUEST_NAVI_DIR";
 	case EUIDImageSubClassType::QUEST_NAVI_END:							return "QUEST_NAVI_END";
+
+	case EUIDImageSubClassType::COMMUNITY_BEGIN:						return "COMMUNITY_BEGIN";
+	case EUIDImageSubClassType::COMMUNITY_KEY:							return "COMMUNITY_KEY";
+	case EUIDImageSubClassType::COMMUNITY_ICON:							return "COMMUNITY_ICON";
+	case EUIDImageSubClassType::COMMUNITY_ARROW:						return "COMMUNITY_ARROW";
+	case EUIDImageSubClassType::COMMUNITY_BG:							return "COMMUNITY_BG";
+	case EUIDImageSubClassType::COMMUNITY_OUTLINE:						return "COMMUNITY_OUTLINE";
+	case EUIDImageSubClassType::COMMUNITY_DECO:							return "COMMUNITY_DECO";
+	case EUIDImageSubClassType::COMMUNITY_END:							return "COMMUNITY_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

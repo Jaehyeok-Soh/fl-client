@@ -176,12 +176,21 @@ void CUIQuestNavi_Image::Bind_Events()
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				this->m_vTargetPos = desc.tChapterInfo.vObjectPosition;
 				this->m_isChange = true;
+
+				if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
+					this->Set_Invisible();
+				else
+					this->Set_Visible();
+
+
 			})
 	);
 }
 
 void CUIQuestNavi_Image::Tick_By_Type(const _float fTimeDelta)
 {
+	
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::QUEST_NAVI_ICON:
@@ -276,6 +285,11 @@ void CUIQuestNavi_Image::Tick_Navi_Icon(const _float fTimeDelta)
 
 void CUIQuestNavi_Image::Tick_Navi_Fx(const _float fTimeDelta)
 {
+	if (KEY_BUTTON_DOWN(DIK_V))
+	{
+		m_isChange = true;
+	}
+
 	if (m_isChange)
 	{
 		m_isChange = false;

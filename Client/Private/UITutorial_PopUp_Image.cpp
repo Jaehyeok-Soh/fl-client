@@ -183,6 +183,8 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 		{
 			if (!m_isFirstTriggered)
 			{
+				m_isFirstEntered = true;
+
 				Set_Invisible();
 				m_pParentCanvasCache->Get_CommonParam_bool_Ref()[POPUP_3] = true;
 				m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>(EUITutorialPopUpTypeID::TUTORIAL_POPUP_3_1);
@@ -204,10 +206,12 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 		Vec3 vLook = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 		_float f = vLook.Dot(Vec3{ 0.f, 1.f, 0.f });
 
-		if (f > 0.7f)
+		if (f > 0.6f)
 		{
 			if (!m_isFirstTriggered)
 			{
+
+				m_isFirstEntered = true;
 				Set_Invisible();
 				m_pParentCanvasCache->Get_CommonParam_bool_Ref()[POPUP_4] = true;
 				m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>(EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1);
@@ -233,25 +237,62 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 	}
 	break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_6:
+	{
+		if (KEY_BUTTON_DOWN(DIK_V))
+		{
+			is = true;
+		}
+	}
 		break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_7:
-		break;
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::COMBO)
+		{
+			is = true;
+		}
+	}
+	break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_8:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::RUNSHORT)
+		{
+			is = true;
+		}
+	}
 		break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_9:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::GUNATTACK)
+		{
+			is = true;
+		}
+	}
 		break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_10:
 		break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_11:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::SKILL1)
+		{
+			is = true;
+		}
+	}
 		break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_12:
 		break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_13:
+	{
+		if (m_pPlayer->Get_CurState() == CPlayer::State::SKILL2)
+		{
+			is = true;
+		}
+	}
 		break;
 	case Client::EUITutorialPopUpTypeID::END:
 	default:
 		break;
 	}
+
 	if (is)
 	{
 		if (!m_isFirstEntered)
@@ -261,7 +302,6 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 			m_pGameInstance->Broadcast<TUTORIAL_POPUP_CLEAR>(m_eTutorialTypeID);
 		}
 	}
-
 
 	switch (m_eDImageSubClass)
 	{
