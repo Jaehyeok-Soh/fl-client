@@ -4,6 +4,7 @@
 NS_BEGIN(Engine)
 
 class CPhysics_CCTFilterCallback;
+class CPhysics_QueryFilterCallback;
 
 class ENGINE_DLL CPhysicsCCT final : public CComponent
 {
@@ -204,6 +205,7 @@ private:
 private:
     PxController* m_pController = { nullptr };
     CPhysics_CCTFilterCallback* m_pCCTFilterCallback = { nullptr };
+    CPhysics_QueryFilterCallback* m_pQueryFilterCallback = { nullptr };
     PHYSICSCCT_DESC m_tDesc = {};
 
     PxControllerCollisionFlags m_CollisionFlags{};
