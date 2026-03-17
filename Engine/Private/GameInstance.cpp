@@ -1049,6 +1049,10 @@ HRESULT CGameInstance::Add_RenderTarget(ERenderTarget eTarget, const CRenderTarg
 {
 	return m_pRenderTarget_Manager->Add_RenderTarget(eTarget, pDesc);
 }
+HRESULT CGameInstance::Add_RenderTargetArray(ERenderTarget eTarget, const CRenderTargetArray::RENDERTARGET_ARR_DESC* pDesc)
+{
+	return m_pRenderTarget_Manager->Add_RenderTargetArray(eTarget, pDesc);
+}
 
 HRESULT CGameInstance::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget)
 {
@@ -1063,6 +1067,16 @@ HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _bool bUseDS
 HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV)
 {
 	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear, pDSV);
+}
+
+HRESULT CGameInstance::Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, _bool bUseDSV)
+{
+	return m_pRenderTarget_Manager->Begin_RTArraySlice(eTarget, iSlice, bClear, bUseDSV);
+}
+
+HRESULT CGameInstance::Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, ID3D11DepthStencilView* pDSV)
+{
+	return m_pRenderTarget_Manager->Begin_RTArraySlice(eTarget, iSlice, bClear, pDSV);
 }
 
 HRESULT CGameInstance::End_MRT()

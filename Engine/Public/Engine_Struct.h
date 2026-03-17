@@ -402,6 +402,23 @@ namespace Engine
 		SimpleMath::Vector3 vPad { 0.f, 0.f, 0.f };
 	}SHADER_TOON_DESC;
 
+	typedef struct tagShaderBakedSection
+	{
+		SimpleMath::Matrix matLightVP{ SimpleMath::Matrix::Identity };
+		SimpleMath::Vector4 vShadowParams{ SimpleMath::Vector4::Zero };
+		SimpleMath::Vector4 vBoundsMin{ SimpleMath::Vector4::Zero };
+		SimpleMath::Vector4 vBoundsMax{ SimpleMath::Vector4::Zero };
+		unsigned int iArraySlice{ 0 };
+		SimpleMath::Vector3 vPadding{ SimpleMath::Vector3::Zero };
+	}SHADER_BAKED_SECTION;
+
+	typedef struct tagShaderBakedSectionDesc
+	{
+		unsigned int iActiveCount{ 0 };
+		SimpleMath::Vector3 vPadding{ SimpleMath::Vector3::Zero };
+		SHADER_TOON_DESC sections[s_iActiveBakedSectionCount]{};
+	}SHADER_BAKED_SECTION_DESC;
+
 	typedef struct tagShaderEffectDesc
 	{
 		// Row 0

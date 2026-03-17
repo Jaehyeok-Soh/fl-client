@@ -991,6 +991,9 @@
     <ClCompile Include="..\Private\Quest_DataModel.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Quest\DataModel</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\RenderTargetArray.cpp">
+      <Filter>00. System\09. RenderTarget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Timer_Manager.h">
@@ -1536,6 +1539,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Quest_DataModel.h">
       <Filter>01. Utility\11. DataRepository\Datas\Quest\DataModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RenderTargetArray.h">
+      <Filter>00. System\09. RenderTarget</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

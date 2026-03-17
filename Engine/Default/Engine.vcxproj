@@ -300,6 +300,7 @@
     <ClCompile Include="..\Private\Ray.cpp" />
     <ClCompile Include="..\Private\RenderFx.cpp" />
     <ClCompile Include="..\Private\RenderTarget.cpp" />
+    <ClCompile Include="..\private\RenderTargetArray.cpp" />
     <ClCompile Include="..\Private\RenderTarget_Manager.cpp" />
     <ClCompile Include="..\Private\Render_Manager.cpp" />
     <ClCompile Include="..\Private\ResourceBase.cpp" />
@@ -486,6 +487,7 @@
     <ClInclude Include="..\Public\Ray.h" />
     <ClInclude Include="..\Public\RenderFx.h" />
     <ClInclude Include="..\Public\RenderTarget.h" />
+    <ClInclude Include="..\public\RenderTargetArray.h" />
     <ClInclude Include="..\Public\RenderTarget_Manager.h" />
     <ClInclude Include="..\Public\Render_Manager.h" />
     <ClInclude Include="..\Public\ResourceBase.h" />
