@@ -3,11 +3,15 @@
 
 NS_BEGIN(Engine)
 
+class CComputeShader;
+
 class ENGINE_DLL CPhysicsRagdoll final : public CComponent
 {
 	using Super = CComponent;
 public:
 	constexpr static EComponentType _ID = EComponentType::PX_RAGDOLL;
+
+	enum class CS_IDX { IMMU_BONEDATA, MU_MATRIX};
 
 private:
 	CPhysicsRagdoll();
@@ -16,13 +20,21 @@ private:
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
-
+	
 public:
 	void Awake(vector<class CChannel*>& vecChannels);
 	void Update();
 	void Sleep();
 
 	_int FindRagdollJointByBoneIndex(_uint boneIdx);
+
+	// getter func
+public:
+	const RAGDOLLELEMENTS& Get_RagDollElements() const { return m_tRagdollElements; }
+
+	// cs func
+public:
+	HRESULT Bind_RagDollCS_ImmuData(CComputeShader* pRagDollCS);
 
 #ifdef _DEBUG
 	void Render();

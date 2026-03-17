@@ -759,6 +759,20 @@ namespace Engine
 
 #pragma endregion
 
+#pragma region RAGDOLL_CS
+	// 가변 데이터
+	typedef struct tagIMMU_RAGDOLL
+	{
+		unsigned int    iBoneIndex;         // 몇번째 뼈인지
+
+		unsigned int    iTotalBoneNums;     // 총 뼈 개수
+		unsigned int    iRagDollBoneNums;   // 래그돌 할 개수
+ 
+		unsigned int    Padding0;
+	}CS_IMMU_RAGDOLL;
+
+#pragma endregion
+
 #pragma endregion
 
 	union COLLIDER_ID

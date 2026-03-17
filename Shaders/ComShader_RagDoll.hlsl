@@ -24,7 +24,7 @@ struct SRT
 };
 
 
-StructuredBuffer<IMMU_BONEDATA>     BONEINDEXES_DATA;
+StructuredBuffer<IMMU_BONEDATA>     IMMU_BONEINDEXES_DATA;
 
 StructuredBuffer<BONE_MAT>          RAGDOLL_LOCAL_TRANSFORMS;   // rag doll system에서 넘겨준 transform
 //StructuredBuffer<SRT>               MU_SRTS;                    // channel을 통해 combine 전까지 업데이트된 srt
@@ -40,10 +40,10 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     // 변수 설정
     uint index = id.x;
     
-    uint iBoneIdx = BONEINDEXES_DATA[index].iBoneIndex;
+    uint iBoneIdx = IMMU_BONEINDEXES_DATA[index].iBoneIndex;
     
     // over된 값 막기
-    if (index >= BONEINDEXES_DATA[0].iRagDollBoneNums)
+    if (index >= IMMU_BONEINDEXES_DATA[0].iRagDollBoneNums)
         return;
     
     // ragdoll이 만든 matrix 분해

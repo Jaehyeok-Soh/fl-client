@@ -11,6 +11,7 @@
 #include "Model.h"
 #include "StructuredBuffer.h"
 #include "Channel.h"
+#include "ComputeShader.h"
 
 #include "EngineConsole.h"
 
@@ -158,7 +159,33 @@ void CPhysicsRagdoll::Sleep()
 	m_tRagdollElements.pArticulation->putToSleep();
 }
 
+HRESULT CPhysicsRagdoll::Bind_RagDollCS_ImmuData(CComputeShader* pRagDollCS)
+{
+	// bone 불변 데이터 넣어줌
+
+	_uint iRagDollSize = ENUM_TO_UINT(ERagdollJoint::END);
+	_uint iBoneNums = m_pSharedModel->Get_BoneCount();
+
+	// 1. 버퍼 내용 생성
+	CS_IMMU_RAGDOLL* pInitialData = new CS_IMMU_RAGDOLL[iRagDollSize];
+
+	for (size_t i = 0; i < (size_t)iRagDollSize; i++)
+	{
+		pInitialData[i].iBoneIndex			= m_tRagdollElements.vecPhysicsLink[i].second.iBoneIndex;
+		pInitialData[i].iTotalBoneNums		= iBoneNums;
+		pInitialData[i].iRagDollBoneNums	= iRagDollSize;
+		pInitialData[i].Padding0			= 0;
+	}
+
+	// 2. 바로 바인딩
+	pRagDollCS->Bind_InputStructuredBuffer_Data(ENUM_TO_UINT(CS_IDX::IMMU_BONEDATA), pInitialData, sizeof(CS_IMMU_RAGDOLL), iRagDollSize);
+	Safe_Delete_Array(pInitialData);
+
+	return S_OK;
+}
+
 #ifdef _DEBUG
+
 void CPhysicsRagdoll::Render()
 {
 	for (auto& link : m_tRagdollElements.vecPhysicsLink)

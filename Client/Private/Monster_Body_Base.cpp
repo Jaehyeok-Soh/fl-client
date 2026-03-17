@@ -25,6 +25,7 @@ CMonster_Body_Base::CMonster_Body_Base(ID3D11Device* pDevice, ID3D11DeviceContex
 
 CMonster_Body_Base::CMonster_Body_Base(const CMonster_Body_Base& rhs)
 	: Super(rhs)
+	, m_bRagDollOn(rhs.m_bRagDollOn)
 {
 }
 
@@ -71,7 +72,8 @@ void CMonster_Body_Base::Update_Priority(_float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 
-	if (m_pGameInstance->CheckRagdollState(Get_ID()))
+	// 어 근데 부모의 id를 넣어줘야 하는거 아님? 
+	if (m_bRagDollOn = m_pGameInstance->CheckRagdollState(Get_ID()))
 	{
 		auto model = Get_Component<CModel>();
 		auto animIdx = model->Get_CurrentAnimationIndex();
@@ -83,8 +85,16 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS);
+	if (m_bRagDollOn)
+	{
+		//Get_Component<CPhysicsRagdoll>()
+	}
+
+	else
+	{
+		Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
+			Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS);
+	}
 
 	// Shake & Emissive 연출용
 	Get_Component<CRenderFx>()->Update(fTimeDelta);
@@ -256,6 +266,8 @@ HRESULT CMonster_Body_Base::Ready_ComputeShader()
 {
 	_uint iBoneNums = Get_Component<CModel>()->Get_BoneCount();
 	_uint iGetBoneNums = Get_Component<CModel>()->Get_StageBoneCount();
+	_uint iRagDollNums = ENUM_TO_UINT(RAGDOLLJOINT::END);
+
 	// ========   Compute Shader : BoneMesh  ========
 	{
 		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
@@ -360,7 +372,32 @@ HRESULT CMonster_Body_Base::Ready_ComputeShader()
 			return E_FAIL;
 	}
 
+	// ========   Compute Shader : RagDoll  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "RAGDOLL_FINALSRT_SRV";
+
+		ShaderDesc.InputBufferNum = 2;
+		ShaderDesc.bMakeSB = true;
+
+		// 입력 버퍼
+		ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEINDEXES_DATA";
+		ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_RAGDOLL);
+		ShaderDesc.Input_StructBuffer.iNumElements = iRagDollNums;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "RAGDOLL_FINALSRT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_RagDoll", L"Prototype_Component_Shader_RagDoll", &ShaderDesc, CAST_VOID_PP(&m_pRagDollCS))))
+			return E_FAIL;
+	}
+
 	if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pBoneAnimEvaluateCS, m_pBoneAnimBlendCS, m_pBoneAnimMixCS)))
+		return E_FAIL;
+
+	if (FAILED(Get_Component<CPhysicsRagdoll>()->Bind_RagDollCS_ImmuData(m_pRagDollCS)))
 		return E_FAIL;
 
 	return S_OK;

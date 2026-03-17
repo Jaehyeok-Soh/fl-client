@@ -61,6 +61,11 @@ protected:
 	CComputeShader* m_pBoneAnimEvaluateCS{ nullptr };
 	CComputeShader* m_pBoneAnimBlendCS{ nullptr };
 	CComputeShader* m_pBoneAnimMixCS{ nullptr };
+	CComputeShader* m_pRagDollCS{ nullptr };
+
+protected:
+	_bool m_bRagDollOn = { false };
+
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;

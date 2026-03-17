@@ -274,6 +274,16 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
+
+	// For. Prototype_Component_Shader_RagDoll
+	{
+		//ComShader_BoneCombinePart
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_RagDoll.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_RagDoll",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
 #pragma endregion
 
 #pragma region EFFECT_Shader
