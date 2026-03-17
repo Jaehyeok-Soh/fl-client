@@ -21,6 +21,7 @@
 #include "UITutorial_PopUp_Clear_Text.h"
 #include "UIQuest_Text.h"
 #include "UIQuestNavi_Text.h"	
+#include "UICommunity_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -38,6 +39,7 @@
 #include "UITutorial_PopUp_Clear_Image.h"
 #include "UIQuest_Image.h"
 #include "UIQuestNavi_Image.h"
+#include "UICommunity_Image.h"
 
 #include "WorldUI_Component.h"
 
@@ -244,6 +246,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isTutorialPopUpClear= (Type == DTO::EUITextSubClassType::TUTORIAL_POPUP_CLEAR_TEXT);
 		const _bool isQuest				= (Type >= DTO::EUITextSubClassType::QUEST_BEGIN && Type <= DTO::EUITextSubClassType::QUEST_END);
 		const _bool isQuestNavi			= (Type == DTO::EUITextSubClassType::QUEST_NAVI_DISTANCE);
+		const _bool isCommunity			= (Type == DTO::EUITextSubClassType::COMMUNITY_TEXT);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -257,66 +260,72 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 
 		if (isPlayerStat)
 		{
-			CUIPlayerStat_Text::PLAYER_STAT_DESC PlayerStatTextDesc= {};
-			static_cast<CUIText::UI_TEXT_DESC&>(PlayerStatTextDesc) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_PlayerStatText", m_iLevelID, g_wszUILayer, &PlayerStatTextDesc);
+			CUIPlayerStat_Text::PLAYER_STAT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_PlayerStatText", m_iLevelID, g_wszUILayer, &Desc);
 
 		}
 		else if (isMenu)
 		{
-			CUIMenu_Text::MENU_TEXT_DESC MenuTextDesc = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(MenuTextDesc) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuText", m_iLevelID, g_wszUILayer, &MenuTextDesc);
+			CUIMenu_Text::MENU_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuText", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isLoading)
 		{
-			CUILoading_Text::LOADING_TEXT_DESC LoadingTextDesc = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(LoadingTextDesc) = TextDesc;
-			LoadingTextDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingText", m_iLevelID, g_wszUILayer, &LoadingTextDesc);
+			CUILoading_Text::LOADING_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			Desc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingText", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isCombo)
 		{
-			CUICombo_Text::COMBO_TEXT_DESC ComboTextDesc = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(ComboTextDesc) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ComboText", m_iLevelID, g_wszUILayer, &ComboTextDesc);
+			CUICombo_Text::COMBO_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ComboText", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isBossCivila)
 		{
-			CUIBossAction_Text::BOSS_ACTION_TEXT_DESC BossActionTextDesc= {};
-			static_cast<CUIText::UI_TEXT_DESC&>(BossActionTextDesc) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossActionText", m_iLevelID, g_wszUILayer, &BossActionTextDesc);
+			CUIBossAction_Text::BOSS_ACTION_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossActionText", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isWeakness)
 		{
-			CUIWeakness_Text::WEAKNESS_TEXT_DESC WeaknessTextDesc= {};
-			static_cast<CUIText::UI_TEXT_DESC&>(WeaknessTextDesc) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WeaknessText", m_iLevelID, g_wszUILayer, &WeaknessTextDesc);
+			CUIWeakness_Text::WEAKNESS_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WeaknessText", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isTutorialPopUp)
 		{
-			CUITutorial_PopUp_Text::TUTORIAL_POPUP_TEXT_DESC TutorialPopUpData = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(TutorialPopUpData) = TextDesc;
-			TutorialPopUpData.iTutorialTypeID = iter->second.iParam0;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpText", m_iLevelID, g_wszUILayer, &TutorialPopUpData);
+			CUITutorial_PopUp_Text::TUTORIAL_POPUP_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			Desc.iTutorialTypeID = iter->second.iParam0;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpText", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isTutorialPopUpClear)
 		{
-			CUITutorial_PopUp_Clear_Text::TUTORIAL_POPUP_CLEAR_TEXT_DESC TutorialPopUpClearDesc = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(TutorialPopUpClearDesc) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpClearText", m_iLevelID, g_wszUILayer, &TutorialPopUpClearDesc);
+			CUITutorial_PopUp_Clear_Text::TUTORIAL_POPUP_CLEAR_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpClearText", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isQuest)
 		{
-			CUIQuest_Text::QUEST_TEXT_DESC QuestText = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(QuestText) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestText", m_iLevelID, g_wszUILayer, &QuestText);
+			CUIQuest_Text::QUEST_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestText", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isQuestNavi)
 		{
-			CUIQuestNavi_Text::QUEST_NAVI_TEXT_DESC QuestNaviText = {};
-			static_cast<CUIText::UI_TEXT_DESC&>(QuestNaviText) = TextDesc;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestNaviText", m_iLevelID, g_wszUILayer, &QuestNaviText);
+			CUIQuestNavi_Text::QUEST_NAVI_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestNaviText", m_iLevelID, g_wszUILayer, &Desc);
+		}
+		else if (isCommunity)
+		{
+			CUICommunity_Text::COMMUNITY_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_CommunityText", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else
 		{
@@ -360,115 +369,123 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isTutorialPopUpClear= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG && Type <= DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX);
 		const _bool isQuest				= (Type >= DTO::EUIDImageSubClassType::QUEST_BEGIN && Type <= DTO::EUIDImageSubClassType::QUEST_END);
 		const _bool isQuestNavi			= (Type >= DTO::EUIDImageSubClassType::QUEST_NAVI_BEGIN && Type <= DTO::EUIDImageSubClassType::QUEST_NAVI_END);
+		const _bool isCommunity			= (Type >= DTO::EUIDImageSubClassType::COMMUNITY_BEGIN && Type <= DTO::EUIDImageSubClassType::COMMUNITY_END);
 
 		if (isPlayerSkill)
 		{
-			CUISkill_BG::SKILL_BG_DESC SkillBGDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
-			SkillBGDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_SkillBG", m_iLevelID, g_wszUILayer, &SkillBGDesc);
+			CUISkill_BG::SKILL_BG_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_SkillBG", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isMiniMap)
 		{
-			CUIMini_Map::MINIMAP_DESC SkillBGDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(SkillBGDesc) = DefaultDesc;
-			SkillBGDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MiniMap", m_iLevelID, g_wszUILayer, &SkillBGDesc);
+			CUIMini_Map::MINIMAP_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MiniMap", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isHoverIcon)
 		{
-			CUIHover_Image::HOVER_IMAGE_DESC HoverImageDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(HoverImageDesc) = DefaultDesc;
-			HoverImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_HoverImage", m_iLevelID, g_wszUILayer, &HoverImageDesc);
+			CUIHover_Image::HOVER_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_HoverImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isMenu)
 		{
-			CUIMenu_Image::MENU_IMAGE_DESC MenuImageDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuImageDesc) = DefaultDesc;
-			MenuImageDesc.eSubClassType = Type;
-			MenuImageDesc.iSlotIndex = iter->second.iParams0;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuImage", m_iLevelID, g_wszUILayer, &MenuImageDesc);
+			CUIMenu_Image::MENU_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			Desc.iSlotIndex = iter->second.iParams0;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isOutLine)
 		{
-			CUIMenu_OutLine::MENU_OUTLINE_DESC MenuOutlineDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(MenuOutlineDesc) = DefaultDesc;
-			MenuOutlineDesc.eSubClassType = Type;
-			MenuOutlineDesc.iSlotIndex = iter->second.iParams0;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuOutline", m_iLevelID, g_wszUILayer, &MenuOutlineDesc);
+			CUIMenu_OutLine::MENU_OUTLINE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			Desc.iSlotIndex = iter->second.iParams0;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MenuOutline", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isLoading)
 		{
-			CUILoading_Image::LOADING_IMAGE_DESC LoadingImageDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(LoadingImageDesc) = DefaultDesc;
-			LoadingImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingImage", m_iLevelID, g_wszUILayer, &LoadingImageDesc);
+			CUILoading_Image::LOADING_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isAimDot)
 		{
-			CUIAimDot_Image::AIMDOT_IMAGE_DESC AimDotImageDesc= {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(AimDotImageDesc) = DefaultDesc;
-			AimDotImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_AimDotImage", m_iLevelID, g_wszUILayer, &AimDotImageDesc);
+			CUIAimDot_Image::AIMDOT_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_AimDotImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isLevelChange)
 		{
-			CUILevelChange_Image::LEVEL_CHANGE_DESC LevelChangeDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(LevelChangeDesc) = DefaultDesc;
-			LevelChangeDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LevelChangeImage", m_iLevelID, g_wszUILayer, &LevelChangeDesc);
+			CUILevelChange_Image::LEVEL_CHANGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LevelChangeImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isCombo)
 		{
-			CUICombo_Image::COMBO_IMAGE_DESC ComboImageDesc= {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(ComboImageDesc) = DefaultDesc;
-			ComboImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ComboImage", m_iLevelID, g_wszUILayer, &ComboImageDesc);
+			CUICombo_Image::COMBO_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ComboImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isBossCivila)
 		{
-			CUIBossAction_Image::BOSS_ACTION_IMAGE_DESC BossActionImageDesc= {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(BossActionImageDesc) = DefaultDesc;
-			BossActionImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossActionImage", m_iLevelID, g_wszUILayer, &BossActionImageDesc);
+			CUIBossAction_Image::BOSS_ACTION_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossActionImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isWeakness)
 		{
-			CUIWeakness_Image::WEAKNESS_IMAGE_DESC WeaknessImageDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(WeaknessImageDesc) = DefaultDesc;
-			WeaknessImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WeaknessImage", m_iLevelID, g_wszUILayer, &WeaknessImageDesc);
+			CUIWeakness_Image::WEAKNESS_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WeaknessImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isTutorialPopUp)
 		{
-			CUITutorial_PopUp_Image::TUTORIAL_POPUP_IMAGE_DESC TutorialPopUpImageDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(TutorialPopUpImageDesc) = DefaultDesc;
-			TutorialPopUpImageDesc.eSubClassType = Type;
-			TutorialPopUpImageDesc.iTutorialTypeID = iter->second.iParams0;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpImage", m_iLevelID, g_wszUILayer, &TutorialPopUpImageDesc);
+			CUITutorial_PopUp_Image::TUTORIAL_POPUP_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			Desc.iTutorialTypeID = iter->second.iParams0;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpImage", m_iLevelID, g_wszUILayer, &Desc);
 
 		}
 		else if (isTutorialPopUpClear)
 		{
-			CUITutorial_PopUp_Clear_Image::TUTORIAL_POPUP_CLEAR_IMAGE_DESC TutorialPopUpClearImageDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(TutorialPopUpClearImageDesc) = DefaultDesc;
-			TutorialPopUpClearImageDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpClearImage", m_iLevelID, g_wszUILayer, &TutorialPopUpClearImageDesc);
+			CUITutorial_PopUp_Clear_Image::TUTORIAL_POPUP_CLEAR_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TutorialPopUpClearImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isQuest)
 		{
-			CUIQuest_Image::QUEST_IMAGE_DESC QuestDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(QuestDesc) = DefaultDesc;
-			QuestDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestImage", m_iLevelID, g_wszUILayer, &QuestDesc);
+			CUIQuest_Image::QUEST_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isQuestNavi)
 		{
-			CUIQuestNavi_Image::QUEST_NAVI_IMAGE_DESC QuestNaviDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(QuestNaviDesc) = DefaultDesc;
-			QuestNaviDesc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestNaviImage", m_iLevelID, g_wszUILayer, &QuestNaviDesc);
+			CUIQuestNavi_Image::QUEST_NAVI_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuestNaviImage", m_iLevelID, g_wszUILayer, &Desc);
+		}
+		else if (isCommunity)
+		{
+			CUICommunity_Image::COMMUNITY_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_CommunityImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else
 		{
