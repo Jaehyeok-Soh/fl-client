@@ -33,9 +33,6 @@ CRender_Manager::CRender_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 
 HRESULT CRender_Manager::Initialize()
 {
-	if (FAILED(Ready_BlendStates()))
-		return E_FAIL;
-
 	if (FAILED(Ready_RT()))
 		return E_FAIL;
 
