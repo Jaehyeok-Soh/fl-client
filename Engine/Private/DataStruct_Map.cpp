@@ -368,6 +368,7 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 		/* Batch Object 包访 */
 	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC	: new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
 	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC	: new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_NPC:							return pSource == nullptr ? new BATCH_NPC_DESC		: new BATCH_NPC_DESC(*static_cast<BATCH_NPC_DESC*>(pSource));
 		/* Trigger Box 包访 */
 	case DTO::EClientMakePath::TriggerBox_ChangeLevel:				return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC				: new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC			: new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
@@ -1300,7 +1301,50 @@ void TRIGGERBOX_TUTORIALUIEVENT_DESC::to_Json(json& SaveJson)
 
 #pragma endregion
 
+#pragma endregion
 
+#pragma region NPC Desc
+
+void BATCH_NPC_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Batch NPC Type"))
+	{
+		this->eBatchNPCType = DTO::MakeNPCType_ToEnum(LoadJson["Batch NPC Type"].get<string>());
+	}
+	else
+		this->eBatchNPCType = OBJECT_ENUM_TAG::NPC_DEFAULT;
+
+	if (LoadJson.contains("bHasQuest"))
+		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
+	else
+		this->bHasQuest = false;
+
+	if (LoadJson.contains("tQuestObjectDesc"))
+	{
+		const auto& questJson = LoadJson.at("tQuestObjectDesc");
+
+		if (questJson.is_array())
+		{
+			questJson.get_to(this->tQuestObjectDesc);
+		}
+		else if (questJson.is_object())
+		{
+			DTO::QUEST_CHAPTERDESC oldFormatDesc;
+			questJson.get_to(oldFormatDesc);
+			this->tQuestObjectDesc.push_back(oldFormatDesc);
+		}
+	}
+}
+
+void BATCH_NPC_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Batch NPC Type"] = DTO::MakeNPCType_ToString(this->eBatchNPCType);
+
+	SaveJson["bHasQuest"] = this->bHasQuest;
+
+	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
+		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
+}
 #pragma endregion
 
 #pragma region Make_BatchObject_Desc cpp备泅何
@@ -1315,7 +1359,8 @@ BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectT
 
 	return nullptr;
 }
-#pragma endregion
 
+
+#pragma endregion
 
 NS_END

@@ -345,6 +345,20 @@ void CModel::Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pA
 	Update_AnimationPlayState(pBoneComBineCS, pAnimEComShader, pAnimBlendCS, fTimeDelta * m_fAnimationSpeed, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditiveCS);
 }
 
+void CModel::Update_PartModel(CComputeShader* pParentBoneComBineCS, CComputeShader* pChildBonePartCS)
+{
+	if (pParentBoneComBineCS && pChildBonePartCS)
+	{
+		// 보무 combine cs 결과를 child bone cs에 넘겨줌
+		pChildBonePartCS->Bind_InputStructuredBuffer(ENUM_TO_UINT(CS_PARTBONE_IDX::MU_PARENTTRANSFORM),
+			pChildBonePartCS->Get_SRV("PARENT_BONECOMBINED_TRANSFORMS"), pParentBoneComBineCS->Get_Output_Buffer());
+
+		// dispatch
+		_uint iGroupX = (Get_BoneCount() + 31) / 32;
+		pChildBonePartCS->Dispatch(iGroupX, 1, 1);
+	}
+}
+
 HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
 {
 	if (pShader == nullptr || iMeshIndex >= m_vecMeshes.size())
@@ -1111,10 +1125,10 @@ void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimE
 		_float fNormalizedTime = std::clamp(m_fBlendedTime / m_fBlendDuration, 0.f, 1.f);
 		_float fRatio = fNormalizedTime * fNormalizedTime * (3.0f - 2.0f * fNormalizedTime);
 
-		if (pOwnerTransform)
+		//if (pOwnerTransform)
 			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditive);
-		else
-			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS, pAdditive);
+		//else
+			//Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS, pAdditive);
 			//Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS);
 	}
 	else
@@ -1238,7 +1252,7 @@ void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS)
 
 void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditiveCS)
 {
-	if (pOwnerTransform)
+	//if (pOwnerTransform)
 	{
 		// 1. 버퍼 빼돌리기
 		StructuredBuffer* pOriginSB = pAnimEvalCS->Get_Output_Buffer();
@@ -1469,6 +1483,50 @@ HRESULT CModel::Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader
 	//{
 	//	Bind_StagingBuffer(pAnimMixCS);
 	//}
+
+	return S_OK;
+}
+
+HRESULT CModel::Ready_PartComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBonePartCS, CModel* pParentModel)
+{
+	if (pBoneMeshCS)
+	{
+		for (auto& pMesh : m_vecMeshes)
+		{
+			if (FAILED(pMesh->Ready_BindCSBuffer(pBoneMeshCS)))
+				return E_FAIL;
+		}
+	}
+
+	if (pBonePartCS && pParentModel)
+	{
+		// bone 불변 데이터 넣어줌
+		_uint iBoneNums = _uint(m_vecBones.size());
+
+		// 1. 버퍼 내용 생성
+		CS_IMMU_PARTBONE* pInitialData = new CS_IMMU_PARTBONE[iBoneNums];
+
+		for (size_t i = 0; i < m_vecBones.size(); i++)
+		{
+			for (size_t j = 0; j < pParentModel->Get_BoneCount(); j++)
+			{
+				if (pParentModel->Get_Bone(j)->Get_Name() == m_vecBones[i]->Get_Name())
+				{
+					pInitialData[i].iParentIdx = (_uint)j;
+					pInitialData[i].iBoneNums = iBoneNums;
+					pInitialData[i].Padding0 = Vec2::Zero;
+					continue;
+				}
+			}
+		}
+
+		// 2. 바로 바인딩
+		pBonePartCS->Bind_InputStructuredBuffer_Data(ENUM_TO_UINT(CS_PARTBONE_IDX::IMMU_BONE), pInitialData, sizeof(CS_IMMU_PARTBONE), iBoneNums);
+		Safe_Delete_Array(pInitialData);
+	}
+
+	else
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -56,6 +56,9 @@ private:
 	HRESULT	Create_InvisibleWall(const DTO::TMap_MapObjectData& tData);
 
 
+	HRESULT	Batch_NPC(const DTO::TMap_MapObjectData& tData);
+
+
 private:
 	CShader*		m_pMeshShader{nullptr};
 	CShader*		m_pInstMeshShader{nullptr};

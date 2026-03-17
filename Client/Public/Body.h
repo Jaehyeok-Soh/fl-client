@@ -53,6 +53,7 @@ public:
 
 public:
 	CComputeShader* Get_AnimMixCS() const { return m_pBoneAnimMixCS; }
+	CComputeShader* Get_BoneCombineCS() const { return m_pBoneCombineCS; }
 
 private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);

@@ -44,7 +44,6 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 
 	return EMakeMonsterType::END;
 }
-
 #pragma endregion
 
 #pragma region Make Object Type
@@ -85,6 +84,28 @@ enum class EMakeTriggerBoxType
 	END,
 };
 
+#pragma endregion
+
+#pragma region Make NPC Type
+inline std::string MakeNPCType_ToString(OBJECT_ENUM_TAG::Enum eTag)
+{
+	switch (eTag)
+	{
+	case Engine::OBJECT_ENUM_TAG::NPC_DEFAULT:	return "NPC_Default";
+	case Engine::OBJECT_ENUM_TAG::NPC_PAN:		return "NPC_Pan";
+	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:	return "NPC_Berenica";
+	default:									return "Unknown";
+	}
+}
+
+inline OBJECT_ENUM_TAG::Enum MakeNPCType_ToEnum(const std::string strType)
+{
+	if (strType == "NPC_Default")				return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
+	if (strType == "NPC_Pan")					return Engine::OBJECT_ENUM_TAG::NPC_PAN;
+	if (strType == "NPC_Berenica")				return Engine::OBJECT_ENUM_TAG::NPC_BERENICA;
+
+	return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
+}
 #pragma endregion
 
 NS_END
@@ -835,6 +856,40 @@ public:
 
 #pragma endregion
 
+#pragma region NPC
+struct ENGINE_DLL BATCH_NPC_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	OBJECT_ENUM_TAG::Enum eBatchNPCType{ OBJECT_ENUM_TAG::NPC_DEFAULT };
+
+	_bool		 bHasQuest = { false };
+	vector<DTO::QUEST_CHAPTERDESC>		tQuestObjectDesc = {};
+public:
+	BATCH_NPC_DESC()
+		:CLIENT_MAKEPATH_DESC_BASE(),
+		eBatchNPCType(OBJECT_ENUM_TAG::NPC_DEFAULT),
+		bHasQuest(false),
+		tQuestObjectDesc()
+	{
+
+	}
+	BATCH_NPC_DESC(const BATCH_NPC_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs),
+		eBatchNPCType(rhs.eBatchNPCType),
+		bHasQuest(rhs.bHasQuest),
+		tQuestObjectDesc(rhs.tQuestObjectDesc)
+	{
+
+	}
+	virtual ~BATCH_NPC_DESC()
+	{
+	}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+#pragma endregion
+
 #pragma endregion
 
 
@@ -905,6 +960,9 @@ enum class EClientMakePath
 	/* 맵 기능 관련 */
 	Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
 
+	/* NPC */
+	Batch_NPC,
+
 	END
 };
 
@@ -971,6 +1029,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::TriggerBox_TutorialUIEvent,			"TriggerBox_TutorialUIEvent"},
 
 			{EClientMakePath::Invisible_Wall,						"Invisible_Wall"},
+
+			{EClientMakePath::Batch_NPC,							"Batch_NPC"},
 
 			{EClientMakePath::END,									"Unknown"},
 		}
