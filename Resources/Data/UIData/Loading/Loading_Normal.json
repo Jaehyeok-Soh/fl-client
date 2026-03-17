@@ -36,7 +36,7 @@
             "isActivate": true,
             "isInteract": true,
             "isUseColorTint": false,
-            "isVisible": true,
+            "isVisible": false,
             "strAlphaMaskTextureTag": "",
             "strCanvasName": "Loading_Normal",
             "strGlowTextureTag": "",
@@ -118,7 +118,7 @@
             "isActivate": true,
             "isInteract": true,
             "isUseColorTint": false,
-            "isVisible": true,
+            "isVisible": false,
             "strAlphaMaskTextureTag": "",
             "strCanvasName": "Loading_Normal",
             "strGlowTextureTag": "",
@@ -469,7 +469,7 @@
         {
             "Type": "UI_TEXT",
             "ePivot": 2,
-            "eShaderType": 0,
+            "eShaderType": 1,
             "eTextSubClassType": "LOADING_TEXT_PERCENT",
             "fRotate": 0.0,
             "fScale": 1.0833332538604736,
@@ -488,7 +488,7 @@
         {
             "Type": "UI_TEXT",
             "ePivot": 0,
-            "eShaderType": 0,
+            "eShaderType": 1,
             "eTextSubClassType": "LOADING_TEXT_BEGIN",
             "fRotate": 0.0,
             "fScale": 0.800000011920929,
@@ -498,7 +498,7 @@
             "strTag": "Loading_Percent_Text_TextData",
             "strText": "%",
             "vFontColor": {
-                "w": 0.0,
+                "w": 1.0,
                 "x": 0.7843137383460999,
                 "y": 0.7450980544090271,
                 "z": 0.6274510025978088

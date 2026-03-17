@@ -739,7 +739,7 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.bIsPlayer = true;
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-    desc.fRadius = 0.35f;
+    desc.fRadius = 0.25f;
     desc.fHeight = 0.7f;
     desc.vExtens = { 0.f, 0.f, 0.f };
     desc.MDeAccelRate = { 0.f,10.f };

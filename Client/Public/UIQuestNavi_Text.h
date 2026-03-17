@@ -3,20 +3,19 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-class CPlayer;
-class CUITutorial_PopUp_Text final : public CUIText
+
+class CUIQuestNavi_Text final : public CUIText
 {
 	using Super = CUIText;
 public:
-	typedef struct tagUITutorialPopUpTextDesc : public UI_TEXT_DESC
+	typedef struct tagUIQuestNaviTextDesc : public UI_TEXT_DESC
 	{
-		_uint iTutorialTypeID = {};
-	}TUTORIAL_POPUP_TEXT_DESC;
+	}QUEST_NAVI_TEXT_DESC;
 
 private:
-	CUITutorial_PopUp_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUITutorial_PopUp_Text(const CUITutorial_PopUp_Text& rhs);
-	virtual ~CUITutorial_PopUp_Text() = default;
+	CUIQuestNavi_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIQuestNavi_Text(const CUIQuestNavi_Text& rhs);
+	virtual ~CUIQuestNavi_Text() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
@@ -31,7 +30,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Ready_Components(TUTORIAL_POPUP_TEXT_DESC* pDesc);
+	HRESULT Ready_Components(QUEST_NAVI_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	HRESULT Attach_Personal_Info();
 	HRESULT Convert_Stat_To_Text();
@@ -41,16 +40,9 @@ private:
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
-	void Tick_By_Type(const _float fTimeDelta)override;
-private:
-	_bool m_isSpawned = { false };
-	EUITutorialPopUpTypeID m_eTutorialTypeID = { EUITutorialPopUpTypeID::END };
-	_bool m_isFirstEntered = { false };
-
-	CPlayer* m_pPlayer = { nullptr };
-
+	virtual void Tick_By_Type(const _float fTimeDelta)override;
 public:
-	static CUITutorial_PopUp_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIQuestNavi_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

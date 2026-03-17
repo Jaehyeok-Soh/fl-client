@@ -778,6 +778,12 @@
     <Filter Include="03. GameObject\PartObjects\BonePart">
       <UniqueIdentifier>{83efcc27-26a0-41e7-9849-ac303486e5a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest\Navi">
+      <UniqueIdentifier>{fa50cb23-8ed3-43ec-95db-e84e5c7604a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi">
+      <UniqueIdentifier>{439ea3b6-89a6-432a-b9f5-d6082c69fff5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1449,6 +1455,12 @@
     <ClInclude Include="..\Public\LandScape.h">
       <Filter>03. GameObject\MapObject\02. LandScape</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIQuestNavi_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest\Navi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQuestNavi_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2106,6 +2118,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\BonePart.cpp">
       <Filter>03. GameObject\PartObjects\BonePart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuestNavi_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest\Navi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuestNavi_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
