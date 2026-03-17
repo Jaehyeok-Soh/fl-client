@@ -36,6 +36,7 @@ public:
 public:
 	HRESULT Bind_RagDollCS_ImmuData(CComputeShader* pRagDollCS);
 
+
 #ifdef _DEBUG
 	void Render();
 #endif // _DEBUG

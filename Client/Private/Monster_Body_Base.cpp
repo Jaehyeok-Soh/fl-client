@@ -85,12 +85,12 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_bRagDollOn)
-	{
-		//Get_Component<CPhysicsRagdoll>()
-	}
+	//if (m_bRagDollOn)
+	//{
+	//	//Get_Component<CPhysicsRagdoll>()
+	//}
 
-	else
+	//else
 	{
 		Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
 			Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS);

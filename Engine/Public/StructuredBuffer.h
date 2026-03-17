@@ -79,6 +79,9 @@ public:
 	HRESULT Copy_Data(void* data, _uint iElementSize, _uint iCount);
 	HRESULT Resize(void* data, _uint iElementSize, _uint iNewNumElements);
 
+	void CopyFrom(StructuredBuffer* pSrc);
+
+
 private:
 	ID3D11Device*					m_pDevice = { nullptr };
 	ID3D11DeviceContext*			m_pDeviceContext = { nullptr };
