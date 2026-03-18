@@ -44,7 +44,7 @@ class CLayer;
 class CFxEffectAsset;
 class CFxShaderVariant;
 class CEffectHandler;
-
+class CBounding_AABB;
 
 class ENGINE_DLL CGameInstance final : public CBase
 {
@@ -423,7 +423,14 @@ public:
 	void Push_CollidedData(const COLLIDED_DESC& desc);
 #pragma endregion
 
-// Todo - 쓰레기통 정리
+
+#pragma region 
+#ifdef _DEBUG
+	HRESULT					DebugRender_MapMinMaxBox();
+#endif // _DEBUG
+	CBounding_AABB*			Get_MapMinMaxBox();
+	void					Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter);
+#pragma endregion
 #pragma region GAMEDATA_MANAGER
 	HRESULT		Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent);
 	HRESULT		BroadCaset_RegisterGlobalEvent(_uint iTypeIndex);

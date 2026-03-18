@@ -90,7 +90,7 @@ void CImGui_AnimationLayout::Render_AnimationInfo()
 	ImGui::Text("Selected Anim Index : %u", m_iSelectAnimation);
 
 	// wstring -> string 변환 필요
-	std::string animName(m_wstrSelectAnimName.begin(), m_wstrSelectAnimName.end());
+	std::string animName(Engine_Utils::ToString(m_wstrSelectAnimName));
 	ImGui::Text("Selected Anim Name  : %s", animName.c_str());
 
 
