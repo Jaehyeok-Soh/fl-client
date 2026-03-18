@@ -99,6 +99,7 @@ public:
 /// </summary>
 public:
     _bool CheckRagdollState(int64 objID);
+    _bool CheckRagDollState_Processing(int64 objID);
     void RagdollRegister(CGameObject* obj);
     void RagdollUnregister(int64 objID);
 

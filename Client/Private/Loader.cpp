@@ -628,7 +628,9 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform = &(matPreTransformIdentity);
 		desc.wstrModelFolderName = L"Monster_Dog";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = {3,150, 152};
+		desc.vecStageBoneIndices = {3,
+			4,6,9,10,32,33,64,125,126,136,137,138,139
+			,150, 152};//6,9,10,32,33,64,125,126,136,137,138,139
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
