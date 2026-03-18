@@ -23,7 +23,7 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 	
 public:
-	void Awake(vector<class CChannel*>& vecChannels);
+	void Awake(vector<class CChannel*>& vecChannels); // 채널 인덱스 != 본 인덱스. 아래 awake 사용하도록 수정함
 	void Awake();
 	void Update();
 	void Sleep();
