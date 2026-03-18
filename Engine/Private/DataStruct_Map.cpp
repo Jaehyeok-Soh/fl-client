@@ -286,22 +286,17 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 
 inline void to_json(json& SaveJson, const TLevelData& tData)
 {
-	SaveJson = json
-	{
-		{ "strTag", tData.strTag },
-		{ "Texture Splating Info"	, tData.strTextureSplatingInfoName },
-		{ "Level Type"				, tData.strLevelTypeName},
-		{ "Env Data", {
-			{ "Wind Data", json::object() } // 빈 객체로 미리 생성
-		}}
-	};
+	SaveJson["strTag"] = tData.strTag;
+	SaveJson["Texture Splating Info"] = tData.strTextureSplatingInfoName;
+	SaveJson["Level Type"] = tData.strLevelTypeName;
 
-	// 2. 구조가 완성된 '후에' 참조자를 가져옵니다.
 	auto& WindJson = SaveJson["Env Data"]["Wind Data"];
-
-	// 3. 이제 값을 채웁니다. (안전함)
 	Engine_Utils::write_vec3_xyz(WindJson["Direction"], tData.vWindDirection);
 	WindJson["Power"] = tData.fWindPower;
+
+	auto& MapBox_Json = SaveJson["Map Box"];
+	Engine_Utils::write_vec3_xyz(MapBox_Json["Center"],tData.vMapMinMaxBox_Center);
+	Engine_Utils::write_vec3_xyz(MapBox_Json["Extents"],tData.vMapMinMaxBox_extents);
 
 	return;
 }
@@ -335,6 +330,20 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 			}
 		}
 	}
+
+	if (LoadJson.contains("Map Box"))
+	{
+		auto& MapBox_Json = LoadJson.at("Map Box");
+		if (MapBox_Json.contains("Center"))
+		{
+			Engine_Utils::read_vec3_xyz(MapBox_Json["Center"],tData.vMapMinMaxBox_Center);
+		}
+		if (MapBox_Json.contains("Extents"))
+		{
+			Engine_Utils::read_vec3_xyz(MapBox_Json["Extents"],tData.vMapMinMaxBox_extents);
+		}
+	}
+
 
 	return;
 }

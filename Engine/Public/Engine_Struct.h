@@ -1139,7 +1139,28 @@ namespace Engine
 
 #pragma endregion
 
+
+#pragma region 
+
+	typedef struct CinematicCameraSequnce_EventDesc
+	{
+		/* 저장된 string 데이터를 Client에서 사용할때는 ToHahs 함수를 사용하여 미리 컴파일 단계때 해쉬를 생성해서 사용해준다 */
+		string          strSubscriberName;   // 예: "UI_Tutorial", "Boss_Haier"
+		vector<string>  vecActionNames;      // 예: "Show_Popup", "Roar"
+	}CCS_EVENT_DESC;
+
+#pragma endregion
+
+
+
+#pragma endregion
+
 }
+
+
+
+
+
 #pragma endregion
 
 #endif // Engine_Struct_h__

@@ -33,6 +33,7 @@ HRESULT CEnvObject::Initialize(void* pArg)
 	ENVOBJECT_DESC* pDesc = static_cast<ENVOBJECT_DESC*>(pArg);
 
 	if (FAILED(Ready_Effect(pDesc->vecEnvEffectInfo)))
+		return E_FAIL;
 
 	return S_OK;
 }

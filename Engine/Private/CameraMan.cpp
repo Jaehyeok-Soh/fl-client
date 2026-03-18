@@ -70,13 +70,15 @@ void CCameraMan::Update(const _float fTimeDelta)
 void CCameraMan::Update_Late(const _float fTimeDelta)
 {
     Super::Update_Late(fTimeDelta);
-
-    Camera_Shaking(fTimeDelta);
 }
 
 void CCameraMan::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
+
+
+    Camera_Shaking(fTimeDelta);
+
     Get_Component<CCamera>()->Update_View();
 }
 
@@ -326,11 +328,6 @@ void CCameraMan::Cinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence)
     m_isCinematicEvent = true;
 
     m_pCinematicSquence->BroadCast(true);
-}
-
-HRESULT CCameraMan::Ready_Components(void* pArg)
-{
-    return S_OK;
 }
 
 void CCameraMan::Free()

@@ -539,8 +539,12 @@ CModel* CMapToolManager::Get_BatchObjectModel(DTO::EMakeObjectType eType)
 
 HRESULT CMapToolManager::Ready_LevelData()
 {
-	m_pLevelData= CLevelData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
+	m_pLevelData = CLevelData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
 	if (m_pLevelData == nullptr) return E_FAIL;
+
+	CGameObject* pResult{ nullptr };
+	if ( nullptr == (pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_LevelData", m_pLevelData)))
+		return E_FAIL;
 
 	return S_OK;
 }

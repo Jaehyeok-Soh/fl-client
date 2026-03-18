@@ -1154,9 +1154,12 @@ typedef struct TLevelData
 	/* Wind */
 	Vec3								vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
 	_float								fWindPower{ 1.f }; //바람이 부는 새기
+
+	/* Map Min Max Box */
+	Vec3								vMapMinMaxBox_Center{0.f,0.f,0.f};
+	Vec3								vMapMinMaxBox_extents{1.f,1.f,1.f};
+
 	/*-------*/
-
-
 
 }SCENEDATA;
 

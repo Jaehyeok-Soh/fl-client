@@ -638,6 +638,7 @@
     <ClCompile Include="..\private\Xibi_Projectile_Circle.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Client_Define.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>

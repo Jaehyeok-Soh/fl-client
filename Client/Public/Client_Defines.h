@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Engine_Define.h"
 #include "EngineConsole.h"
 #include <windows.h>
@@ -770,6 +769,8 @@ namespace Client
 
 #pragma region Tag ¸ðÀ½
 
+	inline constexpr _tchar g_wszCameraCinematicData_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json" };
+	inline constexpr _tchar g_wszCameraCinematicSequnceEventManifest_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CCS_EventManifest.json" };
 
 #pragma region State Tag
 
@@ -983,6 +984,8 @@ namespace Client
 
 	}DIALOGUE_NODE;
 #pragma endregion
+
+
 
 }
 

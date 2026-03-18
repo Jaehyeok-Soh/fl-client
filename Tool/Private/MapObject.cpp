@@ -641,7 +641,7 @@ HRESULT CMapObject::Ready_Env()
     for (auto& EffectInfo : pDesc->vecEnvEffectInfo)
     {
         Add_EnvEffect(EffectInfo.strTags);
-        Set_EnvEffectDesc(m_vEnvEffectList.size()-1, EffectInfo.tDesc);
+        Set_EnvEffectDesc(static_cast<_uint>(m_vEnvEffectList.size()) - 1, EffectInfo.tDesc);
     }
 
     return S_OK;

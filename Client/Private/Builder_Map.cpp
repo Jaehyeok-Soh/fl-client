@@ -172,6 +172,9 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	pCB->SetRawValue(&tEnvData, 0, sizeof(CB_EnvData));
 
 
+	/* Map Box */
+	m_pGameInstance->Set_MapMinMaxBox(tData.vMapMinMaxBox_Center,tData.vMapMinMaxBox_extents);
+
 
 	return S_OK;
 }
