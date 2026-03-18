@@ -50,10 +50,6 @@ HRESULT CRender_Manager::Initialize()
 	if (FAILED(Create_ShadowResource()))
 		return E_FAIL;
 
-#ifdef _DEBUG
-	if (FAILED(Ready_Debug()))
-		return E_FAIL;
-#endif
 	return S_OK;
 }
 
@@ -138,8 +134,11 @@ HRESULT CRender_Manager::Set_BakedShadowConstantBuffer(CShader* pShader)
 	return pShader->Set_ConstantBuffer(EFXCB::BakedShadowparam, m_pCB_BakedShadow->Get_Buffer());
 }
 
-HRESULT CRender_Manager::Initialize_BakedShadowSections()
+HRESULT CRender_Manager::Initialize_BakedShadowSections(BoundingBox* pRootBox)
 {
+	if (pRootBox == nullptr)
+		return E_FAIL;
+
 	m_vecBakedSection.clear();
 	m_vecBakedSectionResults.clear();
 	m_tActiveBakedSet = {};
@@ -147,17 +146,27 @@ HRESULT CRender_Manager::Initialize_BakedShadowSections()
 	m_iCurrentCenterSectionX = INT_MAX;
 	m_iCurrentCenterSectionZ = INT_MAX;
 
+	m_bakedWorldRootBounds = *pRootBox;
 	//===========================================================
 	// 옥트리에 등록된 Object 기준 그림자 뽑는 녀석들로 RootBox 재형성
 	//===========================================================
-	if (FAILED(Create_RootBox(m_bakedWorldRootBounds)))
+	//if (FAILED(Create_RootBox(m_bakedWorldRootBounds)))
+	//	return E_FAIL;
+
+	Vec3 vCenter = Vec3(
+		m_bakedWorldRootBounds.Center.x,
+		m_bakedWorldRootBounds.Center.y,
+		m_bakedWorldRootBounds.Center.z);
+	Vec3 vExtents = Vec3(
+		m_bakedWorldRootBounds.Extents.x,
+		m_bakedWorldRootBounds.Extents.y,
+		m_bakedWorldRootBounds.Extents.z);
+
+	if (vExtents.x <= 0.f || vExtents.y <= 0.f || vExtents.z <= 0.f)
 		return E_FAIL;
 
-	Vec3 vCenter = Vec3(m_bakedWorldRootBounds.Center.x, m_bakedWorldRootBounds.Center.y, m_bakedWorldRootBounds.Center.z);
-	Vec3 vExt = Vec3(m_bakedWorldRootBounds.Extents.x, m_bakedWorldRootBounds.Extents.y, m_bakedWorldRootBounds.Extents.z);
-
-	Vec3 vMin = vCenter - vExt;
-	Vec3 vMax = vCenter + vExt;
+	Vec3 vMin = vCenter - vExtents;
+	Vec3 vMax = vCenter + vExtents;
 
 	m_vBakedSectionOrigin = vMin;
 	m_fBakedSectionSizeX = (vMax.x - vMin.x) / BAKED_SECTION_COUNT_X;
@@ -168,6 +177,27 @@ HRESULT CRender_Manager::Initialize_BakedShadowSections()
 
 	m_bBakedSectionInitialized = false;
 	m_bActiveBakedSectionDirty = true;
+
+#ifdef _DEBUG
+	{
+		string strLog{
+			"[BakedRoot] "
+			"RootMin(" + std::to_string(vMin.x) + ", " +
+						  std::to_string(vMin.y) + ", " +
+						  std::to_string(vMin.z) + ") " +
+			"RootMax(" + std::to_string(vMax.x) + ", " +
+						  std::to_string(vMax.y) + ", " +
+						  std::to_string(vMax.z) + ") " +
+			"SizeXZ(" + std::to_string(vMax.x - vMin.x) + ", " +
+						 std::to_string(vMax.z - vMin.z) + ") " +
+			"SectionXZ(" + std::to_string(m_fBakedSectionSizeX) + ", " +
+							std::to_string(m_fBakedSectionSizeZ) + ") " +
+			"Hysteresis(" + std::to_string(m_fSectionUpdateHysteresisX) + ", "
+							+ std::to_string(m_fSectionUpdateHysteresisZ) + ")"
+		};
+		CLOG_INFO(strLog);
+	}
+#endif
 	return S_OK;
 }
 
@@ -185,6 +215,7 @@ HRESULT CRender_Manager::Build_BakedShadowSections()
 #ifdef _DEBUG
 	if (FAILED(Create_BakedShadowSliceSRV()))
 		return E_FAIL;
+
 #endif
 	return S_OK;
 }
@@ -1838,15 +1869,18 @@ _uint CRender_Manager::Compute_BakedSectionIndex(_int iSectionX, _int iSectionZ)
 
 BoundingBox CRender_Manager::Compute_BakedSectionBounds(_int iSectionX, _int iSectionZ) const
 {
+	constexpr _float fReceiverMinY = -50.f;
+	constexpr _float fReceiverMaxY = 90.f;
+
 	Vec3 vMin = {
 		m_vBakedSectionOrigin.x + iSectionX * m_fBakedSectionSizeX,
-		m_bakedWorldRootBounds.Center.y - m_bakedWorldRootBounds.Extents.y,
+		fReceiverMinY,
 		m_vBakedSectionOrigin.z + iSectionZ * m_fBakedSectionSizeZ
 	};
 
 	Vec3 vMax = {
 		m_vBakedSectionOrigin.x + (iSectionX + 1) * m_fBakedSectionSizeX,
-		m_bakedWorldRootBounds.Center.y + m_bakedWorldRootBounds.Extents.y,
+		fReceiverMaxY,
 		m_vBakedSectionOrigin.z + (iSectionZ + 1) * m_fBakedSectionSizeZ
 	};
 
@@ -1898,12 +1932,10 @@ HRESULT CRender_Manager::Build_BakedShadowSectionJobs()
 			input.sectionBounds = Compute_BakedSectionBounds(x, z);
 			input.vLightDir = vLightDir;
 			input.pStaticCasters = &vecFiltered;
-			CLOG_INFO("push task x=" + std::to_string(x) + " z=" + std::to_string(z));
 			vecFutures.push_back(
 				m_pGameInstance->m_pThreadPool->AddTask(
 					[this](BAKED_SECTION_BUILD_INPUT input)
 					{
-						CLOG_INFO("start task x=" + std::to_string(input.iSectionX) + " z=" + std::to_string(input.iSectionZ));
 						return this->Build_BakedSection(input);
 					},
 					input
@@ -1916,9 +1948,7 @@ HRESULT CRender_Manager::Build_BakedShadowSectionJobs()
 
 	for (auto& fut : vecFutures)
 	{
-		CLOG_INFO("waiting future");
 		BAKED_SECTION_BUILD_RESULT tResult = fut.get();
-		CLOG_INFO("future done");
 		if (tResult.bValid)
 			m_vecBakedSectionResults.push_back(std::move(tResult));
 	}
@@ -1934,11 +1964,99 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 	tOut.sectionBounds = input.sectionBounds;
 
 	if (input.pStaticCasters == nullptr || input.pStaticCasters->empty())
+	{
+#if _DEBUG
+		string strLog{
+			"[BakedSection][Skip] "
+			"Grid(" + std::to_string(input.iSectionX) + ", " + std::to_string(input.iSectionZ) + ") " +
+			"Reason(EmptyStaticCasters)"
+		};
+		CLOG_INFO(strLog);
+#endif
 		return tOut;
+	}
 
-	Vec3 vUnionMin(FLT_MAX, FLT_MAX, FLT_MAX);
-	Vec3 vUnionMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+	// ===============================================
+	// Receiver = sectionBounds 기준으로 LightView 생성
+	// XY는 무조건 receiver 기준으로 고정
+	// ===============================================
+	Vec3 vReceiverCenter = Vec3(
+		input.sectionBounds.Center.x,
+		input.sectionBounds.Center.y,
+		input.sectionBounds.Center.z
+	);
+
+	Vec3 vReceiverExtents = Vec3(
+		input.sectionBounds.Extents.x,
+		input.sectionBounds.Extents.y,
+		input.sectionBounds.Extents.z
+	);
+
+	Vec3 vUp = Vec3::Up;
+	if (fabs(input.vLightDir.Dot(vUp)) > 0.98f)
+		vUp = Vec3::Forward;
+
+	// receiver 중심 기준으로 충분히 뒤에서 보는 View
+	_float fViewBackDist = (std::max)(
+		m_bakedWorldRootBounds.Extents.x + m_bakedWorldRootBounds.Extents.y + m_bakedWorldRootBounds.Extents.z,
+		vReceiverExtents.Length() * 4.f
+	);
+
+	Matrix matLightView = ::XMMatrixLookAtLH(
+		vReceiverCenter - input.vLightDir * fViewBackDist,
+		vReceiverCenter,
+		vUp
+	);
+
+	// ================
+	// receiverLS 계산
+	// XY는 여기서 확정
+	// ================
+	Vec3 vReceiverCorners[8];
+	input.sectionBounds.GetCorners(vReceiverCorners);
+
+	Vec3 vReceiverLSMin(FLT_MAX, FLT_MAX, FLT_MAX);
+	Vec3 vReceiverLSMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	for (_int i = 0; i < 8; ++i)
+	{
+		Vec3 vLS = Vec3::Transform(vReceiverCorners[i], matLightView);
+		vReceiverLSMin = Vec3::Min(vReceiverLSMin, vLS);
+		vReceiverLSMax = Vec3::Max(vReceiverLSMax, vLS);
+	}
+
+	// XY는 receiver(sectionBounds) 기준으로 고정
+	const _float fPadXY = 1.0f;
+	_float minX = vReceiverLSMin.x - fPadXY;
+	_float maxX = vReceiverLSMax.x + fPadXY;
+	_float minY = vReceiverLSMin.y - fPadXY;
+	_float maxY = vReceiverLSMax.y + fPadXY;
+
+	// ===========================================================
+	// caster query 범위
+	// XY는 고정이지만, caster는 section 주변까지 조금 더 넓게 수집
+	// ===========================================================
+	Vec3 vCasterQueryExtents = Vec3(
+		input.sectionBounds.Extents.x + m_fBakedSectionSizeX * 0.15f,
+		input.sectionBounds.Extents.y + 40.f,
+		input.sectionBounds.Extents.z + m_fBakedSectionSizeZ * 0.15f
+	);
+
+	BoundingBox tCasterQueryBounds(
+		input.sectionBounds.Center,
+		vCasterQueryExtents
+	);
+
+	Vec3 vCasterUnionMin(FLT_MAX, FLT_MAX, FLT_MAX);
+	Vec3 vCasterUnionMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	Vec3 vCasterLSMin(FLT_MAX, FLT_MAX, FLT_MAX);
+	Vec3 vCasterLSMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
 	_bool bHasCaster = false;
+
+	_uint iBroadPhaseHitCount = 0;
+	_uint iAcceptedCasterCount = 0;
 
 	for (auto* pObj : *input.pStaticCasters)
 	{
@@ -1950,61 +2068,80 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 			continue;
 
 		const BoundingBox& AABB = *pBounds->Get_WolrdAABB();
-		if (!AABB.Intersects(input.sectionBounds))
+
+		// 1) broad-phase
+		if (AABB.Intersects(tCasterQueryBounds) == false)
 			continue;
+
+		++iBroadPhaseHitCount;
+
+		// 2) narrow-phase : light-space XY overlap 검사
+		Vec3 vObjLSMin(FLT_MAX, FLT_MAX, FLT_MAX);
+		Vec3 vObjLSMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+		Vec3 vCasterCorners[8];
+		AABB.GetCorners(vCasterCorners);
+
+		for (_int i = 0; i < 8; ++i)
+		{
+			Vec3 vLS = Vec3::Transform(vCasterCorners[i], matLightView);
+			vObjLSMin = Vec3::Min(vObjLSMin, vLS);
+			vObjLSMax = Vec3::Max(vObjLSMax, vLS);
+		}
+
+		const _bool bOverlapX = !(vObjLSMax.x < minX || vObjLSMin.x > maxX);
+		const _bool bOverlapY = !(vObjLSMax.y < minY || vObjLSMin.y > maxY);
+
+		if (bOverlapX == false || bOverlapY == false)
+			continue;
+
+		// 여기까지 와야 실제로 이 section receiver에 영향 주는 caster
+		++iAcceptedCasterCount;
 
 		tOut.vecCasters.push_back(pObj);
 
 		Vec3 vObjMin = AABB.Center - AABB.Extents;
 		Vec3 vObjMax = AABB.Center + AABB.Extents;
 
-		vUnionMin = Vec3::Min(vUnionMin, vObjMin);
-		vUnionMax = Vec3::Max(vUnionMax, vObjMax);
+		vCasterUnionMin = Vec3::Min(vCasterUnionMin, vObjMin);
+		vCasterUnionMax = Vec3::Max(vCasterUnionMax, vObjMax);
+
+		vCasterLSMin = Vec3::Min(vCasterLSMin, vObjLSMin);
+		vCasterLSMax = Vec3::Max(vCasterLSMax, vObjLSMax);
 
 		bHasCaster = true;
 	}
 
 	if (bHasCaster == false)
-		return tOut;
-
-	tOut.casterBounds = BoundingBox((vUnionMin + vUnionMax) * 0.5f, (vUnionMax - vUnionMin) * 0.5f);
-
-	Vec3 vCenter = Vec3(tOut.casterBounds.Center.x, tOut.casterBounds.Center.y, tOut.casterBounds.Center.z);
-	Vec3 vExtents = Vec3(tOut.casterBounds.Extents.x, tOut.casterBounds.Extents.y, tOut.casterBounds.Extents.z);
-
-	Vec3 vUp = Vec3::Up;
-	if (fabs(input.vLightDir.Dot(vUp)) > 0.98f)
-		vUp = Vec3::Forward;
-
-	Matrix matLightView = ::XMMatrixLookAtLH(
-		vCenter - input.vLightDir * vExtents.Length(),
-		vCenter,
-		vUp
-	);
-
-	Vec3 vCorners[8];
-	tOut.casterBounds.GetCorners(vCorners);
-
-	Vec3 vMinLS(FLT_MAX, FLT_MAX, FLT_MAX);
-	Vec3 vMaxLS(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-	for (_int i = 0; i < 8; ++i)
 	{
-		Vec3 vLS = Vec3::Transform(vCorners[i], matLightView);
-		vMinLS = Vec3::Min(vMinLS, vLS);
-		vMaxLS = Vec3::Max(vMaxLS, vLS);
+#if _DEBUG
+		string strLog{
+			"[BakedSection][Skip] "
+			"Grid(" + std::to_string(input.iSectionX) + ", " + std::to_string(input.iSectionZ) + ") " +
+			"Reason(NoValidCasterInQueryBounds)"
+		};
+		CLOG_INFO(strLog);
+#endif
+		return tOut;
 	}
 
-	const _float fPadXY = 2.f;
+	tOut.casterBounds = BoundingBox(
+		(vCasterUnionMin + vCasterUnionMax) * 0.5f,
+		(vCasterUnionMax - vCasterUnionMin) * 0.5f
+	);
+
+	// ===========================================================
+	// Z만 receiver + caster 기준으로 가변
+	// ===========================================================
 	const _float fPadZ = 8.f;
 
-	vMinLS.x -= fPadXY; vMaxLS.x += fPadXY;
-	vMinLS.y -= fPadXY; vMaxLS.y += fPadXY;
-	vMinLS.z -= fPadZ;  vMaxLS.z += fPadZ;
+	_float minZ = (std::min)(vReceiverLSMin.z, vCasterLSMin.z) - fPadZ;
+	_float maxZ = (std::max)(vReceiverLSMax.z, vCasterLSMax.z) + fPadZ;
 
 	Matrix matLightProj = ::XMMatrixOrthographicOffCenterLH(
-		vMinLS.x, vMaxLS.x,
-		vMinLS.y, vMaxLS.y,
-		vMinLS.z, vMaxLS.z
+		minX, maxX,
+		minY, maxY,
+		minZ, maxZ
 	);
 
 	tOut.matLightVP = matLightView * matLightProj;
@@ -2014,8 +2151,62 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 		1.f / SHADOW_BAKE_SIZE,
 		1.f / SHADOW_BAKE_SIZE
 	);
-	CLOG_INFO("finish task x=" + std::to_string(input.iSectionX) + " z=" + std::to_string(input.iSectionZ));
+
 	tOut.bValid = true;
+
+#if _DEBUG
+	{
+		_float fOrthoWidth = maxX - minX;
+		_float fOrthoHeight = maxY - minY;
+		_float fOrthoDepth = maxZ - minZ;
+
+		_float fTexelWorldX = fOrthoWidth / (_float)SHADOW_BAKE_SIZE;
+		_float fTexelWorldY = fOrthoHeight / (_float)SHADOW_BAKE_SIZE;
+
+		string strLog{
+			"[BakedSection] "
+			"Grid(" + std::to_string(input.iSectionX) + ", " + std::to_string(input.iSectionZ) + ") " +
+			"SectionMin(" + std::to_string(input.sectionBounds.Center.x - input.sectionBounds.Extents.x) + ", " +
+							 std::to_string(input.sectionBounds.Center.y - input.sectionBounds.Extents.y) + ", " +
+							 std::to_string(input.sectionBounds.Center.z - input.sectionBounds.Extents.z) + ") " +
+			"SectionMax(" + std::to_string(input.sectionBounds.Center.x + input.sectionBounds.Extents.x) + ", " +
+							 std::to_string(input.sectionBounds.Center.y + input.sectionBounds.Extents.y) + ", " +
+							 std::to_string(input.sectionBounds.Center.z + input.sectionBounds.Extents.z) + ") " +
+
+			"ReceiverLS_Min(" + std::to_string(vReceiverLSMin.x) + ", " +
+								 std::to_string(vReceiverLSMin.y) + ", " +
+								 std::to_string(vReceiverLSMin.z) + ") " +
+			"ReceiverLS_Max(" + std::to_string(vReceiverLSMax.x) + ", " +
+								 std::to_string(vReceiverLSMax.y) + ", " +
+								 std::to_string(vReceiverLSMax.z) + ") " +
+
+			"CasterCount(" + std::to_string(tOut.vecCasters.size()) + ") " +
+
+			"CasterLS_Min(" + std::to_string(vCasterLSMin.x) + ", " +
+							   std::to_string(vCasterLSMin.y) + ", " +
+							   std::to_string(vCasterLSMin.z) + ") " +
+			"CasterLS_Max(" + std::to_string(vCasterLSMax.x) + ", " +
+							   std::to_string(vCasterLSMax.y) + ", " +
+							   std::to_string(vCasterLSMax.z) + ") " +
+
+			"FinalXY(" + std::to_string(minX) + "~" + std::to_string(maxX) + ", " +
+						   std::to_string(minY) + "~" + std::to_string(maxY) + ") " +
+			"FinalZ(" + std::to_string(minZ) + "~" + std::to_string(maxZ) + ") " +
+
+			"OrthoWHD(" + std::to_string(fOrthoWidth) + ", " +
+						   std::to_string(fOrthoHeight) + ", " +
+						   std::to_string(fOrthoDepth) + ") " +
+
+			"TexelWS(" + std::to_string(fTexelWorldX) + ", " +
+						  std::to_string(fTexelWorldY) + ")" + 
+
+			"BroadPhase(" + std::to_string(iBroadPhaseHitCount) + ") " +
+			"Accepted(" + std::to_string(iAcceptedCasterCount) + ") "
+		};
+		CLOG_INFO(strLog);
+	}
+#endif
+
 	return tOut;
 }
 
@@ -2063,6 +2254,22 @@ HRESULT CRender_Manager::Render_BakedSection_ToArray(const BAKED_SECTION_BUILD_R
 	tDesc.fShadowBias = job.vShadowParams.x;
 	tDesc.fShadowStrength = job.vShadowParams.y;
 	tDesc.vShadowMapInvSize = Vec2(job.vShadowParams.z, job.vShadowParams.w);
+
+#if _DEBUG
+	{
+		string strLog{
+			"[BakedRender] "
+			"Grid(" + std::to_string(job.iSectionX) + ", " + std::to_string(job.iSectionZ) + ") " +
+			"Slice(" + std::to_string(iSlice) + ") " +
+			"CasterCount(" + std::to_string(job.vecCasters.size()) + ") " +
+			"Bias(" + std::to_string(job.vShadowParams.x) + ") " +
+			"Strength(" + std::to_string(job.vShadowParams.y) + ") " +
+			"InvSize(" + std::to_string(job.vShadowParams.z) + ", " +
+						 std::to_string(job.vShadowParams.w) + ")"
+		};
+		CLOG_INFO(strLog);
+	}
+#endif
 
 	if (FAILED(m_pCB_BakedShadow->Copy_Data(tDesc)))
 		return E_FAIL;
@@ -2139,6 +2346,41 @@ HRESULT CRender_Manager::Update_ActiveBakedSections()
 
 	m_bActiveBakedSectionDirty = false;
 
+#ifdef _DEBUG
+	{
+		CCameraMan* pMainCamera = m_pGameInstance->Get_MainCamera();
+		if (pMainCamera)
+		{
+			CTransform* pTransform = pMainCamera->Get_Component<CTransform>();
+			Vec3 vCamPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+			string strLog{
+				"[BakedActive] "
+				"CamPos(" + std::to_string(vCamPos.x) + ", " +
+							 std::to_string(vCamPos.y) + ", " +
+							 std::to_string(vCamPos.z) + ") " +
+				"MainSection(" + std::to_string(iCenterX) + ", " +
+								 std::to_string(iCenterZ) + ") " +
+				"ActiveCount(" + std::to_string(m_tActiveBakedSet.iCount) + ")"
+			};
+			CLOG_INFO(strLog);
+		}
+
+		for (_uint i = 0; i < m_tActiveBakedSet.iCount; ++i)
+		{
+			const auto& tSection = m_tActiveBakedSet.sections[i];
+
+			string strLog{
+				"[BakedActive][Slot] "
+				"Slot(" + std::to_string(i) + ") " +
+				"Grid(" + std::to_string(tSection.iSectionX) + ", " +
+						   std::to_string(tSection.iSectionZ) + ") " +
+				"Slice(" + std::to_string(tSection.iArraySlice) + ")"
+			};
+			CLOG_INFO(strLog);
+		}
+	}
+#endif
 	return Update_ActiveBakedSectionBuffer();
 }
 
@@ -2375,37 +2617,33 @@ HRESULT CRender_Manager::Create_BakedShadowSliceSRV()
 	D3D11_TEXTURE2D_DESC srcDesc{};
 	pTextureArray->GetDesc(&srcDesc);
 
-	D3D11_TEXTURE2D_DESC desc{};
-	desc.Width = srcDesc.Width;
-	desc.Height = srcDesc.Height;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = srcDesc.Format;
-	desc.SampleDesc = srcDesc.SampleDesc;
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0;
+	if (m_pBakedShadowDebugSRV == nullptr)
+	{
+		D3D11_TEXTURE2D_DESC desc{};
+		desc.Width = srcDesc.Width;
+		desc.Height = srcDesc.Height;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = srcDesc.Format;
+		desc.SampleDesc = srcDesc.SampleDesc;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
 
-	if (FAILED(m_pDevice->CreateTexture2D(&desc, nullptr, &m_pBakedShadowDebugTex)))
-		return E_FAIL;
+		if (FAILED(m_pDevice->CreateTexture2D(&desc, nullptr, &m_pBakedShadowDebugTex)))
+			return E_FAIL;
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = desc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = 1;
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		srvDesc.Format = desc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = 1;
 
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pBakedShadowDebugTex, &srvDesc, &m_pBakedShadowDebugSRV)))
-		return E_FAIL;
+		if (FAILED(m_pDevice->CreateShaderResourceView(m_pBakedShadowDebugTex, &srvDesc, &m_pBakedShadowDebugSRV)))
+			return E_FAIL;
+	}
 
-	return S_OK;
-}
-
-HRESULT CRender_Manager::Ready_Debug()
-{
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Normal, 150.f, 150.f, 300.f, 300.f)))
-		return E_FAIL;
 	return S_OK;
 }
 

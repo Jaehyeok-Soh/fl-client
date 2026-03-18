@@ -43,7 +43,6 @@ void CImGui_ShaderDebugLayout::Render(CGameObject* pGo)
 		{"Bloom_Ping", ERenderTarget::Bloom_Ping},
         {"Cascade_0", ERenderTarget::Cascade_0},
         {"Cascade_1", ERenderTarget::Cascade_1},
-        {"BakedShadow", ERenderTarget::Shadow_Baked},
         {"OIT_Accum", ERenderTarget::OIT_Accum},
         {"OIT_Reveal", ERenderTarget::OIT_Reveal},
 	};

@@ -794,9 +794,9 @@ HRESULT CGameInstance::Set_BakedShadowConstantBuffer(CShader* pShader)
 	return m_pRender_Manager->Set_BakedShadowConstantBuffer(pShader);
 }
 
-HRESULT CGameInstance::Bake_StaticShadow()
+HRESULT CGameInstance::Bake_StaticShadow(BoundingBox* pRootBox)
 {
-	if (FAILED(m_pRender_Manager->Initialize_BakedShadowSections()))
+	if (FAILED(m_pRender_Manager->Initialize_BakedShadowSections(pRootBox)))
 		return E_FAIL;
 
 	if (FAILED(m_pRender_Manager->Build_BakedShadowSections()))

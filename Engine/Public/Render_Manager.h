@@ -45,7 +45,7 @@ public:
 	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
 	HRESULT Set_BakedShadowConstantBuffer(class CShader* pShader);
 
-	HRESULT Initialize_BakedShadowSections();
+	HRESULT Initialize_BakedShadowSections(BoundingBox* pRootBox);
 	HRESULT Build_BakedShadowSections();
 private:	
 	HRESULT Render_Priority();
@@ -234,7 +234,6 @@ private:
 	ID3D11Texture2D* m_pBakedShadowDebugTex = nullptr;
 	ID3D11ShaderResourceView* m_pBakedShadowDebugSRV = nullptr;
 	_int m_iBakedShadowDebugSlice = -1;
-	HRESULT Ready_Debug();
 	HRESULT Render_Debug();
 #endif
 };

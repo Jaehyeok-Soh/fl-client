@@ -495,8 +495,8 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
 	CQuestManager::GetInstance()->Start_Quest(0);
-	if (FAILED(m_pGameInstance->Bake_StaticShadow()))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Bake_StaticShadow()))
+	//	return E_FAIL;
 	return S_OK;
 }
 

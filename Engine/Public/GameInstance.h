@@ -260,7 +260,7 @@ public:
 	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
 	HRESULT Set_BakedShadowConstantBuffer(class CShader* pShader);
-	HRESULT Bake_StaticShadow();
+	HRESULT Bake_StaticShadow(BoundingBox* pRootBox);
 #ifdef _DEBUG
 	inline void Push_DebugComponent(class CComponent* pComp);
 #endif
