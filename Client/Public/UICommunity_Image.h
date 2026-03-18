@@ -39,6 +39,13 @@ private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
+private:
+	_bool m_isClick = { false };
+
+	Vec4 m_vOriginColor = {};
+	Vec4 m_vOriginGradColor = {};
+
+	_bool m_isPaulse = { false };
 
 public:
 	static CUICommunity_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
