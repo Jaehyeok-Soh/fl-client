@@ -41,6 +41,15 @@ _bool CPhysics_RagdollSystem::CheckRagdollState(int64 objID)
 	return false;
 }
 
+_bool CPhysics_RagdollSystem::CheckRagDollState_Processing(uint64 objID) 
+{
+	auto item = m_umapRegisteredMap.find(objID);
+	if (item == m_umapRegisteredMap.end())
+		return false;
+
+	return item->second.second == ERagdollState::PROCESSING;
+}
+
 RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc)
 {
 	RAGDOLLELEMENTS elements{};

@@ -400,6 +400,7 @@ public:
 	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
 
 	_bool CheckRagdollState(int64 objID);
+	_bool CheckRagDollState_Processing(int64 objID);
 	void RagdollRegister(CGameObject* obj);
 	void RagdollUnregister(int64 objID);
 	void RagdollRequestStart(uint64 objID);

@@ -26,6 +26,7 @@ CMonster_Body_Base::CMonster_Body_Base(ID3D11Device* pDevice, ID3D11DeviceContex
 CMonster_Body_Base::CMonster_Body_Base(const CMonster_Body_Base& rhs)
 	: Super(rhs)
 	, m_bRagDollOn(rhs.m_bRagDollOn)
+	, m_bRagDollOnPre(rhs.m_bRagDollOnPre)
 {
 }
 
@@ -72,27 +73,43 @@ void CMonster_Body_Base::Update_Priority(_float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 
-	auto model = Get_Component<CModel>();
 	// 어 근데 부모의 id를 넣어줘야 하는거 아님? 
 	if (m_bRagDollOn = m_pGameInstance->CheckRagdollState(Get_ID()))
 	{
+		auto model = Get_Component<CModel>();
 		auto animIdx = model->Get_CurrentAnimationIndex();
 		m_pGameInstance->RagdollSyncStates(Get_ID(), model->Get_Animation(animIdx)->Get_Channels());
 	}
 
-	// model 쪽에 ragdoll onoff
-	model->Set_ApplyRagDoll(m_bRagDollOn);
+	Get_Component<CModel>()->Set_ApplyRagDoll(m_bRagDollOn);
 }
 
 void CMonster_Body_Base::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if (m_bRagDollOn)
+	if (m_bRagDollOn) // awake 때는 호출 하지 않기 위함
 	{
-		// ragdoll 값 바인딩
-		Get_Component<CPhysicsRagdoll>()->Bind_RagDollCS_MuData(m_pRagDollCS);
+		// toggle 됐을때 : awake
+		if (m_bRagDollOnPre == false)
+		{
+			// awake 때는 on이 되면 안 되므로 방어
+			Get_Component<CModel>()->Set_ApplyRagDoll(false);
+			m_bRagDollOnPre = true;
+		}
+
+		else if (m_bRagDollOnPre)
+		{
+			// ragdoll 값 바인딩
+			Get_Component<CPhysicsRagdoll>()->Bind_RagDollCS_MuData(m_pRagDollCS);
+		}
 	}
+
+	else
+	{
+		m_bRagDollOnPre = false;
+	}
+
 
 	{
 		Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,

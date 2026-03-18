@@ -64,6 +64,7 @@ protected:
 	CComputeShader* m_pRagDollCS{ nullptr };
 
 protected:
+	_bool m_bRagDollOnPre = { false };
 	_bool m_bRagDollOn = { false };
 
 public:
