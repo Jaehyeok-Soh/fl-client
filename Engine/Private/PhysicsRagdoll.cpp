@@ -76,9 +76,9 @@ void CPhysicsRagdoll::Awake(vector<CChannel*>& vecChannels)
 			return;
 		}
 
-		KEYFRAME lastKeyframe = vecChannels[link.second.iBoneIndex]->Get_KeyFrames().back();
-		Vec3 translation = lastKeyframe.vTranslation;
-		Vec4 quaternion = lastKeyframe.vQuaterion;
+		KEYFRAME	lastKeyframe = vecChannels[link.second.iBoneIndex]->Get_KeyFrames().back();
+		Vec3		translation = lastKeyframe.vTranslation;
+		Vec4		quaternion = lastKeyframe.vQuaterion;
 
 		PxQuat pxRot = PxQuat(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 		pxRot.normalize();
@@ -122,9 +122,74 @@ void CPhysicsRagdoll::Awake(vector<CChannel*>& vecChannels)
 	}
 }
 
+void CPhysicsRagdoll::Awake()
+{
+	if (m_pGameInstance->CheckRagdollState(m_iObjectID) == false)
+		return;
+
+	m_pGameInstance->RemoveRagdoll(m_tRagdollElements.pArticulation);
+
+	Matrix objectWorld = static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix();
+	PxTransform pxObjectWorld = m_pGameInstance->XMMatrixToPxTransform(objectWorld);
+	vector<CBone*>& vecBone = m_pSharedModel->Get_Bones();
+
+	if (pxObjectWorld.q.magnitudeSquared() < 1e-6f)
+		pxObjectWorld.q = PxQuat(PxIdentity);
+	else
+		pxObjectWorld.q.normalize();
+
+	pxObjectWorld.p.y += 1.f;
+
+	{
+		auto& link = m_tRagdollElements.vecPhysicsLink[RAGDOLLJOINT::PELVIS];
+
+		PxTransform pose = link.first->getGlobalPose();
+		if (!pose.isValid())
+		{
+			MSG_BOX("failed awake : invalid pose : ragdoll");
+			return;
+		}
+
+		_uint i = { 0 };
+		//for (auto& link : m_tRagdollElements.vecPhysicsLink)
+		{
+			int boneIndex = link.second.iBoneIndex;
+
+			Matrix boneCombined = vecBone[boneIndex]->Get_CombinedTransformMatrix();
+
+
+			PxTransform pxBoneCombine = m_pGameInstance->XMMatrixToPxTransform(boneCombined);
+
+			PxTransform pxGlobal = pxObjectWorld * pxBoneCombine;
+			//PxTransform finalPose = pxGlobal * link.second.matOffsetTransform;
+			if (!pxGlobal.q.isFinite() || pxGlobal.q.magnitudeSquared() < 1e-6f)
+				pxGlobal.q = PxQuat(PxIdentity);
+			else
+				pxGlobal.q.normalize();
+
+			if (!pxGlobal.p.isFinite())
+				return;
+
+
+			//link.first->setGlobalPose(pxBoneWorld, false);
+
+			if(i == 0)
+				m_tRagdollElements.pArticulation->setRootGlobalPose(pxGlobal, false);
+			//else
+			//	link.first->setGlobalPose(pxGlobal, false);
+
+			i++;
+		}
+
+		m_pGameInstance->AddRagdoll(m_tRagdollElements.pArticulation);
+
+		m_tRagdollElements.pArticulation->wakeUp();
+	}
+}
+
 void CPhysicsRagdoll::Update()
 {
-	Matrix objectWorldInverse = static_cast<CPartObject*>(Get_Owner())->Get_Component<CTransform>()->Get_WorldMatrix_Inverse();
+	Matrix objectWorldInverse = static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>()->Get_WorldMatrix_Inverse();
 	_uint iRagDollSize = ENUM_TO_UINT(ERagdollJoint::END);
 	CS_OUT_BONE* pInitialData = new CS_OUT_BONE[iRagDollSize];
 	// 1패스: 오브젝트 공간 combined 먼저 전부 계산
@@ -134,7 +199,7 @@ void CPhysicsRagdoll::Update()
 		if (!link.first) continue;
 		PxTransform pose = link.first->getGlobalPose();
 		Matrix matGlobal = m_pGameInstance->PxTransformToXMMatrix(pose);
-		m_tRagdollElements.vecRagdollLiveTransform[i] = objectWorldInverse *matGlobal ;
+		m_tRagdollElements.vecRagdollLiveTransform[i] = matGlobal * objectWorldInverse;
 	}
 	// 2패스: combined → bone-local 변환
 	for (_int i = 0; i < RAGDOLLJOINT::END; i++)
@@ -152,7 +217,7 @@ void CPhysicsRagdoll::Update()
 		{
 			// 부모 combined 역행렬 * 자신 combined = bone-local
 			Matrix matParentCombined = m_tRagdollElements.vecRagdollLiveTransform[eParentJoint];
-			matBoneLocal = matParentCombined.Invert() * matCombined;
+			matBoneLocal = matCombined * matParentCombined.Invert();// * matCombined;
 		}
 		pInitialData[i].matCombinedTransform = matBoneLocal;
 	}
@@ -344,6 +409,37 @@ PxTransform CPhysicsRagdoll::BoneCombine(class CBone* pCurrentJoint, PxTransform
 	pxTemp.q.normalize();
 
 	pxTemp = BoneCombine(bone, pxTemp, pParentJoint, vecChannels, vecBone);
+
+	return pxTemp;
+}
+
+PxTransform CPhysicsRagdoll::BoneCombine(CBone* pCurrentJoint, PxTransform pxLocal, CBone* pParentJoint, vector<class CBone*>& vecBone)
+{
+	PxTransform pxTemp = pxLocal;
+
+	_int parentIndex = pCurrentJoint->Get_ParentIndex();
+
+	if (parentIndex < 0 || vecBone[parentIndex] == pParentJoint)
+		return pxTemp;
+
+	auto& bone = vecBone[parentIndex];
+
+	Matrix matCombine = bone->Get_CombinedTransformMatrix();
+
+	PxTransform pxParentLocal = m_pGameInstance->XMMatrixToPxTransform(matCombine);
+
+	if (pxParentLocal.q.magnitudeSquared() < 1e-6f)
+		pxParentLocal.q = PxQuat(PxIdentity);
+	else
+		pxParentLocal.q.normalize();
+
+	pxParentLocal.p.y += 1.f;
+
+
+	pxTemp = pxParentLocal * pxTemp;
+	pxTemp.q.normalize();
+
+	pxTemp = BoneCombine(bone, pxTemp, pParentJoint, vecBone);
 
 	return pxTemp;
 }

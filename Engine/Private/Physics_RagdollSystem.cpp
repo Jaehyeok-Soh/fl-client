@@ -198,7 +198,8 @@ void CPhysics_RagdollSystem::Awake(uint64 objID, vector<class CChannel*>& vecCha
 
 	item->second.second = ERagdollState::PROCESSING;
 
-	item->second.first->Get_Component<CPhysicsRagdoll>()->Awake(vecChannels);
+	//item->second.first->Get_Component<CPhysicsRagdoll>()->Awake(vecChannels);
+	item->second.first->Get_Component<CPhysicsRagdoll>()->Awake();
 }
 
 void CPhysics_RagdollSystem::Process(uint64 objID, vector<class CChannel*>& vecChannels)
