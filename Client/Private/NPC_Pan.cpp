@@ -64,6 +64,7 @@ HRESULT CNPC_Pan::Initialize(void* pArg)
 
 	// 상호작용
 	{
+		Set_Interact_Disable();
 		Set_Interact_DefaultDisable();
 		Interact_SetDefaultDialogue(3);
 	}
