@@ -4,9 +4,12 @@
         {
             "setStates": [
                 "Appear",
+                "Chase",
                 "Disappear",
                 "Idle",
-                "Interact"
+                "Interact",
+                "To_Chase_Action",
+                "To_Teleport_Disappear"
             ],
             "strTag": "NPC_Pan",
             "vecMonsterStateDesc": [
@@ -20,9 +23,12 @@
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
+                        "Chase",
                         "Disappear",
                         "Idle",
-                        "Interact"
+                        "Interact",
+                        "To_Chase_Action",
+                        "To_Teleport_Disappear"
                     ],
                     "strName": "Idle",
                     "tStateCoolDownTime": {
@@ -36,14 +42,14 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 1.0,
+                        "fMinTime": 10.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
-                            "strFeature": "feat_chase",
+                            "strFeature": "feat_set_target_offset",
                             "tParam": {
                                 "bParam": [
                                     false,
@@ -53,7 +59,7 @@
                                 ],
                                 "fParam": [
                                     0.0,
-                                    0.0,
+                                    1.0,
                                     0.0,
                                     0.0
                                 ],
@@ -74,11 +80,71 @@
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
-                                "Idle": 100.0
+                                "Chase": 100.0
                             },
                             "vecConditionEntry": [
                                 {
-                                    "strCondition": "condition_true_always",
+                                    "strCondition": "condition_target_out_of_melee_attack",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Interact": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "To_Teleport_Disappear": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_lost",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -115,9 +181,12 @@
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
+                        "Chase",
                         "Disappear",
                         "Idle",
-                        "Interact"
+                        "Interact",
+                        "To_Chase_Action",
+                        "To_Teleport_Disappear"
                     ],
                     "strName": "Appear",
                     "tStateCoolDownTime": {
@@ -186,9 +255,12 @@
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
+                        "Chase",
                         "Disappear",
                         "Idle",
-                        "Interact"
+                        "Interact",
+                        "To_Chase_Action",
+                        "To_Teleport_Disappear"
                     ],
                     "strName": "Disappear",
                     "tStateCoolDownTime": {
@@ -257,9 +329,12 @@
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
+                        "Chase",
                         "Disappear",
                         "Idle",
-                        "Interact"
+                        "Interact",
+                        "To_Chase_Action",
+                        "To_Teleport_Disappear"
                     ],
                     "strName": "Interact",
                     "tStateCoolDownTime": {
@@ -288,6 +363,354 @@
                         {
                             "mapRandomStatePool": {
                                 "Idle": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Appear",
+                        "Chase",
+                        "Disappear",
+                        "Idle",
+                        "Interact",
+                        "To_Chase_Action",
+                        "To_Teleport_Disappear"
+                    ],
+                    "strName": "Chase",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [
+                        {
+                            "strFeature": "feat_chase",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        {
+                            "strFeature": "feat_set_target_offset",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    1.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        }
+                    ],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_NPC_Pan_PetPan_Idle"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_in_melee_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "To_Teleport_Disappear": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_lost",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Appear",
+                        "Chase",
+                        "Disappear",
+                        "Idle",
+                        "Interact",
+                        "To_Chase_Action",
+                        "To_Teleport_Disappear"
+                    ],
+                    "strName": "To_Chase_Action",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_NPC_Pan_PetPan_Idle_random2"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Chase": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Appear",
+                        "Chase",
+                        "Disappear",
+                        "Idle",
+                        "Interact",
+                        "To_Chase_Action",
+                        "To_Teleport_Disappear"
+                    ],
+                    "strName": "To_Teleport_Disappear",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_geniemon_smart_chase",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        1.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_NPC_Pan_PetPan_Disappear"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Appear": 100.0
                             },
                             "vecConditionEntry": [
                                 {

@@ -516,7 +516,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN_POS_TEX input)
     float fToonDiffuse = ComputeToonDiffuse(vNormal, vLightDir);
 
     // 기존 PBR diffuse와 같은 의미로 1/PI를 유지한다.
-    float3 vDiffuseBRDF = vKD / PI;
+    float3 vDiffuseBRDF = vKD;
 
     // Point light radiance를 만든다.
     float3 vRadiance = Light.vDiffuse.rgb * fAtt;

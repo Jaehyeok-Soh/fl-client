@@ -11,6 +11,7 @@ CPointLight::CPointLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	, m_fFlickerMin{ 0.5f }
 	, m_fBaseRange{ 1.f }
 	, m_fAccDT{0.f}
+	, m_isRenderModel{false}
 {
 }
 
@@ -22,6 +23,7 @@ CPointLight::CPointLight(const CPointLight& rhs)
 	, m_fFlickerMin{ rhs.m_fFlickerMin }
 	, m_fBaseRange{ rhs.m_fBaseRange }
 	, m_fAccDT{ rhs.m_fAccDT }
+	, m_isRenderModel{rhs.m_isRenderModel }
 {
 }
 
@@ -43,6 +45,8 @@ HRESULT CPointLight::Initialize(void* pArg)
 
 	m_isFlicker				= pDesc->isFlicker;
 	m_fBaseRange			= pDesc->tLightDesc.fRange;
+	m_isRenderModel			= pDesc->isRenderModel;
+
 
 	if (m_isFlicker)
 	{
@@ -54,6 +58,10 @@ HRESULT CPointLight::Initialize(void* pArg)
 	if (FAILED(Ready_Light(pDesc->tLightDesc)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Model(pDesc->wstrModelName)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -61,6 +69,16 @@ HRESULT CPointLight::Ready_Light(const LIGHT_DESC& tLightDesc)
 {
 	m_pLight = CLight::Create(tLightDesc);
 	if (m_pLight == nullptr) return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CPointLight::Ready_Model(const wstring& wstrModelName)
+{
+	if (!m_isRenderModel) return S_OK;
+
+
+	//const wstring& wstrModelFullTag = g_wszModelPrototypeTag + wstrModelName;
 
 	return S_OK;
 }
@@ -82,19 +100,19 @@ void CPointLight::Update_Priority(const _float fTimeDelta)
 void CPointLight::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	m_fAccDT += fTimeDelta;
+	if (m_isFlicker)
+	{
+		float fSinValue = sinf(m_fAccDT * m_fFlickerSpeed);	/* -1 ~ 1 사이 값 */
+		fSinValue = (fSinValue + 1.f) * 0.5f;			/* 0.f ~ 1.f 사이값으로 변환 */
+		float fFinalLightRangeRatio = m_fFlickerMin + fSinValue * (1.f - m_fFlickerMin);
+		m_pLight->Setup_Range(m_fBaseRange * fFinalLightRangeRatio);
+	}
 
-	if (m_isFlicker == false) return;
 
 	/* 깜빡거리는 애들이라면 프레임단위로 계산해준다 */
-	m_fAccDT += fTimeDelta;
-
-	float fSinValue					= sinf(m_fAccDT * m_fFlickerSpeed);	/* -1 ~ 1 사이 값 */
-	fSinValue						= (fSinValue + 1.f) * 0.5f;			/* 0.f ~ 1.f 사이값으로 변환 */
-	float fFinalLightRangeRatio		= m_fFlickerMin + fSinValue * (1.f - m_fFlickerMin);
-
-	m_pLight->Setup_Range(m_fBaseRange * fFinalLightRangeRatio);
 	Vec3 vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-	m_pLight->Setup_Position(Vec4(vPos.x, vPos.y, vPos.z,1.f));
+	m_pLight->Setup_Position(Vec4(vPos.x, vPos.y, vPos.z, 1.f));
 }
 
 void CPointLight::Update_Late(const _float fTimeDelta)

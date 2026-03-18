@@ -82,12 +82,6 @@ HRESULT CNPC_Base::Initialize(void* pArg)
 	//if (FAILED(Ready_EffectHandler(pArg)))
 	//	return E_FAIL;
 
-	// 상호작용
-	{
-		Interact_SetDefaultDialogue(0);
-		Set_Interact_DefaultEnable();
-	}
-
 	return S_OK;
 }
 

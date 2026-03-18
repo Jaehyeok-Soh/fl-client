@@ -72,6 +72,7 @@
 #include "SocketObject.h"
 #include "SkyBox.h"
 #include "PointLight.h"
+#include "EnvObject.h"
 #include "BonePart.h"
 
 //=================
@@ -188,6 +189,7 @@
 //=================
 // Resource
 //=================
+#include <fstream>
 #include "TextureBase.h"
 #include "Model.h"
 #include "ModelLoader.h"
@@ -328,25 +330,9 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 	/////////// Ready GlobalEvent ///////////
 	/////////////////////////////////////////
-	/* Global */
-	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
+	if (FAILED(Ready_CCS()))
+		return S_OK;
 
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
-
-	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
-	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_OFF);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
-
-
-
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_DIRECTION);
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_IDLE);
 
 
 #pragma endregion
@@ -778,6 +764,9 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszVine_Prototype_Tag,						CVine::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszRock_Prototype_Tag,						CRock::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
+
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszEnvObject_Prototype_Tag,					CEnvObject::Create(m_pDevice, m_pDeviceContext));
+
 
 		/* Invisible Wall */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszInvisibleWall_Prototype_Tag,				CInvisibleWall::Create(m_pDevice, m_pDeviceContext));
@@ -1496,6 +1485,33 @@ HRESULT CLoader::Ready_AttackOverlap_Xibi()
 	return S_OK;
 }
 
+HRESULT CLoader::Ready_CCS()
+{
+	/* Global */
+	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
+
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
+
+	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
+	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
+
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_ON);
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_OFF);
+
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
+
+
+
+	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_DIRECTION);
+	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_IDLE);
+
+
+
+	return S_OK;
+}
+
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 {
 	CLoader* pInstance = new CLoader(pDevice, pDeviceContext, eLoadingLevelID);
@@ -1523,3 +1539,22 @@ void CLoader::Free()
 
 	Super::Free();
 }
+
+
+
+
+
+#pragma region CCS Data from Json
+//void from_json(const json& LoadJson, CCS_EVENT_MANIFEST& tData)
+//{
+//	if (LoadJson.contains("Subscriber Name"))
+//	{
+//		tData.strSubscriberName = LoadJson["Subscriber Name"].get<std::string>();
+//	}
+//
+//	if (LoadJson.contains("Action Names"))
+//	{
+//		tData.vecActionNames = LoadJson["Action Names"].get<std::vector<std::string>>();
+//	}
+//}
+#pragma endregion

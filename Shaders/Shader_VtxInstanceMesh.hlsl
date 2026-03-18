@@ -160,55 +160,6 @@ VS_OUT_INST_MESH VS_GRASS(VS_IN_INST_MESH input)
     // 밀어내는 힘도 긴 풀에 맞춰서 살짝(0.2f)으로 줄임
     output.vPosition.xyz += vPushDir * (fProximity * 0.2f * fCenterSafe) * fSwayWeight;
     
-    
-    //float3 vGrassRootPos = float3(input.matTransform._41, input.matTransform._42, input.matTransform._43);
-    
-    
-    //float4 vLocalRoot = float4(input.vPosition.x, 0.0f, input.vPosition.z, 1.0f);
-    //// 2. 이 로컬 뿌리를 월드 행렬과 곱해서 '진짜 개별 풀잎의 월드 뿌리'를 구한다!
-    //float3 vBladeRootWorld = mul(vLocalRoot, input.matTransform).xyz;
-    
-    //// Step1 플레이어와 충돌처리
-    //float3 vPlayerPos = float3(tPlayerInfo.matWorld._41, tPlayerInfo.matWorld._42, tPlayerInfo.matWorld._43); // 플레이어 위치좌표
-    //float fYDiff = vGrassRootPos.y - vPlayerPos.y; // 플레이어의 중점좌표와 , 현재 Grass Vertex의 Y좌표 까지의 길이 월드상에서의 길이 값
-    //float fYOverHead = max(0.f, fYDiff - tPlayerInfo.fCollisionHeight); //  방금 구한 월드상에서의 fYDiff 플레이어의 콜리전 Y높이빼서 길이를 구한다 만약 -라면 0 
-    //float fUnderFeet = max(0.f, -fYDiff); // 월드상에서 fYDiff = 길이값을 구했을떄 - 였다면 - 를 곱해주어 +가 되고 그대로 값이 들어가고 아니면 0 이되겠지
-    //float fVerticalOutDist = fYOverHead + fUnderFeet; // 캐릭터 몸통 구간을 벗어난 총 수직거리 둘중하나일테니까 둘다 해당하지않는다면 0 0 으로 그냥 기본값으로 꺽이게되고 그 이상 ,이하라면 그에따라 값을 처리해준다
-   
-
-    
-    //float fPushStrength = 0.45f; //tPlayerInfo.fPushPower;
-    //float fFalloffMargin = 0.5f; //tPlayerInfo.fMargin;
-    //float fHeightFalloff = saturate(1.0f - (fVerticalOutDist / fFalloffMargin)); // Margin = 거리의 최대값 각 벗어난 범이의 최대값을 지정해주고 그 지정된값을 넘어가면 0으로 처리해준다.
-    
-    
-    //float3 vDirPlayerToGrass = vGrassRootPos - vPlayerPos;
-    //vDirPlayerToGrass.y = 0.f;
-    //float fDistPlayerToGrassXZ = length(vDirPlayerToGrass);
-    //float fPushPower = 1.0f - smoothstep(0.0f, tPlayerInfo.fCollisionRange * 1.5f, fDistPlayerToGrassXZ);
-    
-    //float3 vPushDir = fDistPlayerToGrassXZ > 0.0f ? normalize(vDirPlayerToGrass) : float3(1.f, 0.f, 0.f); // 밀릴 방향값
-    //float fFinalInteractionPower = fPushPower * fHeightFalloff; //플레이어 와 충돌처리 끝나고의 Insteractive Power
-    
-    
-    //// Step2 바람관련
-    //// LocalY 좌표를 현재 모델의 Max의 Y좌표를 나눠주어 현재 Y값의 비율을 알려준다
-    //float fSwayWeight = saturate(input.vPosition.y / g_fGrassMaxHeight);
-    //float2 vInstancePosXZ = float2(input.matTransform._41, input.matTransform._43);
-    //float fRandom = frac(sin(dot(vInstancePosXZ, float2(12.9898f, 78.233f))) * 43758.5453f);
-    
-    //float fWindPhase = (g_fGrassDT * g_fGrassSwaySpeed) + (output.vPosition.x * g_fGrassWaveSize) + (output.vPosition.z * g_fGrassWaveSize) + (fRandom * 3.141592f);
- 
-    //float fRandomPower = fWindPower * (0.5f + (fRandom * 0.5f));
-    //float fSway = sin(fWindPhase) * fRandomPower;
-    //float fWindAttenuation = 1.0f - fFinalInteractionPower;
-    
-    // 풀의 바람 연산 후 포지션
-    //output.vPosition.xyz += (vWindDirection * fSway * fSwayWeight * fWindAttenuation);
-    
-    // 풀 충돌처리 연산 후 포지션
-    //output.vPosition.xyz += vPushDir * fPushPower * fHeightFalloff * fSwayWeight * fPushStrength;
-    
     output.vWorldPos = output.vPosition;
     output.vPosition = mul(output.vPosition, VP);
     output.vUV = input.vUV;
@@ -253,7 +204,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_INST_MESH input)
 
 PS_OUT_DEFFERED PS_TREE(PS_IN_INST_MESH input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
     
     float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
     
@@ -288,7 +239,7 @@ PS_OUT_DEFFERED PS_TREE(PS_IN_INST_MESH input)
 
 PS_OUT_DEFFERED PS_MOSS(PS_IN_INST_MESH input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
     
     float4 vDiffuse = 1.f;
     Compute_Diffse(vDiffuse, input.vUV);
@@ -347,7 +298,7 @@ PS_OUT_DEFFERED PS_VINE(PS_IN_INST_MESH input)
 
 PS_OUT_DEFFERED PS_GRASS(PS_IN_INST_MESH input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
     
     float4 vDiffuse = 1.f;
     
@@ -385,7 +336,7 @@ PS_OUT_DEFFERED PS_GRASS(PS_IN_INST_MESH input)
 
 PS_OUT_DEFFERED PS_BUSH(PS_IN_INST_MESH input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED)0;
     
     float4 vDiffuse = 1.f;
     

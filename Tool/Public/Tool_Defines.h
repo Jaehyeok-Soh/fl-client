@@ -289,6 +289,9 @@ namespace Tool
 	inline constexpr wchar_t g_wszCollider_Sphere_Prototype_Tag[]	{ L"Prototype_Component_Collider_Sphere" };
 	inline constexpr wchar_t g_wszCollider_OBB_Prototype_Tag[]		{ L"Prototype_Component_Collider_OBB" };
 
+	inline constexpr _tchar g_wszCameraCinematicData_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json" };
+	inline constexpr _tchar g_wszCameraCinematicSequnceEventManifest_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CCS_EventManifest.json" };
+
 
 
 	inline constexpr _tchar g_wszPreviewObejctModelPath		[]{L"L../../Resources/Models/Map/Level/MakeObjectPreview/Model/"};
@@ -410,7 +413,7 @@ namespace Tool
 		Vine,
 		Rock,
 		Water,
-		Fog,
+		Env,
 
 		/*  생성 위치 잡아주는 역할  */
 		Batch_Player,
@@ -468,7 +471,7 @@ namespace Tool
 
 			/* ------------------환경 요소---------------- */
 		case Tool::EClientMakePath::Water:									return "Water";
-		case Tool::EClientMakePath::Fog:									return "Fog";
+		case Tool::EClientMakePath::Env:									return "Env";
 			/* ------------------------------------------- */
 
 			/*  --------- 생성 위치 잡아주는 역할 ---------*/
@@ -505,7 +508,7 @@ namespace Tool
 		if (strType == "Vine")												return EClientMakePath::Vine;
 		if (strType == "Rock")												return EClientMakePath::Rock;
 		if (strType == "Water")												return EClientMakePath::Water;
-		if (strType == "Fog")												return EClientMakePath::Fog;
+		if (strType == "Env")												return EClientMakePath::Env;
 
 		/* 생성 위치관련 */
 		if (strType == "Batch_Player")										return EClientMakePath::Batch_Player;
@@ -992,9 +995,9 @@ namespace Tool
 		return EUITutorialPopUpTypeID::END;
 	}
 
+	HRESULT Load_CCS_EventManifest(OUT vector<struct CCS_EVENT_MANIFEST>* pOutData);
+	HRESULT Save_CCS_EventManifest(const vector<struct CCS_EVENT_MANIFEST>* pSaveData);
 
-#pragma region Struct
-#pragma endregion
 }
 
 using namespace Tool; 

@@ -199,7 +199,10 @@ void CUIQuest_Text::Bind_Events()
 					break;
 				}
 			})
+
 	);
+
+	return;
 }
 
 void CUIQuest_Text::Initialize_Visible_Event()

@@ -1,10 +1,14 @@
 #pragma once
+#include "Base.h"
 #include "Client_Defines.h"
 #include <thread>
 #include <mutex>
-#include "Base.h"
+#include "json_forward.h"
 
 NS_BEGIN(Client)
+
+
+
 
 class CLoader final : public CBase
 {
@@ -60,6 +64,8 @@ private:
 	HRESULT Ready_AttackOverlap_Monster_Boomer();
 	HRESULT Ready_AttackOverlap_Xibi();
 
+
+	HRESULT	Ready_CCS();
 public:
 	const _float* Get_LoadingRatio() const { return &m_fLoadingRatio; }
 

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Engine_Define.h"
 #include "EngineConsole.h"
 #include <windows.h>
@@ -770,6 +769,8 @@ namespace Client
 
 #pragma region Tag ¸ðÀ½
 
+	inline constexpr _tchar g_wszCameraCinematicData_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json" };
+	inline constexpr _tchar g_wszCameraCinematicSequnceEventManifest_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CCS_EventManifest.json" };
 
 #pragma region State Tag
 
@@ -856,6 +857,8 @@ namespace Client
 	inline constexpr wchar_t g_wszVine_Prototype_Tag[]							{ L"Prototype_GameObject_Vine" };
 	inline constexpr wchar_t g_wszRock_Prototype_Tag[]							{ L"Prototype_GameObject_Rock" };
 	inline constexpr wchar_t g_wszWater_Prototype_Tag[]							{ L"Prototype_GameObject_Water" };
+
+	inline constexpr wchar_t g_wszEnvObject_Prototype_Tag[]						{ L"Prototype_GameObject_EnvObject" };
 
 
 
@@ -982,7 +985,7 @@ namespace Client
 	}DIALOGUE_NODE;
 #pragma endregion
 
-#pragma region
+
 
 }
 

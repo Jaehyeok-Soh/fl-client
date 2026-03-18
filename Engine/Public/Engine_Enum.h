@@ -472,7 +472,9 @@ namespace Engine
 
 			DETECT_INTERACT = 1 << 22,
 
-			NONE = 1 << 23,
+			GENIEMON = 1 << 23,
+
+			NONE = 1 << 24,
 			END
 		};
 

@@ -103,6 +103,10 @@ namespace Tool
         "feat_set_impuls_front",
 
         "feat_set_root_motion_apply",
+
+        "feat_set_target_offset",
+        "feat_auto_teleport_chase",
+        "feat_geniemon_smart_chase",
     };
 
     inline constexpr int kConditionCount = (int)(sizeof(kConditionNames) / sizeof(kConditionNames[0]));

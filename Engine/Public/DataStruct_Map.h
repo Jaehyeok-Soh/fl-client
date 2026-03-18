@@ -279,7 +279,7 @@ public:
 	_float fGrassDT{ 0.f };
 	_float fGrassMaxHeight{ 1.f }; //이 모델의 잔디 MinMax중 Max의  Y값
 	_float fGrassSwaySpeed{ 1.f }; //이 잔디가 Sway = 흔들리는 Speed
-	_float fGrassWaveSize{ 1.f }; //이 잔디가 Power = 흔들리는 힘
+	_float fGrassWaveSize{ 1.f };  //이 잔디가 Power = 흔들리는 힘
 public:
 	GRASS_DESC()
 		:PLANTS_DESC()
@@ -609,6 +609,35 @@ public:
 	virtual void to_Json(json& SaveJson)			override;
 };
 #pragma endregion
+
+
+struct ENV_EFFECT_INFO
+{
+	EFFECT_ENV_DESC tDesc{};
+	string			strTags{};
+};
+
+
+#pragma region Env Desc
+struct ENGINE_DLL ENV_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	vector<ENV_EFFECT_INFO>		vecEnvEffectInfo{};
+public:
+	ENV_DESC()
+		: vecEnvEffectInfo{}
+	{ 
+	}
+	ENV_DESC(const ENV_DESC& rhs)
+		: vecEnvEffectInfo{rhs.vecEnvEffectInfo }
+	{
+
+	}
+	virtual ~ENV_DESC() {}
+public:
+	virtual void from_Json(const json& LoadJson)override;
+	virtual void to_Json(json& SaveJson)override;
+};
 #pragma region Fog
 
 enum class EFogTextureType
@@ -942,7 +971,7 @@ enum class EClientMakePath
 	Vine,
 	Rock,
 	Water,
-	Fog,
+	Env,
 
 
 	/* 몬스터 , Player 위치잡는 용도  */
@@ -1015,7 +1044,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::Vine,									"Vine"},
 			{EClientMakePath::Rock,									"Rock"},
 			{EClientMakePath::Water,								"Water"},
-			{EClientMakePath::Fog,									"Fog"},
+			{EClientMakePath::Env,									"Env"},
 
 
 			{EClientMakePath::Batch_Player,							"Batch_Player"},
@@ -1125,9 +1154,12 @@ typedef struct TLevelData
 	/* Wind */
 	Vec3								vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
 	_float								fWindPower{ 1.f }; //바람이 부는 새기
+
+	/* Map Min Max Box */
+	Vec3								vMapMinMaxBox_Center{0.f,0.f,0.f};
+	Vec3								vMapMinMaxBox_extents{1.f,1.f,1.f};
+
 	/*-------*/
-
-
 
 }SCENEDATA;
 

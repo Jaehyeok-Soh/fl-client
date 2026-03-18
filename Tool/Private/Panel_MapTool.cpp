@@ -41,6 +41,7 @@ HRESULT CPanel_MapTool::Initialize()
 	if (FAILED(Update_TextureSplatingInfoDataName()))
 		return E_FAIL;
 
+
 	return S_OK;
 }
 
@@ -1618,7 +1619,6 @@ HRESULT CPanel_MapTool::Render_SaveLevelDataSetting()
 	ImGui::Separator();
 
 
-
 	ImGui::SeparatorText(" Level Type ");
 
 	m_strBuffer = ClientleveltypeToString(m_pMapToolManager->m_pLevelData->m_eClientLevelType);
@@ -1638,6 +1638,15 @@ HRESULT CPanel_MapTool::Render_SaveLevelDataSetting()
 		ImGui::EndCombo();
 	}
 
+	
+	ImGui::SeparatorText(" Map Min Max Box Setting ");
+
+	ImGui::NewLine();
+
+	/* Center */
+
+	ImGui::DragFloat3("Center", &m_pMapToolManager->m_pLevelData->m_vMapMinMaxBox_Center.x, 0.1f);
+	ImGui::DragFloat3("Extents", &m_pMapToolManager->m_pLevelData->m_vMapMinMaxBox_Extents.x);
 	
 
 	ImGui::Separator();

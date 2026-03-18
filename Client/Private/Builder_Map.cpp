@@ -13,6 +13,7 @@
 #include "Water.h"
 #include "Shader.h"
 #include "Fog.h"
+#include "EnvObject.h"
 #pragma region Batch ฐüทร
 /* Batch Player */
 #include "MainPlayer.h"
@@ -115,6 +116,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::Rock:			Create_Rock(tData);			break;
 			case DTO::EClientMakePath::Vine:			Create_Vine(tData);			break;
 			case DTO::EClientMakePath::Water:			Create_Water(tData);		break;
+			case DTO::EClientMakePath::Env:				Create_Env(tData);			break;
 
 			case DTO::EClientMakePath::Batch_Player:	Batch_Player(tData);		break;
 			case DTO::EClientMakePath::Batch_Monster:	Batch_Monster(tData);		break;
@@ -169,6 +171,9 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	if (!pCB->IsValid())	return E_FAIL;
 	pCB->SetRawValue(&tEnvData, 0, sizeof(CB_EnvData));
 
+
+	/* Map Box */
+	m_pGameInstance->Set_MapMinMaxBox(tData.vMapMinMaxBox_Center,tData.vMapMinMaxBox_extents);
 
 
 	return S_OK;
@@ -502,6 +507,40 @@ HRESULT CBuilder_Map::Create_Rock(const DTO::TMap_MapObjectData& tData)
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszRock_Prototype_Tag ,
 		tRock_Desc.iLevelIndex, g_wszStaticObjectLayer, &tRock_Desc);
+
+	return S_OK;
+}
+HRESULT CBuilder_Map::Create_Env(const DTO::TMap_MapObjectData& tData)
+{
+	CEnvObject::ENVOBJECT_DESC tDesc{};
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
+
+
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+	if (!tData.vecClientMakePathDesc.empty())
+	{
+		ENV_DESC* pDesc = static_cast<ENV_DESC*>(tData.vecClientMakePathDesc.front());
+		if (pDesc == nullptr) return E_FAIL;
+		tDesc.vecEnvEffectInfo = pDesc->vecEnvEffectInfo;
+	}
+
+
+	CGameObject* pGameObject{ nullptr };
+	pGameObject = m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszEnvObject_Prototype_Tag,
+		tDesc.iLevelIndex, g_wszStaticObjectLayer , &tDesc);
+
+	if (pGameObject == nullptr)
+		return E_FAIL;
 
 	return S_OK;
 }

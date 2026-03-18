@@ -11,6 +11,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "Material.h"
+#include "Effect_DataManager.h"
 #include "LevelData.h"
 
 IMPLEMENT_SINGLETON(CMapToolManager)
@@ -35,6 +36,7 @@ CMapToolManager::CMapToolManager()
 	, m_arrayMapObjectCloneFactory			{}
 	, m_umapMapTextures						{}
 	, m_mapTextureSplatingInfoDatas			{}
+	, m_vecEnvEffectTags{}
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
@@ -456,6 +458,14 @@ HRESULT CMapToolManager::Register_MapObjectCloneFactory()
 	return S_OK;
 }
 
+HRESULT CMapToolManager::Update_EnvEffectList()
+{
+	m_vecEnvEffectTags.clear();
+
+	m_vecEnvEffectTags = CEffect_DataManager::GetInstance()->Get_EffectTagList();
+
+	return S_OK;
+}
 
 CModel* CMapToolManager::Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMonsterType)
 {
@@ -529,8 +539,12 @@ CModel* CMapToolManager::Get_BatchObjectModel(DTO::EMakeObjectType eType)
 
 HRESULT CMapToolManager::Ready_LevelData()
 {
-	m_pLevelData= CLevelData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
+	m_pLevelData = CLevelData::Create(EToolObjectType::MAPOBJECT, m_pDevice, m_pContext);
 	if (m_pLevelData == nullptr) return E_FAIL;
+
+	CGameObject* pResult{ nullptr };
+	if ( nullptr == (pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_LevelData", m_pLevelData)))
+		return E_FAIL;
 
 	return S_OK;
 }
