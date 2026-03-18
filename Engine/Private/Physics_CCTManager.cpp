@@ -84,9 +84,9 @@ PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 	desc.halfForwardExtent = pDesc->vExtens.z / 2.f;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
-	desc.contactOffset = 0.3f;
-	desc.stepOffset = 0.4f;
-	desc.slopeLimit = 0.7f;
+	desc.contactOffset = pDesc->fContactOffset;
+	desc.stepOffset = pDesc->fStepOffset;
+	desc.slopeLimit = pDesc->fSlopeLimit;
 
 	desc.reportCallback = m_pCCTHitReport;
 	desc.behaviorCallback = m_pCCTBehaviorCallback;
@@ -115,9 +115,9 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 	desc.height = pDesc->fHeight;
 	desc.material = m_pResourceManager->GetMaterial(&pDesc->tMaterial);
 
-	desc.contactOffset = 0.3f;
-	desc.stepOffset = 0.4f;
-	desc.slopeLimit = 0.7f;
+	desc.contactOffset = pDesc->fContactOffset;
+	desc.stepOffset = pDesc->fStepOffset;
+	desc.slopeLimit = pDesc->fSlopeLimit;
 
 	desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
 
@@ -128,6 +128,12 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 	desc.position = poolPos;
 
 	PxController* pCCT = m_pControllerManager->createController(desc);
+
+	if (pCCT == nullptr)
+	{
+		MSG_BOX("Failed to Created : CCT in CCT Manager");
+		return nullptr;
+	}
 
 	m_vPoolingPosition.z += pDesc->fRadius + 5;
 	

@@ -904,6 +904,15 @@ namespace Engine
 		SimpleMath::Vector3 vExtens = {};
 		//PxCapsuleControllerDesc capsuleDesc{};
 		//PxBoxControllerDesc boxDesc{};
+		float fContactOffset = 0.3f;
+		float fStepOffset = 0.4f;
+		float fSlopeLimit = 0.7f;
+
+		DirectX::SimpleMath::Vector3 vLocalOffset = {};
+		DirectX::SimpleMath::Vector3 vWorldOffset = {};
+
+		bool bIsHover = { false };
+		float fHoverOffset = { 1.f };
 
 		////////////////
 		/// Material ///
@@ -913,7 +922,7 @@ namespace Engine
 		////////////////////////
 		/// Collision Filter ///
 		////////////////////////
-		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
+		unsigned int eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
 
 		//////////////////
@@ -1001,7 +1010,7 @@ namespace Engine
 		/// Collision Filter ///
 		////////////////////////
 		bool bSetOnlyFilter = { false };
-		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
+		unsigned int eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
 
 		////////////////////

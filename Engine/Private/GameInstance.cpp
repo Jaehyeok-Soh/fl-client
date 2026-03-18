@@ -1250,9 +1250,9 @@ void CGameInstance::Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* 
 	return m_pPhysics_Module->Raycast_EventCallback(pOwner, pRaycastHitBuffer, raycastDesc);
 }
 
-_bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
+_bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall, OUT _float* fHitDist, OUT Vec3* vHitPos)
 {
-	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
+	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall, fHitDist, vHitPos);
 }
 
 _bool CGameInstance::CheckRagdollState(int64 objID)
