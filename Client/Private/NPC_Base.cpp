@@ -331,8 +331,6 @@ void CNPC_Base::QuestEnter()
 			CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iEnterDialogueId);
 
 			CallQuestEvent(m_eObject_Enum_Tag, 1);
-
-			return;
 		}
 	}
 
@@ -352,8 +350,6 @@ void CNPC_Base::QuestExit()
 			CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iExitDialogueId);
 
 			CallQuestEvent(m_eObject_Enum_Tag, 1);
-
-			return;
 		}
 	}
 
@@ -374,8 +370,6 @@ void CNPC_Base::Interact()
 			CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iInteractDialogueId);
 
 			CallQuestEvent(m_eObject_Enum_Tag, 1);
-
-			return;
 		}
 	}
 	else
