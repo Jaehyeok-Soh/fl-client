@@ -11,16 +11,13 @@ struct Test2 { using Signature = void(unsigned int iCount); };
 
 #pragma region Global Event
 
+/* Xibi */
 struct TUTORIAL_BOSS_CONTATCT		{ using Signature = void(); };
 struct TUTORIAL_BOSS_CONTATCT_END	{ using Signature = void(); };
 
-
 /* Xibi */
-
 struct XIBI_CHANGE_STATE_BOSS_DIRECTION { using Signature = void();};
 struct XIBI_CHANGE_STATE_BOSS_IDLE		{ using Signature = void();};
-
-/* 카메라 */
 
 
 #pragma endregion
@@ -35,7 +32,10 @@ struct PLAYER_SKILL_TRIGGERED { using Signature = void(unsigned int); }; // 플레
 struct COMBO_ATTACK_EVENT_START { using Signature = void(); };
 struct COMBO_ATTACK_EVENT_END	{ using Signature = void(); };
 
-struct MONSTER_DEAD_EVENT_START { using Signature = void(CGameObject* ); }; // 몬스터 NamePlate 사라지게 하기
+struct MONSTER_DEAD_EVENT_START { using Signature = void(CGameObject*); }; // 몬스터 NamePlate 사라지게 하기
+
+
+// 연출관련으로 Delegate를 들고있고 
 
 struct CINEMATIC_START { using Signature = void(); };			// UI 위 아래 나오는 연출
 struct CINEMATIC_END { using Signature = void(); };				// UI 위 아래 들어가는 연출
@@ -69,5 +69,10 @@ struct DIALOGUE_PREV { using Signature = void(); };
 struct DIALOGUE_END { using Signature = void(); };
 struct DIALOGUE_CANCEL { using Signature = void(); }; // 대화 매니저만 사용
 
+// 상호작용 이벤트
+struct INTERACT_DETECT { using Signature = void(class CGameObject* pObj); }; // 상호작용 오브젝트 감지
+struct INTERACT_LOST { using Signature = void(class CGameObject* pObj); }; // 상호작용 오브젝트 감지 벗어남
+struct INTERACT_ENTER { using Signature = void(class CGameObject* pObj); }; // 상호작용 시작
+struct INTERACT_EXIT { using Signature = void(class CGameObject* pObj); }; // 상호작용 종료
 
 #pragma endregion

@@ -470,7 +470,11 @@ namespace Engine
 
 			NPC = 1 << 21,
 
-			NONE = 1 << 22,
+			DETECT_INTERACT = 1 << 22,
+
+			GENIEMON = 1 << 23,
+
+			NONE = 1 << 24,
 			END
 		};
 

@@ -72,6 +72,7 @@
 #include "SocketObject.h"
 #include "SkyBox.h"
 #include "PointLight.h"
+#include "EnvObject.h"
 #include "BonePart.h"
 
 //=================
@@ -159,6 +160,7 @@
 #include "UITutorial_PopUp_Clear_Text.h"
 #include "UIQuest_Text.h"
 #include "UIQuestNavi_Text.h"
+#include "UICommunity_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -181,9 +183,11 @@
 #include "UITutorial_PopUp_Clear_Image.h"
 #include "UIQuest_Image.h"
 #include "UIQuestNavi_Image.h"
+#include "UICommunity_Image.h"
 //=================
 // Resource
 //=================
+#include <fstream>
 #include "TextureBase.h"
 #include "Model.h"
 #include "ModelLoader.h"
@@ -324,25 +328,9 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 	/////////// Ready GlobalEvent ///////////
 	/////////////////////////////////////////
-	/* Global */
-	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
+	if (FAILED(Ready_CCS()))
+		return S_OK;
 
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
-
-	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
-	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_OFF);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
-
-
-
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_DIRECTION);
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_IDLE);
 
 
 #pragma endregion
@@ -777,6 +765,9 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszRock_Prototype_Tag,						CRock::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
 
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszEnvObject_Prototype_Tag,					CEnvObject::Create(m_pDevice, m_pDeviceContext));
+
+
 		/* Invisible Wall */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszInvisibleWall_Prototype_Tag,				CInvisibleWall::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
@@ -866,18 +857,18 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionText",			CUIBossAction_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessImage",			CUIWeakness_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessText",				CUIWeakness_Text::Create(m_pDevice, m_pDeviceContext));
-	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelImage",		CUITutorial_Pannel_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelText",		CUITutorial_Pannel_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpImage",		CUITutorial_PopUp_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpText",		CUITutorial_PopUp_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearImage",	CUITutorial_PopUp_Clear_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearText",	CUITutorial_PopUp_Clear_Text::Create(m_pDevice, m_pDeviceContext));
-	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestImage",				CUIQuest_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestText",				CUIQuest_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviImage",			CUIQuestNavi_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviText",			CUIQuestNavi_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityImage",			CUICommunity_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityText",			CUICommunity_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;
@@ -1491,6 +1482,33 @@ HRESULT CLoader::Ready_AttackOverlap_Xibi()
 	return S_OK;
 }
 
+HRESULT CLoader::Ready_CCS()
+{
+	/* Global */
+	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
+
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
+
+	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
+	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
+
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_ON);
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_OFF);
+
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
+
+
+
+	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_DIRECTION);
+	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_IDLE);
+
+
+
+	return S_OK;
+}
+
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 {
 	CLoader* pInstance = new CLoader(pDevice, pDeviceContext, eLoadingLevelID);
@@ -1518,3 +1536,22 @@ void CLoader::Free()
 
 	Super::Free();
 }
+
+
+
+
+
+#pragma region CCS Data from Json
+//void from_json(const json& LoadJson, CCS_EVENT_MANIFEST& tData)
+//{
+//	if (LoadJson.contains("Subscriber Name"))
+//	{
+//		tData.strSubscriberName = LoadJson["Subscriber Name"].get<std::string>();
+//	}
+//
+//	if (LoadJson.contains("Action Names"))
+//	{
+//		tData.vecActionNames = LoadJson["Action Names"].get<std::vector<std::string>>();
+//	}
+//}
+#pragma endregion

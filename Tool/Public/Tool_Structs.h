@@ -142,10 +142,20 @@ namespace Tool
     };
 
 
+
+    struct CCS_EVENT_MANIFEST
+    {
+        string          strSubscriberName;   // ¿¹: "UI_Tutorial"
+        vector<string>  vecActionNames;      // ¿¹: [ "Show_Popup", "Hide_Popup" ]
+    public:
+    };
+
+
     void to_json(json& SaveJson, const    SRT_DATA& tData);
     void to_json(json& SaveJson, const    OVERRIDE_MATERIALS& tData);
     void to_json(json& SaveJson, const    USING_MODEL_INFO& tData);
     void to_json(json& SaveJson, const    STATICMODEL_DATA& tData);
+
 
     void to_json(json& SaveJson, const    STATICMODEL_DATA& tData);
     void to_json(json& SaveJson, const    INSTANCEMODEL_DATA& tData);
@@ -156,6 +166,12 @@ namespace Tool
 
     void from_json(const json& LoadJson, STATICMODEL_DATA& tData);
     void from_json(const json& LoadJson, INSTANCEMODEL_DATA& tData);
+
+
+    void to_json(json& SaveJson, const    CCS_EVENT_MANIFEST& tData);
+    void from_json(const json& LoadJson, CCS_EVENT_MANIFEST& tData);
+
+
 
 #pragma endregion 
 

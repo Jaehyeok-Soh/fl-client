@@ -41,6 +41,22 @@ private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 	virtual void Tick_By_Type(const _float fTimeDelta)override;
+
+private:
+	class CPlayer* m_pPlayer = { nullptr };
+	Vec3 m_vTargetPos = {};
+
+	_float m_fViewZ = {};
+
+	_float m_fVPWidth = {};
+	_float m_fVPHegiht = {};
+	_float m_fVPTopLeftX = {};
+	_float m_fVPTopLeftY = {};
+
+	Vec2 m_vScreenPos = {};
+
+	_float m_fDistance = {};
+
 public:
 	static CUIQuestNavi_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

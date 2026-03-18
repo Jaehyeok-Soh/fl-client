@@ -325,7 +325,7 @@ Matrix CPhysics_Utils::GetUnrealMatrix(const Matrix& mat)
 	return matBasis * mat * matBasisInv;
 }
 
-_bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
+_bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall, OUT _float* fHitDist, OUT Vec3* vHitPos)
 {
 	// 시작 월드 좌표
 	// 쏠 방향 벡터 : 사이즈 꼭 1 이어야함
@@ -349,8 +349,10 @@ _bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysi
 	{
 		if (m_bRayHit = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer, PxHitFlag::eDEFAULT, filterData, pFilterCall))
 		{
-			PxF32 hitDist = m_RayCastHitBuffer.block.distance;
-
+			if (fHitDist != nullptr)
+				::memcpy(fHitDist, &m_RayCastHitBuffer.block.distance, sizeof(_float));
+			if (vHitPos != nullptr)
+				::memcpy(&vHitPos->x, &m_RayCastHitBuffer.block.position.x, sizeof(Vec3));
 			return m_bRayHit;//m_RayCastHitBuffer.block.actor
 		}
 	}
@@ -359,8 +361,10 @@ _bool CPhysics_Utils::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysi
 	{
 		if (m_bRayHit = m_pScene->raycast(o3, d3, fMaxDist, m_RayCastHitBuffer))
 		{
-			PxF32 hitDist = m_RayCastHitBuffer.block.distance;
-
+			if (fHitDist != nullptr)
+				::memcpy(fHitDist, &m_RayCastHitBuffer.block.distance, sizeof(_float));
+			if (vHitPos != nullptr)
+				::memcpy(&vHitPos->x, &m_RayCastHitBuffer.block.position.x, sizeof(Vec3));
 			return m_bRayHit;//m_RayCastHitBuffer.block.actor
 		}
 	}

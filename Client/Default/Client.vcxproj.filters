@@ -784,6 +784,27 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi">
       <UniqueIdentifier>{439ea3b6-89a6-432a-b9f5-d6082c69fff5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community">
+      <UniqueIdentifier>{ab11963d-fca7-461e-86bb-401d946db20c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\11.Community">
+      <UniqueIdentifier>{f9fbc5dc-3cc4-4c8d-868e-968f0ddb333e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\12.Conversation">
+      <UniqueIdentifier>{378205ac-d5dd-44cf-944d-9f2859cc7831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\08. LightMapObject">
+      <UniqueIdentifier>{bc9e1b73-3e10-43c4-9085-cd04807f50b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\Camera\00. CameraMan_Targeter">
+      <UniqueIdentifier>{150eb9a6-eecf-45a0-9423-b7c324458d5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\Camera\NewFilter1">
+      <UniqueIdentifier>{d45ded89-5b94-43dd-a5e7-0c0cac2cbc91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\Client_Define">
+      <UniqueIdentifier>{fde4a4ac-8ede-492c-a268-bd20661a27dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -800,12 +821,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\MainApplication.h">
       <Filter>01. MainApplication</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_Defines.h">
-      <Filter>99. ETC</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_EventDefine.h">
-      <Filter>99. ETC</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>02. Level\Loading</Filter>
@@ -839,9 +854,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Player.h">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CameraMan_Targeter.h">
-      <Filter>03. GameObject\Camera</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>99. ETC\pch</Filter>
@@ -1461,6 +1473,27 @@
     <ClInclude Include="..\Public\UIQuestNavi_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UICommunity_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UICommunity_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIConservation_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLightMapObject.h">
+      <Filter>03. GameObject\MapObject\08. LightMapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraMan_Targeter.h">
+      <Filter>03. GameObject\Camera\00. CameraMan_Targeter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Defines.h">
+      <Filter>99. ETC\Client_Define</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_EventDefine.h">
+      <Filter>99. ETC\Client_Define</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1514,9 +1547,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
-      <Filter>03. GameObject\Camera</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>99. ETC\pch</Filter>
@@ -2124,6 +2154,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIQuestNavi_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommunity_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommunity_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CUIConservation_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLightMapObject.cpp">
+      <Filter>03. GameObject\MapObject\08. LightMapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
+      <Filter>03. GameObject\Camera\00. CameraMan_Targeter</Filter>
+    </ClCompile>
+    <ClCompile Include="Client_Define.cpp">
+      <Filter>99. ETC\Client_Define</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

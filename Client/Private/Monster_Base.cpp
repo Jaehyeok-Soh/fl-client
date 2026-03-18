@@ -223,6 +223,12 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 		if (vHp.x <= 0)
 		{
+			DTO::QUEST_EVENT_SIGNATURE callback;
+			callback.eEvent = DTO::EQuestEvent::MONSTER_KILL;
+			callback.eTargetType = m_eObject_Enum_Tag;
+			callback.iCount = 1;
+			CGameInstance::GetInstance()->Broadcast<QUEST_NOTIFY>(callback);
+
 			Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
 			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();

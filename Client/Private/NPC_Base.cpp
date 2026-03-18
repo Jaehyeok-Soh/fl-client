@@ -82,12 +82,6 @@ HRESULT CNPC_Base::Initialize(void* pArg)
 	//if (FAILED(Ready_EffectHandler(pArg)))
 	//	return E_FAIL;
 
-	// 상호작용
-	{
-		// Interact_SetDefaultDialogue(0);
-		Set_Interact_DefaultEnable();
-	}
-
 	return S_OK;
 }
 
@@ -213,10 +207,21 @@ void CNPC_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGame
 	collidedDesc.tHitInfo = tHitInfo;
 
 	m_pGameInstance->Push_CollidedData(collidedDesc);
+
+	if (iOtherLayer == PHYSICSFILTERGROUP::DETECT_INTERACT)
+	{
+		if (Is_Interact_Enabled())
+			m_pGameInstance->Broadcast<INTERACT_DETECT>(this);
+	}
 }
 
 void CNPC_Base::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	if (iOtherLayer == PHYSICSFILTERGROUP::DETECT_INTERACT)
+	{
+		if (Is_Interact_Enabled())
+			m_pGameInstance->Broadcast<INTERACT_LOST>(this);
+	}
 }
 
 _bool CNPC_Base::On_Hit(const HIT_DESC& hitDesc)

@@ -4,6 +4,7 @@
 #include "ContainerObject.h"
 #include "Effect.h"
 #include "CEffectObject.h"
+#include "Effect_DataManager.h"
 #include "GameInstance.h"
 
 CBuilder_Effect::CBuilder_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iLevelID)
@@ -63,7 +64,7 @@ HRESULT CBuilder_Effect::Create_Effect(const DTO::TEFFECT_ContainerData& data)
 	pDesc.pTransform_Desc = &pTransDesc;
 	pDesc._childData = pData._ChildData;
 
-	m_pGameInstance->Push_EffectData(Engine_Utils::ToHash(pData.EffectContainerName.c_str()), &pDesc);
+	CEffect_DataManager::GetInstance()->Push_ToolEffectData(Engine_Utils::ToHash(pData.EffectContainerName.c_str()), &pDesc);
 
 	// 풀 헤애힐 이펙트라면.
 	if (pData._IsPoolingEffect)

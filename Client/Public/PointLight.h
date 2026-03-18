@@ -13,8 +13,10 @@ class CPointLight : public CGameObject
 public:
 	typedef struct tagPointLight_Desc : public CGameObject::GAMEOBJECT_DESC
 	{
-		LIGHT_DESC	tLightDesc{};
+		_bool		isRenderModel{false};
+		wstring		wstrModelName{L""};
 
+		LIGHT_DESC	tLightDesc{};
 		_bool		isFlicker{ false };		// 깜빡일래 말래 할래 말래 할래 말래 애매하긴해~
 		_float		fFlickerSpeed{ 1.0f };	// 깜빡이는 속도
 		_float		fFlickerMin{ 0.5f };		// 최소 밝이 비율
@@ -27,6 +29,7 @@ private:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
 	HRESULT					Ready_Light(const LIGHT_DESC& tLightDesc);
+	HRESULT					Ready_Model(const wstring& wstrModelTag);
 public:
 	virtual HRESULT			Awake(const _uint iCurrentLevelID)				override;
 	virtual void			Update_Priority(const _float fTimeDelta)		override;
@@ -37,6 +40,8 @@ public:
 private:
 	CLight*					m_pLight{};
 private:
+	_bool					m_isRenderModel{false};
+
 	_bool					m_isFlicker{ false };		// 깜빡일래 말래 할래 말래 할래 말래 애매하긴해~
 	_float					m_fFlickerSpeed{ 1.f};		// 깜빡이는 속도
 	_float					m_fFlickerMin{ 0.5f };		// 최소 밝이 비율

@@ -102,7 +102,7 @@ void CSkyBox::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 
-	m_pGameInstance->GetInstance()->Push_RenderObject(RENDER_CATEGORY::ENVIRONMENT,this);
+	//m_pGameInstance->GetInstance()->Push_RenderObject(RENDER_CATEGORY::ENVIRONMENT,this);
 }
 
 

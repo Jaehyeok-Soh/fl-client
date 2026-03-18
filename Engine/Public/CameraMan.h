@@ -59,8 +59,8 @@ protected:
 	list<CAM_SHAKING_DATA>				m_listCameraShakingDatas{};
 	Vec3								m_vCamShakingOffsetPosition{Vec3::Zero};
 public:
-	virtual CGameObject* Clone(void *pArg) PURE;
-	virtual void Free() override;
+	virtual CGameObject*				Clone(void *pArg) PURE;
+	virtual void						Free() override;
 };
 
 NS_END
