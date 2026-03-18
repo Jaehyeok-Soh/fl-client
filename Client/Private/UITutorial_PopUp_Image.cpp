@@ -135,12 +135,36 @@ HRESULT CUITutorial_PopUp_Image::Attach_Personal_Info()
 void CUITutorial_PopUp_Image::Bind_Events()
 {
 	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					if (m_isTriggered)
+					{
+						this->Set_Visible();
+						this->Set_Active(true);
+					}
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
+
+	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<TUTORIAL_POPUP_TRIGGER>([this](EUITutorialPopUpTypeID ID)
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
 					if (!m_isFirstEntered)
 					{
+						m_isTriggered = true;
 						this->Set_Visible();
 						this->Set_Active(true);
 					}
@@ -153,6 +177,7 @@ void CUITutorial_PopUp_Image::Bind_Events()
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
+					m_isTriggered = false;
 					this->Set_Invisible();
 				}
 			})
@@ -397,6 +422,7 @@ _bool CUITutorial_PopUp_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_ICON_BG:
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_KEY_ICON1:
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_KEY_ICON2:
+		Set_Active(false);
 		m_isFin_Event = true;
 		return true;
 

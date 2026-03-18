@@ -628,13 +628,18 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	default:														return "END";
 	}
 }
-
 NLOHMANN_JSON_SERIALIZE_ENUM(EFontPivotType, {
 	{ EFontPivotType::CENTER, "CENTER" },
 	{ EFontPivotType::LEFT,   "LEFT"   },
 	{ EFontPivotType::RIGHT,  "RIGHT"  },
 	{ EFontPivotType::UP,     "UP"     },
 	{ EFontPivotType::DOWN,   "DOWN"   },
+	{ EFontPivotType::LT,     "LT"     },
+	{ EFontPivotType::RT,     "RT"     },
+	{ EFontPivotType::LC,     "LC"     },
+	{ EFontPivotType::RC,     "RC"     },
+	{ EFontPivotType::LD,     "LD"     },
+	{ EFontPivotType::RD,     "RD"     },
 	{ EFontPivotType::END,    "END"    },
 	})
 
@@ -645,6 +650,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EFontPivotType, {
 	if (str == "RIGHT")  return EFontPivotType::RIGHT;
 	if (str == "UP")     return EFontPivotType::UP;
 	if (str == "DOWN")   return EFontPivotType::DOWN;
+	if (str == "LT")     return EFontPivotType::LT;
+	if (str == "RT")     return EFontPivotType::RT;
+	if (str == "LC")     return EFontPivotType::LC;
+	if (str == "RC")     return EFontPivotType::RC;
+	if (str == "LD")     return EFontPivotType::LD;
+	if (str == "RD")     return EFontPivotType::RD;
 	if (str == "END")    return EFontPivotType::END;
 	return EFontPivotType::END;
 }
@@ -658,11 +669,16 @@ inline const char* FontPivotTypeToString(const EFontPivotType eType)
 	case EFontPivotType::RIGHT:  return "RIGHT";
 	case EFontPivotType::UP:     return "UP";
 	case EFontPivotType::DOWN:   return "DOWN";
+	case EFontPivotType::LT:     return "LT";
+	case EFontPivotType::RT:     return "RT";
+	case EFontPivotType::LC:     return "LC";
+	case EFontPivotType::RC:     return "RC";
+	case EFontPivotType::LD:     return "LD";
+	case EFontPivotType::RD:     return "RD";
 	case EFontPivotType::END:    return "END";
 	default:                     return "END";
 	}
 }
-
 NLOHMANN_JSON_SERIALIZE_ENUM(EFontShaderType,
 	{
 		{ EFontShaderType::NORMAL,				"NORMAL" },

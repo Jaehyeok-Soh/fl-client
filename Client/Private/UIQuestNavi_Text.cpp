@@ -232,11 +232,19 @@ void CUIQuestNavi_Text::Tick_By_Type(const _float fTimeDelta)
 
 	m_fDistance = vDir.Length();
 
-	vDir.Normalize();
-	vCameraLook.Normalize();
-	vCameraRight.Normalize();
-
 	vDir.y = 0.f;
+	vCameraLook.y = 0.f;
+	vCameraRight.y = 0.f;
+
+	if (vDir.LengthSquared() > 0.0001f)
+		vDir.Normalize();
+
+	if (vCameraLook.LengthSquared() > 0.0001f)
+		vCameraLook.Normalize();
+
+	if (vCameraRight.LengthSquared() > 0.0001f)
+		vCameraRight.Normalize();
+
 	_float fx = vDir.Dot(vCameraRight);
 	_float fy = vDir.Dot(vCameraLook);
 
