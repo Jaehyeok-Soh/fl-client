@@ -137,35 +137,16 @@ void CUIConversation_Text::Bind_Events()
 	);
 
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-			{
-				Set_Active(true);
-				this->Set_Visible();
-			})
-	);
-
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
-			{
-				Set_Active(true);
-				this->Set_Visible();
-
-				this->m_wstrText = Engine_Utils::ToWString(pObj->Get_Name());
-			})
-	);
-
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<INTERACT_LOST>([this](CGameObject* pObj)
-			{
-				this->Set_Invisible();
-
-			})
-	);
-
-	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_ENTER>([this](CGameObject* pObj)
 			{
-				this->Set_Invisible();
+				this->Set_Visible();
+				this->Set_Active(true);
+
+				auto* p = dynamic_cast<IInteractable*>(pObj);
+				if (p == nullptr)
+					return;
+
+				p->Interact();
 			})
 	);
 }

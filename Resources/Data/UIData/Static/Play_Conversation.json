@@ -159,7 +159,7 @@
         },
         {
             "Type": "UI_TEXT",
-            "ePivot": 0,
+            "ePivot": 6,
             "eShaderType": 4,
             "eTextSubClassType": "CONVERSATION_TEXT",
             "fRotate": 0.0,
@@ -168,7 +168,7 @@
             "strFontTag": "ContentsKO24",
             "strOwnerName": "Conversation_Text",
             "strTag": "Conversation_Text_TextData",
-            "strText": "월석 사냥꾼이 여기까지 찾아오다니.",
+            "strText": "월석 사냥꾼이 여기까지 찾아오다니.\n너도 그 녀석들처럼 영웅이 될 가능성이 보이는군.\n",
             "vFontColor": {
                 "w": 1.0,
                 "x": 1.0,

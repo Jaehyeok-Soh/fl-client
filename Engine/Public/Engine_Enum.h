@@ -592,7 +592,7 @@ namespace Engine
 		UP,
 		DOWN,
 
-		LT,RT,LC,RC,LD,RD,
+		LT,CT,RT,LC,RC,LD,CD,RD,
 
 		END
 	};

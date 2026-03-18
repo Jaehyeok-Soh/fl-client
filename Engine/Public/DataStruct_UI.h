@@ -635,10 +635,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EFontPivotType, {
 	{ EFontPivotType::UP,     "UP"     },
 	{ EFontPivotType::DOWN,   "DOWN"   },
 	{ EFontPivotType::LT,     "LT"     },
+	{ EFontPivotType::CT,     "CT"     },
 	{ EFontPivotType::RT,     "RT"     },
 	{ EFontPivotType::LC,     "LC"     },
 	{ EFontPivotType::RC,     "RC"     },
 	{ EFontPivotType::LD,     "LD"     },
+	{ EFontPivotType::CD,     "CD"     },
 	{ EFontPivotType::RD,     "RD"     },
 	{ EFontPivotType::END,    "END"    },
 	})
@@ -651,10 +653,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EFontPivotType, {
 	if (str == "UP")     return EFontPivotType::UP;
 	if (str == "DOWN")   return EFontPivotType::DOWN;
 	if (str == "LT")     return EFontPivotType::LT;
+	if (str == "CT")     return EFontPivotType::CT;
 	if (str == "RT")     return EFontPivotType::RT;
 	if (str == "LC")     return EFontPivotType::LC;
 	if (str == "RC")     return EFontPivotType::RC;
 	if (str == "LD")     return EFontPivotType::LD;
+	if (str == "CD")     return EFontPivotType::CD;
 	if (str == "RD")     return EFontPivotType::RD;
 	if (str == "END")    return EFontPivotType::END;
 	return EFontPivotType::END;
@@ -670,10 +674,12 @@ inline const char* FontPivotTypeToString(const EFontPivotType eType)
 	case EFontPivotType::UP:     return "UP";
 	case EFontPivotType::DOWN:   return "DOWN";
 	case EFontPivotType::LT:     return "LT";
+	case EFontPivotType::CT:     return "CT";
 	case EFontPivotType::RT:     return "RT";
 	case EFontPivotType::LC:     return "LC";
 	case EFontPivotType::RC:     return "RC";
 	case EFontPivotType::LD:     return "LD";
+	case EFontPivotType::CD:     return "CD";
 	case EFontPivotType::RD:     return "RD";
 	case EFontPivotType::END:    return "END";
 	default:                     return "END";
