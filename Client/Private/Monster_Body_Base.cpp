@@ -90,7 +90,7 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 
 	if (m_bRagDollOn) // awake 때는 호출 하지 않기 위함
 	{
-		// toggle 됐을때 : awake
+		// toggle 됐을때 : awake 시점
 		if (m_bRagDollOnPre == false)
 		{
 			// awake 때는 on이 되면 안 되므로 방어
@@ -98,6 +98,7 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 			m_bRagDollOnPre = true;
 		}
 
+		// process 시점
 		else if (m_bRagDollOnPre)
 		{
 			// ragdoll 값 바인딩
@@ -109,7 +110,6 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 	{
 		m_bRagDollOnPre = false;
 	}
-
 
 	{
 		Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
