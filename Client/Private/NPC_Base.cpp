@@ -213,7 +213,7 @@ void CNPC_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGame
 
 	m_pGameInstance->Push_CollidedData(collidedDesc);
 
-	if (iOtherLayer == PHYSICSFILTERGROUP::DETECT_INTERACT)
+	if (Is_Interact_Enabled() && iOtherLayer == PHYSICSFILTERGROUP::DETECT_INTERACT)
 	{
 		if (Is_Interact_Enabled())
 			m_pGameInstance->Broadcast<INTERACT_DETECT>(this);
