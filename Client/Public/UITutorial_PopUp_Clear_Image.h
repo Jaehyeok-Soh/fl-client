@@ -41,6 +41,8 @@ private:
 private:
 	DelegateHandle m_tEventHandle = {};
 
+	_bool m_isPaulse = { false };
+
 public:
 	static CUITutorial_PopUp_Clear_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

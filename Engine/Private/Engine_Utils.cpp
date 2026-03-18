@@ -197,7 +197,7 @@ string Engine_Utils::ToString(wstring value)
     if (iRequire <= 0)
         return string();
 
-    string strReturn(static_cast<size_t>(iRequire), L'\0');
+    string strReturn(static_cast<size_t>(iRequire), '\0');
 
     _int iWritten = ::WideCharToMultiByte(
         CP_UTF8, WC_ERR_INVALID_CHARS,
@@ -403,6 +403,28 @@ void Engine_Utils::write_vec4_xyzw(json& _j, const Vec4& vOut)
     _j["W"] = vOut.w;
 }
 
+
+string Engine_Utils::LIGHTTYPE_ToString(LIGHT_TYPE eType)
+{
+    switch (eType)
+    {
+    case Engine::LIGHT_TYPE::DIRECTIONAL:       return "DIRECTIONAL";
+    case Engine::LIGHT_TYPE::POINT:             return "POINT";
+    default:                                    return "Unknown";
+    }
+
+
+    return "Unknown";
+}
+
+LIGHT_TYPE Engine_Utils::LIGHTTYPE_ToEnum(const string& strType)
+{
+    if (strType == "DIRECTIONAL")  return LIGHT_TYPE::DIRECTIONAL;
+    if (strType == "POINT")        return LIGHT_TYPE::POINT;
+
+
+    return LIGHT_TYPE::END;
+}
 
 string Engine_Utils::MaterialTextureType_ToString(EMaterialTextureType eType)
 {

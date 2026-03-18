@@ -1,11 +1,9 @@
 #include "pch.h"
 #include "Monster_Base.h"
 
-
 #include "EngineConsole.h"
 
 #include "Monster_Body_Base.h"
-#include "Ray.h"
 
 #include "MonsterControlContext.h"
 #include "MonsterActionState.h"
@@ -21,6 +19,9 @@
 #include "GameInstance.h"
 
 #include "MyStat.h"
+
+#include "Monster_Dog.h"
+#include "Monster_Boomer.h"
 
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext), m_eMonsterType{ EMonster_Type::END}
@@ -222,6 +223,12 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 		if (vHp.x <= 0)
 		{
+			DTO::QUEST_EVENT_SIGNATURE callback;
+			callback.eEvent = DTO::EQuestEvent::MONSTER_KILL;
+			callback.eTargetType = m_eObject_Enum_Tag;
+			callback.iCount = 1;
+			CGameInstance::GetInstance()->Broadcast<QUEST_NOTIFY>(callback);
+
 			Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
 			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();
@@ -483,51 +490,14 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 	monsterDesc.iLevelIndex = iAddLevelType;
 	monsterDesc.pTransform_Desc = pTransformDesc;
 
-
 	switch (eCreateMonsterType)
 	{
 	case EMonster_Type::Dog:
 	{
-		monsterDesc.wstrBodyModelTag				= g_wszMonster_Dog_Model_Prototype_Tag;
-		monsterDesc.wstrPartBodyPrototypeTag		= g_wszMonster_Dog_Body_Prototype_Tag;
-		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszMonster_Dog_AttackOverlap_Prototype_Tag;
-		monsterDesc.wstrMonsterStateTag				= g_wszMonster_Dog_State_Tag;
+		monsterDesc = CMonster_Dog::Get_PreSetDesc(monsterDesc.iLevelIndex);
+		monsterDesc.iLevelIndex = iAddLevelType;
+		monsterDesc.pTransform_Desc = pTransformDesc;
 
-		{
-			PHYSICSCCT_DESC desc;
-			desc.pOwner = nullptr;
-			desc.bIsPlayer = false;
-			desc.eType = EPhysicsCCTType::CAPSULE;
-			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 0.5f;
-			desc.fHeight = 0.1f;
-			desc.vExtens = { 2.f, 2.f, 2.f };
-
-			PHYSICSMATERIAL_DESC mtrlDesc{};
-			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-			desc.tMaterial = mtrlDesc;
-
-			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-			desc.iFilterMask =
-				PHYSICSFILTERGROUP::Enum::MONSTER
-				| PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::ATTACK
-				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::SKILL
-				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::MAP
-				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2
-				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
-
-			desc.bGravity = { true };
-			desc.fGravity = { -35.f };
-			desc.MSpeed = { 0.f, 3.f };
-			desc.MAccelRate = { 0.f, 10.f };
-			desc.MDeAccelRate = { 0.f, 10.f };
-
-			monsterDesc.tCCTDesc = desc;
-		}
 		wstrFindPrototypeName	= g_wszMonster_Dog_Prototype_Tag;
 		wstrAddLayerName		= g_wszMonstereLayer;
 	}
@@ -543,46 +513,9 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		////////////////////
 		// MONSTER BOOMER //
 		////////////////////
-		monsterDesc.wstrPartBodyPrototypeTag		= g_wszMonster_Boomer_Body_Prototype_Tag;
-		monsterDesc.wstrBodyModelTag				= g_wszMonster_Boomer_Model_Prototype_Tag;
-		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszMonster_Boomer_AttackOverlap_Prototype_Tag;
-		monsterDesc.wstrMonsterStateTag				= g_wszMonster_Boomer_State_Tag;
-
-		{
-			PHYSICSCCT_DESC desc;
-			desc.pOwner = nullptr;
-			desc.bIsPlayer = false;
-			desc.eType = EPhysicsCCTType::CAPSULE;
-			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 1.f;
-			desc.fHeight = 1.f;
-			desc.vExtens = { 2.f, 2.f, 2.f };
-
-			PHYSICSMATERIAL_DESC mtrlDesc{};
-			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-			desc.tMaterial = mtrlDesc;
-
-			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-			desc.iFilterMask =
-				PHYSICSFILTERGROUP::Enum::MONSTER
-				| PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::ATTACK
-				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::SKILL
-				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::MAP
-				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2
-				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
-
-			desc.bGravity = { true };
-			desc.fGravity = { -35.f };
-			desc.MSpeed = { 0.f, 3.f };
-			desc.MAccelRate = { 0.f, 10.f };
-			desc.MDeAccelRate = { 0.f, 10.f };
-
-			monsterDesc.tCCTDesc = desc;
-		}
+		monsterDesc = CMonster_Boomer::Get_PreSetDesc(monsterDesc.iLevelIndex);
+		monsterDesc.iLevelIndex = iAddLevelType;
+		monsterDesc.pTransform_Desc = pTransformDesc;
 
 		wstrFindPrototypeName		= g_wszMonster_Boomer_Prototype_Tag;
 		wstrAddLayerName			= g_wszMonstereLayer;
@@ -622,7 +555,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
 				| PHYSICSFILTERGROUP::Enum::OBJECT2
-				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
+				| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER
+				| PHYSICSFILTERGROUP::Enum::NPC;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };

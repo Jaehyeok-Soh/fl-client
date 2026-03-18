@@ -109,7 +109,7 @@ HRESULT CLandScape::Render()
 
 	pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
 	pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::LandScape));
-
+	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{

@@ -70,6 +70,10 @@
 #include "Moon_SkillE_Obj.h"
 #include "SkillWarningSpace.h"
 #include "SocketObject.h"
+#include "SkyBox.h"
+#include "PointLight.h"
+#include "EnvObject.h"
+#include "BonePart.h"
 
 //=================
 // SkillObject
@@ -124,6 +128,12 @@
 #include "Boss_Xibi_Body.h"
 
 //=================
+// NPC
+//=================
+#include "NPC_Pan.h"
+#include "NPC_Pan_Body.h"
+
+//=================
 // UI
 //=================
 #include "GenericUI.h"
@@ -148,6 +158,9 @@
 #include "UITutorial_Pannel_Text.h"
 #include "UITutorial_PopUp_Text.h"
 #include "UITutorial_PopUp_Clear_Text.h"
+#include "UIQuest_Text.h"
+#include "UIQuestNavi_Text.h"
+#include "UICommunity_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -168,9 +181,13 @@
 #include "UITutorial_Pannel_Image.h"
 #include "UITutorial_PopUp_Image.h"
 #include "UITutorial_PopUp_Clear_Image.h"
+#include "UIQuest_Image.h"
+#include "UIQuestNavi_Image.h"
+#include "UICommunity_Image.h"
 //=================
 // Resource
 //=================
+#include <fstream>
 #include "TextureBase.h"
 #include "Model.h"
 #include "ModelLoader.h"
@@ -295,7 +312,8 @@ HRESULT CLoader::Loading_For_Test()
 	Sleep(1000);
 
 	m_fLoadingRatio = 1.f;
-	Sleep(5000);
+	Sleep(3000);
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -310,25 +328,9 @@ HRESULT CLoader::Loading_For_Logo()
 	/////////////////////////////////////////
 	/////////// Ready GlobalEvent ///////////
 	/////////////////////////////////////////
-	/* Global */
-	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
+	if (FAILED(Ready_CCS()))
+		return S_OK;
 
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
-
-	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
-	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_OFF);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
-
-
-
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_DIRECTION);
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_IDLE);
 
 
 #pragma endregion
@@ -413,10 +415,13 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Sphere")))
 			return E_FAIL;
-
-
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Twist")))
 			return E_FAIL;
+
+
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/SkyBox")))
+			return E_FAIL;
+
 	}
 	m_fLoadingRatio = 0.13f;
 	// For. Prototype_Component_Button_Test_Texture
@@ -484,6 +489,11 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
 		return E_FAIL;
 
+	// For. SkyBox
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/SkyBox/")))
+		return E_FAIL;
+
+
 #pragma endregion
 
 #pragma region Env Texture Binding
@@ -549,7 +559,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90wwwwdddd
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices	= {3,5,72,74,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
+		desc.vecStageBoneIndices	= {2,3,5,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
 
 		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
@@ -594,17 +604,22 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
-	//// For. Prototype_Component_Model_MoonCloak
-	//{
-	//	CModel::MODEL_ORIGIN_DESC desc = {};
-	//	desc.eType = EModelType::ANIM;
-	//	desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
-	//	desc.pMatPreTransform = &(matPreTransformScale);
-	//	desc.wstrModelFolderName = L"PlayerMoon_Cloak";
-	//	desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+	// For. Prototype_Component_Model_MoonCloak
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"PlayerMang";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
-	//	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
-	//}
+		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 
 	// For.Prototype_Component_Model_Monster_Dog
 	{
@@ -614,7 +629,9 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform = &(matPreTransformIdentity);
 		desc.wstrModelFolderName = L"Monster_Dog";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = {150, 152};
+		desc.vecStageBoneIndices = {3,
+			4,6,9,10,32,33,64,125,126,136,137,138,139
+			,150, 152};//6,9,10,32,33,64,125,126,136,137,138,139
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
@@ -631,7 +648,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform = &(matPreTransformScale150);
 		desc.wstrModelFolderName = L"Monster_Boomer";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = {4, 114, 116 };
+		desc.vecStageBoneIndices = {3,4, 114, 116 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
@@ -639,6 +656,24 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Boomer_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
+	// For.Prototype_Component_Model_NPC_Pan
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.wstrModelFolderName = L"NPC_Pan";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.vecStageBoneIndices = {};
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Pan_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_RenderFx
@@ -679,6 +714,7 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 	}
 
+
 #pragma endregion
 
 	///////////////////////////////////////
@@ -713,7 +749,10 @@ HRESULT CLoader::Loading_For_Logo()
 
 		/* Battle Field */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszBattleField_Prototype_Tag ,				CBattleField::Create(m_pDevice, m_pDeviceContext));
-
+		/* Sky Box */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszSkyBox_Prototype_Tag ,					CSkyBox::Create(m_pDevice, m_pDeviceContext));
+		/* Point Light */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPointLight_Prototype_Tag ,				CPointLight::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region Map Object
 		/* Map Object */
@@ -726,6 +765,9 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszVine_Prototype_Tag,						CVine::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszRock_Prototype_Tag,						CRock::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
+
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszEnvObject_Prototype_Tag,					CEnvObject::Create(m_pDevice, m_pDeviceContext));
+
 
 		/* Invisible Wall */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszInvisibleWall_Prototype_Tag,				CInvisibleWall::Create(m_pDevice, m_pDeviceContext));
@@ -742,17 +784,23 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Sword", CSword::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Part_Gun", CGun::Create(m_pDevice, m_pDeviceContext));
 
-		// For. Prototype_GameObject_Monster_Dummy
+		// For. Prototype_GameObject_Monster_Dog
 		ADD_PROTOTYPE(ELevelType::STATIC , g_wszMonster_Dog_Prototype_Tag , CMonster_Dog::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy_Body
+		// For. Prototype_GameObject_Monster_Dog_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Dog_Body_Prototype_Tag, CMonster_Dog_Body::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy
+		// For. Prototype_GameObject_Monster_Boomer
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
-		// For. Prototype_GameObject_Monster_Dummy_Body
+		// For. Prototype_GameObject_Monster_Boomer_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+
+		// For. Prototype_GameObject_NPC_Pan
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Prototype_Tag, CNPC_Pan::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Pan_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Body_Prototype_Tag, CNPC_Pan_Body::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Bone_Prototype_Tag,		CBonePart::Create(m_pDevice, m_pDeviceContext));
 
 		//ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Socket_Prototype_Tag, CSocketObject::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
@@ -810,32 +858,33 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionText",			CUIBossAction_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessImage",			CUIWeakness_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessText",				CUIWeakness_Text::Create(m_pDevice, m_pDeviceContext));
-	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelImage",		CUITutorial_Pannel_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelText",		CUITutorial_Pannel_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpImage",		CUITutorial_PopUp_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpText",		CUITutorial_PopUp_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearImage",	CUITutorial_PopUp_Clear_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearText",	CUITutorial_PopUp_Clear_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestImage",				CUIQuest_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestText",				CUIQuest_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviImage",			CUIQuestNavi_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviText",			CUIQuestNavi_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityImage",			CUICommunity_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityText",			CUICommunity_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;
 	return S_OK;
 }
 
-
-
 HRESULT CLoader::Loading_For_Tutorial_Village()
 {
 	/* Tutorial Village */
 	m_fLoadingRatio = 0.f;
-		
-	// 오브젝트
+	Sleep(1000);
 	
-	// 이펙트 Object
+	
 	m_fLoadingRatio = 1.f;
 	Sleep(3000);
-
 	m_isFinished = true;
 	return S_OK;
 }
@@ -844,6 +893,8 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 {
 	/* Tutorial Boss */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
+
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
@@ -901,7 +952,8 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiOneshotThunder_Prototype_Tag, CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(1000);
+	Sleep(3000);
+
 
 	m_isFinished = true;
 	return S_OK;
@@ -911,6 +963,7 @@ HRESULT CLoader::Loading_For_Square()
 {
 	/* Square */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
 
 	// 오브젝트
 
@@ -919,7 +972,7 @@ HRESULT CLoader::Loading_For_Square()
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(5000);
+	Sleep(3000);
 	m_isFinished = true;
 	return S_OK;
 }
@@ -928,6 +981,7 @@ HRESULT CLoader::Loading_For_Tavern()
 {
 	/* Square */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
 
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TAVERN);
 
@@ -935,9 +989,9 @@ HRESULT CLoader::Loading_For_Tavern()
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
-	Sleep(5000);
-
 	m_fLoadingRatio = 1.f;
+	Sleep(3000);
+
 
 
 	m_isFinished = true;
@@ -949,6 +1003,7 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 {
 	/* Square */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
 
 
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::KUANGKENG);
@@ -959,9 +1014,9 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
-	Sleep(5000);
-
 	m_fLoadingRatio = 1.f;
+	Sleep(3000);
+
 
 
 	m_isFinished = true;
@@ -974,6 +1029,7 @@ HRESULT CLoader::Loading_For_Lianhuo()
 
 	/* Square */
 	m_fLoadingRatio = 0.f;
+	Sleep(1000);
 
 
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
@@ -984,9 +1040,9 @@ HRESULT CLoader::Loading_For_Lianhuo()
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 
-	Sleep(5000);
 
 	m_fLoadingRatio = 1.f;
+	Sleep(3000);
 
 	m_isFinished = true;
 
@@ -1427,6 +1483,33 @@ HRESULT CLoader::Ready_AttackOverlap_Xibi()
 	return S_OK;
 }
 
+HRESULT CLoader::Ready_CCS()
+{
+	/* Global */
+	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
+
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
+	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
+
+	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
+	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
+
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_ON);
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_OFF);
+
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
+	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
+
+
+
+	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_DIRECTION);
+	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_IDLE);
+
+
+
+	return S_OK;
+}
+
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID)
 {
 	CLoader* pInstance = new CLoader(pDevice, pDeviceContext, eLoadingLevelID);
@@ -1454,3 +1537,22 @@ void CLoader::Free()
 
 	Super::Free();
 }
+
+
+
+
+
+#pragma region CCS Data from Json
+//void from_json(const json& LoadJson, CCS_EVENT_MANIFEST& tData)
+//{
+//	if (LoadJson.contains("Subscriber Name"))
+//	{
+//		tData.strSubscriberName = LoadJson["Subscriber Name"].get<std::string>();
+//	}
+//
+//	if (LoadJson.contains("Action Names"))
+//	{
+//		tData.vecActionNames = LoadJson["Action Names"].get<std::vector<std::string>>();
+//	}
+//}
+#pragma endregion

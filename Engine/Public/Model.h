@@ -73,6 +73,8 @@ private:
 		END
 	};
 
+	enum class AnimUpdateState { NORMAL, BLEND, MIX, ADDITIVE, RAGDOLL };
+
 	enum class CS_SB_IDX : _uint
 	{
 		IMMU_BONE, MU_GROUPIDX, MU_SRTS
@@ -86,6 +88,11 @@ private:
 	enum class GETBONECS_SB_IDX : _uint
 	{
 		IMMU_BONEINDICES, MU_BONEMATS
+	};
+
+	enum class CS_PARTBONE_IDX : _uint
+	{
+		IMMU_BONE, MU_PARENTTRANSFORM
 	};
 
 private:
@@ -107,7 +114,8 @@ public:
 	HRESULT								Change_Animation(CComputeShader* pAnimEComShader,_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
 	// Transform과 CCT를 바인딩 안할 시 RootMotion적용은 되나, 포지션을 반영안한다.
-	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
+	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr, CComputeShader* pRagDollCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
+	void								Update_PartModel(CComputeShader* pParentBoneComBineCS, CComputeShader* pChildBonePartCS);
 
 	// bind funcs
 public:
@@ -157,7 +165,6 @@ public:
 
 	// meshes
 	_int								Get_PassByMesh(_uint iMeshIndex);
-	
 	// counts
 	_uint								Get_AnimationCount()	const { return static_cast<_uint>(m_vecAnimations.size()); }
 	_uint								Get_MaterialCount()		const { return static_cast<_uint>(m_vecMaterials.size()); }
@@ -216,6 +223,9 @@ public:
 
 	void								Set_Animtion_MotionOffset_All(_float fOffset);
 	void								Set_Animation_SpeedOffset_All(_float fOffset);
+
+	void								Set_ApplyRagDoll(_bool bApply) { m_bRagDollOn = bApply; }
+
 public:
 	HRESULT								Set_MI_TintColor(_uint iIndex, const Vec4& vColor );
 public:
@@ -225,6 +235,7 @@ public:
 
 public:
 	HRESULT								Ready_ComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr);
+	HRESULT								Ready_PartComputeShaders(CComputeShader* pBoneMeshCS, CComputeShader* pBonePartCS, CModel* pParentModel);
 	void								Get_BoneMatrix(CComputeShader* pAnimMixCS);
 
 	// load func
@@ -249,21 +260,21 @@ private:
 
 	// animation funcs
 private:
-	void								Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
-	void								Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
+	void								Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
+	void								Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
 
 	HRESULT								Build_AnimationIndexTable();
 	void								Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
-	void								Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
-	void								End_AnimationPlayState(AnimationPlayState eState);
+	void								Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
+	void								End_AnimationPlayState(AnimationPlayState eState, AnimationPlayState eNextState);
 	void								Change_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
 
 	void								Play_Begin(CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
-	void								Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
-	void								Play_End();
+	void								Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
+	void								Play_End(AnimationPlayState eNextState);
 
 	void								Blend_Begin(_uint CurAnimationIndex);
-	void								Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr);
+	void								Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
 	void								Blend_End();
 
 	// ready funcs
@@ -286,7 +297,7 @@ private:
 	// cs update funcs
 private:
 	void								Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS);
-	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio);
+	void								Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
 	void								DisPatch_BondMatrix(CComputeShader* pBoneComBineCS, CComputeShader* pAnimMixCS);
 	void								Mix_Animation(CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta);
 	_bool								Additive_Animation(CComputeShader* pAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta ,CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT);
@@ -318,7 +329,7 @@ private:
 	ID3D11DeviceContext*				m_pDeviceContext			= { nullptr };
 
 	/* Model Minmax */
-	Vec3*								m_pStaticModel_MinMax		= {nullptr};
+	Vec3*								m_pStaticModel_MinMax		= { nullptr };
 
 	vector<_uint>						m_vecPasses;
 	vector<class CBone*>				m_vecBones;
@@ -345,6 +356,7 @@ private:
 	Vec3								m_vPreMainPosition = { Vec3::Zero };
 	Vec3								m_vPreBlendPosition = { Vec3::Zero };
 	Vec3								m_vPreMixPosition = { Vec3::Zero };
+	Vec3								m_vPrePosNon = { Vec3::Zero };
 
 	// mix anim
 	vector<_int>						m_vecMixAnimIndices;
@@ -371,6 +383,10 @@ private:
 	_uint m_iCpuBoneCount = { 0 };
 	_bool m_bLoopAnimDone = { false };
 	_float m_fAnimationSpeed = { 1.f };
+
+	_bool m_bRagDollOn = { false };
+
+	AnimUpdateState m_eAnim_UpdateState = { AnimUpdateState::NORMAL };
 
 	///////////////
 	//// Event ////

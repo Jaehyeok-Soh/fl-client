@@ -62,9 +62,17 @@ protected:
 	void Ready_Lerp_Movement(const Vec2& vStartOffset, const Vec2& vTargetOffset, const _float fDuration, const _float fEaseValue, const _float fDelay, _bool isEaseOut = false);
 	void Ready_Fade(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fDelay);
 	void Ready_LerpChange(const _float fDuration, const _float fStartAlpha, const _float fTargetAlpha, const _float fEaseValue, const _float fDelay, _bool isEaseOut = false);
+	void Ready_ChageColor(const _float fDuration, 
+		const Vec4& vStartColor, const Vec4& vStartGradColor, 
+		const Vec4& vTargetColor, const Vec4& vTargetGradColor, 
+		const _float fEaseValue, const _float fDelay, _bool isEaseOut = false);
+
 	_bool Tick_Lerp_Movement(const _float fTimeDelta);
 	_bool Tick_Fade(const _float fTimeDelta);
 	_bool Tick_LerpChange(_float* p, const _float fTimeDelta);
+	_bool Tick_ChageColor(const _float fTimeDelta);
+	_bool Tick_ChangeOriginColor(const _float fTimeDelta);
+
 	void Request_SetDead();
 	virtual void Bind_Events() {};
 
@@ -148,6 +156,21 @@ private:
 	_float m_fLerpChange_TargetValue			= {};
 	_float m_fLerpChange_EaseValue				= {};
 	_bool m_isLerpChange_EaseOut				= { false };
+
+	// Change Color Values
+	_float	m_fChangeColor_TimeAcc = {};
+	_float	m_fChangeColor_DelayTimeAcc = {};
+	_float	m_fChangeColor_Delay = {};
+	_float	m_fChangeColor_Duration = {};
+	Vec4	m_vChangeColor_StartColor= {};
+	Vec4	m_vChangeColor_StartGradColor= {};
+	Vec4	m_vChangeColor_TargetColor= {};
+	Vec4	m_vChangeColor_TargetGradColor= {};
+	_float	m_fChangeColor_EaseValue = {};
+	_bool	m_isChangeColor_EaseOut = { false };
+
+	Vec4 m_vChangeColor_OriginColor = {};
+	Vec4 m_vChangeColor_OriginGradColor = {};
 
 public:
 	virtual void Free()override;

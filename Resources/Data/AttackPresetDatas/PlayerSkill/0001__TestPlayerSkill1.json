@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "PlayerSkill",
+            "eColliderType": "Overlap",
+            "iID": 1,
+            "strTag": "TestPlayerSkill1",
+            "tCombat": {
+                "DamageType": "Fire",
+                "HitType": "Heavy",
+                "fBaseDamage": 5.0,
+                "fHitStopSec": 0.5600000023841858,
+                "fHitStunSec": 0.3400000035762787,
+                "fImpulse": 59.0,
+                "fPushPower": 7.400000095367432
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

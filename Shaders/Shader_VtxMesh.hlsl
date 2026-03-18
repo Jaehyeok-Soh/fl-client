@@ -39,6 +39,13 @@ cbuffer CB_EnvData
     float fWindPower = 1.f; //바람이 부는 새기
 };
 
+
+cbuffer CB_PlantData
+{
+    float g_fPlantDiffuseColorPower = 1.f;
+    float3 g_fPlantDummy;
+};
+
 cbuffer CB_GrassData
 {
     float g_fGrassDT = 0.f;
@@ -136,27 +143,90 @@ VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
     return output;
 }
 
-VS_OUT_MESH VS_GRASS(VS_IN_MESH input)
+VS_OUT_MESH VS_SKYBOX(VS_IN_MESH input)
 {
     VS_OUT_MESH output;
     
-    // LocalY 좌표를 현재 모델의 Max의 Y좌표를 나눠주어 현재 Y값의 비율을 알려준다
-    float fSwayWeight = saturate(input.vPosition.y / g_fGrassMaxHeight);
+    output.vPosition = mul(float4(input.vPosition, 1.f), W);
+    output.vPosition = mul(output.vPosition, VP);
+    output.vUV = input.vUV;
+    output.vNormal = normalize(mul(input.vNormal, (float3x3) W));
+    output.vTangent = normalize(mul(input.vTangent, (float3x3) W));
+    output.vBinormal = normalize(mul(input.vBinormal, (float3x3) W));
+    
+    output.vWorldPos = mul(float4(input.vPosition, 1.f), W);
+    output.vProjPos = output.vPosition;
+    output.vPosition = output.vPosition.xyww;
+    return output;
+    
+}
+
+VS_OUT_MESH VS_GRASS(VS_IN_MESH input)
+{
+    VS_OUT_MESH output = (VS_OUT_MESH) 0;
+    output.vPosition = mul(float4(input.vPosition, 1.f) , W);
+    
+    // ==========================================================
+    // [기본 세팅] 비밀 무기 1: 곡선 벤딩 (Quadratic Bending)
+    // ==========================================================
+    output.vPosition = mul(float4(input.vPosition, 1.f), W);
+    
+    // 기존: 뻣뻣한 선형(Linear) 벤딩
+    float fLinearSway = saturate(input.vPosition.y / g_fGrassMaxHeight);
+    
+    // 변경: 선형 값을 한 번 더 곱해서(제곱) 부드러운 포물선 곡선으로 만듦!
+    // 이렇게 하면 긴 풀도 밑동은 튼튼하게 버티고 끝부분만 찰랑거리게 됨.
+    float fSwayWeight = fLinearSway * fLinearSway;
+    
+    float3 vGrassRootPos = float3(W._41, W._42, W._43);
+
+    // ==========================================================
+    // [STEP 1] 플레이어 거리 계산 (기존과 동일)
+    // ==========================================================
+    float3 vPlayerPos = float3(tPlayerInfo.matWorld._41, tPlayerInfo.matWorld._42, tPlayerInfo.matWorld._43);
+    float3 vDirToGrass = vGrassRootPos - vPlayerPos;
+    vDirToGrass.y = 0.f;
+    float fDist = length(vDirToGrass);
+    float fProximity = 1.0f - smoothstep(0.0f, tPlayerInfo.fCollisionRange * 1.5f, fDist);
+
+    // ==========================================================
+    // [STEP 2] 자연 바람 (기존과 동일)
+    // ==========================================================
     float2 vInstancePosXZ = float2(W._41, W._43);
     float fRandom = frac(sin(dot(vInstancePosXZ, float2(12.9898f, 78.233f))) * 43758.5453f);
-    
-    //월드 좌표
-    output.vPosition = mul(float4(input.vPosition, 1.f), W);
     float fWindPhase = (g_fGrassDT * g_fGrassSwaySpeed) + (output.vPosition.x * g_fGrassWaveSize) + (output.vPosition.z * g_fGrassWaveSize) + (fRandom * 3.141592f);
-    
-    
-    
     float fRandomPower = fWindPower * (0.5f + (fRandom * 0.5f));
-    float fSway = sin(fWindPhase) * fRandomPower;
+    float fBaseSway = sin(fWindPhase) * fRandomPower;
+
+    // ==========================================================
+    //[STEP 3] 파닥거림 안정화 (비밀 무기 2 & 3)
+    // ==========================================================
+    float fSpeedRatio = saturate(tPlayerInfo.fCurSpeed / max(0.1f, tPlayerInfo.fMaxSpeed));
+    fSpeedRatio = min(0.5f, fSpeedRatio);
     
-    output.vPosition.xyz += (vWindDirection * fSway * fSwayWeight);
+    // 비밀 무기 3: 엇박자 노이즈 섞기 & 진동 속도 조절
+    // 25.0f는 긴 풀에 너무 빨라서 15.0f로 낮춤. 버텍스 x좌표를 더해서 풀마다 다르게 떨게 만듦!
+    float fRustlePhase = (g_fGrassDT * 15.0f) + (output.vPosition.x * 2.0f);
+    
+    // 비밀 무기 2: 강도 대폭 축소! (1.0f -> 0.15f)
+    // 풀이 길기 때문에 0.15f만 줘도 끝부분은 충분히 찰지게 흔들림.
+    float fRustleStrength = 1.f;
+    float fRustleSway = sin(fRustlePhase) * (fProximity * fSpeedRatio * fRustleStrength);
+    
+    // ==========================================================
+    // [STEP 4] 최종 적용 (데드존 포함)
+    // ==========================================================
+    float fTotalSway = fBaseSway + fRustleSway;
+    float fCenterSafe = smoothstep(0.0f, 0.2f, fDist);
+    
+    output.vPosition.xyz += (vWindDirection * fTotalSway * fSwayWeight);
+    
+    float3 vPushDir = fDist > 0.0f ? normalize(vDirToGrass) : float3(1.f, 0.f, 0.f);
+    
+    // 밀어내는 힘도 긴 풀에 맞춰서 살짝(0.2f)으로 줄임
+    output.vPosition.xyz += vPushDir * (fProximity * 0.2f * fCenterSafe) * fSwayWeight;
+    
     output.vWorldPos = output.vPosition;
-    
     output.vPosition = mul(output.vPosition, VP);
     output.vUV = input.vUV;
     output.vNormal = normalize(mul(input.vNormal, (float3x3) W));
@@ -187,14 +257,20 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
-
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     return output;
 }
@@ -329,7 +405,8 @@ PS_OUT_DEFFERED PS_LANDSCAPE(PS_IN_MESH input)
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     //output.vNormal = float4(1.f,0.f,0.f,0.f);
     output.vNormal = float4(finalWorldNormal * 0.5f + 0.5f, 1.f);
-    output.vSpecularMask = float4(0.f, fNBR_Tile_Roughness, 0.f, 0.f);
+    output.vSpecularMask = DEFAULT_SPECMASK_FLOAT4;
+    output.vSpecularMask.y = fNBR_Tile_Roughness;
     //output.vSpecularMask = float4(1.f, 0.f, 0.f, 0.f);
     
     return output;
@@ -358,12 +435,20 @@ PS_OUT_DEFFERED PS_TREE(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     return output;
 }
@@ -386,13 +471,20 @@ PS_OUT_DEFFERED PS_MOSS(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
    
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
 
@@ -405,7 +497,7 @@ PS_OUT_DEFFERED PS_VINE(PS_IN_MESH input)
     
     float4 vDiffuse = 1.f;
     
-    float4 vMask = float4(1.f, 1.f, 1.f, 1.f);
+    float4 vMask = DEFAULT_SPECMASK_FLOAT4;
     
     if (Has(g_iMaterialMask, METALNESS))
         vMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV);
@@ -422,6 +514,14 @@ PS_OUT_DEFFERED PS_VINE(PS_IN_MESH input)
     
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse, input.iCurInstanceID);
     
@@ -450,12 +550,20 @@ PS_OUT_DEFFERED PS_GRASS(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
@@ -476,14 +584,19 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     if (vDiffuse.a < 0.3f)
         discard;
     
-    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    float3 vBaseColor = vDiffuse.rgb * MIDesc.vTintColor.rgb;
+    float fLuminance = dot(vBaseColor, float3(0.299f, 0.587f, 0.114f));
+    float fSaturationBoost = 1.0f + max(0.0f, (g_fPlantDiffuseColorPower - 1.0f) * 0.5f);
+    float3 vVibrantColor = lerp(float3(fLuminance, fLuminance, fLuminance), vBaseColor, fSaturationBoost);
+    
+    vDiffuse.rgb = vVibrantColor * g_fPlantDiffuseColorPower;
     output.vDiffuse = vDiffuse;
     
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     
     if (Has(g_iMaterialMask, METALNESS))
     {
@@ -499,6 +612,14 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     
     //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
@@ -535,12 +656,20 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_iMaterialMask, METALNESS))
         vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
     return output;
 }
 
@@ -622,7 +751,7 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_WaterTexBindingFlags, Water_Lighting))
     {
         float2 vSparkleUV = input.vUV * g_vSparkleUVPower;
@@ -662,6 +791,21 @@ PS_OUT PS_BLACK(PS_IN_MESH input)
 }
 
 
+PS_OUT_BACKBUFFER PS_SKYBOX(PS_IN_MESH input)
+{
+    PS_OUT_BACKBUFFER output;
+    
+    float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+    
+    vDiffuse = g_DefaultTextures[0].Sample(LinearSampler,input.vUV);
+   
+    if (vDiffuse.a < 0.3f)
+        discard;
+    
+    output.vColor = vDiffuse;
+    
+    return output;
+}
 
 
 technique11 T0
@@ -688,4 +832,5 @@ technique11 T0
     //EXT
     PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_BAKESHADOW)
 	PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_BLACK)
+	PASS_RS_DS_BS_VP(SkyBox, RS_Default_CullNone  , DS_ReadOnly , BS_Default, VS_SKYBOX, PS_SKYBOX)
 };

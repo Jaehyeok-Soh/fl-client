@@ -1,0 +1,2587 @@
+{
+    "Category": "EFFECTEVENT",
+    "Objects": [
+        {
+            "Type": 2,
+            "iNumPool": 0,
+            "strOwnerTag": "Xibi",
+            "vecEffectEvents": [
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 41.5,
+                    "iAnimIndex": 15,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill01_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 30.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 60.0,
+                    "iAnimIndex": 15,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill01_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 180.0,
+                        "y": 180.0,
+                        "z": 40.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 58.0,
+                    "iAnimIndex": 14,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill01_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack3",
+                    "vOffset": {
+                        "x": 0.800000011920929,
+                        "y": 0.800000011920929,
+                        "z": 1.2000000476837158
+                    },
+                    "vRotation": {
+                        "x": -75.0,
+                        "y": -10.0,
+                        "z": -120.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 80.0,
+                    "iAnimIndex": 14,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill01_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack2",
+                    "vOffset": {
+                        "x": 0.7799999713897705,
+                        "y": 0.3799999952316284,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 30.0,
+                        "y": -50.0,
+                        "z": 10.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 65.0,
+                    "iAnimIndex": 13,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack1",
+                    "vOffset": {
+                        "x": -0.6000000238418579,
+                        "y": -1.0,
+                        "z": 1.2999999523162842
+                    },
+                    "vRotation": {
+                        "x": -30.0,
+                        "y": -50.0,
+                        "z": 160.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 85.66000366210938,
+                    "iAnimIndex": 13,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack3",
+                    "vOffset": {
+                        "x": 0.6899999976158142,
+                        "y": 0.47999998927116394,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": -26.959999084472656,
+                        "y": -90.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 21,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill03",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_BlinkEffect",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.20999999344348907
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 18.5,
+                    "iAnimIndex": 21,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill03",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_BlinkEffect2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.20000000298023224,
+                        "z": 0.20999999344348907
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 17.0,
+                    "iAnimIndex": 32,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 59,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill09",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 20.5,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 59,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 45.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 20.5,
+                    "iAnimIndex": 19,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 59,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill02_03",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 45.0,
+                    "iAnimIndex": 19,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill02_03",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 40.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 25.5,
+                    "iAnimIndex": 20,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 59,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill02_04",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 25.0,
+                    "iAnimIndex": 30,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 59,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill08_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 45.0,
+                    "iAnimIndex": 30,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill08_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack4",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 21.0,
+                    "iAnimIndex": 31,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 59,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill08_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 45.0,
+                    "iAnimIndex": 31,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 380,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill08_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Thrusting_Attack",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.5,
+                        "z": 2.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Teleport",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 25.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Teleport_End",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 82.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Wind",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.5,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 82.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_WindLightning1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 135.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_WindLightning1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 106.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Wind_DangerousSpace",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.10000000149011612,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 90.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 270.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 156.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 8.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 24.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 154.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 10.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 37.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 153.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.699999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 62.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 157.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 74.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 154.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 107.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.699999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 129.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 153.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.800000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 150.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.800000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 195.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 5.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 240.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 152.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 10.800000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 305.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 155.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 8.199999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 330.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 90.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 270.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 204.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 8.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 24.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 202.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 10.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 37.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 201.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.699999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 62.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 205.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 7.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 74.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 202.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 107.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.699999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 129.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 201.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.800000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 150.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 6.800000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 195.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 5.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 240.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 200.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 10.800000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 305.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 203.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 8.199999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 330.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 12.800000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 15.199999809265137,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.0500030517578,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 19.399999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 142.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.10000610351563,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 15.100000381469727
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 278.3999938964844,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.14999389648438,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 11.300000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 45.099998474121094,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.1999969482422,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 20.600000381469727
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 195.60000610351563,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.25,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 14.199999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 320.20001220703125,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.3000030517578,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 17.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 88.9000015258789,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.35000610351563,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 11.899999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 210.3000030517578,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.39999389648438,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 19.100000381469727
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 345.70001220703125,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.4499969482422,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 15.699999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 62.400001525878906,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.5,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 20.200000762939453
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 110.80000305175781,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.5500030517578,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 13.399999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 255.89999389648438,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.60000610351563,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 16.799999237060547
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 12.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.64999389648438,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 11.199999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 145.3000030517578,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.6999969482422,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 20.899999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 302.70001220703125,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.75,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 14.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 75.80000305175781,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.8000030517578,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 18.200000762939453
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 215.10000610351563,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.85000610351563,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 12.399999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 333.3999938964844,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.89999389648438,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 15.800000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 55.70000076293945,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 172.9499969482422,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 19.799999237060547
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.1999969482422,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 13.899999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 290.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.0500030517578,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 17.100000381469727
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 35.79999923706055,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.10000610351563,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 11.600000381469727
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 125.4000015258789,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.14999389648438,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 20.299999237060547
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 248.89999389648438,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.1999969482422,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 14.800000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 9.199999809265137,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.25,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 18.600000381469727
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 165.6999969482422,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.3000030517578,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 12.100000381469727
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 310.3999938964844,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.35000610351563,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 15.399999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 48.20000076293945,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.39999389648438,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 19.899999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 189.5,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.4499969482422,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 13.699999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 264.29998779296875,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.5,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 17.899999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 355.20001220703125,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.5500030517578,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 11.399999618530273
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 82.69999694824219,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.60000610351563,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 20.799999237060547
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 222.10000610351563,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.64999389648438,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 14.600000381469727
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 328.6000061035156,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.6999969482422,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 16.200000762939453
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 105.4000015258789,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.75,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 13.199999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 241.89999389648438,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.8000030517578,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 19.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 25.600000381469727,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.85000610351563,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 15.300000190734863
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 158.1999969482422,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.89999389648438,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 11.699999809265137
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 285.3999938964844,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 173.9499969482422,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 18.799999237060547
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 52.900001525878906,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 8.399999618530273,
+                    "iAnimIndex": 25,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill05",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_SpawnGate",
+                    "vOffset": {
+                        "x": -6.0,
+                        "y": 3.200000047683716,
+                        "z": -1.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 9.199999809265137,
+                    "iAnimIndex": 25,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill05",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_SpawnGate",
+                    "vOffset": {
+                        "x": -3.5,
+                        "y": 1.0,
+                        "z": -1.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 10.0,
+                    "iAnimIndex": 25,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill05",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_SpawnGate",
+                    "vOffset": {
+                        "x": -2.799999952316284,
+                        "y": 4.300000190734863,
+                        "z": -2.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 10.800000190734863,
+                    "iAnimIndex": 25,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill05",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_SpawnGate",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 2.0,
+                        "z": -1.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 11.600000381469727,
+                    "iAnimIndex": 25,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill05",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_SpawnGate",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 6.0,
+                        "z": -2.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 12.399999618530273,
+                    "iAnimIndex": 25,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill05",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_SpawnGate",
+                    "vOffset": {
+                        "x": 3.0,
+                        "y": 4.300000190734863,
+                        "z": -2.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 13.199999809265137,
+                    "iAnimIndex": 25,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill05",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_SpawnGate",
+                    "vOffset": {
+                        "x": 4.0,
+                        "y": 1.0,
+                        "z": -1.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 14.0,
+                    "iAnimIndex": 25,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill05",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_SpawnGate",
+                    "vOffset": {
+                        "x": 6.0,
+                        "y": 3.0,
+                        "z": -1.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "bFollowBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 15.0,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_DomeSkill",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.05,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            ]
+        }
+    ]
+}

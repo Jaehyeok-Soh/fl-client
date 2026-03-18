@@ -53,6 +53,16 @@ namespace DTO
 		wstring wstrExplain = { L"" };
 
 		wstring wstrDescription = { L"" };
+
+		string strTitle = { "" };
+		string strSubTitle = { "" };
+		string strExplain = { "" };
+
+		string strDescription = { "" };
+
+		int iEnterDialogueId = { -1 };
+		int iExitDialogueId = { -1 };
+		int iInteractDialogueId = { -1 };
 	}QUESTDESC;
 
 	inline void to_json(json& j, const QUESTDESC& d)
@@ -61,10 +71,20 @@ namespace DTO
 		j["iPrevId"] = d.iPrevId;
 		j["iNextId"] = d.iNextId;
 		j["iParentId"] = d.iParentId;
-		j["wstrTitle"] = Engine_Utils::ToString(d.wstrTitle);
-		j["wstrSubTitle"] = Engine_Utils::ToString(d.wstrSubTitle);
-		j["wstrExplain"] = Engine_Utils::ToString(d.wstrExplain);
-		j["wstrDescription"] = Engine_Utils::ToString(d.wstrDescription);
+
+		//j["wstrTitle"] = Engine_Utils::ToWString(d.strTitle);
+		//j["wstrSubTitle"] = Engine_Utils::ToWString(d.strSubTitle);
+		//j["wstrExplain"] = Engine_Utils::ToWString(d.strExplain);
+		//j["wstrDescription"] = Engine_Utils::ToWString(d.strDescription);
+		
+		j["strTitle"] = d.strTitle;
+		j["strSubTitle"] = d.strSubTitle;
+		j["strExplain"] = d.strExplain;
+		j["strDescription"] = d.strDescription;
+
+		j["iEnterDialogueId"] = d.iEnterDialogueId;
+		j["iExitDialogueId"] = d.iExitDialogueId;
+		j["iInteractDialogueId"] = d.iInteractDialogueId;
 	}
 
 	inline void from_json(const json& j, QUESTDESC& d)
@@ -74,18 +94,64 @@ namespace DTO
 		j.at("iNextId").get_to(d.iNextId);
 		j.at("iParentId").get_to(d.iParentId);
 
-		string strBuffer = {};
-		j.at("wstrTitle").get_to(strBuffer);
-		d.wstrTitle = Engine_Utils::ToWString(strBuffer);
+		if (j.contains("strTitle"))
+		{
+			j.at("strTitle").get_to(d.strTitle);
+			d.wstrTitle = Engine_Utils::ToWString(d.strTitle);
+		}
+		else
+		{
+			d.strTitle = "";
+			d.wstrTitle = L"";
+		}
 
-		j.at("wstrSubTitle").get_to(strBuffer);
-		d.wstrSubTitle = Engine_Utils::ToWString(strBuffer);
+		if (j.contains("strSubTitle"))
+		{
+			j.at("strSubTitle").get_to(d.strSubTitle);
+			d.wstrSubTitle = Engine_Utils::ToWString(d.strSubTitle);
+		}
+		else
+		{
+			d.strSubTitle = "";
+			d.wstrSubTitle = L"";
+		}
 
-		j.at("wstrExplain").get_to(strBuffer);
-		d.wstrExplain = Engine_Utils::ToWString(strBuffer);
+		if (j.contains("strExplain"))
+		{
+			j.at("strExplain").get_to(d.strExplain);
+			d.wstrExplain = Engine_Utils::ToWString(d.strExplain);
+		}
+		else
+		{
+			d.strExplain = "";
+			d.wstrExplain = L"";
+		}
 
-		j.at("wstrDescription").get_to(strBuffer);
-		d.wstrDescription = Engine_Utils::ToWString(strBuffer);
+		if (j.contains("strDescription"))
+		{
+			j.at("strDescription").get_to(d.strDescription);
+			d.wstrDescription = Engine_Utils::ToWString(d.strDescription);
+		}
+		else
+		{
+			d.strDescription = "";
+			d.wstrDescription = L"";
+		}
+
+		if (j.contains("iEnterDialogueId"))
+			j.at("iEnterDialogueId").get_to(d.iEnterDialogueId);
+		else
+			d.iEnterDialogueId = -1;
+
+		if (j.contains("iExitDialogueId"))
+			j.at("iExitDialogueId").get_to(d.iExitDialogueId);
+		else
+			d.iExitDialogueId = -1;
+
+		if (j.contains("iInteractDialogueId"))
+			j.at("iInteractDialogueId").get_to(d.iInteractDialogueId);
+		else
+			d.iInteractDialogueId = -1;
 	}
 
 	typedef struct tagQuestChapterDesc

@@ -219,6 +219,8 @@ namespace Engine
 		Matrix matView = Matrix::Identity;
 		Matrix matProj = Matrix::Identity;
 		Matrix matVP = Matrix::Identity;
+		float fAccTime = { 0.f };
+		SimpleMath::Vector3 vPadding = { SimpleMath::Vector3::Zero };
 	}SHADER_GLOBALDESC;
 
 	typedef struct tagShaderInvDesc
@@ -341,6 +343,56 @@ namespace Engine
 		float fFadeEnd{0.f};
 		SimpleMath::Vector2 vPadding{ SimpleMath::Vector2::Zero };
 	}SHADER_OUTLINE_DESC;
+
+	typedef struct tagShaderCascadeShadowDesc
+	{
+		// Light View × Proj 
+		SimpleMath::Matrix matLightVP[SHADOW_CASCADE_COUNT] = {};
+		// ViewZ 기준 분할 거리
+		float fCascadeEnd0 = { 8.0f };
+		float fCascadeEnd1 = { 40.f };
+		float  fShadowBias = { 0.0002f };
+		float  fNormalBias = { 0.04f };
+
+		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
+		float fShadowStrength = { 0.4f };
+		float fCascadeIndex = { 0.f };
+	}SHADER_CASCADE_SHADOW_DESC;
+
+	typedef struct tagShaderFogParamDesc
+	{
+		SimpleMath::Vector4 vColor = { 0.6f, 0.75f, 0.9f, 1.f };
+		SimpleMath::Vector4 vHighColor = { 0.7f, 0.8f, 0.95f, 1.f };
+
+		float fFogStart = { 15.f };
+		float fFogEnd = { 80.f };
+		float fFogDensity = { 0.f };
+		float fFogHeightFalloff = { 0.15f };
+
+		float fFogBaseHeight = { 0.f };
+		float fFogMaxOpacity = { 0.85f };
+		float fFogHeightDensity = { 0.02f };
+		float fFogNoiseScale = { 0.f };
+
+		float fFogNoiseSpeed = { 0.f };
+		SimpleMath::Vector3 vPad = { SimpleMath::Vector3::Zero };
+	}SHADER_FOG_DESC;
+
+	typedef struct tagShaderToonParamDesc
+	{
+		float fWrap = { 0.25f };
+		float fShadowMid = { 0.55f };
+		float fShadowSoftness = { 0.10f };
+		float fShadowStrength{ 0.85f };
+		
+		float fRimThreshold = { 0.65f };
+		float fRimSoftness = { 0.10f };
+		float fRimStrength = { 0.0f };
+		float fPad = { 0.f };
+
+		float fDiffuseStrength = { 1.0f };
+		SimpleMath::Vector3 vPad { 0.f, 0.f, 0.f };
+	}SHADER_TOON_DESC;
 
 	typedef struct tagShaderEffectDesc
 	{
@@ -702,6 +754,31 @@ namespace Engine
 
 #pragma endregion
 
+#pragma region PART_COMBINEBONE
+	// 가변 데이터
+	typedef struct tagPartCombineBone
+	{
+		unsigned int						iParentIdx = { 0 }; // root motion일 경우 tralation을 0으로 만들기 위함
+		unsigned int						iBoneNums = { 0 }; // root motion일 경우 tralation을 0으로 만들기 위함
+		SimpleMath::Vector2		Padding0 = {};
+	}CS_IMMU_PARTBONE;
+
+#pragma endregion
+
+#pragma region RAGDOLL_CS
+	// 가변 데이터
+	typedef struct tagIMMU_RAGDOLL
+	{
+		unsigned int    iBoneIndex;         // 몇번째 뼈인지
+
+		unsigned int    iTotalBoneNums;     // 총 뼈 개수
+		unsigned int    iRagDollBoneNums;   // 래그돌 할 개수
+ 
+		unsigned int    Padding0;
+	}CS_IMMU_RAGDOLL;
+
+#pragma endregion
+
 #pragma endregion
 
 	union COLLIDER_ID
@@ -847,6 +924,15 @@ namespace Engine
 		SimpleMath::Vector3 vExtens = {};
 		//PxCapsuleControllerDesc capsuleDesc{};
 		//PxBoxControllerDesc boxDesc{};
+		float fContactOffset = 0.3f;
+		float fStepOffset = 0.4f;
+		float fSlopeLimit = 0.7f;
+
+		DirectX::SimpleMath::Vector3 vLocalOffset = {};
+		DirectX::SimpleMath::Vector3 vWorldOffset = {};
+
+		bool bIsHover = { false };
+		float fHoverOffset = { 1.f };
 
 		////////////////
 		/// Material ///
@@ -856,7 +942,7 @@ namespace Engine
 		////////////////////////
 		/// Collision Filter ///
 		////////////////////////
-		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
+		unsigned int eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
 
 		//////////////////
@@ -944,7 +1030,7 @@ namespace Engine
 		/// Collision Filter ///
 		////////////////////////
 		bool bSetOnlyFilter = { false };
-		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
+		unsigned int eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
 
 		////////////////////
@@ -1083,7 +1169,28 @@ namespace Engine
 
 #pragma endregion
 
+
+#pragma region 
+
+	typedef struct CinematicCameraSequnce_EventDesc
+	{
+		/* 저장된 string 데이터를 Client에서 사용할때는 ToHahs 함수를 사용하여 미리 컴파일 단계때 해쉬를 생성해서 사용해준다 */
+		string          strSubscriberName;   // 예: "UI_Tutorial", "Boss_Haier"
+		vector<string>  vecActionNames;      // 예: "Show_Popup", "Roar"
+	}CCS_EVENT_DESC;
+
+#pragma endregion
+
+
+
+#pragma endregion
+
 }
+
+
+
+
+
 #pragma endregion
 
 #endif // Engine_Struct_h__

@@ -133,6 +133,7 @@ namespace Tool
 
         SaveJson["Using Model Info"] = tData.tUsingModelInfo;
     }
+
 #pragma endregion
 
 #pragma region InstanceModel 
@@ -144,6 +145,7 @@ namespace Tool
             tData.tUsingModelInfo = LoadJson["Using Model Info"];
     }
 
+
     void to_json(json& SaveJson, const INSTANCEMODEL_DATA& tData)
     {
         SaveJson["Using Model Info"] = tData.tUsingModelInfo;
@@ -152,6 +154,30 @@ namespace Tool
     }
 #pragma endregion
 
+
+#pragma region CCS_EventManifast
+    
+    void to_json(json& SaveJson, const CCS_EVENT_MANIFEST& tData)
+    {
+        SaveJson = json
+        {
+            {"Subscriber Name",tData.strSubscriberName},
+            {"Action Names",tData.vecActionNames}
+        };
+    }
+    void from_json(const json& LoadJson, CCS_EVENT_MANIFEST& tData)
+    {
+        if (LoadJson.contains("Subscriber Name"))
+        {
+            LoadJson.at("Subscriber Name").get_to(tData.strSubscriberName);
+        }
+        if (LoadJson.contains("Action Names"))
+        {
+            LoadJson.at("Action Names").get_to(tData.vecActionNames);
+        }
+    }
+
 #pragma endregion
+
 
 }

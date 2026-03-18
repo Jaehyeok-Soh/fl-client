@@ -4,9 +4,6 @@
     <Filter Include="99. ETC">
       <UniqueIdentifier>{abc407db-dd3f-4180-a2f9-ea688f8ce102}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. MainApplication">
-      <UniqueIdentifier>{1c92be80-c5c7-419a-81e5-19643d43a155}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00. Default">
       <UniqueIdentifier>{1cc99351-da81-4feb-a1cf-61546807521f}</UniqueIdentifier>
     </Filter>
@@ -562,15 +559,6 @@
     <Filter Include="05. Component\Skill\Moon">
       <UniqueIdentifier>{967b52e8-d189-41cf-b480-c8f0f6d3fe01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Component\Monster">
-      <UniqueIdentifier>{B1DED375-A417-4FAC-A147-06883C162BC9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\Monster\MonsterActionState">
-      <UniqueIdentifier>{5507D004-C913-4260-8BCA-C852B54A4717}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05. Component\Monster\MonsterControlContext">
-      <UniqueIdentifier>{9F6A9D98-F1E9-4E08-A76F-50B9DCAADF19}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\BattelField">
       <UniqueIdentifier>{b1195416-a6da-4357-b964-0ea1df18e98b}</UniqueIdentifier>
     </Filter>
@@ -727,14 +715,95 @@
     <Filter Include="07. System\02. Quest\Chapter">
       <UniqueIdentifier>{2338547c-019d-4c84-aa4f-dbb6b6c8cb85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07. System\02. Quest\IQuest">
-      <UniqueIdentifier>{22871574-32e8-4ed9-9209-1982bfac16c0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07. System\99. Debug_ImGui\Layout\Animation">
       <UniqueIdentifier>{f2ac30ac-8cc6-4e1a-91a2-0a36094fcd50}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\03 Dialogue">
       <UniqueIdentifier>{9ff56111-a531-4668-8c29-235fc9a498ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Interface">
+      <UniqueIdentifier>{441eed99-9bfe-4595-97a2-85fe8603fef7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Interface\01. IQuest">
+      <UniqueIdentifier>{22871574-32e8-4ed9-9209-1982bfac16c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Interface\02. IInteract">
+      <UniqueIdentifier>{e1c75443-f2fa-4752-9016-43a07a876f08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC">
+      <UniqueIdentifier>{31929a08-23b6-42f6-884f-004befba8c01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC">
+      <UniqueIdentifier>{3af3d4aa-aaa9-4ddb-b13c-d944c69fa8dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body">
+      <UniqueIdentifier>{da706f59-3659-4ce9-bf83-d4b7259271db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Pan">
+      <UniqueIdentifier>{9fc40d23-e2c5-4e07-b09a-a74ac5d7b598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Monster">
+      <UniqueIdentifier>{B1DED375-A417-4FAC-A147-06883C162BC9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Monster\MonsterActionState">
+      <UniqueIdentifier>{5507D004-C913-4260-8BCA-C852B54A4717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Monster\MonsterControlContext">
+      <UniqueIdentifier>{9F6A9D98-F1E9-4E08-A76F-50B9DCAADF19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\10.Quest">
+      <UniqueIdentifier>{96adf82f-db81-40b0-9a66-0689de401dbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest">
+      <UniqueIdentifier>{b9efb574-6096-4b17-8af9-23ea111f5146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. MainApplication">
+      <UniqueIdentifier>{1c92be80-c5c7-419a-81e5-19643d43a155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkyBox">
+      <UniqueIdentifier>{99918c3e-fd8c-43b0-a581-c9c381bd8543}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\07. EnvObject">
+      <UniqueIdentifier>{3c576829-7611-438f-8913-4851f5db15b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\07. EnvObject\08. Fog">
+      <UniqueIdentifier>{d60575dc-b385-48f0-ba05-2f3bff77d47e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PointLight">
+      <UniqueIdentifier>{a0f8084c-c1b0-4b67-9681-7691de4c94e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\Pan">
+      <UniqueIdentifier>{20ca04a6-e624-479c-ba98-36f81accee48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\BonePart">
+      <UniqueIdentifier>{83efcc27-26a0-41e7-9849-ac303486e5a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest\Navi">
+      <UniqueIdentifier>{fa50cb23-8ed3-43ec-95db-e84e5c7604a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi">
+      <UniqueIdentifier>{439ea3b6-89a6-432a-b9f5-d6082c69fff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community">
+      <UniqueIdentifier>{ab11963d-fca7-461e-86bb-401d946db20c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\11.Community">
+      <UniqueIdentifier>{f9fbc5dc-3cc4-4c8d-868e-968f0ddb333e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\12.Conversation">
+      <UniqueIdentifier>{378205ac-d5dd-44cf-944d-9f2859cc7831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\MapObject\08. LightMapObject">
+      <UniqueIdentifier>{bc9e1b73-3e10-43c4-9085-cd04807f50b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\Camera\00. CameraMan_Targeter">
+      <UniqueIdentifier>{150eb9a6-eecf-45a0-9423-b7c324458d5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\Camera\NewFilter1">
+      <UniqueIdentifier>{d45ded89-5b94-43dd-a5e7-0c0cac2cbc91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. ETC\Client_Define">
+      <UniqueIdentifier>{fde4a4ac-8ede-492c-a268-bd20661a27dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -752,12 +821,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\MainApplication.h">
       <Filter>01. MainApplication</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_Defines.h">
-      <Filter>99. ETC</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Client_EventDefine.h">
-      <Filter>99. ETC</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>02. Level\Loading</Filter>
@@ -791,9 +854,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Player.h">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CameraMan_Targeter.h">
-      <Filter>03. GameObject\Camera</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>99. ETC\pch</Filter>
@@ -1125,7 +1185,6 @@
     <ClInclude Include="..\public\Builder_AttackPreset.h">
       <Filter>07. System\01. Builder\AttackPreset</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LandScape.h" />
     <ClInclude Include="..\Public\Builder_UIPrefabs.h">
       <Filter>07. System\01. Builder\UI</Filter>
     </ClInclude>
@@ -1361,13 +1420,79 @@
       <Filter>07. System\02. Quest\Chapter</Filter>
     </ClInclude>
     <ClInclude Include="..\public\IQuest.h">
-      <Filter>07. System\02. Quest\IQuest</Filter>
+      <Filter>08. Interface\01. IQuest</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ImGui_AnimationLayout.h">
       <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DialogueManager.h">
       <Filter>07. System\03 Dialogue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\IInteractable.h">
+      <Filter>08. Interface\02. IInteract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Base.h">
+      <Filter>03. GameObject\ContainerObjects\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Body_Base.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Pan.h">
+      <Filter>03. GameObject\ContainerObjects\NPC\Pan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQuest_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQuest_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SkyBox.h">
+      <Filter>03. GameObject\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EnvObject.h">
+      <Filter>03. GameObject\MapObject\07. EnvObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fog.h">
+      <Filter>03. GameObject\MapObject\07. EnvObject\08. Fog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PointLight.h">
+      <Filter>03. GameObject\PointLight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Pan_Body.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\Pan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BonePart.h">
+      <Filter>03. GameObject\PartObjects\BonePart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandScape.h">
+      <Filter>03. GameObject\MapObject\02. LandScape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQuestNavi_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest\Navi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQuestNavi_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UICommunity_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UICommunity_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIConservation_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CLightMapObject.h">
+      <Filter>03. GameObject\MapObject\08. LightMapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraMan_Targeter.h">
+      <Filter>03. GameObject\Camera\00. CameraMan_Targeter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Defines.h">
+      <Filter>99. ETC\Client_Define</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_EventDefine.h">
+      <Filter>99. ETC\Client_Define</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1422,9 +1547,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>03. GameObject\ContainerObjects\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
-      <Filter>03. GameObject\Camera</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>99. ETC\pch</Filter>
@@ -1983,13 +2105,73 @@
       <Filter>07. System\02. Quest\Chapter</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\IQuest.cpp">
-      <Filter>07. System\02. Quest\IQuest</Filter>
+      <Filter>08. Interface\01. IQuest</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_AnimationLayout.cpp">
       <Filter>07. System\99. Debug_ImGui\Layout\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DialogueManager.cpp">
       <Filter>07. System\03 Dialogue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\IInteractable.cpp">
+      <Filter>08. Interface\02. IInteract</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Base.cpp">
+      <Filter>03. GameObject\ContainerObjects\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Body_Base.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Pan.cpp">
+      <Filter>03. GameObject\ContainerObjects\NPC\Pan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuest_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuest_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkyBox.cpp">
+      <Filter>03. GameObject\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EnvObject.cpp">
+      <Filter>03. GameObject\MapObject\07. EnvObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Fog.cpp">
+      <Filter>03. GameObject\MapObject\07. EnvObject\08. Fog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PointLight.cpp">
+      <Filter>03. GameObject\PointLight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Pan_Body.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\Pan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BonePart.cpp">
+      <Filter>03. GameObject\PartObjects\BonePart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuestNavi_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\13.Quest\Navi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuestNavi_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommunity_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommunity_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CUIConservation_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CLightMapObject.cpp">
+      <Filter>03. GameObject\MapObject\08. LightMapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraMan_Targeter.cpp">
+      <Filter>03. GameObject\Camera\00. CameraMan_Targeter</Filter>
+    </ClCompile>
+    <ClCompile Include="Client_Define.cpp">
+      <Filter>99. ETC\Client_Define</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2070,6 +2252,12 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">
       <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_BoneCombinePart.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_RagDoll.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

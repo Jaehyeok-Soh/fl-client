@@ -1,0 +1,55 @@
+{
+    "Category": "MAP",
+    "Level Data": {
+        "Level Type": "STATIC",
+        "Texture Splating Info": "None",
+        "strTag": "LevelData0"
+    },
+    "Objects": [
+        {
+            "Client Level Type": "LOGO",
+            "Client Make Path": "TriggerBox_GlobalEvent_BroadCaster",
+            "Client Make Path Desc": [
+                {
+                    "Extents": {
+                        "X": 1.899999976158142,
+                        "Y": 1.100000023841858,
+                        "Z": 1.2000000476837158
+                    },
+                    "Global Event Broadcast Name": "TUTORIAL_BOSS_CONTATCT"
+                }
+            ],
+            "Draw Type": "Collider",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 0.13188302516937256,
+                        "Y": 3.818840980529785,
+                        "Z": -3.7566699981689453
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": false,
+            "UE Raw Data Path": "",
+            "strTag": "TriggerBox_GlobalEvent_BroadCaster3"
+        }
+    ]
+}

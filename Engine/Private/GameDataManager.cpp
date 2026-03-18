@@ -3,9 +3,16 @@
 #include "GameInstance.h"
 #include "Shader.h"
 #include <fstream>
+#include "Cinematic_Manager.h"
+#include "Collider.h"
+#include "Bounding_AABB.h"
+#include "Bounding_OBB.h"
 
 CGameDataManager::CGameDataManager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pGameInstance(CGameInstance::GetInstance()), m_pDevice(pDevice), m_pDeviceContext(pDeviceContext), m_vecGlobalEventsBroadCast{}
+	, m_pBatch{nullptr}
+	, m_pEffect{nullptr}
+	, m_pInputLayout{nullptr}
 {
     Safe_AddRef(m_pDevice);
     Safe_AddRef(m_pDeviceContext);
@@ -18,6 +25,13 @@ HRESULT CGameDataManager::Initialize()
 
 
 	if (FAILED(Make_DefaultTextures()))
+		return E_FAIL;
+
+	if (FAILED(Make_MapMinMaxBox()))
+		return E_FAIL;
+
+
+	if (FAILED(Make_Batch()))
 		return E_FAIL;
 
     return S_OK;
@@ -80,6 +94,83 @@ ID3D11ShaderResourceView* CGameDataManager::Make_ShaderResourceViewColor(_uint A
 	return pSRV;
 }
 
+HRESULT CGameDataManager::Make_Batch()
+{
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
+	m_pEffect = new BasicEffect(m_pDevice);
+	m_pEffect->SetVertexColorEnabled(true);
+
+	const void* pShaderInput = { nullptr };
+	size_t iShaderInputLenght = {};
+	m_pEffect->GetVertexShaderBytecode(&pShaderInput, &iShaderInputLenght);
+
+	if (FAILED(m_pDevice->CreateInputLayout(
+		VertexPositionColor::InputElements
+		, VertexPositionColor::InputElementCount
+		, pShaderInput
+		, iShaderInputLenght
+		, &m_pInputLayout)))
+		return E_FAIL;
+
+
+
+
+	return S_OK;
+}
+
+
+#pragma region Map Min Max Box
+HRESULT CGameDataManager::Make_MapMinMaxBox()
+{
+	CBounding_AABB::BOUNDING_AABB_DESC tAABB_Desc{};
+	tAABB_Desc.vCenter = {0.f,0.f};
+	tAABB_Desc.vExtens = {5.f,5.f};
+	m_pMapMinMaxBox = CBounding_AABB::Create(m_pDevice , m_pDeviceContext, &tAABB_Desc);
+	if (m_pMapMinMaxBox == nullptr) return E_FAIL;
+
+	return S_OK;
+}
+
+void CGameDataManager::Set_MapMinMaxBox(const Vec3& vCenterPos, const Vec3& vExtents)
+{
+	if (m_pMapMinMaxBox == nullptr) return;
+
+	BoundingBox* pBox = m_pMapMinMaxBox->Get_OriginalDesc();
+	pBox->Center = vCenterPos;
+	pBox->Extents = vExtents;
+
+	m_pMapMinMaxBox->Update(Matrix::Identity);
+
+	return;
+}
+
+
+#ifdef _DEBUG
+
+HRESULT CGameDataManager::DebugRender_MapMinMaxBox()
+{
+	if (m_pBatch == nullptr) return E_FAIL;
+	if (m_pEffect == nullptr) return E_FAIL;
+	if (m_pInputLayout == nullptr) return E_FAIL;
+
+	if (m_pMapMinMaxBox == nullptr) return E_FAIL;
+
+	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
+	m_pEffect->SetWorld(Matrix::Identity);
+	m_pEffect->SetView(m_pGameInstance->Get_ViewMatrix());
+	m_pEffect->SetProjection(m_pGameInstance->Get_ProjMatrix());
+
+	m_pEffect->Apply(m_pDeviceContext);
+	m_pDeviceContext->IASetInputLayout(m_pInputLayout);
+
+	m_pBatch->Begin();
+	m_pMapMinMaxBox->Render(m_pBatch , true );
+	m_pBatch->End();
+
+	return S_OK;
+}
+#endif // _DEBUG
+#pragma endregion
 
 #pragma region Texture Splating Info
 
@@ -379,6 +470,7 @@ HRESULT CGameDataManager::Play_CameraCinematic(const wstring& wstrFindKey)
 }
 
 
+
 HRESULT CGameDataManager::Load_CameraCinematicSequence()
 {
 	/* Texture Splating을 저장시킨 Data들을 Load해준다 */
@@ -444,6 +536,7 @@ HRESULT CGameDataManager::Save_CameraCinematicSequence()
 	return S_OK;
 }
 
+
 HRESULT CGameDataManager::Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT Camera_Cinematic_Sequence* pOutCamCinematicSequence)
 {
 	/* 받아갈 데이터를 반드시 집어넣어줘야한다 */
@@ -500,6 +593,7 @@ vector<string> CGameDataManager::Get_CameraCinematicSequenceNames() const
 
 	return vecCamCinematicSequenceNames;
 }
+
 
 #pragma endregion
 
@@ -625,6 +719,12 @@ void CGameDataManager::Free()
 	Safe_Release(m_pDefaultRed);
 	Safe_Release(m_pDefaultBlue);
 	Safe_Release(m_pDefaultGreen);
+	Safe_Release(m_pMapMinMaxBox);
+
+	Safe_Delete(m_pBatch);
+	Safe_Delete(m_pEffect);
+	Safe_Release(m_pInputLayout);
+
 
 	Clear_AttackPreset();
 	for (auto& Pair : m_mapTextureSplatingInfoDatas)

@@ -73,7 +73,7 @@ private:
 	virtual HRESULT						Initialize(void* pArg)							override;
 	HRESULT								Ready_SRTDatas(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT								Ready_Component();
-	HRESULT								Ready_ColliderTypeComponet();
+	HRESULT								Ready_ColliderType();
 	HRESULT								Ready_ClientMakePath(CMapObject::MAPOBJECT_DESC* pDesc);
 	HRESULT								Ready_OverrideMtl(const USING_MODEL_INFO& tUsingModelInfo);
 
@@ -88,7 +88,7 @@ public:
 	HRESULT								Ready_TriggerBox_MonsterSpawner();
 
 	HRESULT								Ready_Water();
-	HRESULT								Ready_Fog();
+	HRESULT								Ready_Env();
 
 
 	HRESULT								Ready_InvisibleWall();
@@ -199,6 +199,12 @@ public:
 private:
 	HRESULT								Check_DrawType_ByClientPath();
 public:
+	void								ImGuiUpdate_EffectEnv();
+	std::vector < std::pair<CEffect_Env*, EFFECT_ENV_DESC>>* Get_EffectEnvData() { return &m_vEnvEffectList; }
+#pragma region BeforeRender
+	void								BatchObject_BeforeRender(const _float fTimeDelta);
+	void								Env_BeforeRender(const _float fTimeDelta);
+#pragma endregion
 
 #pragma region Render 함수 모음
 
@@ -208,6 +214,8 @@ public:
 
 	HRESULT								Render_Plants(_uint iPassIndex);
 
+
+	HRESULT								Bind_PlantBuffer(CShader* pShader = nullptr);
 	HRESULT								Render_Grass();
 	HRESULT								Render_Tree();
 	HRESULT								Render_Moss();
@@ -216,7 +224,7 @@ public:
 	HRESULT								Render_Rock();
 
 	HRESULT								Render_Water();
-	HRESULT								Render_Fog();
+	HRESULT								Render_Env();
 
 	HRESULT								Render_Batch_Player();
 	HRESULT								Render_Batch_Monster();
@@ -274,6 +282,7 @@ protected:
 
 
 	/* 임시 패기처분 */
+	/* 다시 살리기 프로젝트 */
 	/* Override Material을 담아줄 변수 */
 	vector<CMaterial*>					m_vecOverrideMaterials;
 	bool								m_isUseOverrideMaterials{ false };
@@ -294,7 +303,10 @@ public:
 	CEffect_Env*						Get_EnvEffect(_uint iIndex);
 	EFFECT_ENV_DESC						Get_EnvEffectDesc(_uint iIndex);
 	void								Set_EnvEffectDesc(_uint iIndex, const EFFECT_ENV_DESC& Desc);
+	void								Delete_EnvEffect(_uint iIndex);
 
+
+	_bool								m_isModelRender{true};
 	const Matrix*						m_pWorldMatPtr = {nullptr};	// 이거 이중포인터 때문에 반 강제적으로 캐싱해서 들고 있어야함ㅋ
 																	// 폭파의 신 최정우 강림. (클라쪽에서 한번 Awake나 이떄 캐싱해서 들고있어라.)
 	std::vector<std::pair<CEffect_Env*, EFFECT_ENV_DESC>>	m_vEnvEffectList = {};

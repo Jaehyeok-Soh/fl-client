@@ -37,6 +37,7 @@ protected:
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+	HRESULT			Ready_Component();
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void	Update_Priority(const _float fTimeDelta) override;
@@ -57,9 +58,18 @@ private:
 	CB_EnvData			m_tCB_EnvData{};
 	std::string			m_strTextureSplatingInfoName{"None"};
 
-public:
-	CShader*		m_pMeshShader{};
-	CShader*		m_pInstMeshSahder{};
+
+	/* SkyBox¿ë ¹× Texture */
+	//CTexture*			m_pTexture{nullptr};
+	//CModel*				m_pModel{nullptr};
+
+private:
+	/* MapMinMax */
+	Vec3				m_vMapMinMaxBox_Center;
+	Vec3				m_vMapMinMaxBox_Extents;
+private:
+	CShader*			m_pMeshShader{};
+	CShader*			m_pInstMeshSahder{};
 public:
 	static	CLevelData*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg)override;

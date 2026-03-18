@@ -155,6 +155,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pJudgementSystem->Flush_CollidedEvent();
 
 	// 메인카메라 업데이트#ifdef _DEBUG
+	m_pCamera_Manager->Update_AccTime_ForShader(fScaledTimeDelta);
 	m_pCamera_Manager->Update_ViewMatrix();
 	m_pFrustrum->Update();
 
@@ -780,6 +781,10 @@ void CGameInstance::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pG
 {
 	m_pRender_Manager->Push_RenderObject(eCategory, pGO);
 }
+HRESULT CGameInstance::Set_CascadeShadowConstantBuffer(CShader* pShader)
+{
+	return m_pRender_Manager->Set_CascadeShadowConstantBuffer(pShader);
+}
 #ifdef _DEBUG
 ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
 {
@@ -838,6 +843,42 @@ HRESULT CGameInstance::Commit_OutlineParam()
 {
 	return m_pRender_Manager->Commit_OutlineParam();
 }
+SHADER_FOG_DESC& CGameInstance::Get_FogParamDesc()
+{
+	return m_pRender_Manager->Get_FogParamDesc();
+}
+const SHADER_FOG_DESC& CGameInstance::Get_FogParamDesc() const
+{
+	return m_pRender_Manager->Get_FogParamDesc();
+}
+HRESULT CGameInstance::Commit_FogParam()
+{
+	return m_pRender_Manager->Commit_FogParam();
+}
+SHADER_TOON_DESC& CGameInstance::Get_ToonParamDesc()
+{
+	return m_pRender_Manager->Get_ToonParamDesc();
+}
+const SHADER_TOON_DESC& CGameInstance::Get_ToonParamDesc() const
+{
+	return m_pRender_Manager->Get_ToonParamDesc();
+}
+HRESULT CGameInstance::Commit_ToonParam()
+{
+	return m_pRender_Manager->Commit_ToonParam();
+}
+SHADER_CASCADE_SHADOW_DESC& CGameInstance::Get_CascadeParamDesc()
+{
+	return m_pRender_Manager->Get_CascadeParamDesc();
+}
+const SHADER_CASCADE_SHADOW_DESC& CGameInstance::Get_CascadeParamDesc() const
+{
+	return m_pRender_Manager->Get_CascadeParamDesc();
+}
+HRESULT CGameInstance::Commit_CascadeParam()
+{
+	return m_pRender_Manager->Commit_CascadeParam();
+}
 HRESULT CGameInstance::Commit_AllPostParams()
 {
 	return m_pRender_Manager->Commit_AllPostParams();
@@ -854,10 +895,11 @@ HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_Light(LightDesc);
 }
-HRESULT CGameInstance::Push_DynamicLight(CLight* pLight)
+HRESULT CGameInstance::Push_Light(CLight* pLight)
 {
-	return m_pLight_Manager->Push_DynamicLight(pLight);
+	return m_pLight_Manager->Push_Light(pLight);
 }
+
 HRESULT CGameInstance::Render_Lights(CShader* pShader, CVIBuffer_Rect_Tex* pVIBuffer)
 {
 	return m_pLight_Manager->Render(pShader, pVIBuffer);
@@ -1007,6 +1049,11 @@ HRESULT CGameInstance::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget)
 HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _bool bUseDSV)
 {
 	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear, bUseDSV);
+}
+
+HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV)
+{
+	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear, pDSV);
 }
 
 HRESULT CGameInstance::End_MRT()
@@ -1203,14 +1250,19 @@ void CGameInstance::Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* 
 	return m_pPhysics_Module->Raycast_EventCallback(pOwner, pRaycastHitBuffer, raycastDesc);
 }
 
-_bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
+_bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall, OUT _float* fHitDist, OUT Vec3* vHitPos)
 {
-	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
+	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall, fHitDist, vHitPos);
 }
 
 _bool CGameInstance::CheckRagdollState(int64 objID)
 {
 	return m_pPhysics_Module->CheckRagdollState(objID);
+}
+
+_bool CGameInstance::CheckRagDollState_Processing(int64 objID)
+{
+	return m_pPhysics_Module->CheckRagDollState_Processing(objID);
 }
 
 void CGameInstance::RagdollRegister(CGameObject* obj)
@@ -1252,6 +1304,28 @@ void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& tr
 
 #pragma region GAMEDATA_MANAGER
 
+#pragma region Map Min Max Box
+#ifdef _DEBUG
+HRESULT CGameInstance::DebugRender_MapMinMaxBox()
+{
+	return m_pGameData_Manager->DebugRender_MapMinMaxBox();
+}
+#endif // _DEBUG
+
+CBounding_AABB* CGameInstance::Get_MapMinMaxBox()
+{
+	return m_pGameData_Manager->Get_MapMinMaxBox();
+}
+
+void CGameInstance::Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter)
+{
+	return m_pGameData_Manager->Set_MapMinMaxBox(vPos, vCenter);
+}
+
+
+#pragma endregion
+
+#pragma region Broadcast
 HRESULT	CGameInstance::Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent)
 {
 	return m_pGameData_Manager->Register_GlobalEventsBroadCast(iTypeIndex, funcGlobalEvent);
@@ -1261,7 +1335,7 @@ HRESULT	CGameInstance::BroadCaset_RegisterGlobalEvent(_uint iTypeIndex)
 {
 	return m_pGameData_Manager->BroadCaset_RegisterGlobalEvent(iTypeIndex);
 }
-
+#pragma endregion
 
 #pragma region Texture Splating
 HRESULT CGameInstance::GameDataManager_Load_TextureSplatingInfoData()

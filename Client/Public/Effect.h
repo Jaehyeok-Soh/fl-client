@@ -18,11 +18,9 @@ protected:
 	Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit Effect(const Effect& rhs);
 	virtual ~Effect() = default;
-
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
-
 protected:
 	virtual HRESULT Ready_PartsData(void* pArg);
 
@@ -37,6 +35,8 @@ public:
 protected:
 	virtual HRESULT Spawn_FromPool(void* pArg) override;
 	virtual HRESULT Despawn_FromPool() override;
+
+public:
 
 	virtual HRESULT Enable_VFX(void* pArg) override;
 	virtual HRESULT Disable_VFX() override;
@@ -59,7 +59,6 @@ protected:
 	_uint							m_iBoneFlag = {};
 	_bool							m_bUseChildBone = { false };
 	Matrix							m_matCombinedWorld = {};
-
 };
 
 NS_END

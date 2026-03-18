@@ -44,7 +44,7 @@ class CLayer;
 class CFxEffectAsset;
 class CFxShaderVariant;
 class CEffectHandler;
-
+class CBounding_AABB;
 
 class ENGINE_DLL CGameInstance final : public CBase
 {
@@ -258,6 +258,7 @@ public:
 
 #pragma region RENDER_MANAGER
 	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
+	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
 #ifdef _DEBUG
 	inline void Push_DebugComponent(class CComponent* pComp);
 #endif
@@ -266,10 +267,11 @@ public:
 #pragma region LIGHT_MANAGER
 	ID3D11Buffer* Get_Light_ConstantBuffer();
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
-	HRESULT Push_DynamicLight(class CLight* pLight);
+	HRESULT Push_Light(class CLight* pLight);
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
 	class CLight* Get_Light(LIGHT_TYPE eType, _uint iIndex = 0);
 	void Clear_Lights();
+
 #pragma endregion
 
 #pragma region EVENT_MANAGER
@@ -314,6 +316,7 @@ public:
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true, _bool bUseDSV = true);
+	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
@@ -333,6 +336,15 @@ public:
 	SHADER_OUTLINE_DESC& Get_OutlineParamDesc();
 	const SHADER_OUTLINE_DESC& Get_OutlineParamDesc() const;
 	HRESULT Commit_OutlineParam();
+	SHADER_FOG_DESC& Get_FogParamDesc();
+	const SHADER_FOG_DESC& Get_FogParamDesc() const;
+	HRESULT Commit_FogParam();
+	SHADER_TOON_DESC& Get_ToonParamDesc();
+	const SHADER_TOON_DESC& Get_ToonParamDesc() const;
+	HRESULT Commit_ToonParam();
+	SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc();
+	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const;
+	HRESULT Commit_CascadeParam();
 	HRESULT Commit_AllPostParams();
 #endif
 #pragma endregion
@@ -385,9 +397,10 @@ public:
 	PxVec3 GetPureScale(const Matrix& mat);
 	void Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc);
 	void Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc);
-	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
+	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall, OUT _float* fHitDist = nullptr, OUT Vec3* vHitPos = nullptr);
 
 	_bool CheckRagdollState(int64 objID);
+	_bool CheckRagDollState_Processing(int64 objID);
 	void RagdollRegister(CGameObject* obj);
 	void RagdollUnregister(int64 objID);
 	void RagdollRequestStart(uint64 objID);
@@ -411,7 +424,14 @@ public:
 	void Push_CollidedData(const COLLIDED_DESC& desc);
 #pragma endregion
 
-// Todo - 쓰레기통 정리
+
+#pragma region 
+#ifdef _DEBUG
+	HRESULT					DebugRender_MapMinMaxBox();
+#endif // _DEBUG
+	CBounding_AABB*			Get_MapMinMaxBox();
+	void					Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter);
+#pragma endregion
 #pragma region GAMEDATA_MANAGER
 	HRESULT		Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent);
 	HRESULT		BroadCaset_RegisterGlobalEvent(_uint iTypeIndex);

@@ -6,6 +6,7 @@
 #include "Bounding_Sphere.h"
 #include "Bounding_Obb.h"
 #include "TextureBase.h"
+#include "Light.h"
 
 #pragma push_macro("new")
 #undef new
@@ -285,22 +286,17 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 
 inline void to_json(json& SaveJson, const TLevelData& tData)
 {
-	SaveJson = json
-	{
-		{ "strTag", tData.strTag },
-		{ "Texture Splating Info"	, tData.strTextureSplatingInfoName },
-		{ "Level Type"				, tData.strLevelTypeName},
-		{ "Env Data", {
-			{ "Wind Data", json::object() } // 빈 객체로 미리 생성
-		}}
-	};
+	SaveJson["strTag"] = tData.strTag;
+	SaveJson["Texture Splating Info"] = tData.strTextureSplatingInfoName;
+	SaveJson["Level Type"] = tData.strLevelTypeName;
 
-	// 2. 구조가 완성된 '후에' 참조자를 가져옵니다.
 	auto& WindJson = SaveJson["Env Data"]["Wind Data"];
-
-	// 3. 이제 값을 채웁니다. (안전함)
 	Engine_Utils::write_vec3_xyz(WindJson["Direction"], tData.vWindDirection);
 	WindJson["Power"] = tData.fWindPower;
+
+	auto& MapBox_Json = SaveJson["Map Box"];
+	Engine_Utils::write_vec3_xyz(MapBox_Json["Center"],tData.vMapMinMaxBox_Center);
+	Engine_Utils::write_vec3_xyz(MapBox_Json["Extents"],tData.vMapMinMaxBox_extents);
 
 	return;
 }
@@ -335,6 +331,20 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 		}
 	}
 
+	if (LoadJson.contains("Map Box"))
+	{
+		auto& MapBox_Json = LoadJson.at("Map Box");
+		if (MapBox_Json.contains("Center"))
+		{
+			Engine_Utils::read_vec3_xyz(MapBox_Json["Center"],tData.vMapMinMaxBox_Center);
+		}
+		if (MapBox_Json.contains("Extents"))
+		{
+			Engine_Utils::read_vec3_xyz(MapBox_Json["Extents"],tData.vMapMinMaxBox_extents);
+		}
+	}
+
+
 	return;
 }
 
@@ -363,10 +373,11 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	case DTO::EClientMakePath::Bush:								return pSource == nullptr ? new BUSH_DESC			: new BUSH_DESC(*static_cast<BUSH_DESC*>(pSource));
 
 	case DTO::EClientMakePath::Water:								return pSource == nullptr ? new WATER_DESC			: new WATER_DESC(*static_cast<WATER_DESC*>(pSource));
-	case DTO::EClientMakePath::Fog:									return pSource == nullptr ? new FOG_DESC			: new FOG_DESC(*static_cast<FOG_DESC*>(pSource));
+	case DTO::EClientMakePath::Env:									return pSource == nullptr ? new ENV_DESC			: new ENV_DESC(*static_cast<ENV_DESC*>(pSource));
 		/* Batch Object 관련 */
 	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC	: new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
 	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC	: new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_NPC:							return pSource == nullptr ? new BATCH_NPC_DESC		: new BATCH_NPC_DESC(*static_cast<BATCH_NPC_DESC*>(pSource));
 		/* Trigger Box 관련 */
 	case DTO::EClientMakePath::TriggerBox_ChangeLevel:				return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC				: new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC			: new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
@@ -463,6 +474,11 @@ void PLANTS_DESC::from_Json(const json& LoadJson)
 			Engine_Utils::read_vec4_xyzw(Plants_LoadJson["Color"],this->vMITint_Color);
 		}
 	}
+
+	if (LoadJson.contains("Diffuse Color Power"))
+	{
+		this->fDiffuseColorPower = LoadJson["Diffuse Color Power"];
+	}
 }
 
 void PLANTS_DESC::to_Json(json& SaveJson)
@@ -471,6 +487,7 @@ void PLANTS_DESC::to_Json(json& SaveJson)
 
 	Engine_Utils::write_vec4_xyzw(Plants_SaveJson["Color"],this->vMITint_Color);
 
+	SaveJson["Diffuse Color Power"] = this->fDiffuseColorPower;
 }
 
 #pragma region Tree
@@ -588,6 +605,64 @@ void BUSH_DESC::to_Json(json& SaveJson)
 #pragma endregion
 
 #pragma region Env
+
+#pragma region ENV Desc
+
+void ENV_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Effect Infos"))
+	{
+		this->vecEnvEffectInfo.clear(); // 기존 데이터 초기화
+		auto& EffectInfos = LoadJson["Effect Infos"];
+
+		for (auto& InfoJson : EffectInfos)
+		{
+			if (InfoJson.is_null()) continue;
+
+			ENV_EFFECT_INFO tInfo{};
+
+			// 1. 태그 읽기
+			if (InfoJson.contains("Tag"))
+				tInfo.strTags = InfoJson["Tag"].get<string>();
+
+			// 2. Desc (Transform 데이터) 읽기
+			if (InfoJson.contains("Desc"))
+			{
+				auto& DescJson = InfoJson["Desc"];
+				Engine_Utils::read_vec3_xyz(DescJson["Pos"]  , tInfo.tDesc.VFX_Target_Position);
+				Engine_Utils::read_vec3_xyz(DescJson["Rot"]  , tInfo.tDesc.VFX_Rotation);
+				Engine_Utils::read_vec3_xyz(DescJson["Scale"], tInfo.tDesc.VFX_Scale);
+			}
+
+			this->vecEnvEffectInfo.push_back(tInfo);
+		}
+	}
+}
+
+void ENV_DESC::to_Json(json& SaveJson)
+{
+	json EffectInfos_SaveJson = json::array(); // 배열 형태로 생성
+
+	for (auto& tInfo : vecEnvEffectInfo)
+	{
+		json InfoObj;
+		InfoObj["Tag"] = tInfo.strTags;
+
+		// Desc 데이터를 JSON 객체로 변환
+		json DescObj;
+		Engine_Utils::write_vec3_xyz(DescObj["Pos"],tInfo.tDesc.VFX_Target_Position);
+		Engine_Utils::write_vec3_xyz(DescObj["Rot"],tInfo.tDesc.VFX_Rotation);
+		Engine_Utils::write_vec3_xyz(DescObj["Scale"],tInfo.tDesc.VFX_Scale);
+
+		InfoObj["Desc"] = DescObj;
+		EffectInfos_SaveJson.push_back(InfoObj);
+	}
+
+	SaveJson["Effect Infos"] = EffectInfos_SaveJson;
+}
+#pragma endregion
+
+
 
 #pragma region Water
 
@@ -767,7 +842,7 @@ void FOG_DESC::from_Json(const json& LoadJson)
 			const json& KeyJson = LoadJson[strFindKey];
 			if (KeyJson.contains("UV"))
 			{
-				Engine_Utils::read_vec4_xyzw(LoadJson["UV"], this->vUV[i]);
+				Engine_Utils::read_vec4_xyzw(KeyJson["UV"], this->vUV[i]);
 			}
 			if (KeyJson.contains("Texture"))
 			{
@@ -856,11 +931,13 @@ void BATCH_OBJECT_DESC::from_Json(const json& LoadJson)
 		
 		if(BatchObjectDesc_LoadJson.contains("Type"))
 		{
-			this->eBatchObjectType = DTO::MakeObjectType_ToEnum(BatchObjectDesc_LoadJson["Type"].get<string>());
+			this->Change_BatchObjecType(DTO::MakeObjectType_ToEnum(BatchObjectDesc_LoadJson["Type"].get<string>()));
 		}
 
 		if (pBatchObjectDesc)
+		{
 			pBatchObjectDesc->from_Json(BatchObjectDesc_LoadJson["Desc"]);
+		}
 	}
 }
 
@@ -874,7 +951,6 @@ void BATCH_OBJECT_DESC::to_Json(json& SaveJson)
 		pBatchObjectDesc->to_Json(BatchObjectDesc_SaveJson["Desc"]);
 }
 
-#pragma endregion
 
 #pragma region Battle Field
 
@@ -964,6 +1040,105 @@ void BATTLE_FIELD_DESC::to_Json(json& SaveJson)
 		SaveJson["Radius"] = this->fRadius;
 	}
 }
+#pragma endregion
+
+#pragma region Batch Point Light
+
+POINTLIHGT_DESC::POINTLIHGT_DESC()
+	:BATCH_OBJECT_DESC_BASE()
+	, isFlicker{ false }
+	, fFlickerSpeed{ 1.f }
+	, fFlickerMin{ 1.f }
+	, fBaseRange{1.f}
+	, pDebugLight{ nullptr }
+	, tLightDesc{}
+{
+	this->tLightDesc.eType = LIGHT_TYPE::POINT;
+	this->tLightDesc.vDiffuse  = {1.f,1.f,1.f,1.f};
+	this->tLightDesc.vAmbient  = {1.f,1.f,1.f,1.f};
+	this->tLightDesc.vSpecular = {1.f,1.f,1.f,1.f};
+	pDebugLight = CLight::Create(this->tLightDesc);
+}
+
+POINTLIHGT_DESC::POINTLIHGT_DESC(const POINTLIHGT_DESC& rhs)
+	: BATCH_OBJECT_DESC_BASE(rhs)
+	, tLightDesc{rhs.tLightDesc}
+	, isFlicker{ rhs.isFlicker }
+	, fFlickerSpeed{ rhs.fFlickerSpeed }
+	, fFlickerMin{ rhs.fFlickerMin }
+	, fBaseRange{rhs.fBaseRange}
+	, pDebugLight{ rhs.pDebugLight }
+{
+	/* 이때 생성 */
+	pDebugLight = CLight::Create(this->tLightDesc);
+}
+POINTLIHGT_DESC::~POINTLIHGT_DESC()
+{
+	Safe_Release(pDebugLight);
+}
+
+void POINTLIHGT_DESC::Update_Light(const Vec4& vPos)
+{
+	if (this->pDebugLight)
+	{
+		pDebugLight->Setup_Diffuse(this->tLightDesc.vDiffuse);
+		pDebugLight->Setup_Ambient(this->tLightDesc.vAmbient);
+		pDebugLight->Setup_Specular(this->tLightDesc.vSpecular);
+		pDebugLight->Setup_Range(this->fBaseRange);
+		pDebugLight->Setup_Position(vPos);
+	}
+}
+
+void POINTLIHGT_DESC::from_Json(const json& LoadJson)
+{
+	if (!LoadJson.contains("Light Data")) return;
+	const auto& LightData_LoadJson = LoadJson["Light Data"];
+
+	this->tLightDesc.eType = Engine_Utils::LIGHTTYPE_ToEnum(LightData_LoadJson["Type"]);
+
+	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Diffuse"], this->tLightDesc.vDiffuse);
+	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Ambient"], this->tLightDesc.vAmbient);
+	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Specular"], this->tLightDesc.vSpecular);
+
+	if (LightData_LoadJson.contains("Range"))
+	{
+		this->fBaseRange = LightData_LoadJson["Range"];
+		this->tLightDesc.fRange = this->fBaseRange; // 로드 시점엔 일단 원본 크기로 세팅
+	}
+
+	// 4. Flicker 데이터 복원
+	if (LightData_LoadJson.contains("Flicker"))
+	{
+		this->isFlicker = true;
+		const auto& FlickerData_LoadJson = LightData_LoadJson["Flicker"];
+
+		this->fFlickerSpeed = FlickerData_LoadJson.value("Speed", 1.0f);
+		this->fFlickerMin = FlickerData_LoadJson.value("Min", 0.5f);
+	}
+	else
+	{
+		this->isFlicker = false;
+	}
+}
+
+void POINTLIHGT_DESC::to_Json(json& SaveJson)
+{
+	auto& LightData_SaveJson = SaveJson["Light Data"];
+	LightData_SaveJson["Type"] = Engine_Utils::LIGHTTYPE_ToString(this->tLightDesc.eType);
+
+	Engine_Utils::write_vec4_xyzw(LightData_SaveJson["Diffuse"],this->tLightDesc.vDiffuse);
+	Engine_Utils::write_vec4_xyzw(LightData_SaveJson["Ambient"],this->tLightDesc.vAmbient);
+	Engine_Utils::write_vec4_xyzw(LightData_SaveJson["Specular"],this->tLightDesc.vSpecular);
+	LightData_SaveJson["Range"] = this->fBaseRange;			/* 아마 Desc안에있는 Range는 업데이트때마다 달라진다 */
+
+	if (this->isFlicker == true)
+	{
+		auto& FlickerData_SaveJson = LightData_SaveJson["Flicker"];
+		FlickerData_SaveJson["Speed"]	= this->fFlickerSpeed;
+		FlickerData_SaveJson["Min"]		= this->fFlickerMin;
+	}
+}
+
 
 #pragma endregion
 
@@ -977,6 +1152,13 @@ void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
 	{
 		Engine_Utils::read_vec3_xyz(LoadJson["Extents"], this->vExtents);
 	}
+	if (LoadJson.contains("Rotation"))
+	{
+		Vec3 vDegree{};
+		Engine_Utils::read_vec3_xyz(LoadJson["Rotation"], vDegree);
+		this->vRotation = Vec3(XMConvertToRadians(vDegree.x), XMConvertToRadians(vDegree.y), XMConvertToRadians(vDegree.z));
+	}
+
 
 	if (LoadJson.contains("bHasQuest"))
 		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
@@ -984,16 +1166,32 @@ void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
 		this->bHasQuest = false;
 
 	if (LoadJson.contains("tQuestObjectDesc"))
-		LoadJson.at("tQuestObjectDesc").get_to(this->tQuestObjectDesc);
+	{
+		const auto& questJson = LoadJson.at("tQuestObjectDesc");
+
+		if (questJson.is_array())
+		{
+			questJson.get_to(this->tQuestObjectDesc);
+		}
+		else if(questJson.is_object())
+		{
+			DTO::QUEST_CHAPTERDESC oldFormatDesc;
+			questJson.get_to(oldFormatDesc);
+			this->tQuestObjectDesc.push_back(oldFormatDesc);
+		}
+	}
 }
 
 void TRIGGERBOX_DESC::to_Json(json& SaveJson)
 {
 	Engine_Utils::write_vec3_xyz(SaveJson["Extents"], this->vExtents);
 
+	Vec3 vDegree = Vec3(XMConvertToDegrees(vRotation.x), XMConvertToDegrees(vRotation.y), XMConvertToDegrees(vRotation.z));
+	Engine_Utils::write_vec3_xyz(SaveJson["Rotation"], vDegree );
+
 	SaveJson["bHasQuest"] = this->bHasQuest;
 
-	if (this->bHasQuest)
+	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
 		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
 }
 #pragma endregion
@@ -1170,10 +1368,69 @@ void TRIGGERBOX_TUTORIALUIEVENT_DESC::to_Json(json& SaveJson)
 
 #pragma endregion
 
+#pragma endregion
 
+#pragma region NPC Desc
 
+void BATCH_NPC_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Batch NPC Type"))
+	{
+		this->eBatchNPCType = DTO::MakeNPCType_ToEnum(LoadJson["Batch NPC Type"].get<string>());
+	}
+	else
+		this->eBatchNPCType = OBJECT_ENUM_TAG::NPC_DEFAULT;
+
+	if (LoadJson.contains("bHasQuest"))
+		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
+	else
+		this->bHasQuest = false;
+
+	if (LoadJson.contains("tQuestObjectDesc"))
+	{
+		const auto& questJson = LoadJson.at("tQuestObjectDesc");
+
+		if (questJson.is_array())
+		{
+			questJson.get_to(this->tQuestObjectDesc);
+		}
+		else if (questJson.is_object())
+		{
+			DTO::QUEST_CHAPTERDESC oldFormatDesc;
+			questJson.get_to(oldFormatDesc);
+			this->tQuestObjectDesc.push_back(oldFormatDesc);
+		}
+	}
+}
+
+void BATCH_NPC_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Batch NPC Type"] = DTO::MakeNPCType_ToString(this->eBatchNPCType);
+
+	SaveJson["bHasQuest"] = this->bHasQuest;
+
+	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
+		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
+}
+#pragma endregion
+
+#pragma region Make_BatchObject_Desc cpp구현부
+BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType, BATCH_OBJECT_DESC_BASE* pBase)
+{
+	switch (eBatchObjectType)
+	{
+	case DTO::EMakeObjectType::Battle_Field:	return pBase == nullptr ? new BATTLE_FIELD_DESC		:	new BATTLE_FIELD_DESC(*static_cast<BATTLE_FIELD_DESC*>(pBase));
+	case DTO::EMakeObjectType::PointLight:		return pBase == nullptr ? new POINTLIHGT_DESC		:	new POINTLIHGT_DESC(*static_cast<POINTLIHGT_DESC*>(pBase));
+	default:									return nullptr;
+	}
+
+	return nullptr;
+}
 
 
 #pragma endregion
 
+
 NS_END
+
+

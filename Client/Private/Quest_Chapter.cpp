@@ -37,8 +37,12 @@ void CQuest_Chapter::Enter()
 
 	m_tDesc.tQuestDesc.eState = DTO::QUESTSTATE::IN_PROGRESS;
 
-	IQuest* pQuestObject = dynamic_cast<IQuest*>(m_tDesc.pObject);
+	if (m_tDesc.tQuestDesc.iEnterDialogueId != -1)
+	{
+		//
+	}
 
+	IQuest* pQuestObject = dynamic_cast<IQuest*>(m_tDesc.pObject);
 	if (pQuestObject != nullptr)
 		pQuestObject->OnQuestEnter(m_tDesc);
 }
@@ -50,8 +54,12 @@ void CQuest_Chapter::Exit()
 
 	m_tDesc.tQuestDesc.eState = DTO::QUESTSTATE::COMPLETE;
 
-	IQuest* pQuestObject = dynamic_cast<IQuest*>(m_tDesc.pObject);
+	if (m_tDesc.tQuestDesc.iExitDialogueId != -1)
+	{
+		//
+	}
 
+	IQuest* pQuestObject = dynamic_cast<IQuest*>(m_tDesc.pObject);
 	if (pQuestObject != nullptr)
 		pQuestObject->OnQuestExit();
 }

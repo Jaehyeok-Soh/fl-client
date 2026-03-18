@@ -84,6 +84,7 @@ HRESULT CWeapon::Initialize(void* pArg)
 	//Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, ::XMVectorSet(0.8f, 0.f, 0.f, 1.f));
 
 	Set_RenderInfoFlag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Rim, true);
 	return S_OK;
 }
 
@@ -249,6 +250,15 @@ void CWeapon::Set_DefaultSocket()
 		return;
 
 	m_eState = State::NONE;
+}
+
+_int CWeapon::Get_AnimationIndex(const wstring& wstrName)
+{
+	if (CModel* pModel = Get_Component<CModel>())
+	{
+		return pModel->Get_AnimationIndex(wstrName);
+	}
+	return -1;
 }
 
 HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)

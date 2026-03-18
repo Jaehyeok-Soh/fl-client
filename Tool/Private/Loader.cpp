@@ -180,6 +180,7 @@ HRESULT CLoader::Loading_For_Map()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 
+	
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_Effect", Effect::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_Effect_Env", CEffect_Env::Create(m_pDevice, m_pDeviceContext));
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_GameObject_Effect_Part_Particle", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));

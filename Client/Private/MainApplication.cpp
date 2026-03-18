@@ -107,7 +107,7 @@ HRESULT CMainApplication::Render()
 	m_pGameInstance->Draw();
 
 #ifdef _DEBUG
-	m_pDebugGui->Render();
+	//m_pDebugGui->Render();
 #endif
 
 	m_pGameInstance->Draw_End();
@@ -261,6 +261,26 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		CComputeShader::ComShaderOriginDesc shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_AnimAdditiveMix.hlsl";
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimAdditiveMix",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Shader_PartBoneCombine
+	{
+		//ComShader_BoneCombinePart
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_BoneCombinePart.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_PartBoneCombine",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Shader_RagDoll
+	{
+		//ComShader_BoneCombinePart
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_RagDoll.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_RagDoll",
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
@@ -597,7 +617,7 @@ void CMainApplication::Register_Quest_Scenario()
 	s2.iId = 1;
 	s2.iPrevId = 0;
 	s2.iNextId = 2;
-	s2.wstrTitle = L"";
+	s2.wstrTitle = L"세월에 뭍힌 땅";
 	s2.wstrSubTitle = L"";
 	s2.wstrExplain = L"";
 	s2.wstrDescription = L"개발자 설명란 입니다.";

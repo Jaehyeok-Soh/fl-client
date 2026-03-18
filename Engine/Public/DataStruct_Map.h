@@ -44,7 +44,6 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 
 	return EMakeMonsterType::END;
 }
-
 #pragma endregion
 
 #pragma region Make Object Type
@@ -52,21 +51,24 @@ enum class EMakeObjectType
 {
 	/* Battle Filed */
 	Battle_Field,
+	PointLight,
 
 	END,
 };
+
 inline std::string MakeObjectType_ToString(EMakeObjectType eType)
 {
 	switch (eType)
 	{
 	case DTO::EMakeObjectType::Battle_Field:	return "Battle_Field";
+	case DTO::EMakeObjectType::PointLight:		return "PointLight";
 	default:									return "Unknown";
 	}
 }
-
 inline DTO::EMakeObjectType MakeObjectType_ToEnum(const std::string strType)
 {
-	if (strType == "Battle_Field") return DTO::EMakeObjectType::Battle_Field;
+	if (strType == "Battle_Field")				return DTO::EMakeObjectType::Battle_Field;
+	if (strType == "PointLight")				return DTO::EMakeObjectType::PointLight;
 
 	return DTO::EMakeObjectType::END;
 }
@@ -82,6 +84,28 @@ enum class EMakeTriggerBoxType
 	END,
 };
 
+#pragma endregion
+
+#pragma region Make NPC Type
+inline std::string MakeNPCType_ToString(OBJECT_ENUM_TAG::Enum eTag)
+{
+	switch (eTag)
+	{
+	case Engine::OBJECT_ENUM_TAG::NPC_DEFAULT:	return "NPC_Default";
+	case Engine::OBJECT_ENUM_TAG::NPC_PAN:		return "NPC_Pan";
+	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:	return "NPC_Berenica";
+	default:									return "Unknown";
+	}
+}
+
+inline OBJECT_ENUM_TAG::Enum MakeNPCType_ToEnum(const std::string strType)
+{
+	if (strType == "NPC_Default")				return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
+	if (strType == "NPC_Pan")					return Engine::OBJECT_ENUM_TAG::NPC_PAN;
+	if (strType == "NPC_Berenica")				return Engine::OBJECT_ENUM_TAG::NPC_BERENICA;
+
+	return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
+}
 #pragma endregion
 
 NS_END
@@ -100,7 +124,7 @@ public:
 	/* 작성 권장 */
 	explicit CLIENT_MAKEPATH_DESC_BASE(const CLIENT_MAKEPATH_DESC_BASE& rhs)
 	{
-		return;
+		return ;
 	}
 	virtual ~CLIENT_MAKEPATH_DESC_BASE() {};
 public:
@@ -176,13 +200,17 @@ struct PLANTS_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
 	/* MI Free Type의 Color값을 바꿔줄 값 */
 	Vec4		vMITint_Color{ 1.f, 1.f ,1.f ,1.f };
+	float		fDiffuseColorPower{1.f};
 public:
 	PLANTS_DESC() 
-		: CLIENT_MAKEPATH_DESC_BASE(), vMITint_Color{1.f, 1.f ,1.f ,1.f}
+		: CLIENT_MAKEPATH_DESC_BASE()
+		, vMITint_Color{1.f, 1.f ,1.f ,1.f}
+		, fDiffuseColorPower{1.f}
 	{
 	}
 	PLANTS_DESC(const PLANTS_DESC& rhs)
 		: CLIENT_MAKEPATH_DESC_BASE(rhs), vMITint_Color{rhs.vMITint_Color}
+		, fDiffuseColorPower{ rhs.fDiffuseColorPower }
 	{
 
 	}
@@ -194,7 +222,7 @@ public:
 	virtual void from_Json(const json& LoadJson);
 	virtual void to_Json(json& SaveJson);
 };
-
+#pragma endregion
 
 #pragma region Tree
 struct TREE_DESC : public PLANTS_DESC
@@ -220,8 +248,6 @@ public:
 	virtual void to_Json(json& SaveJson);
 };
 #pragma endregion
-
-
 #pragma region Moss
 struct MOSS_DESC : public PLANTS_DESC
 {
@@ -246,8 +272,6 @@ public:
 	virtual void to_Json(json& SaveJson);
 };
 #pragma endregion
-
-
 #pragma region Grass
 struct GRASS_DESC : public PLANTS_DESC
 {
@@ -255,7 +279,7 @@ public:
 	_float fGrassDT{ 0.f };
 	_float fGrassMaxHeight{ 1.f }; //이 모델의 잔디 MinMax중 Max의  Y값
 	_float fGrassSwaySpeed{ 1.f }; //이 잔디가 Sway = 흔들리는 Speed
-	_float fGrassWaveSize{ 1.f }; //이 잔디가 Power = 흔들리는 힘
+	_float fGrassWaveSize{ 1.f };  //이 잔디가 Power = 흔들리는 힘
 public:
 	GRASS_DESC()
 		:PLANTS_DESC()
@@ -283,7 +307,6 @@ public:
 	virtual void to_Json(json& SaveJson);
 };
 #pragma endregion
-
 #pragma region Vine
 struct VINE_DESC : public PLANTS_DESC
 {
@@ -308,8 +331,6 @@ public:
 	virtual void to_Json(json& SaveJson);
 };
 #pragma endregion
-
-
 #pragma region Bush
 struct BUSH_DESC : public PLANTS_DESC
 {
@@ -333,8 +354,6 @@ public:
 	virtual void from_Json(const json& LoadJson);
 	virtual void to_Json(json& SaveJson);
 };
-#pragma endregion
-
 #pragma endregion
 
 #pragma endregion
@@ -370,7 +389,7 @@ public:
 
 #pragma region Batch Object
 
-
+#pragma region Base
 struct ENGINE_DLL BATCH_OBJECT_DESC_BASE
 {
 public:
@@ -383,8 +402,9 @@ public:
 };
 
 inline BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType, BATCH_OBJECT_DESC_BASE* pBase = nullptr);
+#pragma endregion
 
-
+#pragma region Desc
 struct ENGINE_DLL BATCH_OBJECT_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
 	DTO::EMakeObjectType	eBatchObjectType{ DTO::EMakeObjectType::END };
@@ -398,6 +418,7 @@ public:
 	explicit BATCH_OBJECT_DESC(const BATCH_OBJECT_DESC& rhs)
 		: CLIENT_MAKEPATH_DESC_BASE(rhs), eBatchObjectType{ rhs.eBatchObjectType }, pBatchObjectDesc{ nullptr }
 	{
+		Safe_Delete(pBatchObjectDesc);
 		this->pBatchObjectDesc = Make_BatchObject_Desc(this->eBatchObjectType, rhs.pBatchObjectDesc);
 		return;
 	}
@@ -408,7 +429,6 @@ public:
 	virtual void from_Json(const json& LoadJson);
 	virtual void to_Json(json& SaveJson);
 };
-
 #pragma endregion
 
 #pragma region Battle Field
@@ -456,21 +476,36 @@ public:
 };
 #pragma endregion
 
-BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType, BATCH_OBJECT_DESC_BASE* pBase)
+#pragma region Point Light
+struct ENGINE_DLL POINTLIHGT_DESC : public BATCH_OBJECT_DESC_BASE
 {
-	switch (eBatchObjectType)
-	{
-	case DTO::EMakeObjectType::Battle_Field:	return pBase == nullptr ? new BATTLE_FIELD_DESC : new BATTLE_FIELD_DESC(*static_cast<BATTLE_FIELD_DESC*>(pBase));
-	default:									return nullptr;
-	}
+public:
+	LIGHT_DESC	tLightDesc{};
+	_bool		isFlicker{ false };		// 깜빡일래 말래 할래 말래 할래 말래 애매하긴해~
+	_float		fFlickerSpeed{ 1.f };	// 깜빡이는 속도
+	_float		fFlickerMin{ 0.5f };	// 최소 밝이 비율
 
-	return nullptr;
-}
+	_float		fBaseRange{1.f};			// 원래 빛 범위 저장 Update용 
+
+	/* Debug용 */
+	class CLight* pDebugLight{nullptr};
+public:
+	POINTLIHGT_DESC();
+	POINTLIHGT_DESC(const POINTLIHGT_DESC& rhs);
+	virtual ~POINTLIHGT_DESC();
+public:
+	void	Update_Light(const Vec4& vPos);
+public:
+	virtual void from_Json(const json& LoadJson)override;
+	virtual void to_Json(json& SaveJson)override;
+};
+#pragma endregion
 
 #pragma endregion
 
-#pragma region Water
 
+#pragma region Env
+#pragma region Water
 /* 나중에 Engine으로 옮길수도? Water관련 */
 enum class EWaterTextureType
 {
@@ -573,9 +608,37 @@ public:
 	virtual void from_Json(const json& LoadJson)	override;
 	virtual void to_Json(json& SaveJson)			override;
 };
+#pragma endregion
 
 
-#pragma region Fog Texture
+struct ENV_EFFECT_INFO
+{
+	EFFECT_ENV_DESC tDesc{};
+	string			strTags{};
+};
+
+
+#pragma region Env Desc
+struct ENGINE_DLL ENV_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	vector<ENV_EFFECT_INFO>		vecEnvEffectInfo{};
+public:
+	ENV_DESC()
+		: vecEnvEffectInfo{}
+	{ 
+	}
+	ENV_DESC(const ENV_DESC& rhs)
+		: vecEnvEffectInfo{rhs.vecEnvEffectInfo }
+	{
+
+	}
+	virtual ~ENV_DESC() {}
+public:
+	virtual void from_Json(const json& LoadJson)override;
+	virtual void to_Json(json& SaveJson)override;
+};
+#pragma region Fog
 
 enum class EFogTextureType
 {
@@ -639,32 +702,36 @@ public:
 	virtual void to_Json(json& SaveJson)			override;
 };
 #pragma endregion
-
-
 #pragma endregion
 
 
 #pragma region Trigger Box
 
+/* 이거 업데이트를 위차값만 받아가서하는업데트를 해야하긴 할듯 */
 struct ENGINE_DLL TRIGGERBOX_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
 public:
 	Vec3		 vExtents{0.5f,0.5f ,0.5f};
+	Vec3		 vRotation{0.f,0.f,0.f};
 
 	_bool		 bHasQuest = { false };
-	DTO::QUEST_CHAPTERDESC		tQuestObjectDesc = {};
+	vector<DTO::QUEST_CHAPTERDESC>		tQuestObjectDesc = {};
 public:
 	explicit TRIGGERBOX_DESC()
-		: vExtents{ 0.5f,0.5f ,0.5f },
-		bHasQuest(false),
-		tQuestObjectDesc()
+		: CLIENT_MAKEPATH_DESC_BASE()
+		, vExtents{ 0.5f,0.5f ,0.5f }
+		, vRotation{ 0.f,0.f,0.f }
+		, bHasQuest(false)
+		, tQuestObjectDesc()
 	{
+
 	}
 	explicit TRIGGERBOX_DESC(const TRIGGERBOX_DESC& rhs)
-		: CLIENT_MAKEPATH_DESC_BASE(rhs),
-		vExtents(rhs.vExtents),
-		bHasQuest(rhs.bHasQuest),
-		tQuestObjectDesc(rhs.tQuestObjectDesc)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs)
+		, vExtents(rhs.vExtents)
+		, vRotation{rhs.vRotation}
+		, bHasQuest(rhs.bHasQuest)
+		, tQuestObjectDesc(rhs.tQuestObjectDesc)
 	{
 		return;
 	}
@@ -818,6 +885,43 @@ public:
 
 #pragma endregion
 
+#pragma region NPC
+struct ENGINE_DLL BATCH_NPC_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	OBJECT_ENUM_TAG::Enum eBatchNPCType{ OBJECT_ENUM_TAG::NPC_DEFAULT };
+
+	_bool		 bHasQuest = { false };
+	vector<DTO::QUEST_CHAPTERDESC>		tQuestObjectDesc = {};
+public:
+	BATCH_NPC_DESC()
+		:CLIENT_MAKEPATH_DESC_BASE(),
+		eBatchNPCType(OBJECT_ENUM_TAG::NPC_DEFAULT),
+		bHasQuest(false),
+		tQuestObjectDesc()
+	{
+
+	}
+	BATCH_NPC_DESC(const BATCH_NPC_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs),
+		eBatchNPCType(rhs.eBatchNPCType),
+		bHasQuest(rhs.bHasQuest),
+		tQuestObjectDesc(rhs.tQuestObjectDesc)
+	{
+
+	}
+	virtual ~BATCH_NPC_DESC()
+	{
+	}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+#pragma endregion
+
+#pragma endregion
+
+
 NS_END
 
 NS_BEGIN(DTO)
@@ -867,7 +971,7 @@ enum class EClientMakePath
 	Vine,
 	Rock,
 	Water,
-	Fog,
+	Env,
 
 
 	/* 몬스터 , Player 위치잡는 용도  */
@@ -884,7 +988,9 @@ enum class EClientMakePath
 
 	/* 맵 기능 관련 */
 	Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
-	Static_Light,			/* Static 점 조명 */
+
+	/* NPC */
+	Batch_NPC,
 
 	END
 };
@@ -938,7 +1044,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::Vine,									"Vine"},
 			{EClientMakePath::Rock,									"Rock"},
 			{EClientMakePath::Water,								"Water"},
-			{EClientMakePath::Fog,									"Fog"},
+			{EClientMakePath::Env,									"Env"},
 
 
 			{EClientMakePath::Batch_Player,							"Batch_Player"},
@@ -952,7 +1058,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::TriggerBox_TutorialUIEvent,			"TriggerBox_TutorialUIEvent"},
 
 			{EClientMakePath::Invisible_Wall,						"Invisible_Wall"},
-			{EClientMakePath::Static_Light,							"Static_Light"},
+
+			{EClientMakePath::Batch_NPC,							"Batch_NPC"},
 
 			{EClientMakePath::END,									"Unknown"},
 		}
@@ -1047,9 +1154,12 @@ typedef struct TLevelData
 	/* Wind */
 	Vec3								vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
 	_float								fWindPower{ 1.f }; //바람이 부는 새기
+
+	/* Map Min Max Box */
+	Vec3								vMapMinMaxBox_Center{0.f,0.f,0.f};
+	Vec3								vMapMinMaxBox_extents{1.f,1.f,1.f};
+
 	/*-------*/
-
-
 
 }SCENEDATA;
 

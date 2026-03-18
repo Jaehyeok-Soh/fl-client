@@ -107,8 +107,6 @@ struct VS_IN_INST_MESH
     uint iCurInstanceID : SV_InstanceID;
 };
 
-
-
 //////////////////
 // VertexOutput //
 //////////////////
@@ -158,6 +156,19 @@ struct VS_OUT_MESH
     float4 vProjPos : TEXCOORD2;
 };
 
+struct VS_OUT_MESH_VIEWZ
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+    float fViewZ    : TEXCOORD3;
+};
+
 struct VS_OUT_INST_MESH
 {
     float4 vPosition : SV_POSITION;
@@ -184,6 +195,11 @@ struct VS_OUT_SKELETON
     
     float4 vWorldPos : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+};
+
+struct VS_OUT_SHADOW
+{
+    float4 vPosition : SV_POSITION;
 };
 
 struct VS_OUT_POS_TEX_PARTICLE
@@ -378,6 +394,7 @@ struct PS_OUT_DEFFERED
     float4 vSpecularMask : SV_TARGET2;
     float4 vDepth : SV_TARGET3;
     uint4 vObjectInfo : SV_Target4;
+    float4 vEmissive : SV_Target5;
 };
 
 struct PS_OUT_BAKESHADOW
@@ -410,10 +427,14 @@ struct PS_OUT_SPRITEFONT
 {
     float4 vColor : SV_TARGET0;
 };
-    
-////////////////////
-// Compute Shader//
-//////////////////
+  
+struct PS_OUT_SHADOW
+{
+    float4 vDepth : SV_TARGET0;
+};
+/////////////////////
+// Compute Shader ///
+/////////////////////
 
 struct VTXPARTICLE
 {

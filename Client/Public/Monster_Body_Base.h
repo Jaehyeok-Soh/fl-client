@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 class CBone;
+class CComputeShader;
 NS_END
 
 NS_BEGIN(Client)
@@ -42,6 +43,7 @@ public:
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Shadow() override;
 public:
 	CBone* Get_Bone(CMonster_Body_Base::EBone eBone);
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);
@@ -54,6 +56,17 @@ protected:
 	HRESULT Ready_Bones(MONSTERBODY_DESC* pDesc);
 protected:
 	std::vector<_uint> m_vecBoneIndices;
+	CComputeShader* m_pBoneCombineCS{ nullptr };
+	CComputeShader* m_pBoneMeshCS{ nullptr };
+	CComputeShader* m_pBoneAnimEvaluateCS{ nullptr };
+	CComputeShader* m_pBoneAnimBlendCS{ nullptr };
+	CComputeShader* m_pBoneAnimMixCS{ nullptr };
+	CComputeShader* m_pRagDollCS{ nullptr };
+
+protected:
+	_bool m_bRagDollOnPre = { false };
+	_bool m_bRagDollOn = { false };
+
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;

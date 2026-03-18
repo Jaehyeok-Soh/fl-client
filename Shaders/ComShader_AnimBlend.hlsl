@@ -55,10 +55,10 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     float4 q0 = MU_PRETRANSFORMS[iBoneIdx].vQuat;
     float4 q1 = MU_CURTRANSFORMS[iBoneIdx].vQuat;
     
-    if (dot(q0, q1) < 0.0f)
-        q1 = -q1;
+   // if (dot(q0, q1) < 0.0f)
+    //    q1 = -q1;
     
-    vQuat = normalize(lerp(q0, q1, g_InputMU.fRatio));
+    vQuat = Slerp(q0, q1, g_InputMU.fRatio);
     
     if (g_InputMU.iRootMotionBoneIndex == iBoneIdx)
         vTranslation = float3(0.f, 0.f, 0.f);

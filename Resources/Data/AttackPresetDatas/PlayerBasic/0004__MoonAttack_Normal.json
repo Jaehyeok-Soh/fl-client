@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "PlayerBasic",
+            "eColliderType": "Overlap",
+            "iID": 4,
+            "strTag": "MoonAttack_Normal",
+            "tCombat": {
+                "DamageType": "END",
+                "HitType": "Light",
+                "fBaseDamage": 20.0,
+                "fHitStopSec": 0.0,
+                "fHitStunSec": 0.0,
+                "fImpulse": 0.0,
+                "fPushPower": 0.0
+            },
+            "tPolicy": {
+                "PolicyType": "END",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

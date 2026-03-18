@@ -3,20 +3,19 @@
 
 NS_BEGIN(Client)
 
-class IQuest
+class IQuest abstract
 {
 public:
-	IQuest();
-	~IQuest() = default;
+	virtual ~IQuest() = default;
 
 public:
 	void OnQuestEnter(DTO::QUEST_CHAPTERDESC desc);
 	void OnQuestExit();
 
-	void Set_Quest_Enable();
-	void Set_Quest_Disable();
+	void Set_Quest_Enable() { m_bIsQuestEnabled = true; }
+	void Set_Quest_Disable() { m_bIsQuestEnabled = false; }
 
-	_bool Is_Quest_Enabled();
+	_bool Is_Quest_Enabled() { return m_bIsQuestEnabled; }
 
 	virtual void QuestEnter() PURE;
 	virtual void QuestExit() PURE;
@@ -30,7 +29,7 @@ protected:
 	_int m_iScenarioId = { -1 };
 	_int m_iChapterId = { -1 };
 
-	_bool m_bIsEnabled = { false };
+	_bool m_bIsQuestEnabled = { false };
 };
 
 NS_END

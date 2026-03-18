@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "BossBasic",
+            "eColliderType": "Overlap",
+            "iID": 1,
+            "strTag": "TestBossAttack1",
+            "tCombat": {
+                "DamageType": "Fire",
+                "HitType": "Launch",
+                "fBaseDamage": 14.0,
+                "fHitStopSec": 0.4000000059604645,
+                "fHitStunSec": 0.3700000047683716,
+                "fImpulse": 6.0,
+                "fPushPower": 2.700000047683716
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

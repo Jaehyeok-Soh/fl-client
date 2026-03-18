@@ -6,6 +6,8 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
+#include "Player.h"
 #include "WorldUI_Component.h"
 #include "MyStat.h"
 #include "Texture.h"
@@ -13,6 +15,9 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "GameInstance.h"
 #include <UI_Manager.h>
+
+#define POPUP_3 0
+#define POPUP_4 1
 
 CUITutorial_PopUp_Text::CUITutorial_PopUp_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIText(pDevice, pDeviceContext)
@@ -50,7 +55,9 @@ HRESULT CUITutorial_PopUp_Text::Awake(const _uint iCurrentLevelID)
 
 	if (FAILED(Attach_Personal_Info()))
 		return E_FAIL;
+
 	m_vMoveOffset = Vec2{ 0.f, -200.f };
+
 	return S_OK;
 }
 
@@ -63,6 +70,7 @@ void CUITutorial_PopUp_Text::Update_Priority(const _float fTimeDelta)
 void CUITutorial_PopUp_Text::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	Tick_By_Type(fTimeDelta);
 }
 
 void CUITutorial_PopUp_Text::Update_Late(const _float fTimeDelta)
@@ -116,6 +124,13 @@ HRESULT CUITutorial_PopUp_Text::Attach_Personal_Info()
 	default:
 		return E_FAIL;
 	}
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return E_FAIL;
+
+	m_pPlayer = dynamic_cast<CPlayer*>(pResult);
+	if (nullptr == m_pPlayer)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -132,8 +147,11 @@ void CUITutorial_PopUp_Text::Bind_Events()
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
-					this->Set_Visible();
-					this->Set_Active(true);
+					if (!m_isFirstEntered)
+					{
+						this->Set_Visible();
+						this->Set_Active(true);
+					}
 				}
 			})
 	);
@@ -143,6 +161,7 @@ void CUITutorial_PopUp_Text::Bind_Events()
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
+					m_isFirstEntered = true;
 					this->Set_Invisible();
 				}
 			})
@@ -204,6 +223,59 @@ _bool CUITutorial_PopUp_Text::Tick_InVisible_Event(const _float fTimeDelta)
 		break;
 	}
 	return true;
+}
+
+void CUITutorial_PopUp_Text::Tick_By_Type(const _float fTimeDelta)
+{
+	switch (m_eTutorialTypeID)
+	{
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_1:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_2:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3:
+	{
+		if (m_pParentCanvasCache->Get_CommonParam_bool()[POPUP_3])
+		{
+			Set_Invisible();
+		}
+	}
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3_1:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4:
+	{
+		if (m_pParentCanvasCache->Get_CommonParam_bool()[POPUP_4])
+		{
+			Set_Invisible();
+		}
+	}
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_5:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_6:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_7:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_8:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_9:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_10:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_11:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_12:
+		break;
+	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_13:
+		break;
+	case Client::EUITutorialPopUpTypeID::END:
+		break;
+	default:
+		break;
+	}
 }
 
 CUITutorial_PopUp_Text* CUITutorial_PopUp_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

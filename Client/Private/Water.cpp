@@ -139,7 +139,7 @@ HRESULT CWater::Render()
 
 		/* WorldMatrix 바인딩 */
 		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Water));
-
+		pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 		/* Object Info Update */
 		if (FAILED(pShader->Bind_ObjectInfoData(m_tObjectInfoDesc)))	return E_FAIL;
 
@@ -180,7 +180,7 @@ HRESULT CWater::Render()
 
 		/* WorldMatrix 바인딩 */
 		pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Water));
-
+		pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 		/* Object Info Update */
 		if (FAILED(pShader->Bind_ObjectInfoData(m_tObjectInfoDesc)))	return E_FAIL;
 

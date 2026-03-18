@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "PlayerProjectile",
+            "eColliderType": "Overlap",
+            "iID": 1,
+            "strTag": "TestPlayerProjectile1",
+            "tCombat": {
+                "DamageType": "Fire",
+                "HitType": "Light",
+                "fBaseDamage": 5.0,
+                "fHitStopSec": 0.20000000298023224,
+                "fHitStunSec": 0.9200000166893005,
+                "fImpulse": 44.0,
+                "fPushPower": 1.7000000476837158
+            },
+            "tPolicy": {
+                "PolicyType": "Interval",
+                "fIntervalSec": 0.4699999988079071
+            }
+        }
+    ]
+}

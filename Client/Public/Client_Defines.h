@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Engine_Define.h"
 #include "EngineConsole.h"
 #include <windows.h>
@@ -216,6 +215,11 @@ namespace Client
 		_float  g_fGrassWaveSize	{1.f};		//이 잔디가 Power = 흔들리는 힘		Tool에서 지정
 	};
 
+	struct CB_PlantData
+	{
+		_float	g_DiffuseColorPower{1.f};
+		Vec3	g_Dummy{};
+	};
 
 
 	static ELevelType StringToClientleveltype(const _string& str)
@@ -286,6 +290,7 @@ namespace Client
 		RGBMapping,
 		SHADOW_BAKE,
 		DEBUG,
+		SkyBox,
 		END,
 	};
 
@@ -764,6 +769,8 @@ namespace Client
 
 #pragma region Tag 모음
 
+	inline constexpr _tchar g_wszCameraCinematicData_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json" };
+	inline constexpr _tchar g_wszCameraCinematicSequnceEventManifest_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CCS_EventManifest.json" };
 
 #pragma region State Tag
 
@@ -771,6 +778,8 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Dog_State_Tag[]{ L"Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]{ L"Monster_Boomer" };
 	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
+
+	inline constexpr wchar_t g_wszNPC_Pan_State_Tag[]{ L"NPC_Pan" };
 
 #pragma endregion 
 
@@ -780,6 +789,8 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Monster_Dog"};
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
+	
+	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
 
 #pragma endregion
 
@@ -847,6 +858,8 @@ namespace Client
 	inline constexpr wchar_t g_wszRock_Prototype_Tag[]							{ L"Prototype_GameObject_Rock" };
 	inline constexpr wchar_t g_wszWater_Prototype_Tag[]							{ L"Prototype_GameObject_Water" };
 
+	inline constexpr wchar_t g_wszEnvObject_Prototype_Tag[]						{ L"Prototype_GameObject_EnvObject" };
+
 
 
 	inline constexpr wchar_t g_wszInvisibleWall_Prototype_Tag[]					{ L"Prototype_GameObject_InvisibleWall" };
@@ -878,15 +891,24 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
 #pragma endregion
 
+#pragma region Npc 관련
+	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan" };
+
+	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan_Body" };
+#pragma endregion
+
 #pragma region Part Objects
 
 	inline constexpr wchar_t g_wszPartObj_Effect_Prototype_Tag[]{ L"Prototype_GameObject_Part_Effect" }; // static
 	inline constexpr wchar_t g_wszPartObj_Socket_Prototype_Tag[]{ L"Prototype_GameObject_Part_Socket" }; // static
+	inline constexpr wchar_t g_wszPartObj_Bone_Prototype_Tag[]{ L"Prototype_GameObject_Part_Socket" }; // static
 
 #pragma endregion
 
 #pragma region 기타
-	inline constexpr wchar_t g_wszBattleField_Prototype_Tag[]					{ L"Prototype_GameObject_BattleField" };
+	inline constexpr wchar_t g_wszBattleField_Prototype_Tag[]					{ L"Prototype_GameObject_BattleField"};
+	inline constexpr wchar_t g_wszSkyBox_Prototype_Tag[]						{ L"Prototype_GameObject_SkyBox" };
+	inline constexpr wchar_t g_wszPointLight_Prototype_Tag[]					{ L"Prototype_GameObject_PointLight"};
 #pragma endregion
 
 #pragma endregion
@@ -906,7 +928,65 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBoxLayer[]								{ L"TriggerBox_Layer" };
 	inline constexpr wchar_t g_wszBattleFieldLayer[]							{ L"BattleField_Layer" };
 	inline constexpr wchar_t g_wszInvisibleWallLayer[]							{ L"InvisibleWall_Layer" };
+	inline constexpr wchar_t g_wszSkyBoxLayer[]									{ L"SkyBox_Layer" };
+	inline constexpr wchar_t g_wszPointLightLayer[]								{ L"PointLight_Layer" };
+	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
 #pragma endregion
+
+#pragma region Dialogue
+	//typedef struct EDialogueChoice
+	//{
+	//	enum Enum
+	//	{
+	//		NONE,
+	//		CONFIRM,
+	//		CANCEL,
+	//		BACK,
+	//		END
+	//	};
+	//}DIALOGUE_CHOICE;
+
+	typedef struct tagDialogueChoice
+	{
+		wstring wstrText = {};
+		_int iTransitionId = { -1 };
+	}DIALOGUE_CHOICE;
+
+	typedef struct tagDialogueNode
+	{
+		_int iNodeId = { -1 };
+		_int iPrevId = { -1 };
+		_int iNextId = { -1 };
+
+		//OBJECT_ENUM_TAG::Enum eSpeakerTag = OBJECT_ENUM_TAG::NPC_PAN;
+		wstring wstrSpeakerName = {};
+		wstring wstrContentText = {};
+
+		vector<_int> vecTriggerEvent;
+		vector<DIALOGUE_CHOICE> vecChoices;
+
+		tagDialogueNode& AddTrigger(_int eventId)
+		{
+			vecTriggerEvent.push_back(eventId);
+			return *this;
+		}
+
+		tagDialogueNode& AddChoice(const wstring& text, _int transitionId)
+		{
+			vecChoices.push_back({ text, transitionId });
+			return *this;
+		}
+
+		vector<DIALOGUE_CHOICE>* GetChoices()
+		{
+			return &vecChoices;
+		}
+
+	}DIALOGUE_NODE;
+#pragma endregion
+
+
+
 }
 
 #pragma endregion

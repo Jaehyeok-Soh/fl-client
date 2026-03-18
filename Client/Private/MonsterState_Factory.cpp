@@ -176,6 +176,10 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_set_impuls_front", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(0.f, 0.f, -param.fParam[0])); });
 
 	REGISTER_FEATURE("feat_set_root_motion_apply", FEATURE{ MONSTERCC(state)->Set_RootMotion_Apply(param.bParam[0]); });
+	
+	REGISTER_FEATURE("feat_set_target_offset", FEATURE{ MONSTERCC(state)->Set_Target_Offset(param.fParam[0], param.fParam[1], param.fParam[2]); });
+	REGISTER_FEATURE("feat_auto_teleport_chase", FEATURE{ MONSTERCC(state)->Auto_Teleport_Chase(param.fParam[0]); });
+	REGISTER_FEATURE("feat_geniemon_smart_chase", FEATURE{ MONSTERCC(state)->Genimon_Smart_Chase(param.fParam[0], param.fParam[1], param.fParam[2], param.fParam[3]); });
 
 	return S_OK;
 }

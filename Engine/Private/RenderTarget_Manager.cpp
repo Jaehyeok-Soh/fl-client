@@ -78,6 +78,32 @@ HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _boo
     return S_OK;
 }
 
+HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV)
+{
+    list<CRenderTarget*>* pMRTList = Get_MRT(eMRTLayer);
+    if (nullptr == pMRTList)
+        return E_FAIL;
+
+    m_pDeviceContext->OMGetRenderTargets(1, &m_pBackBuffer, &m_pDSV);
+    m_pDeviceContext->VSSetShaderResources(0, 128, m_pNullSRVs);
+    m_pDeviceContext->PSSetShaderResources(0, 128, m_pNullSRVs);
+
+    m_pDeviceContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+    ID3D11RenderTargetView* pRTVs[8]{ nullptr };
+    _uint   iRenderTargetCount = { 0 };
+
+    for (auto& pRenderTarget : *pMRTList)
+    {
+        if (bClear == true)
+            pRenderTarget->Clear();
+        pRTVs[iRenderTargetCount++] = pRenderTarget->Get_RTV();
+    }
+
+    m_pDeviceContext->OMSetRenderTargets(iRenderTargetCount, pRTVs, pDSV);
+    return S_OK;
+}
+
 HRESULT CRenderTarget_Manager::End_MRT()
 {
     ID3D11RenderTargetView* pRenderTargets[8]{nullptr};
@@ -111,6 +137,8 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         eSlot = EFXSRV::RT_Depth; break;
     case Engine::ERenderTarget::ObjectInfo:
         eSlot = EFXSRV::RT_ObjectInfo; break;
+    case Engine::ERenderTarget::Emissive:
+        eSlot = EFXSRV::RT_Emissive; break;
     case Engine::ERenderTarget::SSAO_Ping:
     case Engine::ERenderTarget::SSAO_Pong:
     case Engine::ERenderTarget::SSAO_Full:
@@ -122,6 +150,10 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
     case Engine::ERenderTarget::Bloom_Ping:
     case Engine::ERenderTarget::Bloom_Pong:
         eSlot = EFXSRV::RT_Bloom; break;
+    case Engine::ERenderTarget::Cascade_0:
+        eSlot = EFXSRV::RT_Cascade0; break;
+    case Engine::ERenderTarget::Cascade_1:
+        eSlot = EFXSRV::RT_Cascade1; break;
     case Engine::ERenderTarget::OIT_Accum:
         eSlot = EFXSRV::RT_OIT_Accum; break;
     case Engine::ERenderTarget::OIT_Reveal:

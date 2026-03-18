@@ -4,7 +4,7 @@
 #include "DataDocument_Map.h"
 #include "Shader.h"
 #include "MapToolManager.h"
-
+#include "Bounding_AABB.h"
 #include "GameInstance.h"
 
 CLevelData::CLevelData(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -13,6 +13,8 @@ CLevelData::CLevelData(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
     , m_tCB_EnvData{}
     , m_pMeshShader{nullptr}
     , m_pInstMeshSahder{nullptr}
+    , m_vMapMinMaxBox_Center{ 0.f,0.f,0.f }
+    , m_vMapMinMaxBox_Extents{ 1.f,1.f,1.f }
 {
 }
 
@@ -28,17 +30,8 @@ HRESULT CLevelData::Initialize_Prototype()
     if (FAILED(Super::Initialize_Prototype()))
         return E_FAIL;
 
-    m_strName = "LevelData";
-
-
-    m_pMeshShader =
-        static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool"));
-    if (m_pMeshShader == nullptr) return E_FAIL;
-
-    m_pInstMeshSahder =
-        static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh_Tool"));
-    if (m_pInstMeshSahder == nullptr) return E_FAIL;
-
+    if (FAILED(Ready_Component()))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -47,6 +40,23 @@ HRESULT CLevelData::Initialize(void* pArg)
 {
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
+
+    m_pGameInstance->Set_MapMinMaxBox(m_vMapMinMaxBox_Center,m_vMapMinMaxBox_Extents);
+  
+
+    return S_OK;
+}
+
+HRESULT CLevelData::Ready_Component()
+{
+    /* Shader »ý¼º */
+    m_pMeshShader =
+        static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool"));
+    if (m_pMeshShader == nullptr) return E_FAIL;
+
+    m_pInstMeshSahder =
+        static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh_Tool"));
+    if (m_pInstMeshSahder == nullptr) return E_FAIL;
 
 
 
@@ -64,13 +74,14 @@ HRESULT CLevelData::Awake(const _uint iCurrentLevelID)
 
 void CLevelData::Update_Priority(const _float fTimeDelta)
 {
-    Super::Update_Priority(fTimeDelta);
+    //Super::Update_Priority(fTimeDelta);
 }
 
 void CLevelData::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
 
+    m_pGameInstance->Set_MapMinMaxBox(m_vMapMinMaxBox_Center,m_vMapMinMaxBox_Extents);
 }
 
 void CLevelData::Update_Late(const _float fTimeDelta)
@@ -83,12 +94,19 @@ void CLevelData::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
 
+    m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::ENVIRONMENT,this);
 }
 
 HRESULT CLevelData::Render()
 {
     if (FAILED(Super::Render()))
         return E_FAIL;
+
+#ifdef _DEBUG
+    m_pGameInstance->DebugRender_MapMinMaxBox();
+#endif // _DEBUG
+
+
 
     return S_OK;
 }
@@ -188,6 +206,10 @@ HRESULT CLevelData::Apply_Data(const struct DTO::TLevelData* pData)
     m_tCB_EnvData.fWindPower = pData->fWindPower;
     m_tCB_EnvData.vWindDirection = pData->vWindDirection;
 
+
+    m_vMapMinMaxBox_Center = pData->vMapMinMaxBox_Center;
+    m_vMapMinMaxBox_Extents = pData->vMapMinMaxBox_extents;
+
     this->Set_GPU_EnvData();
 
     return S_OK;
@@ -209,6 +231,10 @@ _bool CLevelData::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocu
     /* Env Data */
     tData.fWindPower = m_tCB_EnvData.fWindPower;
     tData.vWindDirection = m_tCB_EnvData.vWindDirection;
+
+    tData.vMapMinMaxBox_Center  = this->m_vMapMinMaxBox_Center;
+    tData.vMapMinMaxBox_extents = this->m_vMapMinMaxBox_Extents;
+
 
     if (FAILED(pMapDoc->Try_Add(tData)))
         return false;

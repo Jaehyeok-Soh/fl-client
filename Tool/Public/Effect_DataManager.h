@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "Effect.h"
 
 NS_BEGIN(Engine)
 class  CGameInstance;
@@ -33,12 +34,16 @@ public:
 	void Render();
 
 private:
+
 	HRESULT			Ready_Builder();
 	HRESULT			Ready_BuildFiles();
 
 public:
 	std::vector<string>& Get_EffectTagList() { return m_vecEffectTags; }
 	CGameObject*		 Make_EffectPrototype(EEFFECT_DATATYPE DataType, const string& Tag);
+	void Push_ToolEffectData(_uint HashTag, void* Desc);
+	void* Find_ToolEffectData(_uint iHashTag);
+
 
 private:
 	void				 Push_EffectTag(const string& Tag);
@@ -51,6 +56,9 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 
 	class CGameInstance*  m_pGameInstance = { nullptr };
+
+private:
+	std::map<_uint, Effect::EFFECT_CONTAINERDESC>				m_EffectDescData = {};	// ÇØ½ÌÇÑ Data
 
 public:
 	virtual void Free() override;

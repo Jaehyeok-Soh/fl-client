@@ -12,7 +12,8 @@
 #include "Rock.h"
 #include "Water.h"
 #include "Shader.h"
-
+#include "Fog.h"
+#include "EnvObject.h"
 #pragma region Batch 관련
 /* Batch Player */
 #include "MainPlayer.h"
@@ -22,6 +23,10 @@
 
 /* Batch Object */
 #include "BattleField.h"
+#include "PointLight.h"
+
+/* Batch NPC */
+#include "NPC_Base.h"
 
 #pragma endregion
 
@@ -111,6 +116,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::Rock:			Create_Rock(tData);			break;
 			case DTO::EClientMakePath::Vine:			Create_Vine(tData);			break;
 			case DTO::EClientMakePath::Water:			Create_Water(tData);		break;
+			case DTO::EClientMakePath::Env:				Create_Env(tData);			break;
 
 			case DTO::EClientMakePath::Batch_Player:	Batch_Player(tData);		break;
 			case DTO::EClientMakePath::Batch_Monster:	Batch_Monster(tData);		break;
@@ -124,6 +130,9 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 
 
 			case DTO::EClientMakePath::Invisible_Wall:						Create_InvisibleWall(tData); break;
+
+
+			case DTO::EClientMakePath::Batch_NPC:							Batch_NPC(tData); break;
 
 
 			default:									return E_FAIL;
@@ -162,6 +171,9 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	if (!pCB->IsValid())	return E_FAIL;
 	pCB->SetRawValue(&tEnvData, 0, sizeof(CB_EnvData));
 
+
+	/* Map Box */
+	m_pGameInstance->Set_MapMinMaxBox(tData.vMapMinMaxBox_Center,tData.vMapMinMaxBox_extents);
 
 
 	return S_OK;
@@ -240,7 +252,6 @@ HRESULT CBuilder_Map::Create_LandScape(const DTO::TMap_MapObjectData& tData)
 HRESULT CBuilder_Map::Create_Bush(const DTO::TMap_MapObjectData& tData)
 {
 	CBush::BUSH_DESC tDesc{};
-
 	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
 	tDesc.isUELoaded = tData.isUELoaded;
 	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
@@ -261,6 +272,7 @@ HRESULT CBuilder_Map::Create_Bush(const DTO::TMap_MapObjectData& tData)
 		/* Plants  */
 		PLANTS_DESC* pFrontDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
 		tDesc.vMI_TintColor = pFrontDesc->vMITint_Color;
+		tDesc.fDiffuseColorPower = pFrontDesc->fDiffuseColorPower;
 	}
 
 
@@ -298,6 +310,8 @@ HRESULT CBuilder_Map::Create_Grass(const DTO::TMap_MapObjectData& tData)
 		tDesc.vMI_TintColor = pOrigin->vMITint_Color;
 		tDesc.fGrassSwaySpeed = pOrigin->fGrassSwaySpeed;
 		tDesc.fGrassWaveSize = pOrigin->fGrassWaveSize;
+		tDesc.fDiffuseColorPower = pOrigin->fDiffuseColorPower;
+
 	}
 
 
@@ -332,8 +346,9 @@ HRESULT CBuilder_Map::Create_Moss(const DTO::TMap_MapObjectData& tData)
 	if (!tData.vecClientMakePathDesc.empty())
 	{
 		/* Plants  */
-		PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
-		tDesc.vMI_TintColor = pDesc->vMITint_Color;
+		PLANTS_DESC* pOrigin = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
+		tDesc.vMI_TintColor = pOrigin->vMITint_Color;
+		tDesc.fDiffuseColorPower = pOrigin->fDiffuseColorPower;
 	}
 
 
@@ -367,8 +382,9 @@ HRESULT CBuilder_Map::Create_Tree(const DTO::TMap_MapObjectData& tData)
 	if (!tData.vecClientMakePathDesc.empty())
 	{
 		/* Plants  */
-		PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
-		tDesc.vMI_TintColor = pDesc->vMITint_Color;
+		PLANTS_DESC* pOrigin = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
+		tDesc.vMI_TintColor = pOrigin->vMITint_Color;
+		tDesc.fDiffuseColorPower = pOrigin->fDiffuseColorPower;
 	}
 
 	m_pGameInstance->Add_GameObject(
@@ -400,8 +416,9 @@ HRESULT CBuilder_Map::Create_Vine(const DTO::TMap_MapObjectData& tData)
 	if (!tData.vecClientMakePathDesc.empty())
 	{
 		/* Plants  */
-		PLANTS_DESC* pDesc = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
-		tDesc.vMI_TintColor = pDesc->vMITint_Color;
+		PLANTS_DESC* pOrigin = static_cast<PLANTS_DESC*>(tData.vecClientMakePathDesc.front());
+		tDesc.vMI_TintColor = pOrigin->vMITint_Color;
+		tDesc.fDiffuseColorPower = pOrigin->fDiffuseColorPower;
 	}
 
 
@@ -493,6 +510,66 @@ HRESULT CBuilder_Map::Create_Rock(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+HRESULT CBuilder_Map::Create_Env(const DTO::TMap_MapObjectData& tData)
+{
+	CEnvObject::ENVOBJECT_DESC tDesc{};
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
+
+
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+	if (!tData.vecClientMakePathDesc.empty())
+	{
+		ENV_DESC* pDesc = static_cast<ENV_DESC*>(tData.vecClientMakePathDesc.front());
+		if (pDesc == nullptr) return E_FAIL;
+		tDesc.vecEnvEffectInfo = pDesc->vecEnvEffectInfo;
+	}
+
+
+	CGameObject* pGameObject{ nullptr };
+	pGameObject = m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszEnvObject_Prototype_Tag,
+		tDesc.iLevelIndex, g_wszStaticObjectLayer , &tDesc);
+
+	if (pGameObject == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CBuilder_Map::Create_Fog(const DTO::TMap_MapObjectData& tData)
+{
+	CFog::FOG_DESC tDesc{};
+	tDesc.iLevelIndex			= ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded			= tData.isUELoaded;
+	tDesc.eMapObjectDrawType	= static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath			= Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum			= tData.iSectionNum;
+	tDesc.eClientMakePath		= tData.eClientMakePath;
+
+
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+	CGameObject* pGameObject{ nullptr };
+	pGameObject=m_pGameInstance->Add_GameObject(
+		ENUM_TO_UINT(ELevelType::STATIC), g_wszRock_Prototype_Tag,
+		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
+	
+	if (pGameObject == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
 #pragma endregion
 
 #pragma region Create InvisibleWalll
@@ -518,6 +595,35 @@ HRESULT CBuilder_Map::Create_InvisibleWall(const DTO::TMap_MapObjectData& tData)
 		g_wszInvisibleWall_Prototype_Tag, ENUM_TO_UINT(m_eLevelType),
 		g_wszInvisibleWallLayer, &tDesc);
 
+
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Batch_NPC(const DTO::TMap_MapObjectData& tData)
+{
+	/* EObject Enum Tag 별로 Batch */
+
+	if (tData.vecClientMakePathDesc.empty())		return E_FAIL;
+	if (tData.vecSRTs.empty())						return E_FAIL;
+
+	CGameObject* pResult{ nullptr };
+
+	_uint iFindPrototypeIndex = ENUM_TO_UINT(ELevelType::STATIC);
+	wstring wstrAddLayerName{};
+	wstring wstrFindPrototypeName{};
+	_uint iCurLevelIndex = ENUM_TO_UINT(m_eLevelType);
+
+	/* SRT Data를 들고온다 */
+	DTO::SRT_DATA tSRT = tData.vecSRTs.front();
+	CTransform::TRANSFORM_DESC tTransformDesc = {};
+	tTransformDesc.TranslationMatrix = tSRT.Get_World();
+
+	/* Description 제일 맨앞 */
+	BATCH_NPC_DESC* pDesc = static_cast<BATCH_NPC_DESC*>(tData.vecClientMakePathDesc.front());
+	if (pDesc == nullptr) return E_FAIL;
+
+	if (FAILED(CNPC_Base::Create_NPC(pDesc->eBatchNPCType, iFindPrototypeIndex, iCurLevelIndex, &tTransformDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -598,7 +704,6 @@ HRESULT CBuilder_Map::Batch_Object(const DTO::TMap_MapObjectData& tData)
 	CTransform::TRANSFORM_DESC tTransformDesc{};
 	tTransformDesc.TranslationMatrix = tData.vecSRTs.front().Get_World();
 
-	void*	pDesc{nullptr};
 	_uint	iAddLevelIndex{ENUM_TO_UINT(m_eLevelType)};
 	_uint	iFindPrototypeIndex{ENUM_TO_UINT(ELevelType::STATIC)};
 	wstring wstrPrototypeTag{L""};
@@ -607,6 +712,7 @@ HRESULT CBuilder_Map::Batch_Object(const DTO::TMap_MapObjectData& tData)
 	BATCH_OBJECT_DESC* pBatchObjectDesc = static_cast<BATCH_OBJECT_DESC*>(tData.vecClientMakePathDesc.front());
 	DTO::EMakeObjectType eMakeObjectType{ pBatchObjectDesc->eBatchObjectType };
 
+	CGameObject* pResult{ nullptr };
 	switch (eMakeObjectType)
 	{
 	case DTO::EMakeObjectType::Battle_Field:
@@ -614,25 +720,46 @@ HRESULT CBuilder_Map::Batch_Object(const DTO::TMap_MapObjectData& tData)
 		wstrAddLayerTag		= g_wszBattleFieldLayer;
 		wstrPrototypeTag	= g_wszBattleField_Prototype_Tag;
 
-		BATTLE_FIELD_DESC* pDataDesc = static_cast<BATTLE_FIELD_DESC*>(pBatchObjectDesc->pBatchObjectDesc);
-		if (pDataDesc == nullptr) return E_FAIL;
+		BATTLE_FIELD_DESC* pOrigin = static_cast<BATTLE_FIELD_DESC*>(pBatchObjectDesc->pBatchObjectDesc);
+		if (pOrigin == nullptr) return E_FAIL;
 
-		CBattleField::BATTLEFIELD_DESC tClientDesc{};
-		tClientDesc.pTransform_Desc = &tTransformDesc;
-		tClientDesc.eFieldType		= static_cast<Client::CBattleField::Field_Type>(pDataDesc->eFieldType);
-		tClientDesc.iLevelIndex		= iAddLevelIndex;
-		tClientDesc.fRadius			= pDataDesc->fRadius;
-		tClientDesc.vExtents		= pDataDesc->vExtents;
-		pDesc = &tClientDesc;
+		CBattleField::BATTLEFIELD_DESC tBattleFieldDesc{};
+		tBattleFieldDesc.pTransform_Desc = &tTransformDesc;
+		tBattleFieldDesc.eFieldType = static_cast<Client::CBattleField::Field_Type>(pOrigin->eFieldType);
+		tBattleFieldDesc.iLevelIndex = iAddLevelIndex;
+		tBattleFieldDesc.fRadius = pOrigin->fRadius;
+		tBattleFieldDesc.vExtents		= pOrigin->vExtents;
+
+		pResult = m_pGameInstance->Add_GameObject(iFindPrototypeIndex, wstrPrototypeTag, iAddLevelIndex, wstrAddLayerTag, &tBattleFieldDesc);
+		if (pResult == nullptr)
+			return E_FAIL;
+	}
+	break;
+	case DTO::EMakeObjectType::PointLight:
+	{
+		wstrAddLayerTag		= g_wszPointLightLayer;
+		wstrPrototypeTag	= g_wszPointLight_Prototype_Tag;
+
+		Engine::POINTLIHGT_DESC* pOrigin = static_cast<Engine::POINTLIHGT_DESC*>(pBatchObjectDesc->pBatchObjectDesc);
+		if (pOrigin == nullptr) return E_FAIL;
+
+		CPointLight::POINTLIGHT_DESC tPointLightDecs{};
+		tPointLightDecs.pTransform_Desc = &tTransformDesc;	//Transform Data
+
+		tPointLightDecs.tLightDesc = pOrigin->tLightDesc;
+		tPointLightDecs.tLightDesc.fRange = pOrigin->fBaseRange;	// 아마 초기화 잘되어있을텐데 혹시모르니 
+		tPointLightDecs.isFlicker = pOrigin->isFlicker;
+		tPointLightDecs.fFlickerMin = pOrigin->fFlickerMin;
+		tPointLightDecs.fFlickerSpeed = pOrigin->fFlickerSpeed;
+
+		pResult = m_pGameInstance->Add_GameObject(iFindPrototypeIndex, wstrPrototypeTag, iAddLevelIndex, wstrAddLayerTag,&tPointLightDecs);
+		if (pResult == nullptr)
+			return E_FAIL;
 	}
 	break;
 	default:									return E_FAIL;
 	}
 
-	CGameObject* pResult{nullptr};
-	pResult =  m_pGameInstance->Add_GameObject(iFindPrototypeIndex , wstrPrototypeTag, iAddLevelIndex , wstrAddLayerTag, pDesc );
-	if (pResult == nullptr)
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -652,20 +779,21 @@ HRESULT CBuilder_Map::Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectDat
 	if (pTriggerBox_ChangeLevel_Desc == nullptr) return E_FAIL;
 
 	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
-	CTriggerBox_LevelChange::TRIGGERBOX_LEVELCHANGE_DESC pDesc{};
+	CTriggerBox_LevelChange::TRIGGERBOX_LEVELCHANGE_DESC tDesc{};
 	CTransform::TRANSFORM_DESC transformDesc = {};
 	transformDesc.TranslationMatrix = {tSRT.Get_World()};
 
-	pDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-	pDesc.pSRTData = &tSRT;
-	pDesc.pTransform_Desc = &transformDesc;
-	pDesc.vTriggerBox_Extents = pTriggerBox_ChangeLevel_Desc->vExtents;
-	pDesc.eChangeLevelType = StringToClientleveltype(pTriggerBox_ChangeLevel_Desc->strChangeLevelTypeName);
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.pSRTData = &tSRT;
+	tDesc.pTransform_Desc = &transformDesc;
+	tDesc.vTriggerBox_Extents	= pTriggerBox_ChangeLevel_Desc->vExtents;
+	tDesc.eChangeLevelType		= StringToClientleveltype(pTriggerBox_ChangeLevel_Desc->strChangeLevelTypeName);
+	tDesc.vTriggerBox_Rotation	= pTriggerBox_ChangeLevel_Desc->vRotation;
 
-	if (pDesc.bHasQuest = pTriggerBox_ChangeLevel_Desc->bHasQuest)
-		pDesc.tQuestObjectDesc = pTriggerBox_ChangeLevel_Desc->tQuestObjectDesc;
+	if (tDesc.bHasQuest = pTriggerBox_ChangeLevel_Desc->bHasQuest)
+		tDesc.tQuestObjectDesc = pTriggerBox_ChangeLevel_Desc->tQuestObjectDesc;
 
-	m_pGameInstance->Add_GameObject( ENUM_TO_UINT(ELevelType::STATIC) , g_wszTriggerBox_ChangeLevel_Prototype_Tag , ENUM_TO_UINT(m_eLevelType) , g_wszTriggerBoxLayer ,&pDesc);
+	m_pGameInstance->Add_GameObject( ENUM_TO_UINT(ELevelType::STATIC) , g_wszTriggerBox_ChangeLevel_Prototype_Tag , ENUM_TO_UINT(m_eLevelType) , g_wszTriggerBoxLayer ,&tDesc);
 
 	return S_OK;
 }
@@ -678,24 +806,26 @@ HRESULT CBuilder_Map::Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObject
 	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
 
 
-	TRIGGERBOX_MONSTERSPAWNER_DESC* pTriggerBox_MonsterSpawner = static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*> (tData.vecClientMakePathDesc.front());
-	if (pTriggerBox_MonsterSpawner == nullptr) return E_FAIL;
+	TRIGGERBOX_MONSTERSPAWNER_DESC* pOrigin = static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*> (tData.vecClientMakePathDesc.front());
+	if (pOrigin == nullptr) return E_FAIL;
 
 	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
-	CTriggerBox_MonsterSpawner::TRIGGERBOX_MONSTERSPAWNER_DESC  pDesc{};
+	CTriggerBox_MonsterSpawner::TRIGGERBOX_MONSTERSPAWNER_DESC  tDesc{};
 	CTransform::TRANSFORM_DESC transformDesc = {};
 	transformDesc.TranslationMatrix = { tSRT.Get_World() };
 
-	pDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
-	pDesc.pSRTData = &tSRT;
-	pDesc.pTransform_Desc = &transformDesc;
-	pDesc.vTriggerBox_Extents = pTriggerBox_MonsterSpawner->vExtents;
-	pDesc.vecMonsterSpawnData = pTriggerBox_MonsterSpawner->vecMonsterSpawnData;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.pSRTData = &tSRT;
+	tDesc.pTransform_Desc = &transformDesc;
+	tDesc.vTriggerBox_Extents = pOrigin->vExtents;
+	tDesc.vecMonsterSpawnData = pOrigin->vecMonsterSpawnData;
+	tDesc.vTriggerBox_Rotation = pOrigin->vRotation;
 
-	if (pDesc.bHasQuest = pTriggerBox_MonsterSpawner->bHasQuest)
-		pDesc.tQuestObjectDesc = pTriggerBox_MonsterSpawner->tQuestObjectDesc;
 
-	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszTriggerBox_MonsterSapwner_Prototype_Tag , ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &pDesc);
+	if (tDesc.bHasQuest = pOrigin->bHasQuest)
+		tDesc.tQuestObjectDesc = pOrigin->tQuestObjectDesc;
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszTriggerBox_MonsterSapwner_Prototype_Tag , ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &tDesc);
 	return S_OK;
 }
 #pragma endregion
@@ -706,8 +836,8 @@ HRESULT CBuilder_Map::Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_
 	if (tData.vecSRTs.empty()) return E_FAIL;
 	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
 
-	Engine::TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pTriggerBox_GlobalEvent_BroadCaster = static_cast<Engine::TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(tData.vecClientMakePathDesc.front());
-	if (pTriggerBox_GlobalEvent_BroadCaster == nullptr) return E_FAIL;
+	Engine::TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pOrigin = static_cast<Engine::TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(tData.vecClientMakePathDesc.front());
+	if (pOrigin == nullptr) return E_FAIL;
 
 
 	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
@@ -718,16 +848,17 @@ HRESULT CBuilder_Map::Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_
 	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
 	tDesc.pSRTData = &tSRT;
 	tDesc.pTransform_Desc = &transformDesc;
-	tDesc.vTriggerBox_Extents = pTriggerBox_GlobalEvent_BroadCaster->vExtents;
+	tDesc.vTriggerBox_Extents = pOrigin->vExtents;
+	tDesc.vTriggerBox_Rotation = pOrigin->vRotation;
 
-	tDesc.vecGlobalBroadcastType.reserve(pTriggerBox_GlobalEvent_BroadCaster->vecGlobalEventBroadCasetNames.size());
-	for (auto& str : pTriggerBox_GlobalEvent_BroadCaster->vecGlobalEventBroadCasetNames)
+	tDesc.vecGlobalBroadcastType.reserve(pOrigin->vecGlobalEventBroadCasetNames.size());
+	for (auto& str : pOrigin->vecGlobalEventBroadCasetNames)
 	{
 		tDesc.vecGlobalBroadcastType.push_back(Global_Broadcast_Type_ToEnum(str));
 	}
 
-	if (tDesc.bHasQuest = pTriggerBox_GlobalEvent_BroadCaster->bHasQuest)
-		tDesc.tQuestObjectDesc = pTriggerBox_GlobalEvent_BroadCaster->tQuestObjectDesc;
+	if (tDesc.bHasQuest = pOrigin->bHasQuest)
+		tDesc.tQuestObjectDesc = pOrigin->tQuestObjectDesc;
 
 	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), 
 									g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
@@ -754,6 +885,8 @@ HRESULT CBuilder_Map::Create_TriggerBox_TutorialUIEvent(const DTO::TMap_MapObjec
 	tDesc.pTransform_Desc		= &transformDesc;
 	tDesc.vTriggerBox_Extents	= pOrigin->vExtents;
 	tDesc.eType					= UITutorialPopUpTypeID_ToEnum(pOrigin->strEventName);
+	tDesc.vTriggerBox_Rotation	= pOrigin->vRotation;
+
 
 	if (tDesc.bHasQuest = pOrigin->bHasQuest)
 		tDesc.tQuestObjectDesc = pOrigin->tQuestObjectDesc;

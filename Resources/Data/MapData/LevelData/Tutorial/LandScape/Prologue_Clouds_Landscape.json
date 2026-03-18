@@ -1,0 +1,210 @@
+{
+    "Category": "MAP",
+    "Level Data": {
+        "Level Type": "TUTORIAL_BOSS",
+        "Texture Splating Info": "Clouds",
+        "strTag": "LevelData0"
+    },
+    "Objects": [
+        {
+            "Client Level Type": "TUTORIAL_BOSS",
+            "Client Make Path": "LandScape",
+            "Client Make Path Desc": [
+                {
+                    "Index": 0,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.0,
+                            "Y": 0.5
+                        },
+                        "RB": {
+                            "X": 0.5,
+                            "Y": 1.0
+                        }
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Clouds/Land/Mesh/Model/SM_Clouds01_LandProxy.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 121.39999389648438,
+                        "Y": 255.6599884033203,
+                        "Z": -327.4499816894531
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Clouds01_LandProxy101"
+        },
+        {
+            "Client Level Type": "TUTORIAL_BOSS",
+            "Client Make Path": "LandScape",
+            "Client Make Path Desc": [
+                {
+                    "Index": 3,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.5,
+                            "Y": 0.0
+                        },
+                        "RB": {
+                            "X": 1.0,
+                            "Y": 0.5
+                        }
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Clouds/Land/Mesh/Model/SM_Clouds04_LandProxy.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 270.1999816894531,
+                        "Y": 255.6599884033203,
+                        "Z": -178.64999389648438
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Clouds04_LandProxy14"
+        },
+        {
+            "Client Level Type": "TUTORIAL_BOSS",
+            "Client Make Path": "LandScape",
+            "Client Make Path Desc": [
+                {
+                    "Index": 2,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.0,
+                            "Y": 0.0
+                        },
+                        "RB": {
+                            "X": 0.5,
+                            "Y": 0.5
+                        }
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Clouds/Land/Mesh/Model/SM_Clouds03_LandProxy.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 121.39999389648438,
+                        "Y": 255.6599884033203,
+                        "Z": -178.64999389648438
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Clouds03_LandProxy47"
+        },
+        {
+            "Client Level Type": "TUTORIAL_BOSS",
+            "Client Make Path": "LandScape",
+            "Client Make Path Desc": [
+                {
+                    "Index": 1,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.5,
+                            "Y": 0.5
+                        },
+                        "RB": {
+                            "X": 1.0,
+                            "Y": 1.0
+                        }
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Clouds/Land/Mesh/Model/SM_Clouds02_LandProxy.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 270.1999816894531,
+                        "Y": 255.6599884033203,
+                        "Z": -327.4499816894531
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Clouds02_LandProxy50"
+        }
+    ]
+}

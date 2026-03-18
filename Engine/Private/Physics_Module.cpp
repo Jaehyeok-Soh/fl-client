@@ -370,6 +370,11 @@ _bool CPhysics_Module::CheckRagdollState(int64 objID)
 	return m_pRagdollSystem->CheckRagdollState(objID);
 }
 
+_bool CPhysics_Module::CheckRagDollState_Processing(int64 objID)
+{
+	return m_pRagdollSystem->CheckRagDollState_Processing(objID);
+}
+
 void CPhysics_Module::RagdollRegister(CGameObject* obj)
 {
 	m_pRagdollSystem->Register(obj);
@@ -400,6 +405,12 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
+	if ((filterData0.word0 & PHYSICSFILTERGROUP::GENIEMON)
+		|| (filterData1.word0 & PHYSICSFILTERGROUP::GENIEMON))
+	{
+		return PxFilterFlag::eSUPPRESS;
+	}
+	
 	if ((filterData0.word0 & PHYSICSFILTERGROUP::RAGDOLL)
 		|| (filterData1.word0 & PHYSICSFILTERGROUP::RAGDOLL))
 	{
@@ -503,9 +514,9 @@ void CPhysics_Module::Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer
 	m_pFilterEventCallback->ProcessRaycast(pOwner, pRaycastHitBuffer, raycastDesc);
 }
 
-_bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
+_bool CPhysics_Module::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall, OUT _float* fHitDist, OUT Vec3* vHitPos)
 {
-	return m_pUtils->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
+	return m_pUtils->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall, fHitDist, vHitPos);
 }
 
 void CPhysics_Module::ClearPhysics()
