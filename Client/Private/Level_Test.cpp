@@ -481,7 +481,8 @@ HRESULT CLevel_Test::Ready_Monster()
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::NPC;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
@@ -539,7 +540,8 @@ HRESULT CLevel_Test::Ready_Monster()
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::NPC;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };
@@ -607,7 +609,8 @@ HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
 				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
 				| PHYSICSFILTERGROUP::Enum::MAP
 				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2;
+				| PHYSICSFILTERGROUP::Enum::OBJECT2
+				| PHYSICSFILTERGROUP::Enum::NPC;
 
 			desc.bGravity = { true };
 			desc.fGravity = { -35.f };

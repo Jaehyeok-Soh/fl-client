@@ -474,7 +474,11 @@ namespace Engine
 
 			RAGDOLL = 1 << 20,
 
-			NONE = 1 << 21,
+			NPC = 1 << 21,
+
+			DETECT_INTERACT = 1 << 22,
+
+			NONE = 1 << 23,
 			END
 		};
 

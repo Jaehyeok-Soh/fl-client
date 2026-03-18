@@ -78,11 +78,7 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 	//	CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	//}
 
-	//{
-	//	CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
-	//	if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
-	//		return E_FAIL;
-	//}
+
 
 	return S_OK;
 }
@@ -176,7 +172,7 @@ HRESULT CNPC_Pan::Ready_Components(void* pArg)
 		desc.pOwnerAnimECS = static_cast<CComputeShader*>(Get_Part<CNPC_Body_Base>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
 		desc.wstrMonsterStateTag = pDesc->wstrNPCStateTag;
 		desc.iLevelIndex = pDesc->iLevelIndex;
-		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_NPC", &desc)))
+		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
 			return E_FAIL;
 	}
 
@@ -189,39 +185,99 @@ HRESULT CNPC_Pan::Ready_Components(void* pArg)
 	//desc.iSkillCount;
 	//desc.vecSkillRange;
 
-	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_NPC", &desc)))
+	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
 		return E_FAIL;
-
+	//{
+//	CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+//	if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
+//		return E_FAIL;
+//}
 	return S_OK;
 }
 
 CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 {
-	return NPC_DESC();
+	CNPC_Base::NPC_DESC npcDesc = {};
+	npcDesc.iLevelIndex = iLevelId;
+	npcDesc.pTransform_Desc = nullptr;
+
+	npcDesc.wstrBodyModelTag = g_wszNPC_Pan_Model_Prototype_Tag;
+	npcDesc.wstrPartBodyPrototypeTag = g_wszNPC_Pan_Body_Prototype_Tag;
+	npcDesc.wstrNPCStateTag = g_wszNPC_Pan_State_Tag;
+
+	{
+		PHYSICSCCT_DESC desc;
+		desc.pOwner = nullptr;
+		desc.bIsPlayer = false;
+		desc.eType = EPhysicsCCTType::CAPSULE;
+		desc.pOwnerMatrix = nullptr;
+		desc.fRadius = 0.3f;
+		desc.fHeight = 0.1f;
+		desc.vExtens = { 2.f, 2.f, 2.f };
+
+		PHYSICSMATERIAL_DESC mtrlDesc{};
+		mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+		desc.tMaterial = mtrlDesc;
+
+		desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::NPC;
+		desc.iFilterMask =
+			PHYSICSFILTERGROUP::Enum::NPC
+			| PHYSICSFILTERGROUP::Enum::PLAYER
+			| PHYSICSFILTERGROUP::Enum::MONSTER
+			| PHYSICSFILTERGROUP::Enum::MAP
+			| PHYSICSFILTERGROUP::Enum::DETECT_INTERACT;
+
+		desc.bGravity = { true };
+		desc.fGravity = { -35.f };
+		desc.MSpeed = { 0.f, 3.f };
+		desc.MAccelRate = { 0.f, 10.f };
+		desc.MDeAccelRate = { 0.f, 10.f };
+
+		npcDesc.tCCTDesc = desc;
+	}
+
+	return npcDesc;
 }
 
 void CNPC_Pan::QuestEnter()
 {
+	Super::QuestEnter();
 }
 
 void CNPC_Pan::QuestExit()
 {
+	Super::QuestExit();
 }
 
 void CNPC_Pan::Interact()
 {
+	Super::Interact();
 }
 
 CNPC_Pan* CNPC_Pan::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	return nullptr;
+	CNPC_Pan* pInsatnce = new CNPC_Pan(pDevice, pDeviceContext);
+	if (FAILED(pInsatnce->Initialize_Prototype()))
+	{
+		MSG_BOX("CNPC_Pan::Create, Failed");
+		Safe_Release(pInsatnce);
+	}
+
+	return pInsatnce;
 }
 
 CGameObject* CNPC_Pan::Clone(void* pArg)
 {
-	return nullptr;
+	CNPC_Pan* pClone = new CNPC_Pan(*this);
+	if (FAILED(pClone->Initialize(pArg)))
+	{
+		MSG_BOX("CNPC_Pan::Clone, Failed");
+		Safe_Release(pClone);
+	}
+	return pClone;
 }
 
 void CNPC_Pan::Free()
 {
+	Super::Free();
 }

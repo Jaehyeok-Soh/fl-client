@@ -157,6 +157,7 @@ public:
 	CMapObject*					Make_MapObject(void* pArg , _bool isPreview = false);
 	HRESULT						Batch_Preview();
 	HRESULT						Register_MapObjectCloneFactory();
+	HRESULT						Update_EnvEffectList();
 public:
 	CModel*						Get_MonsterPreviewModel(DTO::EMakeMonsterType eMakeMonsterType );
 	CModel*						Get_PlayerPreviewModel();
@@ -348,6 +349,9 @@ private:
 	wstring						m_selectedCategoryName{L""};
 
 
+
+
+	vector<string>				m_vecEnvEffectTags{};
 
 
 private:

@@ -6,7 +6,7 @@ NS_BEGIN(Engine)
 template<typename T>
 class CConstant_Buffer;
 
-class CLight_Manager final : public CBase
+class ENGINE_DLL CLight_Manager final : public CBase
 {
 	using Super = CBase;
 private:

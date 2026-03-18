@@ -493,6 +493,18 @@
     <Filter Include="01. Utility\11. DataRepository\Datas\Quest\DataModel">
       <UniqueIdentifier>{799c19ba-5ac4-4248-9b7c-6e2b9abfc44e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\04. GameObject\CameraMan\CinematicCamera">
+      <UniqueIdentifier>{304814b5-fc33-4a1b-b2fc-3114efdfc4a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\19. Cinematic">
+      <UniqueIdentifier>{649a8cc8-425a-44b7-8845-4e90c619f82d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\19. Cinematic\Cinematic Camera Sequence">
+      <UniqueIdentifier>{0b90cf6b-9af5-4678-b859-36978d95c27b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\99. SuperClass\Manager">
+      <UniqueIdentifier>{5f03e0c9-4308-4edf-bbd1-db3d494aec0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -990,6 +1002,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Quest_DataModel.cpp">
       <Filter>01. Utility\11. DataRepository\Datas\Quest\DataModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CinematicCamera.cpp">
+      <Filter>00. System\04. GameObject\CameraMan\CinematicCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cinematic_Manager.cpp">
+      <Filter>01. Utility\99. SuperClass\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CinematicCameraSequnce.cpp">
+      <Filter>01. Utility\19. Cinematic\Cinematic Camera Sequence</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RenderTargetArray.cpp">
       <Filter>00. System\09. RenderTarget</Filter>
@@ -1539,6 +1560,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Quest_DataModel.h">
       <Filter>01. Utility\11. DataRepository\Datas\Quest\DataModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CinematicCamera.h">
+      <Filter>00. System\04. GameObject\CameraMan\CinematicCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cinematic_Manager.h">
+      <Filter>01. Utility\99. SuperClass\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CinematicCameraSequnce.h">
+      <Filter>01. Utility\19. Cinematic\Cinematic Camera Sequence</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RenderTargetArray.h">
       <Filter>00. System\09. RenderTarget</Filter>

@@ -25,6 +25,7 @@
 #include "PartEffect.h"
 #include "SocketObject.h"
 #include "TriggerCollidePart.h"
+#include "BonePart.h"
 
 #include "CameraMan_Targeter.h"
 
@@ -121,6 +122,9 @@ HRESULT CPlayer::Initialize(void* pArg)
         return E_FAIL;
 
     if (FAILED(Ready_PartCollider()))
+        return E_FAIL;
+    
+    if (FAILED(Ready_Interact_PartCollider()))
         return E_FAIL;
 
     return S_OK;
@@ -476,6 +480,13 @@ void CPlayer::End_Attack(State iState)
         Get_Component<CActionSkill>()->End_Skill(MoonE);
         break;
     }
+}
+
+CPlayer::State CPlayer::Get_CurState()
+{
+    CActionState* pAction = Get_Component<CActionState>();
+
+    return static_cast<CPlayer::State>(pAction->Get_CurrentStateIndex());
 }
 
 HRESULT CPlayer::Ready_BaseStates()
@@ -1218,7 +1229,7 @@ HRESULT CPlayer::Ready_HitStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 60.f / (24.f * 1.2f);//2.f;
+        tKeyTimer.fMaxTime = 30.f / (24.f * 1.2f);//2.f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -1304,9 +1315,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
             weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
 
-            weaponDesc.fAllBullet           = 1000.f;
-            weaponDesc.fCurBullet           = 500.f;
-            weaponDesc.fAttackCoolTime      = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
+            weaponDesc.fAllBullet = 1000.f;
+            weaponDesc.fCurBullet = 500.f;
+            weaponDesc.fAttackCoolTime = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
             weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));
@@ -1315,9 +1326,9 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
                 return E_FAIL;
         }
 
-        switch (m_ePlayerType)
-        {
-        case PLAYER_TYPE::MOON:
+        //switch (m_ePlayerType)
+        //{
+        //case PLAYER_TYPE::MOON:
         {
             CPartEffect::PART_EFFECT_DESC tDesc;
             tDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
@@ -1373,20 +1384,22 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             if (FAILED(Add_Part(Part::EFFECT, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Effect_Prototype_Tag, &tDesc)))
                 return E_FAIL;
         }
-        break;
-        }
+        /*break;
+        }*/
     }
 
-    // parts
-
+    // CLOAK
     {
-        //CSocketObject::SOCEKT_DESC SocketDesc = {};
-        //SocketDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-        //SocketDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-        //SocketDesc.iLevelIndex = pDesc->iLevelIndex;
-        //SocketDesc.wstrModelPrototypeName = pDesc->wstrBodyModelTag;
-        //if (FAILED(Add_Part(Part::CLOAK, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Socket_Prototype_Tag, &SocketDesc)))
-        //    return E_FAIL;
+        CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
+        CBonePart::BONEPART_DESC desc = {};
+        desc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonClock";
+        desc.pMatParent             = &Get_Component<CTransform>()->Get_WorldMatrix();
+        desc.pParentBoneCombineCS   = pBody->Get_BoneCombineCS();
+        desc.pParentModel           = pBody->Get_Component<CModel>();
+        desc.FFlags                 = ENUM_TO_UINT(CBonePart::BonePartFlag::VSShakeOn);
+
+        if (FAILED(Add_Part(Part::CLOAK, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Bone_Prototype_Tag, &desc)))
+            return E_FAIL;
     }
 
 
@@ -1400,6 +1413,9 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
         desc.iStateCount = ENUM_TO_UINT(State::END);
         desc.pOwnerModel = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
         desc.pOwnerAnimECS =static_cast<CComputeShader*>(Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+        desc.pOwnerWeaponModel = Get_Part<CWeapon>(ENUM_TO_UINT(Part::CLOAK))->Get_Component<CModel>();
+        desc.pOwnerWeaponAnimECS = static_cast<CComputeShader*>(Get_Part<CWeapon>(ENUM_TO_UINT(Part::CLOAK))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+
         if (FAILED(Add_Component<CPlayerActionState>(0, L"Prototype_Component_ActionState_Player", &desc)))
             return E_FAIL;
     }
@@ -1466,6 +1482,49 @@ HRESULT CPlayer::Ready_PartCollider()
 
         // player가 감지할 part ui
         if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
+    }
+
+    return S_OK;
+}
+
+HRESULT CPlayer::Ready_Interact_PartCollider()
+{
+    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc;
+    {
+        PHYSICSRIGIDBODY_DESC tRigiDesc = {};
+        {
+            tRigiDesc.eType = EPhysicsActorType::KINEMATIC;
+            tRigiDesc.bUseGravity = false;
+            tRigiDesc.pOwnerMatrix = nullptr;
+
+            tPartColliDesc.pRigidbodyDesc = &tRigiDesc;
+        }
+
+        PHYSICSCOLLIDER_DESC tPColliDesc = {};
+        {
+            tPColliDesc.eShape = EPhysicsShape::BOX;
+            //tPColliDesc.fHeight = 100.f;
+            tPColliDesc.vCenter = { 0.f, 0.75f, 0.3f };
+            tPColliDesc.vExtents = { 2.f, 1.5f, 2.f };
+
+            //tPColliDesc.fRadius = { 20.f };
+            tPColliDesc.bIsTrigger = { true };
+            tPColliDesc.eFilterLayer = PHYSICSFILTERGROUP::DETECT_INTERACT;
+            tPColliDesc.iFilterMask =
+            {
+                PHYSICSFILTERGROUP::Enum::NPC
+                | PHYSICSFILTERGROUP::Enum::OBJECT1
+                | PHYSICSFILTERGROUP::Enum::OBJECT2
+            };
+
+            tPartColliDesc.pColliderDesc = &tPColliDesc;
+        }
+
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_Detect);
+        tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
+
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER_INTERACT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
             return E_FAIL;
     }
 

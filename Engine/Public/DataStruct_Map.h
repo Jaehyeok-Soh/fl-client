@@ -44,7 +44,6 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 
 	return EMakeMonsterType::END;
 }
-
 #pragma endregion
 
 #pragma region Make Object Type
@@ -85,6 +84,28 @@ enum class EMakeTriggerBoxType
 	END,
 };
 
+#pragma endregion
+
+#pragma region Make NPC Type
+inline std::string MakeNPCType_ToString(OBJECT_ENUM_TAG::Enum eTag)
+{
+	switch (eTag)
+	{
+	case Engine::OBJECT_ENUM_TAG::NPC_DEFAULT:	return "NPC_Default";
+	case Engine::OBJECT_ENUM_TAG::NPC_PAN:		return "NPC_Pan";
+	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:	return "NPC_Berenica";
+	default:									return "Unknown";
+	}
+}
+
+inline OBJECT_ENUM_TAG::Enum MakeNPCType_ToEnum(const std::string strType)
+{
+	if (strType == "NPC_Default")				return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
+	if (strType == "NPC_Pan")					return Engine::OBJECT_ENUM_TAG::NPC_PAN;
+	if (strType == "NPC_Berenica")				return Engine::OBJECT_ENUM_TAG::NPC_BERENICA;
+
+	return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
+}
 #pragma endregion
 
 NS_END
@@ -258,7 +279,7 @@ public:
 	_float fGrassDT{ 0.f };
 	_float fGrassMaxHeight{ 1.f }; //이 모델의 잔디 MinMax중 Max의  Y값
 	_float fGrassSwaySpeed{ 1.f }; //이 잔디가 Sway = 흔들리는 Speed
-	_float fGrassWaveSize{ 1.f }; //이 잔디가 Power = 흔들리는 힘
+	_float fGrassWaveSize{ 1.f };  //이 잔디가 Power = 흔들리는 힘
 public:
 	GRASS_DESC()
 		:PLANTS_DESC()
@@ -588,6 +609,35 @@ public:
 	virtual void to_Json(json& SaveJson)			override;
 };
 #pragma endregion
+
+
+struct ENV_EFFECT_INFO
+{
+	EFFECT_ENV_DESC tDesc{};
+	string			strTags{};
+};
+
+
+#pragma region Env Desc
+struct ENGINE_DLL ENV_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	vector<ENV_EFFECT_INFO>		vecEnvEffectInfo{};
+public:
+	ENV_DESC()
+		: vecEnvEffectInfo{}
+	{ 
+	}
+	ENV_DESC(const ENV_DESC& rhs)
+		: vecEnvEffectInfo{rhs.vecEnvEffectInfo }
+	{
+
+	}
+	virtual ~ENV_DESC() {}
+public:
+	virtual void from_Json(const json& LoadJson)override;
+	virtual void to_Json(json& SaveJson)override;
+};
 #pragma region Fog
 
 enum class EFogTextureType
@@ -835,6 +885,40 @@ public:
 
 #pragma endregion
 
+#pragma region NPC
+struct ENGINE_DLL BATCH_NPC_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	OBJECT_ENUM_TAG::Enum eBatchNPCType{ OBJECT_ENUM_TAG::NPC_DEFAULT };
+
+	_bool		 bHasQuest = { false };
+	vector<DTO::QUEST_CHAPTERDESC>		tQuestObjectDesc = {};
+public:
+	BATCH_NPC_DESC()
+		:CLIENT_MAKEPATH_DESC_BASE(),
+		eBatchNPCType(OBJECT_ENUM_TAG::NPC_DEFAULT),
+		bHasQuest(false),
+		tQuestObjectDesc()
+	{
+
+	}
+	BATCH_NPC_DESC(const BATCH_NPC_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs),
+		eBatchNPCType(rhs.eBatchNPCType),
+		bHasQuest(rhs.bHasQuest),
+		tQuestObjectDesc(rhs.tQuestObjectDesc)
+	{
+
+	}
+	virtual ~BATCH_NPC_DESC()
+	{
+	}
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+#pragma endregion
+
 #pragma endregion
 
 
@@ -887,7 +971,7 @@ enum class EClientMakePath
 	Vine,
 	Rock,
 	Water,
-	Fog,
+	Env,
 
 
 	/* 몬스터 , Player 위치잡는 용도  */
@@ -904,6 +988,9 @@ enum class EClientMakePath
 
 	/* 맵 기능 관련 */
 	Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
+
+	/* NPC */
+	Batch_NPC,
 
 	END
 };
@@ -957,7 +1044,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::Vine,									"Vine"},
 			{EClientMakePath::Rock,									"Rock"},
 			{EClientMakePath::Water,								"Water"},
-			{EClientMakePath::Fog,									"Fog"},
+			{EClientMakePath::Env,									"Env"},
 
 
 			{EClientMakePath::Batch_Player,							"Batch_Player"},
@@ -971,6 +1058,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::TriggerBox_TutorialUIEvent,			"TriggerBox_TutorialUIEvent"},
 
 			{EClientMakePath::Invisible_Wall,						"Invisible_Wall"},
+
+			{EClientMakePath::Batch_NPC,							"Batch_NPC"},
 
 			{EClientMakePath::END,									"Unknown"},
 		}
@@ -1065,9 +1154,12 @@ typedef struct TLevelData
 	/* Wind */
 	Vec3								vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
 	_float								fWindPower{ 1.f }; //바람이 부는 새기
+
+	/* Map Min Max Box */
+	Vec3								vMapMinMaxBox_Center{0.f,0.f,0.f};
+	Vec3								vMapMinMaxBox_extents{1.f,1.f,1.f};
+
 	/*-------*/
-
-
 
 }SCENEDATA;
 

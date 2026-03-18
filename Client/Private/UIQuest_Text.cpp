@@ -156,12 +156,26 @@ void CUIQuest_Text::Bind_Events()
 	);
 
 	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_START>(
+			[this]()
+			{
+				this->Set_Invisible();
+			})
+	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
+			{
+				this->Set_Visible();
+			})
+	);
+
+	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				desc.tScenarioInfo.wstrSubTitle;
 				desc.tChapterInfo.tQuestDesc.wstrTitle;
-				int a = 0;
 			})
 	);
 
@@ -169,12 +183,9 @@ void CUIQuest_Text::Bind_Events()
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
-				
 
 				switch (this->m_eTextSubClassType)
 				{
-				case DTO::EUITextSubClassType::QUEST_BEGIN:
-					break;
 				case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:
 					break;
 				case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
@@ -186,31 +197,60 @@ void CUIQuest_Text::Bind_Events()
 					break;
 				case DTO::EUITextSubClassType::QUEST_END:
 					break;
-				case DTO::EUITextSubClassType::END:
-				default:
-					return E_FAIL;
 				}
 			})
+
 	);
+
+	return;
 }
 
 void CUIQuest_Text::Initialize_Visible_Event()
 {
+	m_isFin_Event = false;
+	Ready_Lerp_Movement(Vec2{ -20.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Fade_Text(0.5f, 0.f, 1.f, m_fDelay);
 }
 
 void CUIQuest_Text::Initialize_InVisible_Event()
 {
+	m_isFin_Event = false;
+	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -20.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Fade_Text(0.5f, 1.f, 0.f, m_fDelay);
 }
 
 _bool CUIQuest_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
+	_bool isFade = Tick_Fade_Text(fTimeDelta);
+	_bool isMove = Tick_Lerp_Movement(fTimeDelta);
 
-	return true;
+	m_vFontColor.x = m_vFontColor.w;
+	m_vFontColor.y = m_vFontColor.w;
+	m_vFontColor.z = m_vFontColor.w;
+	if (isFade && isMove)
+	{
+		m_isFin_Event = true;
+		return true;
+	}
+
+	return false;
 }
 
 _bool CUIQuest_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return true;
+	_bool isFade = Tick_Fade_Text(fTimeDelta);
+	_bool isMove = Tick_Lerp_Movement(fTimeDelta);
+
+	m_vFontColor.x = m_vFontColor.w;
+	m_vFontColor.y = m_vFontColor.w;
+	m_vFontColor.z = m_vFontColor.w;
+
+	if (isFade && isMove)
+	{
+		m_isFin_Event = true;
+		return true;
+	}
+	return false;
 }
 
 void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
@@ -226,7 +266,17 @@ void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 	}
 	break;
 	case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
-		break;
+	{
+		auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+		if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
+		{
+
+			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle + L"(" + std::to_wstring(desc.tChapterInfo.iCurrentCount) + L"/10)";
+		}
+		else
+			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
+	}
+	break;
 	case DTO::EUITextSubClassType::QUEST_CONTENTS_TEXT:
 		break;
 	case DTO::EUITextSubClassType::QUEST_TRACKING_TEXT:

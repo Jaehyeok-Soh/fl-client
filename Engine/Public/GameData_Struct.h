@@ -411,6 +411,4 @@ namespace Engine
 	};
 
 #pragma endregion
-
-
 }

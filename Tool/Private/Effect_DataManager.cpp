@@ -64,13 +64,7 @@ void CEffect_DataManager::Push_EffectTag(const string& Tag)
 CGameObject* CEffect_DataManager::Make_EffectPrototype(EEFFECT_DATATYPE DataType, const string& EffectTag)
 {
 	_uint iHashTag = Engine_Utils::ToHash(EffectTag.c_str());
-	auto pData = m_pGameInstance->Find_EffectData(iHashTag);
-
-	if (pData == nullptr)
-	{
-		MSG_BOX("CHybridGameObjectBase::Add_EffectModule, data is invalid");
-		return nullptr;
-	}
+	auto& pData = m_EffectDescData[iHashTag];
 
 	CGameObject* pBase = nullptr;
 
@@ -80,9 +74,9 @@ CGameObject* CEffect_DataManager::Make_EffectPrototype(EEFFECT_DATATYPE DataType
 	{
 		pBase =
 			static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
-				/*Static*/0,
-				L"Prototype_GameObject_Effect_Env",
-				pData));
+				ENUM_TO_UINT(ELevelType::MAP),
+				L"Prototype_GameObject_Effect",
+				&pData));
 		break;
 	}
 
@@ -90,9 +84,9 @@ CGameObject* CEffect_DataManager::Make_EffectPrototype(EEFFECT_DATATYPE DataType
 	{
 		pBase =
 			static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
-				/*Static*/0,
-				L"Prototype_GameObject_Effect",
-				pData));
+				ENUM_TO_UINT(ELevelType::MAP),
+				L"Prototype_GameObject_Effect_Env",
+				&pData));
 		break;
 	}
 	}
@@ -103,7 +97,31 @@ CGameObject* CEffect_DataManager::Make_EffectPrototype(EEFFECT_DATATYPE DataType
 	return pBase;
 }
 
+void CEffect_DataManager::Push_ToolEffectData(_uint iHashTag, void* Desc)
+{
+	Effect::EFFECT_CONTAINERDESC* pDesc = static_cast<Effect::EFFECT_CONTAINERDESC*>(Desc);
+	if (pDesc == nullptr)
+	{
+		MSG_BOX("Desc이 Null입니다 : CEffect_DataManager");
+		return;
+	}
 
+	auto result = m_EffectDescData.emplace(iHashTag, *pDesc);
+}
+
+void* CEffect_DataManager::Find_ToolEffectData(_uint iHashTag)
+{
+	auto iter = m_EffectDescData.find(iHashTag);
+
+	if (iter == m_EffectDescData.end())
+	{
+		static Effect::EFFECT_CONTAINERDESC tEmptyDesc = {};
+		MSG_BOX("Hash Tag에 맞는 EffectData가 없습니다. : CEffect_DataManager");
+		return nullptr;
+	}
+
+	return &(iter->second);
+}
 HRESULT CEffect_DataManager::Ready_Builder()
 {
 	m_pBuilderSystem = CBuilderSystem::Create();
@@ -156,6 +174,9 @@ void CEffect_DataManager::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pGameInstance);
+
+	m_EffectDescData.clear();
+
 
 	Super::Free();
 }

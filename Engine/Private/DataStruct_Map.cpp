@@ -286,22 +286,17 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 
 inline void to_json(json& SaveJson, const TLevelData& tData)
 {
-	SaveJson = json
-	{
-		{ "strTag", tData.strTag },
-		{ "Texture Splating Info"	, tData.strTextureSplatingInfoName },
-		{ "Level Type"				, tData.strLevelTypeName},
-		{ "Env Data", {
-			{ "Wind Data", json::object() } // 빈 객체로 미리 생성
-		}}
-	};
+	SaveJson["strTag"] = tData.strTag;
+	SaveJson["Texture Splating Info"] = tData.strTextureSplatingInfoName;
+	SaveJson["Level Type"] = tData.strLevelTypeName;
 
-	// 2. 구조가 완성된 '후에' 참조자를 가져옵니다.
 	auto& WindJson = SaveJson["Env Data"]["Wind Data"];
-
-	// 3. 이제 값을 채웁니다. (안전함)
 	Engine_Utils::write_vec3_xyz(WindJson["Direction"], tData.vWindDirection);
 	WindJson["Power"] = tData.fWindPower;
+
+	auto& MapBox_Json = SaveJson["Map Box"];
+	Engine_Utils::write_vec3_xyz(MapBox_Json["Center"],tData.vMapMinMaxBox_Center);
+	Engine_Utils::write_vec3_xyz(MapBox_Json["Extents"],tData.vMapMinMaxBox_extents);
 
 	return;
 }
@@ -336,6 +331,20 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 		}
 	}
 
+	if (LoadJson.contains("Map Box"))
+	{
+		auto& MapBox_Json = LoadJson.at("Map Box");
+		if (MapBox_Json.contains("Center"))
+		{
+			Engine_Utils::read_vec3_xyz(MapBox_Json["Center"],tData.vMapMinMaxBox_Center);
+		}
+		if (MapBox_Json.contains("Extents"))
+		{
+			Engine_Utils::read_vec3_xyz(MapBox_Json["Extents"],tData.vMapMinMaxBox_extents);
+		}
+	}
+
+
 	return;
 }
 
@@ -364,10 +373,11 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	case DTO::EClientMakePath::Bush:								return pSource == nullptr ? new BUSH_DESC			: new BUSH_DESC(*static_cast<BUSH_DESC*>(pSource));
 
 	case DTO::EClientMakePath::Water:								return pSource == nullptr ? new WATER_DESC			: new WATER_DESC(*static_cast<WATER_DESC*>(pSource));
-	case DTO::EClientMakePath::Fog:									return pSource == nullptr ? new FOG_DESC			: new FOG_DESC(*static_cast<FOG_DESC*>(pSource));
+	case DTO::EClientMakePath::Env:									return pSource == nullptr ? new ENV_DESC			: new ENV_DESC(*static_cast<ENV_DESC*>(pSource));
 		/* Batch Object 관련 */
 	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC	: new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
 	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC	: new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_NPC:							return pSource == nullptr ? new BATCH_NPC_DESC		: new BATCH_NPC_DESC(*static_cast<BATCH_NPC_DESC*>(pSource));
 		/* Trigger Box 관련 */
 	case DTO::EClientMakePath::TriggerBox_ChangeLevel:				return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC				: new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC			: new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
@@ -595,6 +605,64 @@ void BUSH_DESC::to_Json(json& SaveJson)
 #pragma endregion
 
 #pragma region Env
+
+#pragma region ENV Desc
+
+void ENV_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Effect Infos"))
+	{
+		this->vecEnvEffectInfo.clear(); // 기존 데이터 초기화
+		auto& EffectInfos = LoadJson["Effect Infos"];
+
+		for (auto& InfoJson : EffectInfos)
+		{
+			if (InfoJson.is_null()) continue;
+
+			ENV_EFFECT_INFO tInfo{};
+
+			// 1. 태그 읽기
+			if (InfoJson.contains("Tag"))
+				tInfo.strTags = InfoJson["Tag"].get<string>();
+
+			// 2. Desc (Transform 데이터) 읽기
+			if (InfoJson.contains("Desc"))
+			{
+				auto& DescJson = InfoJson["Desc"];
+				Engine_Utils::read_vec3_xyz(DescJson["Pos"]  , tInfo.tDesc.VFX_Target_Position);
+				Engine_Utils::read_vec3_xyz(DescJson["Rot"]  , tInfo.tDesc.VFX_Rotation);
+				Engine_Utils::read_vec3_xyz(DescJson["Scale"], tInfo.tDesc.VFX_Scale);
+			}
+
+			this->vecEnvEffectInfo.push_back(tInfo);
+		}
+	}
+}
+
+void ENV_DESC::to_Json(json& SaveJson)
+{
+	json EffectInfos_SaveJson = json::array(); // 배열 형태로 생성
+
+	for (auto& tInfo : vecEnvEffectInfo)
+	{
+		json InfoObj;
+		InfoObj["Tag"] = tInfo.strTags;
+
+		// Desc 데이터를 JSON 객체로 변환
+		json DescObj;
+		Engine_Utils::write_vec3_xyz(DescObj["Pos"],tInfo.tDesc.VFX_Target_Position);
+		Engine_Utils::write_vec3_xyz(DescObj["Rot"],tInfo.tDesc.VFX_Rotation);
+		Engine_Utils::write_vec3_xyz(DescObj["Scale"],tInfo.tDesc.VFX_Scale);
+
+		InfoObj["Desc"] = DescObj;
+		EffectInfos_SaveJson.push_back(InfoObj);
+	}
+
+	SaveJson["Effect Infos"] = EffectInfos_SaveJson;
+}
+#pragma endregion
+
+
 
 #pragma region Water
 
@@ -1300,7 +1368,50 @@ void TRIGGERBOX_TUTORIALUIEVENT_DESC::to_Json(json& SaveJson)
 
 #pragma endregion
 
+#pragma endregion
 
+#pragma region NPC Desc
+
+void BATCH_NPC_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Batch NPC Type"))
+	{
+		this->eBatchNPCType = DTO::MakeNPCType_ToEnum(LoadJson["Batch NPC Type"].get<string>());
+	}
+	else
+		this->eBatchNPCType = OBJECT_ENUM_TAG::NPC_DEFAULT;
+
+	if (LoadJson.contains("bHasQuest"))
+		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
+	else
+		this->bHasQuest = false;
+
+	if (LoadJson.contains("tQuestObjectDesc"))
+	{
+		const auto& questJson = LoadJson.at("tQuestObjectDesc");
+
+		if (questJson.is_array())
+		{
+			questJson.get_to(this->tQuestObjectDesc);
+		}
+		else if (questJson.is_object())
+		{
+			DTO::QUEST_CHAPTERDESC oldFormatDesc;
+			questJson.get_to(oldFormatDesc);
+			this->tQuestObjectDesc.push_back(oldFormatDesc);
+		}
+	}
+}
+
+void BATCH_NPC_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Batch NPC Type"] = DTO::MakeNPCType_ToString(this->eBatchNPCType);
+
+	SaveJson["bHasQuest"] = this->bHasQuest;
+
+	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
+		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
+}
 #pragma endregion
 
 #pragma region Make_BatchObject_Desc cpp구현부
@@ -1315,7 +1426,11 @@ BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectT
 
 	return nullptr;
 }
+
+
 #pragma endregion
 
 
 NS_END
+
+

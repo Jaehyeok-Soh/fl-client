@@ -5,6 +5,7 @@
 
 NS_BEGIN(Engine)
 
+class CBounding_AABB;
 class CShader;
 class CGameObject;
 
@@ -19,6 +20,18 @@ private:
 public:
 	static ID3D11ShaderResourceView* Make_ShaderResourceViewColor(_uint A, _uint R, _uint G, _uint B,ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 public:
+	HRESULT					Make_Batch();
+#pragma region Map Min Max Collider
+	HRESULT					Make_MapMinMaxBox();
+	CBounding_AABB*			Get_MapMinMaxBox(){ return m_pMapMinMaxBox; }
+	void					Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter);
+
+#ifdef _DEBUG
+	HRESULT					DebugRender_MapMinMaxBox();
+#endif // _DEBUG
+
+#pragma endregion
+
 
 #pragma region Texture Splating Info Datas
 
@@ -65,7 +78,6 @@ public:
 	const unordered_map<_uint, DTO::TAttackPreset_Data>& Get_AttackPresetsData_ForDebug() const { return m_umapAttackPresetDatas; }
 #pragma endregion
 
-
 public:
 	HRESULT													Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent);
 	HRESULT													BroadCaset_RegisterGlobalEvent(_uint iTypeIndex);
@@ -99,9 +111,19 @@ private:
 	unordered_map<string, _uint>							m_umapAttackPresetTagToKey;
 	class CGameInstance *									m_pGameInstance = { nullptr };
 
+
+
+private:
+	CBounding_AABB*											m_pMapMinMaxBox{};		/* Map전체 크기를 지정해줄 Collider */
 private:
 	/* Global Event 발행할 람다함수 등록 */
 	vector<std::function<void()>>							m_vecGlobalEventsBroadCast;
+
+private:
+	/* Debug용 Batch */
+	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch{ nullptr };
+	BasicEffect* m_pEffect{ nullptr };
+	ID3D11InputLayout* m_pInputLayout{ nullptr };
 public:
 	static CGameDataManager* Create(ID3D11Device* pDevice , ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

@@ -37,6 +37,7 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
     , m_wstrUERawDataPath{L""}
     , m_tUsingModelInfo{}
     , m_fDT{}
+    , m_isModelRender{true}
 {
 
 }
@@ -60,6 +61,7 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_wstrUERawDataPath{rhs.m_wstrUERawDataPath }
     , m_tUsingModelInfo{ rhs.m_tUsingModelInfo}
     , m_fDT{rhs.m_fDT }
+    , m_isModelRender{ rhs.m_isModelRender}
 {
     /* Description을 어케해주는게 좋을려나... */
 } 
@@ -424,8 +426,8 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
         if (FAILED(Ready_Water()))
             return E_FAIL;
         break;
-    case Tool::EClientMakePath::Fog:
-        if (FAILED(Ready_Fog()))
+    case Tool::EClientMakePath::Env:
+        if (FAILED(Ready_Env()))
             return E_FAIL;
         break;
 
@@ -470,7 +472,6 @@ HRESULT CMapObject::Ready_Plants()
 
 HRESULT CMapObject::Ready_Batch_Player()
 {
-
     Remove_Component<CModel>();
     CModel* pModel = m_pMapToolManager->Get_PlayerPreviewModel();
     if (pModel == nullptr) return E_FAIL;
@@ -627,14 +628,20 @@ HRESULT CMapObject::Ready_Water()
     return S_OK;
 }
 
-HRESULT CMapObject::Ready_Fog()
+HRESULT CMapObject::Ready_Env()
 {
-    CModel* pModel = Get_Component<CModel>();
-    if (!pModel) return E_FAIL;
+    if (m_vecClientMakePathDesc.empty())
+        return E_FAIL;
 
-    for (_uint i = 0; i < pModel->Get_MaterialCount(); ++i)
+
+    ENV_DESC* pDesc = static_cast<ENV_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return E_FAIL;
+
+
+    for (auto& EffectInfo : pDesc->vecEnvEffectInfo)
     {
-        pModel->Change_MI(i, EMaterialInstanceType::Free);
+        Add_EnvEffect(EffectInfo.strTags);
+        Set_EnvEffectDesc(static_cast<_uint>(m_vEnvEffectList.size()) - 1, EffectInfo.tDesc);
     }
 
     return S_OK;
@@ -1209,12 +1216,21 @@ HRESULT CMapObject::Awake(const _uint iCurrentLevelID)
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
+
+    m_pWorldMatPtr = Get_Component<CTransform>()->Get_WorldMatrixPtr();
+
     return S_OK;
 }
 
 void CMapObject::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
+
+    for (auto& effect : m_vEnvEffectList)
+    {
+        if (effect.first)
+            effect.first->Update_Priority(fTimeDelta);
+    }
 }
 
 void CMapObject::Update(const _float fTimeDelta)
@@ -1223,6 +1239,11 @@ void CMapObject::Update(const _float fTimeDelta)
 
     /* 나중에 DT값 활용을위해 */
 
+    for (auto& effect : m_vEnvEffectList)
+    {
+        if (effect.first)
+            effect.first->Update(fTimeDelta);
+    }
 
 
     m_fDT += fTimeDelta;
@@ -1231,11 +1252,26 @@ void CMapObject::Update(const _float fTimeDelta)
 void CMapObject::Update_Late(const _float fTimeDelta)
 {
     Super::Update_Late(fTimeDelta);
+
+
+    for (auto& effect : m_vEnvEffectList)
+    {
+        if (effect.first)
+            effect.first->Update_Late(fTimeDelta);
+    }
+
 }
 
 void CMapObject::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
+
+
+    for (auto& effect : m_vEnvEffectList)
+    {
+        if (effect.first)
+            effect.first->Ready_Before_Render(fTimeDelta);
+    }
 
     // m_eMapObjectState == CMapObject::EState::Select ?  RENDER_CATEGORY::NONELIGHT : 
 
@@ -1263,6 +1299,12 @@ HRESULT CMapObject::Render()
 {
     if (FAILED(Super::Render()))
         return E_FAIL;
+
+    for (auto& effect : m_vEnvEffectList)
+    {
+        if (effect.first)
+            effect.first->Render();
+    }
 
     HRESULT hr{E_FAIL};
 
@@ -1297,8 +1339,8 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::Rock:                
         hr = Render_Rock();
         break;
-    case Tool::EClientMakePath::Fog:                
-        hr = Render_Fog();
+    case Tool::EClientMakePath::Env:                
+        hr = Render_Env();
         break;
 
     case Tool::EClientMakePath::Batch_Player:
@@ -1326,7 +1368,12 @@ HRESULT CMapObject::Render()
         hr = Render_StaticObject();
         break;
 
+    case Tool::EClientMakePath::Batch_NPC:
+        hr = Render_StaticObject();
+        break;
+
     default:
+        hr = Render_StaticObject();
         break;
     }
 
@@ -1507,10 +1554,9 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::Bush:
     case Tool::EClientMakePath::Rock:
     case Tool::EClientMakePath::Water:
-    case Tool::EClientMakePath::Fog:
         return S_OK;
 
-
+    case Tool::EClientMakePath::Env:
     case Tool::EClientMakePath::Batch_Player:
     case Tool::EClientMakePath::Batch_Monster:
     case Tool::EClientMakePath::LandScape:
@@ -1527,6 +1573,73 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     }
 
     return S_OK;
+}
+
+void CMapObject::ImGuiUpdate_EffectEnv()
+{
+    if (m_eClientMakePath != EClientMakePath::Env) return;
+
+    ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "--- Environment Effect List (Local Offsets) ---");
+
+    // 리스트가 비어있을 경우 예외 처리
+    if (m_vEnvEffectList.empty()) {
+        ImGui::TextDisabled("No effects attached to this object.");
+        return;
+    }
+
+
+    ImGui::Checkbox("Model Render", &m_isModelRender);
+
+    for (size_t i = 0; i < m_vEnvEffectList.size(); ++i)
+    {
+        // 각 항목마다 고유 ID 부여 (이름이 같을 경우 대비)
+        ImGui::PushID((int)i);
+
+        char szLabel[128];
+        sprintf_s(szLabel, "Effect [%d] : %s", (int)i, m_vEnvEffectList[i].first->Get_Name().c_str());
+
+        // Tree-node 형태로 접었다 폈다 할 수 있게 구성
+        if (ImGui::CollapsingHeader(szLabel, ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // 현재 저장된 데이터 가져오기 (pair의 second가 Desc)
+            EFFECT_ENV_DESC tDesc = m_vEnvEffectList[i].second;
+            bool bChanged = false;
+
+            // 1. Position Offset
+            if (ImGui::DragFloat3("Local Pos", (float*)&tDesc.VFX_Target_Position, 0.1f))
+                bChanged = true;
+
+            // 2. Rotation Offset (Degree 단위로 조절하는 것이 직관적)
+            if (ImGui::DragFloat3("Local Rot", (float*)&tDesc.VFX_Rotation, 0.5f))
+                bChanged = true;
+
+            // 3. Scale Offset
+            if (ImGui::DragFloat3("Local Scale", (float*)&tDesc.VFX_Scale, 0.05f))
+                bChanged = true;
+
+            // 값이 바뀌었다면 즉시 반영
+            if (bChanged)
+            {
+                // Set 함수를 통해 원본 데이터 업데이트
+                Set_EnvEffectDesc((_uint)i, tDesc);
+            }
+
+            // 4. 삭제 버튼
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.6f, 0.1f, 0.1f, 1.0f));
+            if (ImGui::Button("Delete Effect"))
+            {
+                Delete_EnvEffect((_uint)i);
+                ImGui::PopStyleColor();
+                ImGui::PopID();
+                break; 
+            }
+            ImGui::PopStyleColor();
+        }
+
+        ImGui::Separator();
+        ImGui::PopID();
+    }
+
 }
 
 void CMapObject::BatchObject_BeforeRender(const _float fTimeDelta)
@@ -1578,6 +1691,16 @@ void CMapObject::BatchObject_BeforeRender(const _float fTimeDelta)
         break;
     }
 
+
+    return;
+}
+
+void CMapObject::Env_BeforeRender(const _float fTimeDelta)
+{
+    for (auto& EffectEnv : m_vEnvEffectList)
+    {
+
+    }
 
     return;
 }
@@ -2244,48 +2367,17 @@ HRESULT CMapObject::Render_Water()
 
     return S_OK;
 }
-HRESULT CMapObject::Render_Fog()
+
+HRESULT CMapObject::Render_Env()
 {
+    if (m_isModelRender == false)
+        return S_OK;
+
     if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
     {
         CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)         return E_FAIL;
         CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)          return E_FAIL;
         CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)      return E_FAIL;
-        FOG_DESC* pDesc = static_cast<FOG_DESC*>(m_vecClientMakePathDesc.front());          if (pDesc == nullptr)           return E_FAIL;
-
-        /* Fog CB 가져오기 */
-        ID3DX11EffectConstantBuffer* pCB = pShader->Get_ConstantBuffer(g_szCB_FogrData);
-        if (!pCB->IsValid())
-        {
-            MSG_BOX("Fog CB 생성 실패");
-            return E_FAIL;
-        }
-
-        if (m_fDT >= 1000.f)        /* 일정값 이상 넘어가면 다시재생 */
-            m_fDT = 0.f;
-        CB_FogData tData{};
-        tData.g_fFogDT = m_fDT;
-        tData.g_FogTexBindingFlags = 0;
-        tData.g_fDistortionPower = pDesc->fDistortionPower;
-        ::memcpy(tData.g_vUV , pDesc->vUV, sizeof(Vec4) * ENUM_TO_UINT(EFogTextureType::END));
-
-        array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EFogTextureType::END)>  arraySRVs;
-        arraySRVs.fill(nullptr);
-
-        /* Water Texture Binding */
-        for (_uint i = 0; i < ENUM_TO_UINT(EFogTextureType::END); ++i)
-        {
-            /* Texture가 바인딩 되어있다면 */
-            if (pDesc->arrayTextureBase[i])
-            {
-                arraySRVs[i] = pDesc->arrayTextureBase[i]->Get_SRV();
-                Engine_Utils::Add_Flag(tData.g_FogTexBindingFlags, 1 << i); //걍써
-            }
-        }
-
-        pCB->SetRawValue(&tData, 0, sizeof(CB_FogData));
-
-        pShader->Get_SRV(g_szFogTexture)->SetResourceArray(&arraySRVs[0], 0, ENUM_TO_UINT(EFogTextureType::END));
 
         /* 월드 매트릭스 바인딩 */
         const Matrix& pMatrix = pTransform->Get_WorldMatrix();
@@ -2303,86 +2395,14 @@ HRESULT CMapObject::Render_Fog()
         /* Render 호출 */
         for (_uint i = 0; i < iMeshCount; ++i)
         {
-            pModel->Set_MI_TintColor(i, pDesc->vMI_TintColor);
             pModel->Bind_Material(pShader, i);
             pModel->Bind_MaterialInstance(pShader, i);
             pShader->Apply();
             pModel->Render(i);
         }
     }
-
-    else if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-    {
-        CShader* pShader = Get_Component<CShader>();                                        if (pShader == nullptr)             return E_FAIL;
-        CModel* pModel = Get_Component<CModel>();                                           if (pModel == nullptr)              return E_FAIL;
-        CTransform* pTransform = Get_Component<CTransform>();                               if (pTransform == nullptr)          return E_FAIL;
-        CInstanceMesh* pInstanceMesh = Get_Component<CInstanceMesh>();                      if (pInstanceMesh == nullptr)       return E_FAIL;
-        FOG_DESC*       pDesc = static_cast<FOG_DESC*>(m_vecClientMakePathDesc.front());          if (pDesc == nullptr)               return E_FAIL;
- 
-        /* Fog CB 가져오기 */
-        ID3DX11EffectConstantBuffer* pCB = pShader->Get_ConstantBuffer(g_szCB_FogrData);
-        if (!pCB->IsValid())
-        {
-            MSG_BOX("Fog CB 생성 실패");
-            return E_FAIL;
-        }
-
-        if (m_fDT >= 1000.f)        /* 일정값 이상 넘어가면 다시재생 */
-            m_fDT = 0.f;
-        CB_FogData tData{};
-        tData.g_fFogDT = m_fDT;
-        tData.g_FogTexBindingFlags = 0;
-        tData.g_fDistortionPower = pDesc->fDistortionPower;
-        ::memcpy(tData.g_vUV, pDesc->vUV, sizeof(Vec4) * ENUM_TO_UINT(EFogTextureType::END));
-
-        array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EFogTextureType::END)>  arraySRVs;
-        arraySRVs.fill(nullptr);
-
-        /* Water Texture Binding */
-        for (_uint i = 0; i < ENUM_TO_UINT(EFogTextureType::END); ++i)
-        {
-            /* Texture가 바인딩 되어있다면 */
-            if (pDesc->arrayTextureBase[i])
-            {
-                arraySRVs[i] = pDesc->arrayTextureBase[i]->Get_SRV();
-                Engine_Utils::Add_Flag(tData.g_FogTexBindingFlags, 1 << i); //걍써
-            }
-        }
-
-        pCB->SetRawValue(&tData, 0, sizeof(CB_FogData));
-
-        pShader->Get_SRV(g_szFogTexture)->SetResourceArray(&arraySRVs[0], 0, ENUM_TO_UINT(EFogTextureType::END));
-
-
-        /* 월드 매트릭스 바인딩 */
-        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
-
-        pShader->Get_Scalar("g_iSelectInstanceID")->SetRawValue(&m_iSelectedInstanceID, 0, sizeof(m_iSelectedInstanceID));
-        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
-        _uint iInstanceCount = Get_InstanceCount();
-
-
-        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
-
-        /* Client Make Path를 이용한다 */
-        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Fog));
-
-        if (FAILED(Set_GPU_MapObjectState(pShader)))
-            return E_FAIL;
-
-        pInstanceMesh->Bind_Instance(1);
-        for (_uint i = 0; i < iMeshCount; ++i)
-        {
-            pModel->Set_MI_TintColor(i, pDesc->vMI_TintColor);
-            pModel->Bind_Material(pShader, i);
-            pModel->Bind_MaterialInstance(pShader, i);
-            pShader->Apply();
-            pModel->Render_Instance(i, iInstanceCount);
-        }
-        pInstanceMesh->Unbind_Resource(1);
-    }
     else
-        return E_FAIL;
+        return S_OK;
 
     return S_OK;
 }
@@ -2577,6 +2597,8 @@ HRESULT CMapObject::Render_Collider()
 // 해당 리스트 Tag를 MapObject에 넣을 수 있게 설계하긴 했는데 뭐 알아서 해라.
 void CMapObject::Add_EnvEffect(const string& EffectTag)
 {
+    if (this->m_eClientMakePath != EClientMakePath::Env) return;
+
     // 프로토타입 생성
     CGameObject* pGo = CEffect_DataManager::GetInstance()->Make_EffectPrototype(EEFFECT_DATATYPE::ENVIRONMENT, EffectTag);
     CEffect_Env* pEnvEffect = static_cast<CEffect_Env*>(pGo);
@@ -2608,6 +2630,7 @@ void CMapObject::Add_EnvEffect(const string& EffectTag)
 
     Get()으로 들고와서 Set()하는 수 밖에.
 */
+
 void CMapObject::Set_EnvEffectDesc(_uint iIndex, const EFFECT_ENV_DESC& Desc)
 {
     if (iIndex >= m_vEnvEffectList.size()) return;
@@ -2617,6 +2640,15 @@ void CMapObject::Set_EnvEffectDesc(_uint iIndex, const EFFECT_ENV_DESC& Desc)
 
     // 실제 이펙트 객체에 반영
     m_vEnvEffectList[iIndex].first->Set_EnvDesc(Desc);
+}
+
+void CMapObject::Delete_EnvEffect(_uint iIndex)
+{
+    if (m_vEnvEffectList.size() < iIndex) return;
+
+    Safe_Release(m_vEnvEffectList[iIndex].first);
+
+    m_vEnvEffectList.erase(m_vEnvEffectList.begin() + iIndex);
 }
 
 

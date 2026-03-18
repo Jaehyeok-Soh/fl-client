@@ -96,6 +96,8 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 	MSG_BOX("Map");
 	m_pEffectDataManager->Initialize_EffectDataManager(m_pDevice, m_pDeviceContext);
 
+	m_pMapToolManager->Update_EnvEffectList();
+
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 
@@ -106,7 +108,6 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 	m_pImGuiManager->Ready_Events();
 
 	/* Batch */
-
 
 	return S_OK;
 }
@@ -358,7 +359,8 @@ void CLevel_Map::Free()
 
 	Safe_Release(m_pImGuiManager);
 	Safe_Release(m_pPickingManager);
-	Safe_Release(m_pEffectDataManager);
+
+	m_pEffectDataManager->DestroyInstance();
 
 	m_pMapToolManager->Set_LevelMap(nullptr);
 	Safe_Release(m_pMapToolManager);

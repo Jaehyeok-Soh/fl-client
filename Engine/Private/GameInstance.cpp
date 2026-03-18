@@ -1345,6 +1345,28 @@ void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& tr
 
 #pragma region GAMEDATA_MANAGER
 
+#pragma region Map Min Max Box
+#ifdef _DEBUG
+HRESULT CGameInstance::DebugRender_MapMinMaxBox()
+{
+	return m_pGameData_Manager->DebugRender_MapMinMaxBox();
+}
+#endif // _DEBUG
+
+CBounding_AABB* CGameInstance::Get_MapMinMaxBox()
+{
+	return m_pGameData_Manager->Get_MapMinMaxBox();
+}
+
+void CGameInstance::Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter)
+{
+	return m_pGameData_Manager->Set_MapMinMaxBox(vPos, vCenter);
+}
+
+
+#pragma endregion
+
+#pragma region Broadcast
 HRESULT	CGameInstance::Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent)
 {
 	return m_pGameData_Manager->Register_GlobalEventsBroadCast(iTypeIndex, funcGlobalEvent);
@@ -1354,7 +1376,7 @@ HRESULT	CGameInstance::BroadCaset_RegisterGlobalEvent(_uint iTypeIndex)
 {
 	return m_pGameData_Manager->BroadCaset_RegisterGlobalEvent(iTypeIndex);
 }
-
+#pragma endregion
 
 #pragma region Texture Splating
 HRESULT CGameInstance::GameDataManager_Load_TextureSplatingInfoData()

@@ -37,6 +37,13 @@ void CLevel::Update_Picking()
 
 HRESULT CLevel::Render()
 {
+#ifdef _DEBUG
+	if (m_pGameInstance->DebugRender_MapMinMaxBox())
+		return E_FAIL;
+#endif // _DEBUG
+
+
+
 	return S_OK;
 }
 

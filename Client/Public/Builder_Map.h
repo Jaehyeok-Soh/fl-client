@@ -36,6 +36,7 @@ private:
 	/* ------ */
 	HRESULT Create_Water(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_Rock(const DTO::TMap_MapObjectData& tData);
+	HRESULT Create_Env(const DTO::TMap_MapObjectData& tData);
 	HRESULT Create_Fog(const DTO::TMap_MapObjectData& tData);
 
 	/* Batch Player */
@@ -54,6 +55,9 @@ private:
 
 	/* Invisible Wall */
 	HRESULT	Create_InvisibleWall(const DTO::TMap_MapObjectData& tData);
+
+
+	HRESULT	Batch_NPC(const DTO::TMap_MapObjectData& tData);
 
 
 private:

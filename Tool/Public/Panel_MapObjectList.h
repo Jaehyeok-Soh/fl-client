@@ -73,6 +73,8 @@ private:
 
 	/* Water */
 	void						ImGuiUpdate_Water_Desc(WATER_DESC* pDesc);
+	/* Env */
+	void						ImGuiUpdate_Env_Desc(ENV_DESC* pDesc);
 	/* Fog */
 	void						ImGuiUpdate_Fog_Desc(FOG_DESC* pDesc);
 
@@ -97,6 +99,9 @@ private:
 
 	/* Mosnter Spawn ImGuiUpdate */
 	void						ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData* pMonsterSpawnData);
+
+	/* NPC ฐüทร */
+	void						ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc);
 
 public:
 

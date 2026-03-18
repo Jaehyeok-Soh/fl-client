@@ -816,6 +816,17 @@ namespace Engine
 
 #pragma endregion
 
+#pragma region PART_COMBINEBONE
+	// 가변 데이터
+	typedef struct tagPartCombineBone
+	{
+		unsigned int						iParentIdx = { 0 }; // root motion일 경우 tralation을 0으로 만들기 위함
+		unsigned int						iBoneNums = { 0 }; // root motion일 경우 tralation을 0으로 만들기 위함
+		SimpleMath::Vector2		Padding0 = {};
+	}CS_IMMU_PARTBONE;
+
+#pragma endregion
+
 #pragma endregion
 
 	union COLLIDER_ID
@@ -1196,7 +1207,28 @@ namespace Engine
 
 #pragma endregion
 
+
+#pragma region 
+
+	typedef struct CinematicCameraSequnce_EventDesc
+	{
+		/* 저장된 string 데이터를 Client에서 사용할때는 ToHahs 함수를 사용하여 미리 컴파일 단계때 해쉬를 생성해서 사용해준다 */
+		string          strSubscriberName;   // 예: "UI_Tutorial", "Boss_Haier"
+		vector<string>  vecActionNames;      // 예: "Show_Popup", "Roar"
+	}CCS_EVENT_DESC;
+
+#pragma endregion
+
+
+
+#pragma endregion
+
 }
+
+
+
+
+
 #pragma endregion
 
 #endif // Engine_Struct_h__

@@ -20,6 +20,8 @@ public:
 		Check_CollidedObj_Enter = 1 << 5,
 		Check_CollidedObj_Exit = 1 << 6,
 		
+		Only_Detect = 1 << 7,
+
 		//  maskes
 		Default = Call_ParentTirggerEnter | Call_ParentTirggerExit | Check_CollidedPos_Enter | Check_CollidedPos_Exit,
 

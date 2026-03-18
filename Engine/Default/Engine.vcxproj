@@ -162,9 +162,11 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\CinematicCamera.cpp" />
     <ClCompile Include="..\Private\ActionSkill.cpp" />
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
+    <ClCompile Include="..\Private\Cinematic_Manager.cpp" />
     <ClCompile Include="..\Private\ColliderModule.cpp" />
     <ClCompile Include="..\Private\PhysicsRagdoll.cpp" />
     <ClCompile Include="..\Private\EffectBase.cpp" />
@@ -339,6 +341,7 @@
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
     <ClCompile Include="..\public\ThreadPool.cpp" />
     <ClCompile Include="Anim_Event_Base.cpp" />
+    <ClCompile Include="CinematicCameraSequnce.cpp" />
     <ClCompile Include="Engine_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine_pch.h</PrecompiledHeaderFile>
@@ -347,9 +350,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\CinematicCamera.h" />
     <ClInclude Include="..\Public\ActionSkill.h" />
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
+    <ClInclude Include="..\Public\Cinematic_Manager.h" />
     <ClInclude Include="..\Public\ColliderModule.h" />
     <ClInclude Include="..\public\EffectBase.h" />
     <ClInclude Include="..\Public\EffectHandler.h" />
@@ -526,6 +531,7 @@
     <ClInclude Include="..\Public\VIBuffer_Rect_NorTex.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect_Tex.h" />
     <ClInclude Include="..\Public\VIBuffer_Terrain.h" />
+    <ClInclude Include="CinematicCameraSequnce.h" />
     <ClInclude Include="Engine_pch.h" />
   </ItemGroup>
   <ItemGroup>

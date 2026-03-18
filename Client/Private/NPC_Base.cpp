@@ -41,6 +41,11 @@
 ////////////
 #include "DialogueManager.h"
 
+////////////
+// NPC
+////////////
+#include "NPC_Pan.h"
+
 CNPC_Base::CNPC_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
@@ -74,8 +79,14 @@ HRESULT CNPC_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_EffectHandler(pArg)))
-		return E_FAIL;
+	//if (FAILED(Ready_EffectHandler(pArg)))
+	//	return E_FAIL;
+
+	// 상호작용
+	{
+		Interact_SetDefaultDialogue(0);
+		Set_Interact_DefaultEnable();
+	}
 
 	return S_OK;
 }
@@ -202,10 +213,21 @@ void CNPC_Base::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGame
 	collidedDesc.tHitInfo = tHitInfo;
 
 	m_pGameInstance->Push_CollidedData(collidedDesc);
+
+	if (iOtherLayer == PHYSICSFILTERGROUP::DETECT_INTERACT)
+	{
+		if (Is_Interact_Enabled())
+			m_pGameInstance->Broadcast<INTERACT_DETECT>(this);
+	}
 }
 
 void CNPC_Base::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	if (iOtherLayer == PHYSICSFILTERGROUP::DETECT_INTERACT)
+	{
+		if (Is_Interact_Enabled())
+			m_pGameInstance->Broadcast<INTERACT_LOST>(this);
+	}
 }
 
 _bool CNPC_Base::On_Hit(const HIT_DESC& hitDesc)
@@ -224,7 +246,7 @@ void CNPC_Base::Set_RootMotion_Apply(_bool bApply)
 
 HRESULT CNPC_Base::Ready_BaseStates()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CNPC_Base::Ready_PartObjects(void* pArg)
@@ -293,10 +315,45 @@ HRESULT CNPC_Base::Ready_CCT(void* pArgs)
 
 void CNPC_Base::QuestEnter()
 {
+	if (Is_Quest_Enabled() && m_eQuestEvent == DTO::QUESTEVENT::NPC_TALK)
+	{
+		auto chapterDesc = CQuestManager::GetInstance()->Get_QuestChapterInfo();
+
+		auto iter = std::find(chapterDesc.eTargetType.begin(), chapterDesc.eTargetType.end(), m_eObject_Enum_Tag);
+
+		if (iter != chapterDesc.eTargetType.end() && chapterDesc.tQuestDesc.iEnterDialogueId != -1)
+		{
+			CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iEnterDialogueId);
+
+			CallQuestEvent(m_eObject_Enum_Tag, 1);
+
+			return;
+		}
+	}
+
+	Set_Interact_Enable();
 }
 
 void CNPC_Base::QuestExit()
 {
+	if (Is_Quest_Enabled() && m_eQuestEvent == DTO::QUESTEVENT::NPC_TALK)
+	{
+		auto chapterDesc = CQuestManager::GetInstance()->Get_QuestChapterInfo();
+
+		auto iter = std::find(chapterDesc.eTargetType.begin(), chapterDesc.eTargetType.end(), m_eObject_Enum_Tag);
+
+		if (iter != chapterDesc.eTargetType.end() && chapterDesc.tQuestDesc.iExitDialogueId != -1)
+		{
+			CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iExitDialogueId);
+
+			CallQuestEvent(m_eObject_Enum_Tag, 1);
+
+			return;
+		}
+	}
+
+	if (Is_Interact_DefaultEnabled() == false)
+		Set_Interact_Disable();
 }
 
 void CNPC_Base::Interact()
@@ -316,8 +373,10 @@ void CNPC_Base::Interact()
 			return;
 		}
 	}
-
-	CDialogueManager::GetInstance()->Start_Dialogue(m_iDefaultDialogueId);
+	else
+	{
+		CDialogueManager::GetInstance()->Start_Dialogue(m_iDefaultDialogueId);
+	}
 }
 
 HRESULT CNPC_Base::Create_NPC(OBJECT_ENUM_TAG::Enum eTag, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc)
@@ -334,17 +393,26 @@ HRESULT CNPC_Base::Create_NPC(OBJECT_ENUM_TAG::Enum eTag, _uint iFindPrototypeLe
 
 	switch (eTag)
 	{
-	case Engine::EObjectEnumTag::PLAYER:
-		break;
 	case Engine::EObjectEnumTag::NPC_DEFAULT:
 		break;
 	case Engine::EObjectEnumTag::NPC_PAN:
+	{
+		npcDesc = CNPC_Pan::Get_PreSetDesc(npcDesc.iLevelIndex);
+		npcDesc.iLevelIndex = iAddLevelType;
+		npcDesc.pTransform_Desc = pTransformDesc;
+
+		wstrFindPrototypeName = g_wszNPC_Pan_Prototype_Tag;
+		wstrAddLayerName = g_wszNPCeLayer;
+	}
 		break;
 	case Engine::EObjectEnumTag::NPC_BERENICA:
 		break;
 	default:
 		return E_FAIL;
 	}
+
+	if (!(pResult = CGameInstance::GetInstance()->Add_GameObject(iFindPrototypeIndex, wstrFindPrototypeName, iAddLevelType, wstrAddLayerName, &npcDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

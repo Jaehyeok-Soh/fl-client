@@ -3,7 +3,7 @@
 #include "DataStruct_UI.h"
 
 NS_BEGIN(Client)
-
+class CPlayer;
 class CUITutorial_PopUp_Text final : public CUIText
 {
 	using Super = CUIText;
@@ -41,10 +41,13 @@ private:
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
+	void Tick_By_Type(const _float fTimeDelta)override;
 private:
 	_bool m_isSpawned = { false };
-
 	EUITutorialPopUpTypeID m_eTutorialTypeID = { EUITutorialPopUpTypeID::END };
+	_bool m_isFirstEntered = { false };
+
+	CPlayer* m_pPlayer = { nullptr };
 
 public:
 	static CUITutorial_PopUp_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

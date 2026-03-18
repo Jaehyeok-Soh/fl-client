@@ -97,6 +97,8 @@ public:
 
 	void	Set_Weapon_PlayState(_uint iPlayState) { m_eAnimState = static_cast<AnimState>(iPlayState); }
 
+	_int	Get_AnimationIndex(const wstring& wstrName);
+
 protected:
 	State				m_eState = { State::NONE };
 	AnimState			m_eAnimState = { AnimState::STOP };

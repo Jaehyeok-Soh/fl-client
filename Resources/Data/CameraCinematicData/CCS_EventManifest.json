@@ -1,0 +1,26 @@
+[
+    {
+        "Action Names": [
+            "Show_Popup",
+            "Hide_Popup",
+            "Blink",
+            "Test"
+        ],
+        "Subscriber Name": "UI_Tutorial"
+    },
+    {
+        "Action Names": [
+            "Roar",
+            "Jump",
+            "Die"
+        ],
+        "Subscriber Name": "Boss_Haier"
+    },
+    {
+        "Action Names": [
+            "Force_Walk",
+            "Look_Around"
+        ],
+        "Subscriber Name": "Player"
+    }
+]

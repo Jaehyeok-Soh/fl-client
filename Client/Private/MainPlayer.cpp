@@ -30,6 +30,7 @@
 #include "Body.h"
 #include "Weapon.h"
 #include "Gun.h"
+#include "BonePart.h"
 
 #include "StateBase_Player.h"
 
@@ -374,6 +375,8 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
         }
 
+        //if(pPlayerState->Get_AttackFlag())
+
         // Shake & Emissive
         if (CBody* pBody = Get_Part<CBody>(Part::BODY))
         {
@@ -381,6 +384,14 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
             pRenderFx->Play_Shake(0.35f);
             pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
 
+        }
+
+        // Shake & Emissive
+        if (CBonePart* pCloak = Get_Part<CBonePart>(Part::CLOAK))
+        {
+            CRenderFx* pRenderFx = pCloak->Get_Component<CRenderFx>();
+            pRenderFx->Play_Shake(0.35f);
+            pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
         }
         return true;
     }
@@ -728,7 +739,7 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.bIsPlayer = true;
     desc.eType = EPhysicsCCTType::CAPSULE;
     desc.pOwnerMatrix = &Get_Component<CTransform>()->Get_WorldMatrix();
-    desc.fRadius = 0.35f;
+    desc.fRadius = 0.25f;
     desc.fHeight = 0.7f;
     desc.vExtens = { 0.f, 0.f, 0.f };
     desc.MDeAccelRate = { 0.f,10.f };
@@ -752,7 +763,8 @@ HRESULT CMainPlayer::Ready_CCT()
         | PHYSICSFILTERGROUP::Enum::TRIGGER_QUEST
         | PHYSICSFILTERGROUP::Enum::TRIGGER_SPAWN
         | PHYSICSFILTERGROUP::Enum::TRIGGER_DIRECTION
-        | PHYSICSFILTERGROUP::Enum::TRIGGER_BOX;
+        | PHYSICSFILTERGROUP::Enum::TRIGGER_BOX
+        | PHYSICSFILTERGROUP::Enum::NPC;
 
     desc.bGravity = { true };
     desc.fGravity = { -35.f };
@@ -902,7 +914,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 21.f / ANIMTIC;//0.55f ;
+        tKeyTimer.fMaxTime = 19.f / ANIMTIC;//0.55f ;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;

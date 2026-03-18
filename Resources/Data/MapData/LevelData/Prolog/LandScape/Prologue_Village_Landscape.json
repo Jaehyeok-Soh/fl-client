@@ -1,0 +1,805 @@
+{
+    "Category": "MAP",
+    "Objects": [
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 15,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.75,
+                            "Y": 0.0
+                        },
+                        "RB": {
+                            "X": 1.0,
+                            "Y": 0.25
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy15.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -33.45423889160156,
+                        "Y": -37.41947555541992,
+                        "Z": 247.10853576660156
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy1526"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 11,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.75,
+                            "Y": 0.25
+                        },
+                        "RB": {
+                            "X": 1.0,
+                            "Y": 0.5
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy11.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 55.32123947143555,
+                        "Y": -37.41947555541992,
+                        "Z": 157.69424438476563
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy1122"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 0,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.0,
+                            "Y": 0.75
+                        },
+                        "RB": {
+                            "X": 0.25,
+                            "Y": 1.0
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy0.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -35.37074279785156,
+                        "Y": -37.41947555541992,
+                        "Z": -287.460693359375
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy019"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 1,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.25,
+                            "Y": 0.75
+                        },
+                        "RB": {
+                            "X": 0.5,
+                            "Y": 1.0
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy1.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 54.04355239868164,
+                        "Y": -37.41947555541992,
+                        "Z": -198.6852264404297
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy120"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 10,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.5,
+                            "Y": 0.25
+                        },
+                        "RB": {
+                            "X": 0.75,
+                            "Y": 0.5
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy10.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -34.093074798583984,
+                        "Y": -37.41947555541992,
+                        "Z": 68.9188003540039
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy1021"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 14,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.5,
+                            "Y": 0.0
+                        },
+                        "RB": {
+                            "X": 0.75,
+                            "Y": 0.25
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy14.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -122.86854553222656,
+                        "Y": -37.41947555541992,
+                        "Z": 158.33309936523438
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy1425"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 12,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.0,
+                            "Y": 0.0
+                        },
+                        "RB": {
+                            "X": 0.25,
+                            "Y": 0.25
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy12.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -301.6971130371094,
+                        "Y": -37.41947555541992,
+                        "Z": -19.217824935913086
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy1223"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 13,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.25,
+                            "Y": 0.0
+                        },
+                        "RB": {
+                            "X": 0.5,
+                            "Y": 0.25
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy13.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -212.28282165527344,
+                        "Y": -37.41947555541992,
+                        "Z": 69.55764770507813
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy1324"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 2,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.5,
+                            "Y": 0.75
+                        },
+                        "RB": {
+                            "X": 0.75,
+                            "Y": 1.0
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy2.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 143.45785522460938,
+                        "Y": -37.41947555541992,
+                        "Z": -109.9097900390625
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy227"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 3,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.75,
+                            "Y": 0.75
+                        },
+                        "RB": {
+                            "X": 1.0,
+                            "Y": 1.0
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy3.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 232.8721466064453,
+                        "Y": -37.41947555541992,
+                        "Z": -21.13434600830078
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy328"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 4,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.0,
+                            "Y": 0.5
+                        },
+                        "RB": {
+                            "X": 0.25,
+                            "Y": 0.75
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy4.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -124.14620971679688,
+                        "Y": -37.41947555541992,
+                        "Z": -198.04640197753906
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy429"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 9,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.25,
+                            "Y": 0.25
+                        },
+                        "RB": {
+                            "X": 0.5,
+                            "Y": 0.5
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy9.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -123.50736999511719,
+                        "Y": -37.41947555541992,
+                        "Z": -19.856653213500977
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy934"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 5,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.25,
+                            "Y": 0.5
+                        },
+                        "RB": {
+                            "X": 0.5,
+                            "Y": 0.75
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy5.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -34.73191452026367,
+                        "Y": -37.41947555541992,
+                        "Z": -109.27094268798828
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy530"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 6,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.5,
+                            "Y": 0.5
+                        },
+                        "RB": {
+                            "X": 0.75,
+                            "Y": 0.75
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy6.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 54.68238067626953,
+                        "Y": -37.41947555541992,
+                        "Z": -20.49549674987793
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy631"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 7,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.75,
+                            "Y": 0.5
+                        },
+                        "RB": {
+                            "X": 1.0,
+                            "Y": 0.75
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy7.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 144.0966796875,
+                        "Y": -37.41947555541992,
+                        "Z": 68.27995300292969
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy732"
+        },
+        {
+            "Client Level Type": 2,
+            "Client Make Path": 1,
+            "Client Make Path Desc": [
+                {
+                    "Index": 8,
+                    "Texture UV": {
+                        "LT": {
+                            "X": 0.0,
+                            "Y": 0.25
+                        },
+                        "RB": {
+                            "X": 0.25,
+                            "Y": 0.5
+                        }
+                    }
+                }
+            ],
+            "Draw Type": 1,
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/Jingjiedao/JJD_Village/Land/Mesh/Model/SM_Village_LandProxy8.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -212.92166137695313,
+                        "Y": -37.41947555541992,
+                        "Z": -108.63211822509766
+                    },
+                    "Quaternion": {
+                        "W": 0.9245641231536865,
+                        "X": -0.0,
+                        "Y": -0.38102656602859497,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "Prologue_Village_Art_Landscape",
+            "strTag": "SM_Village_LandProxy833"
+        }
+    ]
+}

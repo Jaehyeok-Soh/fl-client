@@ -159,7 +159,6 @@ protected:
 	SHADER_OBJECTINFO_DESC m_tObjectInfoDesc{};
 
 	OBJECT_ENUM_TAG::Enum m_eObject_Enum_Tag = OBJECT_ENUM_TAG::DEFAULT;
-
 private:
 	_bool m_bAwaked = { false };
 	ELifeState m_eState = { ELifeState::Alive };
@@ -253,6 +252,7 @@ inline HRESULT CGameObject::Add_Component(T* pComp)
 /// </summary>
 /// <typeparam name="T"></typeparam>
 /// <returns></returns>
+/// 
 template<typename T>
 inline T* CGameObject::Detach_Component()
 {
