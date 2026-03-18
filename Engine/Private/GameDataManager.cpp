@@ -131,6 +131,13 @@ HRESULT CGameDataManager::Make_MapMinMaxBox()
 	return S_OK;
 }
 
+BoundingBox* CGameDataManager::Get_MapMinMaxBounding()
+{
+	if (m_pMapMinMaxBox == nullptr)
+		return nullptr;
+	return m_pMapMinMaxBox->Get_Desc();
+}
+
 void CGameDataManager::Set_MapMinMaxBox(const Vec3& vCenterPos, const Vec3& vExtents)
 {
 	if (m_pMapMinMaxBox == nullptr) return;

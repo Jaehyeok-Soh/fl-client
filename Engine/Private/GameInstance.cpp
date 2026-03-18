@@ -1357,7 +1357,10 @@ CBounding_AABB* CGameInstance::Get_MapMinMaxBox()
 {
 	return m_pGameData_Manager->Get_MapMinMaxBox();
 }
-
+BoundingBox* CGameInstance::Get_MapMinMaxBounding()
+{
+	return m_pGameData_Manager->Get_MapMinMaxBounding();
+}
 void CGameInstance::Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter)
 {
 	return m_pGameData_Manager->Set_MapMinMaxBox(vPos, vCenter);

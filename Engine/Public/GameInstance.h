@@ -437,6 +437,7 @@ public:
 	HRESULT					DebugRender_MapMinMaxBox();
 #endif // _DEBUG
 	CBounding_AABB*			Get_MapMinMaxBox();
+	BoundingBox*			Get_MapMinMaxBounding();
 	void					Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter);
 #pragma endregion
 #pragma region GAMEDATA_MANAGER
