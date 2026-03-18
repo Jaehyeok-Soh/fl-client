@@ -408,6 +408,9 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 		npcDesc = CNPC_Pan::Get_PreSetDesc(npcDesc.iLevelIndex);
 		npcDesc.iLevelIndex = iAddLevelType;
 		npcDesc.pTransform_Desc = pTransformDesc;
+		
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
 
 		npcDesc.bHasQuest = pDesc->bHasQuest;
 		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;

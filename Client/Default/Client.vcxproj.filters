@@ -805,6 +805,9 @@
     <Filter Include="99. ETC\Client_Define">
       <UniqueIdentifier>{fde4a4ac-8ede-492c-a268-bd20661a27dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation">
+      <UniqueIdentifier>{34d8f7a6-03e3-466d-92ae-48f676cfde60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1479,7 +1482,7 @@
     <ClInclude Include="..\Public\UICommunity_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIConservation_Text.h">
+    <ClInclude Include="..\Public\UIConversation_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CLightMapObject.h">
@@ -1493,6 +1496,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Client_EventDefine.h">
       <Filter>99. ETC\Client_Define</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIConversation_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2161,7 +2167,7 @@
     <ClCompile Include="..\Private\UICommunity_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CUIConservation_Text.cpp">
+    <ClCompile Include="..\Private\UIConversation_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CLightMapObject.cpp">
@@ -2172,6 +2178,9 @@
     </ClCompile>
     <ClCompile Include="Client_Define.cpp">
       <Filter>99. ETC\Client_Define</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIConversation_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

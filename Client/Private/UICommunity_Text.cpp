@@ -121,16 +121,6 @@ void CUICommunity_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
-				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
-				{
-					Set_Active(true);
-					this->Set_Visible();
-				}
-			})
-	);
-	m_vecEventHandles.push_back(
-		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-			{
 				if (EUIEventID::MENU_OPEN == Desc.eEventID)
 				{
 					this->Set_Invisible();
@@ -143,14 +133,6 @@ void CUICommunity_Text::Bind_Events()
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
-
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-			{
-				Set_Active(true);
-				this->Set_Visible();
 			})
 	);
 

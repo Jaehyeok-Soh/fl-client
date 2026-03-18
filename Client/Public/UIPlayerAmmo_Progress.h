@@ -43,6 +43,10 @@ private:
 private:
 	CStatCom_Player* m_pPlayerStatCom = { nullptr };
 	CGun* m_pGunParts = { nullptr };
+
+	_bool m_isMelee = { false };
+	_bool m_isGun = { false };
+
 public:
 	static CUIPlayerAmmo_Progress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

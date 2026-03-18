@@ -161,6 +161,7 @@
 #include "UIQuest_Text.h"
 #include "UIQuestNavi_Text.h"
 #include "UICommunity_Text.h"
+#include "UIConversation_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -184,6 +185,7 @@
 #include "UIQuest_Image.h"
 #include "UIQuestNavi_Image.h"
 #include "UICommunity_Image.h"
+#include "UIConversation_Image.h"
 //=================
 // Resource
 //=================
@@ -869,6 +871,9 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviText",			CUIQuestNavi_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityImage",			CUICommunity_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityText",			CUICommunity_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ConversationImage",		CUIConversation_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ConversationText",			CUIConversation_Text::Create(m_pDevice, m_pDeviceContext));
+
 #pragma endregion
 	
 	m_isFinished = true;
