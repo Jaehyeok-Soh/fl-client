@@ -87,6 +87,7 @@ void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 v
 	// 가변 데이터 desc 작성
 	EFFECT_PARTICLE_MU_ELEMENT tMUDesc;
 	tMUDesc.fTotalTime = fTotalTime;
+	tMUDesc.iEmissionType = m_tParticleDesc.EmissionFlagType;
 	tMUDesc.fTimeDelta = fTImeDelta;
 	tMUDesc.iMoveState = ENUM_TO_UINT(eType);
 	tMUDesc.bIsLoop = m_tParticleDesc.isLoop; 

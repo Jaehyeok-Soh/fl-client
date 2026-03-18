@@ -588,7 +588,7 @@ HRESULT CRender_Manager::Render()
 				return E_FAIL;
 
 			//// 블랜드 State 바인딩
-			m_pDeviceContext->OMSetBlendState(m_pWBOIT_AccumulateBS, nullptr, 0xffffffff);
+		/*	m_pDeviceContext->OMSetBlendState(m_pWBOIT_AccumulateBS, nullptr, 0xffffffff);*/
 
 			// 투명 물체들 값 저장.
 			if (FAILED(Render_NonLights())) return E_FAIL;
@@ -605,14 +605,14 @@ HRESULT CRender_Manager::Render()
 				return E_FAIL;
 
 			//// 블랜드 State 바인딩
-			m_pDeviceContext->OMSetBlendState(m_pAlphaBlendBS, nullptr, 0xffffffff);
+		/*	m_pDeviceContext->OMSetBlendState(m_pAlphaBlendBS, nullptr, 0xffffffff);*/
 
 			// 가중치 Blend 기법
 			if (FAILED(Render_WBOIT())) return E_FAIL;
 
 			m_pGameInstance->Setup_ViewProj_ToCBuffer();
 			//// 블렌드 해제
-			m_pDeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+			/*m_pDeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);*/
 		}
 
 		// SceneHDR Copy하기

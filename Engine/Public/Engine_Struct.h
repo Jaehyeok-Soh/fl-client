@@ -531,7 +531,7 @@ namespace Engine
 
 		// Slot 4
 		SimpleMath::Vector3	vPivot = {};	// Spread시 기준점
-		float Padding1 = {};
+		unsigned int		iEmissionType = {};
 
 		// Slot 5
 		SimpleMath::Vector3 vLook = {};		// Straight시 방향

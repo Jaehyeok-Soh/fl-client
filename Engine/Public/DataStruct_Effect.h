@@ -47,10 +47,14 @@ enum class E_SHAPETYPE {
     DNA,
     GATHER,   // 중앙으로 모이기
     FOUNTAIN,  // 분수 효과
-    LEAF
+    LEAF,
+    CIRCLETRAIL,
+    SEMI_CIRCLETRAIL,
+    WIND_LEAF,
+    STRONGWIND_LEAF
 };
 enum class E_SIMULATION_SPACE { LOCAL, WORLD };
-enum class E_EMISSION_TYPE { BOX = 0, CIRCLE, SPHERE, CONE };
+enum class E_EMISSION_TYPE { BOX = 0, CIRCLE, SPHERE, CONE, CIRCLE_EDGE};
 enum class EEffectType : _uint{ EFFECT_CONTAINER, EFFECT_PARTS, END};
 inline constexpr _uint g_EffectTypeCount{ ENUM_TO_UINT(EEffectType::END) };
 

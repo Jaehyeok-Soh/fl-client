@@ -275,6 +275,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
             pParticleDesc.vSize = m_tEffectDesc.Data._Effect_ParticleSize;
             pParticleDesc.vSpeed = Vec2{ 1.f, 2.f };
             pParticleDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
+            pParticleDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
             pParticleDesc.pOwner = this;
             pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
             pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;

@@ -256,6 +256,7 @@ HRESULT CEffectObject::Ready_Component_Buffer(void* pArg)
         pParticleDesc.vSize = m_tEffectDesc.Data._Effect_ParticleSize;
         pParticleDesc.vSpeed = Vec2{ 1.f, 2.f };
         pParticleDesc.iRandomFlags = m_tEffectDesc.Data.iRandomFlags;
+        pParticleDesc.EmissionFlagType = m_tEffectDesc.Data._Effect_EmissionType;
         pParticleDesc.pOwner = this;
         pParticleDesc.pComputeShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
         pParticleDesc.fDuration = m_tEffectDesc.Data._Effect_Duration;
@@ -953,7 +954,7 @@ void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
         auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
         CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
         if (pInstance && CTShader)
-            pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, 0.f,0.f, STOP, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
+            pInstance->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, 0.f, 0.f, STOP, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
 
         m_fTimeAccumulation = 0.f;
         Set_Invisible();
