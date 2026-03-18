@@ -97,6 +97,34 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
+                    "fStartTrackPosition": 14.0,
+                    "iAnimIndex": 146,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Walk_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_WalkSmoke",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.10000000149011612,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
                     "fStartTrackPosition": 1.0,
                     "iAnimIndex": 138,
                     "iBoneFlag": 4,
@@ -179,6 +207,62 @@
                     "bFollowBone": true,
                     "bUseChildBone": false,
                     "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 1.904105305671692,
+                    "iAnimIndex": 12,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_PlayerMoon_Dodge_To_Run",
+                    "strDescription": "",
+                    "strEffectTag": "Dash_Effect",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": -1.399999976158142
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 1.5,
+                    "iAnimIndex": 11,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_PlayerMoon_Dodge_InAir",
+                    "strDescription": "",
+                    "strEffectTag": "Dash_Effect",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": -0.6000000238418579,
+                        "z": -1.2999999523162842
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
                     "fStartTrackPosition": 2.0,
@@ -220,9 +304,9 @@
                     "strDescription": "",
                     "strEffectTag": "Attack_1_Particle",
                     "vOffset": {
-                        "x": -2.5999999046325684,
+                        "x": -2.180000066757202,
                         "y": 0.07000000029802322,
-                        "z": 1.6399999856948853
+                        "z": 0.800000011920929
                     },
                     "vRotation": {
                         "x": -20.0,
@@ -255,34 +339,6 @@
                     "vRotation": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 1.5,
-                    "iAnimIndex": 11,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 4,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_PlayerMoon_Dodge_InAir",
-                    "strDescription": "",
-                    "strEffectTag": "Dash_Effect",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": -0.6000000238418579,
-                        "z": -1.2999999523162842
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 180.0,
                         "z": 0.0
                     }
                 },
@@ -367,34 +423,6 @@
                     "vRotation": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 1.904105305671692,
-                    "iAnimIndex": 12,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 4,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_PlayerMoon_Dodge_To_Run",
-                    "strDescription": "",
-                    "strEffectTag": "Dash_Effect",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": -1.399999976158142
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 180.0,
                         "z": 0.0
                     }
                 },
@@ -683,6 +711,62 @@
                     "bFollowBone": true,
                     "bUseChildBone": false,
                     "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 8.770187377929688,
+                    "iAnimIndex": 82,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Run_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_WalkSmoke",
+                    "vOffset": {
+                        "x": -0.05000000074505806,
+                        "y": 0.10000000149011612,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 18.639751434326172,
+                    "iAnimIndex": 82,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Run_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_WalkSmoke",
+                    "vOffset": {
+                        "x": 0.05000000074505806,
+                        "y": 0.10000000149011612,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
                     "fStartTrackPosition": 0.10000000149011612,
@@ -851,6 +935,34 @@
                     "bFollowBone": true,
                     "bUseChildBone": false,
                     "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 5.0,
+                    "iAnimIndex": 129,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Sword_HeavyAttack_End",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_ChargeAttack_EndParticle",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.6200000047683716,
+                        "z": -3.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
                     "fStartTrackPosition": 0.10000000149011612,
@@ -871,90 +983,6 @@
                     "vRotation": {
                         "x": -20.0,
                         "y": 180.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 14.0,
-                    "iAnimIndex": 146,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_PlayerMoon_Walk_Loop",
-                    "strDescription": "",
-                    "strEffectTag": "Player_Moon_WalkSmoke",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.10000000149011612,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 0.0,
-                    "fStartTrackPosition": 8.770187377929688,
-                    "iAnimIndex": 82,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_PlayerMoon_Run_Loop",
-                    "strDescription": "",
-                    "strEffectTag": "Player_Moon_WalkSmoke",
-                    "vOffset": {
-                        "x": -0.05000000074505806,
-                        "y": 0.10000000149011612,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 0.0,
-                    "fStartTrackPosition": 18.639751434326172,
-                    "iAnimIndex": 82,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_PlayerMoon_Run_Loop",
-                    "strDescription": "",
-                    "strEffectTag": "Player_Moon_WalkSmoke",
-                    "vOffset": {
-                        "x": 0.05000000074505806,
-                        "y": 0.10000000149011612,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
                         "z": 0.0
                     }
                 },
@@ -983,34 +1011,6 @@
                     "vRotation": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 0.0,
-                    "fStartTrackPosition": 5.0,
-                    "iAnimIndex": 129,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_PlayerMoon_Sword_HeavyAttack_End",
-                    "strDescription": "",
-                    "strEffectTag": "Player_Moon_ChargeAttack_EndParticle",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.6200000047683716,
-                        "z": -3.5
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 180.0,
                         "z": 0.0
                     }
                 }

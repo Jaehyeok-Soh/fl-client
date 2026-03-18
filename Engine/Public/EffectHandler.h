@@ -59,7 +59,7 @@ public:
         string strOwnerTag;
         E_HANDLER_TYPE eType = { E_HANDLER_TYPE::MODEL_ANIM };
         unordered_map<E_OBJ_LIFECYCLE_STATE, STATE_VFX_DESC> mEffectState;
-        unordered_map<_uint, vector<DTO::EFFECTEVENT>> mapEvents;
+        unordered_map</*_uint*/string, vector<DTO::EFFECTEVENT>> mapEvents;
     } ANIM_EFFECT_HANDLER_DESC;
 
 private:
@@ -104,7 +104,7 @@ private:
 public:
     // 툴 모듈에서 실시간으로 데이터를 교체하기 위한 Getter
     ANIM_EFFECT_HANDLER_DESC& Get_Desc() { return m_tDesc; }
-    unordered_map<_uint, vector<DTO::EFFECTEVENT>>& GetEvents();
+    unordered_map<string, vector<DTO::EFFECTEVENT>>& GetEvents();
     void Set_Desc(const ANIM_EFFECT_HANDLER_DESC& Desc);
 
 private:

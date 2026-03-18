@@ -49,7 +49,7 @@ void CEvent_Effect_Module::SetOwner(CAnimObj* pOwner)
 }
 
 // 특정 애니메이션 인덱스에 해당하는 이벤트 리스트 참조 반환
-unordered_map<_uint, vector<DTO::EFFECTEVENT>>& CEvent_Effect_Module::GetEvents()
+unordered_map<string, vector<DTO::EFFECTEVENT>>& CEvent_Effect_Module::GetEvents()
 {
     return m_pEffectEvent->GetEvents();
 }
@@ -68,7 +68,7 @@ void CEvent_Effect_Module::Modify_EFfectEvent(vector<DTO::EFFECTEVENT> events)
     for (auto& evt : events)
     {
         // 툴에서 편집된 애니메이션 인덱스 기준으로 다시 분류
-        mapEvents[evt.iAnimIndex].push_back(evt);
+        mapEvents[evt.strAnimTag].push_back(evt);
     }
 
     m_pEffectEvent->Set_Desc(EffectDesc);

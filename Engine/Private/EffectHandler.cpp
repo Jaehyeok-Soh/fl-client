@@ -65,13 +65,16 @@ void CEffectHandler::Set_Desc(const ANIM_EFFECT_HANDLER_DESC& Desc)
 
          for (auto& pair : m_tDesc.mapEvents)
          {
-             _uint iAnimIndex = pair.first;
-             if (iAnimIndex >= vecAnimations.size()) continue;
+             wstring iAnimName = Engine_Utils::ToWString(pair.first);
 
-             auto pAnimation = vecAnimations[iAnimIndex];
-             pAnimation->Clear_Notifies(EAnimNotifyId::Vfx_Oneshot);
+             for (auto& pAnimation : vecAnimations)
+             {
+                 if (pAnimation->Get_Name() == iAnimName)
+                 {
+                     pAnimation->Clear_Notifies(EAnimNotifyId::Vfx_Oneshot);
+                 }
+             }
          }
-
          Ready_AnimState();
      }
 }
@@ -152,45 +155,48 @@ HRESULT CEffectHandler::Ready_AnimState()
 
     for (auto& pair : m_tDesc.mapEvents)
     {
-        _uint iAnimIndex = pair.first;
-        if (iAnimIndex >= vecAnimations.size()) continue;
+        wstring iAnimName = Engine_Utils::ToWString(pair.first);
 
-        auto pAnimation = vecAnimations[iAnimIndex];
-
-        for (size_t i = 0; i < pair.second.size(); ++i)
+        for (auto& pAnimation : vecAnimations)
         {
-            auto& tEffectData = pair.second[i];
-
-            _float fTotalTick = pAnimation->Get_DurationTime();
-            _float fTickPerSecond = pAnimation->Get_TickPerSecond();
-            _float fStartTick = tEffectData.fStartTrackPosition;
-            _float fEndTick = fStartTick + (tEffectData.fDuration * fTickPerSecond);
-
-
-            AnimNotifyKey tOnKey{};
-            // fDuration이 있으면 On/Off 관리가 필요한 Attach 타입으로 간주
-            tOnKey.eID = (EAnimNotifyId)tEffectData.iNotifyId;
-            tOnKey.fTrackPosition = fStartTick;
-            tOnKey.iParam0 = (_int)i;
-            tOnKey.iParam1 = (_int)pair.first;
-            tOnKey.strParam = tEffectData.strEffectTag;
-
-            // Attach 타입이라면 종료 키도 생성
-            if (tOnKey.eID == EAnimNotifyId::Vfx_Attach_On)
+            if (pAnimation->Get_Name() == iAnimName)
             {
-                AnimNotifyKey tOffKey{};
-                tOffKey.eID = EAnimNotifyId::Vfx_Attach_Off;
-                tOffKey.fTrackPosition = fEndTick;
-                tOffKey.iParam0 = (_int)i;
-                tOffKey.iParam1 = (_int)pair.first;
-                tOffKey.strParam = tEffectData.strEffectTag;
-                pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOffKey);
+                for (size_t i = 0; i < pair.second.size(); ++i)
+                {
+                    auto& tEffectData = pair.second[i];
+
+                    _float fTotalTick = pAnimation->Get_DurationTime();
+                    _float fTickPerSecond = pAnimation->Get_TickPerSecond();
+                    _float fStartTick = tEffectData.fStartTrackPosition;
+                    _float fEndTick = fStartTick + (tEffectData.fDuration * fTickPerSecond);
+
+
+                    AnimNotifyKey tOnKey{};
+                    // fDuration이 있으면 On/Off 관리가 필요한 Attach 타입으로 간주
+                    tOnKey.eID = (EAnimNotifyId)tEffectData.iNotifyId;
+                    tOnKey.fTrackPosition = fStartTick;
+                    tOnKey.iParam0 = (_int)i;
+                    tOnKey.strParam = tEffectData.strEffectTag;
+                    tOnKey.strParam2 = pair.first;
+
+                    // Attach 타입이라면 종료 키도 생성
+                    if (tOnKey.eID == EAnimNotifyId::Vfx_Attach_On)
+                    {
+                        AnimNotifyKey tOffKey{};
+                        tOffKey.eID = EAnimNotifyId::Vfx_Attach_Off;
+                        tOffKey.fTrackPosition = fEndTick;
+                        tOffKey.iParam0 = (_int)i;
+                        tOffKey.strParam = tEffectData.strEffectTag;
+                        tOffKey.strParam2 = pair.first;
+                        pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOffKey);
+                    }
+
+                    pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOnKey);
+                }
+
+                pAnimation->Sort_Notifies();
             }
-
-            pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOnKey);
-        }
-
-        pAnimation->Sort_Notifies();
+        }  
     }
 
     return S_OK;
@@ -241,7 +247,8 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
         key.eID == EAnimNotifyId::Hitbox)
         return;
 
-    auto iterMap = m_tDesc.mapEvents.find(key.iParam1);
+    // 애니메이션 string 데이터 
+    auto iterMap = m_tDesc.mapEvents.find(key.strParam2);
     if (iterMap == m_tDesc.mapEvents.end()) return;
 
     // 안전한 데이터 접근
@@ -635,7 +642,7 @@ SimpleMath::Matrix CEffectHandler::Delete_ScaleMatrix(SimpleMath::Matrix Mat)
 }
 
 // 툴용
-unordered_map<_uint, vector<DTO::EFFECTEVENT>>& CEffectHandler::GetEvents()
+unordered_map<string, vector<DTO::EFFECTEVENT>>& CEffectHandler::GetEvents()
 {
     Ready_AnimState();
 

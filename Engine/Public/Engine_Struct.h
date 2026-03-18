@@ -39,6 +39,7 @@ namespace Engine
 		bool		  bParam0{ false };
 		bool		  bParam1{ false };
 		string		  strParam{ "" };
+		string		  strParam2{ "" };
 	};
 
 	typedef struct tagCollisionHitInformation

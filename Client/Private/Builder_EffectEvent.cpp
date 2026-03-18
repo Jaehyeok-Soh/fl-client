@@ -40,7 +40,7 @@ HRESULT CBuilder_EffectEvent::Create_Effect(const DTO::EFFECT_EVENT_INFO_DESC& d
 	tHandlerDesc.strOwnerTag = data.strOwnerTag;
 	for (const auto& effectEvent : data.vecEffectEvents)
 	{
-		tHandlerDesc.mapEvents[effectEvent.iAnimIndex].push_back(effectEvent);
+		tHandlerDesc.mapEvents[effectEvent.strAnimTag].push_back(effectEvent);
 	}
 
 	wstring wstrOwnerTag = Engine_Utils::ToWString(data.strOwnerTag);
