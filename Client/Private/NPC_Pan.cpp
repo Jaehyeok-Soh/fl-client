@@ -65,7 +65,7 @@ HRESULT CNPC_Pan::Initialize(void* pArg)
 	// 상호작용
 	{
 		Set_Interact_DefaultDisable();
-		Interact_SetDefaultDialogue(0);
+		Interact_SetDefaultDialogue(3);
 	}
 
 	return S_OK;
@@ -228,7 +228,7 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 		desc.vLocalOffset = {};
 		desc.vWorldOffset = {};
 
-		desc.bIsHover = { false };
+		desc.bIsHover = { true };
 		desc.fHoverOffset = { 1.f };
 
 		PHYSICSMATERIAL_DESC mtrlDesc{};
@@ -246,7 +246,7 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 
 		desc.bGravity = { false };
 		desc.fGravity = { -35.f };
-		desc.MSpeed = { 0.f, 3.f };
+		desc.MSpeed = { 0.f, 4.5f };
 		desc.MAccelRate = { 0.f, 10.f };
 		desc.MDeAccelRate = { 0.f, 10.f };
 
