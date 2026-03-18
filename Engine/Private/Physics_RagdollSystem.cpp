@@ -41,6 +41,15 @@ _bool CPhysics_RagdollSystem::CheckRagdollState(int64 objID)
 	return false;
 }
 
+_bool CPhysics_RagdollSystem::CheckRagDollState_Processing(uint64 objID) 
+{
+	auto item = m_umapRegisteredMap.find(objID);
+	if (item == m_umapRegisteredMap.end())
+		return false;
+
+	return item->second.second == ERagdollState::PROCESSING;
+}
+
 RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc)
 {
 	RAGDOLLELEMENTS elements{};
@@ -198,7 +207,8 @@ void CPhysics_RagdollSystem::Awake(uint64 objID, vector<class CChannel*>& vecCha
 
 	item->second.second = ERagdollState::PROCESSING;
 
-	item->second.first->Get_Component<CPhysicsRagdoll>()->Awake(vecChannels);
+	//item->second.first->Get_Component<CPhysicsRagdoll>()->Awake(vecChannels);
+	item->second.first->Get_Component<CPhysicsRagdoll>()->Awake();
 }
 
 void CPhysics_RagdollSystem::Process(uint64 objID, vector<class CChannel*>& vecChannels)

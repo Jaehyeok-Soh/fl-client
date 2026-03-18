@@ -82,6 +82,11 @@ HRESULT CNPC_Base::Initialize(void* pArg)
 	//if (FAILED(Ready_EffectHandler(pArg)))
 	//	return E_FAIL;
 
+	NPC_DESC* pDesc = static_cast<NPC_DESC*>(pArg);
+
+	if (pDesc->bHasQuest)
+		Ready_Quest(&pDesc->tQuestObjectDesc);
+
 	return S_OK;
 }
 
@@ -307,6 +312,12 @@ HRESULT CNPC_Base::Ready_CCT(void* pArgs)
 	return S_OK;
 }
 
+void CNPC_Base::Ready_Quest(vector<DTO::QUEST_CHAPTERDESC>* pQuestDesc)
+{
+	for (auto desc : *pQuestDesc)
+		CQuestManager::GetInstance()->Register_QuestObject(desc, this);
+}
+
 void CNPC_Base::QuestEnter()
 {
 	if (Is_Quest_Enabled() && m_eQuestEvent == DTO::QUESTEVENT::NPC_TALK)
@@ -373,7 +384,7 @@ void CNPC_Base::Interact()
 	}
 }
 
-HRESULT CNPC_Base::Create_NPC(OBJECT_ENUM_TAG::Enum eTag, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc)
+HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc)
 {
 	CGameObject* pResult{ nullptr };
 
@@ -385,7 +396,10 @@ HRESULT CNPC_Base::Create_NPC(OBJECT_ENUM_TAG::Enum eTag, _uint iFindPrototypeLe
 	npcDesc.iLevelIndex = iAddLevelType;
 	npcDesc.pTransform_Desc = pTransformDesc;
 
-	switch (eTag)
+	npcDesc.bHasQuest = pDesc->bHasQuest;
+	npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+	switch (pDesc->eBatchNPCType)
 	{
 	case Engine::EObjectEnumTag::NPC_DEFAULT:
 		break;

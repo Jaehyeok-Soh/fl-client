@@ -153,7 +153,7 @@ void CMonsterControlContext::Set_RootMotion_Apply(_bool bApply)
 	static_cast<CMonster_Base*>(Get_Owner())->Set_RootMotion_Apply(bApply);
 }
 
-void CMonsterControlContext::Set_Target_Offset(_float fX, _float fY, _float fZ)
+void CMonsterControlContext::Set_Target_Offset(_float fX, _float fY, _float fZ, _float fTimeDelta)
 {
 	Vec3 vOffsetPos = m_tRuntimeDesc.vOwnerPos;
 
@@ -166,7 +166,15 @@ void CMonsterControlContext::Set_Target_Offset(_float fX, _float fY, _float fZ)
 	if (fZ > 1e-5f)
 		vOffsetPos.z = m_tRuntimeDesc.vTargetPos.z + fZ;
 	
-	Get_Owner()->Get_Component<CPhysicsCCT>()->SetFootPosition(vOffsetPos);
+	vOffsetPos = vOffsetPos - m_tRuntimeDesc.vOwnerPos;
+
+	_float fSpeed = 5.f;
+	vOffsetPos *= fSpeed * fTimeDelta;
+
+	if (vOffsetPos.Length() > 0.01f)
+	{
+		Get_Owner()->Get_Component<CPhysicsCCT>()->AddFixedMove(vOffsetPos);
+	}
 }
 
 void CMonsterControlContext::Auto_Teleport_Chase(_float fMaxLength)
@@ -183,9 +191,9 @@ void CMonsterControlContext::Auto_Teleport_Chase(_float fMaxLength)
 	}
 }
 
-void CMonsterControlContext::Genimon_Smart_Chase(_float fX, _float fY, _float fZ, _float fMaxLength)
+void CMonsterControlContext::Genimon_Smart_Chase(_float fX, _float fY, _float fZ, _float fMaxLength, _float fTimeDelta)
 {
-	Set_Target_Offset(fX, fY, fZ);
+	Set_Target_Offset(fX, fY, fZ, fTimeDelta);
 	Auto_Teleport_Chase(fMaxLength);
 }
 

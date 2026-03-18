@@ -74,6 +74,9 @@ void CQuest_Scenario::Register_QuestObject(DTO::QUEST_CHAPTERDESC chapterDesc, C
 
 void CQuest_Scenario::UpdateProgress(DTO::QUEST_EVENT_SIGNATURE ID)
 {
+	if (m_chapter[m_iCurChapterId] == nullptr || m_chapter.find(m_iCurChapterId) == m_chapter.end())
+		return;
+
 	m_chapter[m_iCurChapterId]->UpdateProgress(ID);
 	if (m_chapter[m_iCurChapterId]->IsComplete())
 	{

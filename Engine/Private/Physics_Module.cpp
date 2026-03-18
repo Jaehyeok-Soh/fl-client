@@ -370,6 +370,11 @@ _bool CPhysics_Module::CheckRagdollState(int64 objID)
 	return m_pRagdollSystem->CheckRagdollState(objID);
 }
 
+_bool CPhysics_Module::CheckRagDollState_Processing(int64 objID)
+{
+	return m_pRagdollSystem->CheckRagDollState_Processing(objID);
+}
+
 void CPhysics_Module::RagdollRegister(CGameObject* obj)
 {
 	m_pRagdollSystem->Register(obj);
