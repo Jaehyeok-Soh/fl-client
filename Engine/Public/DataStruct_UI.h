@@ -301,10 +301,10 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	QUEST_NAVI_DISTANCE,
 
 	// ¥Î»≠
-		CONVERSATION_BEGIN,
-		CONVERSATION_NAME,
-		CONVERSATION_TEXT,
-		CONVERSATION_END,
+	CONVERSATION_BEGIN,
+	CONVERSATION_NAME,
+	CONVERSATION_TEXT,
+	CONVERSATION_END,
 
 	END
 };
@@ -407,6 +407,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::QUEST_NAVI_DISTANCE,					"QUEST_NAVI_DISTANCE" },
 		{ EUITextSubClassType::COMMUNITY_TEXT,						"COMMUNITY_TEXT" },
 
+		{ EUITextSubClassType::CONVERSATION_BEGIN,					"CONVERSATION_BEGIN" },
+		{ EUITextSubClassType::CONVERSATION_NAME,					"CONVERSATION_NAME" },
+		{ EUITextSubClassType::CONVERSATION_TEXT,					"CONVERSATION_TEXT" },
+		{ EUITextSubClassType::CONVERSATION_END,					"CONVERSATION_END" },
+
 		{ EUITextSubClassType::END,									"END" },
 	})
 	inline EUITextSubClassType StringToUITextSubClassType(const std::string& str)
@@ -505,6 +510,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	
 	else if (str == "QUEST_NAVI_DISTANCE")						return EUITextSubClassType::QUEST_NAVI_DISTANCE;
 	else if (str == "COMMUNITY_TEXT")							return EUITextSubClassType::COMMUNITY_TEXT;
+
+	else if (str == "CONVERSATION_BEGIN")						return EUITextSubClassType::CONVERSATION_BEGIN;
+	else if (str == "CONVERSATION_NAME")						return EUITextSubClassType::CONVERSATION_NAME;
+	else if (str == "CONVERSATION_TEXT")						return EUITextSubClassType::CONVERSATION_TEXT;
+	else if (str == "CONVERSATION_END")							return EUITextSubClassType::CONVERSATION_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -609,6 +619,11 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	
 	case EUITextSubClassType::QUEST_NAVI_DISTANCE:					return "QUEST_NAVI_DISTANCE";
 	case EUITextSubClassType::COMMUNITY_TEXT:						return "COMMUNITY_TEXT";
+
+	case EUITextSubClassType::CONVERSATION_BEGIN:					return "CONVERSATION_BEGIN";
+	case EUITextSubClassType::CONVERSATION_NAME:					return "CONVERSATION_NAME";
+	case EUITextSubClassType::CONVERSATION_TEXT:					return "CONVERSATION_TEXT";
+	case EUITextSubClassType::CONVERSATION_END:						return "CONVERSATION_END";
 	
 	default:														return "END";
 	}
@@ -849,6 +864,8 @@ enum class EUIDImageSubClassType
 	COMMUNITY_DECO,
 	COMMUNITY_END,
 
+	CONVERSATION_DOWN,
+
 	END
 };
 
@@ -985,6 +1002,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::COMMUNITY_OUTLINE,						"COMMUNITY_OUTLINE" },
 	{ EUIDImageSubClassType::COMMUNITY_DECO,						"COMMUNITY_DECO" },
 	{ EUIDImageSubClassType::COMMUNITY_END,							"COMMUNITY_END" },
+
+	{ EUIDImageSubClassType::CONVERSATION_DOWN,							"CONVERSATION_DOWN" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1123,6 +1142,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "COMMUNITY_OUTLINE")						return EUIDImageSubClassType::COMMUNITY_OUTLINE;
 	if (str == "COMMUNITY_DECO")						return EUIDImageSubClassType::COMMUNITY_DECO;
 	if (str == "COMMUNITY_END")							return EUIDImageSubClassType::COMMUNITY_END;
+
+	if (str == "CONVERSATION_DOWN")							return EUIDImageSubClassType::CONVERSATION_DOWN;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1263,6 +1284,8 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::COMMUNITY_OUTLINE:						return "COMMUNITY_OUTLINE";
 	case EUIDImageSubClassType::COMMUNITY_DECO:							return "COMMUNITY_DECO";
 	case EUIDImageSubClassType::COMMUNITY_END:							return "COMMUNITY_END";
+
+	case EUIDImageSubClassType::CONVERSATION_DOWN:						return "CONVERSATION_DOWN";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

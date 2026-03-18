@@ -336,7 +336,8 @@
     <ClInclude Include="..\Public\UICombo_Text.h" />
     <ClInclude Include="..\Public\UICommunity_Image.h" />
     <ClInclude Include="..\Public\UICommunity_Text.h" />
-    <ClInclude Include="..\Public\UIConservation_Text.h" />
+    <ClInclude Include="..\Public\UIConversation_Image.h" />
+    <ClInclude Include="..\Public\UIConversation_Text.h" />
     <ClInclude Include="..\Public\UIDamageFont_Text.h" />
     <ClInclude Include="..\Public\UIDynamic_Image.h" />
     <ClInclude Include="..\Public\UIHover_Image.h" />
@@ -409,7 +410,7 @@
     <ClCompile Include="..\Private\Bush.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
-    <ClCompile Include="..\Private\CUIConservation_Text.cpp" />
+    <ClCompile Include="..\Private\UIConversation_Text.cpp" />
     <ClCompile Include="..\Private\DialogueManager.cpp" />
     <ClCompile Include="..\Private\IInteractable.cpp" />
     <ClCompile Include="..\Private\EnvObject.cpp" />
@@ -591,6 +592,7 @@
     <ClCompile Include="..\Private\UICombo_Text.cpp" />
     <ClCompile Include="..\Private\UICommunity_Image.cpp" />
     <ClCompile Include="..\Private\UICommunity_Text.cpp" />
+    <ClCompile Include="..\Private\UIConversation_Image.cpp" />
     <ClCompile Include="..\Private\UIDamageFont_Text.cpp" />
     <ClCompile Include="..\Private\UIDynamic_Image.cpp" />
     <ClCompile Include="..\Private\UIHover_Image.cpp" />
