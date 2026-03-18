@@ -2,6 +2,7 @@
 #include "ContainerObject.h"
 #include "IQuest.h"
 #include "IInteractable.h"
+#include "DataStruct_Map.h"
 
 NS_BEGIN(Engine)
 class CEffectHandler;
@@ -27,6 +28,9 @@ public:
 		wstring wstrNPCStateTag = {};
 		std::span<std::pair<_uint, string>> spanBoneNames;
 		PHYSICSCCT_DESC tCCTDesc{};
+
+		_bool bHasQuest = { false };
+		vector<DTO::QUEST_CHAPTERDESC>	tQuestObjectDesc = {};
 	}NPC_DESC;
 
 	struct Part
@@ -77,6 +81,8 @@ protected:
 	HRESULT				Ready_EffectHandler(void* pArgs);
 	HRESULT				Ready_CCT(void* pArgs);
 
+	void				Ready_Quest(vector<DTO::QUEST_CHAPTERDESC>* pQuestDesc);
+
 protected:
 	// IQuest을(를) 통해 상속됨
 	virtual void QuestEnter() override;
@@ -89,7 +95,7 @@ protected:
 	class CEffectHandler* m_pEffectHandler = { nullptr };
 
 public:
-	static  HRESULT			Create_NPC(OBJECT_ENUM_TAG::Enum eTag, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc = nullptr);
+	static  HRESULT			Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc = nullptr);
 	virtual CGameObject*	Clone(void* pArg) PURE;
 	virtual void			Free() override;
 };
