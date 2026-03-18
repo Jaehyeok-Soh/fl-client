@@ -6,6 +6,7 @@
 // Manager
 //=================
 #include "UI_Manager.h"
+#include "DialogueManager.h"
 
 //=================
 // Data Struct
@@ -126,6 +127,7 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+	CDialogueManager::GetInstance()->Initialize();
 
 	CQuestManager::GetInstance()->Start_Quest(0);
 

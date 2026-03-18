@@ -133,12 +133,15 @@ void CUICommunity_Image::Bind_Events()
 			{
 				Set_Active(true);
 				this->Set_Visible();
+
+				m_pInteractObj = pObj;
 			})
 	);
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_LOST>([this](CGameObject* pObj)
 			{
+				m_pInteractObj = nullptr;
 				this->Set_Invisible();
 			})
 	);
@@ -165,7 +168,7 @@ void CUICommunity_Image::Tick_By_Type(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::COMMUNITY_BG:
 		if (KEY_BUTTON_UP(DIK_F))
 		{
-			m_pGameInstance->Broadcast<INTERACT_ENTER>(this);
+			m_pGameInstance->Broadcast<INTERACT_ENTER>(m_pInteractObj);
 		}
 		break;
 	case DTO::EUIDImageSubClassType::COMMUNITY_OUTLINE:

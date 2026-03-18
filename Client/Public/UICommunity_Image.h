@@ -47,6 +47,8 @@ private:
 
 	_bool m_isPaulse = { false };
 
+	CGameObject* m_pInteractObj = { nullptr };
+
 public:
 	static CUICommunity_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

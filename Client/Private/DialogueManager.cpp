@@ -25,15 +25,17 @@ void CDialogueManager::Ready_Dialogue()
 {
 	m_umapContents.clear();
 
-	CreateNode(0, -1, 1, L"마령 판신", L"눈을 떠, 일어나!.")
+	CreateNode(0, -1, -1, L"마령 판신", L"눈을 떠, 일어나!.")
 		//.AddChoice(L"눈을 뜨지 않는다.", 10)
 		//.AddChoice(L"눈을 뜬다.", 15)
 		//.AddTrigger(0)
 		;
 	
-	CreateNode(1, 0, 2, L"마령 판신", L"마을에 필토이드들이 습격했어 얼른!.");
-	CreateNode(2, 1, -1, L"비타", L"(일어난다.)");
+	CreateNode(1, -1, -1, L"마령 판신", L"마을에 필토이드들이 습격했어 얼른!.");
+	CreateNode(2, -1, -1, L"비타", L"(일어난다.)");
 	CreateNode(3, -1, -1, L"마령 판신", L"나는 마령 판신!");
+
+	CreateNode(4, 1, -1, L"마령 판신", L"다음대화");
 }
 
 void CDialogueManager::Bind_Events()

@@ -85,7 +85,6 @@ HRESULT CMainApplication::Initialize()
 
 	Register_Quest_Scenario();
 
-	CDialogueManager::GetInstance()->Initialize();
 
 	return S_OK;
 }

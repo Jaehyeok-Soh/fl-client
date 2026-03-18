@@ -696,6 +696,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EFontShaderType,
 		{ EFontShaderType::GRADATION,			"GRADATION" },
 		{ EFontShaderType::OUTLINE_GRADATION,	"OUTLINE_GRADATION" },
 		{ EFontShaderType::HIT,					"HIT" },
+		{ EFontShaderType::NOISE_NOSCROLL,					"NOISE_NOSCROLL" },
+		{ EFontShaderType::OUTLINE_NOISE_NOSCROLL,					"OUTLINE_NOISE_NOSCROLL" },
 		{ EFontShaderType::END,					"END" }
 	})
 
@@ -710,6 +712,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EFontShaderType,
 	if (str == "GRADATION")				return EFontShaderType::GRADATION;
 	if (str == "OUTLINE_GRADATION")		return EFontShaderType::OUTLINE_GRADATION;
 	if (str == "HIT")					return EFontShaderType::HIT;
+	if (str == "NOISE_NOSCROLL")					return EFontShaderType::NOISE_NOSCROLL;
+	if (str == "OUTLINE_NOISE_NOSCROLL")					return EFontShaderType::OUTLINE_NOISE_NOSCROLL;
 	if (str == "END")					return EFontShaderType::END;
 	return EFontShaderType::END;
 }
@@ -727,6 +731,8 @@ inline const char* FontShaderTypeToString(const EFontShaderType eType)
 	case EFontShaderType::GRADATION:			return "GRADATION";
 	case EFontShaderType::OUTLINE_GRADATION:	return "OUTLINE_GRADATION";
 	case EFontShaderType::HIT:					return "HIT";
+	case EFontShaderType::NOISE_NOSCROLL:					return "NOISE_NOSCROLL";
+	case EFontShaderType::OUTLINE_NOISE_NOSCROLL:					return "OUTLINE_NOISE_NOSCROLL";
 	case EFontShaderType::END:					return "END";
 	default:									return "END";
 	}

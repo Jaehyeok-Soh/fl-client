@@ -6,6 +6,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "MyStat.h"
 #include "Texture.h"
@@ -141,6 +142,10 @@ void CUIQuest_Text::Bind_Events()
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
 				{
+					auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+					if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+						return;
+
 					this->Set_Visible();
 				}
 			})
@@ -166,6 +171,10 @@ void CUIQuest_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
 			{
+				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+				if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+					return;
+
 				this->Set_Visible();
 			})
 	);
@@ -189,7 +198,12 @@ void CUIQuest_Text::Bind_Events()
 				case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:
 					break;
 				case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
-					m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
+					if (this->m_wstrText != desc.tChapterInfo.tQuestDesc.wstrTitle)
+					{
+						// 여기서 불 값 바꿔서 텍스트 바뀔 때만 퀘스트 들어갔다 나오기 연출
+						//m_pParentCanvasCache->Get_CommonParam_bool_Ref()
+						this->m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
+					}
 					break;
 				case DTO::EUITextSubClassType::QUEST_CONTENTS_TEXT:
 					break;
@@ -199,7 +213,6 @@ void CUIQuest_Text::Bind_Events()
 					break;
 				}
 			})
-
 	);
 
 	return;

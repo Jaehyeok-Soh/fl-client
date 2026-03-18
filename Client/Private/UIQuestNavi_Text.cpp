@@ -190,7 +190,8 @@ void CUIQuestNavi_Text::Bind_Events()
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				this->m_vTargetPos = desc.tChapterInfo.vObjectPosition;
 
-				if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
+				if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL ||
+					desc.tChapterInfo.eEvent == DTO::EQuestEvent::NPC_TALK)
 					this->Set_Invisible();
 				else
 					this->Set_Visible();

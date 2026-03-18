@@ -5,6 +5,7 @@
 // Manager
 //=================
 #include "UI_Manager.h"
+#include "DialogueManager.h"
 
 //=================
 // Data Struct
@@ -495,6 +496,7 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
 	CQuestManager::GetInstance()->Start_Quest(0);
+	CDialogueManager::GetInstance()->Initialize();
 
 	return S_OK;
 }

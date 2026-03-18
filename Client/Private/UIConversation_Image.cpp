@@ -137,25 +137,16 @@ void CUIConversation_Image::Bind_Events()
 	);
 
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
 			{
-				Set_Active(true);
 				this->Set_Visible();
 			})
 	);
 
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<INTERACT_LOST>([this](CGameObject* pObj)
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
 			{
 				this->Set_Invisible();
-			})
-	);
-
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<INTERACT_ENTER>([this](CGameObject* pObj)
-			{
-				this->Set_Invisible();
-				m_isClick = true;
 			})
 	);
 }
