@@ -174,14 +174,23 @@ void CUIQuestNavi_Image::Bind_Events()
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
-				m_vTargetPos = desc.tChapterInfo.vObjectPosition;
-				m_isChange = true;
+				this->m_vTargetPos = desc.tChapterInfo.vObjectPosition;
+				this->m_isChange = true;
+
+				if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
+					this->Set_Invisible();
+				else
+					this->Set_Visible();
+
+
 			})
 	);
 }
 
 void CUIQuestNavi_Image::Tick_By_Type(const _float fTimeDelta)
 {
+	
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::QUEST_NAVI_ICON:
@@ -201,7 +210,6 @@ void CUIQuestNavi_Image::Tick_By_Type(const _float fTimeDelta)
 		break;
 	}
 }
-
 void CUIQuestNavi_Image::Proj_World_To_Screen()
 {
 	Vec4 clip = Vec4(m_vTargetPos.x, m_vTargetPos.y, m_vTargetPos.z, 1.f);
@@ -209,45 +217,38 @@ void CUIQuestNavi_Image::Proj_World_To_Screen()
 	m_fViewZ = clip.z;
 	clip = Vec4::Transform(clip, m_pGameInstance->Get_ProjMatrix());
 
-	if (clip.w <= 0.1f)
-	{
-		Vec3 vCameraRight = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
-		Vec3 vCameraLook = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	Vec3 vCameraRight = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+	Vec3 vCameraLook = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	Vec3 vPlayerPos = m_pPlayer->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-		Vec3 vPlayerPos = m_pPlayer->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vDir = m_vTargetPos - vPlayerPos;
 
-		Vec3 vDir = m_vTargetPos - vPlayerPos;
-	
+	vDir.y = 0.f;
+	vCameraLook.y = 0.f;
+	vCameraRight.y = 0.f;
+
+	if (vDir.LengthSquared() > 0.0001f)
 		vDir.Normalize();
+
+	if (vCameraLook.LengthSquared() > 0.0001f)
 		vCameraLook.Normalize();
+
+	if (vCameraRight.LengthSquared() > 0.0001f)
 		vCameraRight.Normalize();
 
-		// -1 ~ 1
-		// fx == 0 카메라 기준 센터 // > 0 카메라 기준 오른쪽 // < 0 카메라 기준 왼쪽
-		_float fx = vDir.Dot(vCameraRight);
-		_float fy = vDir.Dot(vCameraLook);
+	_float fx = vDir.Dot(vCameraRight);
+	_float fy = vDir.Dot(vCameraLook);
 
-		//if (m_eDImageSubClass == DTO::EUIDImageSubClassType::QUEST_NAVI_DIR)
-		//{
-		//	m_vMoveOffset = Vec2{ 0.f, 20.f };
-		//	_float fAngle = atan2f(fy, fx);
+	Vec2 vOrbitDir = Vec2(fx, -fy);
+	if (vOrbitDir.LengthSquared() > 0.0001f)
+		vOrbitDir.Normalize();
+	else
+		vOrbitDir = Vec2(0.f, -1.f);
 
-		//	Move_Rotate(fAngle + XM_PIDIV2);
-		//}
-
+	if (clip.w <= 0.1f)
+	{
 		m_vScreenPos.x = (g_iWinSizeX / 2.f) + (fx * 533.5f);
 		m_vScreenPos.y = (g_iWinSizeY / 2.f) - (fy * 250.f);
-
-		if (m_vScreenPos.x < CLAMP_MIN_X)
-			m_vScreenPos.x = CLAMP_MIN_X;
-		else if (m_vScreenPos.x > CLAMP_MAX_X)
-			m_vScreenPos.x = CLAMP_MAX_X;
-
-		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::QUEST_NAVI_DIR)
-		{
-			m_vScreenPos.x += (fx * 20.f);
-			m_vScreenPos.y += (fy* 20.f);
-		}
 	}
 	else
 	{
@@ -255,19 +256,25 @@ void CUIQuestNavi_Image::Proj_World_To_Screen()
 
 		m_vScreenPos.x = (clip.x * 0.5f + 0.5f) * m_fVPWidth + m_fVPTopLeftX;
 		m_vScreenPos.y = (1.f - (clip.y * 0.5f + 0.5f)) * m_fVPHegiht + m_fVPTopLeftY;
+	}
 
-		if (m_vScreenPos.x < CLAMP_MIN_X)
-			m_vScreenPos.x = CLAMP_MIN_X;
-		else if (m_vScreenPos.x > CLAMP_MAX_X)
-			m_vScreenPos.x = CLAMP_MAX_X;
+	if (m_vScreenPos.x < CLAMP_MIN_X)
+		m_vScreenPos.x = CLAMP_MIN_X;
+	else if (m_vScreenPos.x > CLAMP_MAX_X)
+		m_vScreenPos.x = CLAMP_MAX_X;
 
-		if (m_vScreenPos.y < CLAMP_MIN_Y)
-			m_vScreenPos.y = CLAMP_MIN_Y;
-		else if (m_vScreenPos.y > CLAMP_MAX_Y)
-			m_vScreenPos.y = CLAMP_MAX_Y;
+	if (m_vScreenPos.y < CLAMP_MIN_Y)
+		m_vScreenPos.y = CLAMP_MIN_Y;
+	else if (m_vScreenPos.y > CLAMP_MAX_Y)
+		m_vScreenPos.y = CLAMP_MAX_Y;
 
+	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::QUEST_NAVI_DIR)
+	{
+		m_vScreenPos.x += vOrbitDir.x * 20.f;
+		m_vScreenPos.y += vOrbitDir.y * 20.f;
 
-
+		_float fRad = atan2f(vOrbitDir.y, vOrbitDir.x);
+		Move_Rotate(fRad + XM_PIDIV2);
 	}
 }
 
@@ -278,6 +285,11 @@ void CUIQuestNavi_Image::Tick_Navi_Icon(const _float fTimeDelta)
 
 void CUIQuestNavi_Image::Tick_Navi_Fx(const _float fTimeDelta)
 {
+	if (KEY_BUTTON_DOWN(DIK_V))
+	{
+		m_isChange = true;
+	}
+
 	if (m_isChange)
 	{
 		m_isChange = false;

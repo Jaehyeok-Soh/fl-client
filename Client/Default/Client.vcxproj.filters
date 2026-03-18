@@ -784,6 +784,15 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi">
       <UniqueIdentifier>{439ea3b6-89a6-432a-b9f5-d6082c69fff5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community">
+      <UniqueIdentifier>{ab11963d-fca7-461e-86bb-401d946db20c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\11.Community">
+      <UniqueIdentifier>{f9fbc5dc-3cc4-4c8d-868e-968f0ddb333e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\12.Conversation">
+      <UniqueIdentifier>{378205ac-d5dd-44cf-944d-9f2859cc7831}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\MapObject\08. LightMapObject">
       <UniqueIdentifier>{bc9e1b73-3e10-43c4-9085-cd04807f50b3}</UniqueIdentifier>
     </Filter>
@@ -1464,6 +1473,15 @@
     <ClInclude Include="..\Public\UIQuestNavi_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UICommunity_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UICommunity_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIConservation_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\CLightMapObject.h">
       <Filter>03. GameObject\MapObject\08. LightMapObject</Filter>
     </ClInclude>
@@ -2136,6 +2154,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIQuestNavi_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\10.Quest\Navi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommunity_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\14.Community</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UICommunity_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CUIConservation_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CLightMapObject.cpp">
       <Filter>03. GameObject\MapObject\08. LightMapObject</Filter>

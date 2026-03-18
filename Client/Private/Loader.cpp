@@ -160,6 +160,7 @@
 #include "UITutorial_PopUp_Clear_Text.h"
 #include "UIQuest_Text.h"
 #include "UIQuestNavi_Text.h"
+#include "UICommunity_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -182,6 +183,7 @@
 #include "UITutorial_PopUp_Clear_Image.h"
 #include "UIQuest_Image.h"
 #include "UIQuestNavi_Image.h"
+#include "UICommunity_Image.h"
 //=================
 // Resource
 //=================
@@ -853,18 +855,18 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossActionText",			CUIBossAction_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessImage",			CUIWeakness_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WeaknessText",				CUIWeakness_Text::Create(m_pDevice, m_pDeviceContext));
-	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelImage",		CUITutorial_Pannel_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPannelText",		CUITutorial_Pannel_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpImage",		CUITutorial_PopUp_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpText",		CUITutorial_PopUp_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearImage",	CUITutorial_PopUp_Clear_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_TutorialPopUpClearText",	CUITutorial_PopUp_Clear_Text::Create(m_pDevice, m_pDeviceContext));
-	
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestImage",				CUIQuest_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestText",				CUIQuest_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviImage",			CUIQuestNavi_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviText",			CUIQuestNavi_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityImage",			CUICommunity_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityText",			CUICommunity_Text::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 	
 	m_isFinished = true;

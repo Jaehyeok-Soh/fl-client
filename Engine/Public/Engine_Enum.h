@@ -470,7 +470,9 @@ namespace Engine
 
 			NPC = 1 << 21,
 
-			NONE = 1 << 22,
+			DETECT_INTERACT = 1 << 22,
+
+			NONE = 1 << 23,
 			END
 		};
 
