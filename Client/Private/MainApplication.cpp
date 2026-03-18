@@ -34,6 +34,9 @@
 #include "QuestManager.h"
 #include "Quest_DataModel.h"
 
+// Dialogue
+#include "DialogueManager.h"
+
 USING(Client)
 
 CMainApplication::CMainApplication()
@@ -81,6 +84,8 @@ HRESULT CMainApplication::Initialize()
 	CMonsterState_Factory::GetInstance()->Initialize();
 
 	Register_Quest_Scenario();
+
+	CDialogueManager::GetInstance()->Initialize();
 
 	return S_OK;
 }
@@ -628,6 +633,7 @@ void CMainApplication::Free()
 {	
 	CMonsterState_Factory::DestroyInstance();
 	CQuestManager::DestroyInstance();
+	CDialogueManager::DestroyInstance();
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

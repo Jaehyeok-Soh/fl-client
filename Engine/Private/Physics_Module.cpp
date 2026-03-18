@@ -405,11 +405,11 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	if ((filterData0.word0 & PHYSICSFILTERGROUP::GENIEMON)
-		|| (filterData1.word0 & PHYSICSFILTERGROUP::GENIEMON))
-	{
-		return PxFilterFlag::eSUPPRESS;
-	}
+	//if ((filterData0.word0 & PHYSICSFILTERGROUP::GENIEMON)
+	//	|| (filterData1.word0 & PHYSICSFILTERGROUP::GENIEMON))
+	//{
+	//	return PxFilterFlag::eSUPPRESS;
+	//}
 	
 	if ((filterData0.word0 & PHYSICSFILTERGROUP::RAGDOLL)
 		|| (filterData1.word0 & PHYSICSFILTERGROUP::RAGDOLL))

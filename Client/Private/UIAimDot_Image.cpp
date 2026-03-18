@@ -58,6 +58,26 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
+	{
+		// 지금 총 들고 있는데
+		if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
+		{
+			// 이전 프레임엔 총 안 들고 있었는데?
+			if (!m_isPreRangeAtt)
+			{
+				Set_Visible();
+			}
+		}
+		// 지금 칼 들고 있는데, 혹은 아무것도 안 들고 있는데
+		else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
+		{
+			// 이전 프레임엔 총 들고 있었는데?
+			if (m_isPreRangeAtt)
+			{
+				Set_Invisible();
+			}
+		}
+	}
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
 	{
@@ -141,15 +161,7 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 
 void CUIAimDot_Image::Bind_Events()
 {
-	m_vecEventHandles.push_back(
-		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-			{
-				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
-				{
-					this->Set_Visible();
-				}
-			})
-	);
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -166,6 +178,15 @@ void CUIAimDot_Image::Bind_Events()
 		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+					{
+						this->Set_Visible();
+					}
+				})
+		);
 		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]() { this->Set_Visible(); });
 		break;

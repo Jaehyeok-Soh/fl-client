@@ -514,7 +514,14 @@ void CUI_Inspector::SetUp_TextData()
 
 		_string strText = Engine_Utils::ToString(m_pSelectedUI->Get_Text());
 		ImGui::InputText("Text", &strText);
+
+		if (KEY_BUTTON_HOLD(DIK_LCONTROL) && KEY_BUTTON_DOWN(DIK_RETURN))
+			strText += "\n";
+
 		m_pSelectedUI->Set_Text(Engine_Utils::ToWString(strText));
+		
+
+
 
 		auto& vColor = m_pSelectedUI->Get_FontColor();
 		float col[4] = { vColor.x, vColor.y, vColor.z, vColor.w };

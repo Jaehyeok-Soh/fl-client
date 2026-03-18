@@ -591,6 +591,9 @@ namespace Engine
 		RIGHT,
 		UP,
 		DOWN,
+
+		LT,RT,LC,RC,LD,RD,
+
 		END
 	};
 	//===================

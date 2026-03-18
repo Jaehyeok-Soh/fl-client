@@ -25,14 +25,15 @@ void CDialogueManager::Ready_Dialogue()
 {
 	m_umapContents.clear();
 
-	CreateNode(0, 0, -1, 1, L"마령 판신", L"눈을 떠, 일어나!.")
+	CreateNode(0, -1, 1, L"마령 판신", L"눈을 떠, 일어나!.")
 		//.AddChoice(L"눈을 뜨지 않는다.", 10)
 		//.AddChoice(L"눈을 뜬다.", 15)
 		//.AddTrigger(0)
 		;
 	
-	CreateNode(0, 1, 0, 2, L"마령 판신", L"마을에 필토이드들이 습격했어 얼른!.");
-	CreateNode(0, 2, 1, -1, L"비타", L"(일어난다.)");
+	CreateNode(1, 0, 2, L"마령 판신", L"마을에 필토이드들이 습격했어 얼른!.");
+	CreateNode(2, 1, -1, L"비타", L"(일어난다.)");
+	CreateNode(3, -1, -1, L"마령 판신", L"나는 마령 판신!");
 }
 
 void CDialogueManager::Bind_Events()
@@ -157,7 +158,7 @@ void CDialogueManager::FlushTrigger()
 	}
 }
 
-DIALOGUE_NODE& CDialogueManager::CreateNode(_int key, _int nodeId, _int prevId, _int nextId, const wstring& speakerName, const wstring& content)
+DIALOGUE_NODE& CDialogueManager::CreateNode(_int nodeId, _int prevId, _int nextId, const wstring& speakerName, const wstring& content)
 {
 	DIALOGUE_NODE node{};
 	node.iNodeId = nodeId;
@@ -166,8 +167,8 @@ DIALOGUE_NODE& CDialogueManager::CreateNode(_int key, _int nodeId, _int prevId, 
 	node.wstrSpeakerName = speakerName;
 	node.wstrContentText = content;
 
-	m_umapContents[key] = node;
-	return m_umapContents[key];
+	m_umapContents[nodeId] = node;
+	return m_umapContents[nodeId];
 }
 
 void CDialogueManager::Free()

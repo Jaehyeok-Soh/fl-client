@@ -64,7 +64,7 @@ void CPhysicsRagdoll::Awake(vector<CChannel*>& vecChannels)
 	else
 		pxObjectWorld.q.normalize();
 
-	pxObjectWorld.p.y += 1.f;
+	pxObjectWorld.p.y += 0.5f;
 
 	{
 		auto& link = m_tRagdollElements.vecPhysicsLink[RAGDOLLJOINT::PELVIS];

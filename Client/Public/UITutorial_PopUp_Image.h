@@ -52,6 +52,8 @@ private:
 	_bool m_isFirstEntered = { false };
 	_bool m_isFirstTriggered = { false };
 
+	_bool m_isTriggered = { false };
+
 
 	CPlayer* m_pPlayer = { nullptr };
 public:
