@@ -145,8 +145,12 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case State::HOLD:
+	{
+		//Matrix matfinalMat = Matrix::Identity;
+		//matfinalMat.Translation((*m_pMatSocket).Translation());
 		Super::Update_CombinedWorldMatrix(m_matHoldOffsetMatrix * (*m_pMatSocket) * (*m_pMatParent));
 		Update_HoldingPos();
+	}
 		break;
 
 	case State::HAND:
@@ -178,6 +182,9 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 		Super::Update_CombinedWorldMatrix(m_matConOffsetMatrix * (*m_pMatHandSocket) * (*m_pMatParent));
 	}
 	break;
+
+	default:
+		int a = 0;
 	}
 
 #ifdef _DEBUG
@@ -469,7 +476,7 @@ void CWeapon::Update_HoldingPos()
 	Vec3 vUp = m_matCombinedWorld.Left();
 	Vec3 vPos = m_matCombinedWorld.Translation();
 
-	Vec3 vMove = (vLook * 0.4f);
+	Vec3 vMove = (vLook * 0.4f) + (vUp * 0.2f);
 
 	m_matCombinedWorld.Translation(vPos + vMove);
 }

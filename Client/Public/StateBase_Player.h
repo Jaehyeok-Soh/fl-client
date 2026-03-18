@@ -95,8 +95,8 @@ protected:
 
 	STATE_START_DESC		m_tNextStateDesc	= {};
 
-	TimeCount				m_TFallingCount		= { 0.f,0.38f }; // 예전 값 : 0.4f
-	TimeCount				m_TChargeCount		= { 0.f,0.15f };
+	TimeCount				m_TFallingCount		= { 0.f,0.38f }; // 예전 값  : 0.4f
+	TimeCount				m_TChargeCount		= { 0.f,0.18f }; // 예전 값  : 0.15f
 
 	// state가 변환 했다면 true
 protected:
@@ -128,7 +128,7 @@ protected:
 
 	void	Check_Monster();
 
-	void	Change_Weapon(_uint iPart, _uint iState);
+	void	Change_Weapon(_uint iPartWeapon, _uint iState);
 
 	_bool	Start_Att(_uint iPlayerState);
 	void	End_Att(_uint iPlayerState);

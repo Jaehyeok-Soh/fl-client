@@ -79,6 +79,11 @@ CPlayer::CPlayer(const CPlayer& rhs)
     , m_tDoubleJumpCount(rhs.m_tDoubleJumpCount)
     , m_bMainPlayer(rhs.m_bMainPlayer)
     , m_tCBPlayerInfo{rhs.m_tCBPlayerInfo }
+    , m_arrWeaponEnum(rhs.m_arrWeaponEnum)
+    , m_arrMeleeInfo(rhs.m_arrMeleeInfo)
+    , m_arrRangeInfo(rhs.m_arrRangeInfo)
+    , m_arrSkillInfo(rhs.m_arrSkillInfo)
+
 {
     m_vecPartObjects.resize(Part::END, nullptr);
     Safe_AddRef(m_pPhysic_QueryFilter);
@@ -96,6 +101,8 @@ HRESULT CPlayer::Initialize_Prototype()
 
     m_pPhysic_QueryFilter = CPhysics_QueryFilterCallback::Create();
     m_pPhysic_QueryFilter->SetOwner(this);
+
+    Ready_WeaponInfo();
 
     return S_OK;
 }
@@ -140,7 +147,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         if (FAILED(pPlayerState->Awake(iCurrentLevelID)))
             return E_FAIL;
     
-    Change_Weapon(Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+    Change_Weapon(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
     Start_Attack(CPlayer::State::COMBO);
 
     Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
@@ -266,52 +273,31 @@ HRESULT CPlayer::Change_IdleForce()
     return S_OK;
 }
 
-void CPlayer::Change_Weapon(_uint iPart, _uint iState)
+void CPlayer::Change_Weapon(_uint iWeaponType, _uint iState)
 {
     // 우선 다 none으로 바꾼다음
+    Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
+    Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
+    Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
 
-    CWeapon* pSword = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD));
-    CWeapon* pSword2 = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SWORD2));
-    CWeapon* pSkill = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::SKILL));
-    CWeapon* pGun = static_cast<CWeapon*>(Get_Part<CWeapon>(Part::GUN));
-
-    if(pSword)
-        pSword->Set_WeaponState(CWeapon::State::NONE);
-    if (pSword2)
-        pSword2->Set_WeaponState(CWeapon::State::NONE);
-    if (pSkill)
-        pSkill->Set_WeaponState(CWeapon::State::NONE);
-    if (pGun)
-        pGun->Set_WeaponState(CWeapon::State::NONE);
-    else
-        int a = 0;
-
-    switch (iPart)
+    switch (iWeaponType)
     {
-    case static_cast<_uint>(Part::SWORD):
-        if(pSword)
-            pSword->Set_WeaponState(iState);
-        if (pSword2)
-            pSword2->Set_WeaponState(iState);
+    case ENUM_TO_UINT(EWEAPON::MELEE):
+        Set_CurPartWeapon_State(EWEAPON::MELEE, iState);
         break;
 
-    case static_cast<_uint>(Part::SKILL):
-        if (pSkill)
-            pSkill->Set_WeaponState(iState);
+    case ENUM_TO_UINT(EWEAPON::RANGE):
+        Set_CurPartWeapon_State(EWEAPON::RANGE, iState);
         break;
 
-    case static_cast<_uint>(Part::GUN):
-        if (pGun)
-            pGun->Set_WeaponState(iState);
+    case ENUM_TO_UINT(EWEAPON::SKILL):
+        Set_CurPartWeapon_State(EWEAPON::SKILL, iState);
         break;
     }
 
     if (iState == ENUM_TO_UINT(CWeapon::State::NONE))
     {
-        if(pSword)
-           pSword->Set_WeaponState(CWeapon::State::HOLD);
-        if(pSword2)
-           pSword2->Set_WeaponState(CWeapon::State::HOLD);
+        Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::HOLD));
     }
 }
 
@@ -888,8 +874,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
-        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_WALL_NO
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::END);
@@ -1240,6 +1225,71 @@ HRESULT CPlayer::Ready_HitStates()
     return S_OK;
 }
 
+HRESULT CPlayer::Ready_WeaponInfo()
+{
+    // weapon enum
+    {
+        m_arrWeaponEnum.fill(0); //원래는 -1로 해야하는게 맞는데 0으로 해서 다 쓸 수 있도록
+    }
+
+    /* Melee */
+    {
+        {
+            WEAPON_INFO tInfo = {};
+
+            tInfo.iPartStartIdx = Part::SWORD;
+            tInfo.iPartSize = 1;
+            tInfo.bHave = true;
+            tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::HOLD);
+
+            m_arrMeleeInfo[ENUM_TO_SZET(MELEE::SWORD)] = tInfo;
+        }
+
+        {
+            WEAPON_INFO tInfo = {};
+
+            tInfo.iPartStartIdx = Part::Dual_R;
+            tInfo.iPartSize = 2;
+            tInfo.bHave = false;
+            tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
+
+            m_arrMeleeInfo[ENUM_TO_SZET(MELEE::DUAL)] = tInfo;
+        }
+
+    }
+
+    /* Range */
+    {
+        // MACHINE
+        {
+            WEAPON_INFO tInfo = {};
+
+            tInfo.iPartStartIdx = Part::GUN;
+            tInfo.iPartSize = 1;
+            tInfo.bHave = true;
+            tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
+
+            m_arrRangeInfo[ENUM_TO_SZET(RANGE::MACHINE)] = tInfo;
+        }
+    }
+
+    /* Skill */
+    {
+        {
+            WEAPON_INFO tInfo = {};
+
+            tInfo.iPartStartIdx = Part::SKILL;
+            tInfo.iPartSize = 1;
+            tInfo.bHave = true;
+            tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
+
+            m_arrSkillInfo[ENUM_TO_SZET(SKILL::MOON)] = tInfo;
+        }
+    }
+
+    return S_OK;
+}
+
 HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 {
     {
@@ -1271,7 +1321,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
 
             weaponDesc.matHandOffsetMatrix  = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
-            weaponDesc.matHoldOffsetMatrix  = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+            //weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(10.f), XMConvertToRadians(0.f), XMConvertToRadians(-45.f));
             weaponDesc.matConOffsetMatrix   = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(-70.f), XMConvertToRadians(180.f), 0.f);
 
             if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
@@ -1320,7 +1370,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.fAttackCoolTime = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
 
             weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
-            weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-90.f), XMConvertToRadians(90.f));
+            weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(90.f));
 
             if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Gun", &weaponDesc)))
                 return E_FAIL;
@@ -1529,6 +1579,49 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
     }
 
     return S_OK;
+}
+
+void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
+{
+    _uint iCurWeapon{}, iStartPartIdx{}, iPartSize{};
+
+    switch (eWeaponType)
+    {
+    case EWEAPON::MELEE:
+        // melee중에 현재 weapon
+        iCurWeapon      = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::MELEE)];
+        iStartPartIdx   = m_arrMeleeInfo[size_t(iCurWeapon)].iPartStartIdx;
+        iPartSize       = m_arrMeleeInfo[size_t(iCurWeapon)].iPartSize;
+
+        m_arrMeleeInfo[size_t(iCurWeapon)].iWeaponState = iState;
+        break;
+
+    case EWEAPON::RANGE:
+        // melee중에 현재 weapon
+        iCurWeapon      = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::RANGE)];
+        iStartPartIdx   = m_arrRangeInfo[size_t(iCurWeapon)].iPartStartIdx;
+        iPartSize       = m_arrRangeInfo[size_t(iCurWeapon)].iPartSize;
+
+        m_arrRangeInfo[size_t(iCurWeapon)].iWeaponState = iState;
+        break;
+
+    case EWEAPON::SKILL:
+        // melee중에 현재 weapon
+        iCurWeapon      = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::SKILL)];
+        iStartPartIdx   = m_arrSkillInfo[size_t(iCurWeapon)].iPartStartIdx;
+        iPartSize       = m_arrSkillInfo[size_t(iCurWeapon)].iPartSize;
+
+        m_arrSkillInfo[size_t(iCurWeapon)].iWeaponState = iState;
+        break;
+    }
+
+    for (_int i = 0; i < iPartSize; i++)
+    {
+        CWeapon* pWeapon = static_cast<CWeapon*>(Get_Part<CWeapon>(iStartPartIdx + i));
+
+        if (pWeapon)
+            pWeapon->Set_WeaponState(iState);
+    }
 }
 
 void CPlayer::Count_DoubleJump(const _float fTimeDelta)

@@ -52,7 +52,7 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 	else
 		m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_Weapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::COMBO));
 
@@ -79,7 +79,7 @@ HRESULT CState_ComboBase::End()
 
 	End_Att(ENUM_TO_UINT(CPlayer::State::COMBO));
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+	Change_Weapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }
@@ -167,7 +167,7 @@ void CState_ComboBase::Check_Combo()
 	// 너무 시간이 지나면 combo end
 	if (m_fStateElapsed > m_ComboEndTimes[m_iMainAnimIdx])
 	{
-		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+		Change_Weapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 		return;
 	}
 

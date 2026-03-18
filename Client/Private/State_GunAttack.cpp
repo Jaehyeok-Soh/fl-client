@@ -33,7 +33,7 @@ HRESULT CState_GunAttack::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	Change_Weapon(CPlayer::Part::GUN, ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_Weapon(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	Set_GunTimer(true);
 
@@ -79,7 +79,7 @@ HRESULT CState_GunAttack::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	Change_Weapon(CPlayer::Part::GUN, ENUM_TO_UINT(CWeapon::State::HOLD));
+	Change_Weapon(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE), ENUM_TO_UINT(CWeapon::State::HOLD));
 	Reset_GunTimer();
 
 	return S_OK;

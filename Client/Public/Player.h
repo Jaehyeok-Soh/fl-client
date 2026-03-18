@@ -20,6 +20,22 @@ class CPlayer abstract : public CContainerObject
 public:
 	enum class PLAYER_TYPE { MOON, END };
 
+	enum class EWEAPON { MELEE, RANGE, SKILL, END }; // array 접근용 enum  값
+
+	enum class MELEE { SWORD, DUAL, END };
+	enum class RANGE { MACHINE, END };
+	enum class SKILL { MOON, END };
+	
+	// 각 무기가 가지고 있어야 하는 정보들
+	typedef struct tagWeaponInfo
+	{
+		_uint iPartStartIdx = {};		// player part중 몇번째 인지 : 초기 셋팅 값
+		_uint iPartSize		= { 1 };		// part중 몇개를 쓰는지		: 초기 셋팅 값
+		_bool bHave		= { false };		// 해당 무기를 얻었는지
+
+		_uint iWeaponState	= {};		// 무기 state
+	}WEAPON_INFO;
+
 	typedef struct tagPlayerDesc : public Super::GAMEOBJECT_DESC
 	{
 		wstring wstrBodyModelTag = { L"" };
@@ -39,7 +55,10 @@ public:
 		SWORD,
 		SKILL,
 		GUN,
-		SWORD2,
+		
+		// 추가 wepaon
+		Dual_R,
+		Dual_L,
 
 		EFFECT,
 		DETECTCOLLIDER_UI, // 몬스터 감지용 collider
@@ -132,7 +151,7 @@ public:
 
 	// state funcs
 public:
-	void	Change_Weapon(_uint iPart, _uint iState); // 어떤 weapon을 어떤 state로
+	void	Change_Weapon(_uint iWeaponType, _uint iState); // 어떤 weapon을 어떤 state로
 	_bool	Check_OnGround(_float fMaxDist = 0.72f);
 	_bool	Check_ColliWithMonster();
 	void	Count_Combo();
@@ -155,6 +174,7 @@ public:
 	void	End_Attack(State iState);
 
 	State Get_CurState();
+
 protected:
 	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 
@@ -163,7 +183,17 @@ protected:
 	PLAYER_TYPE			m_ePlayerType = { PLAYER_TYPE::END };
 	_bool				m_bMainPlayer = { false };
 	SHADER_PLAYER_INFO	m_tCBPlayerInfo{};
+
+protected:
+	array<_int, ENUM_TO_SZET(EWEAPON::END)>			m_arrWeaponEnum; // 각 무기 종류에서 어떤거를 들고 있는가. 만약 없다면 -1
+
+	array<WEAPON_INFO, ENUM_TO_SZET(MELEE::END)>	m_arrMeleeInfo;
+	array<WEAPON_INFO, ENUM_TO_SZET(RANGE::END)>	m_arrRangeInfo;
+	array<WEAPON_INFO, ENUM_TO_SZET(RANGE::END)>	m_arrSkillInfo;
+
 private:
+	HRESULT		Ready_WeaponInfo();
+
 	HRESULT		Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT		Ready_Components(PLAYER_DESC* pDesc);
 
@@ -172,6 +202,9 @@ private:
 
 	HRESULT		Ready_PartCollider();
 	HRESULT		Ready_Interact_PartCollider();
+
+private:
+	void		Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState);
 
 private:
 	void		Count_DoubleJump(const _float fTimeDelta);
