@@ -7,282 +7,9 @@
             "strOwnerTag": "Xibi",
             "vecEffectEvents": [
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 41.5,
-                    "iAnimIndex": 15,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill01_02",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Attack1",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.5
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 30.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 60.0,
-                    "iAnimIndex": 15,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill01_02",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Attack2",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 180.0,
-                        "y": 180.0,
-                        "z": 40.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 58.0,
-                    "iAnimIndex": 14,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_Xibi_Skill01_01",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Attack3",
-                    "vOffset": {
-                        "x": 0.800000011920929,
-                        "y": 0.800000011920929,
-                        "z": 1.2000000476837158
-                    },
-                    "vRotation": {
-                        "x": -75.0,
-                        "y": -10.0,
-                        "z": -120.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 80.0,
-                    "iAnimIndex": 14,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill01_01",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Attack2",
-                    "vOffset": {
-                        "x": 0.7799999713897705,
-                        "y": 0.3799999952316284,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 30.0,
-                        "y": -50.0,
-                        "z": 10.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 65.0,
-                    "iAnimIndex": 13,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_Xibi_Skill01",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Attack1",
-                    "vOffset": {
-                        "x": -0.6000000238418579,
-                        "y": -1.0,
-                        "z": 1.2999999523162842
-                    },
-                    "vRotation": {
-                        "x": -30.0,
-                        "y": -50.0,
-                        "z": 160.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 85.66000366210938,
-                    "iAnimIndex": 13,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill01",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Attack3",
-                    "vOffset": {
-                        "x": 0.6899999976158142,
-                        "y": 0.47999998927116394,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": -26.959999084472656,
-                        "y": -90.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 0.0,
-                    "fStartTrackPosition": 0.10000000149011612,
-                    "iAnimIndex": 21,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill03",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_BlinkEffect",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.20999999344348907
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 0.0,
-                    "fStartTrackPosition": 18.5,
-                    "iAnimIndex": 21,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill03",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_BlinkEffect2",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.20000000298023224,
-                        "z": 0.20999999344348907
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 17.0,
-                    "iAnimIndex": 32,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 59,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill09",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 20.5,
-                    "iAnimIndex": 17,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 59,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill02_01",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 45.0,
-                    "iAnimIndex": 17,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill02_01",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Attack2",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -290,6 +17,7 @@
                     "iAnimIndex": 19,
                     "iBoneFlag": 4,
                     "iBoneIndex": 59,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_Xibi_Skill02_03",
@@ -307,7 +35,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -315,6 +45,7 @@
                     "iAnimIndex": 19,
                     "iBoneFlag": 4,
                     "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_Xibi_Skill02_03",
@@ -332,7 +63,121 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 41.5,
+                    "iAnimIndex": 15,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill01_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 30.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 60.0,
+                    "iAnimIndex": 15,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill01_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 180.0,
+                        "y": 180.0,
+                        "z": 40.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 58.0,
+                    "iAnimIndex": 14,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill01_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack3",
+                    "vOffset": {
+                        "x": 0.800000011920929,
+                        "y": 0.800000011920929,
+                        "z": 1.2000000476837158
+                    },
+                    "vRotation": {
+                        "x": -75.0,
+                        "y": -10.0,
+                        "z": -120.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 80.0,
+                    "iAnimIndex": 14,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill01_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack2",
+                    "vOffset": {
+                        "x": 0.7799999713897705,
+                        "y": 0.3799999952316284,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 30.0,
+                        "y": -50.0,
+                        "z": 10.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -340,6 +185,7 @@
                     "iAnimIndex": 20,
                     "iBoneFlag": 4,
                     "iBoneIndex": 59,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_Xibi_Skill02_04",
@@ -357,57 +203,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 25.0,
-                    "iAnimIndex": 30,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 59,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill08_01",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 45.0,
-                    "iAnimIndex": 30,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_Xibi_Skill08_01",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_Xibi_Attack4",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -415,6 +213,7 @@
                     "iAnimIndex": 31,
                     "iBoneFlag": 4,
                     "iBoneIndex": 59,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_Xibi_Skill08_02",
@@ -432,7 +231,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -440,6 +241,7 @@
                     "iAnimIndex": 31,
                     "iBoneFlag": 4,
                     "iBoneIndex": 380,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_Xibi_Skill08_02",
@@ -457,7 +259,261 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 17.0,
+                    "iAnimIndex": 32,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 59,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill09",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 65.0,
+                    "iAnimIndex": 13,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Skill01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack1",
+                    "vOffset": {
+                        "x": -0.6000000238418579,
+                        "y": -1.0,
+                        "z": 1.2999999523162842
+                    },
+                    "vRotation": {
+                        "x": -30.0,
+                        "y": -50.0,
+                        "z": 160.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 85.66000366210938,
+                    "iAnimIndex": 13,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack3",
+                    "vOffset": {
+                        "x": 0.6899999976158142,
+                        "y": 0.47999998927116394,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": -26.959999084472656,
+                        "y": -90.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 21,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill03",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_BlinkEffect",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.20999999344348907
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 18.5,
+                    "iAnimIndex": 21,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill03",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_BlinkEffect2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.20000000298023224,
+                        "z": 0.20999999344348907
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 20.5,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 59,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 45.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 25.0,
+                    "iAnimIndex": 30,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 59,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill08_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Signal",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 45.0,
+                    "iAnimIndex": 30,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Skill08_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Attack4",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -465,6 +521,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -482,7 +539,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -490,6 +549,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -507,7 +567,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -515,6 +577,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -532,7 +595,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -540,6 +605,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -557,7 +623,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -565,6 +633,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -582,7 +651,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -590,6 +661,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -607,7 +679,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -615,6 +689,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -632,7 +707,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -640,6 +717,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -657,7 +735,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -665,6 +745,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -682,7 +763,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -690,6 +773,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -707,7 +791,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -715,6 +801,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -732,7 +819,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -740,6 +829,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -757,7 +847,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -765,6 +857,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -782,7 +875,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -790,6 +885,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -807,7 +903,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -815,6 +913,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -832,7 +931,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -840,6 +941,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -857,7 +959,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -865,6 +969,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -882,7 +987,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -890,6 +997,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -907,7 +1015,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -915,6 +1025,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -932,7 +1043,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -940,6 +1053,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -957,7 +1071,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -965,6 +1081,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -982,7 +1099,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -990,6 +1109,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1007,7 +1127,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1015,6 +1137,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1032,7 +1155,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1040,6 +1165,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1057,7 +1183,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1065,6 +1193,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1082,7 +1211,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1090,6 +1221,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1107,7 +1239,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1115,6 +1249,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1132,7 +1267,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1140,6 +1277,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1157,7 +1295,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1165,6 +1305,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1182,7 +1323,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1190,6 +1333,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1207,7 +1351,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1215,6 +1361,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1232,7 +1379,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1240,6 +1389,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1257,7 +1407,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1265,6 +1417,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1282,7 +1435,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1290,6 +1445,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1307,7 +1463,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1315,6 +1473,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1332,7 +1491,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1340,6 +1501,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1357,7 +1519,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1365,6 +1529,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1382,7 +1547,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1390,6 +1557,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1407,7 +1575,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1415,6 +1585,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1432,7 +1603,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1440,6 +1613,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1457,7 +1631,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1465,6 +1641,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1482,7 +1659,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1490,6 +1669,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1507,7 +1687,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1515,6 +1697,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1532,7 +1715,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1540,6 +1725,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1557,7 +1743,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1565,6 +1753,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1582,7 +1771,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1590,6 +1781,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1607,7 +1799,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1615,6 +1809,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1632,7 +1827,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1640,6 +1837,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1657,7 +1855,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1665,6 +1865,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1682,7 +1883,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1690,6 +1893,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1707,7 +1911,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1715,6 +1921,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1732,7 +1939,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1740,6 +1949,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1757,7 +1967,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1765,6 +1977,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1782,7 +1995,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1790,6 +2005,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1807,7 +2023,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1815,6 +2033,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1832,7 +2051,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1840,6 +2061,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1857,7 +2079,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1865,6 +2089,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1882,7 +2107,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1890,6 +2117,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1907,7 +2135,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1915,6 +2145,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1932,7 +2163,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1940,6 +2173,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1957,7 +2191,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1965,6 +2201,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -1982,7 +2219,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -1990,6 +2229,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2007,7 +2247,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2015,6 +2257,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2032,7 +2275,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2040,6 +2285,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2057,7 +2303,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2065,6 +2313,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2082,7 +2331,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2090,6 +2341,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2107,7 +2359,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2115,6 +2369,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2132,7 +2387,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2140,6 +2397,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2157,7 +2415,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2165,6 +2425,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2182,7 +2443,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2190,6 +2453,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2207,7 +2471,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2215,6 +2481,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2232,7 +2499,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2240,6 +2509,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2257,7 +2527,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2265,6 +2537,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2282,7 +2555,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2290,6 +2565,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2307,7 +2583,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2315,6 +2593,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2332,7 +2611,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -2340,6 +2621,7 @@
                     "iAnimIndex": 33,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill10",
@@ -2357,7 +2639,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -2365,6 +2649,7 @@
                     "iAnimIndex": 25,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill05",
@@ -2382,7 +2667,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -2390,6 +2677,7 @@
                     "iAnimIndex": 25,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill05",
@@ -2407,7 +2695,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -2415,6 +2705,7 @@
                     "iAnimIndex": 25,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill05",
@@ -2432,7 +2723,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -2440,6 +2733,7 @@
                     "iAnimIndex": 25,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill05",
@@ -2457,7 +2751,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -2465,6 +2761,7 @@
                     "iAnimIndex": 25,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill05",
@@ -2482,7 +2779,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -2490,6 +2789,7 @@
                     "iAnimIndex": 25,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill05",
@@ -2507,7 +2807,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -2515,6 +2817,7 @@
                     "iAnimIndex": 25,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill05",
@@ -2532,7 +2835,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -2540,6 +2845,7 @@
                     "iAnimIndex": 25,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill05",
@@ -2557,7 +2863,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
@@ -2565,6 +2873,7 @@
                     "iAnimIndex": 16,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Skill02",
@@ -2572,7 +2881,35 @@
                     "strEffectTag": "Boss_Xibi_DomeSkill",
                     "vOffset": {
                         "x": 0.0,
-                        "y": 0.05,
+                        "y": 0.05000000074505806,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 1,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 380,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Condemned_End",
+                    "strDescription": "",
+                    "strEffectTag": "Moon_Player_WeaknessAttack_End",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.800000011920929,
                         "z": 0.0
                     },
                     "vRotation": {
