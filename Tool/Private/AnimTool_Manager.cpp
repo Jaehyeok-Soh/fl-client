@@ -432,7 +432,7 @@ void CAnimTool_Manager::Set_EffectEvent(CEffectHandler* pEffectEvent)
 	{
 		m_pEffectModule->SetEFfectEvent(pEffectEvent, m_tAnimControllInfo.pCurrentObject);
 
-		unordered_map<_uint, vector<DTO::EFFECTEVENT>> EventList = {};
+		unordered_map<string, vector<DTO::EFFECTEVENT>> EventList = {};
 		EventList = m_pEffectModule->GetEvents();
 
 		for (auto& Event : EventList)

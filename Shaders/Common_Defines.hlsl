@@ -215,6 +215,31 @@ BlendState BS_AlphaAdditive
     BlendOpAlpha = ADD;
 };
 
+BlendState BS_WBOIT_Accumulate
+{
+    AlphaToCoverageEnable = FALSE;
+    //IndependentBlendEnable = TRUE;
+
+    // RenderTarget[0] 설정
+    BlendEnable[0] = TRUE;
+    SrcBlend[0] = ONE;
+    DestBlend[0] = ONE;
+    BlendOp[0] = ADD;
+    SrcBlendAlpha[0] = ONE;
+    DestBlendAlpha[0] = ONE;
+    BlendOpAlpha[0] = ADD;
+    RenderTargetWriteMask[0] = 0x0F;
+
+    // RenderTarget[1] 설정
+    BlendEnable[1] = TRUE;
+    SrcBlend[1] = ZERO;
+    DestBlend[1] = INV_SRC_COLOR; // 또는 INV_SRC1_COLOR (사용 환경에 따라 확인 필요)
+    BlendOp[1] = ADD;
+    SrcBlendAlpha[1] = ZERO;
+    DestBlendAlpha[1] = INV_SRC_ALPHA;
+    BlendOpAlpha[1] = ADD;
+    RenderTargetWriteMask[1] = 0x01;
+};
 /////////////////////
 // Depth / Stencil //
 /////////////////////

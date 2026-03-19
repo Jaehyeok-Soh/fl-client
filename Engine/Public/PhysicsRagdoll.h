@@ -30,6 +30,8 @@ public:
 
 	_int FindRagdollJointByBoneIndex(_uint boneIdx);
 
+	void ApplyHitImpulse(Vec3 vDir, _float fPower);
+
 	// getter func
 public:
 	const RAGDOLLELEMENTS& Get_RagDollElements() const { return m_tRagdollElements; }

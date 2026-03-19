@@ -148,7 +148,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Particle()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Particle()));
         SetPixelShader(CompileShader(ps_5_0, PS_Particle()));
@@ -158,7 +158,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Disabled, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Particle()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Particle()));
         SetPixelShader(CompileShader(ps_5_0, PS_Particle()));

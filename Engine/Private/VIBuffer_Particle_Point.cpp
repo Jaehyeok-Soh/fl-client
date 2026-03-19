@@ -9,6 +9,7 @@
 #define CIRCLE 1
 #define SPHERE 2
 #define CONE 3
+#define CIRCLE_EDGE 4
 
 CVIBuffer_Particle_Point::CVIBuffer_Particle_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -132,7 +133,7 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 	if (fDuration <= 0.f) fDuration = 1.f; // 방어 코드
 
 	// 생성 간격 계산
-	_float fSpawnInterval = fDuration / (_float)m_iInstanceCount;
+	_float fSpawnInterval = m_tParticleDesc.fDuration / (_float)m_iInstanceCount;
 	_float fSpeed = 1.f;
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
@@ -144,7 +145,7 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 
 		_float fMaxLifeTime = m_tParticleDesc.vLifeTime.y;
 		if (iFlags & DTO::E_RANDOM_FLAG::RAND_LIFE)
-			fMaxLifeTime = m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y);
+			fMaxLifeTime = m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.y * 0.3f, m_tParticleDesc.vLifeTime.y);
 
 		if (iFlags & DTO::E_RANDOM_FLAG::RAND_SPEED)
 			fSpeed = m_pGameInstance->Rand_Float(0.1f, 1.f);
@@ -181,16 +182,6 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 				vPos.z += m_pGameInstance->Rand_Float(-m_tParticleDesc.vRange.z * 0.5f, m_tParticleDesc.vRange.z * 0.5f);
 				break;
 			}
-
-			case CIRCLE:
-			{
-				_float fRadius = m_tParticleDesc.vRange.x;
-				_float fAngle = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
-
-				vPos.x += cos(fAngle) * fRadius;
-				vPos.y += sin(fAngle) * fRadius;
-				break;
-			}
 			case SPHERE:
 			{
 				_float fPhi = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
@@ -223,6 +214,44 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 
 				// 원뿔 위쪽으로 퍼지는 오프셋
 				vPos += vBottomPos;
+				break;
+			}
+
+			case CIRCLE:
+			{
+				_float fRadius = m_tParticleDesc.vRange.x;
+				_float fAngle = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
+
+				vPos.x += cos(fAngle) * fRadius;
+				vPos.y += sin(fAngle) * fRadius;
+
+				if (!m_tParticleDesc.UseBurst)
+				{
+					_float fAngleRatio = fAngle / DirectX::XM_2PI;
+					_float fInitialDelay = fAngleRatio * m_tParticleDesc.fDuration;
+					pInitialData[i].vParticle_LifeTime.x = -fInitialDelay;
+				}
+				break;
+			}
+
+			case CIRCLE_EDGE:
+			{
+				// 완전한 선이 아니라 약간의 두께감을 줌 (반지름의 90% ~ 100% 사이)
+				_float fMinRadius = m_tParticleDesc.vRange.x * 0.9f;
+				_float fMaxRadius = m_tParticleDesc.vRange.x;
+				_float fRadius = m_pGameInstance->Rand_Float(fMinRadius, fMaxRadius);
+
+				_float fAngle = m_pGameInstance->Rand_Float(0.f, DirectX::XM_2PI);
+
+				// XZ 평면 기준
+				vPos.x += cos(fAngle) * fRadius;
+				vPos.z += sin(fAngle) * fRadius;
+				if (!m_tParticleDesc.UseBurst)
+				{
+					_float fAngleRatio = fAngle / DirectX::XM_2PI;
+					_float fInitialDelay = fAngleRatio * m_tParticleDesc.fDuration;
+					pInitialData[i].vParticle_LifeTime.x = -fInitialDelay;
+				}
 				break;
 			}
 			}

@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "GameObject.h"
 
-#include "PhysicsCollider.h"
+#include "PhysicsCCT.h"
 
 #include "PartObject.h"
 #include "Bone.h"
@@ -157,7 +157,6 @@ void CPhysicsRagdoll::Awake()
 
 			Matrix boneCombined = vecBone[boneIndex]->Get_CombinedTransformMatrix();
 
-
 			PxTransform pxBoneCombine = m_pGameInstance->XMMatrixToPxTransform(boneCombined);
 
 			PxTransform pxGlobal = pxObjectWorld * pxBoneCombine;
@@ -179,6 +178,23 @@ void CPhysicsRagdoll::Awake()
 			//	link.first->setGlobalPose(pxGlobal, false);
 
 			i++;
+		}
+
+		m_tRagdollElements.pArticulation->setRootLinearVelocity(PxVec3(0.f));
+		m_tRagdollElements.pArticulation->setRootAngularVelocity(PxVec3(0.f));
+
+		PxArticulationCache* pCache = m_tRagdollElements.pArticulation->createCache();
+		if (pCache)
+		{
+			m_tRagdollElements.pArticulation->copyInternalStateToCache(*pCache, PxArticulationCacheFlag::eVELOCITY);
+
+			if (pCache->jointVelocity)
+			{
+				memset(pCache->jointVelocity, 0, sizeof(PxReal) * m_tRagdollElements.pArticulation->getDofs());
+			}
+
+			m_tRagdollElements.pArticulation->applyCache(*pCache, PxArticulationCacheFlag::eVELOCITY);
+			pCache->release();
 		}
 
 		m_pGameInstance->AddRagdoll(m_tRagdollElements.pArticulation);
@@ -224,6 +240,15 @@ void CPhysicsRagdoll::Update()
 
 	m_pMatrixBuffer->Copy_Data(pInitialData, sizeof(CS_OUT_BONE), iRagDollSize);
 	Safe_Delete_Array(pInitialData);
+
+	PxTransform rootTransform = m_tRagdollElements.pArticulation->getRootGlobalPose();;
+	//rootTransform.p.y += 0.3f;
+	CTransform* pOwnerTransform = static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>();
+	rootTransform.q.normalize();
+	Quat quat = ToQuaternion(rootTransform.q);
+
+	static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CPhysicsCCT>()->SetFootPosition(ToVector3(rootTransform.p));
+	pOwnerTransform->Rotation(quat);
 }
 
 _int CPhysicsRagdoll::FindRagdollJointByBoneIndex(_uint boneIdx)
@@ -236,12 +261,55 @@ _int CPhysicsRagdoll::FindRagdollJointByBoneIndex(_uint boneIdx)
 	return -1;
 }
 
+void CPhysicsRagdoll::ApplyHitImpulse(Vec3 vDir, _float fPower)
+{
+	m_tRagdollElements.pArticulation->wakeUp();
+
+	PxArticulationLink* pRootLink = m_tRagdollElements.vecPhysicsLink[RAGDOLLJOINT::PELVIS].first;
+
+	if (pRootLink == nullptr)
+		return;
+
+	vDir.Normalize();
+
+	vDir.y += 0.5f;
+	vDir.Normalize();
+
+	PxVec3 pxImpulse = ToPxVec3(vDir) * fPower;
+
+	pRootLink->addForce(pxImpulse, PxForceMode::eIMPULSE);
+}
+
 void CPhysicsRagdoll::Sleep()
 {
+	m_tRagdollElements.pArticulation->setRootLinearVelocity(PxVec3(0.f));
+	m_tRagdollElements.pArticulation->setRootAngularVelocity(PxVec3(0.f));
+
+	PxArticulationCache* pCache = m_tRagdollElements.pArticulation->createCache();
+	if (pCache)
+	{
+		m_tRagdollElements.pArticulation->copyInternalStateToCache(*pCache, PxArticulationCacheFlag::eVELOCITY);
+
+		if (pCache->jointVelocity)
+		{
+			memset(pCache->jointVelocity, 0, sizeof(PxReal) * m_tRagdollElements.pArticulation->getDofs());
+		}
+
+		m_tRagdollElements.pArticulation->applyCache(*pCache, PxArticulationCacheFlag::eVELOCITY);
+		pCache->release();
+	}
+
 	m_tRagdollElements.pArticulation->putToSleep();
 
 	PxTransform resetPose(PxVec3(0.f, -1000.f, 0.f), PxQuat(PxIdentity));
 	m_tRagdollElements.pArticulation->setRootGlobalPose(resetPose, false);
+
+	Quat quat = ToQuaternion(PxQuat(PxIdentity));
+
+	CTransform* pOwnerTransform = static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CTransform>();
+	pOwnerTransform->Rotation(quat);
+
+	m_pGameInstance->RemoveRagdoll(m_tRagdollElements.pArticulation);
 }
 
 HRESULT CPhysicsRagdoll::Setting_CS(CComputeShader* pRagDollCS, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

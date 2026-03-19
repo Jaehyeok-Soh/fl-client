@@ -2,9 +2,9 @@
     "Category": "EFFECT",
     "Objects": [
         {
-            "ContainerName": "Attack_4_Particle",
+            "ContainerName": "Player_Moon_WalkSmoke",
             "IsPoolingEffect": true,
-            "SimulationType": 2,
+            "SimulationType": 3435973836,
             "Type": "EFFECT_CONTAINER",
             "WorldMatrix": [
                 1.0,
@@ -27,17 +27,17 @@
             "_ChildData": [
                 {
                     "AnimationSpeed": 1.0,
-                    "AppearRatio": 0.4000000059604645,
+                    "AppearRatio": 0.0,
                     "Color": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 0.6249983310699463,
-                        "z": 0.0
+                        "w": 0.03921568766236305,
+                        "x": 0.6352941393852234,
+                        "y": 0.6313725709915161,
+                        "z": 0.6313725709915161
                     },
-                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "T_Eyeszz003_D",
-                    "DiscardValue": 0.05000000074505806,
-                    "DissolveTexture_Tag": "T_TurbulenceBx001_Mask",
+                    "CurveTexture_Tag": "",
+                    "DiffuseTexture_Tag": "T_Smoke4x4Wyc001_Mask",
+                    "DiscardValue": 0.0,
+                    "DissolveTexture_Tag": "T_TurbulenceWjw06_Mask",
                     "DistortionScale": {
                         "x": 0.0,
                         "y": 0.0
@@ -48,25 +48,16 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 80.0,
+                        "x": 10.0,
                         "y": 10.0,
                         "z": 10.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
                     "GlobalGravityCurve": [],
-                    "GlowPowerCurve": [
-                        {
-                            "Time": 0.0069605568423867226,
-                            "Val": 3.8333332538604736
-                        },
-                        {
-                            "Time": 0.9976798295974731,
-                            "Val": 0.0533333420753479
-                        }
-                    ],
-                    "GlowTexture_Tag": "T_GlowYb001_Mask",
-                    "GradationTexture_Tag": "",
+                    "GlowPowerCurve": [],
+                    "GlowTexture_Tag": "T_GlowZd002_Mask",
+                    "GradationTexture_Tag": "T_TurbulenceXy006_Mask",
                     "GravityBase": {
                         "Mod": 0.0,
                         "Val": 9.800000190734863
@@ -76,29 +67,29 @@
                         "y": -1.0,
                         "z": 0.0
                     },
-                    "LifeTime": 0.5999999642372131,
+                    "LifeTime": 0.6000000238418579,
                     "Looping": false,
-                    "MaskingTexture_Tag": "T_FlareZd002_Mask",
-                    "MaxParticle": 1,
+                    "MaskingTexture_Tag": "",
+                    "MaxParticle": 10,
                     "Model_Tag": "",
-                    "NoiseTexture_Tag": "",
+                    "NoiseTexture_Tag": "T_TurbulenceFz002_Mask",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "Attack_4_Particle",
+                    "ParentsName": "Player_Moon_WalkSmoke",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
                     },
                     "ParticleSystem": 2,
-                    "PartsName": "Attack4_MainEffect",
+                    "PartsName": "DEFAULT_EFFECT",
                     "PlayAnimation": false,
-                    "PlayBackSpeed": 1.0,
+                    "PlayBackSpeed": 2.0,
                     "RandomFlags": 0,
                     "Range": {
                         "x": 1.0,
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "RenderFlag": 8193,
+                    "RenderFlag": 8321,
                     "RotationCurveX": [],
                     "RotationCurveY": [],
                     "RotationCurveZ": [],
@@ -157,15 +148,15 @@
                     "SpriteInfo": {
                         "Curve": {
                             "w": 0.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 64.0
-                        },
-                        "Diffuse": {
-                            "w": 0.0,
                             "x": 0.0,
                             "y": 0.0,
                             "z": 0.0
+                        },
+                        "Diffuse": {
+                            "w": 1.0,
+                            "x": 2.0,
+                            "y": 4.0,
+                            "z": 4.0
                         },
                         "Dissolve": {
                             "w": 0.0,
@@ -211,9 +202,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 70.0,
-                        "y": 10.0,
-                        "z": 10.0
+                        "x": 5.0,
+                        "y": 5.0,
+                        "z": 5.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -223,7 +214,7 @@
                     },
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 0,
-                    "TextureFlag": 196,
+                    "TextureFlag": 131,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": true,
@@ -234,12 +225,12 @@
                     },
                     "Tool_Resource": {
                         "Curve": false,
-                        "Diffuse": false,
+                        "Diffuse": true,
                         "Dissolve": true,
-                        "Glow": true,
+                        "Glow": false,
                         "Gradation": false,
-                        "Masking": true,
-                        "Noise": false,
+                        "Masking": false,
+                        "Noise": true,
                         "SubMasking": false
                     },
                     "Tool_Samplers": {
@@ -255,12 +246,30 @@
                         "Glow": false,
                         "Gradation": false,
                         "Masking": false,
-                        "Noise": false,
+                        "Noise": true,
                         "SubMasking": false
                     },
                     "Type": "EFFECT_PARTS",
-                    "UVScrollCurveX": [],
-                    "UVScrollCurveY": [],
+                    "UVScrollCurveX": [
+                        {
+                            "Time": 0.004878048785030842,
+                            "Val": 0.019999980926513672
+                        },
+                        {
+                            "Time": 0.992682933807373,
+                            "Val": 0.95333331823349
+                        }
+                    ],
+                    "UVScrollCurveY": [
+                        {
+                            "Time": 0.009756097570061684,
+                            "Val": 0.019999980926513672
+                        },
+                        {
+                            "Time": 0.9902439117431641,
+                            "Val": 0.9666666388511658
+                        }
+                    ],
                     "UV_Offset": {
                         "x": 0.0,
                         "y": 0.0
@@ -271,9 +280,9 @@
                     "UseRotationCurve": false,
                     "UseScaleCurve": false,
                     "UseStartRotation": false,
-                    "UseUVScrollCurve": false,
+                    "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        80.0,
+                        10.0,
                         0.0,
                         0.0,
                         0.0,
@@ -298,7 +307,7 @@
                     "strTag": "EffectObject"
                 }
             ],
-            "strTag": "Attack_4_Particle"
+            "strTag": "Player_Moon_WalkSmoke"
         }
     ]
 }
