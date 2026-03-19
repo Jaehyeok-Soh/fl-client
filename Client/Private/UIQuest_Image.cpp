@@ -152,8 +152,21 @@ void CUIQuest_Image::Bind_Events()
 	);
 
 	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
+			{				
+				if (this->m_isPulseTrigger)
+					return;
+
+				Set_Visible();
+			})
+	);
+
+	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
+				if (this->m_isPulseTrigger)
+					return;
+
 				Set_Visible();
 			})
 	);
@@ -164,7 +177,7 @@ void CUIQuest_Image::Bind_Events()
 				if (EUIEventID::QUEST_NAME_CHANGE == Desc.eEventID)
 				{
 					this->Set_Invisible();
-					this->m_isVisibleTrigger = true;
+					this->m_isPulseTrigger = true;
 				}
 			})
 	);
@@ -215,10 +228,10 @@ _bool CUIQuest_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	{
 		m_isFin_Event = true;
 
-		if (m_isVisibleTrigger)
+		if (m_isPulseTrigger)
 		{
 			m_isVisibleTriggerStart = true;
-			m_isVisibleTrigger = false;
+			m_isPulseTrigger = false;
 		}
 
 		return true;

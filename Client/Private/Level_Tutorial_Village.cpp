@@ -5,6 +5,7 @@
 // Manager
 //=================
 #include "UI_Manager.h"
+#include "UITutorial_Manager.h"
 #include "DialogueManager.h"
 
 //=================
@@ -483,6 +484,8 @@ HRESULT CLevel_Tutorial_Village::Ready_Octree()
 
 HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 {
+	CDialogueManager::GetInstance()->Initialize();
+
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
@@ -496,7 +499,6 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
 	CQuestManager::GetInstance()->Start_Quest(0);
-	CDialogueManager::GetInstance()->Initialize();
 
 	return S_OK;
 }
@@ -504,7 +506,7 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 void CLevel_Tutorial_Village::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
+	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
 
 	static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))

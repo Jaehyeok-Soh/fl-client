@@ -29,6 +29,7 @@
 #include "UILoading_Text.h"
 #include "UILoading_Progress.h"
 #include "UILoading_Image.h"
+#include "UITutorial_Manager.h"
 
 // Quest
 #include "QuestManager.h"
@@ -638,6 +639,7 @@ void CMainApplication::Free()
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();	// 오브젝트 삭제 이후 삭제해야되는데 / 오브젝트에서 Addref 하고 있어서 안터짐
 	CUIMinimap_Manager::GetInstance()->DestroyInstance();
+	CUITutorial_Manager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();
 

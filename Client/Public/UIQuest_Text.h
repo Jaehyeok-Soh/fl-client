@@ -43,7 +43,7 @@ private:
 	virtual void Tick_By_Type(const _float fTimeDelta)override;
 
 private:
-	_bool m_isVisibleTrigger = { false };
+	_bool m_isPulseTrigger = { false };
 	_bool m_isVisibleTriggerStart = { false };
 
 public:
