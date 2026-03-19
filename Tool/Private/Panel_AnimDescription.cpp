@@ -418,6 +418,33 @@ void CPanel_AnimDescription::Desc_EffectWindow()
 
         ImGui::Checkbox("Follow Bone", &pEvent.bFollowBone);
 
+        // --- 새롭게 추가된 Child Bone 관련 제어 부분 ---
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "[ Child Part Attachment ]");
+
+        if (ImGui::Checkbox("Use Child Bone", &pEvent.bUseChildBone))
+        {
+            m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+        }
+
+        // Child Bone 사용 시에만 설정 가능하도록 비활성화 처리
+        if (!pEvent.bUseChildBone) ImGui::BeginDisabled();
+        {
+            if (ImGui::InputInt("Child Part Number", &pEvent.ChildPartNumber))
+            {
+                m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+            }
+            ImGui::NewLine();
+
+            if (ImGui::InputInt("Child Bone Index", &pEvent.iChildBoneIndex))
+            {
+                m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+            }
+            ImGui::NewLine();
+        }
+        if (!pEvent.bUseChildBone) ImGui::EndDisabled();
+
+
         if (ImGui::DragFloat3("Offset Position", (float*)&pEvent.vOffset, 0.01f))
             m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
 

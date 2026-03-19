@@ -362,7 +362,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
             data._Effect_MaskTexture_SpriteInfo = { si["Mask"]["x"], si["Mask"]["y"], si["Mask"]["z"], si["Mask"]["w"] };
 
         if (si.contains("SubMask"))
-            data._Effect_MaskTexture_SpriteInfo = { si["SubMask"]["x"], si["SubMask"]["y"], si["SubMask"]["z"], si["SubMask"]["w"] };
+            data._Effect_SubMaskTexture_SpriteInfo = { si["SubMask"]["x"], si["SubMask"]["y"], si["SubMask"]["z"], si["SubMask"]["w"] };
 
     }
 
