@@ -325,17 +325,17 @@ HRESULT CRender_Manager::Set_ShaderResources()
 	}
 	// FogDesc
 	{
-		m_tFogDesc.vColor = Vec4(0.45f, 0.6f, 0.78f, 1.f);    // 짙은 청색
-		m_tFogDesc.vHighColor = Vec4(0.6f, 0.72f, 0.85f, 1.f);    // 하늘 쪽 밝은 청색
+		m_tFogDesc.vColor = Vec4(0.35f, 0.35f, 0.35f, 1.f);
+		m_tFogDesc.vHighColor = Vec4(0.31f, 0.31f, 0.31f, 1.f);
 
 		// Distance
-		m_tFogDesc.fFogStart = 20.f;     // 20m부터 시작
-		m_tFogDesc.fFogEnd = 80.f;     // 80m에서 최대
+		m_tFogDesc.fFogStart = 100.f;     // 20m부터 시작
+		m_tFogDesc.fFogEnd = 430.f;     // 80m에서 최대
 		m_tFogDesc.fFogDensity = 0.f;      // linear (0이면 linear)
-		m_tFogDesc.fFogMaxOpacity = 0.55f;    // 최대 55% - 멀어도 어느정도 보임
+		m_tFogDesc.fFogMaxOpacity = 0.2f;    // 최대 55% - 멀어도 어느정도 보임
 
 		// Height
-		m_tFogDesc.fFogBaseHeight = -3.f;     // 지면 약간 아래
+		m_tFogDesc.fFogBaseHeight = -9.f;     // 지면 약간 아래
 		m_tFogDesc.fFogHeightFalloff = 0.08f;    // 천천히 감소 - 낮은 곳에 안개 깔림
 		m_tFogDesc.fFogHeightDensity = 0.015f;   // 옅게
 
@@ -410,6 +410,9 @@ HRESULT CRender_Manager::Render()
 			if (FAILED(Render_Outline()))
 				return E_FAIL;
 
+			if (FAILED(Render_Fog()))
+				return E_FAIL;
+
 			m_pGameInstance->Setup_ViewProj_ToCBuffer();
 
 			if (FAILED(m_pGameInstance->End_MRT())) return E_FAIL;
@@ -461,9 +464,6 @@ HRESULT CRender_Manager::Render()
 	}
 
 	m_pGameInstance->Setup_UIViewProj_ToCBuffer();
-
-	//if (FAILED(Render_Fog()))
-	//	return E_FAIL;
 
 	if (FAILED(Render_Bloom()))
 		return E_FAIL;
@@ -1869,18 +1869,18 @@ _uint CRender_Manager::Compute_BakedSectionIndex(_int iSectionX, _int iSectionZ)
 
 BoundingBox CRender_Manager::Compute_BakedSectionBounds(_int iSectionX, _int iSectionZ) const
 {
-	constexpr _float fReceiverMinY = -50.f;
-	constexpr _float fReceiverMaxY = 90.f;
+	_float fMinY = m_bakedWorldRootBounds.Center.y - m_bakedWorldRootBounds.Extents.y;
+	_float fMaxY = m_bakedWorldRootBounds.Center.y + m_bakedWorldRootBounds.Extents.y;
 
 	Vec3 vMin = {
 		m_vBakedSectionOrigin.x + iSectionX * m_fBakedSectionSizeX,
-		fReceiverMinY,
+		fMinY,
 		m_vBakedSectionOrigin.z + iSectionZ * m_fBakedSectionSizeZ
 	};
 
 	Vec3 vMax = {
 		m_vBakedSectionOrigin.x + (iSectionX + 1) * m_fBakedSectionSizeX,
-		fReceiverMaxY,
+		fMaxY,
 		m_vBakedSectionOrigin.z + (iSectionZ + 1) * m_fBakedSectionSizeZ
 	};
 
@@ -1976,31 +1976,108 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 		return tOut;
 	}
 
+	// ===========================================================
+	// 0) section footprint는 유지
+	//    receiver fit은 XZ는 section 그대로, Y만 타이트하게 계산
+	// ===========================================================
+	const _float fSectionMinX = input.sectionBounds.Center.x - input.sectionBounds.Extents.x;
+	const _float fSectionMaxX = input.sectionBounds.Center.x + input.sectionBounds.Extents.x;
+	const _float fSectionMinY = input.sectionBounds.Center.y - input.sectionBounds.Extents.y;
+	const _float fSectionMaxY = input.sectionBounds.Center.y + input.sectionBounds.Extents.y;
+	const _float fSectionMinZ = input.sectionBounds.Center.z - input.sectionBounds.Extents.z;
+	const _float fSectionMaxZ = input.sectionBounds.Center.z + input.sectionBounds.Extents.z;
+
+	_float fReceiverMinY = FLT_MAX;
+	_float fReceiverMaxY = -FLT_MAX;
+	_bool  bHasReceiver = false;
+	_uint  iReceiverCount = 0;
+
+	// receiver 후보:
+	// "현재 section footprint(XZ)에 걸치고, section의 Y band 안에도 실제로 걸치는 baked static"
+	for (auto* pObj : *input.pStaticCasters)
+	{
+		if (pObj == nullptr)
+			continue;
+
+		CBounds* pBounds = pObj->Get_Component<CBounds>();
+		if (pBounds == nullptr || pBounds->Get_WolrdAABB() == nullptr)
+			continue;
+
+		const BoundingBox& AABB = *pBounds->Get_WolrdAABB();
+
+		Vec3 vObjMin = AABB.Center - AABB.Extents;
+		Vec3 vObjMax = AABB.Center + AABB.Extents;
+
+		const _bool bOverlapX = !(vObjMax.x < fSectionMinX || vObjMin.x > fSectionMaxX);
+		const _bool bOverlapZ = !(vObjMax.z < fSectionMinZ || vObjMin.z > fSectionMaxZ);
+
+		if (bOverlapX == false || bOverlapZ == false)
+			continue;
+
+		// section의 원래 높이 band 안으로 Y를 clip
+		const _float fClampedMinY = (std::max)(vObjMin.y, fSectionMinY);
+		const _float fClampedMaxY = (std::min)(vObjMax.y, fSectionMaxY);
+
+		if (fClampedMinY > fClampedMaxY)
+			continue;
+
+		fReceiverMinY = (std::min)(fReceiverMinY, fClampedMinY);
+		fReceiverMaxY = (std::max)(fReceiverMaxY, fClampedMaxY);
+		bHasReceiver = true;
+		++iReceiverCount;
+	}
+
+	// fallback: receiver를 못 찾으면 기존 sectionBounds 사용
+	BoundingBox receiverFitBounds = input.sectionBounds;
+
+	if (bHasReceiver)
+	{
+		constexpr _float fReceiverPadY = 2.f;
+
+		Vec3 vFitMin(
+			fSectionMinX,
+			fReceiverMinY - fReceiverPadY,
+			fSectionMinZ
+		);
+
+		Vec3 vFitMax(
+			fSectionMaxX,
+			fReceiverMaxY + fReceiverPadY,
+			fSectionMaxZ
+		);
+
+		receiverFitBounds = BoundingBox(
+			(vFitMin + vFitMax) * 0.5f,
+			(vFitMax - vFitMin) * 0.5f
+		);
+	}
+
+	tOut.receiverBounds = receiverFitBounds;
+
 	// ===============================================
-	// Receiver = sectionBounds 기준으로 LightView 생성
-	// XY는 무조건 receiver 기준으로 고정
+	// Receiver = receiverFitBounds 기준으로 LightView 생성
+	// XZ footprint는 section 그대로, Y만 타이트하게
 	// ===============================================
 	Vec3 vReceiverCenter = Vec3(
-		input.sectionBounds.Center.x,
-		input.sectionBounds.Center.y,
-		input.sectionBounds.Center.z
+		receiverFitBounds.Center.x,
+		receiverFitBounds.Center.y,
+		receiverFitBounds.Center.z
 	);
 
 	Vec3 vReceiverExtents = Vec3(
-		input.sectionBounds.Extents.x,
-		input.sectionBounds.Extents.y,
-		input.sectionBounds.Extents.z
+		receiverFitBounds.Extents.x,
+		receiverFitBounds.Extents.y,
+		receiverFitBounds.Extents.z
 	);
 
 	Vec3 vUp = Vec3::Up;
 	if (fabs(input.vLightDir.Dot(vUp)) > 0.98f)
 		vUp = Vec3::Forward;
 
-	// receiver 중심 기준으로 충분히 뒤에서 보는 View
-	_float fViewBackDist = (std::max)(
-		m_bakedWorldRootBounds.Extents.x + m_bakedWorldRootBounds.Extents.y + m_bakedWorldRootBounds.Extents.z,
-		vReceiverExtents.Length() * 4.f
-	);
+	_float fViewBackDist = sqrtf(
+		vReceiverExtents.x * vReceiverExtents.x +
+		vReceiverExtents.z * vReceiverExtents.z
+	) * 2.f;
 
 	Matrix matLightView = ::XMMatrixLookAtLH(
 		vReceiverCenter - input.vLightDir * fViewBackDist,
@@ -2008,12 +2085,12 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 		vUp
 	);
 
-	// ================
-	// receiverLS 계산
+	// =========================
+	// receiver LS 범위 계산
 	// XY는 여기서 확정
-	// ================
+	// =========================
 	Vec3 vReceiverCorners[8];
-	input.sectionBounds.GetCorners(vReceiverCorners);
+	receiverFitBounds.GetCorners(vReceiverCorners);
 
 	Vec3 vReceiverLSMin(FLT_MAX, FLT_MAX, FLT_MAX);
 	Vec3 vReceiverLSMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
@@ -2025,8 +2102,7 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 		vReceiverLSMax = Vec3::Max(vReceiverLSMax, vLS);
 	}
 
-	// XY는 receiver(sectionBounds) 기준으로 고정
-	const _float fPadXY = 1.0f;
+	const _float fPadXY = 0.f;
 	_float minX = vReceiverLSMin.x - fPadXY;
 	_float maxX = vReceiverLSMax.x + fPadXY;
 	_float minY = vReceiverLSMin.y - fPadXY;
@@ -2034,11 +2110,11 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 
 	// ===========================================================
 	// caster query 범위
-	// XY는 고정이지만, caster는 section 주변까지 조금 더 넓게 수집
+	// world-space broad phase
 	// ===========================================================
 	Vec3 vCasterQueryExtents = Vec3(
 		input.sectionBounds.Extents.x + m_fBakedSectionSizeX * 0.15f,
-		input.sectionBounds.Extents.y + 40.f,
+		input.sectionBounds.Extents.y + 5.f,
 		input.sectionBounds.Extents.z + m_fBakedSectionSizeZ * 0.15f
 	);
 
@@ -2058,6 +2134,17 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 	_uint iBroadPhaseHitCount = 0;
 	_uint iAcceptedCasterCount = 0;
 
+	// ===========================================================
+	// caster Z slab 제한
+	// - receiver와 너무 멀리 떨어진 caster는 제외
+	// - accepted caster의 Z union도 clamp
+	// ===========================================================
+	const _float fCasterPadFront = 120.f; // light 진행 방향 앞쪽 여유
+	const _float fCasterPadBack = 40.f;  // 뒤쪽 여유
+
+	const _float fReceiverMinZ = vReceiverLSMin.z;
+	const _float fReceiverMaxZ = vReceiverLSMax.z;
+
 	for (auto* pObj : *input.pStaticCasters)
 	{
 		if (pObj == nullptr)
@@ -2075,7 +2162,7 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 
 		++iBroadPhaseHitCount;
 
-		// 2) narrow-phase : light-space XY overlap 검사
+		// 2) light-space narrow phase
 		Vec3 vObjLSMin(FLT_MAX, FLT_MAX, FLT_MAX);
 		Vec3 vObjLSMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
@@ -2091,13 +2178,15 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 
 		const _bool bOverlapX = !(vObjLSMax.x < minX || vObjLSMin.x > maxX);
 		const _bool bOverlapY = !(vObjLSMax.y < minY || vObjLSMin.y > maxY);
+		const _bool bOverlapZ =
+			!(vObjLSMax.z < (fReceiverMinZ - fCasterPadBack) ||
+				vObjLSMin.z >(fReceiverMaxZ + fCasterPadFront));
 
-		if (bOverlapX == false || bOverlapY == false)
+		if (bOverlapX == false || bOverlapY == false || bOverlapZ == false)
 			continue;
 
 		// 여기까지 와야 실제로 이 section receiver에 영향 주는 caster
 		++iAcceptedCasterCount;
-
 		tOut.vecCasters.push_back(pObj);
 
 		Vec3 vObjMin = AABB.Center - AABB.Extents;
@@ -2106,8 +2195,15 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 		vCasterUnionMin = Vec3::Min(vCasterUnionMin, vObjMin);
 		vCasterUnionMax = Vec3::Max(vCasterUnionMax, vObjMax);
 
-		vCasterLSMin = Vec3::Min(vCasterLSMin, vObjLSMin);
-		vCasterLSMax = Vec3::Max(vCasterLSMax, vObjLSMax);
+		// accepted caster의 light-space Z도 slab로 clamp
+		Vec3 vObjLSMinClamped = vObjLSMin;
+		Vec3 vObjLSMaxClamped = vObjLSMax;
+
+		vObjLSMinClamped.z = (std::max)(vObjLSMinClamped.z, fReceiverMinZ - fCasterPadBack);
+		vObjLSMaxClamped.z = (std::min)(vObjLSMaxClamped.z, fReceiverMaxZ + fCasterPadFront);
+
+		vCasterLSMin = Vec3::Min(vCasterLSMin, vObjLSMinClamped);
+		vCasterLSMax = Vec3::Max(vCasterLSMax, vObjLSMaxClamped);
 
 		bHasCaster = true;
 	}
@@ -2125,15 +2221,27 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 		return tOut;
 	}
 
+	Vec3 vSecMin = Vec3(
+		fSectionMinX,
+		vCasterUnionMin.y,
+		fSectionMinZ
+	);
+
+	Vec3 vSecMax = Vec3(
+		fSectionMaxX,
+		vCasterUnionMax.y,
+		fSectionMaxZ
+	);
+
 	tOut.casterBounds = BoundingBox(
-		(vCasterUnionMin + vCasterUnionMax) * 0.5f,
-		(vCasterUnionMax - vCasterUnionMin) * 0.5f
+		(vSecMin + vSecMax) * 0.5f,
+		(vSecMax - vSecMin) * 0.5f
 	);
 
 	// ===========================================================
-	// Z만 receiver + caster 기준으로 가변
+	// Z는 receiver + clamped caster 기준으로 가변
 	// ===========================================================
-	const _float fPadZ = 8.f;
+	const _float fPadZ = 3.f;
 
 	_float minZ = (std::min)(vReceiverLSMin.z, vCasterLSMin.z) - fPadZ;
 	_float maxZ = (std::max)(vReceiverLSMax.z, vCasterLSMax.z) + fPadZ;
@@ -2146,7 +2254,7 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 
 	tOut.matLightVP = matLightView * matLightProj;
 	tOut.vShadowParams = Vec4(
-		0.0025f,
+		0.0006f,
 		0.6f,
 		1.f / SHADOW_BAKE_SIZE,
 		1.f / SHADOW_BAKE_SIZE
@@ -2166,12 +2274,13 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 		string strLog{
 			"[BakedSection] "
 			"Grid(" + std::to_string(input.iSectionX) + ", " + std::to_string(input.iSectionZ) + ") " +
-			"SectionMin(" + std::to_string(input.sectionBounds.Center.x - input.sectionBounds.Extents.x) + ", " +
-							 std::to_string(input.sectionBounds.Center.y - input.sectionBounds.Extents.y) + ", " +
-							 std::to_string(input.sectionBounds.Center.z - input.sectionBounds.Extents.z) + ") " +
-			"SectionMax(" + std::to_string(input.sectionBounds.Center.x + input.sectionBounds.Extents.x) + ", " +
-							 std::to_string(input.sectionBounds.Center.y + input.sectionBounds.Extents.y) + ", " +
-							 std::to_string(input.sectionBounds.Center.z + input.sectionBounds.Extents.z) + ") " +
+
+			"SectionMin(" + std::to_string(fSectionMinX) + ", " +
+							 std::to_string(fSectionMinY) + ", " +
+							 std::to_string(fSectionMinZ) + ") " +
+			"SectionMax(" + std::to_string(fSectionMaxX) + ", " +
+							 std::to_string(fSectionMaxY) + ", " +
+							 std::to_string(fSectionMaxZ) + ") " +
 
 			"ReceiverLS_Min(" + std::to_string(vReceiverLSMin.x) + ", " +
 								 std::to_string(vReceiverLSMin.y) + ", " +
@@ -2189,6 +2298,9 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 							   std::to_string(vCasterLSMax.y) + ", " +
 							   std::to_string(vCasterLSMax.z) + ") " +
 
+			"ReceiverZ(" + std::to_string(vReceiverLSMin.z) + "~" + std::to_string(vReceiverLSMax.z) + ") " +
+			"CasterZ(" + std::to_string(vCasterLSMin.z) + "~" + std::to_string(vCasterLSMax.z) + ") " +
+
 			"FinalXY(" + std::to_string(minX) + "~" + std::to_string(maxX) + ", " +
 						   std::to_string(minY) + "~" + std::to_string(maxY) + ") " +
 			"FinalZ(" + std::to_string(minZ) + "~" + std::to_string(maxZ) + ") " +
@@ -2198,10 +2310,21 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 						   std::to_string(fOrthoDepth) + ") " +
 
 			"TexelWS(" + std::to_string(fTexelWorldX) + ", " +
-						  std::to_string(fTexelWorldY) + ")" + 
+						  std::to_string(fTexelWorldY) + ") " +
 
 			"BroadPhase(" + std::to_string(iBroadPhaseHitCount) + ") " +
-			"Accepted(" + std::to_string(iAcceptedCasterCount) + ") "
+			"Accepted(" + std::to_string(iAcceptedCasterCount) + ") " +
+
+			"ReceiverFitMin(" + std::to_string(receiverFitBounds.Center.x - receiverFitBounds.Extents.x) + ", " +
+							  std::to_string(receiverFitBounds.Center.y - receiverFitBounds.Extents.y) + ", " +
+							  std::to_string(receiverFitBounds.Center.z - receiverFitBounds.Extents.z) + ") " +
+			"ReceiverFitMax(" + std::to_string(receiverFitBounds.Center.x + receiverFitBounds.Extents.x) + ", " +
+							  std::to_string(receiverFitBounds.Center.y + receiverFitBounds.Extents.y) + ", " +
+							  std::to_string(receiverFitBounds.Center.z + receiverFitBounds.Extents.z) + ") " +
+
+			"SectionHeight(" + std::to_string(input.sectionBounds.Extents.y * 2.f) + ") " +
+			"ReceiverHeight(" + std::to_string(receiverFitBounds.Extents.y * 2.f) + ") " +
+			"ReceiverCount(" + std::to_string(iReceiverCount) + ") "
 		};
 		CLOG_INFO(strLog);
 	}

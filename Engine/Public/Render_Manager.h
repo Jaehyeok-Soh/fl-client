@@ -177,9 +177,6 @@ private:
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
-#ifdef  _DEBUG
-public:
-	HRESULT Push_DebugComponent(class CComponent* pComponent);
 	
 	// SSAO
 	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() { return m_tSSAOparamDesc; }
@@ -226,6 +223,9 @@ public:
 	const ACTIVE_BAKED_SET &Get_ActiveBakedSectionSet() const { return m_tActiveBakedSet; }
 	void Update_BakedShadowDebugTexture(_uint iSlice);
 	ID3D11ShaderResourceView* Get_BakedShadowDebugSRV();
+#ifdef  _DEBUG
+public:
+	HRESULT Push_DebugComponent(class CComponent* pComponent);
 private:
 	HRESULT Create_BakedShadowSliceSRV();
 private:

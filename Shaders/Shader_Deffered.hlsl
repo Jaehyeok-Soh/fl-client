@@ -4,7 +4,7 @@
 int Find_BakedSection(float3 vWorldPos)
 {
     [unroll]
-    for (int i = 0; i < shaderBakedSectionParam.iActiveCount; ++i)
+    for (uint i = 0; i < shaderBakedSectionParam.iActiveCount; ++i)
     {
         float3 vMin = shaderBakedSectionParam.sections[i].vBoundsMin.xyz;
         float3 vMax = shaderBakedSectionParam.sections[i].vBoundMax.xyz;
@@ -21,18 +21,22 @@ int Find_BakedSection(float3 vWorldPos)
     return -1;
 }
 
-float SampleBakedShadowSection(float3 vWorldPos, int iSection)
+float SampleBakedShadowSection(float3 vWorldPos, float3 vWorldNormal, float fNDotL, int iSection)
 {
     ShaderBakedSection section = shaderBakedSectionParam.sections[iSection];
+    float fNormalOffset = 0.1f * (1.0f - fNDotL);
     
-    float4 vLightClip = mul(float4(vWorldPos, 1.f), section.matLightVP);
+    float3 vBiasedPos = vWorldPos + vWorldNormal * fNormalOffset;
+    
+    // World -> LightClip
+    float4 vLightClip = mul(float4(vBiasedPos, 1.f), section.matLightVP);
     
     if (abs(vLightClip.w) < EPSILON)
         return 1.f;
         
     float3 vLightNDC = vLightClip.xyz / vLightClip.w;
     float2 vShadowUV = NDC_ToUV(vLightNDC.xy);
-
+    
     if (any(vShadowUV < 0.f) || any(vShadowUV > 1.f) ||
         vLightNDC.z < 0.f || vLightNDC.z > 1.f)
         return 1.f;
@@ -41,23 +45,38 @@ float SampleBakedShadowSection(float3 vWorldPos, int iSection)
     float fBias = section.vShadowParams.x;
     float fStrength = section.vShadowParams.y;
     float2 vInvSize = section.vShadowParams.zw;
+    float fSlice = (float) section.iArraySlice;
+    
+    float fShadow = 0.f;
+    [unroll]
+    for (int y = -1; y <= 1; ++y)
+    {
+        [unroll]
+        for (int x = -1; x <= 1; ++x)
+        {
+            float2 vOffset = float2(x, y) * vInvSize;
+            float fStored = g_RenderTargetShadowBaked.SampleLevel(
+                PointClampSampler,
+                float3(vShadowUV + vOffset, fSlice),
+                0).r;
 
-    float fStored = g_RenderTargetShadowBaked.SampleLevel(
-    PointClampSampler,
-    float3(vShadowUV, section.iArraySlice),
-    0).r;
-    float fShadow = ((fCurrentDepth - fBias) > fStored) ? 0.f : 1.f;
+            fShadow += ((fCurrentDepth - fBias) > fStored) ? 0.f : 1.f;
+        }
+    }
+
+    fShadow /= 9.f;
     return lerp(1.f - fStrength, 1.f, fShadow);
 }
 
-float SampleBakedShadowMulti(float3 vWorldPos)
+float SampleBakedShadowMulti(float3 vWorldPos, float3 vWorldNormal, float fNDotL)
 {
     int iSection = Find_BakedSection(vWorldPos);
     if(iSection <0)
         return 1.f;
     
-    return SampleBakedShadowSection(vWorldPos, iSection);
+    return SampleBakedShadowSection(vWorldPos, vWorldNormal, fNDotL, iSection);
 }
+
 float SampleCascadeShadowPCF(float3 vWorldPos, float3 vWorldNormal, float fNDotL, float fViewZ)
 {
     int iCascade = (fViewZ > cascadeParam.fCascadeEnd0) ? 1 : 0;
@@ -413,7 +432,7 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
 
     // Shadow
     float fDynamicShadow = SampleCascadeShadowPCF(vWorldPos.xyz, vNormal, fNdotL, fViewZ);
-    float fStaticShadow = SampleBakedShadowMulti(vWorldPos.xyz);
+    float fStaticShadow = SampleBakedShadowMulti(vWorldPos.xyz, vNormal, fNdotL);
     
     float fFinalShadow = min(fDynamicShadow, fStaticShadow);
     

@@ -328,6 +328,7 @@ public:
 #ifdef _DEBUG
 	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
 	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+#endif
 	ID3D11ShaderResourceView* Get_RenderTargetSRV(ERenderTarget eTarget);
 	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc();
 	const SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() const;
@@ -354,7 +355,7 @@ public:
 	ID3D11ShaderResourceView* Get_BakedShadowDebugSRV();
 	const ACTIVE_BAKED_SET& Get_ActiveBakedSectionSet() const;
 	void Update_BakedShadowDebugTexture(_uint iSlice);
-#endif
+
 #pragma endregion
 
 #pragma region RANDOM

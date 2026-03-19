@@ -157,6 +157,7 @@ namespace Engine
 		int                    iSectionZ{ 0 };
 		BoundingBox            sectionBounds{};
 		BoundingBox            casterBounds{};
+		BoundingBox			   receiverBounds{};
 		SimpleMath::Matrix     matLightVP{ SimpleMath::Matrix::Identity };
 		SimpleMath::Vector4    vShadowParams{};
 		vector<class CGameObject*> vecCasters;
