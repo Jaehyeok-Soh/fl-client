@@ -325,10 +325,6 @@ public:
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
-#ifdef _DEBUG
-	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
-	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
-#endif
 	ID3D11ShaderResourceView* Get_RenderTargetSRV(ERenderTarget eTarget);
 	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc();
 	const SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() const;
@@ -352,9 +348,13 @@ public:
 	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const;
 	HRESULT Commit_CascadeParam();
 	HRESULT Commit_AllPostParams();
+#ifdef _DEBUG
+	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
 	ID3D11ShaderResourceView* Get_BakedShadowDebugSRV();
 	const ACTIVE_BAKED_SET& Get_ActiveBakedSectionSet() const;
 	void Update_BakedShadowDebugTexture(_uint iSlice);
+#endif
 
 #pragma endregion
 

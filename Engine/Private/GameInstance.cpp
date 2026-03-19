@@ -804,16 +804,6 @@ HRESULT CGameInstance::Bake_StaticShadow(BoundingBox* pRootBox)
 
 	return S_OK;
 }
-#ifdef _DEBUG
-ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
-{
-	return m_pRenderTarget_Manager->Get_RenderTargetSRV(eTarget);
-}
-
-inline void CGameInstance::Push_DebugComponent(CComponent* pComp)
-{
-	m_pRender_Manager->Push_DebugComponent(pComp);
-}
 SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc()
 {
 	return m_pRender_Manager->Get_SSAOParamDesc();
@@ -901,6 +891,16 @@ HRESULT CGameInstance::Commit_CascadeParam()
 HRESULT CGameInstance::Commit_AllPostParams()
 {
 	return m_pRender_Manager->Commit_AllPostParams();
+}
+#ifdef _DEBUG
+ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
+{
+	return m_pRenderTarget_Manager->Get_RenderTargetSRV(eTarget);
+}
+
+inline void CGameInstance::Push_DebugComponent(CComponent* pComp)
+{
+	m_pRender_Manager->Push_DebugComponent(pComp);
 }
 ID3D11ShaderResourceView* CGameInstance::Get_BakedShadowDebugSRV()
 {

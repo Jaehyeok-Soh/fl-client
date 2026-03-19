@@ -2627,15 +2627,6 @@ void CRender_Manager::Free()
 	Super::Free();
 }
 
-#ifdef _DEBUG
-
-HRESULT CRender_Manager::Push_DebugComponent(CComponent* pComponent)
-{
-	m_debugComponents.push_back(pComponent);
-	Safe_AddRef(pComponent);
-	return S_OK;
-}
-
 HRESULT CRender_Manager::Commit_SSAOParam()
 {
 	m_tSSAOparamDesc.vInvSize = { 1.f / m_halfViewport.Width, 1.f / m_halfViewport.Height };
@@ -2686,6 +2677,15 @@ HRESULT CRender_Manager::Commit_AllPostParams()
 	if (FAILED(Commit_ToonParam()))			return E_FAIL;
 	if (FAILED(Commit_CascadeParam()))		return E_FAIL;
 	if (FAILED(Commit_BakedShadowParam()))	return E_FAIL;
+	return S_OK;
+}
+
+#ifdef _DEBUG
+
+HRESULT CRender_Manager::Push_DebugComponent(CComponent* pComponent)
+{
+	m_debugComponents.push_back(pComponent);
+	Safe_AddRef(pComponent);
 	return S_OK;
 }
 

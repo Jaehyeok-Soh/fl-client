@@ -219,11 +219,11 @@ public:
 	HRESULT Commit_BakedShadowParam();
 
 	HRESULT Commit_AllPostParams();
-
+#ifdef  _DEBUG
 	const ACTIVE_BAKED_SET &Get_ActiveBakedSectionSet() const { return m_tActiveBakedSet; }
 	void Update_BakedShadowDebugTexture(_uint iSlice);
 	ID3D11ShaderResourceView* Get_BakedShadowDebugSRV();
-#ifdef  _DEBUG
+
 public:
 	HRESULT Push_DebugComponent(class CComponent* pComponent);
 private:

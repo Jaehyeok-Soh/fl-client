@@ -94,9 +94,10 @@ HRESULT CMainApplication::Start_Level(ELevelType eStartLevel)
 
 void CMainApplication::Update(const _float fTimeDelta)
 {
+#if _DEBUG
 	if (m_pGameInstance->KeyButton_Down(DIK_F10))
 		m_bImGuiDebug = !m_bImGuiDebug;
-
+#endif
 	// 프레임 시작 직전 이벤트 Flush
 	m_pGameInstance->Flush_All();
 
