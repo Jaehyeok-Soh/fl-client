@@ -30,6 +30,7 @@ enum class EUIEventID {
 	TUTORIAL_POPUP_EVENT1,	// V 표시 서클 다 채워졌을 때	// 내부 이벤트
 	TUTORIAL_POPUP_EVENT2,	// 이벤트 다 끝났을 때			// 내부 이벤트
 
+	QUEST_NAME_CHANGE,	// 퀘스트 이름 바꼈을 때 
 	END
 };
 

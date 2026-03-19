@@ -200,8 +200,11 @@ void CUIQuest_Text::Bind_Events()
 				case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
 					if (this->m_wstrText != desc.tChapterInfo.tQuestDesc.wstrTitle)
 					{
-						// 여기서 불 값 바꿔서 텍스트 바뀔 때만 퀘스트 들어갔다 나오기 연출
-						//m_pParentCanvasCache->Get_CommonParam_bool_Ref()
+						
+						UIEVENT_DESC Desc = {};
+						Desc.eEventID = EUIEventID::QUEST_NAME_CHANGE;
+						m_pUIManager->Get_UIEvents().Broadcast(Desc);
+
 						this->m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
 					}
 					break;
@@ -215,20 +218,31 @@ void CUIQuest_Text::Bind_Events()
 			})
 	);
 
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::QUEST_NAME_CHANGE == Desc.eEventID)
+				{
+					this->Set_Invisible();
+					this->m_isVisibleTrigger = true;
+				}
+			})
+	);
+
 	return;
 }
 
 void CUIQuest_Text::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;
-	Ready_Lerp_Movement(Vec2{ -20.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Lerp_Movement(Vec2{ -50.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
 	Ready_Fade_Text(0.5f, 0.f, 1.f, m_fDelay);
 }
 
 void CUIQuest_Text::Initialize_InVisible_Event()
 {
 	m_isFin_Event = false;
-	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -20.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -50.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
 	Ready_Fade_Text(0.5f, 1.f, 0.f, m_fDelay);
 }
 
@@ -260,6 +274,12 @@ _bool CUIQuest_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 	if (isFade && isMove)
 	{
+		if (m_isVisibleTrigger)
+		{
+			m_isVisibleTriggerStart = true;
+			m_isVisibleTrigger = false;
+		}
+
 		m_isFin_Event = true;
 		return true;
 	}
@@ -268,6 +288,12 @@ _bool CUIQuest_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 {
+	if (m_isVisibleTriggerStart)
+	{
+		Set_Visible();
+		m_isVisibleTriggerStart = false;
+	}
+
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::QUEST_BEGIN:
@@ -283,7 +309,6 @@ void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 		auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 		if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
 		{
-
 			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle + L"(" + std::to_wstring(desc.tChapterInfo.iCurrentCount) + L"/10)";
 		}
 		else

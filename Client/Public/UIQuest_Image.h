@@ -47,6 +47,9 @@ private:
 	_bool m_isMovedIn = { false };
 	_bool m_isMovedOut = { false };
 
+	_bool m_isVisibleTrigger = { false };
+	_bool m_isVisibleTriggerStart = { false };
+
 public:
 	static CUIQuest_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -5,6 +5,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -156,42 +157,31 @@ void CUIQuest_Image::Bind_Events()
 				this->m_isChanged = true;
 			})
 	);
+
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::QUEST_NAME_CHANGE == Desc.eEventID)
+				{
+					this->Set_Invisible();
+					this->m_isVisibleTrigger = true;
+				}
+			})
+	);
 }
 
 void CUIQuest_Image::Tick_By_Type(const _float fTimeDelta)
 {
-	if (m_isChanged)
+	if (m_isVisibleTriggerStart)
 	{
-		if (!m_isInitialized)
-		{
-			if (!m_isMovedIn)
-			{
-				Ready_Lerp_Movement(Vec2{0.f,0.f }, Vec2{ -100.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
-				m_isMovedIn = true;
-				m_isInitialized = true;
-			}
-
-			else if (!m_isMovedOut)
-			{
-				Ready_Lerp_Movement(Vec2{ -100.f,0.f }, Vec2{ 0.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
-				m_isMovedIn = true;
-				m_isInitialized = true;
-			}
-		}
-
-		_bool is = Tick_Lerp_Movement(fTimeDelta);
-
-		if (is)
-		{
-
-		}
+		Set_Visible();
+		m_isVisibleTriggerStart = false;
 	}
-
 }
 
 void CUIQuest_Image::Initialize_Visible_Event()
 {
-	Ready_Lerp_Movement(Vec2{ -20.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 5.f, m_fDelay, true);
+	Ready_Lerp_Movement(Vec2{ -50.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 5.f, m_fDelay, true);
 	Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
 }
 
@@ -212,7 +202,7 @@ _bool CUIQuest_Image::Tick_Visible_Event(const _float fTimeDelta)
 void CUIQuest_Image::Initialize_InVisible_Event()
 {
 	m_isFin_Event = false;
-	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -20.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -50.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
 	Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
 }
 
@@ -224,6 +214,13 @@ _bool CUIQuest_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	if (isFade && isMove)
 	{
 		m_isFin_Event = true;
+
+		if (m_isVisibleTrigger)
+		{
+			m_isVisibleTriggerStart = true;
+			m_isVisibleTrigger = false;
+		}
+
 		return true;
 	}
 

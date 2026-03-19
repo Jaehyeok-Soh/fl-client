@@ -255,6 +255,8 @@ _bool CUICommunity_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	{
 		if (isFade)
 		{
+			m_isClick = false;
+			Set_Active(false);
 			return true;
 		}
 	}
