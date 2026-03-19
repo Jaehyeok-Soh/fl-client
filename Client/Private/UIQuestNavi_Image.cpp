@@ -141,6 +141,10 @@ void CUIQuestNavi_Image::Bind_Events()
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
 				{
+					auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+					if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+						return;
+
 					this->Set_Visible();
 				}
 			})
@@ -166,6 +170,10 @@ void CUIQuestNavi_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
 			{
+				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+				if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+					return;
+
 				this->Set_Visible();
 			})
 	);
@@ -177,20 +185,17 @@ void CUIQuestNavi_Image::Bind_Events()
 				this->m_vTargetPos = desc.tChapterInfo.vObjectPosition;
 				this->m_isChange = true;
 
-				if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
+				if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL ||
+					desc.tChapterInfo.eEvent == DTO::EQuestEvent::NPC_TALK)
 					this->Set_Invisible();
 				else
 					this->Set_Visible();
-
-
 			})
 	);
 }
 
 void CUIQuestNavi_Image::Tick_By_Type(const _float fTimeDelta)
 {
-	
-
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::QUEST_NAVI_ICON:

@@ -7,11 +7,13 @@ CTree::CTree(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CPlants(pDevice ,pDeviceContext)
 {
 	m_ePlantsType = CPlants::Type::Tree;
+	m_bBakedShadow = true;
 }
 
 CTree::CTree(const CTree& rhs)
 	: CPlants(rhs)
 {
+	m_bBakedShadow = true;
 }
 
 

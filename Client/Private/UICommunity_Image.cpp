@@ -129,24 +129,19 @@ void CUICommunity_Image::Bind_Events()
 	);
 
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-			{
-				Set_Active(true);
-				this->Set_Visible();
-			})
-	);
-
-	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
 			{
 				Set_Active(true);
 				this->Set_Visible();
+
+				m_pInteractObj = pObj;
 			})
 	);
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_LOST>([this](CGameObject* pObj)
 			{
+				m_pInteractObj = nullptr;
 				this->Set_Invisible();
 			})
 	);
@@ -173,7 +168,7 @@ void CUICommunity_Image::Tick_By_Type(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::COMMUNITY_BG:
 		if (KEY_BUTTON_UP(DIK_F))
 		{
-			m_pGameInstance->Broadcast<INTERACT_ENTER>(this);
+			m_pGameInstance->Broadcast<INTERACT_ENTER>(m_pInteractObj);
 		}
 		break;
 	case DTO::EUIDImageSubClassType::COMMUNITY_OUTLINE:
@@ -260,6 +255,8 @@ _bool CUICommunity_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	{
 		if (isFade)
 		{
+			m_isClick = false;
+			Set_Active(false);
 			return true;
 		}
 	}

@@ -143,6 +143,50 @@ namespace Engine
 
 	}COLLIDED_DESC;
 
+	typedef struct tagBakedSectionBuildInput
+	{
+		int                    iSectionX{ 0 };
+		int                    iSectionZ{ 0 };
+		BoundingBox            sectionBounds{};
+		SimpleMath::Vector3    vLightDir{ SimpleMath::Vector3::Zero };
+		const vector<class CGameObject*>* pStaticCasters{ nullptr };
+	}BAKED_SECTION_BUILD_INPUT;
+
+	typedef struct tagBakedSectionBuildResult
+	{
+		int                    iSectionX{ 0 };
+		int                    iSectionZ{ 0 };
+		BoundingBox            sectionBounds{};
+		BoundingBox            casterBounds{};
+		BoundingBox			   receiverBounds{};
+		SimpleMath::Matrix     matLightVP{ SimpleMath::Matrix::Identity };
+		SimpleMath::Vector4    vShadowParams{};
+		vector<class CGameObject*> vecCasters;
+		bool                   bValid{ false };
+	}BAKED_SECTION_BUILD_RESULT;
+
+	typedef struct tagBakedShadowSection
+	{
+		int iSectionX{ 0 };
+		int iSectionZ{ 0 };
+		BoundingBox sectionBounds{};
+		BoundingBox casterBounds{};
+		SimpleMath::Matrix matLightVP{ SimpleMath::Matrix::Identity };
+		// x = bias
+		// y = strength
+		// z = InvSizeX
+		// w = InvSizeY
+		SimpleMath::Vector4 vShadowParams{ SimpleMath::Vector4::One };
+		unsigned int iArraySlice{ 0 };
+		bool bValid{ false };
+	}BAKED_SHADOW_SECTION;
+
+	typedef struct tagActiveBakedSet
+	{
+		BAKED_SHADOW_SECTION sections[ACTIVE_SECTION_MAX]{};
+		unsigned int iCount = 0;
+	}ACTIVE_BAKED_SET;
+
 	typedef struct tagTimeline
 	{
 		float fDuration{ 0.f };
@@ -348,7 +392,7 @@ namespace Engine
 	typedef struct tagShaderCascadeShadowDesc
 	{
 		// Light View × Proj 
-		SimpleMath::Matrix matLightVP[SHADOW_CASCADE_COUNT] = {};
+		SimpleMath::Matrix matLightVP[SHADOW_CASCADE_COUNT]{ SimpleMath::Matrix::Identity };
 		// ViewZ 기준 분할 거리
 		float fCascadeEnd0 = { 8.0f };
 		float fCascadeEnd1 = { 40.f };
@@ -359,6 +403,14 @@ namespace Engine
 		float fShadowStrength = { 0.4f };
 		float fCascadeIndex = { 0.f };
 	}SHADER_CASCADE_SHADOW_DESC;
+
+	typedef struct tagShaderBakedShadowDesc
+	{
+		SimpleMath::Matrix matLightVP{ SimpleMath::Matrix::Identity };
+		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
+		float fShadowBias = { 0.0002f };
+		float fShadowStrength = { 0.4f };
+	}SHADER_BAKED_SHADOW_DESC;
 
 	typedef struct tagShaderFogParamDesc
 	{
@@ -394,6 +446,23 @@ namespace Engine
 		float fDiffuseStrength = { 1.0f };
 		SimpleMath::Vector3 vPad { 0.f, 0.f, 0.f };
 	}SHADER_TOON_DESC;
+
+	typedef struct tagShaderBakedSection
+	{
+		SimpleMath::Matrix matLightVP{ SimpleMath::Matrix::Identity };
+		SimpleMath::Vector4 vShadowParams{ SimpleMath::Vector4::Zero };
+		SimpleMath::Vector4 vBoundsMin{ SimpleMath::Vector4::Zero };
+		SimpleMath::Vector4 vBoundsMax{ SimpleMath::Vector4::Zero };
+		unsigned int iArraySlice{ 0 };
+		SimpleMath::Vector3 vPadding{ SimpleMath::Vector3::Zero };
+	}SHADER_BAKED_SECTION;
+
+	typedef struct tagShaderBakedSectionDesc
+	{
+		unsigned int iActiveCount{ 0 };
+		SimpleMath::Vector3 vPadding{ SimpleMath::Vector3::Zero };
+		SHADER_BAKED_SECTION sections[ACTIVE_SECTION_MAX]{};
+	}SHADER_BAKED_SECTION_DESC;
 
 	typedef struct tagShaderEffectDesc
 	{

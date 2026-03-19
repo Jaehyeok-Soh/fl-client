@@ -14,6 +14,7 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "GameInstance.h"
 #include "QuestManager.h"
+#include "DialogueManager.h"
 #include <UI_Manager.h>
 
 CUIConversation_Text::CUIConversation_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -137,33 +138,26 @@ void CUIConversation_Text::Bind_Events()
 	);
 
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-			{
-				Set_Active(true);
-				this->Set_Visible();
-			})
-	);
-
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
-			{
-				Set_Active(true);
-				this->Set_Visible();
-
-				this->m_wstrText = Engine_Utils::ToWString(pObj->Get_Name());
-			})
-	);
-
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<INTERACT_LOST>([this](CGameObject* pObj)
-			{
-				this->Set_Invisible();
-
-			})
-	);
-
-	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_ENTER>([this](CGameObject* pObj)
+			{
+				auto* p = dynamic_cast<IInteractable*>(pObj);
+				if (p == nullptr)
+					return;
+
+				p->Interact();
+			})
+	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{				
+				this->Set_Visible();
+				this->Set_Active(true);
+			})
+	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
 			{
 				this->Set_Invisible();
 			})
@@ -172,38 +166,45 @@ void CUIConversation_Text::Bind_Events()
 
 void CUIConversation_Text::Initialize_Visible_Event()
 {
-	Ready_Fade_Text(0.3f, 0.f, 1.f, m_fDelay);
 }
 
 void CUIConversation_Text::Initialize_InVisible_Event()
 {
-	Ready_Fade_Text(0.3f, 1.f, 0.f, m_fDelay);
 }
 
 _bool CUIConversation_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	_bool isFade = Tick_Fade_Text(fTimeDelta);
-	if (isFade)
-	{
-		return true;
-	}
-	return false;
+	return true;
 }
 
 _bool CUIConversation_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	_bool isFade = Tick_Fade_Text(fTimeDelta);
-
-	if (isFade)
-	{
-		Set_Active(false);
-		return true;
-	}
-	return false;
+	Set_Active(false);
+	return true;
 }
 
 void CUIConversation_Text::Tick_By_Type(const _float fTimeDelta)
 {
+	auto* pDialogue = CDialogueManager::GetInstance()->GetDialogue();
+	if (nullptr == pDialogue)
+		return;
+
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::CONVERSATION_NAME:
+	{
+		m_wstrText = pDialogue->wstrSpeakerName;
+	}
+	break;
+	case DTO::EUITextSubClassType::CONVERSATION_TEXT:
+	{
+		if (KEY_BUTTON_DOWN(DIK_SPACE))
+			m_pGameInstance->Broadcast<DIALOGUE_NEXT>();
+
+		m_wstrText = pDialogue->wstrContentText;
+	}
+	break;
+	}
 }
 
 CUIConversation_Text* CUIConversation_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

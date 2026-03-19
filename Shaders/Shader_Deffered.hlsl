@@ -1,6 +1,82 @@
 #include "Struct_Defines.hlsl"
 #include "Light_Defines.hlsl"
 
+int Find_BakedSection(float3 vWorldPos)
+{
+    [unroll]
+    for (uint i = 0; i < shaderBakedSectionParam.iActiveCount; ++i)
+    {
+        float3 vMin = shaderBakedSectionParam.sections[i].vBoundsMin.xyz;
+        float3 vMax = shaderBakedSectionParam.sections[i].vBoundMax.xyz;
+
+        bool bInside =
+            vWorldPos.x >= vMin.x && vWorldPos.x <= vMax.x &&
+            vWorldPos.y >= vMin.y && vWorldPos.y <= vMax.y &&
+            vWorldPos.z >= vMin.z && vWorldPos.z <= vMax.z;
+
+        if(bInside)
+            return i;
+    }
+    
+    return -1;
+}
+
+float SampleBakedShadowSection(float3 vWorldPos, float3 vWorldNormal, float fNDotL, int iSection)
+{
+    ShaderBakedSection section = shaderBakedSectionParam.sections[iSection];
+    float fNormalOffset = 0.1f * (1.0f - fNDotL);
+    
+    float3 vBiasedPos = vWorldPos + vWorldNormal * fNormalOffset;
+    
+    // World -> LightClip
+    float4 vLightClip = mul(float4(vBiasedPos, 1.f), section.matLightVP);
+    
+    if (abs(vLightClip.w) < EPSILON)
+        return 1.f;
+        
+    float3 vLightNDC = vLightClip.xyz / vLightClip.w;
+    float2 vShadowUV = NDC_ToUV(vLightNDC.xy);
+    
+    if (any(vShadowUV < 0.f) || any(vShadowUV > 1.f) ||
+        vLightNDC.z < 0.f || vLightNDC.z > 1.f)
+        return 1.f;
+
+    float fCurrentDepth = vLightNDC.z;
+    float fBias = section.vShadowParams.x;
+    float fStrength = section.vShadowParams.y;
+    float2 vInvSize = section.vShadowParams.zw;
+    float fSlice = (float) section.iArraySlice;
+    
+    float fShadow = 0.f;
+    [unroll]
+    for (int y = -1; y <= 1; ++y)
+    {
+        [unroll]
+        for (int x = -1; x <= 1; ++x)
+        {
+            float2 vOffset = float2(x, y) * vInvSize;
+            float fStored = g_RenderTargetShadowBaked.SampleLevel(
+                PointClampSampler,
+                float3(vShadowUV + vOffset, fSlice),
+                0).r;
+
+            fShadow += ((fCurrentDepth - fBias) > fStored) ? 0.f : 1.f;
+        }
+    }
+
+    fShadow /= 9.f;
+    return lerp(1.f - fStrength, 1.f, fShadow);
+}
+
+float SampleBakedShadowMulti(float3 vWorldPos, float3 vWorldNormal, float fNDotL)
+{
+    int iSection = Find_BakedSection(vWorldPos);
+    if(iSection <0)
+        return 1.f;
+    
+    return SampleBakedShadowSection(vWorldPos, vWorldNormal, fNDotL, iSection);
+}
+
 float SampleCascadeShadowPCF(float3 vWorldPos, float3 vWorldNormal, float fNDotL, float fViewZ)
 {
     int iCascade = (fViewZ > cascadeParam.fCascadeEnd0) ? 1 : 0;
@@ -355,8 +431,11 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
     float fVdotH = saturate(dot(vViewDir, vHalfDir));
 
     // Shadow
-    float fShadow = SampleCascadeShadowPCF(vWorldPos.xyz, vNormal, fNdotL, fViewZ);
-
+    float fDynamicShadow = SampleCascadeShadowPCF(vWorldPos.xyz, vNormal, fNdotL, fViewZ);
+    float fStaticShadow = SampleBakedShadowMulti(vWorldPos.xyz, vNormal, fNdotL);
+    
+    float fFinalShadow = min(fDynamicShadow, fStaticShadow);
+    
     // Roughness를 alpha로 변환한다.
     float fClampedRough = saturate(fRough);
     float fAlpha = max(0.045f, fClampedRough * fClampedRough);
@@ -402,11 +481,11 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN_POS_TEX input)
     float3 vRadiance = Light.vDiffuse.rgb;
 
     // 최종 Toon diffuse를 만든다.
-    float3 vShade = vAmbient + (vRadiance * (fToonDiffuse * fDirectOcc * fShadow)) * vDiffuseBRDF;
+    float3 vShade = vAmbient + (vRadiance * (fToonDiffuse * fDirectOcc * fFinalShadow)) * vDiffuseBRDF;
 
     // Specular는 예전 PBR 공식을 그대로 유지한다.
     float fSpecOcc = lerp(1.0f, fOcc, 0.2f);
-    float3 vSpecular = (vSpecularBRDF * vRadiance) * (fNdotL * fSpecOcc * fShadow);
+    float3 vSpecular = (vSpecularBRDF * vRadiance) * (fNdotL * fSpecOcc * fFinalShadow);
 
     // Rim은 지정된 오브젝트에만 적용한다.
     float fRimMask = GetRimMask(input.vUV);

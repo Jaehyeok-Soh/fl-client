@@ -60,6 +60,9 @@ public:
 	OCTREE_ENTRY* Register(CGameObject* pGo, RENDER_CATEGORY eCategory, const BoundingBox& AABB, _bool bDynamic = false);
 	void Unregister(CGameObject* pGo);
 	void Update_AABB(CGameObject* pGo, const BoundingBox& newAABB);
+	// 0316 Static Shaodw Àü¿ë
+	void Query_All(RENDER_CATEGORY eCategory, OUT vector<CGameObject*>& outObjects);
+	BoundingBox Get_RootBounds() { return m_pRoot->bounds; }
 private:
 	void Query_Node(OCTREE_NODE* pNode, const BoundingFrustum& frustrum, RENDER_CATEGORY eCtegory, OUT vector<CGameObject*>& outObjects, OUT OCTREE_QUERY_STATS* pDebugStat) const;
 public:

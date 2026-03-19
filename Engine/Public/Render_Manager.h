@@ -43,6 +43,10 @@ public:
 	void Clear();
 	void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
+	HRESULT Set_BakedShadowConstantBuffer(class CShader* pShader);
+
+	HRESULT Initialize_BakedShadowSections(BoundingBox* pRootBox);
+	HRESULT Build_BakedShadowSections();
 private:	
 	HRESULT Render_Priority();
 	HRESULT Render_NoneBlend();
@@ -70,11 +74,29 @@ private:
 	HRESULT Create_SSAO_NoiseSRV();
 	HRESULT Create_Perlin_NoiseSRV();
 	HRESULT Set_ConstantBuffer();
+	HRESULT Ready_RTArray();
 	HRESULT Ready_RT();
 	HRESULT Ready_MRT();
 	HRESULT Create_ShadowResource();
 	HRESULT Compute_ShadowCascade();
-	void Request_SortUI();
+	
+
+	HRESULT Bind_ActiveBakedSections();
+	HRESULT Create_RootBox(OUT BoundingBox& outRootBox);
+	// 섹션 정의
+	_uint Compute_BakedSectionIndex(_int iSectionX, _int iSectionZ) const;
+	BoundingBox Compute_BakedSectionBounds(_int iSectionX, _int iSectionZ) const;
+	// 멀티스레드
+	HRESULT Build_BakedShadowSectionJobs();
+	BAKED_SECTION_BUILD_RESULT Build_BakedSection(const BAKED_SECTION_BUILD_INPUT& input);
+	// 렌더 관련
+	HRESULT Execute_BakedShadowSectionJobs();
+	HRESULT Render_BakedSection_ToArray(const BAKED_SECTION_BUILD_RESULT & job);
+	// 런타임 활성 섹션 관리
+	HRESULT Update_ActiveBakedSections();
+	HRESULT Update_ActiveBakedSectionBuffer();
+	_bool Compute_MainCameraSectionIndex(OUT _int& iOutX, OUT _int& iOutZ) const;
+	_bool Should_Update_ActiveBakedSections(_int iNewCenterX, _int iNewCenterZ) const;
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
@@ -118,12 +140,37 @@ private:
 	CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>* m_pCB_CascadeShadow{ nullptr };
 	ID3D11Texture2D* m_pShadowDSTexture{ nullptr };
 	ID3D11DepthStencilView* m_pShadowDSV{ nullptr };
+
+	// Shadow_Baked
+	// 섹션 데이터
+	vector<BAKED_SHADOW_SECTION> m_vecBakedSection;
+	// 활성 섹션 상태
+	ACTIVE_BAKED_SET m_tActiveBakedSet{};
+	_int m_iCurrentCenterSectionX{ INT_MAX };
+	_int m_iCurrentCenterSectionZ{ INT_MAX };
+	// 월드 분할 정보
+	Vec3 m_vBakedSectionOrigin{ Vec3::Zero };
+	_float m_fBakedSectionSizeX{ 0.f };
+	_float m_fBakedSectionSizeZ{ 0.f };
+	BoundingBox m_bakedWorldRootBounds{};
+	// 히스테리시스
+	_float m_fSectionUpdateHysteresisX{ 0.f };
+	_float m_fSectionUpdateHysteresisZ{ 0.f };
+	// For. ThreadPool
+	// CPU 준비 작업 결과 버퍼
+	vector<BAKED_SECTION_BUILD_RESULT> m_vecBakedSectionResults;
+	// Resource
+	D3D11_VIEWPORT m_tBakedShadowViewport{};
+	SHADER_BAKED_SHADOW_DESC m_tBakedShadowDesc{};
+	CConstant_Buffer<SHADER_BAKED_SHADOW_DESC>* m_pCB_BakedShadow{ nullptr };
+	CConstant_Buffer<SHADER_BAKED_SECTION_DESC>* m_pCB_ActiveBakedSections{ nullptr };
+	ID3D11DepthStencilView* m_pBakedShadowDSV{ nullptr };
+	// 상태 플래그
+	_bool m_bBakedSectionInitialized{ false };
+	_bool m_bActiveBakedSectionDirty{ true };
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
-#ifdef  _DEBUG
-public:
-	HRESULT Push_DebugComponent(class CComponent* pComponent);
 	
 	// SSAO
 	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() { return m_tSSAOparamDesc; }
@@ -156,16 +203,31 @@ public:
 	HRESULT Commit_ToonParam();
 
 	// Cascade
-	// Toon
 	SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() { return m_tCascadeShadowDesc; }
 	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const { return m_tCascadeShadowDesc; }
 	HRESULT Commit_CascadeParam();
 
+	// Static Baked Shadow
+	SHADER_BAKED_SHADOW_DESC& Get_BakedShadowParamDesc() { return m_tBakedShadowDesc; }
+	const SHADER_BAKED_SHADOW_DESC& Get_BakedShadowParamDesc() const { return m_tBakedShadowDesc; }
+	HRESULT Commit_BakedShadowParam();
+
 	HRESULT Commit_AllPostParams();
+#ifdef  _DEBUG
+	const ACTIVE_BAKED_SET &Get_ActiveBakedSectionSet() const { return m_tActiveBakedSet; }
+	void Update_BakedShadowDebugTexture(_uint iSlice);
+	ID3D11ShaderResourceView* Get_BakedShadowDebugSRV();
+
+public:
+	HRESULT Push_DebugComponent(class CComponent* pComponent);
+private:
+	HRESULT Create_BakedShadowSliceSRV();
 private:
 	_bool							m_bDebug = { false };
 	list<class CComponent*>			m_debugComponents;
-	HRESULT Ready_Debug();
+	ID3D11Texture2D* m_pBakedShadowDebugTex = nullptr;
+	ID3D11ShaderResourceView* m_pBakedShadowDebugSRV = nullptr;
+	_int m_iBakedShadowDebugSlice = -1;
 	HRESULT Render_Debug();
 #endif
 };
