@@ -43,8 +43,10 @@ public:
 	/// <param name="isKorean"> / 한국어인가? </param>
 	/// <param name="isNoise"> / 노이즈인가? </param>
 	/// <param name="isHit"> / 히트 데미지 폰트인가? </param>
+	/// <param name="isScroll"> / 노이즈인데 흐르게 할껀가?</param>
 	/// <returns></returns>
-	HRESULT Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, const _bool isNoise, const _bool isHit = false);
+	HRESULT Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, 
+		const _bool isNoise, const _bool isHit = false, const _bool isScroll = true);
 	HRESULT Begin_Draw_Gradation(const _bool isOutline);
 
 

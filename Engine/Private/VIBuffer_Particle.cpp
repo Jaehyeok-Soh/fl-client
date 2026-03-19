@@ -80,12 +80,14 @@ void CVIBuffer_Particle::Render()
 
 }
 
-void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, Vec3 finalGravity, _float fTImeDelta, _uint TimeFlag, DTO::E_SHAPETYPE eType)
+void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 vLook, Vec3 finalGravity, _float fTotalTime, _float fTImeDelta, _uint TimeFlag, DTO::E_SHAPETYPE eType)
 {
 	if (ComputeShader == nullptr) return;
 
 	// 가변 데이터 desc 작성
 	EFFECT_PARTICLE_MU_ELEMENT tMUDesc;
+	tMUDesc.fTotalTime = fTotalTime;
+	tMUDesc.iEmissionType = m_tParticleDesc.EmissionFlagType;
 	tMUDesc.fTimeDelta = fTImeDelta;
 	tMUDesc.iMoveState = ENUM_TO_UINT(eType);
 	tMUDesc.bIsLoop = m_tParticleDesc.isLoop; 
@@ -96,6 +98,8 @@ void CVIBuffer_Particle::Update_Simulation(CComputeShader* ComputeShader, Vec3 v
 	tMUDesc.vFinalGravity = finalGravity;
 	tMUDesc.fExternalStrength = {};
 	tMUDesc.UseContinueFlag = m_tParticleDesc.UseContinueFlag;
+	tMUDesc.vRange = m_tParticleDesc.vRange;
+	tMUDesc.iRandomSeed = m_tParticleDesc.iRandomFlags;
 	
 	// comshader에 컨스턴트 버퍼를 통해 매 프레임 갱신 : 가변 데이터
 	ComputeShader->Bind_Compute_EffectData(tMUDesc);

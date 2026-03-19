@@ -317,6 +317,18 @@ HRESULT CFont_Manager::Render_Fonts()
 		return E_FAIL;
 	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::HIT)])
 		Draw_Text(Desc);
+	End_Draw();
+
+	if (FAILED(Begin_Draw_OutlineNoise(true, false, false, false, false)))
+		return E_FAIL;
+	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::NOISE_NOSCROLL)])
+		Draw_Text(Desc);
+	End_Draw();
+
+	if (FAILED(Begin_Draw_OutlineNoise(true, false, true, false, false)))
+		return E_FAIL;
+	for (const auto& Desc : m_vecFontData[ENUM_TO_UINT(EFontShaderType::OUTLINE_NOISE_NOSCROLL)])
+		Draw_Text(Desc);
 
 	End_Draw();
 	Clear_FontQueue();
@@ -337,16 +349,23 @@ HRESULT CFont_Manager::Begin_Draw_Normal()
 	return S_OK;
 }
 
-HRESULT CFont_Manager::Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, const _bool isNoise, const _bool isHit)
+HRESULT CFont_Manager::Begin_Draw_OutlineNoise(const _bool isOutline, const _bool isKorean, const _bool isNoise,
+	const _bool isHit, const _bool isScroll)
 {
 	CB_FONT_OUTLINE_NOISE cb = {};
 	cb.vOutlineColor	= Vec4(0.f, 0.f, 0.f, 1.f);
 	cb.fOutlineStrength = 2.0f;
+
 	m_vScrollUV.x		+= 0.0016f;
+
 	if (m_vScrollUV.x > 1.f)
 		m_vScrollUV.x = 0.f;
 
-	cb.vNoiseUVScroll	= m_vScrollUV;
+	if(isScroll)
+		cb.vNoiseUVScroll	= m_vScrollUV;
+	else
+		cb.vNoiseUVScroll = Vec2{0.f, 0.f};
+
 	cb.fNoiseStrength	= 1.0f;
 
 	if(isOutline)	{ cb.fOutlineSizePx = 1.f; }

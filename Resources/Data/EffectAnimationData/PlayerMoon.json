@@ -7,7 +7,9 @@
             "strOwnerTag": "PlayerMoon",
             "vecEffectEvents": [
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
@@ -15,6 +17,7 @@
                     "iAnimIndex": 74,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_PlayerMoon_Light_Skill01",
@@ -32,7 +35,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
@@ -40,6 +45,7 @@
                     "iAnimIndex": 74,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_PlayerMoon_Light_Skill01",
@@ -57,7 +63,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
@@ -65,6 +73,7 @@
                     "iAnimIndex": 74,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_PlayerMoon_Light_Skill01",
@@ -82,7 +91,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
@@ -90,6 +101,7 @@
                     "iAnimIndex": 138,
                     "iBoneFlag": 4,
                     "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_02",
@@ -107,7 +119,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -115,6 +129,7 @@
                     "iAnimIndex": 138,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_02",
@@ -123,7 +138,7 @@
                     "vOffset": {
                         "x": 0.28999999165534973,
                         "y": 0.0,
-                        "z": 3.0
+                        "z": 1.600000023841858
                     },
                     "vRotation": {
                         "x": 0.0,
@@ -132,7 +147,37 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 2.799999952316284,
+                    "iAnimIndex": 138,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_02",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_WalkSmoke",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.10000000149011612,
+                        "z": 0.20000000298023224
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
@@ -140,6 +185,7 @@
                     "iAnimIndex": 137,
                     "iBoneFlag": 4,
                     "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_01",
@@ -147,17 +193,75 @@
                     "strEffectTag": "Attack_1",
                     "vOffset": {
                         "x": 0.0,
-                        "y": 0.5,
+                        "y": 0.25,
                         "z": 0.5
                     },
                     "vRotation": {
                         "x": -20.0,
-                        "y": 0.0,
+                        "y": 30.0,
                         "z": -20.0
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 1.600000023841858,
+                    "iAnimIndex": 137,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_01",
+                    "strDescription": "",
+                    "strEffectTag": "Attack_1_Particle",
+                    "vOffset": {
+                        "x": -2.5999999046325684,
+                        "y": 0.07000000029802322,
+                        "z": 1.6399999856948853
+                    },
+                    "vRotation": {
+                        "x": -20.0,
+                        "y": 30.0,
+                        "z": -20.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 1.0,
+                    "iAnimIndex": 137,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_01",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_WalkSmoke",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.10000000149011612,
+                        "z": 0.20000000298023224
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -165,6 +269,7 @@
                     "iAnimIndex": 11,
                     "iBoneFlag": 4,
                     "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Dodge_InAir",
@@ -182,7 +287,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
@@ -190,6 +297,7 @@
                     "iAnimIndex": 139,
                     "iBoneFlag": 4,
                     "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_03",
@@ -197,7 +305,7 @@
                     "strEffectTag": "Attack_3",
                     "vOffset": {
                         "x": 0.0,
-                        "y": -0.5,
+                        "y": 0.30000001192092896,
                         "z": 0.0
                     },
                     "vRotation": {
@@ -207,7 +315,37 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 2.0,
+                    "iAnimIndex": 139,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_03",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_WalkSmoke",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.10000000149011612,
+                        "z": 0.20000000298023224
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -215,6 +353,7 @@
                     "iAnimIndex": 76,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_PlayerMoon_Light_Skill02_Red",
@@ -232,7 +371,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -240,6 +381,7 @@
                     "iAnimIndex": 12,
                     "iBoneFlag": 4,
                     "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Dodge_To_Run",
@@ -257,7 +399,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -265,6 +409,7 @@
                     "iAnimIndex": 140,
                     "iBoneFlag": 4,
                     "iBoneIndex": 414,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_04",
@@ -282,23 +427,26 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
                     "fStartTrackPosition": 11.800000190734863,
                     "iAnimIndex": 140,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_04",
                     "strDescription": "",
                     "strEffectTag": "Attack_1",
                     "vOffset": {
-                        "x": 1.4900000095367432,
-                        "y": -1.8300000429153442,
-                        "z": 2.4200000762939453
+                        "x": 0.6000000238418579,
+                        "y": -0.2800000011920929,
+                        "z": 1.190000057220459
                     },
                     "vRotation": {
                         "x": 235.08999633789063,
@@ -307,7 +455,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -315,6 +465,7 @@
                     "iAnimIndex": 140,
                     "iBoneFlag": 4,
                     "iBoneIndex": 414,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_04",
@@ -322,7 +473,7 @@
                     "strEffectTag": "Attack_4_Drain",
                     "vOffset": {
                         "x": 0.0,
-                        "y": 0.0,
+                        "y": -0.6000000238418579,
                         "z": 0.0
                     },
                     "vRotation": {
@@ -332,14 +483,45 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": false,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 18.793100357055664,
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 16.799999237060547,
                     "iAnimIndex": 140,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_04",
+                    "strDescription": "",
+                    "strEffectTag": "Attack4_WindSplashMesh",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 3.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": false,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 18.700000762939453,
+                    "iAnimIndex": 140,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_04",
@@ -348,7 +530,7 @@
                     "vOffset": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 2.680000066757202
+                        "z": 3.5
                     },
                     "vRotation": {
                         "x": 0.0,
@@ -357,32 +539,37 @@
                     }
                 },
                 {
-                    "bFollowBone": false,
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
-                    "ePhase": "PreRender",
+                    "ePhase": "Immediatley",
                     "fDuration": 0.0,
-                    "fStartTrackPosition": 18.700000762939453,
+                    "fStartTrackPosition": 16.799999237060547,
                     "iAnimIndex": 140,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_PlayerMoon_Sword_RunAttack_04",
                     "strDescription": "",
-                    "strEffectTag": "Player_Moon_Attack4_SplashMesh",
+                    "strEffectTag": "Attack4_WindSplashMesh",
                     "vOffset": {
                         "x": 0.0,
-                        "y": -0.800000011920929,
-                        "z": 2.799999952316284
+                        "y": 0.10000000149011612,
+                        "z": 3.5
                     },
                     "vRotation": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.0
+                        "z": 45.0
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -390,6 +577,7 @@
                     "iAnimIndex": 126,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_PlayerMoon_Sword_FallAttack_End",
@@ -397,7 +585,7 @@
                     "strEffectTag": "PlayerMoon_JumpAttack",
                     "vOffset": {
                         "x": 0.0,
-                        "y": 0.0,
+                        "y": -0.4000000059604645,
                         "z": 0.6000000238418579
                     },
                     "vRotation": {
@@ -407,7 +595,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": false,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 0.0,
@@ -415,6 +605,7 @@
                     "iAnimIndex": 126,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_PlayerMoon_Sword_FallAttack_End",
@@ -432,7 +623,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -440,6 +633,7 @@
                     "iAnimIndex": 0,
                     "iBoneFlag": 4,
                     "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_BulletJump_Start",
@@ -457,7 +651,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -465,6 +661,7 @@
                     "iAnimIndex": 123,
                     "iBoneFlag": 0,
                     "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Slide_Start",
@@ -482,7 +679,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -490,6 +689,7 @@
                     "iAnimIndex": 122,
                     "iBoneFlag": 4,
                     "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Slide_Loop",
@@ -507,7 +707,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -515,6 +717,7 @@
                     "iAnimIndex": 141,
                     "iBoneFlag": 4,
                     "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_SlideAttack",
@@ -532,7 +735,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -540,6 +745,7 @@
                     "iAnimIndex": 130,
                     "iBoneFlag": 4,
                     "iBoneIndex": 414,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_HeavyAttack_Start",
@@ -557,7 +763,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -565,6 +773,7 @@
                     "iAnimIndex": 130,
                     "iBoneFlag": 0,
                     "iBoneIndex": 414,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_HeavyAttack_Start",
@@ -582,7 +791,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -590,6 +801,7 @@
                     "iAnimIndex": 130,
                     "iBoneFlag": 4,
                     "iBoneIndex": 414,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_HeavyAttack_Start",
@@ -607,7 +819,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 0.0,
@@ -615,6 +829,7 @@
                     "iAnimIndex": 129,
                     "iBoneFlag": 4,
                     "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Sword_HeavyAttack_End",
@@ -632,7 +847,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -640,6 +857,7 @@
                     "iAnimIndex": 120,
                     "iBoneFlag": 0,
                     "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_SlideInAir_Loop",
@@ -652,6 +870,146 @@
                     },
                     "vRotation": {
                         "x": -20.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 14.0,
+                    "iAnimIndex": 146,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Walk_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_WalkSmoke",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.10000000149011612,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 8.770187377929688,
+                    "iAnimIndex": 82,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Run_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_WalkSmoke",
+                    "vOffset": {
+                        "x": -0.05000000074505806,
+                        "y": 0.10000000149011612,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 18.639751434326172,
+                    "iAnimIndex": 82,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Run_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_WalkSmoke",
+                    "vOffset": {
+                        "x": 0.05000000074505806,
+                        "y": 0.10000000149011612,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": 3,
+                    "bFollowBone": false,
+                    "bUseChildBone": true,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 0.009999999776482582,
+                    "iAnimIndex": 78,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": 8,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_PlayerMoon_Machinegun01_Shooting_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_ShootEffect",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 5.0,
+                    "iAnimIndex": 129,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Sword_HeavyAttack_End",
+                    "strDescription": "",
+                    "strEffectTag": "Player_Moon_ChargeAttack_EndParticle",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.6200000047683716,
+                        "z": -3.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
                         "y": 180.0,
                         "z": 0.0
                     }

@@ -66,7 +66,7 @@ void CQuest_Chapter::Exit()
 
 void CQuest_Chapter::UpdateProgress(DTO::QUEST_EVENT_SIGNATURE ID)
 {
-	if (m_tDesc.eEvent != ID.eEvent)
+	if (this == nullptr || m_tDesc.eEvent != ID.eEvent)
 		return;
 
 	auto iter = std::find(m_tDesc.eTargetType.begin(), m_tDesc.eTargetType.end(), ID.eTargetType);

@@ -130,7 +130,7 @@ void CQuestManager::Bind_Events()
 
 void CQuestManager::EventCallback(DTO::QUEST_EVENT_SIGNATURE ID)
 {
-	if (m_scenario.find(m_iCurScenarioId) == m_scenario.end())
+	if (m_scenario[m_iCurScenarioId] == nullptr || m_scenario.find(m_iCurScenarioId) == m_scenario.end())
 		return;
 
 	m_scenario[m_iCurScenarioId]->UpdateProgress(ID);

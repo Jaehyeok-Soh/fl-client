@@ -10,6 +10,7 @@ CRenderTarget_Manager::CRenderTarget_Manager(ID3D11Device* pDevice, ID3D11Device
     Safe_AddRef(m_pDevice);
     Safe_AddRef(m_pDeviceContext);
     m_arrRenderTargets.fill(nullptr);
+    m_arrRenderTargetArrays.fill(nullptr);
 }
 
 HRESULT CRenderTarget_Manager::Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc)
@@ -22,6 +23,22 @@ HRESULT CRenderTarget_Manager::Add_RenderTarget(ERenderTarget eTarget, const CRe
         return E_FAIL;
 
     m_arrRenderTargets[ENUM_TO_UINT(eTarget)] = pRenderTarget;
+    return S_OK;
+}
+
+HRESULT CRenderTarget_Manager::Add_RenderTargetArray(ERenderTarget eTarget, const CRenderTargetArray::RENDERTARGET_ARR_DESC* pDesc)
+{
+    if (Get_RenderTarget(eTarget) != nullptr)
+        return E_FAIL;
+
+    if (Get_RenderTargetArray(eTarget) != nullptr)
+        return E_FAIL;
+
+    CRenderTargetArray* pRenderTargetArray = CRenderTargetArray::Create(m_pDevice, m_pDeviceContext, pDesc);
+    if (pRenderTargetArray == nullptr)
+        return E_FAIL;
+
+    m_arrRenderTargetArrays[ENUM_TO_UINT(eTarget)] = pRenderTargetArray;
     return S_OK;
 }
 
@@ -104,6 +121,51 @@ HRESULT CRenderTarget_Manager::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D
     return S_OK;
 }
 
+HRESULT CRenderTarget_Manager::Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, _bool bUseDSV)
+{
+    CRenderTargetArray* pRTArray = Get_RenderTargetArray(eTarget);
+    if (nullptr == pRTArray)
+        return E_FAIL;
+
+    m_pDeviceContext->OMGetRenderTargets(1, &m_pBackBuffer, &m_pDSV);
+
+    m_pDeviceContext->VSSetShaderResources(0, 128, m_pNullSRVs);
+    m_pDeviceContext->PSSetShaderResources(0, 128, m_pNullSRVs);
+
+    ID3D11DepthStencilView* pDSV = bUseDSV ? m_pDSV : nullptr;
+
+    if (bClear)
+        pRTArray->Clear(iSlice);
+
+    if (FAILED(pRTArray->Bind_Slice(iSlice, pDSV)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CRenderTarget_Manager::Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, ID3D11DepthStencilView* pDSV)
+{
+    CRenderTargetArray* pRTArray = Get_RenderTargetArray(eTarget);
+    if (nullptr == pRTArray)
+        return E_FAIL;
+
+    m_pDeviceContext->OMGetRenderTargets(1, &m_pBackBuffer, &m_pDSV);
+
+    m_pDeviceContext->VSSetShaderResources(0, 128, m_pNullSRVs);
+    m_pDeviceContext->PSSetShaderResources(0, 128, m_pNullSRVs);
+
+    if (pDSV != nullptr)
+        m_pDeviceContext->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+    if (bClear)
+        pRTArray->Clear(iSlice);
+
+    if (FAILED(pRTArray->Bind_Slice(iSlice, pDSV)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
 HRESULT CRenderTarget_Manager::End_MRT()
 {
     ID3D11RenderTargetView* pRenderTargets[8]{nullptr};
@@ -154,6 +216,8 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         eSlot = EFXSRV::RT_Cascade0; break;
     case Engine::ERenderTarget::Cascade_1:
         eSlot = EFXSRV::RT_Cascade1; break;
+    case Engine::ERenderTarget::Shadow_Baked:
+        eSlot = EFXSRV::RT_ShadowBaked; break;
     case Engine::ERenderTarget::OIT_Accum:
         eSlot = EFXSRV::RT_OIT_Accum; break;
     case Engine::ERenderTarget::OIT_Reveal:
@@ -162,7 +226,13 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         return E_FAIL; 
     }
 
-    return pShader->Bind_SRV(eSlot, m_arrRenderTargets[iIndex]->Get_SRV());
+    if (m_arrRenderTargets[iIndex] != nullptr)
+        return pShader->Bind_SRV(eSlot, m_arrRenderTargets[iIndex]->Get_SRV());
+
+    if (m_arrRenderTargetArrays[iIndex] != nullptr)
+        return pShader->Bind_SRV(eSlot, m_arrRenderTargetArrays[iIndex]->Get_SRV());
+
+    return E_FAIL;
 }
 
 HRESULT CRenderTarget_Manager::Copy_SceneHDRResource(ERenderTarget eTarget)
@@ -182,7 +252,15 @@ HRESULT CRenderTarget_Manager::Copy_SceneHDRResource(ERenderTarget eTarget)
 
 ID3D11ShaderResourceView* CRenderTarget_Manager::Get_RenderTargetSRV(ERenderTarget eTarget)
 {
-    return m_arrRenderTargets[ENUM_TO_UINT(eTarget)]->Get_SRV();
+    _uint iIndex = ENUM_TO_UINT(eTarget);
+
+    if (m_arrRenderTargets[iIndex] != nullptr)
+        return m_arrRenderTargets[iIndex]->Get_SRV();
+
+    if (m_arrRenderTargetArrays[iIndex] != nullptr)
+        return m_arrRenderTargetArrays[iIndex]->Get_SRV();
+
+    return nullptr;
 }
 
 HRESULT CRenderTarget_Manager::Ready_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY)
@@ -230,6 +308,10 @@ void CRenderTarget_Manager::Free()
     for (auto& pRenderTarget : m_arrRenderTargets)
         Safe_Release(pRenderTarget);
     m_arrRenderTargets.fill(nullptr);
+
+    for (auto& pRenderTargetArray : m_arrRenderTargetArrays)
+        Safe_Release(pRenderTargetArray);
+    m_arrRenderTargetArrays.fill(nullptr);
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pDeviceContext);

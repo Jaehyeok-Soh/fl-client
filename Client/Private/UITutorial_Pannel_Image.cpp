@@ -170,6 +170,7 @@ void CUITutorial_Pannel_Image::Bind_Events()
 				}
 			})
 	);
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{

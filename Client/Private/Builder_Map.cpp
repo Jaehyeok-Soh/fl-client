@@ -622,7 +622,7 @@ HRESULT CBuilder_Map::Batch_NPC(const DTO::TMap_MapObjectData& tData)
 	BATCH_NPC_DESC* pDesc = static_cast<BATCH_NPC_DESC*>(tData.vecClientMakePathDesc.front());
 	if (pDesc == nullptr) return E_FAIL;
 
-	if (FAILED(CNPC_Base::Create_NPC(pDesc->eBatchNPCType, iFindPrototypeIndex, iCurLevelIndex, &tTransformDesc)))
+	if (FAILED(CNPC_Base::Create_NPC(pDesc, iFindPrototypeIndex, iCurLevelIndex, &tTransformDesc)))
 		return E_FAIL;
 
 	return S_OK;

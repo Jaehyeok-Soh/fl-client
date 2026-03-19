@@ -34,6 +34,9 @@
 #include "QuestManager.h"
 #include "Quest_DataModel.h"
 
+// Dialogue
+#include "DialogueManager.h"
+
 USING(Client)
 
 CMainApplication::CMainApplication()
@@ -82,6 +85,7 @@ HRESULT CMainApplication::Initialize()
 
 	Register_Quest_Scenario();
 
+
 	return S_OK;
 }
 
@@ -94,6 +98,10 @@ HRESULT CMainApplication::Start_Level(ELevelType eStartLevel)
 
 void CMainApplication::Update(const _float fTimeDelta)
 {
+#if _DEBUG
+	if (m_pGameInstance->KeyButton_Down(DIK_F10))
+		m_bImGuiDebug = !m_bImGuiDebug;
+#endif
 	// 프레임 시작 직전 이벤트 Flush
 	m_pGameInstance->Flush_All();
 
@@ -107,7 +115,8 @@ HRESULT CMainApplication::Render()
 	m_pGameInstance->Draw();
 
 #ifdef _DEBUG
-	//m_pDebugGui->Render();
+	if(m_bImGuiDebug)
+		m_pDebugGui->Render();
 #endif
 
 	m_pGameInstance->Draw_End();
@@ -628,6 +637,7 @@ void CMainApplication::Free()
 {	
 	CMonsterState_Factory::DestroyInstance();
 	CQuestManager::DestroyInstance();
+	CDialogueManager::DestroyInstance();
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

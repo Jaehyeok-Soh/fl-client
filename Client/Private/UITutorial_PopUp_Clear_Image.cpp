@@ -111,6 +111,17 @@ HRESULT CUITutorial_PopUp_Clear_Image::Attach_Personal_Info()
 
 void CUITutorial_PopUp_Clear_Image::Bind_Events()
 {
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
+
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG:
@@ -158,17 +169,6 @@ void CUITutorial_PopUp_Clear_Image::Bind_Events()
 	break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX:
 	{
-		//m_vecEventHandles.push_back(
-		//	m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-		//		{
-		//			if (EUIEventID::TUTORIAL_POPUP_EVENT1 == Desc.eEventID)
-		//			{
-		//				this->Set_Visible();
-		//				this->Set_Active(true);
-		//			}
-		//		})
-		//);
-
 		m_vecEventHandles.push_back(
 			m_pGameInstance->Subscribe<TUTORIAL_POPUP_CLEAR>([this](EUITutorialPopUpTypeID ID)
 				{

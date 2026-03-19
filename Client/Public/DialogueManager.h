@@ -29,13 +29,13 @@ private:
 	virtual ~CDialogueManager() = default;
 
 private:
-	HRESULT Initialize();
-
 	void Ready_Dialogue();
 
 	void Bind_Events();
 
 public:
+	HRESULT Initialize();
+
 	void Start_Dialogue(_int iId);
 
 	void OnInputNext();
@@ -50,7 +50,7 @@ public:
 	DIALOGUE_NODE* GetDialogue() { return m_pCurrentNode; }
 
 private:
-	DIALOGUE_NODE& CreateNode(_int key, _int nodeId,
+	DIALOGUE_NODE& CreateNode(_int nodeId,
 		_int prevId,
 		_int nextId,
 		const wstring& speakerName,

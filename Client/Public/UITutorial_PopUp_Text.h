@@ -49,6 +49,8 @@ private:
 
 	CPlayer* m_pPlayer = { nullptr };
 
+	_bool m_isTriggered = { false };
+
 public:
 	static CUITutorial_PopUp_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

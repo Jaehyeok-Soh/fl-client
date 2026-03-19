@@ -149,9 +149,17 @@ struct CascadeParam
     float fCascadeIndex;
 };
 
+struct BakedShadowParam
+{
+    row_major float4x4 matLightVP;
+    float2 vShadowMapInvSize;
+    float fShadowBias;
+    float fShadowStrength;
+};
+
 struct PlayerInfo
 {
-    row_major Matrix matWorld;
+    row_major float4x4 matWorld;
     float fCollisionRange;
     float fCollisionHeight;
     
@@ -159,6 +167,23 @@ struct PlayerInfo
     float fMaxSpeed;//캐릭터의 Speed값 값 조절 가능하게
 };
 
+struct ShaderBakedSection
+{
+    row_major float4x4 matLightVP;
+    // x = bias, y = strength, z,w = invSize
+    float4 vShadowParams;
+    float4 vBoundsMin;
+    float4 vBoundMax;
+    uint iArraySlice;
+    float3 vPadding;
+};
+
+struct ShaderBakedSectionParam
+{
+    uint iActiveCount;
+    float3 vPadding;
+    ShaderBakedSection sections[ACTIVE_BAKED_SECTION_COUNT];
+};
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -243,10 +268,17 @@ cbuffer CascadeParamBuffer
 {
     CascadeParam cascadeParam;
 };
-
+cbuffer BakedShadowParamBuffer
+{
+    BakedShadowParam bakedShadowParam;
+};
 cbuffer PlayerInfoBuffer
 {
     PlayerInfo tPlayerInfo;
+};
+cbuffer ShaderBakedSectionBuffer
+{
+    ShaderBakedSectionParam shaderBakedSectionParam;
 };
 //////////
 // Func //

@@ -239,7 +239,9 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
 	filters.mFilterCallback = m_pQueryFilterCallback;
 
-	PxControllerCollisionFlags collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
+	PxControllerCollisionFlags collisionFlag;
+	if (m_bEnableMove)
+		collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
 
 	if (m_bIsSteppingOnCCT)
 		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_DOWN;
@@ -279,11 +281,20 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	{
 		_float fHitDesc = {};
 		Vec3 vHitPos = {};
-		finalPos.y += 0.3f;
-		if (m_pGameInstance->RayCast(finalPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDesc, &vHitPos))
+		Vec3 vRayPos = finalPos;
+		vRayPos.y += 0.3f;
+
+		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDesc, &vHitPos))
 		{
-			finalPos.y = vHitPos.y + m_tDesc.fHoverOffset;
-			SetFootPosition(finalPos);
+			_float fMinHoverY = vHitPos.y + m_tDesc.fHoverOffset;
+
+			if (finalPos.y < fMinHoverY)
+			{
+				finalPos.y = fMinHoverY;
+				SetFootPosition(finalPos);
+
+				m_tMoveState.vVelocity.y = 0.f;
+			}
 		}
 	}
 
