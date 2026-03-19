@@ -80,7 +80,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -98,6 +98,11 @@
                         "X": 0.993234395980835,
                         "Y": 1.0,
                         "Z": 0.993234395980835
+                    },
+                    "Scale": {
+                        "X": 0.993234395980835,
+                        "Y": 1.0,
+                        "Z": 1.2621843814849854
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
@@ -414,19 +419,19 @@
                         "Z": 7.41153621673584
                     },
                     "Quaternion": {
-                        "W": 0.7082982063293457,
+                        "W": 0.7083051204681396,
                         "X": -0.0,
-                        "Y": 0.7059133052825928,
+                        "Y": 0.7059063911437988,
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9966228008270264,
+                        "X": 0.9966229796409607,
                         "Y": 1.0,
-                        "Z": 0.9966228008270264
+                        "Z": 0.9071721434593201
                     },
                     "Scale_Isolate": {
-                        "X": 0.9999999403953552,
-                        "Y": 0.9999999403953552,
+                        "X": 1.0,
+                        "Y": 0.9102460145950317,
                         "Z": 1.0
                     }
                 }
@@ -554,13 +559,13 @@
                         "Z": -1.100000023841858
                     },
                     "Quaternion": {
-                        "W": 1.0,
+                        "W": 0.7083107233047485,
                         "X": -0.0,
-                        "Y": 0.0,
+                        "Y": -0.7059008479118347,
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
+                        "X": 0.9966229200363159,
                         "Y": 1.0,
                         "Z": 1.0
                     },
@@ -676,9 +681,9 @@
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9966229200363159,
+                        "X": 1.0,
                         "Y": 1.0,
-                        "Z": 0.9966229200363159
+                        "Z": 1.1401503086090088
                     },
                     "Scale_Isolate": {
                         "X": 0.9999999403953552,
@@ -705,7 +710,7 @@
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 1.0,
+                        "Y": 1.1401503086090088,
                         "Z": 1.0
                     }
                 },
@@ -1145,9 +1150,9 @@
         },
         {
             "Client Level Type": "TEST",
-            "Client Make Path": "StaticObject",
+            "Client Make Path": "Rock",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Wall02.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou14M.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -1190,9 +1195,9 @@
                         "Z": 1.0
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 8.52820110321045,
+                        "Y": 7.323317527770996,
+                        "Z": 7.323317527770996
                     }
                 },
                 {
@@ -1696,15 +1701,15 @@
                 }
             ],
             "Section Number": 0,
-            "UE Loaded": true,
+            "UE Loaded": false,
             "UE Raw Data Path": "",
             "strTag": "SM_PJ_Can01A531"
         },
         {
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
-            "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Sta01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -2063,9 +2068,9 @@
                         "Z": 25.515121459960938
                     },
                     "Quaternion": {
-                        "W": 1.0,
+                        "W": 0.7083051204681396,
                         "X": -0.0,
-                        "Y": 0.0,
+                        "Y": 0.7059063911437988,
                         "Z": -0.0
                     },
                     "Scale": {
@@ -2534,14 +2539,14 @@
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 1.5033650398254395,
+                        "Y": 1.50336492061615,
+                        "Z": 1.50336492061615
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 1.5033648014068604,
+                        "Y": 1.5033648014068604,
+                        "Z": 1.5033648014068604
                     }
                 },
                 {
@@ -2691,6 +2696,52 @@
         },
         {
             "Client Level Type": "TEST",
+            "Client Make Path": "Batch_Object",
+            "Client Make Path Desc": [
+                {
+                    "Batch Object Info": {
+                        "Desc": {
+                            "Field Type": "Sphere",
+                            "Radius": 8.0
+                        },
+                        "Type": "Battle_Field"
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 21.536026000976563,
+                        "Y": 16.235212326049805,
+                        "Z": -1.0876431465148926
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": false,
+            "UE Raw Data Path": "",
+            "strTag": "Battle_Field624"
+        },
+        {
+            "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Default",
             "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Bri02.mesh",
@@ -2748,8 +2799,8 @@
                         "Z": 0.9966228008270264
                     },
                     "Scale_Isolate": {
-                        "X": 0.9999999403953552,
-                        "Y": 0.9999999403953552,
+                        "X": 1.0,
+                        "Y": 0.8602889776229858,
                         "Z": 1.0
                     }
                 }
@@ -2844,7 +2895,7 @@
                     "Quaternion": {
                         "W": 1.0,
                         "X": -0.0,
-                        "Y": 0.0,
+                        "Y": 2.654151955994166e-07,
                         "Z": -0.0
                     },
                     "Scale": {
@@ -2937,7 +2988,7 @@
                     "Quaternion": {
                         "W": 1.0,
                         "X": -0.0,
-                        "Y": 0.0,
+                        "Y": 6.369965376507025e-06,
                         "Z": -0.0
                     },
                     "Scale": {
@@ -2976,7 +3027,7 @@
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9999999403953552,
+                        "X": 1.0,
                         "Y": 1.0,
                         "Z": 0.9999999403953552
                     },
@@ -2996,7 +3047,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -3110,15 +3161,15 @@
                         "Z": 1.054496169090271
                     },
                     "Quaternion": {
-                        "W": 1.0,
+                        "W": 0.7083082795143127,
                         "X": -0.0,
-                        "Y": 2.654151955994166e-07,
+                        "Y": -0.7059032320976257,
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
+                        "X": 0.9966229796409607,
                         "Y": 1.0,
-                        "Z": 1.0
+                        "Z": 0.9966229796409607
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
@@ -3510,14 +3561,14 @@
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 1.1510168313980103,
+                        "Y": 1.2236777544021606,
+                        "Z": 1.1510168313980103
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 1.1510168313980103,
+                        "Y": 1.1510168313980103,
+                        "Z": 1.2236777544021606
                     }
                 }
             ],
@@ -5042,13 +5093,13 @@
                         "Z": 0.0
                     },
                     "Scale": {
-                        "X": 0.9999999403953552,
+                        "X": 0.9966052770614624,
                         "Y": 1.0,
-                        "Z": 0.9999999403953552
+                        "Z": 0.8573684692382813
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 1.0,
+                        "Y": 0.8602889776229858,
                         "Z": 1.0
                     }
                 }
@@ -5224,7 +5275,7 @@
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 1.0,
+                        "Y": 1.2707819938659668,
                         "Z": 1.0
                     }
                 }
@@ -5236,9 +5287,22 @@
         },
         {
             "Client Level Type": "TEST",
-            "Client Make Path": "StaticObject",
-            "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Client Make Path": "Bush",
+            "Client Make Path Desc": [
+                {
+                    "Diffuse Color Power": 1.0,
+                    "Plants": {
+                        "Color": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        }
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/common/Plants/Bush/Mesh/Model/SM_Com_Bus18B.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -5247,20 +5311,20 @@
                         "Z": 13.639044761657715
                     },
                     "Quaternion": {
-                        "W": 0.7083082795143127,
-                        "X": -0.0,
-                        "Y": -0.7059032320976257,
-                        "Z": -0.0
+                        "W": 0.6993396878242493,
+                        "X": 0.0,
+                        "Y": 0.7147895097732544,
+                        "Z": 0.0
                     },
                     "Scale": {
-                        "X": 0.9966229796409607,
-                        "Y": 1.0,
-                        "Z": 0.9966229796409607
+                        "X": 2.0,
+                        "Y": 2.0,
+                        "Z": 2.0
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 2.0,
+                        "Y": 2.0,
+                        "Z": 2.0
                     }
                 }
             ],
@@ -5463,15 +5527,15 @@
                         "Z": -2.9744725227355957
                     },
                     "Quaternion": {
-                        "W": 1.0,
+                        "W": 0.9975597858428955,
                         "X": -0.0,
                         "Y": 0.0,
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
+                        "X": 0.9999668598175049,
                         "Y": 1.0,
-                        "Z": 1.0
+                        "Z": 0.9999668598175049
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
@@ -5826,7 +5890,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Wall02.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -5946,13 +6010,13 @@
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
+                        "X": 0.993234395980835,
                         "Y": 1.0,
-                        "Z": 1.0
+                        "Z": 0.9040876626968384
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 1.0,
+                        "Y": 0.9102460145950317,
                         "Z": 1.0
                     }
                 }
@@ -5966,7 +6030,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Pil01B.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -5989,6 +6053,98 @@
                         "X": 1.0,
                         "Y": 0.8602889776229858,
                         "Z": 1.0
+                    }
+                },
+                {
+                    "Position": {
+                        "X": -11.291069030761719,
+                        "Y": 38.32821273803711,
+                        "Z": -302.35772705078125
+                    },
+                    "Quaternion": {
+                        "W": 0.6974565982818604,
+                        "X": -0.12410120666027069,
+                        "Y": -0.6948737502098083,
+                        "Z": -0.12370788305997849
+                    },
+                    "Scale": {
+                        "X": 6.000734806060791,
+                        "Y": 6.882068157196045,
+                        "Z": 4.981782913208008
+                    },
+                    "Scale_Isolate": {
+                        "X": 6.021067142486572,
+                        "Y": 4.998663425445557,
+                        "Z": 6.883503437042236
+                    }
+                },
+                {
+                    "Position": {
+                        "X": -201.77227783203125,
+                        "Y": 110.98336791992188,
+                        "Z": -503.3221435546875
+                    },
+                    "Quaternion": {
+                        "W": 0.69743812084198,
+                        "X": -0.12420646846294403,
+                        "Y": -0.694854736328125,
+                        "Z": -0.12381284683942795
+                    },
+                    "Scale": {
+                        "X": 6.000734329223633,
+                        "Y": 6.39560079574585,
+                        "Z": 6.000734329223633
+                    },
+                    "Scale_Isolate": {
+                        "X": 6.0210676193237305,
+                        "Y": 6.0210676193237305,
+                        "Z": 6.396936416625977
+                    }
+                },
+                {
+                    "Position": {
+                        "X": 110.21048736572266,
+                        "Y": 170.4110870361328,
+                        "Z": -1762.82421875
+                    },
+                    "Quaternion": {
+                        "W": 0.6891649961471558,
+                        "X": 0.16432563960552216,
+                        "Y": 0.6864460706710815,
+                        "Z": -0.16383059322834015
+                    },
+                    "Scale": {
+                        "X": 12.833293914794922,
+                        "Y": 16.842021942138672,
+                        "Z": 10.628425598144531
+                    },
+                    "Scale_Isolate": {
+                        "X": 12.87678050994873,
+                        "Y": 10.66443920135498,
+                        "Z": 16.848180770874023
+                    }
+                },
+                {
+                    "Position": {
+                        "X": -113.81863403320313,
+                        "Y": 78.50031280517578,
+                        "Z": -486.4507751464844
+                    },
+                    "Quaternion": {
+                        "W": 0.69743812084198,
+                        "X": 0.12420547008514404,
+                        "Y": 0.6948550343513489,
+                        "Z": -0.12381188571453094
+                    },
+                    "Scale": {
+                        "X": 6.000735282897949,
+                        "Y": 6.39560079574585,
+                        "Z": 6.000734806060791
+                    },
+                    "Scale_Isolate": {
+                        "X": 6.0210676193237305,
+                        "Y": 6.0210676193237305,
+                        "Z": 6.396936416625977
                     }
                 }
             ],
@@ -6070,8 +6226,8 @@
         {
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
-            "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN002_Haiboliya/Binghucheng/BH_Quarry/Mesh/Model/SM_Qua_Ore07.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -6129,6 +6285,29 @@
                         "X": 1.2887959480285645,
                         "Y": 1.2887959480285645,
                         "Z": 1.2887959480285645
+                    }
+                },
+                {
+                    "Position": {
+                        "X": 9.104392051696777,
+                        "Y": 14.837566375732422,
+                        "Z": 1.1826318502426147
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
                     }
                 }
             ],
@@ -6266,9 +6445,9 @@
                         "Z": 1.0
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 1.562904953956604,
+                        "Y": 1.562904953956604,
+                        "Z": 1.562904953956604
                     }
                 }
             ],
@@ -6336,8 +6515,8 @@
                         "Z": 0.9966227412223816
                     },
                     "Scale_Isolate": {
-                        "X": 0.9999999403953552,
-                        "Y": 0.9999999403953552,
+                        "X": 1.0,
+                        "Y": 1.0,
                         "Z": 1.0
                     }
                 }
@@ -13594,7 +13773,580 @@
             "Section Number": 0,
             "UE Loaded": false,
             "UE Raw Data Path": "",
+            "strTag": "SM_Com_Gra01B_V2682"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 1.2477953433990479,
+                        "Y": 12.159025192260742,
+                        "Z": 29.319337844848633
+                    },
+                    "Quaternion": {
+                        "W": -0.0026271077804267406,
+                        "X": 0.0,
+                        "Y": 0.999996542930603,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 0.9932345151901245,
+                        "Y": 1.0,
+                        "Z": 0.8544684052467346
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 0.860288679599762,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge02648"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "Tree",
+            "Client Make Path Desc": [
+                {
+                    "Diffuse Color Power": 1.0,
+                    "Plants": {
+                        "Color": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        }
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/common/Plants/Tree/V1/Mesh/Model/SM_Com_Tre15S_V1.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -38.87181854248047,
+                        "Y": 25.2253360748291,
+                        "Z": -12.62619686126709
+                    },
+                    "Quaternion": {
+                        "W": -0.6042665243148804,
+                        "X": 0.05082601308822632,
+                        "Y": 0.793647289276123,
+                        "Z": -0.04901646822690964
+                    },
+                    "Scale": {
+                        "X": 2.4085376262664795,
+                        "Y": 2.4085381031036377,
+                        "Z": 2.4085378646850586
+                    },
+                    "Scale_Isolate": {
+                        "X": 2.4085381031036377,
+                        "Y": 2.4085381031036377,
+                        "Z": 2.4085381031036377
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Com_Tre15S_V1649"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 4.782332897186279,
+                        "Y": 12.129483222961426,
+                        "Z": 29.45284080505371
+                    },
+                    "Quaternion": {
+                        "W": 0.7101520299911499,
+                        "X": -0.0,
+                        "Y": -0.7040483951568604,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 0.9966406226158142,
+                        "Y": 1.0,
+                        "Z": 0.8573989272117615
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.9999999403953552,
+                        "Y": 0.8602889180183411,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge021014"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 8.223576545715332,
+                        "Y": 12.722455024719238,
+                        "Z": 29.634830474853516
+                    },
+                    "Quaternion": {
+                        "W": 0.7101520299911499,
+                        "X": -0.0,
+                        "Y": -0.7040483951568604,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 0.9966406226158142,
+                        "Y": 1.0,
+                        "Z": 0.8573989272117615
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.9999999403953552,
+                        "Y": 0.8602889180183411,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge01650"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "Rock",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou31M.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 339.4665222167969,
+                        "Y": 232.3414764404297,
+                        "Z": 537.8972778320313
+                    },
+                    "Quaternion": {
+                        "W": 0.6888667941093445,
+                        "X": 0.4942399561405182,
+                        "Y": -0.24264360964298248,
+                        "Z": 0.47150135040283203
+                    },
+                    "Scale": {
+                        "X": 8.372246742248535,
+                        "Y": 8.36168098449707,
+                        "Z": 8.370986938476563
+                    },
+                    "Scale_Isolate": {
+                        "X": 8.388249397277832,
+                        "Y": 8.388248443603516,
+                        "Z": 8.388249397277832
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Com_VilMou31M921"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "Rock",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou06M.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 79.29021453857422,
+                        "Y": 15.398945808410645,
+                        "Z": -38.84181213378906
+                    },
+                    "Quaternion": {
+                        "W": 0.984340488910675,
+                        "X": 0.014804678969085217,
+                        "Y": 0.14314162731170654,
+                        "Z": 0.10180944204330444
+                    },
+                    "Scale": {
+                        "X": 0.5509698390960693,
+                        "Y": 0.5509698390960693,
+                        "Z": 0.5509698390960693
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.5509697794914246,
+                        "Y": 0.5509697794914246,
+                        "Z": 0.5509697794914246
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Com_VilMou06M660"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Pil01C.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 68.43678283691406,
+                        "Y": 19.49183464050293,
+                        "Z": -46.47677230834961
+                    },
+                    "Quaternion": {
+                        "W": -0.4364996552467346,
+                        "X": -0.01809229701757431,
+                        "Y": 0.8956131935119629,
+                        "Z": 0.08377155661582947
+                    },
+                    "Scale": {
+                        "X": 1.1629691123962402,
+                        "Y": 0.5304099917411804,
+                        "Z": 0.9068281054496765
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.1629689931869507,
+                        "Y": 0.906827986240387,
+                        "Z": 0.5304099917411804
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Pil01C908"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 36.53485107421875,
+                        "Y": 12.716824531555176,
+                        "Z": 5.054495811462402
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 2.654151955994166e-07,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge01651"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "Rock",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou17L.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -554.6199340820313,
+                        "Y": 35.44304656982422,
+                        "Z": 323.07293701171875
+                    },
+                    "Quaternion": {
+                        "W": 0.8783131241798401,
+                        "X": -0.015409085899591446,
+                        "Y": -0.4772874712944031,
+                        "Z": -0.0229197908192873
+                    },
+                    "Scale": {
+                        "X": 2.217951536178589,
+                        "Y": 2.2213802337646484,
+                        "Z": 2.2179555892944336
+                    },
+                    "Scale_Isolate": {
+                        "X": 2.2213919162750244,
+                        "Y": 2.2213919162750244,
+                        "Z": 2.2213919162750244
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Com_VilMou17L994"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Wall02.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -9.694938659667969,
+                        "Y": 12.623835563659668,
+                        "Z": 19.15009117126465
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 8.081029591266997e-06,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Wall02652"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -1.3987200260162354,
+                        "Y": 15.623835563659668,
+                        "Z": -2.7872731685638428
+                    },
+                    "Quaternion": {
+                        "W": -1.196152970805997e-05,
+                        "X": 0.0,
+                        "Y": 1.0,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 0.993234395980835,
+                        "Y": 1.0,
+                        "Z": 0.993234395980835
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge02654"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Bri02.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 31.27008056640625,
+                        "Y": 30.49608039855957,
+                        "Z": -12.118683815002441
+                    },
+                    "Quaternion": {
+                        "W": 0.9921864867210388,
+                        "X": 0.03802870586514473,
+                        "Y": -0.11874009668827057,
+                        "Z": -0.004546226933598518
+                    },
+                    "Scale": {
+                        "X": 2.3921570777893066,
+                        "Y": 2.3921570777893066,
+                        "Z": 2.3921570777893066
+                    },
+                    "Scale_Isolate": {
+                        "X": 2.3921570777893066,
+                        "Y": 2.3921570777893066,
+                        "Z": 2.3921570777893066
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Bri02655"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 36.53486251831055,
+                        "Y": 12.716824531555176,
+                        "Z": 1.0544942617416382
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 2.654151955994166e-07,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge01870"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "Batch_Object",
+            "Client Make Path Desc": [
+                {
+                    "Batch Object Info": {
+                        "Desc": {
+                            "Light Data": {
+                                "Ambient": {
+                                    "W": 1.0,
+                                    "X": 1.0,
+                                    "Y": 0.0,
+                                    "Z": 0.0
+                                },
+                                "Diffuse": {
+                                    "W": 1.0,
+                                    "X": 1.0,
+                                    "Y": 0.0,
+                                    "Z": 0.0
+                                },
+                                "Flicker": {
+                                    "Min": 0.0,
+                                    "Speed": 20.0
+                                },
+                                "Range": 15.0,
+                                "Specular": {
+                                    "W": 0.0,
+                                    "X": 1.0,
+                                    "Y": 1.0,
+                                    "Z": 1.0
+                                },
+                                "Type": "POINT"
+                            }
+                        },
+                        "Type": "PointLight"
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -11.160806655883789,
+                        "Y": 11.241589546203613,
+                        "Z": 57.20289993286133
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": false,
+            "UE Raw Data Path": "",
             "strTag": "SM_Com_Gra01B_V2217"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Pil05B.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 24.935287475585938,
+                        "Y": 12.5,
+                        "Z": 15.599994659423828
+                    },
+                    "Quaternion": {
+                        "W": -1.712641392259684e-06,
+                        "X": 0.0,
+                        "Y": 1.0,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Pil05B686"
         },
         {
             "Client Level Type": "TEST",
@@ -13694,6 +14446,52 @@
                         "Y": 0.5509697794914246,
                         "Z": 0.5509697794914246
                     }
+                },
+                {
+                    "Position": {
+                        "X": 36.4051399230957,
+                        "Y": 13.14404010772705,
+                        "Z": -3.077056884765625
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                },
+                {
+                    "Position": {
+                        "X": 36.08220291137695,
+                        "Y": 13.348127365112305,
+                        "Z": -2.8917794227600098
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
                 }
             ],
             "Section Number": 0,
@@ -13740,7 +14538,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -13755,6 +14553,41 @@
                         "Z": -0.0
                     },
                     "Scale": {
+                        "X": 1.0,
+                        "Y": 0.8602889776229858,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge021007"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 66.03727722167969,
+                        "Y": 16.21680450439453,
+                        "Z": -6.7909746170043945
+                    },
+                    "Quaternion": {
+                        "W": -1.1363453268131707e-05,
+                        "X": 0.0,
+                        "Y": 1.0,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 0.993234395980835,
+                        "Y": 1.0,
+                        "Z": 0.993234395980835
+                    },
+                    "Scale_Isolate": {
                         "X": 1.0,
                         "Y": 1.0,
                         "Z": 1.0
@@ -13809,8 +14642,8 @@
         {
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
-            "Draw Type": "Default",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Pil01C.mesh",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -13844,8 +14677,8 @@
         {
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
-            "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_PinJie/Mesh/Model/SM_PJ_Can01B.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -13936,7 +14769,7 @@
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 1.0,
+                        "Y": 0.8602889776229858,
                         "Z": 1.0
                     }
                 }
@@ -13983,7 +14816,7 @@
         },
         {
             "Client Level Type": "TEST",
-            "Client Make Path": "Rock",
+            "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
             "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou17L.mesh",
             "SRT": [
@@ -14084,7 +14917,7 @@
             "Section Number": 0,
             "UE Loaded": true,
             "UE Raw Data Path": "",
-            "strTag": "SM_Rou_Edge02227"
+            "strTag": "SM_Rou_Edge02734"
         },
         {
             "Client Level Type": "TEST",
@@ -14252,8 +15085,8 @@
         {
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
-            "Draw Type": "Default",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Pil02B.mesh",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -14270,11 +15103,11 @@
                     "Scale": {
                         "X": 0.9999999403953552,
                         "Y": 1.0,
-                        "Z": 1.0
+                        "Z": 0.9966227412223816
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
+                        "X": 0.9999999403953552,
+                        "Y": 0.9999999403953552,
                         "Z": 1.0
                     }
                 }
@@ -14357,8 +15190,8 @@
         {
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
-            "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/common/Mesh/Model/SM_Com_Can01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -14428,7 +15261,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou26L.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -22115,10 +22948,8 @@
         },
         {
             "Client Level Type": "TEST",
-            "Client Make Path": "StaticObject",
-            "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
-            "SRT": [
+            "Client Make Path": "Batch_Object",
+            "Client Make Path Desc": [
                 {
                     "Position": {
                         "X": 45.46751403808594,
@@ -22161,25 +22992,25 @@
                         "Z": 1.010033369064331
                     },
                     "Quaternion": {
-                        "W": 0.7082982063293457,
+                        "W": 1.0,
                         "X": -0.0,
-                        "Y": 0.7059133052825928,
+                        "Y": 0.0,
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9966228008270264,
+                        "X": 1.0,
                         "Y": 1.0,
-                        "Z": 0.9966228008270264
+                        "Z": 1.0
                     },
                     "Scale_Isolate": {
-                        "X": 0.9999999403953552,
-                        "Y": 0.9999999403953552,
-                        "Z": 1.0
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
                     }
                 }
             ],
             "Section Number": 0,
-            "UE Loaded": true,
+            "UE Loaded": false,
             "UE Raw Data Path": "",
             "strTag": "SM_Rou_Edge01238"
         },
@@ -22662,19 +23493,19 @@
                         "Z": 29.151126861572266
                     },
                     "Quaternion": {
-                        "W": -0.0026271077804267406,
+                        "W": -0.45869535207748413,
                         "X": 0.0,
-                        "Y": 0.999996542930603,
+                        "Y": 0.8885936141014099,
                         "Z": 0.0
                     },
                     "Scale": {
-                        "X": 0.9932345151901245,
+                        "X": 0.9946541786193848,
                         "Y": 1.0,
-                        "Z": 0.8544687032699585
+                        "Z": 0.9946541786193848
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 0.8602889776229858,
+                        "Y": 1.0,
                         "Z": 1.0
                     }
                 }
@@ -22758,7 +23589,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -22828,7 +23659,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -23317,6 +24148,64 @@
                         "Y": 1.0,
                         "Z": 1.0
                     }
+                },
+                {
+                    "Position": {
+                        "X": 1.5200765132904053,
+                        "Y": 12.523852348327637,
+                        "Z": 29.602121353149414
+                    },
+                    "Quaternion": {
+                        "W": -6.5788412939582486e-06,
+                        "X": 0.0,
+                        "Y": 1.0,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 0.993234395980835,
+                        "Y": 1.0,
+                        "Z": 0.993234395980835
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Wall02806"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/common/Mesh/Model/SM_Com_Can01.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 44.544456481933594,
+                        "Y": 12.61442756652832,
+                        "Z": 3.326162099838257
+                    },
+                    "Quaternion": {
+                        "W": 0.7902498245239258,
+                        "X": -0.0,
+                        "Y": -0.612784743309021,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
                 }
             ],
             "Section Number": 0,
@@ -23593,8 +24482,8 @@
                         "Z": 0.9966227412223816
                     },
                     "Scale_Isolate": {
-                        "X": 0.9999999403953552,
-                        "Y": 0.9999999403953552,
+                        "X": 1.0,
+                        "Y": 0.8602889776229858,
                         "Z": 1.0
                     }
                 }
@@ -23687,19 +24576,19 @@
                         "Z": -22.788471221923828
                     },
                     "Quaternion": {
-                        "W": -1.1363453268131707e-05,
+                        "W": -0.0026271077804267406,
                         "X": 0.0,
-                        "Y": 1.0,
+                        "Y": 0.999996542930603,
                         "Z": 0.0
                     },
                     "Scale": {
-                        "X": 0.993234395980835,
+                        "X": 0.9932345151901245,
                         "Y": 1.0,
-                        "Z": 0.993234395980835
+                        "Z": 0.8544687032699585
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 1.0,
+                        "Y": 0.8602889776229858,
                         "Z": 1.0
                     }
                 }
@@ -23757,19 +24646,19 @@
                         "Z": 25.710025787353516
                     },
                     "Quaternion": {
-                        "W": -0.0026271077804267406,
-                        "X": 0.0,
-                        "Y": 0.999996542930603,
-                        "Z": 0.0
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 2.654151955994166e-07,
+                        "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9932345151901245,
+                        "X": 1.0,
                         "Y": 1.0,
-                        "Z": 0.8544687032699585
+                        "Z": 1.0
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 0.8602889776229858,
+                        "Y": 1.0,
                         "Z": 1.0
                     }
                 }
@@ -23781,7 +24670,7 @@
         },
         {
             "Client Level Type": "TEST",
-            "Client Make Path": "Rock",
+            "Client Make Path": "StaticObject",
             "Draw Type": "Default",
             "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou15M.mesh",
             "SRT": [
@@ -24037,9 +24926,9 @@
                         "Z": 1.0
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 6.869377136230469,
+                        "Y": 6.869377613067627,
+                        "Z": 6.869377613067627
                     }
                 }
             ],
@@ -24168,6 +25057,29 @@
                         "X": 0.7196419835090637,
                         "Y": 0.7196419835090637,
                         "Z": 0.7196419835090637
+                    }
+                },
+                {
+                    "Position": {
+                        "X": 36.28360366821289,
+                        "Y": 12.223837852478027,
+                        "Z": -14.63534164428711
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 7.962456038512755e-06,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
                     }
                 }
             ],
@@ -24401,9 +25313,9 @@
         },
         {
             "Client Level Type": "TEST",
-            "Client Make Path": "StaticObject",
+            "Client Make Path": "Rock",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou17L.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -24976,9 +25888,9 @@
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
+                        "X": 1.0000001192092896,
                         "Y": 1.0,
-                        "Z": 1.0
+                        "Z": 1.0000001192092896
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
@@ -25136,7 +26048,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -25293,11 +26205,11 @@
                     "Scale": {
                         "X": 0.9932345151901245,
                         "Y": 1.0,
-                        "Z": 0.8544684052467346
+                        "Z": 1.0
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 0.860288679599762,
+                        "Y": 1.0,
                         "Z": 1.0
                     }
                 }
@@ -25431,13 +26343,13 @@
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
+                        "X": 0.993234395980835,
                         "Y": 1.0,
-                        "Z": 1.0
+                        "Z": 0.9040876626968384
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 1.0,
+                        "Y": 0.9102460145950317,
                         "Z": 1.0
                     }
                 }
@@ -25707,7 +26619,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "Rock",
             "Draw Type": "Default",
-            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou20L.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Pil01C.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -26511,7 +27423,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/common/Mesh/Model/SM_Com_Can01A.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -26520,13 +27432,13 @@
                         "Z": -13.71605396270752
                     },
                     "Quaternion": {
-                        "W": 1.0,
+                        "W": 0.977664053440094,
                         "X": -0.0,
                         "Y": 8.833350875647739e-06,
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
+                        "X": 0.9997002482414246,
                         "Y": 1.0,
                         "Z": 1.2707823514938354
                     },
@@ -26708,19 +27620,19 @@
                         "Z": -2.790961742401123
                     },
                     "Quaternion": {
-                        "W": -1.1363453268131707e-05,
+                        "W": -0.6328353881835938,
                         "X": 0.0,
-                        "Y": 1.0,
+                        "Y": 0.7742863297462463,
                         "Z": 0.0
                     },
                     "Scale": {
-                        "X": 0.993234395980835,
+                        "X": 0.9959381818771362,
                         "Y": 1.0,
-                        "Z": 0.993234395980835
+                        "Z": 0.9959381818771362
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
+                        "X": 0.9999999403953552,
+                        "Y": 0.9999999403953552,
                         "Z": 1.0
                     }
                 }
@@ -26768,8 +27680,8 @@
         {
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
-            "Draw Type": "Default",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Wall04.mesh",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -26778,15 +27690,15 @@
                         "Z": 1.709807276725769
                     },
                     "Quaternion": {
-                        "W": 0.7070990800857544,
-                        "X": 0.0,
-                        "Y": 0.7071144580841064,
-                        "Z": 0.0
+                        "W": 0.7101520299911499,
+                        "X": -0.0,
+                        "Y": -0.7040483951568604,
+                        "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9999999403953552,
+                        "X": 0.9966406226158142,
                         "Y": 1.0,
-                        "Z": 0.9999999403953552
+                        "Z": 0.8573989272117615
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
@@ -27679,7 +28591,7 @@
                     "Scale": {
                         "X": 1.0,
                         "Y": 1.0,
-                        "Z": 1.0
+                        "Z": 0.993234395980835
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
@@ -27901,10 +28813,10 @@
                         "Z": 22.26532745361328
                     },
                     "Quaternion": {
-                        "W": 1.0,
-                        "X": -0.0,
-                        "Y": 0.0,
-                        "Z": -0.0
+                        "W": 1.913844698719913e-06,
+                        "X": 0.0,
+                        "Y": 1.0,
+                        "Z": 0.0
                     },
                     "Scale": {
                         "X": 0.699999988079071,
@@ -28663,9 +29575,9 @@
                         "Z": 1.0
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 1.5919771194458008,
+                        "Y": 1.5919771194458008,
+                        "Z": 1.5919771194458008
                     }
                 }
             ],
@@ -29066,14 +29978,14 @@
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 0.5348125100135803,
+                        "Y": 0.5348125100135803,
+                        "Z": 0.5348125100135803
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 0.5348125100135803,
+                        "Y": 0.5348125100135803,
+                        "Z": 0.5348125100135803
                     }
                 }
             ],
@@ -29702,7 +30614,7 @@
                     "Quaternion": {
                         "W": -1.1845430890389252e-05,
                         "X": 0.0,
-                        "Y": 1.0,
+                        "Y": 0.7071079611778259,
                         "Z": 0.0
                     },
                     "Scale": {
@@ -29829,7 +30741,7 @@
         },
         {
             "Client Level Type": "TEST",
-            "Client Make Path": "StaticObject",
+            "Client Make Path": "Rock",
             "Draw Type": "Default",
             "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Pil01C.mesh",
             "SRT": [
@@ -37253,8 +38165,8 @@
                         "Z": 0.9966228008270264
                     },
                     "Scale_Isolate": {
-                        "X": 0.9999999403953552,
-                        "Y": 0.9999999403953552,
+                        "X": 1.0,
+                        "Y": 1.0,
                         "Z": 1.0
                     }
                 }
@@ -37487,13 +38399,13 @@
                         "Z": 25.72686004638672
                     },
                     "Quaternion": {
-                        "W": -0.0026271077804267406,
-                        "X": 0.0,
-                        "Y": 0.999996542930603,
-                        "Z": 0.0
+                        "W": 1.0,
+                        "X": -0.0,
+                        "Y": 0.0,
+                        "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9932345151901245,
+                        "X": 1.0,
                         "Y": 1.0,
                         "Z": 0.8544687032699585
                     },
@@ -37697,7 +38609,7 @@
         },
         {
             "Client Level Type": "TEST",
-            "Client Make Path": "StaticObject",
+            "Client Make Path": "Rock",
             "Draw Type": "Instance",
             "Model Path": "../../Resources/Models/Map/Level/common/Mesh/Model/SM_Com_Can01A.mesh",
             "SRT": [
@@ -37719,9 +38631,9 @@
                         "Z": 0.9946541786193848
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
-                        "Z": 1.0
+                        "X": 2.4311840534210205,
+                        "Y": 2.4311840534210205,
+                        "Z": 2.4311840534210205
                     }
                 },
                 {
@@ -37743,7 +38655,7 @@
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 1.0,
+                        "Y": 0.8694446086883545,
                         "Z": 1.0
                     }
                 }
@@ -37871,19 +38783,19 @@
                         "Z": 40.73646545410156
                     },
                     "Quaternion": {
-                        "W": 0.7083050012588501,
+                        "W": 1.0,
                         "X": -0.0,
-                        "Y": 0.7059065699577332,
+                        "Y": 0.0,
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9966227412223816,
+                        "X": 1.0,
                         "Y": 1.0,
-                        "Z": 0.9966227412223816
+                        "Z": 1.0
                     },
                     "Scale_Isolate": {
-                        "X": 0.9999999403953552,
-                        "Y": 0.9999999403953552,
+                        "X": 1.0,
+                        "Y": 1.0,
                         "Z": 1.0
                     }
                 }
@@ -38070,19 +38982,19 @@
                         "Z": 6.91143798828125
                     },
                     "Quaternion": {
-                        "W": 0.7082982063293457,
-                        "X": -0.0,
-                        "Y": 0.7059133052825928,
-                        "Z": -0.0
+                        "W": -1.196152970805997e-05,
+                        "X": 0.0,
+                        "Y": 1.0,
+                        "Z": 0.0
                     },
                     "Scale": {
-                        "X": 0.9966228008270264,
+                        "X": 0.993234395980835,
                         "Y": 1.0,
-                        "Z": 0.9966228008270264
+                        "Z": 0.993234395980835
                     },
                     "Scale_Isolate": {
-                        "X": 0.9999999403953552,
-                        "Y": 0.9999999403953552,
+                        "X": 1.0,
+                        "Y": 1.0,
                         "Z": 1.0
                     }
                 }
@@ -38281,17 +39193,17 @@
                     "Quaternion": {
                         "W": -1.196152970805997e-05,
                         "X": 0.0,
-                        "Y": 1.0,
+                        "Y": 0.999996542930603,
                         "Z": 0.0
                     },
                     "Scale": {
-                        "X": 0.993234395980835,
+                        "X": 0.9932345151901245,
                         "Y": 1.0,
-                        "Z": 0.993234395980835
+                        "Z": 0.8544687032699585
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 1.0,
+                        "Y": 0.8602889776229858,
                         "Z": 1.0
                     }
                 }
@@ -38442,19 +39354,19 @@
                         "Z": 29.16796112060547
                     },
                     "Quaternion": {
-                        "W": -0.0026271077804267406,
-                        "X": 0.0,
-                        "Y": 0.999996542930603,
-                        "Z": 0.0
+                        "W": 0.7083082795143127,
+                        "X": -0.0,
+                        "Y": -0.7059032320976257,
+                        "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9932345151901245,
+                        "X": 0.9966229796409607,
                         "Y": 1.0,
-                        "Z": 0.8544687032699585
+                        "Z": 0.9966229796409607
                     },
                     "Scale_Isolate": {
                         "X": 1.0,
-                        "Y": 0.8602889776229858,
+                        "Y": 1.0,
                         "Z": 1.0
                     }
                 }
@@ -38608,7 +39520,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -38617,19 +39529,19 @@
                         "Z": -14.536516189575195
                     },
                     "Quaternion": {
-                        "W": 0.708298921585083,
+                        "W": 0.7083050012588501,
                         "X": -0.0,
-                        "Y": 0.7059125900268555,
+                        "Y": 0.7059065699577332,
                         "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.9966229200363159,
+                        "X": 0.9966227412223816,
                         "Y": 1.0,
-                        "Z": 0.9966229200363159
+                        "Z": 0.907171905040741
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
+                        "X": 0.9999999403953552,
+                        "Y": 0.910245954990387,
                         "Z": 1.0
                     }
                 }
@@ -47808,6 +48720,41 @@
                         "Z": 0.0
                     },
                     "Scale": {
+                        "X": 0.9999999403953552,
+                        "Y": 1.0,
+                        "Z": 0.8602889180183411
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 0.8602889776229858,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge011008"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "Rock",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou06M.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 33.609169006347656,
+                        "Y": -7.005286693572998,
+                        "Z": 56.01041030883789
+                    },
+                    "Quaternion": {
+                        "W": 0.09429333359003067,
+                        "X": -0.058622073382139206,
+                        "Y": 0.9937659502029419,
+                        "Z": -0.010074153542518616
+                    },
+                    "Scale": {
                         "X": 0.993234395980835,
                         "Y": 1.0,
                         "Z": 0.993234395980835
@@ -47899,6 +48846,41 @@
                         "Z": 0.9966227412223816
                     },
                     "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": false,
+            "UE Raw Data Path": "",
+            "strTag": "Batch_Player1017"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "Rock",
+            "Draw Type": "Default",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou17L.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 97.89751434326172,
+                        "Y": 1.301693081855774,
+                        "Z": -37.79237747192383
+                    },
+                    "Quaternion": {
+                        "W": 0.7116206288337708,
+                        "X": 0.030402502045035362,
+                        "Y": -0.7016727328300476,
+                        "Z": -0.018086053431034088
+                    },
+                    "Scale": {
+                        "X": 0.7322534918785095,
+                        "Y": 0.7322534322738647,
+                        "Z": 0.7322534322738647
+                    },
+                    "Scale_Isolate": {
                         "X": 0.9999999403953552,
                         "Y": 0.9999999403953552,
                         "Z": 1.0
@@ -47914,7 +48896,7 @@
             "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -47969,8 +48951,8 @@
                         "Z": 1.0
                     },
                     "Scale_Isolate": {
-                        "X": 1.0,
-                        "Y": 1.0,
+                        "X": 0.9999999403953552,
+                        "Y": 0.910245954990387,
                         "Z": 1.0
                     }
                 }
@@ -48100,9 +49082,67 @@
         },
         {
             "Client Level Type": "TEST",
+            "Client Make Path": "Rock",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou04S.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 72.20095825195313,
+                        "Y": 7.995821475982666,
+                        "Z": -4.360110282897949
+                    },
+                    "Quaternion": {
+                        "W": 0.0006319097010418773,
+                        "X": -0.02974945865571499,
+                        "Y": 0.9995567202568054,
+                        "Z": 0.0010005373042076826
+                    },
+                    "Scale": {
+                        "X": 1.067780613899231,
+                        "Y": 1.0750408172607422,
+                        "Z": 1.127423882484436
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0750473737716675,
+                        "Y": 1.1351033449172974,
+                        "Z": 1.075047254562378
+                    }
+                },
+                {
+                    "Position": {
+                        "X": 75.17984008789063,
+                        "Y": 2.6612277030944824,
+                        "Z": 3.5687854290008545
+                    },
+                    "Quaternion": {
+                        "W": -0.030723778530955315,
+                        "X": -0.031409695744514465,
+                        "Y": 0.9990220665931702,
+                        "Z": -0.004946665372699499
+                    },
+                    "Scale": {
+                        "X": 1.3695635795593262,
+                        "Y": 1.378865361213684,
+                        "Z": 1.4292045831680298
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.3788747787475586,
+                        "Y": 1.4389307498931885,
+                        "Z": 1.3788747787475586
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Com_VilMou04S1030"
+        },
+        {
+            "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_PinJie/Mesh/Model/SM_PJ_Can01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -48114,6 +49154,24 @@
                         "W": -0.0026271077804267406,
                         "X": 0.0,
                         "Y": 0.999996542930603,
+                        "Z": 0.9933601021766663
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    }
+                },
+                {
+                    "Position": {
+                        "X": 33.1378288269043,
+                        "Y": 15.03513240814209,
+                        "Z": 1.2998287677764893
+                    },
+                    "Quaternion": {
+                        "W": 0.6359537839889526,
+                        "X": 0.0,
+                        "Y": 0.7717270851135254,
                         "Z": 0.0
                     },
                     "Scale": {
@@ -48170,9 +49228,79 @@
         },
         {
             "Client Level Type": "TEST",
+            "Client Make Path": "Rock",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/common/Rock/Mesh/Model/SM_Com_VilMou06M.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 515.8324584960938,
+                        "Y": 35.25217056274414,
+                        "Z": 74.24537658691406
+                    },
+                    "Quaternion": {
+                        "W": -0.5469125509262085,
+                        "X": 0.0,
+                        "Y": 0.8371896743774414,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 1.981070637702942,
+                        "Y": 1.9905190467834473,
+                        "Z": 1.981070637702942
+                    },
+                    "Scale_Isolate": {
+                        "X": 1.9905190467834473,
+                        "Y": 1.9905190467834473,
+                        "Z": 1.9905190467834473
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Com_VilMou06M1033"
+        },
+        {
+            "Client Level Type": "TEST",
             "Client Make Path": "StaticObject",
             "Draw Type": "Instance",
-            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": 37.22603225708008,
+                        "Y": 12.716824531555176,
+                        "Z": 40.536376953125
+                    },
+                    "Quaternion": {
+                        "W": 0.7083050012588501,
+                        "X": -0.0,
+                        "Y": 0.7059065699577332,
+                        "Z": -0.0
+                    },
+                    "Scale": {
+                        "X": 0.9966227412223816,
+                        "Y": 1.0,
+                        "Z": 0.9966227412223816
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.9999999403953552,
+                        "Y": 0.9999999403953552,
+                        "Z": 1.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge011036"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge01.mesh",
             "SRT": [
                 {
                     "Position": {
@@ -48266,7 +49394,19 @@
                         "Y": 1.0,
                         "Z": 1.0
                     }
-                },
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": true,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Rou_Edge011041"
+        },
+        {
+            "Client Level Type": "TEST",
+            "Client Make Path": "StaticObject",
+            "Draw Type": "Instance",
+            "Model Path": "../../Resources/Models/Map/Level/EN001_Ailixian/AL_RouGe/Mesh/Model/SM_Rou_Edge02.mesh",
+            "SRT": [
                 {
                     "Position": {
                         "X": 36.737266540527344,
@@ -48484,15 +49624,15 @@
                         "Z": 1.2090317010879517
                     },
                     "Quaternion": {
-                        "W": -1.1363453268131707e-05,
-                        "X": 0.0,
-                        "Y": 1.0,
-                        "Z": 0.0
+                        "W": 0.7083082795143127,
+                        "X": -0.0,
+                        "Y": -0.7059032320976257,
+                        "Z": -0.0
                     },
                     "Scale": {
-                        "X": 0.993234395980835,
+                        "X": 0.9966229796409607,
                         "Y": 1.0,
-                        "Z": 0.993234395980835
+                        "Z": 0.9966229796409607
                     },
                     "Scale_Isolate": {
                         "X": 1.0,

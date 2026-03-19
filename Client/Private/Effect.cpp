@@ -180,19 +180,22 @@ void Effect::Update_Bone_Attached_Matrix()
 		matCustom.Translation(Vec3(vBonePos));
 	}
 
-	if (m_pBoneOwnerMatrix == nullptr)
-		return;
-
-	Matrix matBoneOwner = *m_pBoneOwnerMatrix;
+	Matrix matBoneOwner = XMMatrixIdentity();
 	Matrix matCustom2 = XMMatrixIdentity();
-
 	Vector3 vBoneScale2;
 	Quat vBoneQuat2;
 	Vector3 vBonePos2;
 
-	matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
-	matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
-	matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
+	if (m_bUseChildBone == false)
+	{
+		if (m_pBoneOwnerMatrix == nullptr)
+			return;
+
+		matBoneOwner = *m_pBoneOwnerMatrix;
+		matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
+		matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
+		matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
+	}
 
 	m_matCombinedWorld = m_pOffsetMartix * (matCustom) * (matCustom2);
 }
@@ -240,6 +243,7 @@ void Effect::Spawn_PositionCalculate(void* pArg)
 
 	// Engine 데이터를 기반으로 Client의 데이터 갱신
 	m_eDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pEngineDesc->iSimulationType;
+	m_bUseChildBone = pEngineDesc->bUseChildBone;
 
 	if (pEngineDesc->pTargetBoneMatrix)
 		m_pBoneMatrix = *pEngineDesc->pTargetBoneMatrix;
@@ -282,6 +286,9 @@ HRESULT Effect::Despawn_FromPool()
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
 
+	m_bUseChildBone = false;
+	m_iBoneFlag = 0;
+
 	for (auto effectObject : m_vecPartObjects)
 	{
 		if (effectObject != nullptr)
@@ -308,6 +315,8 @@ HRESULT Effect::Enable_VFX(void* pArg)
 HRESULT Effect::Disable_VFX()
 {
 	m_bIsEffectFinish = false;
+	m_bUseChildBone = false;
+	m_iBoneFlag = 0;
 
 	for (auto effectObject : m_vecPartObjects)
 	{

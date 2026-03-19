@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Frustrum.h"
 #include "Font_Manager.h"
+#include "ThreadPool.h"
 #include "Event_Manager.h"
 #include "ObjectPool_Manager.h"
 #include "Octree_Manager.h"
@@ -108,6 +109,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 		return E_FAIL;
 
 	if (!(m_pFont_Manager = CFont_Manager::Create(*ppDevice, *ppContext)))
+		return E_FAIL;
+
+	if (!(m_pThreadPool = CThreadPool::Create()))
 		return E_FAIL;
 
 	if (!(m_pFrustrum = CFrustrum::Create()))
@@ -800,15 +804,20 @@ HRESULT CGameInstance::Set_CascadeShadowConstantBuffer(CShader* pShader)
 {
 	return m_pRender_Manager->Set_CascadeShadowConstantBuffer(pShader);
 }
-#ifdef _DEBUG
-ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
+HRESULT CGameInstance::Set_BakedShadowConstantBuffer(CShader* pShader)
 {
-	return m_pRenderTarget_Manager->Get_RenderTargetSRV(eTarget);
+	return m_pRender_Manager->Set_BakedShadowConstantBuffer(pShader);
 }
 
-inline void CGameInstance::Push_DebugComponent(CComponent* pComp)
+HRESULT CGameInstance::Bake_StaticShadow(BoundingBox* pRootBox)
 {
-	m_pRender_Manager->Push_DebugComponent(pComp);
+	if (FAILED(m_pRender_Manager->Initialize_BakedShadowSections(pRootBox)))
+		return E_FAIL;
+
+	if (FAILED(m_pRender_Manager->Build_BakedShadowSections()))
+		return E_FAIL;
+
+	return S_OK;
 }
 SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc()
 {
@@ -897,6 +906,28 @@ HRESULT CGameInstance::Commit_CascadeParam()
 HRESULT CGameInstance::Commit_AllPostParams()
 {
 	return m_pRender_Manager->Commit_AllPostParams();
+}
+#ifdef _DEBUG
+ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
+{
+	return m_pRenderTarget_Manager->Get_RenderTargetSRV(eTarget);
+}
+
+inline void CGameInstance::Push_DebugComponent(CComponent* pComp)
+{
+	m_pRender_Manager->Push_DebugComponent(pComp);
+}
+ID3D11ShaderResourceView* CGameInstance::Get_BakedShadowDebugSRV()
+{
+	return m_pRender_Manager->Get_BakedShadowDebugSRV();
+}
+const ACTIVE_BAKED_SET& CGameInstance::Get_ActiveBakedSectionSet() const
+{
+	return m_pRender_Manager->Get_ActiveBakedSectionSet();
+}
+void CGameInstance::Update_BakedShadowDebugTexture(_uint iSlice)
+{
+	m_pRender_Manager->Update_BakedShadowDebugTexture(iSlice);
 }
 #endif
 #pragma endregion
@@ -1008,6 +1039,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
+	Safe_Release(m_pThreadPool);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
@@ -1055,6 +1087,10 @@ HRESULT CGameInstance::Add_RenderTarget(ERenderTarget eTarget, const CRenderTarg
 {
 	return m_pRenderTarget_Manager->Add_RenderTarget(eTarget, pDesc);
 }
+HRESULT CGameInstance::Add_RenderTargetArray(ERenderTarget eTarget, const CRenderTargetArray::RENDERTARGET_ARR_DESC* pDesc)
+{
+	return m_pRenderTarget_Manager->Add_RenderTargetArray(eTarget, pDesc);
+}
 
 HRESULT CGameInstance::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget)
 {
@@ -1069,6 +1105,16 @@ HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _bool bUseDS
 HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV)
 {
 	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear, pDSV);
+}
+
+HRESULT CGameInstance::Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, _bool bUseDSV)
+{
+	return m_pRenderTarget_Manager->Begin_RTArraySlice(eTarget, iSlice, bClear, bUseDSV);
+}
+
+HRESULT CGameInstance::Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, ID3D11DepthStencilView* pDSV)
+{
+	return m_pRenderTarget_Manager->Begin_RTArraySlice(eTarget, iSlice, bClear, pDSV);
 }
 
 HRESULT CGameInstance::End_MRT()
@@ -1265,14 +1311,19 @@ void CGameInstance::Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* 
 	return m_pPhysics_Module->Raycast_EventCallback(pOwner, pRaycastHitBuffer, raycastDesc);
 }
 
-_bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall)
+_bool CGameInstance::RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall, OUT _float* fHitDist, OUT Vec3* vHitPos)
 {
-	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall);
+	return m_pPhysics_Module->RayCast(vWorldPos, vDir, fMaxDist, pFilterCall, fHitDist, vHitPos);
 }
 
 _bool CGameInstance::CheckRagdollState(int64 objID)
 {
 	return m_pPhysics_Module->CheckRagdollState(objID);
+}
+
+_bool CGameInstance::CheckRagDollState_Processing(int64 objID)
+{
+	return m_pPhysics_Module->CheckRagDollState_Processing(objID);
 }
 
 void CGameInstance::RagdollRegister(CGameObject* obj)
@@ -1354,7 +1405,10 @@ CBounding_AABB* CGameInstance::Get_MapMinMaxBox()
 {
 	return m_pGameData_Manager->Get_MapMinMaxBox();
 }
-
+BoundingBox* CGameInstance::Get_MapMinMaxBounding()
+{
+	return m_pGameData_Manager->Get_MapMinMaxBounding();
+}
 void CGameInstance::Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter)
 {
 	return m_pGameData_Manager->Set_MapMinMaxBox(vPos, vCenter);
@@ -1427,6 +1481,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
+	Safe_Release(m_pThreadPool);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);

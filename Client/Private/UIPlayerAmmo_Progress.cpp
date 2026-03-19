@@ -64,6 +64,27 @@ void CUIPlayerAmmo_Progress::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+
+	if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Gun))
+	{
+		if (m_isMelee)
+		{
+			Set_Visible();
+			m_isMelee = false;
+		}
+		m_isGun = true;
+
+	}
+	else if (Engine_Utils::Has_Flag(m_pPlayerStatCom->Get_AttState(), CStatCom_Player::Attack_State::Melee))
+	{
+		if (m_isGun)
+		{
+			Set_Invisible();
+			m_isGun = false;
+		}
+		m_isMelee = true;
+	}
+
 	// CurRatio °»½Å
 	Convert_Stat_To_Ratio();
 }
@@ -133,15 +154,6 @@ void CUIPlayerAmmo_Progress::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
-				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
-				{
-					this->Set_Visible();
-				}
-			})
-	);
-	m_vecEventHandles.push_back(
-		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-			{
 				if (EUIEventID::MENU_OPEN == Desc.eEventID)
 				{
 					this->Set_Invisible();
@@ -160,27 +172,17 @@ void CUIPlayerAmmo_Progress::Initialize_Visible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
-	m_fTimeAcc = 0.f;
-	m_fAlpha_Ratio = 0.f;
 }
 
 void CUIPlayerAmmo_Progress::Initialize_InVisible_Event()
 {
 	m_isFin_Event = false;
-	m_fTimeAcc = 0.f;
 }
 
 _bool CUIPlayerAmmo_Progress::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_fAlpha_Ratio += fTimeDelta * 2.f;
-	if (m_fAlpha_Ratio >= 1.f)
-	{
-		m_fAlpha_Ratio = 1.f;
-		m_isFin_Event = true;
-		m_isActive = true;
-		return true;
-	}
-	return false;
+	m_isFin_Event = true;
+	return true;
 }
 
 _bool CUIPlayerAmmo_Progress::Tick_InVisible_Event(const _float fTimeDelta)

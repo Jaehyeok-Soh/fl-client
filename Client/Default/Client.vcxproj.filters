@@ -808,6 +808,9 @@
     <Filter Include="03. GameObject\TriggerBox\04. TriggerBox_CinematicPlayer">
       <UniqueIdentifier>{1c8dd4c0-5581-4d86-8ff6-cc8f9097db82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation">
+      <UniqueIdentifier>{34d8f7a6-03e3-466d-92ae-48f676cfde60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1482,7 +1485,7 @@
     <ClInclude Include="..\Public\UICommunity_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIConservation_Text.h">
+    <ClInclude Include="..\Public\UIConversation_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CLightMapObject.h">
@@ -1499,6 +1502,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\TriggerBox_CinematicPlayer.h">
       <Filter>03. GameObject\TriggerBox\04. TriggerBox_CinematicPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIConversation_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2167,7 +2173,7 @@
     <ClCompile Include="..\Private\UICommunity_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\11.Community</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CUIConservation_Text.cpp">
+    <ClCompile Include="..\Private\UIConversation_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CLightMapObject.cpp">
@@ -2181,6 +2187,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_CinematicPlayer.cpp">
       <Filter>03. GameObject\TriggerBox\04. TriggerBox_CinematicPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIConversation_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2263,6 +2272,9 @@
       <Filter>04. Shaders\Defines</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombinePart.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_RagDoll.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
   </ItemGroup>

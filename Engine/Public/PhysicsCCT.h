@@ -194,6 +194,7 @@ public:
     void SetIsSideOnCCT();
 
     void EnableCollision(_bool bEnable);
+    void EnableMove(_bool bEnable) { m_bEnableMove = bEnable; }
 
     void SetPoolingPosition(Vec3 vPos);
     void ApplyPoolingPosition();
@@ -223,6 +224,8 @@ private:
     _float m_fGravityOffset = { 0.f };
 
     _bool m_bEnableCollision = { true };
+
+    _bool m_bEnableMove = { true };
 
 private:
     Vec3 m_vPoolingPosition{};

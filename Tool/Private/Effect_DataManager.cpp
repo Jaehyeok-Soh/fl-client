@@ -74,7 +74,7 @@ CGameObject* CEffect_DataManager::Make_EffectPrototype(EEFFECT_DATATYPE DataType
 	{
 		pBase =
 			static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
-				ENUM_TO_UINT(ELevelType::MAP),
+				m_pGameInstance->Get_CurrentLevelIndex(),
 				L"Prototype_GameObject_Effect",
 				&pData));
 		break;
@@ -84,7 +84,7 @@ CGameObject* CEffect_DataManager::Make_EffectPrototype(EEFFECT_DATATYPE DataType
 	{
 		pBase =
 			static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
-				ENUM_TO_UINT(ELevelType::MAP),
+				m_pGameInstance->Get_CurrentLevelIndex(),
 				L"Prototype_GameObject_Effect_Env",
 				&pData));
 		break;
@@ -127,7 +127,7 @@ HRESULT CEffect_DataManager::Ready_Builder()
 	m_pBuilderSystem = CBuilderSystem::Create();
 	if (m_pBuilderSystem == nullptr)  return E_FAIL;
 
-	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, ENUM_TO_UINT(ELevelType::MAP)))))
+	if (FAILED(m_pBuilderSystem->Ready_Builder(DTO::ECategory::EFFECT, CBuilder_Effect::Create(m_pDevice, m_pDeviceContext, m_pGameInstance->Get_CurrentLevelIndex()))))
 		return E_FAIL;
 
 	return S_OK;
@@ -137,7 +137,7 @@ HRESULT CEffect_DataManager::Ready_BuildFiles()
 {
 #pragma region EFFECT
 	DTO::ECategory eCategory = DTO::ECategory::EFFECT;
-	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>((_uint)ELevelType::MAP, eCategory)))
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Effect>(m_pGameInstance->Get_CurrentLevelIndex(), eCategory)))
 		return E_FAIL;
 
 	std::filesystem::path strEffectFolderPath = L"../../Resources/Data/EffectData/VFX_Env/";
@@ -151,10 +151,10 @@ HRESULT CEffect_DataManager::Ready_BuildFiles()
 				// 확장자가 .json인 것만 골라내기
 				if (entry.path().extension() == ".json")
 				{
-					if (FAILED(m_pGameInstance->Load_File_Json((_uint)ELevelType::MAP, eCategory, entry.path())))
+					if (FAILED(m_pGameInstance->Load_File_Json(m_pGameInstance->Get_CurrentLevelIndex(), eCategory, entry.path())))
 						return E_FAIL;
 
-					if (FAILED(m_pBuilderSystem->Build_File((_uint)ELevelType::MAP, eCategory, entry.path().stem().string())))
+					if (FAILED(m_pBuilderSystem->Build_File(m_pGameInstance->Get_CurrentLevelIndex(), eCategory, entry.path().stem().string())))
 						return E_FAIL;
 
 					Push_EffectTag(entry.path().stem().string());

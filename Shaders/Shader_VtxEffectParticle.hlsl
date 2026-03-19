@@ -82,6 +82,7 @@ PS_OUT_WBOIT PS_Particle(GS_OUT_POS_PARTICLE In) : SV_TARGET0
     
         // ================    Curve 텍스처     ===============
     float4 CurveSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 GlowSample = { 1.f, 1.f, 1.f, 1.f };
     float CurvePowerStrength = 1.0f;
     
     // 1. 진행 비율 계산 (AppearRatio: 등장, DissolveProgress: 소멸)
@@ -117,13 +118,36 @@ PS_OUT_WBOIT PS_Particle(GS_OUT_POS_PARTICLE In) : SV_TARGET0
         CurvePowerStrength = 1.f;
     }
     
+    if (Has(g_Effect.g_TextureFlags, GLOWTEXTURE))
+    {
+        if (HasTextureScroll(SCROLL_GLOW))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.GlowTexture_ScrollWeight;
+            GlowSample = GlowTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
+        }
+        else if (HasTextureSprite(g_Effect.GlowTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.GlowTexture_SpriteInfo);
+            GlowSample = GlowTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
+        }
+        else
+        {
+            GlowSample = GlowTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
+        }
+
+    }
+    else
+        GlowSample = float4(1.f, 1.f, 1.f, 1.f);
+    
+    
     float lifeAlpha = 1.0f - DissolveProgress;
     float finalAlpha = g_Effect.g_EffectColor.a;
 
     if (HasLifeDissolve())
         finalAlpha *= lifeAlpha;
 
-    float3 finalRGB = g_Effect.g_EffectColor * CurvePowerStrength;
+    float3 finalRGB = g_Effect.g_EffectColor * CurvePowerStrength * GlowSample.r;
     // ===========  라이프타임에 따른 투명도 적용  =============
 
     if (finalAlpha < g_Effect.g_DiscardValue)
@@ -148,7 +172,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Particle()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Particle()));
         SetPixelShader(CompileShader(ps_5_0, PS_Particle()));
@@ -158,7 +182,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Disabled, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Particle()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Particle()));
         SetPixelShader(CompileShader(ps_5_0, PS_Particle()));

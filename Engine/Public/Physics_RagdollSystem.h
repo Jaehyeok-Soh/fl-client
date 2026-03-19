@@ -29,7 +29,8 @@ private:
     HRESULT Initialize();
 
 public:
-    _bool CheckRagdollState(int64 objID);
+    _bool   CheckRagdollState(int64 objID);
+    _bool    CheckRagDollState_Processing(uint64 objID);
 
     RAGDOLLELEMENTS CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc);
     void Register(CGameObject* obj);
@@ -38,6 +39,8 @@ public:
     void RequestStart(uint64 objID);
     void SyncStates(uint64 objID, vector<class CChannel*>& vecChannels);
     void Finish(uint64 objID);
+
+
 
 private:
     void CreateRagdollLink(RAGDOLLELEMENTS* elements, array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc, _int index, PxArticulationLink* parentLink);

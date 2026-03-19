@@ -65,13 +65,16 @@ void CEffectHandler::Set_Desc(const ANIM_EFFECT_HANDLER_DESC& Desc)
 
          for (auto& pair : m_tDesc.mapEvents)
          {
-             _uint iAnimIndex = pair.first;
-             if (iAnimIndex >= vecAnimations.size()) continue;
+             wstring iAnimName = Engine_Utils::ToWString(pair.first);
 
-             auto pAnimation = vecAnimations[iAnimIndex];
-             pAnimation->Clear_Notifies(EAnimNotifyId::Vfx_Oneshot);
+             for (auto& pAnimation : vecAnimations)
+             {
+                 if (pAnimation->Get_Name() == iAnimName)
+                 {
+                     pAnimation->Clear_Notifies(EAnimNotifyId::Vfx_Oneshot);
+                 }
+             }
          }
-
          Ready_AnimState();
      }
 }
@@ -152,45 +155,48 @@ HRESULT CEffectHandler::Ready_AnimState()
 
     for (auto& pair : m_tDesc.mapEvents)
     {
-        _uint iAnimIndex = pair.first;
-        if (iAnimIndex >= vecAnimations.size()) continue;
+        wstring iAnimName = Engine_Utils::ToWString(pair.first);
 
-        auto pAnimation = vecAnimations[iAnimIndex];
-
-        for (size_t i = 0; i < pair.second.size(); ++i)
+        for (auto& pAnimation : vecAnimations)
         {
-            auto& tEffectData = pair.second[i];
-
-            _float fTotalTick = pAnimation->Get_DurationTime();
-            _float fTickPerSecond = pAnimation->Get_TickPerSecond();
-            _float fStartTick = tEffectData.fStartTrackPosition;
-            _float fEndTick = fStartTick + (tEffectData.fDuration * fTickPerSecond);
-
-
-            AnimNotifyKey tOnKey{};
-            // fDuration이 있으면 On/Off 관리가 필요한 Attach 타입으로 간주
-            tOnKey.eID = (EAnimNotifyId)tEffectData.iNotifyId;
-            tOnKey.fTrackPosition = fStartTick;
-            tOnKey.iParam0 = (_int)i;
-            tOnKey.iParam1 = (_int)pair.first;
-            tOnKey.strParam = tEffectData.strEffectTag;
-
-            // Attach 타입이라면 종료 키도 생성
-            if (tOnKey.eID == EAnimNotifyId::Vfx_Attach_On)
+            if (pAnimation->Get_Name() == iAnimName)
             {
-                AnimNotifyKey tOffKey{};
-                tOffKey.eID = EAnimNotifyId::Vfx_Attach_Off;
-                tOffKey.fTrackPosition = fEndTick;
-                tOffKey.iParam0 = (_int)i;
-                tOffKey.iParam1 = (_int)pair.first;
-                tOffKey.strParam = tEffectData.strEffectTag;
-                pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOffKey);
+                for (size_t i = 0; i < pair.second.size(); ++i)
+                {
+                    auto& tEffectData = pair.second[i];
+
+                    _float fTotalTick = pAnimation->Get_DurationTime();
+                    _float fTickPerSecond = pAnimation->Get_TickPerSecond();
+                    _float fStartTick = tEffectData.fStartTrackPosition;
+                    _float fEndTick = fStartTick + (tEffectData.fDuration * fTickPerSecond);
+
+
+                    AnimNotifyKey tOnKey{};
+                    // fDuration이 있으면 On/Off 관리가 필요한 Attach 타입으로 간주
+                    tOnKey.eID = (EAnimNotifyId)tEffectData.iNotifyId;
+                    tOnKey.fTrackPosition = fStartTick;
+                    tOnKey.iParam0 = (_int)i;
+                    tOnKey.strParam = tEffectData.strEffectTag;
+                    tOnKey.strParam2 = pair.first;
+
+                    // Attach 타입이라면 종료 키도 생성
+                    if (tOnKey.eID == EAnimNotifyId::Vfx_Attach_On)
+                    {
+                        AnimNotifyKey tOffKey{};
+                        tOffKey.eID = EAnimNotifyId::Vfx_Attach_Off;
+                        tOffKey.fTrackPosition = fEndTick;
+                        tOffKey.iParam0 = (_int)i;
+                        tOffKey.strParam = tEffectData.strEffectTag;
+                        tOffKey.strParam2 = pair.first;
+                        pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOffKey);
+                    }
+
+                    pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOnKey);
+                }
+
+                pAnimation->Sort_Notifies();
             }
-
-            pAnimation->Pushback_Notifies(pair.second[i].ePhase, tOnKey);
-        }
-
-        pAnimation->Sort_Notifies();
+        }  
     }
 
     return S_OK;
@@ -241,7 +247,8 @@ void CEffectHandler::CallBackEvent(const AnimNotifyKey& key)
         key.eID == EAnimNotifyId::Hitbox)
         return;
 
-    auto iterMap = m_tDesc.mapEvents.find(key.iParam1);
+    // 애니메이션 string 데이터 
+    auto iterMap = m_tDesc.mapEvents.find(key.strParam2);
     if (iterMap == m_tDesc.mapEvents.end()) return;
 
     // 안전한 데이터 접근
@@ -465,12 +472,19 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
         matTargetWorld = OffsetMat * OwnerMatrix;
     }
 
+
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matTargetWorld;
     tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
-    tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
+    tEngineDesc.pTargetBoneMatrix = ((script.bFollowBone || script.bUseChildBone) ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
+
+    if (script.iChildBoneIndex != -1 && script.bUseChildBone)
+    {
+        tEngineDesc.bUseChildBone = true;
+    }
+
     //if(m_pOwnerModel)
     //tEngineDesc.VFX_fSpeed = m_pOwnerModel->Get_Animatioin_MotionOffset(script.iAnimIndex);
 
@@ -499,9 +513,15 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     EFFECT_SPAWN_DESC tEngineDesc = {};
     tEngineDesc.matWorld = matTargetWorld;
     tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
-    tEngineDesc.pTargetBoneMatrix = (script.bFollowBone ? &BoneMatrix : nullptr);
+    tEngineDesc.pTargetBoneMatrix = ((script.bFollowBone || script.bUseChildBone) ? &BoneMatrix : nullptr);
     tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
+
+    if (script.iChildBoneIndex != -1 && script.bUseChildBone)
+    {
+        tEngineDesc.bUseChildBone = true;
+    }
+
  /*   if (m_pOwnerModel)
     tEngineDesc.VFX_fSpeed = m_pOwnerModel->Get_Animatioin_MotionOffset(script.iAnimIndex);*/
   
@@ -527,12 +547,36 @@ DTO::EFFECTEVENT CEffectHandler::Write_EffectEventDesc(const E_OBJ_LIFECYCLE_STA
 
 void CEffectHandler::BoneMatrix_CalCulator(const DTO::EFFECTEVENT& script, OUT const SimpleMath::Matrix*& BoneMatrix)
 {
-    if (script.iBoneIndex != -1 && script.bFollowBone)
+    if (script.iChildBoneIndex != -1 && script.bUseChildBone)
     {
-        if (m_pOwnerModel == nullptr)
+        if (Get_Owner() == nullptr)
             return;
 
-        (BoneMatrix) = &m_pOwnerModel->Get_Bone(script.iBoneIndex)->Get_CombinedTransformMatrix();
+        if (dynamic_cast<CContainerObject*>(Get_Owner()))
+        {
+            // 플레이어 총 무기
+            if (script.ChildPartNumber == -1) return;
+
+            auto pWeapon = static_cast<CContainerObject*>(Get_Owner())->Get_Part<CPartObject>(script.ChildPartNumber);
+            if (pWeapon == nullptr)
+                return;
+
+            CModel* pWeaponModel = pWeapon->Get_Component<CModel>();
+            if (pWeaponModel == nullptr)
+                return;
+             
+            (BoneMatrix) = &pWeaponModel->Get_Bone(script.iChildBoneIndex)->Get_CombinedTransformMatrix();
+        }
+    }
+    else
+    {
+        if (script.iBoneIndex != -1 && script.bFollowBone)
+        {
+            if (m_pOwnerModel == nullptr)
+                return;
+
+            (BoneMatrix) = &m_pOwnerModel->Get_Bone(script.iBoneIndex)->Get_CombinedTransformMatrix();
+        }
     }
 }
 
@@ -541,7 +585,40 @@ SimpleMath::Matrix CEffectHandler::Offset_CalCulator(const DTO::EFFECTEVENT& scr
     // 오프셋 적용
     Matrix matOffset = XMMatrixTranslation(script.vOffset.x, script.vOffset.y, script.vOffset.z);
     Matrix matRotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(script.vRotation.x), XMConvertToRadians(script.vRotation.y), XMConvertToRadians(script.vRotation.z));
-    return (matOffset * matRotation);
+
+    Matrix ResultMatrix = {};
+
+    ResultMatrix = (matOffset * matRotation);
+
+    if (script.iChildBoneIndex != -1 && script.bUseChildBone)
+    {
+        if (Get_Owner() == nullptr)
+            return ResultMatrix;
+
+        if (dynamic_cast<CContainerObject*>(Get_Owner()))
+        {
+            // 플레이어 총 무기
+            if (script.ChildPartNumber == -1) return ResultMatrix;
+
+            auto pWeapon = static_cast<CContainerObject*>(Get_Owner())->Get_Part<CPartObject>(script.ChildPartNumber);
+            if (pWeapon == nullptr)
+                return ResultMatrix;
+
+            Matrix WeaponCombinedMatrix = pWeapon->Get_CombinedMatrix();
+            Matrix matCustom2 = XMMatrixIdentity();
+
+            Vector3 vBoneScale2;
+            Quat vBoneQuat2;
+            Vector3 vBonePos2;
+
+            WeaponCombinedMatrix.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
+            matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
+            matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
+            (ResultMatrix) *= matCustom2;
+        }
+    }
+
+    return ResultMatrix;
 }
 
 SimpleMath::Matrix CEffectHandler::Delete_ScaleMatrix(SimpleMath::Matrix Mat)
@@ -565,7 +642,7 @@ SimpleMath::Matrix CEffectHandler::Delete_ScaleMatrix(SimpleMath::Matrix Mat)
 }
 
 // 툴용
-unordered_map<_uint, vector<DTO::EFFECTEVENT>>& CEffectHandler::GetEvents()
+unordered_map<string, vector<DTO::EFFECTEVENT>>& CEffectHandler::GetEvents()
 {
     Ready_AnimState();
 

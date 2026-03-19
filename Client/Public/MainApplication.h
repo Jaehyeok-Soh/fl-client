@@ -40,6 +40,7 @@ public:
 private:
 	CGameInstance*	m_pGameInstance		= { nullptr };
 #ifdef _DEBUG
+	_bool m_bImGuiDebug{ false };
 	CImGui_ClientDebug* m_pDebugGui = { nullptr };
 #endif
 };

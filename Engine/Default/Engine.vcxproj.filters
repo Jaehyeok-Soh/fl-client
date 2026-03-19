@@ -1012,6 +1012,9 @@
     <ClCompile Include="..\Private\CinematicCameraSequence.cpp">
       <Filter>01. Utility\19. Cinematic\Cinematic Camera Sequence</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\RenderTargetArray.cpp">
+      <Filter>00. System\09. RenderTarget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Timer_Manager.h">
@@ -1566,6 +1569,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\CinematicCameraSequence.h">
       <Filter>01. Utility\19. Cinematic\Cinematic Camera Sequence</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RenderTargetArray.h">
+      <Filter>00. System\09. RenderTarget</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

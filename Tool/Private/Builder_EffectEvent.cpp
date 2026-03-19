@@ -38,7 +38,7 @@ HRESULT CBuilder_EffectEvent::Create_Effect_Prototype(const DTO::EFFECT_EVENT_IN
 
     for (auto& event : data.vecEffectEvents)
     {
-        tHandlerDesc.mapEvents[event.iAnimIndex].push_back(event);
+        tHandlerDesc.mapEvents[event.strAnimTag].push_back(event);
     }
 
     CEffectHandler* pHandler = CEffectHandler::Create(&tHandlerDesc);

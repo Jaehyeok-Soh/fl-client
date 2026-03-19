@@ -119,7 +119,7 @@ void CState_Slide::Change_PlayerState(STATEKEY eKey, _bool bForce)
         {
         case STATEKEY::LCRTL_UP:
         case STATEKEY::LOOPDONE:
-            Request_Change_State(ENUM_TO_UINT(CPlayer::State::LAND)); // 원래 FALL
+            Request_Change_State(ENUM_TO_UINT(CPlayer::State::FALL)); // 원래 FALL
             return;
 
         case STATEKEY::LM:
@@ -139,7 +139,7 @@ void CState_Slide::Set_NextStateDesc(_uint iNextState)
         break;
 
     default:
-        m_tNextStateDesc.iMainAnimIdx = 0;
+        Super::Set_NextStateDesc(iNextState);
     }
 }
 

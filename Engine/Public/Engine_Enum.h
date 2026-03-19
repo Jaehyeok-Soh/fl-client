@@ -100,6 +100,8 @@ namespace Engine
 		Fogparam,
 		Toonparam,
 		Cascadeparam,
+		BakedShadowparam,
+		SectionShadowparam,
 		PlayerInfoBuffer,
 		COUNT
 	};
@@ -125,6 +127,8 @@ namespace Engine
 		"FogParamBuffer",
 		"ToonParamBuffer",
 		"CascadeParamBuffer",
+		"BakedShadowParamBuffer",
+		"ShaderBakedSectionBuffer",
 		"PlayerInfoBuffer"
 	};
 	//===================
@@ -147,6 +151,7 @@ namespace Engine
 		RT_Bloom,
 		RT_Cascade0,
 		RT_Cascade1,
+		RT_ShadowBaked,
 		LUT_Stand,
 		Transform,
 		Materials,
@@ -175,6 +180,7 @@ namespace Engine
 		"g_RenderTargetBloomTexture",
 		"g_RenderTargetCascadeShadowmap0",
 		"g_RenderTargetCascadeShadowmap1",
+		"g_RenderTargetShadowBaked",
 		"g_LUT_Stand",
 		"g_TransformMap",
 		"g_MaterialTextures",
@@ -472,7 +478,9 @@ namespace Engine
 
 			DETECT_INTERACT = 1 << 22,
 
-			NONE = 1 << 23,
+			GENIEMON = 1 << 23,
+
+			NONE = 1 << 24,
 			END
 		};
 
@@ -589,6 +597,9 @@ namespace Engine
 		RIGHT,
 		UP,
 		DOWN,
+
+		LT,CT,RT,LC,RC,LD,CD,RD,
+
 		END
 	};
 	//===================
@@ -596,7 +607,18 @@ namespace Engine
 	//===================
 	enum class EFontShaderType
 	{
-		NORMAL, OUTLINE, NOISE, NOISE_KOR, OUTLINE_NOISE, OUTLINE_NOISE_KOR, GRADATION, OUTLINE_GRADATION, HIT, END
+		NORMAL, 
+		OUTLINE, 
+		NOISE,
+		NOISE_KOR,
+		OUTLINE_NOISE, 
+		OUTLINE_NOISE_KOR,
+		GRADATION, 
+		OUTLINE_GRADATION,
+		HIT, 
+		NOISE_NOSCROLL,
+		OUTLINE_NOISE_NOSCROLL,
+		END
 	};
 
 	//===================

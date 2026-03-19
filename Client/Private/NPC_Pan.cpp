@@ -62,6 +62,13 @@ HRESULT CNPC_Pan::Initialize(void* pArg)
 	if (FAILED(Ready_BaseStates()))
 		return E_FAIL;
 
+	// 상호작용
+	{
+		Set_Interact_Disable();
+		Set_Interact_DefaultDisable();
+		Interact_SetDefaultDialogue(3);
+	}
+
 	return S_OK;
 }
 
@@ -180,7 +187,7 @@ HRESULT CNPC_Pan::Ready_Components(void* pArg)
 	desc.fMeleeRange = 2.f;
 	desc.fAttackRange = 4.f;
 	desc.fCloseRange = 1.f;
-	desc.fDetectionRange = 15.f;
+	desc.fDetectionRange = 7.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
 	//desc.vecSkillRange;
@@ -215,11 +222,22 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 		desc.fHeight = 0.1f;
 		desc.vExtens = { 2.f, 2.f, 2.f };
 
+		desc.fContactOffset = 0.01f;
+		desc.fStepOffset = 0.2f;
+		desc.fSlopeLimit = 0.7f;
+
+		desc.vLocalOffset = {};
+		desc.vWorldOffset = {};
+
+		desc.bIsHover = { true };
+		desc.fHoverOffset = { 1.f };
+
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
 		desc.tMaterial = mtrlDesc;
 
-		desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::NPC;
+		desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::NPC
+			| PHYSICSFILTERGROUP::Enum::GENIEMON;
 		desc.iFilterMask =
 			PHYSICSFILTERGROUP::Enum::NPC
 			| PHYSICSFILTERGROUP::Enum::PLAYER
@@ -227,9 +245,9 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 			| PHYSICSFILTERGROUP::Enum::MAP
 			| PHYSICSFILTERGROUP::Enum::DETECT_INTERACT;
 
-		desc.bGravity = { true };
+		desc.bGravity = { false };
 		desc.fGravity = { -35.f };
-		desc.MSpeed = { 0.f, 3.f };
+		desc.MSpeed = { 0.f, 4.5f };
 		desc.MAccelRate = { 0.f, 10.f };
 		desc.MDeAccelRate = { 0.f, 10.f };
 

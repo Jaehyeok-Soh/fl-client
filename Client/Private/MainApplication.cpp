@@ -34,6 +34,9 @@
 #include "QuestManager.h"
 #include "Quest_DataModel.h"
 
+// Dialogue
+#include "DialogueManager.h"
+
 USING(Client)
 
 CMainApplication::CMainApplication()
@@ -82,6 +85,7 @@ HRESULT CMainApplication::Initialize()
 
 	Register_Quest_Scenario();
 
+
 	return S_OK;
 }
 
@@ -94,6 +98,10 @@ HRESULT CMainApplication::Start_Level(ELevelType eStartLevel)
 
 void CMainApplication::Update(const _float fTimeDelta)
 {
+#if _DEBUG
+	if (m_pGameInstance->KeyButton_Down(DIK_F10))
+		m_bImGuiDebug = !m_bImGuiDebug;
+#endif
 	// 프레임 시작 직전 이벤트 Flush
 	m_pGameInstance->Flush_All();
 
@@ -107,7 +115,8 @@ HRESULT CMainApplication::Render()
 	m_pGameInstance->Draw();
 
 #ifdef _DEBUG
-	m_pDebugGui->Render();
+	if(m_bImGuiDebug)
+		m_pDebugGui->Render();
 #endif
 
 	m_pGameInstance->Draw_End();
@@ -271,6 +280,16 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		CComputeShader::ComShaderOriginDesc shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_BoneCombinePart.hlsl";
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_PartBoneCombine",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Shader_RagDoll
+	{
+		//ComShader_BoneCombinePart
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_RagDoll.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_RagDoll",
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
@@ -618,6 +637,7 @@ void CMainApplication::Free()
 {	
 	CMonsterState_Factory::DestroyInstance();
 	CQuestManager::DestroyInstance();
+	CDialogueManager::DestroyInstance();
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

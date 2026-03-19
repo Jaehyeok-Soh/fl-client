@@ -105,6 +105,17 @@ void COctree_Manager::Query_Visible(const BoundingFrustum& frustrum, RENDER_CATE
 
 	pDebugStat->iVisibleOut = (_uint)outObjects.size();
 }
+void COctree_Manager::Query_All(RENDER_CATEGORY eCategory, OUT vector<CGameObject*>& outObjects)
+{
+	outObjects.reserve(m_umapEntries.size());
+	for (auto& entry : m_umapEntries)
+	{
+		if (entry.second->eCategory != eCategory)
+			continue;
+
+		outObjects.push_back(entry.first);
+	}
+}
 void COctree_Manager::Query_Node(OCTREE_NODE* pNode, const BoundingFrustum& frustrum, RENDER_CATEGORY eCtegory, OUT vector<CGameObject*>& outObjects, OUT OCTREE_QUERY_STATS* pDebugStat) const
 {
 	if (pNode == nullptr)

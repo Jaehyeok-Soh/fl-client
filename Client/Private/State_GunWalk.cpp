@@ -43,6 +43,7 @@ HRESULT CState_GunWalk::Initialize(void* pArg)
 
 	tSuperDesc.vecChangeState_ByKey = vecChangeState_ByKey;
 
+	tSuperDesc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_NextFrame;
 
 	if (FAILED(Super::Initialize(&tSuperDesc)))
 		return E_FAIL;
@@ -63,7 +64,7 @@ HRESULT CState_GunWalk::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	Change_Weapon(CPlayer::Part::GUN, ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	return S_OK;
 }
@@ -78,7 +79,7 @@ HRESULT CState_GunWalk::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	Change_Weapon(CPlayer::Part::GUN, ENUM_TO_UINT(CWeapon::State::HOLD));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE), ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }

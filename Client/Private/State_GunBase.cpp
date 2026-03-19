@@ -32,6 +32,8 @@ HRESULT CState_GunBase::Initialize(void* pArg)
         | CStateBase_Player::COLLISIONFLAGS::C_Strong
         | CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
+    tSuperDesc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_End;
+
     vector<_uint> vecChangeState_ByKey{};
     vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(CPlayer::State::END));
     tSuperDesc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -52,7 +54,7 @@ HRESULT CState_GunBase::Awake(const _uint iLevelIndex)
 
 HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 {
-    if (FAILED(Super::Start(pArg, bForce)))
+    if(FAILED(Start_AttackState(pArg)))
         return E_FAIL;
 
     GUN_START_DESC* pDesc = static_cast<GUN_START_DESC*>(pArg);
@@ -124,6 +126,9 @@ void CState_GunBase::Update(const _float fTimeDelta)
 
     // 4. move state update
     Move_Update(fTimeDelta);
+
+    // weapon key check / todo_eunbi : check key안으로 일단 넣지는 않음
+    Check_WeaponChnage(fTimeDelta);
 }
 
 HRESULT CState_GunBase::End()

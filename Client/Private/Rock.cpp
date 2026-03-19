@@ -4,11 +4,13 @@
 CRock::CRock(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CMapObject(pDevice ,pDeviceContext)
 {
+	m_bBakedShadow = true;
 }
 
 CRock::CRock(const CRock& rhs)
 	: CMapObject(rhs)
 {
+	m_bBakedShadow = true;
 }
 
 

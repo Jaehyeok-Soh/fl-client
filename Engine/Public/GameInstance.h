@@ -263,6 +263,8 @@ public:
 #pragma region RENDER_MANAGER
 	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
+	HRESULT Set_BakedShadowConstantBuffer(class CShader* pShader);
+	HRESULT Bake_StaticShadow(BoundingBox* pRootBox);
 #ifdef _DEBUG
 	inline void Push_DebugComponent(class CComponent* pComp);
 #endif
@@ -318,15 +320,15 @@ public:
 
 #pragma region RENDERTARGET_MANAGER
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
+	HRESULT Add_RenderTargetArray(ERenderTarget eTarget, const CRenderTargetArray::RENDERTARGET_ARR_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true, _bool bUseDSV = true);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV);
+	HRESULT Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, _bool bUseDSV);
+	HRESULT Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, ID3D11DepthStencilView* pDSV);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
-#ifdef _DEBUG
-	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
-	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
 	ID3D11ShaderResourceView* Get_RenderTargetSRV(ERenderTarget eTarget);
 	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc();
 	const SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() const;
@@ -350,7 +352,14 @@ public:
 	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const;
 	HRESULT Commit_CascadeParam();
 	HRESULT Commit_AllPostParams();
+#ifdef _DEBUG
+	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+	ID3D11ShaderResourceView* Get_BakedShadowDebugSRV();
+	const ACTIVE_BAKED_SET& Get_ActiveBakedSectionSet() const;
+	void Update_BakedShadowDebugTexture(_uint iSlice);
 #endif
+
 #pragma endregion
 
 #pragma region RANDOM
@@ -401,9 +410,10 @@ public:
 	PxVec3 GetPureScale(const Matrix& mat);
 	void Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc);
 	void Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc);
-	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
+	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall, OUT _float* fHitDist = nullptr, OUT Vec3* vHitPos = nullptr);
 
 	_bool CheckRagdollState(int64 objID);
+	_bool CheckRagDollState_Processing(int64 objID);
 	void RagdollRegister(CGameObject* obj);
 	void RagdollUnregister(int64 objID);
 	void RagdollRequestStart(uint64 objID);
@@ -444,6 +454,7 @@ public:
 	HRESULT					DebugRender_MapMinMaxBox();
 #endif // _DEBUG
 	CBounding_AABB*			Get_MapMinMaxBox();
+	BoundingBox*			Get_MapMinMaxBounding();
 	void					Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter);
 #pragma endregion
 #pragma region GAMEDATA_MANAGER
@@ -470,6 +481,7 @@ public:
 	_bool Is_TearDownSequence() { return m_bChangeLevelSequence || m_bDestroyEngineSequence; }
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
+	class CThreadPool* m_pThreadPool = { nullptr };
 	class CDataRepository* m_pDataRepository = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CTimeScale_Manager* m_pTimeScale_Manager = { nullptr };

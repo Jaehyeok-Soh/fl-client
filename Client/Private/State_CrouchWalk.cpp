@@ -58,7 +58,7 @@ void CState_CrouchWalk::Set_NextStateDesc(_uint iNextState)
 		break;
 
 	default:
-		m_tNextStateDesc.iMainAnimIdx = 0;
+		Super::Set_NextStateDesc(iNextState);
 	}
 }
 

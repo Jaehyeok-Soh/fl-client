@@ -23,11 +23,21 @@ HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& v
 
 	switch (ePivot)
 	{
-	case Engine::EFontPivotType::CENTER:vPivot = vSize * 0.5f;					break;
-	case Engine::EFontPivotType::LEFT:	vPivot = { 0.f, vSize.y * 0.5f };		break;
-	case Engine::EFontPivotType::RIGHT:	vPivot = { vSize.x, vSize.y * 0.5f };	break;
-	case Engine::EFontPivotType::UP:	vPivot = { vSize.x * 0.5f, 0.f };		break;
-	case Engine::EFontPivotType::DOWN:	vPivot = { vSize.x * 0.5f, vSize.y };	break;
+	case Engine::EFontPivotType::CENTER:	vPivot = { vSize * 0.5f};				break;
+	case Engine::EFontPivotType::LEFT:		vPivot = { 0.f,	vSize.y * 0.5f };		break;
+	case Engine::EFontPivotType::RIGHT:		vPivot = { vSize.x, vSize.y * 0.5f };	break;
+	case Engine::EFontPivotType::UP:		vPivot = { vSize.x * 0.5f, 0.f };		break;
+	case Engine::EFontPivotType::DOWN:		vPivot = { vSize.x * 0.5f, vSize.y };	break;
+
+	case Engine::EFontPivotType::LT:		vPivot = { 0.f, 0.f };						break;
+	case Engine::EFontPivotType::CT:		vPivot = { vSize.x * 0.5f, 0.f };			break;
+	case Engine::EFontPivotType::RT:		vPivot = { vSize.x, 0.f };					break;
+	case Engine::EFontPivotType::LC:		vPivot = { 0.f, vSize.y * 0.5f };			break;
+	case Engine::EFontPivotType::RC:		vPivot = { vSize.x, vSize.y * 0.5f };		break;
+	case Engine::EFontPivotType::LD:		vPivot = { 0.f, vSize.y };					break;
+	case Engine::EFontPivotType::CD:		vPivot = { vSize.x * 0.5f, vSize.y };		break;
+	case Engine::EFontPivotType::RD:		vPivot = { vSize.x, vSize.y };				break;
+
 	case Engine::EFontPivotType::END:
 	default:
 		return E_FAIL;

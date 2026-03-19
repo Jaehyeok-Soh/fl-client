@@ -143,12 +143,35 @@ HRESULT CUITutorial_PopUp_Text::Convert_Stat_To_Text()
 void CUITutorial_PopUp_Text::Bind_Events()
 {
 	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
+				{
+					if (this->m_isTriggered)
+					{
+						this->Set_Visible();
+					}
+				}
+			})
+	);
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			})
+	);
+
+	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<TUTORIAL_POPUP_TRIGGER>([this](EUITutorialPopUpTypeID ID)
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
 					if (!m_isFirstEntered)
 					{
+						this->m_isTriggered = true;
 						this->Set_Visible();
 						this->Set_Active(true);
 					}
@@ -161,6 +184,7 @@ void CUITutorial_PopUp_Text::Bind_Events()
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
+					m_isTriggered = false;
 					m_isFirstEntered = true;
 					this->Set_Invisible();
 				}

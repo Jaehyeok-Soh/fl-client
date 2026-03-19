@@ -17,88 +17,6 @@
         },
         {
             "Type": "GENERICUI",
-            "eClassType": "DYNAMIC_IMAGE",
-            "eSubClassType": "NONE_OWNER",
-            "fAlphaRatio": 1.0,
-            "fDelay": 0.0,
-            "fHeight": 20.0,
-            "fPosX": 40.0,
-            "fPosY": 366.0,
-            "fPosZ": 0.0,
-            "fRotate": 0.0,
-            "fScale": 1.0,
-            "fWidth": 20.0,
-            "iComponentFlag": 0,
-            "iFillDir": 0,
-            "iFlip": 0,
-            "iRectTransformType": 0,
-            "iShaderPass": 0,
-            "isActivate": false,
-            "isInteract": false,
-            "isUseColorTint": false,
-            "isVisible": true,
-            "strAlphaMaskTextureTag": "",
-            "strCanvasName": "Play_Quest",
-            "strGlowTextureTag": "",
-            "strNoiseTextureTag": "",
-            "strTag": "Quest_Contents_Icon",
-            "strTextureTag": "Texture_T_Com_Dot01",
-            "vColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "vGradiantColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            }
-        },
-        {
-            "Type": "GENERICUI",
-            "eClassType": "UI_TEXT",
-            "eSubClassType": "NONE_OWNER",
-            "fAlphaRatio": 0.0,
-            "fDelay": 0.0,
-            "fHeight": 100.0,
-            "fPosX": 60.0,
-            "fPosY": 364.0,
-            "fPosZ": 0.0,
-            "fRotate": 0.0,
-            "fScale": 1.0,
-            "fWidth": 100.0,
-            "iComponentFlag": 0,
-            "iFillDir": 0,
-            "iFlip": 0,
-            "iRectTransformType": 0,
-            "iShaderPass": 0,
-            "isActivate": false,
-            "isInteract": false,
-            "isUseColorTint": false,
-            "isVisible": true,
-            "strAlphaMaskTextureTag": "",
-            "strCanvasName": "Play_Quest",
-            "strGlowTextureTag": "",
-            "strNoiseTextureTag": "",
-            "strTag": "Quest_Contents",
-            "strTextureTag": "Prototype_Component_Texture_Empty",
-            "vColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "vGradiantColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            }
-        },
-        {
-            "Type": "GENERICUI",
             "eClassType": "UI_TEXT",
             "eSubClassType": "NONE_OWNER",
             "fAlphaRatio": 0.0,
@@ -118,7 +36,7 @@
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
-            "isVisible": true,
+            "isVisible": false,
             "strAlphaMaskTextureTag": "",
             "strCanvasName": "Play_Quest",
             "strGlowTextureTag": "",
@@ -159,7 +77,7 @@
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
-            "isVisible": true,
+            "isVisible": false,
             "strAlphaMaskTextureTag": "",
             "strCanvasName": "Play_Quest",
             "strGlowTextureTag": "",
@@ -200,7 +118,7 @@
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
-            "isVisible": true,
+            "isVisible": false,
             "strAlphaMaskTextureTag": "",
             "strCanvasName": "Play_Quest",
             "strGlowTextureTag": "",
@@ -241,7 +159,7 @@
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
-            "isVisible": true,
+            "isVisible": false,
             "strAlphaMaskTextureTag": "",
             "strCanvasName": "Play_Quest",
             "strGlowTextureTag": "",
@@ -282,7 +200,7 @@
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
-            "isVisible": true,
+            "isVisible": false,
             "strAlphaMaskTextureTag": "",
             "strCanvasName": "Play_Quest",
             "strGlowTextureTag": "",
@@ -306,40 +224,21 @@
             "Type": "UI_TEXT",
             "ePivot": 1,
             "eShaderType": 0,
-            "eTextSubClassType": "QUEST_CONTENTS_TEXT",
+            "eTextSubClassType": "QUEST_SCENARIO_TEXT",
             "fRotate": 0.0,
-            "fScale": 0.5299999713897705,
+            "fScale": 0.6299999952316284,
             "iParam0": 0,
             "strFontTag": "ContentsKO24",
-            "strOwnerName": "Quest_Contents",
-            "strTag": "Quest_Contents_TextData",
-            "strText": "단서 조사: 마지막 게약",
+            "strOwnerName": "Quest_Scenario",
+            "strTag": "Quest_Scenario_TextData",
+            "strText": "",
             "vFontColor": {
                 "w": 1.0,
                 "x": 1.0,
                 "y": 1.0,
-                "z": 1.0
+                "z": 0.9921568632125854
             }
         },
-      {
-        "Type": "UI_TEXT",
-        "ePivot": 1,
-        "eShaderType": 0,
-        "eTextSubClassType": "QUEST_SCENARIO_TEXT",
-        "fRotate": 0.0,
-        "fScale": 0.6299999952316284,
-        "iParam0": 0,
-        "strFontTag": "ContentsKO24",
-        "strOwnerName": "Quest_Scenario",
-        "strTag": "Quest_Scenario_TextData",
-        "strText": "안녕, 아이스레이크 시티",
-        "vFontColor": {
-          "w": 1.0,
-          "x": 1.0,
-          "y": 1.0,
-          "z": 0.9921568632125854
-        }
-      },
         {
             "Type": "UI_TEXT",
             "ePivot": 1,
@@ -351,7 +250,7 @@
             "strFontTag": "ContentsKO24",
             "strOwnerName": "Quest_Title",
             "strTag": "Quest_Title_TextData",
-            "strText": "마르제의 '보물' 3개의 배후 이야기 조사하기",
+            "strText": "",
             "vFontColor": {
                 "w": 1.0,
                 "x": 1.0,
@@ -380,24 +279,17 @@
         },
         {
             "Type": "DYNAMIC_IMAGE",
-            "eDISubClassType": "QUEST_CONTENTS_ICON",
-            "iParams0": 0,
-            "strOwnerName": "Quest_Contents_Icon",
-            "strTag": "Quest_Contents_Icon_DImageData"
-        },
-        {
-            "Type": "DYNAMIC_IMAGE",
             "eDISubClassType": "QUEST_TITLE_ICON",
             "iParams0": 0,
             "strOwnerName": "Quest_Title_Icon",
             "strTag": "Quest_Title_Icon_DImageData"
         },
-      {
-        "Type": "DYNAMIC_IMAGE",
-        "eDISubClassType": "QUEST_TRACKING_ICON",
-        "iParams0": 0,
-        "strOwnerName": "Quest_Tracking_Icon",
-        "strTag": "Quest_Tracking_Icon_DImageData"
-      }
+        {
+            "Type": "DYNAMIC_IMAGE",
+            "eDISubClassType": "QUEST_TRACKING_ICON",
+            "iParams0": 0,
+            "strOwnerName": "Quest_Tracking_Icon",
+            "strTag": "Quest_Tracking_Icon_DImageData"
+        }
     ]
 }

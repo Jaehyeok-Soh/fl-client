@@ -993,6 +993,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			m_pEmissionList.push_back("CIRCLE");
 			m_pEmissionList.push_back("SPHERE");
 			m_pEmissionList.push_back("CONE");
+			m_pEmissionList.push_back("CIRCLE_EDGE");
 
 			std::vector<const char*> iTems;
 			iTems.reserve(static_cast<int>(m_pEmissionList.size()));
@@ -1012,7 +1013,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				return;
 			}
 
-			const char* EmissionNames[] = { "BOX", "CIRCLE", "SPHERE", "CONE" };
+			const char* EmissionNames[] = { "BOX", "CIRCLE", "SPHERE", "CONE", "CIRCLE_EDGE"};
 			int currentIndex = (int)m_tCurrentDesc.Data._Effect_EmissionType;
 
 			ImGui::Spacing();
@@ -1025,7 +1026,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		if (ImGui::TreeNode("Shape_EffectList##Effect_List"))
 		{
-			vector<string> m_pShapeList = {"NONE", "DROP", "RISE", "SPREAD", "STOP", "SPIRAL", "DNA","GATHER", "FOUNTAIN"};
+			vector<string> m_pShapeList = {"NONE", "DROP", "RISE", "SPREAD", "STOP", "SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", "CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF" , "STRONGWIND_LEAF"};
 
 			std::vector<const char*> iTems;
 			iTems.reserve(static_cast<int>(m_pShapeList.size()));
@@ -1047,6 +1048,11 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::FOUNTAIN): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::FOUNTAIN); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::LEAF): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::LEAF); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::CIRCLETRAIL): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::CIRCLETRAIL); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SEMI_CIRCLETRAIL): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SEMI_CIRCLETRAIL); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF); break;
+
 				}
 			}
 
@@ -1056,7 +1062,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				return;
 			}
 
-			const char* shapeNames[] = { "NONE", "DROP", "RISE", "SPREAD", "STRAIGHT", "SPIRAL", "DNA", "GATHER", "FOUNTAIN" };
+			const char* shapeNames[] = { "NONE", "DROP", "RISE", "SPREAD", "STOP", "SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", "CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF", "STRONGWIND_LEAF"};
 			int currentIndex = (int)m_tCurrentDesc.Data._Effect_ShapeType;
 
 			ImGui::Spacing();
@@ -1148,10 +1154,13 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		if (ImGui::TreeNode("Particle Size ##Shape"))
 		{
 			m_bModified |= ImGui::DragFloat2("Particle Size", &m_tCurrentDesc.Data._Effect_ParticleSize.x, 0.01f, 0.0f, 100.f, "%.2f");
-
-
+			if (m_tCurrentDesc.Data._Effect_ParticleSize.x >= m_tCurrentDesc.Data._Effect_ParticleSize.y)
+			{
+				m_tCurrentDesc.Data._Effect_ParticleSize.y = m_tCurrentDesc.Data._Effect_ParticleSize.x + 0.01f;
+			}
 			ImGui::TreePop();
 		}
+
 		// 1. Diffuse Texture
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Diffuse Texture"); ImGui::SameLine(130);
@@ -1564,10 +1573,12 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_PParticleTypeList.push_back("BloomHard");
 					m_PParticleTypeList.push_back("Blend_BloomHard");
 					m_PParticleTypeList.push_back("NONDEPTH_DEFAULT");
+					m_PParticleTypeList.push_back("Glow_Texture");
+					m_PParticleTypeList.push_back("NONEDEPTH_Glow_Texture");
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");
-					m_PParticleTypeList.push_back("SPRITE_MESH");
+					m_PParticleTypeList.push_back("GLOW_MESH");
 					m_PParticleTypeList.push_back("BloomHard");
 					m_PParticleTypeList.push_back("DISTOTION");
 					m_PParticleTypeList.push_back("SwordEffect");
