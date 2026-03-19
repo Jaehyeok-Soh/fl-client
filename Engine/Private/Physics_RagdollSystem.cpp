@@ -54,6 +54,10 @@ RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAG
 {
 	RAGDOLLELEMENTS elements{};
 	elements.pArticulation = m_pPhysics->createArticulationReducedCoordinate(); // RCA : Featherstone's algorithm
+	elements.pArticulation->setSolverIterationCounts(8, 2);
+	elements.pArticulation->setSleepThreshold(0.5f);
+	//elements.setsta
+
 	elements.vecPhysicsLink.resize(RAGDOLLJOINT::END);
 	elements.vecRagdollLiveTransform.resize(RAGDOLLJOINT::END);
 
@@ -152,6 +156,11 @@ void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<
 {
 	auto link = elements->pArticulation->createLink(parentLink, PxTransform(PxIdentity) /*pxLocal*/); // local transform
 	link->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
+	link->setLinearDamping(0.1f);
+	link->setAngularDamping(0.1f);
+	link->setMaxLinearVelocity(50.f);
+	link->setMaxAngularVelocity(20.f);
+	link->setMaxDepenetrationVelocity(1.5f);
 
 	PxMaterial* material = m_pGameInstance->GetPhysicsMaterial(EPhysicsMaterial::PLAYER);
 
@@ -174,9 +183,60 @@ void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<
 	{
 		articulationJoint->setJointType(PxArticulationJointType::eSPHERICAL);
 
-		articulationJoint->setMotion(PxArticulationAxis::eSWING1, PxArticulationMotion::eFREE);
-		articulationJoint->setMotion(PxArticulationAxis::eSWING2, PxArticulationMotion::eFREE);
-		articulationJoint->setMotion(PxArticulationAxis::eTWIST, PxArticulationMotion::eFREE);
+		_float fSwingLimit = PxPi / 4.f;
+		_float fTwistLimit = PxPi / 6.f;
+		_float fJointMass = 1.0f;
+		_float fJointFriction = 0.2f;
+
+		RAGDOLLJOINT::Enum eJoint = arrRagdollBoneDesc[index].eJoint;
+
+		switch (eJoint)
+		{
+		case Engine::ERagdollJoint::SPINE_02:
+			fSwingLimit = PxPi / 6.f; fTwistLimit = PxPi / 8.f;
+			fJointMass = 5.0f; fJointFriction = 0.5f;
+			break;
+		case Engine::ERagdollJoint::HEAD:
+			fSwingLimit = PxPi / 6.f; fTwistLimit = PxPi / 4.f;
+			fJointMass = 2.0f; fJointFriction = 0.2f;
+			break;
+		case Engine::ERagdollJoint::UPPERARM_L:
+		case Engine::ERagdollJoint::UPPERARM_R:
+			fSwingLimit = PxPi / 1.5f; fTwistLimit = PxPi / 3.f;
+			fJointMass = 1.5f; fJointFriction = 0.1f;
+			break;
+		case Engine::ERagdollJoint::LOWERARM_L:
+		case Engine::ERagdollJoint::LOWERARM_R:
+			fSwingLimit = PxPi / 2.f; fTwistLimit = PxPi / 6.f;
+			fJointMass = 2.8f; fJointFriction = 0.1f;
+			break;
+		case Engine::ERagdollJoint::THIGH_L:
+		case Engine::ERagdollJoint::THIGH_R:
+			fSwingLimit = PxPi / 2.5f; fTwistLimit = PxPi / 6.f;
+			fJointMass = 4.0f; fJointFriction = 0.3f;
+			break;
+		case Engine::ERagdollJoint::CALF_L:
+		case Engine::ERagdollJoint::CALF_R:
+			fSwingLimit = PxPi / 2.5f; fTwistLimit = PxPi / 18.f;
+			fJointMass = 2.0f; fJointFriction = 0.2f;
+			break;
+		case Engine::ERagdollJoint::FOOT_L:
+		case Engine::ERagdollJoint::FOOT_R:
+			fSwingLimit = PxPi / 4.f; fTwistLimit = PxPi / 6.f;
+			fJointMass = 2.5f; fJointFriction = 0.5f;
+			break;
+		}
+
+		articulationJoint->setMotion(PxArticulationAxis::eSWING1, PxArticulationMotion::eLIMITED);
+		articulationJoint->setMotion(PxArticulationAxis::eSWING2, PxArticulationMotion::eLIMITED);
+		articulationJoint->setMotion(PxArticulationAxis::eTWIST, PxArticulationMotion::eLIMITED);
+
+		articulationJoint->setLimitParams(PxArticulationAxis::eSWING1, PxArticulationLimit(-fSwingLimit, fSwingLimit));
+		articulationJoint->setLimitParams(PxArticulationAxis::eSWING2, PxArticulationLimit(-fSwingLimit, fSwingLimit));
+		articulationJoint->setLimitParams(PxArticulationAxis::eTWIST, PxArticulationLimit(-fTwistLimit, fTwistLimit));
+		
+		PxRigidBodyExt::updateMassAndInertia(*link, fJointMass);
+		articulationJoint->setFrictionCoefficient(fJointFriction);
 	}
 
 	PxTransform pxLocal = m_pGameInstance->XMMatrixToPxTransform(arrRagdollBoneDesc[index].matLocalTransform);

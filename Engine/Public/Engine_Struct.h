@@ -1044,7 +1044,7 @@ namespace Engine
 
 		float fRadius = 0.05f;
 		float fHeight = 0.05f;
-		float fMass = 1.f;
+		float fMass = 0.1f;
 
 		Matrix matLocalTransform = { Matrix::Identity };
 		PxTransform matOffsetTransform = {PxTransform(PxIdentity)};
