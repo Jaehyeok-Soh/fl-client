@@ -523,7 +523,8 @@ HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
-
+	//if (FAILED(m_pGameInstance->Bake_StaticShadow()))
+	//	return E_FAIL;
 	return S_OK;
 }
 

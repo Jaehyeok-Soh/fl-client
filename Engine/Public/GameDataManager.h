@@ -24,6 +24,7 @@ public:
 #pragma region Map Min Max Collider
 	HRESULT					Make_MapMinMaxBox();
 	CBounding_AABB*			Get_MapMinMaxBox(){ return m_pMapMinMaxBox; }
+	BoundingBox*			Get_MapMinMaxBounding();
 	void					Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter);
 
 #ifdef _DEBUG

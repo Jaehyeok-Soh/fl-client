@@ -6,6 +6,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "MyStat.h"
 #include "Texture.h"
@@ -141,6 +142,10 @@ void CUIQuest_Text::Bind_Events()
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
 				{
+					auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+					if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+						return;
+
 					this->Set_Visible();
 				}
 			})
@@ -166,6 +171,10 @@ void CUIQuest_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
 			{
+				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+				if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+					return;
+
 				this->Set_Visible();
 			})
 	);
@@ -183,13 +192,21 @@ void CUIQuest_Text::Bind_Events()
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
-
+				Set_Visible();
 				switch (this->m_eTextSubClassType)
 				{
 				case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:
 					break;
 				case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
-					m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
+					if (this->m_wstrText != desc.tChapterInfo.tQuestDesc.wstrTitle)
+					{
+						
+						UIEVENT_DESC Desc = {};
+						Desc.eEventID = EUIEventID::QUEST_NAME_CHANGE;
+						m_pUIManager->Get_UIEvents().Broadcast(Desc);
+
+						this->m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
+					}
 					break;
 				case DTO::EUITextSubClassType::QUEST_CONTENTS_TEXT:
 					break;
@@ -199,7 +216,17 @@ void CUIQuest_Text::Bind_Events()
 					break;
 				}
 			})
+	);
 
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::QUEST_NAME_CHANGE == Desc.eEventID)
+				{
+					this->Set_Invisible();
+					this->m_isVisibleTrigger = true;
+				}
+			})
 	);
 
 	return;
@@ -208,14 +235,14 @@ void CUIQuest_Text::Bind_Events()
 void CUIQuest_Text::Initialize_Visible_Event()
 {
 	m_isFin_Event = false;
-	Ready_Lerp_Movement(Vec2{ -20.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Lerp_Movement(Vec2{ -50.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
 	Ready_Fade_Text(0.5f, 0.f, 1.f, m_fDelay);
 }
 
 void CUIQuest_Text::Initialize_InVisible_Event()
 {
 	m_isFin_Event = false;
-	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -20.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -50.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
 	Ready_Fade_Text(0.5f, 1.f, 0.f, m_fDelay);
 }
 
@@ -247,6 +274,12 @@ _bool CUIQuest_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 	if (isFade && isMove)
 	{
+		if (m_isVisibleTrigger)
+		{
+			m_isVisibleTriggerStart = true;
+			m_isVisibleTrigger = false;
+		}
+
 		m_isFin_Event = true;
 		return true;
 	}
@@ -255,6 +288,12 @@ _bool CUIQuest_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 {
+	if (m_isVisibleTriggerStart)
+	{
+		Set_Visible();
+		m_isVisibleTriggerStart = false;
+	}
+
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::QUEST_BEGIN:
@@ -270,7 +309,6 @@ void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 		auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 		if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
 		{
-
 			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle + L"(" + std::to_wstring(desc.tChapterInfo.iCurrentCount) + L"/10)";
 		}
 		else

@@ -71,7 +71,7 @@ void CState_JumpBack::Set_NextStateDesc(_uint iNextState)
 		m_tNextStateDesc.iMainAnimIdx = 1; break; // skyslide
 
 	default:
-		m_tNextStateDesc.iMainAnimIdx = 0;
+		Super::Set_NextStateDesc(iNextState);
 	}
 }
 

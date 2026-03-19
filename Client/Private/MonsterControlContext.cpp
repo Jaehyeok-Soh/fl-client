@@ -459,7 +459,10 @@ void CMonsterControlContext::Set_On_Ragdoll()
 	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
 	auto pRagdoll = body->Get_Component<CPhysicsRagdoll>();
 	if (pRagdoll)
+	{
 		m_pGameInstance->RagdollRequestStart(body->Get_ID());
+		Get_Owner()->Get_Component<CPhysicsCCT>()->EnableMove(false);
+	}
 }
 
 void CMonsterControlContext::Set_Off_Ragdoll()
@@ -467,7 +470,10 @@ void CMonsterControlContext::Set_Off_Ragdoll()
 	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
 	auto pRagdoll = body->Get_Component<CPhysicsRagdoll>();
 	if (pRagdoll)
+	{
 		m_pGameInstance->RagdollFinish(body->Get_ID());
+		Get_Owner()->Get_Component<CPhysicsCCT>()->EnableMove(true);
+	}
 }
 
 void CMonsterControlContext::Clear_RuntimeDesc()

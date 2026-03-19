@@ -29,7 +29,7 @@ HRESULT CState_JumpAttEnd::Awake(const _uint iLevelIndex)
 
 HRESULT CState_JumpAttEnd::Start(void* pArg, _bool bForce)
 {
-	if (FAILED(Super::Start(pArg, bForce)))
+	if (FAILED(Start_AttackState(pArg)))
 		return E_FAIL;
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
@@ -47,12 +47,8 @@ void CState_JumpAttEnd::Update(const _float fTimeDelta)
 
 	if (m_fStateElapsed >= (2.3f / 1.2f))
 	{
-		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
-	}
-
-	else
-	{
-		Check_Monster();
+		Change_Weapon();
+		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 	}
 }
 
@@ -63,7 +59,7 @@ HRESULT CState_JumpAttEnd::End()
 
 	End_Att(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }

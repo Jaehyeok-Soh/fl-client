@@ -29,12 +29,12 @@ HRESULT CState_JumpAttStart::Awake(const _uint iLevelIndex)
 
 HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 {
-	if (FAILED(Super::Start(pArg, bForce)))
+	if (FAILED(Start_AttackState(pArg)))
 		return E_FAIL;
 
 	CStateBase::SetupLook_CameraLook();
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	{
 		CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();

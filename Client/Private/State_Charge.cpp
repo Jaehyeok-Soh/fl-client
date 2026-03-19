@@ -30,10 +30,10 @@ HRESULT CState_Charge::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Charge::Start(void* pArg, _bool bForce)
 {
-	if (FAILED(Super::Start(pArg, bForce)))
+	if (FAILED(Start_AttackState(pArg)))
 		return E_FAIL;
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::CHARGE));
 
@@ -44,13 +44,12 @@ void CState_Charge::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if(m_fHoldWeaponTime <= m_fStateElapsed)
-		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
-
-	else
+	if (m_fHoldWeaponTime <= m_fStateElapsed)
 	{
-		Check_Monster();
+		Change_Weapon();
+		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 	}
+
 }
 
 HRESULT CState_Charge::End()
@@ -60,7 +59,7 @@ HRESULT CState_Charge::End()
 
 	End_Att(ENUM_TO_UINT(CPlayer::State::CHARGE));
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }

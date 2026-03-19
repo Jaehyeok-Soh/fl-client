@@ -5,11 +5,13 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "VIBuffer_Rect_Tex.h"
+#include "ThreadPool.h"
 #include "Shader.h"
 #include "Bounds.h"
 #include "CameraMan.h"
 #include "Light.h"
 #include "RenderTarget.h"
+#include "RenderTargetArray.h"
 #include "Octree_Manager.h"
 #include "EngineConsole.h"
 #include "UIObject.h"
@@ -36,16 +38,15 @@ HRESULT CRender_Manager::Initialize()
 	if (FAILED(Ready_RT()))
 		return E_FAIL;
 
+	if (FAILED(Ready_RTArray()))
+		return E_FAIL;
+
 	if (FAILED(Ready_MRT()))
 		return E_FAIL;	
 
 	if (FAILED(Create_ShadowResource()))
 		return E_FAIL;
 
-#ifdef _DEBUG
-	if (FAILED(Ready_Debug()))
-		return E_FAIL;
-#endif
 	return S_OK;
 }
 
@@ -69,6 +70,100 @@ HRESULT CRender_Manager::Set_CascadeShadowConstantBuffer(CShader* pShader)
 		return E_FAIL;
 
 	return pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer());
+}
+
+HRESULT CRender_Manager::Set_BakedShadowConstantBuffer(CShader* pShader)
+{
+	if (pShader == nullptr)
+		return E_FAIL;
+
+	return pShader->Set_ConstantBuffer(EFXCB::BakedShadowparam, m_pCB_BakedShadow->Get_Buffer());
+}
+
+HRESULT CRender_Manager::Initialize_BakedShadowSections(BoundingBox* pRootBox)
+{
+	if (pRootBox == nullptr)
+		return E_FAIL;
+
+	m_vecBakedSection.clear();
+	m_vecBakedSectionResults.clear();
+	m_tActiveBakedSet = {};
+
+	m_iCurrentCenterSectionX = INT_MAX;
+	m_iCurrentCenterSectionZ = INT_MAX;
+
+	m_bakedWorldRootBounds = *pRootBox;
+	//===========================================================
+	// 옥트리에 등록된 Object 기준 그림자 뽑는 녀석들로 RootBox 재형성
+	//===========================================================
+	//if (FAILED(Create_RootBox(m_bakedWorldRootBounds)))
+	//	return E_FAIL;
+
+	Vec3 vCenter = Vec3(
+		m_bakedWorldRootBounds.Center.x,
+		m_bakedWorldRootBounds.Center.y,
+		m_bakedWorldRootBounds.Center.z);
+	Vec3 vExtents = Vec3(
+		m_bakedWorldRootBounds.Extents.x,
+		m_bakedWorldRootBounds.Extents.y,
+		m_bakedWorldRootBounds.Extents.z);
+
+	if (vExtents.x <= 0.f || vExtents.y <= 0.f || vExtents.z <= 0.f)
+		return E_FAIL;
+
+	Vec3 vMin = vCenter - vExtents;
+	Vec3 vMax = vCenter + vExtents;
+
+	m_vBakedSectionOrigin = vMin;
+	m_fBakedSectionSizeX = (vMax.x - vMin.x) / BAKED_SECTION_COUNT_X;
+	m_fBakedSectionSizeZ = (vMax.z - vMin.z) / BAKED_SECTION_COUNT_Z;
+
+	m_fSectionUpdateHysteresisX = m_fBakedSectionSizeX * 0.3f;
+	m_fSectionUpdateHysteresisZ = m_fBakedSectionSizeZ * 0.3f;
+
+	m_bBakedSectionInitialized = false;
+	m_bActiveBakedSectionDirty = true;
+
+#ifdef _DEBUG
+	{
+		string strLog{
+			"[BakedRoot] "
+			"RootMin(" + std::to_string(vMin.x) + ", " +
+						  std::to_string(vMin.y) + ", " +
+						  std::to_string(vMin.z) + ") " +
+			"RootMax(" + std::to_string(vMax.x) + ", " +
+						  std::to_string(vMax.y) + ", " +
+						  std::to_string(vMax.z) + ") " +
+			"SizeXZ(" + std::to_string(vMax.x - vMin.x) + ", " +
+						 std::to_string(vMax.z - vMin.z) + ") " +
+			"SectionXZ(" + std::to_string(m_fBakedSectionSizeX) + ", " +
+							std::to_string(m_fBakedSectionSizeZ) + ") " +
+			"Hysteresis(" + std::to_string(m_fSectionUpdateHysteresisX) + ", "
+							+ std::to_string(m_fSectionUpdateHysteresisZ) + ")"
+		};
+		CLOG_INFO(strLog);
+	}
+#endif
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Build_BakedShadowSections()
+{
+	if (FAILED(Build_BakedShadowSectionJobs()))
+		return E_FAIL;
+
+	if (FAILED(Execute_BakedShadowSectionJobs()))
+		return E_FAIL;
+
+	m_bBakedSectionInitialized = true;
+	m_bActiveBakedSectionDirty = true;
+
+#ifdef _DEBUG
+	if (FAILED(Create_BakedShadowSliceSRV()))
+		return E_FAIL;
+
+#endif
+	return S_OK;
 }
 
 HRESULT CRender_Manager::Set_ShaderResources()
@@ -176,17 +271,17 @@ HRESULT CRender_Manager::Set_ShaderResources()
 	}
 	// FogDesc
 	{
-		m_tFogDesc.vColor = Vec4(0.45f, 0.6f, 0.78f, 1.f);    // 짙은 청색
-		m_tFogDesc.vHighColor = Vec4(0.6f, 0.72f, 0.85f, 1.f);    // 하늘 쪽 밝은 청색
+		m_tFogDesc.vColor = Vec4(0.35f, 0.35f, 0.35f, 1.f);
+		m_tFogDesc.vHighColor = Vec4(0.31f, 0.31f, 0.31f, 1.f);
 
 		// Distance
-		m_tFogDesc.fFogStart = 20.f;     // 20m부터 시작
-		m_tFogDesc.fFogEnd = 80.f;     // 80m에서 최대
+		m_tFogDesc.fFogStart = 100.f;     // 20m부터 시작
+		m_tFogDesc.fFogEnd = 430.f;     // 80m에서 최대
 		m_tFogDesc.fFogDensity = 0.f;      // linear (0이면 linear)
-		m_tFogDesc.fFogMaxOpacity = 0.55f;    // 최대 55% - 멀어도 어느정도 보임
+		m_tFogDesc.fFogMaxOpacity = 0.2f;    // 최대 55% - 멀어도 어느정도 보임
 
 		// Height
-		m_tFogDesc.fFogBaseHeight = -3.f;     // 지면 약간 아래
+		m_tFogDesc.fFogBaseHeight = -9.f;     // 지면 약간 아래
 		m_tFogDesc.fFogHeightFalloff = 0.08f;    // 천천히 감소 - 낮은 곳에 안개 깔림
 		m_tFogDesc.fFogHeightDensity = 0.015f;   // 옅게
 
@@ -235,6 +330,9 @@ HRESULT CRender_Manager::Render()
 	if (FAILED(Render_SSAO()))
 		return E_FAIL;
 
+	if (FAILED(Update_ActiveBakedSections()))
+		return E_FAIL;
+
 	if (FAILED(Render_Lights()))
 		return E_FAIL;
 
@@ -256,6 +354,9 @@ HRESULT CRender_Manager::Render()
 			m_pGameInstance->Setup_UIViewProj_ToCBuffer();
 
 			if (FAILED(Render_Outline()))
+				return E_FAIL;
+
+			if (FAILED(Render_Fog()))
 				return E_FAIL;
 
 			m_pGameInstance->Setup_ViewProj_ToCBuffer();
@@ -301,9 +402,6 @@ HRESULT CRender_Manager::Render()
 	}
 
 	m_pGameInstance->Setup_UIViewProj_ToCBuffer();
-
-	//if (FAILED(Render_Fog()))
-	//	return E_FAIL;
 
 	if (FAILED(Render_Bloom()))
 		return E_FAIL;
@@ -373,109 +471,6 @@ HRESULT CRender_Manager::Render_Blend()
 		Safe_Release(pElement);
 	} 
 	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::BLEND)].clear();
-
-#pragma region Weighted OIT에 관해서
-// [TODO: Weighted OIT (가중 누적 기반 Order-Independent Transparency)]
-//
-// 목적:
-//  - 투명 오브젝트(이펙트/파티클/투명 메쉬)를 "알파 정렬(Alpha Sorting)" 없이도
-//    비교적 안정적으로(근사적으로) 합성하기 위한 방식.
-//  - 정렬을 완전히 대체하는 "근사"이며, 구현 난이도/성능/품질 밸런스가 좋아 이펙트 쪽에 유효.
-//
-// 핵심 아이디어(2개의 RT로 누적 후, 1번의 Fullscreen Composite):
-//  1) Transparent들을 OIT 버퍼에 "누적(accumulate)"한다.
-//  2) 누적 결과를 SceneHDR(누적용, NoClear)에 "합성(composite)"한다.
-//  3) 그 다음에 Bloom / ToneMap을 수행해야(=후처리에 투명도 포함) 전체 파이프라인이 일관적
-//
-// ------------------------------------------------------------
-// 0) 파이프라인 위치(매우 중요)
-// ------------------------------------------------------------
-//  - Opaque 결과가 SceneHDR에 만들어진 이후(= CombineHDR 이후)
-//  - Transparent_WOIT 누적(Accum/Reveal) -> Composite로 SceneHDR(NoClear)에 반영
-//  - 이후에 Bloom(Extract/Blur) -> ToneMap(BackBuffer 출력)
-//  => 반드시 "ToneMap & Bloom BEFORE" 가 아니라,
-//     "WOIT Composite가 ToneMap & Bloom보다 BEFORE" 여야 함.
-//     (투명 이펙트가 Bloom에 기여해야 자연스럽다)
-//
-// ------------------------------------------------------------
-// 1) 필요 RenderTarget(권장 포맷) 및 Clear 규칙
-// ------------------------------------------------------------
-//  - OIT_Accum  (RGBA16F 권장):
-//      * 누적 색(accum.rgb) + 누적 분모(accum.a)
-//      * 매 프레임 Clear: (0,0,0,0)
-//
-//  - OIT_Reveal (R16F 또는 R8_UNORM):
-//      * revealage(가시성) 누적: 최종 알파를 구하기 위한 값
-//      * 매 프레임 Clear: 1.0 (흰색)
-//      * 의미: 겹칠수록 1 -> 0으로 내려가며 "가려짐/불투명화"가 누적됨
-//
-// ------------------------------------------------------------
-// 2) 누적 패스(Transparent_WOIT) : per-object draw
-// ------------------------------------------------------------
-//  입력:
-//   - src.rgb, src.a (투명 오브젝트 최종 색/알파)
-//   - depth(또는 viewZ) : 가중치(weight)에 활용 (원거리 영향 ↓)
-//
-//  가중치 w (개념):
-//   - 가까운 픽셀이 더 강하게 누적되도록 depth 기반 가중치를 준다.
-//   - 예시(개념): 
-//       w = clamp( pow(1 - depth01, k), 0, 1 ) * max(src.a, eps)
-//     * depth01: [0..1]로 정규화된 depth (가까울수록 0)
-//     * k: 2~8 범위에서 튜닝(가까운 투명 강조 정도)
-//   - 이 w는 "정확성"보다는 "안정적 근사"를 위한 파라미터.
-//
-//  Accum 누적(개념 식):
-//   - premultipliedColor = src.rgb * src.a
-//   - accum.rgb += premultipliedColor * w
-//   - accum.a   += src.a * w                 // (분모 역할)
-//
-//  Reveal 누적(개념 식):
-//   - reveal *= (1 - src.a)
-//   - 겹치면 겹칠수록 reveal이 0으로 수렴 -> 최종 알파가 커짐
-//
-//  메모:
-//   - 이 단계는 MRT(Accum + Reveal)로 동시에 렌더하는 형태가 일반적.
-//   - BlendState는 "Accum은 Additive", "Reveal은 Multiplicative(곱 누적)"로 세팅.
-//     (구체 블렌드 팩터는 엔진 스타일에 맞춰 설정)
-//
-// ------------------------------------------------------------
-// 3) 합성 패스(Composite) : fullscreen 1회, SceneHDR(NoClear)에 반영
-// ------------------------------------------------------------
-//  누적 결과로 투명 레이어의 최종 색/알파를 복원:
-//
-//   transparentColor = accum.rgb / max(accum.a, eps)
-//   transparentAlpha = 1 - reveal
-//
-//  SceneHDR에 합성(개념 식):
-//   sceneHDR.rgb = lerp(sceneHDR.rgb, transparentColor, transparentAlpha)
-//   // 동치 형태:
-//   // sceneHDR.rgb = sceneHDR.rgb * (1 - transparentAlpha) + transparentColor * transparentAlpha
-//
-//  주의:
-//   - Composite는 "SceneHDR 누적 레이어(NoClear)"에 그려야 한다.
-//   - 그래야 이후 Bloom/ToneMap이 SceneHDR 하나만 보면 된다.
-//
-// ------------------------------------------------------------
-// 4) Render_Category 설계 힌트(추후)
-// ------------------------------------------------------------
-//  - RENDER_CATEGORY::TRANSPARENT_WOIT (추후 추가)
-//      * 투명 메쉬 이펙트 / 반투명 파티클 등 "일반 투명"은 여기로 모아 누적
-//
-//  - RENDER_CATEGORY::ADDITIVE_EFFECT (선택)
-//      * 불꽃/빛줄기 같은 Additive 파티클은 WOIT보다
-//        sceneHDR에 직접 Additive가 더 자연스러울 때가 많음.
-//      * 팀이 선택할 수 있게 카테고리 분리 여지 남겨두기.
-//
-// ------------------------------------------------------------
-// 5) 한계/주의사항(팀이 오해 안 하게)
-// ------------------------------------------------------------
-//  - Weighted OIT는 "정렬을 완전 대체"하는 정확 해법이 아니라 근사 해법.
-//    * 두꺼운 유리, 다층 굴절, 내부 산란 같은 케이스에는 부정확할 수 있음.
-//  - 그래도 이펙트(연기/먼지/마법/반투명 메쉬 이펙트)에는 품질 대비 비용이 좋음.
-//  - D3D11 제약: 동일 리소스 SRV/RTV 동시 바인딩 불가.
-//    => Accum/Reveal은 출력용 RTV, Composite에서는 입력용 SRV로 분리해서 사용.
-// ------------------------------------------------------------
-#pragma endregion
 
 	return S_OK;
 }
@@ -854,6 +849,9 @@ HRESULT CRender_Manager::Render_Lights()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Cascade_1, m_pShader)))
 		return E_FAIL;
 
+	if (FAILED(Bind_ActiveBakedSections()))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Render_Lights(m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 
@@ -1200,9 +1198,12 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 	m_pCB_Fog = CConstant_Buffer<SHADER_FOG_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_Toonparam = CConstant_Buffer<SHADER_TOON_DESC>::Create(m_pDevice, m_pDeviceContext);
 	m_pCB_CascadeShadow = CConstant_Buffer<SHADER_CASCADE_SHADOW_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_BakedShadow = CConstant_Buffer< SHADER_BAKED_SHADOW_DESC>::Create(m_pDevice, m_pDeviceContext);
+	m_pCB_ActiveBakedSections = CConstant_Buffer<SHADER_BAKED_SECTION_DESC>::Create(m_pDevice, m_pDeviceContext);
 	if (m_pCB_SSAOkernel == nullptr || m_pCB_SSAOparam == nullptr || m_pCB_HDRparam == nullptr ||
 		m_pCB_Bloomparam == nullptr || m_pCB_Outlineparam == nullptr || m_pCB_Fog == nullptr ||
-		m_pCB_Toonparam == nullptr || m_pCB_CascadeShadow == nullptr)
+		m_pCB_Toonparam == nullptr || m_pCB_CascadeShadow == nullptr || m_pCB_BakedShadow == nullptr ||
+		m_pCB_ActiveBakedSections == nullptr)
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::SSAOkernal, m_pCB_SSAOkernel->Get_Buffer())))
@@ -1222,17 +1223,37 @@ HRESULT CRender_Manager::Set_ConstantBuffer()
 
 	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Toonparam, m_pCB_Toonparam->Get_Buffer())))
 		return E_FAIL;
-	
-	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer())))
-		return E_FAIL;
 
 	// Fog
 	if (FAILED(m_pFogShader->Set_ConstantBuffer(EFXCB::Fogparam, m_pCB_Fog->Get_Buffer())))
 		return E_FAIL;
 
 	// Shadow
-	if(FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer())))
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::Cascadeparam, m_pCB_CascadeShadow->Get_Buffer())))
 		return E_FAIL;
+
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::BakedShadowparam, m_pCB_BakedShadow->Get_Buffer())))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Set_ConstantBuffer(EFXCB::SectionShadowparam, m_pCB_ActiveBakedSections->Get_Buffer())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Ready_RTArray()
+{
+	{
+		CRenderTargetArray::RENDERTARGET_ARR_DESC desc{};
+		desc.ePixelFormat = DXGI_FORMAT_R32_FLOAT;
+		desc.iWidth = SHADOW_BAKE_SIZE;
+		desc.iHeight = SHADOW_BAKE_SIZE;
+		desc.iArraySize = BAKED_SECTION_COUNT_X * BAKED_SECTION_COUNT_Z;
+		desc.vClearColor = Vec4::One;
+
+		if (FAILED(m_pGameInstance->Add_RenderTargetArray(ERenderTarget::Shadow_Baked, &desc)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -1427,6 +1448,7 @@ HRESULT CRender_Manager::Ready_RT()
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Cascade_1, &desc)))
 			return E_FAIL;
 	}
+
 	// For. Targert_OIT_ACCUM
 	{
 		// 누적 색상 버퍼
@@ -1558,10 +1580,6 @@ HRESULT CRender_Manager::Ready_MRT()
 			return E_FAIL;
 	}
 
-	// For. MRT_Shadow
-	{
-	}
-
 	return S_OK;
 }
 
@@ -1569,10 +1587,17 @@ HRESULT CRender_Manager::Create_ShadowResource()
 {
 	// ViewPort
 	{
+		::ZeroMemory(&m_tShadowViewport, sizeof(D3D11_VIEWPORT));
 		m_tShadowViewport.Width = (_float)SHADOW_MAP_SIZE;
 		m_tShadowViewport.Height = (_float)SHADOW_MAP_SIZE;
 		m_tShadowViewport.MinDepth = 0.f;
 		m_tShadowViewport.MaxDepth = 1.f;
+
+		::ZeroMemory(&m_tBakedShadowViewport, sizeof(D3D11_VIEWPORT));
+		m_tBakedShadowViewport.Width = (_float)SHADOW_BAKE_SIZE;
+		m_tBakedShadowViewport.Height = (_float)SHADOW_BAKE_SIZE;
+		m_tBakedShadowViewport.MinDepth = 0.f;
+		m_tBakedShadowViewport.MaxDepth = 1.f;
 	}
 
 	// DSV
@@ -1592,8 +1617,32 @@ HRESULT CRender_Manager::Create_ShadowResource()
 
 		if (FAILED(m_pDevice->CreateDepthStencilView(m_pShadowDSTexture, nullptr, &m_pShadowDSV)))
 			return E_FAIL;
-	}	
+	}
 
+	// DSV
+	{
+		D3D11_TEXTURE2D_DESC dsDesc = {};
+		dsDesc.Width = SHADOW_BAKE_SIZE;
+		dsDesc.Height = SHADOW_BAKE_SIZE;
+		dsDesc.MipLevels = 1;
+		dsDesc.ArraySize = 1;
+		dsDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		dsDesc.SampleDesc.Count = 1;
+		dsDesc.Usage = D3D11_USAGE_DEFAULT;
+		dsDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+		ID3D11Texture2D* pDSTex = nullptr;
+		if (FAILED(m_pDevice->CreateTexture2D(&dsDesc, nullptr, &pDSTex)))
+			return E_FAIL;
+
+		if (FAILED(m_pDevice->CreateDepthStencilView(pDSTex, nullptr, &m_pBakedShadowDSV)))
+		{
+			Safe_Release(pDSTex);
+			return E_FAIL;
+		}
+
+		Safe_Release(pDSTex);
+	}
 	return S_OK;
 }
 
@@ -1679,7 +1728,7 @@ HRESULT CRender_Manager::Compute_ShadowCascade()
 		}
 
 		// 약간 여유
-		float fZPad = 20.f;
+		_float fZPad = 20.f;
 		vMin.z -= fZPad;
 		vMax.z += fZPad;
 
@@ -1692,6 +1741,770 @@ HRESULT CRender_Manager::Compute_ShadowCascade()
 
 	m_tCascadeShadowDesc.vShadowMapInvSize = { 1.f / SHADOW_MAP_SIZE, 1.f / SHADOW_MAP_SIZE };
 	return S_OK;
+}
+
+HRESULT CRender_Manager::Bind_ActiveBakedSections()
+{
+	if (m_bBakedSectionInitialized == false)
+		return S_OK;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Shadow_Baked, m_pShader)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Create_RootBox(OUT BoundingBox &outRootBox)
+{
+	vector<CGameObject*> vecStatics;
+	m_pGameInstance->m_pOctree_Manager->Query_All(RENDER_CATEGORY::NONEBLEND, vecStatics);
+	if (vecStatics.size() <= 0)
+		return E_FAIL;
+
+	vector<CGameObject*> vecFiltered;
+	vecFiltered.reserve(vecStatics.size());
+
+	Vec3 vMinWS(FLT_MAX, FLT_MAX, FLT_MAX);
+	Vec3 vMaxWS(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	for (auto& pObj : vecStatics)
+	{
+		if (pObj->Is_BakedShadow() == false)
+			continue;
+
+		CBounds* pBounds = pObj->Get_Component<CBounds>();
+		if (pBounds == nullptr || pBounds->Get_WolrdAABB() == nullptr)
+			continue;
+
+		vecFiltered.push_back(pObj);
+
+		const BoundingBox& AABB = *pBounds->Get_WolrdAABB();
+		Vec3 vObjMin = AABB.Center - AABB.Extents;
+		Vec3 vObjMax = AABB.Center + AABB.Extents;
+
+		vMinWS = Vec3::Min(vMinWS, vObjMin);
+		vMaxWS = Vec3::Max(vMaxWS, vObjMax);
+	}
+
+	if (vecFiltered.empty() == true)
+		return E_FAIL;
+
+	constexpr _float fMargin = 1.f;
+	vMinWS -= Vec3(fMargin, fMargin, fMargin);
+	vMaxWS += Vec3(fMargin, fMargin, fMargin);
+
+	outRootBox = BoundingBox(
+		(vMinWS + vMaxWS) * 0.5f,
+		(vMaxWS - vMinWS) * 0.5f
+	);
+	return S_OK;
+}
+
+_uint CRender_Manager::Compute_BakedSectionIndex(_int iSectionX, _int iSectionZ) const
+{
+	return static_cast<_uint>(iSectionZ * BAKED_SECTION_COUNT_X + iSectionX);
+}
+
+BoundingBox CRender_Manager::Compute_BakedSectionBounds(_int iSectionX, _int iSectionZ) const
+{
+	_float fMinY = m_bakedWorldRootBounds.Center.y - m_bakedWorldRootBounds.Extents.y;
+	_float fMaxY = m_bakedWorldRootBounds.Center.y + m_bakedWorldRootBounds.Extents.y;
+
+	Vec3 vMin = {
+		m_vBakedSectionOrigin.x + iSectionX * m_fBakedSectionSizeX,
+		fMinY,
+		m_vBakedSectionOrigin.z + iSectionZ * m_fBakedSectionSizeZ
+	};
+
+	Vec3 vMax = {
+		m_vBakedSectionOrigin.x + (iSectionX + 1) * m_fBakedSectionSizeX,
+		fMaxY,
+		m_vBakedSectionOrigin.z + (iSectionZ + 1) * m_fBakedSectionSizeZ
+	};
+
+	return BoundingBox((vMin + vMax) * 0.5f, (vMax - vMin) * 0.5f);
+}
+
+HRESULT CRender_Manager::Build_BakedShadowSectionJobs()
+{
+	m_vecBakedSectionResults.clear();
+
+	vector<CGameObject*> vecStatics;
+	m_pGameInstance->m_pOctree_Manager->Query_All(RENDER_CATEGORY::NONEBLEND, vecStatics);
+
+	vector<CGameObject*> vecFiltered;
+	vecFiltered.reserve(vecStatics.size());
+
+	for (auto* pObj : vecStatics)
+	{
+		if (pObj == nullptr)
+			continue;
+
+		if (pObj->Is_BakedShadow() == false)
+			continue;
+
+		CBounds* pBounds = pObj->Get_Component<CBounds>();
+		if (pBounds == nullptr || pBounds->Get_WolrdAABB() == nullptr)
+			continue;
+
+		vecFiltered.push_back(pObj);
+	}
+
+	CLight* pDirLight = m_pGameInstance->Get_Light(LIGHT_TYPE::DIRECTIONAL);
+	if (pDirLight == nullptr)
+		return E_FAIL;
+
+	Vec3 vLightDir = pDirLight->Get_LightDesc().vDirection;
+	vLightDir.Normalize();
+
+	vector<future<BAKED_SECTION_BUILD_RESULT>> vecFutures;
+	vecFutures.reserve(BAKED_SECTION_COUNT_X * BAKED_SECTION_COUNT_Z);
+
+	for (_int z = 0; z < BAKED_SECTION_COUNT_Z; ++z)
+	{
+		for (_int x = 0; x < BAKED_SECTION_COUNT_X; ++x)
+		{
+			BAKED_SECTION_BUILD_INPUT input = {};
+			input.iSectionX = x;
+			input.iSectionZ = z;
+			input.sectionBounds = Compute_BakedSectionBounds(x, z);
+			input.vLightDir = vLightDir;
+			input.pStaticCasters = &vecFiltered;
+			vecFutures.push_back(
+				m_pGameInstance->m_pThreadPool->AddTask(
+					[this](BAKED_SECTION_BUILD_INPUT input)
+					{
+						return this->Build_BakedSection(input);
+					},
+					input
+				)
+			);
+		}
+	}
+
+	m_vecBakedSectionResults.reserve(vecFutures.size());
+
+	for (auto& fut : vecFutures)
+	{
+		BAKED_SECTION_BUILD_RESULT tResult = fut.get();
+		if (tResult.bValid)
+			m_vecBakedSectionResults.push_back(std::move(tResult));
+	}
+
+	return S_OK;
+}
+
+BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTION_BUILD_INPUT& input)
+{
+	BAKED_SECTION_BUILD_RESULT tOut = {};
+	tOut.iSectionX = input.iSectionX;
+	tOut.iSectionZ = input.iSectionZ;
+	tOut.sectionBounds = input.sectionBounds;
+
+	if (input.pStaticCasters == nullptr || input.pStaticCasters->empty())
+	{
+#if _DEBUG
+		string strLog{
+			"[BakedSection][Skip] "
+			"Grid(" + std::to_string(input.iSectionX) + ", " + std::to_string(input.iSectionZ) + ") " +
+			"Reason(EmptyStaticCasters)"
+		};
+		CLOG_INFO(strLog);
+#endif
+		return tOut;
+	}
+
+	// ===========================================================
+	// 0) section footprint는 유지
+	//    receiver fit은 XZ는 section 그대로, Y만 타이트하게 계산
+	// ===========================================================
+	const _float fSectionMinX = input.sectionBounds.Center.x - input.sectionBounds.Extents.x;
+	const _float fSectionMaxX = input.sectionBounds.Center.x + input.sectionBounds.Extents.x;
+	const _float fSectionMinY = input.sectionBounds.Center.y - input.sectionBounds.Extents.y;
+	const _float fSectionMaxY = input.sectionBounds.Center.y + input.sectionBounds.Extents.y;
+	const _float fSectionMinZ = input.sectionBounds.Center.z - input.sectionBounds.Extents.z;
+	const _float fSectionMaxZ = input.sectionBounds.Center.z + input.sectionBounds.Extents.z;
+
+	_float fReceiverMinY = FLT_MAX;
+	_float fReceiverMaxY = -FLT_MAX;
+	_bool  bHasReceiver = false;
+	_uint  iReceiverCount = 0;
+
+	// receiver 후보:
+	// "현재 section footprint(XZ)에 걸치고, section의 Y band 안에도 실제로 걸치는 baked static"
+	for (auto* pObj : *input.pStaticCasters)
+	{
+		if (pObj == nullptr)
+			continue;
+
+		CBounds* pBounds = pObj->Get_Component<CBounds>();
+		if (pBounds == nullptr || pBounds->Get_WolrdAABB() == nullptr)
+			continue;
+
+		const BoundingBox& AABB = *pBounds->Get_WolrdAABB();
+
+		Vec3 vObjMin = AABB.Center - AABB.Extents;
+		Vec3 vObjMax = AABB.Center + AABB.Extents;
+
+		const _bool bOverlapX = !(vObjMax.x < fSectionMinX || vObjMin.x > fSectionMaxX);
+		const _bool bOverlapZ = !(vObjMax.z < fSectionMinZ || vObjMin.z > fSectionMaxZ);
+
+		if (bOverlapX == false || bOverlapZ == false)
+			continue;
+
+		// section의 원래 높이 band 안으로 Y를 clip
+		const _float fClampedMinY = (std::max)(vObjMin.y, fSectionMinY);
+		const _float fClampedMaxY = (std::min)(vObjMax.y, fSectionMaxY);
+
+		if (fClampedMinY > fClampedMaxY)
+			continue;
+
+		fReceiverMinY = (std::min)(fReceiverMinY, fClampedMinY);
+		fReceiverMaxY = (std::max)(fReceiverMaxY, fClampedMaxY);
+		bHasReceiver = true;
+		++iReceiverCount;
+	}
+
+	// fallback: receiver를 못 찾으면 기존 sectionBounds 사용
+	BoundingBox receiverFitBounds = input.sectionBounds;
+
+	if (bHasReceiver)
+	{
+		constexpr _float fReceiverPadY = 2.f;
+
+		Vec3 vFitMin(
+			fSectionMinX,
+			fReceiverMinY - fReceiverPadY,
+			fSectionMinZ
+		);
+
+		Vec3 vFitMax(
+			fSectionMaxX,
+			fReceiverMaxY + fReceiverPadY,
+			fSectionMaxZ
+		);
+
+		receiverFitBounds = BoundingBox(
+			(vFitMin + vFitMax) * 0.5f,
+			(vFitMax - vFitMin) * 0.5f
+		);
+	}
+
+	tOut.receiverBounds = receiverFitBounds;
+
+	// ===============================================
+	// Receiver = receiverFitBounds 기준으로 LightView 생성
+	// XZ footprint는 section 그대로, Y만 타이트하게
+	// ===============================================
+	Vec3 vReceiverCenter = Vec3(
+		receiverFitBounds.Center.x,
+		receiverFitBounds.Center.y,
+		receiverFitBounds.Center.z
+	);
+
+	Vec3 vReceiverExtents = Vec3(
+		receiverFitBounds.Extents.x,
+		receiverFitBounds.Extents.y,
+		receiverFitBounds.Extents.z
+	);
+
+	Vec3 vUp = Vec3::Up;
+	if (fabs(input.vLightDir.Dot(vUp)) > 0.98f)
+		vUp = Vec3::Forward;
+
+	_float fViewBackDist = sqrtf(
+		vReceiverExtents.x * vReceiverExtents.x +
+		vReceiverExtents.z * vReceiverExtents.z
+	) * 2.f;
+
+	Matrix matLightView = ::XMMatrixLookAtLH(
+		vReceiverCenter - input.vLightDir * fViewBackDist,
+		vReceiverCenter,
+		vUp
+	);
+
+	// =========================
+	// receiver LS 범위 계산
+	// XY는 여기서 확정
+	// =========================
+	Vec3 vReceiverCorners[8];
+	receiverFitBounds.GetCorners(vReceiverCorners);
+
+	Vec3 vReceiverLSMin(FLT_MAX, FLT_MAX, FLT_MAX);
+	Vec3 vReceiverLSMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	for (_int i = 0; i < 8; ++i)
+	{
+		Vec3 vLS = Vec3::Transform(vReceiverCorners[i], matLightView);
+		vReceiverLSMin = Vec3::Min(vReceiverLSMin, vLS);
+		vReceiverLSMax = Vec3::Max(vReceiverLSMax, vLS);
+	}
+
+	const _float fPadXY = 0.f;
+	_float minX = vReceiverLSMin.x - fPadXY;
+	_float maxX = vReceiverLSMax.x + fPadXY;
+	_float minY = vReceiverLSMin.y - fPadXY;
+	_float maxY = vReceiverLSMax.y + fPadXY;
+
+	// ===========================================================
+	// caster query 범위
+	// world-space broad phase
+	// ===========================================================
+	Vec3 vCasterQueryExtents = Vec3(
+		input.sectionBounds.Extents.x + m_fBakedSectionSizeX * 0.15f,
+		input.sectionBounds.Extents.y + 5.f,
+		input.sectionBounds.Extents.z + m_fBakedSectionSizeZ * 0.15f
+	);
+
+	BoundingBox tCasterQueryBounds(
+		input.sectionBounds.Center,
+		vCasterQueryExtents
+	);
+
+	Vec3 vCasterUnionMin(FLT_MAX, FLT_MAX, FLT_MAX);
+	Vec3 vCasterUnionMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	Vec3 vCasterLSMin(FLT_MAX, FLT_MAX, FLT_MAX);
+	Vec3 vCasterLSMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	_bool bHasCaster = false;
+
+	_uint iBroadPhaseHitCount = 0;
+	_uint iAcceptedCasterCount = 0;
+
+	// ===========================================================
+	// caster Z slab 제한
+	// - receiver와 너무 멀리 떨어진 caster는 제외
+	// - accepted caster의 Z union도 clamp
+	// ===========================================================
+	const _float fCasterPadFront = 120.f; // light 진행 방향 앞쪽 여유
+	const _float fCasterPadBack = 40.f;  // 뒤쪽 여유
+
+	const _float fReceiverMinZ = vReceiverLSMin.z;
+	const _float fReceiverMaxZ = vReceiverLSMax.z;
+
+	for (auto* pObj : *input.pStaticCasters)
+	{
+		if (pObj == nullptr)
+			continue;
+
+		CBounds* pBounds = pObj->Get_Component<CBounds>();
+		if (pBounds == nullptr || pBounds->Get_WolrdAABB() == nullptr)
+			continue;
+
+		const BoundingBox& AABB = *pBounds->Get_WolrdAABB();
+
+		// 1) broad-phase
+		if (AABB.Intersects(tCasterQueryBounds) == false)
+			continue;
+
+		++iBroadPhaseHitCount;
+
+		// 2) light-space narrow phase
+		Vec3 vObjLSMin(FLT_MAX, FLT_MAX, FLT_MAX);
+		Vec3 vObjLSMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+		Vec3 vCasterCorners[8];
+		AABB.GetCorners(vCasterCorners);
+
+		for (_int i = 0; i < 8; ++i)
+		{
+			Vec3 vLS = Vec3::Transform(vCasterCorners[i], matLightView);
+			vObjLSMin = Vec3::Min(vObjLSMin, vLS);
+			vObjLSMax = Vec3::Max(vObjLSMax, vLS);
+		}
+
+		const _bool bOverlapX = !(vObjLSMax.x < minX || vObjLSMin.x > maxX);
+		const _bool bOverlapY = !(vObjLSMax.y < minY || vObjLSMin.y > maxY);
+		const _bool bOverlapZ =
+			!(vObjLSMax.z < (fReceiverMinZ - fCasterPadBack) ||
+				vObjLSMin.z >(fReceiverMaxZ + fCasterPadFront));
+
+		if (bOverlapX == false || bOverlapY == false || bOverlapZ == false)
+			continue;
+
+		// 여기까지 와야 실제로 이 section receiver에 영향 주는 caster
+		++iAcceptedCasterCount;
+		tOut.vecCasters.push_back(pObj);
+
+		Vec3 vObjMin = AABB.Center - AABB.Extents;
+		Vec3 vObjMax = AABB.Center + AABB.Extents;
+
+		vCasterUnionMin = Vec3::Min(vCasterUnionMin, vObjMin);
+		vCasterUnionMax = Vec3::Max(vCasterUnionMax, vObjMax);
+
+		// accepted caster의 light-space Z도 slab로 clamp
+		Vec3 vObjLSMinClamped = vObjLSMin;
+		Vec3 vObjLSMaxClamped = vObjLSMax;
+
+		vObjLSMinClamped.z = (std::max)(vObjLSMinClamped.z, fReceiverMinZ - fCasterPadBack);
+		vObjLSMaxClamped.z = (std::min)(vObjLSMaxClamped.z, fReceiverMaxZ + fCasterPadFront);
+
+		vCasterLSMin = Vec3::Min(vCasterLSMin, vObjLSMinClamped);
+		vCasterLSMax = Vec3::Max(vCasterLSMax, vObjLSMaxClamped);
+
+		bHasCaster = true;
+	}
+
+	if (bHasCaster == false)
+	{
+#if _DEBUG
+		string strLog{
+			"[BakedSection][Skip] "
+			"Grid(" + std::to_string(input.iSectionX) + ", " + std::to_string(input.iSectionZ) + ") " +
+			"Reason(NoValidCasterInQueryBounds)"
+		};
+		CLOG_INFO(strLog);
+#endif
+		return tOut;
+	}
+
+	Vec3 vSecMin = Vec3(
+		fSectionMinX,
+		vCasterUnionMin.y,
+		fSectionMinZ
+	);
+
+	Vec3 vSecMax = Vec3(
+		fSectionMaxX,
+		vCasterUnionMax.y,
+		fSectionMaxZ
+	);
+
+	tOut.casterBounds = BoundingBox(
+		(vSecMin + vSecMax) * 0.5f,
+		(vSecMax - vSecMin) * 0.5f
+	);
+
+	// ===========================================================
+	// Z는 receiver + clamped caster 기준으로 가변
+	// ===========================================================
+	const _float fPadZ = 3.f;
+
+	_float minZ = (std::min)(vReceiverLSMin.z, vCasterLSMin.z) - fPadZ;
+	_float maxZ = (std::max)(vReceiverLSMax.z, vCasterLSMax.z) + fPadZ;
+
+	Matrix matLightProj = ::XMMatrixOrthographicOffCenterLH(
+		minX, maxX,
+		minY, maxY,
+		minZ, maxZ
+	);
+
+	tOut.matLightVP = matLightView * matLightProj;
+	tOut.vShadowParams = Vec4(
+		0.0006f,
+		0.6f,
+		1.f / SHADOW_BAKE_SIZE,
+		1.f / SHADOW_BAKE_SIZE
+	);
+
+	tOut.bValid = true;
+
+#if _DEBUG
+	{
+		_float fOrthoWidth = maxX - minX;
+		_float fOrthoHeight = maxY - minY;
+		_float fOrthoDepth = maxZ - minZ;
+
+		_float fTexelWorldX = fOrthoWidth / (_float)SHADOW_BAKE_SIZE;
+		_float fTexelWorldY = fOrthoHeight / (_float)SHADOW_BAKE_SIZE;
+
+		string strLog{
+			"[BakedSection] "
+			"Grid(" + std::to_string(input.iSectionX) + ", " + std::to_string(input.iSectionZ) + ") " +
+
+			"SectionMin(" + std::to_string(fSectionMinX) + ", " +
+							 std::to_string(fSectionMinY) + ", " +
+							 std::to_string(fSectionMinZ) + ") " +
+			"SectionMax(" + std::to_string(fSectionMaxX) + ", " +
+							 std::to_string(fSectionMaxY) + ", " +
+							 std::to_string(fSectionMaxZ) + ") " +
+
+			"ReceiverLS_Min(" + std::to_string(vReceiverLSMin.x) + ", " +
+								 std::to_string(vReceiverLSMin.y) + ", " +
+								 std::to_string(vReceiverLSMin.z) + ") " +
+			"ReceiverLS_Max(" + std::to_string(vReceiverLSMax.x) + ", " +
+								 std::to_string(vReceiverLSMax.y) + ", " +
+								 std::to_string(vReceiverLSMax.z) + ") " +
+
+			"CasterCount(" + std::to_string(tOut.vecCasters.size()) + ") " +
+
+			"CasterLS_Min(" + std::to_string(vCasterLSMin.x) + ", " +
+							   std::to_string(vCasterLSMin.y) + ", " +
+							   std::to_string(vCasterLSMin.z) + ") " +
+			"CasterLS_Max(" + std::to_string(vCasterLSMax.x) + ", " +
+							   std::to_string(vCasterLSMax.y) + ", " +
+							   std::to_string(vCasterLSMax.z) + ") " +
+
+			"ReceiverZ(" + std::to_string(vReceiverLSMin.z) + "~" + std::to_string(vReceiverLSMax.z) + ") " +
+			"CasterZ(" + std::to_string(vCasterLSMin.z) + "~" + std::to_string(vCasterLSMax.z) + ") " +
+
+			"FinalXY(" + std::to_string(minX) + "~" + std::to_string(maxX) + ", " +
+						   std::to_string(minY) + "~" + std::to_string(maxY) + ") " +
+			"FinalZ(" + std::to_string(minZ) + "~" + std::to_string(maxZ) + ") " +
+
+			"OrthoWHD(" + std::to_string(fOrthoWidth) + ", " +
+						   std::to_string(fOrthoHeight) + ", " +
+						   std::to_string(fOrthoDepth) + ") " +
+
+			"TexelWS(" + std::to_string(fTexelWorldX) + ", " +
+						  std::to_string(fTexelWorldY) + ") " +
+
+			"BroadPhase(" + std::to_string(iBroadPhaseHitCount) + ") " +
+			"Accepted(" + std::to_string(iAcceptedCasterCount) + ") " +
+
+			"ReceiverFitMin(" + std::to_string(receiverFitBounds.Center.x - receiverFitBounds.Extents.x) + ", " +
+							  std::to_string(receiverFitBounds.Center.y - receiverFitBounds.Extents.y) + ", " +
+							  std::to_string(receiverFitBounds.Center.z - receiverFitBounds.Extents.z) + ") " +
+			"ReceiverFitMax(" + std::to_string(receiverFitBounds.Center.x + receiverFitBounds.Extents.x) + ", " +
+							  std::to_string(receiverFitBounds.Center.y + receiverFitBounds.Extents.y) + ", " +
+							  std::to_string(receiverFitBounds.Center.z + receiverFitBounds.Extents.z) + ") " +
+
+			"SectionHeight(" + std::to_string(input.sectionBounds.Extents.y * 2.f) + ") " +
+			"ReceiverHeight(" + std::to_string(receiverFitBounds.Extents.y * 2.f) + ") " +
+			"ReceiverCount(" + std::to_string(iReceiverCount) + ") "
+		};
+		CLOG_INFO(strLog);
+	}
+#endif
+
+	return tOut;
+}
+
+HRESULT CRender_Manager::Execute_BakedShadowSectionJobs()
+{
+	m_vecBakedSection.clear();
+	m_vecBakedSection.resize(BAKED_SECTION_COUNT_X * BAKED_SECTION_COUNT_Z);
+
+	for (const auto& job : m_vecBakedSectionResults)
+	{
+		if (!job.bValid)
+			continue;
+
+		if (FAILED(Render_BakedSection_ToArray(job)))
+			return E_FAIL;
+
+		_uint iIndex = Compute_BakedSectionIndex(job.iSectionX, job.iSectionZ);
+
+		auto& tSection = m_vecBakedSection[iIndex];
+		tSection.iSectionX = job.iSectionX;
+		tSection.iSectionZ = job.iSectionZ;
+		tSection.sectionBounds = job.sectionBounds;
+		tSection.casterBounds = job.casterBounds;
+		tSection.matLightVP = job.matLightVP;
+		tSection.vShadowParams = job.vShadowParams;
+		tSection.iArraySlice = iIndex;
+		tSection.bValid = true;
+	}
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Render_BakedSection_ToArray(const BAKED_SECTION_BUILD_RESULT& job)
+{
+	_uint iSlice = Compute_BakedSectionIndex(job.iSectionX, job.iSectionZ);
+
+	m_tBakedShadowViewport.Width = static_cast<_float>(SHADOW_BAKE_SIZE);
+	m_tBakedShadowViewport.Height = static_cast<_float>(SHADOW_BAKE_SIZE);
+	m_tBakedShadowViewport.MinDepth = 0.f;
+	m_tBakedShadowViewport.MaxDepth = 1.f;
+	m_pDeviceContext->RSSetViewports(1, &m_tBakedShadowViewport);
+
+	SHADER_BAKED_SHADOW_DESC tDesc = {};
+	tDesc.matLightVP = job.matLightVP;
+	tDesc.fShadowBias = job.vShadowParams.x;
+	tDesc.fShadowStrength = job.vShadowParams.y;
+	tDesc.vShadowMapInvSize = Vec2(job.vShadowParams.z, job.vShadowParams.w);
+
+#if _DEBUG
+	{
+		string strLog{
+			"[BakedRender] "
+			"Grid(" + std::to_string(job.iSectionX) + ", " + std::to_string(job.iSectionZ) + ") " +
+			"Slice(" + std::to_string(iSlice) + ") " +
+			"CasterCount(" + std::to_string(job.vecCasters.size()) + ") " +
+			"Bias(" + std::to_string(job.vShadowParams.x) + ") " +
+			"Strength(" + std::to_string(job.vShadowParams.y) + ") " +
+			"InvSize(" + std::to_string(job.vShadowParams.z) + ", " +
+						 std::to_string(job.vShadowParams.w) + ")"
+		};
+		CLOG_INFO(strLog);
+	}
+#endif
+
+	if (FAILED(m_pCB_BakedShadow->Copy_Data(tDesc)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Begin_RTArraySlice(
+		ERenderTarget::Shadow_Baked,
+		iSlice,
+		true,
+		m_pBakedShadowDSV)))
+	{
+		m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+		return E_FAIL;
+	}
+
+	for (auto* pObj : job.vecCasters)
+	{
+		if (pObj == nullptr)
+			continue;
+
+		if (FAILED(pObj->Render_Shadow()))
+			return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+	{
+		m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+		return E_FAIL;
+	}
+
+	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Update_ActiveBakedSections()
+{
+	if (m_bBakedSectionInitialized == false)
+		return S_OK;
+
+	_int iCenterX = 0;
+	_int iCenterZ = 0;
+
+	if (Compute_MainCameraSectionIndex(iCenterX, iCenterZ) == false)
+		return E_FAIL;
+
+	if (Should_Update_ActiveBakedSections(iCenterX, iCenterZ) == false)
+		return S_OK;
+
+	m_iCurrentCenterSectionX = iCenterX;
+	m_iCurrentCenterSectionZ = iCenterZ;
+
+	m_tActiveBakedSet = {};
+
+	for (_int dz = -1; dz <= 1; ++dz)
+	{
+		for (_int dx = -1; dx <= 1; ++dx)
+		{
+			_int sx = iCenterX + dx;
+			_int sz = iCenterZ + dz;
+
+			if (sx < 0 || sx >= BAKED_SECTION_COUNT_X || sz < 0 || sz >= BAKED_SECTION_COUNT_Z)
+				continue;
+
+			_uint iIndex = Compute_BakedSectionIndex(sx, sz);
+			if (iIndex >= m_vecBakedSection.size())
+				continue;
+
+			const auto& tSection = m_vecBakedSection[iIndex];
+			if (!tSection.bValid)
+				continue;
+
+			m_tActiveBakedSet.sections[m_tActiveBakedSet.iCount++] = tSection;
+		}
+	}
+
+	m_bActiveBakedSectionDirty = false;
+
+#ifdef _DEBUG
+	{
+		CCameraMan* pMainCamera = m_pGameInstance->Get_MainCamera();
+		if (pMainCamera)
+		{
+			CTransform* pTransform = pMainCamera->Get_Component<CTransform>();
+			Vec3 vCamPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+			string strLog{
+				"[BakedActive] "
+				"CamPos(" + std::to_string(vCamPos.x) + ", " +
+							 std::to_string(vCamPos.y) + ", " +
+							 std::to_string(vCamPos.z) + ") " +
+				"MainSection(" + std::to_string(iCenterX) + ", " +
+								 std::to_string(iCenterZ) + ") " +
+				"ActiveCount(" + std::to_string(m_tActiveBakedSet.iCount) + ")"
+			};
+			CLOG_INFO(strLog);
+		}
+
+		for (_uint i = 0; i < m_tActiveBakedSet.iCount; ++i)
+		{
+			const auto& tSection = m_tActiveBakedSet.sections[i];
+
+			string strLog{
+				"[BakedActive][Slot] "
+				"Slot(" + std::to_string(i) + ") " +
+				"Grid(" + std::to_string(tSection.iSectionX) + ", " +
+						   std::to_string(tSection.iSectionZ) + ") " +
+				"Slice(" + std::to_string(tSection.iArraySlice) + ")"
+			};
+			CLOG_INFO(strLog);
+		}
+	}
+#endif
+	return Update_ActiveBakedSectionBuffer();
+}
+
+HRESULT CRender_Manager::Update_ActiveBakedSectionBuffer()
+{
+	SHADER_BAKED_SECTION_DESC tDesc = {};
+	tDesc.iActiveCount = m_tActiveBakedSet.iCount;
+
+	for (_uint i = 0; i < m_tActiveBakedSet.iCount; ++i)
+	{
+		const auto& src = m_tActiveBakedSet.sections[i];
+		auto& dst = tDesc.sections[i];
+
+		dst.matLightVP = src.matLightVP;
+		dst.vShadowParams = src.vShadowParams;
+
+		Vec3 vMin = Vec3(src.sectionBounds.Center.x, src.sectionBounds.Center.y, src.sectionBounds.Center.z) -
+			Vec3(src.sectionBounds.Extents.x, src.sectionBounds.Extents.y, src.sectionBounds.Extents.z);
+
+		Vec3 vMax = Vec3(src.sectionBounds.Center.x, src.sectionBounds.Center.y, src.sectionBounds.Center.z) +
+			Vec3(src.sectionBounds.Extents.x, src.sectionBounds.Extents.y, src.sectionBounds.Extents.z);
+
+		dst.vBoundsMin = Vec4(vMin.x, vMin.y, vMin.z, 0.f);
+		dst.vBoundsMax = Vec4(vMax.x, vMax.y, vMax.z, 0.f);
+		dst.iArraySlice = src.iArraySlice;
+	}
+
+	if (FAILED(m_pCB_ActiveBakedSections->Copy_Data(tDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+_bool CRender_Manager::Compute_MainCameraSectionIndex(OUT _int& iOutX, OUT _int& iOutZ) const
+{
+	CCameraMan* pMainCamera = m_pGameInstance->Get_MainCamera();
+	if (pMainCamera == nullptr)
+		return false;
+
+	CTransform* pTransform = pMainCamera->Get_Component<CTransform>();
+	
+	Vec3 vPosition = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	_float fLocalX = vPosition.x - m_vBakedSectionOrigin.x;
+	_float fLocalZ = vPosition.z - m_vBakedSectionOrigin.z;
+
+	iOutX = static_cast<_int>(floor(fLocalX / m_fBakedSectionSizeX));
+	iOutZ = static_cast<_int>(floor(fLocalZ / m_fBakedSectionSizeZ));
+
+	iOutX = std::clamp(iOutX, 0, BAKED_SECTION_COUNT_X - 1);
+	iOutZ = std::clamp(iOutZ, 0, BAKED_SECTION_COUNT_Z - 1);
+	return true;
+}
+
+_bool CRender_Manager::Should_Update_ActiveBakedSections(_int iNewCenterX, _int iNewCenterZ) const
+{
+	if (m_iCurrentCenterSectionX == INT_MAX || m_iCurrentCenterSectionZ == INT_MAX)
+		return true;
+
+	if (iNewCenterX != m_iCurrentCenterSectionX || iNewCenterZ != m_iCurrentCenterSectionZ)
+		return true;
+
+	return false;
 }
 
 CRender_Manager* CRender_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -1713,6 +2526,8 @@ void CRender_Manager::Free()
 	for (auto& pDebugCom : m_debugComponents)
 		Safe_Release(pDebugCom);
 	m_debugComponents.clear();
+	Safe_Release(m_pBakedShadowDebugTex);
+	Safe_Release(m_pBakedShadowDebugSRV);
 #endif
 	for (auto& RenderObjects : m_renderObjects)
 	{
@@ -1726,6 +2541,7 @@ void CRender_Manager::Free()
 	Safe_Release(m_pPerlinNoiseSRV);
 	Safe_Release(m_pShadowDSTexture);
 	Safe_Release(m_pShadowDSV);
+	Safe_Release(m_pBakedShadowDSV);
 	Safe_Release(m_pCB_Outlineparam);
 	Safe_Release(m_pCB_Bloomparam);
 	Safe_Release(m_pCB_HDRparam);
@@ -1734,6 +2550,8 @@ void CRender_Manager::Free()
 	Safe_Release(m_pCB_Fog);
 	Safe_Release(m_pCB_Toonparam);
 	Safe_Release(m_pCB_CascadeShadow);
+	Safe_Release(m_pCB_BakedShadow);
+	Safe_Release(m_pCB_ActiveBakedSections);
 	Safe_Release(m_pFogShader);
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
@@ -1741,15 +2559,6 @@ void CRender_Manager::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 	Super::Free();
-}
-
-#ifdef _DEBUG
-
-HRESULT CRender_Manager::Push_DebugComponent(CComponent* pComponent)
-{
-	m_debugComponents.push_back(pComponent);
-	Safe_AddRef(pComponent);
-	return S_OK;
 }
 
 HRESULT CRender_Manager::Commit_SSAOParam()
@@ -1788,22 +2597,110 @@ HRESULT CRender_Manager::Commit_CascadeParam()
 {
 	return m_pCB_CascadeShadow ? m_pCB_CascadeShadow->Copy_Data(m_tCascadeShadowDesc) : E_FAIL;
 }
+HRESULT CRender_Manager::Commit_BakedShadowParam()
+{
+	return m_pCB_BakedShadow ? m_pCB_BakedShadow->Copy_Data(m_tBakedShadowDesc) : E_FAIL;
+}
 HRESULT CRender_Manager::Commit_AllPostParams()
 {
-	if (FAILED(Commit_SSAOParam()))		 return E_FAIL;
-	if (FAILED(Commit_HDRParam()))		 return E_FAIL;
-	if (FAILED(Commit_BloomParam()))	 return E_FAIL;
-	if (FAILED(Commit_OutlineParam()))	 return E_FAIL;
-	if (FAILED(Commit_FogParam()))		 return E_FAIL;
-	if (FAILED(Commit_ToonParam()))		 return E_FAIL;
-	if (FAILED(Commit_CascadeParam()))	 return E_FAIL;
+	if (FAILED(Commit_SSAOParam()))			return E_FAIL;
+	if (FAILED(Commit_HDRParam()))			return E_FAIL;
+	if (FAILED(Commit_BloomParam()))		return E_FAIL;
+	if (FAILED(Commit_OutlineParam()))		return E_FAIL;
+	if (FAILED(Commit_FogParam()))			return E_FAIL;
+	if (FAILED(Commit_ToonParam()))			return E_FAIL;
+	if (FAILED(Commit_CascadeParam()))		return E_FAIL;
+	if (FAILED(Commit_BakedShadowParam()))	return E_FAIL;
 	return S_OK;
 }
 
-HRESULT CRender_Manager::Ready_Debug()
+#ifdef _DEBUG
+
+HRESULT CRender_Manager::Push_DebugComponent(CComponent* pComponent)
 {
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(ERenderTarget::Normal, 150.f, 150.f, 300.f, 300.f)))
+	m_debugComponents.push_back(pComponent);
+	Safe_AddRef(pComponent);
+	return S_OK;
+}
+
+ID3D11ShaderResourceView* CRender_Manager::Get_BakedShadowDebugSRV()
+{
+	return m_pBakedShadowDebugSRV;
+}
+
+void CRender_Manager::Update_BakedShadowDebugTexture(_uint iSlice)
+{
+	if (m_pBakedShadowDebugTex == nullptr)
+		return;
+
+	CRenderTargetArray* pRTArray = m_pGameInstance->m_pRenderTarget_Manager->Get_RenderTargetArray(ERenderTarget::Shadow_Baked);
+	if (pRTArray == nullptr)
+		return;
+
+	ID3D11Texture2D* pTextureArray = pRTArray->Get_Texture2D();
+	if (pTextureArray == nullptr)
+		return;
+
+	D3D11_TEXTURE2D_DESC srcDesc{};
+	pTextureArray->GetDesc(&srcDesc);
+
+	if (iSlice >= srcDesc.ArraySize)
+		return;
+
+	const UINT srcSubresource = D3D11CalcSubresource(0, iSlice, 1);
+
+	m_pDeviceContext->CopySubresourceRegion(
+		m_pBakedShadowDebugTex,
+		0,
+		0, 0, 0,
+		pTextureArray,
+		srcSubresource,
+		nullptr
+	);
+
+	m_iBakedShadowDebugSlice = (_int)iSlice;
+}
+
+HRESULT CRender_Manager::Create_BakedShadowSliceSRV()
+{
+	CRenderTargetArray* pRTArray = m_pGameInstance->m_pRenderTarget_Manager->Get_RenderTargetArray(ERenderTarget::Shadow_Baked);
+	if (pRTArray == nullptr)
 		return E_FAIL;
+
+	ID3D11Texture2D* pTextureArray = pRTArray->Get_Texture2D();
+	if (pTextureArray == nullptr)
+		return E_FAIL;
+
+	D3D11_TEXTURE2D_DESC srcDesc{};
+	pTextureArray->GetDesc(&srcDesc);
+
+	if (m_pBakedShadowDebugSRV == nullptr)
+	{
+		D3D11_TEXTURE2D_DESC desc{};
+		desc.Width = srcDesc.Width;
+		desc.Height = srcDesc.Height;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = srcDesc.Format;
+		desc.SampleDesc = srcDesc.SampleDesc;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
+
+		if (FAILED(m_pDevice->CreateTexture2D(&desc, nullptr, &m_pBakedShadowDebugTex)))
+			return E_FAIL;
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		srvDesc.Format = desc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = 1;
+
+		if (FAILED(m_pDevice->CreateShaderResourceView(m_pBakedShadowDebugTex, &srvDesc, &m_pBakedShadowDebugSRV)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 

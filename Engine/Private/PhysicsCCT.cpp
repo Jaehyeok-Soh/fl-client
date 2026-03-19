@@ -239,7 +239,9 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
 	filters.mFilterCallback = m_pQueryFilterCallback;
 
-	PxControllerCollisionFlags collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
+	PxControllerCollisionFlags collisionFlag;
+	if (m_bEnableMove)
+		collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
 
 	if (m_bIsSteppingOnCCT)
 		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_DOWN;

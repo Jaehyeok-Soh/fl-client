@@ -5,11 +5,13 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
+#include "QuestManager.h"
 #include "GameInstance.h"
 
 CUIQuest_Image::CUIQuest_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -112,6 +114,10 @@ void CUIQuest_Image::Bind_Events()
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
 				{
+					auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+					if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+						return;
+
 					this->Set_Visible();
 				}
 			})
@@ -137,18 +143,45 @@ void CUIQuest_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
 			{
+				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+				if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+					return;
+
 				this->Set_Visible();
+			})
+	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
+			{
+				Set_Visible();
+			})
+	);
+
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::QUEST_NAME_CHANGE == Desc.eEventID)
+				{
+					this->Set_Invisible();
+					this->m_isVisibleTrigger = true;
+				}
 			})
 	);
 }
 
 void CUIQuest_Image::Tick_By_Type(const _float fTimeDelta)
 {
+	if (m_isVisibleTriggerStart)
+	{
+		Set_Visible();
+		m_isVisibleTriggerStart = false;
+	}
 }
 
 void CUIQuest_Image::Initialize_Visible_Event()
 {
-	Ready_Lerp_Movement(Vec2{ -20.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Lerp_Movement(Vec2{ -50.f, 0.f }, Vec2{ 0.f, 0.f }, 0.5f, 5.f, m_fDelay, true);
 	Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
 }
 
@@ -169,7 +202,7 @@ _bool CUIQuest_Image::Tick_Visible_Event(const _float fTimeDelta)
 void CUIQuest_Image::Initialize_InVisible_Event()
 {
 	m_isFin_Event = false;
-	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -20.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
+	Ready_Lerp_Movement(Vec2{ 0.f, 0.f }, Vec2{ -50.f, 0.f }, 0.5f, 3.f, m_fDelay, true);
 	Ready_Fade(0.5f, 1.f, 0.f, m_fDelay);
 }
 
@@ -181,6 +214,13 @@ _bool CUIQuest_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	if (isFade && isMove)
 	{
 		m_isFin_Event = true;
+
+		if (m_isVisibleTrigger)
+		{
+			m_isVisibleTriggerStart = true;
+			m_isVisibleTrigger = false;
+		}
+
 		return true;
 	}
 
