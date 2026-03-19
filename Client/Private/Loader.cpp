@@ -112,6 +112,7 @@
 #include "TriggerBox_MonsterSpawner.h"
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
 #include "TriggerBox_TutorialUIEvent.h"
+#include "TriggerBox_CinematicPlayer.h"
 
 /* --------------------- */
 //=================
@@ -326,20 +327,9 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(Ready_Spawner()))
 		return E_FAIL;
 
-#pragma region Register Global Event
-	/////////////////////////////////////////
-	/////////// Ready GlobalEvent ///////////
-	/////////////////////////////////////////
+#pragma region Ready Cinematic Camera Data
 	if (FAILED(Ready_CCS()))
 		return S_OK;
-
-
-
-#pragma endregion
-
-	/* Cinematic Data Load */
-	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
-		return E_FAIL;
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
@@ -561,7 +551,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90wwwwdddd
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices	= {2,3,5,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
+		desc.vecStageBoneIndices	= {2,3,5,72,285,286,287,288,289,413,414,415,416 ,417,418,419 };
 
 		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
@@ -622,7 +612,31 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+	// For. Prototype_Component_Model_DualR
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Weapon_BerenicaDualR";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_DualR", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+	// For. Prototype_Component_Model_DualL
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Weapon_BerenicaDualL";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_DualL", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
+
+	/* monsters */
 	// For.Prototype_Component_Model_Monster_Dog
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};
@@ -780,6 +794,7 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterSapwner_Prototype_Tag,			CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, CTriggerBox_GlobalEvent_BroadCaster::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_TutorialUIEvent_PrototypeTag,			CTriggerBox_TutorialUIEvent::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_CinematicPlayer_PrototypeTag,			CTriggerBox_CinematicPlayer::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 		/* Weapons */
@@ -1490,27 +1505,9 @@ HRESULT CLoader::Ready_AttackOverlap_Xibi()
 
 HRESULT CLoader::Ready_CCS()
 {
-	/* Global */
-	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
-
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
-
-	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
-	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_OFF);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
-
-
-
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_DIRECTION);
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_IDLE);
-
-
+	if (FAILED(m_pGameInstance->Load_CameraCinematicSequence(g_wszCameraCinematicData_JsonPath)))
+		return E_FAIL;
+		
 
 	return S_OK;
 }

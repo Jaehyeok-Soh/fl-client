@@ -255,6 +255,47 @@ public:
 
 		return Engine::EMaterialInstanceType::Default;
 	}
+
+
+#pragma region ObjectTag Enum Sring Change
+
+
+#pragma endregion
+
+
+#pragma region
+
+	// 헤더 파일의 Enum 선언 바로 밑이나, cpp 파일 상단에 선언해 둡니다.
+	static inline const char* g_szLerpTypes[(int)Engine::ELerpType::END] = {
+		"NONE",
+		"Linear",
+		"SlowStart",
+		"SlowEnd",
+		"SmoothStep",
+		"Curve"
+	};
+	static inline string LerpType_ToString(ELerpType eType)
+	{
+		// 인덱스 초과 방지 안전장치
+		if (eType >= Engine::ELerpType::NONE && eType < Engine::ELerpType::END)
+			return g_szLerpTypes[(int)eType];
+
+		return "Unknown";
+	}
+
+	static inline ELerpType LerpType_ToEnum(const string& strType)
+	{
+		for (int i = 0; i < (int)Engine::ELerpType::END; ++i)
+		{
+			if (strType == g_szLerpTypes[i])
+				return (Engine::ELerpType)i;
+		}
+		return Engine::ELerpType::NONE;
+	}
+
+#pragma endregion
+
+
 };
 
 inline physx::PxVec3 ToPxVec3(const DirectX::SimpleMath::Vector3& v)

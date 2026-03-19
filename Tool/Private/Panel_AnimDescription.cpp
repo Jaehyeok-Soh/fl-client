@@ -318,6 +318,7 @@ void CPanel_AnimDescription::Desc_EffectWindow()
 
     // 현재 선택된 이펙트 데이터 가져오기
     auto& pEvent = m_tEventInfo->vecVFXEvents[m_tAnimControllInfo->iCurrentEffectEventIndex];
+    pEvent.strAnimTag = Engine_Utils::ToString(m_tAnimControllInfo->pModel->Get_AnimationName(pEvent.iAnimIndex));
 
     if (ImGui::Button("Delete this Effect"))
     {

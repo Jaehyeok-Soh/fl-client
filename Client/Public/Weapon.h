@@ -92,8 +92,8 @@ public:
 	void	Set_HandSocket();
 	void	Set_DefaultSocket();
 	_bool	Is_Hand() const { return m_eState == State::HAND; }
-	void	Set_WeaponState(State eState) { m_eState = eState; }
-	void	Set_WeaponState(_uint iState) { m_eState = static_cast<State>(iState); }
+	void	Set_WeaponState(State eState) { m_eState = eState;  (m_eState == State::NONE) ? Set_Active(false) : Set_Active(true); }
+	void	Set_WeaponState(_uint iState) { m_eState = static_cast<State>(iState); (m_eState == State::NONE) ? Set_Active(false) : Set_Active(true);}
 
 	void	Set_Weapon_PlayState(_uint iPlayState) { m_eAnimState = static_cast<AnimState>(iPlayState); }
 

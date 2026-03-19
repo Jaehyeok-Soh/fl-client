@@ -75,7 +75,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	pPlayerTransform->Look_At_Dir(vDir);
 
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::CONDEMN));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::CONDEMN));
 
 	m_tTurnData.vFirstLookDir = vDir;
 	static_cast<CCameraMan_Targeter*>(pPlayer->Get_CameraTargeter())->Set_TurnData(m_tTurnData);
@@ -95,7 +95,7 @@ HRESULT CState_Condemn::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }

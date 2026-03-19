@@ -523,7 +523,7 @@ void CEffectObject::Update(const _float fTimeDelta)
     auto CTShader = static_cast<CComputeShader*>(Get_Script_Component(L"ComputeShader"));
     if (CTShader)
     {
-        // Object의 TimeFlag가 PLAY라면 그대로 전달하여 CS가 멈추지 않게 함
+         // Object의 TimeFlag가 PLAY라면 그대로 전달하여 CS가 멈추지 않게 함
         //CVIBuffer_Particle_Point* pInstance = Get_Component<CVIBuffer_Particle_Point>();
         if (m_pParticleBuffer) m_pParticleBuffer->Update_Simulation(CTShader, Vec3{}, m_vFinalGravity, m_fTimeAccumulation, TimeT, m_tEffectDesc.Data._Effect_TimeFlag, (DTO::E_SHAPETYPE)m_tEffectDesc.Data._Effect_ShapeType);
     }

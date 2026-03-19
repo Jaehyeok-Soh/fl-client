@@ -36,6 +36,18 @@ HRESULT CImGui_ToolManager::Initialize_ToolManager(HWND hWnd, ID3D11Device* pDev
 
 	ImGui::StyleColorsDark();
 
+	// ImGui 컨텍스트 생성 이후, ImGui_Impl~ 초기화 직전이나 직후에 넣어주시면 됩니다.
+	// 
+	// 1. 맑은 고딕(또는 원하는 TTF 폰트)을 로드하고, 한글 글리프 범위를 포함시킵니다.
+	// 사이즈는 16.0f ~ 18.0f 정도가 보기 좋습니다.
+	ImFont* pFont = io.Fonts->AddFontFromFileTTF("../../Resources/ImGuiFonts/malgun.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
+
+	// (선택) 만약 폰트 로드에 실패하면 기본 폰트로 떨어지게 냅두거나 Assert를 겁니다.
+	if (pFont == nullptr)
+	{
+		MSG_BOX("한글 폰트 로드 실패!");
+	}
+
 	ImGuiStyle& style = ImGui::GetStyle();
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{

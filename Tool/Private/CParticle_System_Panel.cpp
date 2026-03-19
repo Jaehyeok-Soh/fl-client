@@ -1573,10 +1573,12 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_PParticleTypeList.push_back("BloomHard");
 					m_PParticleTypeList.push_back("Blend_BloomHard");
 					m_PParticleTypeList.push_back("NONDEPTH_DEFAULT");
+					m_PParticleTypeList.push_back("Glow_Texture");
+					m_PParticleTypeList.push_back("NONEDEPTH_Glow_Texture");
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");
-					m_PParticleTypeList.push_back("SPRITE_MESH");
+					m_PParticleTypeList.push_back("GLOW_MESH");
 					m_PParticleTypeList.push_back("BloomHard");
 					m_PParticleTypeList.push_back("DISTOTION");
 					m_PParticleTypeList.push_back("SwordEffect");

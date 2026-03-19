@@ -162,7 +162,7 @@ namespace Tool
         SaveJson = json
         {
             {"Subscriber Name",tData.strSubscriberName},
-            {"Action Names",tData.vecActionNames}
+            {"Action Infos",tData.vecActionNames}
         };
     }
     void from_json(const json& LoadJson, CCS_EVENT_MANIFEST& tData)
@@ -171,10 +171,24 @@ namespace Tool
         {
             LoadJson.at("Subscriber Name").get_to(tData.strSubscriberName);
         }
-        if (LoadJson.contains("Action Names"))
+        if (LoadJson.contains("Action Infos"))
         {
-            LoadJson.at("Action Names").get_to(tData.vecActionNames);
+            LoadJson.at("Action Infos").get_to(tData.vecActionNames);
         }
+    }
+
+    void to_json(json& SaveJson, const ActionInfo& tData)
+    {
+        SaveJson = json{
+        {"Name", tData.strNames},
+        {"Explain", tData.strExplain}
+        };
+    }
+
+    void from_json(const json& LoadJson, ActionInfo& tData)
+    {
+        if (LoadJson.contains("Name")) LoadJson.at("Name").get_to(tData.strNames);
+        if (LoadJson.contains("Explain")) LoadJson.at("Explain").get_to(tData.strExplain);
     }
 
 #pragma endregion

@@ -883,6 +883,33 @@ public:
 
 #pragma endregion
 
+
+#pragma region CinematicPlayer
+
+struct ENGINE_DLL TRIGGERBOX_CINEMATICPLAYER_DESC : public TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	string		strCinematicName{};
+public:
+	TRIGGERBOX_CINEMATICPLAYER_DESC()
+		: TRIGGERBOX_DESC(), strCinematicName{}
+	{
+	}
+	TRIGGERBOX_CINEMATICPLAYER_DESC(const TRIGGERBOX_CINEMATICPLAYER_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs), strCinematicName{ rhs.strCinematicName }
+	{
+	}
+	virtual ~TRIGGERBOX_CINEMATICPLAYER_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson)override;
+	virtual void to_Json(json& SaveJson)override;
+};
+
+#pragma endregion
+
+
+
 #pragma endregion
 
 #pragma region NPC
@@ -984,6 +1011,7 @@ enum class EClientMakePath
 	TriggerBox_MonsterSpawner,
 	TriggerBox_GlobalEvent_BroadCaster,
 	TriggerBox_TutorialUIEvent,
+	TriggerBox_CinematicPlayer,
 
 
 	/* ¸Ê ±â´É °ü·Ã */
@@ -1056,6 +1084,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::TriggerBox_MonsterSpawner,			"TriggerBox_MonsterSpawner"},
 			{EClientMakePath::TriggerBox_GlobalEvent_BroadCaster,	"TriggerBox_GlobalEvent_BroadCaster"},
 			{EClientMakePath::TriggerBox_TutorialUIEvent,			"TriggerBox_TutorialUIEvent"},
+			{EClientMakePath::TriggerBox_CinematicPlayer,			"TriggerBox_CinematicPlayer"},
 
 			{EClientMakePath::Invisible_Wall,						"Invisible_Wall"},
 
