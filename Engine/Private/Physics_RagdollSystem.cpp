@@ -193,37 +193,37 @@ void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<
 		switch (eJoint)
 		{
 		case Engine::ERagdollJoint::SPINE_02:
-			fSwingLimit = PxPi / 6.f; fTwistLimit = PxPi / 8.f;
-			fJointMass = 5.0f; fJointFriction = 0.5f;
+			fSwingLimit = PxPi / 1.5f; fTwistLimit = PxPi / 1.5f;
+			fJointMass = 5.0f; fJointFriction = 0.05f;
 			break;
 		case Engine::ERagdollJoint::HEAD:
-			fSwingLimit = PxPi / 6.f; fTwistLimit = PxPi / 4.f;
-			fJointMass = 2.0f; fJointFriction = 0.2f;
+			fSwingLimit = PxPi / 1.2f; fTwistLimit = PxPi / 1.2f;
+			fJointMass = 2.0f; fJointFriction = 0.05f;
 			break;
 		case Engine::ERagdollJoint::UPPERARM_L:
 		case Engine::ERagdollJoint::UPPERARM_R:
-			fSwingLimit = PxPi / 1.5f; fTwistLimit = PxPi / 3.f;
-			fJointMass = 1.5f; fJointFriction = 0.1f;
+			fSwingLimit = PxPi * 0.8f; fTwistLimit = PxPi * 0.8f;
+			fJointMass = 1.5f; fJointFriction = 0.01f;
 			break;
 		case Engine::ERagdollJoint::LOWERARM_L:
 		case Engine::ERagdollJoint::LOWERARM_R:
-			fSwingLimit = PxPi / 2.f; fTwistLimit = PxPi / 6.f;
-			fJointMass = 2.8f; fJointFriction = 0.1f;
+			fSwingLimit = PxPi / 1.2f; fTwistLimit = PxPi / 1.2f;
+			fJointMass = 0.8f; fJointFriction = 0.01f;
 			break;
 		case Engine::ERagdollJoint::THIGH_L:
 		case Engine::ERagdollJoint::THIGH_R:
-			fSwingLimit = PxPi / 2.5f; fTwistLimit = PxPi / 6.f;
-			fJointMass = 4.0f; fJointFriction = 0.3f;
+			fSwingLimit = PxPi * 0.8f; fTwistLimit = PxPi / 1.5f;
+			fJointMass = 4.0f; fJointFriction = 0.01f;
 			break;
 		case Engine::ERagdollJoint::CALF_L:
 		case Engine::ERagdollJoint::CALF_R:
-			fSwingLimit = PxPi / 2.5f; fTwistLimit = PxPi / 18.f;
-			fJointMass = 2.0f; fJointFriction = 0.2f;
+			fSwingLimit = PxPi / 1.2f; fTwistLimit = PxPi / 1.5f;
+			fJointMass = 2.0f; fJointFriction = 0.01f;
 			break;
 		case Engine::ERagdollJoint::FOOT_L:
 		case Engine::ERagdollJoint::FOOT_R:
-			fSwingLimit = PxPi / 4.f; fTwistLimit = PxPi / 6.f;
-			fJointMass = 2.5f; fJointFriction = 0.5f;
+			fSwingLimit = PxPi / 1.2f; fTwistLimit = PxPi / 2.f;
+			fJointMass = 0.5f; fJointFriction = 0.01f;
 			break;
 		}
 

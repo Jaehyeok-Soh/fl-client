@@ -261,6 +261,25 @@ _int CPhysicsRagdoll::FindRagdollJointByBoneIndex(_uint boneIdx)
 	return -1;
 }
 
+void CPhysicsRagdoll::ApplyHitImpulse(Vec3 vDir, _float fPower)
+{
+	m_tRagdollElements.pArticulation->wakeUp();
+
+	PxArticulationLink* pRootLink = m_tRagdollElements.vecPhysicsLink[RAGDOLLJOINT::PELVIS].first;
+
+	if (pRootLink == nullptr)
+		return;
+
+	vDir.Normalize();
+
+	vDir.y += 0.5f;
+	vDir.Normalize();
+
+	PxVec3 pxImpulse = ToPxVec3(vDir) * fPower;
+
+	pRootLink->addForce(pxImpulse, PxForceMode::eIMPULSE);
+}
+
 void CPhysicsRagdoll::Sleep()
 {
 	m_tRagdollElements.pArticulation->setRootLinearVelocity(PxVec3(0.f));
