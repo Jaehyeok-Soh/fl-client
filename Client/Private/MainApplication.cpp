@@ -34,6 +34,9 @@
 #include "QuestManager.h"
 #include "Quest_DataModel.h"
 
+// Dialogue
+#include "DialogueManager.h"
+
 USING(Client)
 
 CMainApplication::CMainApplication()
@@ -81,6 +84,7 @@ HRESULT CMainApplication::Initialize()
 	CMonsterState_Factory::GetInstance()->Initialize();
 
 	Register_Quest_Scenario();
+
 
 	return S_OK;
 }
@@ -276,6 +280,16 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		CComputeShader::ComShaderOriginDesc shaderDesc = {};
 		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_BoneCombinePart.hlsl";
 		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_PartBoneCombine",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
+	// For. Prototype_Component_Shader_RagDoll
+	{
+		//ComShader_BoneCombinePart
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_RagDoll.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_RagDoll",
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
@@ -623,6 +637,7 @@ void CMainApplication::Free()
 {	
 	CMonsterState_Factory::DestroyInstance();
 	CQuestManager::DestroyInstance();
+	CDialogueManager::DestroyInstance();
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

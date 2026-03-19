@@ -158,6 +158,10 @@ void CUIQuestNavi_Text::Bind_Events()
 			{
 				if (EUIEventID::MENU_OPEN == Desc.eEventID)
 				{
+					auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+					if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+						return;
+
 					this->Set_Invisible();
 				}
 			})
@@ -174,6 +178,10 @@ void CUIQuestNavi_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
 			{
+				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+				if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+					return;
+
 				this->Set_Visible();
 			})
 	);
@@ -190,7 +198,8 @@ void CUIQuestNavi_Text::Bind_Events()
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				this->m_vTargetPos = desc.tChapterInfo.vObjectPosition;
 
-				if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
+				if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL ||
+					desc.tChapterInfo.eEvent == DTO::EQuestEvent::NPC_TALK)
 					this->Set_Invisible();
 				else
 					this->Set_Visible();
@@ -232,11 +241,19 @@ void CUIQuestNavi_Text::Tick_By_Type(const _float fTimeDelta)
 
 	m_fDistance = vDir.Length();
 
-	vDir.Normalize();
-	vCameraLook.Normalize();
-	vCameraRight.Normalize();
-
 	vDir.y = 0.f;
+	vCameraLook.y = 0.f;
+	vCameraRight.y = 0.f;
+
+	if (vDir.LengthSquared() > 0.0001f)
+		vDir.Normalize();
+
+	if (vCameraLook.LengthSquared() > 0.0001f)
+		vCameraLook.Normalize();
+
+	if (vCameraRight.LengthSquared() > 0.0001f)
+		vCameraRight.Normalize();
+
 	_float fx = vDir.Dot(vCameraRight);
 	_float fy = vDir.Dot(vCameraLook);
 

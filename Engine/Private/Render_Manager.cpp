@@ -53,57 +53,6 @@ HRESULT CRender_Manager::Initialize()
 	return S_OK;
 }
 
-HRESULT CRender_Manager::Ready_BlendStates()
-{
-	D3D11_BLEND_DESC blendDesc = {};
-	blendDesc.AlphaToCoverageEnable = FALSE;
-	blendDesc.IndependentBlendEnable = TRUE;
-
-	//---------------------------------------------------------
-	// WBOIT Accumulate State (정보 수집용)
-	//---------------------------------------------------------
-	// RT 0: Accumulation (D = S + D)
-	blendDesc.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-	// RT 1: Revealage (D = D * (1 - S.a))
-	blendDesc.RenderTarget[1].BlendEnable = TRUE;
-	blendDesc.RenderTarget[1].SrcBlend = D3D11_BLEND_ZERO;
-	blendDesc.RenderTarget[1].DestBlend = D3D11_BLEND_INV_SRC_COLOR;
-	blendDesc.RenderTarget[1].BlendOp = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[1].SrcBlendAlpha = D3D11_BLEND_ZERO;
-	blendDesc.RenderTarget[1].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
-	blendDesc.RenderTarget[1].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[1].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_RED;
-
-	if (FAILED(m_pDevice->CreateBlendState(&blendDesc, &m_pWBOIT_AccumulateBS)))
-		return E_FAIL;
-
-	//---------------------------------------------------------
-	// Alpha Blend State (WBOIT 합성 및 일반 UI용)
-	//---------------------------------------------------------
-	ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
-	blendDesc.IndependentBlendEnable = FALSE; // 모든 RT 공통 적용
-	blendDesc.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
-	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-	if (FAILED(m_pDevice->CreateBlendState(&blendDesc, &m_pAlphaBlendBS)))
-		return E_FAIL;
-
-	return S_OK;
-}
 
 
 void CRender_Manager::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO)
@@ -424,9 +373,6 @@ HRESULT CRender_Manager::Render()
 			if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::OIT_Render, true, true)))
 				return E_FAIL;
 
-			//// 블랜드 State 바인딩
-			m_pDeviceContext->OMSetBlendState(m_pWBOIT_AccumulateBS, nullptr, 0xffffffff);
-
 			// 투명 물체들 값 저장.
 			if (FAILED(Render_NonLights())) return E_FAIL;
 			if (FAILED(Render_Blend())) return E_FAIL;
@@ -441,15 +387,10 @@ HRESULT CRender_Manager::Render()
 			if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SceneHDR_Acc, false, true)))
 				return E_FAIL;
 
-			//// 블랜드 State 바인딩
-			m_pDeviceContext->OMSetBlendState(m_pAlphaBlendBS, nullptr, 0xffffffff);
-
 			// 가중치 Blend 기법
 			if (FAILED(Render_WBOIT())) return E_FAIL;
 
 			m_pGameInstance->Setup_ViewProj_ToCBuffer();
-			//// 블렌드 해제
-			m_pDeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 		}
 
 		// SceneHDR Copy하기
@@ -2597,10 +2538,6 @@ void CRender_Manager::Free()
 			Safe_Release(pRenderObject);
 		RenderObjects.clear();
 	}
-
-	// === WBOIT 전용 blend 캐싱 변수 === 
-	Safe_Release(m_pWBOIT_AccumulateBS);
-	Safe_Release(m_pAlphaBlendBS);
 	//
 	Safe_Release(m_pLUTTexture);
 	Safe_Release(m_pSSAONoiseSRV);

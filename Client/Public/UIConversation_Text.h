@@ -4,7 +4,7 @@
 
 NS_BEGIN(Client)
 
-class CUIConservation_Text final : public CUIText
+class CUIConversation_Text final : public CUIText
 {
 	using Super = CUIText;
 public:
@@ -13,9 +13,9 @@ public:
 	}CONVERSATION_TEXT_DESC;
 
 private:
-	CUIConservation_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIConservation_Text(const CUIConservation_Text& rhs);
-	virtual ~CUIConservation_Text() = default;
+	CUIConversation_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIConversation_Text(const CUIConversation_Text& rhs);
+	virtual ~CUIConversation_Text() = default;
 
 public:
 	HRESULT Initialize_Prototype() override;
@@ -41,8 +41,9 @@ private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 	virtual void Tick_By_Type(const _float fTimeDelta)override;
+
 public:
-	static CUIConservation_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIConversation_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };

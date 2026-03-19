@@ -513,7 +513,7 @@ void CUI_Inspector::SetUp_TextData()
 		}
 
 		_string strText = Engine_Utils::ToString(m_pSelectedUI->Get_Text());
-		ImGui::InputText("Text", &strText);
+		ImGui::InputTextMultiline("Text", &strText);
 		m_pSelectedUI->Set_Text(Engine_Utils::ToWString(strText));
 
 		auto& vColor = m_pSelectedUI->Get_FontColor();

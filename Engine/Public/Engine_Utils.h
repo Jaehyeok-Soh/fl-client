@@ -267,4 +267,14 @@ inline DirectX::SimpleMath::Vector3 ToVector3(const physx::PxVec3& v)
 	return DirectX::SimpleMath::Vector3(v.x, v.y, v.z);
 }
 
+inline physx::PxQuat ToPxQuat(const DirectX::SimpleMath::Quaternion& v)
+{
+	return physx::PxQuat(v.x, v.y, v.z, v.w);
+}
+
+inline DirectX::SimpleMath::Quaternion ToQuaternion(const physx::PxQuat& v)
+{
+	return DirectX::SimpleMath::Quaternion(v.x, v.y, v.z, v.w);
+}
+
 NS_END

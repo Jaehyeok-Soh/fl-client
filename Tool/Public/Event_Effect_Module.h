@@ -30,7 +30,7 @@ public:
     void SetEFfectEvent(CEffectHandler* pEffectHandler, CAnimObj* pOwner);
     void SetOwner(CAnimObj* pOwner);
 
-    unordered_map<_uint, vector<DTO::EFFECTEVENT>>& GetEvents();
+    unordered_map<string, vector<DTO::EFFECTEVENT>>& GetEvents();
     CEffectHandler* GetHandler() { return m_pEffectEvent; }
 
     void SetHandler(CEffectHandler* pHandler) { m_pEffectEvent = pHandler; }

@@ -39,6 +39,7 @@ namespace Engine
 		bool		  bParam0{ false };
 		bool		  bParam1{ false };
 		string		  strParam{ "" };
+		string		  strParam2{ "" };
 	};
 
 	typedef struct tagCollisionHitInformation
@@ -634,34 +635,40 @@ namespace Engine
 	// 가변 데이터 (CS에서 값이 계속 바뀌는 것들)
 	typedef struct tagEffect_Particle_MU_ELEMENT
 	{
-		// 시간 제어 관련
+		// Slot 1
 		float				fTimeDelta = { 0.f };		// 시간 값
 		float				fTotalTime = { 0.f };
 		float				fDuration = { 0.f };
 		float				fStartDelay = { 0.f };
 
-		// 상태 플래그
+		// Slot 2
 		unsigned int		iMoveState = { 0 };
 		int					bIsLoop = { 0 };
 		unsigned int		iTimeFlag = {};
 		float				fPadding4 = { 9.8f };
 
-		// 중력값
+		// Slot 3
 		SimpleMath::Vector3 vFinalGravity = { 0.f, 0.f, 0.f };
 		float				fExternalStrength = { 0.f };
 
-		// 위치 및 방향
+		// Slot 4
 		SimpleMath::Vector3	vPivot = {};	// Spread시 기준점
-		float Padding1 = {};
+		unsigned int		iEmissionType = {};
+
+		// Slot 5
 		SimpleMath::Vector3 vLook = {};		// Straight시 방향
 		float Padding2 = {};
 
+		// Slot 6
 		float				fStartSpeed = { 0.f };
 		float				fSpiralRadius = { 0.f };
 		float				fSpiralSpeed = { 0.f };
 		int					UseContinueFlag = {};
 
-		// 
+		// Slot 7
+		SimpleMath::Vector3 vRange = {};
+		unsigned int		iRandomSeed = {};
+
 	}EFFECT_PARTICLE_MU_ELEMENT;
 
 
@@ -828,6 +835,20 @@ namespace Engine
 
 #pragma endregion
 
+#pragma region RAGDOLL_CS
+	// 가변 데이터
+	typedef struct tagIMMU_RAGDOLL
+	{
+		unsigned int    iBoneIndex;         // 몇번째 뼈인지
+
+		unsigned int    iTotalBoneNums;     // 총 뼈 개수
+		unsigned int    iRagDollBoneNums;   // 래그돌 할 개수
+ 
+		unsigned int    Padding0;
+	}CS_IMMU_RAGDOLL;
+
+#pragma endregion
+
 #pragma endregion
 
 	union COLLIDER_ID
@@ -973,6 +994,15 @@ namespace Engine
 		SimpleMath::Vector3 vExtens = {};
 		//PxCapsuleControllerDesc capsuleDesc{};
 		//PxBoxControllerDesc boxDesc{};
+		float fContactOffset = 0.3f;
+		float fStepOffset = 0.4f;
+		float fSlopeLimit = 0.7f;
+
+		DirectX::SimpleMath::Vector3 vLocalOffset = {};
+		DirectX::SimpleMath::Vector3 vWorldOffset = {};
+
+		bool bIsHover = { false };
+		float fHoverOffset = { 1.f };
 
 		////////////////
 		/// Material ///
@@ -982,7 +1012,7 @@ namespace Engine
 		////////////////////////
 		/// Collision Filter ///
 		////////////////////////
-		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
+		unsigned int eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
 
 		//////////////////
@@ -1070,7 +1100,7 @@ namespace Engine
 		/// Collision Filter ///
 		////////////////////////
 		bool bSetOnlyFilter = { false };
-		PHYSICSFILTERGROUP::Enum eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
+		unsigned int eFilterLayer = PHYSICSFILTERGROUP::Enum::NONE;
 		unsigned int iFilterMask = {};
 
 		////////////////////
@@ -1090,7 +1120,7 @@ namespace Engine
 
 		float fRadius = 0.05f;
 		float fHeight = 0.05f;
-		float fMass = 1.f;
+		float fMass = 0.1f;
 
 		Matrix matLocalTransform = { Matrix::Identity };
 		PxTransform matOffsetTransform = {PxTransform(PxIdentity)};
@@ -1168,6 +1198,7 @@ namespace Engine
 		const SimpleMath::Matrix** pTransformMatrix = { nullptr };	// 실시간 로컬용 부모 행렬 주소
 		int iBoneFlag;
 		int iSimulationType = (int)E_VFX_SIMULTYPE::VFX_WORLD;		// LOCAL(0) or WORLD(1)
+		bool bUseChildBone = { false };
 
 	public:
 		float				VFX_fSpeed = { 1.f };					// 전체적인 스피드 조절

@@ -161,6 +161,7 @@
 #include "UIQuest_Text.h"
 #include "UIQuestNavi_Text.h"
 #include "UICommunity_Text.h"
+#include "UIConversation_Text.h"
 // ±×³É ÀÌ¹ÌÁö
 #include "UIJust_Image.h"
 // ´ÙÀÌ³ª¹Í ÀÌ¹ÌÁö 
@@ -184,6 +185,7 @@
 #include "UIQuest_Image.h"
 #include "UIQuestNavi_Image.h"
 #include "UICommunity_Image.h"
+#include "UIConversation_Image.h"
 //=================
 // Resource
 //=================
@@ -556,7 +558,7 @@ HRESULT CLoader::Loading_For_Logo()
 		CModel::MODEL_ORIGIN_DESC desc = {};
 		desc.eType					= EModelType::ANIM;
 		desc.iPrototypeLevelIndex	= ENUM_TO_UINT(ELevelType::STATIC);
-		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
+		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90wwwwdddd
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
 		desc.vecStageBoneIndices	= {2,3,5,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
@@ -600,6 +602,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Weapon_MoonGun";		
 		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.vecStageBoneIndices = { 8 }; // ÃÑ¿­ »À
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
@@ -628,7 +631,9 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform = &(matPreTransformIdentity);
 		desc.wstrModelFolderName = L"Monster_Dog";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = {3,150, 152};
+		desc.vecStageBoneIndices = {3,
+			4,6,9,10,32,33,64,125,126,136,137,138,139
+			,150, 152};//6,9,10,32,33,64,125,126,136,137,138,139
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
@@ -867,6 +872,9 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuestNaviText",			CUIQuestNavi_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityImage",			CUICommunity_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityText",			CUICommunity_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ConversationImage",		CUIConversation_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ConversationText",			CUIConversation_Text::Create(m_pDevice, m_pDeviceContext));
+
 #pragma endregion
 	
 	m_isFinished = true;

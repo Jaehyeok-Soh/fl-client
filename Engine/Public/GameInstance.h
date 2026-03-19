@@ -406,9 +406,10 @@ public:
 	PxVec3 GetPureScale(const Matrix& mat);
 	void Overlap_EventCallback(CGameObject* pOwner, const PxVec3& vOverlapPoint, PxOverlapHit* pOverlapHit, PxPairFlag::Enum event, DTO::HITBOX_DESC* hitboxDesc);
 	void Raycast_EventCallback(CGameObject* pOwner, PxRaycastBuffer* pRaycastHitBuffer, CPhysicsAttackRaycast::ATTACKRAYCASTDESC* raycastDesc);
-	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall);
+	_bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall, OUT _float* fHitDist = nullptr, OUT Vec3* vHitPos = nullptr);
 
 	_bool CheckRagdollState(int64 objID);
+	_bool CheckRagDollState_Processing(int64 objID);
 	void RagdollRegister(CGameObject* obj);
 	void RagdollUnregister(int64 objID);
 	void RagdollRequestStart(uint64 objID);

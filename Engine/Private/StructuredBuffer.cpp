@@ -91,6 +91,11 @@ HRESULT StructuredBuffer::Resize(void* data, _uint iElementSize, _uint iNewNumEl
 	return Copy_Data(data, iElementSize, iNewNumElements);
 }
 
+void StructuredBuffer::CopyFrom(StructuredBuffer* pSrc)
+{
+	m_pDeviceContext->CopyResource(m_pBuffer, pSrc->Get_Buffer());
+}
+
 StructuredBuffer* StructuredBuffer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iElementSize, _uint iNumElements)
 {
 	StructuredBuffer* pInstance = new StructuredBuffer(pDevice, pDeviceContext, iElementSize, iNumElements);

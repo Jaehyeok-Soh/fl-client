@@ -116,6 +116,8 @@ HRESULT CUITutorial_PopUp_Clear_Text::Convert_Stat_To_Text()
 
 void CUITutorial_PopUp_Clear_Text::Bind_Events()
 {
+
+
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<TUTORIAL_POPUP_CLEAR>([this](EUITutorialPopUpTypeID ID)
 			{

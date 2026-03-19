@@ -24,6 +24,10 @@ void to_json(json& j, const EFFECTEVENT& data) {
     j["vRotation"] = { {"x", data.vRotation.x}, {"y", data.vRotation.y}, {"z", data.vRotation.z} };
     j["bFollowBone"] = data.bFollowBone;
     j["fDuration"] = data.fDuration;
+
+    j["bUseChildBone"] = data.bUseChildBone;
+    j["ChildPartNumber"] = data.ChildPartNumber;
+    j["iChildBoneIndex"] = data.iChildBoneIndex;
 }
 
 void from_json(const json& j, EFFECTEVENT& data) {
@@ -38,6 +42,10 @@ void from_json(const json& j, EFFECTEVENT& data) {
     if (j.contains("iBoneFlag"))       j.at("iBoneFlag").get_to(data.iBoneFlag);
     if (j.contains("bFollowBone"))     j.at("bFollowBone").get_to(data.bFollowBone);
     if (j.contains("fDuration"))       j.at("fDuration").get_to(data.fDuration);
+
+    if (j.contains("bUseChildBone"))       j.at("bUseChildBone").get_to(data.bUseChildBone);
+    if (j.contains("ChildPartNumber"))     j.at("ChildPartNumber").get_to(data.ChildPartNumber);
+    if (j.contains("iChildBoneIndex"))       j.at("iChildBoneIndex").get_to(data.iChildBoneIndex);
 
     if (j.contains("vOffset")) {
         const auto& jo = j.at("vOffset");

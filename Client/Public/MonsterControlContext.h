@@ -196,6 +196,10 @@ public:
 
 	void Set_RootMotion_Apply(_bool bApply);
 
+	void Set_Target_Offset(_float fX, _float fY, _float fZ, _float fTimeDelta);
+	void Auto_Teleport_Chase(_float fMaxLength = 10.f);
+	void Genimon_Smart_Chase(_float fX, _float fY, _float fZ, _float fMaxLength, _float fTimeDelta);
+
 private:
 	void Clear_RuntimeDesc();
 

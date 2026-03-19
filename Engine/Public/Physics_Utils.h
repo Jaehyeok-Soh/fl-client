@@ -29,7 +29,8 @@ public:
     Matrix GetUnrealMatrix(const Matrix& mat);
 
 public:
-    _bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall); // 월드 좌표 기준으로 // 방향으로 max dist까지 범위까지 검사
+    // 월드 좌표 기준으로 // 방향으로 max dist까지 범위까지 검사
+    _bool RayCast(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist, CPhysics_QueryFilterCallback* pFilterCall, OUT _float* fHitDist = nullptr, OUT Vec3* vHitPos = nullptr);
 
     _bool Execute_Overlap(PxGeometry& shape, PxTransform& transform, OUT PxOverlapBuffer& hit, PxQueryFilterData& filterData, PxQueryFilterCallback* filterCallback);
 

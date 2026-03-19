@@ -59,7 +59,9 @@ HRESULT CBonePart::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
-	Get_Component<CShader>()->Set_Pass(3);
+	if (Engine_Utils::Has_Flag(m_FFlags, ENUM_TO_UINT(BonePartFlag::VSShakeOn)))
+		Get_Component<CShader>()->Set_Pass(3);
+
 	return S_OK;
 }
 

@@ -28,9 +28,9 @@ VS_OUT_POS_GS_PARTICLE VS_Texture(VS_IN_POS_GS_PARTICLE In)
 void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_EFFECT_PARTICLE> OutStream)
 {
     GS_OUT_EFFECT_PARTICLE Out[4];
-    
-    float3 vRight = float3(1.f, 0.f, 0.f);
-    float3 vUp = float3(0.f, 1.f, 0.f);
+    matrix matVP = mul(V, P);
+
+    float3 vRight, vUp;
 
     if (HasBillboard())
     {
@@ -56,33 +56,32 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
     }
     else
     {
-        // 빌보드가 아닐 경우 월드 행렬의 축을 그대로 사용
-        vRight = normalize(W[0].xyz);
-        vUp = normalize(W[1].xyz);
+        // 회전 반영: 인스턴스 행렬에서 직접 X, Y축 추출
+        matrix matInst = INSTANCE_OUTPUT[In[0].vInstID].matTransform;
+        matrix matWorld = mul(matInst, W);
+        
+        vRight = normalize(matWorld[0].xyz);
+        vUp = normalize(matWorld[2].xyz);
     }
 
-    // 최종 크기 적용 (VS에서 넘어온 pSize 사용)
-    vRight *= In[0].vPSize.x;
-    vUp *= In[0].vPSize.y;
-    
-    matrix matVP = mul(V, P);
-    
-    // 정점 위치 계산 (중심점 In[0].vPosition 기준)
-    float3 vFinalPos[4];
-    vFinalPos[0] = In[0].vPosition.xyz - vRight + vUp; // 좌상
-    vFinalPos[1] = In[0].vPosition.xyz + vRight + vUp; // 우상
-    vFinalPos[2] = In[0].vPosition.xyz - vRight - vUp; // 좌하
-    vFinalPos[3] = In[0].vPosition.xyz + vRight - vUp; // 우하
+    float3 vScaledRight = vRight * In[0].vPSize.x * 0.5f;
+    float3 vScaledUp = vUp * In[0].vPSize.y * 0.5f;
 
-    // 기본 UV만 설정
-    float2 vFinalUV[4] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
+    float3 vPos[4];
+    vPos[0] = In[0].vPosition.xyz - vScaledRight + vScaledUp; // 좌상
+    vPos[1] = In[0].vPosition.xyz + vScaledRight + vScaledUp; // 우상
+    vPos[2] = In[0].vPosition.xyz - vScaledRight - vScaledUp; // 좌하
+    vPos[3] = In[0].vPosition.xyz + vScaledRight - vScaledUp; // 우하
 
+    float2 vUV[4] = { float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 1) };
+
+    [unroll]
     for (int i = 0; i < 4; ++i)
     {
-        Out[i].vPosition = mul(float4(vFinalPos[i], 1.f), matVP);
-        Out[i].vUV = vFinalUV[i];
-        Out[i].vSpriteUV = float2(0, 0); // 이제 사용 안함 (혹은 제거 가능)
+        Out[i].vPosition = mul(float4(vPos[i], 1.f), matVP);
+        Out[i].vUV = vUV[i];
         Out[i].vLifeTime = In[0].vLifeTime;
+        Out[i].vSpriteUV = float2(0, 0);
         Out[i].vViewZ = In[0].vViewZ;
         OutStream.Append(Out[i]);
     }
@@ -92,7 +91,7 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
 
 PS_OUT_WBOIT PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
 {
-    PS_OUT_WBOIT Out;
+    PS_OUT_WBOIT Out = (PS_OUT_WBOIT)0;
     
     if (In.vLifeTime.x < 0.0f)
         discard;
@@ -389,7 +388,7 @@ PS_OUT_WBOIT PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
 
 PS_OUT_WBOIT PS_TextureBloomHard(GS_OUT_EFFECT_PARTICLE In)
 {
-    PS_OUT_WBOIT Out;
+    PS_OUT_WBOIT Out = (PS_OUT_WBOIT) 0;
     
     if (In.vLifeTime.x < 0.0f)
         discard;
@@ -689,7 +688,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
-        //SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_Texture()));
@@ -699,7 +698,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_Texture()));
@@ -709,7 +708,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
-        //SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_TextureBloomHard()));
@@ -719,7 +718,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_ReadOnly, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture())); 
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_TextureBloomHard()));
@@ -729,7 +728,7 @@ technique11 T0
     {
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Disabled, 0);
-        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_Texture()));

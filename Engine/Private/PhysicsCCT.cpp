@@ -57,6 +57,7 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 
 	m_pCCTFilterCallback = m_pGameInstance->GetCCTFilterCallback();
 	m_pQueryFilterCallback = m_pGameInstance->GetQueryFilterCallback();
+	m_pQueryFilterCallback->SetOwner(Get_Owner());
 
 	m_fContactOffset = m_pController->getContactOffset();
 
@@ -238,7 +239,9 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
 	filters.mFilterCallback = m_pQueryFilterCallback;
 
-	PxControllerCollisionFlags collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
+	PxControllerCollisionFlags collisionFlag;
+	if (m_bEnableMove)
+		collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
 
 	if (m_bIsSteppingOnCCT)
 		collisionFlag &= ~PxControllerCollisionFlag::eCOLLISION_DOWN;
@@ -249,9 +252,52 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	m_bIsSteppingOnCCT = false;
 	m_bIsSideOnCCT = false;
 
+	Vec3 finalPos = GetFootPosition();
 	CTransform* transform = m_pOwner->Get_Component<CTransform>();
 
-	Vec3 finalPos = GetFootPosition();
+	if (!m_tDesc.vLocalOffset.InBounds(Vec3(1e-5f, 1e-5f, 1e-5f)))
+	{
+		Vec3 vRight = transform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+		Vec3 vUp = transform->Get_Info(TRANSFORM_INFO_STATE::UP);
+		Vec3 vLook = transform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+		vRight.Normalize();
+		vUp.Normalize();
+		vLook.Normalize();
+
+		finalPos += vRight * m_tDesc.vLocalOffset.x;
+		finalPos += vUp * m_tDesc.vLocalOffset.y;
+		finalPos += vLook * m_tDesc.vLocalOffset.z;
+	}
+
+	if (!m_tDesc.vLocalOffset.InBounds(Vec3(1e-5f, 1e-5f, 1e-5f)))
+	{
+		finalPos.x += m_tDesc.vWorldOffset.x;
+		finalPos.y += m_tDesc.vWorldOffset.y;
+		finalPos.z += m_tDesc.vWorldOffset.z;
+	}
+
+	if (m_tDesc.bIsHover)
+	{
+		_float fHitDesc = {};
+		Vec3 vHitPos = {};
+		Vec3 vRayPos = finalPos;
+		vRayPos.y += 0.3f;
+
+		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDesc, &vHitPos))
+		{
+			_float fMinHoverY = vHitPos.y + m_tDesc.fHoverOffset;
+
+			if (finalPos.y < fMinHoverY)
+			{
+				finalPos.y = fMinHoverY;
+				SetFootPosition(finalPos);
+
+				m_tMoveState.vVelocity.y = 0.f;
+			}
+		}
+	}
+
 	Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
 	_float fLerpAmount = fTimeDelta * 15.f;

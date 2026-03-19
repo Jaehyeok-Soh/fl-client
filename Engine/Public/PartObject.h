@@ -44,6 +44,7 @@ public:
 	void Set_Parent(CGameObject* pGo);
 	CGameObject* Get_Parent() { return m_pParentObject; }
 
+	const Matrix& Get_CombinedMatrix() { return m_matCombinedWorld; }
 protected:
 	void Clear_AttackDesc();
 

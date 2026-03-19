@@ -35,6 +35,7 @@
 #include "Level_Loading.h"
 #include "Tool_Defines.h"
 #include "MapToolManager.h"
+#include "Effect_DataManager.h"
 
 /////////////
 //   Data  //
@@ -84,6 +85,9 @@ HRESULT CLevel_Effect::Awake(const _uint iLevelID)
 	MSG_BOX("Effect");
 
 	if (FAILED(Ready_CameraSetting(iLevelID)))
+		return E_FAIL;
+
+	if (CEffect_DataManager::GetInstance()->Initialize_EffectDataManager(m_pDevice, m_pDeviceContext))
 		return E_FAIL;
 
 	if (FAILED(CMapToolManager::GetInstance()->Initialize(m_pDevice, m_pDeviceContext)))

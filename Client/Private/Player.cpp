@@ -1307,7 +1307,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
             weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
             weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
-            weaponDesc.eAnimState = CWeapon::AnimState::STOP;
+            weaponDesc.eAnimState = CWeapon::AnimState::PLAY;
             weaponDesc.bMianWeapon = false;
             weaponDesc.eState = CWeapon::State::HOLD;
             weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;

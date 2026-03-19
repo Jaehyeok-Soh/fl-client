@@ -478,7 +478,9 @@ namespace Engine
 
 			DETECT_INTERACT = 1 << 22,
 
-			NONE = 1 << 23,
+			GENIEMON = 1 << 23,
+
+			NONE = 1 << 24,
 			END
 		};
 
@@ -595,6 +597,9 @@ namespace Engine
 		RIGHT,
 		UP,
 		DOWN,
+
+		LT,CT,RT,LC,RC,LD,CD,RD,
+
 		END
 	};
 	//===================
@@ -602,7 +607,18 @@ namespace Engine
 	//===================
 	enum class EFontShaderType
 	{
-		NORMAL, OUTLINE, NOISE, NOISE_KOR, OUTLINE_NOISE, OUTLINE_NOISE_KOR, GRADATION, OUTLINE_GRADATION, HIT, END
+		NORMAL, 
+		OUTLINE, 
+		NOISE,
+		NOISE_KOR,
+		OUTLINE_NOISE, 
+		OUTLINE_NOISE_KOR,
+		GRADATION, 
+		OUTLINE_GRADATION,
+		HIT, 
+		NOISE_NOSCROLL,
+		OUTLINE_NOISE_NOSCROLL,
+		END
 	};
 
 	//===================
