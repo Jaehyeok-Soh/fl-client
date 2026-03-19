@@ -49,22 +49,6 @@ public:
 	HRESULT		Bind_Mix_RGBA_Data_And_Count(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
 #pragma endregion
 
-#pragma region Camera Cinematic Data
-public:
-	HRESULT							Play_CameraCinematic(const wstring& wstrFindKey);
-public:
-	HRESULT							Load_CameraCinematicSequence();  	/* Load */
-	HRESULT							Save_CameraCinematicSequence();		/* 현재 저장된 데이터 전부 저장함수 */
-
-	/* 이미 전부 Load된 Data에서 받아가는 함수 */
-	HRESULT							Load_CameraCinematicSequence(const wstring& wstrFindKey,OUT Camera_Cinematic_Sequence* pOutCamCinematicSequence);
-	HRESULT							Save_CameraCinematicSequence(const wstring& wstrFindKey,const Camera_Cinematic_Sequence* pSaveCamCinematicSequence);
-
-	/* Tool 작업을 위한함수 */
-	vector<string>					Get_CameraCinematicSequenceNames() const;
-
-#pragma endregion
-
 #pragma region Player
 	void Player_BringOutFromStaticLayer();
 	void Player_SetToLayer(const wstring& wstrLayerTag);
@@ -79,9 +63,6 @@ public:
 #pragma endregion
 
 public:
-	HRESULT													Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent);
-	HRESULT													BroadCaset_RegisterGlobalEvent(_uint iTypeIndex);
-public:
 	void Clear_AttackPreset();
 private:
 	map<wstring, TEXTURE_SPLATTING_INFO >					m_mapTextureSplatingInfoDatas{};
@@ -93,15 +74,14 @@ private:
 	ID3D11ShaderResourceView*								m_pDefaultBlue{ nullptr };
 	ID3D11ShaderResourceView*								m_pDefaultGreen{ nullptr };
 private:
-	map<wstring, Camera_Cinematic_Sequence>					m_mapCameraCinematicSequence{};
-	const _tchar*											m_wszCameraCinematicDataPath = L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json";
-private:
 	ID3D11Device*											m_pDevice{nullptr};
 	ID3D11DeviceContext*									m_pDeviceContext{nullptr};
 	//////////////
 	/// Player ///
 	//////////////
 	CGameObject*											m_pPlayer{ nullptr };
+
+	/* BroadCast GlobalEvent */
 
 	////////////////////
 	/// AttackPreset ///
@@ -110,15 +90,8 @@ private:
 	unordered_map<_uint, DTO::TAttackPreset_Data>			m_umapAttackPresetDatas;
 	unordered_map<string, _uint>							m_umapAttackPresetTagToKey;
 	class CGameInstance *									m_pGameInstance = { nullptr };
-
-
-
 private:
 	CBounding_AABB*											m_pMapMinMaxBox{};		/* Map전체 크기를 지정해줄 Collider */
-private:
-	/* Global Event 발행할 람다함수 등록 */
-	vector<std::function<void()>>							m_vecGlobalEventsBroadCast;
-
 private:
 	/* Debug용 Batch */
 	PrimitiveBatch<DirectX::VertexPositionColor>* m_pBatch{ nullptr };

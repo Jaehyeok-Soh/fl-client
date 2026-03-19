@@ -383,6 +383,7 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC			: new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	return pSource == nullptr ? new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC : new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC(*static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			return pSource == nullptr ? new TRIGGERBOX_TUTORIALUIEVENT_DESC			: new TRIGGERBOX_TUTORIALUIEVENT_DESC(*static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_CinematicPlayer:			return pSource == nullptr ? new TRIGGERBOX_CINEMATICPLAYER_DESC			: new TRIGGERBOX_CINEMATICPLAYER_DESC(*static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pSource));
 
 
 
@@ -1217,7 +1218,6 @@ void TRIGGERBOX_CHANGELEVEL_DESC::to_Json(json& SaveJson)
 #pragma endregion
 
 
-
 #pragma region Monster Spawner 
 
 MonsterSpawnData::MonsterSpawnData(const MonsterSpawnData& Copy)
@@ -1366,6 +1366,27 @@ void TRIGGERBOX_TUTORIALUIEVENT_DESC::to_Json(json& SaveJson)
 #pragma endregion
 
 
+#pragma region Cinemaitc Player
+void TRIGGERBOX_CINEMATICPLAYER_DESC::from_Json(const json& LoadJson)
+{
+	Super::from_Json(LoadJson);
+
+
+	if (LoadJson.contains("Play Cinematic Name"))
+	{
+		this->strCinematicName = LoadJson["Play Cinematic Name"];
+	}
+}
+
+void TRIGGERBOX_CINEMATICPLAYER_DESC::to_Json(json& SaveJson)
+{
+	Super::to_Json(SaveJson);
+
+	SaveJson["Play Cinematic Name"] = this->strCinematicName;
+}
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma endregion
@@ -1432,5 +1453,4 @@ BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectT
 
 
 NS_END
-
 

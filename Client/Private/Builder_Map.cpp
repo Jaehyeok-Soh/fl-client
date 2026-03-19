@@ -35,6 +35,7 @@
 #include "TriggerBox_MonsterSpawner.h"
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
 #include "TriggerBox_TutorialUIEvent.h"
+#include "TriggerBox_CinematicPlayer.h"
 #pragma endregion
 
 
@@ -126,6 +127,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			Create_TriggerBox_MonsterSpawner(tData); break;
 			case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	Create_TriggerBox_GlobalEvent_BroadCaster(tData); break;
 			case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			Create_TriggerBox_TutorialUIEvent(tData); break;
+			case DTO::EClientMakePath::TriggerBox_CinematicPlayer:			Create_TriggerBox_CinematicPlayer(tData); break;
 
 
 
@@ -886,6 +888,39 @@ HRESULT CBuilder_Map::Create_TriggerBox_TutorialUIEvent(const DTO::TMap_MapObjec
 	tDesc.vTriggerBox_Extents	= pOrigin->vExtents;
 	tDesc.eType					= UITutorialPopUpTypeID_ToEnum(pOrigin->strEventName);
 	tDesc.vTriggerBox_Rotation	= pOrigin->vRotation;
+
+
+	if (tDesc.bHasQuest = pOrigin->bHasQuest)
+		tDesc.tQuestObjectDesc = pOrigin->tQuestObjectDesc;
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+		g_wszTriggerBox_TutorialUIEvent_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
+		g_wszTriggerBoxLayer, &tDesc);
+
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Create_TriggerBox_CinematicPlayer(const DTO::TMap_MapObjectData& tData)
+{
+	if (tData.vecSRTs.empty()) return E_FAIL;
+	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
+
+	Engine::TRIGGERBOX_CINEMATICPLAYER_DESC* pOrigin = static_cast<Engine::TRIGGERBOX_CINEMATICPLAYER_DESC*>(tData.vecClientMakePathDesc.front());
+	if (pOrigin == nullptr) return E_FAIL;
+
+
+	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
+	CTriggerBox_CinematicPlayer::TRIGGERBOX_CINEMATICCAMERA_DESC tDesc{};
+	CTransform::TRANSFORM_DESC transformDesc = {};
+	transformDesc.TranslationMatrix = { tSRT.Get_World() };
+
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.pSRTData = &tSRT;
+	tDesc.pTransform_Desc = &transformDesc;
+	tDesc.vTriggerBox_Extents = pOrigin->vExtents;
+	tDesc.vTriggerBox_Rotation = pOrigin->vRotation;
+
+	tDesc.strCinemaitcCameraSequnceName = pOrigin->strCinematicName;
 
 
 	if (tDesc.bHasQuest = pOrigin->bHasQuest)

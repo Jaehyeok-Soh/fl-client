@@ -75,6 +75,8 @@ HRESULT CLevel_Map::Initialize()
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
 	m_pMapToolManager->Set_LevelMap(this);
 
+	if (FAILED(m_pMapToolManager->Ready_CinematicCameraSequence_EventManifest()))
+		return E_FAIL;
 
 	if (FAILED(m_pMapToolManager->Register_MapTexture()))
 		return E_FAIL;
@@ -84,6 +86,7 @@ HRESULT CLevel_Map::Initialize()
 
 	if (FAILED(m_pMapToolManager->Ready_CinematicSequenceDebugRender()))
 		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -100,6 +103,10 @@ HRESULT CLevel_Map::Awake(const _uint iLevelID)
 
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Register_CinematicCamera(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, ENUM_TO_UINT(ELevelType::MAP), g_wszCameraLayer)))
+		return E_FAIL;
+
 
 	if (FAILED(Reday_Gui()))
 		return E_FAIL;
@@ -297,8 +304,8 @@ HRESULT CLevel_Map::Ready_Lights()
 HRESULT CLevel_Map::Ready_Camera_Setting(const _uint iLevelID)
 {
 	CCameraMan* pFreeCamera = static_cast<CCameraMan*>(m_pGameInstance->Get_GameObject_Back(iLevelID, L"Camera_Layer"));
-	m_pGameInstance->Add_Camera(CameraType::STATIC, g_FreeCameraName, pFreeCamera);
-	m_pGameInstance->Change_MainCamera(CameraType::STATIC, g_FreeCameraName);
+	m_pGameInstance->Add_Camera(CameraType::DYNAMIC, g_FreeCameraName, pFreeCamera);
+	m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC, g_FreeCameraName);
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
 }
