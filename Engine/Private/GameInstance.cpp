@@ -1020,6 +1020,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pInput_Manager);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pTimeScale_Manager);
+	Safe_Release(m_pCinematicManager);
 	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pSound_Manager);

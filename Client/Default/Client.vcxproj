@@ -413,7 +413,6 @@
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\TriggerBox_CinematicPlayer.cpp" />
-    <ClCompile Include="..\Private\CUIConservation_Text.cpp" />
     <ClCompile Include="..\Private\CLightMapObject.cpp" />
     <ClCompile Include="..\Private\UIConversation_Text.cpp" />
     <ClCompile Include="..\Private\DialogueManager.cpp" />
