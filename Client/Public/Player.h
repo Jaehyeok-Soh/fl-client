@@ -149,9 +149,17 @@ public:
 public:
 	HRESULT Change_IdleForce();
 
+
+	// weapon 관련 함수
+public:
+	void	Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn);
+	_bool	Change_MainWeapon(_uint iWeaponType, _uint iIdx);
+	void	Change_WeaponState(_uint iWeaponType, _uint iState); // 어떤 weapon을 어떤 state로
+	_int	Get_CurWeaponIdx(_uint iWeaponType);
+	_bool	Can_UseWeapon(_uint iWeaponType);
+
 	// state funcs
 public:
-	void	Change_Weapon(_uint iWeaponType, _uint iState); // 어떤 weapon을 어떤 state로
 	_bool	Check_OnGround(_float fMaxDist = 0.72f);
 	_bool	Check_ColliWithMonster();
 	void	Count_Combo();
@@ -170,10 +178,10 @@ public:
 	HRESULT				Bind_PlayerInfo(class CShader* pShader = nullptr);
 	SHADER_PLAYER_INFO* Get_PlayerInfo() { return &m_tCBPlayerInfo; }		/* 임시용 */
 public:
-	_bool	Start_Attack(State iState);
-	void	End_Attack(State iState);
+	_bool				Start_Attack(State iState);
+	void				End_Attack(State iState);
 
-	State Get_CurState();
+	State				Get_CurState();
 
 protected:
 	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
@@ -195,6 +203,7 @@ private:
 	HRESULT		Ready_WeaponInfo();
 
 	HRESULT		Ready_PartObjects(PLAYER_DESC* pDesc);
+	HRESULT		Ready_PartWeapon(PLAYER_DESC* pDesc);
 	HRESULT		Ready_Components(PLAYER_DESC* pDesc);
 
 	HRESULT		Ready_BaseStates();

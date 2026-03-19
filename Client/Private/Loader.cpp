@@ -559,7 +559,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices	= {2,3,5,72,285,286,287,288,289,295,413,414,415,416 ,417,418,419 };
+		desc.vecStageBoneIndices	= {2,3,5,72,285,286,287,288,289,413,414,415,416 ,417,418,419 };
 
 		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
@@ -619,7 +619,42 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+	// For. Prototype_Component_Model_MoonCloak
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"PlayerMang";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonClock", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+	// For. Prototype_Component_Model_DualR
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Weapon_BerenicaDualR";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_DualR", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+	// For. Prototype_Component_Model_DualL
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Weapon_BerenicaDualL";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_DualL", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
+
+	/* monsters */
 	// For.Prototype_Component_Model_Monster_Dog
 	{
 		CModel::MODEL_ORIGIN_DESC desc = {};

@@ -77,7 +77,7 @@ HRESULT CState_SkillBase::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, true)))
 		return E_FAIL;
 
-	Change_Weapon(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL), ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	return S_OK;
 }
@@ -88,7 +88,7 @@ void CState_SkillBase::Update(const _float fTimeDelta)
 
 	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime + 0.6f)
 	{
-		Change_Weapon(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL), ENUM_TO_UINT(CWeapon::State::NONE));
+		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL), ENUM_TO_UINT(CWeapon::State::NONE));
 	}
 }
 
@@ -97,7 +97,7 @@ HRESULT CState_SkillBase::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	Change_Weapon(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL), ENUM_TO_UINT(CWeapon::State::NONE));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL), ENUM_TO_UINT(CWeapon::State::NONE));
 
 	return S_OK;
 }

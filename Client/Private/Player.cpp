@@ -17,6 +17,7 @@
 #include "StatCom_Player.h"
 #include "ActionSkill.h"
 #include "EffectHandler.h"
+#include "Shader.h"
 
 // parts objs
 #include "Weapon.h"
@@ -119,6 +120,9 @@ HRESULT CPlayer::Initialize(void* pArg)
     if (FAILED(Ready_PartObjects(pDesc)))
         return E_FAIL;
 
+    if (FAILED(Ready_PartWeapon(pDesc)))
+        return E_FAIL;
+
     if (FAILED(Ready_Components(pDesc)))
         return E_FAIL;
 
@@ -147,7 +151,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         if (FAILED(pPlayerState->Awake(iCurrentLevelID)))
             return E_FAIL;
     
-    Change_Weapon(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
+    Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
     Start_Attack(CPlayer::State::COMBO);
 
     Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
@@ -273,7 +277,71 @@ HRESULT CPlayer::Change_IdleForce()
     return S_OK;
 }
 
-void CPlayer::Change_Weapon(_uint iWeaponType, _uint iState)
+void CPlayer::Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn)
+{
+    switch (iWeaponType)
+    {
+    case ENUM_TO_UINT(EWEAPON::MELEE):
+        if (iIdx >= ENUM_TO_UINT(MELEE::END))
+            return;
+        m_arrMeleeInfo[size_t(iIdx)].bHave = bOn;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::RANGE):
+        if (iIdx >= ENUM_TO_UINT(RANGE::END))
+            return;
+
+        m_arrRangeInfo[size_t(iIdx)].bHave = bOn;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::SKILL):
+        if (iIdx >= ENUM_TO_UINT(SKILL::END))
+            return;
+
+        m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
+        break;
+    }
+}
+
+_bool CPlayer::Change_MainWeapon(_uint iWeaponType, _uint iIdx)
+{
+    _bool bOn = { false };
+    switch (iWeaponType)
+    {
+    case ENUM_TO_UINT(EWEAPON::MELEE):
+        if (iIdx >= ENUM_TO_UINT(MELEE::END))
+            return false;
+        bOn = m_arrMeleeInfo[size_t(iIdx)].bHave;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::RANGE):
+        if (iIdx >= ENUM_TO_UINT(RANGE::END))
+            return false;
+
+        bOn = m_arrRangeInfo[size_t(iIdx)].bHave;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::SKILL):
+        if (iIdx >= ENUM_TO_UINT(SKILL::END))
+            return false;
+
+        bOn = m_arrSkillInfo[size_t(iIdx)].bHave;
+        break;
+    }
+
+    if (bOn)
+    {
+        // 기존에 있던거 꺼주기
+        Set_CurPartWeapon_State(static_cast<EWEAPON>(iWeaponType), ENUM_TO_UINT(CWeapon::State::NONE));
+
+        // 인덱스 change
+        m_arrWeaponEnum[size_t(iWeaponType)] = iIdx;
+    }
+
+    return bOn;
+}
+
+void CPlayer::Change_WeaponState(_uint iWeaponType, _uint iState)
 {
     // 우선 다 none으로 바꾼다음
     Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
@@ -295,10 +363,39 @@ void CPlayer::Change_Weapon(_uint iWeaponType, _uint iState)
         break;
     }
 
-    if (iState == ENUM_TO_UINT(CWeapon::State::NONE))
+    if (iState == ENUM_TO_UINT(CWeapon::State::NONE) && iWeaponType != ENUM_TO_UINT(EWEAPON::MELEE))
     {
         Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::HOLD));
     }
+}
+
+_int CPlayer::Get_CurWeaponIdx(_uint iWeaponType)
+{
+    return m_arrWeaponEnum[size_t(iWeaponType)];
+}
+
+_bool CPlayer::Can_UseWeapon(_uint iWeaponType)
+{
+    _uint iCurWeapon{};
+    switch (iWeaponType)
+    {
+    case ENUM_TO_UINT(EWEAPON::MELEE):
+        // melee중에 현재 weapon
+        iCurWeapon = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::MELEE)];
+        return      m_arrMeleeInfo[size_t(iCurWeapon)].bHave;
+
+    case ENUM_TO_UINT(EWEAPON::RANGE):
+        // melee중에 현재 weapon
+        iCurWeapon = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::RANGE)];
+        return          m_arrRangeInfo[size_t(iCurWeapon)].bHave;
+
+    case ENUM_TO_UINT(EWEAPON::SKILL):
+        // melee중에 현재 weapon
+        iCurWeapon = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::SKILL)];
+        return       m_arrSkillInfo[size_t(iCurWeapon)].bHave;
+    }
+
+    return false;
 }
 
 _bool CPlayer::Check_OnGround(_float fMaxDist)
@@ -1301,84 +1398,8 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             return E_FAIL;
     }
 
-    // weapons
+    // part eff
     {
-        // Weapons : Sword
-        {
-            CWeapon::WEAPON_DESC weaponDesc = {};
-            weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSword";
-            weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-            weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-            weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
-            weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
-            weaponDesc.eState = CWeapon::State::HOLD;
-
-            weaponDesc.bMianWeapon = true;
-            weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-            weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
-            weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
-            weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
-
-
-            weaponDesc.matHandOffsetMatrix  = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
-            //weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(10.f), XMConvertToRadians(0.f), XMConvertToRadians(-45.f));
-            weaponDesc.matConOffsetMatrix   = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(-70.f), XMConvertToRadians(180.f), 0.f);
-
-            if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
-                return E_FAIL;
-        }
-
-        // Weapons : Skill
-        {
-            CWeapon::WEAPON_DESC weaponDesc = {};
-            weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSkillWeap";
-            weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-            weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-            weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
-            weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
-            weaponDesc.bMianWeapon = false;
-            weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-            weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
-            weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
-            weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
-
-
-            weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
-            weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
-            if (FAILED(Add_Part(Part::SKILL, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
-                return E_FAIL;
-        }
-
-        //Weapons : Gun
-        {
-            CGun::GUN_DESC weaponDesc = {};
-            weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonGun"; //Prototype_Component_Model_XibiWeapon //Prototype_Component_Model_MoonGun
-            weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-            weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
-            weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
-            weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
-            weaponDesc.eAnimState = CWeapon::AnimState::STOP;
-            weaponDesc.bMianWeapon = false;
-            weaponDesc.eState = CWeapon::State::HOLD;
-            weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-            weaponDesc.vColorR = Vec4(0.947917f, 0.947917f, 0.947917f, 1.f);
-            weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
-            weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
-
-            weaponDesc.fAllBullet = 1000.f;
-            weaponDesc.fCurBullet = 500.f;
-            weaponDesc.fAttackCoolTime = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
-
-            weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
-            weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(90.f));
-
-            if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Gun", &weaponDesc)))
-                return E_FAIL;
-        }
-
-        //switch (m_ePlayerType)
-        //{
-        //case PLAYER_TYPE::MOON:
         {
             CPartEffect::PART_EFFECT_DESC tDesc;
             tDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
@@ -1452,6 +1473,113 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             return E_FAIL;
     }
 
+
+    return S_OK;
+}
+
+HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
+{
+    // Weapons : Sword
+    {
+        CWeapon::WEAPON_DESC weaponDesc = {};
+        weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSword";
+        weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+        weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
+        weaponDesc.eState = CWeapon::State::HOLD;
+
+        weaponDesc.bMianWeapon = true;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
+        weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
+        weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
+
+
+        weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+        //weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(10.f), XMConvertToRadians(0.f), XMConvertToRadians(-45.f));
+        weaponDesc.matConOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(-70.f), XMConvertToRadians(180.f), 0.f);
+
+        if (FAILED(Add_Part(Part::SWORD, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+            return E_FAIL;
+    }
+
+    // Weapons : Skill
+    {
+        CWeapon::WEAPON_DESC weaponDesc = {};
+        weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonSkillWeap";
+        weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+        weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
+        weaponDesc.bMianWeapon = false;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
+        weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
+        weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+
+
+        weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+        weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
+        if (FAILED(Add_Part(Part::SKILL, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+            return E_FAIL;
+    }
+
+    //Weapons : Gun
+    {
+        CGun::GUN_DESC weaponDesc = {};
+        weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_MoonGun"; //Prototype_Component_Model_XibiWeapon //Prototype_Component_Model_MoonGun
+        weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+        weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
+        weaponDesc.eAnimState = CWeapon::AnimState::STOP;
+        weaponDesc.bMianWeapon = false;
+        weaponDesc.eState = CWeapon::State::HOLD;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        weaponDesc.vColorR = Vec4(0.947917f, 0.947917f, 0.947917f, 1.f);
+        weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
+        weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
+
+        weaponDesc.fAllBullet = 1000.f;
+        weaponDesc.fCurBullet = 500.f;
+        weaponDesc.fAttackCoolTime = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
+
+        weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
+        weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(90.f));
+
+        if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Gun", &weaponDesc)))
+            return E_FAIL;
+    }
+
+    // Weapons : Dual
+    {
+        //CWeapon::WEAPON_DESC weaponDesc = {};
+        //weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_DualR";
+        //weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+        //weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
+        //weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
+        //weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
+        //weaponDesc.eState = CWeapon::State::HOLD;
+
+        //weaponDesc.bMianWeapon = true;
+        //weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        //weaponDesc.vColorR = Vec4(0.309524f, 0.309524f, 0.309524f, 1.f);
+        //weaponDesc.vColorG = Vec4(0.10119f, 0.10119f, 0.10119f, 1.f);
+        //weaponDesc.vColorB = Vec4(0.125f, 0.055804f, 0.055804f, 1.f);
+
+        //weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(45.f), XMConvertToRadians(-10.f));
+
+        //if (FAILED(Add_Part(Part::Dual_R, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+        //    return E_FAIL;
+
+        //weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_DualL";
+        //weaponDesc.pMatHandSocket = Get_Part<CBody>(Part::BODY)->Get_SocketMatrix(415);
+        //weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(10.f), XMConvertToRadians(0.f), XMConvertToRadians(-90.f));
+
+        //if (FAILED(Add_Part(Part::Dual_L, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+        //    return E_FAIL;
+    }
 
     return S_OK;
 }

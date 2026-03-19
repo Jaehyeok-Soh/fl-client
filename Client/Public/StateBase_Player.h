@@ -41,6 +41,12 @@ public:
 		Vec3 vVicPos = {};
 	}HITSTATE_START_DESC;
 
+	typedef struct tagAttackStartDesc : public CStateBase::STATE_START_DESC
+	{
+		_uint iWeaponType;
+
+	}ATTSTATE_START_DESC;
+
 	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE ,LOOPDONEMOVEKEY, END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
 	// 최소 desc
@@ -128,7 +134,7 @@ protected:
 
 	void	Check_Monster();
 
-	void	Change_Weapon(_uint iPartWeapon, _uint iState);
+	void	Change_WeaponState(_uint iPartWeapon, _uint iState);
 
 	_bool	Start_Att(_uint iPlayerState);
 	void	End_Att(_uint iPlayerState);
@@ -146,6 +152,11 @@ protected:
 	void	Reset_GunTimer();
 	void	Reload_Gun();
 
+	// player weapon util funcs
+protected:
+	_int	Get_WeaponIdx(_uint iWeaponType);
+	_bool	Can_UseWeapon(_uint iWeaponType);
+
 protected:
 	virtual _bool Change_State_WhenLoopDone(const _float fTimeDelta);
 
@@ -155,6 +166,9 @@ protected:
 	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
 
 	virtual _bool Can_CheckKey(const _float fTimeDelta);
+
+protected:
+	HRESULT Start_AttackState(void* pArg);
 
 private:
 	CGun*					m_pOwnerGun = { nullptr };

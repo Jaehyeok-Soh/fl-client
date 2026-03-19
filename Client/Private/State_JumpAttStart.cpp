@@ -34,7 +34,7 @@ HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 
 	CStateBase::SetupLook_CameraLook();
 
-	Change_Weapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	{
 		CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
