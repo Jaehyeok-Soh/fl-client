@@ -12,6 +12,7 @@ class CState_ComboBase abstract : public CStateBase_Player
 	/*
 	first, slide
 	*/
+	enum class ANIM { FIRST, SLIDE, SECOND, THIRD, FOURTH };
 
 public:
 	typedef struct tagComboStateDesc : public CStateBase_Player::PLAYER_STATEBASE_DESC
@@ -35,7 +36,7 @@ public:
 
 protected:
 	std::array<_float, 4>		m_ComboTimes; // 4번째 콤보에서는 다음 콤보를 받지 않음
-	std::array<_float, 5>		m_ComboEndTimes; // 4번째 콤보에서는 다음 콤보를 받지 않음
+	std::array<_float, 5>		m_ComboEndTimes;
 	_float		m_fSlide_KeyCoolTime = { 0.f };
 	_bool		m_bComboTime	= { false };
 	_bool		m_bNextCombo	= { false };
@@ -54,8 +55,16 @@ protected:
 	void Change_FirstCombo();
 	void Check_Combo();
 
+protected:
+	virtual void Update_First(const _float fTimeDelta) {};
+	virtual void Update_Slide(const _float fTimeDelta) {};
+	virtual void Update_Second(const _float fTimeDelta) {};
+	virtual void Update_Third(const _float fTimeDelta) {};
+	virtual void Update_Fourth(const _float fTimeDelta) {};
+
 private:
 	void			Count_ComboTime(const _float fTimeDelta);
+	void			Update_byMainAnim(const _float fTimeDelta);
 
 public:
 	virtual void Free() override;

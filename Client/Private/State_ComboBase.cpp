@@ -67,6 +67,8 @@ void CState_ComboBase::Update(const _float fTimeDelta)
 
 	Check_Combo();
 
+	Update_byMainAnim(fTimeDelta);
+
 	Super::Update(fTimeDelta);
 }
 
@@ -187,6 +189,28 @@ void CState_ComboBase::Check_Combo()
 		m_bNextCombo)
 	{
 		Change_NextCombo();
+	}
+}
+
+void CState_ComboBase::Update_byMainAnim(const _float fTimeDelta)
+{
+	switch (m_iComboCount)
+	{
+	case ENUM_TO_UINT(ANIM::SLIDE):
+		Update_First(fTimeDelta);
+		break;
+
+	case ENUM_TO_UINT(ANIM::SECOND):
+		Update_Second(fTimeDelta);
+		break;
+
+	case ENUM_TO_UINT(ANIM::THIRD):
+		Update_Third(fTimeDelta);
+		break;
+
+	case ENUM_TO_UINT(ANIM::FOURTH):
+		Update_Fourth(fTimeDelta);
+		break;
 	}
 }
 
