@@ -225,11 +225,7 @@ void CPhysicsCCT::SetHeight(_float height)
 
 const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, _float fTimeDelta)
 {
-	if (m_pGameInstance->Is_ChangeLevelSequence() || m_bEnableCollision == false)
-	{
-		PxControllerCollisionFlags collisionFlag;
-		return collisionFlag;
-	}
+	_bool bDisableMove = m_pGameInstance->Is_ChangeLevelSequence() || m_bEnableCollision == false;
 
 	PxFilterData queryFilterData;
 	queryFilterData.word0 = m_tDesc.eFilterLayer;
@@ -240,7 +236,7 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	filters.mFilterCallback = m_pQueryFilterCallback;
 
 	PxControllerCollisionFlags collisionFlag;
-	if (m_bEnableMove)
+	if (m_bEnableMove && bDisableMove == false)
 		collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
 
 	if (m_bIsSteppingOnCCT)

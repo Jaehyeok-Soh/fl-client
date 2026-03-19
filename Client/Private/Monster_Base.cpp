@@ -23,6 +23,8 @@
 #include "Monster_Dog.h"
 #include "Monster_Boomer.h"
 
+#include "PhysicsRagdoll.h"
+
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext), m_eMonsterType{ EMonster_Type::END}
 {
@@ -86,6 +88,20 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 
 	Get_Component<CPhysicsCCT>()->Ready_Position();
 	
+	// 래그돌 초기화
+	{
+		Quat quat = ToQuaternion(PxQuat(PxIdentity));
+		Get_Component<CTransform>()->Rotation(quat);
+
+		auto body = Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
+		auto pRagdoll = body->Get_Component<CPhysicsRagdoll>();
+		if (body != nullptr && pRagdoll != nullptr)
+		{
+			m_pGameInstance->RagdollFinish(body->Get_ID());
+			Get_Component<CPhysicsCCT>()->EnableMove(true);
+		}
+	}
+
 	return S_OK;
 }
 
@@ -232,6 +248,20 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 			Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
 			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();
+		}
+	}
+
+	{
+		CMonster_Body_Base* pBody = { nullptr };
+		pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+
+		CPhysicsRagdoll* pRagdoll = { nullptr };
+		pRagdoll = pBody->Get_Component<CPhysicsRagdoll>();
+
+		if (pBody != nullptr && pRagdoll != nullptr)
+		{
+			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
+				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 50.f);
 		}
 	}
 

@@ -12,7 +12,6 @@
 #include "UIIcon_Component.h"
 #include "GameInstance.h"
 #include "MyStat.h"
-#include "PhysicsRagdoll.h"
 
 CMonster_Dog::CMonster_Dog(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -139,20 +138,6 @@ _bool CMonster_Dog::On_Hit(const HIT_DESC& hitDesc)
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
-	
-	{
-		CMonster_Body_Base* pBody = { nullptr };
-		pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
-
-		CPhysicsRagdoll* pRagdoll = { nullptr };
-		pRagdoll = pBody->Get_Component<CPhysicsRagdoll>();
-
-		if (pBody != nullptr && pRagdoll != nullptr)
-		{
-			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
-				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 50.f);
-		}
-	}
 
 	return result;
 }
