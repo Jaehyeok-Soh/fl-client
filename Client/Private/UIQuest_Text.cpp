@@ -182,6 +182,8 @@ void CUIQuest_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
 			{
+				if (!this->m_isPulseTrigger)
+					Set_Visible();
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				desc.tScenarioInfo.wstrSubTitle;
 				desc.tChapterInfo.tQuestDesc.wstrTitle;
@@ -192,7 +194,11 @@ void CUIQuest_Text::Bind_Events()
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
-				Set_Visible();
+
+				if (!this->m_isPulseTrigger)
+					Set_Visible();
+
+
 				switch (this->m_eTextSubClassType)
 				{
 				case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:
@@ -200,7 +206,6 @@ void CUIQuest_Text::Bind_Events()
 				case DTO::EUITextSubClassType::QUEST_TITLE_TEXT:
 					if (this->m_wstrText != desc.tChapterInfo.tQuestDesc.wstrTitle)
 					{
-						
 						UIEVENT_DESC Desc = {};
 						Desc.eEventID = EUIEventID::QUEST_NAME_CHANGE;
 						m_pUIManager->Get_UIEvents().Broadcast(Desc);
@@ -221,10 +226,10 @@ void CUIQuest_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
-				if (EUIEventID::QUEST_NAME_CHANGE == Desc.eEventID)
+ 				if (EUIEventID::QUEST_NAME_CHANGE == Desc.eEventID)
 				{
 					this->Set_Invisible();
-					this->m_isVisibleTrigger = true;
+					this->m_isPulseTrigger = true;
 				}
 			})
 	);
@@ -274,10 +279,10 @@ _bool CUIQuest_Text::Tick_InVisible_Event(const _float fTimeDelta)
 
 	if (isFade && isMove)
 	{
-		if (m_isVisibleTrigger)
+		if (m_isPulseTrigger)
 		{
 			m_isVisibleTriggerStart = true;
-			m_isVisibleTrigger = false;
+			m_isPulseTrigger = false;
 		}
 
 		m_isFin_Event = true;
