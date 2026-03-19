@@ -67,8 +67,6 @@ void CState_ComboBase::Update(const _float fTimeDelta)
 
 	Check_Combo();
 
-	Check_Monster();
-
 	Super::Update(fTimeDelta);
 }
 

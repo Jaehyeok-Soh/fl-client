@@ -29,7 +29,7 @@ HRESULT CState_JumpAttStart::Awake(const _uint iLevelIndex)
 
 HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 {
-	if (FAILED(Super::Start(pArg, bForce)))
+	if (FAILED(Start_AttackState(pArg)))
 		return E_FAIL;
 
 	CStateBase::SetupLook_CameraLook();

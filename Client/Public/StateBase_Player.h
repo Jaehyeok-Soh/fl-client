@@ -35,17 +35,31 @@ public:
 		,C_CheckF = 0x00040
 	};
 
+	enum WEAPONCHANGEFLAGS : Flags
+	{
+		None = 0
+
+		// change check를 할거니
+		,	Change_Check		= 0x00001
+
+		//  change timming
+		, Change_End			= 0x00010	// state 끝나고 change
+		, Change_NextFrame		= 0x00020	// 다음 프레임에 change
+
+		// 어떤걸 change 할거니 (melee -> gun x, melee 1 -> melee 2)
+		,	Change_Melee		= 0x00002
+		,	Change_Gun			= 0x00004
+		,	Change_Skill		= 0x00008
+
+		// masks
+		,	Mask_ChangeWeapons = Change_Melee | Change_Gun | Change_Skill
+	};
+
 	typedef struct tagHitStartDesc : public CStateBase::STATE_START_DESC
 	{
 		Vec3 vHitDir = {};
 		Vec3 vVicPos = {};
 	}HITSTATE_START_DESC;
-
-	typedef struct tagAttackStartDesc : public CStateBase::STATE_START_DESC
-	{
-		_uint iWeaponType;
-
-	}ATTSTATE_START_DESC;
 
 	enum class STATEKEY : _uint {MOVE, SPACE, SHIFT, LCRTL_PRESS, LCRTL_UP, E,Q, LM, RM, CHARGE, LOOPDONE ,LOOPDONEMOVEKEY, END}; //END에는 키가 없을떄 바꿀 state를 넣자
 
@@ -60,6 +74,7 @@ public:
 	{
 		Flags					FMoves		= { 0 }; // MOVEFLAGS 이용
 		Flags					FCollis		= { 0 }; // COLLISIONFLAGS 이용
+		Flags					FWeaponChanges = { 0 }; // WEAPONCHANGEFLAGS 이용
 		vector<_uint>			vecChangeState_ByKey;			// 키 입력에 따라 어떻게 바꿀지 담는 벡터
 
 		TIME_COUNTER			tKeyTimer = {};
@@ -95,6 +110,8 @@ protected:
 
 	Flags					m_FMoves			= { 0 };
 	Flags					m_FCollisions		= { 0 };
+	Flags					m_FWeaponChanges	= { 0 };
+
 	vector<_uint>			m_vecChangeState_ByKey;
 
 	TIME_COUNTER			m_tKeyTimer			= {};
@@ -119,6 +136,8 @@ protected:
 
 	_bool Check_FKey(const _float fTimeDelta);
 
+	_bool Check_WeaponChnage(const _float fTimeDelta);
+
 protected:
 	_bool	Check_Hit(const _float fTimeDelta);
 	_bool	Check_Collis(const _float fTimeDelta);
@@ -131,10 +150,6 @@ protected:
 	// player 객체 연결 함수들
 protected:
 	_bool	Check_OnGround(_float fMaxDist = 0.6f); // 땅에 있는지 검사 0.8f
-
-	void	Check_Monster();
-
-	void	Change_WeaponState(_uint iPartWeapon, _uint iState);
 
 	_bool	Start_Att(_uint iPlayerState);
 	void	End_Att(_uint iPlayerState);
@@ -154,6 +169,9 @@ protected:
 
 	// player weapon util funcs
 protected:
+	void	Change_WeaponState(_uint iPartWeapon, _uint iState);
+	_bool	Change_Weapon();
+
 	_int	Get_WeaponIdx(_uint iWeaponType);
 	_bool	Can_UseWeapon(_uint iWeaponType);
 
@@ -161,11 +179,13 @@ protected:
 	virtual _bool Change_State_WhenLoopDone(const _float fTimeDelta);
 
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
-	virtual void Set_NextStateDesc(_uint iNextState) {};	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
+	virtual void Set_NextStateDesc(_uint iNextState);	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
 
 	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
 
 	virtual _bool Can_CheckKey(const _float fTimeDelta);
+
+	virtual void Reset_WhenStart();
 
 protected:
 	HRESULT Start_AttackState(void* pArg);
@@ -175,8 +195,8 @@ private:
 
 private:
 	_bool	Has_ChangeState(STATEKEY eKey);
+	_bool	Can_ChangeNextWeapon(_uint iWeaponType);
 
-	_bool	Check_ColliWithMonster();
 	void	Count_Combo();
 
 public:

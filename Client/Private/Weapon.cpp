@@ -77,7 +77,7 @@ HRESULT CWeapon::Initialize(void* pArg)
 	}
 
 	if (!m_bMainWeapon)
-		m_eState = State::NONE;
+		Set_WeaponState(State::NONE);
 
 	//Get_Component<CTransform>()->Set_Scale(0.1f, 0.1f, 0.1f);
 	//Get_Component<CTransform>()->Rotation(0.f, ::XMConvertToRadians(90.f), 0.f);

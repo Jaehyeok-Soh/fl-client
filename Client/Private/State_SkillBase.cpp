@@ -74,7 +74,7 @@ HRESULT CState_SkillBase::Awake(const _uint iLevelIndex)
 
 HRESULT CState_SkillBase::Start(void* pArg, _bool bForce)
 {
-	if (FAILED(Super::Start(pArg, true)))
+	if (FAILED(Start_AttackState(pArg)))
 		return E_FAIL;
 
 	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL), ENUM_TO_UINT(CWeapon::State::HAND));

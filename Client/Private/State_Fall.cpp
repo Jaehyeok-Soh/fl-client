@@ -80,14 +80,14 @@ void CState_Fall::Set_NextStateDesc(_uint iNextState)
 	switch (iNextState)
 	{
 	case ENUM_TO_UINT(CPlayer::State::LAND):
-		if (2.f <= m_fFallTimeAcc) // 3초 이상 떨어졌다면
+		if (1.5f <= m_fFallTimeAcc) // 3초 이상 떨어졌다면
 		{
 			m_tNextStateDesc.iMainAnimIdx = 1; 
 			break; // LAND_Heavy
 		}
 
 	default:
-		m_tNextStateDesc.iMainAnimIdx = 0;
+		Super::Set_NextStateDesc(iNextState);
 	}
 }
 

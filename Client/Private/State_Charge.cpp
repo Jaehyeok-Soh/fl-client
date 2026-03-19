@@ -30,9 +30,8 @@ HRESULT CState_Charge::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Charge::Start(void* pArg, _bool bForce)
 {
-	if (FAILED(Super::Start(pArg, bForce)))
+	if (FAILED(Start_AttackState(pArg)))
 		return E_FAIL;
-
 
 	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HAND));
 
@@ -47,11 +46,6 @@ void CState_Charge::Update(const _float fTimeDelta)
 
 	if(m_fHoldWeaponTime <= m_fStateElapsed)
 		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
-
-	else
-	{
-		Check_Monster();
-	}
 }
 
 HRESULT CState_Charge::End()

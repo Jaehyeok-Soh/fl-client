@@ -27,6 +27,7 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 
 	m_FMoves						= pDesc->FMoves;
 	m_FCollisions					= pDesc->FCollis;
+	m_FWeaponChanges				= pDesc->FWeaponChanges;
 	m_vecChangeState_ByKey			= std::move(pDesc->vecChangeState_ByKey);
 
 	m_tKeyTimer						= pDesc->tKeyTimer;
@@ -53,10 +54,7 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	m_tKeyTimer.fTimeAcc = 0.f;
-
-	m_TFallingCount.x = 0.f;
-	m_TChargeCount.x = 0.f;
+	Reset_WhenStart();
 
 	return S_OK;
 }
@@ -64,6 +62,10 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 void CStateBase_Player::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	// 만약 이전  프레임에 weapon change key가 눌렸다면 weapon을 change
+	if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_NextFrame))
+		Change_Weapon();
 
 	if (Check_Collis(fTimeDelta))
 		return;
@@ -83,12 +85,20 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 	// keyCount를 하지 않거나, coolTime이 다 되었다면 : key 입력을 처리하자
 	if (Check_Keys(fTimeDelta))
 		return;
+
+	// weapon key check / todo_eunbi : check key안으로 일단 넣지는 않음
+	if (Check_WeaponChnage(fTimeDelta))
+		return;
 }
 
 HRESULT CStateBase_Player::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	// 만약 이전  프레임에 weapon change key가 눌렸다면 weapon을 change
+	if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_End))
+		Change_Weapon();
 
 	return S_OK;
 }
@@ -356,14 +366,16 @@ _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 			// 공격이 가능 하다면 : attack
 			if (Can_Fire())
 			{
-				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+				//Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
 				return true;
 			}
 
 			// 공격은 불가능 하지만 reload는 가능 하다면 : reload
 			else if (Can_Reload())
 			{
-				Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
+				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
+				//Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
 				return true;
 			}
 
@@ -478,6 +490,22 @@ _bool CStateBase_Player::Check_FKey(const _float fTimeDelta)
 	return false;
 }
 
+_bool CStateBase_Player::Check_WeaponChnage(const _float fTimeDelta)
+{
+	// key check만 한다
+	if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_Check))
+	{
+		if (KEY_BUTTON_DOWN(DIK_Z))
+		{
+			m_FWeaponChanges |= WEAPONCHANGEFLAGS::Change_Melee;
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
 _bool CStateBase_Player::Check_Collis(const _float fTimeDelta)
 {
 	// 플래그 먼저 확인
@@ -548,23 +576,45 @@ _bool CStateBase_Player::Check_OnGround(_float fMaxDist)
 	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround(fMaxDist);
 }
 
-void CStateBase_Player::Check_Monster()
-{
-	// 몬스터랑 출동 했다면
-	if (Check_ColliWithMonster())
-	{
-		// 몬스터를 향하게 turn
-
-		// combo 카운트 업
-		Count_Combo();
-	}
-}
-
 void CStateBase_Player::Change_WeaponState(_uint iPart, _uint iState)
 {
 	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
 	if(pPlayer)
 		pPlayer->Change_WeaponState(iPart, iState);
+}
+
+_bool CStateBase_Player::Change_Weapon()
+{
+	// change 플래그가 켜졌다면
+	// next로 바뀔수 있다면 weapon index 바꾸고
+	// 해당 weapon hold state로 변경
+	_bool bChange = false;
+	if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_Melee) &&
+		Can_ChangeNextWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE)))
+	{
+		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
+		bChange = true;
+	}
+
+	if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_Gun) &&
+		Can_ChangeNextWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE)))
+	{
+		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE), ENUM_TO_UINT(CWeapon::State::HOLD));
+		bChange = true;
+	}
+
+	if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_Skill) &&
+		Can_ChangeNextWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL)))
+	{
+		// skill 검은 hold를 하지 않음
+		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL), ENUM_TO_UINT(CWeapon::State::NONE));
+		bChange = true;
+	}
+
+	// 플래그 아예 꺼주기
+	Engine_Utils::RemoveHard_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Mask_ChangeWeapons);
+
+	return bChange;
 }
 
 _bool CStateBase_Player::Start_Att(_uint iPlayerState)
@@ -658,10 +708,42 @@ _bool CStateBase_Player::Change_State_WhenLoopDone(const _float fTimeDelta)
 	return false;
 }
 
+void CStateBase_Player::Set_NextStateDesc(_uint iNextState)
+{
+	switch (iNextState)
+	{
+	case ENUM_TO_UINT(CPlayer::State::JUMPATTSTART):
+	case ENUM_TO_UINT(CPlayer::State::JUMPATTEND):
+	case ENUM_TO_UINT(CPlayer::State::CHARGE):
+		m_tNextStateDesc.iMainAnimIdx = Get_WeaponIdx(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE)); break;
+
+	case ENUM_TO_UINT(CPlayer::State::GUNATTACK):
+	case ENUM_TO_UINT(CPlayer::State::GUNRELOAD):
+		m_tNextStateDesc.iMainAnimIdx = Get_WeaponIdx(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE)); break;
+
+	case ENUM_TO_UINT(CPlayer::State::SKILL1):
+	case ENUM_TO_UINT(CPlayer::State::SKILL2):
+		m_tNextStateDesc.iMainAnimIdx = Get_WeaponIdx(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL)); break;
+
+	defualt:
+		m_tNextStateDesc.iMainAnimIdx = 0;
+	}
+}
+
 _bool CStateBase_Player::Can_CheckKey(const _float fTimeDelta)
 {
 	return (!(m_tKeyTimer.bCountTime) ||
 		m_tKeyTimer.CountTime(fTimeDelta) == 1.f);
+}
+
+void CStateBase_Player::Reset_WhenStart()
+{
+	m_tKeyTimer.fTimeAcc = 0.f;
+
+	m_TFallingCount.x = 0.f;
+	m_TChargeCount.x = 0.f;
+
+	Engine_Utils::RemoveHard_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Mask_ChangeWeapons);
 }
 
 HRESULT CStateBase_Player::Start_AttackState(void* pArg)
@@ -669,8 +751,8 @@ HRESULT CStateBase_Player::Start_AttackState(void* pArg)
 	// attack은 pre state 기준으로 애니메이션 재생 x
 	// 이전 state에서 현재 weapon 을 기준으로 설정해준다
 
-	ATTSTATE_START_DESC* pDesc = static_cast<ATTSTATE_START_DESC*>(pArg);
-	m_iMainAnimIdx = Get_WeaponIdx(pDesc->iWeaponType);
+	STATE_START_DESC* pDesc = static_cast<STATE_START_DESC*>(pArg);
+	m_iMainAnimIdx = pDesc->iMainAnimIdx;
 	
 	if (m_iMainAnimIdx < 0)
 		return E_FAIL;
@@ -687,6 +769,8 @@ HRESULT CStateBase_Player::Start_AttackState(void* pArg)
 		Request_ChangeAnimation((size_t)m_vecMainAnims[m_iMainAnimIdx], m_bBlend, m_bLoop);
 	}
 
+	Reset_WhenStart();
+
 	return S_OK;
 }
 
@@ -696,9 +780,13 @@ _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
 	return m_iEndStateIdx != m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
 }
 
-_bool CStateBase_Player::Check_ColliWithMonster()
+_bool CStateBase_Player::Can_ChangeNextWeapon(_uint iWeaponType)
 {
-	return static_cast<CPlayer*>(Get_OwnerObject())->Check_ColliWithMonster();
+	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
+	if (pPlayer)
+		return pPlayer->Change_MainWeaponNext(iWeaponType);
+
+	return false;
 }
 
 void CStateBase_Player::Count_Combo()

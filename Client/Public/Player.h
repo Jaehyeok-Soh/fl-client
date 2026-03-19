@@ -154,6 +154,7 @@ public:
 public:
 	void	Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn);
 	_bool	Change_MainWeapon(_uint iWeaponType, _uint iIdx);
+	_bool	Change_MainWeaponNext(_uint iWeaponType);
 	void	Change_WeaponState(_uint iWeaponType, _uint iState); // 어떤 weapon을 어떤 state로
 	_int	Get_CurWeaponIdx(_uint iWeaponType);
 	_bool	Can_UseWeapon(_uint iWeaponType);
