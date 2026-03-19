@@ -106,7 +106,7 @@ HRESULT CStateBase_Player::End()
 void CStateBase_Player::Change_PlayerState(STATEKEY eKey, _bool bForce)
 {
 	_uint iNextState = m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];
-	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
+ 	Set_NextStateDesc(iNextState);		// next state에 대한 desc 작성
 
 	if (bForce)
 		Request_Change_StateForce(iNextState, &m_tNextStateDesc);
@@ -737,7 +737,7 @@ void CStateBase_Player::Set_NextStateDesc(_uint iNextState)
 	case ENUM_TO_UINT(CPlayer::State::SKILL2):
 		m_tNextStateDesc.iMainAnimIdx = Get_WeaponIdx(ENUM_TO_UINT(CPlayer::EWEAPON::SKILL)); break;
 
-	defualt:
+	default:
 		m_tNextStateDesc.iMainAnimIdx = 0;
 	}
 }

@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "State_MoonCharge.h"
+
+#include "Player.h"
+
 #include "GameInstance.h"
 CState_MoonCharge::CState_MoonCharge(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent)
@@ -31,6 +34,18 @@ HRESULT CState_MoonCharge::Start(void* pArg, _bool bForce)
 
 	m_bShakeActived = false;
 	m_bLookMonsterYet = true;
+
+	switch (m_iMainAnimIdx)
+	{
+	case static_cast<_int>(CPlayer::MELEE::SWORD):
+		m_tKeyTimer.fMaxTime = 1.f;
+		break;
+
+	case static_cast<_int>(CPlayer::MELEE::DUAL):
+		m_tKeyTimer.fMaxTime = 55.f / ANIMTIC;
+		break;
+	}
+
 	return S_OK;
 }
 

@@ -868,9 +868,10 @@ HRESULT CMainPlayer::Ready_AttackStates()
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
         desc.vecPreAnims = {
-                                {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_Start")}
+                                {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_Start")},
+                                {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_FallAttack_Start")}
         };
-        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_Loop") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_Loop") , Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_FallAttack_Loop") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
         desc.bBlend = false;
         desc.bLoop = true;
 
@@ -884,6 +885,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
         desc.pOwnerGun = pMyGun;
 
+        desc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_End;
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPATTSTART), CState_JumpAttStart::Create(pActionState, &desc))))
             return E_FAIL;
     }
@@ -892,7 +895,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = 0;
-        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_End") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_End"), Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_FallAttack_End") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
         desc.bBlend = true;
         desc.bLoop = false;
 
@@ -919,6 +922,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
         desc.pOwnerGun = pMyGun;
 
+        desc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_End;
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPATTEND), CState_JumpAttEnd::Create(pActionState, &desc))))
             return E_FAIL;
     }
@@ -927,8 +932,12 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni | CStateBase::STATEANI_FLAG::SA_PreNonEvent;
-        desc.vecPreAnims = { {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_Start")}};
-        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
+        desc.vecPreAnims = { 
+            {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_Start")}
+            ,  {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_HeavyAttack_Start")}
+        
+        };
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End"),Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_HeavyAttack_End") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
         desc.bBlend = true;
         desc.bLoop = false;
 
@@ -955,6 +964,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;
+
+        desc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_End;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::CHARGE), CState_MoonCharge::Create(pActionState, &desc))))
             return E_FAIL;

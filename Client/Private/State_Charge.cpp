@@ -44,8 +44,12 @@ void CState_Charge::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	if(m_fHoldWeaponTime <= m_fStateElapsed)
+	if (m_fHoldWeaponTime <= m_fStateElapsed)
+	{
+		Change_Weapon();
 		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
+	}
+
 }
 
 HRESULT CState_Charge::End()

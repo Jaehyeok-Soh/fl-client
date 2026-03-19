@@ -4,6 +4,8 @@
 // player의 state들이 공통적으로 처리해야하는 것들을 다루기 위해
 // 부모 statebase를 하나 생성
 
+#define ANIMTIC (24.f * 1.2f)
+
 NS_BEGIN(Client)
 class CGun;
 

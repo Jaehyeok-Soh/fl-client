@@ -58,6 +58,8 @@ HRESULT CState_SkillBase::Initialize(void* pArg)
 	tMyDesc.vecChangeState_ByKey = vecChangeState_ByKey;
 	tMyDesc.vecMainAnims = { pDesc->iAnimIdx };
 
+	tMyDesc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_End;
+
 	if (FAILED(Super::Initialize(&tMyDesc)))
 		return E_FAIL;
 

@@ -32,6 +32,8 @@ HRESULT CState_GunBase::Initialize(void* pArg)
         | CStateBase_Player::COLLISIONFLAGS::C_Strong
         | CStateBase_Player::COLLISIONFLAGS::C_Fly;
 
+    tSuperDesc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_End;
+
     vector<_uint> vecChangeState_ByKey{};
     vecChangeState_ByKey.resize(ENUM_TO_SZET(CStateBase_Player::STATEKEY::END), ENUM_TO_UINT(CPlayer::State::END));
     tSuperDesc.vecChangeState_ByKey = vecChangeState_ByKey;
