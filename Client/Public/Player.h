@@ -100,6 +100,7 @@ public:
 		,LAND
 
 		,COMBO
+		,COMBO_DUAL
 		, JUMPATTSTART
 		, JUMPATTEND
 		,CHARGE

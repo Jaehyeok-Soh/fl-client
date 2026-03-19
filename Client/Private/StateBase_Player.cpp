@@ -336,7 +336,19 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 			{
 				if (Check_OnGround(0.3f))
 				{
-					Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO));
+					_int iCurMelee = Get_WeaponIdx(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE));
+
+					switch (iCurMelee)
+					{
+					case ENUM_TO_UINT(CPlayer::MELEE::SWORD):
+						Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO));
+						break;
+
+					case ENUM_TO_UINT(CPlayer::MELEE::DUAL):
+						//Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO_DUAL));
+						break;
+					}
+
 				}
 
 				else
