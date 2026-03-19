@@ -811,6 +811,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation">
       <UniqueIdentifier>{34d8f7a6-03e3-466d-92ae-48f676cfde60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Fly">
+      <UniqueIdentifier>{0650a79e-345c-4c74-b51f-6436f82262bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Fly">
+      <UniqueIdentifier>{1696a078-6181-4269-85e1-e52d22f83652}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1506,6 +1512,12 @@
     <ClInclude Include="..\Public\UIConversation_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster_Fly.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Fly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Fly_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Fly</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2190,6 +2202,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIConversation_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Fly.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Fly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Fly_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Fly</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

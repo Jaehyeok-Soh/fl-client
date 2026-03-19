@@ -72,8 +72,6 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 300.f);
 	}
 
-
-
 	return S_OK;
 }
 
@@ -165,17 +163,6 @@ HRESULT CMonster_Dog::Ready_Ability()
 
 HRESULT CMonster_Dog::Ready_BaseStates()
 {
-	CMonsterActionState* pActionState = { nullptr };
-	CModel* pModel = Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>();
-	if (!pModel)
-		return E_FAIL;
-
-	if (!(pActionState = Get_Component<CMonsterActionState>()))
-		return E_FAIL;
-
-	TIME_COUNTER tStateLifeTime = {};
-	TIME_COUNTER tStateCoolDownTime = {};
-
 	return S_OK;
 }
 
@@ -264,8 +251,7 @@ CMonster_Dog::MONSTER_DESC CMonster_Dog::Get_PreSetDesc(_uint iLevelId)
 			| PHYSICSFILTERGROUP::Enum::MAP
 			| PHYSICSFILTERGROUP::Enum::OBJECT1
 			| PHYSICSFILTERGROUP::Enum::OBJECT2
-			| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER
-			| PHYSICSFILTERGROUP::Enum::NPC;
+			| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 		desc.bGravity = { true };
 		desc.fGravity = { -35.f };

@@ -85,8 +85,6 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 	//	CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	//}
 
-
-
 	return S_OK;
 }
 
