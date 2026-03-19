@@ -154,7 +154,7 @@ void CUIQuest_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
-				this->m_isChanged = true;
+				Set_Visible();
 			})
 	);
 

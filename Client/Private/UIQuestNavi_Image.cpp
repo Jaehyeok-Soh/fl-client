@@ -141,6 +141,10 @@ void CUIQuestNavi_Image::Bind_Events()
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
 				{
+					auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+					if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+						return;
+
 					this->Set_Visible();
 				}
 			})
@@ -166,6 +170,10 @@ void CUIQuestNavi_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
 			{
+				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+				if (-1 == desc.tChapterInfo.tQuestDesc.iId)
+					return;
+
 				this->Set_Visible();
 			})
 	);

@@ -192,7 +192,7 @@ void CUIQuest_Text::Bind_Events()
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
 			{
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
-
+				Set_Visible();
 				switch (this->m_eTextSubClassType)
 				{
 				case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:

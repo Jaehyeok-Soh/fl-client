@@ -131,6 +131,7 @@ void CUILoading_Image::Initialize_Visible_Event()
 	{
 	case DTO::EUIDImageSubClassType::LOADING_BG:
 	{
+		Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
 	}
 	break;
 	case DTO::EUIDImageSubClassType::LOADING_BG_TOP:
@@ -153,9 +154,14 @@ _bool CUILoading_Image::Tick_Visible_Event(const _float fTimeDelta)
 {
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::LOADING_BG)
 	{
-		m_isFin_Event = true;
-		m_isActive = true;
-		return true;
+		_bool is = Tick_Fade(fTimeDelta);
+
+		if (is)
+		{
+			m_isFin_Event = true;
+			m_isActive = true;
+			return true;
+		}
 	}
 	else if (m_eDImageSubClass == DTO::EUIDImageSubClassType::LOADING_BG_TOP || m_eDImageSubClass == DTO::EUIDImageSubClassType::LOADING_BG_BOTTOM)
 	{
