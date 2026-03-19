@@ -14,8 +14,6 @@ HRESULT CState_MoonCharge::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_fHoldWeaponTime = 2.f;
-
 	return S_OK;
 }
 
@@ -39,10 +37,12 @@ HRESULT CState_MoonCharge::Start(void* pArg, _bool bForce)
 	{
 	case static_cast<_int>(CPlayer::MELEE::SWORD):
 		m_tKeyTimer.fMaxTime = 1.f;
+		m_fHoldWeaponTime = 2.f;
 		break;
 
 	case static_cast<_int>(CPlayer::MELEE::DUAL):
 		m_tKeyTimer.fMaxTime = 55.f / ANIMTIC;
+		m_fHoldWeaponTime = 100.f / ANIMTIC;
 		break;
 	}
 

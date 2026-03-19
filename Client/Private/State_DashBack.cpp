@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "State_DashBack.h"
 
+#include "Player.h"
+#include "Transform.h"
+
 CState_DashBack::CState_DashBack(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "DashBack")
 {
@@ -26,6 +29,17 @@ HRESULT CState_DashBack::Start(void* pArg, _bool bForce)
 {
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
+	
+	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+	_float moveps = pPlayerTrans->Get_MovePerSec(); // 속도
+
+	Vec3 vRight = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT));
+	vRight.Normalize();
+
+	Vec3 accelation = vRight * moveps * -10.f; //  방향 * 속도
+
+	SetCCTImpuls(accelation);
+
 
 	return S_OK;
 }

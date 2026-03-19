@@ -56,6 +56,11 @@ protected:
 	void Check_Combo();
 
 protected:
+	virtual void Start_First() {};
+	virtual void Start_Second() {};
+	virtual void Start_Third() {};
+	virtual void Start_Fourth() {};
+
 	virtual void Update_First(const _float fTimeDelta) {};
 	virtual void Update_Slide(const _float fTimeDelta) {};
 	virtual void Update_Second(const _float fTimeDelta) {};

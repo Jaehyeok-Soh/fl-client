@@ -808,6 +808,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation">
       <UniqueIdentifier>{34d8f7a6-03e3-466d-92ae-48f676cfde60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee\Combo\Dual">
+      <UniqueIdentifier>{51b954b9-bc45-4f1e-b817-f58a1434d26c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1500,6 +1503,9 @@
     <ClInclude Include="..\Public\UIConversation_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_DualCombo.h">
+      <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2181,6 +2187,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIConversation_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_DualCombo.cpp">
+      <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

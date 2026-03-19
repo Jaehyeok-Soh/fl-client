@@ -134,6 +134,22 @@ void CState_ComboBase::Change_NextCombo()
 
 	m_bShakeActived = false;
 
+	switch (m_iComboCount)
+	{
+	case ENUM_TO_UINT(ANIM::SECOND):
+		Start_Second();
+		break;
+
+	case ENUM_TO_UINT(ANIM::THIRD):
+		Start_Third();
+		break;
+
+	case ENUM_TO_UINT(ANIM::FOURTH):
+		Start_Fourth();
+		break;
+	}
+
+
 	Request_ChangeAnimation(m_vecMainAnims[m_iComboCount], true, false, true);
 }
 
@@ -150,6 +166,8 @@ void CState_ComboBase::Change_FirstCombo()
 	m_fStateElapsed = 0.f;
 
 	m_TChargeCount.x = 0.f;
+
+	Start_First();
 
 	Request_ChangeAnimation(m_vecMainAnims[0], false, false, true);
 }
