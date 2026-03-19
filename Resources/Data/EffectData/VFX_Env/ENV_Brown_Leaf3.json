@@ -20,7 +20,7 @@
                 1.0,
                 0.0,
                 20.0,
-                22.200000762939453,
+                37.79999923706055,
                 0.0,
                 1.0
             ],
@@ -30,9 +30,9 @@
                     "AppearRatio": 0.800000011920929,
                     "Color": {
                         "w": 1.0,
-                        "x": 0.7921568751335144,
-                        "y": 0.16078431904315948,
-                        "z": 0.0
+                        "x": 0.2894800901412964,
+                        "y": 0.059310078620910645,
+                        "z": 0.0006953506381250918
                     },
                     "CurveTexture_Tag": "",
                     "DiffuseTexture_Tag": "T_FlowerLzy02_D",
@@ -206,7 +206,7 @@
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "StartSpeed": 10000.0,
+                    "StartSpeed": 1.0,
                     "TargetRotation": {
                         "x": 0.0,
                         "y": 0.0,
@@ -282,7 +282,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
