@@ -44,13 +44,3 @@ void CThreadWorker::operator()()
 		}
 	}
 }
-
-CThreadWorker* CThreadWorker::Create(CThreadPool* pOwnerPool)
-{
-	return new CThreadWorker(pOwnerPool);
-}
-
-void CThreadWorker::Free()
-{
-	Super::Free();
-}

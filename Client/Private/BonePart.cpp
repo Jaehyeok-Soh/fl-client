@@ -45,8 +45,12 @@ HRESULT CBonePart::Initialize(void* pArg)
 	if (FAILED(Ready_ComputeShaders(pDesc)))
 		return E_FAIL;
 
-	Set_RenderInfoFlag(OF_Outline, true);
+	// CascadeBuffer Shader¿¡ ¿¬°á
+	if (FAILED(m_pGameInstance->Set_CascadeShadowConstantBuffer(Get_Component<CShader>())))
+		return E_FAIL;
 
+	Set_RenderInfoFlag(OF_Outline, true);
+	Set_RenderInfoFlag(OF_Rim, true);
 	return S_OK;
 }
 
@@ -84,10 +88,10 @@ void CBonePart::Update_Late(_float fTimeDelta)
 void CBonePart::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+	Super::Update_CombinedWorldMatrix((*m_pMatParent));
 
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-
-	Super::Update_CombinedWorldMatrix((*m_pMatParent));
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 }
 
 void CBonePart::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -134,6 +138,33 @@ HRESULT CBonePart::Render()
 		pModel->Render(i);
 	}
 
+	return S_OK;
+}
+
+HRESULT CBonePart::Render_Shadow()
+{
+	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	CShader* pShader = Get_Component<CShader>();
+	_uint iPrevPass = pShader->Get_CurrentPass();
+
+	constexpr _uint iShadowPass = 4;
+
+	// Set Shadow Pass
+	pShader->Set_Pass(iShadowPass);
+	CModel* pModel = Get_Component<CModel>();
+	_uint iMeshCount = pModel->Get_MeshCount();
+	pShader->Bind_TransformData(m_matCombinedWorld);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		pModel->Bind_Bones(pShader, i, m_pBoneMeshCS, m_pPartBoneCombineCS);
+		pShader->Apply();
+		pModel->Render(i);
+	}
+
+	pShader->Set_Pass(iPrevPass);
+	return S_OK;
 	return S_OK;
 }
 

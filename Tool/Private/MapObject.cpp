@@ -687,6 +687,9 @@ HRESULT CMapObject::Ready_ColliderTypeName()
     case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:
         m_strName = "TriggerBox_TutorialUIEvent";
         break;
+    case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
+        m_strName = "TriggerBox_CinematicPlayer";
+        break;
     case Tool::EClientMakePath::END:
         break;
     default:
@@ -723,6 +726,7 @@ void CMapObject::Check_ClientMakePathAndDrawType_TriggerBox()
         case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
         case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
         case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:
+        case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
             MSG_BOX(" Trigger Box 관련 Client Make Path는 Draw Type으로 Collider로 자동 지정 됩니다 ");
             m_eMapObjectDrawType = EMapObject_DrawType::Collider;
             break;
@@ -1364,6 +1368,9 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:
         hr = Render_Collider();
         break;
+    case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
+        hr = Render_Collider();
+        break;
     case Tool::EClientMakePath::Invisible_Wall:
         hr = Render_StaticObject();
         break;
@@ -1563,6 +1570,7 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
     case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
+    case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
     {
         if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
             MSG_BOX(" 현재 바꾸는 Client MakePth 관련 오브젝트는 Instance 를 지원하지 않습니다 Default Draw로  바꿔주세요 ");

@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Frustrum.h"
 #include "Font_Manager.h"
+#include "ThreadPool.h"
 #include "Event_Manager.h"
 #include "ObjectPool_Manager.h"
 #include "Octree_Manager.h"
@@ -31,6 +32,7 @@
 #include "EffectHandler.h"
 #include "GameData_Struct.h"
 #include "JudgementSystem.h"
+#include "Cinematic_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -109,6 +111,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pFont_Manager = CFont_Manager::Create(*ppDevice, *ppContext)))
 		return E_FAIL;
 
+	if (!(m_pThreadPool = CThreadPool::Create()))
+		return E_FAIL;
+
 	if (!(m_pFrustrum = CFrustrum::Create()))
 		return E_FAIL;
 
@@ -131,6 +136,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 		return E_FAIL;
 
 	if (!(m_pJudgementSystem = CJudgementSystem::Create()))
+		return E_FAIL;
+
+	if (!(m_pCinematicManager = CCinematic_Manager::Create(*ppDevice,*ppContext)))
 		return E_FAIL;
 
 	return S_OK;
@@ -624,15 +632,26 @@ void CGameInstance::Setup_Inv_ToCBuffer()
 	m_pCamera_Manager->Setup_Inv_ToCBuffer();
 }
 
-HRESULT CGameInstance::Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence)
+HRESULT CGameInstance::Register_CinematicCamera(_uint iPrototypeLevelIndex, const wstring& wstrFindPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrAddLagerTag, void* pCinematicCameraDesc)
+{
+	return m_pCamera_Manager->Register_CinematicCamera(iPrototypeLevelIndex, wstrFindPrototypeTag,iCloneLevelIndex,wstrAddLagerTag,pCinematicCameraDesc);
+}
+
+HRESULT CGameInstance::Play_CameraCinematic(CinematicCameraSequence* pCameraCinematicSequence)
 {
 	return m_pCamera_Manager->Play_CameraCinematic(pCameraCinematicSequence);
+}
+
+HRESULT CGameInstance::End_CameraCinematic()
+{
+	return m_pCamera_Manager->End_CameraCinematic();
 }
 
 HRESULT CGameInstance::Camera_Shaking(const CAM_SHAKING_DATA& tData)
 {
 	return m_pCamera_Manager->Camera_Shaking(tData);
 }
+
 #pragma endregion
 
 #pragma region SOUND_MANAGER
@@ -785,15 +804,20 @@ HRESULT CGameInstance::Set_CascadeShadowConstantBuffer(CShader* pShader)
 {
 	return m_pRender_Manager->Set_CascadeShadowConstantBuffer(pShader);
 }
-#ifdef _DEBUG
-ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
+HRESULT CGameInstance::Set_BakedShadowConstantBuffer(CShader* pShader)
 {
-	return m_pRenderTarget_Manager->Get_RenderTargetSRV(eTarget);
+	return m_pRender_Manager->Set_BakedShadowConstantBuffer(pShader);
 }
 
-inline void CGameInstance::Push_DebugComponent(CComponent* pComp)
+HRESULT CGameInstance::Bake_StaticShadow(BoundingBox* pRootBox)
 {
-	m_pRender_Manager->Push_DebugComponent(pComp);
+	if (FAILED(m_pRender_Manager->Initialize_BakedShadowSections(pRootBox)))
+		return E_FAIL;
+
+	if (FAILED(m_pRender_Manager->Build_BakedShadowSections()))
+		return E_FAIL;
+
+	return S_OK;
 }
 SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc()
 {
@@ -882,6 +906,28 @@ HRESULT CGameInstance::Commit_CascadeParam()
 HRESULT CGameInstance::Commit_AllPostParams()
 {
 	return m_pRender_Manager->Commit_AllPostParams();
+}
+#ifdef _DEBUG
+ID3D11ShaderResourceView* CGameInstance::Get_RenderTargetSRV(ERenderTarget eTarget)
+{
+	return m_pRenderTarget_Manager->Get_RenderTargetSRV(eTarget);
+}
+
+inline void CGameInstance::Push_DebugComponent(CComponent* pComp)
+{
+	m_pRender_Manager->Push_DebugComponent(pComp);
+}
+ID3D11ShaderResourceView* CGameInstance::Get_BakedShadowDebugSRV()
+{
+	return m_pRender_Manager->Get_BakedShadowDebugSRV();
+}
+const ACTIVE_BAKED_SET& CGameInstance::Get_ActiveBakedSectionSet() const
+{
+	return m_pRender_Manager->Get_ActiveBakedSectionSet();
+}
+void CGameInstance::Update_BakedShadowDebugTexture(_uint iSlice)
+{
+	m_pRender_Manager->Update_BakedShadowDebugTexture(iSlice);
 }
 #endif
 #pragma endregion
@@ -974,6 +1020,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pInput_Manager);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pTimeScale_Manager);
+	Safe_Release(m_pCinematicManager);
 	Safe_Release(m_pDataRepository);
 	Safe_Release(m_pRender_Manager);
 	Safe_Release(m_pSound_Manager);
@@ -993,6 +1040,7 @@ void CGameInstance::Destroy_Engine()
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
+	Safe_Release(m_pThreadPool);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);
@@ -1040,6 +1088,10 @@ HRESULT CGameInstance::Add_RenderTarget(ERenderTarget eTarget, const CRenderTarg
 {
 	return m_pRenderTarget_Manager->Add_RenderTarget(eTarget, pDesc);
 }
+HRESULT CGameInstance::Add_RenderTargetArray(ERenderTarget eTarget, const CRenderTargetArray::RENDERTARGET_ARR_DESC* pDesc)
+{
+	return m_pRenderTarget_Manager->Add_RenderTargetArray(eTarget, pDesc);
+}
 
 HRESULT CGameInstance::Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget)
 {
@@ -1054,6 +1106,16 @@ HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, _bool bUseDS
 HRESULT CGameInstance::Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV)
 {
 	return m_pRenderTarget_Manager->Begin_MRT(eMRTLayer, bClear, pDSV);
+}
+
+HRESULT CGameInstance::Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, _bool bUseDSV)
+{
+	return m_pRenderTarget_Manager->Begin_RTArraySlice(eTarget, iSlice, bClear, bUseDSV);
+}
+
+HRESULT CGameInstance::Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, ID3D11DepthStencilView* pDSV)
+{
+	return m_pRenderTarget_Manager->Begin_RTArraySlice(eTarget, iSlice, bClear, pDSV);
 }
 
 HRESULT CGameInstance::End_MRT()
@@ -1302,6 +1364,34 @@ void CGameInstance::Physics_Render(const PxGeometry& geom, const PxTransform& tr
 #endif
 #pragma endregion
 
+#pragma region Cinematic Manager
+HRESULT	CGameInstance::Play_CameraCinematic(const wstring& wstrFindKey)
+{
+	return m_pCinematicManager->Play_CameraCinematic(wstrFindKey);
+}
+HRESULT	CGameInstance::Load_CameraCinematicSequence(const _tchar* wszCameraCinematicDataJsonPath)
+{
+	return m_pCinematicManager->Load_CameraCinematicSequence(wszCameraCinematicDataJsonPath);
+}
+HRESULT	CGameInstance::Save_CameraCinematicSequence(const _tchar* wszCameraCinematicDataJsonPath)
+{
+	return m_pCinematicManager->Save_CameraCinematicSequence(wszCameraCinematicDataJsonPath);
+}
+HRESULT	CGameInstance::Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT CinematicCameraSequence* pOutCamCinematicSequence)
+{
+	return m_pCinematicManager->Load_CameraCinematicSequence(wstrFindKey, pOutCamCinematicSequence);
+}
+HRESULT	CGameInstance::Save_CameraCinematicSequence(const wstring& wstrFindKey, const	CinematicCameraSequence* pSaveCamCinematicSequence)
+{
+	return m_pCinematicManager->Save_CameraCinematicSequence(wstrFindKey, pSaveCamCinematicSequence);
+}
+vector<string> CGameInstance::Get_CameraCinematicSequenceNames() const
+{
+	return m_pCinematicManager->Get_CameraCinematicSequenceNames();
+}
+#pragma endregion
+
+
 #pragma region GAMEDATA_MANAGER
 
 #pragma region Map Min Max Box
@@ -1316,7 +1406,10 @@ CBounding_AABB* CGameInstance::Get_MapMinMaxBox()
 {
 	return m_pGameData_Manager->Get_MapMinMaxBox();
 }
-
+BoundingBox* CGameInstance::Get_MapMinMaxBounding()
+{
+	return m_pGameData_Manager->Get_MapMinMaxBounding();
+}
 void CGameInstance::Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter)
 {
 	return m_pGameData_Manager->Set_MapMinMaxBox(vPos, vCenter);
@@ -1325,17 +1418,6 @@ void CGameInstance::Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter)
 
 #pragma endregion
 
-#pragma region Broadcast
-HRESULT	CGameInstance::Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent)
-{
-	return m_pGameData_Manager->Register_GlobalEventsBroadCast(iTypeIndex, funcGlobalEvent);
-}
-
-HRESULT	CGameInstance::BroadCaset_RegisterGlobalEvent(_uint iTypeIndex)
-{
-	return m_pGameData_Manager->BroadCaset_RegisterGlobalEvent(iTypeIndex);
-}
-#pragma endregion
 
 #pragma region Texture Splating
 HRESULT CGameInstance::GameDataManager_Load_TextureSplatingInfoData()
@@ -1345,36 +1427,6 @@ HRESULT CGameInstance::GameDataManager_Load_TextureSplatingInfoData()
 HRESULT CGameInstance::GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName)
 {
 	return m_pGameData_Manager->Bind_SplatingTextureInfo(pBindShader, wstrTextureSplatingInfoDataName);
-}
-#pragma endregion
-
-#pragma region CameraCinematicSequence
-HRESULT CGameInstance::GameDataManager_Load_CameraCinematicSequence()
-{
-	return m_pGameData_Manager->Load_CameraCinematicSequence();
-}
-
-HRESULT CGameInstance::GameDataManager_Save_CameraCinematicSequence()
-{
-	return m_pGameData_Manager->Save_CameraCinematicSequence();
-}
-
-HRESULT CGameInstance::GameDataManager_Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT Camera_Cinematic_Sequence* pOutCamCinematicSequence)
-{
-	return m_pGameData_Manager->Load_CameraCinematicSequence(wstrFindKey, pOutCamCinematicSequence);
-}
-
-HRESULT CGameInstance::GameDataManager_Save_CameraCinematicSequence(const wstring& wstrFindKey, const Camera_Cinematic_Sequence* pSaveCamCinematicSequence)
-{
-	return m_pGameData_Manager->Save_CameraCinematicSequence(wstrFindKey, pSaveCamCinematicSequence);
-}
-HRESULT CGameInstance::Play_CameraCinematic(const wstring& wstrFindKey)
-{
-	return m_pGameData_Manager->Play_CameraCinematic(wstrFindKey);
-}
-vector<std::string> CGameInstance::GameDataManager_Get_CameraCinematicSequenceNames() const
-{
-	return m_pGameData_Manager->Get_CameraCinematicSequenceNames();
 }
 #pragma endregion
 
@@ -1406,6 +1458,7 @@ void CGameInstance::Free()
 {
 	SetDestroyEngineSequence(true);
 	Safe_Release(m_pJudgementSystem);
+	Safe_Release(m_pCinematicManager);
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pInput_Manager);
@@ -1429,6 +1482,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pEventBus_Manager);
 	Safe_Release(m_pShaderAsset_Manager);
+	Safe_Release(m_pThreadPool);
 	Safe_Release(m_pResource_Manager);
 	Safe_Release(m_pPhysics_Module);
 	Safe_Release(m_pGraphic_Device);

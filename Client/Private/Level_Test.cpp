@@ -110,8 +110,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_SkyBox()))
 		return E_FAIL;
 
+	Ready_ShaderSetting();
 	return S_OK;
-
 }
 
 HRESULT CLevel_Test::Awake(const _uint iLevelID)
@@ -130,7 +130,8 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 	CDialogueManager::GetInstance()->Initialize();
 
 	CQuestManager::GetInstance()->Start_Quest(0);
-
+	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -725,6 +726,25 @@ HRESULT CLevel_Test::Ready_SkyBox()
 
 	return S_OK;
 }
+
+void CLevel_Test::Ready_ShaderSetting()
+{
+	// Fog
+	{
+		auto& fogDesc = m_pGameInstance->Get_FogParamDesc();
+		fogDesc.vColor = Vec4{ 0.4f, 0.6f, 0.7f, 1.f };
+		fogDesc.vHighColor = Vec4{ 0.42f, 0.6f, 0.74f, 1.f };		
+		fogDesc.fFogStart = 0.f;
+		fogDesc.fFogEnd = 500.f;
+		fogDesc.fFogDensity = 0.023f;
+		fogDesc.fFogMaxOpacity = 0.2f;
+		fogDesc.fFogBaseHeight = -5.f;
+		fogDesc.fFogNoiseScale = 0.75f;
+		fogDesc.fFogNoiseSpeed = 0.218f;
+		m_pGameInstance->Commit_FogParam();
+	}
+}
+
 HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
 {
 	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);

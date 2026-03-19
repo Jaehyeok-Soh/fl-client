@@ -10,6 +10,10 @@
 #define CAST_VOID_PP(p) reinterpret_cast<void**>(p)
 #define SHADOW_CASCADE_COUNT 2
 #define SHADOW_MAP_SIZE 2048
+#define SHADOW_BAKE_SIZE 2048
+#define BAKED_SECTION_COUNT_X 5
+#define BAKED_SECTION_COUNT_Z 5
+#define ACTIVE_SECTION_MAX 9
 
 // PhysX
 #define PVD_HOST "127.0.0.1"
@@ -21,6 +25,15 @@
 #include "Engine_Function.h"
 #include "Engine_GlobalValue.h"
 #include "VertexData.h"
+
+
+constexpr const wchar_t* g_wszCinematicCameraTag = L"CinematicCamera";
+constexpr const wchar_t* g_wszCinematicCamera_PrototypeTag = L"Prototype_GameObject_CinematicCamera";
+
+
+/* Event µî·Ï */
+struct CCS_EVENT { using Signature = void(const Engine::CCS_BROADCAST_DESC& tDesc); };
+
 
 #pragma warning(disable : 4251)
 

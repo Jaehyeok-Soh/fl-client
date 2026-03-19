@@ -121,6 +121,7 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 		return E_FAIL;
 	}
 
+	Ready_ShaderSetting();
 	return S_OK;
 }
 
@@ -131,7 +132,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Lights()
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
 		desc.vDirection = Vec3{ 0.228f, -0.655f, 0.721f };
 		desc.vDiffuse = Vec4(0.8f, 0.7f, 0.55f, 1.f);
-		desc.vAmbient = Vec4(0.2f, 0.17f, 0.25f, 1.f);
+		desc.vAmbient = Vec4(0.3f, 0.27f, 0.35f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
@@ -139,6 +140,23 @@ HRESULT CLevel_Tutorial_Village::Ready_Lights()
 	}
 
 	return S_OK;
+}
+void CLevel_Tutorial_Village::Ready_ShaderSetting()
+{
+	// Fog
+	{
+		auto& fogDesc = m_pGameInstance->Get_FogParamDesc();
+		fogDesc.vHighColor = Vec4(0.35f, 0.35f, 0.35f, 1.f);
+		fogDesc.vHighColor = Vec4(0.31f, 0.31f, 0.31f, 1.f);
+		fogDesc.fFogStart = 100.f;
+		fogDesc.fFogEnd = 500.f;
+		fogDesc.fFogDensity = 0.f;
+		fogDesc.fFogMaxOpacity = 0.2f;
+		fogDesc.fFogBaseHeight = -45.f;
+		fogDesc.fFogNoiseScale = 0.15f;
+		fogDesc.fFogNoiseSpeed = 0.2f;
+		m_pGameInstance->Commit_FogParam();
+	}
 }
 
 HRESULT CLevel_Tutorial_Village::Ready_SkyBox()
@@ -499,6 +517,10 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
 	CQuestManager::GetInstance()->Start_Quest(0);
+
+	
+	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
+		return E_FAIL;
 
 	return S_OK;
 }

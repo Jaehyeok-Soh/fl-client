@@ -6,11 +6,13 @@
 CVine::CVine(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CPlants(pDevice ,pDeviceContext)
 {
+	m_bBakedShadow = true;
 }
 
 CVine::CVine(const CVine& rhs)
 	: CPlants(rhs)
 {
+	m_bBakedShadow = true;
 }
 
 

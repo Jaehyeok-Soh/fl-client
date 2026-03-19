@@ -1,7 +1,12 @@
 #pragma once
 #include "CameraMan.h"
+#include "CinematicCameraSequence.h"
 
-class CCinematicCamera final: public CCameraMan
+NS_BEGIN(Engine)
+
+struct CinematicCameraSequence;
+
+class ENGINE_DLL CCinematicCamera final: public CCameraMan
 {
 	using Super = CCameraMan;
 public:
@@ -24,14 +29,26 @@ public:
 	virtual void						Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT						Render()override;
 public:
-	HRESULT								Play_Cinematic(Camera_Cinematic_Sequence* pCamCinematicSequence);
+	void								Update_PreMove(const _float fTimeDelta);
+public:
+	HRESULT								Play_Cinematic(CinematicCameraSequence* pCamCinematicSequence);
+	HRESULT								End_Cinematic();
 protected:
-	Camera_Cinematic_Sequence*			m_pCinematicSquence;	/* 현재 CinematicSquence */
-	_uint								m_iCurFrameIndex;		/* 현재 KeyFrame Index */
+	_bool								m_isPreCamData_AddKeyFrame;
+	_bool								m_isActionStart;
+	_bool								m_isDepratEvent;
+	_bool								m_isOnReachEvent;
+	CinematicCameraSequence*			m_pCinematicSquence;	/* 현재 CinematicSquence */
+	_int								m_iCurFrameIndex;		/* 현재 KeyFrame Index */
+	_int								m_iPreFrameIndex;		/* 이전 KeyFrame Index */
 	_float								m_fDeltaTime;			/* 현재 누적된 시간 */
+private:
+	vector<Camera_Keyframe_Data>		m_vecCamer_KeyFrame_Data;
+	Camera_Keyframe_Data				m_tEntryPointData;		/* 카메라 시네마틱 연출 시작 지점  */
 public:
 	static	CCinematicCamera*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject*				Clone(void* pArg) override;
 	virtual void						Free() override;
 };
 
+NS_END

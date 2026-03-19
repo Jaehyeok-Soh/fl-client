@@ -44,7 +44,7 @@ public:
 	};
 protected:
 	// TODO - type 다 지정해줘야됨, 현재 툴때문이 임시로
-	CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _bool bBakedShadow = false);
 	explicit CGameObject(const CGameObject& rhs);
 	virtual ~CGameObject() = default;
 
@@ -116,7 +116,7 @@ public:
 
 	OBJECT_ENUM_TAG::Enum Get_Object_Enum_Tag() { return m_eObject_Enum_Tag; }
 	void Set_Object_Enum_Tag(OBJECT_ENUM_TAG::Enum eTag) { m_eObject_Enum_Tag = eTag; }
-
+	_bool Is_BakedShadow() const { return m_bBakedShadow; }
 public:
 	void Mark_Pooled();
 	virtual void Set_Active(_bool b);
@@ -147,6 +147,7 @@ private:
 	void Safe_Release_Component();
 	void Safe_Release_ScriptComponent();
 protected:
+	_bool m_bBakedShadow = { false };
 	_int m_iActiveIndex = { -1 };
 	wstring m_wstrLayerTag = { L"" };
 	CCameraMan* m_pTargeter = { nullptr };

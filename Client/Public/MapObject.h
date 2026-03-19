@@ -56,15 +56,17 @@ public:
 	virtual void			Update_Late(const _float fTimeelta)				override;
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
+	virtual HRESULT			Render_Shadow()									override;
 	HRESULT					Render_Instance(_uint iPassIndex = 0);
 	HRESULT					Render_Default(_uint iPassIndex = 0);
+	HRESULT					Render_ShadowInstance(_uint iPassIndex = 0);
+	HRESULT					Render_ShadowDefault(_uint iPassIndex = 0);
 private:
 	void					Compute_InstanceGroupMinMax(const Vec3* pComputedFinalMinMax, OUT Vec3 *pMinMax);
 	_bool					Compute_ModelLocalMinMax(CModel* pModel, OUT Vec3 outMinMax[2]);
 	void					Filtering_Visible(OUT _uint &iInstanceCount);
-	HRESULT					Update_InstanceBuffer(CInstanceMesh* pMesh);
+	HRESULT					Update_InstanceBuffer(CInstanceMesh* pMesh, _bool bForce = false);
 protected:
-
 	_uint					m_iSectionNum{0};
 	_uint					m_iShaderPass{0};
 	_bool					m_isUELoaded{false};

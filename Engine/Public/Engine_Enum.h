@@ -100,6 +100,8 @@ namespace Engine
 		Fogparam,
 		Toonparam,
 		Cascadeparam,
+		BakedShadowparam,
+		SectionShadowparam,
 		PlayerInfoBuffer,
 		COUNT
 	};
@@ -125,6 +127,8 @@ namespace Engine
 		"FogParamBuffer",
 		"ToonParamBuffer",
 		"CascadeParamBuffer",
+		"BakedShadowParamBuffer",
+		"ShaderBakedSectionBuffer",
 		"PlayerInfoBuffer"
 	};
 	//===================
@@ -147,6 +151,7 @@ namespace Engine
 		RT_Bloom,
 		RT_Cascade0,
 		RT_Cascade1,
+		RT_ShadowBaked,
 		LUT_Stand,
 		Transform,
 		Materials,
@@ -175,6 +180,7 @@ namespace Engine
 		"g_RenderTargetBloomTexture",
 		"g_RenderTargetCascadeShadowmap0",
 		"g_RenderTargetCascadeShadowmap1",
+		"g_RenderTargetShadowBaked",
 		"g_LUT_Stand",
 		"g_TransformMap",
 		"g_MaterialTextures",
@@ -716,6 +722,156 @@ namespace Engine
 			// 99999 Default
 			DEFAULT = 99999,
 		};
+	public:
+		static Enum		ToEnum(const string& strType)
+		{
+			if (strType == "PLAYER") return OBJECT_ENUM_TAG::PLAYER;
+
+			// NPC
+			if (strType == "NPC_DEFAULT") return OBJECT_ENUM_TAG::NPC_DEFAULT;
+			if (strType == "NPC_PAN") return OBJECT_ENUM_TAG::NPC_PAN;
+			if (strType == "NPC_BERENICA") return OBJECT_ENUM_TAG::NPC_BERENICA;
+
+			// OBJECT
+			if (strType == "OBJECT_DEFAULT") return OBJECT_ENUM_TAG::OBJECT_DEFAULT;
+
+			// OBJECT_PICKING
+			if (strType == "OBJECT_PICKING_DEFAULT") return OBJECT_ENUM_TAG::OBJECT_PICKING_DEFAULT;
+			if (strType == "OBJECT_PICKING_FLOWER_1") return OBJECT_ENUM_TAG::OBJECT_PICKING_FLOWER_1;
+
+			// OBJECT_INTERACT
+			if (strType == "OBJECT_INTERACT_DEFAULT") return OBJECT_ENUM_TAG::OBJECT_INTERACT_DEFAULT;
+			if (strType == "OBJECT_INTERACT_TUTORIAL_WEAPON") return OBJECT_ENUM_TAG::OBJECT_INTERACT_TUTORIAL_WEAPON;
+			if (strType == "OBJECT_INTERACT_TUTORIAL_GUN") return OBJECT_ENUM_TAG::OBJECT_INTERACT_TUTORIAL_GUN;
+
+			// TRIGGER_BOX
+			if (strType == "TRIGGER_BOX_DEFAULT") return OBJECT_ENUM_TAG::TRIGGER_BOX_DEFAULT;
+			if (strType == "TRIGGER_BOX_TO_DEFAULT") return OBJECT_ENUM_TAG::TRIGGER_BOX_TO_DEFAULT;
+			if (strType == "TRIGGER_BOX_TO_TUTORIAL_VILAGE") return OBJECT_ENUM_TAG::TRIGGER_BOX_TO_TUTORIAL_VILAGE;
+			if (strType == "TRIGGER_BOX_TO_TUTORIAL_BOSS") return OBJECT_ENUM_TAG::TRIGGER_BOX_TO_TUTORIAL_BOSS;
+			if (strType == "TRIGGER_BOX_GLOBAL_EVENT_DEFAULT") return OBJECT_ENUM_TAG::TRIGGER_BOX_GLOBAL_EVENT_DEFAULT;
+			if (strType == "TRIGGER_BOX_TUTORIAL_UI_EVENT_DEFAULT") return OBJECT_ENUM_TAG::TRIGGER_BOX_TUTORIAL_UI_EVENT_DEFAULT;
+			if (strType == "TRIGGER_BOX_MILESTONE_DEFAULT") return OBJECT_ENUM_TAG::TRIGGER_BOX_MILESTONE_DEFAULT;
+
+			// MONSTER
+			if (strType == "MONSTER_DEFAULT") return OBJECT_ENUM_TAG::MONSTER_DEFAULT;
+			if (strType == "MONSTER_DOG") return OBJECT_ENUM_TAG::MONSTER_DOG;
+			if (strType == "MONSTER_FLY") return OBJECT_ENUM_TAG::MONSTER_FLY;
+			if (strType == "MONSTER_BOOMER") return OBJECT_ENUM_TAG::MONSTER_BOOMER;
+
+			// MONSTER_ELITE
+			if (strType == "MONSTER_ELITE_DEFAULT") return OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT;
+
+			// MONSTER_BOSS
+			if (strType == "MONSTER_BOSS_DEFAULT") return OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT;
+			if (strType == "MONSTER_BOSS_XIBI") return OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI;
+
+			// DEFAULT
+			if (strType == "DEFAULT") return OBJECT_ENUM_TAG::DEFAULT;
+
+			return OBJECT_ENUM_TAG::DEFAULT; // 매핑되지 않은 문자열이 들어올 경우의 방어 코드
+		}
+		static string	ToString(Enum eType)
+		{
+			switch (eType)
+			{
+			case OBJECT_ENUM_TAG::PLAYER: return "PLAYER";
+
+			case OBJECT_ENUM_TAG::NPC_DEFAULT: return "NPC_DEFAULT";
+			case OBJECT_ENUM_TAG::NPC_PAN: return "NPC_PAN";
+			case OBJECT_ENUM_TAG::NPC_BERENICA: return "NPC_BERENICA";
+
+			case OBJECT_ENUM_TAG::OBJECT_DEFAULT: return "OBJECT_DEFAULT";
+
+			case OBJECT_ENUM_TAG::OBJECT_PICKING_DEFAULT: return "OBJECT_PICKING_DEFAULT";
+			case OBJECT_ENUM_TAG::OBJECT_PICKING_FLOWER_1: return "OBJECT_PICKING_FLOWER_1";
+
+			case OBJECT_ENUM_TAG::OBJECT_INTERACT_DEFAULT: return "OBJECT_INTERACT_DEFAULT";
+			case OBJECT_ENUM_TAG::OBJECT_INTERACT_TUTORIAL_WEAPON: return "OBJECT_INTERACT_TUTORIAL_WEAPON";
+			case OBJECT_ENUM_TAG::OBJECT_INTERACT_TUTORIAL_GUN: return "OBJECT_INTERACT_TUTORIAL_GUN";
+
+			case OBJECT_ENUM_TAG::TRIGGER_BOX_DEFAULT: return "TRIGGER_BOX_DEFAULT";
+			case OBJECT_ENUM_TAG::TRIGGER_BOX_TO_DEFAULT: return "TRIGGER_BOX_TO_DEFAULT";
+			case OBJECT_ENUM_TAG::TRIGGER_BOX_TO_TUTORIAL_VILAGE: return "TRIGGER_BOX_TO_TUTORIAL_VILAGE";
+			case OBJECT_ENUM_TAG::TRIGGER_BOX_TO_TUTORIAL_BOSS: return "TRIGGER_BOX_TO_TUTORIAL_BOSS";
+			case OBJECT_ENUM_TAG::TRIGGER_BOX_GLOBAL_EVENT_DEFAULT: return "TRIGGER_BOX_GLOBAL_EVENT_DEFAULT";
+			case OBJECT_ENUM_TAG::TRIGGER_BOX_TUTORIAL_UI_EVENT_DEFAULT: return "TRIGGER_BOX_TUTORIAL_UI_EVENT_DEFAULT";
+			case OBJECT_ENUM_TAG::TRIGGER_BOX_MILESTONE_DEFAULT: return "TRIGGER_BOX_MILESTONE_DEFAULT";
+
+			case OBJECT_ENUM_TAG::MONSTER_DEFAULT: return "MONSTER_DEFAULT";
+			case OBJECT_ENUM_TAG::MONSTER_DOG: return "MONSTER_DOG";
+			case OBJECT_ENUM_TAG::MONSTER_FLY: return "MONSTER_FLY";
+			case OBJECT_ENUM_TAG::MONSTER_BOOMER: return "MONSTER_BOOMER";
+
+			case OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT: return "MONSTER_ELITE_DEFAULT";
+
+			case OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT: return "MONSTER_BOSS_DEFAULT";
+			case OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI: return "MONSTER_BOSS_XIBI";
+
+			case OBJECT_ENUM_TAG::DEFAULT: return "DEFAULT";
+
+			default: return "Unknown";
+			}
+		}
 	}OBJECT_ENUM_TAG;
+
+	// 툴에서 콤보박스 순회용으로 쓸 배열입니다. (순서대로 띄워집니다)
+	inline static const OBJECT_ENUM_TAG::Enum g_arrAllObjectTags[] = {
+		OBJECT_ENUM_TAG::PLAYER,
+		OBJECT_ENUM_TAG::NPC_DEFAULT,
+		OBJECT_ENUM_TAG::NPC_PAN,
+		OBJECT_ENUM_TAG::NPC_BERENICA,
+		OBJECT_ENUM_TAG::OBJECT_DEFAULT,
+		OBJECT_ENUM_TAG::OBJECT_PICKING_DEFAULT,
+		OBJECT_ENUM_TAG::OBJECT_PICKING_FLOWER_1,
+		OBJECT_ENUM_TAG::OBJECT_INTERACT_DEFAULT,
+		OBJECT_ENUM_TAG::OBJECT_INTERACT_TUTORIAL_WEAPON,
+		OBJECT_ENUM_TAG::OBJECT_INTERACT_TUTORIAL_GUN,
+		OBJECT_ENUM_TAG::TRIGGER_BOX_DEFAULT,
+		OBJECT_ENUM_TAG::TRIGGER_BOX_TO_DEFAULT,
+		OBJECT_ENUM_TAG::TRIGGER_BOX_TO_TUTORIAL_VILAGE,
+		OBJECT_ENUM_TAG::TRIGGER_BOX_TO_TUTORIAL_BOSS,
+		OBJECT_ENUM_TAG::TRIGGER_BOX_GLOBAL_EVENT_DEFAULT,
+		OBJECT_ENUM_TAG::TRIGGER_BOX_TUTORIAL_UI_EVENT_DEFAULT,
+		OBJECT_ENUM_TAG::TRIGGER_BOX_MILESTONE_DEFAULT,
+		OBJECT_ENUM_TAG::MONSTER_DEFAULT,
+		OBJECT_ENUM_TAG::MONSTER_DOG,
+		OBJECT_ENUM_TAG::MONSTER_FLY,
+		OBJECT_ENUM_TAG::MONSTER_BOOMER,
+		OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT,
+		OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT,
+		OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI,
+		OBJECT_ENUM_TAG::DEFAULT
+	};
+
+
+#pragma region Lerp Type
+
+	enum class ELerpType
+	{
+		NONE,           /* 보간 안 함 (Cut 연출. 즉시 텔레포트) */
+		Linear,         /* 등속 이동 (기계처럼 처음부터 끝까지 똑같은 속도) */
+		SlowStart,      /* 서서히 출발 (점점 빨라짐. 상용 엔진의 EaseIn) */
+		SlowEnd,        /* 서서히 도착 (목적지에서 스르륵 멈춤. 상용 엔진의 EaseOut) */
+		SmoothStep,     /* 서서히 출발 + 서서히 도착 (컷신의 꽃. 상용 엔진의 EaseInOut) */
+		Curve,			/* 국선 주행 */
+		END
+	};
+
+#pragma endregion
+
+
+#pragma region Cinematic Camera Sequence BroadCast_Type
+
+	enum class CCS_BROADCAST_TYPE
+	{
+		BEGIN_CCS,
+		DEPART,
+		ON_REACH,
+		END_CCS,
+		END,
+	};
+
+#pragma endregion
 }
 #endif // Engine_Enum_h__

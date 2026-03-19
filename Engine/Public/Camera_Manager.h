@@ -1,15 +1,18 @@
 #pragma once
 #include "CameraMan.h"
 #include "Base.h"
+#include "../../EngineSDK/Include/Engine_Enum.h"
 
 NS_BEGIN(Engine)
 
 class CGameInstance;
 
-struct Camera_Cinematic_Sequence;
+class CCinematicCamera;
+struct CinematicCameraSequence;
 
 template<typename T>
 class CConstant_Buffer;
+
 
 class CCamera_Manager final : public CBase
 {
@@ -21,19 +24,23 @@ private:
 public:
 	CCameraMan* Get_MainCamera() { return m_pMainCamera; }
 
-	void Change_MainCamera(CameraType eType, const wstring& wstrTag);
-	void Add_Camera(CameraType eType, const wstring& wstrTag, CCameraMan* pGo);
-	void Remove_Camera(CameraType eType, const wstring& wstrTag);
+	/* Cinematic 카메라 등록함수 , Static Level에 등록 추천 아닐시 매 Level 등록 해줘야함 */
+	HRESULT	Register_CinematicCamera(_uint iPrototypeLevelIndex, const wstring& wstrFindPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrAddLagerTag, void* pCinematicCameraDesc);
 
-	void Add_Actor_Object(CGameObject* pGo, _bool bImmediatelyChange = false);
-	void Remove_Actor_Object(CGameObject* pGo);
+	void	Change_MainCamera(CameraType eType, const wstring& wstrTag);
+	void	Add_Camera(CameraType eType, const wstring& wstrTag, CCameraMan* pGo);
+	void	Remove_Camera(CameraType eType, const wstring& wstrTag);
 
-	void Change_Target(CGameObject* pGo);
+	void	Add_Actor_Object(CGameObject* pGo, _bool bImmediatelyChange = false);
+	void	Remove_Actor_Object(CGameObject* pGo);
+
+	void	Change_Target(CGameObject* pGo);
 	HRESULT Change_Target_Next();
 
 	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
-	HRESULT Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence );
-	
+	HRESULT Play_CameraCinematic(CinematicCameraSequence* pCameraCinematicSequence );
+	HRESULT	End_CameraCinematic();
+
 	const Matrix& Get_ViewMatrix() const { return m_matView; }
 	void Set_ViewMatrix(const Matrix &matView) { m_matView = matView; }
 	const Matrix& Get_ProjMatrix() const { return m_matProjection; }
@@ -72,6 +79,10 @@ private:
 	CConstant_Buffer<SHADER_INVDESC>* m_pInv_CBuffer = { nullptr };
 
 
+	/* 카메라 교체 시, 교체되기 '이전' 카메라의 정보 저장 */
+	CameraType	m_ePrevCameraType{};
+	wstring		m_wstrPrevCameraName{L""};
+	Matrix		m_matPrevCameraWorld{ Matrix::Identity };
 private:
 	CGameInstance* m_pGameInstnace{ nullptr };
 public:

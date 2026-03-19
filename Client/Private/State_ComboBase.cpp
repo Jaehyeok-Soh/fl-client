@@ -52,7 +52,7 @@ HRESULT CState_ComboBase::Start(void* pArg, _bool bForce)
 	else
 		m_tKeyTimer.fMaxTime = m_ComboTimes[0];
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::COMBO));
 
@@ -67,8 +67,6 @@ void CState_ComboBase::Update(const _float fTimeDelta)
 
 	Check_Combo();
 
-	Check_Monster();
-
 	Super::Update(fTimeDelta);
 }
 
@@ -79,7 +77,7 @@ HRESULT CState_ComboBase::End()
 
 	End_Att(ENUM_TO_UINT(CPlayer::State::COMBO));
 
-	Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 
 	return S_OK;
 }
@@ -97,6 +95,8 @@ _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 
 void CState_ComboBase::Change_NextCombo()
 {
+	Reset_WhenStart();
+
 	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
 
 	// 먼저 monster를 바라보도록 설정
@@ -167,7 +167,10 @@ void CState_ComboBase::Check_Combo()
 	// 너무 시간이 지나면 combo end
 	if (m_fStateElapsed > m_ComboEndTimes[m_iMainAnimIdx])
 	{
-		Change_Weapon(CPlayer::Part::SWORD, ENUM_TO_UINT(CWeapon::State::HOLD));
+		{
+			Change_Weapon();
+			Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
+		}
 		return;
 	}
 

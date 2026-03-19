@@ -93,6 +93,7 @@ private:
 	void						ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUTORIALUIEVENT_DESC* pDesc);
+	void						ImGuiUpdate_TriggerBox_CinematicPlayer(TRIGGERBOX_CINEMATICPLAYER_DESC* pDesc);
 
 	/* Quest ฐüทร */
 	void						ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc);

@@ -238,6 +238,14 @@ VS_OUT_MESH VS_GRASS(VS_IN_MESH input)
     return output;
 }
 
+VS_OUT_SHADOW VS_SHADOW(VS_IN_MESH input)
+{
+    VS_OUT_SHADOW output;
+    float4 vWorldPos = mul(float4(input.vPosition, 1.f), W);
+    output.vPosition = mul(vWorldPos, bakedShadowParam.matLightVP);
+    return output;
+}
+
 PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
 {
     PS_OUT_DEFFERED output;
@@ -807,30 +815,40 @@ PS_OUT_BACKBUFFER PS_SKYBOX(PS_IN_MESH input)
     return output;
 }
 
+PS_OUT_SHADOW PS_SHADOW(VS_OUT_SHADOW input)
+{
+    PS_OUT_SHADOW output;
+    output.vDepth = float4(input.vPosition.z, 0.f, 0.f, 1.f);
+    return output;
+}
+
+
 
 technique11 T0
 {
     // 기본 오브젝트
-	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN) // 0
 	// LandScape
-    PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)
+    PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE) // 1
 
     // 식생
-	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_BUSH)
-	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_GRASS, PS_GRASS)
-	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MOSS)
-	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_TREE)
-	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_VINE)
+	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_BUSH) // 2
+	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_GRASS, PS_GRASS) // 3
+	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MOSS) // 4
+	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_TREE) // 5
+	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_VINE) // 6
 
     // 환경요소
-	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_ReadOnly, BS_AlphaBlend , VS_MAIN, PS_WATER)
+	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN) // 7
+	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_ReadOnly, BS_AlphaBlend , VS_MAIN, PS_WATER) // 8
 
     // RGB mapping : weapon 쪽에서 쓰임
-	PASS_RS_DS_BS_VP(RGBMapping, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING) 
+	PASS_RS_DS_BS_VP(RGBMapping, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING) // 9
     
     //EXT
-    PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_BAKESHADOW)
-	PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_BLACK)
-	PASS_RS_DS_BS_VP(SkyBox, RS_Default_CullNone  , DS_ReadOnly , BS_Default, VS_SKYBOX, PS_SKYBOX)
+    PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_BLACK) // 10
+	PASS_RS_DS_BS_VP(SkyBox, RS_Default_CullNone  , DS_ReadOnly , BS_Default, VS_SKYBOX, PS_SKYBOX) // 11
+
+    // Shadow - Index 변경되면 Render_Shadow에서 Set_Pass Index 바꿔줘야함
+    PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_SHADOW, PS_SHADOW) // 12
 };

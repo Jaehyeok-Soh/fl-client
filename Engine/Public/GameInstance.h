@@ -35,7 +35,7 @@ NS_BEGIN(Engine)
 
 enum class CameraType;
 struct DelegateHandle;
-struct Camera_Cinematic_Sequence;
+struct CinematicCameraSequence;
 class CCollider;
 class CGameObject;
 class CObjectPool;
@@ -45,6 +45,7 @@ class CFxEffectAsset;
 class CFxShaderVariant;
 class CEffectHandler;
 class CBounding_AABB;
+
 
 class ENGINE_DLL CGameInstance final : public CBase
 {
@@ -194,7 +195,10 @@ public:
 	void Setup_UIViewProj_ToCBuffer();
 	void Setup_Inv_ToCBuffer();
 
-	HRESULT Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence);
+	HRESULT	Register_CinematicCamera(_uint iPrototypeLevelIndex, const wstring& wstrFindPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrAddLagerTag, void* pCinematicCameraDesc = nullptr);
+	HRESULT Play_CameraCinematic(CinematicCameraSequence* pCameraCinematicSequence);
+	HRESULT	End_CameraCinematic();
+
 	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
 #pragma endregion
 	
@@ -259,6 +263,8 @@ public:
 #pragma region RENDER_MANAGER
 	inline void Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO);
 	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
+	HRESULT Set_BakedShadowConstantBuffer(class CShader* pShader);
+	HRESULT Bake_StaticShadow(BoundingBox* pRootBox);
 #ifdef _DEBUG
 	inline void Push_DebugComponent(class CComponent* pComp);
 #endif
@@ -314,15 +320,15 @@ public:
 
 #pragma region RENDERTARGET_MANAGER
 	HRESULT Add_RenderTarget(ERenderTarget eTarget, const CRenderTarget::RENDERTARGET_DESC* pDesc);
+	HRESULT Add_RenderTargetArray(ERenderTarget eTarget, const CRenderTargetArray::RENDERTARGET_ARR_DESC* pDesc);
 	HRESULT Add_MRT(EMRTLayer eMRTLayer, ERenderTarget eTarget);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear = true, _bool bUseDSV = true);
 	HRESULT Begin_MRT(EMRTLayer eMRTLayer, _bool bClear, ID3D11DepthStencilView* pDSV);
+	HRESULT Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, _bool bUseDSV);
+	HRESULT Begin_RTArraySlice(ERenderTarget eTarget, _uint iSlice, _bool bClear, ID3D11DepthStencilView* pDSV);
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
-#ifdef _DEBUG
-	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
-	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
 	ID3D11ShaderResourceView* Get_RenderTargetSRV(ERenderTarget eTarget);
 	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc();
 	const SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() const;
@@ -346,7 +352,14 @@ public:
 	const SHADER_CASCADE_SHADOW_DESC& Get_CascadeParamDesc() const;
 	HRESULT Commit_CascadeParam();
 	HRESULT Commit_AllPostParams();
+#ifdef _DEBUG
+	HRESULT Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Debug_RT_Render(EMRTLayer eMRTLayer, class CShader* pShader, class CVIBuffer_Rect_Tex* pVIBuffer);
+	ID3D11ShaderResourceView* Get_BakedShadowDebugSRV();
+	const ACTIVE_BAKED_SET& Get_ActiveBakedSectionSet() const;
+	void Update_BakedShadowDebugTexture(_uint iSlice);
 #endif
+
 #pragma endregion
 
 #pragma region RANDOM
@@ -424,32 +437,32 @@ public:
 	void Push_CollidedData(const COLLIDED_DESC& desc);
 #pragma endregion
 
+#pragma region Cinematic Manager
+
+	HRESULT			Play_CameraCinematic(const wstring& wstrFindKey);
+	HRESULT			Load_CameraCinematicSequence(const _tchar* wszCameraCinematicDataJsonPath);
+	HRESULT			Save_CameraCinematicSequence(const _tchar* wszCameraCinematicDataJsonPath);
+	HRESULT			Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT CinematicCameraSequence* pOutCamCinematicSequence);
+	HRESULT			Save_CameraCinematicSequence(const wstring& wstrFindKey, const	CinematicCameraSequence* pSaveCamCinematicSequence);
+	vector<string>	Get_CameraCinematicSequenceNames() const;
+
+#pragma endregion
+
 
 #pragma region 
 #ifdef _DEBUG
 	HRESULT					DebugRender_MapMinMaxBox();
 #endif // _DEBUG
 	CBounding_AABB*			Get_MapMinMaxBox();
+	BoundingBox*			Get_MapMinMaxBounding();
 	void					Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter);
 #pragma endregion
 #pragma region GAMEDATA_MANAGER
-	HRESULT		Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent);
-	HRESULT		BroadCaset_RegisterGlobalEvent(_uint iTypeIndex);
 #pragma region TextureSplating
 	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
 	/* 이름으로 Binding 하는 함수 */
 	HRESULT		GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
 #pragma endregion
-
-#pragma region
-	HRESULT		GameDataManager_Load_CameraCinematicSequence();
-	HRESULT		GameDataManager_Save_CameraCinematicSequence();
-	HRESULT		GameDataManager_Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT struct Camera_Cinematic_Sequence* pOutCamCinematicSequence);
-	HRESULT		GameDataManager_Save_CameraCinematicSequence(const wstring& wstrFindKey, const struct Camera_Cinematic_Sequence* pSaveCamCinematicSequence);
-
-	HRESULT		Play_CameraCinematic(const wstring& wstrFindKey);
-	vector<std::string> GameDataManager_Get_CameraCinematicSequenceNames() const;
-
 
 #pragma endregion
 
@@ -468,6 +481,7 @@ public:
 	_bool Is_TearDownSequence() { return m_bChangeLevelSequence || m_bDestroyEngineSequence; }
 private:
 	class CObjectPool_Manager* m_pObjectPool_Manager = { nullptr };
+	class CThreadPool* m_pThreadPool = { nullptr };
 	class CDataRepository* m_pDataRepository = { nullptr };
 	class CTimer_Manager* m_pTimer_Manager = { nullptr };
 	class CTimeScale_Manager* m_pTimeScale_Manager = { nullptr };
@@ -494,6 +508,7 @@ private:
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
 	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 	class CJudgementSystem* m_pJudgementSystem = { nullptr };
+	class CCinematic_Manager* m_pCinematicManager = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 

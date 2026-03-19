@@ -77,6 +77,8 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix& world, PHYSICS_SRT
 		PxQuat(srt.vQuat.x, srt.vQuat.y, srt.vQuat.z, srt.vQuat.w)
 	);
 
+	//transform.q.normalize();
+
 	PxVec3 scale(srt.vScale.x, srt.vScale.y, srt.vScale.z);
 
 	PxRigidStatic* staticActor = m_pPhysics->createRigidStatic(transform);

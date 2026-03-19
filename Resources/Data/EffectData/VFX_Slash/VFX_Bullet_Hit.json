@@ -345,7 +345,7 @@
                     "Color": {
                         "w": 1.0,
                         "x": 0.9957103133201599,
-                        "y": 0.8777499794960022,
+                        "y": 0.6955239772796631,
                         "z": 0.3613463044166565
                     },
                     "CurveTexture_Tag": "FX_ColorAtlas_YB",
@@ -420,7 +420,7 @@
                     "ParentsName": "VFX_Bullet_Hit",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
-                        "y": 0.15000000596046448
+                        "y": 0.06000000238418579
                     },
                     "ParticleSystem": 1,
                     "PartsName": "Particle",
@@ -549,7 +549,7 @@
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "StartSpeed": 2.4000000953674316,
+                    "StartSpeed": 4.0,
                     "TargetRotation": {
                         "x": 0.0,
                         "y": 0.0,
@@ -637,7 +637,7 @@
                     "Color": {
                         "w": 1.0,
                         "x": 1.0,
-                        "y": 0.8893676400184631,
+                        "y": 0.7227978706359863,
                         "z": 0.40504610538482666
                     },
                     "CurveTexture_Tag": "FX_ColorAtlas_YB",
@@ -724,7 +724,7 @@
                     "ParentsName": "VFX_Bullet_Hit",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
-                        "y": 0.15000000596046448
+                        "y": 0.06000000238418579
                     },
                     "ParticleSystem": 1,
                     "PartsName": "Particle2",
