@@ -150,10 +150,7 @@ _bool CMonster_Dog::On_Hit(const HIT_DESC& hitDesc)
 		if (pBody != nullptr && pRagdoll != nullptr)
 		{
 			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
-			{
-				Vec3 vImpulseDir = hitDesc.vHitNormal * -1.f;
-				pRagdoll->ApplyHitImpulse(vImpulseDir, 100.f);
-			}
+				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 100.f);
 		}
 	}
 
