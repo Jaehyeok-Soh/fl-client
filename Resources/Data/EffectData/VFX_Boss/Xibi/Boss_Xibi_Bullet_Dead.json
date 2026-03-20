@@ -20,7 +20,7 @@
                 1.0,
                 0.0,
                 20.0,
-                17.0,
+                19.0,
                 0.0,
                 1.0
             ],
@@ -30,12 +30,12 @@
                     "AppearRatio": 0.0,
                     "Color": {
                         "w": 1.0,
-                        "x": 0.41505032777786255,
-                        "y": 0.1507231593132019,
-                        "z": 0.9690590500831604
+                        "x": 0.6382717490196228,
+                        "y": 0.1490197628736496,
+                        "z": 4.156862735748291
                     },
                     "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "",
+                    "DiffuseTexture_Tag": "T_GlowYb001_Mask",
                     "DiscardValue": 0.05000000074505806,
                     "DissolveTexture_Tag": "",
                     "DistortionScale": {
@@ -70,7 +70,7 @@
                     "LifeTime": 1.4999998807907104,
                     "Looping": false,
                     "MaskingTexture_Tag": "",
-                    "MaxParticle": 10,
+                    "MaxParticle": 20,
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
@@ -79,7 +79,7 @@
                         "x": 0.05000000074505806,
                         "y": 0.06000000238418579
                     },
-                    "ParticleSystem": 1,
+                    "ParticleSystem": 2,
                     "PartsName": "Boss_Xibi_Bullet_Particle",
                     "PlayAnimation": false,
                     "PlayBackSpeed": 1.0,
@@ -137,10 +137,10 @@
                     },
                     "SeparateAxes": false,
                     "SeparateScaleAxes": false,
-                    "Shader_Pass": 0,
-                    "Shader_Path": "",
-                    "Shader_Tag": "Shader_VtxEffectParticle",
-                    "ShapeType": 3,
+                    "Shader_Pass": 1,
+                    "Shader_Path": "../../Shaders\\Shader_VtxEffectTexture.hlsl",
+                    "Shader_Tag": "Shader_VtxEffectTexture",
+                    "ShapeType": 14,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0
@@ -214,7 +214,7 @@
                     },
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 0,
-                    "TextureFlag": 16,
+                    "TextureFlag": 17,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": false,
@@ -225,7 +225,7 @@
                     },
                     "Tool_Resource": {
                         "Curve": true,
-                        "Diffuse": false,
+                        "Diffuse": true,
                         "Dissolve": false,
                         "Glow": false,
                         "Gradation": false,
@@ -282,7 +282,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": true,
                     "_Use_Effect_UV_OverScroll": false,
@@ -311,9 +311,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 30.0,
-                        "y": 30.0,
-                        "z": 1.0
+                        "x": 50.0,
+                        "y": 50.0,
+                        "z": 50.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -465,9 +465,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 30.0,
-                        "y": 30.0,
-                        "z": 1.0
+                        "x": 50.0,
+                        "y": 50.0,
+                        "z": 50.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -527,17 +527,17 @@
                     "UseStartRotation": false,
                     "UseUVScrollCurve": false,
                     "WorldMatrix": [
-                        30.0,
+                        50.0,
                         0.0,
                         0.0,
                         0.0,
                         0.0,
-                        30.0,
+                        50.0,
                         0.0,
                         0.0,
                         0.0,
                         0.0,
-                        1.0,
+                        50.0,
                         0.0,
                         0.0,
                         0.0,
@@ -556,12 +556,12 @@
                     "AppearRatio": 0.0,
                     "Color": {
                         "w": 1.0,
-                        "x": 0.9690590500831604,
-                        "y": 0.1507231593132019,
-                        "z": 0.38899385929107666
+                        "x": 9.686274528503418,
+                        "y": 0.1490190178155899,
+                        "z": 0.37247133255004883
                     },
                     "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "",
+                    "DiffuseTexture_Tag": "T_GlowYb001_Mask",
                     "DiscardValue": 0.05000000074505806,
                     "DissolveTexture_Tag": "",
                     "DistortionScale": {
@@ -595,8 +595,8 @@
                     },
                     "LifeTime": 1.4999998807907104,
                     "Looping": false,
-                    "MaskingTexture_Tag": "",
-                    "MaxParticle": 10,
+                    "MaskingTexture_Tag": "T_GlowYb001_Mask",
+                    "MaxParticle": 20,
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
@@ -605,7 +605,7 @@
                         "x": 0.05000000074505806,
                         "y": 0.06000000238418579
                     },
-                    "ParticleSystem": 1,
+                    "ParticleSystem": 2,
                     "PartsName": "NEW_PARTS",
                     "PlayAnimation": false,
                     "PlayBackSpeed": 1.0,
@@ -663,10 +663,10 @@
                     },
                     "SeparateAxes": false,
                     "SeparateScaleAxes": false,
-                    "Shader_Pass": 0,
-                    "Shader_Path": "",
-                    "Shader_Tag": "Shader_VtxEffectParticle",
-                    "ShapeType": 3,
+                    "Shader_Pass": 1,
+                    "Shader_Path": "../../Shaders\\Shader_VtxEffectTexture.hlsl",
+                    "Shader_Tag": "Shader_VtxEffectTexture",
+                    "ShapeType": 14,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0
@@ -740,7 +740,7 @@
                     },
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 0,
-                    "TextureFlag": 16,
+                    "TextureFlag": 17,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": false,
@@ -751,7 +751,7 @@
                     },
                     "Tool_Resource": {
                         "Curve": true,
-                        "Diffuse": false,
+                        "Diffuse": true,
                         "Dissolve": false,
                         "Glow": false,
                         "Gradation": false,
@@ -808,7 +808,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": true,
                     "_Use_Effect_UV_OverScroll": false,
