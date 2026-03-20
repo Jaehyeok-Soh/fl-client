@@ -2,7 +2,7 @@
     "Category": "EFFECT",
     "Objects": [
         {
-            "ContainerName": "ENV_Brown_Leaf3",
+            "ContainerName": "Attack3_Particle",
             "IsPoolingEffect": true,
             "SimulationType": 3435973836,
             "Type": "EFFECT_CONTAINER",
@@ -20,35 +20,35 @@
                 1.0,
                 0.0,
                 20.0,
-                37.79999923706055,
+                22.799999237060547,
                 0.0,
                 1.0
             ],
             "_ChildData": [
                 {
                     "AnimationSpeed": 1.0,
-                    "AppearRatio": 0.800000011920929,
+                    "AppearRatio": 0.25999999046325684,
                     "Color": {
                         "w": 1.0,
-                        "x": 0.2894800901412964,
-                        "y": 0.059310078620910645,
-                        "z": 0.0006953506381250918
+                        "x": 10.0,
+                        "y": 7.109112739562988,
+                        "z": 3.9215688705444336
                     },
                     "CurveTexture_Tag": "",
-                    "DiffuseTexture_Tag": "T_FlowerLzy02_D",
+                    "DiffuseTexture_Tag": "T_GlowYb001_Mask",
                     "DiscardValue": 0.05000000074505806,
                     "DissolveTexture_Tag": "",
                     "DistortionScale": {
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "Duration": 5.0,
+                    "Duration": 0.009999999776482582,
                     "EffectSystem": 1,
                     "EffectType": 1,
                     "Effect_GlowPower": 1.0,
-                    "EmissionType": 0,
+                    "EmissionType": 4,
                     "EndScale": {
-                        "x": 1.0,
+                        "x": 0.10000000149011612,
                         "y": 1.0,
                         "z": 1.0
                     },
@@ -67,27 +67,27 @@
                         "y": -1.0,
                         "z": 0.0
                     },
-                    "LifeTime": 30.0,
-                    "Looping": true,
+                    "LifeTime": 1.5,
+                    "Looping": false,
                     "MaskingTexture_Tag": "",
-                    "MaxParticle": 20,
+                    "MaxParticle": 30,
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "ENV_Brown_Leaf3",
+                    "ParentsName": "Attack3_Particle",
                     "ParticleSize": {
-                        "x": 0.47999998927116394,
-                        "y": 0.49000000953674316
+                        "x": 0.17000000178813934,
+                        "y": 0.18000000715255737
                     },
-                    "ParticleSystem": 2,
+                    "ParticleSystem": 1,
                     "PartsName": "DEFAULT_EFFECT",
                     "PlayAnimation": false,
                     "PlayBackSpeed": 1.0,
-                    "RandomFlags": 7,
+                    "RandomFlags": 15,
                     "Range": {
-                        "x": 2.0,
-                        "y": 2.0,
-                        "z": 2.0
+                        "x": 3.0,
+                        "y": 3.0,
+                        "z": 3.0
                     },
                     "RenderFlag": 8192,
                     "RotationCurveX": [],
@@ -137,10 +137,10 @@
                     },
                     "SeparateAxes": false,
                     "SeparateScaleAxes": false,
-                    "Shader_Pass": 1,
-                    "Shader_Path": "../../Shaders\\Shader_VtxEffectTexture.hlsl",
-                    "Shader_Tag": "Shader_VtxEffectTexture",
-                    "ShapeType": 12,
+                    "Shader_Pass": 0,
+                    "Shader_Path": "../../Shaders\\Shader_VtxEffectParticle.hlsl",
+                    "Shader_Tag": "Shader_VtxEffectParticle",
+                    "ShapeType": 14,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0
@@ -154,9 +154,9 @@
                         },
                         "Diffuse": {
                             "w": 0.0,
-                            "x": 1.0,
-                            "y": 2.0,
-                            "z": 2.0
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
                         },
                         "Dissolve": {
                             "w": 0.0,
@@ -199,14 +199,14 @@
                     "StartRotation": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.0
+                        "z": 90.0
                     },
                     "StartScale": {
-                        "x": 1.0,
+                        "x": 0.10000000149011612,
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "StartSpeed": 1.0,
+                    "StartSpeed": 10.0,
                     "TargetRotation": {
                         "x": 0.0,
                         "y": 0.0,
@@ -259,17 +259,17 @@
                     "UseExternalForceCurve": false,
                     "UseGlobalGravityCurve": false,
                     "UseGlowPowerCurve": false,
-                    "UseRotationCurve": false,
+                    "UseRotationCurve": true,
                     "UseScaleCurve": false,
-                    "UseStartRotation": false,
+                    "UseStartRotation": true,
                     "UseUVScrollCurve": false,
                     "WorldMatrix": [
-                        1.0,
+                        5.9604645663569045e-09,
+                        0.09999998658895493,
                         0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        1.0,
+                        -0.9999998807907104,
+                        5.960464477539063e-08,
                         0.0,
                         0.0,
                         0.0,
@@ -284,12 +284,12 @@
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
                     "_Use_Effect_Continue": false,
-                    "_Use_Effect_Particle_Burst": false,
+                    "_Use_Effect_Particle_Burst": true,
                     "_Use_Effect_UV_OverScroll": false,
                     "strTag": "EffectObject"
                 }
             ],
-            "strTag": "ENV_Brown_Leaf3"
+            "strTag": "Attack3_Particle"
         }
     ]
 }

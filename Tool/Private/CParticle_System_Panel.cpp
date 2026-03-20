@@ -1026,7 +1026,11 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 
 		if (ImGui::TreeNode("Shape_EffectList##Effect_List"))
 		{
-			vector<string> m_pShapeList = {"NONE", "DROP", "RISE", "SPREAD", "STOP", "SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", "CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF" , "STRONGWIND_LEAF"};
+			vector<string> m_pShapeList = {
+				"NONE", "DROP", "RISE", "SPREAD", "STOP", 
+				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
+				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF" , "STRONGWIND_LEAF", "IRREGULAR_SPREAD"
+			};
 
 			std::vector<const char*> iTems;
 			iTems.reserve(static_cast<int>(m_pShapeList.size()));
@@ -1052,6 +1056,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::CIRCLETRAIL): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::CIRCLETRAIL); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SEMI_CIRCLETRAIL): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SEMI_CIRCLETRAIL); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD); break;
 
 				}
 			}
@@ -1062,7 +1067,11 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				return;
 			}
 
-			const char* shapeNames[] = { "NONE", "DROP", "RISE", "SPREAD", "STOP", "SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", "CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF", "STRONGWIND_LEAF"};
+			const char* shapeNames[] = { 
+				"NONE", "DROP", "RISE", "SPREAD", "STOP", 
+				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
+				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF", "STRONGWIND_LEAF", 
+				"IRREGULAR_SPREAD"};
 			int currentIndex = (int)m_tCurrentDesc.Data._Effect_ShapeType;
 
 			ImGui::Spacing();
