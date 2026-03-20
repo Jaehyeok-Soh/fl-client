@@ -957,15 +957,20 @@ BATTLE_FIELD_DESC::BATTLE_FIELD_DESC()
 	: fRadius{ 1.f }, vExtents{ 1.f,1.f,1.f }, pBattleFieldColliderBox{ nullptr }, pBattleFieldColliderSphere{ nullptr }, eFieldType{ Field_Type::Box }
 {
 }
+
 BATTLE_FIELD_DESC::BATTLE_FIELD_DESC(const BATTLE_FIELD_DESC& rhs)
-	: fRadius{ rhs.fRadius }, vExtents{ rhs.vExtents }, pBattleFieldColliderSphere{ rhs.pBattleFieldColliderSphere }, pBattleFieldColliderBox{ rhs.pBattleFieldColliderBox }, eFieldType{ rhs.eFieldType }
+	: fRadius{ rhs.fRadius }, vExtents{ rhs.vExtents }, pBattleFieldColliderSphere{ nullptr }, pBattleFieldColliderBox{ nullptr }, eFieldType{ rhs.eFieldType }
 {
+	/* Desc안에있는 Collider를  */
+	int a = 0;
 }
+
 BATTLE_FIELD_DESC::~BATTLE_FIELD_DESC()
 {
 	Safe_Release(pBattleFieldColliderSphere);
 	Safe_Release(pBattleFieldColliderBox);
 }
+
 void BATTLE_FIELD_DESC::Update_Collider(const Matrix* pWorldMatrix)
 {
 	if (!pBattleFieldColliderSphere)

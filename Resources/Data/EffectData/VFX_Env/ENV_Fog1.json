@@ -2,9 +2,9 @@
     "Category": "EFFECT",
     "Objects": [
         {
-            "ContainerName": "ENV_FOG1",
+            "ContainerName": "ENV_Fog1",
             "IsPoolingEffect": true,
-            "SimulationType": 3435973836,
+            "SimulationType": 1,
             "Type": "EFFECT_CONTAINER",
             "WorldMatrix": [
                 1.0,
@@ -1318,7 +1318,7 @@
                     "strTag": "EffectObject"
                 }
             ],
-            "strTag": "ENV_FOG1"
+            "strTag": "ENV_Fog1"
         }
     ]
 }
