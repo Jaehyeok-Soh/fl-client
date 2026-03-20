@@ -123,27 +123,29 @@ protected:
 	TimeCount				m_TFallingCount		= { 0.f,0.38f }; // 예전 값  : 0.4f
 	TimeCount				m_TChargeCount		= { 0.f,0.18f }; // 예전 값  : 0.15f
 
+	_float					m_fMoveTimeOffset = { 1.f };
+
 	// state가 변환 했다면 true
 protected:
-	_bool Check_Keys(const _float fTimeDelta);
+	_bool	Check_Keys(const _float fTimeDelta);
 
-	_bool Check_MoveKey(const _float fTimeDelta);
-	_bool Check_JumpKey(const _float fTimeDelta);
-	_bool Check_DashKey(const _float fTimeDelta);
-	_bool Check_CtrlPressKey(const _float fTimeDelta);
-	_bool Check_CtrlUpKey(const _float fTimeDelta);
-	_bool Check_MeleeKey(const _float fTimeDelta);
-	_bool Check_RangeKey(const _float fTimeDelta);
-	_bool Check_SkillKey(const _float fTimeDelta);
+	_bool	Check_MoveKey(const _float fTimeDelta);
+	_bool	Check_JumpKey(const _float fTimeDelta);
+	_bool	Check_DashKey(const _float fTimeDelta);
+	_bool	Check_CtrlPressKey(const _float fTimeDelta);
+	_bool	Check_CtrlUpKey(const _float fTimeDelta);
+	_bool	Check_MeleeKey(const _float fTimeDelta);
+	_bool	Check_RangeKey(const _float fTimeDelta);
+	_bool	Check_SkillKey(const _float fTimeDelta);
 
-	_bool Check_FKey(const _float fTimeDelta);
+	_bool	Check_FKey(const _float fTimeDelta);
 
-	_bool Check_WeaponChnage(const _float fTimeDelta);
-
-protected:
+	_bool	Check_WeaponChnage(const _float fTimeDelta);
 	_bool	Check_Hit(const _float fTimeDelta);
 	_bool	Check_Collis(const _float fTimeDelta);
 
+	// 움직임 관련 함수
+protected:
 	void	Jump_Impuls(_float fOffset = 1.f);
 	void	Look_Impuls(_float fOffset = 1.f);
 

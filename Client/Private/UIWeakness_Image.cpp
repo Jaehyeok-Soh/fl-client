@@ -158,7 +158,6 @@ void CUIWeakness_Image::Bind_Events()
 		})
 	);
 
-
 	m_vecEventHandles.push_back(m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 		{
 			if (EUIEventID::WEAKNESS_FIN == Desc.eEventID)
@@ -228,11 +227,11 @@ void CUIWeakness_Image::Initialize_InVisible_Event()
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON:
-		Ready_LerpChange(0.5f, m_fWidth, 0.1f, 3.f, 1.f);
+		Ready_LerpChange(0.4f, m_fWidth, 0.1f, 3.f, 1.f);
 		Ready_Fade(0.5f, 1.f, 0.f, 1.f);
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
-		Ready_LerpChange(0.5f, m_fHeight, 0.1f, 1.f, 1.f);
+		Ready_LerpChange(0.5f, m_fHeight, 0.1f, 1.f, 1.1f);
 		Ready_Fade(1.f, 1.f, 0.f, 1.f);
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:

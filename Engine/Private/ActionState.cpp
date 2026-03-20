@@ -342,6 +342,13 @@ void CActionState::SetCCTImpuls_Conversion(Vec3 vLocal)
 	cct->SetImpulsAccelation(vImpuls);
 }
 
+void CActionState::Set_YLerp(_bool bApply)
+{
+	CPhysicsCCT* cct = { nullptr };
+	if (cct = m_pOwner->Get_Component<CPhysicsCCT>())
+		cct->Set_YLerp(bApply);
+}
+
 HRESULT CActionState::Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx)
 {
 	if (m_pOwnerModel == nullptr)

@@ -29,6 +29,10 @@ HRESULT CState_Land::Start(void* pArg, _bool bForce)
 
 	Set_DoubleJumpCount(false);
 
+
+	Set_RootMotion_Apply(false);
+	Set_YLerp(false);
+
 	return S_OK;
 }
 
@@ -41,6 +45,10 @@ HRESULT CState_Land::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_YLerp(true);
+
+	Set_RootMotion_Apply(true);
 
 	return S_OK;
 }
