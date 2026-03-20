@@ -46,8 +46,6 @@ HRESULT CUITutorial_PopUp_Image::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
-
-
 	return S_OK;
 }
 
@@ -62,9 +60,9 @@ HRESULT CUITutorial_PopUp_Image::Awake(const _uint iCurrentLevelID)
 	m_vMoveOffset = Vec2{ 0.f, -200.f };
 
 	Set_Active(false);
-	m_pParentCanvasCache->Get_CommonParam_bool_Ref().reserve(2);
-	m_pParentCanvasCache->Get_CommonParam_bool_Ref().push_back(false);
-	m_pParentCanvasCache->Get_CommonParam_bool_Ref().push_back(false);
+	m_pParentCanvasCache->Get_CommonParam_bool_Ref()[POPUP_3] = (false);
+	m_pParentCanvasCache->Get_CommonParam_bool_Ref()[POPUP_4] = (false);
+
 	return S_OK;
 }
 
@@ -235,7 +233,6 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 		{
 			if (!m_isFirstTriggered)
 			{
-
 				m_isFirstEntered = true;
 				Set_Invisible();
 				m_pParentCanvasCache->Get_CommonParam_bool_Ref()[POPUP_4] = true;
@@ -332,7 +329,6 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_ICON:
 		break;
-
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BG:
 		break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_ICON_BG:

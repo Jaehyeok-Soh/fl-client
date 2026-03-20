@@ -102,18 +102,18 @@ public:
 	virtual void Initialize_Interactable_Event()	{}
 	virtual void Initialize_NonInteractable_Event()	{}
 
-
 	/// <summary>
 	/// Update Late 에서 실행 / 이벤트가 끝나면 True 반환할 것
 	/// </summary>
 	/// <param name="fTimeDelta"></param>
 	/// <returns></returns>
-	virtual _bool Tick_Visible_Event(const _float fTimeDelta)			{return true;}
-	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)			{return true;}
-	virtual _bool Tick_Activate_Event(const _float fTimeDelta)			{return true;}
-	virtual _bool Tick_InActivate_Event(const _float fTimeDelta)		{return true;}
-	virtual _bool Tick_Interactable_Event(const _float fTimeDelta)		{return true;}
-	virtual _bool Tick_NonInteractable_Event(const _float fTimeDelta)	{return true;}
+	virtual _bool Tick_Visible_Event(const _float fTimeDelta)			{ return true; }
+	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)			{ return true; }
+	virtual _bool Tick_Activate_Event(const _float fTimeDelta)			{ return true; }
+	virtual _bool Tick_InActivate_Event(const _float fTimeDelta)		{ return true; }
+	virtual _bool Tick_Interactable_Event(const _float fTimeDelta)		{ return true; }
+	virtual _bool Tick_NonInteractable_Event(const _float fTimeDelta)	{ return true; }
+
 protected:
 	/* 렌더 상태를 제어 */
 	_bool m_isPreVisible = { false };

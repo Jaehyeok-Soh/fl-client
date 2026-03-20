@@ -192,6 +192,21 @@ void CUIQuestNavi_Image::Bind_Events()
 					this->Set_Visible();
 			})
 	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
+			{
+				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
+				this->m_vTargetPos = desc.tChapterInfo.vObjectPosition;
+				this->m_isChange = true;
+
+				if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL ||
+					desc.tChapterInfo.eEvent == DTO::EQuestEvent::NPC_TALK)
+					this->Set_Invisible();
+				else
+					this->Set_Visible();
+			})
+	);
 }
 
 void CUIQuestNavi_Image::Tick_By_Type(const _float fTimeDelta)

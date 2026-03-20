@@ -29,6 +29,7 @@
 #include "UILoading_Text.h"
 #include "UILoading_Progress.h"
 #include "UILoading_Image.h"
+#include "UITutorial_Manager.h"
 
 // Quest
 #include "QuestManager.h"
@@ -631,6 +632,17 @@ void CMainApplication::Register_Quest_Scenario()
 	s2.wstrExplain = L"";
 	s2.wstrDescription = L"개발자 설명란 입니다.";
 	qm->Register_Scenario(s2);
+
+	// 시나리오-s3
+	DTO::QUESTDESC s3;
+	s3.iId = 2;
+	s3.iPrevId = 1;
+	s3.iNextId = 3;
+	s3.wstrTitle = L"모래의 메아리";
+	s3.wstrSubTitle = L"";
+	s3.wstrExplain = L"";
+	s3.wstrDescription = L"개발자 설명란 입니다.";
+	qm->Register_Scenario(s3);
 }
 
 void CMainApplication::Free()
@@ -643,6 +655,7 @@ void CMainApplication::Free()
 	Safe_Release(m_pDevice);
 	CUI_Manager::GetInstance()->DestroyInstance();	// 오브젝트 삭제 이후 삭제해야되는데 / 오브젝트에서 Addref 하고 있어서 안터짐
 	CUIMinimap_Manager::GetInstance()->DestroyInstance();
+	CUITutorial_Manager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();
 

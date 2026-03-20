@@ -35,6 +35,8 @@ HRESULT CState_Idle::Start(void *pArg, _bool bForce)
 		return S_OK;
 	}
 
+	Set_YLerp(false);
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
@@ -50,6 +52,8 @@ HRESULT CState_Idle::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_YLerp(true);
 
 	return S_OK;
 }

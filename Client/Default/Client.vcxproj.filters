@@ -820,6 +820,9 @@
     <Filter Include="03. GameObject\InteractiveObject\00. TutorialWeapon">
       <UniqueIdentifier>{bec36d74-1c86-4e94-904a-727139f1fa48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee\Combo\Dual">
+      <UniqueIdentifier>{51b954b9-bc45-4f1e-b817-f58a1434d26c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1521,6 +1524,9 @@
     <ClInclude Include="..\Public\WeaponPickUp.h">
       <Filter>03. GameObject\InteractiveObject\00. TutorialWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_DualCombo.h">
+      <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2211,6 +2217,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\WeaponPickUp.cpp">
       <Filter>03. GameObject\InteractiveObject\00. TutorialWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_DualCombo.cpp">
+      <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
