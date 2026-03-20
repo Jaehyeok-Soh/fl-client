@@ -26,18 +26,20 @@ typedef struct tagUITutorialEventesc
 
 class CUITutorial_Manager final : public CBase
 {
+	DECLARE_SINGLETON(CUITutorial_Manager)
+
 	using Super = CBase;
 private:
 	CUITutorial_Manager();
 	virtual ~CUITutorial_Manager() = default;
 public:
+	void Tutorial_Update(const _float fTimeDelta);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	CMulticastDelegate<void(const UI_TUTORIAL_EVENT_DESC&)> m_vTutorialEvents = {};
 
 public:
-	static CUITutorial_Manager* Create();
 	virtual void Free()override;
 
 };

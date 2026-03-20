@@ -65,8 +65,10 @@ private:
 	CUEMapdataParser*										m_pUEMapDataParser{nullptr};
 	CMapToolManager*										m_pMapToolManager{nullptr};
 	class CEffect_DataManager*								m_pEffectDataManager = { nullptr };
-private:
+	
 
+
+private:
 public:
 	
 	static CLevel_Map* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

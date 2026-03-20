@@ -7,12 +7,15 @@
 #include "DebugLine.h"
 #include "Model.h"
 #include "Level_Map.h"
-#include "GameInstance.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "Material.h"
 #include "Effect_DataManager.h"
 #include "LevelData.h"
+#include "CinematicCameraSequence.h"
+#include "GameInstance.h"
+
+
 
 IMPLEMENT_SINGLETON(CMapToolManager)
 
@@ -1090,13 +1093,13 @@ HRESULT CMapToolManager::Set_GPU_EnvData()
 
 HRESULT CMapToolManager::Load_Camera_Cinematic_Sequence(const wstring& wstrFindKey)
 {
-	m_pGameInstance->GameDataManager_Load_CameraCinematicSequence(wstrFindKey , m_pCamCinematicSequence);
+	m_pGameInstance->Load_CameraCinematicSequence(wstrFindKey , m_pCamCinematicSequence);
 	return S_OK;
 }
 
 HRESULT CMapToolManager::Save_Camera_Cinematic_Sequence(const wstring& wstrSaveKey)
 {
-	m_pGameInstance->GameDataManager_Save_CameraCinematicSequence(wstrSaveKey, m_pCamCinematicSequence);
+	m_pGameInstance->Save_CameraCinematicSequence(wstrSaveKey, m_pCamCinematicSequence);
 
 	Update_Camera_Cinematic_Sequence_Names();
 	return S_OK;
@@ -1107,11 +1110,11 @@ HRESULT CMapToolManager::Reset_Camera_Cinematic_Sequence()
 	/* 전체리셋 */
 	if (!m_pCamCinematicSequence)
 	{
-		m_pCamCinematicSequence = new Camera_Cinematic_Sequence(m_pDevice, m_pContext);
+		m_pCamCinematicSequence = new CinematicCameraSequence(m_pDevice, m_pContext);
 		return S_OK;
 	}
 
-	m_pCamCinematicSequence->Reset();
+	m_pCamCinematicSequence->Reset_KeyFrameData();
 
 	return S_OK;
 }
@@ -1120,7 +1123,7 @@ HRESULT CMapToolManager::Update_Camera_Cinematic_Sequence_Names()
 {
 	m_vecCamCinematicSequenceNames.clear();
 
-	m_vecCamCinematicSequenceNames = m_pGameInstance->GameDataManager_Get_CameraCinematicSequenceNames();
+	m_vecCamCinematicSequenceNames = m_pGameInstance->Get_CameraCinematicSequenceNames();
 	
 	return S_OK;
 }
@@ -1144,6 +1147,14 @@ HRESULT CMapToolManager::Ready_CinematicSequenceDebugRender()
 
 	if (m_pCamCinematicSequenceRenderModel == nullptr) return E_FAIL;
 	if (m_pCamCinematicSequenceRenderShader == nullptr) return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Ready_CinematicCameraSequence_EventManifest()
+{
+	if (FAILED(Load_CCS_EventManifest(&m_vecCCS_EventManifest)))
+		return E_FAIL;
 
 	return S_OK;
 }

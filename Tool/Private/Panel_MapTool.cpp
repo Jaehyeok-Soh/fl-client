@@ -4,6 +4,7 @@
 #include "MapObject.h"
 #include "Camera.h"
 #include "LevelData.h"
+#include "CinematicCameraSequence.h"
 #include "CameraMan.h"
 
 CPanel_MapTool::CPanel_MapTool(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -1062,6 +1063,15 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 	ImGui::SeparatorText(" Camera Cinematic Sequence Info ");
 
+	ImGui::NewLine();
+	static bool bShowManifestEditor = false;
+	if (ImGui::Button("Open Event Manifest Editor"))
+	{
+		bShowManifestEditor = !bShowManifestEditor; // 누를 때마다 On/Off
+	}
+
+	ImGui::Separator();
+
 
 	ImGui::NewLine();
 
@@ -1075,15 +1085,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 	if (ImGui::Button("Save Camera Cinematic Sequence [ Data ] "))
 	{
-		if (FAILED(m_pMapToolManager->Save_Camera_Cinematic_Sequence(Engine_Utils::ToWString(pCamCinematicSequence->strDataName))))
-		{
-			MSG_BOX(" Save Camera Cinematic Sequence 실패");
-		}
-	}
-
-	if (ImGui::Button("Save Camera Cinematic Sequence  [ Json ] "))
-	{
-		if (FAILED(m_pGameInstance->GameDataManager_Save_CameraCinematicSequence()))
+		if (FAILED(m_pMapToolManager->Save_Camera_Cinematic_Sequence(Engine_Utils::ToWString(pCamCinematicSequence->strName))))
 		{
 			MSG_BOX(" Save Camera Cinematic Sequence 실패");
 		}
@@ -1094,107 +1096,239 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	if (ImGui::Button(" Reset Camera Cinematic Sequence "))
 	{
 		/* 전체 리셋 */
-		pCamCinematicSequence->Reset();
+		pCamCinematicSequence->Reset_KeyFrameData();
 	}
 
 
 	ImGui::NewLine();
 
-	_bool isDebugRender = pCamCinematicSequence->isDebugRender;
-	ImGui::Checkbox("Debug Render##Debug Render",&pCamCinematicSequence->isDebugRender);
+	ImGui::NewLine();
+
+	ImGui::InputText("Name" , &pCamCinematicSequence->strName);
 
 	ImGui::NewLine();
 
-	ImGui::InputText("Name" , &pCamCinematicSequence->strDataName);
+	vector<CCS_EVENT_MANIFEST>& vecCSS_EventManifest = m_pMapToolManager->m_vecCCS_EventManifest;
 
-	ImGui::NewLine();
 
-	// =========================================================
-		// [추가] Start Cinematic Global Events UI
-		// =========================================================
-	ImGui::SeparatorText(" Start Cinematic Events ");
-
-	if (ImGui::Button("Add Start Event"))
-	{
-		// _uint 배열이므로 "NONE" 문자열 대신 숫자 0 (혹은 ENUM_TO_UINT(NONE))을 넣습니다.
-		pCamCinematicSequence->vecStartCinematic_GlobalEventIndex.push_back(0);
-	}
-
-	ImGui::PushID("StartEvents_Group"); // ID 겹침 방지용 그룹
-	for (int i = 0; i < pCamCinematicSequence->vecStartCinematic_GlobalEventIndex.size(); ++i)
-	{
-		ImGui::PushID(i);
-
-		// string 변환 없이 벡터에 있는 정수값을 바로 꺼내옵니다.
-		int iBuffer = static_cast<int>(pCamCinematicSequence->vecStartCinematic_GlobalEventIndex[i]);
-		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 40.f);
-
-		// 콤보박스에서 값이 변경되면...
-		if (ImGui::Combo("##StartEventCombo", &iBuffer, g_szGlobalBroadCastType, (int)EGlobal_Broadcast_Type::END))
+	// 팝업창과 데이터를 주고받기 위한 공유 변수들
+	static CCS_EVENT_DESC* s_pEditingEvent = nullptr;
+	static string s_strTempSub = "";
+	// 기존의 static string s_strTempAction = ""; 를 아래처럼 바꿉니다!
+	static vector<string> s_vecTempActions;
+	static bool s_bTriggerPopup = false;
+#pragma region CCS Event Manifest 람다
+	// 만능 리스트 렌더링 + 다중 선택 팝업창 통합 람다 함수
+	auto RenderEventListUI = [&](const char* szLabel, vector<CCS_EVENT_DESC>& vecEvents)
 		{
-			// 변경된 정수값을 다시 벡터에 쏙 집어넣습니다.
-			pCamCinematicSequence->vecStartCinematic_GlobalEventIndex[i] = static_cast<_uint>(iBuffer);
-		}
+			ImGui::SeparatorText(szLabel);
 
-		ImGui::SameLine();
-		if (ImGui::Button("X"))
-		{
-			// erase 할 때도 이름 잘 맞춰서 삭제!
-			pCamCinematicSequence->vecStartCinematic_GlobalEventIndex.erase(pCamCinematicSequence->vecStartCinematic_GlobalEventIndex.begin() + i);
-			ImGui::PopID();
-			--i;
-			continue;
-		}
-		ImGui::PopID();
-	}
-	ImGui::PopID(); // StartEvents_Group 해제
+			// 라벨 이름으로 고유한 Add 버튼 생성
+			string strAddBtn = string("Add Event##") + szLabel;
+			if (ImGui::Button(strAddBtn.c_str()))
+			{
+				vecEvents.push_back(CCS_EVENT_DESC());
+			}
+
+			string strPopupName = string("Select Event Data##Popup_") + szLabel;
+			bool bOpenPopup = false;
+
+			ImGui::PushID(szLabel); // 그룹 ID 푸시
+			for (int i = 0; i < vecEvents.size(); ++i)
+			{
+				ImGui::PushID(i);
+
+				CCS_EVENT_DESC* pEventDesc = &vecEvents[i];
+				string strDisplaySub = pEventDesc->strSubscriberName.empty() ? "None" : pEventDesc->strSubscriberName;
+
+				// ======================================================
+				// 1. 수신자 이름 출력 (첫 번째 줄)
+				// ======================================================
+				ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "[ %s ]", strDisplaySub.c_str());
+
+				// 2. 같은 줄 오른쪽 끝으로 이동
+				ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
+
+				// 3. [Setting Data] 버튼
+				if (ImGui::Button("Setting Data"))
+				{
+					s_pEditingEvent = pEventDesc;
+					s_strTempSub = pEventDesc->strSubscriberName;
+					s_vecTempActions = pEventDesc->vecActionNames; // 통째로 vector 복사
+					bOpenPopup = true;
+				}
+
+				ImGui::SameLine();
+
+				// 4. [X] 버튼 (이벤트 전체 삭제)
+				if (ImGui::Button("X"))
+				{
+					vecEvents.erase(vecEvents.begin() + i);
+					ImGui::PopID();
+					--i;
+					continue;
+				}
+
+				// ======================================================
+				// 5. 다음 줄부터 액션 리스트 들여쓰기 출력 (트리 구조)
+				// ======================================================
+				if (!pEventDesc->vecActionNames.empty())
+				{
+					for (int j = 0; j < pEventDesc->vecActionNames.size(); ++j)
+					{
+						string& strActionName = pEventDesc->vecActionNames[j];
+						if (!strActionName.empty())
+						{
+							// '└' 기호를 써서 종속된 느낌을 줍니다.
+							ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "   └ [%d] - %s", j, strActionName.c_str());
+						}
+					}
+				}
+				else
+				{
+					ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "   └ No Actions Selected");
+				}
+
+				ImGui::Spacing(); // 다음 이벤트 블록과의 간격을 살짝 띄워줍니다.
+				ImGui::PopID();   // 현재 이벤트의 PushID 해제
+			}
+			ImGui::PopID(); // szLabel 그룹의 PushID 해제
+
+
+			// =========================================================
+			// [팝업 호출 및 렌더링] 다중 선택(Multi-Select) UI
+			// =========================================================
+			if (bOpenPopup)
+			{
+				ImGui::OpenPopup(strPopupName.c_str());
+			}
+
+			ImGui::SetNextWindowSize(ImVec2(400, 350), ImGuiCond_FirstUseEver);
+
+			if (ImGui::BeginPopupModal(strPopupName.c_str(), NULL, ImGuiWindowFlags_NoSavedSettings))
+			{
+				auto& vecCSS_EventManifest = m_pMapToolManager->m_vecCCS_EventManifest;
+
+				ImGui::TextColored(ImVec4(1.f, 0.8f, 0.f, 1.f), "Select Cinematic Event (Multi-Select)");
+				ImGui::Separator();
+				ImGui::Spacing();
+
+				// -----------------------------------------------------
+				// [1. Subscriber 콤보박스]
+				// -----------------------------------------------------
+				ImGui::Text("1. Subscriber");
+				ImGui::SetNextItemWidth(350.f);
+				if (ImGui::BeginCombo("##SubCombo", s_strTempSub.empty() ? "Select Subscriber..." : s_strTempSub.c_str()))
+				{
+					for (const auto& manifest : vecCSS_EventManifest)
+					{
+						bool bSelected = (s_strTempSub == manifest.strSubscriberName);
+						if (ImGui::Selectable(manifest.strSubscriberName.c_str(), bSelected))
+						{
+							s_strTempSub = manifest.strSubscriberName;
+							s_vecTempActions.clear(); // 대상을 바꾸면 선택했던 액션들도 싹 초기화
+						}
+						if (bSelected) ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+
+				ImGui::Spacing();
+
+				// -----------------------------------------------------
+				// [2. Action 다중 선택 (Checkbox 리스트)]
+				// -----------------------------------------------------
+				string strHoveredExplain = "";
+
+				if (!s_strTempSub.empty())
+				{
+					ImGui::Text("2. Event Actions (Check multiple)");
+
+					const CCS_EVENT_MANIFEST* pTargetManifest = nullptr;
+					for (const auto& manifest : vecCSS_EventManifest) {
+						if (manifest.strSubscriberName == s_strTempSub) { pTargetManifest = &manifest; break; }
+					}
+
+					if (pTargetManifest)
+					{
+						ImGui::BeginChild("ActionSelectBox", ImVec2(350, 100), true);
+						for (const auto& action : pTargetManifest->vecActionNames)
+						{
+							auto it = std::find(s_vecTempActions.begin(), s_vecTempActions.end(), action.strNames);
+							bool bChecked = (it != s_vecTempActions.end());
+
+							if (ImGui::Checkbox(action.strNames.c_str(), &bChecked))
+							{
+								if (bChecked) {
+									s_vecTempActions.push_back(action.strNames);
+								}
+								else {
+									s_vecTempActions.erase(std::find(s_vecTempActions.begin(), s_vecTempActions.end(), action.strNames));
+								}
+							}
+
+							if (ImGui::IsItemHovered())
+							{
+								if (!action.strExplain.empty()) ImGui::SetTooltip("%s", action.strExplain.c_str());
+								strHoveredExplain = action.strExplain;
+							}
+						}
+						ImGui::EndChild();
+					}
+				}
+
+				// -----------------------------------------------------
+				// [3. 설명(Explain) 출력창]
+				// -----------------------------------------------------
+				ImGui::Spacing();
+				ImGui::Text("Description (Hover over an action):");
+				ImGui::BeginChild("DescBox", ImVec2(350, 50), true);
+				if (strHoveredExplain.empty()) ImGui::TextDisabled("Hover over an action to see details.");
+				else ImGui::TextWrapped("%s", strHoveredExplain.c_str());
+				ImGui::EndChild();
+
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+
+				// -----------------------------------------------------
+				// [4. 적용(Apply) 및 취소(Cancel) 버튼]
+				// -----------------------------------------------------
+				if (ImGui::Button("Apply to Data", ImVec2(120, 30)))
+				{
+					if (s_pEditingEvent != nullptr)
+					{
+						s_pEditingEvent->strSubscriberName = s_strTempSub;
+						s_pEditingEvent->vecActionNames = s_vecTempActions;
+					}
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::SameLine(350.f - 120.f + 8.f);
+
+				if (ImGui::Button("Cancel", ImVec2(120, 30)))
+				{
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::NewLine();
+		};
+
+#pragma endregion
+
+
+	// 1. Begin Event 그리기
+	RenderEventListUI(" Begin Cinematic Events ", pCamCinematicSequence->vecBegin_CCS_EventDesc);
 
 	ImGui::NewLine();
 
-	// =========================================================
-	// [추가] End Cinematic Global Events UI
-	// =========================================================
-	ImGui::SeparatorText(" End Cinematic Events ");
-
-	if (ImGui::Button("Add End Event"))
-	{
-		// 여기도 마찬가지로 숫자 0 삽입
-		pCamCinematicSequence->vecEndCinematic_GlobalEventIndex.push_back(0);
-	}
-
-	ImGui::PushID("EndEvents_Group"); // ID 겹침 방지용 그룹
-	for (int i = 0; i < pCamCinematicSequence->vecEndCinematic_GlobalEventIndex.size(); ++i)
-	{
-		ImGui::PushID(i);
-
-		// 정수값 바로 꺼내기
-		int iBuffer = static_cast<int>(pCamCinematicSequence->vecEndCinematic_GlobalEventIndex[i]);
-		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 40.f);
-
-		if (ImGui::Combo("##EndEventCombo", &iBuffer, g_szGlobalBroadCastType, (int)EGlobal_Broadcast_Type::END))
-		{
-			// 정수값 바로 갱신
-			pCamCinematicSequence->vecEndCinematic_GlobalEventIndex[i] = static_cast<_uint>(iBuffer);
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("X"))
-		{
-			// 지울 때도 Index 벡터에서 삭제!
-			pCamCinematicSequence->vecEndCinematic_GlobalEventIndex.erase(pCamCinematicSequence->vecEndCinematic_GlobalEventIndex.begin() + i);
-			ImGui::PopID();
-			--i;
-			continue;
-		}
-		ImGui::PopID();
-	}
-	ImGui::PopID(); // EndEvents_Group 해제
+	// 2. End Event 그리기 (자료형이 같다고 가정)
+	RenderEventListUI(" End Cinematic Events ", pCamCinematicSequence->vecEnd_CCS_EventDesc);
 
 	ImGui::NewLine();
-	ImGui::Separator();
-	// =========================================================
-
-	ImGui::Separator();
 
 	ImGui::SeparatorText(" Add Buttons");
 
@@ -1207,14 +1341,14 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 	if (ImGui::Button(" Add Copy Camera "))
 	{
-		pCamCinematicSequence->Copy_Camera(m_pGameInstance->Get_MainCamera());
+		pCamCinematicSequence->Copy_Camera_KeyFrameData(m_pGameInstance->Get_MainCamera());
 	}
 
 	ImGui::Separator();
 
 	ImGui::NewLine();
 
-	if (pCamCinematicSequence->vecCamKeyFrameData.empty())
+	if (pCamCinematicSequence->vecCamKeyFrameDatas.empty())
 	{
 		ImGui::Text(" Camera KeyFrame Data is Empty..");
 	}
@@ -1224,8 +1358,11 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 		_int iResetIndex{ -1 };
 		_int iCopyCameraIndex{ -1 };
 
+
+		//m_pMapToolManager->m_pCamCinematicSequence->Render_Debug(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject) , m_pMapToolManager->m_pCamCinematicSequenceRenderModel , m_pMapToolManager->m_pCamCinematicSequenceRenderShader);
+
 		// 키프레임 리스트 순회 (삭제 시 안전하게 인덱스를 다루기 위해 for 루프를 수동 증감합니다)
-		for (_uint i = 0; i < pCamCinematicSequence->vecCamKeyFrameData.size(); )
+		for (_uint i = 0; i < pCamCinematicSequence->vecCamKeyFrameDatas.size(); )
 		{
 			// ★ 아주 중요: ImGui는 이름이 같으면 겹치기 때문에, 반드시 고유 ID를 푸시해야 합니다.
 			ImGui::PushID(i);
@@ -1270,14 +1407,14 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 			if (ImGui::Button("Move To Camera"))
 			{
-				m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_WorldMatrix(pCamCinematicSequence->vecCamKeyFrameData[i].Get_WorldMatrix());
+				m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_WorldMatrix(pCamCinematicSequence->vecCamKeyFrameDatas[i].Get_WorldMatrix());
 			}
 
 			// 노드가 펼쳐져 있을 때만 내부 UI 렌더링
 			if (bNodeOpen)
 			{
 				// 코드가 길어지니 레퍼런스로 받아옵니다.
-				auto& KeyFrame = pCamCinematicSequence->vecCamKeyFrameData[i];
+				auto& KeyFrame = pCamCinematicSequence->vecCamKeyFrameDatas[i];
 
 				ImGui::SeparatorText("Time & FOV Info");
 				ImGui::DragFloat("Duration (Sec)", &KeyFrame.fDuration, 0.1f, 0.f, 100.f, "%.2f");
@@ -1286,7 +1423,33 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 				ImGui::SeparatorText("Move Info");
 				/* Enum 콤보박스 (TODO: 실제 Enum 문자열에 맞게 수정 필요!) */
-				ImGui::Combo("Move Base Target", (int*)&KeyFrame.eMoveBaseTarget,g_szCinematicTarget,(int)ECinematicTarget::END);
+				string strPreviewMove = OBJECT_ENUM_TAG::ToString(KeyFrame.eMoveBaseTarget);
+				if (ImGui::BeginCombo("Move Base Target", strPreviewMove.c_str()))
+				{
+					// 2. 아까 만든 배열을 순회합니다.
+					for (int i = 0; i < sizeof(g_arrAllObjectTags) / sizeof(g_arrAllObjectTags[0]) ; ++i)
+					{
+						OBJECT_ENUM_TAG::Enum eVal = g_arrAllObjectTags[i];
+
+						// 이 항목이 현재 선택된 항목인지 체크
+						bool bSelected = (KeyFrame.eMoveBaseTarget == eVal);
+
+						// ToString()으로 글자를 뽑아와서 리스트에 출력!
+						string strName = OBJECT_ENUM_TAG::ToString(eVal);
+						if (ImGui::Selectable(strName.c_str(), bSelected))
+						{
+							// 클릭하면 원본 데이터에 해당 Enum 값을 쏙 넣어줍니다.
+							KeyFrame.eMoveBaseTarget = eVal;
+						}
+
+						if (bSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
 				if(ImGui::InputInt("Move Bone Index", &KeyFrame.iMoveBaseTargetBoneIndex))
 				{
 					if (KeyFrame.iMoveBaseTargetBoneIndex < -1)
@@ -1296,7 +1459,34 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 				ImGui::SeparatorText("LookAt Info");
 				/* Enum 콤보박스 (TODO: 실제 Enum 문자열에 맞게 수정 필요!) */
-				ImGui::Combo("LookAt Target", (int*)&KeyFrame.eLookAtTarget , g_szCinematicTarget, (int)ECinematicTarget::END);
+
+				strPreviewMove = OBJECT_ENUM_TAG::ToString(KeyFrame.eMoveBaseTarget);
+				if (ImGui::BeginCombo("LookAt Target", strPreviewMove.c_str()))
+				{
+					// 2. 아까 만든 배열을 순회합니다.
+					for (int i = 0; i < sizeof(g_arrAllObjectTags) / sizeof(g_arrAllObjectTags[0]); ++i)
+					{
+						OBJECT_ENUM_TAG::Enum eVal = g_arrAllObjectTags[i];
+
+						// 이 항목이 현재 선택된 항목인지 체크
+						bool bSelected = (KeyFrame.eMoveBaseTarget == eVal);
+
+						// ToString()으로 글자를 뽑아와서 리스트에 출력!
+						string strName = OBJECT_ENUM_TAG::ToString(eVal);
+						if (ImGui::Selectable(strName.c_str(), bSelected))
+						{
+							// 클릭하면 원본 데이터에 해당 Enum 값을 쏙 넣어줍니다.
+							KeyFrame.eMoveBaseTarget = eVal;
+						}
+
+						if (bSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
 				if (ImGui::InputInt("LookAt Bone Index", &KeyFrame.iLookAtBoneIndex))
 				{
 					if (KeyFrame.iLookAtBoneIndex < -1)
@@ -1306,108 +1496,29 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				ImGui::DragFloat3("Pitch / Yaw / Roll", (float*)&KeyFrame.vPitchYawRoll, 0.1f);
 
 				ImGui::SeparatorText("Lerp Types");
-				// 배열의 주소(g_szLerpTypes)와 배열의 크기(END)를 넘겨주면 알아서 콤보박스가 완성됩니다!
-				ImGui::Combo("Move Lerp", (int*)&KeyFrame.eMoveLerpType, g_szLerpTypes, (int)Engine::ELerpType::END);
-				ImGui::Combo("LookAt Lerp", (int*)&KeyFrame.eLookAtLerpType, g_szLerpTypes, (int)Engine::ELerpType::END);
-				ImGui::Combo("Fov Lerp", (int*)&KeyFrame.eFovLerpType, g_szLerpTypes, (int)Engine::ELerpType::END);
 
+
+
+				ImGui::Combo("Move Lerp", (int*)&KeyFrame.eMoveLerpType, Engine_Utils::g_szLerpTypes, (int)Engine::ELerpType::END);
+				ImGui::Combo("LookAt Lerp", (int*)&KeyFrame.eLookAtLerpType, Engine_Utils::g_szLerpTypes, (int)Engine::ELerpType::END);
+				ImGui::Combo("Fov Lerp", (int*)&KeyFrame.eFovLerpType, Engine_Utils::g_szLerpTypes, (int)Engine::ELerpType::END);
 
 
 				ImGui::SeparatorText("Events");
 
-				// TreeNode가 열렸을 때만 안쪽 내용을 그리고 TreePop을 합니다.
+
+
+				if (ImGui::TreeNode("Depart Events"))
+				{
+					RenderEventListUI(" Depart Events ", KeyFrame.vecDepart_CCS_EventDesc);
+					ImGui::TreePop();
+				}
+
 				if (ImGui::TreeNode("On Reach Events"))
 				{
-					// 1. 이벤트 추가 버튼
-					if (ImGui::Button("Add##OnReachEvents"))
-					{
-						KeyFrame.vecOnReachEventIndex.push_back(0); // 기본값 0으로 추가
-					}
-
-					_int iEventToDelete = -1; // 삭제할 이벤트의 인덱스를 기억할 변수
-
-					// 2. 현재 들어있는 이벤트 리스트 순회
-					for (_uint j = 0; j < KeyFrame.vecOnReachEventIndex.size(); ++j)
-					{
-						ImGui::PushID(j); 
-
-						// ImGui는 int 포인터를 쓰기 때문에 _uint를 잠시 int로 캐스팅
-						int iEventVal = static_cast<int>(KeyFrame.vecOnReachEventIndex[j]);
-
-						if (ImGui::Combo("##OnReachEvents", &iEventVal, g_szGlobalBroadCastType, (int)EGlobal_Broadcast_Type::END))
-						{
-							// 정수값 바로 갱신
-							KeyFrame.vecOnReachEventIndex[j] = static_cast<_uint>(iEventVal);
-						}
-
-						ImGui::SameLine();
-
-						// 3. 개별 삭제 버튼
-						if (ImGui::Button("Delte##OnReachEvents"))
-						{
-							iEventToDelete = j; // 눌린 버튼의 인덱스를 저장
-						}
-
-						ImGui::PopID();
-					}
-
-					// 4. 루프가 끝난 뒤에 안전하게 삭제 처리 (중간 삭제 완벽 지원)
-					if (iEventToDelete != -1)
-					{
-						KeyFrame.vecOnReachEventIndex.erase(KeyFrame.vecOnReachEventIndex.begin() + iEventToDelete);
-					}
-
-					ImGui::TreePop(); // Arrival Events용 TreePop
+					RenderEventListUI(" On Reach Events ", KeyFrame.vecOnReach_CCS_EventDesc);
+					ImGui::TreePop();
 				}
-
-
-				// TreeNode가 열렸을 때만 안쪽 내용을 그리고 TreePop을 합니다.
-				if (ImGui::TreeNode("Hold Time End Events"))
-				{
-					// 1. 이벤트 추가 버튼
-					if (ImGui::Button("Add##HoldTimeEnd"))
-					{
-						KeyFrame.vecHoldTimeEndEventIndex.push_back(0); // 기본값 0으로 추가
-					}
-
-					_int iEventToDelete = -1; // 삭제할 이벤트의 인덱스를 기억할 변수
-
-					// 2. 현재 들어있는 이벤트 리스트 순회
-					for (_uint j = 0; j < KeyFrame.vecHoldTimeEndEventIndex.size(); ++j)
-					{
-						ImGui::PushID(j); // 이벤트 리스트용 고유 ID 푸시
-
-						// ImGui는 int 포인터를 쓰기 때문에 _uint를 잠시 int로 캐스팅
-						int iEventVal = static_cast<int>(KeyFrame.vecHoldTimeEndEventIndex[j]);
-
-						if (ImGui::Combo("##OnReachEvents", &iEventVal, g_szGlobalBroadCastType, (int)EGlobal_Broadcast_Type::END))
-						{
-							// 정수값 바로 갱신
-							KeyFrame.vecHoldTimeEndEventIndex[j] = static_cast<_uint>(iEventVal);
-						}
-
-						ImGui::SameLine();
-
-						// 3. 개별 삭제 버튼
-						if (ImGui::Button("Delte##OnReachEvents"))
-						{
-							iEventToDelete = j; // 눌린 버튼의 인덱스를 저장
-						}
-
-						ImGui::PopID();
-					}
-
-					// 4. 루프가 끝난 뒤에 안전하게 삭제 처리 (중간 삭제 완벽 지원)
-					if (iEventToDelete != -1)
-					{
-						KeyFrame.vecHoldTimeEndEventIndex.erase(KeyFrame.vecHoldTimeEndEventIndex.begin() + iEventToDelete);
-					}
-
-					ImGui::TreePop(); // Arrival Events용 TreePop
-				}
-
-
-				ImGui::NewLine();
 				ImGui::TreePop(); // TreeNode를 닫아줌
 			}
 
@@ -1418,23 +1529,26 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 		if (iCopyCameraIndex != -1 )
 		{
 			/* iCopyCameraIndex */
-			m_pMapToolManager->m_pCamCinematicSequence->Copy_Camera(m_pGameInstance->Get_MainCamera() , iCopyCameraIndex );
+			m_pMapToolManager->m_pCamCinematicSequence->Copy_Camera_KeyFrameData(m_pGameInstance->Get_MainCamera() , iCopyCameraIndex );
 		}
 
 		if (iResetIndex != -1)
 		{
 			/* CopyCamera */
-			m_pMapToolManager->m_pCamCinematicSequence->Reset(iResetIndex);
+			m_pMapToolManager->m_pCamCinematicSequence->Reset_KeyFrameData(iResetIndex);
 		}
 
 		if (iDeleteIndex != -1)
 		{
 			/* Delete */
-			m_pMapToolManager->m_pCamCinematicSequence->Delete(iDeleteIndex);
+			m_pMapToolManager->m_pCamCinematicSequence->Delete_KeyFrameData(iDeleteIndex);
 		}
-
 	}
 
+	if (bShowManifestEditor)
+	{
+		Render_ImGui_CSS_EventManifest(&m_pMapToolManager->m_vecCCS_EventManifest, &bShowManifestEditor);
+	}
 
 	return S_OK;
 }

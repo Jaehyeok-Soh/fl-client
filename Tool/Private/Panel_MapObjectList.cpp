@@ -1011,6 +1011,7 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner				(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
 	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster		(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
 	case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:			ImGuiUpdate_TriggerBox_TutorialUIEvent				(static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::TriggerBox_CinematicPlayer:         ImGuiUpdate_TriggerBox_CinematicPlayer				(static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pDesc));					return S_OK;
 	
 	case Tool::EClientMakePath::Batch_NPC:							ImGuiUpdate_NPC										(static_cast<BATCH_NPC_DESC*>(pDesc));									return S_OK;
 	default:																																													return S_OK;
@@ -2009,6 +2010,57 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUT
 	}
 
 
+}
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_CinematicPlayer(TRIGGERBOX_CINEMATICPLAYER_DESC* pDesc)
+{
+	ImGuiUpdate_TriggerBox(pDesc);
+
+	ImGui::SeparatorText(" Cinematic Player Desc ");
+
+	ImGui::NewLine();
+
+	// 1. 등록된 시네마틱이 아예 없을 때의 방어 처리
+	if (m_pMapToolManager->m_vecCamCinematicSequenceNames.empty())
+	{
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), " Register CinematicSequence is None...");
+		return; // 더 이상 보여줄 UI가 없으므로 안전하게 리턴
+	}
+
+	// 2. 현재 선택된 시네마틱 이름 텍스트 출력
+	string strCurrentName = pDesc->strCinematicName.empty() ? "None" : pDesc->strCinematicName;
+	ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), " Play Cinematic Name => [ %s ] ", strCurrentName.c_str());
+
+	ImGui::Spacing();
+	ImGui::Text("Select Cinematic:");
+
+	// 3. 콤보박스 (Selectable을 이용한 안전한 string 매핑)
+	ImGui::SetNextItemWidth(250.f);
+	string strPreview = pDesc->strCinematicName.empty() ? "Select Cinematic..." : pDesc->strCinematicName;
+
+	if (ImGui::BeginCombo("##CinematicSelectCombo", strPreview.c_str()))
+	{
+		// 툴 매니저가 들고 있는 이름 리스트(vector<string>) 순회
+		for (int i = 0; i < m_pMapToolManager->m_vecCamCinematicSequenceNames.size(); ++i)
+		{
+			const string& strTargetName = m_pMapToolManager->m_vecCamCinematicSequenceNames[i];
+
+			// 이 항목이 현재 선택된 항목인지 체크
+			bool bSelected = (pDesc->strCinematicName == strTargetName);
+
+			if (ImGui::Selectable(strTargetName.c_str(), bSelected))
+			{
+				// ★ 사용자가 클릭하면 실제 데이터(pDesc)에 바로 등록!
+				pDesc->strCinematicName = strTargetName;
+			}
+
+			// 콤보박스를 열었을 때 현재 선택된 위치로 스크롤을 맞춰줌
+			if (bSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
 }
 void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 {

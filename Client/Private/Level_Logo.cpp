@@ -27,7 +27,7 @@
 #include "Effect.h"
 #include "EffectObject.h"
 #include "Physics_LandScape.h"
-
+#include "CinematicCamera.h"
 //=================
 // UI
 //=================
@@ -237,6 +237,17 @@ HRESULT CLevel_Logo::Ready_Camera_Layer(const wstring& wstrLayerTag)
 			wstrLayerTag, &goDesc)))
 			return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_CinematicCamera()
+{
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC),L"Prototype_GameObject_CinematicCamera",CCinematicCamera::Create(m_pDevice,m_pDeviceContext));
+	
+	if (FAILED(m_pGameInstance->Register_CinematicCamera(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_CinematicCamera", ENUM_TO_UINT(ELevelType::STATIC), L"CinematicCamera_Layer")))
+		return E_FAIL;
 
 	return S_OK;
 }
