@@ -475,6 +475,11 @@ namespace Client
 		TUTORIAL_POPUP_12,	// 보스를 조준하고 [Mouse Wheel] 마우스 휠 버튼을 눌러 시점 고정, 다시 눌러서 고정 해제
 		TUTORIAL_POPUP_13,	// [Q] 버튼을 눌러 종결 스킬 시전
 
+
+		TUTORIAL_PANNEL_1,
+		TUTORIAL_PANNEL_2,
+		TUTORIAL_PANNEL_3,
+		TUTORIAL_PANNEL_4,
 		END,
 	};
 
@@ -494,7 +499,12 @@ namespace Client
 		"TUTORIAL_POPUP_10",
 		"TUTORIAL_POPUP_11",
 		"TUTORIAL_POPUP_12",
-		"TUTORIAL_POPUP_13"
+		"TUTORIAL_POPUP_13",
+
+		"TUTORIAL_PANNEL_1",
+		"TUTORIAL_PANNEL_2",
+		"TUTORIAL_PANNEL_3",
+		"TUTORIAL_PANNEL_4",
 	};
 
 	inline std::string UITutorialPopUpTypeID_ToString(EUITutorialPopUpTypeID eType)

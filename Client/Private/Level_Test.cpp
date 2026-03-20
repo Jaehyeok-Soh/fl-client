@@ -129,7 +129,7 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	CDialogueManager::GetInstance()->Initialize();
 
-	CQuestManager::GetInstance()->Start_Quest(0);
+	//CQuestManager::GetInstance()->Start_Quest(0);
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 	return S_OK;
@@ -190,6 +190,10 @@ void CLevel_Test::Update(const _float fTimeDelta)
 		UIEVENT_DESC Desc = {};
 		Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
 		CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		m_pGameInstance->Broadcast<BOSS_GROGGY>();
 	}
 }
 

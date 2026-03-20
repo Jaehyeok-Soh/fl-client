@@ -46,8 +46,6 @@ HRESULT CUITutorial_PopUp_Image::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
-
-
 	return S_OK;
 }
 
@@ -64,8 +62,6 @@ HRESULT CUITutorial_PopUp_Image::Awake(const _uint iCurrentLevelID)
 	Set_Active(false);
 	m_pParentCanvasCache->Get_CommonParam_bool_Ref()[POPUP_3] = (false);
 	m_pParentCanvasCache->Get_CommonParam_bool_Ref()[POPUP_4] = (false);
-
-
 
 	return S_OK;
 }
