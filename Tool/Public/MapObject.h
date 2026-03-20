@@ -85,6 +85,7 @@ public:
 	HRESULT								Ready_Batch_Player();
 	HRESULT								Ready_Batch_Monster();
 	HRESULT								Ready_Batch_Object();
+	HRESULT								Ready_Batch_InteractiveObject();
 	HRESULT								Ready_TriggerBox_MonsterSpawner();
 
 	HRESULT								Ready_Water();

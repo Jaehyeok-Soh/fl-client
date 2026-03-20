@@ -596,9 +596,6 @@ namespace Client
 		return L"NOT_PREFAB";
 	}
 
-
-
-
 	typedef struct tagUINamePlatePrefabData
 	{
 		CGameObject* pTarget = { nullptr };
@@ -787,6 +784,7 @@ namespace Client
 #pragma region Model Protototype Tag
 
 	/* Monster Model Tag */
+	inline constexpr wchar_t g_wszModel_Prototype_Tag[]							{ L"Prototype_Component_Model_"};
 	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Monster_Dog"};
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
@@ -862,6 +860,9 @@ namespace Client
 	inline constexpr wchar_t g_wszEnvObject_Prototype_Tag[]						{ L"Prototype_GameObject_EnvObject" };
 
 
+	/* Interactive Object */
+	inline constexpr wchar_t g_wszWeaponPickUp_Prototype_Tag[]					{ L"Prototype_GameObject_WeaponPickUp" };
+	/*-------------------*/
 
 	inline constexpr wchar_t g_wszInvisibleWall_Prototype_Tag[]					{ L"Prototype_GameObject_InvisibleWall" };
 #pragma endregion
@@ -895,7 +896,6 @@ namespace Client
 
 #pragma region Npc ฐüทร
 	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan" };
-
 	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan_Body" };
 #pragma endregion
 
@@ -933,6 +933,7 @@ namespace Client
 	inline constexpr wchar_t g_wszSkyBoxLayer[]									{ L"SkyBox_Layer" };
 	inline constexpr wchar_t g_wszPointLightLayer[]								{ L"PointLight_Layer" };
 	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
+	inline constexpr wchar_t g_wszInteractiveObjectLayer[]							{ L"InteractiveObject_Layer" };
 #pragma endregion
 
 #pragma region Dialogue
