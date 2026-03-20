@@ -30,15 +30,15 @@ HRESULT CState_DashBack::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 	
-	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-	_float moveps = pPlayerTrans->Get_MovePerSec(); // 加档
+	//CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+	//_float moveps = pPlayerTrans->Get_MovePerSec(); // 加档
 
-	Vec3 vRight = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT));
-	vRight.Normalize();
+	//Vec3 vRight = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::RIGHT));
+	//vRight.Normalize();
 
-	Vec3 accelation = vRight * moveps * -10.f; //  规氢 * 加档
+	//Vec3 accelation = vRight * moveps * -10.f; //  规氢 * 加档
 
-	SetCCTImpuls(accelation);
+	//SetCCTImpuls(accelation);
 
 
 	return S_OK;

@@ -69,6 +69,8 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 		Set_ZeroDeAccelRate();
 	}
 
+	Set_YLerp(false);
+
 	return S_OK;
 }
 
@@ -90,7 +92,7 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 		m_vDir.y = 0.f;
 		pPlayerTransform->Look_At_Dir(m_vDir);
 
-		if(Check_OnGround(0.3f))
+		if(Check_OnGround(0.95f))
 		{
 			//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
 
@@ -130,6 +132,7 @@ HRESULT CState_JumpBullet::End()
 
 	Set_RootMotion_Apply(true);
 	Set_ApplyGravity(true);
+	Set_YLerp(true);
 	Reset_DeAccelRate();
 
 	return S_OK;
