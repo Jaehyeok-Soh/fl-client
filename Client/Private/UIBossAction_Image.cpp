@@ -101,6 +101,8 @@ HRESULT CUIBossAction_Image::Bind_ShaderResources()
 
 HRESULT CUIBossAction_Image::Attach_Personal_Info()
 {
+
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:

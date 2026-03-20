@@ -426,8 +426,7 @@ namespace Tool
 		TriggerBox_MonsterSpawner,
 		TriggerBox_GlobalEvent_BroadCaster,
 		TriggerBox_TutorialUIEvent,
-
-
+		TriggerBox_CinematicPlayer,
 
 
 		/* ¸Ê ±â´É °ü·Ã */
@@ -485,6 +484,7 @@ namespace Tool
 		case Tool::EClientMakePath::TriggerBox_MonsterSpawner:				return "TriggerBox_MonsterSpawner";
 		case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:		return "TriggerBox_GlobalEvent_BroadCaster";
 		case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:				return "TriggerBox_TutorialUIEvent";
+		case Tool::EClientMakePath::TriggerBox_CinematicPlayer:				return "TriggerBox_CinematicPlayer";
 
 
 			/* -------------- Invisible Wall ----------- */
@@ -520,6 +520,7 @@ namespace Tool
 		if (strType == "TriggerBox_MonsterSpawner")							return EClientMakePath::TriggerBox_MonsterSpawner;
 		if (strType == "TriggerBox_GlobalEvent_BroadCaster")				return EClientMakePath::TriggerBox_GlobalEvent_BroadCaster;
 		if (strType == "TriggerBox_TutorialUIEvent")						return EClientMakePath::TriggerBox_TutorialUIEvent;
+		if (strType == "TriggerBox_CinematicPlayer")						return EClientMakePath::TriggerBox_CinematicPlayer;
 
 
 
@@ -994,6 +995,10 @@ namespace Tool
 		}
 		return EUITutorialPopUpTypeID::END;
 	}
+
+
+	HRESULT Render_ImGui_CSS_EventManifest(std::vector<struct CCS_EVENT_MANIFEST>* _vecCSSEventManifests, bool* pOpen);
+
 
 	HRESULT Load_CCS_EventManifest(OUT vector<struct CCS_EVENT_MANIFEST>* pOutData);
 	HRESULT Save_CCS_EventManifest(const vector<struct CCS_EVENT_MANIFEST>* pSaveData);

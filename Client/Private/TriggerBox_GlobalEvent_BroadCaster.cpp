@@ -90,10 +90,12 @@ HRESULT CTriggerBox_GlobalEvent_BroadCaster::Render()
 
 HRESULT CTriggerBox_GlobalEvent_BroadCaster::BroadCast()
 {
-    for (auto& Type : m_vecGlobalBroadcastType)
-    {
-        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(Type));
-    }
+    if(m_isTriggerEventPlay )
+
+    //for (auto& Type : m_vecGlobalBroadcastType)
+    //{
+    //    m_pGameInstance->Broadcast(ENUM_TO_UINT(Type));
+    //}
 
     m_isTriggerEventPlay = true;
 

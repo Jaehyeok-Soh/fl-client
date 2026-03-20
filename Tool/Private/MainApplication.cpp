@@ -70,7 +70,7 @@ HRESULT CMainApplication::Initialize()
 		return E_FAIL;
 
 	/* Camre Cinematic Sequence Load */
-	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
+	if (FAILED(m_pGameInstance->Load_CameraCinematicSequence(g_wszCameraCinematicData_JsonPath)))
 		return E_FAIL;
 
 	/* 愱砒 概聪历 固府 积己 */
@@ -516,7 +516,7 @@ HRESULT CMainApplication::Render()
 void CMainApplication::Free()
 {
 	/* Data 历厘 */
-	m_pGameInstance->GameDataManager_Save_CameraCinematicSequence();
+	m_pGameInstance->Save_CameraCinematicSequence(g_wszCameraCinematicData_JsonPath);
 
 	Safe_Release(m_pImGuiManager);
 	CAttackPreset_DataManager::DestroyInstance();

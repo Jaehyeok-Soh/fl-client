@@ -805,6 +805,9 @@
     <Filter Include="99. ETC\Client_Define">
       <UniqueIdentifier>{fde4a4ac-8ede-492c-a268-bd20661a27dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\TriggerBox\04. TriggerBox_CinematicPlayer">
+      <UniqueIdentifier>{1c8dd4c0-5581-4d86-8ff6-cc8f9097db82}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation">
       <UniqueIdentifier>{34d8f7a6-03e3-466d-92ae-48f676cfde60}</UniqueIdentifier>
     </Filter>
@@ -1500,6 +1503,9 @@
     <ClInclude Include="..\Public\Client_EventDefine.h">
       <Filter>99. ETC\Client_Define</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_CinematicPlayer.h">
+      <Filter>03. GameObject\TriggerBox\04. TriggerBox_CinematicPlayer</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UIConversation_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
     </ClInclude>
@@ -2184,6 +2190,9 @@
     </ClCompile>
     <ClCompile Include="Client_Define.cpp">
       <Filter>99. ETC\Client_Define</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_CinematicPlayer.cpp">
+      <Filter>03. GameObject\TriggerBox\04. TriggerBox_CinematicPlayer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIConversation_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>

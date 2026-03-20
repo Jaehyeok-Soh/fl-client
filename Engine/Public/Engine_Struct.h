@@ -1223,6 +1223,12 @@ namespace Engine
 
 #pragma endregion
 
+#pragma region Global Event Desc
+
+
+
+#pragma endregion
+
 #pragma region CameraShaking_Data
 
 	typedef struct tagCameraEventDataBase
@@ -1240,9 +1246,11 @@ namespace Engine
 #pragma endregion
 
 
+
+
 #pragma region 
 
-	typedef struct CinematicCameraSequnce_EventDesc
+	typedef struct CinematicCameraSequence_EventDesc
 	{
 		/* 저장된 string 데이터를 Client에서 사용할때는 ToHahs 함수를 사용하여 미리 컴파일 단계때 해쉬를 생성해서 사용해준다 */
 		string          strSubscriberName;   // 예: "UI_Tutorial", "Boss_Haier"
@@ -1251,6 +1259,18 @@ namespace Engine
 
 #pragma endregion
 
+
+#pragma region Cinemaic Camera Sequence Desc
+
+	typedef struct CinematicCameraSequence_BroadCast_Desc
+	{
+		string					strCCSName{""};
+		CCS_BROADCAST_TYPE		eCCS_BroadCast_Type{ CCS_BROADCAST_TYPE::END };
+		int						iCurrentCameraKeyFrameIndex{-1};
+		vector<CCS_EVENT_DESC>	vecCCS_Event_Desc{};
+	}CCS_BROADCAST_DESC;
+
+#pragma endregion
 
 
 #pragma endregion
