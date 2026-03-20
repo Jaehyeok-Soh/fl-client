@@ -74,6 +74,7 @@
 #include "PointLight.h"
 #include "EnvObject.h"
 #include "BonePart.h"
+#include "WeaponPickUp.h"
 
 //=================
 // SkillObject
@@ -802,6 +803,9 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
 
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszEnvObject_Prototype_Tag,					CEnvObject::Create(m_pDevice, m_pDeviceContext));
+
+		/* Interactive Object */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWeaponPickUp_Prototype_Tag,				CWeaponPickUp::Create(m_pDevice, m_pDeviceContext));
 
 
 		/* Invisible Wall */

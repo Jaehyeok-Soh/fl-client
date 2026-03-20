@@ -811,6 +811,15 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation">
       <UniqueIdentifier>{34d8f7a6-03e3-466d-92ae-48f676cfde60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\InteractiveObject">
+      <UniqueIdentifier>{bc5023a0-5a7c-4d67-98c7-3ab593cdf9e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\InteractiveObject\InteractiveObject">
+      <UniqueIdentifier>{bd4bef5b-ec3c-4951-95c1-f34e56dfd1b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\InteractiveObject\00. TutorialWeapon">
+      <UniqueIdentifier>{bec36d74-1c86-4e94-904a-727139f1fa48}</UniqueIdentifier>
+    </Filter>
     <Filter Include="06. FSM\Player\Attack\Melee\Combo\Dual">
       <UniqueIdentifier>{51b954b9-bc45-4f1e-b817-f58a1434d26c}</UniqueIdentifier>
     </Filter>
@@ -1515,6 +1524,12 @@
     <ClInclude Include="..\Public\UIConversation_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\InteractiveObject.h">
+      <Filter>03. GameObject\InteractiveObject\InteractiveObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WeaponPickUp.h">
+      <Filter>03. GameObject\InteractiveObject\00. TutorialWeapon</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\State_DualCombo.h">
       <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
     </ClInclude>
@@ -2208,6 +2223,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIConversation_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InteractiveObject.cpp">
+      <Filter>03. GameObject\InteractiveObject\InteractiveObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WeaponPickUp.cpp">
+      <Filter>03. GameObject\InteractiveObject\00. TutorialWeapon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_DualCombo.cpp">
       <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>

@@ -57,6 +57,11 @@ CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, 
 		::strcpy_s(m_szBattleFieldTypeName[i], MAX_PATH, strCurName.c_str());
 	}
 
+	for (_uint i = 0; i < ARRAYSIZE(g_arrAllObjectTags); ++i)
+	{
+		::strcpy_s(m_szObjectTagNames[i], MAX_PATH, EObjectEnumTag::ToString(g_arrAllObjectTags[i]).c_str());
+	}
+
 }
 
 
@@ -1006,6 +1011,7 @@ HRESULT CPanel_MapObjectList::Render_Description()
 
 	case Tool::EClientMakePath::Batch_Monster:						ImGuiUpdate_Batch_Monster_Desc						(static_cast<BATCH_MONSTER_DESC*>(pDesc));								return S_OK;
 	case Tool::EClientMakePath::Batch_Object:						ImGuiUpdate_Batch_Object_Desc						(static_cast<BATCH_OBJECT_DESC*>(pDesc));								return S_OK;
+	case Tool::EClientMakePath::Batch_InteractiveObject:			ImGuiUpdate_Batch_InteractiveObject_Desc			(static_cast<BATCH_INTERACTIVEOBJECT_DESC*>(pDesc));					return S_OK;
 
 	case Tool::EClientMakePath::TriggerBox_ChangeLevel:				ImGuiUpdate_TriggerBox_ChanageLevel_Desc			(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));						return S_OK;
 	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner				(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
@@ -1488,6 +1494,106 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pD
 		ImGui::EndCombo();
 	}
 	return;
+}
+
+void CPanel_MapObjectList::ImGuiUpdate_Batch_InteractiveObject_Desc(BATCH_INTERACTIVEOBJECT_DESC* pDesc)
+{
+	if (pDesc == nullptr) return; 
+
+
+	// 1. 현재 선택된 타입의 문자열을 콤보박스 미리보기에 띄웁니다.
+	m_strBuffer = EObjectEnumTag::ToString(pDesc->eBatchInteractiveObejctType);
+
+	if (ImGui::BeginCombo("Interactive Type", m_strBuffer.c_str()))
+	{
+		for (_uint i = 0; i < ARRAYSIZE(g_arrAllObjectTags); ++i)
+		{
+			EObjectEnumTag::Enum eType = g_arrAllObjectTags[i];
+
+			if (EObjectEnumTag::OBJECT_INTERACT_DEFAULT <= eType && eType < EObjectEnumTag::OBJECT_INTERACT_END)
+			{
+				string strTypeName = EObjectEnumTag::ToString(eType);
+
+				// 이 항목이 현재 Desc에 저장된 타입인지 체크 (선택된 항목 파란색 하이라이트용)
+				bool isSelected = (pDesc->eBatchInteractiveObejctType == eType);
+
+				// 유저가 이 항목을 클릭했다면 Selectable이 true를 반환합니다!
+				if (ImGui::Selectable(strTypeName.c_str(), isSelected))
+				{
+					// 클릭했으니 Desc의 타입을 갱신해줍니다.
+					pDesc->eBatchInteractiveObejctType = eType;
+				}
+
+				// 콤보박스가 열렸을 때, 현재 선택된 항목으로 스크롤을 맞춰줍니다. (ImGui 국룰 최적화)
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator(); // 줄 하나 예쁘게 그어주기
+
+	if (ImGui::Button("Add Quest"))
+	{
+		/* Quest 정보추가 */
+		pDesc->vecQuestDesc.push_back(DTO::QUEST_CHAPTERDESC());
+	}
+	_uint iIndex = 0;
+	_int iDeleteIndex = -1;
+	for (auto& QuestDesc : pDesc->vecQuestDesc)
+	{
+		this->ImGuiUpdate_Quest(&QuestDesc);
+		if (ImGui::Button("Delete Quest"))
+			iDeleteIndex = iIndex;
+		iIndex++;
+	}
+
+	if (iDeleteIndex != -1)
+		pDesc->vecQuestDesc.erase(pDesc->vecQuestDesc.begin() + iDeleteIndex);
+
+
+	ImGui::Separator(); // 줄 하나 예쁘게 그어주기
+
+
+	// =========================================================
+	// 2. [핵심] 위에서 선택한 타입에 따라 하위 변수 세팅창 띄워주기!
+	// =========================================================
+	switch (pDesc->eBatchInteractiveObejctType)
+	{
+	case EObjectEnumTag::OBJECT_INTERACT_WEAPONPICKUP:
+	{
+		ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "[ Tutorial Weapon Settings ]");
+
+		// 튜토리얼 이벤트 여부 체크박스
+		ImGui::Checkbox("Is Tutorial Event", &pDesc->isTutorialEvent);
+
+		// 무기 타입 문자열 입력 (혹은 이것도 콤보박스로 빼면 더 좋습니다!)
+		_int iCurrentType = static_cast<_int>(WeaponPickUp_WeaponType_ToEnum(pDesc->strWeaponType));
+		if (iCurrentType >= static_cast<_int>(WeaponPickUp_WeaponType::END))
+		{
+			iCurrentType = 0;
+			pDesc->strWeaponType = g_szWeaponPickUp_WeaponType[0]; // 기본값 강제 주입
+		}
+
+		if (ImGui::Combo("Pick Up Weapon Type", &iCurrentType, g_szWeaponPickUp_WeaponType, static_cast<_int>(WeaponPickUp_WeaponType::END)))
+		{
+			if (iCurrentType >= static_cast<_int>(WeaponPickUp_WeaponType::END))
+			{
+				iCurrentType = 0;
+				pDesc->strWeaponType = g_szWeaponPickUp_WeaponType[0]; // 기본값 강제 주입
+			}
+			pDesc->strWeaponType = g_szWeaponPickUp_WeaponType[iCurrentType];
+		}
+		break;
+	}
+	default:
+		ImGui::TextDisabled("Select an Interactive Object Type to edit details.");
+		break;
+	}
+
 }
 
 #pragma region Batch Object Desc
