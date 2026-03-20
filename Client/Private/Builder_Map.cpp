@@ -160,8 +160,7 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	/*  None이라면 돌아가기  */
 	if (tData.strTextureSplatingInfoName != "None")
 	{
-		if (FAILED(m_pGameInstance->GameDataManager_Bind_SplatingTextureInfo(m_pMeshShader, Engine_Utils::ToWString(tData.strTextureSplatingInfoName))))
-			return E_FAIL;
+		m_pGameInstance->GameDataManager_Bind_SplatingTextureInfo(m_pMeshShader, Engine_Utils::ToWString(tData.strTextureSplatingInfoName));
 	}
 
 	CB_EnvData tEnvData{};
