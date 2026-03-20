@@ -2,8 +2,10 @@
 #include "WeaponPickUp.h"
 #include "Shader.h"
 #include "Model.h"
-#include "InstanceMesh.h"
+#include "Player.h"
+#include "Weapon.h"
 #include "GameInstance.h"
+
 
 CWeaponPickUp::CWeaponPickUp(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CInteractiveObject(pDevice, pDeviceContext)
@@ -175,6 +177,41 @@ void CWeaponPickUp::Free()
 void CWeaponPickUp::Interact()
 {
 	Super::Interact();
+	
+
+	/* Interactive */
+	CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer));
+
+	_uint iWeaponType{ 0 };
+	_uint iIdx{ 0 };
+
+	switch (this->m_eWeaponType)
+	{
+	case Client::CWeaponPickUp::EWeaponType::One_Handed_Sword:
+	{
+		iWeaponType = ENUM_TO_UINT(CPlayer::EWEAPON::MELEE);
+		iIdx = ENUM_TO_UINT(CPlayer::MELEE::SWORD);
+	}
+		break;
+	case Client::CWeaponPickUp::EWeaponType::Dual_Daggers:
+	{
+		iWeaponType = ENUM_TO_UINT(CPlayer::EWEAPON::MELEE);
+		iIdx = ENUM_TO_UINT(CPlayer::MELEE::DUAL);
+	}
+		break;
+	case Client::CWeaponPickUp::EWeaponType::Machine_gun:
+	{
+		iWeaponType = ENUM_TO_UINT(CPlayer::EWEAPON::RANGE);
+		iIdx = ENUM_TO_UINT(CPlayer::RANGE::MACHINE);
+	}
+		break;
+	default:													return;
+	}
+
+	/* 무기 On 시켜주기 */
+	pPlayer->Set_WepaponOn( iWeaponType , iIdx , true );
+	/* 무기 State 변환까지 */
+	pPlayer->Change_WeaponState(iWeaponType, ENUM_TO_UINT(CWeapon::State::HOLD));
 
 }
 #pragma endregion
