@@ -219,8 +219,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -856,8 +855,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -1324,8 +1322,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -1836,8 +1833,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -2302,8 +2298,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -2768,8 +2763,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -3075,8 +3069,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -3382,8 +3375,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -3849,7 +3841,7 @@
                         "bCountTime": false,
                         "bTimeReset": false,
                         "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -3987,8 +3979,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -4071,57 +4062,9 @@
                         }
                     ],
                     "vecMainAnimNames": [
-                        "Animation_Monster_Dog_Die01"
+                        "Animation_Monster_Dog_Die1_Pose"
                     ],
                     "vecStartConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_set_cct_collision_disable",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        },
                         {
                             "cond": {
                                 "strCondition": "condition_true_always",
@@ -4169,6 +4112,54 @@
                                     ]
                                 }
                             }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_on_ragdoll",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
                         }
                     ],
                     "vecStateTransition": [
@@ -4178,7 +4169,7 @@
                             },
                             "vecConditionEntry": [
                                 {
-                                    "strCondition": "condition_animation_finish",
+                                    "strCondition": "condition_over_lifetime",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -4256,56 +4247,7 @@
                         "fMinTime": 3.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_over_lifetime",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_set_dead",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
                     "vecGlobalStateTransition": [
@@ -4440,8 +4382,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -4794,8 +4735,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -5099,8 +5039,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -5404,8 +5343,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -5709,8 +5647,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -6016,8 +5953,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -6321,8 +6257,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -6626,8 +6561,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -6931,8 +6865,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -7508,8 +7441,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -7837,8 +7769,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -8142,8 +8073,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -8447,8 +8377,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -8801,8 +8730,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -9155,8 +9083,7 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "HitFlyStart1": 50.0,
-                                "HitFlyStart2": 50.0
+                                "Down_pose": 1.0
                             },
                             "vecConditionEntry": [
                                 {

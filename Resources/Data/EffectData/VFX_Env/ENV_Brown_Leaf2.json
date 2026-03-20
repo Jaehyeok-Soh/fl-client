@@ -20,7 +20,7 @@
                 1.0,
                 0.0,
                 20.0,
-                23.399999618530273,
+                27.299999237060547,
                 0.0,
                 1.0
             ],
@@ -30,8 +30,8 @@
                     "AppearRatio": 0.800000011920929,
                     "Color": {
                         "w": 1.0,
-                        "x": 0.7921568751335144,
-                        "y": 0.16078431904315948,
+                        "x": 0.29623550176620483,
+                        "y": 0.06012703478336334,
                         "z": 0.0
                     },
                     "CurveTexture_Tag": "",
@@ -206,7 +206,7 @@
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "StartSpeed": 10.0,
+                    "StartSpeed": 1.0,
                     "TargetRotation": {
                         "x": 0.0,
                         "y": 0.0,
@@ -282,7 +282,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,

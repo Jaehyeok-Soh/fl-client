@@ -74,6 +74,7 @@
 #include "PointLight.h"
 #include "EnvObject.h"
 #include "BonePart.h"
+#include "WeaponPickUp.h"
 
 //=================
 // SkillObject
@@ -122,6 +123,8 @@
 #include "Monster_Dog_Body.h"
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
+#include "Monster_Fly.h"
+#include "Monster_Fly_Body.h"
 //=================
 // BOSS
 //=================
@@ -672,6 +675,23 @@ HRESULT CLoader::Loading_For_Logo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Boomer_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+	
+	// For.Prototype_Component_Model_Monster_Fly
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale150);
+		desc.wstrModelFolderName = L"Monster_Fly";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = {};
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Fly_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 
 	// For.Prototype_Component_Model_NPC_Pan
 	{
@@ -784,6 +804,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszEnvObject_Prototype_Tag,					CEnvObject::Create(m_pDevice, m_pDeviceContext));
 
+		/* Interactive Object */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWeaponPickUp_Prototype_Tag,				CWeaponPickUp::Create(m_pDevice, m_pDeviceContext));
+
 
 		/* Invisible Wall */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszInvisibleWall_Prototype_Tag,				CInvisibleWall::Create(m_pDevice, m_pDeviceContext));
@@ -809,6 +832,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Boomer_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Monster_Fly
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Fly_Prototype_Tag, CMonster_Fly::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Monster_Fly_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Fly_Body_Prototype_Tag, CMonster_Fly_Body::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_NPC_Pan
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Prototype_Tag, CNPC_Pan::Create(m_pDevice, m_pDeviceContext));

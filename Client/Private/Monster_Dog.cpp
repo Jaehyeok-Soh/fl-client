@@ -12,7 +12,6 @@
 #include "UIIcon_Component.h"
 #include "GameInstance.h"
 #include "MyStat.h"
-#include "PhysicsRagdoll.h"
 
 CMonster_Dog::CMonster_Dog(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -72,8 +71,6 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 	{
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 300.f);
 	}
-
-
 
 	return S_OK;
 }
@@ -139,20 +136,6 @@ _bool CMonster_Dog::On_Hit(const HIT_DESC& hitDesc)
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
-	
-	{
-		CMonster_Body_Base* pBody = { nullptr };
-		pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
-
-		CPhysicsRagdoll* pRagdoll = { nullptr };
-		pRagdoll = pBody->Get_Component<CPhysicsRagdoll>();
-
-		if (pBody != nullptr && pRagdoll != nullptr)
-		{
-			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
-				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 50.f);
-		}
-	}
 
 	return result;
 }
@@ -180,17 +163,6 @@ HRESULT CMonster_Dog::Ready_Ability()
 
 HRESULT CMonster_Dog::Ready_BaseStates()
 {
-	CMonsterActionState* pActionState = { nullptr };
-	CModel* pModel = Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>();
-	if (!pModel)
-		return E_FAIL;
-
-	if (!(pActionState = Get_Component<CMonsterActionState>()))
-		return E_FAIL;
-
-	TIME_COUNTER tStateLifeTime = {};
-	TIME_COUNTER tStateCoolDownTime = {};
-
 	return S_OK;
 }
 
@@ -279,8 +251,7 @@ CMonster_Dog::MONSTER_DESC CMonster_Dog::Get_PreSetDesc(_uint iLevelId)
 			| PHYSICSFILTERGROUP::Enum::MAP
 			| PHYSICSFILTERGROUP::Enum::OBJECT1
 			| PHYSICSFILTERGROUP::Enum::OBJECT2
-			| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER
-			| PHYSICSFILTERGROUP::Enum::NPC;
+			| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER;
 
 		desc.bGravity = { true };
 		desc.fGravity = { -35.f };

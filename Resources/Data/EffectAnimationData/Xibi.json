@@ -2896,7 +2896,7 @@
                     "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
-                    "fDuration": 1.0,
+                    "fDuration": 0.0,
                     "fStartTrackPosition": 0.10000000149011612,
                     "iAnimIndex": 1,
                     "iBoneFlag": 4,
@@ -2911,6 +2911,34 @@
                         "x": 0.0,
                         "y": 0.800000011920929,
                         "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 49.0,
+                    "iAnimIndex": 1,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 380,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Xibi_Condemned_End",
+                    "strDescription": "",
+                    "strEffectTag": "Moon_Player_WeaknessAttack_End2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 0.10000000149011612
                     },
                     "vRotation": {
                         "x": 0.0,

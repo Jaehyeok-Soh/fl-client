@@ -66,7 +66,7 @@ HRESULT CNPC_Pan::Initialize(void* pArg)
 	{
 		Set_Interact_Disable();
 		Set_Interact_DefaultDisable();
-		Interact_SetDefaultDialogue(3);
+		Interact_SetDefaultDialogue(4);
 	}
 
 	return S_OK;
@@ -84,8 +84,6 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 	//	tPrefabData.Data = Desc;
 	//	CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	//}
-
-
 
 	return S_OK;
 }

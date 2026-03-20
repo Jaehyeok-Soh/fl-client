@@ -632,6 +632,17 @@ void CMainApplication::Register_Quest_Scenario()
 	s2.wstrExplain = L"";
 	s2.wstrDescription = L"개발자 설명란 입니다.";
 	qm->Register_Scenario(s2);
+
+	// 시나리오-s3
+	DTO::QUESTDESC s3;
+	s3.iId = 2;
+	s3.iPrevId = 1;
+	s3.iNextId = 3;
+	s3.wstrTitle = L"모래의 메아리";
+	s3.wstrSubTitle = L"";
+	s3.wstrExplain = L"";
+	s3.wstrDescription = L"개발자 설명란 입니다.";
+	qm->Register_Scenario(s3);
 }
 
 void CMainApplication::Free()

@@ -31,11 +31,11 @@ void CDialogueManager::Ready_Dialogue()
 		//.AddTrigger(0)
 		;
 	
-	CreateNode(1, -1, -1, L"마령 판신", L"마을에 필토이드들이 습격했어 얼른!.");
-	CreateNode(2, -1, -1, L"비타", L"(일어난다.)");
-	CreateNode(3, -1, -1, L"마령 판신", L"나는 마령 판신!");
+	CreateNode(1, -1, 2, L"마령 판신", L"마을에 필토이드들이 습격했어 얼른!");
+	CreateNode(2, 1, 3, L"비타", L"(일어난다.)");
+	CreateNode(3, 2, -1, L"마령 판신", L"일단, 집으로 돌아가자!");
 
-	CreateNode(4, 1, -1, L"마령 판신", L"다음대화");
+	CreateNode(4, -1, -1, L"마령 판신", L"나는 마령 판신!");
 }
 
 void CDialogueManager::Bind_Events()
