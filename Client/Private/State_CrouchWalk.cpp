@@ -34,7 +34,7 @@ HRESULT CState_CrouchWalk::Start(void* pArg, _bool bForce)
 
 	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 	if (pCCT)
-		pCCT->Set_SpeedOffset(0.25f);
+		pCCT->Set_SpeedOffset(0.35f);
 
 	return S_OK;
 }

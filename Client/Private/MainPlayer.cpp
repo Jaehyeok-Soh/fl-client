@@ -858,7 +858,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     // combo state : dual
     {
         CState_DualCombo::DUALCOMBO_DESC tDesc = {};
-        tDesc.vCombo_CheckTimes = Vec4{ 20.f / ANIMTIC ,16.f / ANIMTIC, 13.f / ANIMTIC ,30.f / ANIMTIC };
+        tDesc.vCombo_CheckTimes = Vec4{ 17.f / ANIMTIC ,15.f / ANIMTIC, 10.f / ANIMTIC ,24.f / ANIMTIC };
         tDesc.fSlide_CheckTime = 17.f / ANIMTIC;
 
         _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_SlideAttack");

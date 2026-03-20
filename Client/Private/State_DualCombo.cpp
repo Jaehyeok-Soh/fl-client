@@ -90,6 +90,8 @@ HRESULT CState_DualCombo::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	Get_OwnerObject()->Set_Render(true);
+
 	return S_OK;
 }
 
