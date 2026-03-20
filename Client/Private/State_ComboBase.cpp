@@ -67,6 +67,8 @@ void CState_ComboBase::Update(const _float fTimeDelta)
 
 	Check_Combo();
 
+	Update_byMainAnim(fTimeDelta);
+
 	Super::Update(fTimeDelta);
 }
 
@@ -132,6 +134,22 @@ void CState_ComboBase::Change_NextCombo()
 
 	m_bShakeActived = false;
 
+	switch (m_iComboCount)
+	{
+	case ENUM_TO_UINT(ANIM::SECOND):
+		Start_Second();
+		break;
+
+	case ENUM_TO_UINT(ANIM::THIRD):
+		Start_Third();
+		break;
+
+	case ENUM_TO_UINT(ANIM::FOURTH):
+		Start_Fourth();
+		break;
+	}
+
+
 	Request_ChangeAnimation(m_vecMainAnims[m_iComboCount], true, false, true);
 }
 
@@ -148,6 +166,8 @@ void CState_ComboBase::Change_FirstCombo()
 	m_fStateElapsed = 0.f;
 
 	m_TChargeCount.x = 0.f;
+
+	Start_First();
 
 	Request_ChangeAnimation(m_vecMainAnims[0], false, false, true);
 }
@@ -187,6 +207,28 @@ void CState_ComboBase::Check_Combo()
 		m_bNextCombo)
 	{
 		Change_NextCombo();
+	}
+}
+
+void CState_ComboBase::Update_byMainAnim(const _float fTimeDelta)
+{
+	switch (m_iComboCount)
+	{
+	case ENUM_TO_UINT(ANIM::SLIDE):
+		Update_First(fTimeDelta);
+		break;
+
+	case ENUM_TO_UINT(ANIM::SECOND):
+		Update_Second(fTimeDelta);
+		break;
+
+	case ENUM_TO_UINT(ANIM::THIRD):
+		Update_Third(fTimeDelta);
+		break;
+
+	case ENUM_TO_UINT(ANIM::FOURTH):
+		Update_Fourth(fTimeDelta);
+		break;
 	}
 }
 

@@ -2,11 +2,11 @@
 #include "State_ComboBase.h"
 
 NS_BEGIN(Client)
-class CState_MoonCombo final : public CState_ComboBase
+class CState_DualCombo final : public CState_ComboBase
 {
 	using Super = CState_ComboBase;
 public:
-	typedef struct tagMoonComboDesc
+	typedef struct tagDualComboDesc
 	{
 		Vec4 vCombo_CheckTimes = Vec4::Zero;
 
@@ -24,11 +24,11 @@ public:
 
 		std::array<_float, 5> arrCombo_EndTimes;
 
-	}MOONCOMBO_DESC;
+	}DUALCOMBO_DESC;
 
 private:
-	CState_MoonCombo(CActionState* pOwnerComponent);
-	virtual ~CState_MoonCombo() = default;
+	CState_DualCombo(CActionState* pOwnerComponent);
+	virtual ~CState_DualCombo() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;
 
@@ -39,10 +39,11 @@ public:
 	virtual HRESULT End() override;
 
 public:
-	virtual void Update_Fourth(const _float fTimeDelta) override;
+	virtual void Start_Third() override;
+	virtual void Update_Third(const _float fTimeDelta) override;
 
 public:
-	static CState_MoonCombo* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
+	static CState_DualCombo* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
 };
 

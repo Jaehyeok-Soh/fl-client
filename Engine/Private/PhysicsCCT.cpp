@@ -19,6 +19,8 @@ CPhysicsCCT::CPhysicsCCT(const CPhysicsCCT& rhs)
 	, m_pDevice(rhs.m_pDevice)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
 	, m_fGravityOffset(rhs.m_fGravityOffset)
+	, m_bYLerp(rhs.m_bYLerp)
+	, m_fSpeedOffset(rhs.m_fSpeedOffset)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -106,7 +108,7 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 {
 	_bool bHasInput = m_tMoveState.vInputDir.magnitudeSquared() > 0.001f;
 
-	m_tMoveState.vTargetVelocity = m_tMoveState.vInputDir * m_tMoveState.CMSpeed.z;
+	m_tMoveState.vTargetVelocity = m_tMoveState.vInputDir * m_tMoveState.CMSpeed.z * m_fSpeedOffset;
 	m_tMoveState.vTargetVelocity.y = 0.f;
 
 	PxVec3 currentHorizontalVel = m_tMoveState.vVelocity;
@@ -149,14 +151,6 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 			vHoverPos = vHoverPos - vCurrentPose;
 
 			vHoverPos *= 5.f * fTimeDelta;
-
-			//if (finalPos.y < fMinHoverY)
-			//{
-			//	finalPos.y = fMinHoverY;
-			//	SetFootPosition(finalPos);
-
-			//	m_tMoveState.vVelocity.y = 0.f;
-			//}
 
 			AddFixedMove(vHoverPos);
 		}
@@ -305,14 +299,23 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 		finalPos.z += m_tDesc.vWorldOffset.z;
 	}
 
-	Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	if (m_bYLerp)
+	{
+		Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-	_float fLerpAmount = fTimeDelta * 15.f;
-	if (fLerpAmount > 1.f)
-		fLerpAmount = 1.f;
+		_float fLerpAmount = fTimeDelta * 15.f;
+		if (fLerpAmount > 1.f)
+			fLerpAmount = 1.f;
 
-	_float yLerp = std::lerp(currentPos.y, finalPos.y, fLerpAmount);
-	finalPos.y = yLerp;
+		_float yLerp = std::lerp(currentPos.y, finalPos.y, fLerpAmount);
+		finalPos.y = yLerp;
+	}
+
+	// test
+	else
+	{
+		int  a = 0;
+	}
 
 	transform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 

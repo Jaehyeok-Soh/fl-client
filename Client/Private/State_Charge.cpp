@@ -66,12 +66,12 @@ HRESULT CState_Charge::End()
 
 void CState_Charge::Go_Front(const _float fTimeDelta)
 {
-	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
-	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+	//CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
+	//CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
-	Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+	//Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
 
-	Move(vLook);
+	//Move(vLook);
 }
 
 CState_Charge* CState_Charge::Create(CActionState* pOwnerComponent, void* pArg)

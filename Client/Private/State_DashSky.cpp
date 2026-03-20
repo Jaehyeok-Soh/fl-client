@@ -37,6 +37,8 @@ HRESULT CState_DashSky::Start(void* pArg, _bool bForce)
 
 	Set_ApplyGravity(false);
 
+	Set_YLerp(false);
+
 	return S_OK;
 }
 
@@ -49,7 +51,7 @@ void CState_DashSky::Update(const _float fTimeDelta)
 		if(Check_OnGround(0.3f))
 		{
 			//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
-			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::IDLE));
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 			return;
 		}
 		Set_ApplyGravity(true);
@@ -64,6 +66,8 @@ HRESULT CState_DashSky::End()
 	m_FCollisions = 0;
 
 	Set_ApplyGravity(true);
+
+	Set_YLerp(true);
 
 	return S_OK;
 }

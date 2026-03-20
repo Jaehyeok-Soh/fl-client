@@ -195,6 +195,7 @@ protected:
 	void			Set_ApplyGravity(_bool bApply);
 	void			Set_ApplyYLerp(_bool bApply);
 	void			Set_GravityOffset(_float fOffset);
+	void			Set_YLerp(_bool bLerp);
 
 protected:
 	_bool IsBlend() { return m_bBlend; }
