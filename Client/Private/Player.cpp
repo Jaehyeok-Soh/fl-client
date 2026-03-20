@@ -149,9 +149,18 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     CGameInstance::GetInstance()->Add_Actor_Object(this);
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
         if (FAILED(pPlayerState->Awake(iCurrentLevelID)))
-            return E_FAIL;
-    
-    Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
+           return E_FAIL;
+
+    switch (iCurrentLevelID)
+    {
+    case ENUM_TO_UINT(ELevelType::TEST):
+        Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::NONE));
+        break;
+
+    default:
+        Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
+    }
+
     Start_Attack(CPlayer::State::COMBO);
 
     Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
@@ -1394,7 +1403,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::SWORD;
             tInfo.iPartSize = 1;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::HOLD);
 
             m_arrMeleeInfo[ENUM_TO_SZET(MELEE::SWORD)] = tInfo;
@@ -1405,7 +1414,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::Dual_R;
             tInfo.iPartSize = 2;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrMeleeInfo[ENUM_TO_SZET(MELEE::DUAL)] = tInfo;
@@ -1421,7 +1430,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::GUN;
             tInfo.iPartSize = 1;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrRangeInfo[ENUM_TO_SZET(RANGE::MACHINE)] = tInfo;
@@ -1435,7 +1444,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::SKILL;
             tInfo.iPartSize = 1;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrSkillInfo[ENUM_TO_SZET(SKILL::MOON)] = tInfo;
@@ -1547,7 +1556,7 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
         weaponDesc.eState = CWeapon::State::HOLD;
 
-        weaponDesc.bMianWeapon = true;
+        weaponDesc.bMianWeapon = false;
         weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
         weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
         weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
@@ -1779,6 +1788,9 @@ void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
         iStartPartIdx   = m_arrMeleeInfo[size_t(iCurWeapon)].iPartStartIdx;
         iPartSize       = m_arrMeleeInfo[size_t(iCurWeapon)].iPartSize;
 
+        if (!m_arrMeleeInfo[size_t(iCurWeapon)].bHave)
+            return;
+
         m_arrMeleeInfo[size_t(iCurWeapon)].iWeaponState = iState;
         break;
 
@@ -1788,6 +1800,9 @@ void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
         iStartPartIdx   = m_arrRangeInfo[size_t(iCurWeapon)].iPartStartIdx;
         iPartSize       = m_arrRangeInfo[size_t(iCurWeapon)].iPartSize;
 
+        if (!m_arrRangeInfo[size_t(iCurWeapon)].bHave)
+            return;
+
         m_arrRangeInfo[size_t(iCurWeapon)].iWeaponState = iState;
         break;
 
@@ -1796,6 +1811,9 @@ void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
         iCurWeapon      = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::SKILL)];
         iStartPartIdx   = m_arrSkillInfo[size_t(iCurWeapon)].iPartStartIdx;
         iPartSize       = m_arrSkillInfo[size_t(iCurWeapon)].iPartSize;
+
+        if (!m_arrSkillInfo[size_t(iCurWeapon)].bHave)
+            return;
 
         m_arrSkillInfo[size_t(iCurWeapon)].iWeaponState = iState;
         break;

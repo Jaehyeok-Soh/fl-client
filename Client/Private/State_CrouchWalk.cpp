@@ -63,6 +63,7 @@ void CState_CrouchWalk::Set_NextStateDesc(_uint iNextState)
 	switch (iNextState)
 	{
 	case ENUM_TO_UINT(CPlayer::State::COMBO):
+	case ENUM_TO_UINT(CPlayer::State::COMBO_DUAL):
 		m_tNextStateDesc.iMainAnimIdx = 1;
 		break;
 

@@ -198,11 +198,29 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
+    if (KEY_BUTTON_DOWN(DIK_V))
+    {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 0, true);
+        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 0);
+    }
+
     if (KEY_BUTTON_DOWN(DIK_B))
     {
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
+
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 1, true);
+        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 1);
     }
 
+    if (KEY_BUTTON_DOWN(DIK_N))
+    {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::RANGE), 0, true);
+    }
+
+    if (KEY_BUTTON_DOWN(DIK_M))
+    {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::SKILL), 0, true);
+    }
 
     //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
 }
@@ -1069,8 +1087,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::UP)]        = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MU");
 
 
-    vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };
-
+    vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };//, { 204,true,1.f } // 넣을 거면 mix도 blend 필요
     for (auto& MixAnim : arrMix)
     {
         pModel->Make_MixRatio(MixAnim, vecDownMix, pAnimMixCS);
