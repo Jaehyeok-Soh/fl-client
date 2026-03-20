@@ -1909,34 +1909,34 @@ RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT
 	case Engine::ERagdollJoint::PELVIS:
 		desc.fRadius = 0.25f;
 		desc.fMass = 1.f;
-		desc.fHeight = 1.f;
+		desc.fHeight = 0.25f;
 		break;
 	case Engine::ERagdollJoint::SPINE_02:
 		desc.fRadius = 0.05f;
 		desc.fHeight = 0.05f;
 		break;
 	case Engine::ERagdollJoint::HEAD:
-		desc.fRadius = 0.5f;
+		desc.fRadius = 0.1f;
 		desc.fMass = 5.f;
-		desc.fHeight = 1.f;
+		desc.fHeight = 0.1f;
 		break;
 	case Engine::ERagdollJoint::UPPERARM_L:
 	case Engine::ERagdollJoint::UPPERARM_R:
 		desc.fRadius = 0.1f;
 		desc.fMass = 0.1f;
-		desc.fHeight = 0.25f;
+		desc.fHeight = 0.1f;
 		break;
 	case Engine::ERagdollJoint::LOWERARM_L:
 	case Engine::ERagdollJoint::LOWERARM_R:
 		desc.fRadius = 0.1f;
 		desc.fMass = 0.1f;
-		desc.fHeight = 0.25f;
+		desc.fHeight = 0.1f;
 		break;
 	case Engine::ERagdollJoint::THIGH_L:
 	case Engine::ERagdollJoint::THIGH_R:
 		desc.fRadius = 0.1f;
 		desc.fMass = 0.1f;
-		desc.fHeight = 0.25f;
+		desc.fHeight = 0.1f;
 		break;
 	case Engine::ERagdollJoint::CALF_L:
 	case Engine::ERagdollJoint::CALF_R:
@@ -1951,7 +1951,7 @@ RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT
 		break;
 	}
 
-	desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f), PxQuat(PxHalfPi, PxVec3(0, 0, 1)));
+	desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f), PxQuat(PxHalfPi, PxVec3(1, 0, 0)));
 	//desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f),
 	//	PxQuat(PxHalfPi, PxVec3(0, 0, 1)));
 

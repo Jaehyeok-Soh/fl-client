@@ -64,8 +64,12 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
-	Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
-	m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
+	CPhysicsAttackOverlap* pAttackOverlap = { nullptr };
+	if (pAttackOverlap = Get_Component<CPhysicsAttackOverlap>())
+		pAttackOverlap->Bind_Events();
+	
+	if (m_pEffectHandler)
+		m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
 
 	return S_OK;
 }
@@ -128,8 +132,9 @@ void CMonster_Base::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 
-	if (Get_Component <CPhysicsAttackOverlap>())
-		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+	CPhysicsAttackOverlap* pAttackOverlap = { nullptr };
+	if (pAttackOverlap = Get_Component<CPhysicsAttackOverlap>())
+		pAttackOverlap->Update(fTimeDelta);
 }
 
 void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
@@ -138,7 +143,10 @@ void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
 
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsCCT>());
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());
+
+	CPhysicsAttackOverlap* pAttackOverlap = { nullptr };
+	if (pAttackOverlap = Get_Component<CPhysicsAttackOverlap>())
+		m_pGameInstance->Push_DebugComponent(pAttackOverlap);
 #endif // _DEBUG
 }
 
@@ -261,7 +269,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		if (pBody != nullptr && pRagdoll != nullptr)
 		{
 			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
-				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 50.f);
+				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 10.f);
 		}
 	}
 
@@ -369,7 +377,7 @@ HRESULT CMonster_Base::Ready_EffectHandler(void* pArg)
 	Engine_Utils::Replace(NameTag, L"Prototype_Component_Model_", L"");
 
 	if (FAILED(Add_Component<CEffectHandler>(/*Static*/0, L"Prototype_Component_EffectHandler_" + NameTag, nullptr)))
-		return E_FAIL;
+		return S_OK;
 
 	m_pEffectHandler = Get_Component<CEffectHandler>();
 	return S_OK;

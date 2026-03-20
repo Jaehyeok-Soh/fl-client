@@ -130,6 +130,38 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 		m_tMoveState.CMVerticalSpeed.z
 	);
 
+	if (m_tDesc.bIsHover && m_bEnableMove == true)
+	{
+		Vec3 finalPos = GetFootPosition();
+
+		_float fHitDesc = {};
+		Vec3 vHitPos = {};
+		Vec3 vRayPos = finalPos;
+		vRayPos.y += 0.3f;
+
+		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDesc, &vHitPos))
+		{
+			_float fMinHoverY = vHitPos.y + m_tDesc.fHoverOffset;
+
+			Vec3 vHoverPos(0.f, vHitPos.y + m_tDesc.fHoverOffset, 0.f);
+			Vec3 vCurrentPose(0.f, finalPos.y, 0.f);
+
+			vHoverPos = vHoverPos - vCurrentPose;
+
+			vHoverPos *= 5.f * fTimeDelta;
+
+			//if (finalPos.y < fMinHoverY)
+			//{
+			//	finalPos.y = fMinHoverY;
+			//	SetFootPosition(finalPos);
+
+			//	m_tMoveState.vVelocity.y = 0.f;
+			//}
+
+			AddFixedMove(vHoverPos);
+		}
+	}
+
 	m_CollisionFlags = Move((m_tMoveState.vVelocity * fTimeDelta) + m_tMoveState.vFixedMove, 0.001f, fTimeDelta);
 
 	m_tMoveState.ReadyNext();
@@ -271,27 +303,6 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 		finalPos.x += m_tDesc.vWorldOffset.x;
 		finalPos.y += m_tDesc.vWorldOffset.y;
 		finalPos.z += m_tDesc.vWorldOffset.z;
-	}
-
-	if (m_tDesc.bIsHover)
-	{
-		_float fHitDesc = {};
-		Vec3 vHitPos = {};
-		Vec3 vRayPos = finalPos;
-		vRayPos.y += 0.3f;
-
-		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDesc, &vHitPos))
-		{
-			_float fMinHoverY = vHitPos.y + m_tDesc.fHoverOffset;
-
-			if (finalPos.y < fMinHoverY)
-			{
-				finalPos.y = fMinHoverY;
-				SetFootPosition(finalPos);
-
-				m_tMoveState.vVelocity.y = 0.f;
-			}
-		}
 	}
 
 	Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);

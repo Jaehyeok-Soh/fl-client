@@ -791,6 +791,7 @@ namespace Client
 	/* Monster Model Tag */
 	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Monster_Dog"};
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
+	inline constexpr wchar_t g_wszMonster_Fly_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
 	
 	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
@@ -896,6 +897,7 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_Monster_Dog[]{ L"Pool_Monster_Dog" };
 	inline constexpr wchar_t g_wszPool_Monster_Boomer[]{ L"Pool_Monster_Boomer" };
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
+	inline constexpr wchar_t g_wszPool_Monster_Fly[]{ L"Pool_Monster_Fly" };
 #pragma endregion
 
 #pragma region Npc ฐüทร

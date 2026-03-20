@@ -150,7 +150,7 @@ HRESULT CMonster_Fly::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 300.f;
+		desc.fMaxHp = 150.f;
 		desc.fDefense = 50.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 
@@ -197,9 +197,9 @@ HRESULT CMonster_Fly::Ready_Components(void* pArg)
 	}
 
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
-	desc.fMeleeRange = 2.f;
-	desc.fAttackRange = 4.f;
-	desc.fCloseRange = 1.f;
+	desc.fMeleeRange = 0.5f;
+	desc.fAttackRange = 6.f;
+	desc.fCloseRange = 0.3f;
 	desc.fDetectionRange = 15.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
@@ -221,9 +221,10 @@ CMonster_Fly::MONSTER_DESC CMonster_Fly::Get_PreSetDesc(_uint iLevelId)
 	monsterDesc.iLevelIndex = iLevelId;
 	monsterDesc.pTransform_Desc = nullptr;
 
-	monsterDesc.wstrBodyModelTag = g_wszMonster_Fly_Prototype_Tag;
+	monsterDesc.wstrBodyModelTag = g_wszMonster_Fly_Model_Prototype_Tag;
 	monsterDesc.wstrPartBodyPrototypeTag = g_wszMonster_Fly_Body_Prototype_Tag;
-	monsterDesc.wstrAttackOverlapPrototypeTag = g_wszMonster_Fly_AttackOverlap_Prototype_Tag;
+	//monsterDesc.wstrAttackOverlapPrototypeTag = g_wszMonster_Fly_AttackOverlap_Prototype_Tag;
+	monsterDesc.wstrAttackOverlapPrototypeTag = L"";
 	monsterDesc.wstrMonsterStateTag = g_wszMonster_Fly_State_Tag;
 
 	{
@@ -244,7 +245,7 @@ CMonster_Fly::MONSTER_DESC CMonster_Fly::Get_PreSetDesc(_uint iLevelId)
 		desc.vWorldOffset = {};
 
 		desc.bIsHover = { true };
-		desc.fHoverOffset = { 1.f };
+		desc.fHoverOffset = { 2.f };
 
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
