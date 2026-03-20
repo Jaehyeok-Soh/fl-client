@@ -505,6 +505,9 @@
     <Filter Include="01. Utility\99. SuperClass\Manager">
       <UniqueIdentifier>{5f03e0c9-4308-4edf-bbd1-db3d494aec0a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Sounds">
+      <UniqueIdentifier>{bafc48bc-57d7-429c-94bc-de325338ecb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">

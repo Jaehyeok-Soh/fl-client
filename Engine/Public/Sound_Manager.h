@@ -1,55 +1,120 @@
 #pragma once
 #include "Base.h"
 
+#define MAX_SOUND_CHANNEL 32
+#define LIMIT_ONESHOT_SOUNDS 5
+
+typedef struct tagPendingSound
+{
+    _uint iLevelID = 0;
+    _uint iSoundHash = 0;
+    _float fRemainTime = 0.f;
+    _float fVolume = 1.f;
+    _float fPitch = 1.f;
+    _bool bSteal = false;
+}PENDING_ONESHOT;
+
 NS_BEGIN(Engine)
+
+typedef struct tagSoundGroup
+{
+    ESoundCategory            eCategory = ESoundCategory::SFX;
+    vector<FMOD::Sound*> vecSounds;
+}SOUND_GROUP;
 
 class CSound_Manager : public CBase
 {
     using Super = CBase;
+
 private:
     CSound_Manager();
     virtual ~CSound_Manager() = default;
 
-    HRESULT Initialize();
-public:
-    void    Update();
+    HRESULT Initialize(_uint iLevelCount);
 
 public:
-    HRESULT Load_Sounds(const std::wstring& wstrFolderPath);
-
+    void    Update(const _float fTimeDelta);
+    // LevelID - 저장할레벨, ESoundCategory - 사운드 카테고리, wstrFolderPath - 폴더 경로
+    HRESULT Load_Sounds(_uint iLevelID, ESoundCategory eCategory, const wstring& wstrFolderPath);
+    void Clear(_uint iLevelID);
+    void Release_LevelSounds(_uint iLevelID);
 public:
-    void Play_Controlled(const _tchar* pSoundKey, _uint iControlledId, _float fVolume, _bool  bLoop = false, _float fPitch = 1.f);
+    // 카테고리별 볼륨
+    void   Set_CategoryVolume(ESoundCategory eCategory, _float fVolume);
+    _float Get_CategoryVolume(ESoundCategory eCategory) const;
+
+    void   Set_GroupCategory(_uint iLevelID, _uint iSoundHash, ESoundCategory eCategory);
+public:
+    // Engine_Enum.h의 EControlledChannel에 등록된 컨트롤 할 ID
+    void Play_Controlled(_uint iLevelID, _uint iSoundHash, _uint iControlledId, _float fVolume, _bool bLoop = false, _float fPitch = 1.f);
     void Stop_Controlled(_uint iControlledId);
     void Set_ControlledVolume(_uint iControlledId, _float fVolume);
     void Set_ControlledPitch(_uint iControlledId, _float fPitch);
 
-    void PlayBGM(const _tchar* pSoundKey, _float fVolume, _bool bLoop = true, _float fPitch = 1.f);
-    void Play_OneShot(const _tchar* pSoundKey, _float fVolume, _float fPitch = 1.f);
-    void Play_RandOneShot(const _tchar* pSoundKey, _float fVolume, _int iCount, _float fPitch = 1.f);
+    void PlayBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f);
+    // Steal 플래그를 키면 SoundChannel이 꽉찼을때 가장 빨리끝날 Channel을 강제로 종료후 사운드를 재생시킴
+    void Play_OneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
+    void Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
+    void Play_RandOneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
 public:
     void StopSound(_uint iChannelIndex);
-    void StopAll();                  
+    void StopAll();
+
 private:
-    static void  ApplyChannelParams(FMOD::Channel* pChannel, _float fVolume, _bool bLoop, _float fPitch);
-    FMOD::Sound* FindSound(const std::wstring& wstrKey) const;
+    void ApplyChannelParams(FMOD::Channel* pChannel, _float fFinalVolume, _bool bLoop, _float fPitch);
+
+    SOUND_GROUP* FindGroup(_uint iLevelID, _uint iSoundHash);
+    const SOUND_GROUP* FindGroup(_uint iLevelID, _uint iSoundHash) const;
+
+    FMOD::Sound* Pick_SoundFromGroup(const SOUND_GROUP& tGroup) const;
+
+    // Player_Example1, ..2, ..3 가능
+    // Attack01, ...02 가능
+    // Hit-Light-01, ...02 가능
+    string    Extract_GroupKeyString(const wstring& wstrStem);
+
+    _float Compute_FinalVolume(_float fBaseVolume, ESoundCategory eCategory) const;
+
     void Reset_OneShotPool();
     void Reclaim_OneShots();
-    void StopAndClearChannelSlot(_uint iIndex);
-    void RemoveActiveOneShotIfExists(_uint iIndex);
+
+    void Stop_AndClearChannelSlot(_uint iIndex);
+    void Remove_ActiveOneShotIfExists(_uint iIndex);
+
+    void Set_ChannelRuntimeState(_uint iIndex, _uint iLevelID, _uint iGroupHash, _float fBaseVolume, ESoundCategory eCategory);
+    void Reset_ChannelRuntimeState(_uint iIndex);
+    void Apply_StoredChannelVolume(_uint iIndex);
+
+    _uint Acquire_OneShotSlot(_uint iLevelID, _uint iSoundHash, _bool bSteal);
+    _uint Find_StealCandidateOneShot() const;
+
+    _uint Count_PlayingOneShot(_uint iLevelID, _uint iSoundHash) const;
+    _uint Find_StealCandidate(_uint iLevelID, _uint iSoundHash) const;
+
+    void Update_PendingOneShots(_float fTimeDelta);
 private:
-    enum { MAXCHANNEL = 32 };
-    enum { CONTROLLED_COUNT = 10 };
-    const _uint ONE_SHOT_BEGIN = CONTROLLED_COUNT;
-    const _uint ONE_SHOT_END = MAXCHANNEL;
+    const _uint ONE_SHOT_BEGIN = ENUM_TO_UINT(EControlledChannel::COUNT);
+    const _uint ONE_SHOT_END = MAX_SOUND_CHANNEL;
+
 private:
     FMOD::System* m_pSystem = nullptr;
-    FMOD::Channel* m_pChannelArr[MAXCHANNEL]{};
+    FMOD::Channel* m_pChannelArr[MAX_SOUND_CHANNEL]{};
 
-    std::unordered_map<std::wstring, FMOD::Sound*> m_umapSounds;
-    std::vector<_uint> m_vecOneShotStack;
-    std::vector<_uint> m_vecActiveOneShots;
+    vector<unordered_map<_uint, SOUND_GROUP>> m_umapSounds;
+
+    vector<_uint> m_vecOneShotStack;
+    vector<_uint> m_vecActiveOneShots;
+    vector<PENDING_ONESHOT> m_vecPendingOneShots;
+
+    _float m_arrCategoryVolume[ENUM_TO_UINT(ESoundCategory::END)]{};
+
+    // 라이브 볼륨 재계산, 그룹 추적용
+    _float         m_arrChannelBaseVolume[MAX_SOUND_CHANNEL]{};
+    ESoundCategory m_arrChannelCategory[MAX_SOUND_CHANNEL]{};
+    _uint          m_arrChannelLevelID[MAX_SOUND_CHANNEL]{};
+    _uint          m_arrChannelGroupHash[MAX_SOUND_CHANNEL]{};
 public:
-    static CSound_Manager* Create();
+    static CSound_Manager* Create(_uint iLevelCount);
     virtual void Free() override;
 };
 

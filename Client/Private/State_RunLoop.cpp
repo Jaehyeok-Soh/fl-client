@@ -41,14 +41,6 @@ void CState_RunLoop::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	m_fDuration += fTimeDelta;
-	if (m_fDuration >= m_fInterval)
-	{
-		if (dynamic_cast<CMainPlayer*>(Get_OwnerObject()))
-			CGameInstance::GetInstance()->Play_RandOneShot(L"Run", 0.1f, 5);
-		m_fDuration -= m_fInterval;
-	}
-
 	//if (Align_Attack(ENUM_TO_UINT(CPlayer::State::LEFTMELEE)))
 	//	return;
 

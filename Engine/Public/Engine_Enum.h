@@ -192,6 +192,26 @@ namespace Engine
 		"g_RenderTargetOITRevealTexture"
 	};
 	//===================
+	// Sound
+	//===================
+	enum class ESoundCategory : int
+	{
+		BGM = 0,
+		SFX,
+		UI,
+		Voice,
+		Ambient,
+		END
+	};
+
+	enum class EControlledChannel : unsigned int
+	{
+		BGM = 0,
+		AMBIENT,
+		COUNT,
+	};
+
+	//===================
 	// AnimEvent
 	//===================
 	enum class EAnimNotifyId : unsigned int
@@ -205,6 +225,7 @@ namespace Engine
 		Vfx_Attach_Off,
 		Hitbox,
 		Trigger_Gimmik,
+		Sound,
 		END
 	};
 	//===================
