@@ -94,7 +94,7 @@ private:
     void ApplyGravity(const _float fTimeDelta);
     void ApplyExternAcc(const _float fTimeDelta);
     void ApplyImpuls(const _float fTimeDelta);
-
+    
 public:
     const PHYSICSCCT_DESC& Get_Desc() const { return m_tDesc; }
     /// <summary>
@@ -199,6 +199,9 @@ public:
     void SetPoolingPosition(Vec3 vPos);
     void ApplyPoolingPosition();
 
+    void Set_YLerp(_bool bApply) { m_bYLerp = bApply; }
+    void Set_SpeedOffset(_float fSpeedOffset) { m_fSpeedOffset = fSpeedOffset; }
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pDeviceContext = { nullptr };
@@ -226,6 +229,9 @@ private:
     _bool m_bEnableCollision = { true };
 
     _bool m_bEnableMove = { true };
+
+    _bool   m_bYLerp = { true };
+    _float  m_fSpeedOffset = { 1.f };
 
 private:
     Vec3 m_vPoolingPosition{};

@@ -87,6 +87,10 @@ HRESULT CBody::Initialize(void* pArg)
 		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.2f);
 		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dodge_To_Run");
 		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.2f);
+		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_01");
+		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.5f);
+		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_02");
+		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.8f);
 
 		pMyModel->Set_Animation_SpeedOffset_All(1.2f);
 	}

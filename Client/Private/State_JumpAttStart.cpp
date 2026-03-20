@@ -57,6 +57,8 @@ HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 		Set_ZeroDeAccelRate();
 	}
 
+	Set_YLerp(false);
+
 	return S_OK;
 }
 
@@ -96,6 +98,8 @@ HRESULT CState_JumpAttStart::End()
 
 	Reset_DeAccelRate();
 	Set_ZeroHorizontalVelocity();
+
+	Set_YLerp(true);
 
 	return S_OK;
 }

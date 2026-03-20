@@ -31,7 +31,7 @@ HRESULT CState_Fall::Start(void* pArg, _bool bForce)
 
 	m_fFallTimeAcc = 0.f;
 
-	//Set_ApplyYLerp(false);
+	Set_YLerp(false);
 
 	Set_ApplyGravity(true);
 	//Set_GravityOffset(-2.f);
@@ -42,7 +42,7 @@ HRESULT CState_Fall::Start(void* pArg, _bool bForce)
 void CState_Fall::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
-	if (IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_DOWN))
+	if (Check_OnGround(0.95f))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 		return;
@@ -60,7 +60,7 @@ HRESULT CState_Fall::End()
 
 	m_fFallTimeAcc = 0.f;
 
-	//Set_ApplyYLerp(true);
+	Set_YLerp(true);
 
 	return S_OK;
 }

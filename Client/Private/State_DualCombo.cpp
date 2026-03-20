@@ -1,18 +1,18 @@
 #include "pch.h"
-#include "State_MoonCombo.h"
+#include "State_DualCombo.h"
 
 #include "Player.h"
 #include "PlayerActionState.h"
 
 #include "GameInstance.h"
-CState_MoonCombo::CState_MoonCombo(CActionState* pOwnerComponent)
-	: Super(pOwnerComponent,"MoonCombo")
+CState_DualCombo::CState_DualCombo(CActionState* pOwnerComponent)
+	: Super(pOwnerComponent,"DualCombo")
 {
 }
 
-HRESULT CState_MoonCombo::Initialize(void* pArg)
+HRESULT CState_DualCombo::Initialize(void* pArg)
 {
-	MOONCOMBO_DESC* pDesc = static_cast<MOONCOMBO_DESC*>(pArg);
+	DUALCOMBO_DESC* pDesc = static_cast<DUALCOMBO_DESC*>(pArg);
 
 	PLAYER_COMBOBASE_DESC tMyDesc = {};
 	tMyDesc.vCombo_CheckTimes = pDesc->vCombo_CheckTimes;
@@ -62,7 +62,7 @@ HRESULT CState_MoonCombo::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CState_MoonCombo::Awake(const _uint iLevelIndex)
+HRESULT CState_DualCombo::Awake(const _uint iLevelIndex)
 {
 	if (FAILED(Super::Awake(iLevelIndex)))
 		return E_FAIL;
@@ -70,7 +70,7 @@ HRESULT CState_MoonCombo::Awake(const _uint iLevelIndex)
 	return S_OK;
 }
 
-HRESULT CState_MoonCombo::Start(void* pArg, _bool bForce)
+HRESULT CState_DualCombo::Start(void* pArg, _bool bForce)
 {
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
@@ -80,12 +80,12 @@ HRESULT CState_MoonCombo::Start(void* pArg, _bool bForce)
 	return S_OK;
 }
 
-void CState_MoonCombo::Update(const _float fTimeDelta)
+void CState_DualCombo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 }
 
-HRESULT CState_MoonCombo::End()
+HRESULT CState_DualCombo::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
@@ -93,30 +93,30 @@ HRESULT CState_MoonCombo::End()
 	return S_OK;
 }
 
-void CState_MoonCombo::Update_Fourth(const _float fTimeDelta)
+void CState_DualCombo::Start_Third()
 {
-	if (m_bShakeActived == false && m_fStateElapsed >= 0.8f / 1.2f)
-	{
-		CAM_SHAKING_DATA data{};
-		data.fTime = 0.2f;
-		data.fPower = 0.3f;
-		CGameInstance::GetInstance()->Camera_Shaking(data);
-		m_bShakeActived = true;
-	}
+	Get_OwnerObject()->Set_Render(false);
 }
 
-CState_MoonCombo* CState_MoonCombo::Create(CActionState* pOwnerComponent, void* pArg)
+void CState_DualCombo::Update_Third(const _float fTimeDelta)
 {
-	CState_MoonCombo* pInstance = new CState_MoonCombo(pOwnerComponent);
+	if(m_fStateElapsed >= m_tKeyTimer.fMaxTime - 0.1f)
+		Get_OwnerObject()->Set_Render(true);
+	// render onoff °ü¸®
+}
+
+CState_DualCombo* CState_DualCombo::Create(CActionState* pOwnerComponent, void* pArg)
+{
+	CState_DualCombo* pInstance = new CState_DualCombo(pOwnerComponent);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CState_MoonCombo::Create, Failed");
+		MSG_BOX("CState_DualCombo::Create, Failed");
 		Safe_Release(pInstance);
 	} 
 	return pInstance;
 }
 
-void CState_MoonCombo::Free()
+void CState_DualCombo::Free()
 {
 	Super::Free();
 }

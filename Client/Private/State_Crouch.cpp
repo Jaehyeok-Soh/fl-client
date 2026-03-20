@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "State_Crouch.h"
 
+
 #include "Player.h"
 
 CState_Crouch::CState_Crouch(CActionState* pOwnerComponent)
@@ -28,6 +29,8 @@ HRESULT CState_Crouch::Start(void* pArg, _bool bForce)
 {
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
+
+
 
 	return S_OK;
 }

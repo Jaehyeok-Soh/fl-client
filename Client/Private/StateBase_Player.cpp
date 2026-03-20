@@ -336,6 +336,7 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 			{
 				if (Check_OnGround(0.3f))
 				{
+					// combo state 전환 : 무기 체크후 전환
 					_int iCurMelee = Get_WeaponIdx(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE));
 
 					switch (iCurMelee)
@@ -345,7 +346,7 @@ _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 						break;
 
 					case ENUM_TO_UINT(CPlayer::MELEE::DUAL):
-						//Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO_DUAL));
+						Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO_DUAL));
 						break;
 					}
 

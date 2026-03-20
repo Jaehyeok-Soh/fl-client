@@ -280,6 +280,14 @@ void CStateBase::Set_GravityOffset(_float fOffset)
 	m_pOwnerStateComp->Set_GravityOffset(fOffset);
 }
 
+void CStateBase::Set_YLerp(_bool bLerp)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return;
+
+	m_pOwnerStateComp->Set_YLerp(bLerp);
+}
+
 CTransform* CStateBase::Get_CamTransform()
 {
 	if (m_pOwnerStateComp == nullptr)
