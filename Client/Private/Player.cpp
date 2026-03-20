@@ -1394,7 +1394,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::SWORD;
             tInfo.iPartSize = 1;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::HOLD);
 
             m_arrMeleeInfo[ENUM_TO_SZET(MELEE::SWORD)] = tInfo;
@@ -1405,7 +1405,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::Dual_R;
             tInfo.iPartSize = 2;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrMeleeInfo[ENUM_TO_SZET(MELEE::DUAL)] = tInfo;
@@ -1421,7 +1421,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::GUN;
             tInfo.iPartSize = 1;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrRangeInfo[ENUM_TO_SZET(RANGE::MACHINE)] = tInfo;
@@ -1435,7 +1435,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::SKILL;
             tInfo.iPartSize = 1;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrSkillInfo[ENUM_TO_SZET(SKILL::MOON)] = tInfo;
