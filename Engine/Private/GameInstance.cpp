@@ -648,17 +648,33 @@ void CGameInstance::PlayBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _f
 {
 	m_pSound_Manager->PlayBGM(iLevelID, iSoundHash, fVolume, fPitch);
 }
+void CGameInstance::PlayBGM_FadeIn(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeInTime, _float fPitch)
+{
+	m_pSound_Manager->PlayBGM_FadeIn(iLevelID, iSoundHash, fVolume, fFadeInTime, fPitch);
+}
+void CGameInstance::PlayBGM_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayed, _float fVolume, _float fPitch, _float fFadeInTime)
+{
+	m_pSound_Manager->PlayBGM_Delayed(iLevelID, iSoundHash, fDelayed, fVolume, fPitch, fFadeInTime);
+}
+void CGameInstance::StopBGM_FadeOut(_float fFadeOutTime)
+{
+	m_pSound_Manager->StopBGM_FadeOut(fFadeOutTime);
+}
+void CGameInstance::CrossFadeBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeOutTime, _float fFadeInTime, _float fPitch)
+{
+	m_pSound_Manager->CrossFadeBGM(iLevelID, iSoundHash, fVolume, fFadeOutTime, fFadeInTime, fPitch);
+}
 void CGameInstance::Play_OneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch, _bool bSteal)
 {
-	m_pSound_Manager->Play_OneShot(iLevelID, iSoundHash, fVolume, fPitch);
+	m_pSound_Manager->Play_OneShot(iLevelID, iSoundHash, fVolume, fPitch, bSteal);
+}
+void CGameInstance::Play_OneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch, _bool bSteal)
+{
+	m_pSound_Manager->Play_OneShot_Delayed(iLevelID, iSoundHash, fDelayedTime, fVolume, fPitch, bSteal);
 }
 void CGameInstance::Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch, _bool bSteal)
 {
 	m_pSound_Manager->Play_RandOneShot(iLevelID, iSoundHash, fVolume, fPitch, bSteal);
-}
-void CGameInstance::Play_RandOneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch, _bool bSteal)
-{
-	m_pSound_Manager->Play_RandOneShot_Delayed(iLevelID, iSoundHash, fDelayedTime, fVolume, fPitch, bSteal);
 }
 void CGameInstance::Play_Controlled(_uint iLevelID, _uint iSoundHash, _uint iControlledId, _float fVolume, _bool bLoop, _float fPitch)
 {

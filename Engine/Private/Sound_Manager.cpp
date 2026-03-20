@@ -29,7 +29,7 @@ HRESULT CSound_Manager::Initialize(_uint iLevelCount)
         m_arrCategoryVolume[i] = 1.f;
 
     m_umapSounds.resize(iLevelCount);
-
+    m_vecPendingBGMs.resize(iLevelCount);
     Reset_OneShotPool();
     return S_OK;
 }
@@ -39,8 +39,10 @@ void CSound_Manager::Update(const _float fTimeDelta)
     if (m_pSystem)
         FMOD_CALL(m_pSystem->update());
 
+    Reclaim_ControlledChannels();
     Reclaim_OneShots();
     Update_PendingOneShots(fTimeDelta);
+    Update_PendingBGMs(fTimeDelta);
 }
 
 HRESULT CSound_Manager::Load_Sounds(_uint iLevelID, ESoundCategory eCategory, const wstring& wstrFolderPath)
@@ -122,6 +124,7 @@ void CSound_Manager::Clear(_uint iLevelID)
         }
     }
 
+    m_vecPendingBGMs.clear();
     m_vecPendingOneShots.clear();
     Release_LevelSounds(iLevelID);
 }
@@ -223,6 +226,97 @@ void CSound_Manager::PlayBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _
     Play_Controlled(iLevelID, iSoundHash, ENUM_TO_UINT(EControlledChannel::BGM), fVolume, true, fPitch);
 }
 
+void CSound_Manager::PlayBGM_FadeIn(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeInTime, _float fPitch)
+{
+    if (m_pSystem == nullptr)
+        return;
+
+    const _uint iBGMChannel = ENUM_TO_UINT(EControlledChannel::BGM);
+
+    SOUND_GROUP* pGroup = FindGroup(iLevelID, iSoundHash);
+    if (pGroup == nullptr || pGroup->vecSounds.empty())
+        return;
+
+    FMOD::Sound* pSound = Pick_SoundFromGroup(*pGroup);
+    if (pSound == nullptr)
+        return;
+
+    Stop_AndClearChannelSlot(iBGMChannel);
+
+    FMOD::Channel* pChannel = nullptr;
+    FMOD_RESULT fmodResult = m_pSystem->playSound(pSound, nullptr, true, &pChannel);
+    if (fmodResult != FMOD_OK || pChannel == nullptr)
+        return;
+
+    const _float fFinalVolume = Compute_FinalVolume(fVolume, ESoundCategory::BGM);
+
+    FMOD_CALL(pChannel->setVolume(0.f));
+    FMOD_CALL(pChannel->setPitch((fPitch > 0.f) ? fPitch : 0.01f));
+    FMOD_CALL(pChannel->setMode(FMOD_LOOP_NORMAL));
+    FMOD_CALL(pChannel->setLoopCount(-1));
+    FMOD_CALL(pChannel->setPaused(false));
+
+    Setup_FadePoints(pChannel, 0.f, fFinalVolume, fFadeInTime, false);
+
+    m_pChannelArr[iBGMChannel] = pChannel;
+    Set_ChannelRuntimeState(iBGMChannel, iLevelID, iSoundHash, fVolume, ESoundCategory::BGM);
+}
+
+void CSound_Manager::PlayBGM_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayed, _float fVolume, _float fPitch, _float fFadeInTime)
+{
+    if (iLevelID >= m_umapSounds.size())
+        return;
+
+    m_vecPendingBGMs.clear();
+
+    if (fDelayed <= 0.f)
+    {
+        if (fFadeInTime > 0.f)
+            PlayBGM_FadeIn(iLevelID, iSoundHash, fVolume, fFadeInTime, fPitch);
+        else
+            PlayBGM(iLevelID, iSoundHash, fVolume, fPitch);
+
+        return;
+    }
+
+    PENDING_BGM tPending;
+    tPending.iLevelID = iLevelID;
+    tPending.iSoundHash = iSoundHash;
+    tPending.fRemainTime = fDelayed;
+    tPending.fVolume = fVolume;
+    tPending.fPitch = fPitch;
+    tPending.fFadeInTime = fFadeInTime;
+
+    m_vecPendingBGMs.push_back(tPending);
+}
+
+void CSound_Manager::StopBGM_FadeOut(_float fFadeOutTime)
+{
+    const _uint iBGMChannel = ENUM_TO_UINT(EControlledChannel::BGM);
+
+    if (iBGMChannel >= MAX_SOUND_CHANNEL)
+        return;
+
+    FMOD::Channel* pChannel = m_pChannelArr[iBGMChannel];
+    if (pChannel == nullptr)
+        return;
+
+    _float fCurrentVolume = Compute_FinalVolume(
+        m_arrChannelBaseVolume[iBGMChannel],
+        m_arrChannelCategory[iBGMChannel]);
+
+    if (pChannel->getVolume(&fCurrentVolume) != FMOD_OK)
+        fCurrentVolume = 1.f;
+
+    Setup_FadePoints(pChannel, fCurrentVolume, 0.f, fFadeOutTime, true);
+}
+
+void CSound_Manager::CrossFadeBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeOutTime, _float fFadeInTime, _float fPitch)
+{
+    StopBGM_FadeOut(fFadeOutTime);
+    PlayBGM_Delayed(iLevelID, iSoundHash, fFadeOutTime, fVolume, fPitch, fFadeInTime);
+}
+
 void CSound_Manager::Stop_Controlled(_uint iControlledId)
 {
     if (iControlledId >= ONE_SHOT_BEGIN)
@@ -302,7 +396,7 @@ void CSound_Manager::Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float f
     Play_OneShot(iLevelID, iSoundHash, fVolume, fPitch, bSteal);
 }
 
-void CSound_Manager::Play_RandOneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch, _bool bSteal)
+void CSound_Manager::Play_OneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch, _bool bSteal)
 {
     if (iLevelID >= m_umapSounds.size())
         return;
@@ -345,6 +439,7 @@ void CSound_Manager::StopAll()
     for (_uint i = 0; i < MAX_SOUND_CHANNEL; ++i)
         Stop_AndClearChannelSlot(i);
 
+    m_vecPendingBGMs.clear();
     m_vecPendingOneShots.clear();
     Reset_OneShotPool();
 }
@@ -486,6 +581,23 @@ void CSound_Manager::Reclaim_OneShots()
         }
 
         ++i;
+    }
+}
+
+void CSound_Manager::Reclaim_ControlledChannels()
+{
+    for (_uint i = 0; i < ONE_SHOT_BEGIN; ++i)
+    {
+        FMOD::Channel* pChannel = m_pChannelArr[i];
+        if (pChannel == nullptr)
+            continue;
+
+        _bool bPlaying = false;
+        if (pChannel->isPlaying(&bPlaying) != FMOD_OK || bPlaying == false)
+        {
+            m_pChannelArr[i] = nullptr;
+            Reset_ChannelRuntimeState(i);
+        }
     }
 }
 
@@ -708,6 +820,62 @@ _uint CSound_Manager::Find_StealCandidate(_uint iLevelID, _uint iSoundHash) cons
     return iBestIndex;
 }
 
+_bool CSound_Manager::Setup_FadePoints(FMOD::Channel* pChannel, _float fStartVolume, _float fEndVolume, _float fFadeTime, _bool bStopAtEnd)
+{
+    if (pChannel == nullptr)
+        return false;
+
+    fStartVolume = std::clamp(fStartVolume, 0.f, 1.f);
+    fEndVolume = std::clamp(fEndVolume, 0.f, 1.f);
+
+    if (fFadeTime <= 0.f)
+    {
+        FMOD_CALL(pChannel->setVolume(std::clamp(fEndVolume, 0.f, 1.f)));
+
+        if (bStopAtEnd)
+            FMOD_CALL(pChannel->stop());
+
+        return true;
+    }
+
+    unsigned long long ullParentClock = 0;
+    _uint iSampleRate = 0;
+    if (Get_ChannelParentClock(pChannel, ullParentClock, iSampleRate) == false)
+        return false;
+
+    const unsigned long long ullFadeSamples = static_cast<unsigned long long>(fFadeTime * static_cast<_float>(iSampleRate));
+    const unsigned long long ullEndClock = ullParentClock + ullFadeSamples;
+
+    FMOD_CALL(pChannel->removeFadePoints(0ULL, ULLONG_MAX));
+    FMOD_CALL(pChannel->addFadePoint(ullParentClock, fStartVolume));
+    FMOD_CALL(pChannel->addFadePoint(ullEndClock, fEndVolume));
+
+    if (bStopAtEnd)
+        FMOD_CALL(pChannel->setDelay(0ULL, ullEndClock, true));
+
+    return true;
+}
+
+_bool CSound_Manager::Get_ChannelParentClock(FMOD::Channel* pChannel, OUT unsigned long long& iParentClock, OUT _uint& iSampleRate)
+{
+    if (m_pSystem == nullptr || pChannel == nullptr)
+        return false;
+
+    unsigned long long ullDSPClock = 0;
+    unsigned long long ullParentDSPClock = 0;
+
+    if (pChannel->getDSPClock(&ullDSPClock, &ullParentDSPClock) != FMOD_OK)
+        return false;
+
+    int iRate = 0;
+    if (m_pSystem->getSoftwareFormat(&iRate, nullptr, nullptr) != FMOD_OK)
+        return false;
+
+    iParentClock = ullParentDSPClock;
+    iSampleRate = static_cast<_uint>(iRate);
+    return true;
+}
+
 void CSound_Manager::Update_PendingOneShots(_float fTimeDelta)
 {
     for (size_t i = 0; i < m_vecPendingOneShots.size(); )
@@ -727,6 +895,32 @@ void CSound_Manager::Update_PendingOneShots(_float fTimeDelta)
 
             m_vecPendingOneShots[i] = m_vecPendingOneShots.back();
             m_vecPendingOneShots.pop_back();
+            continue;
+        }
+
+        ++i;
+    }
+}
+
+void CSound_Manager::Update_PendingBGMs(_float fTimeDelta)
+{
+    if (fTimeDelta <= 0.f)
+        return;
+
+    for (size_t i = 0; i < m_vecPendingBGMs.size(); )
+    {
+        PENDING_BGM& tPending = m_vecPendingBGMs[i];
+        tPending.fRemainTime -= fTimeDelta;
+
+        if (tPending.fRemainTime <= 0.f)
+        {
+            if (tPending.fFadeInTime > 0.f)
+                PlayBGM_FadeIn(tPending.iLevelID, tPending.iSoundHash, tPending.fVolume, tPending.fFadeInTime, tPending.fPitch);
+            else
+                PlayBGM(tPending.iLevelID, tPending.iSoundHash, tPending.fVolume, tPending.fPitch);
+
+            m_vecPendingBGMs[i] = m_vecPendingBGMs.back();
+            m_vecPendingBGMs.pop_back();
             continue;
         }
 

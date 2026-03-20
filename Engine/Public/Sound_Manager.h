@@ -14,6 +14,16 @@ typedef struct tagPendingSound
     _bool bSteal = false;
 }PENDING_ONESHOT;
 
+typedef struct tagPendingBGM
+{
+    _uint   iLevelID = 0;
+    _uint   iSoundHash = 0;
+    _float  fRemainTime = 0.f;
+    _float  fVolume = 1.f;
+    _float  fPitch = 1.f;
+    _float  fFadeInTime = 0.f;
+}PENDING_BGM;
+
 NS_BEGIN(Engine)
 
 typedef struct tagSoundGroup
@@ -52,10 +62,15 @@ public:
     void Set_ControlledPitch(_uint iControlledId, _float fPitch);
 
     void PlayBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f);
+    void PlayBGM_FadeIn(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeInTime, _float fPitch = 1.f);
+    void PlayBGM_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayed, _float fVolume, _float fPitch = 1.f, _float fFadeInTime = 0.f);
+    void StopBGM_FadeOut(_float fFadeOutTime);
+    void CrossFadeBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeOutTime, _float fFadeInTime, _float fPitch = 1.f);
+
     // Steal 플래그를 키면 SoundChannel이 꽉찼을때 가장 빨리끝날 Channel을 강제로 종료후 사운드를 재생시킴
     void Play_OneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
+    void Play_OneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
     void Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
-    void Play_RandOneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
 public:
     void StopSound(_uint iChannelIndex);
     void StopAll();
@@ -77,6 +92,7 @@ private:
 
     void Reset_OneShotPool();
     void Reclaim_OneShots();
+    void Reclaim_ControlledChannels();
 
     void Stop_AndClearChannelSlot(_uint iIndex);
     void Remove_ActiveOneShotIfExists(_uint iIndex);
@@ -91,7 +107,11 @@ private:
     _uint Count_PlayingOneShot(_uint iLevelID, _uint iSoundHash) const;
     _uint Find_StealCandidate(_uint iLevelID, _uint iSoundHash) const;
 
+    _bool Setup_FadePoints(FMOD::Channel* pChannel, _float fStartVolume, _float fEndVolume, _float fFadeTime, _bool bStopAtEnd);
+    _bool Get_ChannelParentClock(FMOD::Channel* pChannel, OUT unsigned long long& iParentClock, OUT _uint& iSampleRate);
+
     void Update_PendingOneShots(_float fTimeDelta);
+    void Update_PendingBGMs(_float fTimeDelta);
 private:
     const _uint ONE_SHOT_BEGIN = ENUM_TO_UINT(EControlledChannel::COUNT);
     const _uint ONE_SHOT_END = MAX_SOUND_CHANNEL;
@@ -105,6 +125,7 @@ private:
     vector<_uint> m_vecOneShotStack;
     vector<_uint> m_vecActiveOneShots;
     vector<PENDING_ONESHOT> m_vecPendingOneShots;
+    vector<PENDING_BGM> m_vecPendingBGMs;
 
     _float m_arrCategoryVolume[ENUM_TO_UINT(ESoundCategory::END)]{};
 

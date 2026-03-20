@@ -201,9 +201,15 @@ public:
 #pragma region SOUND_MANAGER
 	HRESULT Load_Sounds(_uint iLevelID, ESoundCategory eCategory, const wstring& wstrFolderPath);
 	void PlayBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f);
+	void PlayBGM_FadeIn(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeInTime, _float fPitch = 1.f);
+	void PlayBGM_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayed, _float fVolume, _float fPitch = 1.f, _float fFadeInTime = 0.f);
+	void StopBGM_FadeOut(_float fFadeOutTime);
+	void CrossFadeBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeOutTime, _float fFadeInTime, _float fPitch = 1.f);
+	
 	void Play_OneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal =false);
+	void Play_OneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
 	void Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
-	void Play_RandOneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
+	
 	void Play_Controlled(_uint iLevelID, _uint iSoundHash, _uint iControlledId, _float fVolume, _bool  bLoop = false, _float fPitch = 1.f);
 	void Stop_Controlled(_uint iControlledId);
 	void Set_ControlledVolume(_uint iControlledId, _float fVolume);
