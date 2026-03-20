@@ -591,7 +591,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Weapon_MoonGun";		
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
 		desc.vecStageBoneIndices = { 8 }; // ÃÑ¿­ »À
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));

@@ -1600,7 +1600,7 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
         weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
         weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
-        weaponDesc.eAnimState = CWeapon::AnimState::STOP;
+        weaponDesc.eAnimState = CWeapon::AnimState::PLAY;
         weaponDesc.bMianWeapon = false;
         weaponDesc.eState = CWeapon::State::HOLD;
         weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
@@ -1612,7 +1612,7 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.fCurBullet = 500.f;
         weaponDesc.fAttackCoolTime = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
 
-        weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
+        weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(180.f), XMConvertToRadians(90.f), XMConvertToRadians(0.f));
         weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(90.f));
 
         if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Gun", &weaponDesc)))

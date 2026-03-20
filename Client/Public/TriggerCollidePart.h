@@ -19,8 +19,13 @@ public:
 
 		Check_CollidedObj_Enter = 1 << 5,
 		Check_CollidedObj_Exit = 1 << 6,
-		
+
 		Only_Detect = 1 << 7,
+
+		// update 로직
+		Update_New			= 1 << 8, // 무조건 새로운거
+		Update_MinDistance	= 1 << 9, // 기준으로 부터 가까운순
+		Update_MinDistance_Front = 1 << 10,
 
 		//  maskes
 		Default = Call_ParentTirggerEnter | Call_ParentTirggerExit | Check_CollidedPos_Enter | Check_CollidedPos_Exit,
