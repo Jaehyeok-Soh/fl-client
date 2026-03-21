@@ -282,7 +282,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		}
 	}
 
-	// release 때 터짐
+	// release 때 터짐 : 날라가는 ragdoll 인데 또 날라가서 문제이지 않을까
 	//{
 	//	CMonster_Body_Base* pBody = { nullptr };
 	//	pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
