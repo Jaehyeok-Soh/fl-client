@@ -15,6 +15,9 @@ enum class EMakeMonsterType
 
 	/* Boss 관련 */
 	Xibi,
+
+	Fly,
+
 	END,
 };
 inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
@@ -24,6 +27,7 @@ inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
 	case DTO::EMakeMonsterType::Dog:			return "Dog";
 	case DTO::EMakeMonsterType::Shooter:		return "Shooter";
 	case DTO::EMakeMonsterType::Boomer:			return "Boomer";
+	case DTO::EMakeMonsterType::Fly:			return "Fly";
 
 
 
@@ -38,6 +42,7 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 	if (strType == "Dog")		return DTO::EMakeMonsterType::Dog;
 	if (strType == "Shooter")	return DTO::EMakeMonsterType::Shooter;
 	if (strType == "Boomer")	return DTO::EMakeMonsterType::Boomer;
+	if (strType == "Fly")		return DTO::EMakeMonsterType::Fly;
 
 
 	if (strType == "Xibi")		return DTO::EMakeMonsterType::Xibi;
@@ -858,7 +863,6 @@ public:
 
 #pragma endregion
 
-
 #pragma region TutorialUIEvent
 
 struct ENGINE_DLL TRIGGERBOX_TUTORIALUIEVENT_DESC : public TRIGGERBOX_DESC
@@ -879,6 +883,30 @@ public:
 public:
 	virtual void from_Json(const json& LoadJson);
 	virtual void to_Json(json& SaveJson);
+};
+
+#pragma endregion
+
+#pragma region CinematicPlayer
+
+struct ENGINE_DLL TRIGGERBOX_CINEMATICPLAYER_DESC : public TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	string		strCinematicName{};
+public:
+	TRIGGERBOX_CINEMATICPLAYER_DESC()
+		: TRIGGERBOX_DESC(), strCinematicName{}
+	{
+	}
+	TRIGGERBOX_CINEMATICPLAYER_DESC(const TRIGGERBOX_CINEMATICPLAYER_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs), strCinematicName{ rhs.strCinematicName }
+	{
+	}
+	virtual ~TRIGGERBOX_CINEMATICPLAYER_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson)override;
+	virtual void to_Json(json& SaveJson)override;
 };
 
 #pragma endregion
@@ -917,6 +945,54 @@ public:
 	virtual void from_Json(const json& LoadJson);
 	virtual void to_Json(json& SaveJson);
 };
+#pragma endregion
+
+#pragma region Interactive Object
+
+struct ENGINE_DLL BATCH_INTERACTIVEOBJECT_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	OBJECT_ENUM_TAG::Enum eBatchInteractiveObejctType{ OBJECT_ENUM_TAG::OBJECT_INTERACT_DEFAULT };	/* 생성 Path 느낌 */
+	vector<DTO::QUEST_CHAPTERDESC>		vecQuestDesc = {};											/* 관련된 Quest 느낌 */
+	
+	/* OBJECT_ENUM_TAG::OBJECT_INTERACT_TUTORIAL_WEAPON 관련 변수*/
+	string	strWeaponType{""};		  /* Type을 String으로 설정 */
+	_bool	isTutorialEvent{ false }; /* Tutoiral Event 인지 아닌지 */
+
+
+	/* ---------------------------------------------------------- */
+
+public:
+	BATCH_INTERACTIVEOBJECT_DESC()
+		:CLIENT_MAKEPATH_DESC_BASE()
+		, vecQuestDesc{}
+		, eBatchInteractiveObejctType{OBJECT_ENUM_TAG::OBJECT_INTERACT_DEFAULT}
+		, strWeaponType{}
+		, isTutorialEvent{ false }
+	{
+
+	}
+	BATCH_INTERACTIVEOBJECT_DESC(const BATCH_INTERACTIVEOBJECT_DESC& rhs)
+		: CLIENT_MAKEPATH_DESC_BASE(rhs)
+		, vecQuestDesc{ rhs.vecQuestDesc}
+		, eBatchInteractiveObejctType{ rhs.eBatchInteractiveObejctType }
+		, strWeaponType{rhs.strWeaponType}
+		, isTutorialEvent{rhs.isTutorialEvent}
+	{
+
+	}
+	virtual ~BATCH_INTERACTIVEOBJECT_DESC()
+	{
+	}
+public:
+	void		 Change_BatchInteractiveObjectType(OBJECT_ENUM_TAG::Enum eType);
+	void		 Reset_PlusDesc();
+public:
+	virtual void from_Json(const json& LoadJson)override;
+	virtual void to_Json(json& SaveJson)override;
+};
+
+
 #pragma endregion
 
 #pragma endregion
@@ -978,19 +1054,20 @@ enum class EClientMakePath
 	Batch_Player,
 	Batch_Monster,
 	Batch_Object,
+	Batch_NPC,
+	Batch_InteractiveObject,
 
 	/* Trigger Box 관련 */
 	TriggerBox_ChangeLevel,
 	TriggerBox_MonsterSpawner,
 	TriggerBox_GlobalEvent_BroadCaster,
 	TriggerBox_TutorialUIEvent,
+	TriggerBox_CinematicPlayer,
 
 
 	/* 맵 기능 관련 */
 	Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
 
-	/* NPC */
-	Batch_NPC,
 
 	END
 };
@@ -1050,12 +1127,14 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::Batch_Player,							"Batch_Player"},
 			{EClientMakePath::Batch_Monster,						"Batch_Monster"},
 			{EClientMakePath::Batch_Object,							"Batch_Object"},
+			{EClientMakePath::Batch_InteractiveObject,				"Batch_InteractiveObject"},
 
 
 			{EClientMakePath::TriggerBox_ChangeLevel,				"TriggerBox_ChangeLevel"},
 			{EClientMakePath::TriggerBox_MonsterSpawner,			"TriggerBox_MonsterSpawner"},
 			{EClientMakePath::TriggerBox_GlobalEvent_BroadCaster,	"TriggerBox_GlobalEvent_BroadCaster"},
 			{EClientMakePath::TriggerBox_TutorialUIEvent,			"TriggerBox_TutorialUIEvent"},
+			{EClientMakePath::TriggerBox_CinematicPlayer,			"TriggerBox_CinematicPlayer"},
 
 			{EClientMakePath::Invisible_Wall,						"Invisible_Wall"},
 

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "State_Crouch.h"
 
+
 #include "Player.h"
 
 CState_Crouch::CState_Crouch(CActionState* pOwnerComponent)
@@ -29,6 +30,8 @@ HRESULT CState_Crouch::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+
+
 	return S_OK;
 }
 
@@ -50,6 +53,7 @@ void CState_Crouch::Set_NextStateDesc(_uint iNextState)
 	switch (iNextState)
 	{
 	case ENUM_TO_UINT(CPlayer::State::COMBO):
+	case ENUM_TO_UINT(CPlayer::State::COMBO_DUAL):
 		m_tNextStateDesc.iMainAnimIdx = 1;
 		break;
 

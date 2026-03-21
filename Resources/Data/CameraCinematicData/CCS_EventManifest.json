@@ -1,26 +1,44 @@
 [
     {
-        "Action Names": [
-            "Show_Popup",
-            "Hide_Popup",
-            "Blink",
-            "Test"
+        "Action Infos": [
+            {
+                "Explain": "프레임 워크",
+                "Name": "강병준"
+            },
+            {
+                "Explain": "피직스 , 몬스터 , Animation 툴 , 퀘스트 , NPC ",
+                "Name": "소재혁"
+            },
+            {
+                "Explain": "플레이어 , Animation 툴",
+                "Name": "김은비"
+            },
+            {
+                "Explain": "맵툴",
+                "Name": "민건희"
+            },
+            {
+                "Explain": "UI",
+                "Name": "백승민"
+            },
+            {
+                "Explain": "이펙트",
+                "Name": "최정우"
+            }
         ],
-        "Subscriber Name": "UI_Tutorial"
+        "Subscriber Name": "Test"
     },
     {
-        "Action Names": [
-            "Roar",
-            "Jump",
-            "Die"
+        "Action Infos": [
+            {
+                "Explain": "임시 테스트용",
+                "Name": "Action_Test1"
+            },
+            {
+                "Explain": "임시 테스트용2",
+                "Name": "Action_Test2"
+            }
         ],
-        "Subscriber Name": "Boss_Haier"
-    },
-    {
-        "Action Names": [
-            "Force_Walk",
-            "Look_Around"
-        ],
-        "Subscriber Name": "Player"
+        "Subscriber Name": "Test2"
     }
 ]

@@ -128,6 +128,7 @@ typedef struct tagAnimControllerInfo
 	CAnimObj* pCurrentObject = { nullptr };
 	CModel* pModel = { nullptr };
 	_uint  iCurrentAnimationState = {};
+	std::string iCurrentAnimationStr = {};
 	vector<class CBone*> vecBones;
 	vector<class CModelAnimation*> vecAnimations;
 

@@ -45,13 +45,14 @@ private:
 	HRESULT	Batch_Monster(const DTO::TMap_MapObjectData& tData);
 	/* Batch Object */
 	HRESULT	Batch_Object(const DTO::TMap_MapObjectData& tData);
-
+	/* Batch Interactive Object */
+	HRESULT Batch_InteractiveObject(const DTO::TMap_MapObjectData& tData);
 	/* Trigger Box */
 	HRESULT	Create_TriggerBox_ChangeLevel(const DTO::TMap_MapObjectData& tData);
 	HRESULT	Create_TriggerBox_MonsterSpawner(const DTO::TMap_MapObjectData& tData);
 	HRESULT	Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_MapObjectData& tData);
 	HRESULT	Create_TriggerBox_TutorialUIEvent(const DTO::TMap_MapObjectData& tData);
-
+	HRESULT	Create_TriggerBox_CinematicPlayer(const DTO::TMap_MapObjectData& tData);
 
 	/* Invisible Wall */
 	HRESULT	Create_InvisibleWall(const DTO::TMap_MapObjectData& tData);

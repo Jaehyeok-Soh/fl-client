@@ -7,6 +7,8 @@
 #include "PhysicsCCT.h"
 #include "ActionState.h"
 
+#include "GameInstance.h"
+
 CState_Charge::CState_Charge(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "Charge")
 {
@@ -37,6 +39,10 @@ HRESULT CState_Charge::Start(void* pArg, _bool bForce)
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::CHARGE));
 
+	m_bLookMonsterYet = true;
+	m_bImpulsYet =true;
+	m_bShakeActived = false;
+
 	return S_OK;
 }
 
@@ -44,12 +50,32 @@ void CState_Charge::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+	// monster 추적
+	if (m_bLookMonsterYet && Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
+	{
+		LookAt_Monser();
+		m_bLookMonsterYet = false;
+	}
+
+	// camera shaking
+	if (m_bShakeActived == false && m_fStateElapsed >= (1.f / 1.2f))
+	{
+		CAM_SHAKING_DATA data{};
+		data.fTime = 0.2f;
+		data.fPower = 0.3f;
+		CGameInstance::GetInstance()->Camera_Shaking(data);
+		m_bShakeActived = true;
+	}
+
+	// weapon 별 업데이트
+	Update_byWeapon(fTimeDelta);
+
+	// weapon change time
 	if (m_fHoldWeaponTime <= m_fStateElapsed)
 	{
 		Change_Weapon();
 		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 	}
-
 }
 
 HRESULT CState_Charge::End()
@@ -70,8 +96,37 @@ void CState_Charge::Go_Front(const _float fTimeDelta)
 	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
 	Vec3 vLook = (pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::LOOK));
+	vLook.Normalize();
 
 	Move(vLook);
+}
+
+void CState_Charge::Update_byWeapon(const _float fTimeDelta)
+{
+	switch (m_iMainAnimIdx)
+	{
+	case ENUM_TO_UINT(CPlayer::MELEE::SWORD):
+		Update_Sword(fTimeDelta);
+		break;
+
+	case ENUM_TO_UINT(CPlayer::MELEE::DUAL):
+		Update_Dual(fTimeDelta);
+		break;
+	}
+}
+
+void CState_Charge::Update_Sword(const _float fTimeDelta)
+{
+	if (m_bImpulsYet && Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
+	{
+		Look_Impuls(12.f);
+
+		m_bImpulsYet = false;
+	}
+}
+
+void CState_Charge::Update_Dual(const _float fTimeDelta)
+{
 }
 
 CState_Charge* CState_Charge::Create(CActionState* pOwnerComponent, void* pArg)

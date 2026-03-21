@@ -366,16 +366,14 @@ void CNPC_Base::Interact()
 		auto iter = std::find(chapterDesc.eTargetType.begin(), chapterDesc.eTargetType.end(), m_eObject_Enum_Tag);
 
 		if (iter != chapterDesc.eTargetType.end() && chapterDesc.tQuestDesc.iInteractDialogueId != -1)
-		{
 			CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iInteractDialogueId);
-
-			CallQuestEvent(m_eObject_Enum_Tag, 1);
-		}
 	}
 	else
 	{
 		CDialogueManager::GetInstance()->Start_Dialogue(m_iDefaultDialogueId);
 	}
+
+	CallQuestEvent(m_eObject_Enum_Tag, 1);
 }
 
 HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc)

@@ -20,8 +20,19 @@ public:
 protected:
 	_float m_fHoldWeaponTime = { 0.f };
 
+	_bool m_bImpulsYet = { true };
+
+	_bool m_bShakeActived = { false };
+	_bool m_bLookMonsterYet = { true };
+
 protected:
 	void Go_Front(const _float fTimeDelta);
+
+protected:
+	void Update_byWeapon(const _float fTimeDelta);
+
+	void Update_Sword(const _float fTimeDelta);
+	void Update_Dual(const _float fTimeDelta);
 
 public:
 	static CState_Charge* Create(CActionState* pOwnerComponent, void* pArg = nullptr);

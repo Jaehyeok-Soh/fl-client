@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "State_CrouchWalk.h"
 
+#include "PhysicsCCT.h"
 #include "Player.h"
 
 CState_CrouchWalk::CState_CrouchWalk(CActionState* pOwnerComponent)
@@ -31,6 +32,10 @@ HRESULT CState_CrouchWalk::Start(void* pArg, _bool bForce)
 
 	//Set_ApplyYLerp(true);
 
+	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+	if (pCCT)
+		pCCT->Set_SpeedOffset(0.35f);
+
 	return S_OK;
 }
 
@@ -44,7 +49,11 @@ HRESULT CState_CrouchWalk::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	Set_ApplyYLerp(false);
+	//Set_ApplyYLerp(false);
+
+	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+	if (pCCT)
+		pCCT->Set_SpeedOffset(1.f);
 
 	return S_OK;
 }
@@ -54,6 +63,7 @@ void CState_CrouchWalk::Set_NextStateDesc(_uint iNextState)
 	switch (iNextState)
 	{
 	case ENUM_TO_UINT(CPlayer::State::COMBO):
+	case ENUM_TO_UINT(CPlayer::State::COMBO_DUAL):
 		m_tNextStateDesc.iMainAnimIdx = 1;
 		break;
 

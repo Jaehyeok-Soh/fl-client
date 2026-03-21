@@ -805,8 +805,32 @@
     <Filter Include="99. ETC\Client_Define">
       <UniqueIdentifier>{fde4a4ac-8ede-492c-a268-bd20661a27dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\TriggerBox\04. TriggerBox_CinematicPlayer">
+      <UniqueIdentifier>{1c8dd4c0-5581-4d86-8ff6-cc8f9097db82}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation">
       <UniqueIdentifier>{34d8f7a6-03e3-466d-92ae-48f676cfde60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\InteractiveObject">
+      <UniqueIdentifier>{bc5023a0-5a7c-4d67-98c7-3ab593cdf9e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\InteractiveObject\InteractiveObject">
+      <UniqueIdentifier>{bd4bef5b-ec3c-4951-95c1-f34e56dfd1b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\InteractiveObject\00. TutorialWeapon">
+      <UniqueIdentifier>{bec36d74-1c86-4e94-904a-727139f1fa48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Attack\Melee\Combo\Dual">
+      <UniqueIdentifier>{51b954b9-bc45-4f1e-b817-f58a1434d26c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Fly">
+      <UniqueIdentifier>{0650a79e-345c-4c74-b51f-6436f82262bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Fly">
+      <UniqueIdentifier>{1696a078-6181-4269-85e1-e52d22f83652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect\Env">
+      <UniqueIdentifier>{8680c06a-96f3-4a46-9695-acea14aa5adc}</UniqueIdentifier>
     </Filter>
     <Filter Include="07. System\04. Binder">
       <UniqueIdentifier>{bf9e1beb-a2d5-45fc-9aad-6e498db509b0}</UniqueIdentifier>
@@ -1500,8 +1524,29 @@
     <ClInclude Include="..\Public\Client_EventDefine.h">
       <Filter>99. ETC\Client_Define</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_CinematicPlayer.h">
+      <Filter>03. GameObject\TriggerBox\04. TriggerBox_CinematicPlayer</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UIConversation_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InteractiveObject.h">
+      <Filter>03. GameObject\InteractiveObject\InteractiveObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WeaponPickUp.h">
+      <Filter>03. GameObject\InteractiveObject\00. TutorialWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_DualCombo.h">
+      <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Env.h">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\Env</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Fly.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Fly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Fly_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Fly</Filter>
     </ClInclude>
     <ClInclude Include="..\public\SoundEventBinder.h">
       <Filter>07. System\04. Binder</Filter>
@@ -2185,8 +2230,29 @@
     <ClCompile Include="Client_Define.cpp">
       <Filter>99. ETC\Client_Define</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_CinematicPlayer.cpp">
+      <Filter>03. GameObject\TriggerBox\04. TriggerBox_CinematicPlayer</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UIConversation_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InteractiveObject.cpp">
+      <Filter>03. GameObject\InteractiveObject\InteractiveObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WeaponPickUp.cpp">
+      <Filter>03. GameObject\InteractiveObject\00. TutorialWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_DualCombo.cpp">
+      <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Env.cpp">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\Env</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Fly.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Fly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Fly_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Fly</Filter>
     </ClCompile>
     <ClCompile Include="..\private\SoundEventBinder.cpp">
       <Filter>07. System\04. Binder</Filter>

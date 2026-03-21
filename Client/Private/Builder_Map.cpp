@@ -28,6 +28,9 @@
 /* Batch NPC */
 #include "NPC_Base.h"
 
+/* Batch Interactive Object */
+#include "InteractiveObject.h"
+
 #pragma endregion
 
 #pragma region Trigger Box
@@ -35,6 +38,7 @@
 #include "TriggerBox_MonsterSpawner.h"
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
 #include "TriggerBox_TutorialUIEvent.h"
+#include "TriggerBox_CinematicPlayer.h"
 #pragma endregion
 
 
@@ -107,25 +111,27 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 
 			switch (eClientMakePath)
 			{
-			case DTO::EClientMakePath::StaticObject:	Create_StaticObject(tData); break;
-			case DTO::EClientMakePath::LandScape:		Create_LandScape(tData);	break;
-			case DTO::EClientMakePath::Bush:			Create_Bush(tData);			break;
-			case DTO::EClientMakePath::Tree:			Create_Tree(tData);			break;
-			case DTO::EClientMakePath::Grass:			Create_Grass(tData);		break;
-			case DTO::EClientMakePath::Moss:			Create_Moss(tData);			break;
-			case DTO::EClientMakePath::Rock:			Create_Rock(tData);			break;
-			case DTO::EClientMakePath::Vine:			Create_Vine(tData);			break;
-			case DTO::EClientMakePath::Water:			Create_Water(tData);		break;
-			case DTO::EClientMakePath::Env:				Create_Env(tData);			break;
+			case DTO::EClientMakePath::StaticObject:						Create_StaticObject(tData);							break;
+			case DTO::EClientMakePath::LandScape:							Create_LandScape(tData);							break;
+			case DTO::EClientMakePath::Bush:								Create_Bush(tData);									break;
+			case DTO::EClientMakePath::Tree:								Create_Tree(tData);									break;
+			case DTO::EClientMakePath::Grass:								Create_Grass(tData);								break;
+			case DTO::EClientMakePath::Moss:								Create_Moss(tData);									break;
+			case DTO::EClientMakePath::Rock:								Create_Rock(tData);									break;
+			case DTO::EClientMakePath::Vine:								Create_Vine(tData);									break;
+			case DTO::EClientMakePath::Water:								Create_Water(tData);								break;
+			case DTO::EClientMakePath::Env:									Create_Env(tData);									break;
 
-			case DTO::EClientMakePath::Batch_Player:	Batch_Player(tData);		break;
-			case DTO::EClientMakePath::Batch_Monster:	Batch_Monster(tData);		break;
-			case DTO::EClientMakePath::Batch_Object:	Batch_Object(tData);		break;
+			case DTO::EClientMakePath::Batch_Player:						Batch_Player(tData);								break;
+			case DTO::EClientMakePath::Batch_Monster:						Batch_Monster(tData);								break;
+			case DTO::EClientMakePath::Batch_Object:						Batch_Object(tData);								break;
+			case DTO::EClientMakePath::Batch_InteractiveObject:				Batch_InteractiveObject(tData);						break;
 
-			case DTO::EClientMakePath::TriggerBox_ChangeLevel:				Create_TriggerBox_ChangeLevel(tData); break;
-			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			Create_TriggerBox_MonsterSpawner(tData); break;
-			case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	Create_TriggerBox_GlobalEvent_BroadCaster(tData); break;
-			case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			Create_TriggerBox_TutorialUIEvent(tData); break;
+			case DTO::EClientMakePath::TriggerBox_ChangeLevel:				Create_TriggerBox_ChangeLevel(tData);				break;
+			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			Create_TriggerBox_MonsterSpawner(tData);			break;
+			case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	Create_TriggerBox_GlobalEvent_BroadCaster(tData);	break;
+			case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			Create_TriggerBox_TutorialUIEvent(tData);			break;
+			case DTO::EClientMakePath::TriggerBox_CinematicPlayer:			Create_TriggerBox_CinematicPlayer(tData);			break;
 
 
 
@@ -154,8 +160,7 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	/*  None이라면 돌아가기  */
 	if (tData.strTextureSplatingInfoName != "None")
 	{
-		if (FAILED(m_pGameInstance->GameDataManager_Bind_SplatingTextureInfo(m_pMeshShader, Engine_Utils::ToWString(tData.strTextureSplatingInfoName))))
-			return E_FAIL;
+		m_pGameInstance->GameDataManager_Bind_SplatingTextureInfo(m_pMeshShader, Engine_Utils::ToWString(tData.strTextureSplatingInfoName));
 	}
 
 	CB_EnvData tEnvData{};
@@ -763,6 +768,23 @@ HRESULT CBuilder_Map::Batch_Object(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+HRESULT CBuilder_Map::Batch_InteractiveObject(const DTO::TMap_MapObjectData& tData)
+{
+	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
+	if (tData.vecSRTs.empty()) return E_FAIL;
+
+	_uint iAddLevelIndex = ENUM_TO_UINT(m_eLevelType);
+
+	DTO::SRT_DATA tSRTData = tData.vecSRTs.front();
+	CTransform::TRANSFORM_DESC tTsDesc{};
+	tTsDesc.TranslationMatrix = tSRTData.Get_World();
+
+	if (FAILED(CInteractiveObject::Create_InteractiveObject(static_cast<BATCH_INTERACTIVEOBJECT_DESC*>(tData.vecClientMakePathDesc.front())
+		, iAddLevelIndex, Engine_Utils::ToWString(tData.strModelPath), &tTsDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
 #pragma endregion
 
 
@@ -886,6 +908,39 @@ HRESULT CBuilder_Map::Create_TriggerBox_TutorialUIEvent(const DTO::TMap_MapObjec
 	tDesc.vTriggerBox_Extents	= pOrigin->vExtents;
 	tDesc.eType					= UITutorialPopUpTypeID_ToEnum(pOrigin->strEventName);
 	tDesc.vTriggerBox_Rotation	= pOrigin->vRotation;
+
+
+	if (tDesc.bHasQuest = pOrigin->bHasQuest)
+		tDesc.tQuestObjectDesc = pOrigin->tQuestObjectDesc;
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+		g_wszTriggerBox_TutorialUIEvent_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
+		g_wszTriggerBoxLayer, &tDesc);
+
+	return S_OK;
+}
+
+HRESULT CBuilder_Map::Create_TriggerBox_CinematicPlayer(const DTO::TMap_MapObjectData& tData)
+{
+	if (tData.vecSRTs.empty()) return E_FAIL;
+	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
+
+	Engine::TRIGGERBOX_CINEMATICPLAYER_DESC* pOrigin = static_cast<Engine::TRIGGERBOX_CINEMATICPLAYER_DESC*>(tData.vecClientMakePathDesc.front());
+	if (pOrigin == nullptr) return E_FAIL;
+
+
+	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
+	CTriggerBox_CinematicPlayer::TRIGGERBOX_CINEMATICCAMERA_DESC tDesc{};
+	CTransform::TRANSFORM_DESC transformDesc = {};
+	transformDesc.TranslationMatrix = { tSRT.Get_World() };
+
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.pSRTData = &tSRT;
+	tDesc.pTransform_Desc = &transformDesc;
+	tDesc.vTriggerBox_Extents = pOrigin->vExtents;
+	tDesc.vTriggerBox_Rotation = pOrigin->vRotation;
+
+	tDesc.strCinemaitcCameraSequnceName = pOrigin->strCinematicName;
 
 
 	if (tDesc.bHasQuest = pOrigin->bHasQuest)

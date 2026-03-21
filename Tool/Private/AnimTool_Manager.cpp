@@ -542,7 +542,7 @@ HRESULT CAnimTool_Manager::Save_EffectEvent(fs::path path, string strAnimTag, _i
 
 	for (auto& event : m_tEventInfo.vecVFXEvents)
 	{
-		event.strAnimTag = Engine_Utils::ToString(m_tAnimControllInfo.pModel->Get_AnimationName(event.iAnimIndex));
+		event.iAnimIndex = m_tAnimControllInfo.pModel->Get_AnimationIndex(Engine_Utils::ToWString(event.strAnimTag));
 	}
 	tData.vecEffectEvents = m_tEventInfo.vecVFXEvents;
 

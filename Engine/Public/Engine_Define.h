@@ -26,6 +26,15 @@
 #include "Engine_GlobalValue.h"
 #include "VertexData.h"
 
+
+constexpr const wchar_t* g_wszCinematicCameraTag = L"CinematicCamera";
+constexpr const wchar_t* g_wszCinematicCamera_PrototypeTag = L"Prototype_GameObject_CinematicCamera";
+
+
+/* Event µî·Ï */
+struct CCS_EVENT { using Signature = void(const Engine::CCS_BROADCAST_DESC& tDesc); };
+
+
 #pragma warning(disable : 4251)
 
 #ifdef _DEBUG

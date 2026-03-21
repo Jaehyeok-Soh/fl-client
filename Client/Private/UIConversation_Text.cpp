@@ -140,11 +140,22 @@ void CUIConversation_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_ENTER>([this](CGameObject* pObj)
 			{
-				auto* p = dynamic_cast<IInteractable*>(pObj);
-				if (p == nullptr)
-					return;
+				switch (m_eTextSubClassType)
+				{
+				case DTO::EUITextSubClassType::CONVERSATION_NAME:
+				{
+				}
+				break;
+				case DTO::EUITextSubClassType::CONVERSATION_TEXT:
+				{
+					auto* p = dynamic_cast<IInteractable*>(pObj);
+					if (p == nullptr)
+						return;
 
-				p->Interact();
+					p->Interact();
+				}
+				break;
+				}
 			})
 	);
 
@@ -179,7 +190,6 @@ _bool CUIConversation_Text::Tick_Visible_Event(const _float fTimeDelta)
 
 _bool CUIConversation_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	Set_Active(false);
 	return true;
 }
 

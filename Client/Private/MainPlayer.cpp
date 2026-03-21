@@ -36,6 +36,7 @@
 
 #pragma region State
 #include "State_MoonCombo.h"
+#include "State_DualCombo.h"
 
 #include "State_JumpAttStart.h"
 #include "State_JumpAttEnd.h"
@@ -201,11 +202,29 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
-    if (KEY_BUTTON_DOWN(DIK_B))
+    if (KEY_BUTTON_DOWN(DIK_C))
     {
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
+
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 0, true);
+        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 0);
     }
 
+    if (KEY_BUTTON_DOWN(DIK_B))
+    {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 1, true);
+        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 1);
+    }
+
+    if (KEY_BUTTON_DOWN(DIK_N))
+    {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::RANGE), 0, true);
+    }
+
+    if (KEY_BUTTON_DOWN(DIK_M))
+    {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::SKILL), 0, true);
+    }
 
     //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
 }
@@ -746,7 +765,6 @@ HRESULT CMainPlayer::Ready_CCT()
     desc.fRadius = 0.25f;
     desc.fHeight = 0.7f;
     desc.vExtens = { 0.f, 0.f, 0.f };
-    desc.MDeAccelRate = { 0.f,10.f };
 
     PHYSICSMATERIAL_DESC mtrlDesc{};
     mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
@@ -772,9 +790,9 @@ HRESULT CMainPlayer::Ready_CCT()
 
     desc.bGravity = { true };
     desc.fGravity = { -35.f };
-    desc.MSpeed = { 0.f, 5.f };
+    desc.MSpeed     = { 0.f, 5.f };
     desc.MAccelRate = { 0.f, 10.f };
-    desc.MDeAccelRate = { 0.f, 10.f };
+    desc.MDeAccelRate = { 0.f, 20.f };
 
     if (FAILED(Add_Component<CPhysicsCCT>(0, L"Prototype_Component_Physics_CCT", &desc)))
         return E_FAIL;
@@ -850,10 +868,9 @@ HRESULT CMainPlayer::Ready_AttackStates()
     tKeyTimer.bCountTime = false;
     tKeyTimer.bTimeReset = false;
 
-    // combo state
+    // combo state : moon
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
-        _float fAttackSpeed = { 1.2f };
         tDesc.vCombo_CheckTimes = Vec4{ 15.f/ ANIMTIC ,15.f / ANIMTIC,20.f / ANIMTIC ,25.f / ANIMTIC };
         tDesc.fSlide_CheckTime = 15.f / ANIMTIC;
 
@@ -865,12 +882,6 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
         tDesc.arrCombo_EndTimes = { 50.f / ANIMTIC ,33.f / ANIMTIC,39.f / ANIMTIC ,60.f / ANIMTIC ,70.f / ANIMTIC };
 
-        //pModel->Set_Animation_Speed(iSlide,     fAttackSpeed);
-        //pModel->Set_Animation_Speed(iCombo1,    fAttackSpeed);
-        //pModel->Set_Animation_Speed(iCombo2,    fAttackSpeed);
-        //pModel->Set_Animation_Speed(iCombo3,    fAttackSpeed);
-        //pModel->Set_Animation_Speed(iCombo4,    fAttackSpeed);
-
         tDesc.iSlideAnimIdx = iSlide;
         tDesc.iFirstAnimIdx = iCombo1;
         tDesc.iSecondAnimIdx = iCombo2;
@@ -880,6 +891,32 @@ HRESULT CMainPlayer::Ready_AttackStates()
         tDesc.pOwnerGun      = pMyGun;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::COMBO), CState_MoonCombo::Create(pActionState, &tDesc))))
+            return E_FAIL;
+    }
+
+    // combo state : dual
+    {
+        CState_DualCombo::DUALCOMBO_DESC tDesc = {};
+        tDesc.vCombo_CheckTimes = Vec4{ 17.f / ANIMTIC ,15.f / ANIMTIC, 10.f / ANIMTIC ,24.f / ANIMTIC };
+        tDesc.fSlide_CheckTime = 17.f / ANIMTIC;
+
+        _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_SlideAttack");
+        _int iCombo1 = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_01");
+        _int iCombo2 = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_02");
+        _int iCombo3 = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_03");
+        _int iCombo4 = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_04");
+
+        tDesc.arrCombo_EndTimes = { 55.f / ANIMTIC ,51.f / ANIMTIC,50.f / ANIMTIC ,60.f / ANIMTIC ,75.f / ANIMTIC };
+
+        tDesc.iSlideAnimIdx = iSlide;
+        tDesc.iFirstAnimIdx = iCombo1;
+        tDesc.iSecondAnimIdx = iCombo2;
+        tDesc.iThirdAnimIdx = iCombo3;
+        tDesc.iFourthAnimIdx = iCombo4;
+        tDesc.iEndStateIndex = ENUM_TO_UINT(State::END);
+        tDesc.pOwnerGun = pMyGun;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::COMBO_DUAL), CState_DualCombo::Create(pActionState, &tDesc))))
             return E_FAIL;
     }
 
@@ -906,7 +943,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
         desc.pOwnerGun = pMyGun;
 
-        desc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_End;
+        desc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::None;
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::JUMPATTSTART), CState_JumpAttStart::Create(pActionState, &desc))))
             return E_FAIL;
@@ -996,7 +1033,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     {
         CState_SkillBase::Skill_DESC tDesc = {};
         tDesc.bKeyInput = true;
-        tDesc.fKeyCoolTime = 24.f / ANIMTIC;
+        tDesc.fKeyCoolTime = 21.f / ANIMTIC;
         tDesc.iAnimIdx = Get_AnimationIndex(L"Animation_PlayerMoon_Light_Skill01");
         tDesc.iPlayerState = ENUM_TO_UINT(State::SKILL1);
 
@@ -1071,8 +1108,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::UP)]        = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MU");
 
 
-    vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };
-
+    vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };//, { 204,true,1.f } // 넣을 거면 mix도 blend 필요
     for (auto& MixAnim : arrMix)
     {
         pModel->Make_MixRatio(MixAnim, vecDownMix, pAnimMixCS);

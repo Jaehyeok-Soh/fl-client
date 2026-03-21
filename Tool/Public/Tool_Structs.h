@@ -141,14 +141,20 @@ namespace Tool
         Vec4   g_vUV[2];                                            //
     };
 
+    struct ActionInfo
+    {
+        std::string strNames{};
+        std::string strExplain{};
+    };
 
 
     struct CCS_EVENT_MANIFEST
     {
-        string          strSubscriberName;   // 예: "UI_Tutorial"
-        vector<string>  vecActionNames;      // 예: [ "Show_Popup", "Hide_Popup" ]
+        string              strSubscriberName;   // 예: "UI_Tutorial"
+        vector<ActionInfo>  vecActionNames;      // 예: [ "Show_Popup", "Hide_Popup" ]
     public:
     };
+
 
 
     void to_json(json& SaveJson, const    SRT_DATA& tData);
@@ -171,7 +177,8 @@ namespace Tool
     void to_json(json& SaveJson, const    CCS_EVENT_MANIFEST& tData);
     void from_json(const json& LoadJson, CCS_EVENT_MANIFEST& tData);
 
-
+    void to_json(json& SaveJson, const    ActionInfo& tData);
+    void from_json(const json& LoadJson, ActionInfo& tData);
 
 #pragma endregion 
 

@@ -13,7 +13,7 @@ class CTexture;
 class CShader;
 class CTextureBase;
 
-struct Camera_Cinematic_Sequence;
+struct CinematicCameraSequence;
 struct Camera_Keyframe_Data;
 
 
@@ -255,11 +255,12 @@ public:
 	HRESULT						Update_Camera_Cinematic_Sequence_Names();
 
 	HRESULT						Ready_CinematicSequenceDebugRender();
+	HRESULT						Ready_CinematicCameraSequence_EventManifest();
 public:
 	void						Select_MapTexture();
 private:
 	/* Camera Cinematic Sequence 관련 데이터를 복사로 받아와서 작업하고 저장하는용도 */	
-	Camera_Cinematic_Sequence*	m_pCamCinematicSequence{nullptr};
+	CinematicCameraSequence*	m_pCamCinematicSequence{nullptr};
 	vector<string>				m_vecCamCinematicSequenceNames{};
 	CModel*						m_pCamCinematicSequenceRenderModel{nullptr};
 	CShader*					m_pCamCinematicSequenceRenderShader{ nullptr };
@@ -268,17 +269,17 @@ private:
 	/* Texture Splating을 사용하는 것들을 위해 데이터를 미리 받아오고 활용할 수 있게 한다... */
 	map<wstring, TEXTURE_SPLATTING_INFO >				m_mapTextureSplatingInfoDatas{};
 private:
-	ID3D11Device*										m_pDevice{};
-	ID3D11DeviceContext*								m_pContext{};
+	ID3D11Device*				m_pDevice{};
+	ID3D11DeviceContext*		m_pContext{};
 	
 	/* 생성되기 직전 PreviewObject */
-	CMapObject*											m_pPreviewMapobject{};
+	CMapObject*					m_pPreviewMapobject{};
 	/* GameInstance */
-	CGameInstance*										m_pGameInstance{ nullptr };
+	CGameInstance*				m_pGameInstance{ nullptr };
 
 	/* Batch Mode */
-	EMapToolObjectBatchMode								m_eMapTooObjectBatchMode{ EMapToolObjectBatchMode::Single};
-	EMapTool_EmplaceType								m_eMapToolEmplaceType{EMapTool_EmplaceType::Free};
+	EMapToolObjectBatchMode		m_eMapTooObjectBatchMode{ EMapToolObjectBatchMode::Single};
+	EMapTool_EmplaceType		m_eMapToolEmplaceType{EMapTool_EmplaceType::Free};
 
 	/*  */
 	_int						m_iMakeSectionNumber{0};
@@ -353,6 +354,10 @@ private:
 
 	vector<string>				m_vecEnvEffectTags{};
 
+
+
+
+	vector<CCS_EVENT_MANIFEST>	m_vecCCS_EventManifest{};
 
 private:
 	virtual void Free() override;

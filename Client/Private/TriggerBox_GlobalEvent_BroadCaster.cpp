@@ -90,10 +90,12 @@ HRESULT CTriggerBox_GlobalEvent_BroadCaster::Render()
 
 HRESULT CTriggerBox_GlobalEvent_BroadCaster::BroadCast()
 {
-    for (auto& Type : m_vecGlobalBroadcastType)
-    {
-        m_pGameInstance->BroadCaset_RegisterGlobalEvent(ENUM_TO_UINT(Type));
-    }
+    if(m_isTriggerEventPlay )
+
+    //for (auto& Type : m_vecGlobalBroadcastType)
+    //{
+    //    m_pGameInstance->Broadcast(ENUM_TO_UINT(Type));
+    //}
 
     m_isTriggerEventPlay = true;
 
@@ -118,6 +120,12 @@ void CTriggerBox_GlobalEvent_BroadCaster::OnCollision_Exit(_uint iMyColliderLaye
 
 void CTriggerBox_GlobalEvent_BroadCaster::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+    if (Super::IsEnabled() == false || m_bLockedEnter == true)
+        return;
+
+    if (Super::m_bHasQuest)
+        m_bLockedEnter = true;
+
     Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
     if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
@@ -130,8 +138,16 @@ void CTriggerBox_GlobalEvent_BroadCaster::OnTrigger_Enter(_uint iMyColliderLayer
 
 void CTriggerBox_GlobalEvent_BroadCaster::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+    if (Super::IsEnabled() == false || m_bLockedExit == true)
+        return;
+
     Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 
+    if (Super::m_bHasQuest)
+    {
+        SetEnable(false);
+        Super::m_bLockedExit = true;
+    }
 }
 
 CTriggerBox_GlobalEvent_BroadCaster* CTriggerBox_GlobalEvent_BroadCaster::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

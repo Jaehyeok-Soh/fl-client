@@ -35,7 +35,7 @@ NS_BEGIN(Engine)
 
 enum class CameraType;
 struct DelegateHandle;
-struct Camera_Cinematic_Sequence;
+struct CinematicCameraSequence;
 class CCollider;
 class CGameObject;
 class CObjectPool;
@@ -45,6 +45,7 @@ class CFxEffectAsset;
 class CFxShaderVariant;
 class CEffectHandler;
 class CBounding_AABB;
+
 
 class ENGINE_DLL CGameInstance final : public CBase
 {
@@ -194,7 +195,10 @@ public:
 	void Setup_UIViewProj_ToCBuffer();
 	void Setup_Inv_ToCBuffer();
 
-	HRESULT Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence);
+	HRESULT	Register_CinematicCamera(_uint iPrototypeLevelIndex, const wstring& wstrFindPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrAddLagerTag, void* pCinematicCameraDesc = nullptr);
+	HRESULT Play_CameraCinematic(CinematicCameraSequence* pCameraCinematicSequence);
+	HRESULT	End_CameraCinematic();
+
 	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
 #pragma endregion
 	
@@ -443,6 +447,17 @@ public:
 	void Push_CollidedData(const COLLIDED_DESC& desc);
 #pragma endregion
 
+#pragma region Cinematic Manager
+
+	HRESULT			Play_CameraCinematic(const wstring& wstrFindKey);
+	HRESULT			Load_CameraCinematicSequence(const _tchar* wszCameraCinematicDataJsonPath);
+	HRESULT			Save_CameraCinematicSequence(const _tchar* wszCameraCinematicDataJsonPath);
+	HRESULT			Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT CinematicCameraSequence* pOutCamCinematicSequence);
+	HRESULT			Save_CameraCinematicSequence(const wstring& wstrFindKey, const	CinematicCameraSequence* pSaveCamCinematicSequence);
+	vector<string>	Get_CameraCinematicSequenceNames() const;
+
+#pragma endregion
+
 
 #pragma region 
 #ifdef _DEBUG
@@ -453,23 +468,11 @@ public:
 	void					Set_MapMinMaxBox(const Vec3& vPos, const Vec3& vCenter);
 #pragma endregion
 #pragma region GAMEDATA_MANAGER
-	HRESULT		Register_GlobalEventsBroadCast(_uint iTypeIndex, std::function<void()> funcGlobalEvent);
-	HRESULT		BroadCaset_RegisterGlobalEvent(_uint iTypeIndex);
 #pragma region TextureSplating
 	HRESULT		GameDataManager_Load_TextureSplatingInfoData();
 	/* 이름으로 Binding 하는 함수 */
 	HRESULT		GameDataManager_Bind_SplatingTextureInfo(CShader* pBindShader, const wstring& wstrTextureSplatingInfoDataName);
 #pragma endregion
-
-#pragma region
-	HRESULT		GameDataManager_Load_CameraCinematicSequence();
-	HRESULT		GameDataManager_Save_CameraCinematicSequence();
-	HRESULT		GameDataManager_Load_CameraCinematicSequence(const wstring& wstrFindKey, OUT struct Camera_Cinematic_Sequence* pOutCamCinematicSequence);
-	HRESULT		GameDataManager_Save_CameraCinematicSequence(const wstring& wstrFindKey, const struct Camera_Cinematic_Sequence* pSaveCamCinematicSequence);
-
-	HRESULT		Play_CameraCinematic(const wstring& wstrFindKey);
-	vector<std::string> GameDataManager_Get_CameraCinematicSequenceNames() const;
-
 
 #pragma endregion
 
@@ -515,6 +518,7 @@ private:
 	class CPhysics_Module* m_pPhysics_Module = { nullptr };
 	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 	class CJudgementSystem* m_pJudgementSystem = { nullptr };
+	class CCinematic_Manager* m_pCinematicManager = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 

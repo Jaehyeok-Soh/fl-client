@@ -23,6 +23,8 @@
 #include "Monster_Dog.h"
 #include "Monster_Boomer.h"
 
+#include "PhysicsRagdoll.h"
+
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext), m_eMonsterType{ EMonster_Type::END}
 {
@@ -62,8 +64,12 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	//if (FAILED(Ready_Ability()))
 	//	return E_FAIL;
 
-	Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
-	m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
+	CPhysicsAttackOverlap* pAttackOverlap = { nullptr };
+	if (pAttackOverlap = Get_Component<CPhysicsAttackOverlap>())
+		pAttackOverlap->Bind_Events();
+	
+	if (m_pEffectHandler)
+		m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
 
 	return S_OK;
 }
@@ -86,6 +92,20 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 
 	Get_Component<CPhysicsCCT>()->Ready_Position();
 	
+	// 래그돌 초기화
+	{
+		Quat quat = ToQuaternion(PxQuat(PxIdentity));
+		Get_Component<CTransform>()->Rotation(quat);
+
+		auto body = Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
+		auto pRagdoll = body->Get_Component<CPhysicsRagdoll>();
+		if (body != nullptr && pRagdoll != nullptr)
+		{
+			m_pGameInstance->RagdollFinish(body->Get_ID());
+			Get_Component<CPhysicsCCT>()->EnableMove(true);
+		}
+	}
+
 	return S_OK;
 }
 
@@ -112,8 +132,9 @@ void CMonster_Base::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 
-	if (Get_Component <CPhysicsAttackOverlap>())
-		Get_Component<CPhysicsAttackOverlap>()->Update(fTimeDelta);
+	CPhysicsAttackOverlap* pAttackOverlap = { nullptr };
+	if (pAttackOverlap = Get_Component<CPhysicsAttackOverlap>())
+		pAttackOverlap->Update(fTimeDelta);
 }
 
 void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
@@ -122,7 +143,10 @@ void CMonster_Base::Ready_Before_Render(const _float fTimeDelta)
 
 #ifdef _DEBUG
 	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsCCT>());
-	m_pGameInstance->Push_DebugComponent(Get_Component<CPhysicsAttackOverlap>());
+
+	CPhysicsAttackOverlap* pAttackOverlap = { nullptr };
+	if (pAttackOverlap = Get_Component<CPhysicsAttackOverlap>())
+		m_pGameInstance->Push_DebugComponent(pAttackOverlap);
 #endif // _DEBUG
 }
 
@@ -208,9 +232,32 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 	// 살아 있을때만 피격 처리를 하겠다
 	if (IsAlive())
 	{
-		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SWORD)))
 		{
-			OnHit_PlayerMoon(hitDesc);
+			OnHit_Sword(hitDesc);
+		}
+
+		else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+		{
+			OnHit_Gun(hitDesc);
+		}
+
+		else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::DUAL)))
+		{
+			OnHit_Dual(hitDesc);
+		}
+
+		else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE)))
+		{
+			OnHit_Skill(hitDesc);
+		}
+
+		// Shake & Emissive
+		if (CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(Part::Enum::BODY))
+		{
+			CRenderFx* pRenderFx = pBody->Get_Component<CRenderFx>();
+			pRenderFx->Play_Shake(0.35f);
+			pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
 		}
 	}
 
@@ -232,6 +279,20 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 			Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
 			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();
+		}
+	}
+
+	{
+		CMonster_Body_Base* pBody = { nullptr };
+		pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+
+		CPhysicsRagdoll* pRagdoll = { nullptr };
+		pRagdoll = pBody->Get_Component<CPhysicsRagdoll>();
+
+		if (pBody != nullptr && pRagdoll != nullptr)
+		{
+			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
+				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 10.f);
 		}
 	}
 
@@ -339,7 +400,7 @@ HRESULT CMonster_Base::Ready_EffectHandler(void* pArg)
 	Engine_Utils::Replace(NameTag, L"Prototype_Component_Model_", L"");
 
 	if (FAILED(Add_Component<CEffectHandler>(/*Static*/0, L"Prototype_Component_EffectHandler_" + NameTag, nullptr)))
-		return E_FAIL;
+		return S_OK;
 
 	m_pEffectHandler = Get_Component<CEffectHandler>();
 	return S_OK;
@@ -368,20 +429,20 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 	return S_OK;
 }
 
-void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
+void CMonster_Base::OnHit_Sword(const HIT_DESC& hitDesc)
 {
 	_uint iDamageFlag = hitDesc.iDamageFlag;
 	_bool bCritical = false;
 
 	UI_PREFAB_DATA tPrefabData = {};
 	UI_DAMAGEFONT_PREFAB_DATA Desc = {};
-	Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-	Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
-	Desc.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
+	Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+	Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+	Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
 	Desc.vRandOffset = Vec3{
 		m_pGameInstance->Rand_Float(-1.f, 1.f),
 		m_pGameInstance->Rand_Float(-1.f, 1.f),
-		m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
+		m_pGameInstance->Rand_Float(-1.f, 1.f) };				// 랜덤 오프셋 // 더 커지면 이상함
 
 	/*이펙트를 생성하기 위해서*/
 	//if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
@@ -401,12 +462,6 @@ void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
 		if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
 		{
 			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
-		}
-
-
-		else if (hitDesc.attackDesc.iAttackerLayer == PHYSICSFILTERGROUP::ATTACK_PROJECTTILE)
-		{
-			m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
 		}
 
 		else
@@ -447,14 +502,188 @@ void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
 				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
 		}
 	}
+}
 
-	// Shake & Emissive
-	if (CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(Part::Enum::BODY))
+void CMonster_Base::OnHit_Gun(const HIT_DESC& hitDesc)
+{
+	_uint iDamageFlag = hitDesc.iDamageFlag;
+	_bool bCritical = false;
+
+	// critical 여부 판단
+	if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
 	{
-		CRenderFx* pRenderFx = pBody->Get_Component<CRenderFx>();
-		pRenderFx->Play_Shake(0.35f);
-		pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
+		bCritical = true;
+	}
 
+	// effect 출력
+	{
+		/*	hitDesc.attackDesc.iAttackerLayer = PHYSICSFILTERGROUP::ATTACK_PROJECTTILE;*/
+		EFFECT_SPAWN_DESC Desc = {};
+		//Matrix OffsetMatrix = Matrix::CreateTranslation(Vec3(0.f, 0.5f, 0.5f));
+		Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
+
+		Vec3 vScale, vPos;
+		Quat vQuat;
+		WorldMatrix.Decompose(vScale, vQuat, vPos);
+
+		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
+		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+		if (bCritical)
+		{
+			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+		}
+
+
+		else if (hitDesc.attackDesc.iAttackerLayer == PHYSICSFILTERGROUP::ATTACK_PROJECTTILE)
+		{
+			m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
+		}
+	}
+
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+		Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+		Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
+		Desc.vRandOffset = Vec3{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f) };				// 랜덤 오프셋 // 더 커지면 이상함
+
+		////// UI에게 폰트 호출 //////
+		if (bCritical)
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+
+		else
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+	}
+}
+
+void CMonster_Base::OnHit_Skill(const HIT_DESC& hitDesc)
+{
+	_uint iDamageFlag = hitDesc.iDamageFlag;
+	_bool bCritical = false;
+
+	// critical 여부 판단
+	if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+	{
+		bCritical = true;
+	}
+
+	/*이펙트를 생성하기 위해서*/
+	//if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+	{
+		/*	hitDesc.attackDesc.iAttackerLayer = PHYSICSFILTERGROUP::ATTACK_PROJECTTILE;*/
+		EFFECT_SPAWN_DESC Desc = {};
+		//Matrix OffsetMatrix = Matrix::CreateTranslation(Vec3(0.f, 0.5f, 0.5f));
+		Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
+
+		Vec3 vScale, vPos;
+		Quat vQuat;
+		WorldMatrix.Decompose(vScale, vQuat, vPos);
+
+		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
+		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+		if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+		{
+			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+		}
+
+		else
+		{
+			m_pGameInstance->Request_Effect("VFX_Sword_Hit", Desc);
+		}
+	}
+
+	/* 폰트 추가 정보 */
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+		Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+		Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
+		Desc.vRandOffset = Vec3{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f) };				// 랜덤 오프셋 // 더 커지면 이상함
+
+		// skill : hit point가 없어서 positoin 값 기준으로 데미지 폰트 띄움
+		{
+			Vec3 vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+			vPos.y += 0.5f;
+
+			Desc.vHitPos = vPos;
+		}
+
+		////// UI에게 폰트 호출 //////
+		if (bCritical)
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+
+		else
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+	}
+}
+
+void CMonster_Base::OnHit_Dual(const HIT_DESC& hitDesc)
+{
+	_uint iDamageFlag = hitDesc.iDamageFlag;
+	_bool bCritical = false;
+
+	// critical 여부 판단
+	if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+	{
+		bCritical = true;
+	}
+
+	// effect 출력
+	{
+
+	}
+
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+		Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		Desc.vFontColor = Vec4{ 0.f, 0.82f, 1.f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+		Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
+		Desc.vRandOffset = Vec3{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f) };				// 랜덤 오프셋 // 더 커지면 이상함
+
+		////// UI에게 폰트 호출 //////
+		if (bCritical)
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+
+		else
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
 	}
 }
 

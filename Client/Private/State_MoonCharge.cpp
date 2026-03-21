@@ -14,8 +14,6 @@ HRESULT CState_MoonCharge::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_fHoldWeaponTime = 2.f;
-
 	return S_OK;
 }
 
@@ -32,17 +30,16 @@ HRESULT CState_MoonCharge::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	m_bShakeActived = false;
-	m_bLookMonsterYet = true;
-
 	switch (m_iMainAnimIdx)
 	{
 	case static_cast<_int>(CPlayer::MELEE::SWORD):
 		m_tKeyTimer.fMaxTime = 1.f;
+		m_fHoldWeaponTime = 2.f;
 		break;
 
 	case static_cast<_int>(CPlayer::MELEE::DUAL):
 		m_tKeyTimer.fMaxTime = 55.f / ANIMTIC;
+		m_fHoldWeaponTime = 100.f / ANIMTIC;
 		break;
 	}
 
@@ -52,21 +49,6 @@ HRESULT CState_MoonCharge::Start(void* pArg, _bool bForce)
 void CState_MoonCharge::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
-	if (m_bLookMonsterYet && Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
-	{
-		LookAt_Monser();
-		m_bLookMonsterYet = false;
-	}
-
-	if (m_bShakeActived == false && m_fStateElapsed >= (1.f / 1.2f))
-	{
-		CAM_SHAKING_DATA data{};
-		data.fTime = 0.2f;
-		data.fPower = 0.3f;
-		CGameInstance::GetInstance()->Camera_Shaking(data);
-		m_bShakeActived = true;
-	}
 }
 
 HRESULT CState_MoonCharge::End()

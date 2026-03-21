@@ -5,7 +5,7 @@
 NS_BEGIN(Engine)
 
 
-struct Camera_Cinematic_Sequence;
+struct CinematicCameraSequence;
 
 enum class CameraType
 {
@@ -39,7 +39,7 @@ public:
 	CGameObject*	Get_Actor() { return m_pActor; }
 	inline void		Change_Actor(CGameObject* pGo);
 
-	void			Cinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence);
+	void			Cinematic(CinematicCameraSequence* pCameraCinematicSequence);
 	void			Camera_Shaking(const CAM_SHAKING_DATA& tData);
 
 	const Vec3&		Get_CameraShakingOffsetPos() const { return m_vCamShakingOffsetPosition; }
@@ -51,7 +51,7 @@ protected:
 	CGameObject*	m_pActor = { nullptr };
 protected:
 	_bool								m_isCinematicEvent{false};
-	Camera_Cinematic_Sequence*			m_pCinematicSquence{nullptr};
+	CinematicCameraSequence*			m_pCinematicSquence{nullptr};
 	/* Cinematic Sequence 관련 데이터 처리용 변수 */
 	_uint								m_iCurFrameIndex{ 0 };	/* 현재 KeyFrame Index */
 	_float								m_fDeltaTime{ 0.f };		/* 현재 누적된 시간 */

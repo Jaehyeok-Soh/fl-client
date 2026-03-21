@@ -47,7 +47,7 @@ private:
 	_bool m_isMovedIn = { false };
 	_bool m_isMovedOut = { false };
 
-	_bool m_isVisibleTrigger = { false };
+	_bool m_isPulseTrigger  = { false };
 	_bool m_isVisibleTriggerStart = { false };
 
 public:

@@ -81,6 +81,8 @@ private:
 	/* Batch 관련 */
 	void						ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pDesc);
 
+	void						ImGuiUpdate_Batch_InteractiveObject_Desc(BATCH_INTERACTIVEOBJECT_DESC* pDesc);
+
 #pragma region Batch Object Desc 관련
 	void						ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDesc);
 	void						ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDesc);
@@ -93,6 +95,7 @@ private:
 	void						ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUTORIALUIEVENT_DESC* pDesc);
+	void						ImGuiUpdate_TriggerBox_CinematicPlayer(TRIGGERBOX_CINEMATICPLAYER_DESC* pDesc);
 
 	/* Quest 관련 */
 	void						ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc);
@@ -167,7 +170,7 @@ private:
 
 
 
-	/* Trigger Box Change Level Desc */
+	char						m_szObjectTagNames[ARRAYSIZE(g_arrAllObjectTags)][MAX_PATH];
 
 public:
 	static  CPanel_MapObjectList* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

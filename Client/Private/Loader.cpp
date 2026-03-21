@@ -63,6 +63,7 @@
 #include "TriggerCollidePart.h"
 #include "Loader.h"
 #include "Effect.h"
+#include "Effect_Env.h"
 #include "Effect_WarningCircle.h"
 #include "EffectObject.h"
 #include "BattleField.h"
@@ -75,6 +76,7 @@
 #include "PointLight.h"
 #include "EnvObject.h"
 #include "BonePart.h"
+#include "WeaponPickUp.h"
 
 //=================
 // SkillObject
@@ -113,6 +115,7 @@
 #include "TriggerBox_MonsterSpawner.h"
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
 #include "TriggerBox_TutorialUIEvent.h"
+#include "TriggerBox_CinematicPlayer.h"
 
 /* --------------------- */
 //=================
@@ -122,6 +125,8 @@
 #include "Monster_Dog_Body.h"
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
+#include "Monster_Fly.h"
+#include "Monster_Fly_Body.h"
 //=================
 // BOSS
 //=================
@@ -330,20 +335,9 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(Ready_Sounds()))
 		return E_FAIL;
 
-#pragma region Register Global Event
-	/////////////////////////////////////////
-	/////////// Ready GlobalEvent ///////////
-	/////////////////////////////////////////
+#pragma region Ready Cinematic Camera Data
 	if (FAILED(Ready_CCS()))
 		return S_OK;
-
-
-
-#pragma endregion
-
-	/* Cinematic Data Load */
-	if (FAILED(m_pGameInstance->GameDataManager_Load_CameraCinematicSequence()))
-		return E_FAIL;
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
@@ -605,8 +599,8 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Weapon_MoonGun";		
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
-		desc.vecStageBoneIndices = { 8 }; // √—ø≠ ª¿
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = { 6 }; // √—ø≠ ª¿ : 8
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
@@ -685,6 +679,23 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pAniChannelData = &tAniChannelData;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Boomer_Model_Prototype_Tag , CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+	
+	// For.Prototype_Component_Model_Monster_Fly
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale150);
+		desc.wstrModelFolderName = L"Monster_Fly";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = {};
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Fly_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 	// For.Prototype_Component_Model_NPC_Pan
@@ -769,6 +780,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// ¿Ã∆Â∆Æ Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Env",			CEffect_Env::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_WarningCircle", CEffect_WarningCircle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_WarningSpace",			CSkillWarningSpace::Create(m_pDevice, m_pDeviceContext));
@@ -800,6 +812,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszEnvObject_Prototype_Tag,					CEnvObject::Create(m_pDevice, m_pDeviceContext));
 
+		/* Interactive Object */
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWeaponPickUp_Prototype_Tag,				CWeaponPickUp::Create(m_pDevice, m_pDeviceContext));
+
 
 		/* Invisible Wall */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszInvisibleWall_Prototype_Tag,				CInvisibleWall::Create(m_pDevice, m_pDeviceContext));
@@ -810,6 +825,7 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterSapwner_Prototype_Tag,			CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, CTriggerBox_GlobalEvent_BroadCaster::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_TutorialUIEvent_PrototypeTag,			CTriggerBox_TutorialUIEvent::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_CinematicPlayer_PrototypeTag,			CTriggerBox_CinematicPlayer::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 		/* Weapons */
@@ -824,6 +840,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Prototype_Tag , CMonster_Boomer::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Boomer_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Boomer_Body_Prototype_Tag, CMonster_Boomer_Body::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Monster_Fly
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Fly_Prototype_Tag, CMonster_Fly::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Monster_Fly_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Fly_Body_Prototype_Tag, CMonster_Fly_Body::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_NPC_Pan
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Prototype_Tag, CNPC_Pan::Create(m_pDevice, m_pDeviceContext));
@@ -1377,7 +1397,7 @@ HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonFinal.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonFFinal.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))
@@ -1528,27 +1548,9 @@ HRESULT CLoader::Ready_AttackOverlap_Xibi()
 
 HRESULT CLoader::Ready_CCS()
 {
-	/* Global */
-	m_pGameInstance->Register_GlobalEventsBroadCast(ENUM_TO_UINT(EGlobal_Broadcast_Type::NONE), nullptr);
-
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT);
-	REGISTER_GLOBAL_EVENT(TUTORIAL_BOSS_CONTATCT_END);
-
-	REGISTER_GLOBAL_EVENT(CINEMATIC_START);
-	REGISTER_GLOBAL_EVENT(CINEMATIC_END);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_ACTION_OFF);
-
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_ON);
-	REGISTER_GLOBAL_EVENT(XIBILA_BOSS_UI_OFF);
-
-
-
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_DIRECTION);
-	REGISTER_GLOBAL_EVENT(XIBI_CHANGE_STATE_BOSS_IDLE);
-
-
+	if (FAILED(m_pGameInstance->Load_CameraCinematicSequence(g_wszCameraCinematicData_JsonPath)))
+		return E_FAIL;
+		
 
 	return S_OK;
 }

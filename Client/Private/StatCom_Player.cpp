@@ -19,103 +19,118 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 	, m_tComboTimeCounter(rhs.m_tComboTimeCounter)
 	, m_FAttState(rhs.m_FAttState)
 	, m_iSkillAttack(rhs.m_iSkillAttack)
-	, m_pESkillBase(rhs.m_pESkillBase)
-	, m_pQSkillBase(rhs.m_pQSkillBase)
-	, m_tExtra_AttackDesc(rhs.m_tExtra_AttackDesc)
-	, m_bInvincible(rhs.m_bInvincible)
-{
-}
-
-HRESULT CStatCom_Player::Initialize_Prototype()
-{
-	if (FAILED(Super::Initialize_Prototype()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CStatCom_Player::Initialize(void* pArg)
-{
-	if (FAILED(Super::Initialize(pArg)))
-		return E_FAIL;
-
-	PLAYER_STATCOMP_DESC* pDesc = static_cast<PLAYER_STATCOMP_DESC*>(pArg);
-
-	m_fMeleeAtt = pDesc->fMeleeAttack;
-	m_fGunAtt = pDesc->fGunAttack;
-	m_tComboTimeCounter.fMaxTime = pDesc->fComboCoolTime;
-	m_tDashTimeCounter.fMaxTime = pDesc->fDashCoolTime;
-
-	m_tDashTimeCounter.bCountTime	= true;
-	m_tDashTimeCounter.bTimeReset	= true;
-	m_tComboTimeCounter.bCountTime	= false;
-	m_tComboTimeCounter.bTimeReset	= true;
-
-	m_pESkillBase = pDesc->pESkill;
-	m_pQSkillBase = pDesc->pQSkill;
-	Safe_AddRef(m_pESkillBase);
-	Safe_AddRef(m_pQSkillBase);
-
-	m_tExtra_AttackDesc.vecCompute_Order  = std::move(pDesc->vecExtraComputeOrder);
-
-	m_fCriticalRate = pDesc->fCriticalRate;
-	m_fCirticalAttack = pDesc->fCriticalAttack;
-
-	// 초기는 우선 근접 무기로 설정해둠
-	m_FAttState = Attack_State::Melee;
-	pDesc->fAttack = m_fMeleeAtt;
-
-	return S_OK;
-}
-
-void CStatCom_Player::Update_Stat(const _float fTimeDelta)
-{
-	Super::Update_Stat(fTimeDelta);
-
-	Count_Dash(fTimeDelta);
-	Count_Combo(fTimeDelta);
-
-	if (m_bInvincible)
+		, m_pESkillBase(rhs.m_pESkillBase)
+		, m_pQSkillBase(rhs.m_pQSkillBase)
+		, m_tExtra_AttackDesc(rhs.m_tExtra_AttackDesc)
+		, m_bInvincible(rhs.m_bInvincible)
 	{
-		Fill_StatFull(STAT_TYPE::DEFENSE);
-		Fill_StatFull(STAT_TYPE::HP);
-		Fill_StatFull(STAT_TYPE::MENTAL);
-	}
-}
-
-const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
-{
-	// 상황에 맞게 값을 설정해서 내보자
-
-	/* 값 리셋 */
-	m_tExtra_AttackDesc.fAddDamage = 0.f;
-	m_tExtra_AttackDesc.fAddRate = 0.f;
-	m_tExtra_AttackDesc.fRandomAdd_Rate = 0.f;
-	m_tExtra_AttackDesc.fRandomMul_Rate = 0.f;
-	m_tExtra_AttackDesc.vFinalDamege_MinMax = Vec2::Zero;
-	m_tExtra_AttackDesc.vRandomAdd_MinMax = Vec2::Zero;
-	m_tExtra_AttackDesc.vRandomMul_MinMax = Vec2::Zero;
-
-	m_tExtra_AttackDesc.iDamageFlag = 0;
-
-	// skill에서 set으로 값을 먼저 설정하고
-	// skill 이 켜져 있다면 안에서 값 수정 하도록 설정
-	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
-	{
-		m_pESkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc, this);
-		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::SKILLE);
-	}
-	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
-	{
-		m_pQSkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc,this);
-		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ);
 	}
 
-	if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Gun))
+	HRESULT CStatCom_Player::Initialize_Prototype()
 	{
-		m_pQSkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc, this);
-		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::GUN);
+		if (FAILED(Super::Initialize_Prototype()))
+			return E_FAIL;
+
+		return S_OK;
 	}
+
+	HRESULT CStatCom_Player::Initialize(void* pArg)
+	{
+		if (FAILED(Super::Initialize(pArg)))
+			return E_FAIL;
+
+		PLAYER_STATCOMP_DESC* pDesc = static_cast<PLAYER_STATCOMP_DESC*>(pArg);
+
+		m_fMeleeAtt = pDesc->fMeleeAttack;
+		m_fGunAtt = pDesc->fGunAttack;
+		m_tComboTimeCounter.fMaxTime = pDesc->fComboCoolTime;
+		m_tDashTimeCounter.fMaxTime = pDesc->fDashCoolTime;
+
+		m_tDashTimeCounter.bCountTime = true;
+		m_tDashTimeCounter.bTimeReset = true;
+		m_tComboTimeCounter.bCountTime = false;
+		m_tComboTimeCounter.bTimeReset = true;
+
+		m_pESkillBase = pDesc->pESkill;
+		m_pQSkillBase = pDesc->pQSkill;
+		Safe_AddRef(m_pESkillBase);
+		Safe_AddRef(m_pQSkillBase);
+
+		m_tExtra_AttackDesc.vecCompute_Order = std::move(pDesc->vecExtraComputeOrder);
+
+		m_fCriticalRate = pDesc->fCriticalRate;
+		m_fCirticalAttack = pDesc->fCriticalAttack;
+
+		// 초기는 우선 근접 무기로 설정해둠
+		m_FAttState = Attack_State::Melee;
+		pDesc->fAttack = m_fMeleeAtt;
+
+		return S_OK;
+	}
+
+	void CStatCom_Player::Update_Stat(const _float fTimeDelta)
+	{
+		Super::Update_Stat(fTimeDelta);
+
+		Count_Dash(fTimeDelta);
+		Count_Combo(fTimeDelta);
+
+		if (m_bInvincible)
+		{
+			Fill_StatFull(STAT_TYPE::DEFENSE);
+			Fill_StatFull(STAT_TYPE::HP);
+			Fill_StatFull(STAT_TYPE::MENTAL);
+		}
+	}
+
+	const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
+	{
+		// 상황에 맞게 값을 설정해서 내보자
+
+		/* 값 리셋 */
+		m_tExtra_AttackDesc.fAddDamage = 0.f;
+		m_tExtra_AttackDesc.fAddRate = 0.f;
+		m_tExtra_AttackDesc.fRandomAdd_Rate = 0.f;
+		m_tExtra_AttackDesc.fRandomMul_Rate = 0.f;
+		m_tExtra_AttackDesc.vFinalDamege_MinMax = Vec2::Zero;
+		m_tExtra_AttackDesc.vRandomAdd_MinMax = Vec2::Zero;
+		m_tExtra_AttackDesc.vRandomMul_MinMax = Vec2::Zero;
+
+		m_tExtra_AttackDesc.iDamageFlag = 0;
+
+		// skill에서 set으로 값을 먼저 설정하고
+		// skill 이 켜져 있다면 안에서 값 수정 하도록 설정
+		if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::E))
+		{
+			m_pESkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc, this);
+			m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::SKILLE);
+		}
+		if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Q))
+		{
+			m_pQSkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc, this);
+			m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ);
+		}
+
+		if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Gun))
+		{
+			m_pQSkillBase->Set_ExtraAttack_Desc(m_tExtra_AttackDesc, this);
+			m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::GUN);
+		}
+
+		// 근접일때에는 종류에 따라 flag 넘겨줌
+		if (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Melee))
+		{
+			_int iCurMeleeIdx = static_cast<CPlayer*>(Get_Owner())->Get_CurWeaponIdx(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE));
+			switch (iCurMeleeIdx)
+			{
+			case static_cast<_int>(CPlayer::MELEE::SWORD):
+				m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::SWORD);
+				break;
+			case static_cast<_int>(CPlayer::MELEE::DUAL):
+				m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::DUAL);
+				break;
+			}
+		}
 
 	// critical이나 다른 값들 그 다음에 추가 한다
 	// critical 정보 처리 : test용으로 일단 무조건 criticla
@@ -138,15 +153,6 @@ const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
 
 	// 연산 순서 : 우선은 stat 복사 생성시 desc으로 받도록 하자
 	// 좀 복잡해진다면 flag mask 검사후 order 지정
-
-	switch (static_cast<CPlayer*>(Get_Owner())->Get_PlayerType())
-	{
-	case CPlayer::PLAYER_TYPE::MOON:
-		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::MOON);
-		break;
-	default:
-		int a = 0;
-	}
 
 	return m_tExtra_AttackDesc;
 }

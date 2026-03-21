@@ -19,6 +19,8 @@ CPhysicsCCT::CPhysicsCCT(const CPhysicsCCT& rhs)
 	, m_pDevice(rhs.m_pDevice)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
 	, m_fGravityOffset(rhs.m_fGravityOffset)
+	, m_bYLerp(rhs.m_bYLerp)
+	, m_fSpeedOffset(rhs.m_fSpeedOffset)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -106,7 +108,7 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 {
 	_bool bHasInput = m_tMoveState.vInputDir.magnitudeSquared() > 0.001f;
 
-	m_tMoveState.vTargetVelocity = m_tMoveState.vInputDir * m_tMoveState.CMSpeed.z;
+	m_tMoveState.vTargetVelocity = m_tMoveState.vInputDir * m_tMoveState.CMSpeed.z * m_fSpeedOffset;
 	m_tMoveState.vTargetVelocity.y = 0.f;
 
 	PxVec3 currentHorizontalVel = m_tMoveState.vVelocity;
@@ -129,6 +131,30 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 		m_tMoveState.CMVerticalSpeed.y,
 		m_tMoveState.CMVerticalSpeed.z
 	);
+
+	if (m_tDesc.bIsHover && m_bEnableMove == true)
+	{
+		Vec3 finalPos = GetFootPosition();
+
+		_float fHitDesc = {};
+		Vec3 vHitPos = {};
+		Vec3 vRayPos = finalPos;
+		vRayPos.y += 0.3f;
+
+		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDesc, &vHitPos))
+		{
+			_float fMinHoverY = vHitPos.y + m_tDesc.fHoverOffset;
+
+			Vec3 vHoverPos(0.f, vHitPos.y + m_tDesc.fHoverOffset, 0.f);
+			Vec3 vCurrentPose(0.f, finalPos.y, 0.f);
+
+			vHoverPos = vHoverPos - vCurrentPose;
+
+			vHoverPos *= 5.f * fTimeDelta;
+
+			AddFixedMove(vHoverPos);
+		}
+	}
 
 	m_CollisionFlags = Move((m_tMoveState.vVelocity * fTimeDelta) + m_tMoveState.vFixedMove, 0.001f, fTimeDelta);
 
@@ -225,11 +251,7 @@ void CPhysicsCCT::SetHeight(_float height)
 
 const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, _float fTimeDelta)
 {
-	if (m_pGameInstance->Is_ChangeLevelSequence() || m_bEnableCollision == false)
-	{
-		PxControllerCollisionFlags collisionFlag;
-		return collisionFlag;
-	}
+	_bool bDisableMove = m_pGameInstance->Is_ChangeLevelSequence() || m_bEnableCollision == false;
 
 	PxFilterData queryFilterData;
 	queryFilterData.word0 = m_tDesc.eFilterLayer;
@@ -240,7 +262,7 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	filters.mFilterCallback = m_pQueryFilterCallback;
 
 	PxControllerCollisionFlags collisionFlag;
-	if (m_bEnableMove)
+	if (m_bEnableMove && bDisableMove == false)
 		collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
 
 	if (m_bIsSteppingOnCCT)
@@ -277,35 +299,23 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 		finalPos.z += m_tDesc.vWorldOffset.z;
 	}
 
-	if (m_tDesc.bIsHover)
+	if (m_bYLerp)
 	{
-		_float fHitDesc = {};
-		Vec3 vHitPos = {};
-		Vec3 vRayPos = finalPos;
-		vRayPos.y += 0.3f;
+		Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDesc, &vHitPos))
-		{
-			_float fMinHoverY = vHitPos.y + m_tDesc.fHoverOffset;
+		_float fLerpAmount = fTimeDelta * 15.f;
+		if (fLerpAmount > 1.f)
+			fLerpAmount = 1.f;
 
-			if (finalPos.y < fMinHoverY)
-			{
-				finalPos.y = fMinHoverY;
-				SetFootPosition(finalPos);
-
-				m_tMoveState.vVelocity.y = 0.f;
-			}
-		}
+		_float yLerp = std::lerp(currentPos.y, finalPos.y, fLerpAmount);
+		finalPos.y = yLerp;
 	}
 
-	Vec3 currentPos = transform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
-	_float fLerpAmount = fTimeDelta * 15.f;
-	if (fLerpAmount > 1.f)
-		fLerpAmount = 1.f;
-
-	_float yLerp = std::lerp(currentPos.y, finalPos.y, fLerpAmount);
-	finalPos.y = yLerp;
+	// test
+	else
+	{
+		int  a = 0;
+	}
 
 	transform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 

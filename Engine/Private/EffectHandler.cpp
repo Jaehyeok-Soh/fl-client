@@ -331,6 +331,7 @@ void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script)
     MatWorldOffset = Offset_CalCulator(script);
     // 이펙트 생성 요청
     Spawn_RequestFromEffectManager(script, MatWorldOffset, MatOwnerMatrix, pTargetBoneMatrix);
+    //Spawn_RequestFromEffectManager(script, MatWorldOffset, pTargetBoneMatrix, MatWorldOffset);
 }
 
 void CEffectHandler::Request_SpawnEffect(const DTO::EFFECTEVENT& script, const std::string& EffectTag)

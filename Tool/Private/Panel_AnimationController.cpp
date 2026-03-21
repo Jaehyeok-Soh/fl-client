@@ -56,7 +56,7 @@ void CPanel_AnimationController::AnimationListWindow()
             if (ImGui::Selectable(label.c_str(), is_selected))
             {
                 m_tAnimControllInfo->iCurrentAnimIndex = i;
-
+                m_tAnimControllInfo->iCurrentAnimationStr = m_tAnimControllInfo->vecAnimInfo[i].strAnimName;
                 m_pAnimToolManager->ChangeAnimation(i);
             }
 
@@ -694,7 +694,9 @@ void CPanel_AnimationController::DrawController()
     for (int i = 0; i < m_tEventInfo->vecVFXEvents.size(); ++i)
     {
         auto& evt = m_tEventInfo->vecVFXEvents[i];
-        if (evt.iAnimIndex != m_tAnimControllInfo->iCurrentAnimIndex) continue;
+
+        if (evt.strAnimTag != m_tAnimControllInfo->iCurrentAnimationStr)
+            continue;
 
         char labelBuf[32];
         sprintf_s(labelBuf, "Effect %d", localIdx++);
@@ -789,6 +791,7 @@ void CPanel_AnimationController::Render_AddEventModal()
                 DTO::EFFECTEVENT newEvent{};
                 newEvent.eEventType = Engine::EAnimEvent::EFFECT;
                 newEvent.iAnimIndex = m_tAnimControllInfo->iCurrentAnimIndex;
+                newEvent.strAnimTag = m_tAnimControllInfo->iCurrentAnimationStr;
                 newEvent.fStartTrackPosition = (_float)m_tAnimControllInfo->fTrackPosition; // 현재 타임라인 위치에 생성
                 newEvent.fDuration = 1.0f; // 기본 지속 시간 1초
                 newEvent.strEffectTag = "None"; // 초기 태그
@@ -860,34 +863,34 @@ void CPanel_AnimationController::SetAnimationObject()
 
 BONEINFO CPanel_AnimationController::GetBoneInfo(_uint index)
 {
-	if (!m_pAnimToolManager->ValidCheck())
-		return BONEINFO();
+    if (!m_pAnimToolManager->ValidCheck())
+        return BONEINFO();
 
-	return m_tAnimControllInfo->vecBoneInfo[index];
+    return m_tAnimControllInfo->vecBoneInfo[index];
 }
 
 ANIMINFO CPanel_AnimationController::GetAnimInfo(_uint index)
 {
-	if (!m_pAnimToolManager->ValidCheck())
-		return ANIMINFO();
+    if (!m_pAnimToolManager->ValidCheck())
+        return ANIMINFO();
 
-	return m_tAnimControllInfo->vecAnimInfo[index];
+    return m_tAnimControllInfo->vecAnimInfo[index];
 }
 
 CPanel_AnimationController* CPanel_AnimationController::Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CPanel_AnimationController* pInstance = new CPanel_AnimationController(pLabel, pOwner, pDevice, pDeviceContext);
-	if (FAILED(pInstance->Initialize()))
-	{
-		Safe_Release(pInstance);
-		MSG_BOX("CPanel_AnimationController is faield to Create");
-		return nullptr;
-	}
+    CPanel_AnimationController* pInstance = new CPanel_AnimationController(pLabel, pOwner, pDevice, pDeviceContext);
+    if (FAILED(pInstance->Initialize()))
+    {
+        Safe_Release(pInstance);
+        MSG_BOX("CPanel_AnimationController is faield to Create");
+        return nullptr;
+    }
 
-	return pInstance;
+    return pInstance;
 }
 
 void CPanel_AnimationController::Free()
 {
-	Super::Free();
+    Super::Free();
 }

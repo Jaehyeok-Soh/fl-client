@@ -47,7 +47,6 @@ HRESULT CPointLight::Initialize(void* pArg)
 	m_fBaseRange			= pDesc->tLightDesc.fRange;
 	m_isRenderModel			= pDesc->isRenderModel;
 
-
 	if (m_isFlicker)
 	{
 		m_fFlickerSpeed = pDesc->fFlickerSpeed;

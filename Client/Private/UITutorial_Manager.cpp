@@ -8,19 +8,22 @@
 
 NS_BEGIN(Client)
 
+IMPLEMENT_SINGLETON(CUITutorial_Manager)
+
 CUITutorial_Manager::CUITutorial_Manager()
 	:m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
 }
 
-CUITutorial_Manager* CUITutorial_Manager::Create()
+void CUITutorial_Manager::Tutorial_Update(const _float fTimeDelta)
 {
-	return new CUITutorial_Manager();
+
 }
 
 void CUITutorial_Manager::Free()
 {
+	Safe_Release(m_pGameInstance);
 	Super::Free();
 }
 

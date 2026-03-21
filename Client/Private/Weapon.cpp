@@ -22,6 +22,7 @@ CWeapon::CWeapon(const CWeapon& rhs)
 	, m_eAnimState(rhs.m_eAnimState)
 	, m_matHandOffsetMatrix(rhs.m_matHandOffsetMatrix)
 	, m_matHoldOffsetMatrix(rhs.m_matHoldOffsetMatrix)
+	, m_bPlayOnceYet(rhs.m_bPlayOnceYet)
 {
 }
 
@@ -131,6 +132,11 @@ void CWeapon::Update(_float fTimeDelta)
 void CWeapon::Update_Late(_float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+
+	if (m_bPlayOnceYet == false)
+	{
+		Set_Weapon_PlayState(ENUM_TO_UINT(AnimState::STOP));
+	}
 }
 
 void CWeapon::Ready_Before_Render(_float fTimeDelta)
@@ -463,6 +469,11 @@ void CWeapon::Play_Anim(const _float fTimeDelta)
 
 		case AnimState::STOP:
 			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, 0.f, nullptr, nullptr, m_pAnimBlendECS);
+			break;
+
+		case AnimState::PLAY_ONCE:
+			Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pAnimECS, 0.01f, nullptr, nullptr, m_pAnimBlendECS);
+			m_bPlayOnceYet = false;
 			break;
 		}
 	}

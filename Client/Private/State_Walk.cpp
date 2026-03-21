@@ -44,6 +44,19 @@ void CState_Walk::Update(const _float fTimeDelta)
 	{
 		CStateBase::Turn_byCam(fTimeDelta);
 
+		CStateBase::Update(fTimeDelta);
+
+		// 만약 이전  프레임에 weapon change key가 눌렸다면 weapon을 change
+		if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_NextFrame))
+			Change_Weapon();
+
+		if (Check_Collis(fTimeDelta))
+			return;
+
+		// hit 충돌 처리 먼저
+		if (Check_Hit(fTimeDelta))
+			return;
+
 		if (Check_PreMoveKey())
 			return;
 
@@ -58,9 +71,13 @@ void CState_Walk::Update(const _float fTimeDelta)
 
 		if (Super::Check_CtrlUpKey(fTimeDelta))
 			return;
+
+		// weapon key check / todo_eunbi : check key안으로 일단 넣지는 않음
+		if (Check_WeaponChnage(fTimeDelta))
+			return;
 	}
 
-	//else
+	else
 	{
 		Super::Update(fTimeDelta);
 	}

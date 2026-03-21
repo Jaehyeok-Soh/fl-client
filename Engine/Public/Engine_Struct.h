@@ -1224,10 +1224,33 @@ namespace Engine
 
 	typedef struct tagEnvironmentEffectDesc : public EFFECT_SPAWN_DESC
 	{
-		SimpleMath::Vector3 VFX_Target_Position = { 0.f, 0.f, 0.f };
-		SimpleMath::Vector3 VFX_Scale = { 1.f, 1.f, 1.f };
-		SimpleMath::Vector3 VFX_Rotation = { 0.f, 0.f, 0.f };
+		typedef struct tagENV_PARTEFFECT_DESC
+		{
+			unsigned int	iPartsIndex = {};
+
+			SimpleMath::Vector3 /*Particle Position*/	VFX_Position_Parts;
+			SimpleMath::Vector3 /*Particle Scale*/		VFX_Scale_Parts;
+			SimpleMath::Vector3 /*Particle Rotation*/	VFX_Rotation_Parts;
+
+			int											VFX_ParticleCount_Parts;
+			float										VFX_ParticleLifeTime_Parts;
+			float										VFX_ParticleDuration_Parts;
+			SimpleMath::Vector3 /*Range*/				VFX_ParticleRange_Parts;
+		}ENV_PART_DESC;
+
+		// 부모 이펙트
+		SimpleMath::Vector3								VFX_Target_Position = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3								VFX_Scale = { 1.f, 1.f, 1.f };
+		SimpleMath::Vector3								VFX_Rotation = { 0.f, 0.f, 0.f };
+
+		std::vector<ENV_PART_DESC>						VFX_PartsDescList = {};
 	}EFFECT_ENV_DESC;
+
+#pragma endregion
+
+#pragma region Global Event Desc
+
+
 
 #pragma endregion
 
@@ -1248,9 +1271,11 @@ namespace Engine
 #pragma endregion
 
 
+
+
 #pragma region 
 
-	typedef struct CinematicCameraSequnce_EventDesc
+	typedef struct CinematicCameraSequence_EventDesc
 	{
 		/* 저장된 string 데이터를 Client에서 사용할때는 ToHahs 함수를 사용하여 미리 컴파일 단계때 해쉬를 생성해서 사용해준다 */
 		string          strSubscriberName;   // 예: "UI_Tutorial", "Boss_Haier"
@@ -1259,6 +1284,18 @@ namespace Engine
 
 #pragma endregion
 
+
+#pragma region Cinemaic Camera Sequence Desc
+
+	typedef struct CinematicCameraSequence_BroadCast_Desc
+	{
+		string					strCCSName{""};
+		CCS_BROADCAST_TYPE		eCCS_BroadCast_Type{ CCS_BROADCAST_TYPE::END };
+		int						iCurrentCameraKeyFrameIndex{-1};
+		vector<CCS_EVENT_DESC>	vecCCS_Event_Desc{};
+	}CCS_BROADCAST_DESC;
+
+#pragma endregion
 
 
 #pragma endregion

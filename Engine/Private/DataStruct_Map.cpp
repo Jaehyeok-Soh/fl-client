@@ -19,8 +19,6 @@ using json = nlohmann::json;
 #include "GameInstance.h"
 
 NS_BEGIN(Engine)
-
-
 #pragma region Data MapObject
 json CData_MapObject::ToJson() const
 {
@@ -42,8 +40,7 @@ void CData_MapObject::Free()
 	Super::Free();
 }
 #pragma endregion
-
-#pragma region 
+#pragma region Data Level Data
 
 json CData_LevelData::ToJson() const
 {
@@ -63,7 +60,6 @@ void CData_LevelData::Free()
 	return;
 }
 #pragma endregion
-
 NS_END
 
 
@@ -300,7 +296,6 @@ inline void to_json(json& SaveJson, const TLevelData& tData)
 
 	return;
 }
-
 inline void from_json(const json& LoadJson, TLevelData& tData)
 {
 	if (LoadJson.contains("strTag"))
@@ -354,6 +349,8 @@ NS_END
 
 
 
+
+
 #pragma region Client Make Path Desc
 
 
@@ -364,25 +361,27 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 {
 	switch (ePath)
 	{
-	case DTO::EClientMakePath::LandScape:							return pSource == nullptr ? new LANDSCAPE_DESC		: new LANDSCAPE_DESC(*static_cast<LANDSCAPE_DESC*>(pSource));
+	case DTO::EClientMakePath::LandScape:							return pSource == nullptr ? new LANDSCAPE_DESC							: new LANDSCAPE_DESC(*static_cast<LANDSCAPE_DESC*>(pSource));
 
-	case DTO::EClientMakePath::Tree:								return pSource == nullptr ? new TREE_DESC			: new TREE_DESC(*static_cast<TREE_DESC*>(pSource));
-	case DTO::EClientMakePath::Grass:								return pSource == nullptr ? new GRASS_DESC			: new GRASS_DESC(*static_cast<GRASS_DESC*>(pSource));
-	case DTO::EClientMakePath::Vine:								return pSource == nullptr ? new VINE_DESC			: new VINE_DESC(*static_cast<VINE_DESC*>(pSource));
-	case DTO::EClientMakePath::Moss:								return pSource == nullptr ? new MOSS_DESC			: new MOSS_DESC(*static_cast<MOSS_DESC*>(pSource));
-	case DTO::EClientMakePath::Bush:								return pSource == nullptr ? new BUSH_DESC			: new BUSH_DESC(*static_cast<BUSH_DESC*>(pSource));
+	case DTO::EClientMakePath::Tree:								return pSource == nullptr ? new TREE_DESC								: new TREE_DESC(*static_cast<TREE_DESC*>(pSource));
+	case DTO::EClientMakePath::Grass:								return pSource == nullptr ? new GRASS_DESC								: new GRASS_DESC(*static_cast<GRASS_DESC*>(pSource));
+	case DTO::EClientMakePath::Vine:								return pSource == nullptr ? new VINE_DESC								: new VINE_DESC(*static_cast<VINE_DESC*>(pSource));
+	case DTO::EClientMakePath::Moss:								return pSource == nullptr ? new MOSS_DESC								: new MOSS_DESC(*static_cast<MOSS_DESC*>(pSource));
+	case DTO::EClientMakePath::Bush:								return pSource == nullptr ? new BUSH_DESC								: new BUSH_DESC(*static_cast<BUSH_DESC*>(pSource));
 
-	case DTO::EClientMakePath::Water:								return pSource == nullptr ? new WATER_DESC			: new WATER_DESC(*static_cast<WATER_DESC*>(pSource));
-	case DTO::EClientMakePath::Env:									return pSource == nullptr ? new ENV_DESC			: new ENV_DESC(*static_cast<ENV_DESC*>(pSource));
+	case DTO::EClientMakePath::Water:								return pSource == nullptr ? new WATER_DESC								: new WATER_DESC(*static_cast<WATER_DESC*>(pSource));
+	case DTO::EClientMakePath::Env:									return pSource == nullptr ? new ENV_DESC								: new ENV_DESC(*static_cast<ENV_DESC*>(pSource));
 		/* Batch Object 관련 */
-	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC	: new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
-	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC	: new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
-	case DTO::EClientMakePath::Batch_NPC:							return pSource == nullptr ? new BATCH_NPC_DESC		: new BATCH_NPC_DESC(*static_cast<BATCH_NPC_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC						: new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC						: new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_NPC:							return pSource == nullptr ? new BATCH_NPC_DESC							: new BATCH_NPC_DESC(*static_cast<BATCH_NPC_DESC*>(pSource));
+	case DTO::EClientMakePath::Batch_InteractiveObject:				return pSource == nullptr ? new BATCH_INTERACTIVEOBJECT_DESC			: new BATCH_INTERACTIVEOBJECT_DESC(*static_cast<BATCH_INTERACTIVEOBJECT_DESC*>(pSource));
 		/* Trigger Box 관련 */
 	case DTO::EClientMakePath::TriggerBox_ChangeLevel:				return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC				: new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC			: new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	return pSource == nullptr ? new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC : new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC(*static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			return pSource == nullptr ? new TRIGGERBOX_TUTORIALUIEVENT_DESC			: new TRIGGERBOX_TUTORIALUIEVENT_DESC(*static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_CinematicPlayer:			return pSource == nullptr ? new TRIGGERBOX_CINEMATICPLAYER_DESC			: new TRIGGERBOX_CINEMATICPLAYER_DESC(*static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pSource));
 
 
 
@@ -405,6 +404,7 @@ inline _bool IsExist_ClientMakePathDesc(DTO::EClientMakePath ePath)
 	return false;
 }
 
+#pragma endregion
 
 #pragma region Static Object
 
@@ -885,7 +885,7 @@ void FOG_DESC::to_Json(json& SaveJson)
 
 #pragma endregion
 
-
+#pragma region Batch 관련
 #pragma region Batch Monster
 
 void BATCH_MONSTER_DESC::from_Json(const json& LoadJson)
@@ -950,7 +950,6 @@ void BATCH_OBJECT_DESC::to_Json(json& SaveJson)
 	if(this->pBatchObjectDesc)
 		pBatchObjectDesc->to_Json(BatchObjectDesc_SaveJson["Desc"]);
 }
-
 
 #pragma region Battle Field
 
@@ -1040,6 +1039,8 @@ void BATTLE_FIELD_DESC::to_Json(json& SaveJson)
 		SaveJson["Radius"] = this->fRadius;
 	}
 }
+#pragma endregion
+
 #pragma endregion
 
 #pragma region Batch Point Light
@@ -1142,6 +1143,137 @@ void POINTLIHGT_DESC::to_Json(json& SaveJson)
 
 #pragma endregion
 
+#pragma region Batch Interaicve Object
+void BATCH_INTERACTIVEOBJECT_DESC::Change_BatchInteractiveObjectType(OBJECT_ENUM_TAG::Enum eType)
+{
+	if (this->eBatchInteractiveObejctType == eType) return;
+
+	eBatchInteractiveObejctType = eType;
+}
+void BATCH_INTERACTIVEOBJECT_DESC::Reset_PlusDesc()
+{
+	/* 초기화 */
+	this->isTutorialEvent = false;
+	this->strWeaponType = "";
+}
+void BATCH_INTERACTIVEOBJECT_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Object Enum Tag"))
+	{
+		this->eBatchInteractiveObejctType = EObjectEnumTag::ToEnum(LoadJson["Object Enum Tag"].get<string>());
+	}
+
+	if (LoadJson.contains("Quest Desc"))
+	{
+		auto& QuestDesc_JsonArray = LoadJson["Quest Desc"];
+		if (QuestDesc_JsonArray.is_array())
+		{
+			for (auto& QuestDescJson : QuestDesc_JsonArray)
+			{
+				if (QuestDescJson.is_null())
+					continue;
+				DTO::QUEST_CHAPTERDESC tQuestDesc{};
+				tQuestDesc = QuestDescJson;
+				this->vecQuestDesc.push_back(tQuestDesc);
+			}
+		}
+	}
+
+
+	switch (this->eBatchInteractiveObejctType)
+	{
+	case Engine::EObjectEnumTag::OBJECT_INTERACT_WEAPONPICKUP:
+	{
+		auto& WeaponPickUp_LoadJson =  LoadJson["Weapon PickUp Desc"];
+
+		if (WeaponPickUp_LoadJson.contains("Is Tutorial"))
+		{
+			this->isTutorialEvent = WeaponPickUp_LoadJson.at("Is Tutorial");
+		}
+
+		if (WeaponPickUp_LoadJson.contains("Pick Up Weapon Type"))
+		{
+			this->strWeaponType = WeaponPickUp_LoadJson.at("Pick Up Weapon Type");
+		}
+
+	}
+	break;
+	default:
+		break;
+	}
+
+}
+
+void BATCH_INTERACTIVEOBJECT_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Object Enum Tag"] = EObjectEnumTag::ToString(this->eBatchInteractiveObejctType);
+	if (!vecQuestDesc.empty())
+		SaveJson["Quest Desc"] = vecQuestDesc;
+
+
+	switch (this->eBatchInteractiveObejctType)
+	{
+	case Engine::EObjectEnumTag::OBJECT_INTERACT_WEAPONPICKUP:
+	{
+		auto& WeaponPickUp_SaveJson = SaveJson["Weapon PickUp Desc"];
+
+		WeaponPickUp_SaveJson["Is Tutorial"] = this->isTutorialEvent;
+		WeaponPickUp_SaveJson["Pick Up Weapon Type"] = this->strWeaponType;
+	}
+	break;
+	default:
+		break;
+	}
+}
+
+#pragma endregion
+
+#pragma region Batch Npc
+void BATCH_NPC_DESC::from_Json(const json& LoadJson)
+{
+	if (LoadJson.contains("Batch NPC Type"))
+	{
+		this->eBatchNPCType = DTO::MakeNPCType_ToEnum(LoadJson["Batch NPC Type"].get<string>());
+	}
+	else
+		this->eBatchNPCType = OBJECT_ENUM_TAG::NPC_DEFAULT;
+
+	if (LoadJson.contains("bHasQuest"))
+		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
+	else
+		this->bHasQuest = false;
+
+	if (LoadJson.contains("tQuestObjectDesc"))
+	{
+		const auto& questJson = LoadJson.at("tQuestObjectDesc");
+
+		if (questJson.is_array())
+		{
+			questJson.get_to(this->tQuestObjectDesc);
+		}
+		else if (questJson.is_object())
+		{
+			DTO::QUEST_CHAPTERDESC oldFormatDesc;
+			questJson.get_to(oldFormatDesc);
+			this->tQuestObjectDesc.push_back(oldFormatDesc);
+		}
+	}
+}
+
+void BATCH_NPC_DESC::to_Json(json& SaveJson)
+{
+	SaveJson["Batch NPC Type"] = DTO::MakeNPCType_ToString(this->eBatchNPCType);
+
+	SaveJson["bHasQuest"] = this->bHasQuest;
+
+	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
+		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
+}
+#pragma endregion
+
+
+#pragma endregion
+
 
 
 #pragma region Trigger Box
@@ -1215,7 +1347,6 @@ void TRIGGERBOX_CHANGELEVEL_DESC::to_Json(json& SaveJson)
 	SaveJson["Change Level Type Name"] = this->strChangeLevelTypeName;
 }
 #pragma endregion
-
 
 
 #pragma region Monster Spawner 
@@ -1366,53 +1497,26 @@ void TRIGGERBOX_TUTORIALUIEVENT_DESC::to_Json(json& SaveJson)
 #pragma endregion
 
 
-#pragma endregion
-
-#pragma endregion
-
-#pragma region NPC Desc
-
-void BATCH_NPC_DESC::from_Json(const json& LoadJson)
+#pragma region Cinemaitc Player
+void TRIGGERBOX_CINEMATICPLAYER_DESC::from_Json(const json& LoadJson)
 {
-	if (LoadJson.contains("Batch NPC Type"))
+	Super::from_Json(LoadJson);
+
+
+	if (LoadJson.contains("Play Cinematic Name"))
 	{
-		this->eBatchNPCType = DTO::MakeNPCType_ToEnum(LoadJson["Batch NPC Type"].get<string>());
-	}
-	else
-		this->eBatchNPCType = OBJECT_ENUM_TAG::NPC_DEFAULT;
-
-	if (LoadJson.contains("bHasQuest"))
-		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
-	else
-		this->bHasQuest = false;
-
-	if (LoadJson.contains("tQuestObjectDesc"))
-	{
-		const auto& questJson = LoadJson.at("tQuestObjectDesc");
-
-		if (questJson.is_array())
-		{
-			questJson.get_to(this->tQuestObjectDesc);
-		}
-		else if (questJson.is_object())
-		{
-			DTO::QUEST_CHAPTERDESC oldFormatDesc;
-			questJson.get_to(oldFormatDesc);
-			this->tQuestObjectDesc.push_back(oldFormatDesc);
-		}
+		this->strCinematicName = LoadJson["Play Cinematic Name"];
 	}
 }
 
-void BATCH_NPC_DESC::to_Json(json& SaveJson)
+void TRIGGERBOX_CINEMATICPLAYER_DESC::to_Json(json& SaveJson)
 {
-	SaveJson["Batch NPC Type"] = DTO::MakeNPCType_ToString(this->eBatchNPCType);
+	Super::to_Json(SaveJson);
 
-	SaveJson["bHasQuest"] = this->bHasQuest;
-
-	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
-		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
+	SaveJson["Play Cinematic Name"] = this->strCinematicName;
 }
 #pragma endregion
+
 
 #pragma region Make_BatchObject_Desc cpp구현부
 BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectType, BATCH_OBJECT_DESC_BASE* pBase)
@@ -1430,7 +1534,10 @@ BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectT
 
 #pragma endregion
 
+#pragma endregion
+
 
 NS_END
+
 
 

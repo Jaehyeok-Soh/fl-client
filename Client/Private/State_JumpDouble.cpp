@@ -32,6 +32,7 @@ HRESULT CState_JumpDouble::Start(void* pArg, _bool bForce)
 	Set_ApplyGravity(false);
 	Set_ZeroVerticalVelocity();
 	Jump_Impuls(0.3f);
+	Set_YLerp(false);
 
 	return S_OK;
 }
@@ -40,7 +41,7 @@ void CState_JumpDouble::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
 	if (m_fStateElapsed > 0.3f &&
-		Check_OnGround(0.3f))
+		Check_OnGround(0.1f))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 		return;
@@ -50,7 +51,7 @@ void CState_JumpDouble::Update(const _float fTimeDelta)
 	{
 		Set_ApplyGravity(true);
 
-		Set_RootMotion_Apply(false);
+		//Set_RootMotion_Apply(false);
 	}
 
 	Super::Update(fTimeDelta);
@@ -66,6 +67,8 @@ HRESULT CState_JumpDouble::End()
 	Set_RootMotion_Apply(true);
 
 	Set_DoubleJumpCount(true);
+
+	Set_YLerp(true);
 
 	return S_OK;
 }

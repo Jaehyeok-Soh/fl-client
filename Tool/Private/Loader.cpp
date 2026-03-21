@@ -27,6 +27,7 @@
 #include "CEffectObject.h"
 #include "Gravity_Force.h"
 #include "Tool_Weapon.h"
+#include "CinematicCamera.h"
 //=================
 // UI
 //=================
@@ -126,6 +127,7 @@ HRESULT CLoader::Loading_For_Logo()
 {
 	m_isFinished = true;
 
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, CCinematicCamera::Create(m_pDevice, m_pDeviceContext));
 
 	return S_OK;
 }
@@ -177,7 +179,6 @@ HRESULT CLoader::Loading_For_Map()
 	ExploDesc.vPivot = Vec3(0.f, 0.f, 0.5f);
 
 	pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
-
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_VIBuffer_Particle_Point", CVIBuffer_Particle_Point::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_VIBuffer_Particle_Mesh", CVIBuffer_Particle_Mesh::Create(m_pDevice, m_pDeviceContext, &ExploDesc));
 
@@ -217,8 +218,11 @@ HRESULT CLoader::Loading_For_Map()
 
 	Safe_Release(pMapDataLoader);
 
-	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
 
+
+
+
+	Loading_Textures_Effect(L"../../Resources/Textures/Effect");
 
 #pragma endregion
 

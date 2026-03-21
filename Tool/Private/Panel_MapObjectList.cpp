@@ -57,6 +57,11 @@ CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, 
 		::strcpy_s(m_szBattleFieldTypeName[i], MAX_PATH, strCurName.c_str());
 	}
 
+	for (_uint i = 0; i < ARRAYSIZE(g_arrAllObjectTags); ++i)
+	{
+		::strcpy_s(m_szObjectTagNames[i], MAX_PATH, EObjectEnumTag::ToString(g_arrAllObjectTags[i]).c_str());
+	}
+
 }
 
 
@@ -1006,11 +1011,13 @@ HRESULT CPanel_MapObjectList::Render_Description()
 
 	case Tool::EClientMakePath::Batch_Monster:						ImGuiUpdate_Batch_Monster_Desc						(static_cast<BATCH_MONSTER_DESC*>(pDesc));								return S_OK;
 	case Tool::EClientMakePath::Batch_Object:						ImGuiUpdate_Batch_Object_Desc						(static_cast<BATCH_OBJECT_DESC*>(pDesc));								return S_OK;
+	case Tool::EClientMakePath::Batch_InteractiveObject:			ImGuiUpdate_Batch_InteractiveObject_Desc			(static_cast<BATCH_INTERACTIVEOBJECT_DESC*>(pDesc));					return S_OK;
 
 	case Tool::EClientMakePath::TriggerBox_ChangeLevel:				ImGuiUpdate_TriggerBox_ChanageLevel_Desc			(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));						return S_OK;
 	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner				(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
 	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster		(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
 	case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:			ImGuiUpdate_TriggerBox_TutorialUIEvent				(static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::TriggerBox_CinematicPlayer:         ImGuiUpdate_TriggerBox_CinematicPlayer				(static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pDesc));					return S_OK;
 	
 	case Tool::EClientMakePath::Batch_NPC:							ImGuiUpdate_NPC										(static_cast<BATCH_NPC_DESC*>(pDesc));									return S_OK;
 	default:																																													return S_OK;
@@ -1487,6 +1494,106 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pD
 		ImGui::EndCombo();
 	}
 	return;
+}
+
+void CPanel_MapObjectList::ImGuiUpdate_Batch_InteractiveObject_Desc(BATCH_INTERACTIVEOBJECT_DESC* pDesc)
+{
+	if (pDesc == nullptr) return; 
+
+
+	// 1. 현재 선택된 타입의 문자열을 콤보박스 미리보기에 띄웁니다.
+	m_strBuffer = EObjectEnumTag::ToString(pDesc->eBatchInteractiveObejctType);
+
+	if (ImGui::BeginCombo("Interactive Type", m_strBuffer.c_str()))
+	{
+		for (_uint i = 0; i < ARRAYSIZE(g_arrAllObjectTags); ++i)
+		{
+			EObjectEnumTag::Enum eType = g_arrAllObjectTags[i];
+
+			if (EObjectEnumTag::OBJECT_INTERACT_DEFAULT <= eType && eType < EObjectEnumTag::OBJECT_INTERACT_END)
+			{
+				string strTypeName = EObjectEnumTag::ToString(eType);
+
+				// 이 항목이 현재 Desc에 저장된 타입인지 체크 (선택된 항목 파란색 하이라이트용)
+				bool isSelected = (pDesc->eBatchInteractiveObejctType == eType);
+
+				// 유저가 이 항목을 클릭했다면 Selectable이 true를 반환합니다!
+				if (ImGui::Selectable(strTypeName.c_str(), isSelected))
+				{
+					// 클릭했으니 Desc의 타입을 갱신해줍니다.
+					pDesc->eBatchInteractiveObejctType = eType;
+				}
+
+				// 콤보박스가 열렸을 때, 현재 선택된 항목으로 스크롤을 맞춰줍니다. (ImGui 국룰 최적화)
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator(); // 줄 하나 예쁘게 그어주기
+
+	if (ImGui::Button("Add Quest"))
+	{
+		/* Quest 정보추가 */
+		pDesc->vecQuestDesc.push_back(DTO::QUEST_CHAPTERDESC());
+	}
+	_uint iIndex = 0;
+	_int iDeleteIndex = -1;
+	for (auto& QuestDesc : pDesc->vecQuestDesc)
+	{
+		this->ImGuiUpdate_Quest(&QuestDesc);
+		if (ImGui::Button("Delete Quest"))
+			iDeleteIndex = iIndex;
+		iIndex++;
+	}
+
+	if (iDeleteIndex != -1)
+		pDesc->vecQuestDesc.erase(pDesc->vecQuestDesc.begin() + iDeleteIndex);
+
+
+	ImGui::Separator(); // 줄 하나 예쁘게 그어주기
+
+
+	// =========================================================
+	// 2. [핵심] 위에서 선택한 타입에 따라 하위 변수 세팅창 띄워주기!
+	// =========================================================
+	switch (pDesc->eBatchInteractiveObejctType)
+	{
+	case EObjectEnumTag::OBJECT_INTERACT_WEAPONPICKUP:
+	{
+		ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "[ Tutorial Weapon Settings ]");
+
+		// 튜토리얼 이벤트 여부 체크박스
+		ImGui::Checkbox("Is Tutorial Event", &pDesc->isTutorialEvent);
+
+		// 무기 타입 문자열 입력 (혹은 이것도 콤보박스로 빼면 더 좋습니다!)
+		_int iCurrentType = static_cast<_int>(WeaponPickUp_WeaponType_ToEnum(pDesc->strWeaponType));
+		if (iCurrentType >= static_cast<_int>(WeaponPickUp_WeaponType::END))
+		{
+			iCurrentType = 0;
+			pDesc->strWeaponType = g_szWeaponPickUp_WeaponType[0]; // 기본값 강제 주입
+		}
+
+		if (ImGui::Combo("Pick Up Weapon Type", &iCurrentType, g_szWeaponPickUp_WeaponType, static_cast<_int>(WeaponPickUp_WeaponType::END)))
+		{
+			if (iCurrentType >= static_cast<_int>(WeaponPickUp_WeaponType::END))
+			{
+				iCurrentType = 0;
+				pDesc->strWeaponType = g_szWeaponPickUp_WeaponType[0]; // 기본값 강제 주입
+			}
+			pDesc->strWeaponType = g_szWeaponPickUp_WeaponType[iCurrentType];
+		}
+		break;
+	}
+	default:
+		ImGui::TextDisabled("Select an Interactive Object Type to edit details.");
+		break;
+	}
+
 }
 
 #pragma region Batch Object Desc
@@ -2009,6 +2116,57 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUT
 	}
 
 
+}
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_CinematicPlayer(TRIGGERBOX_CINEMATICPLAYER_DESC* pDesc)
+{
+	ImGuiUpdate_TriggerBox(pDesc);
+
+	ImGui::SeparatorText(" Cinematic Player Desc ");
+
+	ImGui::NewLine();
+
+	// 1. 등록된 시네마틱이 아예 없을 때의 방어 처리
+	if (m_pMapToolManager->m_vecCamCinematicSequenceNames.empty())
+	{
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), " Register CinematicSequence is None...");
+		return; // 더 이상 보여줄 UI가 없으므로 안전하게 리턴
+	}
+
+	// 2. 현재 선택된 시네마틱 이름 텍스트 출력
+	string strCurrentName = pDesc->strCinematicName.empty() ? "None" : pDesc->strCinematicName;
+	ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), " Play Cinematic Name => [ %s ] ", strCurrentName.c_str());
+
+	ImGui::Spacing();
+	ImGui::Text("Select Cinematic:");
+
+	// 3. 콤보박스 (Selectable을 이용한 안전한 string 매핑)
+	ImGui::SetNextItemWidth(250.f);
+	string strPreview = pDesc->strCinematicName.empty() ? "Select Cinematic..." : pDesc->strCinematicName;
+
+	if (ImGui::BeginCombo("##CinematicSelectCombo", strPreview.c_str()))
+	{
+		// 툴 매니저가 들고 있는 이름 리스트(vector<string>) 순회
+		for (int i = 0; i < m_pMapToolManager->m_vecCamCinematicSequenceNames.size(); ++i)
+		{
+			const string& strTargetName = m_pMapToolManager->m_vecCamCinematicSequenceNames[i];
+
+			// 이 항목이 현재 선택된 항목인지 체크
+			bool bSelected = (pDesc->strCinematicName == strTargetName);
+
+			if (ImGui::Selectable(strTargetName.c_str(), bSelected))
+			{
+				// ★ 사용자가 클릭하면 실제 데이터(pDesc)에 바로 등록!
+				pDesc->strCinematicName = strTargetName;
+			}
+
+			// 콤보박스를 열었을 때 현재 선택된 위치로 스크롤을 맞춰줌
+			if (bSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
 }
 void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 {

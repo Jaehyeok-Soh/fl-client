@@ -2,6 +2,7 @@
 #include "Camera_Manager.h"
 #include "Constant_Buffer.h"
 #include "GameInstance.h"
+#include "CinematicCamera.h"
 
 CCamera_Manager::CCamera_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -15,6 +16,7 @@ CCamera_Manager::CCamera_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDe
 	m_matProjection = Matrix::Identity;
 	m_matView_UI = Matrix::Identity;
 	m_matProjection_UI = Matrix::Identity;
+	m_matPrevCameraWorld = Matrix::Identity;
 }
 
 HRESULT CCamera_Manager::Initiailize()
@@ -48,6 +50,43 @@ void CCamera_Manager::Change_Target(CGameObject* pGo)
 	m_pMainCamera->Change_Actor(pGo);
 }
 
+
+
+HRESULT CCamera_Manager::Register_CinematicCamera(_uint iPrototypeLevelIndex, const wstring& wstrFindPrototypeTag, _uint iCloneLevelIndex, const wstring& wstrAddLagerTag, void* pCinematicCameraDesc)
+{
+	const  auto& iter = m_Cameras[ENUM_TO_UINT(CameraType::DYNAMIC)].find(g_wszCinematicCameraTag);
+
+	if (iter != m_Cameras[ENUM_TO_UINT(CameraType::DYNAMIC)].end())
+	{
+		MSG_BOX(" 이미 Cinematic Camera가 등록되었습니다 ");
+		return E_FAIL;
+	}
+
+	CCinematicCamera::CINEMATICCAMER_DESC* pDesc{ static_cast<CCinematicCamera::CINEMATICCAMER_DESC*>(pCinematicCameraDesc) };
+	if (!pDesc)
+	{
+		/* 전역으로 설정 */
+		static CCinematicCamera::CINEMATICCAMER_DESC tDesc{};
+		tDesc.iLevelIndex = m_pGameInstnace->Get_CurrentLevelIndex();
+		static CCamera::CAMERA_DESC tCamDesc{};
+		/* 카메라 기본값 세팅 */
+		tCamDesc.eProjectionType = EProjectionType::PERSPECTIVE;
+		tCamDesc.fFar = 1000.f;
+		tCamDesc.fNear = 0.1f;
+		tCamDesc.fFov = XMConvertToRadians(60.f);
+		tDesc.pCamera_Desc = &tCamDesc;
+		pDesc = &tDesc;
+	}
+
+	CGameObject* pResult{nullptr};
+	if (nullptr == (pResult = m_pGameInstnace->Add_GameObject(iPrototypeLevelIndex, wstrFindPrototypeTag, iCloneLevelIndex, wstrAddLagerTag, pDesc)))
+		return E_FAIL;
+
+	Add_Camera(CameraType::DYNAMIC , g_wszCinematicCameraTag , static_cast<CCameraMan*>(pResult));
+
+	return S_OK;
+}
+
 void CCamera_Manager::Change_MainCamera(CameraType eType, const wstring& wstrTag)
 {
 	if (wstrTag.empty())
@@ -56,6 +95,14 @@ void CCamera_Manager::Change_MainCamera(CameraType eType, const wstring& wstrTag
 	auto itr = m_Cameras[ENUM_TO_UINT(eType)].find(wstrTag);
 	if (itr == m_Cameras[ENUM_TO_UINT(eType)].end())
 		return;
+
+	/* Main Camera가 바뀌기전의 위치를 건내준다 */
+	if (m_pMainCamera)
+	{
+		m_matPrevCameraWorld = m_pMainCamera->Get_Component<CTransform>()->Get_WorldMatrix();
+		m_wstrPrevCameraName = m_pMainCamera->Get_WName();
+		m_ePrevCameraType = m_pMainCamera->Get_Type();
+	}
 
 	Safe_Release(m_pMainCamera);
 	CCameraMan* pCameraMan = itr->second;
@@ -104,11 +151,30 @@ HRESULT CCamera_Manager::Camera_Shaking(const CAM_SHAKING_DATA& tData)
 	return S_OK;
 }
 
-HRESULT CCamera_Manager::Play_CameraCinematic(Camera_Cinematic_Sequence* pCameraCinematicSequence)
+HRESULT CCamera_Manager::Play_CameraCinematic(CinematicCameraSequence* pCameraCinematicSequence)
 {
 	if (pCameraCinematicSequence == nullptr) return E_FAIL;
 
-	m_pMainCamera->Cinematic(pCameraCinematicSequence);
+	/* Main Camera 교체 */
+
+	map<wstring, CCameraMan*>::iterator iter = m_Cameras[ENUM_TO_UINT(CameraType::DYNAMIC)].find(g_wszCinematicCameraTag);
+	if (iter == m_Cameras[ENUM_TO_UINT(CameraType::DYNAMIC)].end()) return E_FAIL;
+	CCinematicCamera* pCinematiCam = dynamic_cast<CCinematicCamera*>(iter->second);
+	if (pCinematiCam == nullptr) return E_FAIL;
+
+	pCinematiCam->Play_Cinematic(pCameraCinematicSequence);
+
+	this->Change_MainCamera(CameraType::DYNAMIC,g_wszCinematicCameraTag);
+
+	return S_OK;
+}
+
+HRESULT CCamera_Manager::End_CameraCinematic()
+{
+	Change_MainCamera(m_ePrevCameraType ,m_wstrPrevCameraName);
+
+	/* 끝나면 바로 카메라 원상 복귀 */
+	Update_ViewMatrix();
 
 	return S_OK;
 }
@@ -149,6 +215,8 @@ void CCamera_Manager::Add_Camera(CameraType eType, const wstring& wstrTag, CCame
 	auto itr = m_Cameras[ENUM_TO_UINT(eType)].find(wstrTag);
 	if (itr != m_Cameras[ENUM_TO_UINT(eType)].end())
 		return;
+
+	pGo->Set_Name(wstrTag);
 
 	Safe_AddRef(pGo);
 	m_Cameras[ENUM_TO_UINT(eType)].insert(map<wstring, CCameraMan*>::value_type(wstrTag, pGo));

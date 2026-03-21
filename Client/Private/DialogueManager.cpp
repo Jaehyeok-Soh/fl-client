@@ -25,17 +25,33 @@ void CDialogueManager::Ready_Dialogue()
 {
 	m_umapContents.clear();
 
-	CreateNode(0, -1, -1, L"마령 판신", L"눈을 떠, 일어나!.")
-		//.AddChoice(L"눈을 뜨지 않는다.", 10)
-		//.AddChoice(L"눈을 뜬다.", 15)
-		//.AddTrigger(0)
-		;
-	
-	CreateNode(1, -1, -1, L"마령 판신", L"마을에 필토이드들이 습격했어 얼른!.");
-	CreateNode(2, -1, -1, L"비타", L"(일어난다.)");
-	CreateNode(3, -1, -1, L"마령 판신", L"나는 마령 판신!");
+	// 튜토리얼 진입 대화 : 마령
+	{
+		CreateNode(0, -1, -1, L"마령 판신", L"눈을 떠, 일어나!.")
+			//.AddChoice(L"눈을 뜨지 않는다.", 10)
+			//.AddChoice(L"눈을 뜬다.", 15)
+			//.AddTrigger(0)
+			;
 
-	CreateNode(4, 1, -1, L"마령 판신", L"다음대화");
+		CreateNode(1, -1, 2, L"마령 판신", L"마을에 필토이드들이 습격했어 얼른!");
+		CreateNode(2, 1, 3, L"은비", L"(일어난다.)");
+		CreateNode(3, 2, -1, L"마령 판신", L"일단, 집으로 돌아가자!");
+	}
+	
+	// 마령 일반 대화
+	{
+		CreateNode(4, -1, -1, L"마령 판신", L"나는 마령 판신!");
+	}
+
+	// 튜토리얼 총기 주운 후 대화
+	{
+		CreateNode(5, -1, 6, L"마령 판신", L"미처 가져가지 못한 총인가봐,\n일단 우리가 챙기자.");
+		CreateNode(6, 5, 7, L"마령 판신", L"부둣가에 배는 찾아볼 수 없어.");
+		CreateNode(7, 6, 8, L"마령 판신", L"어쩔 수 없지, 산 위의 배를 타고가자.");
+		CreateNode(8, 7, 9, L"은비", L"산 위의..... 배?");
+		CreateNode(9, 8, -1, L"마령 판신", L"응, 하늘을 나는 배.\n일단 산 위로 올라가자.");
+	}
+
 }
 
 void CDialogueManager::Bind_Events()

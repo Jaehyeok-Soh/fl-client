@@ -419,20 +419,20 @@ namespace Tool
 		Batch_Monster,
 		/*  Object Batch 관련  */
 		Batch_Object,
+		Batch_NPC,
+		/* Batch Interactive Obejct */
+		Batch_InteractiveObject,
 
 		/* Trigger Box 관련 */
 		TriggerBox_ChangeLevel,
 		TriggerBox_MonsterSpawner,
 		TriggerBox_GlobalEvent_BroadCaster,
 		TriggerBox_TutorialUIEvent,
-
-
+		TriggerBox_CinematicPlayer,
 
 
 		/* 맵 기능 관련 */
 		Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
-
-		Batch_NPC,
 
 		END,
 	};
@@ -478,12 +478,14 @@ namespace Tool
 		case Tool::EClientMakePath::Batch_Player:							return "Batch_Player";
 		case Tool::EClientMakePath::Batch_Monster:							return "Batch_Monster";
 		case Tool::EClientMakePath::Batch_Object:							return "Batch_Object";
+		case Tool::EClientMakePath::Batch_InteractiveObject:				return "Batch_InteractiveObject";
 
 			/* -------------- Trigger Box -------------- */
 		case Tool::EClientMakePath::TriggerBox_ChangeLevel:					return "TriggerBox_ChangeLevel";
 		case Tool::EClientMakePath::TriggerBox_MonsterSpawner:				return "TriggerBox_MonsterSpawner";
 		case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:		return "TriggerBox_GlobalEvent_BroadCaster";
 		case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:				return "TriggerBox_TutorialUIEvent";
+		case Tool::EClientMakePath::TriggerBox_CinematicPlayer:				return "TriggerBox_CinematicPlayer";
 
 
 			/* -------------- Invisible Wall ----------- */
@@ -513,12 +515,14 @@ namespace Tool
 		if (strType == "Batch_Player")										return EClientMakePath::Batch_Player;
 		if (strType == "Batch_Monster")										return EClientMakePath::Batch_Monster;
 		if (strType == "Batch_Object")										return EClientMakePath::Batch_Object;
+		if (strType == "Batch_InteractiveObject")							return EClientMakePath::Batch_InteractiveObject;
 
 		/* Trigger Box 관련 */
 		if (strType == "TriggerBox_ChangeLevel")							return EClientMakePath::TriggerBox_ChangeLevel;
 		if (strType == "TriggerBox_MonsterSpawner")							return EClientMakePath::TriggerBox_MonsterSpawner;
 		if (strType == "TriggerBox_GlobalEvent_BroadCaster")				return EClientMakePath::TriggerBox_GlobalEvent_BroadCaster;
 		if (strType == "TriggerBox_TutorialUIEvent")						return EClientMakePath::TriggerBox_TutorialUIEvent;
+		if (strType == "TriggerBox_CinematicPlayer")						return EClientMakePath::TriggerBox_CinematicPlayer;
 
 
 
@@ -955,6 +959,11 @@ namespace Tool
 		TUTORIAL_POPUP_11,	// [E] 버튼을 눌러 스킬 시전
 		TUTORIAL_POPUP_12,	// 보스를 조준하고 [Mouse Wheel] 마우스 휠 버튼을 눌러 시점 고정, 다시 눌러서 고정 해제
 		TUTORIAL_POPUP_13,	// [Q] 버튼을 눌러 종결 스킬 시전
+		
+		TUTORIAL_PANNEL_1,
+		TUTORIAL_PANNEL_2,
+		TUTORIAL_PANNEL_3,
+		TUTORIAL_PANNEL_4,
 		END,
 	};
 
@@ -975,6 +984,11 @@ namespace Tool
 		"TUTORIAL_POPUP_11",
 		"TUTORIAL_POPUP_12",
 		"TUTORIAL_POPUP_13",
+
+		"TUTORIAL_PANNEL_1",
+		"TUTORIAL_PANNEL_2",
+		"TUTORIAL_PANNEL_3",
+		"TUTORIAL_PANNEL_4",
 	};
 	inline string UITutorialPopUpTypeID_ToString(EUITutorialPopUpTypeID eType)
 	{
@@ -993,6 +1007,43 @@ namespace Tool
 		}
 		return EUITutorialPopUpTypeID::END;
 	}
+
+
+	enum class WeaponPickUp_WeaponType
+	{
+		One_Handed_Sword,	/* 한손검 */
+		Dual_Daggers,		/* 쌍칼 */
+		Machine_gun,		/* 머신건 */
+		END,
+	};
+
+	static const char* g_szWeaponPickUp_WeaponType[(int)WeaponPickUp_WeaponType::END] = {
+	"One_Handed_Sword",
+	"Dual_Daggers",
+	"Machine_gun",
+	};
+
+	inline string WeaponPickUp_WeaponType_ToString(WeaponPickUp_WeaponType eType)
+	{
+		_uint iType = ENUM_TO_UINT(eType);
+		if (iType < ENUM_TO_UINT(WeaponPickUp_WeaponType::END))
+			return g_szWeaponPickUp_WeaponType[iType];
+
+		return "UnKnown";
+	}
+	inline WeaponPickUp_WeaponType	WeaponPickUp_WeaponType_ToEnum(const string& strType)
+	{
+		for (_uint i = 0; i < ENUM_TO_UINT(WeaponPickUp_WeaponType::END); ++i)
+		{
+			if (strType == g_szWeaponPickUp_WeaponType[i])
+				return WeaponPickUp_WeaponType(i);
+		}
+		return WeaponPickUp_WeaponType::END;
+	}
+
+
+	HRESULT Render_ImGui_CSS_EventManifest(std::vector<struct CCS_EVENT_MANIFEST>* _vecCSSEventManifests, bool* pOpen);
+
 
 	HRESULT Load_CCS_EventManifest(OUT vector<struct CCS_EVENT_MANIFEST>* pOutData);
 	HRESULT Save_CCS_EventManifest(const vector<struct CCS_EVENT_MANIFEST>* pSaveData);
