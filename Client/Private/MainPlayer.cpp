@@ -198,16 +198,16 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
-    if (KEY_BUTTON_DOWN(DIK_V))
+    if (KEY_BUTTON_DOWN(DIK_C))
     {
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
+
         Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 0, true);
         Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 0);
     }
 
     if (KEY_BUTTON_DOWN(DIK_B))
     {
-        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
-
         Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 1, true);
         Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 1);
     }

@@ -1723,7 +1723,7 @@ HRESULT CPlayer::Ready_PartCollider()
             tPartColliDesc.pColliderDesc = &tPColliDesc;
         }
 
-        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_ObjChache);
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_ObjChache) | ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Update_MinDistance);
 
         // player가 감지할 part ui
         if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
