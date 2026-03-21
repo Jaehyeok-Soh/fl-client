@@ -1,10 +1,10 @@
 #pragma once
 #include "Effect.h"
 
-NS_BEGIN(Tool)
+NS_BEGIN(Client)
 
 class CEffect_Env :
-    public Effect
+	public Effect
 {
 	using Super = Effect;
 

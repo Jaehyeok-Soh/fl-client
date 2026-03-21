@@ -31,8 +31,8 @@ public:
 		Vec3 vCenter = { 0.f, 0.f, 0.f };
 		Vec3 vPivot = { 0.f, 0.f, 0.f };
 		Vec3 vRange = { 0.f, 0.f, 0.f };
-		Vec2 vSpeed = { 0.f, 0.f };
 		float m_fStartSpeeds = { 1.f };
+		Vec2 vSpeed = { 0.f, 0.f };
 		Vec2 vLifeTime = { 0.f, 0.f };
 		_bool isLoop = { false };
 		_bool UseBurst = { false };
@@ -59,16 +59,18 @@ public:
 	virtual void Reset_Simulation();
 
 public:
-	const PARTICLE_ORIGIN_DESC& Get_ParticleDesc() { return m_tParticleDesc; }
-	virtual void Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc) {}
-	virtual void Set_ContinueFlagEnd() { m_tParticleDesc.UseContinueFlag = E_Continueflag::E_DISTROY;}
-	virtual void Particle_Reset() {m_tParticleDesc = m_tParticleOriginDesc;}
-	virtual HRESULT Resize_InstanceBuffer(const PARTICLE_ORIGIN_DESC& Desc) { return S_OK; }
+	const PARTICLE_ORIGIN_DESC&			Get_ParticleDesc() { return m_tParticleDesc; }
+	virtual void						Set_ParticleDesc(const PARTICLE_ORIGIN_DESC& Desc) {}
+	virtual void						Set_ContinueFlagEnd() { m_tParticleDesc.UseContinueFlag = E_Continueflag::E_DISTROY;}
+	virtual void						Particle_Reset() {m_tParticleDesc = m_tParticleOriginDesc;}
+	virtual HRESULT						Resize_InstanceBuffer(const PARTICLE_ORIGIN_DESC& Desc) { return S_OK; }
 
 public:
 	virtual _uint   Get_InstanceCount() { return m_iInstanceCount; }
 	virtual _uint	Get_IndexCountPerInstance() { return m_iIndexCountPerInstance; }
 	virtual void	Debug_CheckVertexBuffer();
+
+public:
 
 protected:
 	_bool			m_bIsLoop = { false };

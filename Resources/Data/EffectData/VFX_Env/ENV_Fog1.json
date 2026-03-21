@@ -2,9 +2,9 @@
     "Category": "EFFECT",
     "Objects": [
         {
-            "ContainerName": "ENV_FOG1",
+            "ContainerName": "ENV_Fog1",
             "IsPoolingEffect": true,
-            "SimulationType": 3435973836,
+            "SimulationType": 1,
             "Type": "EFFECT_CONTAINER",
             "WorldMatrix": [
                 1.0,
@@ -29,7 +29,7 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.0,
                     "Color": {
-                        "w": 0.1568627506494522,
+                        "w": 0.14901961386203766,
                         "x": 0.4274509847164154,
                         "y": 0.6941176652908325,
                         "z": 0.8509804010391235
@@ -74,7 +74,7 @@
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "T_TurbulenceCc004_Mask",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "ENV_FOG1",
+                    "ParentsName": "ENV_Fog1",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
@@ -254,7 +254,7 @@
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 0,
                     "TextureFlag": 3,
-                    "TimeFlag": 0,
+                    "TimeFlag": 3,
                     "Tool_Render": {
                         "Billboard": false,
                         "DirBillboard": false,
@@ -321,17 +321,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        321.2427062988281,
+                        300.0,
                         0.0,
                         0.0,
                         0.0,
                         0.0,
-                        1.914755739562679e-05,
-                        321.24267578125,
+                        1.7881393432617188e-05,
+                        299.9999694824219,
                         0.0,
                         0.0,
-                        -321.24267578125,
-                        1.914755739562679e-05,
+                        -299.9999694824219,
+                        1.7881393432617188e-05,
                         0.0,
                         0.0,
                         1.100000023841858,
@@ -349,7 +349,7 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.0,
                     "Color": {
-                        "w": 0.1568627506494522,
+                        "w": 0.14901961386203766,
                         "x": 0.6470588445663452,
                         "y": 0.8588235378265381,
                         "z": 0.9764705896377563
@@ -394,7 +394,7 @@
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "T_TurbulenceYb020_Mask",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "ENV_FOG1",
+                    "ParentsName": "ENV_Fog1",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
@@ -574,7 +574,7 @@
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 0,
                     "TextureFlag": 3,
-                    "TimeFlag": 0,
+                    "TimeFlag": 3,
                     "Tool_Render": {
                         "Billboard": false,
                         "DirBillboard": false,
@@ -641,17 +641,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        387.49749755859375,
+                        380.0,
                         0.0,
                         0.0,
                         0.0,
                         0.0,
-                        2.3096650693332776e-05,
-                        387.4974365234375,
+                        2.2649765014648438e-05,
+                        379.9999694824219,
                         0.0,
                         0.0,
-                        -387.4974365234375,
-                        2.3096650693332776e-05,
+                        -379.9999694824219,
+                        2.2649765014648438e-05,
                         0.0,
                         -8.100000381469727,
                         2.0999999046325684,
@@ -669,10 +669,10 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.0,
                     "Color": {
-                        "w": 0.1568627506494522,
-                        "x": 0.14901961386203766,
-                        "y": 0.2980392277240753,
-                        "z": 0.7607843279838562
+                        "w": 0.14901961386203766,
+                        "x": 0.6392157077789307,
+                        "y": 0.7254902124404907,
+                        "z": 1.0
                     },
                     "CurveTexture_Tag": "",
                     "DiffuseTexture_Tag": "T_SmokeXy005_Mask",
@@ -688,9 +688,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
+                        "x": 100.0,
+                        "y": 100.0,
+                        "z": 100.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -704,7 +704,7 @@
                     },
                     "GravityDir": {
                         "x": 0.0,
-                        "y": -1.0,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "LifeTime": 5.0,
@@ -714,7 +714,7 @@
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "T_TurbulenceHf010_Mask",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "ENV_FOG1",
+                    "ParentsName": "ENV_Fog1",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
@@ -737,67 +737,67 @@
                     "ScaleCurveX": [
                         {
                             "Time": 0.002439024392515421,
-                            "Val": 99.0
+                            "Val": 382.5
                         },
                         {
-                            "Time": 0.22926829755306244,
-                            "Val": 108.99999237060547
+                            "Time": 0.21463415026664734,
+                            "Val": 390.0
                         },
                         {
-                            "Time": 0.4682926833629608,
-                            "Val": 102.0
+                            "Time": 0.4560975730419159,
+                            "Val": 382.5
                         },
                         {
-                            "Time": 0.7365853786468506,
-                            "Val": 112.0
+                            "Time": 0.6975609660148621,
+                            "Val": 390.0
                         },
                         {
                             "Time": 0.995121955871582,
-                            "Val": 103.0
+                            "Val": 390.0
                         }
                     ],
                     "ScaleCurveY": [
                         {
                             "Time": 0.002439024392515421,
-                            "Val": 99.0
+                            "Val": 382.5
                         },
                         {
-                            "Time": 0.22926829755306244,
-                            "Val": 108.99999237060547
+                            "Time": 0.21463415026664734,
+                            "Val": 390.0
                         },
                         {
-                            "Time": 0.4682926833629608,
-                            "Val": 102.0
+                            "Time": 0.4560975730419159,
+                            "Val": 382.5
                         },
                         {
-                            "Time": 0.7365853786468506,
-                            "Val": 112.0
+                            "Time": 0.6975609660148621,
+                            "Val": 390.0
                         },
                         {
                             "Time": 0.995121955871582,
-                            "Val": 103.0
+                            "Val": 390.0
                         }
                     ],
                     "ScaleCurveZ": [
                         {
                             "Time": 0.002439024392515421,
-                            "Val": 99.0
+                            "Val": 382.5
                         },
                         {
-                            "Time": 0.22926829755306244,
-                            "Val": 108.99999237060547
+                            "Time": 0.21463415026664734,
+                            "Val": 390.0
                         },
                         {
-                            "Time": 0.4682926833629608,
-                            "Val": 102.0
+                            "Time": 0.4560975730419159,
+                            "Val": 382.5
                         },
                         {
-                            "Time": 0.7365853786468506,
-                            "Val": 112.0
+                            "Time": 0.6975609660148621,
+                            "Val": 390.0
                         },
                         {
                             "Time": 0.995121955871582,
-                            "Val": 103.0
+                            "Val": 390.0
                         }
                     ],
                     "ScrollSpeed": {
@@ -905,9 +905,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
+                        "x": 100.0,
+                        "y": 100.0,
+                        "z": 100.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -981,25 +981,25 @@
                     "UseGlobalGravityCurve": false,
                     "UseGlowPowerCurve": false,
                     "UseRotationCurve": true,
-                    "UseScaleCurve": false,
+                    "UseScaleCurve": true,
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        1.0,
+                        387.2793884277344,
                         0.0,
                         0.0,
                         0.0,
                         0.0,
-                        5.960464477539063e-08,
-                        0.9999998807907104,
+                        2.3083650376065634e-05,
+                        387.2793273925781,
                         0.0,
                         0.0,
-                        -0.9999998807907104,
-                        5.960464477539063e-08,
+                        -387.2793273925781,
+                        2.3083650376065634e-05,
                         0.0,
-                        1.600000023841858,
-                        2.9000000953674316,
-                        0.20000000298023224,
+                        -4.5,
+                        1.2999999523162842,
+                        1.7999999523162842,
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
@@ -1013,7 +1013,7 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.0,
                     "Color": {
-                        "w": 0.1568627506494522,
+                        "w": 0.14901961386203766,
                         "x": 0.3294117748737335,
                         "y": 0.3607843220233917,
                         "z": 0.3686274588108063
@@ -1058,7 +1058,7 @@
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "T_TurbulenceYb020_Mask",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "ENV_FOG1",
+                    "ParentsName": "ENV_Fog1",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
@@ -1293,17 +1293,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        446.71343994140625,
+                        446.7330322265625,
                         0.0,
                         0.0,
                         0.0,
                         0.0,
-                        -38.933624267578125,
-                        445.0135498046875,
+                        -38.93532943725586,
+                        445.03302001953125,
                         0.0,
                         0.0,
-                        -445.0135498046875,
-                        -38.933624267578125,
+                        -445.03302001953125,
+                        -38.93532943725586,
                         0.0,
                         0.0,
                         2.5999999046325684,
@@ -1318,7 +1318,7 @@
                     "strTag": "EffectObject"
                 }
             ],
-            "strTag": "ENV_FOG1"
+            "strTag": "ENV_Fog1"
         }
     ]
 }
