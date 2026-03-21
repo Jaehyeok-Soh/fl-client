@@ -37,8 +37,8 @@ public:
 	virtual void			OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
 public:
-	virtual void			QuestEnter() override {};
-	virtual void			QuestExit() override {};
+	virtual void			QuestEnter() override;
+	virtual void			QuestExit() override;
 
 private:
 	EUITutorialPopUpTypeID	m_eUITutorialPopUpTypeID{ EUITutorialPopUpTypeID::END};

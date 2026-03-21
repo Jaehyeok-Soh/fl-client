@@ -99,6 +99,12 @@ void CTriggerBox_TutorialUIEvent::OnCollision_Exit(_uint iMyColliderLayer, _uint
 
 void CTriggerBox_TutorialUIEvent::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+	if (Super::IsEnabled() == false || m_bLockedEnter == false)
+		return;
+
+	if (Super::m_bHasQuest)
+		m_bLockedEnter = true;
+
 	if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
 	{
 		m_pGameInstance->Broadcast<TUTORIAL_POPUP_TRIGGER>(m_eUITutorialPopUpTypeID);
@@ -112,10 +118,29 @@ void CTriggerBox_TutorialUIEvent::OnTrigger_Enter(_uint iMyColliderLayer, _uint 
 
 void CTriggerBox_TutorialUIEvent::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	if (Super::IsEnabled() == false || m_bLockedExit == false)
+		return;
+
 	if (m_eQuestEvent == DTO::QUESTEVENT::AREA_EXIT)
 	{
 		CallQuestEvent(Get_Object_Enum_Tag(), 1);
 	}
+
+	if (Super::m_bHasQuest)
+	{
+		SetEnable(false);
+		Super::m_bLockedExit = true;
+	}
+}
+
+void CTriggerBox_TutorialUIEvent::QuestEnter()
+{
+	Super::QuestEnter();
+}
+
+void CTriggerBox_TutorialUIEvent::QuestExit()
+{
+	Super::QuestExit();
 }
 
 CTriggerBox_TutorialUIEvent* CTriggerBox_TutorialUIEvent::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

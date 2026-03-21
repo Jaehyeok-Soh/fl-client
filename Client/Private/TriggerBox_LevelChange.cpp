@@ -100,11 +100,20 @@ void CTriggerBox_LevelChange::OnCollision_Enter(_uint iMyColliderLayer, _uint iO
 
 void CTriggerBox_LevelChange::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+    if (Super::IsEnabled() == false)
+        return;
+
     Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 void CTriggerBox_LevelChange::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+    if (Super::IsEnabled() == false || m_bLockedEnter == false)
+        return;
+
+    if (Super::m_bHasQuest)
+        m_bLockedEnter = true;
+
     Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
     if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
@@ -116,8 +125,26 @@ void CTriggerBox_LevelChange::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOth
 
 void CTriggerBox_LevelChange::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+    if (Super::IsEnabled() == false || m_bLockedExit == false)
+        return;
+
     Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 
+    if (Super::m_bHasQuest)
+    {
+        SetEnable(false);
+        Super::m_bLockedExit = true;
+    }
+}
+
+void CTriggerBox_LevelChange::QuestEnter()
+{
+    Super::QuestEnter();
+}
+
+void CTriggerBox_LevelChange::QuestExit()
+{
+    Super::QuestExit();
 }
 
 CTriggerBox_LevelChange* CTriggerBox_LevelChange::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

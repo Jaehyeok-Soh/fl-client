@@ -36,12 +36,15 @@ HRESULT CTriggerBox::Initialize(void* pArg)
 
     CTriggerBox::TRIGGERBOX_DESC* pDesc = static_cast<CTriggerBox::TRIGGERBOX_DESC*>(pArg);
 
-
     if (FAILED(Ready_Component(pDesc)))
         return E_FAIL;
 
-    if (pDesc->bHasQuest)
+    if (m_bHasQuest = pDesc->bHasQuest)
+    {
+        // 퀘스트 있는 트리거박스는 퀘스트 활성화 시에만 트리거 발동
+        SetEnable(false);
         Ready_Quest(&pDesc->tQuestObjectDesc);
+    }
 
     return S_OK;
 }
@@ -171,6 +174,16 @@ HRESULT CTriggerBox::Render()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CTriggerBox::QuestEnter()
+{
+    SetEnable(true);
+}
+
+void CTriggerBox::QuestExit()
+{
+    SetEnable(false);
 }
 
 

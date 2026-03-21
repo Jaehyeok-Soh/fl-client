@@ -178,14 +178,21 @@ void CTriggerBox_MonsterSpawner::OnCollision_Enter(_uint iMyColliderLayer, _uint
 
 void CTriggerBox_MonsterSpawner::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-    Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
+    if (Super::IsEnabled() == false)
+        return;
 
+    Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-    Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+    if (Super::IsEnabled() == false || m_bLockedEnter == false)
+        return;
 
+    if (Super::m_bHasQuest)
+        m_bLockedEnter = true;
+
+    Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
 	if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
 	{
@@ -195,13 +202,30 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint i
 			return;
 		}
 	}
-
 }
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+    if (Super::IsEnabled() == false || m_bLockedExit == false)
+        return;
+
     Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 
+    if (Super::m_bHasQuest)
+    {
+        SetEnable(false);
+        Super::m_bLockedExit = true;
+    }
+}
+
+void CTriggerBox_MonsterSpawner::QuestEnter()
+{
+    Super::QuestEnter();
+}
+
+void CTriggerBox_MonsterSpawner::QuestExit()
+{
+    Super::QuestExit();
 }
 
 HRESULT CTriggerBox_MonsterSpawner::SpawnMonster()

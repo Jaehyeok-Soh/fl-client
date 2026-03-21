@@ -50,15 +50,24 @@ public:
 	virtual void			Update_Late(const _float fTimeDelta)			override;
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
+
+	void					SetEnable(_bool bEnable) { m_bIsEnabled = bEnable; }
+	_bool					IsEnabled() { return m_bIsEnabled; }
+
 public:
 	CTriggerBox::Type		Get_TriggerBoxType() const { return m_eTriggerBoxType; }
 
-	virtual void			QuestEnter() override {};
-	virtual void			QuestExit() override {};
+	virtual void			QuestEnter() override;
+	virtual void			QuestExit() override;
 
 protected:
 	_bool					m_isTriggerEventPlay{false};
 	CTriggerBox::Type		m_eTriggerBoxType{ CTriggerBox::Type::END};
+
+	_bool					m_bHasQuest{ false };
+	_bool					m_bIsEnabled{ false };
+	_bool					m_bLockedEnter{ false };
+	_bool					m_bLockedExit{ false };
 
 public:
 	virtual					void Free()override;
