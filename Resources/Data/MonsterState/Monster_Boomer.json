@@ -12,6 +12,7 @@
                 "Die01",
                 "Die02",
                 "Die1_Pose",
+                "Down_pose",
                 "Hit_Light01",
                 "Hit_Light02",
                 "Hit_Light03",
@@ -45,6 +46,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -156,8 +158,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -574,6 +576,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -709,8 +712,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -1032,6 +1035,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -1167,8 +1171,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -1488,6 +1492,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -1623,8 +1628,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -1944,6 +1949,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -2055,8 +2061,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -2344,6 +2350,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -2504,8 +2511,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -2745,6 +2752,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -2856,8 +2864,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -3048,6 +3056,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -3159,8 +3168,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -3351,6 +3360,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -3462,8 +3472,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -3654,6 +3664,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -3765,8 +3776,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -3957,6 +3968,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -4262,8 +4274,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -4503,6 +4515,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -4614,8 +4627,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -5053,6 +5066,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -5211,8 +5225,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -5433,6 +5447,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -5544,8 +5559,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -5736,6 +5751,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -5847,8 +5863,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -6136,6 +6152,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -6271,8 +6288,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -6463,6 +6480,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -6598,8 +6616,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -6790,6 +6808,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -6901,8 +6920,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -7111,6 +7130,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -7222,8 +7242,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -7414,6 +7434,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -7525,8 +7546,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -7717,6 +7738,7 @@
                         "Die01",
                         "Die02",
                         "Die1_Pose",
+                        "Down_pose",
                         "Hit_Light01",
                         "Hit_Light02",
                         "Hit_Light03",
@@ -7828,8 +7850,8 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hit_Light01": 35.0,
-                                "Hit_Light02": 35.0
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -8000,6 +8022,377 @@
                             ]
                         }
                     ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Attack_1",
+                        "Attack_2",
+                        "C01_Skill01_End",
+                        "C01_Skill01_Loop",
+                        "C01_Skill01_Start",
+                        "Chase",
+                        "Die01",
+                        "Die02",
+                        "Die1_Pose",
+                        "Down_pose",
+                        "Hit_Light01",
+                        "Hit_Light02",
+                        "Hit_Light03",
+                        "Idle",
+                        "Set_Dead",
+                        "Skill02",
+                        "Skill_01_End",
+                        "Skill_01_Loop",
+                        "Skill_01_Start",
+                        "Special_Alert",
+                        "Turn_to_Skill02",
+                        "Turn_to_Skill_01_Start"
+                    ],
+                    "strName": "Down_pose",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_off_ragdoll",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Die01": 50.0,
+                                "Die02": 50.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_dying",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_none_die_pose",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_none_die_process",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Hit_Light01": 50.0,
+                                "Hit_Light02": 50.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_hit_light",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_alive",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Hit_Light03": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_hit_heavy",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_alive",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Die1_Pose": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_die_pose",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Monster_Boomer_Die1_Pose"
+                    ],
+                    "vecStartConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_on_ragdoll",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecStateTransition": [],
                     "vecWeaponAnimNames": []
                 }
             ]

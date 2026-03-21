@@ -125,6 +125,7 @@ namespace Client
 		Dog,
 		Shooter,
 		Boomer,
+		Fly,
 
 		/* Boss */
 		Xibi,
@@ -785,6 +786,7 @@ namespace Client
 	/* Monster State Tag */
 	inline constexpr wchar_t g_wszMonster_Dog_State_Tag[]{ L"Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]{ L"Monster_Boomer" };
+	inline constexpr wchar_t g_wszMonster_Fly_State_Tag[]{ L"Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
 
 	inline constexpr wchar_t g_wszNPC_Pan_State_Tag[]{ L"NPC_Pan" };
@@ -797,6 +799,7 @@ namespace Client
 	inline constexpr wchar_t g_wszModel_Prototype_Tag[]							{ L"Prototype_Component_Model_"};
 	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Monster_Dog"};
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
+	inline constexpr wchar_t g_wszMonster_Fly_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
 	
 	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
@@ -811,6 +814,7 @@ namespace Client
 	/* Monster Attack OverLap */
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
+	inline constexpr wchar_t g_wszMonster_Fly_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Xibi" };
 #pragma endregion
 
@@ -891,17 +895,20 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Dog_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Shooter_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter" };
+	inline constexpr wchar_t g_wszMonster_Fly_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi" };
 
 	/* Monster Body Prototype Name 모음 */
 	inline constexpr wchar_t g_wszMonster_Dog_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Dog_Body" };
 	inline constexpr wchar_t g_wszMonster_Boomer_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer_Body" };
 	inline constexpr wchar_t g_wszBoss_Shooter_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter_Body" };
+	inline constexpr wchar_t g_wszMonster_Fly_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly_Body" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi_Body" };
 
 	inline constexpr wchar_t g_wszPool_Monster_Dog[]{ L"Pool_Monster_Dog" };
 	inline constexpr wchar_t g_wszPool_Monster_Boomer[]{ L"Pool_Monster_Boomer" };
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
+	inline constexpr wchar_t g_wszPool_Monster_Fly[]{ L"Pool_Monster_Fly" };
 #pragma endregion
 
 #pragma region Npc 관련
