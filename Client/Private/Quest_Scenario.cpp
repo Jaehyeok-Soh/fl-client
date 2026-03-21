@@ -27,10 +27,10 @@ void CQuest_Scenario::Enter()
 
 	m_tQuestDesc.eState = DTO::QUESTSTATE::IN_PROGRESS;
 
+	m_isComplete = false;
+
 	if (m_pCurChapter)
 		m_pCurChapter->Enter();
-
-	m_isComplete = false;
 }
 
 void CQuest_Scenario::Exit()
@@ -83,10 +83,7 @@ _bool CQuest_Scenario::IsComplete()
 void CQuest_Scenario::Register_QuestObject(DTO::QUEST_CHAPTERDESC chapterDesc, CGameObject* pObj)
 {
 	if (chapterDesc.tQuestDesc.iId < 0 || m_chapter.find(chapterDesc.tQuestDesc.iId) != m_chapter.end())
-	{
-		MSG_BOX("Chapter register failed");
 		return;
-	}
 
 	m_chapter[chapterDesc.tQuestDesc.iId] = CQuest_Chapter::Create(chapterDesc, pObj);
 }

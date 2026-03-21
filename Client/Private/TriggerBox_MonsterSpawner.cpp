@@ -186,6 +186,8 @@ void CTriggerBox_MonsterSpawner::OnCollision_Exit(_uint iMyColliderLayer, _uint 
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+    m_iOverlapCount++;
+
     if (Super::IsEnabled() == false || m_bLockedEnter == true)
         return;
 
@@ -209,8 +211,15 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint i
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+    m_iOverlapCount--;
+
     if (Super::IsEnabled() == false || m_bLockedExit == true)
         return;
+
+    if (m_iOverlapCount > 0)
+        return;
+
+    m_iOverlapCount = 0;
 
     Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 

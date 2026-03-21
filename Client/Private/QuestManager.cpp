@@ -42,10 +42,7 @@ void CQuestManager::Start_Quest(_int iStartScenarioId, _int iStartChapterId)
 void CQuestManager::Register_Scenario(DTO::QUESTDESC scenarioDesc)
 {
 	if (scenarioDesc.iId < 0 || m_scenario.find(scenarioDesc.iId) != m_scenario.end())
-	{
-		MSG_BOX("Scenario register failed");
 		return;
-	}
 
 	m_scenario[scenarioDesc.iId] = CQuest_Scenario::Create(scenarioDesc);
 }
@@ -53,10 +50,7 @@ void CQuestManager::Register_Scenario(DTO::QUESTDESC scenarioDesc)
 void CQuestManager::Register_QuestObject(DTO::QUEST_CHAPTERDESC chapterDesc, CGameObject* pObj)
 {
 	if (chapterDesc.tQuestDesc.iParentId < 0 || m_scenario.find(chapterDesc.tQuestDesc.iParentId) == m_scenario.end())
-	{
-		MSG_BOX("Chapter register failed");
 		return;
-	}
 
 	m_scenario[chapterDesc.tQuestDesc.iParentId]->Register_QuestObject(chapterDesc, pObj);
 }

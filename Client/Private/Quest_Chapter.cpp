@@ -37,6 +37,8 @@ void CQuest_Chapter::Enter()
 
 	m_tDesc.tQuestDesc.eState = DTO::QUESTSTATE::IN_PROGRESS;
 
+	m_tDesc.iCurrentCount = 0;
+
 	if (m_tDesc.tQuestDesc.iEnterDialogueId != -1)
 	{
 		//
@@ -45,8 +47,6 @@ void CQuest_Chapter::Enter()
 	IQuest* pQuestObject = dynamic_cast<IQuest*>(m_tDesc.pObject);
 	if (pQuestObject != nullptr)
 		pQuestObject->OnQuestEnter(m_tDesc);
-
-	m_tDesc.iCurrentCount = 0;
 }
 
 void CQuest_Chapter::Exit()
