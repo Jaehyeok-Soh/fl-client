@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Effect_Env.h"
-#include "CEffectObject.h"
+#include "EffectObject.h"
 #include "GameInstance.h"
 
 CEffect_Env::CEffect_Env(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	:Super(EToolObjectType::MESHEFFECT, pDevice, pDeviceContext)
+	:Super(pDevice, pDeviceContext)
 {
 
 }
@@ -80,7 +80,7 @@ void CEffect_Env::Update_CombinedWorldMatrix()
 		{
 			Update_Bone_Attached_Matrix();
 		}
-		
+
 		else if (m_pBoneOwnerMatrix != nullptr)
 		{
 			m_matCombinedWorld = m_pOffsetMartix * (*m_pBoneOwnerMatrix);
@@ -99,7 +99,7 @@ void CEffect_Env::Spawn_PartsSetting(void* pArg)
 	EFFECT_ENV_DESC* pDesc = static_cast<EFFECT_ENV_DESC*>(pArg);
 	if (pDesc == nullptr) return;
 	if (pDesc->VFX_PartsDescList.size() == 0) return;
-	
+
 	_uint PartSize = (_uint)m_vecPartObjects.size();
 
 	for (auto& Parts : pDesc->VFX_PartsDescList)
@@ -175,6 +175,7 @@ HRESULT CEffect_Env::Enable_VFX(void* pArg)
 			static_cast<CEffectObject*>(effectObject)->Enable_VFX(pArg);
 	}
 
+	// 버퍼 재할당.
 	Spawn_PartsSetting(pArg);
 
 	return S_OK;
