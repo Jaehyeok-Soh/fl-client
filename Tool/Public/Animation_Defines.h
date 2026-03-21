@@ -101,6 +101,7 @@ typedef struct tagAnimControllerInfo
 
 	_int iCurrentAttackEventIndex = { -1 };
 	_int iCurrentEffectEventIndex = { -1 };
+	_int iCurrentSoundEventIndex = { -1 };
 
 	_uint fDuration = {};
 	_uint fTrackPosition = {};

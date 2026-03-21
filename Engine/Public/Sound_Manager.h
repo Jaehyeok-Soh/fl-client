@@ -108,7 +108,7 @@ private:
     _uint Find_StealCandidate(_uint iLevelID, _uint iSoundHash) const;
 
     _bool Setup_FadePoints(FMOD::Channel* pChannel, _float fStartVolume, _float fEndVolume, _float fFadeTime, _bool bStopAtEnd);
-    _bool Get_ChannelParentClock(FMOD::Channel* pChannel, OUT unsigned long long& iParentClock, OUT _uint& iSampleRate);
+    _bool Get_ChannelParentClock(FMOD::Channel* pChannel, OUT unsigned long long& iParentClock, OUT _int& iSampleRate);
 
     void Update_PendingOneShots(_float fTimeDelta);
     void Update_PendingBGMs(_float fTimeDelta);

@@ -250,16 +250,17 @@ void CSound_Manager::PlayBGM_FadeIn(_uint iLevelID, _uint iSoundHash, _float fVo
 
     const _float fFinalVolume = Compute_FinalVolume(fVolume, ESoundCategory::BGM);
 
-    FMOD_CALL(pChannel->setVolume(0.f));
+    FMOD_CALL(pChannel->setVolume(fFinalVolume));
     FMOD_CALL(pChannel->setPitch((fPitch > 0.f) ? fPitch : 0.01f));
     FMOD_CALL(pChannel->setMode(FMOD_LOOP_NORMAL));
     FMOD_CALL(pChannel->setLoopCount(-1));
-    FMOD_CALL(pChannel->setPaused(false));
 
-    Setup_FadePoints(pChannel, 0.f, fFinalVolume, fFadeInTime, false);
+    Setup_FadePoints(pChannel, 0.f, 1.f, fFadeInTime, false);
 
     m_pChannelArr[iBGMChannel] = pChannel;
     Set_ChannelRuntimeState(iBGMChannel, iLevelID, iSoundHash, fVolume, ESoundCategory::BGM);
+
+    FMOD_CALL(pChannel->setPaused(false));
 }
 
 void CSound_Manager::PlayBGM_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayed, _float fVolume, _float fPitch, _float fFadeInTime)
@@ -301,20 +302,14 @@ void CSound_Manager::StopBGM_FadeOut(_float fFadeOutTime)
     if (pChannel == nullptr)
         return;
 
-    _float fCurrentVolume = Compute_FinalVolume(
-        m_arrChannelBaseVolume[iBGMChannel],
-        m_arrChannelCategory[iBGMChannel]);
-
-    if (pChannel->getVolume(&fCurrentVolume) != FMOD_OK)
-        fCurrentVolume = 1.f;
-
-    Setup_FadePoints(pChannel, fCurrentVolume, 0.f, fFadeOutTime, true);
+    Setup_FadePoints(pChannel, 1.f, 0.f, fFadeOutTime, true);
 }
 
 void CSound_Manager::CrossFadeBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeOutTime, _float fFadeInTime, _float fPitch)
 {
+    constexpr _float fStartOffset = 0.02f;
     StopBGM_FadeOut(fFadeOutTime);
-    PlayBGM_Delayed(iLevelID, iSoundHash, fFadeOutTime, fVolume, fPitch, fFadeInTime);
+    PlayBGM_Delayed(iLevelID, iSoundHash, fFadeOutTime + fStartOffset, fVolume, fPitch, fFadeInTime);
 }
 
 void CSound_Manager::Stop_Controlled(_uint iControlledId)
@@ -830,7 +825,8 @@ _bool CSound_Manager::Setup_FadePoints(FMOD::Channel* pChannel, _float fStartVol
 
     if (fFadeTime <= 0.f)
     {
-        FMOD_CALL(pChannel->setVolume(std::clamp(fEndVolume, 0.f, 1.f)));
+        FMOD_CALL(pChannel->removeFadePoints(0ULL, ULLONG_MAX));
+        FMOD_CALL(pChannel->addFadePoint(0ULL, fEndVolume));
 
         if (bStopAtEnd)
             FMOD_CALL(pChannel->stop());
@@ -839,7 +835,7 @@ _bool CSound_Manager::Setup_FadePoints(FMOD::Channel* pChannel, _float fStartVol
     }
 
     unsigned long long ullParentClock = 0;
-    _uint iSampleRate = 0;
+    _int iSampleRate = 0;
     if (Get_ChannelParentClock(pChannel, ullParentClock, iSampleRate) == false)
         return false;
 
@@ -856,7 +852,7 @@ _bool CSound_Manager::Setup_FadePoints(FMOD::Channel* pChannel, _float fStartVol
     return true;
 }
 
-_bool CSound_Manager::Get_ChannelParentClock(FMOD::Channel* pChannel, OUT unsigned long long& iParentClock, OUT _uint& iSampleRate)
+_bool CSound_Manager::Get_ChannelParentClock(FMOD::Channel* pChannel, OUT unsigned long long& iParentClock, OUT _int& iSampleRate)
 {
     if (m_pSystem == nullptr || pChannel == nullptr)
         return false;
@@ -867,12 +863,10 @@ _bool CSound_Manager::Get_ChannelParentClock(FMOD::Channel* pChannel, OUT unsign
     if (pChannel->getDSPClock(&ullDSPClock, &ullParentDSPClock) != FMOD_OK)
         return false;
 
-    int iRate = 0;
-    if (m_pSystem->getSoftwareFormat(&iRate, nullptr, nullptr) != FMOD_OK)
+    if (m_pSystem->getSoftwareFormat(&iSampleRate, nullptr, nullptr) != FMOD_OK)
         return false;
 
     iParentClock = ullParentDSPClock;
-    iSampleRate = static_cast<_uint>(iRate);
     return true;
 }
 

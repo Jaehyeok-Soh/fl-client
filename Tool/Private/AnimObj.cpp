@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "PhysicsCCT.h"
 #include "Picking_ToolManager.h"
+#include "ToolAnimSoundPlayer.h"
 #include "GameInstance.h"
 
 #include "ComputeShader.h"
@@ -148,6 +149,9 @@ HRESULT CAnimObj::Ready_Components(ANIMOBJ_DESC* pDesc)
 
 	/* Prototype_Component_Shader_AnimMesh */
 	if (FAILED(Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMesh", nullptr)))
+		return E_FAIL;
+
+	if (FAILED(Add_Script_Component(L"ToolAnimSoundPlayer", L"Prototype_Component_SoundPlayer", nullptr)))
 		return E_FAIL;
 
 	return S_OK;

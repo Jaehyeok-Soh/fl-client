@@ -26,6 +26,7 @@
 // Animation tool module
 #include "Event_Overlap_Module.h"
 #include "Event_Effect_Module.h"
+#include "Event_Sound_Module.h"
 
 IMPLEMENT_SINGLETON(CAnimTool_Manager)
 
@@ -48,6 +49,7 @@ HRESULT CAnimTool_Manager::Initialize_AnimTool(ID3D11Device* pDevice, ID3D11Devi
 
 	m_pOverlapModule = CEvent_Overlap_Module::Create(m_pDevice, m_pDeviceContext);
 	m_pEffectModule = CEvent_Effect_Module::Create(m_pDevice, m_pDeviceContext);
+	m_pSoundModule = CEvent_Sound_Module::Create();
 
 	Ready_Event();
 
@@ -315,6 +317,7 @@ void CAnimTool_Manager::SetModuleOwner()
 	 m_pEffectModule->SetOwner(m_tAnimControllInfo.pCurrentObject);
 
 	// »ç¿îµå
+	 m_pSoundModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
 }
 
 HRESULT CAnimTool_Manager::Ready_Builder()
@@ -563,6 +566,17 @@ void CAnimTool_Manager::Modify_EffectEvent(vector<DTO::EFFECTEVENT> events)
 	m_pEffectModule->Modify_EFfectEvent(events);
 }
 
+void CAnimTool_Manager::Modify_SoundEvent(vector<DTO::SOUNDEVENT> events)
+{
+	m_tEventInfo.vecSoundEvents = std::move(events);
+
+	if (!ValidCheck())
+		return;
+
+	m_pSoundModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
+	m_pSoundModule->Rebuild(events);
+}
+
 HRESULT CAnimTool_Manager::EffectEvent_GizmoObjectSetting()
 {
 
@@ -575,6 +589,7 @@ void CAnimTool_Manager::Free()
 {
 	Safe_Release(m_pOverlapModule);
 	Safe_Release(m_pEffectModule);
+	Safe_Release(m_pSoundModule);
 
 	Release_Event();
 

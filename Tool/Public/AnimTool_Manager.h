@@ -86,6 +86,8 @@ public:
 
 	//void Modify_EffectEvent(_uint eventIdx, DTO::ANIM_EVENT_INFO_DESC event);
 	void Modify_EffectEvent(vector<DTO::EFFECTEVENT> events);
+	// 사운드
+	void Modify_SoundEvent(vector<DTO::SOUNDEVENT> events);
 	HRESULT EffectEvent_GizmoObjectSetting();
 private:
 	// 매 프레임 가져오는 애니메이션 정보
@@ -141,7 +143,7 @@ private:
 private:
 	class CEvent_Overlap_Module* m_pOverlapModule = { nullptr };
 	class CEvent_Effect_Module* m_pEffectModule = { nullptr };
-
+	class CEvent_Sound_Module* m_pSoundModule = { nullptr };
 private:
 	std::vector<string> m_vecEffectTags;	// 이펙트 전용 Tag 리스트들.
 public:
