@@ -19,6 +19,7 @@ public:
 	{
 		DTO::E_SIMULATION_SPACE _Effect_SimulationType = DTO::E_SIMULATION_SPACE::WORLD;
 		_bool	_IsPoolingEffect = true;
+		_bool	_UseLightBox = false;
 		vector<DTO::TEFFECT_PartsData>	_childData = {};
 	}EFFECT_CONTAINERDESC;
 

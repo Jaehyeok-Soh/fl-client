@@ -19,6 +19,7 @@
 #define WIND_LEAF 12
 #define STRONGWIND_LEAF 13
 #define IRREGULAR_SPREAD 14
+#define IRREGULAR_FOUNTAIN 15
 
 // 시간 데이터
 #define PLAY 0
@@ -588,6 +589,63 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         // 6. 위치 업데이트 (여기서 직접 더해줌)
             currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
         
+    }
+    else if (g_InputB.iMoveState == IRREGULAR_FOUNTAIN)
+    {
+        {
+            float3 vStartVelocity = float3(0.f, g_InputB.fStartSpeed, 0.f);
+            float3 vSideDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
+            vSideDir.y = 0.f;
+          
+            // 수직 속도와 수평 속도를 합산하여 vVelocity 계산
+            vVelocity = (vStartVelocity + (vAppliedGravity * currentData.vLifeTime.x)) * input.vSpeed;
+            vVelocity += vSideDir * (g_InputB.fStartSpeed * 0.3f);
+        
+            currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
+        }
+        
+        
+        
+        float fTime = currentData.vLifeTime.x;
+        float fSeed = (float) dtid.x + g_InputB.vRandomSeed;
+
+        // 1. 기본 진행 방향 (피벗에서 방사형으로)
+        float3 vBaseDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
+        
+        // 2. 출렁임(Sway) 계산 - 진행 방향의 수직 벡터를 구해서 흔들어줌
+        float3 vUp = abs(vBaseDir.y) > 0.99f ? float3(0, 0, 1) : float3(0, 1, 0);
+        float3 vRight = normalize(cross(vUp, vBaseDir));
+        float3 vActualUp = cross(vBaseDir, vRight);
+
+        // 시간에 따라 개별적으로 출렁이는 오프셋 (낙엽 느낌)
+        float fSwayX = sin(fTime * 4.0f + fSeed) * 0.5f;
+        float fSwayY = cos(fTime * 3.5f + fSeed * 0.5f) * 0.5f;
+        float3 vSwayOffset = (vRight * fSwayX + vActualUp * fSwayY) * 1.f; // 출렁임 강도
+
+        // s최종 속도 (진행 방향 + 출렁임 + 중력)
+        float fSpeed = g_InputB.fStartSpeed * input.vSpeed;
+        vVelocity = (vBaseDir + vSwayOffset) * fSpeed + (vAppliedGravity * fTime);
+
+        // 낙엽처럼 제멋대로 도는 회전 행렬 생성
+        float fSpinSpeed = fTime * (5.0f + GetRandom(float2(fSeed, 0.1f)) * 10.0f);
+        float sp, cp, sy, cy, sr, cr;
+        sincos(fSpinSpeed * 0.7f, sp, cp);
+        sincos(fSpinSpeed * 1.2f, sy, cy);
+        sincos(fSpinSpeed * 0.9f, sr, cr);
+
+        float3x3 rotMat;
+        rotMat[0] = float3(cy * cr + sy * sp * sr, sr * cp, -sy * cr + cy * sp * sr);
+        rotMat[1] = float3(-cy * sr + sy * sp * cr, cr * cp, sr * sy + cy * sp * cr);
+        rotMat[2] = float3(sy * cp, -sp, cy * cp);
+
+        // 5. 스케일 및 회전 적용
+        float3 vScale = float3(length(input.vRight.xyz), length(input.vUp.xyz), length(input.vLook.xyz));
+        currentData.matTransform[0].xyz = mul(float3(1, 0, 0), rotMat) * vScale.x;
+        currentData.matTransform[1].xyz = mul(float3(0, 1, 0), rotMat) * vScale.y;
+        currentData.matTransform[2].xyz = mul(float3(0, 0, 1), rotMat) * vScale.z;
+
+        // 6. 위치 업데이트 (여기서 직접 더해줌)
+        currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }
     
 

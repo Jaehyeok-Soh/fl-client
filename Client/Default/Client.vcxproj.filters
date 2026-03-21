@@ -814,6 +814,9 @@
     <Filter Include="06. FSM\Player\Attack\Melee\Combo\Dual">
       <UniqueIdentifier>{51b954b9-bc45-4f1e-b817-f58a1434d26c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect\Env">
+      <UniqueIdentifier>{8680c06a-96f3-4a46-9695-acea14aa5adc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1512,6 +1515,9 @@
     <ClInclude Include="..\Public\State_DualCombo.h">
       <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Env.h">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\Env</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2199,6 +2205,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_DualCombo.cpp">
       <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Env.cpp">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\Env</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
