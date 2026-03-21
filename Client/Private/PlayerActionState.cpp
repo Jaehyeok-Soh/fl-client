@@ -19,6 +19,7 @@ CPlayerActionState::CPlayerActionState(const CPlayerActionState& rhs)
     : Super(rhs)
     , m_tFKeyData(rhs.m_tFKeyData)
     , m_tGunCoolTimer(rhs.m_tGunCoolTimer)
+    , m_bCanSpecialDash(rhs.m_bCanSpecialDash)
 {
 }
 
