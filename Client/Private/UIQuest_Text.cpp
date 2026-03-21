@@ -179,6 +179,8 @@ void CUIQuest_Text::Bind_Events()
 			})
 	);
 
+
+
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
 			{

@@ -658,8 +658,13 @@ namespace Client
 
 	enum class EUITutorialTypeToPlayerState
 	{
-		JUMP,
-	
+		UNLOCK_JUMP,
+		UNLOCK_SLIDE,
+		UNLOCK_LATTAK,
+		UNLOCK_RATTAK,
+		UNLOCK_E,
+		UNLOCK_Q,
+		END
 	};
 
 #pragma endregion

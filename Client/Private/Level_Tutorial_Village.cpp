@@ -522,6 +522,8 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 
+	CUITutorial_Manager::GetInstance()->Initialize();
+	
 	return S_OK;
 }
 

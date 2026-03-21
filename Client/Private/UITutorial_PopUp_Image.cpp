@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
+#include "UITutorial_Manager.h"
 #include "GameInstance.h"
 
 // Common Params Bool
@@ -209,6 +210,55 @@ void CUITutorial_PopUp_Image::Bind_Events()
 						m_isTriggered = true;
 						this->Set_Visible();
 						this->Set_Active(true);
+
+						switch (m_eTutorialTypeID)
+						{
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_1:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_JUMP);
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_2:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_SLIDE);
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3_1:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_5:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_6:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_7:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_8:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_9:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_10:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_11:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_12:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_13:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_1:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_2:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_3:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_4:
+							break;
+						case Client::EUITutorialPopUpTypeID::END:
+							break;
+						default:
+							break;
+						}
+
 					}
 				}
 			})

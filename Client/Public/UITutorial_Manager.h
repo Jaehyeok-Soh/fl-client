@@ -33,13 +33,17 @@ private:
 	CUITutorial_Manager();
 	virtual ~CUITutorial_Manager() = default;
 public:
+	void Initialize();
 	void Tutorial_Update(const _float fTimeDelta);
 
-	void Set_Current_Tutorial_Step();
+	void Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState eState);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	CMulticastDelegate<void(const UI_TUTORIAL_EVENT_DESC&)> m_vTutorialEvents = {};
+
+	EUITutorialTypeToPlayerState m_eTutorialToPlayerState = { EUITutorialTypeToPlayerState ::END};
+	_bool m_isChangeState = { false };
 
 public:
 	virtual void Free()override;
