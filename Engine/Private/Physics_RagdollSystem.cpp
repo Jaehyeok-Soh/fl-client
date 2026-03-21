@@ -156,10 +156,10 @@ void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<
 {
 	auto link = elements->pArticulation->createLink(parentLink, PxTransform(PxIdentity) /*pxLocal*/); // local transform
 	link->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
-	link->setLinearDamping(0.1f);
-	link->setAngularDamping(0.1f);
+	link->setLinearDamping(1.5f);
+	link->setAngularDamping(3.f);
 	link->setMaxLinearVelocity(50.f);
-	link->setMaxAngularVelocity(20.f);
+	link->setMaxAngularVelocity(5.f);
 	link->setMaxDepenetrationVelocity(1.5f);
 
 	PxMaterial* material = m_pGameInstance->GetPhysicsMaterial(EPhysicsMaterial::PLAYER);

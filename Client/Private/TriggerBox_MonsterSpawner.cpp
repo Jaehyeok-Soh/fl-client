@@ -20,6 +20,7 @@
 
 #include "Monster_Dog.h"
 #include "Monster_Boomer.h"
+#include "Monster_Fly.h"
 
 CTriggerBox_MonsterSpawner::CTriggerBox_MonsterSpawner(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CTriggerBox(pDevice ,pContext) 
@@ -109,6 +110,12 @@ HRESULT CTriggerBox_MonsterSpawner::Register_Pool(_uint iLevelId, _uint iFindPro
     }
         break;
     case DTO::EMakeMonsterType::Shooter:
+        break;
+    case DTO::EMakeMonsterType::Fly:
+    {
+        auto desc = CMonster_Fly::Get_PreSetDesc(iLevelId);
+        m_pGameInstance->Regist_Pool(iLevelId, g_wszPool_Monster_Fly, g_wszMonstereLayer, ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Fly_Prototype_Tag, &desc, numPool + 10);
+    }
         break;
     case DTO::EMakeMonsterType::Xibi:
         break;
@@ -228,6 +235,9 @@ HRESULT CTriggerBox_MonsterSpawner::SpawnMonster()
         break;
         case DTO::EMakeMonsterType::Boomer:
             poolTag = g_wszPool_Monster_Boomer;
+        break;
+        case DTO::EMakeMonsterType::Fly:
+            poolTag = g_wszPool_Monster_Fly;
         break;
 
         // todo
