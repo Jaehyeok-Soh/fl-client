@@ -179,11 +179,15 @@ HRESULT CTriggerBox::Render()
 void CTriggerBox::QuestEnter()
 {
     SetEnable(true);
+    m_bLockedEnter = false;
+    m_bLockedExit = false;
 }
 
 void CTriggerBox::QuestExit()
 {
     SetEnable(false);
+    m_bLockedEnter = true;
+    m_bLockedExit = true;
 }
 
 

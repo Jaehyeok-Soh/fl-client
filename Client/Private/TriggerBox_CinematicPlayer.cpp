@@ -90,7 +90,7 @@ void CTriggerBox_CinematicPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint
 
 void CTriggerBox_CinematicPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-	if (Super::IsEnabled() == false || m_bLockedEnter == false)
+	if (Super::IsEnabled() == false || m_bLockedEnter == true)
 		return;
 
 	if (Super::m_bHasQuest)
@@ -112,7 +112,7 @@ void CTriggerBox_CinematicPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint 
 
 void CTriggerBox_CinematicPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-	if (Super::IsEnabled() == false || m_bLockedExit == false)
+	if (Super::IsEnabled() == false || m_bLockedExit == true)
 		return;
 
 	if (m_eQuestEvent == DTO::QUESTEVENT::AREA_EXIT)

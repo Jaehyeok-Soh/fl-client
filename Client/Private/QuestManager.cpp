@@ -22,21 +22,19 @@ HRESULT CQuestManager::Initialize()
 	return S_OK;
 }
 
-void CQuestManager::Start_Quest(_int iFirstScenarioId)
+void CQuestManager::Start_Quest(_int iStartScenarioId, _int iStartChapterId)
 {
-	if (m_bHasStarted)
-		return;
-
-	if (m_scenario.find(iFirstScenarioId) == m_scenario.end())
+	if (m_scenario.find(iStartScenarioId) == m_scenario.end())
 		return;
 
 	Initialize();
 
-	m_iCurScenarioId = iFirstScenarioId;
-	m_pCurScenario = m_scenario[iFirstScenarioId];
+	m_iCurScenarioId = iStartScenarioId;
+	m_pCurScenario = m_scenario[iStartScenarioId];
 	m_pCurScenario->Enter();
 
-	m_bHasStarted = true;
+	if (iStartChapterId != -1)
+		m_pCurScenario->Change_Chapter(iStartChapterId);
 
 	m_pGameInstance->Broadcast<QUEST_CHANGE_SCENARIO_NOTIFY>();
 }

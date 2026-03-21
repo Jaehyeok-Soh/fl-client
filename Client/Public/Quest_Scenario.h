@@ -23,6 +23,7 @@ public:
 	void UpdateProgress(DTO::QUEST_EVENT_SIGNATURE ID);
 
 	void Change_Chapter();
+	void Change_Chapter(_int changeChapterId);
 	_bool IsComplete();
 
 	CQuest_Chapter* GetCurrentChapter() { return m_pCurChapter; }

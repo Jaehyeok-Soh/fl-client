@@ -65,7 +65,7 @@ protected:
 	CTriggerBox::Type		m_eTriggerBoxType{ CTriggerBox::Type::END};
 
 	_bool					m_bHasQuest{ false };
-	_bool					m_bIsEnabled{ false };
+	_bool					m_bIsEnabled{ true };
 	_bool					m_bLockedEnter{ false };
 	_bool					m_bLockedExit{ false };
 

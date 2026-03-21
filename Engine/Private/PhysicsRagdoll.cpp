@@ -15,6 +15,8 @@
 
 #include "EngineConsole.h"
 
+#include "PartObject.h"
+
 CPhysicsRagdoll::CPhysicsRagdoll()
 	: Super()
 {
@@ -263,20 +265,31 @@ _int CPhysicsRagdoll::FindRagdollJointByBoneIndex(_uint boneIdx)
 
 void CPhysicsRagdoll::ApplyHitImpulse(Vec3 vDir, _float fPower)
 {
-	m_tRagdollElements.pArticulation->wakeUp();
+	if (!m_tRagdollElements.pArticulation)
+		return;
+
+	if (static_cast<CPartObject*>(Get_Owner())->Get_Parent()->IsAlive() == false)
+		return;
 
 	PxArticulationLink* pRootLink = m_tRagdollElements.vecPhysicsLink[RAGDOLLJOINT::PELVIS].first;
 
 	if (pRootLink == nullptr)
 		return;
 
-	vDir.Normalize();
+	if (pRootLink->getScene() == nullptr)
+		return;
+
+	if (vDir.LengthSquared() <= 1e-5f)
+		vDir = Vec3(0.f, 1.f, 0.f);
+	else
+		vDir.Normalize();
 
 	vDir.y += 0.5f;
 	vDir.Normalize();
 
 	PxVec3 pxImpulse = ToPxVec3(vDir) * fPower;
 
+	//m_tRagdollElements.pArticulation->wakeUp();
 	pRootLink->addForce(pxImpulse, PxForceMode::eIMPULSE);
 }
 

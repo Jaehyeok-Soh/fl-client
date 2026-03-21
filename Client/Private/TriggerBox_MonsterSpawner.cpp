@@ -40,7 +40,7 @@ HRESULT CTriggerBox_MonsterSpawner::Initialize_Prototype()
     if (FAILED(Super::Initialize_Prototype()))
         return E_FAIL;
 
-
+    Set_Object_Enum_Tag(OBJECT_ENUM_TAG::TRIGGER_BOX_MILESTONE_DEFAULT);
 
     return S_OK;
 }
@@ -186,11 +186,8 @@ void CTriggerBox_MonsterSpawner::OnCollision_Exit(_uint iMyColliderLayer, _uint 
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-    if (Super::IsEnabled() == false || m_bLockedEnter == false)
+    if (Super::IsEnabled() == false || m_bLockedEnter == true)
         return;
-
-    if (Super::m_bHasQuest)
-        m_bLockedEnter = true;
 
     Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
@@ -202,11 +199,17 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint i
 			return;
 		}
 	}
+
+    if (Super::m_bHasQuest)
+    {
+        m_bLockedEnter = true;
+        CallQuestEvent(Get_Object_Enum_Tag(), 1);
+    }
 }
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-    if (Super::IsEnabled() == false || m_bLockedExit == false)
+    if (Super::IsEnabled() == false || m_bLockedExit == true)
         return;
 
     Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
@@ -215,6 +218,7 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Exit(_uint iMyColliderLayer, _uint iO
     {
         SetEnable(false);
         Super::m_bLockedExit = true;
+        CallQuestEvent(Get_Object_Enum_Tag(), 1);
     }
 }
 

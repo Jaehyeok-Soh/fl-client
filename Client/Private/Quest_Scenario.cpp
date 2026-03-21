@@ -29,6 +29,8 @@ void CQuest_Scenario::Enter()
 
 	if (m_pCurChapter)
 		m_pCurChapter->Enter();
+
+	m_isComplete = false;
 }
 
 void CQuest_Scenario::Exit()
@@ -38,7 +40,8 @@ void CQuest_Scenario::Exit()
 
 void CQuest_Scenario::Change_Chapter()
 {
-	m_pCurChapter->Exit();
+	if (m_pCurChapter)
+		m_pCurChapter->Exit();
 	
 	_int nextId = m_pCurChapter->GetDesc().tQuestDesc.iNextId;
 
@@ -50,6 +53,22 @@ void CQuest_Scenario::Change_Chapter()
 
 	m_iCurChapterId = nextId;
 	
+	m_pCurChapter = m_chapter[m_iCurChapterId];
+	m_pCurChapter->Enter();
+
+	m_pGameInstance->Broadcast<QUEST_CHANGE_CHAPTER_NOTIFY>();
+}
+
+void CQuest_Scenario::Change_Chapter(_int changeChapterId)
+{
+	if (m_chapter.find(changeChapterId) == m_chapter.end())
+		return;
+
+	if (m_pCurChapter)
+		m_pCurChapter->Exit();
+
+	m_iCurChapterId = changeChapterId;
+
 	m_pCurChapter = m_chapter[m_iCurChapterId];
 	m_pCurChapter->Enter();
 

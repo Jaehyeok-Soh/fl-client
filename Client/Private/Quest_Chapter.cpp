@@ -45,6 +45,8 @@ void CQuest_Chapter::Enter()
 	IQuest* pQuestObject = dynamic_cast<IQuest*>(m_tDesc.pObject);
 	if (pQuestObject != nullptr)
 		pQuestObject->OnQuestEnter(m_tDesc);
+
+	m_tDesc.iCurrentCount = 0;
 }
 
 void CQuest_Chapter::Exit()
