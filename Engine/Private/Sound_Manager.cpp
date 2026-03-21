@@ -29,6 +29,7 @@ HRESULT CSound_Manager::Initialize(_uint iLevelCount)
         m_arrCategoryVolume[i] = 1.f;
 
     m_umapSounds.resize(iLevelCount);
+    m_umapSoundMetaData.resize(iLevelCount);
     m_vecPendingBGMs.resize(iLevelCount);
     Reset_OneShotPool();
     return S_OK;
@@ -108,6 +109,17 @@ HRESULT CSound_Manager::Load_Sounds(_uint iLevelID, ESoundCategory eCategory, co
             group.eCategory = eCategory;
 
         group.vecSounds.push_back(pSound);
+        
+        // MetaData
+        {
+            auto& metaMap = m_umapSoundMetaData[iLevelID];
+
+            SOUND_META& meta = metaMap[iSoundHash];
+            meta.strTag = strGroupKey;
+            meta.iHash = iSoundHash;
+            meta.eCategory = eCategory;
+            meta.iVariantCount = (_uint)group.vecSounds.size();
+        }
     }
 
     return S_OK;
@@ -389,6 +401,57 @@ void CSound_Manager::Play_OneShot(_uint iLevelID, _uint iSoundHash, _float fVolu
 void CSound_Manager::Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch, _bool bSteal)
 {
     Play_OneShot(iLevelID, iSoundHash, fVolume, fPitch, bSteal);
+}
+
+vector<SOUND_META> CSound_Manager::Get_SoundMetas(_uint iLevelID) const
+{
+    vector<SOUND_META> result;
+
+    if (iLevelID >= m_umapSoundMetaData.size())
+        return result;
+
+    const auto& metaMap = m_umapSoundMetaData[iLevelID];
+    result.reserve(metaMap.size());
+
+    for (const auto& pair : metaMap)
+        result.push_back(pair.second);
+
+    // 문자열 정렬
+    std::sort(result.begin(), result.end(),
+        [](const SOUND_META& a, const SOUND_META& b)
+        {
+            return a.strTag < b.strTag;
+        });
+
+    return result;
+}
+
+const SOUND_META* CSound_Manager::Find_SoundMeta(_uint iLevelID, _uint iSoundHash) const
+{
+    if (iLevelID >= m_umapSoundMetaData.size())
+        return nullptr;
+
+    const auto& metaMap = m_umapSoundMetaData[iLevelID];
+    auto it = metaMap.find(iSoundHash);
+    if (it == metaMap.end())
+        return nullptr;
+
+    return &it->second;
+}
+
+_bool CSound_Manager::Has_SoundTag(_uint iLevelID, const string& strTag) const
+{
+    if (iLevelID >= m_umapSoundMetaData.size())
+        return false;
+
+    const auto& metaMap = m_umapSoundMetaData[iLevelID];
+    for (const auto& pair : metaMap)
+    {
+        if (pair.second.strTag == strTag)
+            return true;
+    }
+
+    return false;
 }
 
 void CSound_Manager::Play_OneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch, _bool bSteal)

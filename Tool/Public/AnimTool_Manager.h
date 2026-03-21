@@ -87,7 +87,7 @@ public:
 	//void Modify_EffectEvent(_uint eventIdx, DTO::ANIM_EVENT_INFO_DESC event);
 	void Modify_EffectEvent(vector<DTO::EFFECTEVENT> events);
 	// 사운드
-	void Modify_SoundEvent(vector<DTO::SOUNDEVENT> events);
+	void Modify_SoundEvent();
 	HRESULT EffectEvent_GizmoObjectSetting();
 private:
 	// 매 프레임 가져오는 애니메이션 정보

@@ -71,6 +71,11 @@ public:
     void Play_OneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
     void Play_OneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
     void Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
+
+    // Tool, 디버그용
+    vector<SOUND_META> Get_SoundMetas(_uint iLevelID) const;
+    const SOUND_META* Find_SoundMeta(_uint iLevelID, _uint iSoundHash) const;
+    _bool Has_SoundTag(_uint iLevelID, const string& strTag) const;
 public:
     void StopSound(_uint iChannelIndex);
     void StopAll();
@@ -121,6 +126,7 @@ private:
     FMOD::Channel* m_pChannelArr[MAX_SOUND_CHANNEL]{};
 
     vector<unordered_map<_uint, SOUND_GROUP>> m_umapSounds;
+    vector<unordered_map<_uint, SOUND_META>> m_umapSoundMetaData;
 
     vector<_uint> m_vecOneShotStack;
     vector<_uint> m_vecActiveOneShots;

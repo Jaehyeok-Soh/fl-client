@@ -696,6 +696,18 @@ void CGameInstance::Stop_All()
 {
 	m_pSound_Manager->StopAll();
 }
+vector<SOUND_META> CGameInstance::Get_SoundMetas(_uint iLevelID) const
+{
+	return m_pSound_Manager->Get_SoundMetas(iLevelID);
+}
+const SOUND_META* CGameInstance::Find_SoundMeta(_uint iLevelID, _uint iSoundHash) const
+{
+	return m_pSound_Manager->Find_SoundMeta(iLevelID, iSoundHash);
+}
+_bool CGameInstance::Has_SoundTag(_uint iLevelID, const string& strTag) const
+{
+	return m_pSound_Manager->Has_SoundTag(iLevelID, strTag);
+}
 #pragma endregion
 
 #pragma region INPUT_MANAGER

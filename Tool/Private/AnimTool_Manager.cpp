@@ -566,15 +566,13 @@ void CAnimTool_Manager::Modify_EffectEvent(vector<DTO::EFFECTEVENT> events)
 	m_pEffectModule->Modify_EFfectEvent(events);
 }
 
-void CAnimTool_Manager::Modify_SoundEvent(vector<DTO::SOUNDEVENT> events)
+void CAnimTool_Manager::Modify_SoundEvent()
 {
-	m_tEventInfo.vecSoundEvents = std::move(events);
-
 	if (!ValidCheck())
 		return;
 
 	m_pSoundModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
-	m_pSoundModule->Rebuild(events);
+	m_pSoundModule->Rebuild(m_tEventInfo.vecSoundEvents);
 }
 
 HRESULT CAnimTool_Manager::EffectEvent_GizmoObjectSetting()

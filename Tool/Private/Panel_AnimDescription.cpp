@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Panel_AnimDescription.h"
 #include "AnimTool_Manager.h"
+#include "GameInstance.h"
 
 static constexpr const _char* s_AnimNotifyPhaseItems[] =
 {
@@ -62,7 +63,7 @@ void CPanel_AnimDescription::ModifyOne(_uint eventIdx, DTO::ATTACKEVENT event)
 
 void CPanel_AnimDescription::ModifySoundOne()
 {
-    m_pAnimToolManager->Modify_SoundEvent(m_tEventInfo->vecSoundEvents);
+    m_pAnimToolManager->Modify_SoundEvent();
 }
 
 void CPanel_AnimDescription::Description_TabWindow()
@@ -547,7 +548,7 @@ void CPanel_AnimDescription::Desc_SoundWindow()
             m_tEventInfo->vecSoundEvents.end());
 
         m_tAnimControllInfo->iCurrentSoundEventIndex = -1;
-        m_pAnimToolManager->Modify_SoundEvent(m_tEventInfo->vecSoundEvents);
+        m_pAnimToolManager->Modify_SoundEvent();
 
         ImGui::PopID();
         return;
@@ -620,12 +621,48 @@ void CPanel_AnimDescription::Desc_SoundWindow()
         }
 
         // Sound Tag
-        static char soundTagBuf[256];
-        strcpy_s(soundTagBuf, pEvent->strSoundTag.c_str());
-        if (ImGui::InputText("Sound Tag", soundTagBuf, 256))
+        const auto vecSoundMetas = CGameInstance::GetInstance()->Get_SoundMetas(ENUM_TO_UINT(ELevelType::ANIMATION));
+
+        const char* previewLabel = pEvent->strSoundTag.empty() ? "<None>" : pEvent->strSoundTag.c_str();
+
+        if (ImGui::BeginCombo("Sound Tag", previewLabel))
         {
-            pEvent->strSoundTag = soundTagBuf;
-            ModifySoundOne();
+            bool bSelectedNone = pEvent->strSoundTag.empty();
+            if (ImGui::Selectable("<None>", bSelectedNone))
+            {
+                pEvent->strSoundTag.clear();
+                ModifySoundOne();
+            }
+            if (bSelectedNone)
+                ImGui::SetItemDefaultFocus();
+
+            ImGui::Separator();
+
+            for (const auto& meta : vecSoundMetas)
+            {
+                bool bSelected = (pEvent->strSoundTag == meta.strTag);
+
+                if (ImGui::Selectable(meta.strTag.c_str(), bSelected))
+                {
+                    pEvent->strSoundTag = meta.strTag;
+                    ModifySoundOne();
+                }
+
+                if (bSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (!pEvent->strSoundTag.empty())
+        {
+            _uint iHash = Engine_Utils::ToHash(pEvent->strSoundTag.c_str());
+            ImGui::Text("Resolved Hash: %u", iHash);
+        }
+        else
+        {
+            ImGui::TextDisabled("Resolved Hash: <None>");
         }
 
         const EAnimSoundCommand eCmd = static_cast<EAnimSoundCommand>(pEvent->iCommand);

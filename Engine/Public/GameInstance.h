@@ -215,6 +215,10 @@ public:
 	void Set_ControlledVolume(_uint iControlledId, _float fVolume);
 	void Set_ControlledPitch(_uint iControlledId, _float fPitch);
 	void Stop_All();
+
+	vector<SOUND_META> Get_SoundMetas(_uint iLevelID) const;
+	const SOUND_META* Find_SoundMeta(_uint iLevelID, _uint iSoundHash) const;
+	_bool Has_SoundTag(_uint iLevelID, const string& strTag) const;
 #pragma endregion
 
 #pragma region INPUT_MANAGER

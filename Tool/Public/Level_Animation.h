@@ -63,7 +63,7 @@ private:
 	HRESULT Ready_Panels();
 	HRESULT Ready_Event();
 	HRESULT Release_Event();
-
+	HRESULT Ready_Sounds();
 private:
 	void	Update_Elements(const _float fTimeDelta);
 	void	Render_Elements();

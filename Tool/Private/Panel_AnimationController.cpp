@@ -808,7 +808,7 @@ void CPanel_AnimationController::Render_AddEventModal()
                 newEvent.bLoop = false;
 
                 m_tEventInfo->vecSoundEvents.push_back(newEvent);
-                m_pAnimToolManager->Modify_SoundEvent(m_tEventInfo->vecSoundEvents);
+                m_pAnimToolManager->Modify_SoundEvent();
             } break;
             default:
                 break;
