@@ -49,7 +49,7 @@ HRESULT CEnvObject::Ready_Effect(const vector<ENV_EFFECT_INFO>& vecEnvEffectInfo
 	for (auto& Info : vecEnvEffectInfo)
 	{
 		_uint iHash = Engine_Utils::ToHash(Info.strTags.c_str());
-		void* pDesc = m_pGameInstance->Find_EffectData(iHash);
+ 		void* pDesc = m_pGameInstance->Find_EffectData(iHash);
 		if (pDesc == nullptr) return E_FAIL;
 
 		// Env_Effect·Î º¯°æ
@@ -68,7 +68,7 @@ HRESULT CEnvObject::Ready_Effect(const vector<ENV_EFFECT_INFO>& vecEnvEffectInfo
 		tEnvDesc.matWorld = EffectLocalMatrix * pTs->Get_WorldMatrix();
 
 		pEffect->Enable_VFX(&tEnvDesc);
-		m_vecEffect.push_back(pEffect);
+		m_vecEffect.push_back(w);
 	}
 
 	return S_OK;
