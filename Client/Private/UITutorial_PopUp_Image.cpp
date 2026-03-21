@@ -158,10 +158,38 @@ void CUITutorial_PopUp_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<TUTORIAL_POPUP_TRIGGER>([this](EUITutorialPopUpTypeID ID)
 			{
+				if (this->m_eTutorialTypeID == EUITutorialPopUpTypeID::TUTORIAL_POPUP_1)
+				{
+					UI_PREFAB_DATA Desc = {};
+					UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+
+					if (ID == EUITutorialPopUpTypeID::TUTORIAL_PANNEL_1)
+						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
+					else if (ID == EUITutorialPopUpTypeID::TUTORIAL_PANNEL_2)
+						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_2;
+					else if (ID == EUITutorialPopUpTypeID::TUTORIAL_PANNEL_3)
+						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
+					else if (ID == EUITutorialPopUpTypeID::TUTORIAL_PANNEL_4)
+						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_4;
+					else
+						return;
+
+					Desc.Data = PrefabDesc;
+
+					CUI_Manager::GetInstance()->Request_Add_Prefab(
+						ENUM_TO_UINT(ELevelType::TEST),
+						EUIPrefabType::TUTORIAL_PANNEL,
+						ENUM_TO_UINT(ELevelType::TEST),
+						&Desc);
+				}
+
 				if ((this->m_eTutorialTypeID) == ID)
 				{
 					if (!m_isFirstEntered)
 					{
+
+
+
 						m_isTriggered = true;
 						this->Set_Visible();
 						this->Set_Active(true);
