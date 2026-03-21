@@ -156,7 +156,8 @@ void CUIQuest_Image::Bind_Events()
 			{				
 				if (this->m_isPulseTrigger)
 					return;
-
+				
+				this->m_isPulseTrigger = true;
 				Set_Visible();
 			})
 	);

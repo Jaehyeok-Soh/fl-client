@@ -152,6 +152,21 @@ void CUITutorial_Pannel_Text::Bind_Events()
 				}
 			})
 	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<TUTORIAL_POPUP_TRIGGER>([this](EUITutorialPopUpTypeID ID)
+			{
+				if ((this->m_eTutorialTypeID) == ID)
+				{
+					if (!m_isFirstEntered)
+					{
+						this->m_isTriggered = true;
+						this->Set_Visible();
+						this->Set_Active(true);
+					}
+				}
+			})
+	);
 }
 
 void CUITutorial_Pannel_Text::Tick_By_Type(const _float fTimeDelta)

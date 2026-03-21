@@ -183,7 +183,11 @@ void CUIQuest_Text::Bind_Events()
 		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
 			{
 				if (!this->m_isPulseTrigger)
+				{
+					this->m_isPulseTrigger = true;
 					Set_Visible();
+				}
+
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				desc.tScenarioInfo.wstrSubTitle;
 				desc.tChapterInfo.tQuestDesc.wstrTitle;
