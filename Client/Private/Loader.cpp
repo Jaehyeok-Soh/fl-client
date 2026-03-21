@@ -62,6 +62,7 @@
 #include "TriggerCollidePart.h"
 #include "Loader.h"
 #include "Effect.h"
+#include "Effect_Env.h"
 #include "Effect_WarningCircle.h"
 #include "EffectObject.h"
 #include "BattleField.h"
@@ -594,8 +595,8 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Weapon_MoonGun";		
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
-		desc.vecStageBoneIndices = { 8 }; // √—ø≠ ª¿
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = { 6 }; // √—ø≠ ª¿ : 8
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
@@ -773,6 +774,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// ¿Ã∆Â∆Æ Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Env",			CEffect_Env::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_WarningCircle", CEffect_WarningCircle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_WarningSpace",			CSkillWarningSpace::Create(m_pDevice, m_pDeviceContext));
@@ -1381,7 +1383,7 @@ HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonFinal.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonFFinal.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

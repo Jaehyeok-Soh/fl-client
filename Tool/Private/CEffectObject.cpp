@@ -918,6 +918,28 @@ HRESULT CEffectObject::Process_InitializeDesc(void* pArg)
     return S_OK;
 }
 
+void CEffectObject::Overwrite_FromEnv(const EFFECT_ENV_DESC::ENV_PART_DESC& pDesc)
+{
+    SimpleMath::Matrix WorldMatrix = {};
+
+    Quaternion rotation = Quaternion::CreateFromYawPitchRoll(pDesc.VFX_Position_Parts);
+
+    WorldMatrix =
+        SimpleMath::Matrix::CreateScale(pDesc.VFX_Scale_Parts) *
+        SimpleMath::Matrix::CreateFromQuaternion(rotation) *
+        SimpleMath::Matrix::CreateTranslation(pDesc.VFX_Position_Parts);
+
+    m_pTransform->Set_WorldMatrix(WorldMatrix);
+
+    CVIBuffer_Particle::PARTICLE_ORIGIN_DESC ParticleDesc = m_pParticleBuffer->Get_ParticleDesc();
+    ParticleDesc.fDuration = pDesc.VFX_ParticleDuration_Parts;
+    ParticleDesc.vLifeTime.y = pDesc.VFX_ParticleLifeTime_Parts;
+    ParticleDesc.vRange = pDesc.VFX_ParticleRange_Parts;
+    ParticleDesc.iInstnaceCount = pDesc.VFX_ParticleCount_Parts;
+
+    m_pParticleBuffer->Set_ParticleDesc(ParticleDesc);
+}
+
 
 void CEffectObject::TimeFlagRequest(_uint iTimeFlag)
 {

@@ -34,7 +34,7 @@ HRESULT CState_CrouchWalk::Start(void* pArg, _bool bForce)
 
 	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 	if (pCCT)
-		pCCT->Set_SpeedOffset(0.25f);
+		pCCT->Set_SpeedOffset(0.35f);
 
 	return S_OK;
 }
@@ -63,6 +63,7 @@ void CState_CrouchWalk::Set_NextStateDesc(_uint iNextState)
 	switch (iNextState)
 	{
 	case ENUM_TO_UINT(CPlayer::State::COMBO):
+	case ENUM_TO_UINT(CPlayer::State::COMBO_DUAL):
 		m_tNextStateDesc.iMainAnimIdx = 1;
 		break;
 

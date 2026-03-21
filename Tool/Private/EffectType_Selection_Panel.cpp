@@ -246,6 +246,15 @@ void CEffectType_Selection_Panel::EditEffect()
 		ImGui::Checkbox("Pooling", &pDesc->_IsPoolingEffect); // 원본 메모리를 직접 제어
 
 	}
+	
+	// 조명 체크 박스
+	{
+		auto pDesc = pEffectContainer->Get_ContainerData(); // 실제 객체의 주소를 가져옴
+		if (ImGui::Checkbox("Use Light", &pDesc->_UseLightBox))
+		{
+			Draw_LightBoxWindow(*m_ppTargetSlot);
+		}
+	}
 
 
 	if (ImGui::TreeNode("Edit##Container_EffectList"))
@@ -284,6 +293,50 @@ void CEffectType_Selection_Panel::EditEffect()
 
 		ImGui::TreePop();
 	}
+}
+
+void CEffectType_Selection_Panel::Draw_LightBoxWindow(CToolObject* pGo)
+{
+	ImGui::Begin("##EFfect type Selection");
+
+	// TODO : LightDesc 작성하기.
+
+	/*
+	EffectLight 클래스 생성.
+	{
+		typedef struct tagLightDesc
+	{
+		LIGHT_TYPE				eType = { LIGHT_TYPE::END };
+		SimpleMath::Vector4		vDiffuse = { 0.f, 0.f, 0.f, 0.f };
+		SimpleMath::Vector4		vAmbient = { 0.f, 0.f, 0.f, 0.f };
+		SimpleMath::Vector4		vSpecular = { 0.f, 0.f, 0.f, 0.f };
+
+		SimpleMath::Vector3		vDirection = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector4		vPosition = { 0.f, 0.f, 0.f, 0.f };
+		float					fRange = { 1.f };
+	}LIGHT_DESC;
+
+	CLight*					m_pLight{};를 매개변수로 들고있음.
+	}
+
+	생성 딜레이 시간 : 
+	생성 유지 시간 : 
+
+	조명 밝기 보간 Curve 그래프 : 
+	
+	Start Color
+	End Color
+	// Start Color와 End Color 보간
+
+
+	
+	
+	
+	*/
+
+
+
+	ImGui::End();
 }
 
 void CEffectType_Selection_Panel::TransformEffect(CToolObject* pGo)

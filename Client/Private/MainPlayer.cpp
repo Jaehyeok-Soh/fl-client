@@ -198,11 +198,29 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
-    if (KEY_BUTTON_DOWN(DIK_B))
+    if (KEY_BUTTON_DOWN(DIK_C))
     {
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
+
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 0, true);
+        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 0);
     }
 
+    if (KEY_BUTTON_DOWN(DIK_B))
+    {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 1, true);
+        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 1);
+    }
+
+    if (KEY_BUTTON_DOWN(DIK_N))
+    {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::RANGE), 0, true);
+    }
+
+    if (KEY_BUTTON_DOWN(DIK_M))
+    {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::SKILL), 0, true);
+    }
 
     //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
 }
@@ -858,7 +876,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     // combo state : dual
     {
         CState_DualCombo::DUALCOMBO_DESC tDesc = {};
-        tDesc.vCombo_CheckTimes = Vec4{ 20.f / ANIMTIC ,16.f / ANIMTIC, 13.f / ANIMTIC ,30.f / ANIMTIC };
+        tDesc.vCombo_CheckTimes = Vec4{ 17.f / ANIMTIC ,15.f / ANIMTIC, 10.f / ANIMTIC ,24.f / ANIMTIC };
         tDesc.fSlide_CheckTime = 17.f / ANIMTIC;
 
         _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_SlideAttack");
@@ -1069,8 +1087,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
     arrAimMix[ENUM_TO_SZET(CState_GunBase::Aim_MixAnim::UP)]        = Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MU");
 
 
-    vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };
-
+    vector<CModel::DATA_ANIMIX> vecDownMix = { {304,true,1.f},{329,true,1.f},{378,true,1.f} };//, { 204,true,1.f } // 넣을 거면 mix도 blend 필요
     for (auto& MixAnim : arrMix)
     {
         pModel->Make_MixRatio(MixAnim, vecDownMix, pAnimMixCS);

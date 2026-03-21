@@ -92,7 +92,7 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 		m_vDir.y = 0.f;
 		pPlayerTransform->Look_At_Dir(m_vDir);
 
-		if(Check_OnGround(0.95f))
+		if(Check_OnGround(0.1f))
 		{
 			//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
 

@@ -19,6 +19,7 @@
 #define WIND_LEAF 12
 #define STRONGWIND_LEAF 13
 #define IRREGULAR_SPREAD 14
+#define IRREGULAR_FOUNTAIN 15
 
 // 시간 데이터
 #define PLAY 0
@@ -589,6 +590,53 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
             currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
         
     }
+    else if (g_InputB.iMoveState == IRREGULAR_FOUNTAIN)
+    {
+        float fTime = currentData.vLifeTime.x;
+        float fSeed = (float) dtid.x + g_InputB.vRandomSeed;
+
+        // 1. 기본 물리 엔진 기반 속도 계산 (수직 상승 후 하강)
+        float3 vStartVelocity = float3(0.f, g_InputB.fStartSpeed, 0.f);
+        float3 vSideDir = normalize(input.vTranslation.xyz - g_InputB.vPivot);
+        vSideDir.y = 0.f; // 수평 확산 방향
+
+        // 2. 불규칙성(Irregularity) 추가
+        // 공기 저항이나 물방울의 미세한 떨림을 표현하기 위해 수직/수평 벡터를 구함
+        float3 vForward = vSideDir;
+        float3 vUp = float3(0, 1, 0);
+        float3 vRight = normalize(cross(vUp, vForward));
+
+        // 입자마다 미세하게 다른 출렁임 (Sway)
+        float fSwayX = sin(fTime * 5.0f + fSeed) * 0.4f;
+        float fSwayZ = cos(fTime * 4.2f + fSeed * 0.8f) * 0.4f;
+        float3 vSwayOffset = vRight * fSwayX + vForward * fSwayZ;
+
+        // 3. 최종 속도 조합
+        // 기본 포물선 운동 속도 + 수평 확산 + 불규칙 출렁임
+        vVelocity = (vStartVelocity + (vAppliedGravity * fTime)) * input.vSpeed; // 중력 적용
+        vVelocity += (vSideDir + vSwayOffset) * (g_InputB.fStartSpeed * 0.5f);
+
+        // 4. 불규칙한 자전 (Rotation) - 입자가 공중에서 덤블링하는 느낌
+        float fSpinSpeed = fTime * (8.0f + GetRandom(float2(fSeed, 0.2f)) * 12.0f);
+        float sp, cp, sy, cy, sr, cr;
+        sincos(fSpinSpeed * 1.1f, sp, cp);
+        sincos(fSpinSpeed * 0.9f, sy, cy);
+        sincos(fSpinSpeed * 1.4f, sr, cr);
+
+        float3x3 rotMat;
+        rotMat[0] = float3(cy * cr + sy * sp * sr, sr * cp, -sy * cr + cy * sp * sr);
+        rotMat[1] = float3(-cy * sr + sy * sp * cr, cr * cp, sr * sy + cy * sp * cr);
+        rotMat[2] = float3(sy * cp, -sp, cy * cp);
+
+        // 5. 스케일 유지 및 회전 적용
+        float3 vScale = float3(length(input.vRight.xyz), length(input.vUp.xyz), length(input.vLook.xyz));
+        currentData.matTransform[0].xyz = mul(float3(1, 0, 0), rotMat) * vScale.x;
+        currentData.matTransform[1].xyz = mul(float3(0, 1, 0), rotMat) * vScale.y;
+        currentData.matTransform[2].xyz = mul(float3(0, 0, 1), rotMat) * vScale.z;
+
+        // 6. 위치 업데이트
+        currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
+    }
     
 
         if (g_InputB.iMoveState == CIRCLE_TRAIL ||
@@ -599,7 +647,8 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         g_InputB.iMoveState == LEAF ||
         g_InputB.iMoveState == STRONGWIND_LEAF ||
         g_InputB.iMoveState == WIND_LEAF ||
-        g_InputB.iMoveState == IRREGULAR_SPREAD
+        g_InputB.iMoveState == IRREGULAR_SPREAD||
+        g_InputB.iMoveState == IRREGULAR_FOUNTAIN
         )
         {
             if (length(vVelocity) > 0.001f)
