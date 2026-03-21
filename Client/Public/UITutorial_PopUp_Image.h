@@ -56,6 +56,9 @@ private:
 
 	CPlayer* m_pPlayer = { nullptr };
 
+	//GARA
+	_bool m_isPannel = { false };
+
 public:
 	static CUITutorial_PopUp_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -202,7 +202,11 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 		break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_ICON:			// 설명 이미지
 	{
-
+		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_ICON)
+		{
+			if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_vecTextureTags[m_iCurPage], ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
+				return;
+		}
 	}
 	break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON:		// 버튼 0이 Prev, 1이 Next
@@ -263,7 +267,13 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 					m_pParentCanvasCache->Get_CommonParam_bool_Ref()[NEXT_BUTTON] = true;
 
 					if (m_iCurPage == m_iMaxPage)
+					{
 						m_iCurPage = m_iMaxPage;
+
+						UIEVENT_DESC Desc = {};
+						Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
+						CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
+					}
 					else
 						m_iCurPage++;
 				}

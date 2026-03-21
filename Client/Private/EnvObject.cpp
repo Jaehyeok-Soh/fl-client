@@ -68,7 +68,7 @@ HRESULT CEnvObject::Ready_Effect(const vector<ENV_EFFECT_INFO>& vecEnvEffectInfo
 		tEnvDesc.matWorld = EffectLocalMatrix * pTs->Get_WorldMatrix();
 
 		pEffect->Enable_VFX(&tEnvDesc);
-		m_vecEffect.push_back(w);
+		m_vecEffect.push_back(pEffect);
 	}
 
 	return S_OK;

@@ -162,34 +162,50 @@ void CUITutorial_PopUp_Image::Bind_Events()
 				{
 					UI_PREFAB_DATA Desc = {};
 					UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+					_bool isValidPannel = false;
 
-					if (ID == EUITutorialPopUpTypeID::TUTORIAL_PANNEL_1)
+					switch (ID)
+					{
+					case EUITutorialPopUpTypeID::TUTORIAL_PANNEL_1:
 						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
-					else if (ID == EUITutorialPopUpTypeID::TUTORIAL_PANNEL_2)
+						isValidPannel = true;
+						break;
+
+					case EUITutorialPopUpTypeID::TUTORIAL_PANNEL_2:
 						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_2;
-					else if (ID == EUITutorialPopUpTypeID::TUTORIAL_PANNEL_3)
+						isValidPannel = true;
+						break;
+
+					case EUITutorialPopUpTypeID::TUTORIAL_PANNEL_3:
 						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
-					else if (ID == EUITutorialPopUpTypeID::TUTORIAL_PANNEL_4)
+						isValidPannel = true;
+						break;
+
+					case EUITutorialPopUpTypeID::TUTORIAL_PANNEL_4:
 						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_4;
-					else
-						return;
+						isValidPannel = true;
+						break;
+					}
 
-					Desc.Data = PrefabDesc;
+					if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BG)
+					{
+						if (isValidPannel)
+						{
+							Desc.Data = PrefabDesc;
 
-					CUI_Manager::GetInstance()->Request_Add_Prefab(
-						ENUM_TO_UINT(ELevelType::TEST),
-						EUIPrefabType::TUTORIAL_PANNEL,
-						ENUM_TO_UINT(ELevelType::TEST),
-						&Desc);
+							CUI_Manager::GetInstance()->Request_Add_Prefab(
+								m_pGameInstance->Get_CurrentLevelIndex(),
+								EUIPrefabType::TUTORIAL_PANNEL,
+								m_pGameInstance->Get_CurrentLevelIndex(),
+								&Desc);
+						}
+					}
 				}
 
 				if ((this->m_eTutorialTypeID) == ID)
 				{
 					if (!m_isFirstEntered)
 					{
-
-
-
 						m_isTriggered = true;
 						this->Set_Visible();
 						this->Set_Active(true);
@@ -298,6 +314,7 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 	{
 		if (m_pPlayer->Get_CurState() == CPlayer::State::COMBO)
 		{
+			m_isPannel = false;
 			is = true;
 		}
 	}
