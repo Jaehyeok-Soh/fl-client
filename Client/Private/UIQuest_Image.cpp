@@ -177,8 +177,11 @@ void CUIQuest_Image::Bind_Events()
 			{
 				if (EUIEventID::QUEST_NAME_CHANGE == Desc.eEventID)
 				{
-					this->Set_Invisible();
-					this->m_isPulseTrigger = true;
+					if (m_isVisible)
+					{
+						this->Set_Invisible();
+						this->m_isPulseTrigger = true;
+					}
 				}
 			})
 	);

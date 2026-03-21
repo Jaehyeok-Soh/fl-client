@@ -26,7 +26,7 @@ private:
 public:
 	HRESULT Initialize();
 
-	void Start_Quest(_int iFirstScenarioId);
+	void Start_Quest(_int iStartScenarioId, _int iStartChapterId = -1);
 
 	void Register_Scenario(DTO::QUESTDESC scenarioDesc);
 	void Register_QuestObject(DTO::QUEST_CHAPTERDESC chapterDesc, class CGameObject* pObj);
@@ -38,7 +38,6 @@ public:
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
-	_bool m_bHasStarted = { false };
 
 	vector<DelegateHandle> m_vecEventHandles;
 
@@ -46,6 +45,8 @@ private:
 	CQuest_Scenario* m_pCurScenario = { nullptr };
 
 	unordered_map<_int, CQuest_Scenario*> m_scenario;
+
+	_bool m_bInitialized = { false };
 
 public:
 	virtual void Free() override;

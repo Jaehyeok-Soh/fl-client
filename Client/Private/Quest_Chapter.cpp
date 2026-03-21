@@ -37,6 +37,8 @@ void CQuest_Chapter::Enter()
 
 	m_tDesc.tQuestDesc.eState = DTO::QUESTSTATE::IN_PROGRESS;
 
+	m_tDesc.iCurrentCount = 0;
+
 	if (m_tDesc.tQuestDesc.iEnterDialogueId != -1)
 	{
 		//

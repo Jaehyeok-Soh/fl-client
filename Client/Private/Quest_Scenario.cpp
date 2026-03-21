@@ -27,6 +27,8 @@ void CQuest_Scenario::Enter()
 
 	m_tQuestDesc.eState = DTO::QUESTSTATE::IN_PROGRESS;
 
+	m_isComplete = false;
+
 	if (m_pCurChapter)
 		m_pCurChapter->Enter();
 }
@@ -38,7 +40,8 @@ void CQuest_Scenario::Exit()
 
 void CQuest_Scenario::Change_Chapter()
 {
-	m_pCurChapter->Exit();
+	if (m_pCurChapter)
+		m_pCurChapter->Exit();
 	
 	_int nextId = m_pCurChapter->GetDesc().tQuestDesc.iNextId;
 
@@ -56,6 +59,22 @@ void CQuest_Scenario::Change_Chapter()
 	m_pGameInstance->Broadcast<QUEST_CHANGE_CHAPTER_NOTIFY>();
 }
 
+void CQuest_Scenario::Change_Chapter(_int changeChapterId)
+{
+	if (m_chapter.find(changeChapterId) == m_chapter.end())
+		return;
+
+	if (m_pCurChapter)
+		m_pCurChapter->Exit();
+
+	m_iCurChapterId = changeChapterId;
+
+	m_pCurChapter = m_chapter[m_iCurChapterId];
+	m_pCurChapter->Enter();
+
+	m_pGameInstance->Broadcast<QUEST_CHANGE_CHAPTER_NOTIFY>();
+}
+
 _bool CQuest_Scenario::IsComplete()
 {
 	return m_isComplete;
@@ -64,10 +83,7 @@ _bool CQuest_Scenario::IsComplete()
 void CQuest_Scenario::Register_QuestObject(DTO::QUEST_CHAPTERDESC chapterDesc, CGameObject* pObj)
 {
 	if (chapterDesc.tQuestDesc.iId < 0 || m_chapter.find(chapterDesc.tQuestDesc.iId) != m_chapter.end())
-	{
-		MSG_BOX("Chapter register failed");
 		return;
-	}
 
 	m_chapter[chapterDesc.tQuestDesc.iId] = CQuest_Chapter::Create(chapterDesc, pObj);
 }

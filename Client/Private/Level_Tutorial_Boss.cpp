@@ -69,6 +69,7 @@
 // Game Instance
 //=================
 #include "GameInstance.h"
+#include "QuestManager.h"
 
 CLevel_Tutorial_Boss::CLevel_Tutorial_Boss(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CLevel(pDevice , pDeviceContext)
@@ -518,10 +519,10 @@ HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 
-
-
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
+	CQuestManager::GetInstance()->Start_Quest(2, 3);
 
 	//if (FAILED(m_pGameInstance->Bake_StaticShadow()))
 	//	return E_FAIL;

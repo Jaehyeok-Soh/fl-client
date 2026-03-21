@@ -204,7 +204,6 @@ void CUIQuest_Text::Bind_Events()
 				if (!this->m_isPulseTrigger)
 					Set_Visible();
 
-
 				switch (this->m_eTextSubClassType)
 				{
 				case DTO::EUITextSubClassType::QUEST_SCENARIO_TEXT:
@@ -234,8 +233,11 @@ void CUIQuest_Text::Bind_Events()
 			{
  				if (EUIEventID::QUEST_NAME_CHANGE == Desc.eEventID)
 				{
-					this->Set_Invisible();
-					this->m_isPulseTrigger = true;
+					if (m_isVisible)
+					{
+						this->Set_Invisible();
+						this->m_isPulseTrigger = true;
+					}
 				}
 			})
 	);

@@ -38,13 +38,15 @@ public:
 	virtual void			OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
 public:
-	virtual void			QuestEnter() override {};
-	virtual void			QuestExit() override {};
+	virtual void			QuestEnter() override;
+	virtual void			QuestExit() override;
 
 public:
 	HRESULT					SpawnMonster();
 protected:
 	vector<MonsterSpawnData>		m_vecMonsterSpawnData{};
+
+	_int							m_iOverlapCount = { 0 };
 
 public:
 	static CTriggerBox_MonsterSpawner*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
