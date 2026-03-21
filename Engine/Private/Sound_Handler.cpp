@@ -10,14 +10,15 @@ CSound_Handler::CSound_Handler()
 
 CSound_Handler::CSound_Handler(const CSound_Handler& rhs)
     : Super(rhs)
-    , m_tDesc(rhs.m_tDesc)
-    , m_iSoundLevelID(rhs.m_iSoundLevelID)
 {
 }
 
-HRESULT CSound_Handler::Initialize_Prototype(void* pArg)
+HRESULT CSound_Handler::Initialize_Prototype()
 {
-    return Ready_Desc(pArg);
+    if (FAILED(Super::Initialize_Prototype()))
+        return E_FAIL;
+
+    return S_OK;
 }
 
 HRESULT CSound_Handler::Initialize(void* pArg)
@@ -25,11 +26,11 @@ HRESULT CSound_Handler::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
-    if (pArg)
-    {
-        if (FAILED(Ready_Desc(pArg)))
-            return E_FAIL;
-    }
+    if (pArg == nullptr)
+        return E_FAIL;
+
+    if (FAILED(Ready_Desc(pArg)))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -54,10 +55,8 @@ void CSound_Handler::Set_Desc(const SOUND_HANDLER_DESC& desc)
     }
 }
 
-void CSound_Handler::Setup_ForOwner(CGameObject* pOwner, CModel* pModel)
+void CSound_Handler::Setup_ForOwner(CModel* pModel)
 {
-    Set_Owner(pOwner);
-
     Safe_Release(m_pOwnerModel);
     m_pOwnerModel = pModel;
     Safe_AddRef(m_pOwnerModel);
@@ -82,12 +81,14 @@ void CSound_Handler::Clear_SoundNotifies()
 AnimNotifyKey CSound_Handler::Build_SoundNotifyKey(const DTO::SOUNDEVENT& event) const
 {
     AnimNotifyKey key{};
-    key.eID = EAnimNotifyId::Sound;
+    key.eID = Engine::EAnimNotifyId::Sound;
     key.fTrackPosition = event.fStartTrackPosition;
 
     key.iParam0 = ENUM_TO_UINT(event.eCommand);
-    key.iParam1 = event.strSoundTag.empty() ? 0u : Engine_Utils::ToHash(event.strSoundTag.c_str());
-    key.iParam2 = (event.iControlledId < 0) ? INVALID_CONTROLLED_ID : static_cast<_uint>(event.iControlledId);
+    key.iParam1 = event.strSoundTag.empty()
+        ? 0u
+        : Engine_Utils::ToHash(event.strSoundTag.c_str());
+    key.iParam2 = static_cast<_uint>(event.iControlledId < 0 ? -1 : event.iControlledId);
     key.iParam3 = static_cast<_uint>((std::max)(0.f, event.fDelay) * 1000.f);
 
     key.fParam0 = event.fVolume;
@@ -172,9 +173,9 @@ void CSound_Handler::CallbackEvent(const AnimNotifyKey& key)
             return;
 
         if (fDelay > 0.f)
-            m_pGameInstance->Play_OneShot_Delayed(m_iSoundLevelID, iSoundHash, fDelay, fVolume, fPitch, bSteal);
+            m_pGameInstance->Play_OneShot_Delayed(0 /* static */, iSoundHash, fDelay, fVolume, fPitch, bSteal);
         else
-            m_pGameInstance->Play_OneShot(m_iSoundLevelID, iSoundHash, fVolume, fPitch, bSteal);
+            m_pGameInstance->Play_OneShot(0 /* static */, iSoundHash, fVolume, fPitch, bSteal);
     }
     break;
 
@@ -183,7 +184,7 @@ void CSound_Handler::CallbackEvent(const AnimNotifyKey& key)
         if (iSoundHash == 0 || iControlledId == INVALID_CONTROLLED_ID)
             return;
 
-        m_pGameInstance->Play_Controlled(m_iSoundLevelID, iSoundHash, iControlledId, fVolume, bLoop, fPitch);
+        m_pGameInstance->Play_Controlled(0 /* static */, iSoundHash, iControlledId, fVolume, bLoop, fPitch);
     }
     break;
 
@@ -225,11 +226,11 @@ void CSound_Handler::Release_Event()
         m_pOwnerModel->OnNotify.Unsubscribe(m_EventHandle);
 }
 
-CSound_Handler* CSound_Handler::Create(void* pArg)
+CSound_Handler* CSound_Handler::Create()
 {
     CSound_Handler* pInstance = new CSound_Handler();
 
-    if (FAILED(pInstance->Initialize_Prototype(pArg)))
+    if (FAILED(pInstance->Initialize_Prototype()))
     {
         MSG_BOX("Failed to Created : CSound_Handler");
         Safe_Release(pInstance);

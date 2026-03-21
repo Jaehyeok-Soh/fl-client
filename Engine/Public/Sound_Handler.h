@@ -9,11 +9,10 @@ class CModel;
 class ENGINE_DLL CSound_Handler final : public CComponent
 {
     using Super = CComponent;
-
 public:
+    constexpr static EComponentType _ID = EComponentType::SOUNDHANDLER;
     typedef struct tagSoundHandlerDesc
     {
-        string              strOwnerTag = {};
         vector<DTO::SOUNDEVENT> vecSoundEvents;
     } SOUND_HANDLER_DESC;
 private:
@@ -25,14 +24,14 @@ private:
     virtual ~CSound_Handler() = default;
 
 public:
-    virtual HRESULT Initialize_Prototype(void* pArg);
+    virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg) override;
 
 public:
     void Set_Desc(const SOUND_HANDLER_DESC& desc);
     const SOUND_HANDLER_DESC& Get_Desc() const { return m_tDesc; }
 
-    void Setup_ForOwner(CGameObject* pOwner, CModel* pModel);
+    void Setup_ForOwner(CModel* pModel);
     void Release_Event();
 
 private:
@@ -52,7 +51,7 @@ private:
     _uint m_iSoundLevelID = 0;
 
 public:
-    static CSound_Handler* Create(void* pArg);
+    static CSound_Handler* Create();
     virtual CComponent* Clone(void* pArg) override;
     virtual void Free() override;
 };

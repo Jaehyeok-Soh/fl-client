@@ -808,6 +808,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation">
       <UniqueIdentifier>{34d8f7a6-03e3-466d-92ae-48f676cfde60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\04. Binder">
+      <UniqueIdentifier>{bf9e1beb-a2d5-45fc-9aad-6e498db509b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1500,6 +1503,9 @@
     <ClInclude Include="..\Public\UIConversation_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\SoundEventBinder.h">
+      <Filter>07. System\04. Binder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2181,6 +2187,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIConversation_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\15.Conversation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SoundEventBinder.cpp">
+      <Filter>07. System\04. Binder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

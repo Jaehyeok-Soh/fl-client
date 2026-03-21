@@ -196,6 +196,7 @@
     <ClInclude Include="..\Public\Quest_Chapter.h" />
     <ClInclude Include="..\Public\Quest_Scenario.h" />
     <ClInclude Include="..\Public\SkyBox.h" />
+    <ClInclude Include="..\public\SoundEventBinder.h" />
     <ClInclude Include="..\Public\State_Condemn.h" />
     <ClInclude Include="..\Public\TriggerBox_TutorialUIEvent.h" />
     <ClInclude Include="..\Public\TriggerCollidePart.h" />
@@ -412,6 +413,7 @@
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\CLightMapObject.cpp" />
+    <ClCompile Include="..\private\SoundEventBinder.cpp" />
     <ClCompile Include="..\Private\UIConversation_Text.cpp" />
     <ClCompile Include="..\Private\DialogueManager.cpp" />
     <ClCompile Include="..\Private\IInteractable.cpp" />

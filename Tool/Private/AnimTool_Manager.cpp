@@ -441,7 +441,7 @@ HRESULT CAnimTool_Manager::Load_SoundEvent(fs::path path)
 	if (pDoc == nullptr)
 		return E_FAIL;
 
-	const string ownerTag = m_tAnimControllInfo.modelPath.stem().string();
+	const string ownerTag = path.stem().string();
 	const auto* pData = pDoc->Find_Data(ownerTag); // 이런 helper 하나 두는 걸 권장
 	if (pData == nullptr)
 		return E_FAIL;
@@ -567,7 +567,7 @@ HRESULT CAnimTool_Manager::Save_SoundEvent(fs::path path)
 		return E_FAIL;
 
 	DTO::SOUND_EVENT_INFO_DESC tData{};
-	tData.strOwnerTag = m_tAnimControllInfo.modelPath.stem().string();
+	tData.strOwnerTag = path.stem().string();
 	tData.vecSoundEvents = m_tEventInfo.vecSoundEvents;
 
 	if (FAILED(pSoundDoc->Upsert(tData)))
