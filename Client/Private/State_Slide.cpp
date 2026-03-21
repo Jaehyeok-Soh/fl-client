@@ -40,6 +40,8 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
     if (m_iMainAnimIdx == ENUM_TO_UINT(ANI::SKY))
     {
         m_FCollisions &= ~COLLISIONFLAGS::C_DOWN;
+
+        Set_YLerp(false);
     }
 
     Set_ApplyYLerp(true);
@@ -64,9 +66,7 @@ void CState_Slide::Update(const _float fTimeDelta)
     //    m_FMoves |= MOVEFLAGS::OWN;
     //}
 
-    Super::Update(fTimeDelta);
-
-    // sky animation 일때는 바닥 체크를 하고
+        // sky animation 일때는 바닥 체크를 하고
     if (m_iMainAnimIdx == ENUM_TO_UINT(ANI::SKY) &&
         Check_OnGround(0.3f))
     {
@@ -75,6 +75,8 @@ void CState_Slide::Update(const _float fTimeDelta)
 
         m_iMainAnimIdx = ENUM_TO_UINT(ANI::NORMAL);
     }
+
+    Super::Update(fTimeDelta);
 }
 
 HRESULT CState_Slide::End()
@@ -86,6 +88,8 @@ HRESULT CState_Slide::End()
 
     Set_ApplyYLerp(false);
     Reset_DeAccelRate();
+
+    Set_YLerp(true);
 
     CPhysicsCCT* cct = { nullptr };
     if (cct = Get_OwnerObject()->Get_Component<CPhysicsCCT>())

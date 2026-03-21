@@ -51,7 +51,7 @@ void CState_JumpDouble::Update(const _float fTimeDelta)
 	{
 		Set_ApplyGravity(true);
 
-		Set_RootMotion_Apply(false);
+		//Set_RootMotion_Apply(false);
 	}
 
 	Super::Update(fTimeDelta);
