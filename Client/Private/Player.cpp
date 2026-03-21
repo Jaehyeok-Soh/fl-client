@@ -537,6 +537,7 @@ _bool CPlayer::Start_Attack(State iState)
     switch (iState)
     {
     case State::COMBO:
+    case State::COMBO_DUAL:
     case State::CHARGE:
     case State::JUMPATTEND:
         bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
@@ -577,6 +578,7 @@ void CPlayer::End_Attack(State iState)
     {
         // combo timer Ω√¿€
     case State::COMBO:
+    case State::COMBO_DUAL:
     case State::JUMPATTEND:
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_Timer(CStatCom_Player::TIMER_TYPE::COMBO, true);
     case State::CHARGE:

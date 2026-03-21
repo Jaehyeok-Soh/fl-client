@@ -282,19 +282,20 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		}
 	}
 
-	{
-		CMonster_Body_Base* pBody = { nullptr };
-		pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	// release 때 터짐
+	//{
+	//	CMonster_Body_Base* pBody = { nullptr };
+	//	pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
 
-		CPhysicsRagdoll* pRagdoll = { nullptr };
-		pRagdoll = pBody->Get_Component<CPhysicsRagdoll>();
+	//	CPhysicsRagdoll* pRagdoll = { nullptr };
+	//	pRagdoll = pBody->Get_Component<CPhysicsRagdoll>();
 
-		if (pBody != nullptr && pRagdoll != nullptr)
-		{
-			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
-				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 10.f);
-		}
-	}
+	//	if (pBody != nullptr && pRagdoll != nullptr)
+	//	{
+	//		if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
+	//			pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 10.f);
+	//	}
+	//}
 
 #ifdef _DEBUG
 	wstring infoHeader(L"Monster Hit ");
@@ -645,6 +646,46 @@ void CMonster_Base::OnHit_Skill(const HIT_DESC& hitDesc)
 
 void CMonster_Base::OnHit_Dual(const HIT_DESC& hitDesc)
 {
+	_uint iDamageFlag = hitDesc.iDamageFlag;
+	_bool bCritical = false;
+
+	// critical 여부 판단
+	if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+	{
+		bCritical = true;
+	}
+
+	// effect 출력
+	{
+
+	}
+
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+		Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		Desc.vFontColor = Vec4{ 0.f, 0.82f, 1.f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+		Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
+		Desc.vRandOffset = Vec3{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f) };				// 랜덤 오프셋 // 더 커지면 이상함
+
+		////// UI에게 폰트 호출 //////
+		if (bCritical)
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+
+		else
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+	}
 }
 
 void CMonster_Base::SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc)
