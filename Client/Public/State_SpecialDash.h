@@ -22,8 +22,8 @@ protected:
 
 private:
 	Vec3 m_vPivot = { Vec3::Zero };
-	_float m_fRadiaus = { 0.f };
-	_float m_fAngle = { 0.f };
+
+	array<Vec3, 4> m_arrPoses;
 
 public:
 	static CState_SpecialDash* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
