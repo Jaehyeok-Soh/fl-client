@@ -310,6 +310,7 @@ _bool CMesh::IntsersectWithPlane(CRay* const pRay, Matrix matWorld, _float fMaxD
 	return true;
 }
 
+
 HRESULT CMesh::Load_AnimVertices(std::span<VTXANIMMESH> spanVertex)
 {
 	m_iVertexStride = sizeof(VTXANIMMESH);

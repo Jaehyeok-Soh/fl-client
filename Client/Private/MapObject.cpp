@@ -236,7 +236,7 @@ HRESULT CMapObject::Ready_PhysicsCollider(MAPOBJECT_DESC* pDesc)
     }
 
     PHYSICSCOLLIDER_DESC cloneDesc{};
-    cloneDesc.eFilterLayer = PHYSICSFILTERGROUP::MAP;
+    cloneDesc.eFilterLayer =PHYSICSFILTERGROUP::MAP;
     cloneDesc.iFilterMask = 0xFFFFFFFF;
     cloneDesc.bSetOnlyFilter = true;
 

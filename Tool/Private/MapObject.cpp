@@ -412,6 +412,11 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
             return E_FAIL;
         break;
 
+    case Tool::EClientMakePath::Batch_InteractiveObject:
+        if (FAILED(Ready_Batch_InteractiveObject()))
+            return E_FAIL;
+        break;
+
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
         if (FAILED(Ready_TriggerBox_MonsterSpawner()))
             return E_FAIL;
@@ -592,6 +597,13 @@ HRESULT CMapObject::Ready_Batch_Object()
     }
     default:                                    break;
     }
+
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_Batch_InteractiveObject()
+{
 
 
     return S_OK;
@@ -1356,6 +1368,9 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::Batch_Object:
         hr = Render_Batch_Object();
         break;
+    case Tool::EClientMakePath::Batch_InteractiveObject:
+        hr = Render_StaticObject();
+        break;
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
         hr = Render_TriggerBox_ChangeLevel();
         break;
@@ -1566,6 +1581,7 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::Env:
     case Tool::EClientMakePath::Batch_Player:
     case Tool::EClientMakePath::Batch_Monster:
+    case Tool::EClientMakePath::Batch_InteractiveObject:
     case Tool::EClientMakePath::LandScape:
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
@@ -1926,9 +1942,9 @@ HRESULT CMapObject::Render_MapObject()
 HRESULT CMapObject::Render_StaticObject()
 {
     if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
-        return Render_Instance(0);
+        return Render_Instance(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject));
     else
-        return Render_Default(0);
+        return Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject));
 
     return S_OK;
 }
