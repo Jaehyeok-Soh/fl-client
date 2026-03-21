@@ -613,10 +613,10 @@ void CPanel_AnimDescription::Desc_SoundWindow()
     // =========================
     if (ImGui::CollapsingHeader("Sound Command", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        int iCommand = static_cast<int>(pEvent->iCommand);
+        int iCommand = static_cast<_int>(pEvent->eCommand);
         if (ImGui::Combo("Command", &iCommand, s_SoundCommandItems, IM_ARRAYSIZE(s_SoundCommandItems)))
         {
-            pEvent->iCommand = static_cast<_uint>(iCommand);
+            pEvent->eCommand = static_cast<DTO::EAnimSoundCommand>(iCommand);
             ModifySoundOne();
         }
 
@@ -665,11 +665,11 @@ void CPanel_AnimDescription::Desc_SoundWindow()
             ImGui::TextDisabled("Resolved Hash: <None>");
         }
 
-        const EAnimSoundCommand eCmd = static_cast<EAnimSoundCommand>(pEvent->iCommand);
+        const DTO::EAnimSoundCommand eCmd = pEvent->eCommand;
 
         switch (eCmd)
         {
-        case EAnimSoundCommand::OneShot:
+        case DTO::EAnimSoundCommand::OneShot:
         {
             if (ImGui::DragFloat("Volume", &pEvent->fVolume, 0.01f, 0.f, 1.f, "%.2f"))
                 ModifySoundOne();
@@ -685,7 +685,7 @@ void CPanel_AnimDescription::Desc_SoundWindow()
         }
         break;
 
-        case EAnimSoundCommand::ControlledPlay:
+        case DTO::EAnimSoundCommand::ControlledPlay:
         {
             if (ImGui::InputInt("Controlled ID", &pEvent->iControlledId))
                 ModifySoundOne();
@@ -701,14 +701,14 @@ void CPanel_AnimDescription::Desc_SoundWindow()
         }
         break;
 
-        case EAnimSoundCommand::ControlledStop:
+        case DTO::EAnimSoundCommand::ControlledStop:
         {
             if (ImGui::InputInt("Controlled ID", &pEvent->iControlledId))
                 ModifySoundOne();
         }
         break;
 
-        case EAnimSoundCommand::ControlledVolume:
+        case DTO::EAnimSoundCommand::ControlledVolume:
         {
             if (ImGui::InputInt("Controlled ID", &pEvent->iControlledId))
                 ModifySoundOne();
@@ -718,7 +718,7 @@ void CPanel_AnimDescription::Desc_SoundWindow()
         }
         break;
 
-        case EAnimSoundCommand::ControlledPitch:
+        case DTO::EAnimSoundCommand::ControlledPitch:
         {
             if (ImGui::InputInt("Controlled ID", &pEvent->iControlledId))
                 ModifySoundOne();

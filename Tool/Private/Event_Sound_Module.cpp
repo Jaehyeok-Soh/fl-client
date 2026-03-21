@@ -10,6 +10,11 @@ CEvent_Sound_Module::CEvent_Sound_Module()
 	Safe_AddRef(m_pGameInstance);
 }
 
+HRESULT CEvent_Sound_Module::Initialize()
+{
+	return S_OK;
+}
+
 void CEvent_Sound_Module::Set_Owner(CAnimObj* pOwner)
 {
 	if (m_pOwner != nullptr && m_pOwner == pOwner)
@@ -22,11 +27,6 @@ void CEvent_Sound_Module::Set_Owner(CAnimObj* pOwner)
 		return;
 
 	Ensure_SoundPlayer();
-}
-
-HRESULT CEvent_Sound_Module::Initialize()
-{
-	return S_OK;
 }
 
 HRESULT CEvent_Sound_Module::Ensure_SoundPlayer()

@@ -52,7 +52,7 @@ private:
 	_float		 m_fGlobalTimeScale = 1.f;
 	_float		 m_fTimeDebug = 1.f;
 
-
+	_int m_iDraggingEventToken = -1;
 private:
 	_float m_fTimeScale = { 1.f };
 

@@ -110,11 +110,12 @@ private:
 public:
 	HRESULT Load_AttackOverlap(fs::path path);
 	HRESULT Load_EffectEvent(fs::path path);
+	HRESULT Load_SoundEvent(fs::path path);
 	void Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap);
 	void Set_EffectEvent(CEffectHandler* pEffectEvent);
 	HRESULT Save_AttackOverlap(fs::path path, string strAnimTag, _int iPool);
 	HRESULT Save_EffectEvent(fs::path path, string strAnimTag, _int iPool);
-
+	HRESULT Save_SoundEvent(fs::path path);
 private:
 	HRESULT Ready_Builder();
 	HRESULT Ready_BuildFiles();

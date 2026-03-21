@@ -23,6 +23,10 @@
 #include "DataDocument_Effect.h"
 #include "DataStruct_Effect.h"
 
+// Sound
+#include "DataDocument_SoundEvent.h"
+#include "DataStruct_SoundEvent.h"
+
 // Animation tool module
 #include "Event_Overlap_Module.h"
 #include "Event_Effect_Module.h"
@@ -421,6 +425,38 @@ HRESULT CAnimTool_Manager::Load_EffectEvent(fs::path path)
 	return S_OK;
 }
 
+HRESULT CAnimTool_Manager::Load_SoundEvent(fs::path path)
+{
+	const _uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
+	const DTO::ECategory eCategory = DTO::ECategory::SOUNDEVENT;
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_SoundEvent>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, path)))
+		return E_FAIL;
+
+	CDataDocumentBase* pBase = m_pGameInstance->Ensure_Document(iLevelID, eCategory, path);
+	CDataDocument_SoundEvent* pDoc = static_cast<CDataDocument_SoundEvent*>(pBase);
+	if (pDoc == nullptr)
+		return E_FAIL;
+
+	const string ownerTag = m_tAnimControllInfo.modelPath.stem().string();
+	const auto* pData = pDoc->Find_Data(ownerTag); // 이런 helper 하나 두는 걸 권장
+	if (pData == nullptr)
+		return E_FAIL;
+
+	m_tEventInfo.vecSoundEvents = pData->vecSoundEvents;
+	m_tAnimControllInfo.iCurrentSoundEventIndex = -1;
+	if (m_pSoundModule)
+	{
+		m_pSoundModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
+		m_pSoundModule->Rebuild(m_tEventInfo.vecSoundEvents);
+	}
+
+	return S_OK;
+}
+
 void CAnimTool_Manager::Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap)
 {
 	m_pOverlapModule->SetAttackOverlap(pAttackOverlap, m_tAnimControllInfo.pCurrentObject);
@@ -511,6 +547,30 @@ HRESULT CAnimTool_Manager::Save_EffectEvent(fs::path path, string strAnimTag, _i
 	tData.vecEffectEvents = m_tEventInfo.vecVFXEvents;
 
 	if (FAILED(pEffectEventDoc->Try_Add(tData)))
+		return E_FAIL;
+
+	m_pGameInstance->Save_File_Json(iLevelID, eCategory, path);
+	return S_OK;
+}
+
+HRESULT CAnimTool_Manager::Save_SoundEvent(fs::path path)
+{
+	const _uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
+	const DTO::ECategory eCategory = DTO::ECategory::SOUNDEVENT;
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_SoundEvent>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, path);
+	CDataDocument_SoundEvent* pSoundDoc = static_cast<CDataDocument_SoundEvent*>(pDocument);
+	if (pSoundDoc == nullptr)
+		return E_FAIL;
+
+	DTO::SOUND_EVENT_INFO_DESC tData{};
+	tData.strOwnerTag = m_tAnimControllInfo.modelPath.stem().string();
+	tData.vecSoundEvents = m_tEventInfo.vecSoundEvents;
+
+	if (FAILED(pSoundDoc->Upsert(tData)))
 		return E_FAIL;
 
 	m_pGameInstance->Save_File_Json(iLevelID, eCategory, path);

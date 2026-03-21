@@ -43,7 +43,7 @@ AnimNotifyKey CToolAnimSoundPlayer::Build_SoundNotifyKey(const DTO::SOUNDEVENT& 
 	key.eID = Engine::EAnimNotifyId::Sound;
 	key.fTrackPosition = event.fStartTrackPosition;
 
-	key.iParam0 = static_cast<_uint>(event.iCommand);
+	key.iParam0 = ENUM_TO_UINT(event.eCommand);
 	key.iParam1 = event.strSoundTag.empty()
 		? 0u
 		: Engine_Utils::ToHash(event.strSoundTag.c_str());
@@ -77,7 +77,6 @@ HRESULT CToolAnimSoundPlayer::Cache_OwnerModel()
 HRESULT CToolAnimSoundPlayer::Rebuild(const vector<DTO::SOUNDEVENT>& events)
 {
 	Release_Event();
-	Clear_SoundNotifies();
 
 	if (FAILED(Cache_OwnerModel()))
 		return E_FAIL;
@@ -126,6 +125,15 @@ void CToolAnimSoundPlayer::Register_Notifies(const vector<DTO::SOUNDEVENT>& even
 			continue;
 
 		Engine::AnimNotifyKey key = Build_SoundNotifyKey(src);
+		const DTO::EAnimSoundCommand eCmd = static_cast<DTO::EAnimSoundCommand>(key.iParam0);
+
+		// 해쉬 기록이 없다면 스킵
+		if((eCmd == DTO::EAnimSoundCommand::OneShot || eCmd == DTO::EAnimSoundCommand::ControlledPlay)
+			&& key.iParam1 == 0)
+		{
+			continue;
+		}
+
 		pAnimation->Pushback_Notifies(src.ePhase, key);
 	}
 
@@ -161,7 +169,7 @@ void CToolAnimSoundPlayer::CallbackEvent(const Engine::AnimNotifyKey& key)
 	if (key.eID != Engine::EAnimNotifyId::Sound)
 		return;
 
-	const EAnimSoundCommand eCommand = static_cast<EAnimSoundCommand>(key.iParam0);
+	const DTO::EAnimSoundCommand eCommand = static_cast<DTO::EAnimSoundCommand>(key.iParam0);
 	const _uint iSoundHash = key.iParam1;
 	const _uint iControlledId = key.iParam2;
 	const _float fDelay = static_cast<_float>(key.iParam3) / 1000.f;
@@ -172,7 +180,7 @@ void CToolAnimSoundPlayer::CallbackEvent(const Engine::AnimNotifyKey& key)
 
 	switch (eCommand)
 	{
-	case EAnimSoundCommand::OneShot:
+	case DTO::EAnimSoundCommand::OneShot:
 	{
 		if (iSoundHash == 0)
 			return;
@@ -182,19 +190,19 @@ void CToolAnimSoundPlayer::CallbackEvent(const Engine::AnimNotifyKey& key)
 		else
 			m_pGameInstance->Play_OneShot(m_iSoundLevelID, iSoundHash, fVolume, fPitch, bSteal);
 	} break;
-	case EAnimSoundCommand::ControlledPlay:
+	case DTO::EAnimSoundCommand::ControlledPlay:
 	{
 		if (iSoundHash == 0 || iControlledId < 0)
 			return;
 		m_pGameInstance->Play_Controlled(m_iSoundLevelID, iSoundHash, iControlledId, fVolume, bLoop, fPitch);
 	} break;
-	case EAnimSoundCommand::ControlledStop:
+	case DTO::EAnimSoundCommand::ControlledStop:
 		m_pGameInstance->Stop_Controlled(iControlledId);
 		break;
-	case EAnimSoundCommand::ControlledVolume:
+	case DTO::EAnimSoundCommand::ControlledVolume:
 		m_pGameInstance->Set_ControlledVolume(iControlledId, fVolume);
 		break;
-	case EAnimSoundCommand::ControlledPitch:
+	case DTO::EAnimSoundCommand::ControlledPitch:
 		m_pGameInstance->Set_ControlledPitch(iControlledId, fPitch);
 		break;
 	default:

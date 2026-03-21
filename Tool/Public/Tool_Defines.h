@@ -96,16 +96,6 @@ namespace Tool
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
-	enum class EAnimSoundCommand : unsigned int
-	{
-		OneShot = 0,
-		ControlledPlay,
-		ControlledStop,
-		ControlledVolume,
-		ControlledPitch,
-		END
-	};	
-
 #pragma region MapToolObjectBatchMode
 	enum class EMapToolObjectBatchMode
 	{

@@ -346,6 +346,9 @@
     <Filter Include="04. Component\Sound">
       <UniqueIdentifier>{e204b4a2-2f70-400f-9263-b359472af135}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09. Builder\Sound">
+      <UniqueIdentifier>{3169e4f7-ec1f-498b-99ff-9b4c99924918}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -681,6 +684,9 @@
     <ClInclude Include="..\public\ToolAnimSoundPlayer.h">
       <Filter>04. Component\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Builder_SoundEvent.h">
+      <Filter>09. Builder\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -998,6 +1004,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ToolAnimSoundPlayer.cpp">
       <Filter>04. Component\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Builder_SoundEvent.cpp">
+      <Filter>09. Builder\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
