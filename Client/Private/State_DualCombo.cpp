@@ -3,8 +3,10 @@
 
 #include "Player.h"
 #include "PlayerActionState.h"
+#include "PhysicsCCT.h"
 
 #include "GameInstance.h"
+
 CState_DualCombo::CState_DualCombo(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent,"DualCombo")
 {
@@ -90,18 +92,49 @@ HRESULT CState_DualCombo::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	Get_OwnerObject()->Set_Render(true);
+
+	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+	pCCT->EnableCollision(true);
+
 	return S_OK;
 }
 
 void CState_DualCombo::Start_Third()
 {
 	Get_OwnerObject()->Set_Render(false);
+ 
+	// 좀 더 앞으로 셋
+	CGameObject* pObj = Get_OwnerObject();
+	CTransform* pTransform = pObj->Get_Component<CTransform>();
+	CPhysicsCCT* pCCT = pObj->Get_Component<CPhysicsCCT>();
+	if (pTransform && pCCT)
+	{
+		Vec3 vCurPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+		Vec3 vLook = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+		vLook.Normalize();
+
+		if (m_bLookAtMonster)
+		{
+			pCCT->SetFootPosition(m_vMonsterPos - vLook * 2.f);
+		}
+
+		else
+		{
+			pCCT->SetFootPosition(vCurPos + vLook * 1.5f);
+		}
+	}
 }
 
 void CState_DualCombo::Update_Third(const _float fTimeDelta)
 {
-	if(m_fStateElapsed >= m_tKeyTimer.fMaxTime - 0.1f)
+	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime - 0.1f)
+	{
 		Get_OwnerObject()->Set_Render(true);
+		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+		pCCT->EnableCollision(true);
+	}
+
 	// render onoff 관리
 }
 

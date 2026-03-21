@@ -125,6 +125,9 @@ protected:
 
 	_float					m_fMoveTimeOffset = { 1.f };
 
+	_bool					m_bLookAtMonster = { false };
+	Vec3					m_vMonsterPos = { Vec3::Zero };
+
 	// state가 변환 했다면 true
 protected:
 	_bool	Check_Keys(const _float fTimeDelta);
