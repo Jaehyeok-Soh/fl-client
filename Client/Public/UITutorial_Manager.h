@@ -35,13 +35,14 @@ private:
 public:
 	void Tutorial_Update(const _float fTimeDelta);
 
+	void Set_Current_Tutorial_Step();
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	CMulticastDelegate<void(const UI_TUTORIAL_EVENT_DESC&)> m_vTutorialEvents = {};
 
 public:
 	virtual void Free()override;
-
 };
 
 NS_END

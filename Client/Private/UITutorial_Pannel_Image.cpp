@@ -282,7 +282,6 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 				m_pParentCanvasCache->Get_CommonParam_uint_Ref()[CUR_PAGE] = m_iCurPage;
 			}
 		}
-
 		// 페이지별 상태
 		{
 			_uint i = m_iCurPage;
