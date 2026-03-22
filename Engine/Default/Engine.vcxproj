@@ -165,6 +165,10 @@
     <ClCompile Include="..\Private\ActionSkill.cpp" />
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
+    <ClCompile Include="..\private\CameraController.cpp" />
+    <ClCompile Include="..\private\CameraModifier.cpp" />
+    <ClCompile Include="..\Private\CameraRuntimeTypes.cpp" />
+    <ClCompile Include="..\Private\CameraTypeConverters.cpp" />
     <ClCompile Include="..\Private\CinematicCamera.cpp" />
     <ClCompile Include="..\Private\CinematicCameraSequence.cpp" />
     <ClCompile Include="..\Private\Cinematic_Manager.cpp" />
@@ -356,6 +360,12 @@
     <ClInclude Include="..\Public\ActionSkill.h" />
     <ClInclude Include="..\Public\ActionState.h" />
     <ClInclude Include="..\Public\ActiveAttackOverlap.h" />
+    <ClInclude Include="..\public\CameraController.h" />
+    <ClInclude Include="..\public\CameraCommonTypes.h" />
+    <ClInclude Include="..\Public\CameraDataTypes.h" />
+    <ClInclude Include="..\public\CameraModifier.h" />
+    <ClInclude Include="..\Public\CameraRuntimeTypes.h" />
+    <ClInclude Include="..\Public\CameraTypeConverters.h" />
     <ClInclude Include="..\Public\CinematicCamera.h" />
     <ClInclude Include="..\Public\CinematicCameraSequence.h" />
     <ClInclude Include="..\Public\Cinematic_Manager.h" />
