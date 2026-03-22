@@ -171,6 +171,7 @@
     <ClInclude Include="..\Public\Builder_UI.h" />
     <ClInclude Include="..\Public\Builder_UIPrefabs.h" />
     <ClInclude Include="..\Public\Bush.h" />
+    <ClInclude Include="..\public\CameraEventBinder.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
     <ClInclude Include="..\Public\WeaponPickUp.h" />
@@ -417,6 +418,7 @@
     <ClCompile Include="..\Private\Builder_UI.cpp" />
     <ClCompile Include="..\Private\Builder_UIPrefabs.cpp" />
     <ClCompile Include="..\Private\Bush.cpp" />
+    <ClCompile Include="..\private\CameraEventBinder.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\WeaponPickUp.cpp" />

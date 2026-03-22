@@ -55,6 +55,7 @@
 #include "UIMinimap_Manager.h"
 #include "UI_Manager.h"
 #include "SoundEventBinder.h"
+#include "CameraEventBinder.h"
 #include "GameInstance.h"
 
 // Test
@@ -122,6 +123,9 @@ HRESULT CMainPlayer::Initialize(void* pArg)
         return E_FAIL;
 
     if (FAILED(Ready_SoundHandler()))
+        return E_FAIL;
+
+    if (FAILED(Ready_CameraHandler()))
         return E_FAIL;
 
     Get_Component<CPhysicsAttackOverlap>()->Bind_Events();
@@ -839,6 +843,23 @@ HRESULT CMainPlayer::Ready_SoundHandler()
         return E_FAIL;
     // 내부에서 Add_Component 해줌
     CSoundEventBinder* pResult = CSoundEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Example.json");
+    if (pResult == nullptr)
+        return E_FAIL;
+    Safe_Release(pResult);
+    return S_OK;
+}
+
+HRESULT CMainPlayer::Ready_CameraHandler()
+{
+    _uint iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
+    CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
+    if (pBody == nullptr)
+        return E_FAIL;
+    CModel* pAnimModel = pBody->Get_Component<CModel>();
+    if (pAnimModel == nullptr)
+        return E_FAIL;
+    // 내부에서 Add_Component 해줌
+    CCameraEventBinder* pResult = CCameraEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/CameraAnimationData/PlayerMoon.json");
     if (pResult == nullptr)
         return E_FAIL;
     Safe_Release(pResult);

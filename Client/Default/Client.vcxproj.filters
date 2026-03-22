@@ -1551,6 +1551,9 @@
     <ClInclude Include="..\public\SoundEventBinder.h">
       <Filter>07. System\04. Binder</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CameraEventBinder.h">
+      <Filter>07. System\04. Binder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2255,6 +2258,9 @@
       <Filter>03. GameObject\PartObjects\Monster\Body\Fly</Filter>
     </ClCompile>
     <ClCompile Include="..\private\SoundEventBinder.cpp">
+      <Filter>07. System\04. Binder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraEventBinder.cpp">
       <Filter>07. System\04. Binder</Filter>
     </ClCompile>
   </ItemGroup>

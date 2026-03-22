@@ -56,6 +56,7 @@ private:
 	HRESULT Ready_AttackOverlap();
 	HRESULT Ready_EffectEvent();
 	HRESULT Ready_SoundHandler();
+	HRESULT Ready_CameraHandler();
 	HRESULT Ready_AttackStates();
 
 private:
