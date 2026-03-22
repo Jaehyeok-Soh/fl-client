@@ -14,6 +14,7 @@
 #include "Shader.h"
 #include "Fog.h"
 #include "EnvObject.h"
+#include "SkyBox.h"
 #pragma region Batch 관련
 /* Batch Player */
 #include "MainPlayer.h"
@@ -164,9 +165,21 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	}
 
 	CB_EnvData tEnvData{};
+	
+	/* Wind */
 	tEnvData.vWindDirection = tData.vWindDirection;
 	tEnvData.fWindPower = tData.fWindPower;
 
+	/* SkyBox */
+	tEnvData.vEnvColor = tData.vEnvColor;
+
+	tEnvData.vSkyColor = tData.vSkyColor;
+	tEnvData.vCloudBaseColor = tData.vCloudBaseColor;
+	tEnvData.vCloudHighlight = tData.vCloudHighlight;
+
+	tEnvData.vSkyBoxTextureUVSpeed = tData.vSkyBoxTextureUVSpeed;
+	tEnvData.isChannelPacking = tData.isSkyBoxChannelPacking;
+	
 	/* Env Data 세팅 */
 	ID3DX11EffectConstantBuffer* pCB = m_pMeshShader->Get_ConstantBuffer("CB_EnvData");
 	if (!pCB->IsValid())	return E_FAIL;
@@ -176,10 +189,22 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	if (!pCB->IsValid())	return E_FAIL;
 	pCB->SetRawValue(&tEnvData, 0, sizeof(CB_EnvData));
 
-
 	/* Map Box */
 	m_pGameInstance->Set_MapMinMaxBox(tData.vMapMinMaxBox_Center,tData.vMapMinMaxBox_extents);
 
+	CSkyBox::SKYBOX_DESC tDesc{};
+	tDesc.wstrModelTag = Engine_Utils::ToWString(tData.strSkyBoxModelName);
+	tDesc.wstrTextureTag = Engine_Utils::ToWString(tData.strSKyBoxTextureName);
+
+	CTransform::TRANSFORM_DESC tTsDesc{};
+	tTsDesc.RotationMatrix = Matrix::CreateFromYawPitchRoll(
+		XMConvertToRadians(tData.vSkyBoxPitchYawRoll.y), XMConvertToRadians(tData.vSkyBoxPitchYawRoll.x), XMConvertToRadians(tData.vSkyBoxPitchYawRoll.z));
+	tTsDesc.TranslationMatrix = Matrix::CreateTranslation(tData.vSkyBoxPositionOffset);
+
+	tDesc.pTransform_Desc = &tTsDesc;
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),g_wszSkyBox_Prototype_Tag , tDesc.iLevelIndex , g_wszSkyBoxLayer , &tDesc);
 
 	return S_OK;
 }

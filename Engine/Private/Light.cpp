@@ -4,6 +4,7 @@
 #include "VIBuffer_Rect_Tex.h"
 
 CLight::CLight()
+    :  m_tLightDesc{}
 {
 }
 
@@ -18,6 +19,8 @@ HRESULT CLight::Initialize(const LIGHT_DESC& LightDesc)
     m_tLightDesc.vDirection = LightDesc.vDirection;
     m_tLightDesc.vPosition = LightDesc.vPosition;
     m_tLightDesc.fRange = LightDesc.fRange;
+
+
     return S_OK;
 }
 

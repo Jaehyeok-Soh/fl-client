@@ -188,9 +188,34 @@ namespace Client
 
 	struct CB_EnvData
 	{
-		Vec3        vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
-		_float      fWindPower{ 1.f }; //바람이 부는 새기
+		Vec4        vEnvColor{ 1.f,1.f,1.f,1.f };              // 16Byte 환경 Color
+		/*  16Byte  */
+
+
+		Vec3        vWindDirection{ 1.f,0.f, 1.f };             // 12Byte 바람이 부는 방향
+		_float      fWindPower{ 1.f };                          // 4Byte 바람이 부는 새기      
+		/*  16Byte */
+
+		/*  16Byte */
+		Vec4        vSkyColor{ 0.3f,0.7f,0.8f,1.f };
+		Vec4        vCloudBaseColor{ 0.8f,0.8f,0.8f,1.f };
+		Vec4        vCloudHighlight{ 1.f,1.f,1.f,1.f };
+
+
+		_int        isChannelPacking{ false };                  // 4Byte 채널 패킹을 사용하는지 않나는지
+		_int        iSkyBoxTextureType{ 0 };                      // 4Byte 텍스처가 원형용텍스처인지 , 사각형용 텍스처인지
+		_float      fPolarRadiusScale{ 1.f };                     // 4Byte 여백 조절용 , 기본값 1.0
+		_float      EnvDataDummy1{ 0.f };
+
+		/*  16Byte */
+
+		Vec2        vSkyBoxTextureUVSpeed{ 1.f,1.f };        // 8Byte UV
+		float       fEnvAccDT{ 0.f };                        // 4Byte 시간값
+		float       EnvDataDummy2{ 1.f };                      // 4Byte 더미
+
+		/* 16 Byte */
 	};
+
 
 	struct CB_WaterData
 	{
@@ -288,6 +313,7 @@ namespace Client
 		Vine,
 		Rock,
 		Water,
+		Env,
 		RGBMapping,
 		DEBUG,
 		SkyBox,

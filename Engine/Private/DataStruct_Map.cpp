@@ -279,23 +279,47 @@ inline void from_json(const json& LoadJson, DTO::TMap_MapObjectData& tData)
 
 #pragma region Level Data
 
-
 inline void to_json(json& SaveJson, const TLevelData& tData)
 {
 	SaveJson["strTag"] = tData.strTag;
 	SaveJson["Texture Splating Info"] = tData.strTextureSplatingInfoName;
 	SaveJson["Level Type"] = tData.strLevelTypeName;
+	
+	Engine_Utils::write_vec4_xyzw(SaveJson["Env Data"]["Env Color"], tData.vEnvColor);
 
 	auto& WindJson = SaveJson["Env Data"]["Wind Data"];
 	Engine_Utils::write_vec3_xyz(WindJson["Direction"], tData.vWindDirection);
 	WindJson["Power"] = tData.fWindPower;
 
+
+	if (tData.strSkyBoxModelName != "None" && tData.strSKyBoxTextureName != "None")
+	{
+		auto& SkyBoxJson = SaveJson["Env Data"]["Sky Box"];
+
+		Engine_Utils::write_vec3_xyz(SkyBoxJson["Scale"], tData.vSkyBoxScale);
+		Engine_Utils::write_vec3_PitchYawRoll(SkyBoxJson["PitchYawRoll"], tData.vSkyBoxPitchYawRoll);
+		Engine_Utils::write_vec3_xyz(SkyBoxJson["Position Offset"], tData.vSkyBoxPositionOffset);
+
+		SkyBoxJson["Model Name"] = tData.strSkyBoxModelName;
+		SkyBoxJson["Texture Name"] = tData.strSKyBoxTextureName;
+		Engine_Utils::write_vec2_xy(SkyBoxJson["UV Speed"], tData.vSkyBoxTextureUVSpeed);
+		SkyBoxJson["Texture Shape Type"] = tData.iSkyBoxTextureType;
+		SkyBoxJson["Use ChannelPacking"] = tData.isSkyBoxChannelPacking;
+		SkyBoxJson["Polar Radiuse Scale"] = tData.fPolarRadiusScale;
+
+		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Sky Color"], tData.vSkyColor);
+		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Cloud Base Color"], tData.vCloudBaseColor);
+		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Cloud Highlight Color"], tData.vCloudHighlight);
+
+	}
+	
 	auto& MapBox_Json = SaveJson["Map Box"];
 	Engine_Utils::write_vec3_xyz(MapBox_Json["Center"],tData.vMapMinMaxBox_Center);
 	Engine_Utils::write_vec3_xyz(MapBox_Json["Extents"],tData.vMapMinMaxBox_extents);
 
 	return;
 }
+
 inline void from_json(const json& LoadJson, TLevelData& tData)
 {
 	if (LoadJson.contains("strTag"))
@@ -311,6 +335,71 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 	if (LoadJson.contains("Env Data"))
 	{
 		auto& EnvLoadJson = LoadJson["Env Data"];
+		if (EnvLoadJson.contains("Env Color"))
+		{
+			Engine_Utils::read_vec4_xyzw(EnvLoadJson["Env Color"],tData.vEnvColor);
+		}
+
+		if (EnvLoadJson.contains("Sky Box"))
+		{
+			auto& SkyBox_LoadJson = EnvLoadJson["Sky Box"];
+
+			if (SkyBox_LoadJson.contains("Scale"))
+			{
+				Engine_Utils::read_vec3_xyz(SkyBox_LoadJson["Scale"], tData.vSkyBoxScale);
+			}
+			if (SkyBox_LoadJson.contains("PitchYawRoll"))
+			{
+				Engine_Utils::read_vec3_PitchYawRoll(SkyBox_LoadJson["PitchYawRoll"], tData.vSkyBoxPitchYawRoll);
+			}
+			if (SkyBox_LoadJson.contains("Position Offset"))
+			{
+				Engine_Utils::read_vec3_xyz(SkyBox_LoadJson["Position Offset"],tData.vSkyBoxPositionOffset);
+			}
+
+			if (SkyBox_LoadJson.contains("Sky Color"))
+			{
+				Engine_Utils::read_vec4_xyzw(SkyBox_LoadJson["Sky Color"], tData.vSkyColor);
+			}
+			if (SkyBox_LoadJson.contains("Cloud Base Color"))
+			{
+				Engine_Utils::read_vec4_xyzw(SkyBox_LoadJson["Cloud Base Color"], tData.vCloudBaseColor);
+			}
+			if (SkyBox_LoadJson.contains("Cloud Highlight Color"))
+			{
+				Engine_Utils::read_vec4_xyzw(SkyBox_LoadJson["Cloud Highlight Color"], tData.vCloudHighlight);
+			}
+
+
+			if (SkyBox_LoadJson.contains("UV Speed"))
+			{
+				Engine_Utils::read_vec2_xy(SkyBox_LoadJson["UV Speed"], tData.vSkyBoxTextureUVSpeed);
+			}
+
+
+			if (SkyBox_LoadJson.contains("Model Name"))
+			{
+				tData.strSkyBoxModelName = SkyBox_LoadJson["Model Name"];
+			}
+			if (SkyBox_LoadJson.contains("Texture Name"))
+			{
+				tData.strSKyBoxTextureName = SkyBox_LoadJson["Texture Name"];
+			}
+			if (SkyBox_LoadJson.contains("Texture Shape Type"))
+			{
+				tData.iSkyBoxTextureType = SkyBox_LoadJson["Texture Shape Type"];
+			}
+			if (SkyBox_LoadJson.contains("Use ChannelPacking"))
+			{
+				tData.isSkyBoxChannelPacking = SkyBox_LoadJson["Use ChannelPacking"];
+			}
+			if (SkyBox_LoadJson.contains("Polar Radiuse Scale"))
+			{
+				tData.fPolarRadiusScale = SkyBox_LoadJson["Polar Radiuse Scale"];
+			}
+		}
+
+
 		if (EnvLoadJson.contains("Wind Data"))
 		{
 			auto& WindLoaddJson = EnvLoadJson["Wind Data"];
@@ -324,6 +413,7 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 				tData.fWindPower = WindLoaddJson["Power"];
 			}
 		}
+
 	}
 
 	if (LoadJson.contains("Map Box"))
@@ -338,6 +428,7 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 			Engine_Utils::read_vec3_xyz(MapBox_Json["Extents"],tData.vMapMinMaxBox_extents);
 		}
 	}
+
 
 
 	return;

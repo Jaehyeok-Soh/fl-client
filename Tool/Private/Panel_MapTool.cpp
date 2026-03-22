@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "MapObject.h"
 #include "Camera.h"
+#include "Model.h"
 #include "LevelData.h"
 #include "CinematicCameraSequence.h"
 #include "CameraMan.h"
@@ -142,15 +143,6 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 	if (ImGui::CollapsingHeader(" Camera Cinematic Sequnce "))
 	{
 		if (FAILED((Render_CameraCinematicSequnce())))
-		{
-			ImGui::TreePop();
-			return E_FAIL;
-		}
-	}
-
-	if (ImGui::CollapsingHeader(" Map Env Data Setting "))
-	{
-		if (FAILED((Render_EnvSetting())))
 		{
 			ImGui::TreePop();
 			return E_FAIL;
@@ -987,6 +979,129 @@ HRESULT CPanel_MapTool::Render_EnvSetting()
 {
 	auto& tCB_EnvData = m_pMapToolManager->m_pLevelData->m_tCB_EnvData;
 
+	ImGui::NewLine();
+
+	ImGui::ColorEdit4(" Evn Color Setting ", &tCB_EnvData.vEnvColor.x);
+
+	ImGui::NewLine();
+
+	if (FAILED(Redner_SkyBoxSetting()))
+		return E_FAIL;
+
+	ImGui::NewLine();
+
+	if (FAILED(Render_WindSetting()))
+		return E_FAIL;
+
+	ImGui::NewLine();
+
+	return S_OK;
+}
+
+HRESULT CPanel_MapTool::Redner_SkyBoxSetting()
+{
+	CLevelData* pLevelData = m_pMapToolManager->m_pLevelData;
+	if (pLevelData == nullptr) return E_FAIL;
+	
+	ImGui::SeparatorText(" Sky Box Setting ");
+	ImGui::NewLine();
+
+	const vector<string>& vecSkyBoxModel = m_pMapToolManager->m_vecSkyBoxModelNames;
+
+	CTransform* pSkyBoxTs = pLevelData->Get_Component<CTransform>();
+	
+	Matrix matSkyBoxWorld = pSkyBoxTs->Get_WorldMatrix();
+	
+	Vec3 vScale{ 1.f,1.f,1.f };
+	Quat vQuat{0.f,0.f,0.f,1.f};
+	Vec3 vPos{0.f,0.f,0.f};
+	matSkyBoxWorld.Decompose(vScale,vQuat,vPos);
+	Vec3 vPitchYawRoll_Degree = vQuat.ToEuler() * To_DEGREE;
+
+	ImGui::DragFloat3("SkyBox Scale",&vScale.x , 0.001f , 0.001f , FLT_MAX , "%.3f");
+	ImGui::DragFloat3("SkyBox Pitch Yaw Roll", &vPitchYawRoll_Degree.x, 0.1f, -360.f, 360.f, "%.1f");
+	ImGui::DragFloat3("SkyBox Offset Position", &vPos.x , 0.01f , -FLT_MAX, FLT_MAX);
+
+	Vec3 vPitchYawRoll_Radian = vPitchYawRoll_Degree * TO_RAD;
+	pSkyBoxTs->Set_WorldMatrix(Matrix::CreateScale(vScale) *  Matrix::CreateFromYawPitchRoll(vPitchYawRoll_Radian.y , vPitchYawRoll_Radian.x , vPitchYawRoll_Radian.z) *
+			Matrix::CreateTranslation(vPos));
+
+	if (vecSkyBoxModel.empty())
+		ImGui::Text(" Regist Sky Box Model is None ");
+	else
+	{
+		 const string& strSkyBoxModelName = pLevelData->Get_SkyBoxModelName();
+
+		 ImGui::SeparatorText(" Model Setting ");
+
+		 if (ImGui::BeginCombo("SkyBox Model List", strSkyBoxModelName.c_str()))
+		 {
+			 for (_uint i = 0; i < static_cast<_uint>(vecSkyBoxModel.size()); ++i)
+			 {
+				 string strCurName = vecSkyBoxModel[i];
+				 _bool	isSelected = strCurName == strSkyBoxModelName;
+				 if (ImGui::Selectable(strCurName.c_str(), isSelected))
+					 pLevelData->Change_SkyBoxModel(Engine_Utils::ToWString(strCurName));
+
+				 if (isSelected)
+					 ImGui::SetItemDefaultFocus();
+			 }
+			 ImGui::EndCombo();
+		 }
+		 if (ImGui::Button("Delete##SkyBox Model", ImVec2(52,32)))
+			 pLevelData->Change_SkyBoxModel(wstring());
+
+
+		 if (pLevelData->Get_Component<CModel>() != nullptr)
+		 {
+			 ImGui::SeparatorText(" Texture Setting ");
+
+			 CTextureBase* pTexture = pLevelData->Get_SkyBoxTexture();
+			 ID3D11ShaderResourceView* pSRV{ nullptr };
+			 if (pTexture == nullptr)
+				 pSRV = m_pMapToolManager->m_pDefaultWhiteSRV;
+			 else
+				 pSRV = pTexture->Get_SRV();
+
+
+			 if (pTexture != nullptr)
+			 {
+				 ImGui::ColorEdit4(" Sky Color Setting ", &pLevelData->m_tCB_EnvData.vSkyColor.x);
+				 ImGui::ColorEdit4(" Cloud Base Color Setting ", &pLevelData->m_tCB_EnvData.vCloudBaseColor.x);
+				 ImGui::ColorEdit4(" Cloud Highlight Color Setting ", &pLevelData->m_tCB_EnvData.vCloudHighlight.x);
+
+				 ImGui::DragFloat2("UV Speed", &pLevelData->m_tCB_EnvData.vSkyBoxTextureUVSpeed.x, 0.01f);
+
+
+				 if (ImGui::ImageButton("##SkyBoxTexture", (ImTextureRef)pSRV, ImVec2(64, 64)))
+				 {
+					 m_pMapToolManager->m_ppTargetSlot = pLevelData->Get_SkeyBoxTexturePointer();
+					 m_pMapToolManager->m_isTex_DH_ArraySelect = false;
+					 m_pMapToolManager->m_isTex_NBR_ArraySelect = false;
+					 ImGui::OpenPopup("Texture_Select_Modal");
+				 }
+
+				 ImGui::Checkbox(" SkyBox Use Channel Packing ", (_bool*)&pLevelData->m_tCB_EnvData.isChannelPacking);
+
+				 ImGui::Combo("SkyBox Texture Type", (int*)&pLevelData->m_tCB_EnvData.iSkyBoxTextureType, g_szSkyBoxTextureTypeNames, ARRAYSIZE(g_szSkyBoxTextureTypeNames));
+
+				 ImGui::DragFloat("SkyBox PolarRadiusScale", &pLevelData->m_tCB_EnvData.fPolarRadiusScale, 0.01f);
+
+			 }
+		 }
+	}
+
+
+
+	m_pMapToolManager->Select_MapTexture();
+
+	return S_OK;
+}
+
+HRESULT CPanel_MapTool::Render_WindSetting()
+{
+	auto& tCB_EnvData = m_pMapToolManager->m_pLevelData->m_tCB_EnvData;
+
 	ImGui::SeparatorText(" Wind Setting ");
 
 	ImGui::NewLine();
@@ -1002,11 +1117,6 @@ HRESULT CPanel_MapTool::Render_EnvSetting()
 	{
 		m_pMapToolManager->Set_GPU_EnvData();
 	}
-
-	ImGui::NewLine();
-
-	ImGui::Separator();
-
 
 	return S_OK;
 }
@@ -1764,6 +1874,13 @@ HRESULT CPanel_MapTool::Render_SaveLevelDataSetting()
 	
 
 	ImGui::Separator();
+
+
+	/* 환경 세팅 */
+	if(FAILED(Render_EnvSetting()))
+		return E_FAIL;
+
+	ImGui::NewLine();
 
 	m_pMapToolManager->m_pLevelData->Draw_ImGui();
 

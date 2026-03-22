@@ -43,6 +43,10 @@
 #define FOG_NOISE              1
 #define MAX_FOG_TEXTURE_COUNT  2
 
+#define RECTANGLE   0
+#define SPHERE      1
+
+
 
 //  전체적인 지형이들어갈 Base Texture
 Texture2D       g_Base_Texture;
@@ -61,8 +65,30 @@ Texture2D g_FogTexture[MAX_FOG_TEXTURE_COUNT];
 
 cbuffer CB_EnvData
 {
-    float3 vWindDirection   = float3(1.f,-1.f,1.f);     //바람이 부는 방향
-    float  fWindPower       = 1.f;                      //바람이 부는 새기
+    float4 vEnvColor = float4(1.f, 1.f, 1.f, 1.f); // 환경 Color값
+    /*  16Byte  */
+    
+    float3 vWindDirection = float3(1.f, -1.f, 1.f); // 바람이 부는 방향
+    float fWindPower = 1.f; // 바람이 부는 새기
+    /*  16Byte  */
+    
+    
+    // SkyBox Setting 
+    // 16 byte
+    float4 vSkyColor = float4(1.f,1.f,1.f,1.f);//16
+    float4 vCloudBaseColor = float4(1.f, 1.f, 1.f, 1.f);//16
+    float4 vCloudHighlight = float4(1.f, 1.f, 1.f, 1.f); //16
+    
+    int isChannelPacking = false; // 4 Byte 채널 패킹 사용한건지 아닌건지 
+    int iSkyBoxTextureType = RECTANGLE; // 4 Byte 기본 사각형
+    float fPolarRadiusScale = 1.f; // 4 Byte 
+    float EnvDataDummy; // 4 Byte
+    /* 16Byte  */
+    
+    float2  vSkyBoxTextureUVSpeed = float2(1.f, 1.f); // 8 Byte UV Speed 
+    float   fEvnAccDT = 0.f;  //4Byte
+    float   EnvDataDummy2;    //4bytes (16바이트 정렬 맞춤용)
+    /* 16 Byte */
 };
 
 
@@ -80,7 +106,6 @@ cbuffer CB_GrassData
     float g_fGrassSwaySpeed = 1.f; //이 잔디가 Sway = 흔들리는 Speed
     float g_fGrassWaveSize = 1.f; //이 잔디가 Power = 흔들리는 힘
 };
-
 
 
 
@@ -187,7 +212,7 @@ VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
     return output;
 }
 
-VS_OUT_MESH_VIEWZ VS_FOG(VS_IN_MESH input)
+VS_OUT_MESH_VIEWZ VS_ENV(VS_IN_MESH input)
 {
     VS_OUT_MESH_VIEWZ output;
     
@@ -204,6 +229,23 @@ VS_OUT_MESH_VIEWZ VS_FOG(VS_IN_MESH input)
     output.vProjPos = output.vPosition;
     return output;
 }
+
+VS_OUT_MESH VS_SKYBOX(VS_IN_MESH input)
+{
+    VS_OUT_MESH output;
+    output.vPosition = mul(float4(input.vPosition, 1.f),W);
+    output.vPosition = mul(output.vPosition, VP);
+    output.vUV = input.vUV;
+    output.vNormal = normalize(mul(input.vNormal, (float3x3) W));
+    output.vTangent = normalize(mul(input.vTangent, (float3x3) W));
+    output.vBinormal = normalize(mul(input.vBinormal, (float3x3) W));
+    
+    output.vWorldPos    = mul(float4(input.vPosition, 1.f), W);
+    output.vProjPos     = output.vPosition;
+    output.vPosition    = output.vPosition.xyww;
+    return output;
+}
+
 
 
 VS_OUT_MESH VS_GRASS(VS_IN_MESH input)
@@ -551,7 +593,7 @@ PS_OUT_DEFFERED PS_VINE(PS_IN_MESH input)
 
 PS_OUT_DEFFERED PS_GRASS(PS_IN_MESH input)
 {
-    PS_OUT_DEFFERED output;
+    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED)0;
     
     float4 vDiffuse = 1.f;
     
@@ -735,7 +777,7 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
 }
 
 
-PS_OUT_WBOIT PS_FOG(VS_OUT_MESH_VIEWZ input)
+PS_OUT_WBOIT PS_ENV(VS_OUT_MESH_VIEWZ input)
 {
     PS_OUT_WBOIT output;
    
@@ -786,39 +828,93 @@ PS_OUT_WBOIT PS_FOG(VS_OUT_MESH_VIEWZ input)
 }
 
 
+PS_OUT_BACKBUFFER PS_SKYBOX(PS_IN_MESH input)
+{
+    PS_OUT_BACKBUFFER output;
+    
+    float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+        
+    // 1. 시간에 따른 UV 애니메이션 적용
+    float2 animUV = input.vUV + vSkyBoxTextureUVSpeed * fEvnAccDT;
+    
+    // 최종적으로 샘플링할 UV를 담을 변수
+    float2 finalUV;
+    
+    if(iSkyBoxTextureType == SPHERE)
+    {
+        // [핵심] 둥근 텍스처는 U축(x) 애니메이션만 각도(회전)로 사용하고, 
+        // V축(y)은 애니메이션이 적용되지 않은 원본 input.vUV.y를 써야 안전합니다!
+        float angle = animUV.x * 2.0f * 3.14159265f;
+        
+        float radius = input.vUV.y * 0.5f; // animUV.y 대신 input.vUV.y 사용!
+        radius *= fPolarRadiusScale;
+
+        finalUV.x = 0.5f + radius * cos(angle);
+        finalUV.y = 0.5f + radius * sin(angle);
+    }
+    else // RECTANGLE 등 기본 사각형
+    {
+        // 사각형 텍스처는 U, V 양방향으로 스크롤되어도 무방함
+        finalUV = animUV;
+    }
+   
+    vDiffuse = g_DefaultTextures[0].Sample(LinearSampler, finalUV);
+    
+    
+    if(isChannelPacking)
+    {
+        float baseCloudMask = vDiffuse.b; // B채널: 전체적인 구름의 베이스 형태
+        float highlightCloudMask = vDiffuse.r; // R채널: 햇빛을 받는 밝고 짙은 구름 형태
+        
+        float4 finalPackedColor = lerp(vSkyColor, vCloudBaseColor, baseCloudMask);
+        
+        finalPackedColor = lerp(finalPackedColor, vCloudHighlight, highlightCloudMask);
+        
+        vDiffuse = finalPackedColor * vEnvColor;
+    }
+    
+
+    
+    output.vColor = vDiffuse;
+    
+    return output;
+}
+
+
 
 technique11 T0
 {
     // 기본 오브젝트
-	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)//0
 	
     // 지형
-    PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)
+    PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_LANDSCAPE)//1
 
     // 식생
-	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_BUSH)
-	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_GRASS , PS_GRASS)
-	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_MOSS)
-	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_TREE)
-	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_VINE)
+	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_BUSH)//2
+	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_GRASS , PS_GRASS)//3
+	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_MOSS)//4
+	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_TREE)//5
+	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_VINE)//6
 
     // 환경요소
-	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone , DS_Default , BS_AlphaBlend , VS_MAIN, PS_WATER)
+	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)//7
+	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone , DS_Default , BS_AlphaBlend , VS_MAIN, PS_WATER)//8
 
-    pass Fog
+    pass Env
     {
 
         SetRasterizerState(RS_Default_CullNone);
         SetDepthStencilState(DS_Default, 0);
         //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
-        SetVertexShader(CompileShader(vs_5_0, VS_FOG()));
+        SetVertexShader(CompileShader(vs_5_0, VS_ENV()));
         GeometryShader = NULL;
-        SetPixelShader(CompileShader(ps_5_0,PS_FOG()));
-    }
+        SetPixelShader(CompileShader(ps_5_0, PS_ENV()));
+    }//9
 
-
-    //EXT
-    PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+    // RGB mapping : weapon 쪽에서 쓰임
+	PASS_RS_DS_BS_VP(RGBMapping, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN , PS_MAIN) // 10
+    PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_MAIN) // 11
+	PASS_RS_DS_BS_VP(SkyBox, RS_Default_CullNone, DS_ReadOnly, BS_Default, VS_SKYBOX, PS_SKYBOX) // 12
+    PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN) // 13
 };

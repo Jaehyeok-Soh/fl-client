@@ -7,12 +7,13 @@
 #include "GameInstance.h"
 
 CSkyBox::CSkyBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject(pDevice, pContext)
-{
+	: CGameObject(pDevice, pContext), m_fAccDT{}
+{ 
 }
 
 CSkyBox::CSkyBox(const CSkyBox& rhs)
 	: CGameObject(rhs)
+	, m_fAccDT{rhs.m_fAccDT }
 {
 }
 
@@ -49,6 +50,7 @@ HRESULT CSkyBox::Ready_Component(SKYBOX_DESC* pDesc)
 		return E_FAIL;
 
 	/* 기본 모델 생성 */
+
 	CModel::MODEL_COPY_DESC tModelCopyDesc{};
 	wstring wstrModelDefaultTag = L"Prototype_Component_Model_";
 	if(FAILED(Add_Component<CModel>(ENUM_TO_UINT(ELevelType::STATIC) , wstrModelDefaultTag + wstrModelName, &tModelCopyDesc)))
@@ -90,6 +92,10 @@ void CSkyBox::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+
+	m_fAccDT += fTimeDelta;
+	if (m_fAccDT > 1000.f)
+		m_fAccDT = 0.f;
 }
 
 void CSkyBox::Update_Late(const _float fTimeDelta)
@@ -102,7 +108,7 @@ void CSkyBox::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 
-	//m_pGameInstance->GetInstance()->Push_RenderObject(RENDER_CATEGORY::ENVIRONMENT,this);
+	m_pGameInstance->GetInstance()->Push_RenderObject(RENDER_CATEGORY::ENVIRONMENT,this);
 }
 
 
@@ -112,6 +118,9 @@ HRESULT CSkyBox::Render()
 	CModel*		pModel		= Get_Component<CModel>();	if (pTs == nullptr) return E_FAIL;
 	CShader*	pShader		= Get_Component<CShader>();	if (pTs == nullptr) return E_FAIL;
 	CTexture*	pTexture	= Get_Component<CTexture>(); if (pTexture == nullptr) return E_FAIL;
+
+	if (FAILED(pShader->Get_Scalar("fEvnAccDT")->SetFloat(m_fAccDT)))
+		return E_FAIL;
 
 	CCameraMan* pCam = m_pGameInstance->Get_MainCamera();
 	if (pCam == nullptr) return E_FAIL;
@@ -131,11 +140,6 @@ HRESULT CSkyBox::Render()
 		pShader->Apply();
 		pModel->Render(i);
 	}
-
-	return S_OK;
-
-
-
 
 	return S_OK;
 }

@@ -2410,7 +2410,7 @@ HRESULT CMapObject::Render_Env()
         _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
 
         /* Client Make Path를 이용한다 */
-        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::Fog));
+        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject));
 
         /* MapObject State 바인딩 */
         if (FAILED(Set_GPU_MapObjectState(pShader)))
