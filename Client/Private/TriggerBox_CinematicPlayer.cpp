@@ -90,6 +90,12 @@ void CTriggerBox_CinematicPlayer::OnCollision_Exit(_uint iMyColliderLayer, _uint
 
 void CTriggerBox_CinematicPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
+	if (Super::IsEnabled() == false || m_bLockedEnter == true)
+		return;
+
+	if (Super::m_bHasQuest)
+		m_bLockedEnter = true;
+
 	if (!m_isTriggerEventPlay)
 	{
 		m_isTriggerEventPlay = true;
@@ -106,10 +112,29 @@ void CTriggerBox_CinematicPlayer::OnTrigger_Enter(_uint iMyColliderLayer, _uint 
 
 void CTriggerBox_CinematicPlayer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+	if (Super::IsEnabled() == false || m_bLockedExit == true)
+		return;
+
 	if (m_eQuestEvent == DTO::QUESTEVENT::AREA_EXIT)
 	{
 		CallQuestEvent(Get_Object_Enum_Tag(), 1);
 	}
+
+	if (Super::m_bHasQuest)
+	{
+		SetEnable(false);
+		Super::m_bLockedExit = true;
+	}
+}
+
+void CTriggerBox_CinematicPlayer::QuestEnter()
+{
+	Super::QuestEnter();
+}
+
+void CTriggerBox_CinematicPlayer::QuestExit()
+{
+	Super::QuestExit();
 }
 
 CTriggerBox_CinematicPlayer* CTriggerBox_CinematicPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

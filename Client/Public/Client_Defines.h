@@ -710,8 +710,8 @@ namespace Client
 		NONE = 0,
 
 		// player Á¾·ù
-		MOON = 0x000001,
-		BERO = 0x000002,
+		SWORD = 0x000001,
+		DUAL = 0x000002,
 		PIGGY = 0x000004,
 
 		NORMAL = 0x000008,

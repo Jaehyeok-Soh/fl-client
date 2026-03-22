@@ -545,31 +545,47 @@ void CPanel_AnimationController::DrawController()
     // ---------------------------------------------------------
     auto DrawSingleEventTrack = [&](const char* label, auto& evt, int eventIndex, EAnimEvent::Enum typeIndex, ImU32 color, float durationSec)
         {
-            // ID 충돌 방지: 이벤트 인덱스와 타입 인덱스를 조합
-            ImGui::PushID(eventIndex * 1000 + typeIndex);
+            const int eventToken = eventIndex * 1000 + static_cast<int>(typeIndex);
+
+            ImGui::PushID(eventToken);
 
             // --- 2-1. 라벨 영역 (클릭 선택) ---
             ImGui::SetCursorScreenPos(ImVec2(canvas_pos.x, current_y));
 
             bool isSelected = false;
-            if (typeIndex == EAnimEvent::OVERLAP) isSelected = (m_tAnimControllInfo->iCurrentAttackEventIndex == eventIndex);
-            else if (typeIndex == EAnimEvent::EFFECT) isSelected = (m_tAnimControllInfo->iCurrentEffectEventIndex == eventIndex);
+            if (typeIndex == EAnimEvent::OVERLAP)      isSelected = (m_tAnimControllInfo->iCurrentAttackEventIndex == eventIndex);
+            else if (typeIndex == EAnimEvent::EFFECT)  isSelected = (m_tAnimControllInfo->iCurrentEffectEventIndex == eventIndex);
+            else if (typeIndex == EAnimEvent::SOUND)   isSelected = (m_tAnimControllInfo->iCurrentSoundEventIndex == eventIndex);
 
             if (ImGui::Selectable(label, isSelected, 0, ImVec2(LABEL_WIDTH, TRACK_HEIGHT)))
             {
+                m_tAnimControllInfo->iCurrentSoundEventIndex = -1;
+                m_tAnimControllInfo->iCurrentEffectEventIndex = -1;
+                m_tAnimControllInfo->iCurrentAttackEventIndex = -1;
+
                 if (typeIndex == EAnimEvent::OVERLAP)
                     m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
-
-                else if (typeIndex == EAnimEvent::EFFECT) 
+                else if (typeIndex == EAnimEvent::EFFECT)
                     m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::SOUND)
+                    m_tAnimControllInfo->iCurrentSoundEventIndex = eventIndex;
             }
 
-            draw_list->AddRect(ImVec2(canvas_pos.x, current_y), ImVec2(canvas_pos.x + LABEL_WIDTH, current_y + TRACK_HEIGHT), IM_COL32(100, 100, 100, 255));
+            draw_list->AddRect(
+                ImVec2(canvas_pos.x, current_y),
+                ImVec2(canvas_pos.x + LABEL_WIDTH, current_y + TRACK_HEIGHT),
+                IM_COL32(100, 100, 100, 255));
 
             // --- 2-2. 트랙 배경 ---
             ImU32 bg_col = (eventIndex % 2 == 0) ? IM_COL32(50, 50, 50, 255) : IM_COL32(55, 55, 55, 255);
-            draw_list->AddRectFilled(ImVec2(canvas_pos.x + LABEL_WIDTH, current_y), ImVec2(canvas_pos.x + LABEL_WIDTH + timeline_area_width, current_y + TRACK_HEIGHT), bg_col);
-            draw_list->AddLine(ImVec2(canvas_pos.x, current_y + TRACK_HEIGHT), ImVec2(canvas_pos.x + LABEL_WIDTH + timeline_area_width, current_y + TRACK_HEIGHT), IM_COL32(30, 30, 30, 255));
+            draw_list->AddRectFilled(
+                ImVec2(canvas_pos.x + LABEL_WIDTH, current_y),
+                ImVec2(canvas_pos.x + LABEL_WIDTH + timeline_area_width, current_y + TRACK_HEIGHT),
+                bg_col);
+            draw_list->AddLine(
+                ImVec2(canvas_pos.x, current_y + TRACK_HEIGHT),
+                ImVec2(canvas_pos.x + LABEL_WIDTH + timeline_area_width, current_y + TRACK_HEIGHT),
+                IM_COL32(30, 30, 30, 255));
 
             // --- 2-3. 이벤트 박스 계산 ---
             float start_tick = evt.fStartTrackPosition;
@@ -577,46 +593,68 @@ void CPanel_AnimationController::DrawController()
 
             float start_x = canvas_pos.x + LABEL_WIDTH + (start_tick * px_per_tick);
             float width_px = duration_tick * px_per_tick;
-            if (width_px < 6.0f) width_px = 6.0f;
+            if (width_px < 6.0f)
+                width_px = 6.0f;
             float end_x = start_x + width_px;
 
             ImVec2 rect_min(start_x, current_y + 4);
             ImVec2 rect_max(end_x, current_y + TRACK_HEIGHT - 4);
 
-            // [중요] 입력 처리를 위한 커서 이동 (박스 위치로)
             ImGui::SetCursorScreenPos(rect_min);
+            ImGui::InvisibleButton("##EvtBtn", ImVec2(width_px, TRACK_HEIGHT - 8));
 
-            // 버튼 ID 생성 ("##EvtBtn"으로 하면 PushID 덕분에 고유해짐)
-            // [드래그 및 클릭 처리]
-            // InvisibleButton은 클릭/드래그 모두 감지 가능
-            if (ImGui::InvisibleButton("##EvtBtn", ImVec2(width_px, TRACK_HEIGHT - 8)))
+            // 클릭 선택
+            if (ImGui::IsItemClicked())
             {
-                // 단순 클릭 시 선택 처리
-                if (typeIndex == EAnimEvent::OVERLAP) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
-                 else if (typeIndex == EAnimEvent::EFFECT) m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
+                m_tAnimControllInfo->iCurrentSoundEventIndex = -1;
+                m_tAnimControllInfo->iCurrentEffectEventIndex = -1;
+                m_tAnimControllInfo->iCurrentAttackEventIndex = -1;
+
+                if (typeIndex == EAnimEvent::OVERLAP)
+                    m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::EFFECT)
+                    m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::SOUND)
+                    m_tAnimControllInfo->iCurrentSoundEventIndex = eventIndex;
             }
 
-            // 버튼이 활성화된 상태에서 드래그 중인지 확인
+            // 드래그 시작
+            if (ImGui::IsItemActivated())
+            {
+                m_iDraggingEventToken = eventToken;
+            }
+
+            // 드래그 중에는 위치만 변경
             if (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left))
             {
-                // 마우스 델타값(픽셀) 가져오기
                 float delta_px = ImGui::GetIO().MouseDelta.x;
-
-                // 픽셀 -> 틱 변환
                 float delta_tick = delta_px / px_per_tick;
 
-                // 데이터 갱신
                 evt.fStartTrackPosition += delta_tick;
+                evt.fStartTrackPosition = std::clamp(evt.fStartTrackPosition, 0.0f, total_duration_ticks);
 
-                // 범위 제한 (0 이하 방지)
-                if (evt.fStartTrackPosition < 0.0f) evt.fStartTrackPosition = 0.0f;
-
-                // 드래그 중일 때도 선택된 것으로 간주
-                if (typeIndex == EAnimEvent::OVERLAP) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
-                else if (typeIndex == EAnimEvent::EFFECT) m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
+                if (typeIndex == EAnimEvent::OVERLAP)
+                    m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::EFFECT)
+                    m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::SOUND)
+                    m_tAnimControllInfo->iCurrentSoundEventIndex = eventIndex;
             }
 
-            // [박스 렌더링] (입력 처리 후에 그려도 됨, DrawList 순서 주의)
+            // 마우스를 놓는 순간 실제 반영
+            if (m_iDraggingEventToken == eventToken && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+            {
+                if (typeIndex == EAnimEvent::OVERLAP)
+                    m_pAnimToolManager->Modify_AttackOverlap(m_tEventInfo->vecAttackEvents);
+                else if (typeIndex == EAnimEvent::EFFECT)
+                    m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
+                else if (typeIndex == EAnimEvent::SOUND)
+                    m_pAnimToolManager->Modify_SoundEvent();
+
+                m_iDraggingEventToken = -1;
+            }
+
+            // [박스 렌더링]
             draw_list->AddRectFilled(rect_min, rect_max, color, 4.0f);
 
             if (isSelected)
@@ -624,13 +662,7 @@ void CPanel_AnimationController::DrawController()
             else
                 draw_list->AddRect(rect_min, rect_max, IM_COL32(255, 255, 255, 100), 4.0f);
 
-            // 텍스트 (박스가 충분히 클 때만)
-            if (width_px > 30.0f) {
-                // draw_list->AddText(ImVec2(start_x + 2, current_y + 5), IM_COL32(255, 255, 255, 255), label);
-            }
-
-            ImGui::PopID(); // PushID에 대한 팝
-
+            ImGui::PopID();
             current_y += TRACK_HEIGHT;
         };
 
@@ -679,6 +711,31 @@ void CPanel_AnimationController::DrawController()
         );
     }
 
+    // [Sound Events]
+    localIdx = 0;
+    const std::string curAnimName =
+        Engine_Utils::ToString(m_tAnimControllInfo->pModel->Get_CurrentAnimationName());
+
+    for (int i = 0; i < m_tEventInfo->vecSoundEvents.size(); ++i)
+    {
+        auto& evt = m_tEventInfo->vecSoundEvents[i];
+
+        // 사운드는 strAnimTag를 source of truth로 사용
+        if (evt.strAnimTag != curAnimName)
+            continue;
+
+        char labelBuf[32];
+        sprintf_s(labelBuf, "Sound %d", localIdx++);
+
+        DrawSingleEventTrack(
+            labelBuf,
+            evt,
+            i,
+            EAnimEvent::SOUND,
+            IM_COL32(240, 180, 60, 220), // 사운드는 노랑/주황 계열
+            0.0f // 순간 이벤트이므로 duration 0 -> 최소 width 6으로 표시됨
+        );
+    }
 
     // ---------------------------------------------------------
     // D. 인디케이터 (현재 재생 위치)
@@ -715,6 +772,8 @@ void CPanel_AnimationController::Render_AddEventModal()
             {
             case Engine::EAnimEvent::OVERLAP:
             {
+                m_tAnimControllInfo->iCurrentEffectEventIndex = -1;
+                m_tAnimControllInfo->iCurrentSoundEventIndex = -1;
                 m_tAnimControllInfo->iCurrentAttackEventIndex = (_int)m_tEventInfo->vecAttackEvents.size();
                 DTO::ATTACKEVENT newEvent{};
                 newEvent.iAnimIndex = m_tAnimControllInfo->iCurrentAnimIndex;
@@ -724,6 +783,8 @@ void CPanel_AnimationController::Render_AddEventModal()
             }
             case Engine::EAnimEvent::EFFECT:
             {
+                m_tAnimControllInfo->iCurrentAttackEventIndex = -1;
+                m_tAnimControllInfo->iCurrentSoundEventIndex = -1;
                 m_tAnimControllInfo->iCurrentEffectEventIndex = (_int)m_tEventInfo->vecVFXEvents.size();
 
                 // 새로운 EffectEvent 객체 생성 및 기본값 새팅
@@ -743,7 +804,35 @@ void CPanel_AnimationController::Render_AddEventModal()
                 break;
             }
             case Engine::EAnimEvent::SOUND:
-                break;
+            {
+                m_tAnimControllInfo->iCurrentAttackEventIndex = -1;
+                m_tAnimControllInfo->iCurrentEffectEventIndex = -1;
+                m_tAnimControllInfo->iCurrentSoundEventIndex = (_int)m_tEventInfo->vecSoundEvents.size();
+
+                DTO::SOUNDEVENT newEvent{};
+                newEvent.eEventType = Engine::EAnimEvent::SOUND;
+
+                newEvent.strDescription = "New Sound Event";
+                newEvent.strAnimTag = Engine_Utils::ToString(m_tAnimControllInfo->pModel->Get_CurrentAnimationName());
+                newEvent.iAnimIndex = m_tAnimControllInfo->iCurrentAnimIndex; // 캐시용
+
+                newEvent.fStartTrackPosition = (_float)m_tAnimControllInfo->fTrackPosition;
+                newEvent.ePhase = Engine::EAnimNotifyPhase::Immediatley;
+
+                newEvent.eCommand = DTO::EAnimSoundCommand::OneShot;
+                newEvent.strSoundTag = "";
+                newEvent.iControlledId = -1;
+
+                newEvent.fVolume = 1.f;
+                newEvent.fPitch = 1.f;
+                newEvent.fDelay = 0.f;
+
+                newEvent.bSteal = false;
+                newEvent.bLoop = false;
+
+                m_tEventInfo->vecSoundEvents.push_back(newEvent);
+                m_pAnimToolManager->Modify_SoundEvent();
+            } break;
             default:
                 break;
             }

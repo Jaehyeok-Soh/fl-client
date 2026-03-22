@@ -48,6 +48,8 @@ public:
     void CreateLineEffect();
     void CreateTrailEffect();
 
+private:
+    void Draw_LightBoxWindow(CToolObject* pGo);
 
 protected:
     wstring TypeToString(E_EffectSystemType eType);

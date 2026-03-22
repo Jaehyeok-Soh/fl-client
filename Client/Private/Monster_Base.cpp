@@ -232,9 +232,32 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 	// 살아 있을때만 피격 처리를 하겠다
 	if (IsAlive())
 	{
-		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SWORD)))
 		{
-			OnHit_PlayerMoon(hitDesc);
+			OnHit_Sword(hitDesc);
+		}
+
+		else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+		{
+			OnHit_Gun(hitDesc);
+		}
+
+		else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::DUAL)))
+		{
+			OnHit_Dual(hitDesc);
+		}
+
+		else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE)))
+		{
+			OnHit_Skill(hitDesc);
+		}
+
+		// Shake & Emissive
+		if (CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(Part::Enum::BODY))
+		{
+			CRenderFx* pRenderFx = pBody->Get_Component<CRenderFx>();
+			pRenderFx->Play_Shake(0.35f);
+			pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
 		}
 	}
 
@@ -406,20 +429,20 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 	return S_OK;
 }
 
-void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
+void CMonster_Base::OnHit_Sword(const HIT_DESC& hitDesc)
 {
 	_uint iDamageFlag = hitDesc.iDamageFlag;
 	_bool bCritical = false;
 
 	UI_PREFAB_DATA tPrefabData = {};
 	UI_DAMAGEFONT_PREFAB_DATA Desc = {};
-	Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage); // 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-	Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f }; // 데미지 폰트 색 // 캐릭터 고유 색
-	Desc.vHitPos = hitDesc.vHitPoint; // 데미지 폰트를 띄울 World 위치 // 
+	Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+	Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+	Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
 	Desc.vRandOffset = Vec3{
 		m_pGameInstance->Rand_Float(-1.f, 1.f),
 		m_pGameInstance->Rand_Float(-1.f, 1.f),
-		m_pGameInstance->Rand_Float(-1.f, 1.f) }; // 랜덤 오프셋 // 더 커지면 이상함
+		m_pGameInstance->Rand_Float(-1.f, 1.f) };				// 랜덤 오프셋 // 더 커지면 이상함
 
 	/*이펙트를 생성하기 위해서*/
 	//if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
@@ -439,12 +462,6 @@ void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
 		if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
 		{
 			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
-		}
-
-
-		else if (hitDesc.attackDesc.iAttackerLayer == PHYSICSFILTERGROUP::ATTACK_PROJECTTILE)
-		{
-			m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
 		}
 
 		else
@@ -485,14 +502,188 @@ void CMonster_Base::OnHit_PlayerMoon(const HIT_DESC& hitDesc)
 				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
 		}
 	}
+}
 
-	// Shake & Emissive
-	if (CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(Part::Enum::BODY))
+void CMonster_Base::OnHit_Gun(const HIT_DESC& hitDesc)
+{
+	_uint iDamageFlag = hitDesc.iDamageFlag;
+	_bool bCritical = false;
+
+	// critical 여부 판단
+	if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
 	{
-		CRenderFx* pRenderFx = pBody->Get_Component<CRenderFx>();
-		pRenderFx->Play_Shake(0.35f);
-		pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
+		bCritical = true;
+	}
 
+	// effect 출력
+	{
+		/*	hitDesc.attackDesc.iAttackerLayer = PHYSICSFILTERGROUP::ATTACK_PROJECTTILE;*/
+		EFFECT_SPAWN_DESC Desc = {};
+		//Matrix OffsetMatrix = Matrix::CreateTranslation(Vec3(0.f, 0.5f, 0.5f));
+		Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
+
+		Vec3 vScale, vPos;
+		Quat vQuat;
+		WorldMatrix.Decompose(vScale, vQuat, vPos);
+
+		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
+		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+		if (bCritical)
+		{
+			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+		}
+
+
+		else if (hitDesc.attackDesc.iAttackerLayer == PHYSICSFILTERGROUP::ATTACK_PROJECTTILE)
+		{
+			m_pGameInstance->Request_Effect("VFX_Bullet_Hit", Desc);
+		}
+	}
+
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+		Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+		Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
+		Desc.vRandOffset = Vec3{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f) };				// 랜덤 오프셋 // 더 커지면 이상함
+
+		////// UI에게 폰트 호출 //////
+		if (bCritical)
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+
+		else
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+	}
+}
+
+void CMonster_Base::OnHit_Skill(const HIT_DESC& hitDesc)
+{
+	_uint iDamageFlag = hitDesc.iDamageFlag;
+	_bool bCritical = false;
+
+	// critical 여부 판단
+	if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+	{
+		bCritical = true;
+	}
+
+	/*이펙트를 생성하기 위해서*/
+	//if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::MOON)))
+	{
+		/*	hitDesc.attackDesc.iAttackerLayer = PHYSICSFILTERGROUP::ATTACK_PROJECTTILE;*/
+		EFFECT_SPAWN_DESC Desc = {};
+		//Matrix OffsetMatrix = Matrix::CreateTranslation(Vec3(0.f, 0.5f, 0.5f));
+		Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
+
+		Vec3 vScale, vPos;
+		Quat vQuat;
+		WorldMatrix.Decompose(vScale, vQuat, vPos);
+
+		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
+		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+		if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+		{
+			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+		}
+
+		else
+		{
+			m_pGameInstance->Request_Effect("VFX_Sword_Hit", Desc);
+		}
+	}
+
+	/* 폰트 추가 정보 */
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+		Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		Desc.vFontColor = Vec4{ 1.f, 0.95f, 0.47f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+		Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
+		Desc.vRandOffset = Vec3{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f) };				// 랜덤 오프셋 // 더 커지면 이상함
+
+		// skill : hit point가 없어서 positoin 값 기준으로 데미지 폰트 띄움
+		{
+			Vec3 vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+			vPos.y += 0.5f;
+
+			Desc.vHitPos = vPos;
+		}
+
+		////// UI에게 폰트 호출 //////
+		if (bCritical)
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+
+		else
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+	}
+}
+
+void CMonster_Base::OnHit_Dual(const HIT_DESC& hitDesc)
+{
+	_uint iDamageFlag = hitDesc.iDamageFlag;
+	_bool bCritical = false;
+
+	// critical 여부 판단
+	if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL)))
+	{
+		bCritical = true;
+	}
+
+	// effect 출력
+	{
+
+	}
+
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_DAMAGEFONT_PREFAB_DATA Desc = {};
+		Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
+		Desc.vFontColor = Vec4{ 0.f, 0.82f, 1.f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+		Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
+		Desc.vRandOffset = Vec3{
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f),
+			m_pGameInstance->Rand_Float(-1.f, 1.f) };				// 랜덤 오프셋 // 더 커지면 이상함
+
+		////// UI에게 폰트 호출 //////
+		if (bCritical)
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_CRITICAL, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
+
+		else
+		{
+			tPrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(
+				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+		}
 	}
 }
 

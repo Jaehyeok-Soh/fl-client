@@ -149,9 +149,18 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     CGameInstance::GetInstance()->Add_Actor_Object(this);
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
         if (FAILED(pPlayerState->Awake(iCurrentLevelID)))
-            return E_FAIL;
-    
-    Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
+           return E_FAIL;
+
+    switch (iCurrentLevelID)
+    {
+    case ENUM_TO_UINT(ELevelType::TEST):
+        Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::NONE));
+        break;
+
+    default:
+        Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
+    }
+
     Start_Attack(CPlayer::State::COMBO);
 
     Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
@@ -528,6 +537,7 @@ _bool CPlayer::Start_Attack(State iState)
     switch (iState)
     {
     case State::COMBO:
+    case State::COMBO_DUAL:
     case State::CHARGE:
     case State::JUMPATTEND:
         bChange = static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_AttackState(CStatCom_Player::Attack_State::Melee, true);
@@ -568,6 +578,7 @@ void CPlayer::End_Attack(State iState)
     {
         // combo timer 시작
     case State::COMBO:
+    case State::COMBO_DUAL:
     case State::JUMPATTEND:
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Set_Timer(CStatCom_Player::TIMER_TYPE::COMBO, true);
     case State::CHARGE:
@@ -877,7 +888,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::JUMPATTSTART);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::END);
 
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -1151,7 +1162,7 @@ HRESULT CPlayer::Ready_BaseStates()
         CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = 0;
         desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Land_Inplace"), Get_AnimationIndex(L"Animation_PlayerMoon_LandHeavy_Inplace") };
-        desc.bBlend = true;
+        desc.bBlend = false;
         desc.bLoop = false;
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
@@ -1394,7 +1405,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::SWORD;
             tInfo.iPartSize = 1;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::HOLD);
 
             m_arrMeleeInfo[ENUM_TO_SZET(MELEE::SWORD)] = tInfo;
@@ -1405,7 +1416,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::Dual_R;
             tInfo.iPartSize = 2;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrMeleeInfo[ENUM_TO_SZET(MELEE::DUAL)] = tInfo;
@@ -1421,7 +1432,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::GUN;
             tInfo.iPartSize = 1;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrRangeInfo[ENUM_TO_SZET(RANGE::MACHINE)] = tInfo;
@@ -1435,7 +1446,7 @@ HRESULT CPlayer::Ready_WeaponInfo()
 
             tInfo.iPartStartIdx = Part::SKILL;
             tInfo.iPartSize = 1;
-            tInfo.bHave = true;
+            tInfo.bHave = false;
             tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrSkillInfo[ENUM_TO_SZET(SKILL::MOON)] = tInfo;
@@ -1547,7 +1558,7 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
         weaponDesc.eState = CWeapon::State::HOLD;
 
-        weaponDesc.bMianWeapon = true;
+        weaponDesc.bMianWeapon = false;
         weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
         weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
         weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
@@ -1591,7 +1602,7 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.pMatHandSocket = &Get_Part<CBody>(Part::BODY)->Get_RightHandSocket()->Get_CombinedTransformMatrix();
         weaponDesc.pMatSocket = &Get_Part<CBody>(Part::BODY)->Get_WeaponSocket()->Get_BindPoseTransformMatrix();
         weaponDesc.eModel = CWeapon::Weapon_ModelType::ANIM;
-        weaponDesc.eAnimState = CWeapon::AnimState::STOP;
+        weaponDesc.eAnimState = CWeapon::AnimState::PLAY_ONCE;
         weaponDesc.bMianWeapon = false;
         weaponDesc.eState = CWeapon::State::HOLD;
         weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
@@ -1601,9 +1612,9 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
 
         weaponDesc.fAllBullet = 1000.f;
         weaponDesc.fCurBullet = 500.f;
-        weaponDesc.fAttackCoolTime = 0.26f; // 0.15 넘 빠름 // 0.3 너무 느림
+        weaponDesc.fAttackCoolTime = 0.2f; // 0.15 넘 빠름 // 0.3 너무 느림
 
-        weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), XMConvertToRadians(90.f), XMConvertToRadians(-90.f));
+        weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(180.f), XMConvertToRadians(90.f), XMConvertToRadians(0.f));
         weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(90.f));
 
         if (FAILED(Add_Part(Part::GUN, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Gun", &weaponDesc)))
@@ -1714,7 +1725,7 @@ HRESULT CPlayer::Ready_PartCollider()
             tPartColliDesc.pColliderDesc = &tPColliDesc;
         }
 
-        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_ObjChache);
+        tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_ObjChache) | ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Update_MinDistance);
 
         // player가 감지할 part ui
         if (FAILED(Add_Part(Part::DETECTCOLLIDER, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
@@ -1779,6 +1790,9 @@ void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
         iStartPartIdx   = m_arrMeleeInfo[size_t(iCurWeapon)].iPartStartIdx;
         iPartSize       = m_arrMeleeInfo[size_t(iCurWeapon)].iPartSize;
 
+        if (!m_arrMeleeInfo[size_t(iCurWeapon)].bHave)
+            return;
+
         m_arrMeleeInfo[size_t(iCurWeapon)].iWeaponState = iState;
         break;
 
@@ -1788,6 +1802,9 @@ void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
         iStartPartIdx   = m_arrRangeInfo[size_t(iCurWeapon)].iPartStartIdx;
         iPartSize       = m_arrRangeInfo[size_t(iCurWeapon)].iPartSize;
 
+        if (!m_arrRangeInfo[size_t(iCurWeapon)].bHave)
+            return;
+
         m_arrRangeInfo[size_t(iCurWeapon)].iWeaponState = iState;
         break;
 
@@ -1796,6 +1813,9 @@ void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
         iCurWeapon      = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::SKILL)];
         iStartPartIdx   = m_arrSkillInfo[size_t(iCurWeapon)].iPartStartIdx;
         iPartSize       = m_arrSkillInfo[size_t(iCurWeapon)].iPartSize;
+
+        if (!m_arrSkillInfo[size_t(iCurWeapon)].bHave)
+            return;
 
         m_arrSkillInfo[size_t(iCurWeapon)].iWeaponState = iState;
         break;

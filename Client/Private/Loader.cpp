@@ -5,6 +5,7 @@
 #include "PlayerControlContext.h"
 #include "MonsterControlContext.h"
 #include "MonoBehaviour.h"
+#include "Sound_Handler.h"
 #include "EffectHandler.h"
 #include "PlayerActionState.h"
 #include "MonsterActionState.h"
@@ -62,6 +63,7 @@
 #include "TriggerCollidePart.h"
 #include "Loader.h"
 #include "Effect.h"
+#include "Effect_Env.h"
 #include "Effect_WarningCircle.h"
 #include "EffectObject.h"
 #include "BattleField.h"
@@ -330,6 +332,9 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(Ready_Spawner()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Sounds()))
+		return E_FAIL;
+
 #pragma region Ready Cinematic Camera Data
 	if (FAILED(Ready_CCS()))
 		return S_OK;
@@ -594,8 +599,8 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Weapon_MoonGun";		
-		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
-		desc.vecStageBoneIndices = { 8 }; // ÃÑ¿­ »À
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = { 6 }; // ÃÑ¿­ »À : 8
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonGun", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
@@ -728,6 +733,8 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_VIBuffer_InstanceMesh
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
+	// For. Prototype_Component_SoundHandler
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_SoundHandler", CSound_Handler::Create());
 	// For. Prototype_Component_EffectHandler_SkillObject
 	{
 		CEffectHandler::ANIM_EFFECT_HANDLER_DESC desc{};
@@ -773,6 +780,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 		// ÀÌÆåÆ® Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Env",			CEffect_Env::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_WarningCircle", CEffect_WarningCircle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_WarningSpace",			CSkillWarningSpace::Create(m_pDevice, m_pDeviceContext));
@@ -1375,13 +1383,21 @@ HRESULT CLoader::Ready_Spawner()
 	return S_OK;
 }
 
+HRESULT CLoader::Ready_Sounds()
+{
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 {
 	ELevelType eLevelType = ELevelType::LOGO;
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonFinal.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonFFinal.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

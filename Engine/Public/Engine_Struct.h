@@ -143,6 +143,14 @@ namespace Engine
 
 	}COLLIDED_DESC;
 
+	typedef struct tagSoundMeta
+	{
+		string strTag{""};
+		unsigned int iHash = { 0 };
+		ESoundCategory eCategory = { ESoundCategory::SFX };
+		unsigned int iVariantCount = { 0 };
+	}SOUND_META;
+
 	typedef struct tagBakedSectionBuildInput
 	{
 		int                    iSectionX{ 0 };
@@ -1216,9 +1224,26 @@ namespace Engine
 
 	typedef struct tagEnvironmentEffectDesc : public EFFECT_SPAWN_DESC
 	{
-		SimpleMath::Vector3 VFX_Target_Position = { 0.f, 0.f, 0.f };
-		SimpleMath::Vector3 VFX_Scale = { 1.f, 1.f, 1.f };
-		SimpleMath::Vector3 VFX_Rotation = { 0.f, 0.f, 0.f };
+		typedef struct tagENV_PARTEFFECT_DESC
+		{
+			unsigned int	iPartsIndex = {};
+
+			SimpleMath::Vector3 /*Particle Position*/	VFX_Position_Parts;
+			SimpleMath::Vector3 /*Particle Scale*/		VFX_Scale_Parts;
+			SimpleMath::Vector3 /*Particle Rotation*/	VFX_Rotation_Parts;
+
+			int											VFX_ParticleCount_Parts;
+			float										VFX_ParticleLifeTime_Parts;
+			float										VFX_ParticleDuration_Parts;
+			SimpleMath::Vector3 /*Range*/				VFX_ParticleRange_Parts;
+		}ENV_PART_DESC;
+
+		// ºÎ¸ð ÀÌÆåÆ®
+		SimpleMath::Vector3								VFX_Target_Position = { 0.f, 0.f, 0.f };
+		SimpleMath::Vector3								VFX_Scale = { 1.f, 1.f, 1.f };
+		SimpleMath::Vector3								VFX_Rotation = { 0.f, 0.f, 0.f };
+
+		std::vector<ENV_PART_DESC>						VFX_PartsDescList = {};
 	}EFFECT_ENV_DESC;
 
 #pragma endregion

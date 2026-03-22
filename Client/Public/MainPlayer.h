@@ -55,7 +55,7 @@ private:
 	HRESULT Ready_CCT();
 	HRESULT Ready_AttackOverlap();
 	HRESULT Ready_EffectEvent();
-
+	HRESULT Ready_SoundHandler();
 	HRESULT Ready_AttackStates();
 
 private:

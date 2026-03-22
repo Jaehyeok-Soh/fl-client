@@ -176,6 +176,7 @@
     <ClInclude Include="..\Public\WeaponPickUp.h" />
     <ClInclude Include="..\Public\InteractiveObject.h" />
     <ClInclude Include="..\Public\CLightMapObject.h" />
+    <ClInclude Include="..\Public\Effect_Env.h" />
     <ClInclude Include="..\Public\Monster_Fly.h" />
     <ClInclude Include="..\Public\Monster_Fly_Body.h" />
     <ClInclude Include="..\Public\TriggerBox_CinematicPlayer.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="..\Public\Quest_Chapter.h" />
     <ClInclude Include="..\Public\Quest_Scenario.h" />
     <ClInclude Include="..\Public\SkyBox.h" />
+    <ClInclude Include="..\public\SoundEventBinder.h" />
     <ClInclude Include="..\Public\State_Condemn.h" />
     <ClInclude Include="..\Public\State_DualCombo.h" />
     <ClInclude Include="..\Public\TriggerBox_TutorialUIEvent.h" />
@@ -421,9 +423,11 @@
     <ClCompile Include="..\Private\InteractiveObject.cpp" />
     <ClCompile Include="..\Private\Monster_Fly.cpp" />
     <ClCompile Include="..\Private\Monster_Fly_Body.cpp" />
+    <ClCompile Include="..\Private\Effect_Env.cpp" />
     <ClCompile Include="..\Private\TriggerBox_CinematicPlayer.cpp" />
     <ClCompile Include="..\Private\CLightMapObject.cpp" />
     <ClCompile Include="..\Private\State_DualCombo.cpp" />
+    <ClCompile Include="..\private\SoundEventBinder.cpp" />
     <ClCompile Include="..\Private\UIConversation_Text.cpp" />
     <ClCompile Include="..\Private\DialogueManager.cpp" />
     <ClCompile Include="..\Private\IInteractable.cpp" />

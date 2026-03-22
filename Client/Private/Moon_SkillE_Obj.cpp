@@ -64,7 +64,7 @@ void CMoon_SkillE_Obj::Handle_Hit(_uint iMyLayer, _uint iOtherLayer, Engine::CGa
 
 	EXTRA_ATTACK_DESC tExtra = {};
 	{
-		tExtra.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::MOON) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE);
+		tExtra.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::SWORD) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE);
 
 		desc.tExtraDesc = tExtra;
 	}

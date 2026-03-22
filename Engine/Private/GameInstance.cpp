@@ -96,7 +96,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pRender_Manager = CRender_Manager::Create(*ppDevice, *ppContext)))
 		return E_FAIL;
 
-	if (!(m_pSound_Manager = CSound_Manager::Create()))
+	if (!(m_pSound_Manager = CSound_Manager::Create(Engine_Desc.iLevelCount)))
 		return E_FAIL;
 
 	if (!(m_pShaderAsset_Manager = CShaderAsset_Manager::Create(*ppDevice, *ppContext)))
@@ -149,7 +149,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	_float fUnscaledTimeDelta = fTimeDelta;
 	_float fScaledTimeDelta = m_pTimeScale_Manager->Begin_Frame(fUnscaledTimeDelta);
 
-	m_pSound_Manager->Update();
+	m_pSound_Manager->Update(fTimeDelta);
 	m_pInput_Manager->Update();
 	m_pLevel_Manager->Update(fUnscaledTimeDelta);
 	m_pObject_Manager->Update_Priority(fUnscaledTimeDelta, fScaledTimeDelta);
@@ -222,7 +222,7 @@ void CGameInstance::Clear(_uint iLevelID)
 	m_pInput_Manager->Clear();
 	m_pCamera_Manager->Clear();
 	m_pEventBus_Manager->Clear_All();
-	m_pSound_Manager->StopAll();
+	m_pSound_Manager->Clear(iLevelID);
 }
 
 #pragma region PICKING
@@ -655,29 +655,45 @@ HRESULT CGameInstance::Camera_Shaking(const CAM_SHAKING_DATA& tData)
 #pragma endregion
 
 #pragma region SOUND_MANAGER
-HRESULT CGameInstance::Load_Sounds(const std::wstring& wstrFolderPath)
+HRESULT CGameInstance::Load_Sounds(_uint iLevelID, ESoundCategory eCategory, const wstring& wstrFolderPath)
 {
-	return m_pSound_Manager->Load_Sounds(wstrFolderPath);
+	return m_pSound_Manager->Load_Sounds(iLevelID, eCategory, wstrFolderPath);
 }
-void CGameInstance::PlayBGM(const _tchar* pSoundKey, _float fVolume, _bool bLoop, _float fPitch)
+void CGameInstance::PlayBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch)
 {
-	m_pSound_Manager->PlayBGM(pSoundKey, fVolume, bLoop, fPitch);
+	m_pSound_Manager->PlayBGM(iLevelID, iSoundHash, fVolume, fPitch);
 }
-void CGameInstance::PlayAmbient(const _tchar* pSoundKey, _float fVolume, _bool bLoop, _float fPitch)
+void CGameInstance::PlayBGM_FadeIn(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeInTime, _float fPitch)
 {
-	m_pSound_Manager->Play_Controlled(pSoundKey, 1, fVolume, bLoop, fPitch);
+	m_pSound_Manager->PlayBGM_FadeIn(iLevelID, iSoundHash, fVolume, fFadeInTime, fPitch);
 }
-void CGameInstance::Play_OneShot(const _tchar* pSoundKey, _float fVolume, _float fPitch)
+void CGameInstance::PlayBGM_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayed, _float fVolume, _float fPitch, _float fFadeInTime)
 {
-	m_pSound_Manager->Play_OneShot(pSoundKey, fVolume, fPitch);
+	m_pSound_Manager->PlayBGM_Delayed(iLevelID, iSoundHash, fDelayed, fVolume, fPitch, fFadeInTime);
 }
-void CGameInstance::Play_RandOneShot(const _tchar* pSoundKey, _float fVolume, _int iCount, _float fPitch)
+void CGameInstance::StopBGM_FadeOut(_float fFadeOutTime)
 {
-	m_pSound_Manager->Play_RandOneShot(pSoundKey, fVolume, iCount, fPitch);
+	m_pSound_Manager->StopBGM_FadeOut(fFadeOutTime);
 }
-void CGameInstance::Play_Controlled(const _tchar* pSoundKey, _uint iControlledId, _float fVolume, _bool bLoop, _float fPitch)
+void CGameInstance::CrossFadeBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeOutTime, _float fFadeInTime, _float fPitch)
 {
-	m_pSound_Manager->Play_Controlled(pSoundKey, iControlledId, fVolume, bLoop, fPitch);
+	m_pSound_Manager->CrossFadeBGM(iLevelID, iSoundHash, fVolume, fFadeOutTime, fFadeInTime, fPitch);
+}
+void CGameInstance::Play_OneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch, _bool bSteal)
+{
+	m_pSound_Manager->Play_OneShot(iLevelID, iSoundHash, fVolume, fPitch, bSteal);
+}
+void CGameInstance::Play_OneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch, _bool bSteal)
+{
+	m_pSound_Manager->Play_OneShot_Delayed(iLevelID, iSoundHash, fDelayedTime, fVolume, fPitch, bSteal);
+}
+void CGameInstance::Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch, _bool bSteal)
+{
+	m_pSound_Manager->Play_RandOneShot(iLevelID, iSoundHash, fVolume, fPitch, bSteal);
+}
+void CGameInstance::Play_Controlled(_uint iLevelID, _uint iSoundHash, _uint iControlledId, _float fVolume, _bool bLoop, _float fPitch)
+{
+	m_pSound_Manager->Play_Controlled(iLevelID, iSoundHash, iControlledId, fVolume, bLoop, fPitch);
 }
 void CGameInstance::Stop_Controlled(_uint iControlledId)
 {
@@ -689,11 +705,23 @@ void CGameInstance::Set_ControlledVolume(_uint iControlledId, _float fVolume)
 }
 void CGameInstance::Set_ControlledPitch(_uint iControlledId, _float fPitch)
 {
-	m_pSound_Manager->Set_ControlledVolume(iControlledId, fPitch);
+	m_pSound_Manager->Set_ControlledPitch(iControlledId, fPitch);
 }
 void CGameInstance::Stop_All()
 {
 	m_pSound_Manager->StopAll();
+}
+vector<SOUND_META> CGameInstance::Get_SoundMetas(_uint iLevelID) const
+{
+	return m_pSound_Manager->Get_SoundMetas(iLevelID);
+}
+const SOUND_META* CGameInstance::Find_SoundMeta(_uint iLevelID, _uint iSoundHash) const
+{
+	return m_pSound_Manager->Find_SoundMeta(iLevelID, iSoundHash);
+}
+_bool CGameInstance::Has_SoundTag(_uint iLevelID, const string& strTag) const
+{
+	return m_pSound_Manager->Has_SoundTag(iLevelID, strTag);
 }
 #pragma endregion
 

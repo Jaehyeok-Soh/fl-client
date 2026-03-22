@@ -29,7 +29,7 @@ public:
 
 	enum class AnimState : _uint
 	{
-		PLAY, STOP
+		PLAY, STOP, PLAY_ONCE
 	};
 
 	enum WeaponDescFlag : Flags
@@ -95,7 +95,7 @@ public:
 	void	Set_WeaponState(State eState) { m_eState = eState;  (m_eState == State::NONE) ? Set_Active(false) : Set_Active(true); }
 	void	Set_WeaponState(_uint iState) { m_eState = static_cast<State>(iState); (m_eState == State::NONE) ? Set_Active(false) : Set_Active(true);}
 
-	void	Set_Weapon_PlayState(_uint iPlayState) { m_eAnimState = static_cast<AnimState>(iPlayState); }
+	void	Set_Weapon_PlayState(_uint iPlayState) { m_eAnimState = static_cast<AnimState>(iPlayState); m_bPlayOnceYet = true; }
 
 	_int	Get_AnimationIndex(const wstring& wstrName);
 
@@ -116,6 +116,8 @@ protected:
 	Matrix				m_matConOffsetMatrix		= {};
 
 	Flags				m_FDescFlags = { 0 };
+
+	_bool				m_bPlayOnceYet = { true };
 
 	SHADER_RGBCOLOR_DESC m_tColorDesc = {};
 	CComputeShader* m_pBoneMeshCS{ nullptr };

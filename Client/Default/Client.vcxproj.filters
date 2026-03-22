@@ -829,6 +829,12 @@
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Fly">
       <UniqueIdentifier>{1696a078-6181-4269-85e1-e52d22f83652}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect\Env">
+      <UniqueIdentifier>{8680c06a-96f3-4a46-9695-acea14aa5adc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\04. Binder">
+      <UniqueIdentifier>{bf9e1beb-a2d5-45fc-9aad-6e498db509b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1533,11 +1539,17 @@
     <ClInclude Include="..\Public\State_DualCombo.h">
       <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Env.h">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\Env</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Monster_Fly.h">
       <Filter>03. GameObject\ContainerObjects\Monster\Fly</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Fly_Body.h">
       <Filter>03. GameObject\PartObjects\Monster\Body\Fly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SoundEventBinder.h">
+      <Filter>07. System\04. Binder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2233,11 +2245,17 @@
     <ClCompile Include="..\Private\State_DualCombo.cpp">
       <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect_Env.cpp">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\Env</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Monster_Fly.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster\Fly</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Fly_Body.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body\Fly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SoundEventBinder.cpp">
+      <Filter>07. System\04. Binder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

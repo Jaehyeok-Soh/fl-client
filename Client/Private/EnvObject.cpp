@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "EnvObject.h"
-#include "Effect.h"
+#include "Effect_Env.h"
 #include "GameInstance.h"
 
 CEnvObject::CEnvObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -42,33 +42,32 @@ HRESULT CEnvObject::Ready_Effect(const vector<ENV_EFFECT_INFO>& vecEnvEffectInfo
 {
 	if (vecEnvEffectInfo.empty()) return E_FAIL;
 
-
 	CTransform* pTs = Get_Component<CTransform>();
 	if (pTs == nullptr) return E_FAIL;
 
-	Effect* pEffect{ nullptr };
+	CEffect_Env* pEffect{ nullptr };
 	for (auto& Info : vecEnvEffectInfo)
 	{
 		_uint iHash = Engine_Utils::ToHash(Info.strTags.c_str());
-		void* pDesc = m_pGameInstance->Find_EffectData(iHash);
+ 		void* pDesc = m_pGameInstance->Find_EffectData(iHash);
 		if (pDesc == nullptr) return E_FAIL;
-		pEffect = static_cast<Effect*>(m_pGameInstance->Clone_Prototype(
-			EPrototypeType::GAMEOBJECT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Effect", pDesc));
+
+		// Env_Effect로 변경
+		pEffect = static_cast<CEffect_Env*>(m_pGameInstance->Clone_Prototype(
+			EPrototypeType::GAMEOBJECT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Effect_Env", pDesc));
 		if (pEffect == nullptr) return E_FAIL;
 
-		EFFECT_SPAWN_DESC tSpawnDesc{};
-		tSpawnDesc.matWorld = { pTs->Get_WorldMatrix() };
-		tSpawnDesc.iSimulationType = (int)tagEffectSpawnDesc::E_VFX_SIMULTYPE::VFX_WORLD;
-
+		// Env_EffectDesc 작성해서 넘기기.
+		EFFECT_ENV_DESC tEnvDesc{};
+		tEnvDesc = Info.tDesc;
+		tEnvDesc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
 
 		Matrix EffectLocalMatrix = Matrix::CreateScale(Info.tDesc.VFX_Scale) * Matrix::CreateFromYawPitchRoll(Info.tDesc.VFX_Rotation.y, Info.tDesc.VFX_Rotation.x, Info.tDesc.VFX_Rotation.z)
-									* Matrix::CreateTranslation(Info.tDesc.VFX_Target_Position);;
+								* Matrix::CreateTranslation(Info.tDesc.VFX_Target_Position);;
 
-		tSpawnDesc.matWorld = EffectLocalMatrix * pTs->Get_WorldMatrix();
+		tEnvDesc.matWorld = EffectLocalMatrix * pTs->Get_WorldMatrix();
 
-		pEffect->Enable_VFX(&tSpawnDesc);
-		
-		
+		pEffect->Enable_VFX(&tEnvDesc);
 		m_vecEffect.push_back(pEffect);
 	}
 
@@ -155,8 +154,6 @@ CGameObject* CEnvObject::Clone(void* pArg)
 
 	return pEnvObject;
 }
-
-
 
 void CEnvObject::Free()
 {

@@ -568,7 +568,7 @@ void CStateBase_Player::Look_Impuls(_float fOffset)
 
 void CStateBase_Player::LookAt_Monser()
 {
-	Vec3 vMonsterPos = Vec3::Zero;
+	m_vMonsterPos = Vec3::Zero;
 	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
 	if (pPlayer == nullptr)
 		return;
@@ -577,10 +577,12 @@ void CStateBase_Player::LookAt_Monser()
 	if (pPlayerTransform == nullptr)
 		return;
 
-	vMonsterPos = pPlayer->Get_CollidedMonster_Position();
-	if (vMonsterPos != Vec3::Zero)
+	m_vMonsterPos = pPlayer->Get_CollidedMonster_Position();
+	if (m_vMonsterPos != Vec3::Zero)
 	{
-		pPlayerTransform->Look_At_XZ(vMonsterPos);
+		pPlayerTransform->Look_At_XZ(m_vMonsterPos);
+
+		m_bLookAtMonster = true;
 	}
 }
 
@@ -751,6 +753,8 @@ _bool CStateBase_Player::Can_CheckKey(const _float fTimeDelta)
 
 void CStateBase_Player::Reset_WhenStart()
 {
+	m_bLookAtMonster = false;
+
 	m_tKeyTimer.fTimeAcc = 0.f;
 
 	m_TFallingCount.x = 0.f;

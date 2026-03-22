@@ -37,7 +37,10 @@ public:
 
 protected:
 	virtual void Spawn_PositionCalculate(void* pArg) override;
-	SimpleMath::Matrix WorldMatrix_Calculate(const EFFECT_WARNING_DESC* pArg);
+	SimpleMath::Matrix WorldMatrix_Calculate(const EFFECT_ENV_DESC* pArg);
+
+private:
+	void Spawn_PartsSetting(void* pArg);
 
 public:
 	static CEffect_Env* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

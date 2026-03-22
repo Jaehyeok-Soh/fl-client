@@ -23,9 +23,14 @@
 #include "DataDocument_Effect.h"
 #include "DataStruct_Effect.h"
 
+// Sound
+#include "DataDocument_SoundEvent.h"
+#include "DataStruct_SoundEvent.h"
+
 // Animation tool module
 #include "Event_Overlap_Module.h"
 #include "Event_Effect_Module.h"
+#include "Event_Sound_Module.h"
 
 IMPLEMENT_SINGLETON(CAnimTool_Manager)
 
@@ -48,6 +53,7 @@ HRESULT CAnimTool_Manager::Initialize_AnimTool(ID3D11Device* pDevice, ID3D11Devi
 
 	m_pOverlapModule = CEvent_Overlap_Module::Create(m_pDevice, m_pDeviceContext);
 	m_pEffectModule = CEvent_Effect_Module::Create(m_pDevice, m_pDeviceContext);
+	m_pSoundModule = CEvent_Sound_Module::Create();
 
 	Ready_Event();
 
@@ -315,6 +321,7 @@ void CAnimTool_Manager::SetModuleOwner()
 	 m_pEffectModule->SetOwner(m_tAnimControllInfo.pCurrentObject);
 
 	// 사운드
+	 m_pSoundModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
 }
 
 HRESULT CAnimTool_Manager::Ready_Builder()
@@ -418,6 +425,38 @@ HRESULT CAnimTool_Manager::Load_EffectEvent(fs::path path)
 	return S_OK;
 }
 
+HRESULT CAnimTool_Manager::Load_SoundEvent(fs::path path)
+{
+	const _uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
+	const DTO::ECategory eCategory = DTO::ECategory::SOUNDEVENT;
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_SoundEvent>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, path)))
+		return E_FAIL;
+
+	CDataDocumentBase* pBase = m_pGameInstance->Ensure_Document(iLevelID, eCategory, path);
+	CDataDocument_SoundEvent* pDoc = static_cast<CDataDocument_SoundEvent*>(pBase);
+	if (pDoc == nullptr)
+		return E_FAIL;
+
+	const string ownerTag = path.stem().string();
+	const auto* pData = pDoc->Find_Data(ownerTag); // 이런 helper 하나 두는 걸 권장
+	if (pData == nullptr)
+		return E_FAIL;
+
+	m_tEventInfo.vecSoundEvents = pData->vecSoundEvents;
+	m_tAnimControllInfo.iCurrentSoundEventIndex = -1;
+	if (m_pSoundModule)
+	{
+		m_pSoundModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
+		m_pSoundModule->Rebuild(m_tEventInfo.vecSoundEvents);
+	}
+
+	return S_OK;
+}
+
 void CAnimTool_Manager::Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap)
 {
 	m_pOverlapModule->SetAttackOverlap(pAttackOverlap, m_tAnimControllInfo.pCurrentObject);
@@ -514,6 +553,30 @@ HRESULT CAnimTool_Manager::Save_EffectEvent(fs::path path, string strAnimTag, _i
 	return S_OK;
 }
 
+HRESULT CAnimTool_Manager::Save_SoundEvent(fs::path path)
+{
+	const _uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
+	const DTO::ECategory eCategory = DTO::ECategory::SOUNDEVENT;
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_SoundEvent>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, path);
+	CDataDocument_SoundEvent* pSoundDoc = static_cast<CDataDocument_SoundEvent*>(pDocument);
+	if (pSoundDoc == nullptr)
+		return E_FAIL;
+
+	DTO::SOUND_EVENT_INFO_DESC tData{};
+	tData.strOwnerTag = path.stem().string();
+	tData.vecSoundEvents = m_tEventInfo.vecSoundEvents;
+
+	if (FAILED(pSoundDoc->Upsert(tData)))
+		return E_FAIL;
+
+	m_pGameInstance->Save_File_Json(iLevelID, eCategory, path);
+	return S_OK;
+}
+
 HRESULT CAnimTool_Manager::Release_Event()
 {
 	m_pGameInstance->Unsubscribe<LoadAttackOverlap>(m_EventHandles[CLevel_Animation::Event::LOAD_OVERLAP_SCRIPT]);
@@ -563,6 +626,15 @@ void CAnimTool_Manager::Modify_EffectEvent(vector<DTO::EFFECTEVENT> events)
 	m_pEffectModule->Modify_EFfectEvent(events);
 }
 
+void CAnimTool_Manager::Modify_SoundEvent()
+{
+	if (!ValidCheck())
+		return;
+
+	m_pSoundModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
+	m_pSoundModule->Rebuild(m_tEventInfo.vecSoundEvents);
+}
+
 HRESULT CAnimTool_Manager::EffectEvent_GizmoObjectSetting()
 {
 
@@ -575,6 +647,7 @@ void CAnimTool_Manager::Free()
 {
 	Safe_Release(m_pOverlapModule);
 	Safe_Release(m_pEffectModule);
+	Safe_Release(m_pSoundModule);
 
 	Release_Event();
 

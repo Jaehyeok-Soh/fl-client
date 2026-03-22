@@ -1,6 +1,14 @@
 #include "pch.h"
 #include "Panel_AnimDescription.h"
 #include "AnimTool_Manager.h"
+#include "GameInstance.h"
+
+static constexpr const _char* s_AnimNotifyPhaseItems[] =
+{
+    "Immediatley",
+    "Late",
+    "PreRender"
+};
 
 CPanel_AnimDescription::CPanel_AnimDescription(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext),
@@ -53,6 +61,11 @@ void CPanel_AnimDescription::ModifyOne(_uint eventIdx, DTO::ATTACKEVENT event)
     m_pAnimToolManager->Modify_AttackOverlap(m_tAnimControllInfo->iCurrentAttackEventIndex, event);;
 }
 
+void CPanel_AnimDescription::ModifySoundOne()
+{
+    m_pAnimToolManager->Modify_SoundEvent();
+}
+
 void CPanel_AnimDescription::Description_TabWindow()
 {
 	ImGui::Begin("Description Editor");
@@ -83,6 +96,20 @@ void CPanel_AnimDescription::Description_TabWindow()
             ImGui::EndTabItem();
 		}
 
+        if (ImGui::BeginTabItem("Sound"))
+        {
+            if (m_tAnimControllInfo->iCurrentSoundEventIndex != -1 &&
+                m_tAnimControllInfo->iCurrentSoundEventIndex < m_tEventInfo->vecSoundEvents.size())
+            {
+                Desc_SoundWindow();
+            }
+            else
+            {
+                ImGui::Text("Select an sound event from the timeline.");
+            }
+            ImGui::EndTabItem();
+        }
+
 		if (ImGui::BeginTabItem("Bone"))
 		{
 			ImGui::EndTabItem();
@@ -101,13 +128,6 @@ void CPanel_AnimDescription::Description_TabWindow()
 
 void CPanel_AnimDescription::Desc_AttackOverlapWindow()
 {
-    static constexpr const _char* s_AnimNotifyPhaseItems[] =
-    {
-        "Immediatley",
-        "Late",
-        "PreRender"
-    };
-
     auto pEvent = &m_tEventInfo->vecAttackEvents[m_tAnimControllInfo->iCurrentAttackEventIndex];
 
     if (pEvent == nullptr)
@@ -309,13 +329,6 @@ void CPanel_AnimDescription::Desc_AttackOverlapWindow()
 }
 void CPanel_AnimDescription::Desc_EffectWindow()
 {
-    static constexpr const _char* s_AnimNotifyPhaseItems[] =
-    {
-        "Immediatley",
-        "Late",
-        "PreRender"
-    };
-
     // 현재 선택된 이펙트 데이터 가져오기
     auto& pEvent = m_tEventInfo->vecVFXEvents[m_tAnimControllInfo->iCurrentEffectEventIndex];/*
     pEvent.strAnimTag = Engine_Utils::ToString(m_tAnimControllInfo->pModel->Get_AnimationName(pEvent.iAnimIndex));*/
@@ -491,6 +504,232 @@ void CPanel_AnimDescription::Desc_EffectWindow()
             ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "Current Flag Value: %d", pEvent.iBoneFlag);
 
             ImGui::TreePop();
+        }
+    }
+
+    ImGui::PopID();
+}
+
+void CPanel_AnimDescription::Desc_SoundWindow()
+{
+    static constexpr const char* s_SoundCommandItems[] =
+    {
+        "OneShot",
+        "ControlledPlay",
+        "ControlledStop",
+        "ControlledVolume",
+        "ControlledPitch"
+    };
+
+    auto* pEvent = &m_tEventInfo->vecSoundEvents[m_tAnimControllInfo->iCurrentSoundEventIndex];
+    if (pEvent == nullptr)
+    {
+        ImGui::TextDisabled("No Sound Event Selected");
+        return;
+    }
+
+    ImGui::PushID(pEvent);
+
+    // 삭제
+    if (ImGui::Button("Delete this Sound"))
+        m_pAnimToolManager->Open_ConfirmModal("Delete_Sound_Event");
+
+    if (1 == m_pAnimToolManager->Render_ConfirmModal("Delete_Sound_Event", "really sure delete this sound event?"))
+    {
+        _uint idxAcc = 0;
+        m_tEventInfo->vecSoundEvents.erase(
+            std::remove_if(
+                m_tEventInfo->vecSoundEvents.begin(),
+                m_tEventInfo->vecSoundEvents.end(),
+                [&idxAcc, &delIdx = m_tAnimControllInfo->iCurrentSoundEventIndex](const auto&) mutable
+                {
+                    return idxAcc++ == delIdx;
+                }),
+            m_tEventInfo->vecSoundEvents.end());
+
+        m_tAnimControllInfo->iCurrentSoundEventIndex = -1;
+        m_pAnimToolManager->Modify_SoundEvent();
+
+        ImGui::PopID();
+        return;
+    }
+
+    // =========================
+    // 기본 정보
+    // =========================
+    if (ImGui::CollapsingHeader("Sound Event Settings", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        if (ImGui::DragFloat("Start Time", &pEvent->fStartTrackPosition, 0.01f, 0.0f, 1000.0f, "%.2f"))
+            ModifySoundOne();
+
+        static char descBuf[256];
+        strcpy_s(descBuf, pEvent->strDescription.c_str());
+        if (ImGui::InputText("Description", descBuf, 256))
+        {
+            pEvent->strDescription = descBuf;
+            ModifySoundOne();
+        }
+
+        int iPhase = static_cast<int>(pEvent->ePhase);
+        if (ImGui::Combo("EventNotifyPhase", &iPhase, s_AnimNotifyPhaseItems, IM_ARRAYSIZE(s_AnimNotifyPhaseItems)))
+        {
+            pEvent->ePhase = static_cast<Engine::EAnimNotifyPhase>(iPhase);
+            ModifySoundOne();
+        }
+    }
+
+    // =========================
+    // 애니메이션 선택
+    // =========================
+    if (ImGui::CollapsingHeader("Animation Binding", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        const char* previewLabel = pEvent->strAnimTag.empty() ? "<None>" : pEvent->strAnimTag.c_str();
+
+        if (ImGui::BeginCombo("Anim Tag", previewLabel))
+        {
+            for (const auto& animInfo : m_tAnimControllInfo->vecAnimInfo)
+            {
+                bool bSelected = (pEvent->strAnimTag == animInfo.strAnimName);
+
+                if (ImGui::Selectable(animInfo.strAnimName.c_str(), bSelected))
+                {
+                    pEvent->strAnimTag = animInfo.strAnimName;
+                    pEvent->iAnimIndex = animInfo.iIndex; // 캐시 갱신
+                    ModifySoundOne();
+                }
+
+                if (bSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
+        ImGui::TextDisabled("Source of truth: strAnimTag");
+        ImGui::Text("Cached Anim Index: %d", pEvent->iAnimIndex);
+    }
+
+    // =========================
+    // 사운드 명령
+    // =========================
+    if (ImGui::CollapsingHeader("Sound Command", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        int iCommand = static_cast<_int>(pEvent->eCommand);
+        if (ImGui::Combo("Command", &iCommand, s_SoundCommandItems, IM_ARRAYSIZE(s_SoundCommandItems)))
+        {
+            pEvent->eCommand = static_cast<DTO::EAnimSoundCommand>(iCommand);
+            ModifySoundOne();
+        }
+
+        // Sound Tag
+        const auto vecSoundMetas = CGameInstance::GetInstance()->Get_SoundMetas(ENUM_TO_UINT(ELevelType::ANIMATION));
+
+        const char* previewLabel = pEvent->strSoundTag.empty() ? "<None>" : pEvent->strSoundTag.c_str();
+
+        if (ImGui::BeginCombo("Sound Tag", previewLabel))
+        {
+            bool bSelectedNone = pEvent->strSoundTag.empty();
+            if (ImGui::Selectable("<None>", bSelectedNone))
+            {
+                pEvent->strSoundTag.clear();
+                ModifySoundOne();
+            }
+            if (bSelectedNone)
+                ImGui::SetItemDefaultFocus();
+
+            ImGui::Separator();
+
+            for (const auto& meta : vecSoundMetas)
+            {
+                bool bSelected = (pEvent->strSoundTag == meta.strTag);
+
+                if (ImGui::Selectable(meta.strTag.c_str(), bSelected))
+                {
+                    pEvent->strSoundTag = meta.strTag;
+                    ModifySoundOne();
+                }
+
+                if (bSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (!pEvent->strSoundTag.empty())
+        {
+            _uint iHash = Engine_Utils::ToHash(pEvent->strSoundTag.c_str());
+            ImGui::Text("Resolved Hash: %u", iHash);
+        }
+        else
+        {
+            ImGui::TextDisabled("Resolved Hash: <None>");
+        }
+
+        const DTO::EAnimSoundCommand eCmd = pEvent->eCommand;
+
+        switch (eCmd)
+        {
+        case DTO::EAnimSoundCommand::OneShot:
+        {
+            if (ImGui::DragFloat("Volume", &pEvent->fVolume, 0.01f, 0.f, 1.f, "%.2f"))
+                ModifySoundOne();
+
+            if (ImGui::DragFloat("Pitch", &pEvent->fPitch, 0.01f, 0.01f, 3.f, "%.2f"))
+                ModifySoundOne();
+
+            if (ImGui::DragFloat("Delay", &pEvent->fDelay, 0.01f, 0.f, 10.f, "%.2f sec"))
+                ModifySoundOne();
+
+            if (ImGui::Checkbox("Steal", &pEvent->bSteal))
+                ModifySoundOne();
+        }
+        break;
+
+        case DTO::EAnimSoundCommand::ControlledPlay:
+        {
+            if (ImGui::InputInt("Controlled ID", &pEvent->iControlledId))
+                ModifySoundOne();
+
+            if (ImGui::DragFloat("Volume", &pEvent->fVolume, 0.01f, 0.f, 1.f, "%.2f"))
+                ModifySoundOne();
+
+            if (ImGui::DragFloat("Pitch", &pEvent->fPitch, 0.01f, 0.01f, 3.f, "%.2f"))
+                ModifySoundOne();
+
+            if (ImGui::Checkbox("Loop", &pEvent->bLoop))
+                ModifySoundOne();
+        }
+        break;
+
+        case DTO::EAnimSoundCommand::ControlledStop:
+        {
+            if (ImGui::InputInt("Controlled ID", &pEvent->iControlledId))
+                ModifySoundOne();
+        }
+        break;
+
+        case DTO::EAnimSoundCommand::ControlledVolume:
+        {
+            if (ImGui::InputInt("Controlled ID", &pEvent->iControlledId))
+                ModifySoundOne();
+
+            if (ImGui::DragFloat("Volume", &pEvent->fVolume, 0.01f, 0.f, 1.f, "%.2f"))
+                ModifySoundOne();
+        }
+        break;
+
+        case DTO::EAnimSoundCommand::ControlledPitch:
+        {
+            if (ImGui::InputInt("Controlled ID", &pEvent->iControlledId))
+                ModifySoundOne();
+
+            if (ImGui::DragFloat("Pitch", &pEvent->fPitch, 0.01f, 0.01f, 3.f, "%.2f"))
+                ModifySoundOne();
+        }
+        break;
+
+        default:
+            break;
         }
     }
 

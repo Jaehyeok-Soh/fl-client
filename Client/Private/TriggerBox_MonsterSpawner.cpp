@@ -40,7 +40,7 @@ HRESULT CTriggerBox_MonsterSpawner::Initialize_Prototype()
     if (FAILED(Super::Initialize_Prototype()))
         return E_FAIL;
 
-
+    Set_Object_Enum_Tag(OBJECT_ENUM_TAG::TRIGGER_BOX_MILESTONE_DEFAULT);
 
     return S_OK;
 }
@@ -178,14 +178,20 @@ void CTriggerBox_MonsterSpawner::OnCollision_Enter(_uint iMyColliderLayer, _uint
 
 void CTriggerBox_MonsterSpawner::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
-    Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
+    if (Super::IsEnabled() == false)
+        return;
 
+    Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
-    Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+    m_iOverlapCount++;
 
+    if (Super::IsEnabled() == false || m_bLockedEnter == true)
+        return;
+
+    Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
 	if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
 	{
@@ -196,12 +202,43 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint i
 		}
 	}
 
+    if (Super::m_bHasQuest)
+    {
+        m_bLockedEnter = true;
+        CallQuestEvent(Get_Object_Enum_Tag(), 1);
+    }
 }
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
+    m_iOverlapCount--;
+
+    if (Super::IsEnabled() == false || m_bLockedExit == true)
+        return;
+
+    if (m_iOverlapCount > 0)
+        return;
+
+    m_iOverlapCount = 0;
+
     Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 
+    if (Super::m_bHasQuest)
+    {
+        SetEnable(false);
+        Super::m_bLockedExit = true;
+        CallQuestEvent(Get_Object_Enum_Tag(), 1);
+    }
+}
+
+void CTriggerBox_MonsterSpawner::QuestEnter()
+{
+    Super::QuestEnter();
+}
+
+void CTriggerBox_MonsterSpawner::QuestExit()
+{
+    Super::QuestExit();
 }
 
 HRESULT CTriggerBox_MonsterSpawner::SpawnMonster()

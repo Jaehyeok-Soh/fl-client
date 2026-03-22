@@ -96,7 +96,6 @@ namespace Tool
 	};
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
 
-
 #pragma region MapToolObjectBatchMode
 	enum class EMapToolObjectBatchMode
 	{

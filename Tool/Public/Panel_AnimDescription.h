@@ -28,12 +28,13 @@ public:
 	ANIMINFO GetAnimInfo(_uint index);
 
 	void ModifyOne(_uint eventIdx, DTO::ATTACKEVENT event);
-
+	void ModifySoundOne();
 	// window
 private:
 	void Description_TabWindow();
 	void Desc_AttackOverlapWindow();
 	void Desc_EffectWindow();
+	void Desc_SoundWindow();
 	//void Desc_BoneWindow();
 	//void Desc_AnimWindow();
 	EAnimNotifyPhase MappingPhase();

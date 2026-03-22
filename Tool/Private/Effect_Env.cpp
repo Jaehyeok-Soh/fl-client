@@ -94,9 +94,26 @@ void CEffect_Env::Update_CombinedWorldMatrix()
 	}
 }
 
+void CEffect_Env::Spawn_PartsSetting(void* pArg)
+{
+	EFFECT_ENV_DESC* pDesc = static_cast<EFFECT_ENV_DESC*>(pArg);
+	if (pDesc == nullptr) return;
+	if (pDesc->VFX_PartsDescList.size() == 0) return;
+	
+	_uint PartSize = (_uint)m_vecPartObjects.size();
+
+	for (auto& Parts : pDesc->VFX_PartsDescList)
+	{
+		if (Parts.iPartsIndex >= PartSize) continue;
+
+		CEffectObject* pObject = static_cast<CEffectObject*>(m_vecPartObjects[Parts.iPartsIndex]);
+		pObject->Overwrite_FromEnv(Parts);
+	}
+}
+
 void CEffect_Env::Spawn_PositionCalculate(void* pArg)
 {
-	EFFECT_WARNING_DESC* pDesc = static_cast<EFFECT_WARNING_DESC*>(pArg);
+	EFFECT_ENV_DESC* pDesc = static_cast<EFFECT_ENV_DESC*>(pArg);
 	if (pDesc == nullptr) return;
 
 	Matrix WorldMatrix = WorldMatrix_Calculate(pDesc);
@@ -112,7 +129,7 @@ void CEffect_Env::Spawn_PositionCalculate(void* pArg)
 	}
 }
 
-Matrix CEffect_Env::WorldMatrix_Calculate(const EFFECT_WARNING_DESC* pArg)
+Matrix CEffect_Env::WorldMatrix_Calculate(const EFFECT_ENV_DESC* pArg)
 {
 	using namespace DirectX::SimpleMath;
 
@@ -157,6 +174,8 @@ HRESULT CEffect_Env::Enable_VFX(void* pArg)
 		if (effectObject != nullptr)
 			static_cast<CEffectObject*>(effectObject)->Enable_VFX(pArg);
 	}
+
+	Spawn_PartsSetting(pArg);
 
 	return S_OK;
 }

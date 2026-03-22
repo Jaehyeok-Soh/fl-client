@@ -95,6 +95,7 @@ public:
     void RESET_ForSpawn();
     void RESET_ForDesPawn();
     HRESULT Process_InitializeDesc(void* pArg);
+    void Overwrite_FromEnv(const EFFECT_ENV_DESC::ENV_PART_DESC& pDesc);
 
 public:
     const DTO::E_EffectSystemType& Get_EffectType() { return (DTO::E_EffectSystemType)m_tEffectDesc.Data.eEffectSystemType; }
