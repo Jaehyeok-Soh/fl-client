@@ -51,6 +51,12 @@ HRESULT CTriggerBox::Initialize(void* pArg)
 
 HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
 {
+    /* Tranfrom 에 먼저 Rotation을 적용시켜준다 */
+    CTransform* pTs = Get_Component<CTransform>();
+    if (pTs == nullptr) return E_FAIL;
+    /* 이 오브젝트에 회전값을 적용시켜준다 */
+    pTs->Rotation(pDesc->vTriggerBox_Rotation.x, pDesc->vTriggerBox_Rotation.y, pDesc->vTriggerBox_Rotation.z);
+
 
     /* Ready PhysicCollider */
     {
@@ -102,10 +108,6 @@ HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
     }
 
 
-    CTransform* pTs = Get_Component<CTransform>();
-    if (pTs == nullptr) return E_FAIL;
-    /* 이 오브젝트에 회전값을 적용시켜준다 */
-    pTs->Rotation( pDesc->vTriggerBox_Rotation.x , pDesc->vTriggerBox_Rotation.y, pDesc->vTriggerBox_Rotation.z);
 
     return S_OK;
 }

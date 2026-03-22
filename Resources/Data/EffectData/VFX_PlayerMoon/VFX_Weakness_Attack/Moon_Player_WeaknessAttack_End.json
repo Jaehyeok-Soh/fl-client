@@ -342,7 +342,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -653,7 +653,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -964,7 +964,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -1316,9 +1316,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -1509,9 +1509,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -1668,9 +1668,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -1861,9 +1861,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -2020,9 +2020,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -2213,9 +2213,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -2372,9 +2372,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -2565,9 +2565,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -2724,9 +2724,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -2917,9 +2917,9 @@
                         "z": 20.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -3076,9 +3076,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -3269,9 +3269,9 @@
                         "z": 20.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -3662,7 +3662,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": true,
                     "_Use_Effect_UV_OverScroll": false,

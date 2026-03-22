@@ -656,14 +656,32 @@ void CMonster_Base::OnHit_Dual(const HIT_DESC& hitDesc)
 
 	// effect 출력
 	{
+		EFFECT_SPAWN_DESC Desc = {};
+		Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
 
+		Vec3 vScale, vPos;
+		Quat vQuat;
+		WorldMatrix.Decompose(vScale, vQuat, vPos);
+
+		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
+		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+		if (bCritical)
+		{
+			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+		}
+
+		else
+		{
+			m_pGameInstance->Request_Effect("VFX_Blade_Hit", Desc);
+		}
 	}
 
 	{
 		UI_PREFAB_DATA tPrefabData = {};
 		UI_DAMAGEFONT_PREFAB_DATA Desc = {};
 		Desc.iDamage = static_cast<_uint>(hitDesc.fFinalDamage);	// 데미지 폰트에 뜰 숫자 // 플레이어 공격력 // 랜덤은 보여주기용
-		Desc.vFontColor = Vec4{ 0.f, 0.82f, 1.f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
+		Desc.vFontColor = Vec4{ 0.f, 0.85f, 0.6f, 1.f };			// 데미지 폰트 색 // 캐릭터 고유 색
 		Desc.vHitPos = hitDesc.vHitPoint;							// 데미지 폰트를 띄울 World 위치 // 
 		Desc.vRandOffset = Vec3{
 			m_pGameInstance->Rand_Float(-1.f, 1.f),

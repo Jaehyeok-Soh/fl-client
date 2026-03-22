@@ -448,7 +448,11 @@ namespace Tool
 		Vine,
 		Rock,
 		Water,
-		Fog,
+		Env,
+		RGBMapping,
+		DEBUG,
+		SkyBox,
+		Shadow,
 		END,
 	};
 
@@ -1047,6 +1051,43 @@ namespace Tool
 
 	HRESULT Load_CCS_EventManifest(OUT vector<struct CCS_EVENT_MANIFEST>* pOutData);
 	HRESULT Save_CCS_EventManifest(const vector<struct CCS_EVENT_MANIFEST>* pSaveData);
+
+
+
+
+
+	enum class SkyBoxTextureType
+	{
+		RECTANGLE,
+		SPHERE,
+		END,
+	};
+
+	static const char* g_szSkyBoxTextureTypeNames[(int)SkyBoxTextureType::END] = {
+		"RECTANGLE",
+		"SPHERE",
+	};
+
+	static string SkyBoxTextureType_ToString(SkyBoxTextureType eType)
+	{
+		if (eType < SkyBoxTextureType::END)
+		{
+			return g_szSkyBoxTextureTypeNames[ENUM_TO_UINT(eType)];
+		}
+		return "Unknown";
+	}
+
+	static SkyBoxTextureType SkyBoxTextureType_ToEnum(string strType)
+	{
+		for (_uint i = 0; i < ENUM_TO_UINT(SkyBoxTextureType::END); ++i)
+		{
+			if (g_szSkyBoxTextureTypeNames[i] == strType)
+				return static_cast<SkyBoxTextureType>(i);
+		}
+
+
+		return SkyBoxTextureType::END;
+	}
 
 }
 

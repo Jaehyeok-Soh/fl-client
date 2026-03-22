@@ -320,6 +320,7 @@ void Effect::Spawn_PositionCalculate(void* pArg)
 
 	// Engine 데이터를 기반으로 Client의 데이터 갱신
 	m_eDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pEngineDesc->iSimulationType;
+	m_bUseChildBone = pEngineDesc->bUseChildBone;
 
 	if (pEngineDesc->pTargetBoneMatrix)
 		m_pBoneMatrix = *pEngineDesc->pTargetBoneMatrix;

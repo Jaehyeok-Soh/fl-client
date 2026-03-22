@@ -72,7 +72,7 @@ void CEffect_Env::Update_CombinedWorldMatrix()
 
 	Quaternion rotation = Quaternion::CreateFromYawPitchRoll(m_tEnvDesc.VFX_Rotation);
 
-	m_pOffsetMartix = Matrix::CreateScale(m_tEnvDesc.VFX_Scale) * Matrix::CreateFromQuaternion(rotation) * Matrix::CreateTranslation(m_tEnvDesc.VFX_Target_Position);
+	//m_pOffsetMartix = Matrix::CreateScale(m_tEnvDesc.VFX_Scale) * Matrix::CreateFromQuaternion(rotation) * Matrix::CreateTranslation(m_tEnvDesc.VFX_Target_Position);
 
 	if (m_eDesc._Effect_SimulationType == DTO::E_SIMULATION_SPACE::LOCAL)
 	{
@@ -165,6 +165,7 @@ HRESULT CEffect_Env::Enable_VFX(void* pArg)
 	if (pDesc->pTargetBoneMatrix)
 		m_pBoneMatrix = *pDesc->pTargetBoneMatrix;
 
+	m_pOffsetMartix = pDesc->matWorld;
 	m_iBoneFlag = pDesc->iBoneFlag;
 
 	Update_CombinedWorldMatrix();

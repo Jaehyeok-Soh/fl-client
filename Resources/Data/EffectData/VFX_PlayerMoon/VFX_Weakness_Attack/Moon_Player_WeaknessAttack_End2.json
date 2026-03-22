@@ -694,9 +694,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -887,9 +887,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -1611,9 +1611,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -1804,9 +1804,9 @@
                         "z": 20.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -1963,9 +1963,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -2156,9 +2156,9 @@
                         "z": 10.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -2268,9 +2268,9 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        -5.1534730118873995e-06,
-                        5.383093357086182,
-                        30.52903938293457,
+                        -5.153473921382101e-06,
+                        5.38309383392334,
+                        30.529043197631836,
                         0.0,
                         9.238719371751358e-07,
                         30.529037475585938,

@@ -186,16 +186,13 @@ void Effect::Update_Bone_Attached_Matrix()
 	Quat vBoneQuat2;
 	Vector3 vBonePos2;
 
-	if (m_bUseChildBone == false)
-	{
-		if (m_pBoneOwnerMatrix == nullptr)
-			return;
+	if (m_pBoneOwnerMatrix == nullptr)
+		return;
 
-		matBoneOwner = *m_pBoneOwnerMatrix;
-		matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
-		matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
-		matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
-	}
+	matBoneOwner = *m_pBoneOwnerMatrix;
+	matBoneOwner.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
+	matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
+	matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
 
 	m_matCombinedWorld = m_pOffsetMartix * (matCustom) * (matCustom2);
 }
