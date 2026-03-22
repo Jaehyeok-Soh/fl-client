@@ -267,9 +267,16 @@ _bool CStateBase_Player::Check_DashKey(const _float fTimeDelta)
 	if (Has_ChangeState(STATEKEY::SHIFT) &&
 		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::DASH)))
 	{
-		m_pGameInstance->Broadcast<PLAYER_SKILL_TRIGGERED>(ENUM_TO_UINT(STATEKEY::SHIFT));
-		
-		Change_PlayerState(STATEKEY::SHIFT);
+		if (static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Get_SpecialDashOn() &&
+			Check_OnGround(0.3f))
+			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::SPECIALDASH));
+
+		else
+		{
+			m_pGameInstance->Broadcast<PLAYER_SKILL_TRIGGERED>(ENUM_TO_UINT(STATEKEY::SHIFT));
+			Change_PlayerState(STATEKEY::SHIFT);
+		}
+
 		return true;
 	}
 

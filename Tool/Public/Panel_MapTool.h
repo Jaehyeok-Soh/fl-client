@@ -41,13 +41,14 @@ private:
 	
 	/* Save Scene Data Setting */
 	HRESULT					Render_SaveLevelDataSetting();
+	HRESULT					Render_EnvSetting();				/* Env Setting Render */
+	HRESULT					Redner_SkyBoxSetting();
+	HRESULT					Render_WindSetting();
 
 	/* MapTool Setting Render */
 	HRESULT					Render_CheckAndBind();
 	HRESULT					Render_MakeMapObjectSetting();
 
-	/* Env Setting Render */
-	HRESULT					Render_EnvSetting();
 
 	/* Camera Cinematic Sequence */
 	HRESULT					Render_CameraCinematicSequnce();

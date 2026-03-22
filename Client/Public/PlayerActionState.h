@@ -65,6 +65,14 @@ public:
 	_bool Can_ChangeGunState();
 	void  Set_GunTimerOn() { m_tGunCoolTimer.bCountTime = true; m_tGunCoolTimer.fTimeAcc = 0.f; }
 
+	// pivot ฐüทร funcs
+public:
+	void		Set_PivotPos(Vec3 vPivotPos) { m_vPivotPos = vPivotPos; }
+	const Vec3& Get_PivotPos() const { return m_vPivotPos; }
+
+	void		Set_SpecialDashOn(_bool bOn) { m_bCanSpecialDash = bOn; }
+	_bool		Get_SpecialDashOn() const { return m_bCanSpecialDash; }
+
 private:
 	Flags			m_fAttackFlag	= {};
 	HIT_DESC		m_tPreHitDesc	= {};
@@ -74,6 +82,8 @@ private:
 private:
 	TIME_COUNTER	m_tGunCoolTimer = {};
 
+	Vec3			m_vPivotPos = {};
+	_bool			m_bCanSpecialDash = { false };
 
 public:
 	static CPlayerActionState* Create();

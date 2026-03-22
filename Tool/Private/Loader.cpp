@@ -38,6 +38,7 @@
 //=================
 #include "MapObject.h"
 #include "LevelData.h"
+#include "MapToolManager.h"
 //=================
 // Resource
 //=================
@@ -160,6 +161,32 @@ HRESULT CLoader::Loading_For_Map()
 		}
 		Safe_Release(pMapDataLoader);
 	}
+
+	std::filesystem::path mapSkyBoxFolderPath = L"../../Resources/Models/SkyBox/Model/";
+	if (std::filesystem::exists(mapFolderPath))
+	{
+		/* Model Prototype */
+		CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
+		if (pMapDataLoader == nullptr) return E_FAIL;
+		if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), mapSkyBoxFolderPath)))
+		{
+			Safe_Release(pMapDataLoader);
+			return E_FAIL;
+		}
+		Safe_Release(pMapDataLoader);
+
+		for (auto& Path : std::filesystem::directory_iterator(mapSkyBoxFolderPath))
+		{
+			/* 파일이 아니라면 패스 */
+			if (std::filesystem::is_regular_file(Path) == false)
+				continue;
+
+			string strFileName = path(Path).filename().stem().string();
+			CMapToolManager::GetInstance()->Add_SkyBoxModelName(strFileName);
+		}
+	}
+
+
 
 	//=================
 	// CGameObject

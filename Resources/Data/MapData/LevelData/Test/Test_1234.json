@@ -29,21 +29,31 @@
     },
     "Objects": [
         {
-            "Client Level Type": "LOGO",
-            "Client Make Path": "TriggerBox_CinematicPlayer",
+            "Client Level Type": "STATIC",
+            "Client Make Path": "Batch_Object",
             "Client Make Path Desc": [
                 {
-                    "Play Cinematic Name": ""
+                    "Batch Object Info": {
+                        "Desc": {
+                            "Extents": {
+                                "X": 2.799999952316284,
+                                "Y": 3.799999952316284,
+                                "Z": 2.700000047683716
+                            },
+                            "Field Type": "Box"
+                        },
+                        "Type": "Battle_Field"
+                    }
                 }
             ],
-            "Draw Type": "Collider",
-            "Model Path": "",
+            "Draw Type": "Default",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
             "SRT": [
                 {
                     "Position": {
-                        "X": -7.683762073516846,
-                        "Y": 8.936117172241211,
-                        "Z": -8.561062812805176
+                        "X": -17.302587509155273,
+                        "Y": 15.907926559448242,
+                        "Z": -18.273717880249023
                     },
                     "Quaternion": {
                         "W": 1.0,
@@ -66,7 +76,7 @@
             "Section Number": 0,
             "UE Loaded": false,
             "UE Raw Data Path": "",
-            "strTag": "TriggerBox_CinematicPlayer158"
+            "strTag": "Battle_Field346"
         }
     ]
 }

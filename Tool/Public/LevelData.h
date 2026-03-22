@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 class CShader;
+class CTextureBase;
 NS_END
 
 
@@ -39,6 +40,12 @@ protected:
 	virtual HRESULT Initialize(void* pArg) override;
 	HRESULT			Ready_Component();
 public:
+	void			Change_SkyBoxModel(const wstring& wstrModelName);
+	void			Change_SkyBoxTexture(const wstring& wstrTextureName);
+	CTextureBase*	Get_SkyBoxTexture() { return m_pSkyBoxTexture; }
+	CTextureBase**	Get_SkeyBoxTexturePointer() { return &m_pSkyBoxTexture; }
+	string			Get_SkyBoxModelName();
+public:
 	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
 	virtual void	Update_Priority(const _float fTimeDelta) override;
 	virtual void	Update(const _float fTimeDelta) override;
@@ -47,7 +54,6 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool	Picking(OUT Vec3& vOut) override;
 	virtual void	Draw_ImGui()override;
-public:
 	HRESULT			Apply_Data(const struct DTO::TLevelData* pData);
 	HRESULT			Set_GPU_EnvData();
 public:
@@ -60,8 +66,8 @@ private:
 
 
 	/* SkyBox¿ë ¹× Texture */
-	//CTexture*			m_pTexture{nullptr};
-	//CModel*				m_pModel{nullptr};
+	CTextureBase*		m_pSkyBoxTexture{nullptr};
+	string				m_strSkyBoxModelName{"None"};
 
 private:
 	/* MapMinMax */

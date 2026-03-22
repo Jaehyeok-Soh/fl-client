@@ -93,7 +93,7 @@ void CBuilder_Effect::Regist_pool(void* pArg, string& PrefabEffectTag)
 	wstring PoolTag = L"POOL_" + Engine_Utils::ToWString(PrefabEffectTag);
 	wstring LayTag = L"Effect_Layer";
 	wstring PrototypeTag = Create_PrototypeTag(PrefabEffectTag);
-
+	
 	if (PrefabEffectTag == "Boss_Xibi_Lightning_Oneshot")
 		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 200);
 

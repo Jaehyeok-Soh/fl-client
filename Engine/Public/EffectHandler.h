@@ -144,6 +144,7 @@ private:
     ANIM_EFFECT_HANDLER_DESC m_tDesc;
 
     const Matrix* m_pOwnerMatrix = { nullptr };
+    const Matrix* m_pChildMatrix = { nullptr };
     CModel* m_pOwnerModel = { nullptr };
 
 private:

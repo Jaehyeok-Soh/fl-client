@@ -1235,19 +1235,39 @@ typedef struct TMap_MapObjectData
 typedef struct TLevelData
 {
 	string								strTag{};
-	string								strTextureSplatingInfoName{"None"};
-	string								strLevelTypeName{"STATIC"};
+	string								strTextureSplatingInfoName{ "None" };
+	string								strLevelTypeName{ "STATIC" };
 
 
 	/* 환경 데이터 */
+
+	/* 환경 Color */
+	Vec4								vEnvColor{ 1.f,1.f,1.f,1.f };				// 16Byte 환경 Color
 
 	/* Wind */
 	Vec3								vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
 	_float								fWindPower{ 1.f }; //바람이 부는 새기
 
+	/* SkyBox */
+
+	Vec4								vSkyColor{ 0.3f,0.7f,0.8f,1.f };
+	Vec4								vCloudBaseColor{ 0.8f,0.8f,0.8f,1.f };
+	Vec4								vCloudHighlight{ 1.f,1.f,1.f,1.f };
+
+	Vec3								vSkyBoxScale{1.f,1.f,1.f};
+	Vec3								vSkyBoxPositionOffset{0.f,0.f,0.f};
+	Vec3								vSkyBoxPitchYawRoll{0.f,0.f,0.f};
+	string								strSkyBoxModelName{ "None" };
+	string								strSKyBoxTextureName{ "None" };
+	Vec2								vSkyBoxTextureUVSpeed{1.f,1.f};
+	_int								iSkyBoxTextureType{ 0 };					// 4Byte 텍스처가 원형용텍스처인지 , 사각형용 텍스처인지
+	_bool								isSkyBoxChannelPacking{ false };			// 4Byte 채널 패킹을 사용하는지 않나는지
+	_float								fPolarRadiusScale{ 1.f };                   // 4Byte 여백 조절용 , 기본값 1.0
+
+
 	/* Map Min Max Box */
-	Vec3								vMapMinMaxBox_Center{0.f,0.f,0.f};
-	Vec3								vMapMinMaxBox_extents{1.f,1.f,1.f};
+	Vec3								vMapMinMaxBox_Center{ 0.f,0.f,0.f };
+	Vec3								vMapMinMaxBox_extents{ 1.f,1.f,1.f };
 
 	/*-------*/
 

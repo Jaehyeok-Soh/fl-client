@@ -107,8 +107,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_HybridObject()))
 		return E_FAIL;
 
-	if (FAILED(Ready_SkyBox()))
-		return E_FAIL;
+	//if (FAILED(Ready_SkyBox()))
+	//	return E_FAIL;
 
 	Ready_ShaderSetting();
 	return S_OK;
@@ -164,37 +164,37 @@ void CLevel_Test::Update(const _float fTimeDelta)
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 
-	if (KEY_BUTTON_DOWN(DIK_4))
-	{
-	}
-	if (KEY_BUTTON_DOWN(DIK_5))
-	{
-		UI_PREFAB_DATA Desc = {};
-		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
-		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
-		Desc.Data = PrefabDesc;
+	//if (KEY_BUTTON_DOWN(DIK_4))
+	//{
+	//}
+	//if (KEY_BUTTON_DOWN(DIK_5))
+	//{
+	//	UI_PREFAB_DATA Desc = {};
+	//	UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+	//	PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
+	//	Desc.Data = PrefabDesc;
 
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	}
-	if (KEY_BUTTON_DOWN(DIK_6))
-	{
-		UI_PREFAB_DATA Desc = {};
-		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
-		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
-		Desc.Data = PrefabDesc;
+	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	//}
+	//if (KEY_BUTTON_DOWN(DIK_6))
+	//{
+	//	UI_PREFAB_DATA Desc = {};
+	//	UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+	//	PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
+	//	Desc.Data = PrefabDesc;
 
-		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	}
-	if (KEY_BUTTON_DOWN(DIK_7))
-	{
-		UIEVENT_DESC Desc = {};
-		Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
-		CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
-	}
-	if (KEY_BUTTON_DOWN(DIK_8))
-	{
-		m_pGameInstance->Broadcast<BOSS_GROGGY>();
-	}
+	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
+	//}
+	//if (KEY_BUTTON_DOWN(DIK_7))
+	//{
+	//	UIEVENT_DESC Desc = {};
+	//	Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
+	//	CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
+	//}
+	//if (KEY_BUTTON_DOWN(DIK_8))
+	//{
+	//	m_pGameInstance->Broadcast<BOSS_GROGGY>();
+	//}
 }
 
 HRESULT CLevel_Test::Render()
