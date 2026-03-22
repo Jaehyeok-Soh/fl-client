@@ -263,62 +263,6 @@
                     "bFollowBone": true,
                     "bUseChildBone": false,
                     "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 1.904105305671692,
-                    "iAnimIndex": 12,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 4,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_PlayerMoon_Dodge_To_Run",
-                    "strDescription": "",
-                    "strEffectTag": "Dash_Effect",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": -1.399999976158142
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 180.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 1.5,
-                    "iAnimIndex": 11,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 4,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_PlayerMoon_Dodge_InAir",
-                    "strDescription": "",
-                    "strEffectTag": "Dash_Effect",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": -0.6000000238418579,
-                        "z": -1.2999999523162842
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 180.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
                     "fStartTrackPosition": 2.0,
@@ -395,6 +339,62 @@
                     "vRotation": {
                         "x": 0.0,
                         "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 1.5,
+                    "iAnimIndex": 11,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_PlayerMoon_Dodge_InAir",
+                    "strDescription": "",
+                    "strEffectTag": "Dash_Effect",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": -0.6000000238418579,
+                        "z": -1.2999999523162842
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 1.904105305671692,
+                    "iAnimIndex": 12,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_PlayerMoon_Dodge_To_Run",
+                    "strDescription": "",
+                    "strEffectTag": "Dash_Effect",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": -1.399999976158142
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
                         "z": 0.0
                     }
                 },
@@ -795,6 +795,34 @@
                     "bFollowBone": true,
                     "bUseChildBone": false,
                     "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 142,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_PlayerMoon_Slide_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Sliding_Effect",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": -0.30000001192092896,
+                        "z": -2.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
                     "fStartTrackPosition": 8.770187377929688,
@@ -843,34 +871,6 @@
                     "vRotation": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 0.10000000149011612,
-                    "iAnimIndex": 142,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 4,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_PlayerMoon_Slide_Loop",
-                    "strDescription": "",
-                    "strEffectTag": "Sliding_Effect",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": -0.30000001192092896,
-                        "z": -2.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 180.0,
                         "z": 0.0
                     }
                 },
@@ -1329,20 +1329,20 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
-                    "fStartTrackPosition": 2.0,
-                    "iAnimIndex": 28,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
+                    "fStartTrackPosition": 6.0,
+                    "iAnimIndex": 27,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
                     "iChildBoneIndex": -1,
                     "iNotifyId": 4,
-                    "iSimulationType": 0,
-                    "strAnimTag": "Animation_PlayerMoon_Dualblade_SlideAttack",
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Dualblade_RunAttack_04",
                     "strDescription": "",
-                    "strEffectTag": "Dual_Blade_SlideAttack",
+                    "strEffectTag": "Dual_Blade_Attack4_Glow_End",
                     "vOffset": {
                         "x": 0.0,
-                        "y": 0.20000000298023224,
-                        "z": 0.0
+                        "y": 2.5,
+                        "z": 0.5
                     },
                     "vRotation": {
                         "x": 0.0,
@@ -1516,6 +1516,118 @@
                         "x": 0.0,
                         "y": 0.0,
                         "z": 165.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 2.0,
+                    "iAnimIndex": 28,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_PlayerMoon_Dualblade_SlideAttack",
+                    "strDescription": "",
+                    "strEffectTag": "Dual_Blade_SlideAttack",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.20000000298023224,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 9.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 414,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_PlayerMoon_Dualblade_HeavyAttack_Start",
+                    "strDescription": "",
+                    "strEffectTag": "Dual_Blade_ChargeEnd_Particle",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 9.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_PlayerMoon_Dualblade_HeavyAttack_Start",
+                    "strDescription": "",
+                    "strEffectTag": "Dual_Blade_ChargeEnd_Particle2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 414,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_PlayerMoon_Dualblade_HeavyAttack_Start",
+                    "strDescription": "",
+                    "strEffectTag": "Dual_Blade_ChargeStart_Particle",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     }
                 }
             ]
