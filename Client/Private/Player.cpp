@@ -1821,7 +1821,7 @@ void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
         break;
     }
 
-    for (_int i = 0; i < iPartSize; i++)
+    for (_int i = 0; i < (_int)iPartSize; i++)
     {
         CWeapon* pWeapon = static_cast<CWeapon*>(Get_Part<CWeapon>(iStartPartIdx + i));
 

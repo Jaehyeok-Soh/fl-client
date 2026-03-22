@@ -60,10 +60,9 @@ void CState_Charge::Update(const _float fTimeDelta)
 	// camera shaking
 	if (m_bShakeActived == false && m_fStateElapsed >= (1.f / 1.2f))
 	{
-		CAM_SHAKING_DATA data{};
-		data.fTime = 0.2f;
-		data.fPower = 0.3f;
-		CGameInstance::GetInstance()->Camera_Shaking(data);
+		CAMERA_SHAKE_DESC desc{};
+		desc.fDuration = 0.2f;
+		CGameInstance::GetInstance()->Request_MainCameraShake(desc);
 		m_bShakeActived = true;
 	}
 
