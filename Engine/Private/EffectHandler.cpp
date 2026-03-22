@@ -612,7 +612,7 @@ SimpleMath::Matrix CEffectHandler::Offset_CalCulator(const DTO::EFFECTEVENT& scr
             Quat vBoneQuat2;
             Vector3 vBonePos2;
 
-            WeaponCombinedMatrix.Decompose(vBoneScale2,d vBoneQuat2, vBonePos2);
+            WeaponCombinedMatrix.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
             matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
             matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
             (ResultMatrix) *= matCustom2;
