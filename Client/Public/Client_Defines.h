@@ -816,6 +816,7 @@ namespace Client
 	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
 
 	inline constexpr wchar_t g_wszNPC_Pan_State_Tag[]{ L"NPC_Pan" };
+	inline constexpr wchar_t g_wszNPC_Tavern_State_Tag[]{ L"NPC_Tavern" };
 
 #pragma endregion 
 
@@ -829,6 +830,7 @@ namespace Client
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
 	
 	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
+	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Tavern" };
 
 #pragma endregion
 
@@ -902,6 +904,7 @@ namespace Client
 
 	/* Interactive Object */
 	inline constexpr wchar_t g_wszWeaponPickUp_Prototype_Tag[]					{ L"Prototype_GameObject_WeaponPickUp" };
+	inline constexpr wchar_t g_wszChangeLevelObject_Prototype_Tag[]					{ L"Prototype_GameObject_ChangeLevelObject" };
 	/*-------------------*/
 
 	inline constexpr wchar_t g_wszInvisibleWall_Prototype_Tag[]					{ L"Prototype_GameObject_InvisibleWall" };
@@ -940,6 +943,8 @@ namespace Client
 #pragma region Npc ฐüทร
 	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan_Body" };
+	inline constexpr wchar_t g_wszNPC_Tavern_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Tavern" };
+	inline constexpr wchar_t g_wszNPC_Tavern_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Tavern_Body" };
 #pragma endregion
 
 #pragma region Part Objects

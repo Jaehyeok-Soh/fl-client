@@ -70,6 +70,7 @@
 //=================
 #include "GameInstance.h"
 #include "QuestManager.h"
+#include "DialogueManager.h"
 
 CLevel_Tutorial_Boss::CLevel_Tutorial_Boss(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CLevel(pDevice , pDeviceContext)
@@ -510,6 +511,8 @@ HRESULT CLevel_Tutorial_Boss::Ready_Map()
 
 HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 {
+	CDialogueManager::GetInstance()->Initialize();
+
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
