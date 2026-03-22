@@ -23,6 +23,8 @@ protected:
 private:
 	Vec3 m_vPivot = { Vec3::Zero };
 
+	Vec3 m_vDir = { Vec3::Zero };
+
 	array<Vec3, 4> m_arrPoses;
 
 public:

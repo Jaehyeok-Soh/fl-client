@@ -162,6 +162,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     {
     case ENUM_TO_UINT(ELevelType::TEST):
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::NONE));
+        //pPlayerState->Set_SpecialDashOn(true);
         break;
 
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
@@ -186,13 +187,25 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
 
     Super::Update_Priority(fTimeDelta);
 
+    CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
     switch (m_pGameInstance->Get_CurrentLevelIndex())
     {
-    case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
-        CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
+    case ENUM_TO_UINT(ELevelType::TEST):
+    {
+        CGameObject* pMonster = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TEST), g_wszMonstereLayer);
+        if(pMonster)
+            pPlayerState->Set_PivotPos(pMonster->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+    }
+    break;
 
-        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS),g_wszBossLayer);
-        pPlayerState->Set_PivotPos(pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+    case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
+    {
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszBossLayer);
+        if(pBoss)
+            pPlayerState->Set_PivotPos(pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+    }
+    break;
+
     }
 }
 

@@ -47,7 +47,8 @@ void CImGui_AnimationLayout::Update_ModelInfo()
 		m_iAnimNums = m_pPlayerModel->Get_AnimationCount();
 
 		m_wstrSelectAnimName = m_pPlayerModel->Get_AnimationName(m_iSelectAnimation);
-		m_fSelectSpeed = (m_pPlayerModel->Get_Animation(m_iSelectAnimation))->Get_MotionOffset();
+		m_fSelectOffset = (m_pPlayerModel->Get_Animation(m_iSelectAnimation))->Get_MotionOffset();
+		m_fSelectSpeed = (m_pPlayerModel->Get_Animation(m_iSelectAnimation))->Get_AnimationSpeed();
 	}
 }
 
@@ -97,7 +98,23 @@ void CImGui_AnimationLayout::Render_AnimationInfo()
 
 	////////////// speed ////////////////////////
 
-	ImGui::Text("Selected Anim MotionOffset : %f", m_fSelectSpeed);
+	ImGui::Text("Selected Anim MotionOffset : %f", m_fSelectOffset);
+	ImGui::SetNextItemWidth(120.f);  // 원하는 픽셀 길이
+	ImGui::InputFloat("Change Offset", &m_fChnageOffset, 0.01f, 1.0f, "%.3f");
+	ImGui::SameLine();
+	if (ImGui::Button("Apply##OffsetEnugmsdfdf"))
+	{
+		if (m_pPlayerModel)
+		{
+			m_pPlayerModel->Get_Animation(m_iSelectAnimation)->Set_MotionOffset(m_fChnageOffset);
+			Update_ModelInfo();
+		}
+	}
+
+
+	ImGui::Separator();
+
+	ImGui::Text("Selected Anim Speed : %f", m_fSelectSpeed);
 	ImGui::SetNextItemWidth(120.f);  // 원하는 픽셀 길이
 	ImGui::InputFloat("Change Speed", &m_fChnageSpeed, 0.01f, 1.0f, "%.3f");
 	ImGui::SameLine();
@@ -105,13 +122,10 @@ void CImGui_AnimationLayout::Render_AnimationInfo()
 	{
 		if (m_pPlayerModel)
 		{
-			m_pPlayerModel->Get_Animation(m_iSelectAnimation)->Set_MotionOffset(m_fChnageSpeed);
+			m_pPlayerModel->Get_Animation(m_iSelectAnimation)->Set_AnimationSpeed(m_fChnageSpeed);
 			Update_ModelInfo();
 		}
 	}
-
-
-	ImGui::Separator();
 }
 
 void CImGui_AnimationLayout::Render_ChangeAnimInfo()

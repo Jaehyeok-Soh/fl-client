@@ -42,6 +42,9 @@ private:
 	_float m_fSelectSpeed = {0.f};
 	_float m_fChnageSpeed = { 0.f };
 
+	_float m_fSelectOffset = { 0.f };
+	_float m_fChnageOffset = { 0.f };
+
 public:
 	static CImGui_AnimationLayout* Create();
 	virtual void Free() override;

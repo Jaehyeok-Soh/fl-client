@@ -59,8 +59,9 @@
 // Test
 #include "ImGui_ClientDebug.h"
 
-#define ANIMTIC (24.f * 1.2f)
-
+#define ANIMTPS     24.f
+#define ANIMTIC     (24.f * 1.2f)
+#define ANIMTIC_3   (24.f * 1.3f)
 
 CMainPlayer::CMainPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
     : Super(pDevice, pDeviceContext), m_isCinematic{false}
@@ -850,8 +851,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
     // combo state : moon
     {
         CState_MoonCombo::MOONCOMBO_DESC tDesc = {};
-        tDesc.vCombo_CheckTimes = Vec4{ 15.f/ ANIMTIC ,15.f / ANIMTIC,20.f / ANIMTIC ,25.f / ANIMTIC };
-        tDesc.fSlide_CheckTime = 15.f / ANIMTIC;
+        tDesc.vCombo_CheckTimes = Vec4{ 15.f/ ANIMTIC_3 ,15.f / ANIMTIC_3,20.f / ANIMTIC_3 ,25.f / ANIMTIC_3 };
+        tDesc.fSlide_CheckTime = 15.f / ANIMTIC_3;
 
         _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack");
         _int iCombo1 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01");
@@ -859,7 +860,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         _int iCombo3 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03");
         _int iCombo4 = Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04");
 
-        tDesc.arrCombo_EndTimes = { 50.f / ANIMTIC ,33.f / ANIMTIC,39.f / ANIMTIC ,60.f / ANIMTIC ,70.f / ANIMTIC };
+        tDesc.arrCombo_EndTimes = { 50.f / ANIMTIC_3 ,33.f / ANIMTIC_3,39.f / ANIMTIC_3 ,60.f / ANIMTIC_3 ,70.f / ANIMTIC_3 };
 
         tDesc.iSlideAnimIdx = iSlide;
         tDesc.iFirstAnimIdx = iCombo1;
@@ -876,8 +877,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
     // combo state : dual
     {
         CState_DualCombo::DUALCOMBO_DESC tDesc = {};
-        tDesc.vCombo_CheckTimes = Vec4{ 17.f / ANIMTIC ,15.f / ANIMTIC, 10.f / ANIMTIC ,24.f / ANIMTIC };
-        tDesc.fSlide_CheckTime = 17.f / ANIMTIC;
+        tDesc.vCombo_CheckTimes = Vec4{ 17.f / (ANIMTPS * 1.9f) ,15.f / ANIMTIC_3, 10.f / ANIMTIC_3 ,24.f / ANIMTIC_3 };
+        tDesc.fSlide_CheckTime = 17.f / (ANIMTPS * 1.5f);
 
         _int iSlide = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_SlideAttack");
         _int iCombo1 = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_01");
@@ -885,7 +886,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
         _int iCombo3 = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_03");
         _int iCombo4 = Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_04");
 
-        tDesc.arrCombo_EndTimes = { 55.f / ANIMTIC ,51.f / ANIMTIC,50.f / ANIMTIC ,60.f / ANIMTIC ,75.f / ANIMTIC };
+        tDesc.arrCombo_EndTimes = { 55.f / (ANIMTPS * 1.9f) ,51.f / (ANIMTPS * 1.5f),50.f / ANIMTIC_3 ,60.f / ANIMTIC_3 ,75.f / ANIMTIC_3 };
 
         tDesc.iSlideAnimIdx = iSlide;
         tDesc.iFirstAnimIdx = iCombo1;
@@ -954,7 +955,7 @@ HRESULT CMainPlayer::Ready_AttackStates()
 
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 19.f / ANIMTIC;//0.55f ;
+        tKeyTimer.fMaxTime = 19.f / ANIMTIC_3;//0.55f ;
         desc.tKeyTimer = tKeyTimer;
 
         desc.pOwnerGun = pMyGun;
