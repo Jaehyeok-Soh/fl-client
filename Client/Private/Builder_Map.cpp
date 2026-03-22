@@ -174,8 +174,14 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 
 	tEnvData.vEnvColor = tData.vEnvColor;							// 환경 Color세팅
 	tEnvData.vSkyColor = tData.vSkyColor;							// SkyColor 세팅
+
 	tEnvData.vCloudBaseColor = tData.vCloudBaseColor;				// Base Color 세팅
+
 	tEnvData.vCloudHighlight = tData.vCloudHighlight;				// Clouds Hightlight 세팅
+	tEnvData.fCloudHighlightPower = tData.fCloudHighlightPower;		// Power
+
+	tEnvData.vCloudShadowColor = tData.vCloudShadowColor;			// Cloud Shadow Color 세팅
+	tEnvData.fCloudShadowPower = tData.fCloudShadowPower;			// Power
 
 	tEnvData.vSkyBoxTextureUVSpeed = tData.vSkyBoxTextureUVSpeed;	// UV Speed Setting
 	tEnvData.isChannelPacking = tData.isSkyBoxChannelPacking;		// Chaneel Packing Setting

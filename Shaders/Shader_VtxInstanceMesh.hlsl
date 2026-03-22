@@ -46,6 +46,11 @@ cbuffer CB_EnvData
     float4 vSkyColor = float4(1.f, 1.f, 1.f, 1.f); //16
     float4 vCloudBaseColor = float4(1.f, 1.f, 1.f, 1.f); //16
     float4 vCloudHighlight = float4(1.f, 1.f, 1.f, 1.f); //16
+    float4 vCloudShadowColor = float4(1.f, 1.f, 1.f, 1.f); //16
+    
+    float fCloudHighlightPower = 1.f;
+    float fCloudShadowPower = 1.f;
+    float2 EnvDataDummy2;
     
     int isChannelPacking = false; // 4 Byte 채널 패킹 사용한건지 아닌건지 
     int iSkyBoxTextureType = RECTANGLE; // 4 Byte 기본 사각형
@@ -55,7 +60,7 @@ cbuffer CB_EnvData
     
     float2 vSkyBoxTextureUVSpeed = float2(1.f, 1.f); // 8 Byte UV Speed 
     float fEvnAccDT = 0.f; //4Byte
-    float EnvDataDummy2; //4bytes (16바이트 정렬 맞춤용)
+    float EnvDataDummy3; //4bytes (16바이트 정렬 맞춤용)
     /* 16 Byte */
 };
 cbuffer CB_PlantData

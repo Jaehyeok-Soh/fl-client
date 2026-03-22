@@ -310,6 +310,10 @@ inline void to_json(json& SaveJson, const TLevelData& tData)
 		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Sky Color"], tData.vSkyColor);
 		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Cloud Base Color"], tData.vCloudBaseColor);
 		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Cloud Highlight Color"], tData.vCloudHighlight);
+		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Cloud Shadow Color"], tData.vCloudShadowColor);
+
+		SkyBoxJson["Cloud Highlight Power"] = tData.fCloudHighlightPower;
+		SkyBoxJson["Cloud Shadow Power"] = tData.fCloudShadowPower;
 
 	}
 	
@@ -357,6 +361,7 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 				Engine_Utils::read_vec3_xyz(SkyBox_LoadJson["Position Offset"],tData.vSkyBoxPositionOffset);
 			}
 
+
 			if (SkyBox_LoadJson.contains("Sky Color"))
 			{
 				Engine_Utils::read_vec4_xyzw(SkyBox_LoadJson["Sky Color"], tData.vSkyColor);
@@ -368,6 +373,19 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 			if (SkyBox_LoadJson.contains("Cloud Highlight Color"))
 			{
 				Engine_Utils::read_vec4_xyzw(SkyBox_LoadJson["Cloud Highlight Color"], tData.vCloudHighlight);
+			}
+			if (SkyBox_LoadJson.contains("Cloud Shadow Color"))
+			{
+				Engine_Utils::read_vec4_xyzw(SkyBox_LoadJson["Cloud Shadow Color"], tData.vCloudShadowColor);
+			}
+
+			if (SkyBox_LoadJson.contains("Cloud Highlight Power"))
+			{
+				tData.fCloudHighlightPower = SkyBox_LoadJson["Cloud Highlight Power"];
+			}
+			if (SkyBox_LoadJson.contains("Cloud Shadow Power"))
+			{
+				tData.fCloudShadowPower = SkyBox_LoadJson["Cloud Shadow Power"];
 			}
 
 

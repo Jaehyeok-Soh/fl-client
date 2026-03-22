@@ -40,28 +40,34 @@ bool HasSecNormal() { return (g_iGlobalMask & 2) != 0; }
 
 cbuffer CB_EnvData
 {
-    float4  vEnvColor = float4(1.f, 1.f, 1.f, 1.f); // 환경 Color값
+    float4 vEnvColor = float4(1.f, 1.f, 1.f, 1.f); // 환경 Color값
     /*  16Byte  */
     
-    float3  vWindDirection = float3(1.f, -1.f, 1.f); // 바람이 부는 방향
-    float   fWindPower = 1.f;                         // 바람이 부는 새기
+    float3 vWindDirection = float3(1.f, -1.f, 1.f); // 바람이 부는 방향
+    float fWindPower = 1.f; // 바람이 부는 새기
     /*  16Byte  */
     
     
     // SkyBox Setting 
+    // 16 byte
     float4 vSkyColor = float4(1.f, 1.f, 1.f, 1.f); //16
     float4 vCloudBaseColor = float4(1.f, 1.f, 1.f, 1.f); //16
     float4 vCloudHighlight = float4(1.f, 1.f, 1.f, 1.f); //16
+    float4 vCloudShadowColor = float4(1.f, 1.f, 1.f, 1.f); //16
     
-    int     isChannelPacking        = false;                    // 4 Byte 채널 패킹 사용한건지 아닌건지 
-    int     iSkyBoxTextureType      = RECTANGLE;                // 4 Byte 기본 사각형
-    float   fPolarRadiusScale       = 1.f;                      // 4 Byte 
-    float   EnvDataDummy;                                      // 4 Byte
+    float fCloudHighlightPower = 1.f;
+    float fCloudShadowPower = 1.f;
+    float2 EnvDataDummy2;
+    
+    int isChannelPacking = false; // 4 Byte 채널 패킹 사용한건지 아닌건지 
+    int iSkyBoxTextureType = RECTANGLE; // 4 Byte 기본 사각형
+    float fPolarRadiusScale = 1.f; // 4 Byte 
+    float EnvDataDummy; // 4 Byte
     /* 16Byte  */
     
-    float2  vSkyBoxTextureUVSpeed   = float2(1.f,1.f);          // 8 Byte UV Speed 
-    float   fEvnAccDT               = 0.f;
-    float   EnvDataDummy2; //  8 bytes (16바이트 정렬 맞춤용)
+    float2 vSkyBoxTextureUVSpeed = float2(1.f, 1.f); // 8 Byte UV Speed 
+    float fEvnAccDT = 0.f; //4Byte
+    float EnvDataDummy3; //4bytes (16바이트 정렬 맞춤용)
     /* 16 Byte */
 };
 

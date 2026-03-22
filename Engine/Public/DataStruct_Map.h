@@ -1242,6 +1242,11 @@ typedef struct TLevelData
 	Vec4								vSkyColor{ 0.3f,0.7f,0.8f,1.f };
 	Vec4								vCloudBaseColor{ 0.8f,0.8f,0.8f,1.f };
 	Vec4								vCloudHighlight{ 1.f,1.f,1.f,1.f };
+	Vec4								vCloudShadowColor{ 1.f,1.f,1.f,1.f };
+
+	_float								fCloudHighlightPower{1.f};
+	_float								fCloudShadowPower{1.f};
+
 
 	Vec3								vSkyBoxScale{1.f,1.f,1.f};
 	Vec3								vSkyBoxPositionOffset{0.f,0.f,0.f};
@@ -1295,6 +1300,7 @@ inline void from_json(const json& LoadJson, TMap_MapObjectData& tData);
 inline void to_json(json& SaveJson, const TLevelData& tData);
 inline void from_json(const json& LoadJson, TLevelData& tData);
 #pragma endregion
+
 
 NS_END
 /////////////////-------------------  Wrapping Class  -------------------/////////////////

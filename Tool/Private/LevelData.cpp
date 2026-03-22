@@ -161,7 +161,7 @@ HRESULT CLevelData::Render()
     if (FAILED(Super::Render()))
         return E_FAIL;
 
-    HRESULT hr{ E_FAIL };
+    HRESULT hr{ S_OK };
 
     CModel* pModel = Get_Component<CModel>();
 
@@ -313,23 +313,27 @@ HRESULT CLevelData::Apply_Data(const struct DTO::TLevelData* pData)
     pTs->Set_WorldMatrix( Matrix::Identity * Matrix::CreateFromYawPitchRoll(vPitchYawRoll_Radain.y , vPitchYawRoll_Radain.x , vPitchYawRoll_Radain.z) * 
         Matrix::CreateTranslation(pData->vSkyBoxPositionOffset.x, pData->vSkyBoxPositionOffset.y, pData->vSkyBoxPositionOffset.z));
 
-
-    m_tCB_EnvData.isChannelPacking = pData->isSkyBoxChannelPacking;
-    m_tCB_EnvData.fPolarRadiusScale = pData->fPolarRadiusScale;
-    m_tCB_EnvData.iSkyBoxTextureType = pData->iSkyBoxTextureType;
-    m_tCB_EnvData.vSkyBoxTextureUVSpeed = pData->vSkyBoxTextureUVSpeed;
-
     Change_SkyBoxModel(Engine_Utils::ToWString(pData->strSkyBoxModelName));
     Change_SkyBoxTexture(Engine_Utils::ToWString(pData->strSKyBoxTextureName));
 
-    m_tCB_EnvData.vSkyColor         = pData->vSkyColor;
-    m_tCB_EnvData.vCloudBaseColor   = pData->vCloudBaseColor;
-    m_tCB_EnvData.vCloudHighlight   = pData->vCloudHighlight;
+    m_tCB_EnvData.vSkyColor = pData->vSkyColor;
 
+    m_tCB_EnvData.vCloudBaseColor = pData->vCloudBaseColor;
+
+    m_tCB_EnvData.vCloudHighlight = pData->vCloudHighlight;
+    m_tCB_EnvData.fCloudHighlightPower = pData->fCloudHighlightPower;
+
+    m_tCB_EnvData.fCloudShadowPower = pData->fCloudShadowPower;
+    m_tCB_EnvData.vCloudShadowColor = pData->vCloudShadowColor;
+
+    m_tCB_EnvData.isChannelPacking          = pData->isSkyBoxChannelPacking;
+    m_tCB_EnvData.fPolarRadiusScale         = pData->fPolarRadiusScale;
+    m_tCB_EnvData.iSkyBoxTextureType        = pData->iSkyBoxTextureType;
+    m_tCB_EnvData.vSkyBoxTextureUVSpeed     = pData->vSkyBoxTextureUVSpeed;
+        
 
     m_vMapMinMaxBox_Center = pData->vMapMinMaxBox_Center;
     m_vMapMinMaxBox_Extents = pData->vMapMinMaxBox_extents;
-
 
 
     this->Set_GPU_EnvData();

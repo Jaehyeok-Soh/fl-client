@@ -75,9 +75,14 @@ cbuffer CB_EnvData
     
     // SkyBox Setting 
     // 16 byte
-    float4 vSkyColor = float4(1.f,1.f,1.f,1.f);//16
-    float4 vCloudBaseColor = float4(1.f, 1.f, 1.f, 1.f);//16
-    float4 vCloudHighlight = float4(1.f, 1.f, 1.f, 1.f); //16
+    float4 vSkyColor        = float4(1.f,1.f,1.f,1.f);      //16
+    float4 vCloudBaseColor  = float4(1.f, 1.f, 1.f, 1.f);   //16
+    float4 vCloudHighlight  = float4(1.f, 1.f, 1.f, 1.f);   //16
+    float4 vCloudShadowColor = float4(1.f, 1.f, 1.f, 1.f); //16
+    
+    float fCloudHighlightPower = 1.f;
+    float fCloudShadowPower = 1.f;
+    float2 EnvDataDummy2;
     
     int isChannelPacking = false; // 4 Byte 채널 패킹 사용한건지 아닌건지 
     int iSkyBoxTextureType = RECTANGLE; // 4 Byte 기본 사각형
@@ -87,7 +92,7 @@ cbuffer CB_EnvData
     
     float2  vSkyBoxTextureUVSpeed = float2(1.f, 1.f); // 8 Byte UV Speed 
     float   fEvnAccDT = 0.f;  //4Byte
-    float   EnvDataDummy2;    //4bytes (16바이트 정렬 맞춤용)
+    float   EnvDataDummy3;    //4bytes (16바이트 정렬 맞춤용)
     /* 16 Byte */
 };
 
@@ -863,16 +868,24 @@ PS_OUT_BACKBUFFER PS_SKYBOX(PS_IN_MESH input)
     
     if(isChannelPacking)
     {
-        float baseCloudMask = vDiffuse.b; // B채널: 전체적인 구름의 베이스 형태
-        float highlightCloudMask = vDiffuse.r; // R채널: 햇빛을 받는 밝고 짙은 구름 형태
+        // 1. [최종 확정] 디버깅 결과에 따라 채널 배치를 확정합니다!
+        float baseCloudMask = vDiffuse.b;           // B채널: '번지르르'하고 부드러운 몸통 (Base)
+        float highlightCloudMask = vDiffuse.r;      // R채널: '디테일이 있는' 선명한 하이라이트 (Highlight)
+        float shadowMask = vDiffuse.g;              // G채널: '어두운 부분이 많은' 상세 음영 (Shadow)
         
+
+        // 3. 베이스 구름 깔기 (이건 lerp가 맞습니다)
         float4 finalPackedColor = lerp(vSkyColor, vCloudBaseColor, baseCloudMask);
-        
-        finalPackedColor = lerp(finalPackedColor, vCloudHighlight, highlightCloudMask);
-        
+
+        // 4. [섀도우 적용] 베이스 구름 위에 섀도우 마스크를 사용하여 섀도우 색상을 섞어줍니다.
+        finalPackedColor = lerp(finalPackedColor, vCloudShadowColor, shadowMask);
+
+        // 5. 하이라이트 빛 더하기 (덧셈 연산)
+        finalPackedColor += (vCloudHighlight * highlightCloudMask * fCloudHighlightPower); // 강도 2.0배 고정
+
+        // 6. 최종 환경광 곱하기
         vDiffuse = finalPackedColor * vEnvColor;
     }
-    
 
     
     output.vColor = vDiffuse;
