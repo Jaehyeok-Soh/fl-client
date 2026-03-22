@@ -894,6 +894,14 @@ enum class EUIDImageSubClassType
 
 	CONVERSATION_DOWN,
 
+	// 마우스 커서
+		MOUSE_CURSOR_BEGIN,
+		MOUSE_CURSOR_DEFAULT,
+		MOUSE_CURSOR_CLICK,
+		MOUSE_CURSOR_TEXTEDIT,
+		MOUSE_CURSOR_GRAB,
+		MOUSE_CURSOR_HAND,
+		MOUSE_CURSOR_END,
 	END
 };
 
@@ -1032,6 +1040,14 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::COMMUNITY_END,							"COMMUNITY_END" },
 
 	{ EUIDImageSubClassType::CONVERSATION_DOWN,							"CONVERSATION_DOWN" },
+
+	{ EUIDImageSubClassType::MOUSE_CURSOR_BEGIN,						"MOUSE_CURSOR_BEGIN" },
+	{ EUIDImageSubClassType::MOUSE_CURSOR_DEFAULT,						"MOUSE_CURSOR_DEFAULT" },
+	{ EUIDImageSubClassType::MOUSE_CURSOR_CLICK,						"MOUSE_CURSOR_CLICK" },
+	{ EUIDImageSubClassType::MOUSE_CURSOR_TEXTEDIT,						"MOUSE_CURSOR_TEXTEDIT" },
+	{ EUIDImageSubClassType::MOUSE_CURSOR_GRAB,							"MOUSE_CURSOR_GRAB" },
+	{ EUIDImageSubClassType::MOUSE_CURSOR_HAND,							"MOUSE_CURSOR_HAND" },
+	{ EUIDImageSubClassType::MOUSE_CURSOR_END,							"MOUSE_CURSOR_END" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1172,6 +1188,14 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "COMMUNITY_END")							return EUIDImageSubClassType::COMMUNITY_END;
 
 	if (str == "CONVERSATION_DOWN")							return EUIDImageSubClassType::CONVERSATION_DOWN;
+
+	if (str == "MOUSE_CURSOR_BEGIN")							return EUIDImageSubClassType::MOUSE_CURSOR_BEGIN;
+	if (str == "MOUSE_CURSOR_DEFAULT")							return EUIDImageSubClassType::MOUSE_CURSOR_DEFAULT;
+	if (str == "MOUSE_CURSOR_CLICK")							return EUIDImageSubClassType::MOUSE_CURSOR_CLICK;
+	if (str == "MOUSE_CURSOR_TEXTEDIT")							return EUIDImageSubClassType::MOUSE_CURSOR_TEXTEDIT;
+	if (str == "MOUSE_CURSOR_GRAB")							return EUIDImageSubClassType::MOUSE_CURSOR_GRAB;
+	if (str == "MOUSE_CURSOR_HAND")							return EUIDImageSubClassType::MOUSE_CURSOR_HAND;
+	if (str == "MOUSE_CURSOR_END")							return EUIDImageSubClassType::MOUSE_CURSOR_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1314,6 +1338,14 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::COMMUNITY_END:							return "COMMUNITY_END";
 
 	case EUIDImageSubClassType::CONVERSATION_DOWN:						return "CONVERSATION_DOWN";
+
+	case EUIDImageSubClassType::MOUSE_CURSOR_BEGIN:						return "MOUSE_CURSOR_BEGIN";
+	case EUIDImageSubClassType::MOUSE_CURSOR_DEFAULT:					return "MOUSE_CURSOR_DEFAULT";
+	case EUIDImageSubClassType::MOUSE_CURSOR_CLICK:						return "MOUSE_CURSOR_CLICK";
+	case EUIDImageSubClassType::MOUSE_CURSOR_TEXTEDIT:					return "MOUSE_CURSOR_TEXTEDIT";
+	case EUIDImageSubClassType::MOUSE_CURSOR_GRAB:						return "MOUSE_CURSOR_GRAB";
+	case EUIDImageSubClassType::MOUSE_CURSOR_HAND:						return "MOUSE_CURSOR_HAND";
+	case EUIDImageSubClassType::MOUSE_CURSOR_END:						return "MOUSE_CURSOR_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

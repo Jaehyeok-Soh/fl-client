@@ -192,6 +192,7 @@
 #include "UIQuestNavi_Image.h"
 #include "UICommunity_Image.h"
 #include "UIConversation_Image.h"
+#include "UIMouseCursor_Image.h"
 //=================
 // Resource
 //=================
@@ -924,6 +925,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_CommunityText",			CUICommunity_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ConversationImage",		CUIConversation_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ConversationText",			CUIConversation_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MouseCursorImage",			CUIMouseCursor_Image::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	

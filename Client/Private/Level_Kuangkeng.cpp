@@ -115,7 +115,7 @@ void CLevel_Kuangkeng::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	static _uint s_iCount = { 0 };
+	/*static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
 	{
 #ifdef _DEBUG
@@ -138,7 +138,7 @@ void CLevel_Kuangkeng::Update(const _float fTimeDelta)
 		}
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
-	}
+	}*/
 }
 
 HRESULT CLevel_Kuangkeng::Render()

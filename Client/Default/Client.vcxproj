@@ -173,6 +173,7 @@
     <ClInclude Include="..\Public\Bush.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\UIMouseCursor_Image.h" />
     <ClInclude Include="..\Public\WeaponPickUp.h" />
     <ClInclude Include="..\Public\InteractiveObject.h" />
     <ClInclude Include="..\Public\CLightMapObject.h" />
@@ -419,6 +420,7 @@
     <ClCompile Include="..\Private\Bush.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
+    <ClCompile Include="..\Private\UIMouseCursor_Image.cpp" />
     <ClCompile Include="..\Private\WeaponPickUp.cpp" />
     <ClCompile Include="..\Private\InteractiveObject.cpp" />
     <ClCompile Include="..\Private\Monster_Fly.cpp" />

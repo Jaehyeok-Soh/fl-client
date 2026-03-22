@@ -20,6 +20,7 @@ namespace Engine
 		LockedHiddenCenter = 0,
 		VisibleClipped,
 		VisibleFree,
+		InVisibleClipped,
 		Tool,
 		END
 	};

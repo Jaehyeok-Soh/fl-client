@@ -19,9 +19,6 @@ public:
 	typedef struct tagWeaponPickUp_Desc : public CInteractiveObject::INTERACTIVEOBJECT_DESC
 	{
 		/* 충돌처리 할건지말건지 */
-		
-
-
 		_bool						isTutorialEvent{ false }; /* Tutoiral Event 인지 아닌지 */
 		string						strWeaponType{""};
 	}WEAPONPICKUP_DESC;

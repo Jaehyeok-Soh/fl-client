@@ -426,31 +426,31 @@ void CLevel_Square::Update(const _float fTimeDelta)
 {
 
 	Super::Update(fTimeDelta);
-
-	static _uint s_iCount = { 0 };
-	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
-	{
-#ifdef _DEBUG
-		s_iCount = (s_iCount + 1) % 3;
-#else
-		s_iCount = (s_iCount + 1) % 2;
-#endif
-		if (s_iCount == 0)
-		{
-			m_eCursorMode = ECursorMode::LockedHiddenCenter;
-		}
-		else if (s_iCount == 1)
-		{
-			m_eCursorMode = ECursorMode::VisibleClipped;
-		}
-#ifdef _DEBUG
-		else
-		{
-			m_eCursorMode = ECursorMode::VisibleFree;
-		}
-#endif
-		m_pGameInstance->Request_CursorMode(m_eCursorMode);
-	}
+//
+//	static _uint s_iCount = { 0 };
+//	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+//	{
+//#ifdef _DEBUG
+//		s_iCount = (s_iCount + 1) % 3;
+//#else
+//		s_iCount = (s_iCount + 1) % 2;
+//#endif
+//		if (s_iCount == 0)
+//		{
+//			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+//		}
+//		else if (s_iCount == 1)
+//		{
+//			m_eCursorMode = ECursorMode::VisibleClipped;
+//		}
+//#ifdef _DEBUG
+//		else
+//		{
+//			m_eCursorMode = ECursorMode::VisibleFree;
+//		}
+//#endif
+//		m_pGameInstance->Request_CursorMode(m_eCursorMode);
+//	}
 }
 
 HRESULT CLevel_Square::Render()
