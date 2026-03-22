@@ -216,7 +216,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
         
        // SRT 보간
         vScale = lerp(vLeftScale, vRightScale, fRatio);
-        vQuat = normalize(lerp(vLeftQuat, vRightQuat, fRatio)); // todo : 원래는 dot을 해서 음수일때 처리 해야하는데 일단 슛
+        vQuat = normalize(lerp(vLeftQuat, vRightQuat, fRatio));
         if (bRootMotionBone)
             vTranslation = float3(0.f, 0.f, 0.f);
         else
@@ -228,7 +228,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     float4 vFinalQuat;
     
     // bone mix
-    if(g_InputData.iMixType == 0 )
+    if(g_InputData.iMixType == 0)
     {
         vFinalScale = lerp(MU_PRETRANSFORMS[iBoneIdx].vScale, vScale, fMixRatio);
    
@@ -244,36 +244,6 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
             vFinalTranslation = float3(0.f, 0.f, 0.f);
         else
             vFinalTranslation = lerp(MU_PRETRANSFORMS[iBoneIdx].vTranslation, vTranslation, fMixRatio);
-    }
-    
-    // addtive
-    else if (g_InputData.iMixType == 1)
-    {
-        // 1. scale
-        float3 ScaledDelta = 1 + (vScale - 1.f) * fMixRatio;
-        vFinalScale = MU_PRETRANSFORMS[iBoneIdx].vScale * ScaledDelta;
-        
-        // 2. quat
-        float4 Quatbase = MU_PRETRANSFORMS[iBoneIdx].vQuat;
-        float4 delta = vQuat;
-        
-        // ratio만큼 줄이기
-        float4 identity = float4(0, 0, 0, 1);
-
-        if (dot(identity, delta) < 0.0f)
-            delta = -delta;
-        
-        float4 QuatDelta = normalize(lerp(identity, delta, fMixRatio));
-
-        // base에 곱하기
-        float4 vFinalQuat = normalize(QuaternionMultiply(Quatbase, QuatDelta));
-        
-        // 3. translation
-        // todo_eunbi : mix때도 zero로 만들어야 하나
-        if (g_InputData.iRootMotionBoneIndex == iBoneIdx)
-            vFinalTranslation = float3(0.f, 0.f, 0.f);
-        else
-            vFinalTranslation = MU_PRETRANSFORMS[iBoneIdx].vTranslation + vTranslation * fMixRatio;
     }
     
     // 결과 값 바인드

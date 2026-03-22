@@ -838,6 +838,9 @@
     <Filter Include="03. GameObject\LevelData">
       <UniqueIdentifier>{5274bfe2-5640-4c74-93bb-8270f1dd7ba7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\SpecialDash">
+      <UniqueIdentifier>{91575362-f826-4373-b82f-f1ba4d35e7b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1554,6 +1557,9 @@
     <ClInclude Include="..\public\SoundEventBinder.h">
       <Filter>07. System\04. Binder</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_SpecialDash.h">
+      <Filter>06. FSM\Player\SpecialDash</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2259,6 +2265,9 @@
     </ClCompile>
     <ClCompile Include="..\private\SoundEventBinder.cpp">
       <Filter>07. System\04. Binder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_SpecialDash.cpp">
+      <Filter>06. FSM\Player\SpecialDash</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -80,19 +80,38 @@ HRESULT CBody::Initialize(void* pArg)
 
 		pMyModel->Set_AdditiveRef_AnimIdx(99);					// middle aim을 ref 애니메이션으로 잡는다
 
+		pMyModel->Set_Animation_SpeedOffset_All(1.2f);
+
 		// motion offset
 		_uint iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop_Acc");
 		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(0.6f);
 		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dodge_InAir");
-		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.2f);
+		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.5f);
 		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dodge_To_Run");
 		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.2f);
 		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_01");
 		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.5f);
+		pMyModel->Get_Animation(iRunAnimIds)->Set_AnimationSpeed(1.7f);
 		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_02");
 		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.8f);
 
-		pMyModel->Set_Animation_SpeedOffset_All(1.2f);
+
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_Loop"))->Set_AnimationSpeed(1.1f);
+
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_02"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_03"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_04"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_SlideAttack"))->Set_AnimationSpeed(1.5f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_FallAttack_End"))->Set_AnimationSpeed(1.3f);
+
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01"))->Set_AnimationSpeed(1.9f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_End"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_Start"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End"))->Set_AnimationSpeed(1.3f);
 	}
 
 	// CascadeBuffer Shader에 연결

@@ -19,6 +19,10 @@
 #include "EffectHandler.h"
 #include "Shader.h"
 
+#include "PhysicsCCT.h"
+#include "PhysicsRigidBody.h"
+#include "PhysicsCollider.h"
+
 // parts objs
 #include "Weapon.h"
 #include "Body.h"
@@ -59,10 +63,7 @@
 #include "State_HitStrong.h"
 
 #include "State_Condemn.h"
-
-#include "PhysicsCCT.h"
-#include "PhysicsRigidBody.h"
-#include "PhysicsCollider.h"
+#include "State_SpecialDash.h"
 
 #pragma endregion
 
@@ -147,15 +148,26 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         return E_FAIL;
 
     CGameInstance::GetInstance()->Add_Actor_Object(this);
-    if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
+    CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
+    if (pPlayerState)
+    {
         if (FAILED(pPlayerState->Awake(iCurrentLevelID)))
-           return E_FAIL;
+            return E_FAIL;
+    }
 
+
+
+    // level 별 관리 : 주로 테스트용
     switch (iCurrentLevelID)
     {
     case ENUM_TO_UINT(ELevelType::TEST):
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::NONE));
+        //pPlayerState->Set_SpecialDashOn(true);
         break;
+
+    case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
+        Set_FKeyEvent(0, true);
+        //pPlayerState->Set_SpecialDashOn(true);
 
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
@@ -165,8 +177,6 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 
     Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
 
-    if (iCurrentLevelID == ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS))
-        Set_FKeyEvent(0, true);
 
     return S_OK;
 }
@@ -176,6 +186,27 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
     Count_DoubleJump(fTimeDelta);
 
     Super::Update_Priority(fTimeDelta);
+
+    CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
+    switch (m_pGameInstance->Get_CurrentLevelIndex())
+    {
+    case ENUM_TO_UINT(ELevelType::TEST):
+    {
+        CGameObject* pMonster = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TEST), g_wszMonstereLayer);
+        if(pMonster)
+            pPlayerState->Set_PivotPos(pMonster->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+    }
+    break;
+
+    case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
+    {
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszBossLayer);
+        if(pBoss)
+            pPlayerState->Set_PivotPos(pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+    }
+    break;
+
+    }
 }
 
 void CPlayer::Update(const _float fTimeDelta)
@@ -1232,6 +1263,42 @@ HRESULT CPlayer::Ready_BaseStates()
             return E_FAIL;
     }
 
+    // SPECIALDASH
+    {
+        CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
+        desc.bBlend = true;
+        desc.bLoop = false;
+
+        desc.FCollis = 0;
+
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::WALK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::CROUCH);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
+
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)] = ENUM_TO_UINT(State::COMBO);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)] = ENUM_TO_UINT(State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)] = ENUM_TO_UINT(State::CHARGE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime    = false;
+
+        desc.tKeyTimer          = tKeyTimer;
+        desc.pOwnerGun          = pMyGun;
+
+        desc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_End;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SPECIALDASH), CState_SpecialDash::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
     return S_OK;
 }
 
@@ -1660,8 +1727,6 @@ HRESULT CPlayer::Ready_Components(PLAYER_DESC* pDesc)
         desc.iStateCount = ENUM_TO_UINT(State::END);
         desc.pOwnerModel = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>();
         desc.pOwnerAnimECS =static_cast<CComputeShader*>(Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
-        desc.pOwnerWeaponModel = Get_Part<CWeapon>(ENUM_TO_UINT(Part::CLOAK))->Get_Component<CModel>();
-        desc.pOwnerWeaponAnimECS = static_cast<CComputeShader*>(Get_Part<CWeapon>(ENUM_TO_UINT(Part::CLOAK))->Get_Script_Component(TEXT("ComputeShader_AnimE")));
 
         if (FAILED(Add_Component<CPlayerActionState>(0, L"Prototype_Component_ActionState_Player", &desc)))
             return E_FAIL;
