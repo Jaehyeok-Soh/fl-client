@@ -541,6 +541,15 @@
     <Filter Include="00. System\05. Component\Camera\Modifier\RotationOffset">
       <UniqueIdentifier>{0bb1025d-4a71-4b2d-8a3e-4853896948c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Camera">
+      <UniqueIdentifier>{6f6d645f-92d3-481f-8897-02cd5b7fd439}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Camera\DataDocument_CameraControlEvent">
+      <UniqueIdentifier>{d383f3f2-751d-47df-bf38-c796c33241a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Camera\DataStruct_CameraControlEvent">
+      <UniqueIdentifier>{3d684b0b-627d-436d-b8ff-a403e20b0e3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -1086,6 +1095,12 @@
     </ClCompile>
     <ClCompile Include="..\private\CameraModifier_RotationOffset.cpp">
       <Filter>00. System\05. Component\Camera\Modifier\RotationOffset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataStruct_CameraControlEvent.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Camera\DataStruct_CameraControlEvent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DataDocument_CameraControlEvent.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Camera\DataDocument_CameraControlEvent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1686,6 +1701,12 @@
     </ClInclude>
     <ClInclude Include="..\public\CameraModifier_RotationOffset.h">
       <Filter>00. System\05. Component\Camera\Modifier\RotationOffset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataStruct_CameraControlEvent.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Camera\DataStruct_CameraControlEvent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DataDocument_CameraControlEvent.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Camera\DataDocument_CameraControlEvent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

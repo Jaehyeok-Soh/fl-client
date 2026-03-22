@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "VIBuffer_Line_Color.h"
 #include "Transform.h"
+#include "CameraController.h"
 #include "ToolAnimSoundPlayer.h"
 //=================
 // Object
@@ -128,6 +129,7 @@ HRESULT CLoader::Loading_For_Logo()
 	m_isFinished = true;
 
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, CCinematicCamera::Create(m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_CameraController", CCameraController::Create());
 
 	return S_OK;
 }

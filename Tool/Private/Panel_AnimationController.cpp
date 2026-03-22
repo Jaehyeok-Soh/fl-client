@@ -556,12 +556,14 @@ void CPanel_AnimationController::DrawController()
             if (typeIndex == EAnimEvent::OVERLAP)      isSelected = (m_tAnimControllInfo->iCurrentAttackEventIndex == eventIndex);
             else if (typeIndex == EAnimEvent::EFFECT)  isSelected = (m_tAnimControllInfo->iCurrentEffectEventIndex == eventIndex);
             else if (typeIndex == EAnimEvent::SOUND)   isSelected = (m_tAnimControllInfo->iCurrentSoundEventIndex == eventIndex);
+            else if (typeIndex == EAnimEvent::CAMERACONTROL)   isSelected = (m_tAnimControllInfo->iCurrentCameraControlEventIndex == eventIndex);
 
             if (ImGui::Selectable(label, isSelected, 0, ImVec2(LABEL_WIDTH, TRACK_HEIGHT)))
             {
                 m_tAnimControllInfo->iCurrentSoundEventIndex = -1;
                 m_tAnimControllInfo->iCurrentEffectEventIndex = -1;
                 m_tAnimControllInfo->iCurrentAttackEventIndex = -1;
+                m_tAnimControllInfo->iCurrentCameraControlEventIndex = -1;
 
                 if (typeIndex == EAnimEvent::OVERLAP)
                     m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
@@ -569,6 +571,8 @@ void CPanel_AnimationController::DrawController()
                     m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
                 else if (typeIndex == EAnimEvent::SOUND)
                     m_tAnimControllInfo->iCurrentSoundEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::CAMERACONTROL)
+                    m_tAnimControllInfo->iCurrentCameraControlEventIndex = eventIndex;
             }
 
             draw_list->AddRect(
@@ -609,6 +613,7 @@ void CPanel_AnimationController::DrawController()
                 m_tAnimControllInfo->iCurrentSoundEventIndex = -1;
                 m_tAnimControllInfo->iCurrentEffectEventIndex = -1;
                 m_tAnimControllInfo->iCurrentAttackEventIndex = -1;
+                m_tAnimControllInfo->iCurrentCameraControlEventIndex = -1;
 
                 if (typeIndex == EAnimEvent::OVERLAP)
                     m_tAnimControllInfo->iCurrentAttackEventIndex = eventIndex;
@@ -616,6 +621,8 @@ void CPanel_AnimationController::DrawController()
                     m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
                 else if (typeIndex == EAnimEvent::SOUND)
                     m_tAnimControllInfo->iCurrentSoundEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::CAMERACONTROL)
+                    m_tAnimControllInfo->iCurrentCameraControlEventIndex = eventIndex;
             }
 
             // 드래그 시작
@@ -639,6 +646,8 @@ void CPanel_AnimationController::DrawController()
                     m_tAnimControllInfo->iCurrentEffectEventIndex = eventIndex;
                 else if (typeIndex == EAnimEvent::SOUND)
                     m_tAnimControllInfo->iCurrentSoundEventIndex = eventIndex;
+                else if (typeIndex == EAnimEvent::SOUND)
+                    m_tAnimControllInfo->iCurrentCameraControlEventIndex = eventIndex;
             }
 
             // 마우스를 놓는 순간 실제 반영
@@ -650,6 +659,8 @@ void CPanel_AnimationController::DrawController()
                     m_pAnimToolManager->Modify_EffectEvent(m_tEventInfo->vecVFXEvents);
                 else if (typeIndex == EAnimEvent::SOUND)
                     m_pAnimToolManager->Modify_SoundEvent();
+                else if (typeIndex == EAnimEvent::CAMERACONTROL)
+                    m_pAnimToolManager->Modify_CameraControlEvent(m_tEventInfo->vecCameraControlEvents);
 
                 m_iDraggingEventToken = -1;
             }
@@ -732,8 +743,30 @@ void CPanel_AnimationController::DrawController()
             evt,
             i,
             EAnimEvent::SOUND,
-            IM_COL32(240, 180, 60, 220), // 사운드는 노랑/주황 계열
-            0.0f // 순간 이벤트이므로 duration 0 -> 최소 width 6으로 표시됨
+            IM_COL32(240, 180, 60, 220),
+            0.0f
+        );
+    }
+
+    // [Camera Events]
+    localIdx = 0;
+    for (int i = 0; i < m_tEventInfo->vecCameraControlEvents.size(); ++i)
+    {
+        auto& evt = m_tEventInfo->vecCameraControlEvents[i];
+
+        if (evt.strAnimTag != m_tAnimControllInfo->iCurrentAnimationStr)
+            continue;
+
+        char labelBuf[32];
+        sprintf_s(labelBuf, "Camera %d", localIdx++);
+
+        DrawSingleEventTrack(
+            labelBuf,
+            evt,
+            i,
+            EAnimEvent::CAMERACONTROL,
+            IM_COL32(180, 120, 255, 220),
+            Get_CameraEventDuration(evt)
         );
     }
 
@@ -833,6 +866,24 @@ void CPanel_AnimationController::Render_AddEventModal()
                 m_tEventInfo->vecSoundEvents.push_back(newEvent);
                 m_pAnimToolManager->Modify_SoundEvent();
             } break;
+            case Engine::EAnimEvent::CAMERACONTROL:
+            {
+                m_tAnimControllInfo->iCurrentAttackEventIndex = -1;
+                m_tAnimControllInfo->iCurrentEffectEventIndex = -1;
+                m_tAnimControllInfo->iCurrentSoundEventIndex = -1;
+                m_tAnimControllInfo->iCurrentCameraControlEventIndex = (_int)m_tEventInfo->vecCameraControlEvents.size();
+
+                DTO::CAMERACOTRNOL_EVENT newEvent{};
+                newEvent.eEventType = Engine::EAnimEvent::CAMERACONTROL;
+                newEvent.eCommand = DTO::EAnimCameraControlCommand::Shake;
+                newEvent.strDescription = "New Camera Event";
+                newEvent.strAnimTag = m_tAnimControllInfo->iCurrentAnimationStr;
+                newEvent.iAnimIndex = m_tAnimControllInfo->iCurrentAnimIndex;
+                newEvent.fStartTrackPosition = (_float)m_tAnimControllInfo->fTrackPosition;
+
+                m_tEventInfo->vecCameraControlEvents.push_back(newEvent);
+                m_pAnimToolManager->Modify_CameraControlEvent(m_tEventInfo->vecCameraControlEvents);
+            } break;
             default:
                 break;
             }
@@ -853,6 +904,26 @@ void CPanel_AnimationController::Render_AddEventModal()
 
         ImGui::EndPopup();
     }
+}
+
+_float CPanel_AnimationController::Get_CameraEventDuration(const DTO::CAMERACOTRNOL_EVENT& evt)
+{
+    switch (evt.eCommand)
+    {
+    case DTO::EAnimCameraControlCommand::Shake:
+        return evt.shake.fDuration;
+
+    case DTO::EAnimCameraControlCommand::FOV:
+        return evt.fov.fBlendInTime + evt.fov.fHoldTime + evt.fov.fBlendOutTime;
+
+    case DTO::EAnimCameraControlCommand::RotationOffset:
+        return evt.rotationOffset.fBlendInTime + evt.rotationOffset.fHoldTime + evt.rotationOffset.fBlendOutTime;
+
+    case DTO::EAnimCameraControlCommand::PositionOffset:
+        return evt.positionOffset.fBlendInTime + evt.positionOffset.fHoldTime + evt.positionOffset.fBlendOutTime;
+    }
+
+    return 0.f;
 }
 
 void CPanel_AnimationController::SetAnimationObject()

@@ -12,11 +12,23 @@ CCameraModifier_RotationOffset::CCameraModifier_RotationOffset(const CAMERA_ROTA
 
 void CCameraModifier_RotationOffset::Accumulate(const CAMERA_POSE& basePose, OUT CAMERA_MODIFIER_RESULT& outResult) const
 {
-	const _float fWeight = Get_BlendWeight();
+    if (!m_bStarted || m_bFinished)
+        return;
 
-	outResult.fYawOffsetRad += m_tDesc.fYawRad * fWeight;
-	outResult.fPitchOffsetRad += m_tDesc.fPitchRad * fWeight;
-	outResult.fRollOffsetRad += m_tDesc.fRollRad * fWeight;
+    _float fWeight = Get_BlendWeight();
+    if (fWeight <= 0.f)
+        return;
+
+    // 회전은 들어갈 때 살짝 과장하면 덜 심심함
+    if (m_fBlendInTime > 0.f && m_fElapsed < m_fBlendInTime)
+    {
+        const _float fT = m_fElapsed / m_fBlendInTime;
+        fWeight = Engine_Utils::EvalEase_EaseOutBack(fT);
+    }
+
+    outResult.fYawOffsetRad += m_tDesc.fYawRad * fWeight;
+    outResult.fPitchOffsetRad += m_tDesc.fPitchRad * fWeight;
+    outResult.fRollOffsetRad += m_tDesc.fRollRad * fWeight;
 }
 
 CCameraModifier_RotationOffset* CCameraModifier_RotationOffset::Create(const CAMERA_ROTATION_OFFSET_DESC& desc)

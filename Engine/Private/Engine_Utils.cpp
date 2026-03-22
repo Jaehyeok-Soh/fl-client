@@ -301,6 +301,37 @@ void Engine_Utils::Set_OnlyFlag(Flags& curFlags, _uint iBitFlag)
     curFlags |= iBitFlag;
 }
 
+_float Engine_Utils::EvalTimingWeight(_float fElapsed, _float fBlendIn, _float fHold, _float fBlendOut)
+{
+    fBlendIn = (std::max)(0.f, fBlendIn);
+    fHold = (std::max)(0.f, fHold);
+    fBlendOut = (std::max)(0.f, fBlendOut);
+
+    const _float fTotal = fBlendIn + fHold + fBlendOut;
+    if (fTotal <= 0.f)
+        return 1.f;
+
+    if (fElapsed < 0.f)
+        return 0.f;
+
+    if (fBlendIn > 0.f && fElapsed < fBlendIn)
+    {
+        const _float fT = fElapsed / fBlendIn;
+        return EvalEase_EaseOutQuad(fT);
+    }
+
+    if (fElapsed < fBlendIn + fHold)
+        return 1.f;
+
+    if (fBlendOut > 0.f && fElapsed < fTotal)
+    {
+        const _float fT = (fElapsed - fBlendIn - fHold) / fBlendOut;
+        return 1.f - EvalEase_EaseInOutQuad(fT);
+    }
+
+    return 0.f;
+}
+
 void Engine_Utils::Merge_MinMax(const Vec3* pMinMax, Vec3& ioMin, Vec3& ioMax)
 {
     const Vec3& vMin = pMinMax[0];

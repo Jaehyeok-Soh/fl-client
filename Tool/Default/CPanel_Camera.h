@@ -16,12 +16,17 @@ public:
 	virtual HRESULT		Render(CToolObject* pGo)override;
 	virtual void		Update(const _float fTimeDelta)override;
 private:
-	HRESULT				Render_CameraShaking();
-
-
+	void				Reset_CameraPreviewDefaults();
+	HRESULT				Render_CameraPreview();
+	void				Render_CameraShaking();
+	void				Render_CameraFov();
+	void				Render_CameraRotationOffset();
+	void				Render_CameraPositionOffset();
 private:
-	CAM_SHAKING_DATA	m_tCamShakingData{};
-
+	CAMERA_SHAKE_DATA m_tCamShakingData = {};
+	CAMERA_FOV_DATA m_tCamFovData = {};
+	CAMERA_ROTATION_OFFSET_DATA m_tCamRotationOffsetData = {};
+	CAMERA_POSITION_OFFSET_DATA m_tCamPositionOffsetData = {};
 private:
 	CGameInstance* m_pGameInstance{ nullptr };
 public:
@@ -30,4 +35,3 @@ public:
 };
 
 NS_END
-

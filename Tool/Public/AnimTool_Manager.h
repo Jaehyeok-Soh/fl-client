@@ -51,6 +51,7 @@ public:
 public:
 	ANIMCTRLINFO& Get_AnimControllInfo() { return m_tAnimControllInfo; }
 	DTO::ANIM_EVENT_INFO1& Get_AnimEventInfo() { return m_tEventInfo; }
+	class CEvent_CameraControl_Module* Get_CameraControlMoule() { return m_pCameraControlModule; }
 
 /// <summary>
 /// 애니메이션 모델과 애니메이션
@@ -88,6 +89,9 @@ public:
 	void Modify_EffectEvent(vector<DTO::EFFECTEVENT> events);
 	// 사운드
 	void Modify_SoundEvent();
+	// 카메라 컨트롤
+	void Modify_CameraControlEvent(_uint eventIdx, DTO::CAMERACOTRNOL_EVENT event);
+	void Modify_CameraControlEvent(vector<DTO::CAMERACOTRNOL_EVENT> events);
 	HRESULT EffectEvent_GizmoObjectSetting();
 private:
 	// 매 프레임 가져오는 애니메이션 정보
@@ -111,11 +115,13 @@ public:
 	HRESULT Load_AttackOverlap(fs::path path);
 	HRESULT Load_EffectEvent(fs::path path);
 	HRESULT Load_SoundEvent(fs::path path);
+	HRESULT Load_CameraControlEvent(fs::path path);
 	void Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap);
 	void Set_EffectEvent(CEffectHandler* pEffectEvent);
 	HRESULT Save_AttackOverlap(fs::path path, string strAnimTag, _int iPool);
 	HRESULT Save_EffectEvent(fs::path path, string strAnimTag, _int iPool);
 	HRESULT Save_SoundEvent(fs::path path);
+	HRESULT Save_CameraControlEvent(fs::path path);
 private:
 	HRESULT Ready_Builder();
 	HRESULT Ready_BuildFiles();
@@ -145,6 +151,7 @@ private:
 	class CEvent_Overlap_Module* m_pOverlapModule = { nullptr };
 	class CEvent_Effect_Module* m_pEffectModule = { nullptr };
 	class CEvent_Sound_Module* m_pSoundModule = { nullptr };
+	class CEvent_CameraControl_Module* m_pCameraControlModule = { nullptr };
 private:
 	std::vector<string> m_vecEffectTags;	// 이펙트 전용 Tag 리스트들.
 public:

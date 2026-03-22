@@ -12,20 +12,21 @@ CCameraModifier_Fov::CCameraModifier_Fov(const CAMERA_FOV_DESC& desc)
 
 void CCameraModifier_Fov::Accumulate(const CAMERA_POSE& basePose, OUT CAMERA_MODIFIER_RESULT& outResult) const
 {
-	const _float fWeight = Get_BlendWeight();
-	_float fDelta = 0.f;
+    if (m_bStarted == false || m_bFinished)
+        return;
 
-	switch (m_tDesc.eMode)
-	{
-	case ECameraFovMode::Delta:
-		fDelta = m_tDesc.fValueRad * fWeight;
-		break;
-	case ECameraFovMode::Absolute:
-		fDelta = (m_tDesc.fValueRad - basePose.fFovRad) * fWeight;
-		break;
-	}
+    const _float fWeight = Get_BlendWeight();
+    if (fWeight <= 0.f)
+        return;
 
-	outResult.fFovDeltaRad += fDelta;
+    _float fDeltaRad = 0.f;
+
+    if (m_tDesc.eMode == ECameraFovMode::Delta)
+        fDeltaRad = m_tDesc.fValueRad;
+    else
+        fDeltaRad = (m_tDesc.fValueRad - basePose.fFovRad);
+
+    outResult.fFovDeltaRad += fDeltaRad * fWeight;
 }
 
 CCameraModifier_Fov* CCameraModifier_Fov::Create(const CAMERA_FOV_DESC& desc)

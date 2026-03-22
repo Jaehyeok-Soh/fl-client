@@ -164,6 +164,7 @@
     <ClInclude Include="..\Public\CameraMan_Free.h" />
     <ClInclude Include="..\Public\Effect_DataManager.h" />
     <ClInclude Include="..\Public\Effect_Env.h" />
+    <ClInclude Include="..\public\Event_CameraControl_Module.h" />
     <ClInclude Include="..\public\Event_Sound_Module.h" />
     <ClInclude Include="..\public\ToolAnimSoundPlayer.h" />
     <ClInclude Include="..\Public\Tool_EffectBase.h" />
@@ -278,6 +279,7 @@
     <ClCompile Include="..\Private\CameraMan_Free.cpp" />
     <ClCompile Include="..\Private\Effect_DataManager.cpp" />
     <ClCompile Include="..\Private\Effect_Env.cpp" />
+    <ClCompile Include="..\private\Event_CameraControl_Module.cpp" />
     <ClCompile Include="..\private\Event_Sound_Module.cpp" />
     <ClCompile Include="..\private\ToolAnimSoundPlayer.cpp" />
     <ClCompile Include="..\Private\Tool_EffectBase.cpp" />

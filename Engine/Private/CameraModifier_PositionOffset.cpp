@@ -12,19 +12,19 @@ CCameraModifier_PositionOffset::CCameraModifier_PositionOffset(const CAMERA_POSI
 
 void CCameraModifier_PositionOffset::Accumulate(const CAMERA_POSE& basePose, OUT CAMERA_MODIFIER_RESULT& outResult) const
 {
+    if (!m_bStarted || m_bFinished)
+        return;
+
     const _float fWeight = Get_BlendWeight();
-    const Vec3 vOffset = m_tDesc.vOffset * fWeight;
+    if (fWeight <= 0.f)
+        return;
 
-    switch (m_tDesc.eSpace)
-    {
-    case ECameraSpace::World:
-        outResult.vWorldPosOffset += vOffset;
-        break;
+    const Vec3 vWeightedOffset = m_tDesc.vOffset * fWeight;
 
-    case ECameraSpace::Camera_Local:
-        outResult.vLocalPosOffset += vOffset;
-        break;
-    }
+    if (m_tDesc.eSpace == ECameraSpace::Camera_Local)
+        outResult.vLocalPosOffset += vWeightedOffset;
+    else
+        outResult.vWorldPosOffset += vWeightedOffset;
 }
 
 CCameraModifier_PositionOffset* CCameraModifier_PositionOffset::Create(const CAMERA_POSITION_OFFSET_DESC& desc)

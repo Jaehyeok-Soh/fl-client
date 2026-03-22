@@ -226,6 +226,7 @@ namespace Engine
 		Hitbox,
 		Trigger_Gimmik,
 		Sound,
+		CameraControl,
 		END
 	};
 	//===================
@@ -591,6 +592,7 @@ namespace Engine
 			OVERLAP,
 			EFFECT,
 			SOUND,
+			CAMERACONTROL,
 			NONE,
 			END
 		};
