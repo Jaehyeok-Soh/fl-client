@@ -1350,6 +1350,26 @@ void CMapToolManager::Select_MapTexture()
 	}
 }
 
+void CMapToolManager::Add_SkyBoxModelName(const vector<string>& vecNames,_bool isClear)
+{
+	if (vecNames.empty())
+		return;
+	if (isClear)
+		m_vecSkyBoxModelNames.clear();
+
+	m_vecSkyBoxModelNames.insert(m_vecSkyBoxModelNames.end() , vecNames.begin() , vecNames.end());
+}
+
+void CMapToolManager::Add_SkyBoxModelName(const string& strName,_bool isClear)
+{
+	if (strName.empty())
+		return;
+	if (isClear)
+		m_vecSkyBoxModelNames.clear();
+
+	m_vecSkyBoxModelNames.push_back(strName);
+}
+
 CMapObject* CMapToolManager::Make_MapObject(void* pArg, _bool isPreview)
 {
 	if ( m_funcMapObjectCloneFactory == nullptr) return nullptr;

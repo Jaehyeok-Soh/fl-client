@@ -183,6 +183,19 @@ struct VS_OUT_INST_MESH
     uint iCurInstanceID : TEXCOORD3;
 };
 
+struct VS_OUT_INST_MESH_VIEWZ
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
+    float fViewZ : TEXCOORD3;
+};
+
 struct VS_OUT_SKELETON
 {
     float4 vPosition : SV_POSITION;

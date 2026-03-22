@@ -2,6 +2,38 @@
     "Category": "MAP",
     "Level Data": {
         "Env Data": {
+            "Env Color": {
+                "W": 1.0,
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "Sky Box": {
+                "Model Name": "SM_Env",
+                "PitchYawRoll": {
+                    "Pitch": -0.0,
+                    "Roll": -0.0,
+                    "Yaw": 0.013707776553928852
+                },
+                "Polar Radiuse Scale": 1.7999999523162842,
+                "Position Offset": {
+                    "X": 0.0,
+                    "Y": -10000.0,
+                    "Z": 0.0
+                },
+                "Scale": {
+                    "X": 0.9999998807907104,
+                    "Y": 1.0,
+                    "Z": 0.9999998807907104
+                },
+                "Texture Name": "T_Env_VIl_01",
+                "Texture Shape Type": 1,
+                "UV Speed": {
+                    "X": 0.0010000000474974513,
+                    "Y": 0.0
+                },
+                "Use ChannelPacking": true
+            },
             "Wind Data": {
                 "Direction": {
                     "X": 1.0,
@@ -29,51 +61,22 @@
     },
     "Objects": [
         {
-            "Client Level Type": "STATIC",
-            "Client Make Path": "Batch_InteractiveObject",
-            "Client Make Path Desc": [
-                {
-                    "Object Enum Tag": "OBJECT_INTERACT_WEAPONPICKUP",
-                    "Quest Desc": [
-                        {
-                            "eEvent": 2,
-                            "eTargetType": [],
-                            "iCount": 0,
-                            "tQuestDesc": {
-                                "iEnterDialogueId": -1,
-                                "iExitDialogueId": -1,
-                                "iId": -1,
-                                "iInteractDialogueId": -1,
-                                "iNextId": -1,
-                                "iParentId": -1,
-                                "iPrevId": -1,
-                                "strDescription": "",
-                                "strExplain": "",
-                                "strSubTitle": "",
-                                "strTitle": ""
-                            }
-                        }
-                    ],
-                    "Weapon PickUp Desc": {
-                        "Is Tutorial": true,
-                        "Pick Up Weapon Type": "One_Handed_Sword"
-                    }
-                }
-            ],
+            "Client Level Type": "LOGO",
+            "Client Make Path": "StaticObject",
             "Draw Type": "Default",
             "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
             "SRT": [
                 {
                     "Position": {
-                        "X": -0.436675101518631,
-                        "Y": 4.2133283615112305,
-                        "Z": -4.5635809898376465
+                        "X": 0.9943217635154724,
+                        "Y": 1.6318764686584473,
+                        "Z": -0.2242259979248047
                     },
                     "Quaternion": {
                         "W": 1.0,
-                        "X": -0.0,
+                        "X": 0.0,
                         "Y": 0.0,
-                        "Z": -0.0
+                        "Z": 0.0
                     },
                     "Scale": {
                         "X": 1.0,

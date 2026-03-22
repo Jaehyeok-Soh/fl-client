@@ -115,11 +115,6 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 		return E_FAIL;
 	}
 
-	if (FAILED(Ready_SkyBox()))
-	{
-		MSG_BOX("CLevel_Tutorial_Village::Initialize, Ready_SkyBox Create Failed");
-		return E_FAIL;
-	}
 
 	Ready_ShaderSetting();
 	return S_OK;

@@ -14,6 +14,7 @@
 #include "Shader.h"
 #include "Fog.h"
 #include "EnvObject.h"
+#include "SkyBox.h"
 #pragma region Batch 包访
 /* Batch Player */
 #include "MainPlayer.h"
@@ -164,8 +165,22 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	}
 
 	CB_EnvData tEnvData{};
+	
+	/* Wind */
 	tEnvData.vWindDirection = tData.vWindDirection;
 	tEnvData.fWindPower = tData.fWindPower;
+
+	/* SkyBox */
+
+	tEnvData.vEnvColor = tData.vEnvColor;							// 券版 Color技泼
+	tEnvData.vSkyColor = tData.vSkyColor;							// SkyColor 技泼
+	tEnvData.vCloudBaseColor = tData.vCloudBaseColor;				// Base Color 技泼
+	tEnvData.vCloudHighlight = tData.vCloudHighlight;				// Clouds Hightlight 技泼
+
+	tEnvData.vSkyBoxTextureUVSpeed = tData.vSkyBoxTextureUVSpeed;	// UV Speed Setting
+	tEnvData.isChannelPacking = tData.isSkyBoxChannelPacking;		// Chaneel Packing Setting
+	tEnvData.iSkyBoxTextureType = tData.iSkyBoxTextureType;			//TextureType Setting
+	tEnvData.fPolarRadiusScale = tData.fPolarRadiusScale;
 
 	/* Env Data 技泼 */
 	ID3DX11EffectConstantBuffer* pCB = m_pMeshShader->Get_ConstantBuffer("CB_EnvData");
@@ -176,10 +191,27 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	if (!pCB->IsValid())	return E_FAIL;
 	pCB->SetRawValue(&tEnvData, 0, sizeof(CB_EnvData));
 
-
 	/* Map Box */
 	m_pGameInstance->Set_MapMinMaxBox(tData.vMapMinMaxBox_Center,tData.vMapMinMaxBox_extents);
 
+
+	/* SkyBox 积己 眉农 */
+	if(tData.strSkyBoxModelName != "None" && tData.strSKyBoxTextureName != "None")
+	{
+		CSkyBox::SKYBOX_DESC tDesc{};
+		tDesc.wstrModelTag = Engine_Utils::ToWString(tData.strSkyBoxModelName);
+		tDesc.wstrTextureTag = Engine_Utils::ToWString(tData.strSKyBoxTextureName);
+
+		CTransform::TRANSFORM_DESC tTsDesc{};
+		tTsDesc.RotationMatrix = Matrix::CreateFromYawPitchRoll(
+			XMConvertToRadians(tData.vSkyBoxPitchYawRoll.y), XMConvertToRadians(tData.vSkyBoxPitchYawRoll.x), XMConvertToRadians(tData.vSkyBoxPitchYawRoll.z));
+		tTsDesc.TranslationMatrix = Matrix::CreateTranslation(tData.vSkyBoxPositionOffset);
+
+		tDesc.pTransform_Desc = &tTsDesc;
+		tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+
+		m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszSkyBox_Prototype_Tag, tDesc.iLevelIndex, g_wszSkyBoxLayer, &tDesc);
+	}
 
 	return S_OK;
 }
