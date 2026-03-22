@@ -203,16 +203,26 @@ public:
 #pragma endregion
 	
 #pragma region SOUND_MANAGER
-	HRESULT Load_Sounds(const std::wstring& wstrFolderPath);
-	void PlayBGM(const _tchar* pSoundKey, _float fVolume, _bool bLoop = true, _float fPitch = 1.f);
-	void PlayAmbient(const _tchar* pSoundKey, _float fVolume, _bool bLoop = true, _float fPitch = 1.f);
-	void Play_OneShot(const _tchar* pSoundKey, _float fVolume, _float fPitch = 1.f);
-	void Play_RandOneShot(const _tchar* pSoundKey, _float fVolume, _int iCount, _float fPitch = 1.f);
-	void Play_Controlled(const _tchar* pSoundKey, _uint iControlledId, _float fVolume, _bool  bLoop = false, _float fPitch = 1.f);
+	HRESULT Load_Sounds(_uint iLevelID, ESoundCategory eCategory, const wstring& wstrFolderPath);
+	void PlayBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f);
+	void PlayBGM_FadeIn(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeInTime, _float fPitch = 1.f);
+	void PlayBGM_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayed, _float fVolume, _float fPitch = 1.f, _float fFadeInTime = 0.f);
+	void StopBGM_FadeOut(_float fFadeOutTime);
+	void CrossFadeBGM(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fFadeOutTime, _float fFadeInTime, _float fPitch = 1.f);
+	
+	void Play_OneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal =false);
+	void Play_OneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
+	void Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
+	
+	void Play_Controlled(_uint iLevelID, _uint iSoundHash, _uint iControlledId, _float fVolume, _bool  bLoop = false, _float fPitch = 1.f);
 	void Stop_Controlled(_uint iControlledId);
 	void Set_ControlledVolume(_uint iControlledId, _float fVolume);
 	void Set_ControlledPitch(_uint iControlledId, _float fPitch);
 	void Stop_All();
+
+	vector<SOUND_META> Get_SoundMetas(_uint iLevelID) const;
+	const SOUND_META* Find_SoundMeta(_uint iLevelID, _uint iSoundHash) const;
+	_bool Has_SoundTag(_uint iLevelID, const string& strTag) const;
 #pragma endregion
 
 #pragma region INPUT_MANAGER

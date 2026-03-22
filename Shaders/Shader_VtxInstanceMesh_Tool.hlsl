@@ -30,7 +30,8 @@
 #define MAX_WATER_TEXTURE_COUNT 14
 
 
-
+#define RECTANGLE   0
+#define SPHERE      1
 
 
 bool HasCopickMask() { return (g_iGlobalMask & 1) != 0; }
@@ -39,8 +40,29 @@ bool HasSecNormal() { return (g_iGlobalMask & 2) != 0; }
 
 cbuffer CB_EnvData
 {
-    float3 vWindDirection = float3(1.f, -1.f, 1.f); //바람이 부는 방향
-    float fWindPower = 1.f; //바람이 부는 새기
+    float4  vEnvColor = float4(1.f, 1.f, 1.f, 1.f); // 환경 Color값
+    /*  16Byte  */
+    
+    float3  vWindDirection = float3(1.f, -1.f, 1.f); // 바람이 부는 방향
+    float   fWindPower = 1.f;                         // 바람이 부는 새기
+    /*  16Byte  */
+    
+    
+    // SkyBox Setting 
+    float4 vSkyColor = float4(1.f, 1.f, 1.f, 1.f); //16
+    float4 vCloudBaseColor = float4(1.f, 1.f, 1.f, 1.f); //16
+    float4 vCloudHighlight = float4(1.f, 1.f, 1.f, 1.f); //16
+    
+    int     isChannelPacking        = false;                    // 4 Byte 채널 패킹 사용한건지 아닌건지 
+    int     iSkyBoxTextureType      = RECTANGLE;                // 4 Byte 기본 사각형
+    float   fPolarRadiusScale       = 1.f;                      // 4 Byte 
+    float   EnvDataDummy;                                      // 4 Byte
+    /* 16Byte  */
+    
+    float2  vSkyBoxTextureUVSpeed   = float2(1.f,1.f);          // 8 Byte UV Speed 
+    float   fEvnAccDT               = 0.f;
+    float   EnvDataDummy2; //  8 bytes (16바이트 정렬 맞춤용)
+    /* 16 Byte */
 };
 
 cbuffer CB_PlantData
@@ -136,6 +158,25 @@ VS_OUT_INST_MESH VS_MAIN(VS_IN_INST_MESH input)
   
     return Out;
 }
+
+VS_OUT_INST_MESH_VIEWZ VS_ENV(VS_IN_INST_MESH input)
+{
+    VS_OUT_INST_MESH_VIEWZ output;
+    
+    output.vPosition = mul(float4(input.vPosition, 1.f), input.matTransform);
+    output.vPosition = mul(output.vPosition, V);
+    output.fViewZ = output.vPosition.w;
+    output.vPosition = mul(output.vPosition, P);
+    output.vUV = input.vUV;
+    output.vNormal = normalize(mul(input.vNormal, (float3x3) input.matTransform));
+    output.vTangent = normalize(mul(input.vTangent, (float3x3) input.matTransform));
+    output.vBinormal = normalize(mul(input.vBinormal, (float3x3) input.matTransform));
+    
+    output.vWorldPos = mul(float4(input.vPosition, 1.f), input.matTransform);
+    output.vProjPos = output.vPosition;
+    return output;
+}
+
 
 VS_OUT_INST_MESH VS_GRASS(VS_IN_INST_MESH input)
 {
@@ -428,6 +469,10 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_INST_MESH input)
 }
 
 
+
+
+
+
 PS_OUT_DEFFERED PS_WATER(PS_IN_INST_MESH input)
 {
     PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
@@ -529,26 +574,63 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_INST_MESH input)
 
 
 
+PS_OUT_WBOIT PS_ENV(VS_OUT_INST_MESH_VIEWZ input)
+{
+    PS_OUT_WBOIT output;
+   
+    float4 vColor = 1.f;
+    
+    float2 vInputUV = float2(input.vUV.x, input.vUV.y);
+   
+    vColor *= MIDesc.vTintColor;
+    
+    float fNoiseVal = 0.0f; // 노이즈 밝기 값 저장용
+  
+    float3 srcRGB = vColor.rgb;
+    float srcAlpha = vColor.a;
+    float w = pow(saturate(1.0f - input.fViewZ / 1000.0f), 3.0f); // 3승으로 변화율 조절
+    w = clamp(w, 0.01f, 3000.0f); // 상한선을 적당히 열어주되, 하한선으로 방어
+    
+    output.vAccum = float4(srcRGB * srcAlpha, srcAlpha) * w;
+    output.vReveal = srcAlpha;
+    
+    return output;
+}
+
+
+
 technique11 T0
 {
     // 기본 오브젝트
-	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(StaticObject, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)//0
 	
     // 지형
-    PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+    PASS_RS_DS_BS_VP(LandScape, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)//1
 
     // 식생   절대 순서를 건들지 말것
-	PASS_RS_DS_BS_VP(Bush,RS_Default_CullNone, DS_Default, BS_Default,VS_MAIN,PS_BUSH)
-	PASS_RS_DS_BS_VP(Grass,RS_Default_CullNone,DS_Default,BS_Default,VS_GRASS,PS_GRASS)
-	PASS_RS_DS_BS_VP(Moss,RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,PS_MOSS)
-	PASS_RS_DS_BS_VP(Tree,RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,PS_TREE)
-	PASS_RS_DS_BS_VP(Vine,RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,PS_VINE)
+	PASS_RS_DS_BS_VP(Bush, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_BUSH) //2
+	PASS_RS_DS_BS_VP(Grass, RS_Default_CullNone, DS_Default, BS_Default, VS_GRASS, PS_GRASS) //3
+	PASS_RS_DS_BS_VP(Moss, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MOSS) //4
+	PASS_RS_DS_BS_VP(Tree, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_TREE) //5
+	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_VINE) //6
 
     // 환경요소
-	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN ,PS_MAIN)
-	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_WATER)
+	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN) //7
+	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_WATER) //8
 
-    //EXT
-    PASS_RS_DS_BS_VP(SHADOW_BAKE, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-	PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+    pass Env
+    {
+
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_Default, 0);
+        //SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
+        SetVertexShader(CompileShader(vs_5_0, VS_ENV()));
+        GeometryShader = NULL;
+        SetPixelShader(CompileShader(ps_5_0, PS_ENV()));
+    }//9
+
+	PASS_RS_DS_BS_VP(RGBMapping, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN) // 10
+    PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_MAIN) // 11
+	PASS_RS_DS_BS_VP(SkyBox, RS_Default_CullNone, DS_ReadOnly, BS_Default, VS_MAIN, PS_MAIN) // 12
+    PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN) // 13
 };

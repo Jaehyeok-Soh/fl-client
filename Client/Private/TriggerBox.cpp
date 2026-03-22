@@ -36,18 +36,27 @@ HRESULT CTriggerBox::Initialize(void* pArg)
 
     CTriggerBox::TRIGGERBOX_DESC* pDesc = static_cast<CTriggerBox::TRIGGERBOX_DESC*>(pArg);
 
-
     if (FAILED(Ready_Component(pDesc)))
         return E_FAIL;
 
-    if (pDesc->bHasQuest)
+    if (m_bHasQuest = pDesc->bHasQuest)
+    {
+        // 퀘스트 있는 트리거박스는 퀘스트 활성화 시에만 트리거 발동
+        SetEnable(false);
         Ready_Quest(&pDesc->tQuestObjectDesc);
+    }
 
     return S_OK;
 }
 
 HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
 {
+    /* Tranfrom 에 먼저 Rotation을 적용시켜준다 */
+    CTransform* pTs = Get_Component<CTransform>();
+    if (pTs == nullptr) return E_FAIL;
+    /* 이 오브젝트에 회전값을 적용시켜준다 */
+    pTs->Rotation(pDesc->vTriggerBox_Rotation.x, pDesc->vTriggerBox_Rotation.y, pDesc->vTriggerBox_Rotation.z);
+
 
     /* Ready PhysicCollider */
     {
@@ -99,10 +108,6 @@ HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
     }
 
 
-    CTransform* pTs = Get_Component<CTransform>();
-    if (pTs == nullptr) return E_FAIL;
-    /* 이 오브젝트에 회전값을 적용시켜준다 */
-    pTs->Rotation( pDesc->vTriggerBox_Rotation.x , pDesc->vTriggerBox_Rotation.y, pDesc->vTriggerBox_Rotation.z);
 
     return S_OK;
 }
@@ -171,6 +176,20 @@ HRESULT CTriggerBox::Render()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CTriggerBox::QuestEnter()
+{
+    SetEnable(true);
+    m_bLockedEnter = false;
+    m_bLockedExit = false;
+}
+
+void CTriggerBox::QuestExit()
+{
+    SetEnable(false);
+    m_bLockedEnter = true;
+    m_bLockedExit = true;
 }
 
 

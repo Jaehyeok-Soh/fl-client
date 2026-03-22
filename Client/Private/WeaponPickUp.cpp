@@ -29,6 +29,8 @@ HRESULT CWeaponPickUp::Initialize_Prototype()
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::OBJECT_INTERACT_WEAPONPICKUP);
+
 	return S_OK;
 }
 
@@ -43,6 +45,7 @@ HRESULT CWeaponPickUp::Initialize(void* pArg)
 	m_eWeaponType		= CWeaponPickUp::WeaponType_ToEnum(pDesc->strWeaponType);
 	m_isTutorialEvent	= pDesc->isTutorialEvent;
 
+	Set_Name("¹«±â È¹µæ");
 
 	if (FAILED(Ready_RGBColorDesc()))
 		return E_FAIL;

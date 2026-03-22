@@ -107,8 +107,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_HybridObject()))
 		return E_FAIL;
 
-	if (FAILED(Ready_SkyBox()))
-		return E_FAIL;
+	//if (FAILED(Ready_SkyBox()))
+	//	return E_FAIL;
 
 	Ready_ShaderSetting();
 	return S_OK;

@@ -106,6 +106,9 @@ void CUIObject::Update(const _float fTimeDelta)
 			Initialize_NonInteractable_Event();
 	}
 
+	if (m_strName == "Quest_Scenario")
+		int a = 0;
+
 	if (m_isPreVisible != m_isVisibleTrigger)
 	{
 		m_isPlaying_VisibleEvent = true;

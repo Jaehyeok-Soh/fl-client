@@ -115,11 +115,6 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 		return E_FAIL;
 	}
 
-	if (FAILED(Ready_SkyBox()))
-	{
-		MSG_BOX("CLevel_Tutorial_Village::Initialize, Ready_SkyBox Create Failed");
-		return E_FAIL;
-	}
 
 	Ready_ShaderSetting();
 	return S_OK;
@@ -517,7 +512,6 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
 	CQuestManager::GetInstance()->Start_Quest(0);
-
 	
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;

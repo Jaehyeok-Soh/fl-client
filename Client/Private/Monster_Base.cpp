@@ -282,20 +282,19 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		}
 	}
 
-	// release 때 터짐 : 날라가는 ragdoll 인데 또 날라가서 문제이지 않을까
-	//{
-	//	CMonster_Body_Base* pBody = { nullptr };
-	//	pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	{
+		CMonster_Body_Base* pBody = { nullptr };
+		pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
 
-	//	CPhysicsRagdoll* pRagdoll = { nullptr };
-	//	pRagdoll = pBody->Get_Component<CPhysicsRagdoll>();
+		CPhysicsRagdoll* pRagdoll = { nullptr };
+		pRagdoll = pBody->Get_Component<CPhysicsRagdoll>();
 
-	//	if (pBody != nullptr && pRagdoll != nullptr)
-	//	{
-	//		if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
-	//			pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 10.f);
-	//	}
-	//}
+		if (pBody != nullptr && pRagdoll != nullptr)
+		{
+			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
+				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 10.f);
+		}
+	}
 
 #ifdef _DEBUG
 	wstring infoHeader(L"Monster Hit ");
@@ -657,7 +656,25 @@ void CMonster_Base::OnHit_Dual(const HIT_DESC& hitDesc)
 
 	// effect 출력
 	{
+		EFFECT_SPAWN_DESC Desc = {};
+		Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
 
+		Vec3 vScale, vPos;
+		Quat vQuat;
+		WorldMatrix.Decompose(vScale, vQuat, vPos);
+
+		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
+		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+		if (bCritical)
+		{
+			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+		}
+
+		else
+		{
+			m_pGameInstance->Request_Effect("VFX_Blade_Hit", Desc);
+		}
 	}
 
 	{

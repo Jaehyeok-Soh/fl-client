@@ -48,7 +48,7 @@ HRESULT CLevel_Animation::Initialize()
 
 	Ready_Camera(g_wszCameraLayer);
 	Ready_Lights();
-
+	Ready_Sounds();
 #ifdef _DEBUG
 	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pDeviceContext);
 	m_pEffect = new BasicEffect(m_pDevice);
@@ -256,6 +256,15 @@ HRESULT CLevel_Animation::Release_Event()
 	m_pGameInstance->Unsubscribe<LoadAnimModel>(m_EventHandles[Event::LOAD]);
 	m_pGameInstance->Unsubscribe<LoadAnimModelPart>(m_EventHandles[Event::LOAD_PART]);
 	m_pGameInstance->Unsubscribe<ChangeSelectedObject>(m_EventHandles[Event::ChangeSelectedObject]);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Animation::Ready_Sounds()
+{
+	_uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
+		return E_FAIL;
 
 	return S_OK;
 }

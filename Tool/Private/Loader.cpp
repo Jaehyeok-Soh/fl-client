@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "VIBuffer_Line_Color.h"
 #include "Transform.h"
+#include "ToolAnimSoundPlayer.h"
 //=================
 // Object
 //=================
@@ -37,6 +38,7 @@
 //=================
 #include "MapObject.h"
 #include "LevelData.h"
+#include "MapToolManager.h"
 //=================
 // Resource
 //=================
@@ -160,6 +162,32 @@ HRESULT CLoader::Loading_For_Map()
 		Safe_Release(pMapDataLoader);
 	}
 
+	std::filesystem::path mapSkyBoxFolderPath = L"../../Resources/Models/SkyBox/Model/";
+	if (std::filesystem::exists(mapFolderPath))
+	{
+		/* Model Prototype */
+		CUEMapDataLoader* pMapDataLoader = CUEMapDataLoader::Create(m_pDevice, m_pDeviceContext);
+		if (pMapDataLoader == nullptr) return E_FAIL;
+		if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), mapSkyBoxFolderPath)))
+		{
+			Safe_Release(pMapDataLoader);
+			return E_FAIL;
+		}
+		Safe_Release(pMapDataLoader);
+
+		for (auto& Path : std::filesystem::directory_iterator(mapSkyBoxFolderPath))
+		{
+			/* 파일이 아니라면 패스 */
+			if (std::filesystem::is_regular_file(Path) == false)
+				continue;
+
+			string strFileName = path(Path).filename().stem().string();
+			CMapToolManager::GetInstance()->Add_SkyBoxModelName(strFileName);
+		}
+	}
+
+
+
 	//=================
 	// CGameObject
 	//=================
@@ -265,6 +293,8 @@ HRESULT CLoader::Loading_For_Animation()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Effect_Part_Particle", CEffectObject::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Effect_Part_ForceField", CGravity_Force::Create(EToolObjectType::MESHEFFECT, m_pDevice, m_pDeviceContext));
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"Prototype_GameObject_Tool_Weapon", CTool_Weapon::Create(EToolObjectType::ANIMATION, m_pDevice, m_pDeviceContext));
+	
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_SoundPlayer", CToolAnimSoundPlayer::Create());
 	/* Effect Data Model */
 	wstring basicBoxPath = L"../../Resources/Models/Map/Level/BasicShapes/Model/";
 
