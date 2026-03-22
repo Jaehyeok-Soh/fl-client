@@ -197,7 +197,16 @@ void Effect::Update_Bone_Attached_Matrix()
 		matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
 	}
 
-	m_matCombinedWorld = m_pOffsetMartix * (matCustom) * (matCustom2);
+
+	if (m_bUseChildBone == false)
+	{
+		m_matCombinedWorld = m_pOffsetMartix * (matCustom) * (matCustom2);
+	}
+
+	else
+	{
+		m_matCombinedWorld = matCustom * matCustom2 * m_pOffsetMartix;
+	}
 }
 
 void Effect::Update_FinishState()
