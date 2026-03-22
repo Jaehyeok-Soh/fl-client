@@ -3,8 +3,7 @@
 #include "json_forward.h"
 #include "Engine_Enum.h"
 
-namespace Engine
-{
+NS_BEGIN(Engine)
 	NLOHMANN_JSON_SERIALIZE_ENUM(EAnimNotifyPhase,
 		{
 			{EAnimNotifyPhase::Immediatley, "Immediatley"},
@@ -13,10 +12,9 @@ namespace Engine
 			{EAnimNotifyPhase::END, "END"},
 		}
 	)
-}
+NS_END
 
-namespace DTO
-{
+NS_BEGIN(DTO)
 	typedef struct tagAnimEventBase1
 	{
 		EAnimEvent::Enum eEventType = EAnimEvent::NONE;
@@ -54,4 +52,4 @@ namespace DTO
 		j.at("iAnimIndex").get_to(d.iAnimIndex);
 		j.at("fStartTrackPosition").get_to(d.fStartTrackPosition);
 	}
-}
+NS_END

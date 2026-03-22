@@ -119,7 +119,10 @@ protected:
 	HRESULT				Ready_CCT(void* pArgs);
 
 protected:
-	void				OnHit_PlayerMoon(const HIT_DESC& hitDesc); //플레이어 별 처리를 위함.. 필요하다면 virtual로 빼도 될지도
+	void				OnHit_Sword(const HIT_DESC& hitDesc);
+	void				OnHit_Dual(const HIT_DESC& hitDesc);
+	void				OnHit_Gun(const HIT_DESC& hitDesc);
+	void				OnHit_Skill(const HIT_DESC& hitDesc);
 
 protected:
 	EMonster_Type			m_eMonsterType{ EMonster_Type::END};

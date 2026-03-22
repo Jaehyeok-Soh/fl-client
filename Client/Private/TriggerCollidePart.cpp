@@ -88,12 +88,12 @@ void CTriggerCollidePart::Update(_float fTimeDelta)
 
 	switch (m_eState)
 	{
-	case Client::CTriggerCollidePart::None:
+	case CTriggerCollidePart::None:
 		break;
-	case Client::CTriggerCollidePart::WithBone:
+	case CTriggerCollidePart::WithBone:
 		Super::Update_CombinedWorldMatrix((*m_pMatSocket) * (*m_pMatParent));
 		break;
-	case Client::CTriggerCollidePart::OnlyOwner:
+	case CTriggerCollidePart::OnlyOwner:
 		Super::Update_CombinedWorldMatrix((*m_pMatParent));
 		break;
 	}
@@ -148,13 +148,23 @@ void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLa
 		{
 			if (m_pCollidedObj != pOther)
 			{
-				if (m_pCollidedObj)
+				_bool bPreNull = (m_pCollidedObj == nullptr);
+
+				// 우선순위 비교후 갱신
+				if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Update_New)))
 				{
-					//Safe_Release(m_pCollidedObj);
+					Update_New(pOther, bPreNull);
 				}
 
-				m_pCollidedObj = pOther;
-				//Safe_AddRef(m_pCollidedObj);
+				else if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Update_MinDistance)))
+				{
+					Update_MinDist(pOther, bPreNull);
+				}
+
+				else if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Update_MinDistance_Front)))
+				{
+					Update_MinDistFront(pOther, bPreNull);
+				}
 			}
 		}
 	}
@@ -216,6 +226,68 @@ HRESULT CTriggerCollidePart::Ready_Components(TRIGGER_COLLIDEPART_DESC* pDesc)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+_bool CTriggerCollidePart::Update_New(CGameObject* pNewObj, _bool bPreNull)
+{
+	m_pCollidedObj = pNewObj;
+	return true;
+}
+
+_bool CTriggerCollidePart::Update_MinDist(CGameObject* pNewObj, _bool bPreNull)
+{
+	// 이전게 null이거나, 캐싱하던 객체가 죽었다면 -> 바로 갱신
+	if (bPreNull || !(m_pCollidedObj->IsAlive()))
+	{
+		m_pCollidedObj = pNewObj;
+		return true;
+	}
+
+	Vec3 vParentPos = Get_Parent()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vNewPos	= pNewObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vOldPos	= m_pCollidedObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	Vec3 vNewDist = vNewPos - vParentPos;
+	Vec3 vOldDist = vOldPos - vParentPos;
+
+	// 거리의 길이비교
+	if (vNewDist.Length() < vOldDist.Length())
+	{
+		m_pCollidedObj = pNewObj;
+		return true;
+	}
+
+	return false;
+}
+
+_bool CTriggerCollidePart::Update_MinDistFront(CGameObject* pNewObj, _bool bPreNull)
+{
+	Vec3 vParentPos = Get_Parent()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vNewPos = pNewObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vNewDist = vNewPos - vParentPos;
+
+	// 뒤에 있다면 갱신하지 않음
+	if (vNewDist.x < 0)
+		return false;
+
+	// 이전게 null이거나, 캐싱하던 객체가 죽었다면 -> 앞에 있는지 확인 후 갱신
+	if (bPreNull || !(m_pCollidedObj->IsAlive()))
+	{
+		m_pCollidedObj = pNewObj;
+		return true;
+	}
+
+	Vec3 vOldPos = m_pCollidedObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vOldDist = vOldPos - vParentPos;
+
+	// 거리의 길이비교
+	if (vNewDist.Length() < vOldDist.Length())
+	{
+		m_pCollidedObj = pNewObj;
+		return true;
+	}
+
+	return false;
 }
 
 CTriggerCollidePart* CTriggerCollidePart::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

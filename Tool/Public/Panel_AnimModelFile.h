@@ -76,6 +76,8 @@ private:
 	void Load_EffectData(fs::path path);
 	void Save_EffectData(fs::path path);
 
+	void Load_SoundData(fs::path path);
+	void Save_SoundData(fs::path path);
 private:
 	DIR GetRootDir() { return m_tRootDirectory; }
 	DIR RefreshModelDir();

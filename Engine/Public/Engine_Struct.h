@@ -143,6 +143,14 @@ namespace Engine
 
 	}COLLIDED_DESC;
 
+	typedef struct tagSoundMeta
+	{
+		string strTag{""};
+		unsigned int iHash = { 0 };
+		ESoundCategory eCategory = { ESoundCategory::SFX };
+		unsigned int iVariantCount = { 0 };
+	}SOUND_META;
+
 	typedef struct tagBakedSectionBuildInput
 	{
 		int                    iSectionX{ 0 };

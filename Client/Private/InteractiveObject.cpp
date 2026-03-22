@@ -56,6 +56,12 @@ HRESULT CInteractiveObject::Initialize(void* pArg)
 	if (FAILED(Ready_Quest(pDesc->vecQuestDesc)))
 		return E_FAIL;
 
+	// 상호작용
+	{
+		Set_Interact_Disable();
+		Set_Interact_DefaultDisable();
+	}
+
 	return S_OK;
 }
 
@@ -295,7 +301,21 @@ HRESULT CInteractiveObject::Create_InteractiveObject(const Engine::BATCH_INTERAC
 
 void CInteractiveObject::Interact()
 {
+	if (Is_Quest_Enabled() && m_eQuestEvent == DTO::QUESTEVENT::OBJECT_INTERACT)
+	{
+		auto chapterDesc = CQuestManager::GetInstance()->Get_QuestChapterInfo();
 
+		auto iter = std::find(chapterDesc.eTargetType.begin(), chapterDesc.eTargetType.end(), m_eObject_Enum_Tag);
+
+		if (iter != chapterDesc.eTargetType.end() && chapterDesc.tQuestDesc.iInteractDialogueId != -1)
+			CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iInteractDialogueId);
+	}
+	else
+	{
+		CDialogueManager::GetInstance()->Start_Dialogue(m_iDefaultDialogueId);
+	}
+
+	CallQuestEvent(m_eObject_Enum_Tag, 1);
 }
 #pragma endregion
 
@@ -316,10 +336,8 @@ void CInteractiveObject::QuestEnter()
 			CallQuestEvent(m_eObject_Enum_Tag, 1);
 		}
 	}
-	else
-	{
-		CDialogueManager::GetInstance()->Start_Dialogue(m_iDefaultDialogueId);
-	}
+
+	Set_Interact_Enable();
 }
 
 void CInteractiveObject::QuestExit()

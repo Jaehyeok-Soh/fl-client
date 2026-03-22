@@ -832,6 +832,9 @@
     <Filter Include="03. GameObject\EffectObject\Parent_Effect\Env">
       <UniqueIdentifier>{8680c06a-96f3-4a46-9695-acea14aa5adc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\04. Binder">
+      <UniqueIdentifier>{bf9e1beb-a2d5-45fc-9aad-6e498db509b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1545,6 +1548,9 @@
     <ClInclude Include="..\Public\Monster_Fly_Body.h">
       <Filter>03. GameObject\PartObjects\Monster\Body\Fly</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\SoundEventBinder.h">
+      <Filter>07. System\04. Binder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2247,6 +2253,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Fly_Body.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body\Fly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SoundEventBinder.cpp">
+      <Filter>07. System\04. Binder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

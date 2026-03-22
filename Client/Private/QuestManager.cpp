@@ -22,21 +22,19 @@ HRESULT CQuestManager::Initialize()
 	return S_OK;
 }
 
-void CQuestManager::Start_Quest(_int iFirstScenarioId)
+void CQuestManager::Start_Quest(_int iStartScenarioId, _int iStartChapterId)
 {
-	if (m_bHasStarted)
-		return;
-
-	if (m_scenario.find(iFirstScenarioId) == m_scenario.end())
+	if (m_scenario.find(iStartScenarioId) == m_scenario.end())
 		return;
 
 	Initialize();
 
-	m_iCurScenarioId = iFirstScenarioId;
-	m_pCurScenario = m_scenario[iFirstScenarioId];
+	m_iCurScenarioId = iStartScenarioId;
+	m_pCurScenario = m_scenario[iStartScenarioId];
 	m_pCurScenario->Enter();
 
-	m_bHasStarted = true;
+	if (iStartChapterId != -1)
+		m_pCurScenario->Change_Chapter(iStartChapterId);
 
 	m_pGameInstance->Broadcast<QUEST_CHANGE_SCENARIO_NOTIFY>();
 }
@@ -44,10 +42,7 @@ void CQuestManager::Start_Quest(_int iFirstScenarioId)
 void CQuestManager::Register_Scenario(DTO::QUESTDESC scenarioDesc)
 {
 	if (scenarioDesc.iId < 0 || m_scenario.find(scenarioDesc.iId) != m_scenario.end())
-	{
-		MSG_BOX("Scenario register failed");
 		return;
-	}
 
 	m_scenario[scenarioDesc.iId] = CQuest_Scenario::Create(scenarioDesc);
 }
@@ -55,10 +50,7 @@ void CQuestManager::Register_Scenario(DTO::QUESTDESC scenarioDesc)
 void CQuestManager::Register_QuestObject(DTO::QUEST_CHAPTERDESC chapterDesc, CGameObject* pObj)
 {
 	if (chapterDesc.tQuestDesc.iParentId < 0 || m_scenario.find(chapterDesc.tQuestDesc.iParentId) == m_scenario.end())
-	{
-		MSG_BOX("Chapter register failed");
 		return;
-	}
 
 	m_scenario[chapterDesc.tQuestDesc.iParentId]->Register_QuestObject(chapterDesc, pObj);
 }

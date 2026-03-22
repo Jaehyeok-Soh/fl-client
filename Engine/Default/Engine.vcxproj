@@ -169,6 +169,8 @@
     <ClCompile Include="..\Private\CinematicCameraSequence.cpp" />
     <ClCompile Include="..\Private\Cinematic_Manager.cpp" />
     <ClCompile Include="..\Private\ColliderModule.cpp" />
+    <ClCompile Include="..\private\DataDocument_SoundEvent.cpp" />
+    <ClCompile Include="..\private\DataStruct_SoundEvent.cpp" />
     <ClCompile Include="..\Private\PhysicsRagdoll.cpp" />
     <ClCompile Include="..\Private\EffectBase.cpp" />
     <ClCompile Include="..\private\EffectHandler.cpp" />
@@ -315,6 +317,7 @@
     <ClCompile Include="..\private\SkillObjectBase.cpp" />
     <ClCompile Include="..\private\SkillObjectSpawnerBase.cpp" />
     <ClCompile Include="..\private\SkillObjectSpawner_RandomXZ.cpp" />
+    <ClCompile Include="..\private\Sound_Handler.cpp" />
     <ClCompile Include="..\Private\Sound_Manager.cpp" />
     <ClCompile Include="..\Private\MyStat.cpp" />
     <ClCompile Include="..\Private\StateBase.cpp" />
@@ -357,6 +360,8 @@
     <ClInclude Include="..\Public\CinematicCameraSequence.h" />
     <ClInclude Include="..\Public\Cinematic_Manager.h" />
     <ClInclude Include="..\Public\ColliderModule.h" />
+    <ClInclude Include="..\public\DataDocument_SoundEvent.h" />
+    <ClInclude Include="..\public\DataStruct_SoundEvent.h" />
     <ClInclude Include="..\public\EffectBase.h" />
     <ClInclude Include="..\Public\EffectHandler.h" />
     <ClInclude Include="..\Public\Anim_Event_AttackOverlap.h" />
@@ -505,6 +510,7 @@
     <ClInclude Include="..\public\SkillObjectBase.h" />
     <ClInclude Include="..\public\SkillObjectSpawnerBase.h" />
     <ClInclude Include="..\public\SkillObjectSpawner_RandomXZ.h" />
+    <ClInclude Include="..\public\Sound_Handler.h" />
     <ClInclude Include="..\Public\Sound_Manager.h" />
     <ClInclude Include="..\Public\MyStat.h" />
     <ClInclude Include="..\Public\StateBase.h" />
