@@ -1,8 +1,8 @@
 #include "Engine_pch.h"
 #include "Camera_Manager.h"
 #include "Constant_Buffer.h"
-#include "GameInstance.h"
 #include "CinematicCamera.h"
+#include "GameInstance.h"
 
 CCamera_Manager::CCamera_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -142,12 +142,39 @@ HRESULT CCamera_Manager::Change_Target_Next()
 	return S_OK;
 }
 
-HRESULT CCamera_Manager::Camera_Shaking(const CAM_SHAKING_DATA& tData)
+HRESULT CCamera_Manager::Play_MainCameraShake(const CAMERA_SHAKE_DESC& desc)
 {
-	if (m_pMainCamera == nullptr) return E_FAIL;
+	if (m_pMainCamera == nullptr)
+		return E_FAIL;
 
-	m_pMainCamera->Camera_Shaking(tData);
+	m_pMainCamera->Play_CameraShake(desc);
+	return S_OK;
+}
 
+HRESULT CCamera_Manager::Play_MainCameraFOV(const CAMERA_FOV_DESC& desc)
+{
+	if (m_pMainCamera == nullptr)
+		return E_FAIL;
+
+	m_pMainCamera->Play_CameraFOV(desc);
+	return S_OK;
+}
+
+HRESULT CCamera_Manager::Play_MainCameraPositionOffset(const CAMERA_POSITION_OFFSET_DESC& desc)
+{
+	if (m_pMainCamera == nullptr)
+		return E_FAIL;
+
+	m_pMainCamera->Play_CameraPositionOffset(desc);
+	return S_OK;
+}
+
+HRESULT CCamera_Manager::Play_MainCameraRotationOffset(const CAMERA_ROTATION_OFFSET_DESC& desc)
+{
+	if (m_pMainCamera == nullptr)
+		return E_FAIL;
+
+	m_pMainCamera->Play_CameraRotationOffset(desc);
 	return S_OK;
 }
 

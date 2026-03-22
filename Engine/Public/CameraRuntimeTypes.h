@@ -32,15 +32,15 @@ typedef struct tagCameraModifierResult
 
 typedef struct tagCameraControllerDesc
 {
-    _float fMinFovRad = XMConvertToRadians(20.f);
-    _float fMaxFovRad = XMConvertToRadians(100.f);
+    _float fMinFovRad = ::XMConvertToRadians(20.f);
+    _float fMaxFovRad = ::XMConvertToRadians(100.f);
 }CAMERA_CONTROLLER_DESC;
 
 typedef struct tagCameraShakeDesc
 {
     _float fPosAmplitude = 0.05f;
-    _float fYawAmplitudeRad = XMConvertToRadians(0.5f);
-    _float fPitchAmplitudeRad = XMConvertToRadians(0.5f);
+    _float fYawAmplitudeRad = ::XMConvertToRadians(0.5f);
+    _float fPitchAmplitudeRad = ::XMConvertToRadians(0.5f);
     _float fFrequency = 25.f;
     _float fDuration = 0.15f;
 }CAMERA_SHAKE_DESC;

@@ -141,6 +141,7 @@ void CCameraController::Add_Modifier(ICameraModifier* pModifier)
 		return;
 
 	pModifier->Start();
+	m_vecModifiers.push_back(pModifier);
 }
 
 void CCameraController::Remove_FinishedModifiers()
@@ -230,5 +231,6 @@ CComponent* CCameraController::Clone(void* pArg)
 }
 void CCameraController::Free()
 {
+	Stop_All();
 	Super::Free();
 }
