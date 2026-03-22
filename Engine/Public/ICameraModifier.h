@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL ICameraModifier final : public CBase
+class ENGINE_DLL ICameraModifier : public CBase
 {
 	using Super = CBase;
 public:

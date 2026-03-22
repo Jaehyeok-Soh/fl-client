@@ -166,7 +166,12 @@
     <ClCompile Include="..\Private\ActionState.cpp" />
     <ClCompile Include="..\Private\ActiveAttackOverlap.cpp" />
     <ClCompile Include="..\private\CameraController.cpp" />
-    <ClCompile Include="..\private\CameraModifier.cpp" />
+    <ClCompile Include="..\private\CameraModifier_Fov.cpp" />
+    <ClCompile Include="..\private\CameraModifier_PositionOffset.cpp" />
+    <ClCompile Include="..\private\CameraModifier_RotationOffset.cpp" />
+    <ClCompile Include="..\private\CameraModifier_Shake.cpp" />
+    <ClCompile Include="..\private\ICameraModifier.cpp" />
+    <ClCompile Include="..\private\CameraModifierBase.cpp" />
     <ClCompile Include="..\Private\CameraRuntimeTypes.cpp" />
     <ClCompile Include="..\Private\CameraTypeConverters.cpp" />
     <ClCompile Include="..\Private\CinematicCamera.cpp" />
@@ -363,7 +368,12 @@
     <ClInclude Include="..\public\CameraController.h" />
     <ClInclude Include="..\public\CameraCommonTypes.h" />
     <ClInclude Include="..\Public\CameraDataTypes.h" />
-    <ClInclude Include="..\public\CameraModifier.h" />
+    <ClInclude Include="..\public\CameraModifier_Fov.h" />
+    <ClInclude Include="..\public\CameraModifier_PositionOffset.h" />
+    <ClInclude Include="..\public\CameraModifier_RotationOffset.h" />
+    <ClInclude Include="..\public\CameraModifier_Shake.h" />
+    <ClInclude Include="..\public\ICameraModifier.h" />
+    <ClInclude Include="..\public\CameraModifierBase.h" />
     <ClInclude Include="..\Public\CameraRuntimeTypes.h" />
     <ClInclude Include="..\Public\CameraTypeConverters.h" />
     <ClInclude Include="..\Public\CinematicCamera.h" />

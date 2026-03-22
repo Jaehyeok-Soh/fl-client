@@ -529,6 +529,18 @@
     <Filter Include="00. System\05. Component\Camera\Modifier\Interface">
       <UniqueIdentifier>{b81a810f-4de7-4a9d-8ea9-f0eee507de69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\05. Component\Camera\Modifier\Shake">
+      <UniqueIdentifier>{aebd097e-6d70-4529-a985-86d32a423a27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\Camera\Modifier\Fov">
+      <UniqueIdentifier>{236fba5c-6000-4ad0-8c0a-dd84fd6d4b34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\Camera\Modifier\PositionOffset">
+      <UniqueIdentifier>{7b34239f-c88b-4652-8f06-1ea1969e5978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\05. Component\Camera\Modifier\RotationOffset">
+      <UniqueIdentifier>{0bb1025d-4a71-4b2d-8a3e-4853896948c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -1057,8 +1069,23 @@
     <ClCompile Include="..\private\CameraController.cpp">
       <Filter>00. System\05. Component\Camera\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\CameraModifier.cpp">
+    <ClCompile Include="..\private\ICameraModifier.cpp">
       <Filter>00. System\05. Component\Camera\Modifier\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraModifierBase.cpp">
+      <Filter>00. System\05. Component\Camera\Modifier\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraModifier_Shake.cpp">
+      <Filter>00. System\05. Component\Camera\Modifier\Shake</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraModifier_Fov.cpp">
+      <Filter>00. System\05. Component\Camera\Modifier\Fov</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraModifier_PositionOffset.cpp">
+      <Filter>00. System\05. Component\Camera\Modifier\PositionOffset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraModifier_RotationOffset.cpp">
+      <Filter>00. System\05. Component\Camera\Modifier\RotationOffset</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1642,8 +1669,23 @@
     <ClInclude Include="..\public\CameraController.h">
       <Filter>00. System\05. Component\Camera\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\CameraModifier.h">
+    <ClInclude Include="..\public\ICameraModifier.h">
       <Filter>00. System\05. Component\Camera\Modifier\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CameraModifierBase.h">
+      <Filter>00. System\05. Component\Camera\Modifier\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CameraModifier_Shake.h">
+      <Filter>00. System\05. Component\Camera\Modifier\Shake</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CameraModifier_Fov.h">
+      <Filter>00. System\05. Component\Camera\Modifier\Fov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CameraModifier_PositionOffset.h">
+      <Filter>00. System\05. Component\Camera\Modifier\PositionOffset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CameraModifier_RotationOffset.h">
+      <Filter>00. System\05. Component\Camera\Modifier\RotationOffset</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
