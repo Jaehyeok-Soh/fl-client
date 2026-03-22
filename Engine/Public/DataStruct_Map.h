@@ -489,9 +489,7 @@ public:
 	_bool		isFlicker{ false };		// 깜빡일래 말래 할래 말래 할래 말래 애매하긴해~
 	_float		fFlickerSpeed{ 1.f };	// 깜빡이는 속도
 	_float		fFlickerMin{ 0.5f };	// 최소 밝이 비율
-
-	_float		fBaseRange{1.f};			// 원래 빛 범위 저장 Update용 
-
+	_float		fBaseRange{1.f};		// 원래 빛 범위 저장 Update용 
 	/* Debug용 */
 	class CLight* pDebugLight{nullptr};
 public:
@@ -622,7 +620,6 @@ struct ENV_EFFECT_INFO
 	string			strTags{};
 };
 
-
 #pragma region Env Desc
 struct ENGINE_DLL ENV_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
@@ -709,6 +706,39 @@ public:
 #pragma endregion
 #pragma endregion
 
+
+#pragma region Light Object
+
+struct ENGINE_DLL LIGHTOBJECT_DESC : public CLIENT_MAKEPATH_DESC_BASE
+{
+public:
+	LIGHT_DESC	tLightDesc{};
+
+	/* 나중에 vector로 넣어줄듯  */
+
+	_bool		isFlicker{ false };			// 깜빡일래 말래 할래 말래 할래 말래 애매하긴해~
+	_float		fFlickerSpeed{ 1.f };		// 깜빡이는 속도
+	_float		fFlickerMin{ 0.5f };		// 최소 밝이 비율
+	_float		fBaseRange{ 1.f };			// 원래 빛 범위 저장 Update용 
+	Vec3		vOffsetPosition{0.f,0.f,0.f};	// Model위치에 따른 Offset 포지션
+
+	float       fEmissviePower{};
+
+	/* Debug용 */
+	class CLight* pDebugLight{ nullptr };
+public:
+	LIGHTOBJECT_DESC();
+	LIGHTOBJECT_DESC(const LIGHTOBJECT_DESC& rhs);
+	virtual ~LIGHTOBJECT_DESC();
+public:
+	void	Update_Light(const Vec4& vPos);
+public:
+	virtual void from_Json(const json& LoadJson)override;
+	virtual void to_Json(json& SaveJson)override;
+};
+
+
+#pragma endregion
 
 #pragma region Trigger Box
 
@@ -1048,7 +1078,7 @@ enum class EClientMakePath
 	Rock,
 	Water,
 	Env,
-
+	LightObject,
 
 	/* 몬스터 , Player 위치잡는 용도  */
 	Batch_Player,
@@ -1067,8 +1097,6 @@ enum class EClientMakePath
 
 	/* 맵 기능 관련 */
 	Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
-
-
 	END
 };
 
@@ -1122,6 +1150,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::Rock,									"Rock"},
 			{EClientMakePath::Water,								"Water"},
 			{EClientMakePath::Env,									"Env"},
+			{EClientMakePath::LightObject,							"LightObject"},
 
 
 			{EClientMakePath::Batch_Player,							"Batch_Player"},
@@ -1193,7 +1222,6 @@ public:
 #pragma endregion
 
 #pragma region MapObject
-
 typedef struct TMap_MapObjectData
 {
 	/* UE Load Check */

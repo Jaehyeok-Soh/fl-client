@@ -335,29 +335,90 @@ VS_OUT_MESH VS_GRASS(VS_IN_MESH input)
 
 PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
 {
-    PS_OUT_DEFFERED output = (PS_OUT_DEFFERED) 0;
+    PS_OUT_DEFFERED output;
     
-    float4 vDiffuse = 1.f;
+    float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+    
     Compute_Diffse(vDiffuse, input.vUV);
+    
+    if (vDiffuse.a < 0.3f)
+        discard;
+    
     vDiffuse.rgb *= MIDesc.vTintColor.rgb;
     output.vDiffuse = vDiffuse;
     
+    
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
-    output.vNormal = float4(vNormal * 0.5f + 0.5f,1.F);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
     
-    float3 vSpecMask = float3(1.f, 1.f, 0.f);
-    if (Has(g_iMaterialMask, SPECULAR))
-        vSpecMask = g_MaterialTextures[SPECULAR].Sample(LinearSampler, input.vUV).xyz;
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+       
+    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
+    return output;
+}
+
+PS_OUT_DEFFERED PS_ROCK(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
     
-    if (output.vDiffuse.a < 0.3f)
+    float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+    
+    Compute_Diffse(vDiffuse, input.vUV);
+    
+    if (vDiffuse.a < 0.3f)
         discard;
     
+    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    output.vDiffuse = vDiffuse;
     
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    if (Has(g_iMaterialMask, METALNESS))
+    {
+        // 1. 마스크 텍스처 가져오기
+        float3 vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+        
+        // 2. 푹 파인 곳(그림자 질 곳) 마스크만 딱 뽑기
+        float rockCavityMask = vSpecMask.g;
+        
+        // 3. 잡다한 색깔 다 빼고, 원래 질감(vDiffuse)에 곱해서 어둡게만 만들기 끝!
+        // (그림자가 너무 새까맣게 타면 rockCavityMask 뒤에 * 0.7f 정도만 곱해주세요)
+        vDiffuse.rgb *= (1.0f - rockCavityMask);
+
+    }
+    
+    
+    
+    output.vSpecularMask = float4(DEFAULT_SPECMASK_FLOAT3, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+       
     output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
     return output;
@@ -531,7 +592,17 @@ PS_OUT_DEFFERED PS_TREE(PS_IN_MESH input)
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     
-    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+    
+    
+    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
     return output;
 }
@@ -560,9 +631,18 @@ PS_OUT_DEFFERED PS_MOSS(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-    
    
-    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+   
+    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
 
     return output;
 }
@@ -591,7 +671,17 @@ PS_OUT_DEFFERED PS_VINE(PS_IN_MESH input)
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     output.vSpecularMask = float4(0.f,0.f,0.f,0.f);
     
-    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse, input.iCurInstanceID);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+    
+    
+    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
     return output;
 }
@@ -631,7 +721,17 @@ PS_OUT_DEFFERED PS_GRASS(PS_IN_MESH input)
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     
-    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+    
+    
+    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
     return output;
 }
@@ -678,7 +778,19 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     output.vSpecularMask = float4(vSpecMask, 1.f);
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
-        
+    
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+    
+    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+
+    
     return output;
 }
 
@@ -776,7 +888,19 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
     output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     
-    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+    
+    
+    
+    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
     return output;
 }
@@ -894,6 +1018,44 @@ PS_OUT_BACKBUFFER PS_SKYBOX(PS_IN_MESH input)
 }
 
 
+PS_OUT_DEFFERED PS_LIGHTOBJECT(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+    
+    Compute_Diffse(vDiffuse, input.vUV);
+    
+    if (vDiffuse.a < 0.3f)
+        discard;
+    
+    vDiffuse.rgb *= MIDesc.vTintColor.rgb;
+    output.vDiffuse = vDiffuse;
+    
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = MIDesc.vEmissive.rgb * fMask * MIDesc.fEmissivePower;
+    }
+    output.vEmissive = float4(vEmissive, 1.f);
+    
+    return output;
+}
+
+
 
 technique11 T0
 {
@@ -911,7 +1073,7 @@ technique11 T0
 	PASS_RS_DS_BS_VP(Vine, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN,  PS_VINE)//6
 
     // 환경요소
-	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_MAIN)//7
+	PASS_RS_DS_BS_VP(Rock, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_ROCK)//7
 	PASS_RS_DS_BS_VP(Water, RS_Default_CullNone , DS_Default , BS_AlphaBlend , VS_MAIN, PS_WATER)//8
 
     pass Env
@@ -929,4 +1091,5 @@ technique11 T0
     PASS_RS_DS_BS_VP(Debug, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_MAIN) // 11
 	PASS_RS_DS_BS_VP(SkyBox, RS_Default_CullNone, DS_ReadOnly, BS_Default, VS_SKYBOX, PS_SKYBOX) // 12
     PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN) // 13
+    PASS_RS_DS_BS_VP(LightObject, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_LIGHTOBJECT) // 14
 };

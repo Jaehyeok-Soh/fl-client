@@ -2,6 +2,12 @@
     "Category": "MAP",
     "Level Data": {
         "Env Data": {
+            "Env Color": {
+                "W": 1.0,
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
             "Wind Data": {
                 "Direction": {
                     "X": 1.0,
@@ -29,37 +35,58 @@
     },
     "Objects": [
         {
-            "Client Level Type": "STATIC",
-            "Client Make Path": "Batch_Object",
+            "Client Level Type": "LOGO",
+            "Client Make Path": "LightObject",
             "Client Make Path Desc": [
                 {
-                    "Batch Object Info": {
-                        "Desc": {
-                            "Extents": {
-                                "X": 2.799999952316284,
-                                "Y": 3.799999952316284,
-                                "Z": 2.700000047683716
-                            },
-                            "Field Type": "Box"
+                    "Light Data": {
+                        "Ambient": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
                         },
-                        "Type": "Battle_Field"
+                        "Diffuse": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 0.681877076625824,
+                            "Z": 0.15057915449142456
+                        },
+                        "Emissive Power": 0.5,
+                        "Flicker": {
+                            "Min": 0.10000000149011612,
+                            "Speed": 1.0
+                        },
+                        "Offset Position": {
+                            "X": 0.0,
+                            "Y": 0.0,
+                            "Z": 0.0
+                        },
+                        "Range": 3.0,
+                        "Specular": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        },
+                        "Type": "POINT"
                     }
                 }
             ],
             "Draw Type": "Default",
-            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\EN001_Ailixian\\Jingjiedao\\JJD_Village\\Mesh\\Model\\SM_Vil_Nos01.mesh",
             "SRT": [
                 {
                     "Position": {
-                        "X": -17.302587509155273,
-                        "Y": 15.907926559448242,
-                        "Z": -18.273717880249023
+                        "X": -0.6310928463935852,
+                        "Y": 5.753458499908447,
+                        "Z": -5.894058704376221
                     },
                     "Quaternion": {
                         "W": 1.0,
-                        "X": -0.0,
+                        "X": 0.0,
                         "Y": 0.0,
-                        "Z": -0.0
+                        "Z": 0.0
                     },
                     "Scale": {
                         "X": 1.0,
@@ -76,7 +103,7 @@
             "Section Number": 0,
             "UE Loaded": false,
             "UE Raw Data Path": "",
-            "strTag": "Battle_Field346"
+            "strTag": "SM_Vil_Nos01_LightObject345"
         }
     ]
 }

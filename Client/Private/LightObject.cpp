@@ -1,36 +1,42 @@
 #include "pch.h"
-#include "PointLight.h"
+#include "LightObject.h"
 #include "Light.h"
 #include "Collider.h"
-#include "Model.h"
 #include "Bounding_Sphere.h"
+#include "Model.h"
+#include "Shader.h"
+#include "Transform.h"
 #include "GameInstance.h"
 
-CPointLight::CPointLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject(pDevice,pContext) 
-	, m_pLight{nullptr}
+CLightObject::CLightObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CMapObject(pDevice, pContext)
+	, m_pLight{ nullptr }
 	, m_isFlicker{ false }
 	, m_fFlickerSpeed{ 1.f }
 	, m_fFlickerMin{ 0.5f }
 	, m_fBaseRange{ 1.f }
-	, m_fAccDT{0.f}
-	, m_isRenderModel{false}
+	, m_fAccDT{ 0.f }
+	, m_isRenderModel{ false }
+	, m_eShaderPass{ EMapObjectShaderPass::StaticObject }
+	, m_pLightCollider{nullptr}
 {
 }
 
-CPointLight::CPointLight(const CPointLight& rhs)
-	: CGameObject(rhs)
+CLightObject::CLightObject(const CLightObject& rhs)
+	: CMapObject(rhs)
 	, m_pLight{ rhs.m_pLight }
 	, m_isFlicker{ rhs.m_isFlicker }
 	, m_fFlickerSpeed{ rhs.m_fFlickerSpeed }
 	, m_fFlickerMin{ rhs.m_fFlickerMin }
 	, m_fBaseRange{ rhs.m_fBaseRange }
 	, m_fAccDT{ rhs.m_fAccDT }
-	, m_isRenderModel{rhs.m_isRenderModel }
+	, m_isRenderModel{ rhs.m_isRenderModel }
+	, m_eShaderPass{rhs.m_eShaderPass }
+	, m_pLightCollider{rhs.m_pLightCollider }
 {
 }
 
-HRESULT CPointLight::Initialize_Prototype()
+HRESULT CLightObject::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
@@ -39,34 +45,40 @@ HRESULT CPointLight::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPointLight::Initialize(void* pArg)
+HRESULT CLightObject::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	CPointLight::POINTLIGHT_DESC* pDesc = static_cast<CPointLight::POINTLIGHT_DESC*>(pArg);
+	CLightObject::LIGHTOBJECT_DESC* pDesc = static_cast<CLightObject::LIGHTOBJECT_DESC*>(pArg);
 
-	m_isFlicker				= pDesc->isFlicker;
-	m_fBaseRange			= pDesc->tLightDesc.fRange;
+	m_isFlicker = pDesc->isFlicker;
+	m_fBaseRange = pDesc->tLightDesc.fRange;
+	m_isRenderModel = pDesc->isRenderModel;
+
+	m_eShaderPass	= pDesc->eShaderPass;
+	m_isRenderModel = pDesc->isRenderModel;
 
 	if (m_isFlicker)
 	{
 		m_fFlickerSpeed = pDesc->fFlickerSpeed;
-		m_fFlickerMin	= pDesc->fFlickerMin;
+		m_fFlickerMin = pDesc->fFlickerMin;
 	}
 
 
 	if (FAILED(Ready_Light(pDesc->tLightDesc)))
 		return E_FAIL;
-	
+
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
 
+	if (!pDesc->isRenderModel)
+		CGameObject::Remove_Component<CModel>();
 
 	return S_OK;
 }
 
-HRESULT CPointLight::Ready_Light(const LIGHT_DESC& tLightDesc)
+HRESULT CLightObject::Ready_Light(const LIGHT_DESC& tLightDesc)
 {
 	m_pLight = CLight::Create(tLightDesc);
 	if (m_pLight == nullptr) return E_FAIL;
@@ -76,12 +88,12 @@ HRESULT CPointLight::Ready_Light(const LIGHT_DESC& tLightDesc)
 
 
 
-HRESULT CPointLight::Ready_Collider()
+HRESULT CLightObject::Ready_Collider()
 {
 	/* Collider Setting 전에 SetScale 1 1 1 로 설정 */
 	CTransform* pTs = Get_Component<CTransform>();
 	if (pTs == nullptr) return E_FAIL;
-	pTs->Set_Scale(1.f,1.f,1.f);
+	pTs->Set_Scale(1.f, 1.f, 1.f);
 
 
 	CBounding_Sphere::BOUNDING_SPHERE_DESC tBoundingSphere_Desc{};
@@ -91,15 +103,15 @@ HRESULT CPointLight::Ready_Collider()
 	CCollider::COLLIDER_DESC tColliderDesc{};
 	tColliderDesc.pBoundingDesc = &tBoundingSphere_Desc;
 
-	if (FAILED(Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_Sphere_PrototypeTag, &tColliderDesc)))
-		return E_FAIL;
+	m_pLightCollider =  static_cast<CCollider*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_Sphere_PrototypeTag, &tColliderDesc));
+	if (m_pLightCollider == nullptr) return E_FAIL;
 
 
 	return S_OK;
 }
 
 
-HRESULT CPointLight::Awake(const _uint iCurrentLevelID)
+HRESULT CLightObject::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
@@ -107,12 +119,12 @@ HRESULT CPointLight::Awake(const _uint iCurrentLevelID)
 	return S_OK;
 }
 
-void CPointLight::Update_Priority(const _float fTimeDelta)
+void CLightObject::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 }
 
-void CPointLight::Update(const _float fTimeDelta)
+void CLightObject::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 	m_fAccDT += fTimeDelta;
@@ -136,24 +148,23 @@ void CPointLight::Update(const _float fTimeDelta)
 
 
 	/* Collider Update */
-	CCollider* pCollider = Get_Component<CCollider>();
-	static_cast<CBounding_Sphere*>(pCollider->Get_Bounding())->Get_OriginalDesc()->Radius = fFinalRange * 1.25f;
-	pCollider->Update(pTs->Get_WorldMatrix());
+	static_cast<CBounding_Sphere*>(m_pLightCollider->Get_Bounding())->Get_OriginalDesc()->Radius = fFinalRange * 1.25f;
+	m_pLightCollider->Update(pTs->Get_WorldMatrix());
 
 }
 
-void CPointLight::Update_Late(const _float fTimeDelta)
+void CLightObject::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 }
 
-void CPointLight::Ready_Before_Render(const _float fTimeDelta)
+void CLightObject::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 
 
 	/* 점조명이기에 매프레임 넣어준다 */
-	EFrustrumTier eType =  m_pGameInstance->Classify_BySplitFrustrum(*static_cast<CBounding_Sphere*>(Get_Component<CCollider>()->Get_Bounding())->Get_Desc());
+	EFrustrumTier eType = m_pGameInstance->Classify_BySplitFrustrum(*static_cast<CBounding_Sphere*>(Get_Component<CCollider>()->Get_Bounding())->Get_Desc());
 
 	if (eType == EFrustrumTier::Near)
 	{
@@ -168,49 +179,54 @@ void CPointLight::Ready_Before_Render(const _float fTimeDelta)
 	}
 
 #ifdef _DEBUG
-	CCollider* pCollider =  Get_Component<CCollider>();
-	if(pCollider)
+	CCollider* pCollider = Get_Component<CCollider>();
+	if (pCollider)
 		m_pGameInstance->Push_DebugComponent(pCollider);
 #endif // _DEBUG
-
-
 }
 
-HRESULT CPointLight::Render()
+HRESULT CLightObject::Render()
 {
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 
+
+	if (m_isRenderModel)
+	{
+		if (FAILED(CMapObject::Render()))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
-CPointLight* CPointLight::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLightObject* CLightObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CPointLight* pPointLight = new CPointLight(pDevice,pContext);
+	CLightObject* pLightObject = new CLightObject(pDevice, pContext);
 
-	if (FAILED(pPointLight->Initialize_Prototype()))
+	if (FAILED(pLightObject->Initialize_Prototype()))
 	{
-		Safe_Release(pPointLight);
+		Safe_Release(pLightObject);
 		MSG_BOX("Point Light is failed to Create");
 		return nullptr;
 	}
-	return pPointLight;
+	return pLightObject;
 }
 
-CGameObject* CPointLight::Clone(void* pArg)
+CGameObject* CLightObject::Clone(void* pArg)
 {
-	CPointLight* pPointLight = new CPointLight(*this);
+	CLightObject* pLightObject = new CLightObject(*this);
 
-	if (FAILED(pPointLight->Initialize(pArg)))
+	if (FAILED(pLightObject->Initialize(pArg)))
 	{
-		Safe_Release(pPointLight);
+		Safe_Release(pLightObject);
 		MSG_BOX("Point Light is failed to Clone");
 		return nullptr;
 	}
-	return pPointLight;
+	return pLightObject;
 }
 
-void CPointLight::Free()
+void CLightObject::Free()
 {
 	Super::Free();
 	Safe_Release(m_pLight);

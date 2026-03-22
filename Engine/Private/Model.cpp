@@ -823,6 +823,34 @@ HRESULT CModel::Set_MI_TintColor(_uint iIndex, const Vec4& vColor)
 	return S_OK;
 }
 
+HRESULT CModel::Set_MI_EmissiveColor(_uint iIndex, const Vec4& vColor)
+{
+	if (iIndex >= m_vecMaterialInstances.size()) return E_FAIL;
+
+	if (m_vecMaterialInstances[iIndex]->Get_MIType() != EMaterialInstanceType::Free)
+	{
+		MSG_BOX(" Material Instance Type이 Free가 아니라면 Setting 불가능 ");
+	}
+
+	m_vecMaterialInstances[iIndex]->Set_EmissiveColor(vColor);
+
+	return S_OK;
+}
+
+HRESULT CModel::Set_MI_EmissivePower(_uint iIndex, const float& fPower)
+{
+	if (iIndex >= m_vecMaterialInstances.size()) return E_FAIL;
+
+	if (m_vecMaterialInstances[iIndex]->Get_MIType() != EMaterialInstanceType::Free)
+	{
+		MSG_BOX(" Material Instance Type이 Free가 아니라면 Setting 불가능 ");
+	}
+
+	m_vecMaterialInstances[iIndex]->Set_EmissivePower(fPower);
+
+	return S_OK;
+}
+
 void CModel::Set_AnimTrackPosition(_float fValue)
 {
 	m_vecAnimations[m_iCurrentAnimIndex]->Set_TrackPosition(fValue);

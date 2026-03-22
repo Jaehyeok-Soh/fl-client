@@ -838,6 +838,9 @@
     <Filter Include="03. GameObject\LevelData">
       <UniqueIdentifier>{5274bfe2-5640-4c74-93bb-8270f1dd7ba7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Light">
+      <UniqueIdentifier>{630a0d20-7dd9-48d2-9e4b-0c3c09026f7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1515,7 +1518,7 @@
     <ClInclude Include="..\Public\UIConversation_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CLightMapObject.h">
+    <ClInclude Include="..\Public\LightObject.h">
       <Filter>03. GameObject\MapObject\08. LightMapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CameraMan_Targeter.h">
@@ -2224,7 +2227,7 @@
     <ClCompile Include="..\Private\UIConversation_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\12.Conversation</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CLightMapObject.cpp">
+    <ClCompile Include="..\Private\LightObject.cpp">
       <Filter>03. GameObject\MapObject\08. LightMapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp">

@@ -11,6 +11,7 @@
 #include "Vine.h"
 #include "Rock.h"
 #include "Water.h"
+#include "LightObject.h"
 #include "Shader.h"
 #include "Fog.h"
 #include "EnvObject.h"
@@ -122,6 +123,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::Vine:								Create_Vine(tData);									break;
 			case DTO::EClientMakePath::Water:								Create_Water(tData);								break;
 			case DTO::EClientMakePath::Env:									Create_Env(tData);									break;
+			case DTO::EClientMakePath::LightObject:							Create_LightObject(tData);							break;
 
 			case DTO::EClientMakePath::Batch_Player:						Batch_Player(tData);								break;
 			case DTO::EClientMakePath::Batch_Monster:						Batch_Monster(tData);								break;
@@ -587,6 +589,34 @@ HRESULT CBuilder_Map::Create_Env(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+HRESULT CBuilder_Map::Create_LightObject(const DTO::TMap_MapObjectData& tData)
+{
+	CLightObject::LIGHTOBJECT_DESC tDesc{};
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.isUELoaded = tData.isUELoaded;
+	tDesc.eMapObjectDrawType = static_cast<EMapObject_DrawType>(tData.eMapObjectDrawType);
+	tDesc.wstrModelPath = Engine_Utils::ToWString(tData.strModelPath);
+	tDesc.iSectionNum = tData.iSectionNum;
+	tDesc.eClientMakePath = tData.eClientMakePath;
+
+	for (auto& SRT_DATA : tData.vecSRTs)
+	{
+		tDesc.vecSRT.push_back(SRT_DATA);
+	}
+
+	LIGHTOBJECT_DESC* pOrignDesc = static_cast<Engine::LIGHTOBJECT_DESC*>(tData.vecClientMakePathDesc.front());
+
+	tDesc.tLightDesc = pOrignDesc->tLightDesc;
+	tDesc.tLightDesc.fRange = pOrignDesc->fBaseRange;
+	tDesc.isFlicker = pOrignDesc->isFlicker;
+	tDesc.fFlickerMin = pOrignDesc->fFlickerMin;
+	tDesc.fFlickerSpeed = pOrignDesc->fFlickerSpeed;
+	tDesc.fEmissivePower = pOrignDesc->fEmissviePower;
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC) , g_wszLightObject_Prototype_Tag  , tDesc.iLevelIndex , g_wszStaticObjectLayer , &tDesc );
+
+	return S_OK;
+}
 HRESULT CBuilder_Map::Create_Fog(const DTO::TMap_MapObjectData& tData)
 {
 	CFog::FOG_DESC tDesc{};
@@ -789,11 +819,11 @@ HRESULT CBuilder_Map::Batch_Object(const DTO::TMap_MapObjectData& tData)
 		CPointLight::POINTLIGHT_DESC tPointLightDecs{};
 		tPointLightDecs.pTransform_Desc = &tTransformDesc;	//Transform Data
 
-		tPointLightDecs.tLightDesc = pOrigin->tLightDesc;
-		tPointLightDecs.tLightDesc.fRange = pOrigin->fBaseRange;	// 아마 초기화 잘되어있을텐데 혹시모르니 
-		tPointLightDecs.isFlicker = pOrigin->isFlicker;
-		tPointLightDecs.fFlickerMin = pOrigin->fFlickerMin;
-		tPointLightDecs.fFlickerSpeed = pOrigin->fFlickerSpeed;
+		tPointLightDecs.tLightDesc			= pOrigin->tLightDesc;
+		tPointLightDecs.tLightDesc.fRange	= pOrigin->fBaseRange; 
+		tPointLightDecs.isFlicker			= pOrigin->isFlicker;
+		tPointLightDecs.fFlickerMin			= pOrigin->fFlickerMin;
+		tPointLightDecs.fFlickerSpeed		= pOrigin->fFlickerSpeed;
 
 		pResult = m_pGameInstance->Add_GameObject(iFindPrototypeIndex, wstrPrototypeTag, iAddLevelIndex, wstrAddLayerTag,&tPointLightDecs);
 		if (pResult == nullptr)

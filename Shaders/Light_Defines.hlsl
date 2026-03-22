@@ -28,6 +28,9 @@ struct MaterialDesc
 struct MaterialInstanceDesc
 {
     float4 vTintColor;
+    float4 vAmbient;
+    float4 vSpecular;
+    float4 vEmissive;
     float3 vPadding;
     float fEmissivePower;
 };
@@ -228,6 +231,7 @@ cbuffer MaterialInstance
     uint TextureMapMask;
     float3 vPadding;
 };
+
 cbuffer SSAOKernelBuffer
 {
     SSAOKernalDesc SSAOkernel;

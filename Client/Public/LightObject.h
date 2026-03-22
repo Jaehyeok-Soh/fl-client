@@ -1,29 +1,27 @@
 #pragma once
-#include "GameObject.h"
+#include "MapObject.h"
 
-NS_BEGIN(Engine)
-class CLight;
-NS_END
+
+/* 모델도 있고 Light도 있는 애들 전용 */
 
 NS_BEGIN(Client)
 
-/* Light Object는 Instance 없애야할듯? */
-
-class CPointLight : public CGameObject
+class CLightObject : public CMapObject
 {
-	using Super = CGameObject;
+	using Super = CMapObject;
 public:
-	typedef struct tagPointLight_Desc : public CGameObject::GAMEOBJECT_DESC
+	typedef struct tagLightObject_Desc : public CMapObject::MAPOBJECT_DESC
 	{
+		float		fEmissivePower{1.f};
 		LIGHT_DESC	tLightDesc{};
-		_bool		isFlicker{ false };			// 깜빡일래 말래 할래 말래 할래 말래 애매하긴해~
-		_float		fFlickerSpeed{ 1.0f };		// 깜빡이는 속도
+		_bool		isFlicker{ false };		// 깜빡일래 말래 할래 말래 할래 말래 애매하긴해~
+		_float		fFlickerSpeed{ 1.0f };	// 깜빡이는 속도
 		_float		fFlickerMin{ 0.5f };		// 최소 밝이 비율
-	}POINTLIGHT_DESC;
+	}LIGHTOBJECT_DESC;
 public:
-	CPointLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CPointLight(const CPointLight& rhs);
-	virtual ~CPointLight() = default;
+	CLightObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CLightObject(const CLightObject& rhs);
+	virtual ~CLightObject() = default;
 private:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
@@ -37,20 +35,21 @@ public:
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
 private:
-	CLight*					m_pLight{};
+	CLight* m_pLight{};
 private:
-	_bool					m_isRenderModel{false};
+	_bool					m_isRenderModel{ false };
+	EMapObjectShaderPass	m_eShaderPass{EMapObjectShaderPass::StaticObject};
 
 	_bool					m_isFlicker{ false };		// 깜빡일래 말래 할래 말래 할래 말래 애매하긴해~
-	_float					m_fFlickerSpeed{ 1.f};		// 깜빡이는 속도
+	_float					m_fFlickerSpeed{ 1.f };		// 깜빡이는 속도
 	_float					m_fFlickerMin{ 0.5f };		// 최소 밝이 비율
-	_float					m_fBaseRange{0.5f};			// 원래 빛 범위 저장
-	_float					m_fAccDT{0.f};
+	_float					m_fBaseRange{ 0.5f };			// 원래 빛 범위 저장
+	_float					m_fAccDT{ 0.f };
+	CCollider*				m_pLightCollider{nullptr};
 public:
-	static	CPointLight*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CLightObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg)								override;
 	virtual void			Free() override;
 };
 
 NS_END
-

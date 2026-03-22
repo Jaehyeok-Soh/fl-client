@@ -17,7 +17,7 @@
 #include "Bounding_Obb.h"
 #include "Bounding_Sphere.h"
 #include "Light.h"
-
+#include "CEffectObject.h"
 // Manager
 #include "Effect_DataManager.h"
 #include "Effect_Env.h"
@@ -435,6 +435,10 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
         if (FAILED(Ready_Env()))
             return E_FAIL;
         break;
+    case Tool::EClientMakePath::LightObject:
+        if (FAILED(Ready_LightObject()))
+            return E_FAIL;
+        break;
 
     case Tool::EClientMakePath::Bush:
     case Tool::EClientMakePath::Grass:
@@ -650,11 +654,33 @@ HRESULT CMapObject::Ready_Env()
     if (pDesc == nullptr) return E_FAIL;
 
 
+    _uint iIndex = 0;
     for (auto& EffectInfo : pDesc->vecEnvEffectInfo)
     {
         Add_EnvEffect(EffectInfo.strTags);
         Set_EnvEffectDesc(static_cast<_uint>(m_vEnvEffectList.size()) - 1, EffectInfo.tDesc);
     }
+
+
+
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_LightObject()
+{
+    m_strName += "_LightObject";
+
+
+    CModel* pModel = Get_Component<CModel>();
+    if (!pModel)  return E_FAIL;
+
+    _uint iMtlCount = (_uint)pModel->Get_MaterialCount();
+    for (_uint i = 0; i < iMtlCount; ++i)
+    {
+        pModel->Change_MI(i, EMaterialInstanceType::Free);
+    }
+
 
     return S_OK;
 }
@@ -1296,6 +1322,9 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
     switch (m_eClientMakePath)
     {
     case Tool::EClientMakePath::Water:          eCategroy = RENDER_CATEGORY::COMPUTELIGHT_BLEND;  break;
+    case Tool::EClientMakePath::LightObject:
+        LightObject_BeforeRender(fTimeDelta);
+        break;
 
     case Tool::EClientMakePath::Batch_Object:
         BatchObject_BeforeRender(fTimeDelta);
@@ -1357,6 +1386,9 @@ HRESULT CMapObject::Render()
         break;
     case Tool::EClientMakePath::Env:                
         hr = Render_Env();
+        break;
+    case Tool::EClientMakePath::LightObject:                
+        hr = Render_LightObject();
         break;
 
     case Tool::EClientMakePath::Batch_Player:
@@ -1587,6 +1619,7 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
     case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
     case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
+    case Tool::EClientMakePath::LightObject:
     {
         if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)
             MSG_BOX(" 현재 바꾸는 Client MakePth 관련 오브젝트는 Instance 를 지원하지 않습니다 Default Draw로  바꿔주세요 ");
@@ -1707,8 +1740,6 @@ void CMapObject::BatchObject_BeforeRender(const _float fTimeDelta)
             pPointLightDesc->pDebugLight->Setup_Range(pPointLightDesc->fBaseRange * fFinalLightRangeRatio);
             m_pGameInstance->Push_Light(pPointLightDesc->pDebugLight);
         }
-
-        
         break;
     }
     default:
@@ -1724,6 +1755,40 @@ void CMapObject::Env_BeforeRender(const _float fTimeDelta)
     for (auto& EffectEnv : m_vEnvEffectList)
     {
 
+    }
+
+    return;
+}
+
+
+
+/* Offset 값은 제각각 들어간다 그냥 Instnaceing 빼버려 */
+void CMapObject::LightObject_BeforeRender(const _float fTimeDelta)
+{
+    if (m_vecClientMakePathDesc.empty()) return;
+
+    LIGHTOBJECT_DESC* pLightObjectDesc = static_cast<LIGHTOBJECT_DESC*>(m_vecClientMakePathDesc.front());
+
+    if (!pLightObjectDesc)
+        return;
+    /* 로직 */
+
+    /* 깜빡거리는 애들이라면 프레임단위로 계산해준다 */
+    float fFinalLightRangeRatio{ 1.f };
+    if (pLightObjectDesc->isFlicker)
+    {
+        float fSinValue = sinf(m_fDT * pLightObjectDesc->fFlickerSpeed);	/* -1 ~ 1 사이 값 */
+        fSinValue = (fSinValue + 1.f) * 0.5f;			/* 0.f ~ 1.f 사이값으로 변환 */
+        fFinalLightRangeRatio = pLightObjectDesc->fFlickerMin + fSinValue * (1.f - pLightObjectDesc->fFlickerMin);
+    }
+
+    if (pLightObjectDesc->pDebugLight)
+    {
+        /* Update를 해주자 */
+        const Vec3& vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+        pLightObjectDesc->Update_Light(Vec4(vPos.x, vPos.y, vPos.z, 1.f));
+        pLightObjectDesc->pDebugLight->Setup_Range(pLightObjectDesc->fBaseRange * fFinalLightRangeRatio);
+        m_pGameInstance->Push_Light(pLightObjectDesc->pDebugLight);
     }
 
     return;
@@ -2430,6 +2495,54 @@ HRESULT CMapObject::Render_Env()
 
     return S_OK;
 }
+
+HRESULT CMapObject::Render_LightObject()
+{
+    /* Instnace 지원 X */
+    if (m_eMapObjectDrawType == EMapObject_DrawType::Default)
+    {
+
+        CShader* pShader = Get_Component<CShader>();            if (pShader == nullptr)         return E_FAIL;
+        CModel* pModel = Get_Component<CModel>();               if (pModel == nullptr)          return E_FAIL;
+        CTransform* pTransform = Get_Component<CTransform>();   if (pTransform == nullptr)      return E_FAIL;
+
+        LIGHTOBJECT_DESC* pDesc = static_cast<LIGHTOBJECT_DESC*>(m_vecClientMakePathDesc.front());
+        CLight* pLight = pDesc->pDebugLight;
+        if (pLight == nullptr) return E_FAIL;
+        const SHADER_LIGHTDESC& tLightDesc = pLight->Get_LightDesc();
+        Vec4 vEmissiveColor = pLight->Get_LightDesc().vDiffuse;
+        float fRange = tLightDesc.fRange;
+
+
+        /* 내 현재 Power 값을  */
+
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+        _uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+        /* Client Make Path를 이용한다 */
+        /* Emissive */
+        /* Emissive 관련해서  */
+        pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::LightObject));
+
+        if (FAILED(Set_GPU_MapObjectState(pShader)))
+            return E_FAIL;
+
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pModel->Set_MI_EmissiveColor(i,vEmissiveColor);
+            pModel->Set_MI_EmissivePower(i,pDesc->fEmissviePower * fRange);
+            pModel->Bind_MaterialInstance(pShader, i);
+            pModel->Bind_Material(pShader, i);
+            pShader->Apply();
+            pModel->Render(i);
+        }
+
+    }
+    else
+        return S_OK;
+
+    return S_OK;
+}
 #pragma endregion
 
 
@@ -2495,6 +2608,7 @@ HRESULT CMapObject::Render_Batch_Object()
 
 
     }
+    break;
     case DTO::EMakeObjectType::PointLight:
     {
         if (FAILED(Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject))))
@@ -2662,8 +2776,7 @@ void CMapObject::Set_EnvEffectDesc(_uint iIndex, const EFFECT_ENV_DESC& Desc)
     // 리스트 내의 데이터 갱신
     m_vEnvEffectList[iIndex].second = Desc;
 
-    // 실제 이펙트 객체에 반영
-    m_vEnvEffectList[iIndex].first->Set_EnvDesc(Desc);
+    m_vEnvEffectList[iIndex].first->Enable_VFX(&m_vEnvEffectList[iIndex].second);
 }
 
 void CMapObject::Delete_EnvEffect(_uint iIndex)

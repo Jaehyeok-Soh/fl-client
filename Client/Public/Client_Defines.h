@@ -200,7 +200,7 @@ namespace Client
 		Vec4        vSkyColor{ 0.3f,0.7f,0.8f,1.f };
 		Vec4        vCloudBaseColor{ 0.8f,0.8f,0.8f,1.f };
 		Vec4        vCloudHighlight{ 1.f,1.f,1.f,1.f };
-		Vec4        vCloudShadowColor = float4(1.f, 1.f, 1.f, 1.f);   //16
+		Vec4        vCloudShadowColor = { 1.f, 1.f, 1.f, 1.f };   //16
 
 		float       fCloudHighlightPower = 1.f;
 		float       fCloudShadowPower = 1.f;
@@ -322,6 +322,7 @@ namespace Client
 		DEBUG,
 		SkyBox,
 		Shadow,
+		LightObject,
 		END,
 	};
 
@@ -886,8 +887,8 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_XibiGate[]							{ L"Prototype_Spawner_XibiGate" };
 
 	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]							{ L"Prototype_Spawner_PlayerMoon_SkillE" };
-	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };
-	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Attack[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Attack" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]					{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Attack[]					{ L"Prototype_Spawner_PlayerMoon_SkillQ_Attack" };
 #pragma endregion
 
 #pragma region MapObject ฐüทร
@@ -903,6 +904,7 @@ namespace Client
 
 	inline constexpr wchar_t g_wszEnvObject_Prototype_Tag[]						{ L"Prototype_GameObject_EnvObject" };
 
+	inline constexpr wchar_t g_wszLightObject_Prototype_Tag[]					{ L"Prototype_GameObject_LightObejct" };
 
 	/* Interactive Object */
 	inline constexpr wchar_t g_wszWeaponPickUp_Prototype_Tag[]					{ L"Prototype_GameObject_WeaponPickUp" };
@@ -980,7 +982,7 @@ namespace Client
 	inline constexpr wchar_t g_wszSkyBoxLayer[]									{ L"SkyBox_Layer" };
 	inline constexpr wchar_t g_wszPointLightLayer[]								{ L"PointLight_Layer" };
 	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
-	inline constexpr wchar_t g_wszInteractiveObjectLayer[]							{ L"InteractiveObject_Layer" };
+	inline constexpr wchar_t g_wszInteractiveObjectLayer[]						{ L"InteractiveObject_Layer"};
 #pragma endregion
 
 #pragma region Dialogue
