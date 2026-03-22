@@ -119,8 +119,13 @@ HRESULT CSkyBox::Render()
 	CShader*	pShader		= Get_Component<CShader>();	if (pTs == nullptr) return E_FAIL;
 	CTexture*	pTexture	= Get_Component<CTexture>(); if (pTexture == nullptr) return E_FAIL;
 
-	if (FAILED(pShader->Get_Scalar("fEvnAccDT")->SetFloat(m_fAccDT)))
+
+	ID3DX11EffectVariable* pEFFValue = pShader->Get_Variable("fEvnAccDT");
+	ID3DX11EffectScalarVariable* pScalarValue = pEFFValue->AsScalar();
+	if (!pScalarValue->IsValid())
 		return E_FAIL;
+	pScalarValue->SetFloat(m_fAccDT);
+
 
 	CCameraMan* pCam = m_pGameInstance->Get_MainCamera();
 	if (pCam == nullptr) return E_FAIL;

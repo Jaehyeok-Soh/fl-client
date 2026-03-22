@@ -835,6 +835,9 @@
     <Filter Include="07. System\04. Binder">
       <UniqueIdentifier>{bf9e1beb-a2d5-45fc-9aad-6e498db509b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\LevelData">
+      <UniqueIdentifier>{5274bfe2-5640-4c74-93bb-8270f1dd7ba7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

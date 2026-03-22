@@ -827,11 +827,47 @@ PS_OUT_BACKBUFFER PS_SKYBOX(PS_IN_MESH input)
     PS_OUT_BACKBUFFER output;
     
     float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+        
+    // 1. 시간에 따른 UV 애니메이션 적용
+    float2 animUV = input.vUV + vSkyBoxTextureUVSpeed * fEvnAccDT;
     
-    vDiffuse = g_DefaultTextures[0].Sample(LinearSampler,input.vUV);
+    // 최종적으로 샘플링할 UV를 담을 변수
+    float2 finalUV;
+    
+    if (iSkyBoxTextureType == SPHERE)
+    {
+        // [핵심] 둥근 텍스처는 U축(x) 애니메이션만 각도(회전)로 사용하고, 
+        // V축(y)은 애니메이션이 적용되지 않은 원본 input.vUV.y를 써야 안전합니다!
+        float angle = animUV.x * 2.0f * 3.14159265f;
+        
+        float radius = input.vUV.y * 0.5f; // animUV.y 대신 input.vUV.y 사용!
+        radius *= fPolarRadiusScale;
+
+        finalUV.x = 0.5f + radius * cos(angle);
+        finalUV.y = 0.5f + radius * sin(angle);
+    }
+    else // RECTANGLE 등 기본 사각형
+    {
+        // 사각형 텍스처는 U, V 양방향으로 스크롤되어도 무방함
+        finalUV = animUV;
+    }
    
-    if (vDiffuse.a < 0.3f)
-        discard;
+    vDiffuse = g_DefaultTextures[0].Sample(LinearSampler, finalUV);
+    
+    
+    if (isChannelPacking)
+    {
+        float baseCloudMask = vDiffuse.b; // B채널: 전체적인 구름의 베이스 형태
+        float highlightCloudMask = vDiffuse.r; // R채널: 햇빛을 받는 밝고 짙은 구름 형태
+        
+        float4 finalPackedColor = lerp(vSkyColor, vCloudBaseColor, baseCloudMask);
+        
+        finalPackedColor = lerp(finalPackedColor, vCloudHighlight, highlightCloudMask);
+        
+        vDiffuse = finalPackedColor * vEnvColor;
+    }
+    
+
     
     output.vColor = vDiffuse;
     
