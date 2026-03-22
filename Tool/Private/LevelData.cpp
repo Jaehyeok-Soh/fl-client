@@ -358,6 +358,14 @@ _bool CLevelData::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocu
     tData.vSkyBoxTextureUVSpeed = m_tCB_EnvData.vSkyBoxTextureUVSpeed;      /* Sky Box Texture UV Speed */
     tData.iSkyBoxTextureType = m_tCB_EnvData.iSkyBoxTextureType;            /* Sky Box Texture Setting */
 
+    /* »ö±ò ¼³Á¤ */
+    tData.vEnvColor = m_tCB_EnvData.vEnvColor;
+    tData.vCloudBaseColor = m_tCB_EnvData.vCloudBaseColor;
+    tData.vCloudHighlight = m_tCB_EnvData.vCloudHighlight;
+    tData.vSkyColor = m_tCB_EnvData.vSkyColor;
+
+
+
     CTransform* pTs = Get_Component<CTransform>();
     Matrix matWorld = pTs->Get_WorldMatrix();
     Vec3 vScale{};
