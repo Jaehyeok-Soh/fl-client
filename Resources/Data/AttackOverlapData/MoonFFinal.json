@@ -444,29 +444,29 @@
                     "iAnimIndex": 16,
                     "strAnimTag": "Animation_PlayerMoon_Dualblade_HeavyAttack_End",
                     "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 2,
-                        "eType": 0,
-                        "fDamage": 0.0,
-                        "fDuration": 1.0199999809265137,
-                        "fHeight": 0.0,
-                        "fRadius": 0.0,
-                        "fTickTime": 0.029999999329447746,
-                        "iFilterMask": 6176,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "MoonAttack_Heavy",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 5.199999809265137,
-                            "y": 3.390000104904175,
-                            "z": 4.610000133514404
-                        },
-                        "vOffset": {
-                            "x": 0.0,
-                            "y": 1.0700000524520874,
-                            "z": 1.9500000476837158
-                        }
+                  "tHitboxDesc": {
+                    "eFilterLayer": 2,
+                    "eType": 0,
+                    "fDamage": 0.0,
+                    "fDuration": 1.0199999809265137,
+                    "fHeight": 0.0,
+                    "fRadius": 0.0,
+                    "fTickTime": 0.029999999329447746,
+                    "iFilterMask": 6176,
+                    "iMaxHit": 32,
+                    "strAttackPresetTag": "MoonAttack_Normal",
+                    "strName": "",
+                    "vExtents": {
+                      "x": 5.199999809265137,
+                      "y": 3.390000104904175,
+                      "z": 4.610000133514404
+                    },
+                    "vOffset": {
+                      "x": 0.0,
+                      "y": 1.0700000524520874,
+                      "z": 1.9500000476837158
                     }
+                  }
                 },
                 {
                     "eEventType": 3,

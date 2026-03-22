@@ -167,7 +167,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
         Set_FKeyEvent(0, true);
-        pPlayerState->Set_SpecialDashOn(true);
+        //pPlayerState->Set_SpecialDashOn(true);
 
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
