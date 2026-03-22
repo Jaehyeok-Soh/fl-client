@@ -364,10 +364,15 @@ _bool CLevelData::Export_Data(DTO::ECategory eCategory, CDataDocumentBase* pDocu
 
     /* »ö±ò ¼³Á¤ */
     tData.vEnvColor = m_tCB_EnvData.vEnvColor;
-    tData.vCloudBaseColor = m_tCB_EnvData.vCloudBaseColor;
-    tData.vCloudHighlight = m_tCB_EnvData.vCloudHighlight;
     tData.vSkyColor = m_tCB_EnvData.vSkyColor;
 
+    tData.vCloudBaseColor = m_tCB_EnvData.vCloudBaseColor;
+    
+    tData.vCloudHighlight = m_tCB_EnvData.vCloudHighlight;
+    tData.fCloudHighlightPower = m_tCB_EnvData.fCloudHighlightPower;
+
+    tData.vCloudShadowColor = m_tCB_EnvData.vCloudShadowColor;
+    tData.fCloudShadowPower = m_tCB_EnvData.fCloudShadowPower;
 
 
     CTransform* pTs = Get_Component<CTransform>();
