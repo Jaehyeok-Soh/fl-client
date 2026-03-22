@@ -48,9 +48,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 0.10000000149011612,
-                        "y": 0.10000000149011612,
-                        "z": 0.10000000149011612
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -250,9 +250,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 30.0,
-                        "y": 30.0,
-                        "z": 40.0
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -672,8 +672,8 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 40.0,
-                        "y": 20.0,
+                        "x": 1.0,
+                        "y": 1.0,
                         "z": 1.0
                     },
                     "ExternalForceCurve": [],
@@ -870,8 +870,8 @@
                         "z": 17.299999237060547
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 20.0,
+                        "x": 1.0,
+                        "y": 1.0,
                         "z": 1.0
                     },
                     "StartSpeed": 1.0,
