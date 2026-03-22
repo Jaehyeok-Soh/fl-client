@@ -17,7 +17,7 @@ public:
 	HRESULT Initialize(DTO::QUESTDESC desc);
 
 public:
-	void Enter();
+	void Enter(_int chapterId = 0);
 	void Exit();
 
 	void UpdateProgress(DTO::QUEST_EVENT_SIGNATURE ID);
