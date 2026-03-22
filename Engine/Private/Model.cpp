@@ -1182,6 +1182,19 @@ void CModel::Blend_End()
 {
 	m_fBlendedTime = 0.f;
 
+	switch (m_iBlendRootType)
+	{
+	case 0: // 둘다 업데이트
+		break;
+
+	case 1: // pre만 업데이트
+		m_vPreMainPosition = m_vPreBlendPosition;
+		break;
+
+	case 2: // main만 업데이트
+		break;
+	}
+
 	//m_vecAnimations[m_iPrevAnimIndex]->Reset_PrePosition(m_vPreBlendPosition);
 }
 
@@ -1457,15 +1470,48 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio, CTransf
 			//motion bone 일때 trans : zero로 해줌
 			if (m_iRootBoneIdx == i)
 			{
-				if (pOwnerPhyCCT && pOwnerTransform &&
-					m_vecAnimations[m_iCurrentAnimIndex]->Get_ApplyRoot() && m_vecAnimations[m_iPrevAnimIndex]->Get_ApplyRoot())
+				if (pOwnerPhyCCT && pOwnerTransform)
 				{
-					Vec3 vBlendvDelta = m_vPreBlendPosition - m_vecPrevAnimationPose[i].vTranslation;
-					Vec3 vMainDelta = m_vPreMainPosition - m_vecCurrAnimationPose[i].vTranslation;
-					m_vPreBlendPosition = m_vecPrevAnimationPose[i].vTranslation;
-					m_vPreMainPosition = m_vecCurrAnimationPose[i].vTranslation;
+					Vec3 vDelta = { Vec3::Zero };
+					_float fMotionOffset = { 1.f };
+					if (m_vecAnimations[m_iCurrentAnimIndex]->Get_ApplyRoot() && m_vecAnimations[m_iPrevAnimIndex]->Get_ApplyRoot())
+					{
+						m_iBlendRootType = 0;
 
-					Vec3 vDelta = Vec3::Lerp(vBlendvDelta, vMainDelta, fRatio);
+						Vec3 vBlendvDelta = m_vPreBlendPosition - m_vecPrevAnimationPose[i].vTranslation;
+						Vec3 vMainDelta = m_vPreMainPosition - m_vecCurrAnimationPose[i].vTranslation;
+						m_vPreBlendPosition = m_vecPrevAnimationPose[i].vTranslation;
+						m_vPreMainPosition = m_vecCurrAnimationPose[i].vTranslation;
+
+						vDelta = Vec3::Lerp(vBlendvDelta, vMainDelta, fRatio);
+
+						fMotionOffset = m_vecAnimations[m_iCurrentAnimIndex]->Get_MotionOffset();
+					}
+
+					else if (m_vecAnimations[m_iPrevAnimIndex]->Get_ApplyRoot())
+					{
+						m_iBlendRootType = 1;
+
+						Vec3 vBlendvDelta = m_vPreBlendPosition - m_vecPrevAnimationPose[i].vTranslation;
+						m_vPreBlendPosition = m_vecPrevAnimationPose[i].vTranslation;
+
+						vDelta = vBlendvDelta;
+
+						fMotionOffset = m_vecAnimations[m_iPrevAnimIndex]->Get_MotionOffset();
+					}
+
+					else if (m_vecAnimations[m_iCurrentAnimIndex]->Get_ApplyRoot())
+					{
+						m_iBlendRootType = 2;
+
+						Vec3 vMainDelta = m_vPreMainPosition - m_vecCurrAnimationPose[i].vTranslation;
+						m_vPreMainPosition = m_vecCurrAnimationPose[i].vTranslation;
+
+						vDelta = vMainDelta;
+
+						fMotionOffset = m_vecAnimations[m_iCurrentAnimIndex]->Get_MotionOffset();
+					}
+
 
 					//// 3. 두 Delta를 블렌딩 비율에 따라 섞음
 					//Vec3 vDelta = m_vPreBlendPosition - vTranslation;
@@ -1483,7 +1529,7 @@ void CModel::Lerp_Animation(CComputeShader* pAnimBlendCS, _float fRatio, CTransf
 
 						Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
 
-						pOwnerPhyCCT->AddFixedMove(moveDistance * m_vecAnimations[m_iCurrentAnimIndex]->Get_MotionOffset());
+						pOwnerPhyCCT->AddFixedMove(moveDistance * fMotionOffset);
 					}
 
 					//m_vPreMainPosition

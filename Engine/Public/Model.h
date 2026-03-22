@@ -368,6 +368,8 @@ private:
 	_float								m_fAdditiveOffset		= { 1.f };
 	_bool								m_bAdditiveAnim			= { false };
 
+	_uint								m_iBlendRootType = { 0 };
+
 	// compute shader º¯¼ö
 private:
 	vector<BONE_GROUP>					m_vecBoneGroups;
