@@ -475,11 +475,36 @@ void CCameraMan_Targeter::TurnCam_Begin()
 {
     CTransform* pTransform = Get_Component<CTransform>();
 
-    pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, m_tTurnData.vPivot - m_tTurnData.vFirstLookDir * m_tTurnData.fDistance);
+    Vec3 vLookDir = m_tTurnData.vFirstLookDir;
+    vLookDir.y = 0.f;
 
-    Vec3 vNewPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+    // 유효한 방향이 안나오면 내기준 Look
+    if (vLookDir.LengthSquared() <= g_XMEpsilon.f[0])
+    {
+        vLookDir = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+        vLookDir.y = 0.f;
+    }
+    // 그것도 안되면 걍 world forward
+    if (vLookDir.LengthSquared() <= g_XMEpsilon.f[0])
+        vLookDir = Vec3::Forward;
 
-    pTransform->Look_At_Dir(m_tTurnData.vPivot - vNewPos);
+    vLookDir.Normalize();
+
+    _float fDistance = m_tTurnData.fDistance;
+    if (fDistance <= 0.f)
+    {
+        Vec3 vCurOffset = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS) - m_tTurnData.vPivot;
+        vCurOffset.y = 0.f;
+        fDistance = vCurOffset.Length();
+        if (fDistance <= g_XMEpsilon.f[0])
+            fDistance = 3.f;
+    }
+
+    Vec3 vStartPos = m_tTurnData.vPivot - vLookDir * fDistance;
+    pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vStartPos);
+    pTransform->Look_At_Dir(m_tTurnData.vPivot - vStartPos);
+    m_vTurnBaseLookDir = vLookDir;
+    m_fTurnBaseDistance = fDistance;
 }
 
 void CCameraMan_Targeter::TurnCam_Update_Priority(const _float fTimeDelta)
@@ -489,23 +514,45 @@ void CCameraMan_Targeter::TurnCam_Update_Priority(const _float fTimeDelta)
 
 void CCameraMan_Targeter::TurnCam_Update(const _float fTimeDelta)
 {
-    if (m_fStateTime < m_tTurnData.fTurnHalfTime)
-    {
-        Update_TurnOn(fTimeDelta);
-    }
+    // 기존 적분방식이아닌 Alpha를 이용해서 목표 각도를 바로 계산
+    const _float fHalf = (std::max)(0.f, m_tTurnData.fTurnHalfTime);
+    const _float fHold = (std::max)(0.f, m_tTurnData.fTurnHoldTime);
+    const _float fTotal = fHalf * 2.f + fHold;
 
-    else if (m_fStateTime < (m_tTurnData.fTurnHalfTime  + m_tTurnData.fTurnHoldTime))
+    if (m_fStateTime >= fTotal)
     {
+        Change_CamState(TargeterState::NORMAL);
         return;
     }
 
-    else if (m_fStateTime < (m_tTurnData.fTurnHalfTime * 2.f + m_tTurnData.fTurnHoldTime))
-    {
-        Update_TurnOn(fTimeDelta * -1.f);
-    }
+    // Half구간의 목표 회전량은 Speed * TunrHalfTime
+    const _float fCurYawDegree = Eval_TurnYawDegree();
+    const _float fCurYawRadian = ::XMConvertToRadians(fCurYawDegree);
 
-    else
-        Change_CamState(TargeterState::NORMAL);
+    // 시작 기준 Offset을 회전
+    Vec3 vBaseOffset = -m_vTurnBaseLookDir * m_fTurnBaseDistance;
+
+    Matrix matRot = Matrix::CreateRotationY(fCurYawRadian);
+    Vec3 vCurOffset = Vec3::TransformNormal(vBaseOffset, matRot);
+    Vec3 vDesiredPosition = m_tTurnData.vPivot + vCurOffset;
+
+    CTransform* pTransform = Get_Component<CTransform>();
+
+    pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vDesiredPosition);
+
+    Vec3 vLook = m_tTurnData.vPivot - vDesiredPosition;
+    if (vLook.LengthSquared() > g_XMEpsilon.f[0])
+    {
+        vLook.Normalize();
+        Vec3 vRight = Vec3::Up.Cross(vLook);
+        vRight.Normalize();
+        Vec3 vUp = vLook.Cross(vRight);
+        vUp.Normalize();
+
+        pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
+        pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, vUp);
+        pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, vLook);
+    }
 }
 
 void CCameraMan_Targeter::TurnCam_End()
@@ -518,12 +565,10 @@ void CCameraMan_Targeter::TurnCam_End()
 
     if (CContainerObject* pObject = dynamic_cast<CContainerObject*>(pActor))
     {
-        // 플레이어의 바디를 들고 온다
         CBody* pBodyOfPlayer = nullptr;
         if (!(pBodyOfPlayer = pObject->Get_Part<CBody>(CPlayer::BODY)))
             return;
 
-        // 플레이어의 transform을 들고 온다
         CTransform* pPlayerTransform = nullptr;
         if (!(pPlayerTransform = pObject->Get_Component<CTransform>()))
             return;
@@ -534,11 +579,12 @@ void CCameraMan_Targeter::TurnCam_End()
         Vec3 vCurCamPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
         vCurCamPos.y = 0.f;
 
-
         fLength = Vec3::Distance(vCurCamPos, vChasePositionRaw);
     }
 
     m_arrPreDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)] = fLength;
+    m_vTurnBaseLookDir = Vec3::Forward;
+    m_fTurnBaseDistance = 0.f;
 }
 
 void CCameraMan_Targeter::Update_Input(const _float fTimeDelta)
@@ -792,6 +838,37 @@ void CCameraMan_Targeter::Update_TurnOff(const _float fTimeDelta)
     pTransform->Look_At(m_tTurnData.vPivot);
 
     pTransform->Chase(m_tTurnData.vPivot, m_tTurnData.fDistance, fTimeDelta);
+}
+
+_float CCameraMan_Targeter::Eval_TurnYawDegree() const
+{
+    const _float fHalf = (std::max)(0.f, m_tTurnData.fTurnHalfTime);
+    const _float fHold = (std::max)(0.f, m_tTurnData.fTurnHoldTime);
+
+    // Speed 를 Degree / Sec으로 해석
+    const _float fTargetYawDegree = m_tTurnData.fSpeed * fHalf;
+    if (fHalf <= 0.f)
+        return 0.f;
+
+    // 들어갈 때
+    if (m_fStateTime < fHalf)
+    {
+        const _float fT = m_fStateTime / fHalf;
+        return fTargetYawDegree * Engine_Utils::EvalEase_EaseOutQuad(fT);
+    }
+    // 유지
+    if (m_fStateTime < fHalf + fHold)
+    {
+        return fTargetYawDegree;
+    }
+    // 복귀
+    if (m_fStateTime < fHalf * 2.f + fHold)
+    {
+        const _float fT = (m_fStateTime - fHalf - fHold) / fHalf;
+        return fTargetYawDegree * (1.f - Engine_Utils::EvalEase_EaseOutQuad(fT));
+    }
+
+    return 0.f;
 }
 
 Vec3 CCameraMan_Targeter::CheckCameraCollision(Vec3 vCameraPos, Vec3 vTargetPos)

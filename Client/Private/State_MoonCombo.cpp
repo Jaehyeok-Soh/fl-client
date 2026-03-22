@@ -75,8 +75,6 @@ HRESULT CState_MoonCombo::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
-	m_bShakeActived = false;
-
 	return S_OK;
 }
 
@@ -95,13 +93,6 @@ HRESULT CState_MoonCombo::End()
 
 void CState_MoonCombo::Update_Fourth(const _float fTimeDelta)
 {
-	if (m_bShakeActived == false && m_fStateElapsed >= 0.8f / 1.2f)
-	{
-		CAMERA_SHAKE_DESC desc{};
-		desc.fDuration = 0.2f;
-		CGameInstance::GetInstance()->Request_MainCameraShake(desc);
-		m_bShakeActived = true;
-	}
 }
 
 CState_MoonCombo* CState_MoonCombo::Create(CActionState* pOwnerComponent, void* pArg)
