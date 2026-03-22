@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
-
 #include "Anim_Event_AttackOverlap.h"
 #include "DataStruct_EffectEvent.h"
-
+#include "DataStruct_SoundEvent.h"
+ 
 namespace DTO
 {
 	typedef struct tagAnimEventInfo1
@@ -17,7 +17,7 @@ namespace DTO
 
 		vector<ATTACKEVENT> vecAttackEvents;
 		vector<EFFECTEVENT> vecVFXEvents;
-		//vector<ANIM_EVENT_BASE> vecSoundEvents;
+		vector<SOUNDEVENT> vecSoundEvents;
 		//vector<ANIM_EVENT_BASE> vecCameraEvents;
 	}ANIM_EVENT_INFO1;
 
@@ -26,6 +26,7 @@ namespace DTO
 		j["strOwnerTag"] = d.strOwnerTag;
 		j["vecAttackEvents"] = d.vecAttackEvents;
 		j["vecVFXEvents"] = d.vecVFXEvents;
+		j["vecSoundEvents"] = d.vecSoundEvents;
 	}
 
 	inline void from_json(const json& j, ANIM_EVENT_INFO1& d)
@@ -33,5 +34,7 @@ namespace DTO
 		j.at("strOwnerTag").get_to(d.strOwnerTag);
 		j.at("vecAttackEvents").get_to(d.vecAttackEvents);
 		j.at("vecVFXEvents").get_to(d.vecVFXEvents);
+		if (j.contains("vecSoundEvents"))
+			j.at("vecSoundEvents").get_to(d.vecSoundEvents);
 	}
 }

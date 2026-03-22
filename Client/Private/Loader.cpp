@@ -5,6 +5,7 @@
 #include "PlayerControlContext.h"
 #include "MonsterControlContext.h"
 #include "MonoBehaviour.h"
+#include "Sound_Handler.h"
 #include "EffectHandler.h"
 #include "PlayerActionState.h"
 #include "MonsterActionState.h"
@@ -329,6 +330,9 @@ HRESULT CLoader::Loading_For_Test()
 HRESULT CLoader::Loading_For_Logo()
 {
 	if (FAILED(Ready_Spawner()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Sounds()))
 		return E_FAIL;
 
 #pragma region Ready Cinematic Camera Data
@@ -729,6 +733,8 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Bounds", CBounds::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_VIBuffer_InstanceMesh
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
+	// For. Prototype_Component_SoundHandler
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_SoundHandler", CSound_Handler::Create());
 	// For. Prototype_Component_EffectHandler_SkillObject
 	{
 		CEffectHandler::ANIM_EFFECT_HANDLER_DESC desc{};
@@ -1374,6 +1380,14 @@ HRESULT CLoader::Ready_Spawner()
 			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
 			return E_FAIL;
 	}
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Sounds()
+{
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

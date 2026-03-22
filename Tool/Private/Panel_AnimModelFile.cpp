@@ -159,7 +159,7 @@ void CPanel_AnimModelFile::SaveFileDialog(char* buffer, const char* filter)
 	ofn.nMaxFileTitle = 0;
 	ofn.lpstrInitialDir = NULL;
 	ofn.lpstrDefExt = "json";
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR | OFN_OVERWRITEPROMPT;
 
 	if (GetSaveFileNameA(&ofn) == TRUE)
 	{
@@ -267,8 +267,8 @@ void CPanel_AnimModelFile::RenderLoadModal()
 			if (m_tLoadOptions.bLoadEffect && strlen(m_tLoadOptions.strEffectPath) > 0)
 				Load_EffectData(m_tLoadOptions.strEffectPath);
 
-			//if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
-			//	Load_SoundData(m_tLoadOptions.strSoundPath);
+			if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
+				Load_SoundData(m_tLoadOptions.strSoundPath);
 
 			ImGui::CloseCurrentPopup(); // ¸ð´Þ ´Ý±â
 		}
@@ -371,8 +371,8 @@ void CPanel_AnimModelFile::RenderSaveModal()
 			if (m_tLoadOptions.bLoadEffect && strlen(m_tLoadOptions.strEffectPath) > 0)
 				Save_EffectData(m_tLoadOptions.strEffectPath);
 
-			//if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
-			//	Load_SoundData(m_tLoadOptions.strSoundPath);
+			if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
+				Save_SoundData(m_tLoadOptions.strSoundPath);
 
 			ImGui::CloseCurrentPopup(); // ¸ð´Þ ´Ý±â
 		}
@@ -407,6 +407,16 @@ void CPanel_AnimModelFile::Load_EffectData(fs::path path)
 void CPanel_AnimModelFile::Save_EffectData(fs::path path)
 {
 	m_pAnimToolManager->Save_EffectEvent(path, m_tLoadOptions.strAnimTag, m_tLoadOptions.iPoolingCount);
+}
+
+void CPanel_AnimModelFile::Load_SoundData(fs::path path)
+{
+	m_pAnimToolManager->Load_SoundEvent(path);
+}
+
+void CPanel_AnimModelFile::Save_SoundData(fs::path path)
+{
+	m_pAnimToolManager->Save_SoundEvent(path);
 }
 
 DIR CPanel_AnimModelFile::RefreshModelDir()
