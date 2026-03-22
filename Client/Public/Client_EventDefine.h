@@ -53,6 +53,9 @@ struct GUN_ON_HIT { using Signature = void(); };	// 총알을 적중했을 때
 struct TUTORIAL_POPUP_TRIGGER{ using Signature = void(EUITutorialPopUpTypeID ID); }; // 튜토리얼 팝업 띄우기
 struct TUTORIAL_POPUP_CLEAR{ using Signature = void(EUITutorialPopUpTypeID ID); }; // 튜토리얼 팝업 내리고 클리어 띄우기
 
+struct MINIGAME_CIRCLE_ON { using Signature = void(); };
+struct MINIGAME_CIRCLE_CLEAR { using Signature = void(); };
+struct MINIGAME_CIRCLE_OFF { using Signature = void(); };
 
 // 퀘스트 이벤트
 struct QUEST_NOTIFY{ using Signature = void(DTO::QUEST_EVENT_SIGNATURE ID); }; // 퀘스트 업데이트

@@ -168,6 +168,7 @@
 #include "UIQuestNavi_Text.h"
 #include "UICommunity_Text.h"
 #include "UIConversation_Text.h"
+#include "UIMiniGame_Circle_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -193,6 +194,7 @@
 #include "UICommunity_Image.h"
 #include "UIConversation_Image.h"
 #include "UIMouseCursor_Image.h"
+#include "UIMiniGame_Circle_Image.h"
 //=================
 // Resource
 //=================
@@ -926,6 +928,8 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ConversationImage",		CUIConversation_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ConversationText",			CUIConversation_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MouseCursorImage",			CUIMouseCursor_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleImage",		CUIMiniGame_Circle_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleText",		CUIMiniGame_Circle_Text::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	

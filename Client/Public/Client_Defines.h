@@ -19,6 +19,7 @@ namespace Client
 	enum class ELevelType : unsigned int
 	{
 		STATIC = 0,
+		TITLE,
 		LOADING,
 		LOGO,				/* 현재 임시 Test Level용 추후 Logo Scene으로 바뀔예정  */
 		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */

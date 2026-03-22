@@ -189,6 +189,8 @@ HRESULT CToolUI::Render()
 
 _bool CToolUI::Calc_HitEvent()
 {
+	return false;
+
 	if (m_isDisable)
 		return FALSE;
 

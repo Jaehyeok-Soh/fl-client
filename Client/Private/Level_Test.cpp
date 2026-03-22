@@ -191,10 +191,14 @@ void CLevel_Test::Update(const _float fTimeDelta)
 //		Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
 //		CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
 //	}
-//	if (KEY_BUTTON_DOWN(DIK_8))
-//	{
-//		m_pGameInstance->Broadcast<BOSS_GROGGY>();
-//	}
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		m_pGameInstance->Broadcast<MINIGAME_CIRCLE_ON>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_9))
+	{
+		m_pGameInstance->Broadcast<MINIGAME_CIRCLE_OFF>();
+	}
 }
 
 HRESULT CLevel_Test::Render()
