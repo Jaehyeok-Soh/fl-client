@@ -180,6 +180,7 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 	tEnvData.vSkyBoxTextureUVSpeed = tData.vSkyBoxTextureUVSpeed;	// UV Speed Setting
 	tEnvData.isChannelPacking = tData.isSkyBoxChannelPacking;		// Chaneel Packing Setting
 	tEnvData.iSkyBoxTextureType = tData.iSkyBoxTextureType;			//TextureType Setting
+	tEnvData.fPolarRadiusScale = tData.fPolarRadiusScale;
 
 	/* Env Data ¼¼ÆÃ */
 	ID3DX11EffectConstantBuffer* pCB = m_pMeshShader->Get_ConstantBuffer("CB_EnvData");
