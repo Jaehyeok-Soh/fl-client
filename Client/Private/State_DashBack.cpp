@@ -30,6 +30,8 @@ HRESULT CState_DashBack::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Set_RootMotion_Apply(true);
+
 	return S_OK;
 }
 
@@ -42,6 +44,8 @@ HRESULT CState_DashBack::End()
 {
 	if (FAILED(Super::End()))
 		return E_FAIL;
+
+	Set_RootMotion_Apply(false);
 
 	return S_OK;
 }

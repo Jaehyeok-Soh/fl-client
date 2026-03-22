@@ -162,12 +162,12 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     {
     case ENUM_TO_UINT(ELevelType::TEST):
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::NONE));
-        //pPlayerState->Set_SpecialDashOn(true);
+        pPlayerState->Set_SpecialDashOn(true);
         break;
 
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
         Set_FKeyEvent(0, true);
-        //pPlayerState->Set_SpecialDashOn(true);
+        pPlayerState->Set_SpecialDashOn(true);
 
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
@@ -341,6 +341,34 @@ void CPlayer::Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn)
         m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
         break;
     }
+}
+
+void CPlayer::SetWepaponOn_SetState(_uint iWeaponType, _uint iIdx, _bool bOn, _uint iState)
+{
+    switch (iWeaponType)
+    {
+    case ENUM_TO_UINT(EWEAPON::MELEE):
+        if (iIdx >= ENUM_TO_UINT(MELEE::END))
+            return;
+        m_arrMeleeInfo[size_t(iIdx)].bHave = bOn;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::RANGE):
+        if (iIdx >= ENUM_TO_UINT(RANGE::END))
+            return;
+
+        m_arrRangeInfo[size_t(iIdx)].bHave = bOn;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::SKILL):
+        if (iIdx >= ENUM_TO_UINT(SKILL::END))
+            return;
+
+        m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
+        break;
+    }
+
+    Change_WeaponState(iWeaponType, iState);
 }
 
 _bool CPlayer::Change_MainWeapon(_uint iWeaponType, _uint iIdx)
@@ -1159,7 +1187,7 @@ HRESULT CPlayer::Ready_BaseStates()
         CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags      = 0;
         desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Jump_FallLoop") };
-        desc.bBlend         = true;
+        desc.bBlend         = false;
         desc.bLoop          = true;
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
@@ -1780,9 +1808,9 @@ HRESULT CPlayer::Ready_PartCollider()
         tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_TriggerCall);
         tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
 
-        // mini map에게 감지할 part ui
-        if (FAILED(Add_Part(Part::DETECTCOLLIDER_UI, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
-            return E_FAIL;
+        //// mini map에게 감지할 part ui
+        //if (FAILED(Add_Part(Part::DETECTCOLLIDER_UI, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+        //    return E_FAIL;
 
         {
             tPColliDesc.eShape = EPhysicsShape::SPHERE;
@@ -1836,8 +1864,8 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
         tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_Detect);
         tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
 
-        if (FAILED(Add_Part(Part::DETECTCOLLIDER_INTERACT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
-            return E_FAIL;
+        //if (FAILED(Add_Part(Part::DETECTCOLLIDER_INTERACT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+        //    return E_FAIL;
     }
 
     return S_OK;

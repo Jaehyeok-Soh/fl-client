@@ -36,6 +36,8 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 	Set_ApplyGravity(false);
 	Set_YLerp(false);
 
+	Set_RootMotion_Apply(true);
+
 	return S_OK;
 }
 
@@ -53,7 +55,7 @@ void CState_Jump::Update(const _float fTimeDelta)
 	{
 		Set_ApplyGravity(true);
 
-		//Set_RootMotion_Apply(false);
+		Set_RootMotion_Apply(false);
 	}
 
 	Super::Update(fTimeDelta);
@@ -66,7 +68,7 @@ HRESULT CState_Jump::End()
 
 	Set_ApplyGravity(true);
 
-	Set_RootMotion_Apply(true);
+	//Set_RootMotion_Apply(true);
 
 	Set_YLerp(true);
 

@@ -53,24 +53,36 @@ HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
     vLookDir.Normalize();
     vRightDir.Normalize();
 
-    m_vDir = vRightDir * 2.f + vLookDir;
+    m_vDir = vRightDir * 1.f + vLookDir;
 
     SetCCTInputDirection(m_vDir);
-    //Vec3 vDir = vRightDir * 2.f + vLookDir; // 30도zd
 
-    //SetCCTImpuls(vDir * 30.f);
+    m_fDeSpeed = 0.f;
 
     return S_OK;
 }
 
 void CState_SpecialDash::Update(const _float fTimeDelta)
 {
+    if (m_fStateElapsed >= 23.f / ANIMTIC)
+    {
+        if (Check_Collis(fTimeDelta))
+            return;
+
+        if (Check_Keys(fTimeDelta))
+            return;
+
+        Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
+        return;
+    }
+
     CTransform* pPlayerTransform = Get_OwnerObject()->Get_Component<CTransform>();
     CPhysicsCCT* pPlayerCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
-    //Move(m_vDir * fTimeDelta * 10.f);
+    pPlayerCCT->AddFixedMove(m_vDir * fTimeDelta * (8.f - m_fDeSpeed));
+    pPlayerTransform->Look_At_XZ(m_vPivot);
 
-    //pPlayerTransform->Look_At_XZ(m_vPivot);
+    m_fDeSpeed += 7.f * fTimeDelta;
 
     Super::Update(fTimeDelta);
 }
@@ -80,7 +92,7 @@ HRESULT CState_SpecialDash::End()
     if (FAILED(Super::End()))
         return E_FAIL;
 
-    Set_RootMotion_Apply(true);
+    //Set_RootMotion_Apply(true);
 
     //CPhysicsCCT* pPlayerCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
     //pPlayerCCT->SetZeroHorizontalVelocity();
