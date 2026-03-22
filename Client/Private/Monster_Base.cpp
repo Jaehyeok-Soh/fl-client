@@ -656,7 +656,25 @@ void CMonster_Base::OnHit_Dual(const HIT_DESC& hitDesc)
 
 	// effect Ãâ·Â
 	{
+		EFFECT_SPAWN_DESC Desc = {};
+		Matrix WorldMatrix = Get_Component<CTransform>()->Get_WorldMatrix();
 
+		Vec3 vScale, vPos;
+		Quat vQuat;
+		WorldMatrix.Decompose(vScale, vQuat, vPos);
+
+		Desc.matWorld = Matrix::CreateFromQuaternion(vQuat) * Matrix::CreateTranslation(hitDesc.vHitPoint);
+		Desc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+
+		if (bCritical)
+		{
+			m_pGameInstance->Request_Effect("VFX_Critical_Hit", Desc);
+		}
+
+		else
+		{
+			m_pGameInstance->Request_Effect("VFX_Blade_Hit", Desc);
+		}
 	}
 
 	{

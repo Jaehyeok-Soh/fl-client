@@ -1081,7 +1081,7 @@
                     "iAnimIndex": 96,
                     "iBoneFlag": 4,
                     "iBoneIndex": -1,
-                    "iChildBoneIndex": 8,
+                    "iChildBoneIndex": 6,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_PlayerMoon_Machinegun01_Shooting_Loop",
