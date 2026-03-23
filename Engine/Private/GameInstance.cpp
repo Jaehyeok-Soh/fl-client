@@ -647,11 +647,25 @@ HRESULT CGameInstance::End_CameraCinematic()
 	return m_pCamera_Manager->End_CameraCinematic();
 }
 
-HRESULT CGameInstance::Camera_Shaking(const CAM_SHAKING_DATA& tData)
+HRESULT CGameInstance::Request_MainCameraShake(const CAMERA_SHAKE_DESC& desc)
 {
-	return m_pCamera_Manager->Camera_Shaking(tData);
+	return m_pCamera_Manager->Play_MainCameraShake(desc);
 }
 
+HRESULT CGameInstance::Request_MainCameraFOV(const CAMERA_FOV_DESC& desc)
+{
+	return m_pCamera_Manager->Play_MainCameraFOV(desc);
+}
+
+HRESULT CGameInstance::Request_MainCameraPositionOffset(const CAMERA_POSITION_OFFSET_DESC& desc)
+{
+	return m_pCamera_Manager->Play_MainCameraPositionOffset(desc);
+}
+
+HRESULT CGameInstance::Request_MainCameraRotationOffset(const CAMERA_ROTATION_OFFSET_DESC& desc)
+{
+	return m_pCamera_Manager->Play_MainCameraRotationOffset(desc);
+}
 #pragma endregion
 
 #pragma region SOUND_MANAGER

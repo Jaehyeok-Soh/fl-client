@@ -57,16 +57,6 @@ void CState_Charge::Update(const _float fTimeDelta)
 		m_bLookMonsterYet = false;
 	}
 
-	// camera shaking
-	if (m_bShakeActived == false && m_fStateElapsed >= (1.f / 1.2f))
-	{
-		CAM_SHAKING_DATA data{};
-		data.fTime = 0.2f;
-		data.fPower = 0.3f;
-		CGameInstance::GetInstance()->Camera_Shaking(data);
-		m_bShakeActived = true;
-	}
-
 	// weapon 별 업데이트
 	Update_byWeapon(fTimeDelta);
 

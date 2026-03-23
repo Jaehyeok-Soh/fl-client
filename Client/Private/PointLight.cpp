@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "PointLight.h"
 #include "Light.h"
+#include "Collider.h"
+#include "Model.h"
+#include "Bounding_Sphere.h"
 #include "GameInstance.h"
 
 CPointLight::CPointLight(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -45,7 +48,6 @@ HRESULT CPointLight::Initialize(void* pArg)
 
 	m_isFlicker				= pDesc->isFlicker;
 	m_fBaseRange			= pDesc->tLightDesc.fRange;
-	m_isRenderModel			= pDesc->isRenderModel;
 
 	if (m_isFlicker)
 	{
@@ -56,8 +58,8 @@ HRESULT CPointLight::Initialize(void* pArg)
 
 	if (FAILED(Ready_Light(pDesc->tLightDesc)))
 		return E_FAIL;
-
-	if (FAILED(Ready_Model(pDesc->wstrModelName)))
+	
+	if (FAILED(Ready_Collider()))
 		return E_FAIL;
 
 
@@ -72,12 +74,26 @@ HRESULT CPointLight::Ready_Light(const LIGHT_DESC& tLightDesc)
 	return S_OK;
 }
 
-HRESULT CPointLight::Ready_Model(const wstring& wstrModelName)
+
+
+HRESULT CPointLight::Ready_Collider()
 {
-	if (!m_isRenderModel) return S_OK;
+	/* Collider Setting 전에 SetScale 1 1 1 로 설정 */
+	CTransform* pTs = Get_Component<CTransform>();
+	if (pTs == nullptr) return E_FAIL;
+	pTs->Set_Scale(1.f,1.f,1.f);
 
 
-	//const wstring& wstrModelFullTag = g_wszModelPrototypeTag + wstrModelName;
+	CBounding_Sphere::BOUNDING_SPHERE_DESC tBoundingSphere_Desc{};
+	tBoundingSphere_Desc.fRadius = m_fBaseRange;
+	tBoundingSphere_Desc.vCenter = { 0.f,0.f,0.f };
+
+	CCollider::COLLIDER_DESC tColliderDesc{};
+	tColliderDesc.pBoundingDesc = &tBoundingSphere_Desc;
+
+	if (FAILED(Add_Component<CCollider>(ENUM_TO_UINT(ELevelType::STATIC), g_wszCollider_Sphere_PrototypeTag, &tColliderDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -100,18 +116,30 @@ void CPointLight::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 	m_fAccDT += fTimeDelta;
+
+	_float fFinalRange = m_fBaseRange;
 	if (m_isFlicker)
 	{
 		float fSinValue = sinf(m_fAccDT * m_fFlickerSpeed);	/* -1 ~ 1 사이 값 */
 		fSinValue = (fSinValue + 1.f) * 0.5f;			/* 0.f ~ 1.f 사이값으로 변환 */
 		float fFinalLightRangeRatio = m_fFlickerMin + fSinValue * (1.f - m_fFlickerMin);
-		m_pLight->Setup_Range(m_fBaseRange * fFinalLightRangeRatio);
+		fFinalRange = m_fBaseRange * fFinalLightRangeRatio;
+		m_pLight->Setup_Range(fFinalRange);
 	}
 
 
 	/* 깜빡거리는 애들이라면 프레임단위로 계산해준다 */
-	Vec3 vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	CTransform* pTs = Get_Component<CTransform>();
+	Vec3 vPos = pTs->Get_Info(TRANSFORM_INFO_STATE::POS);
 	m_pLight->Setup_Position(Vec4(vPos.x, vPos.y, vPos.z, 1.f));
+
+
+
+	/* Collider Update */
+	CCollider* pCollider = Get_Component<CCollider>();
+	static_cast<CBounding_Sphere*>(pCollider->Get_Bounding())->Get_OriginalDesc()->Radius = fFinalRange * 1.25f;
+	pCollider->Update(pTs->Get_WorldMatrix());
+
 }
 
 void CPointLight::Update_Late(const _float fTimeDelta)
@@ -125,14 +153,33 @@ void CPointLight::Ready_Before_Render(const _float fTimeDelta)
 
 
 	/* 점조명이기에 매프레임 넣어준다 */
-	if(m_pLight)
-		m_pGameInstance->Push_Light(m_pLight);
+	EFrustrumTier eType =  m_pGameInstance->Classify_BySplitFrustrum(*static_cast<CBounding_Sphere*>(Get_Component<CCollider>()->Get_Bounding())->Get_Desc());
+
+	if (eType == EFrustrumTier::Near)
+	{
+		if (m_pLight)
+		{
+			m_pGameInstance->Push_Light(m_pLight);
+		}
+	}
+	else
+	{
+		int a = 0;
+	}
+
+#ifdef _DEBUG
+	CCollider* pCollider =  Get_Component<CCollider>();
+	if(pCollider)
+		m_pGameInstance->Push_DebugComponent(pCollider);
+#endif // _DEBUG
+
+
 }
 
 HRESULT CPointLight::Render()
 {
-	if (FAILED(Super::Render())) return E_FAIL;
-
+	if (FAILED(Super::Render()))
+		return E_FAIL;
 
 	return S_OK;
 }

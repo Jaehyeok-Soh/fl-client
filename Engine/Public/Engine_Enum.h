@@ -226,6 +226,7 @@ namespace Engine
 		Hitbox,
 		Trigger_Gimmik,
 		Sound,
+		CameraControl,
 		END
 	};
 	//===================
@@ -253,6 +254,7 @@ namespace Engine
 		CONTROLCONTEXT,
 		ACTIONSTATE,
 		CAMERA,
+		CAMERACONTROLLER,
 		SHADER,
 		BOUND,
 		STAT,
@@ -260,6 +262,7 @@ namespace Engine
 		GIMMIKCTRL,
 		RENDER_FX,
 		SOUNDHANDLER,
+		CAMERAEVENT_HANDLER,
 		//
 		PX_RIGIDBODY,
 		PX_COLLIDER,
@@ -590,6 +593,7 @@ namespace Engine
 			OVERLAP,
 			EFFECT,
 			SOUND,
+			CAMERACONTROL,
 			NONE,
 			END
 		};
@@ -909,5 +913,10 @@ namespace Engine
 	};
 
 #pragma endregion
+
+#pragma region
+
+
+
 }
 #endif // Engine_Enum_h__

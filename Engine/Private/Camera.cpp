@@ -15,7 +15,8 @@ CCamera::CCamera()
 CCamera::CCamera(const CCamera& rhs)
 	: Super(rhs)
 	, m_eProjectionType(rhs.m_eProjectionType)
-	, m_fFov(rhs.m_fFov)
+	, m_fRenderFov(rhs.m_fRenderFov)
+	, m_fBaseFov(rhs.m_fBaseFov)
 	, m_fViewWidth(rhs.m_fViewWidth)
 	, m_fViewHeight(rhs.m_fViewHeight)
 	, m_fAspectRatio(rhs.m_fAspectRatio)
@@ -41,35 +42,43 @@ HRESULT CCamera::Initialize(void* pArg)
 
 	CAMERA_DESC* pDesc = static_cast<CAMERA_DESC*>(pArg);
 	m_eProjectionType = pDesc->eProjectionType;
-	m_fFov = pDesc->fFov;
+	m_fRenderFov = m_fBaseFov = pDesc->fFov;
 	m_fViewWidth = pDesc->fViewWidth;
 	m_fViewHeight = pDesc->fViewHeight;
 	m_fAspectRatio = m_fViewWidth / m_fViewHeight;
 	m_fNear = pDesc->fNear;
 	m_fFar = pDesc->fFar;
 	
-	Update_Proj();
+	Update_Proj(m_fBaseFov);
 	return S_OK;
 }
 
 void CCamera::Update_View()
 {
-	CCameraMan* pCameraMan = static_cast<CCameraMan*>(Get_Owner());
-	CTransform* pOwnerTransform = pCameraMan->Get_Component<CTransform>();
+	CTransform* pOnwerTransform = Get_Owner()->Get_Component<CTransform>();
 
-	Matrix matView = Matrix::Identity;
+	CAMERA_POSE		tPose{};
+	tPose.vPos		= pOnwerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+	tPose.vRight	= pOnwerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+	tPose.vUp		= pOnwerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+	tPose.vLook		= pOnwerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	tPose.fFovRad	= m_fBaseFov;
 
-	if (m_eProjectionType == EProjectionType::PERSPECTIVE)
-	{
-		matView = ::XMMatrixLookToLH(pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS) + pCameraMan->Get_CameraShakingOffsetPos(),
-			pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK),
-			pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP));
-	}
-	
-	m_matView = matView;
+	Update_View(tPose);
 }
 
-void CCamera::Update_Proj()
+void CCamera::Update_View(const CAMERA_POSE& pose)
+{
+	m_fRenderFov = pose.fFovRad;
+	Update_Proj(m_fRenderFov);
+
+	m_matView = ::XMMatrixLookToLH(
+		pose.vPos,
+		pose.vLook,
+		pose.vUp);
+}
+
+void CCamera::Update_Proj(_float fFov)
 {
 	m_fAspectRatio = m_fViewWidth / m_fViewHeight;
 
@@ -78,7 +87,7 @@ void CCamera::Update_Proj()
 	{
 	case Engine::EProjectionType::PERSPECTIVE:
 	{
-		matProjection = ::XMMatrixPerspectiveFovLH(m_fFov, m_fAspectRatio, m_fNear, m_fFar);
+		matProjection = ::XMMatrixPerspectiveFovLH(fFov, m_fAspectRatio, m_fNear, m_fFar);
 	} break;
 	case Engine::EProjectionType::ORTHOGRAPHIC:
 	{
