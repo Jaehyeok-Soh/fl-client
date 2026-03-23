@@ -5,6 +5,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -68,7 +69,7 @@ void CUINameplate_BG::Update_Late(const _float fTimeDelta)
 void CUINameplate_BG::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f)
+	if (m_pParentCanvasCache->Get_CommonParam_bool()[0])
 		m_fAlpha_Ratio = 0.f;
 	else
 		m_fAlpha_Ratio = 1.f;

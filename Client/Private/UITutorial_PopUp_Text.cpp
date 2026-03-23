@@ -199,6 +199,50 @@ void CUITutorial_PopUp_Text::Bind_Events()
 				}
 			})
 	);
+
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					if (!m_isFirstEntered)
+					{
+						EUITutorialPannelTypeID e = static_cast<EUITutorialPannelTypeID>(Desc.iParam0);
+						switch (e)
+						{
+						case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_1:
+							if (this->m_eTutorialTypeID == Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_7)
+							{
+								m_isTriggered = true;
+								this->Set_Visible();
+								this->Set_Active(true);
+							}
+							break;
+						case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_2:
+						{
+							m_isTriggered = true;
+							this->Set_Visible();
+							this->Set_Active(true);
+						}
+							break;
+						case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_3:
+							break;
+						case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_4:
+						{
+							m_isTriggered = true;
+							this->Set_Visible();
+							this->Set_Active(true);
+						}
+							break;
+						case Client::EUITutorialPannelTypeID::END:
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			})
+	);
 }
 
 void CUITutorial_PopUp_Text::Initialize_Visible_Event()

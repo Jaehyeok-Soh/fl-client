@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
+#include "UITutorial_Manager.h"
 #include "GameInstance.h"
 
 // fParam0 -> Prev 버튼		// Hover 이펙트 밝기 조절용으로 사용중 
@@ -272,6 +273,7 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 
 						UIEVENT_DESC Desc = {};
 						Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
+						Desc.iParam0 = static_cast<_uint>(m_eTutorialID);
 						CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
 					}
 					else
@@ -548,6 +550,7 @@ _bool CUITutorial_Pannel_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		{
 			m_isFin_Event = true;
 			m_isActive = true;
+			Set_Active(false);
 			Request_SetDead();
 			return true;
 		}
@@ -569,6 +572,7 @@ _bool CUITutorial_Pannel_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		{
 			m_isFin_Event = true;
 			m_isActive = true;
+			Set_Active(false);
 			Request_SetDead();
 			return true;
 		}
@@ -590,7 +594,7 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 	{
 		m_pParentCanvasCache = pDesc->pCanvas;
 		m_eTutorialID = pPannel->eTutorialTypeID;
-
+		
 		switch (m_eTutorialID)
 		{
 		case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_1:
@@ -662,6 +666,9 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 
 	m_isSpawned = true;
 	m_isDeadRequest = false;
+
+	CUITutorial_Manager::GetInstance()->PlayerState_All_Lock();
+
 	return S_OK;
 }
 
@@ -677,6 +684,7 @@ HRESULT CUITutorial_Pannel_Image::Despawn_FromPool()
 
 	this->Set_Active(false);
 	m_vecTextureTags.clear();
+	CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
 	return S_OK;
 }
 

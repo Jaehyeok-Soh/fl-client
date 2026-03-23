@@ -6,6 +6,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "MyStat.h"
 #include "Texture.h"
@@ -73,7 +74,7 @@ void CUIMonsterStat_Text::Ready_Before_Render(const _float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 	if (FAILED(Convert_Stat_To_Text()))
 		return;
-	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f)
+	if (m_pParentCanvasCache->Get_CommonParam_bool()[0])
 	{
 		m_vFontColor.w = 0.f;
 	}

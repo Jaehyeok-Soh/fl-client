@@ -696,6 +696,7 @@ namespace Client
 		UNLOCK_RATTAK,
 		UNLOCK_E,
 		UNLOCK_Q,
+		ALL,
 		END
 	};
 

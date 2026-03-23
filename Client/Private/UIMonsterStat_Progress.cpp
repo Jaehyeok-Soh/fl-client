@@ -5,6 +5,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "WorldUI_Component.h"	
 #include "MyStat.h"
 #include "Texture.h"
@@ -62,6 +63,8 @@ void CUIMonsterStat_Progress::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
+	m_fMonsterHPTimeAcc += fTimeDelta;
+
 	// CurRatio °»½Å
 	Convert_Stat_To_Ratio();
 }
@@ -69,15 +72,22 @@ void CUIMonsterStat_Progress::Update(const _float fTimeDelta)
 void CUIMonsterStat_Progress::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+
+	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f || m_fMonsterHPTimeAcc > 3.f)
+	{
+		m_fAlpha_Ratio = 0.f;
+		m_pParentCanvasCache->Get_CommonParam_bool_Ref()[0] = true;
+	}
+	else
+	{
+		m_fAlpha_Ratio = 1.f;
+		m_pParentCanvasCache->Get_CommonParam_bool_Ref()[0] = true;
+	}
 }
 
 void CUIMonsterStat_Progress::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f)
-		m_fAlpha_Ratio = 0.f;
-	else
-		m_fAlpha_Ratio = 1.f;
 }
 
 HRESULT CUIMonsterStat_Progress::Render()
@@ -117,12 +127,6 @@ HRESULT CUIMonsterStat_Progress::Attach_Personal_Info()
 	m_vOriginColor = m_vColorTint;
 	m_vOriginGradiantColor = m_vGradiantColorTint;
 
-	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
-		{
-			if (pDead == m_pTargetMoster)
-				this->Set_Invisible();
-		});
-
 	if (m_isSpawned)
 	{
 		Set_Visible();
@@ -135,6 +139,9 @@ void CUIMonsterStat_Progress::Initialize_Visible_Event()
 {
 	m_isActive		= false;
 	m_isFin_Event	= false;
+	
+	Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
+
 }
 
 void CUIMonsterStat_Progress::Initialize_InVisible_Event()
@@ -146,20 +153,22 @@ void CUIMonsterStat_Progress::Initialize_InVisible_Event()
 
 _bool CUIMonsterStat_Progress::Tick_Visible_Event(const _float fTimeDelta)
 {
-	m_fAlpha_Ratio += fTimeDelta * 2.f;
-	if (m_fAlpha_Ratio >= 1.f)
+	_bool isFade = Tick_Fade(fTimeDelta);
+	if (isFade)
 	{
-		m_fAlpha_Ratio = 1.f;
 		m_isFin_Event = true;
 		m_isActive = true;
 		return true;
 	}
+
 	return false;
 }
 
 _bool CUIMonsterStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	if (Tick_Fade(fTimeDelta))
+	_bool isFade = Tick_Fade(fTimeDelta);
+
+	if (isFade)
 	{
 		Request_SetDead();
 		m_isActive = false;
@@ -177,16 +186,12 @@ HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 	if (auto* pNamePlate= std::get_if<UI_NAMEPLATE_PREFAB_DATA>(&pDesc->Data))
 	{
-
 		auto* pComp = Get_Script_Component(L"WorldUIComponent");
 		if (nullptr == pComp)
 			return E_FAIL;
 
 		m_pWorldUIComp = static_cast<CWorldUI_Component*>(pComp);
 		if (nullptr == m_pWorldUIComp)
-			return E_FAIL;
-
-		if (FAILED(Super::Spawn_FromPool(pArg)))
 			return E_FAIL;
 
 		m_pWorldUIComp->Set_Target(pNamePlate->pTarget);
@@ -237,8 +242,15 @@ void CUIMonsterStat_Progress::Bind_Events()
 				}
 			})
 	);
-}
 
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
+			{
+				if (pDead == m_pTargetMoster)
+					this->Set_Invisible();
+			})
+	);
+}
 
 HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 {
@@ -248,12 +260,19 @@ HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 		m_fCurRatio = m_pTargetStat->Get_HealthRatio();
 		break;
 	case DTO::EUISubClassType::MONSTER_ARMOR:
-		m_fCurRatio = 0.f;// m_pTargetStat->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
+		m_fCurRatio = 0.f; // m_pTargetStat->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
 		break;
 	case DTO::EUISubClassType::END:
 	default:
 		return E_FAIL;
 	}
+	if (fabsf(m_fPreMonsterHPRatio - m_fCurRatio) > FLT_EPSILON)
+	{
+		m_fMonsterHPTimeAcc = 0.f;
+	}
+
+	m_fPreMonsterHPRatio = m_fCurRatio;
+
 	return S_OK;
 }
 

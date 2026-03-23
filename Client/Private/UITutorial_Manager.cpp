@@ -95,6 +95,46 @@ void CUITutorial_Manager::Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState
 	m_isChangeState = true;
 }
 
+void CUITutorial_Manager::PlayerState_All_Lock()
+{
+	auto* p = Get_PlayerCtrCtx();
+	if (nullptr == p)
+		return;
+
+	p->Set_PreKeyFlag();
+	p->Set_AllKeyFlag(false);
+}
+
+void CUITutorial_Manager::Return_Locked_PlayerState()
+{
+	auto* p = Get_PlayerCtrCtx();
+	if (nullptr == p)
+		return;
+
+	p->Set_AllKeyFlag(true);
+}
+
+CPlayerControlContext* CUITutorial_Manager::Get_PlayerCtrCtx()
+{
+	CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	if (nullptr == pResult)
+		return nullptr;
+
+	auto* pPlayer = dynamic_cast<CPlayer*>(pResult);
+	if (nullptr == pPlayer)
+		return nullptr;
+
+	auto* pControlContext = pPlayer->Get_Component<CControlContext>();
+	if (nullptr == pControlContext)
+		return nullptr;
+
+	auto* pPlayerControlContext = dynamic_cast<CPlayerControlContext*>(pControlContext);
+	if (nullptr == pPlayerControlContext)
+		return nullptr;
+
+	return pPlayerControlContext;
+}
+
 void CUITutorial_Manager::Free()
 {
 	Safe_Release(m_pGameInstance);

@@ -38,6 +38,12 @@ public:
 
 	void Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState eState);
 
+	void PlayerState_All_Lock();
+	void Return_Locked_PlayerState();
+
+private:
+	class CPlayerControlContext* Get_PlayerCtrCtx();
+
 public:
 	_bool Get_isFirstTutorial() const { return m_isFirstTutorial; }
 
