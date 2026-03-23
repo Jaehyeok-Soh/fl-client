@@ -478,7 +478,7 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     tEngineDesc.matWorld = matTargetWorld;
     tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
     tEngineDesc.pTargetBoneMatrix = ((script.bFollowBone || script.bUseChildBone) ? &BoneMatrix : nullptr);
-    tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
+    tEngineDesc.pTransformMatrix = (script.bUseChildBone) ? &m_pChildMatrix : &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
 
     if (script.iChildBoneIndex != -1 && script.bUseChildBone)
@@ -515,7 +515,7 @@ void CEffectHandler::Spawn_RequestFromEffectManager(
     tEngineDesc.matWorld = matTargetWorld;
     tEngineDesc.iSimulationType = (_bool)script.iSimulationType;
     tEngineDesc.pTargetBoneMatrix = ((script.bFollowBone || script.bUseChildBone) ? &BoneMatrix : nullptr);
-    tEngineDesc.pTransformMatrix = &m_pOwnerMatrix;
+    tEngineDesc.pTransformMatrix = (script.bUseChildBone) ?  &m_pChildMatrix : &m_pOwnerMatrix;
     tEngineDesc.iBoneFlag = script.iBoneFlag;
 
     if (script.iChildBoneIndex != -1 && script.bUseChildBone)
@@ -562,6 +562,8 @@ void CEffectHandler::BoneMatrix_CalCulator(const DTO::EFFECTEVENT& script, OUT c
             if (pWeapon == nullptr)
                 return;
 
+            m_pChildMatrix = &pWeapon->Get_CombinedMatrix();
+
             CModel* pWeaponModel = pWeapon->Get_Component<CModel>();
             if (pWeaponModel == nullptr)
                 return;
@@ -591,33 +593,33 @@ SimpleMath::Matrix CEffectHandler::Offset_CalCulator(const DTO::EFFECTEVENT& scr
 
     ResultMatrix = (matOffset * matRotation);
 
-    if (script.iChildBoneIndex != -1 && script.bUseChildBone)
-    {
-        if (Get_Owner() == nullptr)
-            return ResultMatrix;
+    //if (script.iChildBoneIndex != -1 && script.bUseChildBone)
+    //{
+    //    if (Get_Owner() == nullptr)
+    //        return ResultMatrix;
 
-        if (dynamic_cast<CContainerObject*>(Get_Owner()))
-        {
-            // 플레이어 총 무기
-            if (script.ChildPartNumber == -1) return ResultMatrix;
+    //    if (dynamic_cast<CContainerObject*>(Get_Owner()))
+    //    {
+    //        // 플레이어 총 무기
+    //        if (script.ChildPartNumber == -1) return ResultMatrix;
 
-            auto pWeapon = static_cast<CContainerObject*>(Get_Owner())->Get_Part<CPartObject>(script.ChildPartNumber);
-            if (pWeapon == nullptr)
-                return ResultMatrix;
+    //        auto pWeapon = static_cast<CContainerObject*>(Get_Owner())->Get_Part<CPartObject>(script.ChildPartNumber);
+    //        if (pWeapon == nullptr)
+    //            return ResultMatrix;
 
-            Matrix WeaponCombinedMatrix = pWeapon->Get_CombinedMatrix();
-            Matrix matCustom2 = XMMatrixIdentity();
+    //        Matrix WeaponCombinedMatrix = pWeapon->Get_CombinedMatrix();
+    //        Matrix matCustom2 = XMMatrixIdentity();
 
-            Vector3 vBoneScale2;
-            Quat vBoneQuat2;
-            Vector3 vBonePos2;
+    //        Vector3 vBoneScale2;
+    //        Quat vBoneQuat2;
+    //        Vector3 vBonePos2;
 
-            WeaponCombinedMatrix.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
-            matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
-            matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
-            (ResultMatrix) *= matCustom2;
-        }
-    }
+    //        WeaponCombinedMatrix.Decompose(vBoneScale2, vBoneQuat2, vBonePos2);
+    //        matCustom2 *= Matrix::CreateFromQuaternion(vBoneQuat2);
+    //        matCustom2.Translation(Vec3(vBonePos2.x, vBonePos2.y, vBonePos2.z));
+    //        (ResultMatrix) *= matCustom2;
+    //    }
+    //}
 
     return ResultMatrix;
 }

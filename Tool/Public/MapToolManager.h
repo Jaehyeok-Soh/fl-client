@@ -258,6 +258,10 @@ public:
 	HRESULT						Ready_CinematicCameraSequence_EventManifest();
 public:
 	void						Select_MapTexture();
+
+public:
+	void						Add_SkyBoxModelName(const vector<string>& vecNames, _bool isClear = false);
+	void						Add_SkyBoxModelName(const string& strName, _bool isClear = false);
 private:
 	/* Camera Cinematic Sequence 관련 데이터를 복사로 받아와서 작업하고 저장하는용도 */	
 	CinematicCameraSequence*	m_pCamCinematicSequence{nullptr};
@@ -350,7 +354,7 @@ private:
 	wstring						m_selectedCategoryName{L""};
 
 
-
+	vector<string>				m_vecSkyBoxModelNames{};
 
 	vector<string>				m_vecEnvEffectTags{};
 

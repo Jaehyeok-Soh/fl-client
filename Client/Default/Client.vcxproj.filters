@@ -835,6 +835,21 @@
     <Filter Include="07. System\04. Binder">
       <UniqueIdentifier>{bf9e1beb-a2d5-45fc-9aad-6e498db509b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\LevelData">
+      <UniqueIdentifier>{5274bfe2-5640-4c74-93bb-8270f1dd7ba7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\SpecialDash">
+      <UniqueIdentifier>{91575362-f826-4373-b82f-f1ba4d35e7b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\InteractiveObject\01. ChangeLevel">
+      <UniqueIdentifier>{27ee5101-9dbc-418f-8d8d-f2b3e978a544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Tavern">
+      <UniqueIdentifier>{5d36a635-b601-455f-ae50-73e086388a50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\Tavern">
+      <UniqueIdentifier>{941ffcde-7e16-44aa-bbe0-d42bee691b50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1551,6 +1566,18 @@
     <ClInclude Include="..\public\SoundEventBinder.h">
       <Filter>07. System\04. Binder</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_SpecialDash.h">
+      <Filter>06. FSM\Player\SpecialDash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ChangeLevelObject.h">
+      <Filter>03. GameObject\InteractiveObject\01. ChangeLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Tavern.h">
+      <Filter>03. GameObject\ContainerObjects\NPC\Tavern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Tavern_Body.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\Tavern</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\CameraEventBinder.h">
       <Filter>07. System\04. Binder</Filter>
     </ClInclude>
@@ -2259,6 +2286,18 @@
     </ClCompile>
     <ClCompile Include="..\private\SoundEventBinder.cpp">
       <Filter>07. System\04. Binder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_SpecialDash.cpp">
+      <Filter>06. FSM\Player\SpecialDash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ChangeLevelObject.cpp">
+      <Filter>03. GameObject\InteractiveObject\01. ChangeLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Tavern.cpp">
+      <Filter>03. GameObject\ContainerObjects\NPC\Tavern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Tavern_Body.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\Tavern</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CameraEventBinder.cpp">
       <Filter>07. System\04. Binder</Filter>

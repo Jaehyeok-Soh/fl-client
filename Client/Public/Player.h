@@ -122,6 +122,7 @@ public:
 		,HITSTRONG
 
 		,CONDEMN
+		,SPECIALDASH
 
 		,END
 	};

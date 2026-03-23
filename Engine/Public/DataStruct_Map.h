@@ -99,6 +99,7 @@ inline std::string MakeNPCType_ToString(OBJECT_ENUM_TAG::Enum eTag)
 	case Engine::OBJECT_ENUM_TAG::NPC_DEFAULT:	return "NPC_Default";
 	case Engine::OBJECT_ENUM_TAG::NPC_PAN:		return "NPC_Pan";
 	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:	return "NPC_Berenica";
+	case Engine::OBJECT_ENUM_TAG::NPC_TAVERN:	return "NPC_Tavern";
 	default:									return "Unknown";
 	}
 }
@@ -108,6 +109,7 @@ inline OBJECT_ENUM_TAG::Enum MakeNPCType_ToEnum(const std::string strType)
 	if (strType == "NPC_Default")				return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
 	if (strType == "NPC_Pan")					return Engine::OBJECT_ENUM_TAG::NPC_PAN;
 	if (strType == "NPC_Berenica")				return Engine::OBJECT_ENUM_TAG::NPC_BERENICA;
+	if (strType == "NPC_Tavern")				return Engine::OBJECT_ENUM_TAG::NPC_TAVERN;
 
 	return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
 }
@@ -962,22 +964,31 @@ public:
 
 	/* ---------------------------------------------------------- */
 
+
+	/* OBJECT_ENUM_TAG::OBJECT_INTERACT_CHANGELEVEL 관련 변수*/
+	std::string strChangeLevelTypeName{ "NONE" };
+
+
+	/* ---------------------------------------------------------- */
+
 public:
 	BATCH_INTERACTIVEOBJECT_DESC()
 		:CLIENT_MAKEPATH_DESC_BASE()
 		, vecQuestDesc{}
-		, eBatchInteractiveObejctType{OBJECT_ENUM_TAG::OBJECT_INTERACT_DEFAULT}
+		, eBatchInteractiveObejctType{ OBJECT_ENUM_TAG::OBJECT_INTERACT_DEFAULT }
 		, strWeaponType{}
 		, isTutorialEvent{ false }
+		, strChangeLevelTypeName{ "NONE" }
 	{
 
 	}
 	BATCH_INTERACTIVEOBJECT_DESC(const BATCH_INTERACTIVEOBJECT_DESC& rhs)
 		: CLIENT_MAKEPATH_DESC_BASE(rhs)
-		, vecQuestDesc{ rhs.vecQuestDesc}
+		, vecQuestDesc{ rhs.vecQuestDesc }
 		, eBatchInteractiveObejctType{ rhs.eBatchInteractiveObejctType }
-		, strWeaponType{rhs.strWeaponType}
-		, isTutorialEvent{rhs.isTutorialEvent}
+		, strWeaponType{ rhs.strWeaponType }
+		, isTutorialEvent{ rhs.isTutorialEvent }
+		, strChangeLevelTypeName{ rhs.strChangeLevelTypeName }
 	{
 
 	}
@@ -1224,19 +1235,39 @@ typedef struct TMap_MapObjectData
 typedef struct TLevelData
 {
 	string								strTag{};
-	string								strTextureSplatingInfoName{"None"};
-	string								strLevelTypeName{"STATIC"};
+	string								strTextureSplatingInfoName{ "None" };
+	string								strLevelTypeName{ "STATIC" };
 
 
 	/* 환경 데이터 */
+
+	/* 환경 Color */
+	Vec4								vEnvColor{ 1.f,1.f,1.f,1.f };				// 16Byte 환경 Color
 
 	/* Wind */
 	Vec3								vWindDirection{ 1.f,0.f, 1.f }; //바람이 부는 방향
 	_float								fWindPower{ 1.f }; //바람이 부는 새기
 
+	/* SkyBox */
+
+	Vec4								vSkyColor{ 0.3f,0.7f,0.8f,1.f };
+	Vec4								vCloudBaseColor{ 0.8f,0.8f,0.8f,1.f };
+	Vec4								vCloudHighlight{ 1.f,1.f,1.f,1.f };
+
+	Vec3								vSkyBoxScale{1.f,1.f,1.f};
+	Vec3								vSkyBoxPositionOffset{0.f,0.f,0.f};
+	Vec3								vSkyBoxPitchYawRoll{0.f,0.f,0.f};
+	string								strSkyBoxModelName{ "None" };
+	string								strSKyBoxTextureName{ "None" };
+	Vec2								vSkyBoxTextureUVSpeed{1.f,1.f};
+	_int								iSkyBoxTextureType{ 0 };					// 4Byte 텍스처가 원형용텍스처인지 , 사각형용 텍스처인지
+	_bool								isSkyBoxChannelPacking{ false };			// 4Byte 채널 패킹을 사용하는지 않나는지
+	_float								fPolarRadiusScale{ 1.f };                   // 4Byte 여백 조절용 , 기본값 1.0
+
+
 	/* Map Min Max Box */
-	Vec3								vMapMinMaxBox_Center{0.f,0.f,0.f};
-	Vec3								vMapMinMaxBox_extents{1.f,1.f,1.f};
+	Vec3								vMapMinMaxBox_Center{ 0.f,0.f,0.f };
+	Vec3								vMapMinMaxBox_extents{ 1.f,1.f,1.f };
 
 	/*-------*/
 

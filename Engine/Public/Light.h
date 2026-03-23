@@ -22,8 +22,7 @@ public:
 	void Setup_Specular(const Vec4& vSpecular) { m_tLightDesc.vSpecular = vSpecular; }
 private:
 	LIGHT_TYPE m_eType = { LIGHT_TYPE::END };
-	SHADER_LIGHTDESC				m_tLightDesc = {};
-
+	SHADER_LIGHTDESC				m_tLightDesc{};
 public:
 	static CLight* Create(const LIGHT_DESC& LightDesc);
 	virtual void Free() override;

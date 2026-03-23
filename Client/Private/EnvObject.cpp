@@ -65,7 +65,16 @@ HRESULT CEnvObject::Ready_Effect(const vector<ENV_EFFECT_INFO>& vecEnvEffectInfo
 		Matrix EffectLocalMatrix = Matrix::CreateScale(Info.tDesc.VFX_Scale) * Matrix::CreateFromYawPitchRoll(Info.tDesc.VFX_Rotation.y, Info.tDesc.VFX_Rotation.x, Info.tDesc.VFX_Rotation.z)
 								* Matrix::CreateTranslation(Info.tDesc.VFX_Target_Position);;
 
-		tEnvDesc.matWorld = EffectLocalMatrix * pTs->Get_WorldMatrix();
+
+		if (Info.tDesc.iSimulationType == (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_LOCAL)
+		{
+			tEnvDesc.matWorld = EffectLocalMatrix;
+		}
+
+		else
+		{
+			tEnvDesc.matWorld = EffectLocalMatrix * pTs->Get_WorldMatrix();
+		}
 
 		pEffect->Enable_VFX(&tEnvDesc);
 		m_vecEffect.push_back(pEffect);
