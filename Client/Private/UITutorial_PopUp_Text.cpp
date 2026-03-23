@@ -14,6 +14,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "GameInstance.h"
+#include "UITutorial_Manager.h"
 #include <UI_Manager.h>
 
 #define POPUP_3 0
@@ -169,6 +170,14 @@ void CUITutorial_PopUp_Text::Bind_Events()
 			{
 				if ((this->m_eTutorialTypeID) == ID)
 				{
+					if ((this->m_eTutorialTypeID) == EUITutorialPopUpTypeID::TUTORIAL_POPUP_1)
+					{
+						if (CUITutorial_Manager::GetInstance()->Get_isFirstTutorial())
+						{
+							return;
+						}
+
+					}
 					if (!m_isFirstEntered)
 					{
 						this->m_isTriggered = true;

@@ -38,12 +38,19 @@ public:
 
 	void Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState eState);
 
+public:
+	_bool Get_isFirstTutorial() const { return m_isFirstTutorial; }
+
+	void Set_isFirstTutorial(_bool is) { m_isFirstTutorial = is; }
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	CMulticastDelegate<void(const UI_TUTORIAL_EVENT_DESC&)> m_vTutorialEvents = {};
 
 	EUITutorialTypeToPlayerState m_eTutorialToPlayerState = { EUITutorialTypeToPlayerState ::END};
 	_bool m_isChangeState = { false };
+
+	_bool m_isFirstTutorial = { false };
 
 public:
 	virtual void Free()override;

@@ -64,7 +64,6 @@ void CUIMonsterStat_Progress::Update(const _float fTimeDelta)
 
 	// CurRatio °»½Å
 	Convert_Stat_To_Ratio();
-
 }
 
 void CUIMonsterStat_Progress::Update_Late(const _float fTimeDelta)
@@ -249,7 +248,7 @@ HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 		m_fCurRatio = m_pTargetStat->Get_HealthRatio();
 		break;
 	case DTO::EUISubClassType::MONSTER_ARMOR:
-		m_fCurRatio = m_pTargetStat->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
+		m_fCurRatio = 0.f;// m_pTargetStat->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
 		break;
 	case DTO::EUISubClassType::END:
 	default:

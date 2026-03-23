@@ -205,6 +205,15 @@ void CUITutorial_PopUp_Image::Bind_Events()
 
 				if ((this->m_eTutorialTypeID) == ID)
 				{
+					if ((this->m_eTutorialTypeID) == EUITutorialPopUpTypeID::TUTORIAL_POPUP_1)
+					{
+						if (CUITutorial_Manager::GetInstance()->Get_isFirstTutorial())
+						{
+							return;
+						}
+			
+					}
+
 					if (!m_isFirstEntered)
 					{
 						m_isTriggered = true;
@@ -285,7 +294,10 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_1:
 	{
 		if (m_pPlayer->Get_CurState() == CPlayer::State::JUMP)
+		{
 			is = true;
+			CUITutorial_Manager::GetInstance()->Set_isFirstTutorial(true);
+		}
 	}
 	break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_2:

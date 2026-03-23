@@ -6,6 +6,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "IInteractable.h"
 #include "WorldUI_Component.h"
 #include "MyStat.h"
@@ -18,6 +19,7 @@
 #include <UI_Manager.h>
 
 #define TEXT_SPEED 0.2f
+
 
 CUIConversation_Text::CUIConversation_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIText(pDevice, pDeviceContext)
@@ -118,7 +120,7 @@ HRESULT CUIConversation_Text::Attach_Personal_Info()
 	case DTO::EUITextSubClassType::CONVERSATION_TEXT:
 		break;
 	case DTO::EUITextSubClassType::CONVERSATION_CURRENT_TEXT:
-		m_iProgressConversation = 2;
+		m_iProgressConversation = 1;
 		break;
 	}
 	return S_OK;
@@ -211,6 +213,14 @@ void CUIConversation_Text::Tick_By_Type(const _float fTimeDelta)
 	if (nullptr == pDialogue)
 		return;
 
+	if (m_pParentCanvasCache->Get_CommonParam_bool()[0] && m_pParentCanvasCache->Get_CommonParam_bool()[1])
+	{
+		m_pGameInstance->Broadcast<DIALOGUE_NEXT>();
+
+		m_pParentCanvasCache->Get_CommonParam_bool_Ref()[0] = false;
+		m_pParentCanvasCache->Get_CommonParam_bool_Ref()[1] = false;
+	}
+
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::CONVERSATION_NAME:
@@ -240,6 +250,8 @@ void CUIConversation_Text::Tick_For_ConversationText(const _float fTimeDelta, au
 		}
 		else
 		{
+			m_pParentCanvasCache->Get_CommonParam_bool_Ref()[0] = true;
+
 			m_isFinCurrentConversation = false;
 			m_fConversation_TimeAcc = 0.f;
 			m_iProgressConversation = 0;
@@ -278,10 +290,10 @@ void CUIConversation_Text::Tick_For_ConversationCurrentText(const _float fTimeDe
 		}
 		else
 		{
-			m_pGameInstance->Broadcast<DIALOGUE_NEXT>();
+			m_pParentCanvasCache->Get_CommonParam_bool_Ref()[1] = true;
 			m_isFinCurrentConversation = false;
 			m_fConversation_TimeAcc = 0.f;
-			m_iProgressConversation = 2;
+			m_iProgressConversation = 1;
 			return;
 		}
 	}
