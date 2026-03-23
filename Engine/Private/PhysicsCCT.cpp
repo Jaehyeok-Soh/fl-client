@@ -156,6 +156,9 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 		}
 	}
 
+	if (m_CollisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN))
+		m_tMoveState.vVelocity.y = 0.f;
+
 	m_CollisionFlags = Move((m_tMoveState.vVelocity * fTimeDelta) + m_tMoveState.vFixedMove, 0.001f, fTimeDelta);
 
 	m_tMoveState.ReadyNext();
@@ -217,10 +220,7 @@ void CPhysicsCCT::ApplyGravity(const _float fTimeDelta)
 	if (m_tMoveState.bGravity == false)
 		return;
 
-	if (m_CollisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN))
-		m_tMoveState.vAccelation.y += (0.f + m_fGravityOffset);
-	else
-		m_tMoveState.vAccelation.y += (m_tMoveState.fGravity + m_fGravityOffset);
+	m_tMoveState.vAccelation.y += (m_tMoveState.fGravity + m_fGravityOffset);
 }
 
 void CPhysicsCCT::ApplyExternAcc(const _float fTimeDelta)
