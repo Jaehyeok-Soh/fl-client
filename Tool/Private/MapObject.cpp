@@ -658,11 +658,10 @@ HRESULT CMapObject::Ready_Env()
     for (auto& EffectInfo : pDesc->vecEnvEffectInfo)
     {
         Add_EnvEffect(EffectInfo.strTags);
+        EffectInfo.tDesc.iSimulationType = (_int)EFFECT_ENV_DESC::E_VFX_SIMULTYPE::VFX_LOCAL;
+        EffectInfo.tDesc.pTransformMatrix = &m_pWorldMatPtr;
         Set_EnvEffectDesc(static_cast<_uint>(m_vEnvEffectList.size()) - 1, EffectInfo.tDesc);
     }
-
-
-
 
     return S_OK;
 }

@@ -817,9 +817,6 @@
     <Filter Include="03. GameObject\InteractiveObject\InteractiveObject">
       <UniqueIdentifier>{bd4bef5b-ec3c-4951-95c1-f34e56dfd1b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\InteractiveObject\00. TutorialWeapon">
-      <UniqueIdentifier>{bec36d74-1c86-4e94-904a-727139f1fa48}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06. FSM\Player\Attack\Melee\Combo\Dual">
       <UniqueIdentifier>{51b954b9-bc45-4f1e-b817-f58a1434d26c}</UniqueIdentifier>
     </Filter>
@@ -852,6 +849,9 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\NPC\Body\Tavern">
       <UniqueIdentifier>{941ffcde-7e16-44aa-bbe0-d42bee691b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\InteractiveObject\00. WeaponPickUp">
+      <UniqueIdentifier>{bec36d74-1c86-4e94-904a-727139f1fa48}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1552,7 +1552,7 @@
       <Filter>03. GameObject\InteractiveObject\InteractiveObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\WeaponPickUp.h">
-      <Filter>03. GameObject\InteractiveObject\00. TutorialWeapon</Filter>
+      <Filter>03. GameObject\InteractiveObject\00. WeaponPickUp</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_DualCombo.h">
       <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
@@ -2270,7 +2270,7 @@
       <Filter>03. GameObject\InteractiveObject\InteractiveObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\WeaponPickUp.cpp">
-      <Filter>03. GameObject\InteractiveObject\00. TutorialWeapon</Filter>
+      <Filter>03. GameObject\InteractiveObject\00. WeaponPickUp</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_DualCombo.cpp">
       <Filter>06. FSM\Player\Attack\Melee\Combo\Dual</Filter>
