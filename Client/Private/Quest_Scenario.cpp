@@ -20,14 +20,12 @@ HRESULT CQuest_Scenario::Initialize(DTO::QUESTDESC desc)
 	return S_OK;
 }
 
-void CQuest_Scenario::Enter()
+void CQuest_Scenario::Enter(_int chapterId)
 {
-	m_iCurChapterId = m_iFirstChapterId;
-	m_pCurChapter = m_chapter[m_iFirstChapterId];
+	m_iCurChapterId = chapterId;
+	m_pCurChapter = m_chapter[chapterId];
 
 	m_tQuestDesc.eState = DTO::QUESTSTATE::IN_PROGRESS;
-
-	m_isComplete = false;
 
 	if (m_pCurChapter)
 		m_pCurChapter->Enter();
@@ -47,7 +45,9 @@ void CQuest_Scenario::Change_Chapter()
 
 	if (nextId < 0 || m_chapter.find(nextId) == m_chapter.end())
 	{
-		m_isComplete = true;
+		if (nextId == -1)
+			m_isComplete = true;
+
 		return;
 	}
 

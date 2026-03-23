@@ -173,6 +173,10 @@
     <ClInclude Include="..\Public\Bush.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\State_SpecialDash.h" />
+    <ClInclude Include="..\Public\ChangeLevelObject.h" />
+    <ClInclude Include="..\Public\NPC_Tavern.h" />
+    <ClInclude Include="..\Public\NPC_Tavern_Body.h" />
     <ClInclude Include="..\Public\WeaponPickUp.h" />
     <ClInclude Include="..\Public\InteractiveObject.h" />
     <ClInclude Include="..\Public\LightObject.h" />
@@ -419,6 +423,10 @@
     <ClCompile Include="..\Private\Bush.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
+    <ClCompile Include="..\Private\State_SpecialDash.cpp" />
+    <ClCompile Include="..\Private\ChangeLevelObject.cpp" />
+    <ClCompile Include="..\Private\NPC_Tavern.cpp" />
+    <ClCompile Include="..\Private\NPC_Tavern_Body.cpp" />
     <ClCompile Include="..\Private\WeaponPickUp.cpp" />
     <ClCompile Include="..\Private\InteractiveObject.cpp" />
     <ClCompile Include="..\Private\Monster_Fly.cpp" />

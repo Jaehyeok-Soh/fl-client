@@ -643,6 +643,39 @@ void CMainApplication::Register_Quest_Scenario()
 	s3.wstrExplain = L"";
 	s3.wstrDescription = L"개발자 설명란 입니다.";
 	qm->Register_Scenario(s3);
+
+	// 시나리오-s4
+	DTO::QUESTDESC s4;
+	s4.iId = 3;
+	s4.iPrevId = 2;
+	s4.iNextId = 4;
+	s4.wstrTitle = L"어두운 소문과 빈민촌";
+	s4.wstrSubTitle = L"";
+	s4.wstrExplain = L"";
+	s4.wstrDescription = L"개발자 설명란 입니다.";
+	qm->Register_Scenario(s4);
+
+	// 시나리오-s5
+	DTO::QUESTDESC s5;
+	s5.iId = 4;
+	s5.iPrevId = 3;
+	s5.iNextId = 5;
+	s5.wstrTitle = L"위험한 갱도";
+	s5.wstrSubTitle = L"";
+	s5.wstrExplain = L"";
+	s5.wstrDescription = L"개발자 설명란 입니다.";
+	qm->Register_Scenario(s5);
+
+	// 시나리오-s5
+	DTO::QUESTDESC s6;
+	s6.iId = 5;
+	s6.iPrevId = 4;
+	s6.iNextId = -1;
+	s6.wstrTitle = L"마지막 전투";
+	s6.wstrSubTitle = L"";
+	s6.wstrExplain = L"";
+	s6.wstrDescription = L"개발자 설명란 입니다.";
+	qm->Register_Scenario(s6);
 }
 
 void CMainApplication::Free()

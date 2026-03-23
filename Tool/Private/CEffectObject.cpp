@@ -920,16 +920,11 @@ HRESULT CEffectObject::Process_InitializeDesc(void* pArg)
 
 void CEffectObject::Overwrite_FromEnv(const EFFECT_ENV_DESC::ENV_PART_DESC& pDesc)
 {
-    SimpleMath::Matrix WorldMatrix = {};
-
-    Quaternion rotation = Quaternion::CreateFromYawPitchRoll(pDesc.VFX_Position_Parts);
-
-    WorldMatrix =
-        SimpleMath::Matrix::CreateScale(pDesc.VFX_Scale_Parts) *
-        SimpleMath::Matrix::CreateFromQuaternion(rotation) *
-        SimpleMath::Matrix::CreateTranslation(pDesc.VFX_Position_Parts);
-
-    m_pTransform->Set_WorldMatrix(WorldMatrix);
+    m_tEffectDesc.Data._bUseStartRotation = true;
+    m_tEffectDesc.Data._Effect_StartRotation = pDesc.VFX_Rotation_Parts;
+    m_tEffectDesc.Data._Effect_StartScale = pDesc.VFX_Scale_Parts;
+   
+    m_pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, pDesc.VFX_Position_Parts);
 
     CVIBuffer_Particle::PARTICLE_ORIGIN_DESC ParticleDesc = m_pParticleBuffer->Get_ParticleDesc();
     ParticleDesc.fDuration = pDesc.VFX_ParticleDuration_Parts;
@@ -1163,13 +1158,13 @@ void CEffectObject::Apply_Scaling_Dynamics(const _float fRatio)
     if (m_tEffectDesc.Data._bUseScaleCurve)
     {
         // X축 샘플링 (공통 혹은 개별)
-        vFinalScale.x = Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveX, fRatio);
+        vFinalScale.x = m_tEffectDesc.Data._Effect_StartScale.x * Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveX, fRatio);
 
         if (m_tEffectDesc.Data._bSeparateScaleAxes)
         {
             // 각 축별로 개별적인 커브 적용
-            vFinalScale.y = Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveY, fRatio);
-            vFinalScale.z = Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveZ, fRatio);
+            vFinalScale.y = m_tEffectDesc.Data._Effect_StartScale.y * Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveY, fRatio);
+            vFinalScale.z = m_tEffectDesc.Data._Effect_StartScale.z * Sample_RotationCurve(m_tEffectDesc.Data._vecScaleCurveZ, fRatio);
         }
         else
         {
@@ -1182,7 +1177,7 @@ void CEffectObject::Apply_Scaling_Dynamics(const _float fRatio)
     else
     {
         vFinalScale = Vec3::Lerp(m_tEffectDesc.Data._Effect_StartScale,
-            m_tEffectDesc.Data._Effect_EndScale, fRatio);
+        m_tEffectDesc.Data._Effect_EndScale, fRatio);
     }
 
     // 트랜스폼 컴포넌트에 최종 스케일 반영

@@ -23,7 +23,7 @@ USING(Tool)
 
 CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CImGui_Panel(pLabel, pOwner, pDevice, pDeviceContext), m_pGameInstance(CGameInstance::GetInstance()), m_pTransformLayout(nullptr), m_pCamera(nullptr)
-	, m_pCameraCom(nullptr), m_wszMapObjectLayerTag{}, m_szFindName{}, m_iSelectInstanceID{} 
+	, m_pCameraCom(nullptr), m_wszMapObjectLayerTag{}, m_szFindName{}, m_iSelectInstanceID{}
 	, m_iSelectOriginMtlTexture{ 0 }, m_pMapToolManager{ CMapToolManager::GetInstance() }, m_szMakeMonsterTypeName{}
 {
 
@@ -42,7 +42,7 @@ CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, 
 	for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeMonsterType::END); ++i)
 	{
 		string strCurName = DTO::MakeMonsterType_ToString(DTO::EMakeMonsterType(i));
-		::strcpy_s(m_szMakeMonsterTypeName[i] , MAX_PATH , strCurName.c_str());
+		::strcpy_s(m_szMakeMonsterTypeName[i], MAX_PATH, strCurName.c_str());
 	}
 
 	for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeObjectType::END); ++i)
@@ -111,7 +111,7 @@ void CPanel_MapObjectList::Update(const _float fTimeDelta)
 
 HRESULT CPanel_MapObjectList::Update_MapObjectList()
 {
-	m_pLayer = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP) , g_wszMapObjectLayer);
+	m_pLayer = m_pGameInstance->Get_GameObject_List(ENUM_TO_UINT(ELevelType::MAP), g_wszMapObjectLayer);
 
 
 	return S_OK;
@@ -176,7 +176,7 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 
 	m_strBuffer = m_eShowMapObjectFilter == EClientMakePath::END ? "All" : ClientMakePath_ToString(m_eShowMapObjectFilter);
 
-	if (ImGui::BeginCombo(" Clinet Make Path Select " , m_strBuffer.c_str()))
+	if (ImGui::BeginCombo(" Clinet Make Path Select ", m_strBuffer.c_str()))
 	{
 		for (_int i = 0; i <= ENUM_TO_UINT(EClientMakePath::END); ++i)
 		{
@@ -202,7 +202,7 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 				if (!GameObject)
 					continue;
 				bool isDelete{ false };
-				
+
 				static_cast<CLevel_Map*>(m_pOwnerLevel)->On_ChangeSelectedObject(nullptr);
 
 				if (m_eShowMapObjectFilter == EClientMakePath::END || static_cast<CMapObject*>(GameObject)->Get_ClientMakePath() == m_eShowMapObjectFilter)
@@ -214,18 +214,18 @@ HRESULT CPanel_MapObjectList::Render_MapObjectList()
 	}
 
 
-	ImGui::Separator();                                                                                                                                                              
+	ImGui::Separator();
 
 
 	ImGui::NewLine();
-	
+
 	ImGui::InputText("Search", m_szFindName, MAX_PATH);
-	
+
 	ImGui::NewLine();
 
 	ImGui::Separator();
 
-	ImGui::Text( " Object Count [ %d ]" , m_iObjectCount );
+	ImGui::Text(" Object Count [ %d ]", m_iObjectCount);
 
 	ImGui::Separator();
 
@@ -316,12 +316,12 @@ HRESULT CPanel_MapObjectList::Render_SelectMaterial()
 	/* Material 이름 */
 
 	ImGui::NewLine();
-	
+
 	ImGui::SeparatorText(" Material Info ");
 
 	ImGui::Separator();
 
-	ImGui::SeparatorText( "  Textures " );
+	ImGui::SeparatorText("  Textures ");
 
 
 	return S_OK;
@@ -350,7 +350,7 @@ HRESULT CPanel_MapObjectList::Render_TransformInfo()
 
 	if (ImGui::TreeNode(" Origin SRT "))
 	{
-		SRT_DATA tData = m_pSelectMapObject->Get_SRTData( true, m_iSelectInstanceID);
+		SRT_DATA tData = m_pSelectMapObject->Get_SRTData(true, m_iSelectInstanceID);
 
 		ImGui::Text(" Scale	=> X : [ %.2f ]  Y : [ %.2f ]  Z : [ %.2f ]", tData.vScale.x, tData.vScale.y, tData.vScale.z);
 		ImGui::Text(" Degree	=> X : [ %.2f ]  Y : [ %.2f ]  Z : [ %.2f ]  W : [%.2f] ", tData.vQuat.x, tData.vQuat.y, tData.vQuat.z, tData.vQuat.w);
@@ -440,7 +440,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 			//}
 
 			SRT_DATA tSRT = m_pSelectMapObject->Get_SRTData(false);
-			
+
 			/* Brush  */
 			CMapToolManager::GetInstance()->Set_BrushScale(tSRT.vScale);
 			CMapToolManager::GetInstance()->Set_BrushRotation(tSRT.vQuat);
@@ -471,7 +471,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 		ImGui::NewLine();
 
 		m_iBuffer = static_cast<_int>(m_pSelectMapObject->Get_SectionNumber());
-		ImGui::Text(" Section Number : [ %d ] " , m_iBuffer);
+		ImGui::Text(" Section Number : [ %d ] ", m_iBuffer);
 		if (ImGui::InputInt("##SectionNumber", &m_iBuffer))
 			m_pSelectMapObject->Set_SectionNumber(static_cast<_uint>(m_iBuffer));
 
@@ -606,7 +606,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 			}
 
 		}
-		
+
 		else
 		{
 			ImGui::SeparatorText(" Add Object");
@@ -637,7 +637,7 @@ HRESULT CPanel_MapObjectList::Render_SelectInfo()
 		{
 			if (ImGui::BeginTabItem(" Model Info "))
 			{
-				
+
 				Render_ModelInfo();
 
 				ImGui::EndTabItem();
@@ -695,7 +695,7 @@ HRESULT CPanel_MapObjectList::Render_ModelInfo()
 
 	ImGui::NewLine();
 
-	ImGui::Text("Model Name : [ %s ]",  m_pSelectMapObject->Get_ModelFileName().c_str() );
+	ImGui::Text("Model Name : [ %s ]", m_pSelectMapObject->Get_ModelFileName().c_str());
 
 	ImGui::NewLine();
 
@@ -707,7 +707,7 @@ HRESULT CPanel_MapObjectList::Render_ModelInfo()
 
 	if (ImGui::BeginTable("Mateiral Info Table", 2, ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersInnerV))
 	{
-		ImGui::TableSetupColumn("Slot Num", ImGuiTableColumnFlags_WidthFixed,50.0f);
+		ImGui::TableSetupColumn("Slot Num", ImGuiTableColumnFlags_WidthFixed, 50.0f);
 		ImGui::TableSetupColumn("Material Name", ImGuiTableColumnFlags_WidthStretch);
 
 		vector<CMaterial*> vecMtl = pModel->Get_Materials();
@@ -724,7 +724,7 @@ HRESULT CPanel_MapObjectList::Render_ModelInfo()
 			m_strBuffer = vecMtl[i] == nullptr ? "" : Engine_Utils::ToString(vecMtl[i]->Get_Name());
 			if (ImGui::Selectable(m_strBuffer.c_str(), bSelected))
 			{
-				if(!m_strBuffer.empty())
+				if (!m_strBuffer.empty())
 					m_pSelectMaterial = vecMtl[i];
 			}
 
@@ -840,7 +840,7 @@ HRESULT CPanel_MapObjectList::Render_SelectOriginMaterialInfo()
 
 	Update_SelectObject();
 
-	if ( !m_pSelectMapObject || m_pSelectMaterial == nullptr)
+	if (!m_pSelectMapObject || m_pSelectMaterial == nullptr)
 	{
 		ImGui::Text(" Origin Material Is Empty");
 		ImGui::End();
@@ -855,7 +855,7 @@ HRESULT CPanel_MapObjectList::Render_SelectOriginMaterialInfo()
 
 	ImGui::Separator();
 
-	
+
 	m_arrayMtl_SRVs = m_pSelectMaterial->Get_ArraySRV();
 	m_arrayMtl_Textures = m_pSelectMaterial->Get_TextureNameArray();
 
@@ -891,7 +891,7 @@ HRESULT CPanel_MapObjectList::Render_SelectOriginMaterialInfo()
 	}
 
 	m_strBuffer = Engine_Utils::ToString(m_arrayMtl_Textures[m_iSelectMtSlot]);
-	ImGui::Text(" Texture Name => [ %s ] " , m_strBuffer.c_str());
+	ImGui::Text(" Texture Name => [ %s ] ", m_strBuffer.c_str());
 
 
 	ImGui::End();
@@ -958,8 +958,8 @@ void CPanel_MapObjectList::Compute_LandScape_TextureUV(_uint iLandScapeIndex, OU
 	 //  위의 fTop, fBottom 코드를 지우고 아래 주석을 푸세요.
 
 	float fBottom = 1.0f - ((float)iIndex_Row * fUnitV);      // 아래쪽이 V값이 큼
-	float fTop    = 1.0f - ((float)(iIndex_Row + 1) * fUnitV); // 윗쪽이 V값이 작음
-	
+	float fTop = 1.0f - ((float)(iIndex_Row + 1) * fUnitV); // 윗쪽이 V값이 작음
+
 
 	// 4. 결과 출력
 	vOut_LT = Vec2(fLeft, fTop);
@@ -996,32 +996,32 @@ HRESULT CPanel_MapObjectList::Render_Description()
 
 	switch (ePath)
 	{
-	case Tool::EClientMakePath::StaticObject:						ImGuiUpdate_StaticObject_Desc						(static_cast<STATICOBJECT_DESC*>(pDesc));								return S_OK;
-	case Tool::EClientMakePath::LandScape:							ImGuiUpdate_LandScape_Desc							(static_cast<LANDSCAPE_DESC*>(pDesc));									return S_OK;
+	case Tool::EClientMakePath::StaticObject:						ImGuiUpdate_StaticObject_Desc(static_cast<STATICOBJECT_DESC*>(pDesc));								return S_OK;
+	case Tool::EClientMakePath::LandScape:							ImGuiUpdate_LandScape_Desc(static_cast<LANDSCAPE_DESC*>(pDesc));									return S_OK;
 
 
-	case Tool::EClientMakePath::Tree:								ImGuiUpdate_Tree_Desc								(static_cast<TREE_DESC*>(pDesc));										return S_OK;
-	case Tool::EClientMakePath::Moss:								ImGuiUpdate_Moss_Desc								(static_cast<MOSS_DESC*>(pDesc));										return S_OK;
-	case Tool::EClientMakePath::Grass:								ImGuiUpdate_Grass_Desc								(static_cast<GRASS_DESC*>(pDesc));										return S_OK;
-	case Tool::EClientMakePath::Vine:								ImGuiUpdate_Vine_Desc								(static_cast<VINE_DESC*>(pDesc));										return S_OK;
-	case Tool::EClientMakePath::Bush:								ImGuiUpdate_Bush_Desc								(static_cast<BUSH_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Tree:								ImGuiUpdate_Tree_Desc(static_cast<TREE_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Moss:								ImGuiUpdate_Moss_Desc(static_cast<MOSS_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Grass:								ImGuiUpdate_Grass_Desc(static_cast<GRASS_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Vine:								ImGuiUpdate_Vine_Desc(static_cast<VINE_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Bush:								ImGuiUpdate_Bush_Desc(static_cast<BUSH_DESC*>(pDesc));										return S_OK;
 
 	case Tool::EClientMakePath::Water:								ImGuiUpdate_Water_Desc								(static_cast<WATER_DESC*>(pDesc));										return S_OK;
 	case Tool::EClientMakePath::Env:								ImGuiUpdate_Env_Desc								(static_cast<ENV_DESC*>(pDesc));										return S_OK;
 	case Tool::EClientMakePath::LightObject:						ImGuiUpdate_LightObject_Desc						(static_cast<LIGHTOBJECT_DESC*>(pDesc));								return S_OK;
 
 
-	case Tool::EClientMakePath::Batch_Monster:						ImGuiUpdate_Batch_Monster_Desc						(static_cast<BATCH_MONSTER_DESC*>(pDesc));								return S_OK;
-	case Tool::EClientMakePath::Batch_Object:						ImGuiUpdate_Batch_Object_Desc						(static_cast<BATCH_OBJECT_DESC*>(pDesc));								return S_OK;
-	case Tool::EClientMakePath::Batch_InteractiveObject:			ImGuiUpdate_Batch_InteractiveObject_Desc			(static_cast<BATCH_INTERACTIVEOBJECT_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::Batch_Monster:						ImGuiUpdate_Batch_Monster_Desc(static_cast<BATCH_MONSTER_DESC*>(pDesc));								return S_OK;
+	case Tool::EClientMakePath::Batch_Object:						ImGuiUpdate_Batch_Object_Desc(static_cast<BATCH_OBJECT_DESC*>(pDesc));								return S_OK;
+	case Tool::EClientMakePath::Batch_InteractiveObject:			ImGuiUpdate_Batch_InteractiveObject_Desc(static_cast<BATCH_INTERACTIVEOBJECT_DESC*>(pDesc));					return S_OK;
 
-	case Tool::EClientMakePath::TriggerBox_ChangeLevel:				ImGuiUpdate_TriggerBox_ChanageLevel_Desc			(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));						return S_OK;
-	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner				(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
-	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster		(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
-	case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:			ImGuiUpdate_TriggerBox_TutorialUIEvent				(static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pDesc));					return S_OK;
-	case Tool::EClientMakePath::TriggerBox_CinematicPlayer:         ImGuiUpdate_TriggerBox_CinematicPlayer				(static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pDesc));					return S_OK;
-	
-	case Tool::EClientMakePath::Batch_NPC:							ImGuiUpdate_NPC										(static_cast<BATCH_NPC_DESC*>(pDesc));									return S_OK;
+	case Tool::EClientMakePath::TriggerBox_ChangeLevel:				ImGuiUpdate_TriggerBox_ChanageLevel_Desc(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));						return S_OK;
+	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
+	case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:			ImGuiUpdate_TriggerBox_TutorialUIEvent(static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::TriggerBox_CinematicPlayer:         ImGuiUpdate_TriggerBox_CinematicPlayer(static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pDesc));					return S_OK;
+
+	case Tool::EClientMakePath::Batch_NPC:							ImGuiUpdate_NPC(static_cast<BATCH_NPC_DESC*>(pDesc));									return S_OK;
 	default:																																													return S_OK;
 	}
 
@@ -1038,7 +1038,7 @@ void CPanel_MapObjectList::ImGuiUpdate_StaticObject_Desc(STATICOBJECT_DESC* pDes
 	string strText = Engine_Utils::ToString(pDesc->wstrTest);
 
 
-	ImGui::Text(" Test Text => [ %s ] " , strText.c_str());
+	ImGui::Text(" Test Text => [ %s ] ", strText.c_str());
 
 	if (ImGui::InputText(" Test ", &strText))
 		pDesc->wstrTest = Engine_Utils::ToWString(strText);
@@ -1063,7 +1063,7 @@ void CPanel_MapObjectList::ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc)
 
 	ImGui::Text(" Setting To Compute UV ");
 
-	ImGui::Text(" Total Count => [ %d ]", m_iLandScape_Row * m_iLandScape_Col );
+	ImGui::Text(" Total Count => [ %d ]", m_iLandScape_Row * m_iLandScape_Col);
 	if (ImGui::InputInt(" Row Count ", &m_iLandScape_Row))
 	{
 		if (m_iLandScape_Row < 1)
@@ -1077,20 +1077,20 @@ void CPanel_MapObjectList::ImGuiUpdate_LandScape_Desc(LANDSCAPE_DESC* pDesc)
 
 	if (ImGui::Button("Compute UV"))
 	{
-		Compute_LandScape_TextureUV(pDesc->iIndex , pDesc->vTextureUV_LT , pDesc->vTextureUV_RB);
+		Compute_LandScape_TextureUV(pDesc->iIndex, pDesc->vTextureUV_LT, pDesc->vTextureUV_RB);
 	}
 
 	ImGui::NewLine();
-	
+
 	ImGui::SeparatorText(" Index ");
 
-	ImGui::InputInt("Index" ,&pDesc->iIndex);
+	ImGui::InputInt("Index", &pDesc->iIndex);
 
 	ImGui::SeparatorText(" Texture UV ");
 
 	ImGui::Text(" LT ");
 
-	ImGui::InputFloat2( "LT" , &pDesc->vTextureUV_LT.x , "%.5f");
+	ImGui::InputFloat2("LT", &pDesc->vTextureUV_LT.x, "%.5f");
 
 	ImGui::Text(" RB ");
 
@@ -1109,7 +1109,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Plants_Desc(PLANTS_DESC* pDesc)
 	if (pDesc == nullptr) return;
 
 	ImGui::SeparatorText(" Plants Description ");
-	
+
 	ImGui::NewLine();
 
 	ImGui::Text(" if Instance Model) Index 0 Descripton Color Only Apply  ");
@@ -1122,7 +1122,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Plants_Desc(PLANTS_DESC* pDesc)
 
 	ImGui::NewLine();
 
-	ImGui::DragFloat("Plant Diffuse Color Power", &pDesc->fDiffuseColorPower,0.001f,0.f,100.f,"%.3f");
+	ImGui::DragFloat("Plant Diffuse Color Power", &pDesc->fDiffuseColorPower, 0.001f, 0.f, 100.f, "%.3f");
 
 	ImGui::NewLine();
 
@@ -1175,16 +1175,16 @@ void CPanel_MapObjectList::ImGuiUpdate_Grass_Desc(GRASS_DESC* pDesc)
 
 	ImGui::SeparatorText("Grass Data");
 
-	ImGui::Text(" DT => [ %f ] " , pDesc->fGrassDT );
+	ImGui::Text(" DT => [ %f ] ", pDesc->fGrassDT);
 
 	ImGui::NewLine();
 
-	ImGui::Text(" Max Height => [ %f ]" , pDesc->fGrassMaxHeight);
+	ImGui::Text(" Max Height => [ %f ]", pDesc->fGrassMaxHeight);
 
 	ImGui::NewLine();
 
 	ImGui::Text(" Sway Speed ");
-	ImGui::DragFloat("##Grass Sway Speed",&pDesc->fGrassSwaySpeed , 0.01f , 0.f , 1000.f , "%.2f");
+	ImGui::DragFloat("##Grass Sway Speed", &pDesc->fGrassSwaySpeed, 0.01f, 0.f, 1000.f, "%.2f");
 	ImGui::NewLine();
 
 	ImGui::Text(" Wave Size ");
@@ -1226,18 +1226,18 @@ void CPanel_MapObjectList::ImGuiUpdate_Water_Desc(WATER_DESC* pDesc)
 
 	ImGui::SeparatorText("Normal Data");
 
-	ImGui::DragFloat2("Water Speed 1", (float*)&pDesc->vSpeed1,0.01f,0.f,100.f,"%.3f");
-	ImGui::DragFloat2("Water Speed 2", (float*)&pDesc->vSpeed2,0.01f, 0.f, 100.f, "%.3f");
+	ImGui::DragFloat2("Water Speed 1", (float*)&pDesc->vSpeed1, 0.01f, 0.f, 100.f, "%.3f");
+	ImGui::DragFloat2("Water Speed 2", (float*)&pDesc->vSpeed2, 0.01f, 0.f, 100.f, "%.3f");
 
 	ImGui::NewLine();
 
-	ImGui::DragFloat2("UV Power", (float*)&pDesc->vWaterUVPower,0.f,0.1f,1000.f, "%.3f");
+	ImGui::DragFloat2("UV Power", (float*)&pDesc->vWaterUVPower, 0.f, 0.1f, 1000.f, "%.3f");
 
 	ImGui::NewLine();
 
 	ImGui::SeparatorText("Noise Data");
 
-	ImGui::DragFloat2("Distortion UV Power ", (float*)&pDesc->vDistortionUVPower, 0.01f , 0.f, 1000.f, "%.3f");
+	ImGui::DragFloat2("Distortion UV Power ", (float*)&pDesc->vDistortionUVPower, 0.01f, 0.f, 1000.f, "%.3f");
 	ImGui::DragFloat2("Distortion Speed ", (float*)&pDesc->vDistortionSpeed, 0.01f, 0.f, 100.f, "%.3f");
 	ImGui::DragFloat("Distortion Power", (float*)&pDesc->fDistortionPower, 0.001f, 0.f, 10.f, "%.3f");
 
@@ -1264,11 +1264,11 @@ void CPanel_MapObjectList::ImGuiUpdate_Water_Desc(WATER_DESC* pDesc)
 		strTextureName = pTextureBase == nullptr ? "None" : Engine_Utils::ToString(pTextureBase->Get_Name());
 
 		ImGui::SeparatorText(strTextureSlotName.c_str());
-		ImGui::Text("Texture Name		=> [ %s ] " , strTextureName.c_str());
+		ImGui::Text("Texture Name		=> [ %s ] ", strTextureName.c_str());
 
 		ID3D11ShaderResourceView* pSRV = pTextureBase == nullptr ? m_pMapToolManager->m_pDefaultWhiteSRV : pTextureBase->Get_SRV();
 
-		if (ImGui::ImageButton("Texture", ImTextureRef(pSRV),ImVec2(32,32)))
+		if (ImGui::ImageButton("Texture", ImTextureRef(pSRV), ImVec2(32, 32)))
 		{
 			// 타겟 주소를 넘겨주는 아주 훌륭한 로직!
 			m_pMapToolManager->m_ppTargetSlot = &pDesc->arrayTextureBase[i];
@@ -1488,7 +1488,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Fog_Desc(FOG_DESC* pDesc)
 	ImGui::NewLine();
 	ImGui::ColorEdit4(" Tint Color ", (float*)&pDesc->vMI_TintColor);
 	ImGui::NewLine();
-	ImGui::DragFloat(" Distortion Power ",&pDesc->fDistortionPower,0.001f,0.f,10000.f,"%.3f");
+	ImGui::DragFloat(" Distortion Power ", &pDesc->fDistortionPower, 0.001f, 0.f, 10000.f, "%.3f");
 	ImGui::NewLine();
 	// 2. 텍스처 배열 순회
 	string strTextureSlotName{};
@@ -1618,7 +1618,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pD
 			bool isSelected = i == m_iBuffer;
 			if (ImGui::Selectable(m_szMakeMonsterTypeName[i], &isSelected))
 			{
-				pDesc->eBatchMonsterType= DTO::EMakeMonsterType(i);
+				pDesc->eBatchMonsterType = DTO::EMakeMonsterType(i);
 				m_pSelectMapObject->Ready_Batch_Monster();
 			}
 			if (isSelected)
@@ -1631,7 +1631,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pD
 
 void CPanel_MapObjectList::ImGuiUpdate_Batch_InteractiveObject_Desc(BATCH_INTERACTIVEOBJECT_DESC* pDesc)
 {
-	if (pDesc == nullptr) return; 
+	if (pDesc == nullptr) return;
 
 
 	// 1. 현재 선택된 타입의 문자열을 콤보박스 미리보기에 띄웁니다.
@@ -1720,8 +1720,37 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_InteractiveObject_Desc(BATCH_INTERA
 			}
 			pDesc->strWeaponType = g_szWeaponPickUp_WeaponType[iCurrentType];
 		}
-		break;
 	}
+	break;
+	case EObjectEnumTag::OBJECT_INTERACT_CHANGELEVEL:
+	{
+		ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "[ Tutorial Weapon Settings ]");
+
+		ImGui::SeparatorText("Client Level Type ");
+
+		EClientLevelType eLevelType = StringToClientleveltype(pDesc->strChangeLevelTypeName);
+		m_iBuffer = ENUM_TO_UINT(eLevelType);
+
+		if (ImGui::BeginCombo("##Client Level Type", ClientleveltypeToString(static_cast<EClientLevelType>(m_iBuffer)).c_str()))
+		{
+			for (_int i = 0; i < ENUM_TO_UINT(EClientLevelType::END); ++i)
+			{
+				EClientLevelType eCurType = static_cast<EClientLevelType>(i);
+				bool isSelected = m_iBuffer == i;
+				string strCurName = ClientleveltypeToString(eCurType).c_str();
+				if (ImGui::Selectable(strCurName.c_str(), &isSelected))
+				{
+					/* 이름 Update 해주기 */
+					pDesc->strChangeLevelTypeName = strCurName;
+				}
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+	}
+	break;
 	default:
 		ImGui::TextDisabled("Select an Interactive Object Type to edit details.");
 		break;
@@ -1736,12 +1765,12 @@ void CPanel_MapObjectList::ImGuiUpdate_Batch_Object_Desc(BATCH_OBJECT_DESC* pDes
 	if (pDesc == nullptr) return;
 
 
-	ImGui::SeparatorText( " Batch Object Type " );
+	ImGui::SeparatorText(" Batch Object Type ");
 
 	m_strBuffer = DTO::MakeObjectType_ToString(pDesc->eBatchObjectType);
 	m_iBuffer = _int(pDesc->eBatchObjectType);
 
-	_bool isChange{false};
+	_bool isChange{ false };
 	if (ImGui::BeginCombo("Batch Object Type List##Batch Object Desc", m_strBuffer.c_str()))
 	{
 		for (_uint i = 0; i < ENUM_TO_UINT(DTO::EMakeObjectType::END); ++i)
@@ -1805,7 +1834,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDes
 
 	if (pDesc->eFieldType == BATTLE_FIELD_DESC::Field_Type::Box)
 	{
-		ImGui::DragFloat3("Battle Field Extents##BattleFieldDesc",&pDesc->vExtents.x , 0.1f , 0.5f, 200.f );
+		ImGui::DragFloat3("Battle Field Extents##BattleFieldDesc", &pDesc->vExtents.x, 0.1f, 0.5f, 200.f);
 	}
 	else
 	{
@@ -1820,7 +1849,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Battle_Field_Desc(BATTLE_FIELD_DESC* pDes
 void CPanel_MapObjectList::ImGuiUpdate_PointLight_Desc(POINTLIHGT_DESC* pDesc)
 {
 	if (pDesc == nullptr) return;
-	
+
 	ImGui::SeparatorText("Point Light Settings");
 
 	// 1. 색상 관련 설정 (Diffuse, Ambient, Specular)
@@ -1849,8 +1878,8 @@ void CPanel_MapObjectList::ImGuiUpdate_PointLight_Desc(POINTLIHGT_DESC* pDesc)
 	if (pDesc->isFlicker)
 	{
 		ImGui::Indent(); // 옵션 구분을 위해 들여쓰기
-		ImGui::DragFloat("Speed", &pDesc->fFlickerSpeed, 0.001f,0.f,1000.f,"%.3f");
-		ImGui::DragFloat("Min Ratio", &pDesc->fFlickerMin,0.0001f, 0.f,1.f,"%.4f");
+		ImGui::DragFloat("Speed", &pDesc->fFlickerSpeed, 0.001f, 0.f, 1000.f, "%.3f");
+		ImGui::DragFloat("Min Ratio", &pDesc->fFlickerMin, 0.0001f, 0.f, 1.f, "%.4f");
 
 		// 현재 적용 중인 실시간 Range 확인 (Read Only)
 		ImGui::Text("Current Range: %.2f", pDesc->pDebugLight->Get_LightDesc().fRange);
@@ -1873,8 +1902,8 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc)
 		m_pSelectMapObject->Update_Collider();
 	}
 
-	Vec3 vDegree = Vec3( XMConvertToDegrees(pDesc->vRotation.x), XMConvertToDegrees(pDesc->vRotation.y), XMConvertToDegrees(pDesc->vRotation.z));
-	if (ImGui::DragFloat3("Rotation##TriggerBox_Rotation", &vDegree.x, 0.1f,-360.f,360.f, "%.2f"))
+	Vec3 vDegree = Vec3(XMConvertToDegrees(pDesc->vRotation.x), XMConvertToDegrees(pDesc->vRotation.y), XMConvertToDegrees(pDesc->vRotation.z));
+	if (ImGui::DragFloat3("Rotation##TriggerBox_Rotation", &vDegree.x, 0.1f, -360.f, 360.f, "%.2f"))
 	{
 		pDesc->vRotation = Vec3(XMConvertToRadians(vDegree.x), XMConvertToRadians(vDegree.y), XMConvertToRadians(vDegree.z));
 		if (m_pSelectMapObject == nullptr) return;
@@ -1984,7 +2013,7 @@ void CPanel_MapObjectList::ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData
 	ImGui::Text("--------Make Monster Type--------");
 
 	m_strBuffer = DTO::MakeMonsterType_ToString(pMonsterSpawnData->eMakeMonsterType);
-	m_iBuffer	= _int(pMonsterSpawnData->eMakeMonsterType);
+	m_iBuffer = _int(pMonsterSpawnData->eMakeMonsterType);
 
 	if (ImGui::BeginCombo("Make Monster Type List##Monstre Spawn Data Make Monster Type", m_strBuffer.c_str()))
 	{
@@ -2006,15 +2035,15 @@ void CPanel_MapObjectList::ImGuiUpdate_MonsterSpawnData(Engine::MonsterSpawnData
 
 	ImGui::Text("-------Delay Time--------");
 
-	ImGui::DragFloat("Delay Time##Monster Spawn Data Delay Time",&pMonsterSpawnData->fSpawnDelayTime,0.01f);
+	ImGui::DragFloat("Delay Time##Monster Spawn Data Delay Time", &pMonsterSpawnData->fSpawnDelayTime, 0.01f);
 
 	ImGui::Text("-------SRT--------");
 
 	ImGui::NewLine();
 
-	ImGui::DragFloat3("Scale##Monster Spawn Data Scale",				&pMonsterSpawnData->vScale.x,		0.1f);
-	ImGui::DragFloat3("PitchYawRoll##Monster Spawn Data PitchYawRoll",	&pMonsterSpawnData->vPitchYawRoll.x,	0.1f);
-	ImGui::DragFloat3("Position##Monster Spawn Data Position",			&pMonsterSpawnData->vPosition.x,			0.1f);
+	ImGui::DragFloat3("Scale##Monster Spawn Data Scale", &pMonsterSpawnData->vScale.x, 0.1f);
+	ImGui::DragFloat3("PitchYawRoll##Monster Spawn Data PitchYawRoll", &pMonsterSpawnData->vPitchYawRoll.x, 0.1f);
+	ImGui::DragFloat3("Position##Monster Spawn Data Position", &pMonsterSpawnData->vPosition.x, 0.1f);
 
 	ImGui::NewLine();
 
@@ -2040,7 +2069,8 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 		OBJECT_ENUM_TAG::Enum allTypes[] = {
 			OBJECT_ENUM_TAG::NPC_DEFAULT,
 			OBJECT_ENUM_TAG::NPC_PAN,
-			OBJECT_ENUM_TAG::NPC_BERENICA
+			OBJECT_ENUM_TAG::NPC_BERENICA,
+			OBJECT_ENUM_TAG::NPC_TAVERN
 		};
 
 		for (int i = 0; i < IM_ARRAYSIZE(allTypes); i++)
@@ -2124,7 +2154,7 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONS
 		pDesc->vecMonsterSpawnData.push_back(Engine::MonsterSpawnData());
 		MonsterSpawnData& Data = pDesc->vecMonsterSpawnData.back();
 		Data.pDebugModel = m_pMapToolManager->Get_MonsterPreviewModel(Data.eMakeMonsterType);
-		
+
 		if (m_pSelectMapObject)
 		{
 			Data.vPosition = m_pSelectMapObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);

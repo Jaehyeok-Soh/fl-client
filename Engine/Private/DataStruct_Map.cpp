@@ -1510,6 +1510,10 @@ void BATCH_INTERACTIVEOBJECT_DESC::from_Json(const json& LoadJson)
 		break;
 	}
 
+	if (LoadJson.contains("strChangeLevelTypeName"))
+		this->strChangeLevelTypeName = LoadJson.at("strChangeLevelTypeName");
+	
+
 }
 
 void BATCH_INTERACTIVEOBJECT_DESC::to_Json(json& SaveJson)
@@ -1532,6 +1536,9 @@ void BATCH_INTERACTIVEOBJECT_DESC::to_Json(json& SaveJson)
 	default:
 		break;
 	}
+
+
+	SaveJson["strChangeLevelTypeName"] = this->strChangeLevelTypeName;
 }
 
 #pragma endregion

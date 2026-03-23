@@ -99,6 +99,7 @@ inline std::string MakeNPCType_ToString(OBJECT_ENUM_TAG::Enum eTag)
 	case Engine::OBJECT_ENUM_TAG::NPC_DEFAULT:	return "NPC_Default";
 	case Engine::OBJECT_ENUM_TAG::NPC_PAN:		return "NPC_Pan";
 	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:	return "NPC_Berenica";
+	case Engine::OBJECT_ENUM_TAG::NPC_TAVERN:	return "NPC_Tavern";
 	default:									return "Unknown";
 	}
 }
@@ -108,6 +109,7 @@ inline OBJECT_ENUM_TAG::Enum MakeNPCType_ToEnum(const std::string strType)
 	if (strType == "NPC_Default")				return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
 	if (strType == "NPC_Pan")					return Engine::OBJECT_ENUM_TAG::NPC_PAN;
 	if (strType == "NPC_Berenica")				return Engine::OBJECT_ENUM_TAG::NPC_BERENICA;
+	if (strType == "NPC_Tavern")				return Engine::OBJECT_ENUM_TAG::NPC_TAVERN;
 
 	return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
 }
@@ -992,22 +994,31 @@ public:
 
 	/* ---------------------------------------------------------- */
 
+
+	/* OBJECT_ENUM_TAG::OBJECT_INTERACT_CHANGELEVEL 관련 변수*/
+	std::string strChangeLevelTypeName{ "NONE" };
+
+
+	/* ---------------------------------------------------------- */
+
 public:
 	BATCH_INTERACTIVEOBJECT_DESC()
 		:CLIENT_MAKEPATH_DESC_BASE()
 		, vecQuestDesc{}
-		, eBatchInteractiveObejctType{OBJECT_ENUM_TAG::OBJECT_INTERACT_DEFAULT}
+		, eBatchInteractiveObejctType{ OBJECT_ENUM_TAG::OBJECT_INTERACT_DEFAULT }
 		, strWeaponType{}
 		, isTutorialEvent{ false }
+		, strChangeLevelTypeName{ "NONE" }
 	{
 
 	}
 	BATCH_INTERACTIVEOBJECT_DESC(const BATCH_INTERACTIVEOBJECT_DESC& rhs)
 		: CLIENT_MAKEPATH_DESC_BASE(rhs)
-		, vecQuestDesc{ rhs.vecQuestDesc}
+		, vecQuestDesc{ rhs.vecQuestDesc }
 		, eBatchInteractiveObejctType{ rhs.eBatchInteractiveObejctType }
-		, strWeaponType{rhs.strWeaponType}
-		, isTutorialEvent{rhs.isTutorialEvent}
+		, strWeaponType{ rhs.strWeaponType }
+		, isTutorialEvent{ rhs.isTutorialEvent }
+		, strChangeLevelTypeName{ rhs.strChangeLevelTypeName }
 	{
 
 	}
