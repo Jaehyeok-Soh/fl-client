@@ -63,6 +63,8 @@
 // GameInstance
 //=================
 #include "GameInstance.h"
+#include "QuestManager.h"
+#include "DialogueManager.h"
 
 CLevel_Lianhuo::CLevel_Lianhuo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -98,6 +100,8 @@ HRESULT CLevel_Lianhuo::Initialize()
 
 HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 {
+	CDialogueManager::GetInstance()->Initialize();
+
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 

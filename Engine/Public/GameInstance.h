@@ -6,6 +6,7 @@
 #include "EventBus_Manager.h"
 #include "DataRepository.h"
 #include "Anim_Event_Hitbox.h"
+#include "CameraRuntimeTypes.h"
 #include "PhysicsAttackRaycast.h"
 
 NS_BEGIN(Engine)
@@ -199,7 +200,10 @@ public:
 	HRESULT Play_CameraCinematic(CinematicCameraSequence* pCameraCinematicSequence);
 	HRESULT	End_CameraCinematic();
 
-	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
+	HRESULT Request_MainCameraShake(const CAMERA_SHAKE_DESC& desc);
+	HRESULT Request_MainCameraFOV(const CAMERA_FOV_DESC& desc);
+	HRESULT Request_MainCameraPositionOffset(const CAMERA_POSITION_OFFSET_DESC& desc);
+	HRESULT Request_MainCameraRotationOffset(const CAMERA_ROTATION_OFFSET_DESC& desc);
 #pragma endregion
 	
 #pragma region SOUND_MANAGER

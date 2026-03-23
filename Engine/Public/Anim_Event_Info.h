@@ -3,7 +3,8 @@
 #include "Anim_Event_AttackOverlap.h"
 #include "DataStruct_EffectEvent.h"
 #include "DataStruct_SoundEvent.h"
- 
+#include "DataStruct_CameraControlEvent.h" 
+
 namespace DTO
 {
 	typedef struct tagAnimEventInfo1
@@ -18,7 +19,7 @@ namespace DTO
 		vector<ATTACKEVENT> vecAttackEvents;
 		vector<EFFECTEVENT> vecVFXEvents;
 		vector<SOUNDEVENT> vecSoundEvents;
-		//vector<ANIM_EVENT_BASE> vecCameraEvents;
+		vector<CAMERACOTRNOL_EVENT> vecCameraControlEvents;
 	}ANIM_EVENT_INFO1;
 
 	inline void to_json(json& j, const ANIM_EVENT_INFO1& d)
@@ -27,6 +28,7 @@ namespace DTO
 		j["vecAttackEvents"] = d.vecAttackEvents;
 		j["vecVFXEvents"] = d.vecVFXEvents;
 		j["vecSoundEvents"] = d.vecSoundEvents;
+		j["vecCameraControlEvents"] = d.vecCameraControlEvents;
 	}
 
 	inline void from_json(const json& j, ANIM_EVENT_INFO1& d)
@@ -36,5 +38,7 @@ namespace DTO
 		j.at("vecVFXEvents").get_to(d.vecVFXEvents);
 		if (j.contains("vecSoundEvents"))
 			j.at("vecSoundEvents").get_to(d.vecSoundEvents);
+		if (j.contains("vecCameraControlEvents"))
+			j.at("vecCameraControlEvents").get_to(d.vecCameraControlEvents);
 	}
 }

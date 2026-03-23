@@ -61,6 +61,8 @@
 // Game Instance
 //=================
 #include "GameInstance.h"
+#include "QuestManager.h"
+#include "DialogueManager.h"
 
 CLevel_Square::CLevel_Square(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CLevel(pDevice , pDeviceContext)
@@ -113,6 +115,8 @@ HRESULT CLevel_Square::Initialize()
 
 HRESULT CLevel_Square::Awake(const _uint iLevelID)
 {
+	CDialogueManager::GetInstance()->Initialize();
+
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 

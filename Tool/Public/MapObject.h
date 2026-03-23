@@ -90,6 +90,7 @@ public:
 
 	HRESULT								Ready_Water();
 	HRESULT								Ready_Env();
+	HRESULT								Ready_LightObject();
 
 
 	HRESULT								Ready_InvisibleWall();
@@ -205,6 +206,7 @@ public:
 #pragma region BeforeRender
 	void								BatchObject_BeforeRender(const _float fTimeDelta);
 	void								Env_BeforeRender(const _float fTimeDelta);
+	void								LightObject_BeforeRender(const _float fTimeDelta);
 #pragma endregion
 
 #pragma region Render 함수 모음
@@ -226,6 +228,7 @@ public:
 
 	HRESULT								Render_Water();
 	HRESULT								Render_Env();
+	HRESULT								Render_LightObject();
 
 	HRESULT								Render_Batch_Player();
 	HRESULT								Render_Batch_Monster();

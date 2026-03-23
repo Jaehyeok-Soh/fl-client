@@ -23,6 +23,9 @@ class CPanel_AnimModelFile final : public CImGui_Panel
 		_bool bLoadSound = true;
 		_char strSoundPath[256] = "";
 
+		_bool bLoadCameraControl = true;
+		_char strCameraControlPath[256] = "";
+
 		// 모달을 열 때 초기화하는 함수
 		void Reset() {
 			memset(strAnimTag, 0, 256);
@@ -30,10 +33,12 @@ class CPanel_AnimModelFile final : public CImGui_Panel
 			memset(strHitboxPath, 0, 256);
 			memset(strEffectPath, 0, 256);
 			memset(strSoundPath, 0, 256);
+			memset(strCameraControlPath, 0, 256);
 			bLoadAnimInfo = true;
 			bLoadHitbox = true;
 			bLoadEffect = true;
 			bLoadSound = true;
+			bLoadCameraControl = true;
 		}
 	};
 
@@ -78,6 +83,9 @@ private:
 
 	void Load_SoundData(fs::path path);
 	void Save_SoundData(fs::path path);
+
+	void Load_CameraControlData(fs::path path);
+	void Save_CameraControlData(fs::path path);
 private:
 	DIR GetRootDir() { return m_tRootDirectory; }
 	DIR RefreshModelDir();

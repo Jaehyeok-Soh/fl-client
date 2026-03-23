@@ -1261,13 +1261,6 @@ namespace Engine
 		
 	}CAM_EVENTDATA_BASE;
 
-	typedef struct tagCameraShaking_Data
-	{
-		float  fCurTime		{0.f};		// 현재 누적된 시간
-		float  fTime		{0.f};		// 남은 흔들림 시간
-		float  fPower		{0.f};		// 흔들림 강도
-	}CAM_SHAKING_DATA;
-
 #pragma endregion
 
 

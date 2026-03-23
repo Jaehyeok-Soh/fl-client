@@ -107,7 +107,11 @@ namespace Tool
         Vec4        vSkyColor{0.3f,0.7f,0.8f,1.f};
         Vec4        vCloudBaseColor{ 0.8f,0.8f,0.8f,1.f };
         Vec4        vCloudHighlight{ 1.f,1.f,1.f,1.f };
+        Vec4        vCloudShadowColor{ 1.f, 1.f, 1.f, 1.f };   //16
 
+        float       fCloudHighlightPower = 1.f;
+        float       fCloudShadowPower = 1.f;
+        Vec2        EnvDataDummy2;
 
         _int        isChannelPacking{ false };                  // 4Byte 채널 패킹을 사용하는지 않나는지
         _int        iSkyBoxTextureType{0};                      // 4Byte 텍스처가 원형용텍스처인지 , 사각형용 텍스처인지
@@ -118,7 +122,7 @@ namespace Tool
 
         Vec2        vSkyBoxTextureUVSpeed{ 1.f,1.f };        // 8Byte UV
         float       fEnvAccDT{ 0.f };                        // 4Byte 시간값
-        float       EnvDataDummy2{1.f};                      // 4Byte 더미
+        float       EnvDataDummy3{1.f};                      // 4Byte 더미
 
         /* 16 Byte */
     };

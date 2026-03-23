@@ -13,6 +13,7 @@
 /* Interactive Object Header */
 
 #include "WeaponPickUp.h"
+#include "ChangeLevelObject.h"
 
 /* -------------------------  */
 #include "GameInstance.h"
@@ -283,6 +284,20 @@ HRESULT CInteractiveObject::Create_InteractiveObject(const Engine::BATCH_INTERAC
 		tWeaponDesc.strWeaponType = pToolDesc->strWeaponType;
 		tWeaponDesc.isTutorialEvent = pToolDesc->isTutorialEvent;
 		pArg = &tWeaponDesc;
+	}
+	break;
+	case Engine::EObjectEnumTag::OBJECT_INTERACT_CHANGELEVEL:
+	{
+		wstrProtototypeTag = g_wszChangeLevelObject_Prototype_Tag;
+
+		/* Level Change */
+		static CChangeLevelObject::INTERACT_LEVELCHANGE_DESC tChangeLevelDesc{};
+		static_cast<CInteractiveObject::INTERACTIVEOBJECT_DESC&>(tChangeLevelDesc) = tInteractiveDesc;
+
+		tChangeLevelDesc.eModelType = EModelType::STATIC;
+		tChangeLevelDesc.eChangeLevelType = StringToClientleveltype(pToolDesc->strChangeLevelTypeName);
+
+		pArg = &tChangeLevelDesc;
 	}
 	break;
 	default:	return E_FAIL;

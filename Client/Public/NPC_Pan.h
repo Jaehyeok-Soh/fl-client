@@ -53,7 +53,6 @@ public:
 	static CNPC_Pan* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
-
 };
 
 NS_END

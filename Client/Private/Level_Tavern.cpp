@@ -63,6 +63,8 @@
 // GameInstance
 //=================
 #include "GameInstance.h"
+#include "QuestManager.h"
+#include "DialogueManager.h"
 
 CLevel_Tavern::CLevel_Tavern(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -98,6 +100,8 @@ HRESULT CLevel_Tavern::Initialize()
 
 HRESULT CLevel_Tavern::Awake(const _uint iLevelID)
 {
+	CDialogueManager::GetInstance()->Initialize();
+
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
@@ -109,6 +113,9 @@ HRESULT CLevel_Tavern::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
+	CQuestManager::GetInstance()->Start_Quest(3, 0);
+
 	return S_OK;
 }
 

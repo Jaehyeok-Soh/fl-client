@@ -6,7 +6,6 @@
 CCameraMan::CCameraMan(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, CameraType eType)
     : Super(pDevice, pDeviceContext)
     , m_eType(eType)
-    , m_vCamShakingOffsetPosition{Vec3::Zero}
     , m_pCinematicSquence{nullptr}
     , m_iCurFrameIndex{0}
     , m_fDeltaTime{0.f}
@@ -17,7 +16,6 @@ CCameraMan::CCameraMan(const CCameraMan& rhs)
     : Super(rhs)
     , m_eType(rhs.m_eType)
     , m_pCinematicSquence{rhs.m_pCinematicSquence }
-    , m_vCamShakingOffsetPosition{ rhs.m_vCamShakingOffsetPosition }
     , m_iCurFrameIndex{rhs.m_iCurFrameIndex }
     , m_fDeltaTime{rhs.m_fDeltaTime}
 {
@@ -39,6 +37,9 @@ HRESULT CCameraMan::Initialize(void* pArg)
     GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
 
     if (FAILED(Add_Component<CCamera>(0 , L"Prototype_Component_Camera", pDesc->pCamera_Desc)))
+        return E_FAIL;
+
+    if (FAILED(Add_Component<CCameraController>(0, L"Prototype_Component_CameraController", nullptr)))
         return E_FAIL;
 
     return S_OK;
@@ -70,16 +71,16 @@ void CCameraMan::Update(const _float fTimeDelta)
 void CCameraMan::Update_Late(const _float fTimeDelta)
 {
     Super::Update_Late(fTimeDelta);
+    Get_Component<CCameraController>()->Update_Controller(fTimeDelta);
 }
 
 void CCameraMan::Ready_Before_Render(const _float fTimeDelta)
 {
     Super::Ready_Before_Render(fTimeDelta);
-
-
-    Camera_Shaking(fTimeDelta);
-
-    Get_Component<CCamera>()->Update_View();
+    CAMERA_POSE basePose = Capture_BasePose_FromTransform();
+    CAMERA_POSE finalPose = basePose;
+    Get_Component<CCameraController>()->Build_FinalPose(basePose, finalPose);
+    Apply_FinalPose_ToCamera(finalPose);
 }
 
 inline void CCameraMan::Change_Actor(CGameObject* pGo)
@@ -105,44 +106,6 @@ void CCameraMan::Cinematic(const _float fTimeDelta)
     return;
 }
 
-void CCameraMan::Camera_Shaking(const CAM_SHAKING_DATA& tData)
-{
-    m_listCameraShakingDatas.push_back(tData);
-    return;
-}
-
-void CCameraMan::Camera_Shaking(const _float fTimeDelta)
-{
-    m_listCameraShakingDatas.remove_if([](const CAM_SHAKING_DATA& data) {
-        return data.fCurTime >= data.fTime;
-        });
-
-    if (m_listCameraShakingDatas.empty())
-    {
-        m_vCamShakingOffsetPosition = { Vec3::Zero };
-        return;
-    }
-
-
-    m_vCamShakingOffsetPosition = { Vec3::Zero };
-
-    /* CamShakingData */
-    for (auto& CamShakingData : m_listCameraShakingDatas)
-    {
-        CamShakingData.fCurTime += fTimeDelta;
-        _float fTimeRatio = CamShakingData.fCurTime / CamShakingData.fTime;
-
-        /* 카메라 쉐이킹 강도를 시간에 따라 감소시켜줌 */
-        _float strength = CamShakingData.fPower * (1.0f - fTimeRatio);
-
-        _float randX = ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
-        _float randY = ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
-        _float randZ = ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
-
-        m_vCamShakingOffsetPosition += Vec3(randX, randY, randZ) * strength;
-    }
-}
-
 void CCameraMan::Cinematic(CinematicCameraSequence* pCameraCinematicSequence)
 {
     if (pCameraCinematicSequence == nullptr) return;
@@ -151,6 +114,49 @@ void CCameraMan::Cinematic(CinematicCameraSequence* pCameraCinematicSequence)
     m_pCinematicSquence = pCameraCinematicSequence;
     m_isCinematicEvent = true;
 
+}
+
+void CCameraMan::Play_CameraShake(const CAMERA_SHAKE_DESC& desc)
+{
+    Get_Component<CCameraController>()->Play_Shake(desc);
+}
+
+void CCameraMan::Play_CameraFOV(const CAMERA_FOV_DESC& desc)
+{
+    Get_Component<CCameraController>()->Play_FOV(desc);
+}
+
+void CCameraMan::Play_CameraPositionOffset(const CAMERA_POSITION_OFFSET_DESC& desc)
+{
+    Get_Component<CCameraController>()->Play_PositionOffset(desc);
+}
+
+void CCameraMan::Play_CameraRotationOffset(const CAMERA_ROTATION_OFFSET_DESC& desc)
+{
+    Get_Component<CCameraController>()->Play_RotationOffset(desc);
+}
+
+CAMERA_POSE CCameraMan::Capture_BasePose_FromTransform()
+{
+    CAMERA_POSE tPose{};
+
+    CTransform* pTrasnform  = Get_Component<CTransform>();
+    CCamera* pCameraComp    = Get_Component<CCamera>();
+    tPose.vPos              = pTrasnform->Get_Info(TRANSFORM_INFO_STATE::POS);
+    tPose.vRight            = pTrasnform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    tPose.vUp               = pTrasnform->Get_Info(TRANSFORM_INFO_STATE::UP);
+    tPose.vLook             = pTrasnform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+    tPose.fFovRad           = pCameraComp->Get_Fov();
+
+    tPose.vRight.Normalize();
+    tPose.vUp.Normalize();
+    tPose.vLook.Normalize();
+    return tPose;
+}
+
+void CCameraMan::Apply_FinalPose_ToCamera(const CAMERA_POSE& finalPose)
+{
+    Get_Component<CCamera>()->Update_View(finalPose);
 }
 
 void CCameraMan::Free()

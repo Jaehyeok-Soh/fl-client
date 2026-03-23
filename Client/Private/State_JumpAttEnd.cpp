@@ -33,11 +33,6 @@ HRESULT CState_JumpAttEnd::Start(void* pArg, _bool bForce)
 		return E_FAIL;
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
-
-	CAM_SHAKING_DATA data{};
-	data.fTime = 0.2f;
-	data.fPower = 0.3f;
-	CGameInstance::GetInstance()->Camera_Shaking(data);
 	return S_OK;
 }
 

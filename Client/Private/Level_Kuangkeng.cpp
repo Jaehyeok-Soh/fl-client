@@ -63,6 +63,8 @@
 // GameInstance
 //=================
 #include "GameInstance.h"
+#include "QuestManager.h"
+#include "DialogueManager.h"
 
 CLevel_Kuangkeng::CLevel_Kuangkeng(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -97,6 +99,8 @@ HRESULT CLevel_Kuangkeng::Initialize()
 
 HRESULT CLevel_Kuangkeng::Awake(const _uint iLevelID)
 {
+	CDialogueManager::GetInstance()->Initialize();
+
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
