@@ -1,0 +1,2905 @@
+{
+    "Category": "MONSTER_STATE",
+    "Objects": [
+        {
+            "setStates": [
+                "AdvanceComboAttack01",
+                "AdvanceComboAttack02",
+                "AdvanceThrustAttack",
+                "Backdash",
+                "BackdashAttack",
+                "CatchAttack",
+                "GimmikAttack",
+                "Idle",
+                "JumpSpinAttack",
+                "JumpThrustAttack",
+                "L_Turn180",
+                "L_Turn90",
+                "Move_B",
+                "Move_BL",
+                "Move_BR",
+                "Move_F",
+                "Move_FL",
+                "Move_FR",
+                "Move_L",
+                "Move_R",
+                "R_Turn180",
+                "R_Turn90",
+                "Screaming",
+                "SpawnAttack"
+            ],
+            "strTag": "Sample",
+            "vecMonsterStateDesc": [
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "AdvanceComboAttack01",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        15.0,
+                                        20.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        40.0,
+                                        50.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        70.0,
+                                        80.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill01"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "AdvanceComboAttack02",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        25.0,
+                                        50.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        80.0,
+                                        90.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill02_01"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "AdvanceThrustAttack",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        25.0,
+                                        45.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill02_02"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Screaming",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill03"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "BackdashAttack",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        13.0,
+                                        55.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill04"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "SpawnAttack",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill05"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "JumpThrustAttack",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        40.0,
+                                        70.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill06"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Backdash",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill09"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "JumpSpinAttack",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        15.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill10"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Idle",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.699999988079071,
+                        "fMinTime": 0.699999988079071,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.5,
+                        "fMinTime": 0.5,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_FightIdle"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "L_Turn180": 5.0,
+                                "R_Turn180": 5.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_behind",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "AdvanceComboAttack01": 5.0,
+                                "AdvanceComboAttack02": 5.0,
+                                "Backdash": 6.0,
+                                "BackdashAttack": 6.0,
+                                "Move_B": 4.0,
+                                "Move_BL": 4.0,
+                                "Move_BR": 4.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_in_melee_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "L_Turn180",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Turn_L180"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "L_Turn90",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Turn_L90"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "R_Turn180",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Turn_R180"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "R_Turn90",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Turn_R90"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Move_B",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 10.0,
+                        "fMinTime": 10.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.699999988079071,
+                        "fMinTime": 0.699999988079071,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_WalkLoop_B"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Move_BL",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 10.0,
+                        "fMinTime": 10.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.699999988079071,
+                        "fMinTime": 0.699999988079071,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_WalkLoop_LB"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Move_BR",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 10.0,
+                        "fMinTime": 10.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.699999988079071,
+                        "fMinTime": 0.699999988079071,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_WalkLoop_RB"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Move_F",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 10.0,
+                        "fMinTime": 10.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.699999988079071,
+                        "fMinTime": 0.699999988079071,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_WalkLoop_F"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Move_FL",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 10.0,
+                        "fMinTime": 10.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.699999988079071,
+                        "fMinTime": 0.699999988079071,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_WalkLoop_LF"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Move_FR",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 10.0,
+                        "fMinTime": 10.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.699999988079071,
+                        "fMinTime": 0.699999988079071,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_WalkLoop_RF"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Move_L",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 10.0,
+                        "fMinTime": 10.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.699999988079071,
+                        "fMinTime": 0.699999988079071,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_WalkLoop_L"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "CatchAttack",
+                        "GimmikAttack",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack"
+                    ],
+                    "strName": "Move_R",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 10.0,
+                        "fMinTime": 10.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.699999988079071,
+                        "fMinTime": 0.699999988079071,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_WalkLoop_R"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                }
+            ]
+        }
+    ]
+}
