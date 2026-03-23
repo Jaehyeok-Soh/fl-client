@@ -130,6 +130,7 @@ HRESULT CLevel_Square::Awake(const _uint iLevelID)
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
+	CQuestManager::GetInstance()->Start_Quest(3, 2);
 
 	return S_OK;
 }

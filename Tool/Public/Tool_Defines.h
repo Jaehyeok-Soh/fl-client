@@ -413,6 +413,7 @@ namespace Tool
 		Rock,
 		Water,
 		Env,
+		LightObject,
 
 		/*  생성 위치 잡아주는 역할  */
 		Batch_Player,
@@ -453,6 +454,7 @@ namespace Tool
 		DEBUG,
 		SkyBox,
 		Shadow,
+		LightObject,
 		END,
 	};
 
@@ -475,6 +477,7 @@ namespace Tool
 			/* ------------------환경 요소---------------- */
 		case Tool::EClientMakePath::Water:									return "Water";
 		case Tool::EClientMakePath::Env:									return "Env";
+		case Tool::EClientMakePath::LightObject:							return "LightObject";
 			/* ------------------------------------------- */
 
 			/*  --------- 생성 위치 잡아주는 역할 ---------*/
@@ -514,6 +517,7 @@ namespace Tool
 		if (strType == "Rock")												return EClientMakePath::Rock;
 		if (strType == "Water")												return EClientMakePath::Water;
 		if (strType == "Env")												return EClientMakePath::Env;
+		if (strType == "LightObject")										return EClientMakePath::LightObject;
 
 		/* 생성 위치관련 */
 		if (strType == "Batch_Player")										return EClientMakePath::Batch_Player;

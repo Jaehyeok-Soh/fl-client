@@ -37,7 +37,7 @@ struct LoadAttackOverlap { using Signature = void(CPhysicsAttackOverlap* pAttack
 struct LoadEffectEvent { using Signature = void(CEffectHandler* pEffectEvent);};
 struct LoadSoundevent { using Signature = void(CToolAnimSoundPlayer* pSoundPlayer); };
 
-static const char* eventTypeItems[EAnimEvent::END] = { "OVERLAP", "EFFECT", "SOUND", "NONE" };
+static const char* eventTypeItems[EAnimEvent::END] = { "OVERLAP", "EFFECT", "SOUND", "CAMERACONTROL","NONE" };
 static const char* overlapTypeItems[EOverlapType::END] = { "Box", "Sphere", "Capsule"};
 static const char* filterGroupItems[EPhysicsFilterType::END] =
 {
@@ -107,6 +107,7 @@ typedef struct tagAnimControllerInfo
 	_int iCurrentAttackEventIndex = { -1 };
 	_int iCurrentEffectEventIndex = { -1 };
 	_int iCurrentSoundEventIndex = { -1 };
+	_int iCurrentCameraControlEventIndex = { -1 };
 
 	_uint fDuration = {};
 	_uint fTrackPosition = {};

@@ -102,8 +102,7 @@ HRESULT CModelLoader::Read_Material(vector<CMaterial*>* vecMaterials)
 
 		MaterialDesc.wstrPath = finalPath;
 
-
-		if (m_ModelPath.wstring().find(L"SM_Home_Carp05A") != std::wstring::npos)
+		if (MaterialDesc.wstrName.find(L"MI_Vil_Nos01_SRT") != std::wstring::npos)
 		{
 			int a = 0;
 		}

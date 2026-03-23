@@ -45,7 +45,26 @@ public:
 	static void Set_OnlyFlag(Flags& curFlags, _uint iBitFlag);
 
 	static _float SmoothStep(_float fT) { return fT * fT * (3.f - 2.f * fT); }
+	static _float EvalEase_SmoothStep(_float fT) { fT = std::clamp(fT, 0.f, 1.f); return fT * fT * (3.f - 2.f * fT); }
+	static _float EvalEase_EaseOutQuad(_float fT) { fT = std::clamp(fT, 0.f, 1.f); return 1.f - (1.f - fT) * (1.f - fT); }
+	static _float EvalEase_EaseInOutQuad(_float fT)
+	{
+		fT = std::clamp(fT, 0.f, 1.f);
+		return (fT < 0.5f)
+			? 2.f * fT * fT
+			: 1.f - std::pow(-2.f * fT + 2.f, 2.f) * 0.5f;
+	}
+	static _float EvalEase_EaseOutBack(_float fT)
+	{
+		fT = std::clamp(fT, 0.f, 1.f);
 
+		constexpr _float fC1 = 1.70158f;
+		constexpr _float fC3 = fC1 + 1.f;
+
+		return 1.f + fC3 * std::pow(fT - 1.f, 3.f) + fC1 * std::pow(fT - 1.f, 2.f);
+	}
+	static _float EvalTimingWeight(_float fElapsed, _float fBlendIn, _float fHold, _float fBlendOut);
+	
 	static void Merge_MinMax(const Vec3* pMinMax, Vec3& ioMin, Vec3& ioMax);
 
 	static BoundingBox MakeAABB_FromMinMax(const Vec3 &vMin, const Vec3 &vMax);

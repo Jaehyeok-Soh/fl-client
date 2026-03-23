@@ -23,6 +23,7 @@ public:
 	HRESULT Bind_ShaderResource(class CShader* pShader);
 	EMaterialInstanceType Get_MIType() const { return m_eMIType; }
 	void Set_TintColor(const Vec4& vColor) { m_shaderDesc.vTintColor = vColor; }
+	void Set_EmissiveColor(const Vec4& vColor) { m_shaderDesc.vEmissive = vColor; }
 	void Set_EmissivePower(_float fEmissivePower) { m_shaderDesc.fEmissivePower = fEmissivePower; }
 private:
 

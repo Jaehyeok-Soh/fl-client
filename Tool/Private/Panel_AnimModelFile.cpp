@@ -245,6 +245,17 @@ void CPanel_AnimModelFile::RenderLoadModal()
 			OpenFileDialog(m_tLoadOptions.strSoundPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
+		// CameraControl
+		ImGui::Checkbox("##CameraCheck", &m_tLoadOptions.bLoadCameraControl);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Camera Info", m_tLoadOptions.strCameraControlPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##CameraBtn"))
+		{
+			OpenFileDialog(m_tLoadOptions.strCameraControlPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
+		}
+
 		ImGui::Separator();
 		ImGui::Spacing();
 
@@ -269,6 +280,9 @@ void CPanel_AnimModelFile::RenderLoadModal()
 
 			if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
 				Load_SoundData(m_tLoadOptions.strSoundPath);
+
+			if (m_tLoadOptions.bLoadCameraControl && strlen(m_tLoadOptions.strCameraControlPath) > 0)
+				Load_CameraControlData(m_tLoadOptions.strCameraControlPath);
 
 			ImGui::CloseCurrentPopup(); // 모달 닫기
 		}
@@ -349,9 +363,20 @@ void CPanel_AnimModelFile::RenderSaveModal()
 			SaveFileDialog(m_tLoadOptions.strSoundPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
 		}
 
+		// CameraControl
+		ImGui::Checkbox("##CameraCheck", &m_tLoadOptions.bLoadCameraControl);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(300.f);
+		ImGui::InputText("Camera Info", m_tLoadOptions.strCameraControlPath, 256, ImGuiInputTextFlags_ReadOnly);
+		ImGui::SameLine();
+		if (ImGui::Button("...##CameraBtn"))
+		{
+			SaveFileDialog(m_tLoadOptions.strCameraControlPath, "Json Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0");
+		}
+
 		ImGui::Separator();
 		ImGui::Spacing();
-
+		
 		// ---------------------------------------------------------
 		// 하단 버튼 (확인 / 취소)
 		// ---------------------------------------------------------
@@ -373,6 +398,9 @@ void CPanel_AnimModelFile::RenderSaveModal()
 
 			if (m_tLoadOptions.bLoadSound && strlen(m_tLoadOptions.strSoundPath) > 0)
 				Save_SoundData(m_tLoadOptions.strSoundPath);
+
+			if (m_tLoadOptions.bLoadCameraControl && strlen(m_tLoadOptions.strCameraControlPath) > 0)
+				Save_CameraControlData(m_tLoadOptions.strCameraControlPath);
 
 			ImGui::CloseCurrentPopup(); // 모달 닫기
 		}
@@ -417,6 +445,16 @@ void CPanel_AnimModelFile::Load_SoundData(fs::path path)
 void CPanel_AnimModelFile::Save_SoundData(fs::path path)
 {
 	m_pAnimToolManager->Save_SoundEvent(path);
+}
+
+void CPanel_AnimModelFile::Load_CameraControlData(fs::path path)
+{
+	m_pAnimToolManager->Load_CameraControlEvent(path);
+}
+
+void CPanel_AnimModelFile::Save_CameraControlData(fs::path path)
+{
+	m_pAnimToolManager->Save_CameraControlEvent(path);
 }
 
 DIR CPanel_AnimModelFile::RefreshModelDir()

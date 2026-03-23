@@ -200,7 +200,11 @@ namespace Client
 		Vec4        vSkyColor{ 0.3f,0.7f,0.8f,1.f };
 		Vec4        vCloudBaseColor{ 0.8f,0.8f,0.8f,1.f };
 		Vec4        vCloudHighlight{ 1.f,1.f,1.f,1.f };
+		Vec4        vCloudShadowColor = { 1.f, 1.f, 1.f, 1.f };   //16
 
+		float       fCloudHighlightPower = 1.f;
+		float       fCloudShadowPower = 1.f;
+		Vec2        EnvDataDummy2;
 
 		_int        isChannelPacking{ false };                  // 4Byte 채널 패킹을 사용하는지 않나는지
 		_int        iSkyBoxTextureType{ 0 };                      // 4Byte 텍스처가 원형용텍스처인지 , 사각형용 텍스처인지
@@ -211,7 +215,7 @@ namespace Client
 
 		Vec2        vSkyBoxTextureUVSpeed{ 1.f,1.f };        // 8Byte UV
 		float       fEnvAccDT{ 0.f };                        // 4Byte 시간값
-		float       EnvDataDummy2{ 1.f };                      // 4Byte 더미
+		float       EnvDataDummy3{ 1.f };                      // 4Byte 더미
 
 		/* 16 Byte */
 	};
@@ -318,6 +322,7 @@ namespace Client
 		DEBUG,
 		SkyBox,
 		Shadow,
+		LightObject,
 		END,
 	};
 
@@ -817,6 +822,8 @@ namespace Client
 
 	inline constexpr wchar_t g_wszNPC_Pan_State_Tag[]{ L"NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_State_Tag[]{ L"NPC_Tavern" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_State_Tag[]{ L"NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_State_Tag[]{ L"NPC_Kid_1" };
 
 #pragma endregion 
 
@@ -831,6 +838,8 @@ namespace Client
 	
 	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Tavern" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Kid_1" };
 
 #pragma endregion
 
@@ -884,8 +893,8 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_XibiGate[]							{ L"Prototype_Spawner_XibiGate" };
 
 	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]							{ L"Prototype_Spawner_PlayerMoon_SkillE" };
-	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };
-	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Attack[]							{ L"Prototype_Spawner_PlayerMoon_SkillQ_Attack" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]					{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };
+	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Attack[]					{ L"Prototype_Spawner_PlayerMoon_SkillQ_Attack" };
 #pragma endregion
 
 #pragma region MapObject 관련
@@ -901,6 +910,7 @@ namespace Client
 
 	inline constexpr wchar_t g_wszEnvObject_Prototype_Tag[]						{ L"Prototype_GameObject_EnvObject" };
 
+	inline constexpr wchar_t g_wszLightObject_Prototype_Tag[]					{ L"Prototype_GameObject_LightObejct" };
 
 	/* Interactive Object */
 	inline constexpr wchar_t g_wszWeaponPickUp_Prototype_Tag[]					{ L"Prototype_GameObject_WeaponPickUp" };
@@ -945,6 +955,10 @@ namespace Client
 	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan_Body" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Tavern" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Tavern_Body" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Villager_1_Body" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Kid_1" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Kid_1_Body" };
 #pragma endregion
 
 #pragma region Part Objects
@@ -981,7 +995,7 @@ namespace Client
 	inline constexpr wchar_t g_wszSkyBoxLayer[]									{ L"SkyBox_Layer" };
 	inline constexpr wchar_t g_wszPointLightLayer[]								{ L"PointLight_Layer" };
 	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
-	inline constexpr wchar_t g_wszInteractiveObjectLayer[]							{ L"InteractiveObject_Layer" };
+	inline constexpr wchar_t g_wszInteractiveObjectLayer[]						{ L"InteractiveObject_Layer"};
 #pragma endregion
 
 #pragma region Dialogue

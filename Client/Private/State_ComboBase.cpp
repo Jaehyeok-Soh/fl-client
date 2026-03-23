@@ -131,9 +131,6 @@ void CState_ComboBase::Change_NextCombo()
 	m_fStateElapsed = 0.f;
 
 	m_TChargeCount.x = 0.f;
-
-	m_bShakeActived = false;
-
 	switch (m_iComboCount)
 	{
 	case ENUM_TO_UINT(ANIM::SECOND):

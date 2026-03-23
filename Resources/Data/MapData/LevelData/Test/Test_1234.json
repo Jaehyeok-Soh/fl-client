@@ -2,6 +2,12 @@
     "Category": "MAP",
     "Level Data": {
         "Env Data": {
+            "Env Color": {
+                "W": 1.0,
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
             "Wind Data": {
                 "Direction": {
                     "X": 1.0,
@@ -29,21 +35,61 @@
     },
     "Objects": [
         {
-            "Client Level Type": "STATIC",
-            "Client Make Path": "Batch_Object",
+            "Client Level Type": "LOGO",
+            "Client Make Path": "Env",
             "Client Make Path Desc": [
                 {
-                    "Batch Object Info": {
-                        "Desc": {
-                            "Extents": {
-                                "X": 2.799999952316284,
-                                "Y": 3.799999952316284,
-                                "Z": 2.700000047683716
+                    "Effect Infos": [
+                        {
+                            "Desc": {
+                                "Part Object Desc": [
+                                    {
+                                        "Duration": 5.0,
+                                        "Life Time": 15.0,
+                                        "Override Index": 0,
+                                        "Particle Count": 100,
+                                        "Position": {
+                                            "X": 0.0,
+                                            "Y": 0.0,
+                                            "Z": 0.0
+                                        },
+                                        "Range": {
+                                            "X": 5.0,
+                                            "Y": 2.0,
+                                            "Z": 5.0
+                                        },
+                                        "Rotation": {
+                                            "X": 0.0,
+                                            "Y": 0.0,
+                                            "Z": 0.0
+                                        },
+                                        "Scale": {
+                                            "X": 1.0,
+                                            "Y": 1.0,
+                                            "Z": 1.0
+                                        }
+                                    }
+                                ],
+                                "Pos": {
+                                    "X": 0.0,
+                                    "Y": 0.0,
+                                    "Z": 0.0
+                                },
+                                "Rot": {
+                                    "X": 0.0,
+                                    "Y": 0.0,
+                                    "Z": 0.0
+                                },
+                                "Scale": {
+                                    "X": 1.0,
+                                    "Y": 1.0,
+                                    "Z": 1.0
+                                },
+                                "Speed": 1.0
                             },
-                            "Field Type": "Box"
-                        },
-                        "Type": "Battle_Field"
-                    }
+                            "Tag": "ENV_Brown_Leaf"
+                        }
+                    ]
                 }
             ],
             "Draw Type": "Default",
@@ -51,15 +97,15 @@
             "SRT": [
                 {
                     "Position": {
-                        "X": -17.302587509155273,
-                        "Y": 15.907926559448242,
-                        "Z": -18.273717880249023
+                        "X": -0.7888171076774597,
+                        "Y": 8.142293930053711,
+                        "Z": -7.954042911529541
                     },
                     "Quaternion": {
                         "W": 1.0,
-                        "X": -0.0,
+                        "X": 0.0,
                         "Y": 0.0,
-                        "Z": -0.0
+                        "Z": 0.0
                     },
                     "Scale": {
                         "X": 1.0,
@@ -76,7 +122,7 @@
             "Section Number": 0,
             "UE Loaded": false,
             "UE Raw Data Path": "",
-            "strTag": "Battle_Field346"
+            "strTag": "Cube345"
         }
     ]
 }

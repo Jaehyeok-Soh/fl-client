@@ -27,10 +27,14 @@
 #include "DataDocument_SoundEvent.h"
 #include "DataStruct_SoundEvent.h"
 
+// Camera
+#include "DataDocument_CameraControlEvent.h"
+
 // Animation tool module
 #include "Event_Overlap_Module.h"
 #include "Event_Effect_Module.h"
 #include "Event_Sound_Module.h"
+#include "Event_CameraControl_Module.h"
 
 IMPLEMENT_SINGLETON(CAnimTool_Manager)
 
@@ -54,6 +58,7 @@ HRESULT CAnimTool_Manager::Initialize_AnimTool(ID3D11Device* pDevice, ID3D11Devi
 	m_pOverlapModule = CEvent_Overlap_Module::Create(m_pDevice, m_pDeviceContext);
 	m_pEffectModule = CEvent_Effect_Module::Create(m_pDevice, m_pDeviceContext);
 	m_pSoundModule = CEvent_Sound_Module::Create();
+	m_pCameraControlModule = CEvent_CameraControl_Module::Create();
 
 	Ready_Event();
 
@@ -322,6 +327,9 @@ void CAnimTool_Manager::SetModuleOwner()
 
 	// 사운드
 	 m_pSoundModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
+	
+	// 카메라
+	 m_pCameraControlModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
 }
 
 HRESULT CAnimTool_Manager::Ready_Builder()
@@ -457,6 +465,54 @@ HRESULT CAnimTool_Manager::Load_SoundEvent(fs::path path)
 	return S_OK;
 }
 
+HRESULT CAnimTool_Manager::Load_CameraControlEvent(fs::path path)
+{
+	const _uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
+	const DTO::ECategory eCategory = DTO::ECategory::CAMERACONTROLEVENT;
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_CameraControlEvent>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, path)))
+		return E_FAIL;
+
+	CDataDocumentBase* pBase = m_pGameInstance->Ensure_Document(iLevelID, eCategory, path);
+	CDataDocument_CameraControlEvent* pDoc = static_cast<CDataDocument_CameraControlEvent*>(pBase);
+	if (pDoc == nullptr)
+		return E_FAIL;
+
+	const string ownerTag = path.stem().string();
+	const auto* pData = pDoc->Find_Data(ownerTag);
+	if (pData == nullptr)
+		return E_FAIL;
+
+	m_tEventInfo.vecCameraControlEvents = pData->vecCameraControlEvents;
+	m_tAnimControllInfo.iCurrentCameraControlEventIndex = -1;
+
+	if (m_tAnimControllInfo.pModel)
+	{
+		for (auto& evt : m_tEventInfo.vecCameraControlEvents)
+		{
+			if (evt.strAnimTag.empty())
+			{
+				evt.iAnimIndex = -1;
+				continue;
+			}
+
+			evt.iAnimIndex = m_tAnimControllInfo.pModel->Get_AnimationIndex(
+				Engine_Utils::ToWString(evt.strAnimTag));
+		}
+	}
+
+	if (m_pCameraControlModule)
+	{
+		m_pCameraControlModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
+		m_pCameraControlModule->Rebuild(m_tEventInfo.vecCameraControlEvents);
+	}
+
+	return S_OK;
+}
+
 void CAnimTool_Manager::Set_AttackOverlap(CPhysicsAttackOverlap* pAttackOverlap)
 {
 	m_pOverlapModule->SetAttackOverlap(pAttackOverlap, m_tAnimControllInfo.pCurrentObject);
@@ -577,6 +633,43 @@ HRESULT CAnimTool_Manager::Save_SoundEvent(fs::path path)
 	return S_OK;
 }
 
+HRESULT CAnimTool_Manager::Save_CameraControlEvent(fs::path path)
+{
+	const _uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
+	const DTO::ECategory eCategory = DTO::ECategory::CAMERACONTROLEVENT;
+
+	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_CameraControlEvent>(iLevelID, eCategory)))
+		return E_FAIL;
+
+	CDataDocumentBase* pDocument = m_pGameInstance->Ensure_Document(iLevelID, eCategory, path);
+	CDataDocument_CameraControlEvent* pCameraDoc = static_cast<CDataDocument_CameraControlEvent*>(pDocument);
+	if (pCameraDoc == nullptr)
+		return E_FAIL;
+
+	DTO::CAMERACONTROL_EVENT_INFO_DESC tData{};
+	tData.strOwnerTag = path.stem().string();
+
+	if (m_tAnimControllInfo.pModel)
+	{
+		for (auto& evt : m_tEventInfo.vecCameraControlEvents)
+		{
+			if (evt.iAnimIndex >= 0)
+			{
+				evt.strAnimTag = Engine_Utils::ToString(
+					m_tAnimControllInfo.pModel->Get_AnimationName(evt.iAnimIndex));
+			}
+		}
+	}
+
+	tData.vecCameraControlEvents = m_tEventInfo.vecCameraControlEvents;
+
+	if (FAILED(pCameraDoc->Upsert(tData)))
+		return E_FAIL;
+
+	m_pGameInstance->Save_File_Json(iLevelID, eCategory, path);
+	return S_OK;
+}
+
 HRESULT CAnimTool_Manager::Release_Event()
 {
 	m_pGameInstance->Unsubscribe<LoadAttackOverlap>(m_EventHandles[CLevel_Animation::Event::LOAD_OVERLAP_SCRIPT]);
@@ -635,6 +728,23 @@ void CAnimTool_Manager::Modify_SoundEvent()
 	m_pSoundModule->Rebuild(m_tEventInfo.vecSoundEvents);
 }
 
+void CAnimTool_Manager::Modify_CameraControlEvent(_uint eventIdx, DTO::CAMERACOTRNOL_EVENT event)
+{
+	if (eventIdx >= m_tEventInfo.vecCameraControlEvents.size())
+		return;
+
+	m_tEventInfo.vecCameraControlEvents[eventIdx] = event;
+	m_pCameraControlModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
+	m_pCameraControlModule->Rebuild(m_tEventInfo.vecCameraControlEvents);
+}
+
+void CAnimTool_Manager::Modify_CameraControlEvent(vector<DTO::CAMERACOTRNOL_EVENT> events)
+{
+	m_tEventInfo.vecCameraControlEvents = events;
+	m_pCameraControlModule->Set_Owner(m_tAnimControllInfo.pCurrentObject);
+	m_pCameraControlModule->Rebuild(m_tEventInfo.vecCameraControlEvents);
+}
+
 HRESULT CAnimTool_Manager::EffectEvent_GizmoObjectSetting()
 {
 
@@ -648,6 +758,7 @@ void CAnimTool_Manager::Free()
 	Safe_Release(m_pOverlapModule);
 	Safe_Release(m_pEffectModule);
 	Safe_Release(m_pSoundModule);
+	Safe_Release(m_pCameraControlModule);
 
 	Release_Event();
 
