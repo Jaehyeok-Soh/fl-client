@@ -1275,13 +1275,36 @@ float4 PS_DISTOTION(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
     }
     
     float4 refractionColor = g_RenderTargetSceneHDRCopyTexture.Sample(LinearClampSampler, distortionUV);
-
-    float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
-    scrolledUV += g_Effect.g_ScrollOffset;
-    float4 mainTex = g_DefaultTextures[DEFAULTTEXTURE].Sample(LinearClampSampler, scrolledUV);
-    // 수명에 따른 투명도 계산
+    
+    
+    float4 DiffuseSample = float4(1.f, 1.f, 1.f, 1.f);
+    
+    if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
+    {
+        if (HasTextureSprite(g_Effect.DiffuseTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.DiffuseTexture_SpriteInfo);
+            
+            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+        }
+        else if (HasTextureScroll(SCROLL_DIFFUSE))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
+            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+        }
+        else
+        {
+            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+        }
+    }
+    else
+    {
+        DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+    }
+    
     float lifeAlpha = 1.0f - (In.vLifeTime.x / In.vLifeTime.y);
-    float finalAlpha = mainTex.a * lifeAlpha;
+    float finalAlpha = DiffuseSample.a * lifeAlpha;
 
     if (finalAlpha < g_Effect.g_DiscardValue)
         discard;
