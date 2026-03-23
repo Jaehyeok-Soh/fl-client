@@ -853,6 +853,18 @@
     <Filter Include="03. GameObject\InteractiveObject\00. WeaponPickUp">
       <UniqueIdentifier>{bec36d74-1c86-4e94-904a-727139f1fa48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Villager_1">
+      <UniqueIdentifier>{ce34dca1-063d-4d6a-9877-83ec6521b8c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Kid_1">
+      <UniqueIdentifier>{68af1f20-ced8-457e-8404-d7c298ac428e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Villager_1">
+      <UniqueIdentifier>{9f6fc000-8cfd-4490-8078-f82c773403a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Kid_1">
+      <UniqueIdentifier>{c6dbeae1-4a69-41e7-af3d-a67094b67d21}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1584,6 +1596,18 @@
     <ClInclude Include="..\public\CameraEventBinder.h">
       <Filter>07. System\04. Binder</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\NPC_Villager_1.h">
+      <Filter>03. GameObject\ContainerObjects\NPC\Villager_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Kid_1.h">
+      <Filter>03. GameObject\ContainerObjects\NPC\Kid_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Villager_Body_1.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Villager_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Kid_Body_1.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2304,6 +2328,18 @@
     </ClCompile>
     <ClCompile Include="..\private\CameraEventBinder.cpp">
       <Filter>07. System\04. Binder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Villager_1.cpp">
+      <Filter>03. GameObject\ContainerObjects\NPC\Villager_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Kid_1.cpp">
+      <Filter>03. GameObject\ContainerObjects\NPC\Kid_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Villager_Body_1.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Villager_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Kid_Body_1.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -38,7 +38,7 @@ HRESULT CNPC_Tavern_Body::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("NPC_Pan_Body");
+	Set_Name("NPC_Tavern_Body");
 
 	NPCBODY_DESC* pDesc = static_cast<NPCBODY_DESC*>(pArg);
 	if (FAILED(Ready_Components(pDesc)))
