@@ -17,6 +17,8 @@
 #include "DialogueManager.h"
 #include <UI_Manager.h>
 
+#define TEXT_SPEED 0.2f
+
 CUIConversation_Text::CUIConversation_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIText(pDevice, pDeviceContext)
 {
@@ -109,6 +111,16 @@ HRESULT CUIConversation_Text::Bind_ShaderResources()
 
 HRESULT CUIConversation_Text::Attach_Personal_Info()
 {
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::CONVERSATION_NAME:
+		break;
+	case DTO::EUITextSubClassType::CONVERSATION_TEXT:
+		break;
+	case DTO::EUITextSubClassType::CONVERSATION_CURRENT_TEXT:
+		m_iProgressConversation = 2;
+		break;
+	}
 	return S_OK;
 }
 
@@ -207,14 +219,92 @@ void CUIConversation_Text::Tick_By_Type(const _float fTimeDelta)
 	}
 	break;
 	case DTO::EUITextSubClassType::CONVERSATION_TEXT:
-	{
-		if (KEY_BUTTON_DOWN(DIK_SPACE))
-			m_pGameInstance->Broadcast<DIALOGUE_NEXT>();
+		Tick_For_ConversationText(fTimeDelta, pDialogue);
+		break;
+	case DTO::EUITextSubClassType::CONVERSATION_CURRENT_TEXT:
+		Tick_For_ConversationCurrentText(fTimeDelta, pDialogue);
+		break;
+	}
+}
 
-		m_wstrText = pDialogue->wstrContentText;
+void CUIConversation_Text::Tick_For_ConversationText(const _float fTimeDelta, auto* pDialogue)
+{
+	if (KEY_BUTTON_DOWN(DIK_SPACE))
+	{
+		if (!m_isFinCurrentConversation)
+		{
+			m_wstrText = m_wstrCurrentText;
+			m_isFinCurrentConversation = true;
+			m_iProgressConversation = (_uint)m_wstrCurrentText.size();
+			return;
+		}
+		else
+		{
+			m_isFinCurrentConversation = false;
+			m_fConversation_TimeAcc = 0.f;
+			m_iProgressConversation = 0;
+			return;
+		}
 	}
-	break;
+
+	if (m_isFinCurrentConversation)
+		return;
+
+	m_wstrCurrentText = pDialogue->wstrContentText;
+
+	m_fConversation_TimeAcc += fTimeDelta;
+	if (m_fConversation_TimeAcc > TEXT_SPEED)
+	{
+		m_fConversation_TimeAcc = 0.f;
+		m_iProgressConversation++;
 	}
+
+	if (m_iProgressConversation <= m_wstrCurrentText.size())
+		m_wstrText = m_wstrCurrentText.substr(0, m_iProgressConversation);
+	else
+		m_isFinCurrentConversation = true;
+}
+
+void CUIConversation_Text::Tick_For_ConversationCurrentText(const _float fTimeDelta, auto* pDialogue)
+{
+	if (KEY_BUTTON_DOWN(DIK_SPACE))
+	{
+		if (!m_isFinCurrentConversation)
+		{
+			m_wstrText = m_wstrCurrentText;
+			m_isFinCurrentConversation = true;
+			m_iProgressConversation = (_uint)m_wstrCurrentText.size();
+			return;
+		}
+		else
+		{
+			m_pGameInstance->Broadcast<DIALOGUE_NEXT>();
+			m_isFinCurrentConversation = false;
+			m_fConversation_TimeAcc = 0.f;
+			m_iProgressConversation = 2;
+			return;
+		}
+	}
+
+	Tick_Fade_Text(fTimeDelta);
+
+	if (m_isFinCurrentConversation)
+		return;
+
+	m_wstrCurrentText = pDialogue->wstrContentText;
+
+	m_fConversation_TimeAcc += fTimeDelta;
+	if (m_fConversation_TimeAcc > TEXT_SPEED)
+	{
+		m_fConversation_TimeAcc = 0.f;
+		Ready_Fade_Text(TEXT_SPEED, 0.7f, 1.f, m_fDelay);
+		m_iProgressConversation++;
+	}
+
+	if (m_iProgressConversation <= m_wstrCurrentText.size())
+		m_wstrText = m_wstrCurrentText.substr(0, m_iProgressConversation);
+	else
+		m_isFinCurrentConversation = true;
 }
 
 CUIConversation_Text* CUIConversation_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

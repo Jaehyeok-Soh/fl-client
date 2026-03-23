@@ -304,6 +304,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	CONVERSATION_BEGIN,
 	CONVERSATION_NAME,
 	CONVERSATION_TEXT,
+	CONVERSATION_CURRENT_TEXT,
 	CONVERSATION_END,
 
 	//동그란 미니게임
@@ -417,6 +418,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::CONVERSATION_BEGIN,					"CONVERSATION_BEGIN" },
 		{ EUITextSubClassType::CONVERSATION_NAME,					"CONVERSATION_NAME" },
 		{ EUITextSubClassType::CONVERSATION_TEXT,					"CONVERSATION_TEXT" },
+		{ EUITextSubClassType::CONVERSATION_CURRENT_TEXT,			"CONVERSATION_CURRENT_TEXT" },
 		{ EUITextSubClassType::CONVERSATION_END,					"CONVERSATION_END" },
 		
 		{ EUITextSubClassType::MINIGAME_CIRCLE_BEGIN,				"MINIGAME_CIRCLE_BEGIN" },
@@ -527,6 +529,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "CONVERSATION_BEGIN")						return EUITextSubClassType::CONVERSATION_BEGIN;
 	else if (str == "CONVERSATION_NAME")						return EUITextSubClassType::CONVERSATION_NAME;
 	else if (str == "CONVERSATION_TEXT")						return EUITextSubClassType::CONVERSATION_TEXT;
+	else if (str == "CONVERSATION_CURRENT_TEXT")				return EUITextSubClassType::CONVERSATION_CURRENT_TEXT;
 	else if (str == "CONVERSATION_END")							return EUITextSubClassType::CONVERSATION_END;
 	
 	else if (str == "MINIGAME_CIRCLE_BEGIN")					return EUITextSubClassType::MINIGAME_CIRCLE_BEGIN;
@@ -642,6 +645,7 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::CONVERSATION_BEGIN:					return "CONVERSATION_BEGIN";
 	case EUITextSubClassType::CONVERSATION_NAME:					return "CONVERSATION_NAME";
 	case EUITextSubClassType::CONVERSATION_TEXT:					return "CONVERSATION_TEXT";
+	case EUITextSubClassType::CONVERSATION_CURRENT_TEXT:			return "CONVERSATION_CURRENT_TEXT";
 	case EUITextSubClassType::CONVERSATION_END:						return "CONVERSATION_END";
 	
 	case EUITextSubClassType::MINIGAME_CIRCLE_BEGIN:				return "MINIGAME_CIRCLE_BEGIN";
@@ -918,6 +922,7 @@ enum class EUIDImageSubClassType
 	COMMUNITY_END,
 
 	CONVERSATION_DOWN,
+	CONVERSATION_BG,
 
 	// 마우스 커서
 	MOUSE_CURSOR_BEGIN,
@@ -1085,6 +1090,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::COMMUNITY_END,							"COMMUNITY_END" },
 
 	{ EUIDImageSubClassType::CONVERSATION_DOWN,							"CONVERSATION_DOWN" },
+	{ EUIDImageSubClassType::CONVERSATION_BG,							"CONVERSATION_BG" },
 
 	{ EUIDImageSubClassType::MOUSE_CURSOR_BEGIN,						"MOUSE_CURSOR_BEGIN" },
 	{ EUIDImageSubClassType::MOUSE_CURSOR_DEFAULT,						"MOUSE_CURSOR_DEFAULT" },
@@ -1251,6 +1257,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "COMMUNITY_END")							return EUIDImageSubClassType::COMMUNITY_END;
 
 	if (str == "CONVERSATION_DOWN")						return EUIDImageSubClassType::CONVERSATION_DOWN;
+	if (str == "CONVERSATION_BG")						return EUIDImageSubClassType::CONVERSATION_BG;
 
 	if (str == "MOUSE_CURSOR_BEGIN")					return EUIDImageSubClassType::MOUSE_CURSOR_BEGIN;
 	if (str == "MOUSE_CURSOR_DEFAULT")					return EUIDImageSubClassType::MOUSE_CURSOR_DEFAULT;
@@ -1419,6 +1426,7 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::COMMUNITY_END:							return "COMMUNITY_END";
 
 	case EUIDImageSubClassType::CONVERSATION_DOWN:						return "CONVERSATION_DOWN";
+	case EUIDImageSubClassType::CONVERSATION_BG:						return "CONVERSATION_BG";
 
 	case EUIDImageSubClassType::MOUSE_CURSOR_BEGIN:						return "MOUSE_CURSOR_BEGIN";
 	case EUIDImageSubClassType::MOUSE_CURSOR_DEFAULT:					return "MOUSE_CURSOR_DEFAULT";

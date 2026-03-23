@@ -388,7 +388,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isQuest				= (Type >= DTO::EUIDImageSubClassType::QUEST_BEGIN && Type <= DTO::EUIDImageSubClassType::QUEST_END);
 		const _bool isQuestNavi			= (Type >= DTO::EUIDImageSubClassType::QUEST_NAVI_BEGIN && Type <= DTO::EUIDImageSubClassType::QUEST_NAVI_END);
 		const _bool isCommunity			= (Type >= DTO::EUIDImageSubClassType::COMMUNITY_BEGIN && Type <= DTO::EUIDImageSubClassType::COMMUNITY_END);
-		const _bool isConversation		= (Type == DTO::EUIDImageSubClassType::CONVERSATION_DOWN);
+		const _bool isConversation		= (Type >= DTO::EUIDImageSubClassType::CONVERSATION_DOWN && Type <= DTO::EUIDImageSubClassType::CONVERSATION_BG);
 		const _bool isMouseCursor		= (Type >= DTO::EUIDImageSubClassType::MOUSE_CURSOR_BEGIN && Type <= DTO::EUIDImageSubClassType::MOUSE_CURSOR_END);
 		const _bool isMiniGameCircle	= (Type >= DTO::EUIDImageSubClassType::MINIGAME_CIRCLE_BEGIN && Type <= DTO::EUIDImageSubClassType::MINIGAME_CIRCLE_END);
 
