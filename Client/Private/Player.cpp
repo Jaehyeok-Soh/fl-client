@@ -162,12 +162,12 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     {
     case ENUM_TO_UINT(ELevelType::TEST):
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::NONE));
-        pPlayerState->Set_SpecialDashOn(true);
+        //pPlayerState->Set_SpecialDashOn(true);
         break;
 
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
         Set_FKeyEvent(0, true);
-        pPlayerState->Set_SpecialDashOn(true);
+       // pPlayerState->Set_SpecialDashOn(true);
 
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
@@ -188,30 +188,11 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
     Super::Update_Priority(fTimeDelta);
 
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
-    switch (m_pGameInstance->Get_CurrentLevelIndex())
-    {
-    case ENUM_TO_UINT(ELevelType::TEST):
-    {
-        CGameObject* pMonster = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TEST), g_wszMonstereLayer);
-        if(pMonster)
-            pPlayerState->Set_PivotPos(pMonster->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
-    }
-    break;
 
-    case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
-    {
-        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszBossLayer);
-        if(pBoss)
-            pPlayerState->Set_PivotPos(pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
-    }
-    break;
-
-    }
-
-    // special dash on일때만 pivot 넘겨줌
+    // special dash on일때만 pivot 넘겨줌 : 보스전에만 가능
     if (pPlayerState->Get_SpecialDashOn())
     {
-        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszBossLayer);
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
         if (pBoss)
             pPlayerState->Set_PivotPos(pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
     }
@@ -1251,10 +1232,10 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::CHARGE);
         desc.vecChangeState_ByKey                                                       = vecChangeState_ByKey;
 
-        tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.1f; // (24.f / 36.f) / (36.f / 24.f) / 1.2f;
-        desc.tKeyTimer       = tKeyTimer;
-        desc.pOwnerGun = pMyGun;
+        tKeyTimer.bCountTime    = true;
+        tKeyTimer.fMaxTime      = 0.1f; // (24.f / 36.f) / (36.f / 24.f) / 1.2f;
+        desc.tKeyTimer          = tKeyTimer;
+        desc.pOwnerGun          = pMyGun;
 
         desc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_NextFrame;
 
@@ -1303,9 +1284,9 @@ HRESULT CPlayer::Ready_BaseStates()
     {
         CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = 0;
-        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
-        desc.bBlend = true;
-        desc.bLoop = false;
+        desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
+        desc.bBlend         = false;
+        desc.bLoop          = false;
 
         desc.FCollis = 0;
 

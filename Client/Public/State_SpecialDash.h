@@ -20,7 +20,7 @@ public:
 public:
 	virtual _uint	Get_Capabilities() const override
 	{
-		return	0;
+		return	0; // ¹«Àû
 	}
 
 private:

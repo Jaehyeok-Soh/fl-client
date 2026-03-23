@@ -1127,7 +1127,7 @@ void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex, _boo
 
 	m_vecAnimations[iAnimationIndex]->Reset_NotifyCursor();
 
-	if (m_eCurrentAnimationState != BLEND)
+	if (m_eCurrentAnimationState != BLEND || bChannelReset)
 		m_vecAnimations[iAnimationIndex]->Reset_PrePosition(m_vPreMainPosition);
 
 	else
