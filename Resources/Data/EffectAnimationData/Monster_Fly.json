@@ -1,0 +1,40 @@
+{
+    "Category": "EFFECTEVENT",
+    "Objects": [
+        {
+            "Type": 2,
+            "iNumPool": 0,
+            "strOwnerTag": "Monster_Fly",
+            "vecEffectEvents": [
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 1.0,
+                    "iAnimIndex": 1,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Monster_Fly_C01_Skill01",
+                    "strDescription": "",
+                    "strEffectTag": "Fly_Charge_Start",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            ]
+        }
+    ]
+}

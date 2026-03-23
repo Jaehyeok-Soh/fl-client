@@ -33,7 +33,7 @@ public:
 
 	void Tick(_float fTimeDelta);
 
-	_bool CheckAlreadyHit(CGameObject* hitObject);
+	_bool CheckAlreadyHit(PxOverlapHit* hitObject);
 	void HitObjectsClear();
 
 private:
@@ -60,7 +60,7 @@ private:
 
 	vector<PxOverlapHit> m_vecHitResults;
 	PxOverlapBuffer m_hitBuffer;
-	std::set<CGameObject*> m_hitObjects;
+	std::set<PxOverlapHit*> m_hitObjects;
 
 	wstring m_strEventString = {};
 

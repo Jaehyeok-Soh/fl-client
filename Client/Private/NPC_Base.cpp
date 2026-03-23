@@ -46,6 +46,8 @@
 ////////////
 #include "NPC_Pan.h"
 #include "NPC_Tavern.h"
+#include "NPC_Villager_1.h"
+#include "NPC_Kid_1.h"
 
 CNPC_Base::CNPC_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -430,6 +432,38 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 		wstrAddLayerName = g_wszNPCeLayer;
 	}
 		break;
+	case Engine::EObjectEnumTag::NPC_VILLAGER_1:
+	{
+		npcDesc = CNPC_Villager_1::Get_PreSetDesc(npcDesc.iLevelIndex);
+		npcDesc.iLevelIndex = iAddLevelType;
+		npcDesc.pTransform_Desc = pTransformDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		wstrFindPrototypeName = g_wszNPC_Villager_1_Prototype_Tag;
+		wstrAddLayerName = g_wszNPCeLayer;
+	}
+	break;
+	case Engine::EObjectEnumTag::NPC_KID_1:
+	{
+		npcDesc = CNPC_Kid_1::Get_PreSetDesc(npcDesc.iLevelIndex);
+		npcDesc.iLevelIndex = iAddLevelType;
+		npcDesc.pTransform_Desc = pTransformDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		wstrFindPrototypeName = g_wszNPC_Kid_1_Prototype_Tag;
+		wstrAddLayerName = g_wszNPCeLayer;
+	}
+	break;
 	default:
 		return E_FAIL;
 	}

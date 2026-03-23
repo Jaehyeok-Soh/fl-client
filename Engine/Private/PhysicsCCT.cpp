@@ -156,6 +156,9 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 		}
 	}
 
+	if (m_CollisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN))
+		m_tMoveState.vVelocity.y = 0.f;
+
 	m_CollisionFlags = Move((m_tMoveState.vVelocity * fTimeDelta) + m_tMoveState.vFixedMove, 0.001f, fTimeDelta);
 
 	m_tMoveState.ReadyNext();

@@ -3,13 +3,13 @@
 
 NS_BEGIN(Client)
 
-class CNPC_Tavern_Body final : public CNPC_Body_Base
+class CNPC_Villager_Body_1 final : public CNPC_Body_Base
 {
 	using Super = CNPC_Body_Base;
 private:
-	CNPC_Tavern_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CNPC_Tavern_Body(const CNPC_Tavern_Body& rhs);
-	virtual ~CNPC_Tavern_Body() = default;
+	CNPC_Villager_Body_1(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CNPC_Villager_Body_1(const CNPC_Villager_Body_1& rhs);
+	virtual ~CNPC_Villager_Body_1() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -33,7 +33,7 @@ private:
 	HRESULT Bind_ShaderResources();
 
 public:
-	static CNPC_Tavern_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CNPC_Villager_Body_1* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

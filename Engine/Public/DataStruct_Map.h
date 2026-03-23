@@ -100,6 +100,8 @@ inline std::string MakeNPCType_ToString(OBJECT_ENUM_TAG::Enum eTag)
 	case Engine::OBJECT_ENUM_TAG::NPC_PAN:		return "NPC_Pan";
 	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:	return "NPC_Berenica";
 	case Engine::OBJECT_ENUM_TAG::NPC_TAVERN:	return "NPC_Tavern";
+	case Engine::OBJECT_ENUM_TAG::NPC_VILLAGER_1:	return "NPC_Villager_1";
+	case Engine::OBJECT_ENUM_TAG::NPC_KID_1:	return "NPC_Kid_1";
 	default:									return "Unknown";
 	}
 }
@@ -110,6 +112,8 @@ inline OBJECT_ENUM_TAG::Enum MakeNPCType_ToEnum(const std::string strType)
 	if (strType == "NPC_Pan")					return Engine::OBJECT_ENUM_TAG::NPC_PAN;
 	if (strType == "NPC_Berenica")				return Engine::OBJECT_ENUM_TAG::NPC_BERENICA;
 	if (strType == "NPC_Tavern")				return Engine::OBJECT_ENUM_TAG::NPC_TAVERN;
+	if (strType == "NPC_Villager_1")			return Engine::OBJECT_ENUM_TAG::NPC_VILLAGER_1;
+	if (strType == "NPC_Kid_1")					return Engine::OBJECT_ENUM_TAG::NPC_KID_1;
 
 	return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
 }
