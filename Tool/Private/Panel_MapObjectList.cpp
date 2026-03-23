@@ -1328,13 +1328,16 @@ void CPanel_MapObjectList::ImGuiUpdate_Env_Desc(ENV_DESC* pDesc)
 			// 기본값 설정 (필요시)
 			tNewInfo.tDesc.VFX_Scale = { 1.f, 1.f, 1.f };
 
-			targetInfos.push_back(tNewInfo);
 
 			// 실제 맵 객체에도 즉시 생성 요청
 			if (m_pSelectMapObject)
 			{
 				/* PushBack 하게되면 Description이 작성된다 */
 				m_pSelectMapObject->Add_EnvEffect(tNewInfo.strTags);
+
+				const EFFECT_ENV_DESC& tEffectEnvDesc = m_pSelectMapObject->m_vEnvEffectList.back().second;
+				tNewInfo.tDesc = tEffectEnvDesc;
+				targetInfos.push_back(tNewInfo);
 			}
 		}
 	}
@@ -1372,6 +1375,8 @@ void CPanel_MapObjectList::ImGuiUpdate_Env_Desc(ENV_DESC* pDesc)
 				if (ImGui::DragFloat3("Local Rot", (float*)&tDataDesc.VFX_Rotation, 0.5f)) bChanged = true;
 				if (ImGui::DragFloat3("Local Scale", (float*)&tDataDesc.VFX_Scale, 0.01f)) bChanged = true;
 				if (ImGui::DragFloat("Local Speed", (float*)&tDataDesc.VFX_fSpeed, 0.001f, -FLT_MAX, FLT_MAX, "%.3f")) bChanged = true;
+				if (ImGui::ColorEdit3("Local Color", &tDataDesc.VFX_Color.x)) bChanged = true;
+
 
 				ImGui::Separator();
 

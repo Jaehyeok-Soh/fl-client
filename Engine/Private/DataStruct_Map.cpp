@@ -742,6 +742,12 @@ void ENV_DESC::from_Json(const json& LoadJson)
 				Engine_Utils::read_vec3_xyz(DescJson["Pos"]  , tInfo.tDesc.VFX_Target_Position);
 				Engine_Utils::read_vec3_xyz(DescJson["Rot"]  , tInfo.tDesc.VFX_Rotation);
 				Engine_Utils::read_vec3_xyz(DescJson["Scale"], tInfo.tDesc.VFX_Scale);
+				
+				if(DescJson.contains("Color"))
+				{
+					Engine_Utils::read_vec3_xyz(DescJson["Color"],tInfo.tDesc.VFX_Color);
+				}
+
 				if (DescJson.contains("Speed"))
 				{
 					tInfo.tDesc.VFX_fSpeed = DescJson["Speed"];
@@ -818,6 +824,8 @@ void ENV_DESC::to_Json(json& SaveJson)
 		Engine_Utils::write_vec3_xyz(DescObj["Rot"],tInfo.tDesc.VFX_Rotation);
 		Engine_Utils::write_vec3_xyz(DescObj["Scale"],tInfo.tDesc.VFX_Scale);
 		DescObj["Speed"] = tInfo.tDesc.VFX_fSpeed;
+		Engine_Utils::write_vec3_xyz(DescObj["Color"], tInfo.tDesc.VFX_Color);
+
 
 
 		if (!tInfo.tDesc.VFX_PartsDescList.empty())
@@ -1100,10 +1108,15 @@ LIGHTOBJECT_DESC::LIGHTOBJECT_DESC(const LIGHTOBJECT_DESC& rhs)
 	, fFlickerSpeed{ rhs.fFlickerSpeed }
 	, fFlickerMin{ rhs.fFlickerMin }
 	, fBaseRange{ rhs.fBaseRange }
-	, pDebugLight{ rhs.pDebugLight }
+	, pDebugLight{ nullptr }
 	, vOffsetPosition{ rhs.vOffsetPosition }
 	, fEmissviePower{ rhs .fEmissviePower}
 {
+	this->tLightDesc.eType = LIGHT_TYPE::POINT;
+	this->tLightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	this->tLightDesc.vAmbient = { 1.f,1.f,1.f,1.f };
+	this->tLightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+	pDebugLight = CLight::Create(this->tLightDesc);
 }
 
 LIGHTOBJECT_DESC::~LIGHTOBJECT_DESC()
