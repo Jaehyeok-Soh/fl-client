@@ -24,6 +24,14 @@ HRESULT CLight::Initialize(const LIGHT_DESC& LightDesc)
     return S_OK;
 }
 
+HRESULT CLight::Bind_Texture(CShader* pShader)
+{
+    if (pShader == nullptr) return E_FAIL;
+
+    //if(pShader->BindTexutre)
+    return S_OK;
+}
+
 CLight* CLight::Create(const LIGHT_DESC& LightDesc)
 {
     CLight* pInstance = new CLight();

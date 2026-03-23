@@ -20,9 +20,12 @@ public:
 	void Setup_Diffuse(const Vec4& vDiffuse) { m_tLightDesc.vDiffuse = vDiffuse; }
 	void Setup_Ambient(const Vec4& vAmbient) { m_tLightDesc.vAmbient = vAmbient; }
 	void Setup_Specular(const Vec4& vSpecular) { m_tLightDesc.vSpecular = vSpecular; }
+	void Set_Texture(const wstring& wstrTexture);
+	HRESULT Bind_Texture(class CShader* pShader);
 private:
 	LIGHT_TYPE m_eType = { LIGHT_TYPE::END };
 	SHADER_LIGHTDESC				m_tLightDesc{};
+//	CTextureBase*					m_pTextureBase{nullptr};
 public:
 	static CLight* Create(const LIGHT_DESC& LightDesc);
 	virtual void Free() override;

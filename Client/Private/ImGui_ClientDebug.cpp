@@ -66,6 +66,7 @@ HRESULT CImGui_ClientDebug::Ready_Inspector()
 	m_arrInspectors[EInspectorType::Global] = CImGui_GlobalInspector::Create();
 	m_arrInspectors[EInspectorType::TextureDebug] = CImGui_TextureDebugInspector::Create();
 	m_arrInspectors[EInspectorType::PoolDebug] = CImGui_PoolInspector::Create();
+	//m_arrInspectors[EInspectorType::Light] = CImGui
 	return S_OK;
 }
 

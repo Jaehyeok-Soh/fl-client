@@ -54,7 +54,8 @@ NS_END
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CDataStruct_SoundEvent final : public IObjectDataBase {
+class ENGINE_DLL CDataStruct_SoundEvent final : public IObjectDataBase
+{
     using Super = IObjectDataBase;
 private:
     CDataStruct_SoundEvent() = default;

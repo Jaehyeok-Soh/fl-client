@@ -48,8 +48,8 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 30.0,
-                        "y": 30.0,
+                        "x": 1.0,
+                        "y": 1.0,
                         "z": 1.0
                     },
                     "ExternalForceCurve": [],
@@ -254,8 +254,8 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 40.0,
-                        "y": 40.0,
+                        "x": 1.0,
+                        "y": 1.0,
                         "z": 1.0
                     },
                     "StartSpeed": 2.0,

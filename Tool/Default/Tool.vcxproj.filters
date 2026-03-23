@@ -343,11 +343,14 @@
     <Filter Include="03. Level\Animation\03. Sound_Module">
       <UniqueIdentifier>{09cf807a-ff06-4fb4-9d38-9a3c5e9f5473}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Component\Sound">
-      <UniqueIdentifier>{e204b4a2-2f70-400f-9263-b359472af135}</UniqueIdentifier>
-    </Filter>
     <Filter Include="09. Builder\Sound">
       <UniqueIdentifier>{3169e4f7-ec1f-498b-99ff-9b4c99924918}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\SoundPlayer">
+      <UniqueIdentifier>{e204b4a2-2f70-400f-9263-b359472af135}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Level\Animation\04. CameraControl_Module">
+      <UniqueIdentifier>{4669d9e4-7db1-4a0e-bcb5-d8a853c66acf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -682,10 +685,13 @@
       <Filter>03. Level\Animation\03. Sound_Module</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ToolAnimSoundPlayer.h">
-      <Filter>04. Component\Sound</Filter>
+      <Filter>04. Component\SoundPlayer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Builder_SoundEvent.h">
       <Filter>09. Builder\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Event_CameraControl_Module.h">
+      <Filter>03. Level\Animation\04. CameraControl_Module</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1003,10 +1009,13 @@
       <Filter>03. Level\Animation\03. Sound_Module</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ToolAnimSoundPlayer.cpp">
-      <Filter>04. Component\Sound</Filter>
+      <Filter>04. Component\SoundPlayer</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Builder_SoundEvent.cpp">
       <Filter>09. Builder\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Event_CameraControl_Module.cpp">
+      <Filter>03. Level\Animation\04. CameraControl_Module</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

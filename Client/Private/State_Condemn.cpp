@@ -17,11 +17,11 @@ HRESULT CState_Condemn::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_tTurnData.fDistance		= 3.5f;
-
-	m_tTurnData.fSpeed			= 3.f;
-	m_tTurnData.fTurnHalfTime	= 1.f;
-	m_tTurnData.fTurnHoldTime	= 2.f;
+	m_tTurnData.fDistance		= 4.f;
+	// Speed 를 Degree / Sec으로 해석
+	m_tTurnData.fSpeed			= -170.f;
+	m_tTurnData.fTurnHalfTime	= 0.4f;
+	m_tTurnData.fTurnHoldTime	= 2.5f;
 
 	return S_OK;
 }

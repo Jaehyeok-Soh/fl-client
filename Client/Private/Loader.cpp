@@ -6,6 +6,7 @@
 #include "MonsterControlContext.h"
 #include "MonoBehaviour.h"
 #include "Sound_Handler.h"
+#include "CameraEvent_Handler.h"
 #include "EffectHandler.h"
 #include "PlayerActionState.h"
 #include "MonsterActionState.h"
@@ -77,6 +78,8 @@
 #include "EnvObject.h"
 #include "BonePart.h"
 #include "WeaponPickUp.h"
+#include "LightObject.h"
+#include "ChangeLevelObject.h"
 
 //=================
 // SkillObject
@@ -138,6 +141,8 @@
 //=================
 #include "NPC_Pan.h"
 #include "NPC_Pan_Body.h"
+#include "NPC_Tavern.h"
+#include "NPC_Tavern_Body.h"
 
 //=================
 // UI
@@ -715,8 +720,27 @@ HRESULT CLoader::Loading_For_Logo()
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Pan_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
+	// For.Prototype_Component_Model_NPC_Tavern
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale150);
+		desc.wstrModelFolderName = L"NPC_Tavern";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+		desc.vecStageBoneIndices = {};
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Tavern_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
+	// For. Prototype_Component_CameraController
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_CameraController", CCameraController::Create());
 	// For. Prototype_Component_RenderFx
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_RenderFx", CRenderFx::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_ActionState_Player
@@ -735,6 +759,8 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_SoundHandler
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_SoundHandler", CSound_Handler::Create());
+	// For. Prototype_Component_CameraEvent_Handler
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_CameraEvent_Handler", CCameraEvent_Handler::Create());
 	// For. Prototype_Component_EffectHandler_SkillObject
 	{
 		CEffectHandler::ANIM_EFFECT_HANDLER_DESC desc{};
@@ -811,9 +837,11 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWater_Prototype_Tag,						CWater::Create(m_pDevice, m_pDeviceContext));
 
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszEnvObject_Prototype_Tag,					CEnvObject::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszLightObject_Prototype_Tag,				CLightObject::Create(m_pDevice, m_pDeviceContext));
 
 		/* Interactive Object */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszWeaponPickUp_Prototype_Tag,				CWeaponPickUp::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszChangeLevelObject_Prototype_Tag,			CChangeLevelObject::Create(m_pDevice, m_pDeviceContext));
 
 
 		/* Invisible Wall */
@@ -849,6 +877,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Prototype_Tag, CNPC_Pan::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_NPC_Pan_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Body_Prototype_Tag, CNPC_Pan_Body::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Tavern
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Tavern_Prototype_Tag, CNPC_Tavern::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Tavern_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Tavern_Body_Prototype_Tag, CNPC_Tavern_Body::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Panel_AnimDescription.h"
+#include "Event_CameraControl_Module.h"
 #include "AnimTool_Manager.h"
 #include "GameInstance.h"
 
@@ -66,6 +67,15 @@ void CPanel_AnimDescription::ModifySoundOne()
     m_pAnimToolManager->Modify_SoundEvent();
 }
 
+void CPanel_AnimDescription::ModifyCameraOne()
+{
+    const int idx = m_tAnimControllInfo->iCurrentCameraControlEventIndex;
+    if (idx < 0 || idx >= (int)m_tEventInfo->vecCameraControlEvents.size())
+        return;
+
+    m_pAnimToolManager->Modify_CameraControlEvent(idx, m_tEventInfo->vecCameraControlEvents[idx]);
+}
+
 void CPanel_AnimDescription::Description_TabWindow()
 {
 	ImGui::Begin("Description Editor");
@@ -107,6 +117,21 @@ void CPanel_AnimDescription::Description_TabWindow()
             {
                 ImGui::Text("Select an sound event from the timeline.");
             }
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Camera"))
+        {
+            if (m_tAnimControllInfo->iCurrentCameraControlEventIndex != -1 &&
+                m_tAnimControllInfo->iCurrentCameraControlEventIndex < m_tEventInfo->vecCameraControlEvents.size())
+            {
+                Desc_CameraControlWindow();
+            }
+            else
+            {
+                ImGui::Text("Select a camera event from the timeline.");
+            }
+
             ImGui::EndTabItem();
         }
 
@@ -731,6 +756,212 @@ void CPanel_AnimDescription::Desc_SoundWindow()
         default:
             break;
         }
+    }
+
+    ImGui::PopID();
+}
+
+void CPanel_AnimDescription::Desc_CameraControlWindow()
+{
+    auto* pEvent = &m_tEventInfo->vecCameraControlEvents[m_tAnimControllInfo->iCurrentCameraControlEventIndex];
+    if (pEvent == nullptr)
+    {
+        ImGui::TextDisabled("No Camera Event Selected");
+        return;
+    }
+
+    ImGui::PushID(pEvent);
+
+    if (ImGui::Button("Delete this Camera Event"))
+        m_pAnimToolManager->Open_ConfirmModal("Delete_Camera_Event");
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Preview"))
+    {
+        if (m_pAnimToolManager->Get_CameraControlMoule())
+            m_pAnimToolManager->Get_CameraControlMoule()->Preview_Event(m_tAnimControllInfo->iCurrentCameraControlEventIndex);
+    }
+
+    if (1 == m_pAnimToolManager->Render_ConfirmModal("Delete_Camera_Event", "really sure delete this camera event?"))
+    {
+        _uint idxAcc = 0;
+        m_tEventInfo->vecCameraControlEvents.erase(
+            std::remove_if(
+                m_tEventInfo->vecCameraControlEvents.begin(),
+                m_tEventInfo->vecCameraControlEvents.end(),
+                [&idxAcc, &delIdx = m_tAnimControllInfo->iCurrentCameraControlEventIndex](const auto&) mutable
+                {
+                    return idxAcc++ == delIdx;
+                }),
+            m_tEventInfo->vecCameraControlEvents.end());
+
+        m_tAnimControllInfo->iCurrentCameraControlEventIndex = -1;
+        m_pAnimToolManager->Modify_CameraControlEvent(m_tEventInfo->vecCameraControlEvents);
+
+        ImGui::PopID();
+        return;
+    }
+
+    if (ImGui::CollapsingHeader("Camera Event Settings", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        if (ImGui::DragFloat("Start Time", &pEvent->fStartTrackPosition, 0.01f, 0.0f, 1000.0f, "%.2f"))
+            ModifyCameraOne();
+
+        static char descBuf[256];
+        strcpy_s(descBuf, pEvent->strDescription.c_str());
+        if (ImGui::InputText("Description", descBuf, 256))
+        {
+            pEvent->strDescription = descBuf;
+            ModifyCameraOne();
+        }
+
+        int iPhase = static_cast<int>(pEvent->ePhase);
+        if (ImGui::Combo("EventNotifyPhase", &iPhase, s_AnimNotifyPhaseItems, IM_ARRAYSIZE(s_AnimNotifyPhaseItems)))
+        {
+            pEvent->ePhase = static_cast<Engine::EAnimNotifyPhase>(iPhase);
+            ModifyCameraOne();
+        }
+
+        const char* previewLabel = pEvent->strAnimTag.empty() ? "<None>" : pEvent->strAnimTag.c_str();
+        if (ImGui::BeginCombo("Anim Tag", previewLabel))
+        {
+            for (const auto& animInfo : m_tAnimControllInfo->vecAnimInfo)
+            {
+                bool bSelected = (pEvent->strAnimTag == animInfo.strAnimName);
+                if (ImGui::Selectable(animInfo.strAnimName.c_str(), bSelected))
+                {
+                    pEvent->strAnimTag = animInfo.strAnimName;
+                    pEvent->iAnimIndex = animInfo.iIndex;
+                    ModifyCameraOne();
+                }
+
+                if (bSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
+        static const char* s_CameraCommandItems[] =
+        {
+            "Shake",
+            "FOV",
+            "RotationOffset",
+            "PositionOffset"
+        };
+
+        int iCmd = static_cast<int>(pEvent->eCommand);
+        if (ImGui::Combo("Camera Command", &iCmd, s_CameraCommandItems, IM_ARRAYSIZE(s_CameraCommandItems)))
+        {
+            pEvent->eCommand = static_cast<DTO::EAnimCameraControlCommand>(iCmd);
+            ModifyCameraOne();
+        }
+    }
+
+    ImGui::Separator();
+
+    switch (pEvent->eCommand)
+    {
+    case DTO::EAnimCameraControlCommand::Shake:
+    {
+        if (ImGui::CollapsingHeader("Shake", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ImGui::DragFloat("Pos Amplitude", &pEvent->shake.fPosAmplitude, 0.001f, 0.f, 10.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Yaw Amplitude Deg", &pEvent->shake.fYawAmplitudeDeg, 0.01f, 0.f, 180.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Pitch Amplitude Deg", &pEvent->shake.fPitchAmplitudeDeg, 0.01f, 0.f, 180.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Frequency", &pEvent->shake.fFrequency, 0.1f, 0.f, 200.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Duration", &pEvent->shake.fDuration, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+        }
+    }
+    break;
+
+    case DTO::EAnimCameraControlCommand::FOV:
+    {
+        if (ImGui::CollapsingHeader("FOV", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            static const char* s_FovModeItems[] = { "Delta", "Absolute" };
+            int iMode = static_cast<int>(pEvent->fov.eMode);
+            if (ImGui::Combo("FOV Mode", &iMode, s_FovModeItems, IM_ARRAYSIZE(s_FovModeItems)))
+            {
+                pEvent->fov.eMode = static_cast<Engine::ECameraFovMode>(iMode);
+                ModifyCameraOne();
+            }
+
+            if (ImGui::DragFloat("FOV Value Deg", &pEvent->fov.fValueDeg, 0.1f, -180.f, 180.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Blend In", &pEvent->fov.fBlendInTime, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Hold", &pEvent->fov.fHoldTime, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Blend Out", &pEvent->fov.fBlendOutTime, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+        }
+    }
+    break;
+
+    case DTO::EAnimCameraControlCommand::RotationOffset:
+    {
+        if (ImGui::CollapsingHeader("Rotation Offset", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ImGui::DragFloat("Yaw Deg", &pEvent->rotationOffset.fYawDeg, 0.1f, -180.f, 180.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Pitch Deg", &pEvent->rotationOffset.fPitchDeg, 0.1f, -180.f, 180.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Roll Deg", &pEvent->rotationOffset.fRollDeg, 0.1f, -180.f, 180.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Blend In", &pEvent->rotationOffset.fBlendInTime, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Hold", &pEvent->rotationOffset.fHoldTime, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Blend Out", &pEvent->rotationOffset.fBlendOutTime, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+        }
+    }
+    break;
+
+    case DTO::EAnimCameraControlCommand::PositionOffset:
+    {
+        if (ImGui::CollapsingHeader("Position Offset", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ImGui::DragFloat3("Offset", &pEvent->positionOffset.vOffset.x, 0.01f))
+                ModifyCameraOne();
+
+            static const char* s_SpaceItems[] = { "World", "Camera Local" };
+            int iSpace = static_cast<int>(pEvent->positionOffset.eSpace);
+            if (ImGui::Combo("Space", &iSpace, s_SpaceItems, IM_ARRAYSIZE(s_SpaceItems)))
+            {
+                pEvent->positionOffset.eSpace = static_cast<Engine::ECameraSpace>(iSpace);
+                ModifyCameraOne();
+            }
+
+            if (ImGui::DragFloat("Blend In", &pEvent->positionOffset.fBlendInTime, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Hold", &pEvent->positionOffset.fHoldTime, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+
+            if (ImGui::DragFloat("Blend Out", &pEvent->positionOffset.fBlendOutTime, 0.01f, 0.f, 10.f))
+                ModifyCameraOne();
+        }
+    }
+    break;
     }
 
     ImGui::PopID();

@@ -31,10 +31,11 @@ void CQuestManager::Start_Quest(_int iStartScenarioId, _int iStartChapterId)
 
 	m_iCurScenarioId = iStartScenarioId;
 	m_pCurScenario = m_scenario[iStartScenarioId];
-	m_pCurScenario->Enter();
 
 	if (iStartChapterId != -1)
-		m_pCurScenario->Change_Chapter(iStartChapterId);
+		m_pCurScenario->Enter(iStartChapterId);
+	else
+		m_pCurScenario->Enter();
 
 	m_pGameInstance->Broadcast<QUEST_CHANGE_SCENARIO_NOTIFY>();
 }

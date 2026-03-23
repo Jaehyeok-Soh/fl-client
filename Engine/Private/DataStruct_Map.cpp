@@ -310,6 +310,10 @@ inline void to_json(json& SaveJson, const TLevelData& tData)
 		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Sky Color"], tData.vSkyColor);
 		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Cloud Base Color"], tData.vCloudBaseColor);
 		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Cloud Highlight Color"], tData.vCloudHighlight);
+		Engine_Utils::write_vec4_xyzw(SkyBoxJson["Cloud Shadow Color"], tData.vCloudShadowColor);
+
+		SkyBoxJson["Cloud Highlight Power"] = tData.fCloudHighlightPower;
+		SkyBoxJson["Cloud Shadow Power"] = tData.fCloudShadowPower;
 
 	}
 	
@@ -357,6 +361,7 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 				Engine_Utils::read_vec3_xyz(SkyBox_LoadJson["Position Offset"],tData.vSkyBoxPositionOffset);
 			}
 
+
 			if (SkyBox_LoadJson.contains("Sky Color"))
 			{
 				Engine_Utils::read_vec4_xyzw(SkyBox_LoadJson["Sky Color"], tData.vSkyColor);
@@ -368,6 +373,19 @@ inline void from_json(const json& LoadJson, TLevelData& tData)
 			if (SkyBox_LoadJson.contains("Cloud Highlight Color"))
 			{
 				Engine_Utils::read_vec4_xyzw(SkyBox_LoadJson["Cloud Highlight Color"], tData.vCloudHighlight);
+			}
+			if (SkyBox_LoadJson.contains("Cloud Shadow Color"))
+			{
+				Engine_Utils::read_vec4_xyzw(SkyBox_LoadJson["Cloud Shadow Color"], tData.vCloudShadowColor);
+			}
+
+			if (SkyBox_LoadJson.contains("Cloud Highlight Power"))
+			{
+				tData.fCloudHighlightPower = SkyBox_LoadJson["Cloud Highlight Power"];
+			}
+			if (SkyBox_LoadJson.contains("Cloud Shadow Power"))
+			{
+				tData.fCloudShadowPower = SkyBox_LoadJson["Cloud Shadow Power"];
 			}
 
 
@@ -462,6 +480,7 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 
 	case DTO::EClientMakePath::Water:								return pSource == nullptr ? new WATER_DESC								: new WATER_DESC(*static_cast<WATER_DESC*>(pSource));
 	case DTO::EClientMakePath::Env:									return pSource == nullptr ? new ENV_DESC								: new ENV_DESC(*static_cast<ENV_DESC*>(pSource));
+	case DTO::EClientMakePath::LightObject:							return pSource == nullptr ? new LIGHTOBJECT_DESC						: new LIGHTOBJECT_DESC(*static_cast<LIGHTOBJECT_DESC*>(pSource));
 		/* Batch Object 관련 */
 	case DTO::EClientMakePath::Batch_Monster:						return pSource == nullptr ? new BATCH_MONSTER_DESC						: new BATCH_MONSTER_DESC(*static_cast<BATCH_MONSTER_DESC*>(pSource));
 	case DTO::EClientMakePath::Batch_Object:						return pSource == nullptr ? new BATCH_OBJECT_DESC						: new BATCH_OBJECT_DESC(*static_cast<BATCH_OBJECT_DESC*>(pSource));
@@ -723,6 +742,60 @@ void ENV_DESC::from_Json(const json& LoadJson)
 				Engine_Utils::read_vec3_xyz(DescJson["Pos"]  , tInfo.tDesc.VFX_Target_Position);
 				Engine_Utils::read_vec3_xyz(DescJson["Rot"]  , tInfo.tDesc.VFX_Rotation);
 				Engine_Utils::read_vec3_xyz(DescJson["Scale"], tInfo.tDesc.VFX_Scale);
+				if (DescJson.contains("Speed"))
+				{
+					tInfo.tDesc.VFX_fSpeed = DescJson["Speed"];
+				}
+
+				if (DescJson.contains("Part Object Desc"))
+				{
+					auto& PartObjectJsonArray = DescJson["Part Object Desc"];
+					if (PartObjectJsonArray.is_array())
+					{
+						for (auto& PartObjectJson : PartObjectJsonArray)
+						{
+							if (PartObjectJson.is_null())
+								continue;
+							EFFECT_ENV_DESC::ENV_PART_DESC tPartDesc{};
+
+							if (PartObjectJson.contains("Override Index"))
+							{
+								tPartDesc.iPartsIndex = PartObjectJson["Override Index"];
+							}
+							if (PartObjectJson.contains("Particle Count"))
+							{
+								tPartDesc.VFX_ParticleCount_Parts = PartObjectJson["Particle Count"];
+							}
+							if (PartObjectJson.contains("Duration"))
+							{
+								tPartDesc.VFX_ParticleDuration_Parts = PartObjectJson["Duration"];
+							}
+							if (PartObjectJson.contains("Life Time"))
+							{
+								tPartDesc.VFX_ParticleLifeTime_Parts = PartObjectJson["Life Time"];
+							}
+
+							if (PartObjectJson.contains("Range"))
+							{
+								Engine_Utils::read_vec3_xyz(PartObjectJson["Range"],tPartDesc.VFX_ParticleRange_Parts);
+							}
+
+							if (PartObjectJson.contains("Position"))
+							{
+								Engine_Utils::read_vec3_xyz(PartObjectJson["Position"], tPartDesc.VFX_Position_Parts);
+							}
+							if (PartObjectJson.contains("Rotation"))
+							{
+								Engine_Utils::read_vec3_xyz(PartObjectJson["Rotation"], tPartDesc.VFX_Rotation_Parts);
+							}
+							if (PartObjectJson.contains("Scale"))
+							{
+								Engine_Utils::read_vec3_xyz(PartObjectJson["Scale"], tPartDesc.VFX_Scale_Parts);
+							}
+							tInfo.tDesc.VFX_PartsDescList.push_back(tPartDesc);
+						}
+					}
+				}
 			}
 
 			this->vecEnvEffectInfo.push_back(tInfo);
@@ -744,6 +817,30 @@ void ENV_DESC::to_Json(json& SaveJson)
 		Engine_Utils::write_vec3_xyz(DescObj["Pos"],tInfo.tDesc.VFX_Target_Position);
 		Engine_Utils::write_vec3_xyz(DescObj["Rot"],tInfo.tDesc.VFX_Rotation);
 		Engine_Utils::write_vec3_xyz(DescObj["Scale"],tInfo.tDesc.VFX_Scale);
+		DescObj["Speed"] = tInfo.tDesc.VFX_fSpeed;
+
+
+		if (!tInfo.tDesc.VFX_PartsDescList.empty())
+		{
+			auto& PartDescObjArray = DescObj["Part Object Desc"];
+			PartDescObjArray = json::array();
+			for (auto& PartObject : tInfo.tDesc.VFX_PartsDescList)
+			{
+				json PartObjectJson = json::object();
+				
+				PartObjectJson["Override Index"] = PartObject.iPartsIndex;
+				PartObjectJson["Particle Count"] = PartObject.VFX_ParticleCount_Parts;
+				PartObjectJson["Duration"] = PartObject.VFX_ParticleDuration_Parts;
+				PartObjectJson["Life Time"] = PartObject.VFX_ParticleLifeTime_Parts;
+
+				Engine_Utils::write_vec3_xyz(PartObjectJson["Range"], PartObject.VFX_ParticleRange_Parts);
+				Engine_Utils::write_vec3_xyz(PartObjectJson["Position"], PartObject.VFX_Position_Parts);
+				Engine_Utils::write_vec3_xyz(PartObjectJson["Scale"], PartObject.VFX_Scale_Parts);
+				Engine_Utils::write_vec3_xyz(PartObjectJson["Rotation"], PartObject.VFX_Rotation_Parts);
+				PartDescObjArray.push_back(PartObjectJson);
+			}
+		}
+
 
 		InfoObj["Desc"] = DescObj;
 		EffectInfos_SaveJson.push_back(InfoObj);
@@ -976,6 +1073,120 @@ void FOG_DESC::to_Json(json& SaveJson)
 
 #pragma endregion
 
+#pragma region Light Object
+
+LIGHTOBJECT_DESC::LIGHTOBJECT_DESC()
+	:CLIENT_MAKEPATH_DESC_BASE()
+	, isFlicker{ false }
+	, fFlickerSpeed{ 1.f }
+	, fFlickerMin{ 1.f }
+	, fBaseRange{ 1.f }
+	, pDebugLight{ nullptr }
+	, tLightDesc{}
+	, vOffsetPosition{ Vec3::Zero }
+	, fEmissviePower{1.f}
+{ 
+	this->tLightDesc.eType = LIGHT_TYPE::POINT;
+	this->tLightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	this->tLightDesc.vAmbient = { 1.f,1.f,1.f,1.f };
+	this->tLightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+	pDebugLight = CLight::Create(this->tLightDesc);
+}
+
+LIGHTOBJECT_DESC::LIGHTOBJECT_DESC(const LIGHTOBJECT_DESC& rhs)
+	: CLIENT_MAKEPATH_DESC_BASE(rhs)
+	, tLightDesc{ rhs.tLightDesc }
+	, isFlicker{ rhs.isFlicker }
+	, fFlickerSpeed{ rhs.fFlickerSpeed }
+	, fFlickerMin{ rhs.fFlickerMin }
+	, fBaseRange{ rhs.fBaseRange }
+	, pDebugLight{ rhs.pDebugLight }
+	, vOffsetPosition{ rhs.vOffsetPosition }
+	, fEmissviePower{ rhs .fEmissviePower}
+{
+}
+
+LIGHTOBJECT_DESC::~LIGHTOBJECT_DESC()
+{
+	Safe_Release(pDebugLight);
+}
+
+void LIGHTOBJECT_DESC::Update_Light(const Vec4& vPos)
+{
+	if (this->pDebugLight)
+	{
+		pDebugLight->Setup_Diffuse(this->tLightDesc.vDiffuse);
+		pDebugLight->Setup_Ambient(this->tLightDesc.vAmbient);
+		pDebugLight->Setup_Specular(this->tLightDesc.vSpecular);
+		pDebugLight->Setup_Range(this->fBaseRange);
+		pDebugLight->Setup_Position(vPos + vOffsetPosition);
+	}
+}
+
+void LIGHTOBJECT_DESC::from_Json(const json& LoadJson)
+{
+	if (!LoadJson.contains("Light Data")) return;
+	const auto& LightData_LoadJson = LoadJson["Light Data"];
+
+	this->tLightDesc.eType = Engine_Utils::LIGHTTYPE_ToEnum(LightData_LoadJson["Type"]);
+
+	if (LightData_LoadJson.contains("Offset Position"))
+	{
+		Engine_Utils::read_vec3_xyz(LightData_LoadJson["Offset Position"], this->vOffsetPosition);
+	}
+
+	if (LightData_LoadJson.contains("Emissive Power"))
+	{
+		this->fEmissviePower = LightData_LoadJson["Emissive Power"];
+	}
+
+	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Diffuse"], this->tLightDesc.vDiffuse);
+	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Ambient"], this->tLightDesc.vAmbient);
+	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Specular"], this->tLightDesc.vSpecular);
+
+	if (LightData_LoadJson.contains("Range"))
+	{
+		this->fBaseRange = LightData_LoadJson["Range"];
+		this->tLightDesc.fRange = this->fBaseRange; // 로드 시점엔 일단 원본 크기로 세팅
+	}
+
+	// 4. Flicker 데이터 복원
+	if (LightData_LoadJson.contains("Flicker"))
+	{
+		this->isFlicker = true;
+		const auto& FlickerData_LoadJson = LightData_LoadJson["Flicker"];
+
+		this->fFlickerSpeed = FlickerData_LoadJson.value("Speed", 1.0f);
+		this->fFlickerMin = FlickerData_LoadJson.value("Min", 0.5f);
+	}
+	else
+	{
+		this->isFlicker = false;
+	}
+}
+
+void LIGHTOBJECT_DESC::to_Json(json& SaveJson)
+{
+	auto& LightData_SaveJson = SaveJson["Light Data"];
+	LightData_SaveJson["Type"] = Engine_Utils::LIGHTTYPE_ToString(this->tLightDesc.eType);
+
+	LightData_SaveJson["Emissive Power"] = this->fEmissviePower;
+
+	Engine_Utils::write_vec3_xyz(LightData_SaveJson["Offset Position"], this->vOffsetPosition);
+	Engine_Utils::write_vec4_xyzw(LightData_SaveJson["Diffuse"], this->tLightDesc.vDiffuse);
+	Engine_Utils::write_vec4_xyzw(LightData_SaveJson["Ambient"], this->tLightDesc.vAmbient);
+	Engine_Utils::write_vec4_xyzw(LightData_SaveJson["Specular"], this->tLightDesc.vSpecular);
+	LightData_SaveJson["Range"] = this->fBaseRange;			/* 아마 Desc안에있는 Range는 업데이트때마다 달라진다 */
+
+	if (this->isFlicker == true)
+	{
+		auto& FlickerData_SaveJson = LightData_SaveJson["Flicker"];
+		FlickerData_SaveJson["Speed"] = this->fFlickerSpeed;
+		FlickerData_SaveJson["Min"] = this->fFlickerMin;
+	}
+}
+#pragma endregion
+
 #pragma region Batch 관련
 #pragma region Batch Monster
 
@@ -1174,6 +1385,7 @@ POINTLIHGT_DESC::~POINTLIHGT_DESC()
 	Safe_Release(pDebugLight);
 }
 
+
 void POINTLIHGT_DESC::Update_Light(const Vec4& vPos)
 {
 	if (this->pDebugLight)
@@ -1298,6 +1510,10 @@ void BATCH_INTERACTIVEOBJECT_DESC::from_Json(const json& LoadJson)
 		break;
 	}
 
+	if (LoadJson.contains("strChangeLevelTypeName"))
+		this->strChangeLevelTypeName = LoadJson.at("strChangeLevelTypeName");
+	
+
 }
 
 void BATCH_INTERACTIVEOBJECT_DESC::to_Json(json& SaveJson)
@@ -1320,6 +1536,9 @@ void BATCH_INTERACTIVEOBJECT_DESC::to_Json(json& SaveJson)
 	default:
 		break;
 	}
+
+
+	SaveJson["strChangeLevelTypeName"] = this->strChangeLevelTypeName;
 }
 
 #pragma endregion

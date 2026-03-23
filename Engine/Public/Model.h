@@ -228,6 +228,8 @@ public:
 
 public:
 	HRESULT								Set_MI_TintColor(_uint iIndex, const Vec4& vColor );
+	HRESULT								Set_MI_EmissiveColor(_uint iIndex, const Vec4& vColor );
+	HRESULT								Set_MI_EmissivePower(_uint iIndex, const float& fPower );
 public:
 	HRESULT								Change_MI(_uint iIndex, EMaterialInstanceType eChangeType );
 	HRESULT								Change_Material(_uint iIndex, const wstring& wstrMaterialTag);

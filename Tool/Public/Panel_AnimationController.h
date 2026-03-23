@@ -39,7 +39,7 @@ private:
 	// 이벤트 추가 모달
 private:
 	void Render_AddEventModal();
-
+	_float Get_CameraEventDuration(const DTO::CAMERACOTRNOL_EVENT& evt);
 private:
 	class CAnimTool_Manager* m_pAnimToolManager = { nullptr };
 

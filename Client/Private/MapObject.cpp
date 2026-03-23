@@ -496,6 +496,7 @@ _bool CMapObject::IsMakePhysicsCollider(DTO::EClientMakePath eType)
     case DTO::EClientMakePath::Invisible_Wall:          
     case DTO::EClientMakePath::Rock:
     case DTO::EClientMakePath::Tree:
+    case DTO::EClientMakePath::LightObject:
         return true;
 
     //case DTO::EClientMakePath::Bush:

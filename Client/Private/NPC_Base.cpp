@@ -45,6 +45,7 @@
 // NPC
 ////////////
 #include "NPC_Pan.h"
+#include "NPC_Tavern.h"
 
 CNPC_Base::CNPC_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -412,6 +413,22 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 	}
 		break;
 	case Engine::EObjectEnumTag::NPC_BERENICA:
+		break;
+	case Engine::EObjectEnumTag::NPC_TAVERN:
+	{
+		npcDesc = CNPC_Tavern::Get_PreSetDesc(npcDesc.iLevelIndex);
+		npcDesc.iLevelIndex = iAddLevelType;
+		npcDesc.pTransform_Desc = pTransformDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		wstrFindPrototypeName = g_wszNPC_Tavern_Prototype_Tag;
+		wstrAddLayerName = g_wszNPCeLayer;
+	}
 		break;
 	default:
 		return E_FAIL;

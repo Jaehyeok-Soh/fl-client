@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "CameraRuntimeTypes.h"
 
 NS_BEGIN(Engine)
 
@@ -26,25 +27,26 @@ private:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	void Update_View();
-
+	void Update_View(const CAMERA_POSE& pose);
 	const Matrix& Get_ViewMatrix() const { return m_matView; }
 	const Matrix& Get_ProjectionMatrix() const { return m_matProjection; }
 
-	_float Get_Fov() const { return m_fFov; }
-	void Set_Fov(_float fFov) { m_fFov = fFov; Update_Proj(); }
+	_float Get_Fov() const { return m_fBaseFov; }
+	void Set_Fov(_float fFov) { m_fBaseFov = fFov; Update_Proj(m_fBaseFov); }
 	_float Get_ViewWidth() const { return m_fViewWidth; }
-	void Set_ViewWidth(_float fViewWidth) { m_fViewWidth = fViewWidth; Update_Proj(); }
+	void Set_ViewWidth(_float fViewWidth) { m_fViewWidth = fViewWidth; Update_Proj(m_fBaseFov); }
 	_float Get_ViewHeight() const { return m_fViewHeight; }
-	void Set_ViewHeight(_float fViewHeight) { m_fViewHeight = fViewHeight; Update_Proj(); }
+	void Set_ViewHeight(_float fViewHeight) { m_fViewHeight = fViewHeight; Update_Proj(m_fBaseFov); }
 	_float Get_Far() const { return m_fFar; }
-	void Set_Far(_float fFar) { m_fFar = fFar; Update_Proj(); }
+	void Set_Far(_float fFar) { m_fFar = fFar; Update_Proj(m_fBaseFov); }
 	_float Get_Near() const { return m_fNear; }
-	void Set_Near(_float fNear) { m_fNear = fNear; Update_Proj(); }
+	void Set_Near(_float fNear) { m_fNear = fNear; Update_Proj(m_fBaseFov); }
 private:
-	void Update_Proj();
+	void Update_Proj(_float fFov);
 private:
 	EProjectionType m_eProjectionType = { EProjectionType::PERSPECTIVE };
-	_float m_fFov = { 0.f };
+	_float m_fRenderFov = { 0.f };
+	_float m_fBaseFov = { 0.f };
 	_float m_fViewWidth = { 0.f };
 	_float m_fViewHeight = { 0.f };
 	_float m_fAspectRatio = { 0.f };

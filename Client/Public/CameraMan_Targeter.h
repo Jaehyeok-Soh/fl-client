@@ -113,8 +113,10 @@ private:
 
 	Vec3 CheckCameraCollision(Vec3 vCameraPos, Vec3 vTargetPos);
 
+	// For. TurnState
 	void Update_TurnOn(const _float fTimeDelta);
 	void Update_TurnOff(const _float fTimeDelta);
+	_float Eval_TurnYawDegree() const;
 
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
@@ -159,7 +161,10 @@ private:
 
 	_bool m_bChangeFirst = { true }; // ÃÊ±â change °ª
 
+	// For. Turn State
 	TURNCAM_DATA	m_tTurnData = {};
+	Vec3 m_vTurnBaseLookDir = Vec3::Backward;
+	_float m_fTurnBaseDistance = 0.f;
 
 	TargeterState	m_ePreState = { TargeterState::NORMAL };
 
