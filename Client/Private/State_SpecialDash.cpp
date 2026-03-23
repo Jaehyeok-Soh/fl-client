@@ -37,7 +37,7 @@ HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
     if (FAILED(Super::Start(pArg, bForce)))
         return E_FAIL;
 
-    Set_RootMotion_Apply(false);
+    //Set_RootMotion_Apply(true);
 
     // pivot position을 바라 봄
 
@@ -46,18 +46,15 @@ HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
     if (pPlayerTransform == nullptr || pPlayerCCT == nullptr) return E_FAIL;
 
     m_vPivot = static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Get_PivotPos();
+
     pPlayerTransform->Look_At_XZ(m_vPivot);
-
-    Vec3 vLookDir = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
     Vec3 vRightDir = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
-    vLookDir.Normalize();
     vRightDir.Normalize();
+    pPlayerTransform->Look_At_Dir(vRightDir * -1.f);
 
-    m_vDir = vRightDir * 1.f + vLookDir;
-
-    SetCCTInputDirection(m_vDir);
-
-    m_fDeSpeed = 0.f;
+    Vec3 vDistance = m_vPivot - pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+    vDistance.y = 0.f;
+    m_fDistance = vDistance.Length();
 
     return S_OK;
 }
@@ -66,23 +63,43 @@ void CState_SpecialDash::Update(const _float fTimeDelta)
 {
     if (m_fStateElapsed >= 23.f / ANIMTIC)
     {
-        if (Check_Collis(fTimeDelta))
-            return;
+        //if (Check_Collis(fTimeDelta))
+        //    return;
 
-        if (Check_Keys(fTimeDelta))
-            return;
+        //if (Check_Keys(fTimeDelta))
+        //    return;
 
-        Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
-        return;
+       Vec3 vNewPivot = static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Get_PivotPos();
+
+       SetupLook_PointLerp(fTimeDelta, vNewPivot, 10.f);
     }
 
-    CTransform* pPlayerTransform = Get_OwnerObject()->Get_Component<CTransform>();
-    CPhysicsCCT* pPlayerCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 
-    pPlayerCCT->AddFixedMove(m_vDir * fTimeDelta * (8.f - m_fDeSpeed));
-    pPlayerTransform->Look_At_XZ(m_vPivot);
+    else
+    {
+        CPhysicsCCT* pPlayerCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+        pPlayerCCT->SetZeroHorizontalVelocity();
 
-    m_fDeSpeed += 7.f * fTimeDelta;
+        CTransform* pPlayerTransform = Get_OwnerObject()->Get_Component<CTransform>();
+        Vec3 vCurPos = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+        Vec3 vAccDir = m_vPivot - vCurPos;
+        vAccDir.y = 0.f;
+        vAccDir.Normalize();
+
+        Move(vAccDir * m_fDistance * 10.f);
+
+        pPlayerTransform->Look_At_XZ(m_vPivot);
+        Vec3 vRightDir = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+        vRightDir.Normalize();
+        pPlayerTransform->Look_At_Dir(vRightDir * -1.f);
+    }
+
+
+    //pPlayerCCT->AddFixedMove(m_vDir * fTimeDelta * (8.f - m_fDeSpeed));
+    //pPlayerTransform->Look_At_XZ(m_vPivot);
+
+    //m_fDeSpeed += 7.f * fTimeDelta;
 
     Super::Update(fTimeDelta);
 }
@@ -94,15 +111,19 @@ HRESULT CState_SpecialDash::End()
 
     //Set_RootMotion_Apply(true);
 
-    //CPhysicsCCT* pPlayerCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
-    //pPlayerCCT->SetZeroHorizontalVelocity();
+    CPhysicsCCT* pPlayerCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
+    pPlayerCCT->SetZeroHorizontalVelocity();
+
+    //CTransform* pPlayerTransform = Get_OwnerObject()->Get_Component<CTransform>();
+    //pPlayerTransform->Look_At_XZ(m_vPivot);
+    //Set_RootMotion_Apply(false);
 
     return S_OK;
 }
 
 _bool CState_SpecialDash::Can_CheckKey(const _float fTimeDelta)
 {
-    return Is_MainAnimFinished();
+    return (m_fStateElapsed >= 23.f / ANIMTIC);
 }
 
 CState_SpecialDash* CState_SpecialDash::Create(CActionState* pOwnerComponent, void* pArg)

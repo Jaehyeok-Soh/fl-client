@@ -25,6 +25,8 @@ private:
 
 	Vec3 m_vDir = { Vec3::Zero };
 
+	_float m_fDistance = { 0.f };
+
 	_float m_fDeSpeed = { 8.f };
 
 	array<Vec3, 4> m_arrPoses;

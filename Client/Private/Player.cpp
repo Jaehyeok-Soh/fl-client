@@ -1316,7 +1316,8 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)] = ENUM_TO_UINT(State::CHARGE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
-        tKeyTimer.bCountTime    = false;
+        tKeyTimer.bCountTime    = true;
+        tKeyTimer.fMaxTime      = 23.f / ANIMTIC;
 
         desc.tKeyTimer          = tKeyTimer;
         desc.pOwnerGun          = pMyGun;
