@@ -113,7 +113,7 @@ HRESULT CLevel_Kuangkeng::Awake(const _uint iLevelID)
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
-	CQuestManager::GetInstance()->Start_Quest(2, 3);
+	CQuestManager::GetInstance()->Start_Quest(4, 1);
 
 	return S_OK;
 }
@@ -336,40 +336,47 @@ HRESULT CLevel_Kuangkeng::Ready_Map()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Combined.json";
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
 
 	/* 갱도는 파일 4개를 빌드해준다. */
 
-	/* Part 1 */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_01.json";
-	if (!std::filesystem::exists(FilePath))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+	///* Part 1 */
+	//std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_01.json";
+	//if (!std::filesystem::exists(FilePath))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+	//	return E_FAIL;
+	//if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+	//	return E_FAIL;
 
-	/* Part 2 */
-	FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_02.json";
-	if (!std::filesystem::exists(FilePath))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+	///* Part 2 */
+	//FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_02.json";
+	//if (!std::filesystem::exists(FilePath))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+	//	return E_FAIL;
+	//if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+	//	return E_FAIL;
 
-	/* Part 3 */
-	FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_03.json";
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+	///* Part 3 */
+	//FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_03.json";
+	//if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+	//	return E_FAIL;
+	//if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+	//	return E_FAIL;
 
-	/* Part 4 */
-	FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_04.json";
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+	///* Part 4 */
+	//FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_04.json";
+	//if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+	//	return E_FAIL;
+	//if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+	//	return E_FAIL;
 
 
 	return S_OK;

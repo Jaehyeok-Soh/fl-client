@@ -227,6 +227,9 @@ vector<PxTriangleMesh*> CPhysics_ResourceManager::CreateTriangleMeshes(CModel* m
 
 	vector<PxTriangleMesh*> result{};
 
+	if (model == nullptr)
+		return result;
+
 	vector<CMesh*> meshes;
 	_uint NumMesh = model->Get_MeshCount();
 
@@ -297,6 +300,9 @@ vector<PxConvexMesh*> CPhysics_ResourceManager::CreateConvexMeshes(CModel* model
 	// 정점 개수가 적을 수록 성능 좋아짐
 
 	vector<PxConvexMesh*> result{};
+
+	if (model == nullptr)
+		return result;
 
 	vector<CMesh*> meshes;
 	_uint NumMesh = model->Get_MeshCount();
@@ -379,6 +385,9 @@ PxConvexMesh* CPhysics_ResourceManager::CreateConvexMesh(CMesh* mesh, PxConvexMe
 vector<CPhysics_ResourceManager::HEIGHTFIELD_INFO> CPhysics_ResourceManager::CreateHeightFields(CModel* model)
 {
 	vector<HEIGHTFIELD_INFO> result{};
+
+	if (model == nullptr)
+		return result;
 
 	vector<CMesh*> meshes;
 	_uint NumMesh = model->Get_MeshCount();
