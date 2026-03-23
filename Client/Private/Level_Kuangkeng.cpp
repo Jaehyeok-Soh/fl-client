@@ -112,6 +112,9 @@ HRESULT CLevel_Kuangkeng::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
+	CQuestManager::GetInstance()->Start_Quest(2, 3);
+
 	return S_OK;
 }
 

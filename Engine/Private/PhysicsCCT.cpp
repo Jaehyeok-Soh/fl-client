@@ -217,7 +217,10 @@ void CPhysicsCCT::ApplyGravity(const _float fTimeDelta)
 	if (m_tMoveState.bGravity == false)
 		return;
 
-	m_tMoveState.vAccelation.y += (m_tMoveState.fGravity + m_fGravityOffset);
+	if (m_CollisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN))
+		m_tMoveState.vAccelation.y += (-0.1f + m_fGravityOffset);
+	else
+		m_tMoveState.vAccelation.y += (m_tMoveState.fGravity + m_fGravityOffset);
 }
 
 void CPhysicsCCT::ApplyExternAcc(const _float fTimeDelta)

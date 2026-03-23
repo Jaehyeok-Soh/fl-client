@@ -694,6 +694,8 @@ namespace Engine
 			NPC_PAN = 2,
 			NPC_BERENICA = 3,
 			NPC_TAVERN = 4,
+			NPC_VILLAGER_1 = 5,
+			NPC_KID_1 = 6,
 
 			// 1000 ~ 1999 오브젝트
 			// OBJECT_
@@ -756,6 +758,8 @@ namespace Engine
 			if (strType == "NPC_PAN") return OBJECT_ENUM_TAG::NPC_PAN;
 			if (strType == "NPC_BERENICA") return OBJECT_ENUM_TAG::NPC_BERENICA;
 			if (strType == "NPC_TAVERN") return OBJECT_ENUM_TAG::NPC_TAVERN;
+			if (strType == "NPC_VILLAGER_1") return OBJECT_ENUM_TAG::NPC_VILLAGER_1;
+			if (strType == "NPC_KID_1") return OBJECT_ENUM_TAG::NPC_KID_1;
 
 			// OBJECT
 			if (strType == "OBJECT_DEFAULT") return OBJECT_ENUM_TAG::OBJECT_DEFAULT;
@@ -806,6 +810,8 @@ namespace Engine
 			case OBJECT_ENUM_TAG::NPC_PAN:									return "NPC_PAN";
 			case OBJECT_ENUM_TAG::NPC_BERENICA:								return "NPC_BERENICA";
 			case OBJECT_ENUM_TAG::NPC_TAVERN:								return "NPC_TAVERN";
+			case OBJECT_ENUM_TAG::NPC_VILLAGER_1:							return "NPC_VILLAGER_1";
+			case OBJECT_ENUM_TAG::NPC_KID_1:								return "NPC_KID_1";
 
 			case OBJECT_ENUM_TAG::OBJECT_DEFAULT:							return "OBJECT_DEFAULT";
 
@@ -848,6 +854,8 @@ namespace Engine
 		OBJECT_ENUM_TAG::NPC_PAN,
 		OBJECT_ENUM_TAG::NPC_BERENICA,
 		OBJECT_ENUM_TAG::NPC_TAVERN,
+		OBJECT_ENUM_TAG::NPC_VILLAGER_1,
+		OBJECT_ENUM_TAG::NPC_KID_1,
 		OBJECT_ENUM_TAG::OBJECT_DEFAULT,
 		OBJECT_ENUM_TAG::OBJECT_PICKING_DEFAULT,
 		OBJECT_ENUM_TAG::OBJECT_PICKING_FLOWER_1,
