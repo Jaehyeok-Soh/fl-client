@@ -26,6 +26,7 @@ public:
 		Update_New					= 1 << 8, // 무조건 새로운거
 		Update_MinDistance			= 1 << 9, // 기준으로 부터 가까운순
 		Update_MinDistance_Front	= 1 << 10,// 기준으로 부터 가까운순 + 앞쪽 obj들만
+		Update_MinDistance_YDiscard	= 1 << 11,// 기준으로 부터 가까운순 + y값 일정 범위 애들만 check
 
 		//  maskes
 		Default = Call_ParentTirggerEnter | Call_ParentTirggerExit | Check_CollidedPos_Enter | Check_CollidedPos_Exit,
@@ -35,6 +36,11 @@ public:
 		Only_ObjChache		= Check_CollidedObj_Enter | Check_CollidedObj_Exit, // 6
 	};
 
+	typedef struct tagUpdateValues
+	{
+		_float fYDiscard = { 0.f };
+	}UPDATE_VALUES;
+
 	typedef struct tagColliderPartDesc : public CPartObject::PARTOBJ_DESC
 	{
 		PHYSICSRIGIDBODY_DESC* pRigidbodyDesc = { nullptr };
@@ -43,6 +49,8 @@ public:
 		Matrix vPreScale = { Matrix::Identity };
 
 		Flags FUpdate_Flags = { ENUM_TO_UINT(UPDATEFLAGS::Default) }; //UPDATEFLAGS 이용 할것
+
+		UPDATE_VALUES tValues;
 
 	}TRIGGER_COLLIDEPART_DESC;
 
@@ -86,6 +94,7 @@ private:
 	_bool Update_New(CGameObject* pNewObj, _bool bPreNull);
 	_bool Update_MinDist(CGameObject* pNewObj, _bool bPreNull);
 	_bool Update_MinDistFront(CGameObject* pNewObj, _bool bPreNull);
+	_bool Update_MinDistYDiscard(CGameObject* pNewObj, _bool bPreNull);
 
 private:
 	EState m_eState{ EState::None };
@@ -97,6 +106,8 @@ private:
 	_int	m_iCollidedID	= {-1};
 
 	Flags	m_FUpdate_Flags = {};
+
+	UPDATE_VALUES	m_tUpdateValues = {};
 
 private:
 	CGameObject* m_pCollidedObj = { nullptr };

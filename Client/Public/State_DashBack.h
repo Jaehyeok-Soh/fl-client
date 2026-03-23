@@ -18,6 +18,9 @@ public:
 	virtual HRESULT End() override;
 
 public:
+	virtual _uint	Get_Capabilities() const override;
+
+public:
 	static CState_DashBack* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;
 };
