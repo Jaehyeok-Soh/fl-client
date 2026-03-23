@@ -605,8 +605,7 @@ _bool CPlayer::Start_Attack(State iState)
     case State::SKILL2:
         bChange = Get_Component<CActionSkill>()->Start_Skill(MoonQ);
 
-
-        if (bChange && m_ePlayerType == PLAYER_TYPE::MOON)
+        if (bChange)
         {
             if (CPartEffect* pEff = Get_Part<CPartEffect>(Part::EFFECT))
             {
@@ -1557,11 +1556,10 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
         {
             CPartEffect::PART_EFFECT_DESC tDesc;
             tDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-            tDesc.arrState_DurationTimes = {};
             tDesc.arrState_DurationTimes = { 0.f,12.5f,0.f };
             tDesc.arrState_DelayTimes = { 0.f,0.5f,0.f };
             tDesc.FPartEff_Flags = CPartEffect::PartEff_Flag::Spawn_Again_AfterDespawn;
-
+            tDesc.iLevelIndex = pDesc->iLevelIndex;
 
             vector<CPartEffect::DATA_EFFHANDLER> tEffectHandlerDesc;
             tEffectHandlerDesc.reserve(2);
@@ -1573,7 +1571,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
                 CEffectHandler::STATE_VFX_DESC SkillDesc{};
                 {
-                    SkillDesc.EffectPrefabTag = "Player_Moon_QSkill_Barrior";//"PlayerMoon_ESkillObject";
+                    SkillDesc.EffectPrefabTag = "Player_Moon_QSkill_Barrior";
                     SkillDesc.pParentTransformMatrix = nullptr;
                     SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
                     SkillDesc.bFollowBone = { false };
@@ -1609,8 +1607,6 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             if (FAILED(Add_Part(Part::EFFECT, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Effect_Prototype_Tag, &tDesc)))
                 return E_FAIL;
         }
-        /*break;
-        }*/
     }
 
     // CLOAK

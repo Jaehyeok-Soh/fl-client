@@ -44,7 +44,7 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 void CState_Jump::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
-	if (m_fStateElapsed > 0.28f &&
+	if (m_fStateElapsed > 12.f / ANIMTIC &&
 		Check_OnGround(0.1f))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));

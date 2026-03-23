@@ -176,8 +176,8 @@ public:
 	void	Change_CamState(_uint iCamState);
 	_float	Get_CamPitch()const;
 
-	void	Set_FKeyEvent(_uint iEvenet, _bool bOn); // f event 활성화 onoff
-	const Vec3& Get_CollidedMonster_Position();
+	void				Set_FKeyEvent(_uint iEvenet, _bool bOn); // f event 활성화 onoff
+	const Vec3&			Get_CollidedMonster_Position();
 
 	HRESULT				Bind_PlayerInfo(class CShader* pShader = nullptr);
 	SHADER_PLAYER_INFO* Get_PlayerInfo() { return &m_tCBPlayerInfo; }		/* 임시용 */
@@ -205,7 +205,7 @@ protected:
 
 private:
 	HRESULT		Ready_WeaponInfo();
-
+	
 	HRESULT		Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT		Ready_PartWeapon(PLAYER_DESC* pDesc);
 	HRESULT		Ready_Components(PLAYER_DESC* pDesc);

@@ -57,7 +57,7 @@
 #include "Monster_Dog_Body.h"
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
-#include "Moon_SkillE_Obj.h"
+#include "PlayerSkillObj_Headers.h"
 
 //=================
 // GameInstance
@@ -160,7 +160,7 @@ HRESULT CLevel_Kuangkeng::Build_Prototype()
 {
 	_uint iLevelType = ENUM_TO_UINT(ELevelType::KUANGKENG);
 
-	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, iLevelType ))))
+	if (FAILED(Ready_Builder(DTO::ECategory::MAP, CBuilder_Map::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
 	if (FAILED(Ready_Builder(DTO::ECategory::UI, CBuilder_UI::Create(m_pDevice, m_pDeviceContext, iLevelType))))
 		return E_FAIL;
@@ -241,27 +241,49 @@ HRESULT CLevel_Kuangkeng::Build_Files()
 
 HRESULT CLevel_Kuangkeng::Ready_Player_Layer(const wstring& wstrLayerTag)
 {
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::KUANGKENG);
 
+	// TODO : 만약 플레이어가 늘어난다면 레이어 추가 체크 필수
+	if (CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), wstrLayerTag))
+		return S_OK;
 
 	/* Player 최초 생성 */
 	{
-		// SkillObject Pool
+		// Moon skil E
 		{
-			//CMoon_SkillE_Obj::GAMEOBJECT_DESC desc{};
-			////TRANSFORM_DESC
-			//CTransform::TRANSFORM_DESC tTransDesc = {};
-			//tTransDesc.fMovePerSec = 20.f;
-			//desc.pTransform_Desc = &tTransDesc;
+			CMoon_SkillE_Obj::GAMEOBJECT_DESC desc{};
+			//TRANSFORM_DESC
+			CTransform::TRANSFORM_DESC tTransDesc = {};
+			tTransDesc.fMovePerSec = 20.f;
+			desc.pTransform_Desc = &tTransDesc;
 
-			//if (FAILED(m_pGameInstance->Regist_Pool(
-			//	0,
-			//	g_wszPool_MoonSkillE,
-			//	g_wszSkillObjectLayer,
-			//	0,
-			//	g_wszMoonSkillE__Prototype_Tag,
-			//	nullptr,
-			//	30)))
-			//	return E_FAIL;
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillE,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillE__Prototype_Tag,
+				&desc,
+				30)))
+				return E_FAIL;
+		}
+
+		// Moon skil Q attack
+		{
+			CMoon_SkillQAttack_Obj::SKILLOBJECT_SPAWN_DESC desc{};
+			desc.fSpeed = 50.f;
+			desc.fLifeTime = 12.5f;
+			desc.iFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillQAttack,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillQAttack_Prototype_Tag,
+				&desc,
+				10)))
+				return E_FAIL;
 		}
 
 		CGameObject* pResult = { nullptr };
@@ -336,40 +358,49 @@ HRESULT CLevel_Kuangkeng::Ready_Map()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Combined.json";
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+
 
 	/* 갱도는 파일 4개를 빌드해준다. */
 
-	/* Part 1 */
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_01.json";
-	if (!std::filesystem::exists(FilePath))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+	///* Part 1 */
+	//std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_01.json";
+	//if (!std::filesystem::exists(FilePath))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+	//	return E_FAIL;
+	//if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+	//	return E_FAIL;
 
-	/* Part 2 */
-	FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_02.json";
-	if (!std::filesystem::exists(FilePath))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+	///* Part 2 */
+	//FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_02.json";
+	//if (!std::filesystem::exists(FilePath))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+	//	return E_FAIL;
+	//if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+	//	return E_FAIL;
 
-	/* Part 3 */
-	FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_03.json";
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+	///* Part 3 */
+	//FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_03.json";
+	//if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+	//	return E_FAIL;
+	//if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+	//	return E_FAIL;
 
-	/* Part 4 */
-	FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_04.json";
-	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
-		return E_FAIL;
-	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
-		return E_FAIL;
+	///* Part 4 */
+	//FilePath = L"../../Resources/Data/MapData/LevelData/Kuangkeng/Kuangkeng_Part_04.json";
+	//if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+	//	return E_FAIL;
+	//if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
+	//	return E_FAIL;
 
 
 	return S_OK;
