@@ -770,7 +770,7 @@
             "iFillDir": 0,
             "iFlip": 0,
             "iRectTransformType": 4,
-            "iShaderPass": 0,
+            "iShaderPass": 1,
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
@@ -782,16 +782,16 @@
             "strTag": "Minigame_Circle_TimerCircle",
             "strTextureTag": "Texture_T_ShuiFa_Deco02",
             "vColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             },
             "vGradiantColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             }
         },
         {
@@ -852,7 +852,7 @@
             "iFillDir": 0,
             "iFlip": 0,
             "iRectTransformType": 4,
-            "iShaderPass": 0,
+            "iShaderPass": 1,
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
@@ -864,16 +864,16 @@
             "strTag": "Minigame_Circle_TimerCircle1",
             "strTextureTag": "Texture_T_ShuiFa_Deco02",
             "vColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             },
             "vGradiantColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             }
         },
         {
@@ -893,7 +893,7 @@
             "iFillDir": 0,
             "iFlip": 0,
             "iRectTransformType": 4,
-            "iShaderPass": 0,
+            "iShaderPass": 1,
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
@@ -905,16 +905,16 @@
             "strTag": "Minigame_Circle_TimerCircle2",
             "strTextureTag": "Texture_T_ShuiFa_Deco02",
             "vColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             },
             "vGradiantColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             }
         },
         {
@@ -975,7 +975,7 @@
             "iFillDir": 0,
             "iFlip": 0,
             "iRectTransformType": 4,
-            "iShaderPass": 0,
+            "iShaderPass": 1,
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
@@ -987,16 +987,16 @@
             "strTag": "Minigame_Circle_TimerCircle3",
             "strTextureTag": "Texture_T_ShuiFa_Deco02",
             "vColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             },
             "vGradiantColorTint": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             }
         },
         {
@@ -1303,7 +1303,7 @@
             "iFillDir": 0,
             "iFlip": 0,
             "iRectTransformType": 4,
-            "iShaderPass": 0,
+            "iShaderPass": 1,
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
@@ -2695,8 +2695,8 @@
             "vFontColor": {
                 "w": 1.0,
                 "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "y": 0.9683219194412231,
+                "z": 0.6718146800994873
             }
         },
         {
@@ -2713,9 +2713,9 @@
             "strText": "g  o  w  p  d  h  k  s  f  y",
             "vFontColor": {
                 "w": 1.0,
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "x": 0.9189189076423645,
+                "y": 0.8276174068450928,
+                "z": 0.1561097502708435
             }
         },
         {
@@ -3005,7 +3005,7 @@
         },
         {
             "Type": "DYNAMIC_IMAGE",
-            "eDISubClassType": "MINIGAME_CIRCLE_CLEAR_POINT_BG",
+            "eDISubClassType": "MINIGAME_CIRCLE_CLEAR_POINT",
             "iParams0": 5,
             "strOwnerName": "Minigame_Circle_ClearPoint5",
             "strTag": "Minigame_Circle_ClearPoint5_DImageData"

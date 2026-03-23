@@ -36,6 +36,7 @@ private:
 	virtual void Bind_Events()override;
 	virtual void Tick_By_Type(const _float fTimeDelta)override;
 private:
+	void Tick_For_Point(const _float fTimeDelta);
 	void Tick_For_Cursor(const _float fTimeDelta);
 
 private:
@@ -48,6 +49,17 @@ private:
 
 	// Cursor Values
 	_float m_fRad = {};
+	_float m_fRotateSpeed = { 1.f };
+
+	// Point Values
+	Vec2 m_vClampAngle = {};
+
+	// Clear Circle Values
+	_bool m_isFirstEntered = { false };
+
+	// MINIGAME_CIRCLE_KEY_ICON values
+	_float m_fMiniGameCircle_TimeAcc = {};
+	_float m_fMiniGameCircle_Duration = {};
 
 public:
 	static CUIMiniGame_Circle_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

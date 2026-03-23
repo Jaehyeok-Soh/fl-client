@@ -6,6 +6,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "IInteractable.h"
 #include "WorldUI_Component.h"
 #include "MyStat.h"
@@ -16,6 +17,10 @@
 #include "QuestManager.h"
 #include "DialogueManager.h"
 #include <UI_Manager.h>
+
+#define FAILED_TO_CLEAR_SLOT 7
+
+#define TIME_LIMIT 12.f
 
 CUIMiniGame_Circle_Text::CUIMiniGame_Circle_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIText(pDevice, pDeviceContext)
@@ -110,6 +115,16 @@ HRESULT CUIMiniGame_Circle_Text::Bind_ShaderResources()
 
 HRESULT CUIMiniGame_Circle_Text::Attach_Personal_Info()
 {
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_TIMER_TEXT:
+		break;
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT:
+		break;
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:
+		break;
+	}
+
 	return S_OK;
 }
 
@@ -120,28 +135,168 @@ HRESULT CUIMiniGame_Circle_Text::Convert_Stat_To_Text()
 
 void CUIMiniGame_Circle_Text::Bind_Events()
 {
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<MINIGAME_CIRCLE_ON>([this]()
+			{
+				Set_Active(true);
+				m_isFirstEntered = false;
+
+				switch (m_eTextSubClassType)
+				{
+				case DTO::EUITextSubClassType::MINIGAME_CIRCLE_TIMER_TEXT:
+					Set_Visible();
+					Set_Active(true);
+
+					m_fMiniGameTimer = TIME_LIMIT;
+
+					break;
+				case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT:
+				case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:
+					break;
+				}
+			})
+	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<MINIGAME_CIRCLE_CLEAR>([this]()
+			{
+				switch (m_eTextSubClassType)
+				{
+				case DTO::EUITextSubClassType::MINIGAME_CIRCLE_TIMER_TEXT:
+				case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT:
+				case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:
+					Set_Invisible();
+					break;
+				}
+			})
+	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<MINIGAME_CIRCLE_OFF>([this]()
+			{
+			})
+	);
 }
 
 void CUIMiniGame_Circle_Text::Initialize_Visible_Event()
 {
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_TIMER_TEXT:
+		Ready_Fade_Text(0.5f, 0.f, 1.f, m_fDelay);
+		Ready_LerpChange(0.5f, 2.f, 1.f, 3.f, m_fDelay, true);
+		break;
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT:
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:
+		Ready_Fade_Text(0.5f, 0.f, 0.f, m_fDelay);
+		break;
+	}
 }
 
 void CUIMiniGame_Circle_Text::Initialize_InVisible_Event()
 {
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_TIMER_TEXT:
+		Ready_Fade_Text(0.5f, 1.f, 0.f, 0.3f);
+		Ready_LerpChange(0.5f, 1.f, 2.f, 3.f, 0.3f, true);
+		break;
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT:
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:
+		Ready_Fade_Text(0.5f, 1.f, 0.f, 0.3f);
+		break;
+	}
+
 }
 
 _bool CUIMiniGame_Circle_Text::Tick_Visible_Event(const _float fTimeDelta)
 {
-	return true;
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_TIMER_TEXT:
+	{
+		_bool isFade = Tick_Fade_Text(fTimeDelta);
+		_bool isChange = Tick_LerpChange(&m_fFontScale, fTimeDelta);
+
+		if (isFade && isChange)
+		{
+			return true;
+		}
+	}
+	break;
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT:
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:
+	{
+		_bool isFade = Tick_Fade_Text(fTimeDelta);
+
+		if (isFade)
+			return true;
+	}
+		break;
+	}
+	return false;
 }
 
 _bool CUIMiniGame_Circle_Text::Tick_InVisible_Event(const _float fTimeDelta)
 {
-	return true;
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_TIMER_TEXT:
+	{
+		_bool isFade = Tick_Fade_Text(fTimeDelta);
+		_bool isChange = Tick_LerpChange(&m_fFontScale, fTimeDelta);
+
+		if (isFade && isChange)
+		{
+			Set_Active(false);
+			return true;
+		}
+	}
+	break;
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT:
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:
+	{
+		_bool isFade = Tick_Fade_Text(fTimeDelta);
+		if (isFade)
+			return true;
+	}
+		break;
+	}
+	return false;
+
 }
 
 void CUIMiniGame_Circle_Text::Tick_By_Type(const _float fTimeDelta)
 {
+	switch (m_eTextSubClassType)
+	{
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_TIMER_TEXT:
+		Tick_For_TimerText(fTimeDelta);
+		break;
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT:
+		break;
+	case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:
+		break;
+	}
+}
+
+void CUIMiniGame_Circle_Text::Tick_For_TimerText(const _float fTimeDelta)
+{
+	m_fMiniGameTimer -= fTimeDelta;
+
+	_uint i = static_cast<_uint>(m_fMiniGameTimer);
+	_wstring wstr = std::to_wstring(i);
+
+	if (m_fMiniGameTimer <= 0.f)
+	{
+		m_fMiniGameTimer = TIME_LIMIT;
+		m_pParentCanvasCache->Get_CommonParam_bool_Ref()[FAILED_TO_CLEAR_SLOT] = true;
+	}
+
+	if (i < 10)
+		wstr = L"0" + wstr;
+
+	m_wstrText = L"00:" + wstr;
 }
 
 CUIMiniGame_Circle_Text* CUIMiniGame_Circle_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
