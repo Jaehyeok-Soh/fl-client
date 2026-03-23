@@ -87,7 +87,7 @@ PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 	desc.contactOffset = pDesc->fContactOffset;
 	desc.stepOffset = pDesc->fStepOffset;
 	//desc.slopeLimit = pDesc->fSlopeLimit;
-	desc.slopeLimit = PxCos(XMConvertToRadians(45.f));
+	desc.slopeLimit = PxCos(PxDegToRad(89.f));
 
 	desc.reportCallback = m_pCCTHitReport;
 	desc.behaviorCallback = m_pCCTBehaviorCallback;
@@ -121,7 +121,7 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 	desc.contactOffset = pDesc->fContactOffset;
 	desc.stepOffset = pDesc->fStepOffset;
 	//desc.slopeLimit = pDesc->fSlopeLimit;
-	desc.slopeLimit = PxCos(XMConvertToRadians(45.f));
+	desc.slopeLimit = PxCos(PxDegToRad(89.f));
 
 	desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
 

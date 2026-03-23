@@ -218,7 +218,7 @@ void CPhysicsCCT::ApplyGravity(const _float fTimeDelta)
 		return;
 
 	if (m_CollisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN))
-		m_tMoveState.vAccelation.y += (-0.1f + m_fGravityOffset);
+		m_tMoveState.vAccelation.y += (0.f + m_fGravityOffset);
 	else
 		m_tMoveState.vAccelation.y += (m_tMoveState.fGravity + m_fGravityOffset);
 }
