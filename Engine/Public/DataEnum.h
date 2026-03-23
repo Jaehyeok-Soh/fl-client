@@ -20,6 +20,7 @@ enum class ECategory : _uint
 	MONSTER_STATE,
 	ATTACK_PRESET,
 	SOUNDEVENT,
+	CAMERACONTROLEVENT,
 	END
 };
 inline constexpr _uint g_CategoryCount{ ENUM_TO_UINT(ECategory::END) };
@@ -36,6 +37,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ECategory,
 		{ECategory::MONSTER_STATE, "MONSTER_STATE"},
 		{ECategory::ATTACK_PRESET, "ATTACK_PRESET"},
 		{ECategory::SOUNDEVENT, "SOUNDEVENT"},
+		{ECategory::CAMERACONTROLEVENT, "CAMERACONTROLEVENT"},
 		{ECategory::END, "END"}
 	}
 )

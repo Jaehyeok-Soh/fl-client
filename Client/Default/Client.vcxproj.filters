@@ -1581,6 +1581,9 @@
     <ClInclude Include="..\Public\NPC_Tavern_Body.h">
       <Filter>03. GameObject\PartObjects\NPC\Body\Tavern</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CameraEventBinder.h">
+      <Filter>07. System\04. Binder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2298,6 +2301,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\NPC_Tavern_Body.cpp">
       <Filter>03. GameObject\PartObjects\NPC\Body\Tavern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraEventBinder.cpp">
+      <Filter>07. System\04. Binder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

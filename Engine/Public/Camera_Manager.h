@@ -1,7 +1,6 @@
 #pragma once
 #include "CameraMan.h"
 #include "Base.h"
-#include "../../EngineSDK/Include/Engine_Enum.h"
 
 NS_BEGIN(Engine)
 
@@ -37,7 +36,10 @@ public:
 	void	Change_Target(CGameObject* pGo);
 	HRESULT Change_Target_Next();
 
-	HRESULT Camera_Shaking(const CAM_SHAKING_DATA& tData);
+	HRESULT Play_MainCameraShake(const CAMERA_SHAKE_DESC& desc);
+	HRESULT Play_MainCameraFOV(const CAMERA_FOV_DESC& desc);
+	HRESULT Play_MainCameraPositionOffset(const CAMERA_POSITION_OFFSET_DESC& desc);
+	HRESULT Play_MainCameraRotationOffset(const CAMERA_ROTATION_OFFSET_DESC& desc);
 	HRESULT Play_CameraCinematic(CinematicCameraSequence* pCameraCinematicSequence );
 	HRESULT	End_CameraCinematic();
 

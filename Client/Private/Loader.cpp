@@ -6,6 +6,7 @@
 #include "MonsterControlContext.h"
 #include "MonoBehaviour.h"
 #include "Sound_Handler.h"
+#include "CameraEvent_Handler.h"
 #include "EffectHandler.h"
 #include "PlayerActionState.h"
 #include "MonsterActionState.h"
@@ -738,6 +739,8 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
+	// For. Prototype_Component_CameraController
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_CameraController", CCameraController::Create());
 	// For. Prototype_Component_RenderFx
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_RenderFx", CRenderFx::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_ActionState_Player
@@ -756,6 +759,8 @@ HRESULT CLoader::Loading_For_Logo()
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_VIBuffer_InstanceMesh", CInstanceMesh::Create(m_pDevice, m_pDeviceContext));
 	// For. Prototype_Component_SoundHandler
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_SoundHandler", CSound_Handler::Create());
+	// For. Prototype_Component_CameraEvent_Handler
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_CameraEvent_Handler", CCameraEvent_Handler::Create());
 	// For. Prototype_Component_EffectHandler_SkillObject
 	{
 		CEffectHandler::ANIM_EFFECT_HANDLER_DESC desc{};
