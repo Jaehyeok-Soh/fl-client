@@ -972,7 +972,7 @@ PS_OUT_DEFFERED PS_LIGHTOBJECT(PS_IN_MESH input)
     {
         vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
         float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
-        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+        vEmissive = MIDesc.vEmissive.rgb * fMask * MIDesc.fEmissivePower;
     }
     output.vEmissive = float4(vEmissive, 1.f);
     

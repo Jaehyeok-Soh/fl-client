@@ -25,6 +25,7 @@ public:
 private:
 	virtual HRESULT			Initialize_Prototype()							override;
 	virtual HRESULT			Initialize(void* pArg)							override;
+	HRESULT					Ready_MI();
 	HRESULT					Ready_Light(const LIGHT_DESC& tLightDesc);
 	HRESULT					Ready_Collider();
 public:
@@ -46,6 +47,7 @@ private:
 	_float					m_fBaseRange{ 0.5f };			// 원래 빛 범위 저장
 	_float					m_fAccDT{ 0.f };
 	CCollider*				m_pLightCollider{nullptr};
+	_float					m_fEmissivePower{0.f};
 public:
 	static CLightObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg)								override;

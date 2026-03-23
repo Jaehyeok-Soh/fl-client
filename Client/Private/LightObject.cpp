@@ -19,6 +19,7 @@ CLightObject::CLightObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	, m_isRenderModel{ false }
 	, m_eShaderPass{ EMapObjectShaderPass::StaticObject }
 	, m_pLightCollider{nullptr}
+	, m_fEmissivePower{1.f}
 {
 }
 
@@ -33,6 +34,7 @@ CLightObject::CLightObject(const CLightObject& rhs)
 	, m_isRenderModel{ rhs.m_isRenderModel }
 	, m_eShaderPass{rhs.m_eShaderPass }
 	, m_pLightCollider{rhs.m_pLightCollider }
+	, m_fEmissivePower{rhs.m_fEmissivePower }
 {
 }
 
@@ -54,10 +56,6 @@ HRESULT CLightObject::Initialize(void* pArg)
 
 	m_isFlicker = pDesc->isFlicker;
 	m_fBaseRange = pDesc->tLightDesc.fRange;
-	m_isRenderModel = pDesc->isRenderModel;
-
-	m_eShaderPass	= pDesc->eShaderPass;
-	m_isRenderModel = pDesc->isRenderModel;
 
 	if (m_isFlicker)
 	{
@@ -65,6 +63,8 @@ HRESULT CLightObject::Initialize(void* pArg)
 		m_fFlickerMin = pDesc->fFlickerMin;
 	}
 
+	if (FAILED(Ready_MI()))
+		return E_FAIL;
 
 	if (FAILED(Ready_Light(pDesc->tLightDesc)))
 		return E_FAIL;
@@ -72,8 +72,19 @@ HRESULT CLightObject::Initialize(void* pArg)
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
 
-	if (!pDesc->isRenderModel)
-		CGameObject::Remove_Component<CModel>();
+
+	return S_OK;
+}
+
+HRESULT CLightObject::Ready_MI()
+{
+	CModel* pModel = Get_Component<CModel>();
+	_uint iCount =  (_uint)pModel->Get_MaterialCount();
+
+	for (_uint i = 0; i < iCount; ++i)
+	{
+		pModel->Change_MI(i,EMaterialInstanceType::Free);
+	}
 
 	return S_OK;
 }
@@ -164,7 +175,7 @@ void CLightObject::Ready_Before_Render(const _float fTimeDelta)
 
 
 	/* 점조명이기에 매프레임 넣어준다 */
-	EFrustrumTier eType = m_pGameInstance->Classify_BySplitFrustrum(*static_cast<CBounding_Sphere*>(Get_Component<CCollider>()->Get_Bounding())->Get_Desc());
+	EFrustrumTier eType = m_pGameInstance->Classify_BySplitFrustrum(*static_cast<CBounding_Sphere*>(m_pLightCollider->Get_Bounding())->Get_Desc());
 
 	if (eType == EFrustrumTier::Near)
 	{
@@ -191,11 +202,36 @@ HRESULT CLightObject::Render()
 		return E_FAIL;
 
 
-	if (m_isRenderModel)
+	CShader* pShader = Get_Component<CShader>();            if (pShader == nullptr)         return E_FAIL;
+	CModel* pModel = Get_Component<CModel>();               if (pModel == nullptr)          return E_FAIL;
+	CTransform* pTransform = Get_Component<CTransform>();   if (pTransform == nullptr)      return E_FAIL;
+	if (!m_pLight) return E_FAIL;
+
+	const SHADER_LIGHTDESC& tLightDesc = m_pLight->Get_LightDesc();
+	Vec4 vEmissiveColor = m_pLight->Get_LightDesc().vDiffuse;
+	float fRange = tLightDesc.fRange;
+
+	/* 내 현재 Power 값을  */
+
+	pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+	_uint iMeshCount = static_cast<_uint>(pModel->Get_MeshCount());
+
+	/* Client Make Path를 이용한다 */
+	/* Emissive */
+	/* Emissive 관련해서  */
+	pShader->Set_Pass(ENUM_TO_UINT(EMapObjectShaderPass::LightObject));
+
+	for (_uint i = 0; i < iMeshCount; ++i)
 	{
-		if (FAILED(CMapObject::Render()))
-			return E_FAIL;
+		pModel->Set_MI_EmissiveColor(i, vEmissiveColor);
+		pModel->Set_MI_EmissivePower(i, m_fEmissivePower * fRange);
+		pModel->Bind_MaterialInstance(pShader, i);
+		pModel->Bind_Material(pShader, i);
+		pShader->Apply();
+		pModel->Render(i);
 	}
+
+
 
 	return S_OK;
 }
@@ -230,4 +266,5 @@ void CLightObject::Free()
 {
 	Super::Free();
 	Safe_Release(m_pLight);
+	Safe_Release(m_pLightCollider);
 }
