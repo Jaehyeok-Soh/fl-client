@@ -61,6 +61,18 @@ HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
 
 void CState_SpecialDash::Update(const _float fTimeDelta)
 {
+    if (m_fStateElapsed >= (23.f / ANIMTIC) + 0.5f)
+    {
+        if (Check_Collis(fTimeDelta))
+            return;
+
+        if (Check_Keys(fTimeDelta))
+            return;
+
+        Change_PlayerState(STATEKEY::LOOPDONE);			// ´ÙÀ½ state·Î change
+        return;
+    }
+
     if (m_fStateElapsed >= 23.f / ANIMTIC)
     {
         //if (Check_Collis(fTimeDelta))
@@ -87,7 +99,7 @@ void CState_SpecialDash::Update(const _float fTimeDelta)
         vAccDir.y = 0.f;
         vAccDir.Normalize();
 
-        Move(vAccDir * m_fDistance * 10.f);
+        Move(vAccDir * m_fDistance * 15.f);
 
         pPlayerTransform->Look_At_XZ(m_vPivot);
         Vec3 vRightDir = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
@@ -119,11 +131,6 @@ HRESULT CState_SpecialDash::End()
     //Set_RootMotion_Apply(false);
 
     return S_OK;
-}
-
-_bool CState_SpecialDash::Can_CheckKey(const _float fTimeDelta)
-{
-    return (m_fStateElapsed >= 23.f / ANIMTIC);
 }
 
 CState_SpecialDash* CState_SpecialDash::Create(CActionState* pOwnerComponent, void* pArg)

@@ -373,6 +373,11 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
     CTransform*         pTransform = Get_Component<CTransform>();
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
 
+    if (hitDesc.attackDesc.pAttackPreset->eCategory == DTO::EAttackPresetCategory::BossDashOn)
+    {
+        pPlayerState->Set_SpecialDashOn(true);
+    }
+
     // 만약 현재 state가 attack을 받을 수 있다면
     _uint iStateFlag = pPlayerState->Get_CurrentCapabilities();
     if (Has_Capability(iStateFlag, Engine::StateCapability::BEATTACKED))

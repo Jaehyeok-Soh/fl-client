@@ -17,8 +17,11 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
-protected:
-	virtual _bool Can_CheckKey(const _float fTimeDelta);
+public:
+	virtual _uint	Get_Capabilities() const override
+	{
+		return	0;
+	}
 
 private:
 	Vec3 m_vPivot = { Vec3::Zero };
@@ -27,7 +30,6 @@ private:
 
 	_float m_fDistance = { 0.f };
 
-	_float m_fDeSpeed = { 8.f };
 
 	array<Vec3, 4> m_arrPoses;
 

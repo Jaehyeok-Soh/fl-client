@@ -207,6 +207,14 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
     break;
 
     }
+
+    // special dash on일때만 pivot 넘겨줌
+    if (pPlayerState->Get_SpecialDashOn())
+    {
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszBossLayer);
+        if (pBoss)
+            pPlayerState->Set_PivotPos(pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+    }
 }
 
 void CPlayer::Update(const _float fTimeDelta)
@@ -1301,7 +1309,7 @@ HRESULT CPlayer::Ready_BaseStates()
 
         desc.FCollis = 0;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
@@ -1317,7 +1325,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime    = true;
-        tKeyTimer.fMaxTime      = 23.f / ANIMTIC;
+        tKeyTimer.fMaxTime      = 20.f / ANIMTIC;
 
         desc.tKeyTimer          = tKeyTimer;
         desc.pOwnerGun          = pMyGun;
@@ -1809,9 +1817,9 @@ HRESULT CPlayer::Ready_PartCollider()
         tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_TriggerCall);
         tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
 
-        //// mini map에게 감지할 part ui
-        //if (FAILED(Add_Part(Part::DETECTCOLLIDER_UI, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
-        //    return E_FAIL;
+        // mini map에게 감지할 part ui
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER_UI, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
 
         {
             tPColliDesc.eShape = EPhysicsShape::SPHERE;
@@ -1865,8 +1873,8 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
         tPartColliDesc.FUpdate_Flags = ENUM_TO_UINT(CTriggerCollidePart::UPDATEFLAGS::Only_Detect);
         tPartColliDesc.pMatParent = Get_Component<CTransform>()->Get_WorldMatrixPtr();
 
-        //if (FAILED(Add_Part(Part::DETECTCOLLIDER_INTERACT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
-        //    return E_FAIL;
+        if (FAILED(Add_Part(Part::DETECTCOLLIDER_INTERACT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Collider", &tPartColliDesc)))
+            return E_FAIL;
     }
 
     return S_OK;
