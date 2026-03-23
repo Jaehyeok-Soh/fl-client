@@ -149,6 +149,9 @@ vector<PxConvexMesh*> CPhysics_ResourceManager::GetConvexMeshes(PHYSICSCOLLIDER_
 
 void CPhysics_ResourceManager::RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag)
 {
+	if (m_MeshResourceTag.find(prototypeTag) != m_MeshResourceTag.end())
+		m_MeshResourceTag[prototypeTag] = levelIndex;
+
 	m_MeshResourceTag.emplace(prototypeTag, levelIndex);
 }
 
