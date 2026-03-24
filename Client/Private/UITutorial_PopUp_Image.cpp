@@ -254,10 +254,12 @@ void CUITutorial_PopUp_Image::Bind_Events()
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_10:
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_11:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_E);
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_12:
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_13:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_Q);
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_1:
 							break;
