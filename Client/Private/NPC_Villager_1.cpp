@@ -66,7 +66,7 @@ HRESULT CNPC_Villager_1::Initialize(void* pArg)
 	{
 		Set_Interact_Enable();
 		Set_Interact_DefaultEnable();
-		Interact_SetDefaultDialogue(200);
+		Interact_SetDefaultDialogue(210);
 	}
 
 	return S_OK;
@@ -262,6 +262,8 @@ void CNPC_Villager_1::QuestEnter()
 void CNPC_Villager_1::QuestExit()
 {
 	Super::QuestExit();
+
+	Interact_SetDefaultDialogue(211);
 }
 
 void CNPC_Villager_1::Interact()

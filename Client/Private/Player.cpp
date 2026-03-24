@@ -1831,8 +1831,8 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
         {
             tPColliDesc.eShape = EPhysicsShape::BOX;
             //tPColliDesc.fHeight = 100.f;
-            tPColliDesc.vCenter = { 0.f, 0.75f, 1.f };
-            tPColliDesc.vExtents = { 2.f, 1.5f, 5.f };
+            tPColliDesc.vCenter = { 0.f, 0.75f, 0.7f };
+            tPColliDesc.vExtents = { 2.f, 1.5f, 4.f };
 
             //tPColliDesc.fRadius = { 20.f };
             tPColliDesc.bIsTrigger = { true };
