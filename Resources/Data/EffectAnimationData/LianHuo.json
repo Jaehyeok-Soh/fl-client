@@ -285,6 +285,34 @@
                         "y": 0.0,
                         "z": 0.0
                     }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 55.0,
+                    "iAnimIndex": 21,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 241,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Lianhuo_Skill06",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Rianhuo_JumpKick",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 2.0
+                    },
+                    "vRotation": {
+                        "x": 30.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
                 }
             ]
         }
