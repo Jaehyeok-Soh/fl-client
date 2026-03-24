@@ -809,6 +809,7 @@ void CEffectObject::Overwrite_FromEnv(const EFFECT_ENV_DESC::ENV_PART_DESC& pDes
     ParticleDesc.vLifeTime.y = pDesc.VFX_ParticleLifeTime_Parts;
     ParticleDesc.vRange = pDesc.VFX_ParticleRange_Parts;
     ParticleDesc.iInstnaceCount = pDesc.VFX_ParticleCount_Parts;
+    ParticleDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_AnimSpeed;
 
     m_pParticleBuffer->Set_ParticleDesc(ParticleDesc);
 }
