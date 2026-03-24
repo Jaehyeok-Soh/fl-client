@@ -707,15 +707,15 @@ void CMonster_Base::OnHit_Dual(const HIT_DESC& hitDesc)
 
 void CMonster_Base::SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc)
 {
-	{
-		Matrix transform = tTransformDesc.TranslationMatrix;
-		Vec3 pos = transform.Translation();
-		pos.x += m_pGameInstance->Rand_Float(-2.5f, 2.5f);
-		pos.y += 3.f;
-		pos.z += m_pGameInstance->Rand_Float(-2.5f, 2.5f);
+	//{
+	//	Matrix transform = tTransformDesc.TranslationMatrix;
+	//	Vec3 pos = transform.Translation();
+	//	pos.x += m_pGameInstance->Rand_Float(-2.5f, 2.5f);
+	//	pos.y += 3.f;
+	//	pos.z += m_pGameInstance->Rand_Float(-2.5f, 2.5f);
 
-		tTransformDesc.TranslationMatrix = Matrix::CreateTranslation(pos);
-	}
+	//	tTransformDesc.TranslationMatrix = Matrix::CreateTranslation(pos);
+	//}
 
 	Matrix matWorld = tTransformDesc.ScaleMatrix * tTransformDesc.RotationMatrix * tTransformDesc.TranslationMatrix;
 
