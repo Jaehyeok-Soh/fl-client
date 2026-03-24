@@ -52,6 +52,11 @@ void CPlayerActionState::Update(const _float fTImeDelta)
     Super::Update(fTImeDelta);
 }
 
+_bool CPlayerActionState::Get_KeyFlag(_uint iKeyFlag)
+{
+    return static_cast<CPlayerControlContext*>(m_pOwnerControlContext)->Get_KeyFlag(static_cast<CPlayerControlContext::KEYFLAGS>(iKeyFlag));
+}
+
 void CPlayerActionState::Set_Flag(Flags FActionFlag, _bool bOn)
 {
     if (bOn)

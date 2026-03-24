@@ -40,6 +40,9 @@ private:
 public:
 	virtual void Update(const _float fTImeDelta) override;
 
+public:
+	_bool Get_KeyFlag(_uint iKeyFlag);
+
 	// hit ฐüทร funcs
 public:
 	void Set_Flag(Flags FActionFlag, _bool bOn);

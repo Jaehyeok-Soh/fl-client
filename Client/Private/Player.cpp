@@ -156,18 +156,16 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     }
 
 
-
+    Set_FKeyEvent(0, false);
     // level 별 관리 : 주로 테스트용
     switch (iCurrentLevelID)
     {
     case ENUM_TO_UINT(ELevelType::TEST):
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::NONE));
-        //pPlayerState->Set_SpecialDashOn(true);
         break;
 
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
         Set_FKeyEvent(0, true);
-       // pPlayerState->Set_SpecialDashOn(true);
 
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));

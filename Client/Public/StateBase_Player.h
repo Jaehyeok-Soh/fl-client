@@ -201,6 +201,7 @@ private:
 	CGun*					m_pOwnerGun = { nullptr };
 
 private:
+	_bool	KeyFlag_On(_uint iKeyFlag);
 	_bool	Has_ChangeState(STATEKEY eKey);
 	_bool	Can_ChangeNextWeapon(_uint iWeaponType);
 

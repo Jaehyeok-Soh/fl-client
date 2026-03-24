@@ -309,7 +309,8 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 {
-	if (Can_UseWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE)))
+	if (KeyFlag_On(CPlayerControlContext::KEYFLAGS::COMBO)
+		&&Can_UseWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE)))
 	{
 		// holding 시간 체크
 		if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
@@ -796,6 +797,11 @@ HRESULT CStateBase_Player::Start_AttackState(void* pArg)
 	Reset_WhenStart();
 
 	return S_OK;
+}
+
+_bool CStateBase_Player::KeyFlag_On(_uint iKeyFlag)
+{
+	return static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Get_KeyFlag(iKeyFlag);
 }
 
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)
