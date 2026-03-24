@@ -712,6 +712,7 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombinePart.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_BoneMyMove.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_RagDoll.hlsl" />
     <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">
