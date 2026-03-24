@@ -13,6 +13,14 @@ public:
 	virtual _bool Can_Render(CGameObject* pGo) override;
 	virtual void Render(CGameObject* pGo) override;
 
+private:
+	_float m_fFloat1 = { 0.f };
+	_float m_fFloat2 = { 0.f };
+	_float m_fFloat3 = { 0.f };
+
+private:
+	void Render_Float(CGameObject* pGo);
+
 public:
 	static CImGui_StateLayout* Create();
 	virtual void Free() override;

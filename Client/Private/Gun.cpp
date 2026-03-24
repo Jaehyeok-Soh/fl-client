@@ -124,7 +124,7 @@ void CGun::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObj
 	//m_pGameInstance->Push_CollidedData(desc);
 
 	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
-
+	
 	m_pGameInstance->Broadcast<GUN_ON_HIT>();
 }
 

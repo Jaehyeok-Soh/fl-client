@@ -152,32 +152,17 @@ HRESULT CUIWeakness_Image::Bind_ShaderResources()
 
 void CUIWeakness_Image::Bind_Events()
 {
-	m_tEventHandle0 = (m_pGameInstance->Subscribe<BOSS_GROGGY>([this]()
-		{
-			this->Set_Visible();
-		})
-	);
-
-	m_vecEventHandles.push_back(m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-		{
-			if (EUIEventID::WEAKNESS_FIN == Desc.eEventID)
-				this->Set_Invisible();
-		})
-	);
-
-	switch (m_eDImageSubClass)
-	{
-	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_BEGIN:
-		break;
-	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON:
-		break;
-	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
-		break;
-	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:
-		break;
-	case DTO::EUIDImageSubClassType::BSTTLE_WEAKNESS_END:
-		break;
-	}
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<BOSS_GROGGY>([this]()
+			{
+				this->Set_Visible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::WEAKNESS_FIN == Desc.eEventID)
+					this->Set_Invisible();
+			}));
 }
 
 void CUIWeakness_Image::Tick_By_Type(const _float fTimeDelta)
@@ -266,7 +251,7 @@ _bool CUIWeakness_Image::Tick_Visible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
 	{
 		_bool is = Tick_LerpChange(&m_fHeight, fTimeDelta);
@@ -277,7 +262,7 @@ _bool CUIWeakness_Image::Tick_Visible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:
 		return Tick_Fade(fTimeDelta);
 		break;
@@ -309,7 +294,7 @@ _bool CUIWeakness_Image::Tick_InVisible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG:
 	{
 		_bool is = Tick_LerpChange(&m_fHeight, fTimeDelta);
@@ -320,14 +305,14 @@ _bool CUIWeakness_Image::Tick_InVisible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::BATTLE_WEAKNESS_EYEICON_BG_FX:
 		return Tick_Fade(fTimeDelta);
 		break;
 	case DTO::EUIDImageSubClassType::BSTTLE_WEAKNESS_END:
 		break;
 	}
-	return false	;
+	return false;
 }
 
 CUIWeakness_Image* CUIWeakness_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -355,6 +340,4 @@ CGameObject* CUIWeakness_Image::Clone(void* pArg)
 void CUIWeakness_Image::Free()
 {
 	Super::Free();
-
-	m_pGameInstance->Unsubscribe<BOSS_GROGGY>(m_tEventHandle0);
 }

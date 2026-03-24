@@ -37,9 +37,9 @@ public:
 	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, _float fMotionOffset);
 
 	// motion anim
-	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos);
-	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos);
-	void Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos);
+	void Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos, OUT Quat& vPreQuat);
+	void SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos, OUT Quat& vPreQuat);
+	void Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos, OUT Quat& vPreQuat);
 
 	void Update_Addtive(const vector<class CBone*>& vecBones, const vector<KEYFRAME>& RefKeyFrame, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset);
 
@@ -51,7 +51,7 @@ public:
 public:
 	void	Check_UpdateCpu(const vector<class CBone*>& vecBones);
 	_bool	Set_MotionBone(_int iBoneIdx);
-	void	Reset_PreTranslation(OUT Vec3& vPrepos);
+	void	Reset_PreTranslation(OUT Vec3& vPrepos, OUT Quat& vPreQuat);
 
 	// 기본 channel 정보
 private:
@@ -70,7 +70,7 @@ private:
 	_bool				m_bUpdateCpu = { false };
 
 private:
-	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans , CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset,_float fRatio, OUT Vec3& vPrepos);
+	void Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans, Quat vLeftQuat, Quat vRightQuat, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, _float fRatio, OUT Vec3& vPrepos, OUT Quat& vPreQuat);
 
 public:
 	static CChannel* Create(const CHANNEL_DESC &desc);

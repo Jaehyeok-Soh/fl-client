@@ -75,7 +75,6 @@ protected:
 
 	void Request_SetDead();
 	virtual void Bind_Events() {};
-
 public:
 	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
 	void Set_ParentCanvas(CCanvas* p) { m_pParentCanvasCache = p; }

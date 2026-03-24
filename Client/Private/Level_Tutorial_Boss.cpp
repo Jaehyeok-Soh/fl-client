@@ -536,7 +536,7 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	static _uint s_iCount = { 0 };
+	/*static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
 	{
 #ifdef _DEBUG
@@ -567,7 +567,7 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 	if (KEY_BUTTON_DOWN(DIK_9))
 	{
 		m_pGameInstance->Broadcast<XIBILA_BOSS_UI_OFF>();
-	}
+	}*/
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

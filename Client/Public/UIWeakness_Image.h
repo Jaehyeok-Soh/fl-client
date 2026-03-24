@@ -47,8 +47,6 @@ private:
 	_float	m_fGlowPulseSpeed	= {};
 	_float	m_fGlowIntensity	= {};
 
-	DelegateHandle m_tEventHandle0 = {};
-
 public:
 	static CUIWeakness_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

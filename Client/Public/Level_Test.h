@@ -30,7 +30,6 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Map();
 	HRESULT Ready_Monster();
-	HRESULT Ready_Boss_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();
 	HRESULT	Ready_SkyBox();

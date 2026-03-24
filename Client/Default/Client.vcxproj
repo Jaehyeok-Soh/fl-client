@@ -161,6 +161,7 @@
     <ClInclude Include="..\Public\Body.h" />
     <ClInclude Include="..\Public\BonePart.h" />
     <ClInclude Include="..\Public\BossControlContext.h" />
+    <ClInclude Include="..\public\Boss_Lianhuo_Body.h" />
     <ClInclude Include="..\public\Boss_Xibi.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
     <ClInclude Include="..\public\Builder_AttackPreset.h" />
@@ -182,6 +183,9 @@
     <ClInclude Include="..\Public\ChangeLevelObject.h" />
     <ClInclude Include="..\Public\NPC_Tavern.h" />
     <ClInclude Include="..\Public\NPC_Tavern_Body.h" />
+    <ClInclude Include="..\Public\UIMiniGame_Circle_Image.h" />
+    <ClInclude Include="..\Public\UIMiniGame_Circle_Text.h" />
+    <ClInclude Include="..\Public\UIMouseCursor_Image.h" />
     <ClInclude Include="..\Public\WeaponPickUp.h" />
     <ClInclude Include="..\Public\InteractiveObject.h" />
     <ClInclude Include="..\Public\LightObject.h" />
@@ -405,9 +409,12 @@
     <ClInclude Include="..\public\Xibi_Loop_Thunder.h" />
     <ClInclude Include="..\public\Xibi_Oneshot_Thunder.h" />
     <ClInclude Include="..\public\Xibi_Projectile_Circle.h" />
+    <ClInclude Include="Boss_Lianhuo.h" />
+    <ClInclude Include="CameraShotUtils.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PlayerImguiValues.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -416,6 +423,7 @@
     <ClCompile Include="..\Private\Body.cpp" />
     <ClCompile Include="..\Private\BonePart.cpp" />
     <ClCompile Include="..\Private\BossControlContext.cpp" />
+    <ClCompile Include="..\private\Boss_Lianhuo_Body.cpp" />
     <ClCompile Include="..\private\Boss_Xibi.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
     <ClCompile Include="..\private\Builder_AttackPreset.cpp" />
@@ -437,6 +445,9 @@
     <ClCompile Include="..\Private\ChangeLevelObject.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern_Body.cpp" />
+    <ClCompile Include="..\Private\UIMiniGame_Circle_Image.cpp" />
+    <ClCompile Include="..\Private\UIMiniGame_Circle_Text.cpp" />
+    <ClCompile Include="..\Private\UIMouseCursor_Image.cpp" />
     <ClCompile Include="..\Private\WeaponPickUp.cpp" />
     <ClCompile Include="..\Private\InteractiveObject.cpp" />
     <ClCompile Include="..\Private\Monster_Fly.cpp" />
@@ -679,6 +690,8 @@
     <ClCompile Include="..\private\Xibi_Oneshot_Thunder.cpp" />
     <ClCompile Include="..\private\Xibi_Projectile_Circle.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
+    <ClCompile Include="Boss_Lianhuo.cpp" />
+    <ClCompile Include="CameraShotUtils.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Client_Define.cpp" />
     <ClCompile Include="pch.cpp">

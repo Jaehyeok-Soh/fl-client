@@ -1614,9 +1614,11 @@ void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
 	}
 	if (LoadJson.contains("Rotation"))
 	{
-		Vec3 vDegree{};
-		Engine_Utils::read_vec3_xyz(LoadJson["Rotation"], vDegree);
-		this->vRotation = Vec3(XMConvertToRadians(vDegree.x), XMConvertToRadians(vDegree.y), XMConvertToRadians(vDegree.z));
+		//Vec3 vDegree{};
+		//Engine_Utils::read_vec3_xyz(LoadJson["Rotation"], vDegree);
+		//this->vRotation = Vec3(XMConvertToRadians(vDegree.x), XMConvertToRadians(vDegree.y), XMConvertToRadians(vDegree.z));
+		
+		Engine_Utils::read_vec3_xyz(LoadJson["Rotation"], this->vRotation);
 	}
 
 

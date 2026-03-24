@@ -284,7 +284,7 @@ inline void CTransform::Yaw_Turn(const _float fTimeDelta)
 	vUp.Normalize();
 
 	Matrix matRotation = Matrix::CreateFromAxisAngle(vUp, m_fRotatePerSec * fTimeDelta);
-
+	
 	Set_Info(TRANSFORM_INFO_STATE::RIGHT, Vec3::TransformNormal(vRight, matRotation));
 	Set_Info(TRANSFORM_INFO_STATE::UP, Vec3::TransformNormal(vUp, matRotation));
 	Set_Info(TRANSFORM_INFO_STATE::LOOK, Vec3::TransformNormal(vLook, matRotation));
@@ -409,6 +409,19 @@ inline void CTransform::Turn(const Vec3& vAxis, const _float fTimeDelta)
 	Vec3 vLook = Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
 	Matrix matRotation = Matrix::CreateFromAxisAngle(vAxis, m_fRotatePerSec * fTimeDelta);
+
+	Set_Info(TRANSFORM_INFO_STATE::RIGHT, Vec3::TransformNormal(vRight, matRotation));
+	Set_Info(TRANSFORM_INFO_STATE::UP, Vec3::TransformNormal(vUp, matRotation));
+	Set_Info(TRANSFORM_INFO_STATE::LOOK, Vec3::TransformNormal(vLook, matRotation));
+}
+
+inline void CTransform::Turn_Radian(const Vec3& vAxis, const _float fRadian)
+{
+	Vec3 vRight = Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+	Vec3 vUp = Get_Info(TRANSFORM_INFO_STATE::UP);
+	Vec3 vLook = Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+	Matrix matRotation = Matrix::CreateFromAxisAngle(vAxis, fRadian);
 
 	Set_Info(TRANSFORM_INFO_STATE::RIGHT, Vec3::TransformNormal(vRight, matRotation));
 	Set_Info(TRANSFORM_INFO_STATE::UP, Vec3::TransformNormal(vUp, matRotation));

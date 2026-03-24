@@ -44,7 +44,7 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 {
 }
 
-void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos)
+void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos, OUT Quat& vPreQuat)
 {
 	if (m_bUpdateCpu)
 	{
@@ -52,7 +52,7 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 		{
 			*pCurrentKeyFrameIndex = 0;
 			if(m_bRootBone)
-				Reset_PreTranslation(vPrepos);
+				Reset_PreTranslation(vPrepos, vPreQuat);
 		}
 
 
@@ -89,9 +89,12 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 
 			if (m_bRootBone)
 			{
-				Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos);
+				Update_MotionBone(vLeftTranslation, vRightTranslation, vLeftQuaternion, vRightQuaternion, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos, vPreQuat);
 				vLeftTranslation = { 0.f,0.f,0.f };
 				vRightTranslation = { 0.f,0.f,0.f };
+
+				vLeftQuaternion = { 0.f, 0.f, 0.f, 1.f };
+				vRightQuaternion = { 0.f, 0.f, 0.f, 1.f };
 			}
 
 			vScale = Vec3::Lerp(vLeftScale, vRightScale, fRatio);
@@ -104,18 +107,18 @@ void CChannel::Update_TransformationMatrix(const vector<class CBone*>& vecBones,
 	}
 
 	else if (m_bRootBone)
-		Move_OnwerTransform(fCurrentTrackPosition, pCurrentKeyFrameIndex, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, vPrepos);
+		Move_OnwerTransform(fCurrentTrackPosition, pCurrentKeyFrameIndex, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, vPrepos,  vPreQuat);
 
 }
 
-void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos)
+void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos, OUT Quat& vPreQuat)
 {
 	if (m_bUpdateCpu)
 	{
 		if (fCurrentTrackPosition <= 0.f)
 		{
 			*pCurrentKeyFrameIndex = 0;
-			Reset_PreTranslation(vPrepos);
+			Reset_PreTranslation(vPrepos, vPreQuat);
 		}
 
 		Matrix matTransformation = {};
@@ -169,18 +172,18 @@ void CChannel::SetUp_PoseData(std::span<LOCALSRT> spanLocalSrtData, _float fCurr
 	}
 
 	else if (m_bRootBone)
-		Move_OnwerTransform(fCurrentTrackPosition, pCurrentKeyFrameIndex, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, vPrepos);
+		Move_OnwerTransform(fCurrentTrackPosition, pCurrentKeyFrameIndex, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, vPrepos, vPreQuat);
 
 }
 
-void CChannel::Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos)
+void CChannel::Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrentKeyFrameIndex, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, OUT Vec3& vPrepos, OUT Quat& vPreQuat)
 {
 	//if (m_bRootBone)
 	{
 		if (fCurrentTrackPosition <= 0.f)
 		{
 			*pCurrentKeyFrameIndex = 0;
-			Reset_PreTranslation(vPrepos);
+			Reset_PreTranslation(vPrepos, vPreQuat);
 		}
 
 		KEYFRAME lastKeyFrame = m_vecKeyframes.back();
@@ -191,6 +194,9 @@ void CChannel::Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrent
 
 		if (fCurrentTrackPosition >= m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition)
 			++(*pCurrentKeyFrameIndex);
+
+		Quat vLeftQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vQuaterion;
+		Quat vRightQuaternion = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vQuaterion;
 		
 		Vec3 vLeftTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex)].vTranslation;
 		Vec3 vRightTranslation = m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].vTranslation;
@@ -198,7 +204,7 @@ void CChannel::Move_OnwerTransform(_float fCurrentTrackPosition, _uint* pCurrent
 		_float		fRatio = (fCurrentTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition) /
 			(m_vecKeyframes[(*pCurrentKeyFrameIndex) + 1].fTrackPosition - m_vecKeyframes[(*pCurrentKeyFrameIndex)].fTrackPosition);
 
-		Update_MotionBone(vLeftTranslation, vRightTranslation, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos);
+		Update_MotionBone(vLeftTranslation, vRightTranslation, vLeftQuaternion, vRightQuaternion, pOwnerTransform, pOwnerPhyCCT, fTimeDelta, fMotionOffset, fRatio, vPrepos, vPreQuat);
 	}
 }
 
@@ -299,44 +305,94 @@ _bool CChannel::Set_MotionBone(_int iBoneIdx)
 	return m_bRootBone;
 }
 
-void CChannel::Reset_PreTranslation(OUT Vec3& vPrepos)
+void CChannel::Reset_PreTranslation(OUT Vec3& vPrepos, OUT Quat& vPreQuat)
 {
 	vPrepos = m_vecKeyframes[0].vTranslation;
+	vPreQuat = m_vecKeyframes[0].vQuaterion;
 }
 
-void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, _float fRatio, OUT Vec3& vPrepos)
+//void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans,  CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, _float fRatio, OUT Vec3& vPrepos)
+//{
+//	if (pOwnerTransform == nullptr ||
+//		pOwnerPhyCCT == nullptr)
+//		return;
+//
+//	/* 좌표계 차이 때문에 x,z,y & 부호 반대로 */
+//
+//	//_float fLocalRight	= vLeftTrans.x - vRightTrans.x;
+//	//_float fLocalUp		= vLeftTrans.z - vRightTrans.z;
+//	//_float fLocalLook	= vLeftTrans.y - vRightTrans.y;
+//
+//	Vec3 vLerp = Vec3::Lerp(vLeftTrans, vRightTrans, fRatio);
+//	Vec3 vDelta = vPrepos - vLerp;
+//	vPrepos = vLerp;
+//
+//
+//	//if (fLocalRight == 0
+//	//	&& fLocalUp == 0
+//	//	&& fLocalLook == 0)
+//	//	return;
+//
+//	Vec3 vOwnerRight	= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+//	Vec3 vOwnerUp		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+//	Vec3 vOwnerLook		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+//
+//	vOwnerRight.Normalize();
+//	vOwnerUp.Normalize();
+//	vOwnerLook.Normalize();
+//
+//	Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
+//
+//	pOwnerPhyCCT->AddFixedMove(moveDistance * fMotionOffset);
+//}
+
+void CChannel::Update_MotionBone(Vec3 vLeftTrans, Vec3 vRightTrans, Quat vLeftQuat, Quat vRightQuat, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, const _float fTimeDelta, _float fMotionOffset, _float fRatio, OUT Vec3& vPrepos, OUT Quat& vPreQuat)
 {
 	if (pOwnerTransform == nullptr ||
 		pOwnerPhyCCT == nullptr)
 		return;
 
-	/* 좌표계 차이 때문에 x,z,y & 부호 반대로 */
-
-	//_float fLocalRight	= vLeftTrans.x - vRightTrans.x;
-	//_float fLocalUp		= vLeftTrans.z - vRightTrans.z;
-	//_float fLocalLook	= vLeftTrans.y - vRightTrans.y;
-
-	Vec3 vLerp = Vec3::Lerp(vLeftTrans, vRightTrans, fRatio);
-	Vec3 vDelta = vPrepos - vLerp;
-	vPrepos = vLerp;
+	/* Translation */
+	{
+		Vec3 vLerp = Vec3::Lerp(vLeftTrans, vRightTrans, fRatio);
+		Vec3 vDelta = vPrepos - vLerp;
+		vPrepos = vLerp;
 
 
-	//if (fLocalRight == 0
-	//	&& fLocalUp == 0
-	//	&& fLocalLook == 0)
-	//	return;
+		if (vDelta.Length() != 0.f)
+		{
+			Vec3 vOwnerRight = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+			Vec3 vOwnerUp = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+			Vec3 vOwnerLook = pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
-	Vec3 vOwnerRight	= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
-	Vec3 vOwnerUp		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
-	Vec3 vOwnerLook		= pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+			vOwnerRight.Normalize();
+			vOwnerUp.Normalize();
+			vOwnerLook.Normalize();
 
-	vOwnerRight.Normalize();
-	vOwnerUp.Normalize();
-	vOwnerLook.Normalize();
+			Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
 
-	Vec3 moveDistance = vOwnerRight * vDelta.x + vOwnerUp * vDelta.z + vOwnerLook * vDelta.y;
+			pOwnerPhyCCT->AddFixedMove(moveDistance * fMotionOffset);
+		}
+	}
 
-	pOwnerPhyCCT->AddFixedMove(moveDistance * fMotionOffset);
+	/* Rotation */
+	{
+		Quat vCurRot = Quat::Slerp(vLeftQuat, vRightQuat, fRatio);
+
+		// delta = curRot * inverse(preRot)
+
+		Quat vInvQuat;
+		vPreQuat.Inverse(vInvQuat);
+		Quat vDeltaRot = vCurRot * vInvQuat;
+		vPreQuat = vCurRot;
+
+		// Yaw(Y축)만 추출
+		Vec3 vEuler = vDeltaRot.ToEuler();   // DirectXMath 기준
+		_float fYaw = vEuler.z;
+
+		// 오너 Transform Y축 회전에 누적
+		pOwnerTransform->Turn_Radian(Vec3::Up, fYaw * -1.f);
+	}
 }
 
 CChannel* CChannel::Create(const CHANNEL_DESC& desc)

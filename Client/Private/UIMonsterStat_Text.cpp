@@ -6,6 +6,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "MyStat.h"
 #include "Texture.h"
@@ -66,21 +67,25 @@ void CUIMonsterStat_Text::Update(const _float fTimeDelta)
 void CUIMonsterStat_Text::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
+
+	if (FAILED(Convert_Stat_To_Text()))
+		return;
+
+	if (m_pParentCanvasCache->Get_CommonParam_bool()[0])
+	{
+		m_isVisible = false;
+		m_vFontColor.w = 0.f;
+	}
+	else
+	{
+		m_isVisible = true;
+		m_vFontColor.w = 1.f;
+	}
 }
 
 void CUIMonsterStat_Text::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	if (FAILED(Convert_Stat_To_Text()))
-		return;
-	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f)
-	{
-		m_vFontColor.w = 0.f;
-	}
-	else
-	{
-		m_vFontColor.w = 1.f;
-	}
 }
 
 HRESULT CUIMonsterStat_Text::Render()
@@ -113,12 +118,7 @@ HRESULT CUIMonsterStat_Text::Bind_ShaderResources()
 
 HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
 {
-	m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>(
-		[this](CGameObject* pDead)
-		{
-			if (pDead == m_pTargetMoster)
-				this->Set_Invisible();
-		});
+
 
 	if (m_isSpawned)
 	{
@@ -154,8 +154,7 @@ void CUIMonsterStat_Text::Bind_Events()
 				{
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -163,8 +162,46 @@ void CUIMonsterStat_Text::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>(
+			[this](CGameObject* pDead)
+			{
+				if (pDead == m_pTargetMoster)
+					this->Set_Invisible();
+			}));
+
+
+	// 대화 Event
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{					
+				m_isVisible = false;
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{
+				m_isVisible = true;
+			}));
+
+	// 패널 Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					m_isVisible = false;
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					m_isVisible = true;
+				}
+			}));
 }
 
 void CUIMonsterStat_Text::Initialize_Visible_Event()

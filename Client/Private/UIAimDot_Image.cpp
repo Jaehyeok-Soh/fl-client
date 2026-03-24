@@ -161,7 +161,6 @@ HRESULT CUIAimDot_Image::Attach_Personal_Info()
 
 void CUIAimDot_Image::Bind_Events()
 {
-
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -169,13 +168,46 @@ void CUIAimDot_Image::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
+
+	// 대화 Event
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{
+				this->m_fAlpha_Ratio = 0.f;
+				Set_Active(false);
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{
+				this->m_fAlpha_Ratio = 1.f;
+				Set_Active(true);
+			}));
+
+	// 패널 Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					this->m_fAlpha_Ratio = 0.f;
+					Set_Active(false);
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					this->m_fAlpha_Ratio = 1.f;
+					Set_Active(true);
+				}
+			}));
 
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BATTLE_UI_BEGIN:
-		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
+		m_vecEventHandles.push_back(m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); }));
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_COMMON:
 		m_vecEventHandles.push_back(
@@ -185,26 +217,25 @@ void CUIAimDot_Image::Bind_Events()
 					{
 						this->Set_Visible();
 					}
-				})
-		);
-		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
-		m_pGameInstance->Subscribe<CINEMATIC_END>([this]() { this->Set_Visible(); });
+				}));
+		m_vecEventHandles.push_back(m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); }));
+		m_vecEventHandles.push_back(m_pGameInstance->Subscribe<CINEMATIC_END>([this]() { this->Set_Visible(); }));
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_TOP:
-		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
+		m_vecEventHandles.push_back(m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); }));
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_RIGHT:
-		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
+		m_vecEventHandles.push_back(m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); }));
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_BOTTOM:
-		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
+		m_vecEventHandles.push_back(m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); }));
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIMDOT_CROSSHAIR_LEFT:
-		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
+		m_vecEventHandles.push_back(m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); }));
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_HIT:
-		m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); });
-		m_pGameInstance->Subscribe< GUN_ON_HIT>([this]() { this->Set_Visible(); });
+		m_vecEventHandles.push_back(m_pGameInstance->Subscribe<CINEMATIC_START>([this]() { this->Set_Invisible(); }));
+		m_vecEventHandles.push_back(m_pGameInstance->Subscribe< GUN_ON_HIT>([this]() { this->Set_Visible(); }));
 		break;
 	case DTO::EUIDImageSubClassType::BATTLE_AIM_LOCK:
 		break;

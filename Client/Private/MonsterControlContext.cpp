@@ -243,6 +243,67 @@ _bool CMonsterControlContext::IsTargetFOV()
 	return _bool();
 }
 
+_bool CMonsterControlContext::IsTargetLeft90() const
+{
+	if (m_tRuntimeDesc.bTargetValid == false)
+		return false;
+
+	// 내 오른쪽 벡터와 타겟 방향의 내적 -> 음수면 왼쪽
+	_float fDotRight = m_tRuntimeDesc.vOwnerRight.Dot(m_tRuntimeDesc.vToTargetDir);
+
+	// 앞쪽이 아니고(정면 아님), 왼쪽에 있고, 완전 뒤는 아님
+	// fDotForward:		0.0 ~ 0.7 = 측면
+	// fDotRight:		< 0 = 왼쪽
+	return (m_tRuntimeDesc.fDotForward < 0.7f)
+		&& (m_tRuntimeDesc.fDotForward > -0.3f)
+		&& (fDotRight < -0.3f);
+}
+
+_bool CMonsterControlContext::IsTargetRight90() const
+{
+	if (m_tRuntimeDesc.bTargetValid == false)
+		return false;
+
+	_float fDotRight = m_tRuntimeDesc.vOwnerRight.Dot(m_tRuntimeDesc.vToTargetDir);
+
+	return (m_tRuntimeDesc.fDotForward < 0.7f)
+		&& (m_tRuntimeDesc.fDotForward > -0.3f)
+		&& (fDotRight > 0.3f);
+}
+
+_bool CMonsterControlContext::IsTargetLeft180() const
+{
+	if (m_tRuntimeDesc.bTargetValid == false)
+		return false;
+
+	_float fDotRight = m_tRuntimeDesc.vOwnerRight.Dot(m_tRuntimeDesc.vToTargetDir);
+
+	// 완전 뒤쪽 + 왼쪽
+	return (m_tRuntimeDesc.fDotForward < -0.3f)
+		&& (fDotRight <= 0.f);
+}
+
+_bool CMonsterControlContext::IsTargetRight180() const
+{
+	if (!m_tRuntimeDesc.bTargetValid)
+		return false;
+
+	_float fDotRight = m_tRuntimeDesc.vOwnerRight.Dot(m_tRuntimeDesc.vToTargetDir);
+
+	// 완전 뒤쪽 + 오른쪽
+	return (m_tRuntimeDesc.fDotForward < -0.3f)
+		&& (fDotRight > 0.f);
+}
+
+_bool CMonsterControlContext::IsTargetBehind() const
+{
+	return IsTargetLeft180() || IsTargetRight180();
+}
+_bool CMonsterControlContext::IsTargetSide() const
+{
+	return IsTargetLeft90() || IsTargetRight90();
+}
+
 _bool CMonsterControlContext::IsCliffAhead()
 {
 	return _bool();

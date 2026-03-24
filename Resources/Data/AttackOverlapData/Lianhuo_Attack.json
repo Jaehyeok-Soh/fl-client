@@ -1,0 +1,42 @@
+{
+    "Category": "OVERLAP_SCRIPT",
+    "Objects": [
+        {
+            "attackEvents": [
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 9.38734245300293,
+                    "iAnimIndex": 8,
+                    "strAnimTag": "Animation_Lianhuo_FightIdle",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 32,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.05000000074505806,
+                        "fHeight": 0.0,
+                        "fRadius": 1.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Xibi_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                }
+            ],
+            "iNumPool": 30,
+            "strTag": "Lianhuo"
+        }
+    ]
+}
