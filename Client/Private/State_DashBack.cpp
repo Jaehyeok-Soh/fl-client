@@ -30,6 +30,8 @@ HRESULT CState_DashBack::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	Set_RootMotion_Apply(true);
+
 	return S_OK;
 }
 
@@ -43,7 +45,23 @@ HRESULT CState_DashBack::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
+	//Set_RootMotion_Apply(false);
+
 	return S_OK;
+}
+
+_uint CState_DashBack::Get_Capabilities() const
+{
+	if (m_fStateElapsed > 0.3f)
+	{
+		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
+
+	}
+
+	else
+	{
+		return	ENUM_TO_UINT(Engine::StateCapability::SKILL) | ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
+	}
 }
 
 CState_DashBack* CState_DashBack::Create(CActionState* pOwnerComponent, void* pArg)
