@@ -2010,7 +2010,7 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 
 	Vec3 vUp = Vec3::Up;
 	if (fabs(input.vLightDir.Dot(vUp)) > 0.98f)
-		vUp = Vec3::Forward;
+		vUp = Vec3::Backward;
 
 	_float fViewBackDist = sqrtf(
 		vReceiverExtents.x * vReceiverExtents.x +
