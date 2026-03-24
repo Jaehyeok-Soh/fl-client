@@ -119,6 +119,8 @@ void to_json(json& j, const TEFFECT_PartsData& data)
         {"PlayAnimation", data._Effect_bPlayAnim},
         {"AnimationSpeed", data._Effect_AnimSpeed},
         {"AppearRatio", data._Effect_ApearRatio},
+        {"_Effect_UVXPower", data._Effect_UVXPower},
+        {"_Effect_UVYPower", data._Effect_UVYPower},
 
         // ---- Sprite 가중치 ----
         {"SpriteInfo", {
@@ -321,6 +323,8 @@ void from_json(const json& j, TEFFECT_PartsData& data)
 
     if (j.contains("UseGlowPowerCurve")) j.at("UseGlowPowerCurve").get_to(data._bUseGlowPowerCurve);
     if (j.contains("Effect_GlowPower")) j.at("Effect_GlowPower").get_to(data._Effect_GlowPower);
+    if (j.contains("_Effect_UVXPower")) j.at("_Effect_UVXPower").get_to(data._Effect_UVXPower);
+    if (j.contains("_Effect_UVYPower")) j.at("_Effect_UVYPower").get_to(data._Effect_UVYPower);
 
     // 스크롤 가중치 복구
     if (j.contains("ScrollWeights")) {
