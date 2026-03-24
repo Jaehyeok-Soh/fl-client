@@ -16454,7 +16454,7 @@
             "Client Make Path": "TriggerBox_ChangeLevel",
             "Client Make Path Desc": [
                 {
-                    "Change Level Type Name": "TUTORIAL_VILLAGE",
+                    "Change Level Type Name": "TUTORIAL_BOSS",
                     "Extents": {
                         "X": 2.9000000953674316,
                         "Y": 1.5,

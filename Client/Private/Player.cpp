@@ -688,7 +688,7 @@ HRESULT CPlayer::Ready_BaseStates()
                                 ,{ENUM_TO_UINT(State::SLIDE), Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_To_Stand")}
                                 ,{ENUM_TO_UINT(State::RUNLOOP), Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L_Acc")}
         };
-        desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") }; //Animation_PlayerMoon_Idle //Animation_Pino_Combo_Slash1
+        desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") }; //Animation_PlayerMoon_Idle // Animation_PlayerMoon_Turn_L45
         desc.bBlend         = true;
         desc.bLoop          = true;
 
@@ -734,7 +734,7 @@ HRESULT CPlayer::Ready_BaseStates()
                         //,{ENUM_TO_UINT(State::LAND), Get_AnimationIndex(L"Animation_PlayerMoon_Land_To_Running")}
                         //,{-1, Get_AnimationIndex(L"Animation_PlayerMoon_Run_Start_L")}
         };
-        desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop") }; // Animation_PlayerMoon_Run_Loop //Animation_Pino_Turn
+        desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop") }; // Animation_PlayerMoon_Run_Loop
         desc.bBlend         = true;
         desc.bLoop          = true;
 
@@ -769,16 +769,16 @@ HRESULT CPlayer::Ready_BaseStates()
     {
         CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = 0;
-        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_Idle") };
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_Loop") };
         desc.bBlend = true;
         desc.bLoop = true;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
-            | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly
-            | CStateBase_Player::COLLISIONFLAGS::C_CheckF
-            ;
+                     | CStateBase_Player::COLLISIONFLAGS::C_Strong
+                     | CStateBase_Player::COLLISIONFLAGS::C_Fly
+                     | CStateBase_Player::COLLISIONFLAGS::C_CheckF
+                     ;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::CROUCHWALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBULLET);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
