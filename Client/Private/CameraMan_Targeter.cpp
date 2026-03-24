@@ -8,6 +8,7 @@
 #include "PhysicsCCT.h"
 #include "PhysicsSpringArm.h"
 #include "CameraAnchorResolver.h"
+#include "CameraShotUtils.h"
 #include "GameInstance.h"
 
 USING(Client)
@@ -196,6 +197,26 @@ HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
 
 HRESULT CCameraMan_Targeter::Request_PlayScriptedShot(const Engine::SCRIPTED_CAMERA_SHOT_DESC& shotDesc, const Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC& bindingDesc)
 {
+    if (shotDesc.Pivot.fDuration <= 0.f)
+        return E_FAIL;
+
+    Release_ScriptedShotBindingObjects();
+
+    m_tScriptedShotDesc = shotDesc;
+    m_tScriptedShotBinding = bindingDesc;
+
+    Retain_ScriptedShotBindingObjects();
+
+    Change_CamState(TargeterState::SCRIPTED_SHOT);
+    return S_OK;
+}
+
+HRESULT CCameraMan_Targeter::Request_StopScriptedShot()
+{
+    if (m_eCurrentState != TargeterState::SCRIPTED_SHOT)
+        return S_FALSE;
+
+    Change_CamState(TargeterState::NORMAL);
     return S_OK;
 }
 
@@ -221,6 +242,10 @@ void CCameraMan_Targeter::Update_Priority_State(const _float fTimeDelta)
 
     case Client::TargeterState::TURN:
         TurnCam_Update_Priority(fTimeDelta);
+        break;
+
+    case Client::TargeterState::SCRIPTED_SHOT:
+        ScriptedShot_Update_Priority(fTimeDelta);
         break;
     }
 }
@@ -248,6 +273,10 @@ void CCameraMan_Targeter::Update_State(const _float fTimeDelta)
     case Client::TargeterState::TURN:
         TurnCam_Update(fTimeDelta);
         break;
+
+    case Client::TargeterState::SCRIPTED_SHOT:
+        ScriptedShot_Update(fTimeDelta);
+        break;
     }
 }
 
@@ -267,9 +296,11 @@ void CCameraMan_Targeter::State_Begin(TargeterState eState)
     case Client::TargeterState::SKILL_SEQUENCE:
         Skill_SequeneCam_Begin();
         break;
-
     case Client::TargeterState::TURN:
         TurnCam_Begin();
+        break;
+    case Client::TargeterState::SCRIPTED_SHOT:
+        ScriptedShot_Begin();
         break;
     }
 }
@@ -295,6 +326,10 @@ void CCameraMan_Targeter::State_End(TargeterState eState)
 
     case Client::TargeterState::TURN:
         TurnCam_End();
+        break;
+
+    case Client::TargeterState::SCRIPTED_SHOT:
+        ScriptedShot_End();
         break;
     }
 }
@@ -592,6 +627,72 @@ void CCameraMan_Targeter::TurnCam_End()
     m_fTurnBaseDistance = 0.f;
 }
 
+void CCameraMan_Targeter::ScriptedShot_Begin()
+{
+    m_tScriptedShotRuntime = {};
+    m_tScriptedShotRuntime.bPlaying = true;
+    m_tScriptedShotRuntime.bPause = false;
+    m_tScriptedShotRuntime.fElapsed = 0.f;
+    Capture_ScriptedShotSnapshot();
+}
+
+void CCameraMan_Targeter::ScriptedShot_Update_Priority(const _float fTimeDelta)
+{
+    
+}
+
+void CCameraMan_Targeter::ScriptedShot_Update(const _float fTimeDelta)
+{
+    if (m_tScriptedShotRuntime.bPlaying == false)
+        return;
+
+    if (m_tScriptedShotRuntime.bPause == false)
+        m_tScriptedShotRuntime.fElapsed += fTimeDelta;
+
+    const _float fDuration = (std::max)(0.01f, m_tScriptedShotDesc.Pivot.fDuration);
+    const _float fEvalTime = std::clamp(m_tScriptedShotRuntime.fElapsed, 0.f, fDuration);
+
+    Engine::CAMERA_ANCHOR_RESULT tPivot{};
+    Engine::CAMERA_ANCHOR_RESULT tLookAt{};
+    Resolve_ScriptedShotAnchors(tPivot, tLookAt);
+
+    CAMERA_POSE tBasePose{};
+    Vec3 vPivotWS{};
+    Evaluate_ScriptedShotBasePose(fEvalTime, tPivot, tLookAt, tBasePose, vPivotWS);
+
+    CAMERA_MODIFIER_RESULT tModifierResult{};
+    Evaluate_ScriptedControllerResult(fEvalTime, tModifierResult);
+
+    CAMERA_POSE tFinalPose{};
+    if (CCameraController* pController = Get_Component<CCameraController>())
+    {
+        pController->Build_FinalPose_FromResult(tBasePose, tModifierResult, tFinalPose);
+    }
+    else
+    {
+        tFinalPose = tBasePose;
+    }
+
+    // 최종 위치 기준 collision resolve
+    tFinalPose.vPos = CheckCameraCollision(tFinalPose.vPos, vPivotWS);
+
+    Apply_CameraPose(tFinalPose);
+
+    if (m_tScriptedShotRuntime.fElapsed >= fDuration)
+    {
+        Change_CamState(TargeterState::NORMAL);
+    }
+}
+
+void CCameraMan_Targeter::ScriptedShot_End()
+{
+    m_tScriptedShotRuntime.bPlaying = false;
+    m_tScriptedShotRuntime.bPause = false;
+
+    Sync_NormalStateFromCurrentPose();
+    Release_ScriptedShotBindingObjects();
+}
+
 void CCameraMan_Targeter::Update_Input(const _float fTimeDelta)
 {
     if (!m_pActor)
@@ -876,6 +977,36 @@ _float CCameraMan_Targeter::Eval_TurnYawDegree() const
     return 0.f;
 }
 
+void CCameraMan_Targeter::Capture_ScriptedShotSnapshot()
+{
+    CTransform* pTransform = Get_Component<CTransform>();
+    if (pTransform == nullptr)
+        return;
+
+    Engine::CAMERA_ANCHOR_RESULT tPivot{};
+    Engine::CAMERA_ANCHOR_RESULT tLookAt{};
+
+    Resolve_ScriptedShotAnchors(tPivot, tLookAt);
+
+    m_tScriptedShotRuntime.tStartPivotAnchor = tPivot;
+    m_tScriptedShotRuntime.tStartLookAtAnchor = tLookAt;
+
+    m_tScriptedShotRuntime.vStartCamPosWS = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+    m_tScriptedShotRuntime.vStartRight = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    m_tScriptedShotRuntime.vStartUp = pTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+    m_tScriptedShotRuntime.vStartLook = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+    m_tScriptedShotRuntime.vStartRight.Normalize();
+    m_tScriptedShotRuntime.vStartUp.Normalize();
+    m_tScriptedShotRuntime.vStartLook.Normalize();
+
+    Vec3 vOffset = m_tScriptedShotRuntime.vStartCamPosWS - tPivot.vPos;
+
+    m_tScriptedShotRuntime.vBaseOffsetLocal.x = vOffset.Dot(m_tScriptedShotRuntime.vStartRight);
+    m_tScriptedShotRuntime.vBaseOffsetLocal.y = vOffset.Dot(m_tScriptedShotRuntime.vStartUp);
+    m_tScriptedShotRuntime.vBaseOffsetLocal.z = vOffset.Dot(-m_tScriptedShotRuntime.vStartLook);
+}
+
 _bool CCameraMan_Targeter::Resolve_ScriptedShotAnchors(OUT CAMERA_ANCHOR_RESULT& outPivot, OUT CAMERA_ANCHOR_RESULT& outLookAt)
 {
     CGameObject* pDefaultActor = Get_Actor();
@@ -928,6 +1059,7 @@ void CCameraMan_Targeter::Resolve_ShotBasis(const Engine::CAMERA_ANCHOR_RESULT& 
         break;
 
     case Engine::ECameraBasisMode::WORLD:
+    default:
         outRight = Vec3::Right;
         outUp = Vec3::Up;
         outLook = Vec3::Backward;
@@ -942,6 +1074,196 @@ void CCameraMan_Targeter::Resolve_ShotBasis(const Engine::CAMERA_ANCHOR_RESULT& 
 Vec3 CCameraMan_Targeter::CheckCameraCollision(Vec3 vCameraPos, Vec3 vTargetPos)
 {
     return Get_Component<CPhysicsSpringArm>()->CheckResolveCollision(vCameraPos, vTargetPos);
+}
+
+void CCameraMan_Targeter::Evaluate_ScriptedShotBasePose(_float fTime, const CAMERA_ANCHOR_RESULT& pivotAnchor, const CAMERA_ANCHOR_RESULT& lookAtAnchor, OUT CAMERA_POSE& outBasePose, OUT Vec3& outPivotWS)
+{
+    outBasePose = {};
+
+    Vec3 vBasisRight{}, vBasisUp{}, vBasisLook{};
+    Resolve_ShotBasis(pivotAnchor, vBasisRight, vBasisUp, vBasisLook);
+
+    //////////////////////////////
+    // Pivot / LookAt 자체 이동
+    //////////////////////////////
+    Vec3 vPivotPos = pivotAnchor.vPos;
+    vPivotPos += vBasisRight * Eval_Channel1D(m_tScriptedShotDesc.Pivot.PivotOffsetX, fTime);
+    vPivotPos += vBasisUp * Eval_Channel1D(m_tScriptedShotDesc.Pivot.PivotOffsetY, fTime);
+    vPivotPos += vBasisLook * Eval_Channel1D(m_tScriptedShotDesc.Pivot.PivotOffsetZ, fTime);
+
+    Vec3 vLookAtPos = lookAtAnchor.vPos;
+    vLookAtPos += vBasisRight * Eval_Channel1D(m_tScriptedShotDesc.Pivot.LookAtOffsetX, fTime);
+    vLookAtPos += vBasisUp * Eval_Channel1D(m_tScriptedShotDesc.Pivot.LookAtOffsetY, fTime);
+    vLookAtPos += vBasisLook * Eval_Channel1D(m_tScriptedShotDesc.Pivot.LookAtOffsetZ, fTime);
+
+    outPivotWS = vPivotPos;
+
+    //////////////////////////////
+    // 시작 기준 camera local offset
+    //////////////////////////////
+    _float fLocalX = m_tScriptedShotRuntime.vBaseOffsetLocal.x + Eval_Channel1D(m_tScriptedShotDesc.Pivot.LocalX, fTime);
+    _float fLocalY = m_tScriptedShotRuntime.vBaseOffsetLocal.y + Eval_Channel1D(m_tScriptedShotDesc.Pivot.LocalY, fTime);
+    _float fLocalZ = m_tScriptedShotRuntime.vBaseOffsetLocal.z + Eval_Channel1D(m_tScriptedShotDesc.Pivot.LocalZ, fTime);
+
+    Vec3 vOffsetWS =
+        vBasisRight * fLocalX +
+        vBasisUp * fLocalY +
+        (-vBasisLook) * fLocalZ;
+
+    //////////////////////////////
+    // Orbit
+    //////////////////////////////
+    const _float fOrbitYawRad = XMConvertToRadians(
+        Eval_Channel1D(m_tScriptedShotDesc.Pivot.OrbitYawDeg, fTime));
+
+    Matrix matOrbit = Matrix::CreateFromAxisAngle(vBasisUp, fOrbitYawRad);
+    vOffsetWS = Vec3::TransformNormal(vOffsetWS, matOrbit);
+
+    Vec3 vCamPos = vPivotPos + vOffsetWS;
+
+    ///////////
+    // Look
+    ///////////
+    Vec3 vLook = vBasisLook;
+
+    if (m_tScriptedShotDesc.Pivot.bLookAtTarget)
+    {
+        vLook = vLookAtPos - vCamPos;
+        if (vLook.LengthSquared() <= g_XMEpsilon.f[0])
+            vLook = vBasisLook;
+    }
+
+    vLook.Normalize();
+
+    Vec3 vRight = Vec3::Up.Cross(vLook);
+    if (vRight.LengthSquared() <= g_XMEpsilon.f[0])
+        vRight = vBasisRight;
+    vRight.Normalize();
+
+    Vec3 vUp = vLook.Cross(vRight);
+    vUp.Normalize();
+
+    outBasePose.vPos = vCamPos;
+    outBasePose.vRight = vRight;
+    outBasePose.vUp = vUp;
+    outBasePose.vLook = vLook;
+
+    outBasePose.fFovRad = Get_Component<CCamera>()->Get_Fov();
+}
+
+void CCameraMan_Targeter::Evaluate_ScriptedControllerResult(_float fTime, CAMERA_MODIFIER_RESULT& outResult) const
+{
+    outResult = {};
+
+    const auto& tCtrl = m_tScriptedShotDesc.Controller;
+
+    outResult.fFovDeltaRad =
+        ::XMConvertToRadians(Eval_Channel1D(tCtrl.FovDeltaDeg, fTime));
+
+    outResult.fYawOffsetRad =
+        ::XMConvertToRadians(Eval_Channel1D(tCtrl.RotYawDeg, fTime));
+
+    outResult.fPitchOffsetRad =
+        ::XMConvertToRadians(Eval_Channel1D(tCtrl.RotPitchDeg, fTime));
+
+    outResult.fRollOffsetRad =
+        ::XMConvertToRadians(Eval_Channel1D(tCtrl.RotRollDeg, fTime));
+
+    outResult.vLocalPosOffset.x = Eval_Channel1D(tCtrl.LocalPosX, fTime);
+    outResult.vLocalPosOffset.y = Eval_Channel1D(tCtrl.LocalPosY, fTime);
+    outResult.vLocalPosOffset.z = Eval_Channel1D(tCtrl.LocalPosZ, fTime);
+}
+
+void CCameraMan_Targeter::Apply_CameraPose(const CAMERA_POSE& tPose)
+{
+    CTransform* pTransform = Get_Component<CTransform>();
+    if (pTransform == nullptr)
+        return;
+
+    pTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, tPose.vRight);
+    pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, tPose.vUp);
+    pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, tPose.vLook);
+    pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, tPose.vPos);
+
+    Get_Component<CCamera>()->Set_Fov(tPose.fFovRad);
+}
+
+void CCameraMan_Targeter::Sync_NormalStateFromCurrentPose()
+{
+    CTransform* pTransform = Get_Component<CTransform>();
+    if (pTransform == nullptr)
+        return;
+
+    Vec3 vLook = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+    vLook.Normalize();
+
+    m_fYaw = std::atan2(vLook.x, vLook.z);
+    m_fPitch = std::asin(std::clamp(vLook.y, -1.f, 1.f)) * -1.f;
+
+    m_fYaw_Target = m_fYaw;
+    m_fPitch_Target = m_fPitch;
+
+    m_bChaseInit = false;
+}
+
+void CCameraMan_Targeter::Retain_ScriptedShotBindingObjects()
+{
+    if (m_tScriptedShotBinding.pviot.eSource == Engine::ECameraAnchorSource::OBJECT &&
+        m_tScriptedShotBinding.pviot.pObject)
+    {
+        Safe_AddRef(m_tScriptedShotBinding.pviot.pObject);
+    }
+
+    if (m_tScriptedShotBinding.LookAt.eSource == Engine::ECameraAnchorSource::OBJECT &&
+        m_tScriptedShotBinding.LookAt.pObject)
+    {
+        Safe_AddRef(m_tScriptedShotBinding.LookAt.pObject);
+    }
+}
+
+void CCameraMan_Targeter::Release_ScriptedShotBindingObjects()
+{
+    if (m_tScriptedShotBinding.pviot.eSource == Engine::ECameraAnchorSource::OBJECT &&
+        m_tScriptedShotBinding.pviot.pObject)
+    {
+        Safe_Release(m_tScriptedShotBinding.pviot.pObject);
+        m_tScriptedShotBinding.pviot.pObject = nullptr;
+    }
+
+    if (m_tScriptedShotBinding.LookAt.eSource == Engine::ECameraAnchorSource::OBJECT &&
+        m_tScriptedShotBinding.LookAt.pObject)
+    {
+        Safe_Release(m_tScriptedShotBinding.LookAt.pObject);
+        m_tScriptedShotBinding.LookAt.pObject = nullptr;
+    }
+}
+
+void CCameraMan_Targeter::Debug_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& tDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding)
+{
+    Request_PlayScriptedShot(tDesc, tBinding);
+}
+
+void CCameraMan_Targeter::Debug_StopScriptedShot()
+{
+    Request_StopScriptedShot();
+}
+
+void CCameraMan_Targeter::Debug_SetScriptedShotTime(_float fTime)
+{
+    if (m_eCurrentState != TargeterState::SCRIPTED_SHOT)
+        return;
+
+    const _float fDuration = (std::max)(0.01f, m_tScriptedShotDesc.Pivot.fDuration);
+    m_tScriptedShotRuntime.fElapsed = std::clamp(fTime, 0.f, fDuration);
+    m_tScriptedShotRuntime.bPause = true;
+}
+
+void CCameraMan_Targeter::Debug_SetScriptedShotPause(_bool bPause)
+{
+    if (m_eCurrentState != TargeterState::SCRIPTED_SHOT)
+        return;
+
+    m_tScriptedShotRuntime.bPause = bPause;
 }
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -968,6 +1290,7 @@ CGameObject* CCameraMan_Targeter::Clone(void* pArg)
 
 void CCameraMan_Targeter::Free()
 {
+    Release_ScriptedShotBindingObjects();
     Safe_Release(m_pLockonTarget);
     Super::Free();
 }
