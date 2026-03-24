@@ -33,15 +33,33 @@ private:
 	CUITutorial_Manager();
 	virtual ~CUITutorial_Manager() = default;
 public:
+	void Initialize();
 	void Tutorial_Update(const _float fTimeDelta);
+
+	void Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState eState);
+
+	void PlayerState_All_Lock();
+	void Return_Locked_PlayerState();
+
+private:
+	class CPlayerControlContext* Get_PlayerCtrCtx();
+
+public:
+	_bool Get_isFirstTutorial() const { return m_isFirstTutorial; }
+
+	void Set_isFirstTutorial(_bool is) { m_isFirstTutorial = is; }
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	CMulticastDelegate<void(const UI_TUTORIAL_EVENT_DESC&)> m_vTutorialEvents = {};
 
+	EUITutorialTypeToPlayerState m_eTutorialToPlayerState = { EUITutorialTypeToPlayerState ::END};
+	_bool m_isChangeState = { false };
+
+	_bool m_isFirstTutorial = { false };
+
 public:
 	virtual void Free()override;
-
 };
 
 NS_END

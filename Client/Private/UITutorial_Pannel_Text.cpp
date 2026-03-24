@@ -137,21 +137,11 @@ void CUITutorial_Pannel_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
-				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
-				{
-					this->Set_Visible();
-				}
-			})
-	);
-	m_vecEventHandles.push_back(
-		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-			{
 				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 }
 
 void CUITutorial_Pannel_Text::Tick_By_Type(const _float fTimeDelta)
@@ -177,7 +167,7 @@ void CUITutorial_Pannel_Text::Tick_By_Type(const _float fTimeDelta)
 			m_vFontColor = m_vOriginFontColor;
 		}
 	}
-	break;
+		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_NEXT_BTN_TEXT:
 	{
 		if (m_iCurPageIdx == m_iMaxPageIdx)
@@ -189,7 +179,7 @@ void CUITutorial_Pannel_Text::Tick_By_Type(const _float fTimeDelta)
 			m_wstrText = L"다음 페이지";
 		}
 	}
-	break;
+		break;
 	}
 
 }

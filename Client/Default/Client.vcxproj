@@ -182,6 +182,9 @@
     <ClInclude Include="..\Public\ChangeLevelObject.h" />
     <ClInclude Include="..\Public\NPC_Tavern.h" />
     <ClInclude Include="..\Public\NPC_Tavern_Body.h" />
+    <ClInclude Include="..\Public\UIMiniGame_Circle_Image.h" />
+    <ClInclude Include="..\Public\UIMiniGame_Circle_Text.h" />
+    <ClInclude Include="..\Public\UIMouseCursor_Image.h" />
     <ClInclude Include="..\Public\WeaponPickUp.h" />
     <ClInclude Include="..\Public\InteractiveObject.h" />
     <ClInclude Include="..\Public\LightObject.h" />
@@ -438,6 +441,9 @@
     <ClCompile Include="..\Private\ChangeLevelObject.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern_Body.cpp" />
+    <ClCompile Include="..\Private\UIMiniGame_Circle_Image.cpp" />
+    <ClCompile Include="..\Private\UIMiniGame_Circle_Text.cpp" />
+    <ClCompile Include="..\Private\UIMouseCursor_Image.cpp" />
     <ClCompile Include="..\Private\WeaponPickUp.cpp" />
     <ClCompile Include="..\Private\InteractiveObject.cpp" />
     <ClCompile Include="..\Private\Monster_Fly.cpp" />

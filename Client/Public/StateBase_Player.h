@@ -187,8 +187,7 @@ protected:
 	virtual _bool Change_State_WhenLoopDone(const _float fTimeDelta);
 
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
-	virtual void Set_NextStateDesc(_uint iNextState);	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
-
+	virtual void Set_NextStateDesc(_uint iNextState);		// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
 	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
 
 	virtual _bool Can_CheckKey(const _float fTimeDelta);

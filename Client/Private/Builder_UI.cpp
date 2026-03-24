@@ -23,6 +23,7 @@
 #include "UIQuestNavi_Text.h"	
 #include "UICommunity_Text.h"
 #include "UIConversation_Text.h"
+#include "UIMiniGame_Circle_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -42,6 +43,8 @@
 #include "UIQuestNavi_Image.h"
 #include "UICommunity_Image.h"
 #include "UIConversation_Image.h"
+#include "UIMouseCursor_Image.h"
+#include "UIMiniGame_Circle_Image.h"
 
 #include "WorldUI_Component.h"
 
@@ -224,8 +227,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			return E_FAIL;
 		}
 	}
-	//Prototype_UI_TutorialPopUpClearImage
-	//Prototype_UI_TutorialPopUpClearText
 
 	////////////////////////////////////////
 	// UI_TEXT //
@@ -250,6 +251,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isQuestNavi			= (Type == DTO::EUITextSubClassType::QUEST_NAVI_DISTANCE);
 		const _bool isCommunity			= (Type == DTO::EUITextSubClassType::COMMUNITY_TEXT);
 		const _bool isConversation		= (Type >= DTO::EUITextSubClassType::CONVERSATION_BEGIN && Type <= DTO::EUITextSubClassType::CONVERSATION_END);
+		const _bool isMiniGameCircle	= (Type >= DTO::EUITextSubClassType::MINIGAME_CIRCLE_BEGIN && Type <= DTO::EUITextSubClassType::MINIGAME_CIRCLE_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -336,6 +338,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ConversationText", m_iLevelID, g_wszUILayer, &Desc);
 		}
+		else if (isMiniGameCircle)
+		{
+			CUIMiniGame_Circle_Text::MINIGAME_CIRCLE_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			Desc.iNumber = iter->second.iParam0;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MiniGameCircleText", m_iLevelID, g_wszUILayer, &Desc);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -379,7 +388,9 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isQuest				= (Type >= DTO::EUIDImageSubClassType::QUEST_BEGIN && Type <= DTO::EUIDImageSubClassType::QUEST_END);
 		const _bool isQuestNavi			= (Type >= DTO::EUIDImageSubClassType::QUEST_NAVI_BEGIN && Type <= DTO::EUIDImageSubClassType::QUEST_NAVI_END);
 		const _bool isCommunity			= (Type >= DTO::EUIDImageSubClassType::COMMUNITY_BEGIN && Type <= DTO::EUIDImageSubClassType::COMMUNITY_END);
-		const _bool isConversation		= (Type == DTO::EUIDImageSubClassType::CONVERSATION_DOWN);
+		const _bool isConversation		= (Type >= DTO::EUIDImageSubClassType::CONVERSATION_DOWN && Type <= DTO::EUIDImageSubClassType::CONVERSATION_BG);
+		const _bool isMouseCursor		= (Type >= DTO::EUIDImageSubClassType::MOUSE_CURSOR_BEGIN && Type <= DTO::EUIDImageSubClassType::MOUSE_CURSOR_END);
+		const _bool isMiniGameCircle	= (Type >= DTO::EUIDImageSubClassType::MINIGAME_CIRCLE_BEGIN && Type <= DTO::EUIDImageSubClassType::MINIGAME_CIRCLE_END);
 
 		if (isPlayerSkill)
 		{
@@ -503,6 +514,21 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
 			Desc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_ConversationImage", m_iLevelID, g_wszUILayer, &Desc);
+		}
+		else if (isMouseCursor)
+		{
+			CUIMouseCursor_Image::MOUSE_CURSOR_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MouseCursorImage", m_iLevelID, g_wszUILayer, &Desc);
+		}
+		else if (isMiniGameCircle)
+		{
+			CUIMiniGame_Circle_Image::MINIGAME_CIRCLE_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			Desc.iNumber = iter->second.iParams0;;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_MiniGameCircleImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else
 		{

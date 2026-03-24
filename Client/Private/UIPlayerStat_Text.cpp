@@ -219,8 +219,7 @@ void CUIPlayerStat_Text::Bind_Events()
 				{
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -228,20 +227,52 @@ void CUIPlayerStat_Text::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
-	m_pGameInstance->Subscribe<CINEMATIC_START>(
-		[this]() 
-		{
-			this->Set_Invisible(); 
-		});
-	m_pGameInstance->Subscribe<CINEMATIC_END>(
-		[this]() 
-		{ 
-			this->Set_Visible(); 
-		});
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_START>(
+			[this]()
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_END>(
+			[this]()
+			{
+				this->Set_Visible();
+			}));
 
+	// 대화 Event
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{
+				Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{
+				Set_Active(true);
+				Set_Visible();
+			}));
+
+	// 패널 Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					Set_Invisible();
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					Set_Active(true);
+					Set_Visible();
+				}
+			}));
 }
 
 

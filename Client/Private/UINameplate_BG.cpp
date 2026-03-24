@@ -5,6 +5,7 @@
 //=================
 // Component
 //=================
+#include "Canvas.h"
 #include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -68,10 +69,14 @@ void CUINameplate_BG::Update_Late(const _float fTimeDelta)
 void CUINameplate_BG::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f)
-		m_fAlpha_Ratio = 0.f;
+	if (m_pParentCanvasCache->Get_CommonParam_bool()[0])
+	{
+		m_isVisible = false;
+	}
 	else
-		m_fAlpha_Ratio = 1.f;
+	{
+		m_isVisible = true;
+	}
 }
 
 HRESULT CUINameplate_BG::Render()
@@ -104,11 +109,7 @@ HRESULT CUINameplate_BG::Bind_ShaderResources()
 
 HRESULT CUINameplate_BG::Attach_Personal_Info()
 {
-	m_tEventHandle = m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
-		{
-			if (pDead == m_pTargetMoster)
-				this->Set_Invisible();
-		});
+
 
 	if (m_isSpawned)
 	{
@@ -127,8 +128,7 @@ void CUINameplate_BG::Bind_Events()
 				{
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -136,8 +136,44 @@ void CUINameplate_BG::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
+			{
+				if (pDead == m_pTargetMoster)
+					this->Set_Invisible();
 			})
 	);
+
+	// 대화 Event
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{
+				m_isVisible = false;
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{
+				m_isVisible = true;
+			}));
+
+	// 패널 Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					m_isVisible = false;
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					m_isVisible = true;
+				}
+			}));
 }
 
 void CUINameplate_BG::Initialize_Visible_Event()

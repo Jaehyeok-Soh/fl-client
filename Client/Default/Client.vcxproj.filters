@@ -865,6 +865,21 @@
     <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Kid_1">
       <UniqueIdentifier>{c6dbeae1-4a69-41e7-af3d-a67094b67d21}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\16.Cursor">
+      <UniqueIdentifier>{7a792138-2c62-4fd9-9607-f51f5db22f20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\17.MiniGame">
+      <UniqueIdentifier>{841fe255-e9ed-4909-a0a2-d8213ce1c08b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\17.MiniGame\00.Circle">
+      <UniqueIdentifier>{1a04d6b2-0b19-430b-a91b-e5490009e98b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\13.MiniGame">
+      <UniqueIdentifier>{3d2366c2-20f7-47f8-bc03-6a6d988b8bad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle">
+      <UniqueIdentifier>{e8fc26f0-09fa-4947-8b34-680e5ca04955}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1608,6 +1623,15 @@
     <ClInclude Include="..\Public\NPC_Kid_Body_1.h">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIMouseCursor_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\16.Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMiniGame_Circle_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\17.MiniGame\00.Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMiniGame_Circle_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle</Filter>
+    </ClInclude>
     <ClInclude Include="PlayerImguiValues.h">
       <Filter>99. ETC\46.Headers</Filter>
     </ClInclude>
@@ -2343,6 +2367,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\NPC_Kid_Body_1.cpp">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMouseCursor_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\16.Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMiniGame_Circle_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\17.MiniGame\00.Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMiniGame_Circle_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

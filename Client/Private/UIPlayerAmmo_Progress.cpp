@@ -158,14 +158,47 @@ void CUIPlayerAmmo_Progress::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_START>(
+			[this]()
+			{
+				this->Set_Invisible();
+			}));
 
-	m_pGameInstance->Subscribe<CINEMATIC_START>(
-		[this]() 
-		{ 
-			this->Set_Invisible();
-		});
+	// 대화 Event
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{
+				m_fAlpha_Ratio = 0.f;
+				Set_Active(false);
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{
+				Set_Active(true);				
+				m_fAlpha_Ratio = 1.f;
+			}));
+
+	// 패널 Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					m_fAlpha_Ratio = 0.f;
+					Set_Active(false);
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					Set_Active(true);			
+					m_fAlpha_Ratio = 1.f;
+				}
+			}));
 }
 
 void CUIPlayerAmmo_Progress::Initialize_Visible_Event()

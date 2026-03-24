@@ -18,9 +18,10 @@ namespace Engine
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,
-		VisibleClipped,
-		VisibleFree,
-		Tool,
+		VisibleClipped,		
+		VisibleFree,		
+		InVisibleClipped,	
+		Tool,				
 		END
 	};
 

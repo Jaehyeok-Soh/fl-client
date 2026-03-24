@@ -19,6 +19,7 @@ namespace Client
 	enum class ELevelType : unsigned int
 	{
 		STATIC = 0,
+		TITLE,
 		LOADING,
 		LOGO,				/* 현재 임시 Test Level용 추후 Logo Scene으로 바뀔예정  */
 		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
@@ -548,9 +549,6 @@ namespace Client
 	}
 
 
-
-
-
 	enum class EUIPrefabType {
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
@@ -585,7 +583,6 @@ namespace Client
 		END
 	};
 
-
 	inline EUITutorialPopUpTypeID UITutorialPopUpTypeID_ToEnum(const std::string& strType)
 	{
 		for (int i = 0; i < (int)EUITutorialPopUpTypeID::END; ++i)
@@ -595,8 +592,6 @@ namespace Client
 		}
 		return EUITutorialPopUpTypeID::END;
 	}
-
-
 
 	inline _wstring UIPrefabtypeToWstring(EUIPrefabType eType)
 	{
@@ -643,7 +638,6 @@ namespace Client
 		CGameObject* pTarget = { nullptr };
 		Vec3 vOffset = {};
 	} UI_NAMEPLATE_PREFAB_DATA;
-
 	typedef struct tagUIDamageFontPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
@@ -652,30 +646,24 @@ namespace Client
 		_uint iDamage = {};
 		Vec3 vRandOffset = {};
 	} UI_DAMAGEFONT_PREFAB_DATA;
-
 	typedef struct tagUIBossNamePlatePrefabData
 	{
 		CGameObject* pTarget = { nullptr };
 	} UI_BOSS_NAMEPLATE_PREFAB_DATA;
-
 	typedef struct tagUIMinimapMonsterIconPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
 	} UI_MINIMAP_MONSTER_ICON_PREFAB_DATA;
-
 	typedef struct tagUITutorialPannelPrefabData
 	{
 		EUITutorialPannelTypeID eTutorialTypeID = {};
 
 	} UI_TUTORIAL_PANNEL_PREFAB_DATA;
-
 	typedef struct tagUITutorialPopUpPrefabData
 	{
 		EUITutorialPopUpTypeID eTutorialTypeID = { EUITutorialPopUpTypeID::END };
 
 	} UI_TUTORIAL_POPUP_PREFAB_DATA;
-
-
 	typedef std::variant<
 		UI_NAMEPLATE_PREFAB_DATA,
 		UI_DAMAGEFONT_PREFAB_DATA,
@@ -691,8 +679,6 @@ namespace Client
 		class CCanvas* pCanvas = {nullptr};
 	} UI_PREFAB_DATA;
 
-
-
 	enum class ECombotype {
 		C, 
 		B, 
@@ -702,7 +688,18 @@ namespace Client
 	};
 
 
-
+	enum class EUITutorialTypeToPlayerState
+	{
+		UNLOCK_JUMP,
+		UNLOCK_SLIDE,
+		UNLOCK_LATTAK,
+		UNLOCK_DASH,
+		UNLOCK_RATTAK,
+		UNLOCK_E,
+		UNLOCK_Q,
+		ALL,
+		END
+	};
 
 #pragma endregion
 
