@@ -1002,87 +1002,24 @@ namespace Client
 #pragma endregion
 
 #pragma region Camera
-	enum class ECameraShotEase : _uint
+	typedef struct tagScriptedCameraShotRuntime
 	{
-		Linear = 0,
-		SmoothStep,
-		EaseOutQuad,
-		EaseInOutQuad,
-		EaseOutBack,
-		END
-	};
+		bool bPlaying = { false };
+		bool bPause = { false };
+		float fElpased = { 0.f };
+		SimpleMath::Vector3 vStartPivotWS = SimpleMath::Vector3::Zero;
+		SimpleMath::Vector3 vStartCamPosWS = SimpleMath::Vector3::Zero;
 
-	struct CAMERA_SHOT_KEY_1D
-	{
-		_float fTime = 0.f;
-		_float fValue = 0.f;
-		ECameraShotEase eEase = ECameraShotEase::SmoothStep;
-	};
-
-	struct CAMERA_SHOT_CHANNEL_1D
-	{
-		vector<CAMERA_SHOT_KEY_1D> vecKeys;
-	};
-
-	struct SCRIPTED_PIVOT_SHOT_DESC
-	{
-		_float  fDuration = 0.7f;
-
-		_bool   bFollowLivePivot = true;
-		_bool   bLookAtPivot = true;
-
-		_uint   iPart = 0;
-		wstring strPivotBoneTag;
-
-		// 시작 카메라 local basis 기준
-		CAMERA_SHOT_CHANNEL_1D LocalX;
-		CAMERA_SHOT_CHANNEL_1D LocalY;
-		CAMERA_SHOT_CHANNEL_1D LocalZ;         // +일수록 시작 look 반대방향(뒤)로 멀어짐
-
-		CAMERA_SHOT_CHANNEL_1D OrbitYawDeg;    // pivot 중심 월드 Y 회전
-		CAMERA_SHOT_CHANNEL_1D LookOffsetX;    // framing
-		CAMERA_SHOT_CHANNEL_1D LookOffsetY;
-	};
-
-	struct SCRIPTED_CONTROLLER_LAYER_DESC
-	{
-		CAMERA_SHOT_CHANNEL_1D FovDeltaDeg;
-
-		CAMERA_SHOT_CHANNEL_1D RotYawDeg;
-		CAMERA_SHOT_CHANNEL_1D RotPitchDeg;
-		CAMERA_SHOT_CHANNEL_1D RotRollDeg;
-
-		CAMERA_SHOT_CHANNEL_1D LocalPosX;
-		CAMERA_SHOT_CHANNEL_1D LocalPosY;
-		CAMERA_SHOT_CHANNEL_1D LocalPosZ;
-	};
-
-	struct SCRIPTED_CAMERA_SHOT_DESC
-	{
-		string                          strName;
-		SCRIPTED_PIVOT_SHOT_DESC        Pivot;
-		SCRIPTED_CONTROLLER_LAYER_DESC  Controller;
-	};
-
-	struct SCRIPTED_CAMERA_SHOT_RUNTIME
-	{
-		_bool   bPlaying = false;
-		_bool   bPause = false;
-		_float  fElapsed = 0.f;
-
-		Vec3    vStartPivotWS = Vec3::Zero;
-		Vec3    vStartCamPosWS = Vec3::Zero;
-
-		Vec3    vStartRight = Vec3::Right;
-		Vec3    vStartUp = Vec3::Up;
-		Vec3    vStartLook = Vec3::Forward;
+		SimpleMath::Vector3 vStartRight = SimpleMath::Vector3::Right;
+		SimpleMath::Vector3 vStartUp = SimpleMath::Vector3::Up;
+		SimpleMath::Vector3 vStartLook = SimpleMath::Vector3::Forward;
 
 		// 시작 시점 offset을 camera local basis로 저장
 		// x = dot(offset, right)
 		// y = dot(offset, up)
 		// z = dot(offset, -look)  -> 양수면 뒤쪽
-		Vec3    vBaseOffsetLocal = Vec3::Zero;
-	};
+		SimpleMath::Vector3 vBaseOffsetLocal = SimpleMath::Vector3::Zero;
+	}SCRIPTED_CAMERA_SHOT_RUNTIME;
 #pragma endregion
 
 

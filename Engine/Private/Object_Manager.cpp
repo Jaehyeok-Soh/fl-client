@@ -300,6 +300,7 @@ HRESULT CObject_Manager::Set_ScaledDomain(_uint iLevelIndex, const wstring& wstr
 		return E_FAIL;
 
 	pFindLayer->Set_ScaledDomain();
+	return S_OK;
 }
 
 HRESULT CObject_Manager::Set_UnscaledDomain(_uint iLevelIndex, const wstring& wstrLayerTag)
@@ -309,6 +310,7 @@ HRESULT CObject_Manager::Set_UnscaledDomain(_uint iLevelIndex, const wstring& ws
 		return E_FAIL;
 
 	pFindLayer->Set_UnscaledDomain();
+	return S_OK;
 }
 
 void CObject_Manager::Clear(_uint iLevelIndex)

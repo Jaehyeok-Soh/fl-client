@@ -682,6 +682,20 @@ HRESULT CGameInstance::Request_MainCameraRotationOffset(const CAMERA_ROTATION_OF
 {
 	return m_pCamera_Manager->Play_MainCameraRotationOffset(desc);
 }
+HRESULT CGameInstance::Request_PlayCameraShot(const SCRIPTED_CAMERA_SHOT_DESC& shotDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& bindingDesc)
+{
+	if (m_pCamera_Manager->Get_MainCamera() == nullptr)
+		return S_OK;
+
+	return m_pCamera_Manager->Get_MainCamera()->Request_PlayScriptedShot(shotDesc, bindingDesc);
+}
+HRESULT CGameInstance::Request_StopCameraShot()
+{
+	if (m_pCamera_Manager->Get_MainCamera() == nullptr)
+		return S_OK;
+
+	return m_pCamera_Manager->Get_MainCamera()->Request_StopScriptedShot();
+}
 #pragma endregion
 
 #pragma region SOUND_MANAGER
