@@ -79,7 +79,7 @@ struct EffectDesc
     float2 g_UVOffset;
 
     // Row 2
-    float2 Padding0;
+    float2 g_UVPower;
     float g_GlowPower;
     float g_AppearRatio;
 
@@ -393,4 +393,18 @@ float McGuire_CalculateWeight(float viewZ, float alpha)
     }
 
     return weight;
+}
+
+// 2차 베지에 곡선 함수
+float3 GetBezierPos(float3 p0, float3 p1, float3 p2, float t)
+{
+    float invT = 1.f - t;
+    return invT * invT * p0 + 2.f * invT * t * p1 + t * t * p2;
+}
+
+// 곡선의 접선 계산 
+float3 GetBezierTangent(float3 p0, float3 p1, float3 p2, float t)
+{
+    return normalize(2.f * (1.f - t) * (p1 - p0) + 2.f * t * (p2 - p1));
+
 }

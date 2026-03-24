@@ -27,6 +27,64 @@ VS_OUT_INST_MESH_PARTICLE
     return Out;
 }
 
+VS_OUT_INST_MESH_PARTICLE VS_CHAIN(VS_IN_INST_MESH_PARTICLE In)
+{
+    // 스플라인 기법 포기.
+    // 텍스처로 대체. (원본 매쉬가 휘어져있음.)
+    // -> UV Tiling 기법으로 변경
+    VS_OUT_INST_MESH_PARTICLE Out;
+
+    float fFullLength = 0.95f;
+    float fStartOffset = 0.0f;
+
+    float localZ = In.vPosition.z;
+    float t = saturate((localZ - fStartOffset) / fFullLength);
+
+    float3 p0 = float3(0.0f, 0.0f, 0.0f);
+    float3 p1 = float3(0.2f, 0.2f, 0.5f);
+    float3 p2 = float3(0.0f, 0.0f, 0.95f);
+
+    float3 curvePos = GetBezierPos(p0, p1, p2, t);
+    float3 forward = normalize(GetBezierTangent(p0, p1, p2, t));
+
+    float3 refUp = abs(forward.y) > 0.99f ? float3(1, 0, 0) : float3(0, 1, 0);
+    float3 right = normalize(cross(refUp, forward));
+    float3 up = normalize(cross(forward, right));
+
+    // matrix mul 대신 직접 조립
+    float3 localOffset = float3(In.vPosition.x, In.vPosition.y, 0.0f);
+    float3 bentLocalPos = curvePos + right * localOffset.x + up * localOffset.y;
+
+    // 핵심: spline 결과를 인스턴스 행렬에 태운다
+    float4 vLocalInstPos = mul(float4(bentLocalPos, 1.0f), INSTANCE_OUTPUT[In.vInstID].matTransform);
+    float4 vWorldPos = mul(vLocalInstPos, W);
+    float4 vViewPos = mul(vWorldPos, V);
+    Out.vPosition = mul(vViewPos, P);
+
+    Out.vWorldPos = vWorldPos;
+    Out.vProjPos = Out.vPosition;
+
+    // spline 회전 후, 인스턴스 회전/스케일까지 반영
+    float3 bentNormal = right * In.vNormal.x + up * In.vNormal.y + forward * In.vNormal.z;
+    float3 bentTangent = right * In.vTangent.x + up * In.vTangent.y + forward * In.vTangent.z;
+    float3 bentBinormal = right * In.vBinormal.x + up * In.vBinormal.y + forward * In.vBinormal.z;
+
+    float3x3 instRot = (float3x3) INSTANCE_OUTPUT[In.vInstID].matTransform;
+
+    Out.vNormal = normalize(mul(bentNormal, instRot));
+    Out.vTangent = normalize(mul(bentTangent, instRot));
+    Out.vBinormal = normalize(mul(bentBinormal, instRot));
+
+    Out.vUV = In.vUV;
+
+    Out.vPSize = float2(length(INSTANCE_OUTPUT[In.vInstID].matTransform[0].xyz),
+                        length(INSTANCE_OUTPUT[In.vInstID].matTransform[1].xyz));
+    Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
+    Out.vViewZ = vViewPos.z;
+
+    return Out;
+}
+
 PS_OUT_WBOIT PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In)
 {
     PS_OUT_WBOIT Out;
@@ -36,7 +94,14 @@ PS_OUT_WBOIT PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In)
    // =======              노이즈 텍스처 샘플링             ===========
     float2 finalUV = In.vUV;
     
-    float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
+    // UV power 적용 (타일링 기법)
+    if (g_Effect.g_UVPower.x > 0.f || g_Effect.g_UVPower.y > 0.f)
+    {
+        finalUV.x *= g_Effect.g_UVPower.x;
+        finalUV.y *= g_Effect.g_UVPower.y;
+    }
+    
+        float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 noiseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 DetailNoiseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
@@ -46,7 +111,7 @@ PS_OUT_WBOIT PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In)
     float4 CurveSample = { 1.f, 1.f, 1.f, 1.f };
     float4 SubMaskSample = { 1.f, 1.f, 1.f, 1.f };
     float noiseValue = { 1.f };
-    
+     
     // 1. 진행 비율 계산 (AppearRatio: 등장, DissolveProgress: 소멸)
     float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
     float AppearRatio = In.vLifeTime.x / (In.vLifeTime.y * g_Effect.g_AppearRatio);
@@ -91,7 +156,7 @@ PS_OUT_WBOIT PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In)
     {
         if (HasTextureSprite(g_Effect.DiffuseTexture_SpriteInfo))
         {
-            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.DiffuseTexture_SpriteInfo);
+            float2 SpriteUV = GetStaticSpriteUV(finalUV, g_Effect.DiffuseTexture_SpriteInfo);
             
             if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
             {
@@ -107,21 +172,21 @@ PS_OUT_WBOIT PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In)
         {
             if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
             {
-                float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+                float2 scrolledUV = finalUV + g_Effect.g_UVOffset;
                 scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
                 scrolledUV += distortionUV;
                 DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
             }
             else
             {
-                float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+                float2 scrolledUV = finalUV + g_Effect.g_UVOffset;
                 scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
                 DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
             }
         }
         else
         {
-            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(finalUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
         }
     }
     else
@@ -326,6 +391,13 @@ PS_OUT_WBOIT PS_GlowEffect(VS_OUT_INST_MESH_PARTICLE In)
    // =======              노이즈 텍스처 샘플링             ===========
     float2 finalUV = In.vUV;
     
+    // UV power 적용 (타일링 기법)
+    if (g_Effect.g_UVPower.x > 0.f || g_Effect.g_UVPower.y > 0.f)
+    {
+        finalUV.x *= g_Effect.g_UVPower.x;
+        finalUV.y *= g_Effect.g_UVPower.y;
+    }
+    
     float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 noiseSample = { 1.f, 1.f, 1.f, 1.f };
     float4 DetailNoiseSample = { 1.f, 1.f, 1.f, 1.f };
@@ -381,7 +453,7 @@ PS_OUT_WBOIT PS_GlowEffect(VS_OUT_INST_MESH_PARTICLE In)
     {
         if (HasTextureSprite(g_Effect.DiffuseTexture_SpriteInfo))
         {
-            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.DiffuseTexture_SpriteInfo);
+            float2 SpriteUV = GetStaticSpriteUV(finalUV, g_Effect.DiffuseTexture_SpriteInfo);
             
             if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
             {
@@ -397,21 +469,21 @@ PS_OUT_WBOIT PS_GlowEffect(VS_OUT_INST_MESH_PARTICLE In)
         {
             if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
             {
-                float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+                float2 scrolledUV = finalUV + g_Effect.g_UVOffset;
                 scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
                 scrolledUV += distortionUV;
                 DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
             }
             else
             {
-                float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+                float2 scrolledUV = finalUV + g_Effect.g_UVOffset;
                 scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
                 DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
             }
         }
         else
         {
-            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(finalUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
         }
     }
     else
@@ -1381,6 +1453,296 @@ float4 PS_SWORDEFFECT(VS_OUT_INST_MESH_PARTICLE In) : SV_Target0
 }
 
 
+PS_OUT_WBOIT PS_Chain(VS_OUT_INST_MESH_PARTICLE In)
+{
+    PS_OUT_WBOIT Out;
+    
+    if (In.vLifeTime.x < 0.0f)
+        discard;
+   // =======              노이즈 텍스처 샘플링             ===========
+    float2 finalUV = In.vUV;
+    
+    float4 DiffuseSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 noiseSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 DetailNoiseSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 MaskSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 GradationSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 GlowSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 DissolveSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 CurveSample = { 1.f, 1.f, 1.f, 1.f };
+    float4 SubMaskSample = { 1.f, 1.f, 1.f, 1.f };
+    float noiseValue = { 1.f };
+    
+    // 1. 진행 비율 계산 (AppearRatio: 등장, DissolveProgress: 소멸)
+    float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
+    float AppearRatio = In.vLifeTime.x / (In.vLifeTime.y * g_Effect.g_AppearRatio);
+    float DissolveProgress = saturate((LifeRatio - g_Effect.g_AppearRatio) / max(0.001f, 1.0f - g_Effect.g_AppearRatio));
+   
+     // ================     노이즈 텍스처     ===============
+
+        // 3. 왜곡량(Offset) 계산
+    float2 distortionOffset = float2(0.f, 0.f);
+    
+    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+    {
+        if (HasTextureScroll(SCROLL_NOISE))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.NoiseTexture_ScrollWeight;
+            
+            noiseSample = NoiseTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, NOISETEXTURE));
+            
+            distortionOffset.x = (noiseSample.r - 0.5f) * g_Effect.g_DistortionScale.x;
+            distortionOffset.y = (noiseSample.g - 0.5f) * g_Effect.g_DistortionScale.y;
+        }
+        else
+        {
+            noiseSample = NoiseTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, NOISETEXTURE));
+            
+            distortionOffset.x = (noiseSample.r - 0.5f) * g_Effect.g_DistortionScale.x;
+            distortionOffset.y = (noiseSample.g - 0.5f) * g_Effect.g_DistortionScale.y;
+        }
+    }
+    else
+    {
+        noiseSample = float4(1.f, 1.f, 1.f, 1.f);
+        distortionOffset = float2(0.f, 0.f);
+    }
+    
+    // 최종 왜곡 UV (왜곡량)
+    float2 distortionUV = distortionOffset;
+    
+    // ================     메인 텍스처      ===============
+    if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
+    {
+        if (HasTextureSprite(g_Effect.DiffuseTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.DiffuseTexture_SpriteInfo);
+            
+            if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+            {
+                SpriteUV += distortionUV;
+                DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+            }
+            else
+            {
+                DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+            }
+        }
+        else if (HasTextureScroll(SCROLL_DIFFUSE))
+        {
+            if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+            {
+                float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+                scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
+                scrolledUV += distortionUV;
+                DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+            }
+            else
+            {
+                float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+                scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
+                DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+            }
+        }
+        else
+        {
+            DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+        }
+    }
+    else
+        DiffuseSample = float4(1.f, 1.f, 1.f, 1.f);
+    
+    // ================     그라데이션 텍스처     ===============
+    
+    if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
+    {
+        if (HasTextureScroll(SCROLL_GRADATION))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.GradationTexture_ScrollWeight;
+            GradationSample = GradationTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
+        }
+        else if (HasTextureSprite(g_Effect.GradationTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.GradationTexture_SpriteInfo);
+            GradationSample = GradationTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
+        }
+        else
+        {
+            GradationSample = GradationTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
+        }
+
+    }
+    else
+        GradationSample = float4(1.f, 1.f, 1.f, 1.f);
+    
+     // ================    GLOW 텍스처     ===============
+    
+    if (Has(g_Effect.g_TextureFlags, GLOWTEXTURE))
+    {
+        if (HasTextureScroll(SCROLL_GLOW))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.GlowTexture_ScrollWeight;
+            GlowSample = GlowTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
+        }
+        else if (HasTextureSprite(g_Effect.GlowTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.GlowTexture_SpriteInfo);
+            GlowSample = GlowTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
+        }
+        else
+        {
+            GlowSample = GlowTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
+        }
+
+    }
+    else
+        GlowSample = float4(0.f, 0.f, 0.f, 0.f);
+    
+    
+     // ================    Mask 텍스처     ===============
+    
+    if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
+    {
+        if (HasTextureScroll(SCROLL_MASKING))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.MaskingTexture_ScrollWeight;
+            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+        }
+        else if (HasTextureSprite(g_Effect.MaskTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.MaskTexture_SpriteInfo);
+            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+        }
+        else
+        {
+            MaskSample = MaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+        }
+
+    }
+    else
+        MaskSample = float4(1.f, 1.f, 1.f, 1.f);
+    
+     // ================    DISSOLVE 텍스처     ===============
+    
+    float dissolveMask = 1.0f;
+    float dissolveNoise = 0.f;
+    
+    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
+    {
+        if (HasTextureScroll(SCROLL_DISSOLVE))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.DissolveTexture_ScrollWeight;
+            DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, DISSOLVETEXTURE));
+            dissolveNoise = DissolveSample.r;
+            dissolveMask = step(DissolveProgress, dissolveNoise);
+        }
+        else if (HasTextureSprite(g_Effect.DissolveTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.DissolveTexture_SpriteInfo);
+            DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, DISSOLVETEXTURE));
+        }
+        else
+        {
+            DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, DISSOLVETEXTURE));
+            dissolveNoise = DissolveSample.r;
+            dissolveMask = step(DissolveProgress, dissolveNoise);
+        }
+
+    }
+    else
+    {
+        DissolveSample = float4(1.f, 1.f, 1.f, 1.f);
+    }
+    
+         // ================    Curve 텍스처     ===============
+    
+    float CurvePowerStrength = 1.0f;
+    
+    if (Has(g_Effect.g_TextureFlags, CURVETEXTURE))
+    {
+        if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.CurveTexture_SpriteInfo);
+
+            if (HasTextureScroll(SCROLL_CURVE))
+            {
+                SpriteUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+            }
+
+            CurveSample = CurveTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, CURVETEXTURE));
+            CurvePowerStrength = CurveSample.r;
+            CurvePowerStrength *= 2.5f;
+        }
+        else
+        {
+            CurveSample = CurveTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, CURVETEXTURE));
+            CurvePowerStrength = CurveSample.r;
+            CurvePowerStrength *= 2.5f;
+        }
+
+    }
+    else
+    {
+        CurvePowerStrength = 1.f;
+    }
+    
+    // ===================== SubMask 텍스처 ====================
+    if (Has(g_Effect.g_TextureFlags, SUBMASKINGTEXTURE))
+    {
+        if (HasTextureScroll(SCROLL_SUBMASKING))
+        {
+            float2 scrolledUV = In.vUV + g_Effect.g_UVOffset;
+            scrolledUV += g_Effect.g_ScrollOffset * g_Effect.SubMaskTexture_ScrollWeight;
+            SubMaskSample = SubMaskTextureSample(Get90DegreeRotatedUV(scrolledUV, g_Effect.g_RotationFlags, SUBMASKINGTEXTURE));
+        }
+        else if (HasTextureSprite(g_Effect.SubMaskTexture_SpriteInfo))
+        {
+            float2 SpriteUV = GetStaticSpriteUV(In.vUV, g_Effect.SubMaskTexture_SpriteInfo);
+            SubMaskSample = SubMaskTextureSample(Get90DegreeRotatedUV(SpriteUV, g_Effect.g_RotationFlags, SUBMASKINGTEXTURE));
+        }
+        else
+        {
+            SubMaskSample = SubMaskTextureSample(Get90DegreeRotatedUV(In.vUV, g_Effect.g_RotationFlags, SUBMASKINGTEXTURE));
+        }
+
+    }
+    else
+        SubMaskSample = float4(1.f, 1.f, 1.f, 1.f);
+    
+    
+
+    // =================  계산식 사용  ================
+    
+        // 5. 최종 결합 (아틀라스 색상 * 캐릭터 고유 색상)
+    float3 finalRGB = DiffuseSample.rgb * GradationSample.rgb * g_Effect.g_EffectColor.rgb * CurvePowerStrength;
+    finalRGB += (GlowSample.rgb * g_Effect.g_GlowPower);
+    
+    float lifeAlpha = 1.0f - DissolveProgress;
+    float finalAlpha = DiffuseSample.a * MaskSample.r * SubMaskSample.r * dissolveMask * g_Effect.g_EffectColor.a/* * lifeAlpha*/;
+
+    if (HasLifeDissolve())
+        finalAlpha *= lifeAlpha;
+    
+    if (finalAlpha <= g_Effect.g_DiscardValue)
+        discard;
+    
+    float3 srcRGB = finalRGB;
+    float srcAlpha = finalAlpha;
+    float w = pow(saturate(1.0f - In.vViewZ / 1000.0f), 3.0f); // 3승으로 변화율 조절
+    w = clamp(w, 0.01f, 3000.0f); // 상한선을 적당히 열어주되, 하한선으로 방어
+
+    Out.vAccum = float4(srcRGB * srcAlpha, srcAlpha) * w;
+    Out.vReveal = srcAlpha;
+
+    return Out;
+}
+
+
 technique11 T0
 {
     pass Mesh_Effect
@@ -1442,4 +1804,15 @@ technique11 T0
         GeometryShader = NULL;
         SetPixelShader(CompileShader(ps_5_0, PS_DefaultMesh()));
     }
+
+    pass Default_Chain
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_ReadOnly, 0);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_DEFAULT()));
+        GeometryShader = NULL;
+        SetPixelShader(CompileShader(ps_5_0, PS_Chain()));
+    }
+
 }

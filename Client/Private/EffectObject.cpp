@@ -380,6 +380,8 @@ HRESULT CEffectObject::Bind_ShaderResource()
             m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.z,
             (_float)m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::SUB_MASKTEXTURE)]);
 
+        pDesc.vUVPower = Vec2(m_tEffectDesc.Data._Effect_UVXPower, m_tEffectDesc.Data._Effect_UVYPower);
+
         m_pShader->Bind_EffectData(pDesc);
 
         // Compute 셰이더가 들고있는 SRV를, Default Shader한테 SRV 꽂아주기.
@@ -807,6 +809,7 @@ void CEffectObject::Overwrite_FromEnv(const EFFECT_ENV_DESC::ENV_PART_DESC& pDes
     ParticleDesc.vLifeTime.y = pDesc.VFX_ParticleLifeTime_Parts;
     ParticleDesc.vRange = pDesc.VFX_ParticleRange_Parts;
     ParticleDesc.iInstnaceCount = pDesc.VFX_ParticleCount_Parts;
+    ParticleDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_AnimSpeed;
 
     m_pParticleBuffer->Set_ParticleDesc(ParticleDesc);
 }

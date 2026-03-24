@@ -16,7 +16,6 @@ struct OFFSET_AFFECTIDX
     row_major float4x4  matOffsetTransform;
 };
 
-
 cbuffer MU_MESHBONENUMS
 {
     MU_INDEX g_CB;
@@ -27,7 +26,6 @@ StructuredBuffer<BONE_MAT>          MU_COMBINEMAT;
 
 RWStructuredBuffer<BONE_MAT> BONEFNIMAL_TRANSFORMS;
 StructuredBuffer<BONE_MAT> BONEFNIMAL_TRANSFORMS_SRV;
-
 
 // Warp/Wavefront는 32명씩 묶여서 연산을 한다.
 [numthreads(32, 1, 1)]

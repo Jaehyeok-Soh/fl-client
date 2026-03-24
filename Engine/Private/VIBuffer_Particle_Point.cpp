@@ -134,7 +134,7 @@ HRESULT CVIBuffer_Particle_Point::Set_ResizeBuffer_SpecificRandom()
 
 	// 생성 간격 계산
 	_float fSpawnInterval = m_tParticleDesc.fDuration / (_float)m_iInstanceCount;
-	_float fSpeed = 1.f;
+	_float fSpeed = 1.f;  
 
 	for (size_t i = 0; i < m_iInstanceCount; i++)
 	{
