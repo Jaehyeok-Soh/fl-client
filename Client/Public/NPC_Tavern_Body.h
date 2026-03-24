@@ -1,5 +1,8 @@
 #pragma once
 #include "NPC_Body_Base.h"
+
+NS_BEGIN(Client)
+
 class CNPC_Tavern_Body final : public CNPC_Body_Base
 {
 	using Super = CNPC_Body_Base;
@@ -28,9 +31,11 @@ public:
 private:
 	HRESULT Ready_Components(NPCBODY_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+
 public:
 	static CNPC_Tavern_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
 
+NS_END

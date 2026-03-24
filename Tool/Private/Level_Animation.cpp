@@ -265,6 +265,10 @@ HRESULT CLevel_Animation::Ready_Sounds()
 	_uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Weapon/Dual_Blade/")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Weapon/OneHand_Sword/")))
+		return E_FAIL;
 
 	return S_OK;
 }

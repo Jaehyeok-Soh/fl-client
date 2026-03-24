@@ -309,20 +309,6 @@ HRESULT CLevel_Test::Ready_Player_SkillObjPool()
 			return E_FAIL;
 	}
 
-	//// Moon skil Q sheild
-	//{
-	//	CMoon_SkillQSheild_Obj::SKILLOBJECT_DESC desc{};
-	//	if (FAILED(m_pGameInstance->Regist_Pool(
-	//		0,
-	//		g_wszPool_MoonSkillQSheild,
-	//		g_wszSkillObjectLayer,
-	//		0,
-	//		g_wszMoonSkillQSheild_Prototype_Tag,
-	//		&desc,
-	//		10)))
-	//		return E_FAIL;
-	//}
-
 	// Moon skil Q attack
 	{
 		CMoon_SkillQAttack_Obj::SKILLOBJECT_SPAWN_DESC desc{};

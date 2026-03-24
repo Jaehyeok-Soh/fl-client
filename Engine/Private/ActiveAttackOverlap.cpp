@@ -40,9 +40,9 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 		{
 			CGameObject* hitObject = static_cast<CGameObject*>(m_hitBuffer.touches[i].actor->userData);
 			
-			if (CheckAlreadyHit(hitObject))
+			if (CheckAlreadyHit(&m_hitBuffer.touches[i]))
 			{
-				//m_pGameInstance->Overlap_EventCallback(m_pOwner, &m_hitBuffer, PxPairFlag::eNOTIFY_TOUCH_PERSISTS);
+				m_pGameInstance->Overlap_EventCallback(m_pOwner, m_pxTransform.p, &m_hitBuffer.touches[i], PxPairFlag::eNOTIFY_TOUCH_PERSISTS, m_tHitboxDesc);
 				continue;
 			}
 
@@ -52,7 +52,7 @@ void CActiveAttackOverlap::Update(_float fTimeDelta)
 
 			m_pGameInstance->Overlap_EventCallback(m_pOwner, m_pxTransform.p, &m_hitBuffer.touches[i], PxPairFlag::eNOTIFY_TOUCH_FOUND, m_tHitboxDesc);
 
-			m_hitObjects.insert(hitObject);
+			m_hitObjects.insert(&m_hitBuffer.touches[i]);
 		}
 	}
 }
@@ -97,7 +97,7 @@ void CActiveAttackOverlap::Tick(_float fTimeDelta)
 	}
 }
 
-_bool CActiveAttackOverlap::CheckAlreadyHit(CGameObject* hitObject)
+_bool CActiveAttackOverlap::CheckAlreadyHit(PxOverlapHit* hitObject)
 {
 	auto obj = m_hitObjects.find(hitObject);
 	if (obj != m_hitObjects.end())
@@ -108,8 +108,9 @@ _bool CActiveAttackOverlap::CheckAlreadyHit(CGameObject* hitObject)
 
 void CActiveAttackOverlap::HitObjectsClear()
 {
-	//for (auto& obj : m_hitObjects)
-	//	m_pGameInstance->Overlap_EventCallback(m_pOwner, &m_hitBuffer, PxPairFlag::eNOTIFY_TOUCH_LOST);
+	for (auto& obj : m_hitObjects)
+		m_pGameInstance->Overlap_EventCallback(m_pOwner, m_pxTransform.p, obj, PxPairFlag::eNOTIFY_TOUCH_LOST, m_tHitboxDesc);
+
 	m_hitObjects.clear();
 }
 

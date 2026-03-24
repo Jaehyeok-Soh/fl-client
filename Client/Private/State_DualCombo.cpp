@@ -110,11 +110,17 @@ void CState_DualCombo::Start_Third()
 	{
 		Vec3 vCurPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 		Vec3 vLook = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
 		vLook.Normalize();
 
 		if (m_bLookAtMonster)
 		{
-			pCCT->SetFootPosition(m_vMonsterPos - vLook * 2.f);
+			_float fDiffY = (m_vMonsterPos - vCurPos).y;
+			if ((fDiffY < 0.f && fDiffY < -1.f) ||
+				(fDiffY >= 0.f && fDiffY < 1.f))
+			{
+				pCCT->SetFootPosition(m_vMonsterPos - vLook * 2.f);
+			}
 		}
 
 		else

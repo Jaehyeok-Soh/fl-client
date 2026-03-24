@@ -621,6 +621,40 @@ void CActionState::SetupLook_Target_XZ()
 	m_pOwnerTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, vNewLookDir * vScale.z);
 }
 
+void CActionState::SetupLook_PointLerp(const _float fTimeDelta, Vec3 vPoint, _float fLerpSpeed)
+{
+	//vPoint.y = 0.f;
+	//vPoint.Normalize();
+
+	Vec3 vMyPos = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+	// 피벗까지의 방향을 vPoint로
+	Vec3 vLookPoint = vPoint - vMyPos;
+
+	vLookPoint.y = 0.f;
+	vLookPoint.Normalize();
+
+	_float fRadian = std::atan2(vLookPoint.x, vLookPoint.z);
+
+	// 현재 각도
+	Vec3 vCurLook = m_pOwnerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	vCurLook.y = 0.f;
+	vCurLook.Normalize();
+
+	_float fCurRadian = std::atan2(vCurLook.x, vCurLook.z);
+
+	// 현재 각도 : 179°
+	// 목표 각도 : -179°
+
+	// 2도만 돌면 되는데 358도를 돌게 됨 -> 따로 각도 보간 필요
+	_float fDifff = (fRadian - fCurRadian);
+	while (fDifff > XM_PI)  fDifff -= XM_PI * 2.f;
+	while (fDifff < -XM_PI) fDifff += XM_PI * 2.f;
+	_float fNewRadian = fCurRadian + fDifff * std::clamp(fLerpSpeed * fTimeDelta, 0.f, 1.f);
+
+	m_pOwnerTransform->Rotation(Vec3::Up, fNewRadian);
+}
+
 CGameObject* CActionState::Get_Target()
 {
 	return m_pOwnerControlContext->Get_Target();

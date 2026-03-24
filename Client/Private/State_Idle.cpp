@@ -35,6 +35,7 @@ HRESULT CState_Idle::Start(void *pArg, _bool bForce)
 		return S_OK;
 	}
 
+	Set_ZeroVerticalVelocity();
 	Set_YLerp(false);
 
 	if (FAILED(Super::Start(pArg, bForce)))

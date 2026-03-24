@@ -131,6 +131,7 @@ protected:
 	void			SetupLook_CameraSameLook(); // camera look == owenr look
 	void			SetupLookAt(const Vec3& vPoint);
 	void			SetupLook_Target_XZ();
+	void			SetupLook_PointLerp(const _float fTimeDelta, Vec3 vPoint, _float fLerpSpeed);
 	CGameObject*	Get_Target();
 	_bool			Align_Move(_uint iState, _bool bForce = false, void* pArg = nullptr);
 	_bool			Align_Attack(_uint iState);

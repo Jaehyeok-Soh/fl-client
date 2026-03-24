@@ -819,6 +819,8 @@ namespace Client
 
 	inline constexpr wchar_t g_wszNPC_Pan_State_Tag[]{ L"NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_State_Tag[]{ L"NPC_Tavern" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_State_Tag[]{ L"NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_State_Tag[]{ L"NPC_Kid_1" };
 
 #pragma endregion 
 
@@ -833,6 +835,8 @@ namespace Client
 	
 	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Tavern" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Kid_1" };
 
 #pragma endregion
 
@@ -948,6 +952,10 @@ namespace Client
 	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan_Body" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Tavern" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Tavern_Body" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Villager_1_Body" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Kid_1" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Kid_1_Body" };
 #pragma endregion
 
 #pragma region Part Objects

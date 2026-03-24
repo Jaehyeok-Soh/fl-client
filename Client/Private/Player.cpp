@@ -167,7 +167,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
         Set_FKeyEvent(0, true);
-        //pPlayerState->Set_SpecialDashOn(true);
+       // pPlayerState->Set_SpecialDashOn(true);
 
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
@@ -188,24 +188,13 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
     Super::Update_Priority(fTimeDelta);
 
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
-    switch (m_pGameInstance->Get_CurrentLevelIndex())
-    {
-    case ENUM_TO_UINT(ELevelType::TEST):
-    {
-        CGameObject* pMonster = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TEST), g_wszMonstereLayer);
-        if(pMonster)
-            pPlayerState->Set_PivotPos(pMonster->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
-    }
-    break;
 
-    case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
+    // special dash on일때만 pivot 넘겨줌 : 보스전에만 가능
+    if (pPlayerState->Get_SpecialDashOn())
     {
-        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszBossLayer);
-        if(pBoss)
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
+        if (pBoss)
             pPlayerState->Set_PivotPos(pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
-    }
-    break;
-
     }
 }
 
@@ -341,6 +330,34 @@ void CPlayer::Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn)
         m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
         break;
     }
+}
+
+void CPlayer::SetWepaponOn_SetState(_uint iWeaponType, _uint iIdx, _bool bOn, _uint iState)
+{
+    switch (iWeaponType)
+    {
+    case ENUM_TO_UINT(EWEAPON::MELEE):
+        if (iIdx >= ENUM_TO_UINT(MELEE::END))
+            return;
+        m_arrMeleeInfo[size_t(iIdx)].bHave = bOn;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::RANGE):
+        if (iIdx >= ENUM_TO_UINT(RANGE::END))
+            return;
+
+        m_arrRangeInfo[size_t(iIdx)].bHave = bOn;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::SKILL):
+        if (iIdx >= ENUM_TO_UINT(SKILL::END))
+            return;
+
+        m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
+        break;
+    }
+
+    Change_WeaponState(iWeaponType, iState);
 }
 
 _bool CPlayer::Change_MainWeapon(_uint iWeaponType, _uint iIdx)
@@ -588,8 +605,7 @@ _bool CPlayer::Start_Attack(State iState)
     case State::SKILL2:
         bChange = Get_Component<CActionSkill>()->Start_Skill(MoonQ);
 
-
-        if (bChange && m_ePlayerType == PLAYER_TYPE::MOON)
+        if (bChange)
         {
             if (CPartEffect* pEff = Get_Part<CPartEffect>(Part::EFFECT))
             {
@@ -1159,7 +1175,7 @@ HRESULT CPlayer::Ready_BaseStates()
         CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags      = 0;
         desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Jump_FallLoop") };
-        desc.bBlend         = true;
+        desc.bBlend         = false;
         desc.bLoop          = true;
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
@@ -1215,10 +1231,10 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::CHARGE);
         desc.vecChangeState_ByKey                                                       = vecChangeState_ByKey;
 
-        tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.1f; // (24.f / 36.f) / (36.f / 24.f) / 1.2f;
-        desc.tKeyTimer       = tKeyTimer;
-        desc.pOwnerGun = pMyGun;
+        tKeyTimer.bCountTime    = true;
+        tKeyTimer.fMaxTime      = 0.1f; // (24.f / 36.f) / (36.f / 24.f) / 1.2f;
+        desc.tKeyTimer          = tKeyTimer;
+        desc.pOwnerGun          = pMyGun;
 
         desc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_NextFrame;
 
@@ -1267,13 +1283,13 @@ HRESULT CPlayer::Ready_BaseStates()
     {
         CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
         desc.FAniFlags = 0;
-        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
-        desc.bBlend = true;
-        desc.bLoop = false;
+        desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_DodgeBack") };
+        desc.bBlend         = false;
+        desc.bLoop          = false;
 
         desc.FCollis = 0;
 
-        desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
@@ -1288,7 +1304,8 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)] = ENUM_TO_UINT(State::CHARGE);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
-        tKeyTimer.bCountTime    = false;
+        tKeyTimer.bCountTime    = true;
+        tKeyTimer.fMaxTime      = 20.f / ANIMTIC;
 
         desc.tKeyTimer          = tKeyTimer;
         desc.pOwnerGun          = pMyGun;
@@ -1539,11 +1556,10 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
         {
             CPartEffect::PART_EFFECT_DESC tDesc;
             tDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-            tDesc.arrState_DurationTimes = {};
             tDesc.arrState_DurationTimes = { 0.f,12.5f,0.f };
             tDesc.arrState_DelayTimes = { 0.f,0.5f,0.f };
             tDesc.FPartEff_Flags = CPartEffect::PartEff_Flag::Spawn_Again_AfterDespawn;
-
+            tDesc.iLevelIndex = pDesc->iLevelIndex;
 
             vector<CPartEffect::DATA_EFFHANDLER> tEffectHandlerDesc;
             tEffectHandlerDesc.reserve(2);
@@ -1555,7 +1571,7 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
 
                 CEffectHandler::STATE_VFX_DESC SkillDesc{};
                 {
-                    SkillDesc.EffectPrefabTag = "Player_Moon_QSkill_Barrior";//"PlayerMoon_ESkillObject";
+                    SkillDesc.EffectPrefabTag = "Player_Moon_QSkill_Barrior";
                     SkillDesc.pParentTransformMatrix = nullptr;
                     SkillDesc.bWorld = { CEffectHandler::E_WORLD::E_LOCAL };
                     SkillDesc.bFollowBone = { false };
@@ -1591,8 +1607,6 @@ HRESULT CPlayer::Ready_PartObjects(PLAYER_DESC* pDesc)
             if (FAILED(Add_Part(Part::EFFECT, ENUM_TO_UINT(ELevelType::STATIC), g_wszPartObj_Effect_Prototype_Tag, &tDesc)))
                 return E_FAIL;
         }
-        /*break;
-        }*/
     }
 
     // CLOAK
@@ -1817,7 +1831,7 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
         {
             tPColliDesc.eShape = EPhysicsShape::BOX;
             //tPColliDesc.fHeight = 100.f;
-            tPColliDesc.vCenter = { 0.f, 0.75f, 0.8f };
+            tPColliDesc.vCenter = { 0.f, 0.75f, 0.7f };
             tPColliDesc.vExtents = { 2.f, 1.5f, 4.f };
 
             //tPColliDesc.fRadius = { 20.f };

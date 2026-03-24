@@ -86,10 +86,13 @@ PxController* CPhysics_CCTManager::MakeBoxController(PHYSICSCCT_DESC* pDesc)
 
 	desc.contactOffset = pDesc->fContactOffset;
 	desc.stepOffset = pDesc->fStepOffset;
-	desc.slopeLimit = pDesc->fSlopeLimit;
+	//desc.slopeLimit = pDesc->fSlopeLimit;
+	desc.slopeLimit = PxCos(PxDegToRad(89.f));
 
 	desc.reportCallback = m_pCCTHitReport;
 	desc.behaviorCallback = m_pCCTBehaviorCallback;
+
+	desc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING;
 
 	PxExtendedVec3 poolPos(m_vPoolingPosition.x, m_vPoolingPosition.y, m_vPoolingPosition.z);
 	desc.position = poolPos;
@@ -117,12 +120,15 @@ PxController* CPhysics_CCTManager::MakeCapsuleController(PHYSICSCCT_DESC* pDesc)
 
 	desc.contactOffset = pDesc->fContactOffset;
 	desc.stepOffset = pDesc->fStepOffset;
-	desc.slopeLimit = pDesc->fSlopeLimit;
+	//desc.slopeLimit = pDesc->fSlopeLimit;
+	desc.slopeLimit = PxCos(PxDegToRad(89.f));
 
 	desc.climbingMode = PxCapsuleClimbingMode::eCONSTRAINED;
 
 	desc.reportCallback = m_pCCTHitReport;
 	desc.behaviorCallback = m_pCCTBehaviorCallback;
+
+	desc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING;
 
 	PxExtendedVec3 poolPos(m_vPoolingPosition.x, m_vPoolingPosition.y, m_vPoolingPosition.z);
 	desc.position = poolPos;
