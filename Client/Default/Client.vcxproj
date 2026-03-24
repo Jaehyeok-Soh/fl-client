@@ -403,6 +403,7 @@
     <ClInclude Include="..\public\Xibi_Oneshot_Thunder.h" />
     <ClInclude Include="..\public\Xibi_Projectile_Circle.h" />
     <ClInclude Include="Boss_Lianhuo.h" />
+    <ClInclude Include="CameraShotUtils.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -675,6 +676,7 @@
     <ClCompile Include="..\private\Xibi_Projectile_Circle.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Boss_Lianhuo.cpp" />
+    <ClCompile Include="CameraShotUtils.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Client_Define.cpp" />
     <ClCompile Include="pch.cpp">

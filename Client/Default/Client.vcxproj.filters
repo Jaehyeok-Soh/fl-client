@@ -1590,6 +1590,9 @@
     <ClInclude Include="Boss_Lianhuo.h">
       <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
     </ClInclude>
+    <ClInclude Include="CameraShotUtils.h">
+      <Filter>99. ETC\Client_Define</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2316,6 +2319,9 @@
     </ClCompile>
     <ClCompile Include="Boss_Lianhuo.cpp">
       <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraShotUtils.cpp">
+      <Filter>99. ETC\Client_Define</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
