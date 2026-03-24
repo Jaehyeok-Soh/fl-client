@@ -139,62 +139,35 @@ void CLevel_Test::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	static _uint s_iCount = { 0 };
-	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+//	static _uint s_iCount = { 0 };
+//	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+//	{
+//#ifdef _DEBUG
+//		s_iCount = (s_iCount + 1) % 3;
+//#else
+//		s_iCount = (s_iCount + 1) % 2;
+//#endif
+//		if (s_iCount == 0)
+//		{
+//			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+//		}
+//		else if (s_iCount == 1)
+//		{
+//			m_eCursorMode = ECursorMode::VisibleClipped;
+//		}
+//#ifdef _DEBUG
+//		else
+//		{
+//			m_eCursorMode = ECursorMode::VisibleFree;
+//		}
+//#endif
+//		m_pGameInstance->Request_CursorMode(m_eCursorMode);
+//	}
+//
+	if (KEY_BUTTON_DOWN(DIK_4))
 	{
-#ifdef _DEBUG
-		s_iCount = (s_iCount + 1) % 3;
-#else
-		s_iCount = (s_iCount + 1) % 2;
-#endif
-		if (s_iCount == 0)
-		{
-			m_eCursorMode = ECursorMode::LockedHiddenCenter;
-		}
-		else if (s_iCount == 1)
-		{
-			m_eCursorMode = ECursorMode::VisibleClipped;
-		}
-#ifdef _DEBUG
-		else
-		{
-			m_eCursorMode = ECursorMode::VisibleFree;
-		}
-#endif
-		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 
-	//if (KEY_BUTTON_DOWN(DIK_4))
-	//{
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_5))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
-	//	PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
-	//	Desc.Data = PrefabDesc;
-
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_6))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
-	//	PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
-	//	Desc.Data = PrefabDesc;
-
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_7))
-	//{
-	//	UIEVENT_DESC Desc = {};
-	//	Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
-	//	CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_8))
-	//{
-	//	m_pGameInstance->Broadcast<BOSS_GROGGY>();
-	//}
 }
 
 HRESULT CLevel_Test::Render()
@@ -335,20 +308,6 @@ HRESULT CLevel_Test::Ready_Player_SkillObjPool()
 			30)))
 			return E_FAIL;
 	}
-
-	//// Moon skil Q sheild
-	//{
-	//	CMoon_SkillQSheild_Obj::SKILLOBJECT_DESC desc{};
-	//	if (FAILED(m_pGameInstance->Regist_Pool(
-	//		0,
-	//		g_wszPool_MoonSkillQSheild,
-	//		g_wszSkillObjectLayer,
-	//		0,
-	//		g_wszMoonSkillQSheild_Prototype_Tag,
-	//		&desc,
-	//		10)))
-	//		return E_FAIL;
-	//}
 
 	// Moon skil Q attack
 	{

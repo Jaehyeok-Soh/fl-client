@@ -1063,29 +1063,35 @@ HRESULT CPanel_MapTool::Redner_SkyBoxSetting()
 			 else
 				 pSRV = pTexture->Get_SRV();
 
+			 if (ImGui::ImageButton("##SkyBoxTexture", (ImTextureRef)pSRV, ImVec2(64, 64)))
+			 {
+				 m_pMapToolManager->m_ppTargetSlot = pLevelData->Get_SkeyBoxTexturePointer();
+				 m_pMapToolManager->m_isTex_DH_ArraySelect = false;
+				 m_pMapToolManager->m_isTex_NBR_ArraySelect = false;
+				 ImGui::OpenPopup("Texture_Select_Modal");
+			 }
+
 
 			 if (pTexture != nullptr)
 			 {
 				 ImGui::ColorEdit4(" Sky Color Setting ", &pLevelData->m_tCB_EnvData.vSkyColor.x);
-				 ImGui::ColorEdit4(" Cloud Base Color Setting ", &pLevelData->m_tCB_EnvData.vCloudBaseColor.x);
+				 ImGui::Separator();
+				 ImGui::ColorEdit4(" Cloud Base	Color Setting ", &pLevelData->m_tCB_EnvData.vCloudBaseColor.x);
+				 ImGui::Separator();
 				 ImGui::ColorEdit4(" Cloud Highlight Color Setting ", &pLevelData->m_tCB_EnvData.vCloudHighlight.x);
-
+				 ImGui::DragFloat("Cloud Highlight Power" , &pLevelData->m_tCB_EnvData.fCloudHighlightPower,0.01f,0.f,FLT_MAX);
+				 ImGui::Separator();
+				 ImGui::ColorEdit4(" Cloud Shadow Color Setting ", &pLevelData->m_tCB_EnvData.vCloudShadowColor.x);
+				 ImGui::DragFloat("Cloud Shadow Power" , &pLevelData->m_tCB_EnvData.fCloudShadowPower,0.01f,0.f,FLT_MAX);
+				 ImGui::Separator();
 				 ImGui::DragFloat2("UV Speed", &pLevelData->m_tCB_EnvData.vSkyBoxTextureUVSpeed.x, 0.01f);
-
-
-				 if (ImGui::ImageButton("##SkyBoxTexture", (ImTextureRef)pSRV, ImVec2(64, 64)))
-				 {
-					 m_pMapToolManager->m_ppTargetSlot = pLevelData->Get_SkeyBoxTexturePointer();
-					 m_pMapToolManager->m_isTex_DH_ArraySelect = false;
-					 m_pMapToolManager->m_isTex_NBR_ArraySelect = false;
-					 ImGui::OpenPopup("Texture_Select_Modal");
-				 }
-
+				 ImGui::Separator();
 				 ImGui::Checkbox(" SkyBox Use Channel Packing ", (_bool*)&pLevelData->m_tCB_EnvData.isChannelPacking);
-
+				 ImGui::Separator();
 				 ImGui::Combo("SkyBox Texture Type", (int*)&pLevelData->m_tCB_EnvData.iSkyBoxTextureType, g_szSkyBoxTextureTypeNames, ARRAYSIZE(g_szSkyBoxTextureTypeNames));
-
+				 ImGui::Separator();
 				 ImGui::DragFloat("SkyBox PolarRadiusScale", &pLevelData->m_tCB_EnvData.fPolarRadiusScale, 0.01f);
+				 ImGui::Separator();
 
 			 }
 		 }

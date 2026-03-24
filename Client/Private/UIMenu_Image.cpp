@@ -130,11 +130,7 @@ void CUIMenu_Image::Tick_By_Type(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::MENU_BG:
 		break;
 	case DTO::EUIDImageSubClassType::MENU_ICON:
-	{
-
-		int a = 0;
-	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
 		/* µŞ ¹è°æ ¾Öµé ¹à°Ô ºû³ª°Ô ÇÏ±â À§ÇØ¼­ */
@@ -155,7 +151,7 @@ void CUIMenu_Image::Tick_By_Type(const _float fTimeDelta)
 			m_pUIManager->Get_UIEvents().Broadcast(Desc);
 		}
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
 	{
 		if (Engine_Utils::Has_Flag(m_iInteractState, EUIInteract_Flag::PRESS_ENTER))
@@ -166,14 +162,12 @@ void CUIMenu_Image::Tick_By_Type(const _float fTimeDelta)
 			Set_NonInteractable();
 		}
 	}
-	break;
+		break;
 	}
 }
 
 void CUIMenu_Image::Bind_Events()
 {
-	m_vecEventHandles.resize(ENUM_TO_UINT(EUIEventID::END));
-
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::MENU_BEGIN:
@@ -187,18 +181,17 @@ void CUIMenu_Image::Bind_Events()
 					{
 						this->Set_Invisible();
 					}
-				})
-		);
-
-		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-			{
-				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				}));
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
-					this->Set_Visible();
-				}
-			});
+					if (EUIEventID::MENU_OPEN == Desc.eEventID)
+					{
+						this->Set_Visible();
+					}
+				}));
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::MENU_ICON:
 	{
 		m_vecEventHandles.push_back(
@@ -208,8 +201,7 @@ void CUIMenu_Image::Bind_Events()
 					{
 						this->Set_Invisible();
 					}
-				})
-		);
+				}));
 		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
@@ -217,11 +209,9 @@ void CUIMenu_Image::Bind_Events()
 					{
 						this->Set_Visible();
 					}
-				})
-		);
+				}));
 	}
-	break;
-
+		break;
 	case DTO::EUIDImageSubClassType::MENU_ICON_BG:
 	{
 		m_vecEventHandles.push_back(
@@ -232,8 +222,7 @@ void CUIMenu_Image::Bind_Events()
 						this->Set_Invisible();
 						this->Set_NonInteractable();
 					}
-				})
-		);
+				}));
  		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
@@ -242,10 +231,9 @@ void CUIMenu_Image::Bind_Events()
 						this->Set_Visible();
 						this->Set_Interactable();
 					}
-				})
-		);
+				}));
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::MENU_EXIT_TRIGGER:
 	{
 		m_vecEventHandles.push_back(
@@ -255,8 +243,7 @@ void CUIMenu_Image::Bind_Events()
 					{
 						this->Set_NonInteractable();
 					}
-				})
-		);
+				}));
 		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
@@ -264,10 +251,9 @@ void CUIMenu_Image::Bind_Events()
 					{
 						this->Set_Interactable();
 					}
-				})
-		);
+				}));
 	}
-	break;
+		break;
 	}
 }
 

@@ -99,15 +99,12 @@ void CWeaponPickUp::Update_Priority(const _float fTimeDelta)
 void CWeaponPickUp::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
 }
 
 void CWeaponPickUp::Update_Late(const _float fTimeelta)
 {
 	Super::Update_Late(fTimeelta);
-
 }
-
 
 void CWeaponPickUp::Ready_Before_Render(const _float fTimeDelta)
 {

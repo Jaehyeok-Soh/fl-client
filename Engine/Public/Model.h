@@ -228,6 +228,8 @@ public:
 
 public:
 	HRESULT								Set_MI_TintColor(_uint iIndex, const Vec4& vColor );
+	HRESULT								Set_MI_EmissiveColor(_uint iIndex, const Vec4& vColor );
+	HRESULT								Set_MI_EmissivePower(_uint iIndex, const float& fPower );
 public:
 	HRESULT								Change_MI(_uint iIndex, EMaterialInstanceType eChangeType );
 	HRESULT								Change_Material(_uint iIndex, const wstring& wstrMaterialTag);
@@ -353,10 +355,15 @@ private:
 
 private:
 	_int								m_iRootBoneIdx				= { -1 };
-	Vec3								m_vPreMainPosition = { Vec3::Zero };
-	Vec3								m_vPreBlendPosition = { Vec3::Zero };
-	Vec3								m_vPreMixPosition = { Vec3::Zero };
-	Vec3								m_vPrePosNon = { Vec3::Zero };
+	Vec3								m_vPreMainPosition			= { Vec3::Zero };
+	Vec3								m_vPreBlendPosition			= { Vec3::Zero };
+	Vec3								m_vPreMixPosition			= { Vec3::Zero };
+	Vec3								m_vPrePosNon				= { Vec3::Zero };
+
+	Quat								m_vPreQuat					= { Quat::Identity };
+	Quat								m_vPreBlendQuat				= { Quat::Identity };
+	Quat								m_vPreQuatMix				= { Quat::Identity };
+	Quat								m_vPreQuatNon				= { Quat::Identity };
 
 	// mix anim
 	vector<_int>						m_vecMixAnimIndices;
@@ -367,6 +374,8 @@ private:
 	_int								m_iAdditivePos_AnimIdx	= { -1 };
 	_float								m_fAdditiveOffset		= { 1.f };
 	_bool								m_bAdditiveAnim			= { false };
+
+	_uint								m_iBlendRootType = { 0 };
 
 	// compute shader º¯¼ö
 private:

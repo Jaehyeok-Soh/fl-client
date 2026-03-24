@@ -61,7 +61,6 @@ HRESULT CUISkill_BG::Awake(const _uint iCurrentLevelID)
 void CUISkill_BG::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
-	Trigger_User_Use_Skill();
 }
 
 void CUISkill_BG::Update(const _float fTimeDelta)
@@ -91,10 +90,6 @@ HRESULT CUISkill_BG::Render()
 	return S_OK;
 }
 
-void CUISkill_BG::Trigger_User_Use_Skill()
-{
-}
-
 void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
 {
 	if (m_isUsingE)
@@ -114,6 +109,7 @@ void CUISkill_BG::Tick_Use_Skill_Event(const _float fTimeDelta)
 			}
 		}
 	}
+
 	else if (m_isUsingSkill)
 	{
 		_bool is = { false };
@@ -270,16 +266,6 @@ HRESULT CUISkill_BG::Attach_Personal_Info()
 	case DTO::EUIDImageSubClassType::PLAYER_DODGE:
 		m_fMaxCoolTime = m_pPlayerStatCom->Get_Timer(CStatCom_Player::TIMER_TYPE::DASH).fMaxTime;
 		m_fAlpha_Ratio = 0.7f;
-		//m_pGameInstance->Subscribe<PLAYER_SKILL_TRIGGERED>([this](_uint iKey)
-		//	{
-		//		if (static_cast<CStateBase_Player::STATEKEY>(iKey) == CStateBase_Player::STATEKEY::SHIFT)
-		//		{
-		//			this->Ready_Fade(0.2f, 0.f, 0.7f, m_fDelay);
-		//			this->m_isUsingSkill = true;
-		//			this->m_isSkillFlash = false;
-		//			this->m_fProgress_Ratio = 1.f;
-		//		}
-		//	});
 		break;
 	case DTO::EUIDImageSubClassType::PLAYER_SKILL_END:
 		break;
@@ -300,17 +286,28 @@ _bool CUISkill_BG::Tick_Visible_Event(const _float fTimeDelta)
 	return true;
 }
 
+void CUISkill_BG::Initialize_InVisible_Event()
+{
+}
+
+_bool CUISkill_BG::Tick_InVisible_Event(const _float fTimeDelta)
+{
+	Set_Active(false);
+	return true;
+}
+
 void CUISkill_BG::Bind_Events()
 {
+	// 메뉴 Event
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
 				{
+					this->Set_Active(true);
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -318,19 +315,53 @@ void CUISkill_BG::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
-	m_pGameInstance->Subscribe<CINEMATIC_START>(
-		[this]()
-		{
-			this->Set_Invisible();
-		});
-	m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-		{
-			this->Set_Visible();
-		});
+	// 시네마틱 Event -> 검정색 UI 위 아래에서 나오는 Event
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_START>(
+			[this]()
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
+			{
+				this->Set_Active(true);
+				this->Set_Visible();
+			}));
 
+	// 대화 Event
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{
+				this->Set_Active(true);
+				this->Set_Visible();
+			}));
+
+	// 패널 Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					this->Set_Visible();
+					this->Set_Active(true);
+				}
+			}));
 }
 
 CUISkill_BG* CUISkill_BG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

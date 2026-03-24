@@ -168,7 +168,11 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
         vScale  = lerp(vLeftScale, vRightScale, fRatio);
         vQuat   = normalize(lerp(vLeftQuat, vRightQuat, fRatio)); // todo : 원래는 dot을 해서 음수일때 처리 해야하는데 일단 슛
         if (bRootMotionBone)
-            vTranslation = float3(0.f, 0.f, 0.f);
+        {
+            vQuat           = float4(0.f, 0.f, 0.f, 1.f);
+            vTranslation    = float3(0.f, 0.f, 0.f);
+        }
+
         else
             vTranslation = lerp(vLeftTrans, vRightTrans, fRatio);
     }

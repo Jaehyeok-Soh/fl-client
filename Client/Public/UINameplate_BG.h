@@ -43,8 +43,6 @@ private:
 	CGameObject* m_pTargetMoster = { nullptr };
 	_bool m_isSpawned = { false };
 
-	DelegateHandle m_tEventHandle = {};
-
 public:
 	static CUINameplate_BG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

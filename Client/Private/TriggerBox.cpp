@@ -99,6 +99,7 @@ HRESULT CTriggerBox::Ready_Component(TRIGGERBOX_DESC* pDesc)
         }
         else
         {
+            pDesc->pSRTData->vQuat = Quat::CreateFromYawPitchRoll(pDesc->vTriggerBox_Rotation.y, pDesc->vTriggerBox_Rotation.x, pDesc->vTriggerBox_Rotation.z);
             desc.pOwnerMatrices = { pDesc->pSRTData->Get_World() };
             desc.vecSRT         = { PHYSICS_SRT(pDesc->pSRTData->vScale , pDesc->pSRTData->vQuat , pDesc->pSRTData->vPosition) };
         }

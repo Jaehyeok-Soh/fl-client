@@ -41,7 +41,6 @@ HRESULT CUIPlayerStat_Progress::Initialize(void* pArg)
 	return S_OK;
 }
 
-
 HRESULT CUIPlayerStat_Progress::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
@@ -143,6 +142,7 @@ _bool CUIPlayerStat_Progress::Tick_Visible_Event(const _float fTimeDelta)
 _bool CUIPlayerStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	m_isFin_Event = true;
+	Set_Active(false);
 	return true;
 }
 
@@ -153,10 +153,10 @@ void CUIPlayerStat_Progress::Bind_Events()
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
 				{
+					Set_Active(true);
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -164,22 +164,55 @@ void CUIPlayerStat_Progress::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
-	m_pGameInstance->Subscribe<CINEMATIC_START>(
-		[this]() 
-		{
-			this->Set_Invisible();
-		});
-	m_pGameInstance->Subscribe<CINEMATIC_END>(
-		[this]()
-		{
-			this->Set_Visible();
-		});
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_START>(
+			[this]()
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_END>(
+			[this]()
+			{
+				Set_Active(true);
+				this->Set_Visible();
+			}));
 
+
+	// 대화 Event
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{
+				Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{				
+				Set_Active(true);
+				Set_Visible();
+			}));
+
+	// 패널 Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					Set_Invisible();
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					Set_Active(true);
+					Set_Visible();
+				}
+			}));
 }
-
 
 HRESULT CUIPlayerStat_Progress::Ready_Components(PLAYER_STAT_PROGRESS_DESC* pDesc)
 {
@@ -212,14 +245,12 @@ HRESULT CUIPlayerStat_Progress::Attach_Personal_Info()
 
 	m_vOriginColor = m_vColorTint;
 	m_vOriginGradiantColor = m_vGradiantColorTint;
-
 	return S_OK;
 }
 
 HRESULT CUIPlayerStat_Progress::Convert_Stat_To_Ratio()
 {
 	_float f = {};
-
 	switch (m_eSubClassType)
 	{
 	case DTO::EUISubClassType::NONE_OWNER:
@@ -228,15 +259,11 @@ HRESULT CUIPlayerStat_Progress::Convert_Stat_To_Ratio()
 		f = m_pPlayerStatCom->Get_HealthRatio();
 		break;
 	case DTO::EUISubClassType::PLAYER_ARMOR:
-	{
 		f = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
 		break;
-	}
 	case DTO::EUISubClassType::PLAYER_ENERGY:
-	{
 		f = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::MENTAL);
 		break;
-	}
 	case DTO::EUISubClassType::END:
 	default:
 		return E_FAIL;

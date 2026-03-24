@@ -150,7 +150,7 @@ HRESULT CMonster_Dog::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 300.f;
+		desc.fMaxHp = 50.f; // 수정하기
 		desc.fDefense = 50.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 

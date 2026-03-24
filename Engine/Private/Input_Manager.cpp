@@ -219,6 +219,11 @@ void CInput_Manager::Apply_CursorMode(ECursorMode eMode)
 		Force_ShowCursor(true);
 		Clip_ToClient(true);
 	} break;
+	case ECursorMode::InVisibleClipped:
+	{
+		Force_ShowCursor(false);
+		Clip_ToClient(true);
+	}break;
 	case ECursorMode::VisibleFree:
 	default:
 	{

@@ -278,22 +278,21 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 		return E_FAIL;
 	}
 
-
-
 	return S_OK;
 }
 
 void CUIMini_Map::Bind_Events()
 {
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
 				{
+					this->Set_Active(true);
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -301,18 +300,53 @@ void CUIMini_Map::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
-	m_pGameInstance->Subscribe<CINEMATIC_START>(
-		[this]() 
-		{ 
-			this->Set_Invisible();
-		});
-	m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-		{ 
-			this->Set_Visible(); 
-		});
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_START>(
+			[this]()
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
+			{
+				this->Set_Active(true);
+				this->Set_Visible();
+			}));
+
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{
+				this->Set_Active(true);
+				this->Set_Visible();
+			}));
+
+	// ÆÐ³Î Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					this->Set_Visible();
+					this->Set_Active(true);
+				}
+			}));
 }
 
 void CUIMini_Map::Initialize_Visible_Event()
@@ -322,7 +356,6 @@ void CUIMini_Map::Initialize_Visible_Event()
 	m_fAlpha_Ratio = 0.f;
 	m_fTimeAcc = 0.f;
 	Ready_Lerp_Movement(Vec2{ -10.f,0.f }, Vec2{ 10.f, 0.f }, 0.5f, 1.f, 0.f);
-
 }
 
 void CUIMini_Map::Initialize_InVisible_Event()
@@ -359,7 +392,11 @@ _bool CUIMini_Map::Tick_InVisible_Event(const _float fTimeDelta)
 	_bool isFade = Tick_Fade(fTimeDelta);
 	_bool isLerp = Tick_Lerp_Movement(fTimeDelta);
 	if (isFade && isLerp)
+	{
+		Set_Active(false);
 		return true;
+	}
+
 	return false;
 }
 

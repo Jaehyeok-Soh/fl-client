@@ -44,10 +44,10 @@ private:
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
-	_bool	Update_TransformationMatrices(const vector<class CBone*>& vecBones,_bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS, OUT Vec3& vPrepos);
-	void	SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS, OUT Vec3& vPrepos);
-	void	Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _bool bFirst, OUT Vec3& vPrepos);
-	void	Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, const vector<class CChannel*>& vRefChannels, CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float  fRatioOffset);
+	_bool	Update_TransformationMatrices(const vector<class CBone*>& vecBones,_bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS, OUT Vec3& vPrepos, OUT Quat& vPreQuat);
+	void	SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _uint iTotalBoneNum, CComputeShader* pAnimECS, OUT Vec3& vPrepos, OUT Quat& vPreQuat);
+	void	Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _bool bFirst, OUT Vec3& vPrepos, OUT Quat& vPreQuat);
+	void	Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, const vector<class CChannel*>& vRefChannels, CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float  fRatioOffset, OUT Quat& vPreQuat);
 	
 	void Clear();
 
@@ -75,7 +75,7 @@ public:
 
 	// test
 	void Check_UpdateCpu(const vector<class CBone*>& vecBones);
-	void Reset_PrePosition(OUT Vec3& vPrepos);
+	void Reset_PrePosition(OUT Vec3& vPrepos, OUT Quat& vPreQuat);
 
 public:
 	void Set_MotionBone(_int iBondIdx);

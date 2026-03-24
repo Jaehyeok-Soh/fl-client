@@ -100,9 +100,7 @@ HRESULT CUIMenu_OutLine::Bind_ShaderResources()
 
 void CUIMenu_OutLine::Bind_Events()
 {
-	m_vecEventHandles.resize(ENUM_TO_UINT(EUIEventID::END));
-
-	m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ICON_HOVER_ENTER)] = (
+	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
 				if (EUIEventID::MENU_ICON_HOVER_ENTER == Desc.eEventID)
@@ -115,7 +113,7 @@ void CUIMenu_OutLine::Bind_Events()
 				}
 			}));
 
-	m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ICON_HOVER_EXIT)] = (
+	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
 				if (EUIEventID::MENU_ICON_HOVER_EXIT == Desc.eEventID)
@@ -128,7 +126,6 @@ void CUIMenu_OutLine::Bind_Events()
 				}
 			}));
 
-
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -136,8 +133,7 @@ void CUIMenu_OutLine::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -145,8 +141,7 @@ void CUIMenu_OutLine::Bind_Events()
 				{
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 }
 
 void CUIMenu_OutLine::Initialize_Visible_Event()

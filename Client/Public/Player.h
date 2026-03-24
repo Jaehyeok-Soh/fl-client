@@ -154,12 +154,13 @@ public:
 
 	// weapon 관련 함수
 public:
-	void	Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn);
-	_bool	Change_MainWeapon(_uint iWeaponType, _uint iIdx);
-	_bool	Change_MainWeaponNext(_uint iWeaponType);
-	void	Change_WeaponState(_uint iWeaponType, _uint iState); // 어떤 weapon을 어떤 state로. 단 활성화 되었을때만 조절 가능
-	_int	Get_CurWeaponIdx(_uint iWeaponType);
-	_bool	Can_UseWeapon(_uint iWeaponType);
+	void	Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn);						// weapon on off만 관리
+	void	SetWepaponOn_SetState(_uint iWeaponType, _uint iIdx, _bool bOn, _uint iState);	// weapon on off & state 까지 setting
+	_bool	Change_MainWeapon(_uint iWeaponType, _uint iIdx);								// 예시 : 근접무기를 sword -> dual로 바꾸고 싶을때
+	_bool	Change_MainWeaponNext(_uint iWeaponType);										// 특정 무기 타입을 다음 인덱스의 weapon으로 바꾸고 싶을때. 안에서 자동으로 인덱스 관리중
+	void	Change_WeaponState(_uint iWeaponType, _uint iState);							// 어떤 weapon을 어떤 state로. 단 활성화 되었을때만 조절 가능
+	_int	Get_CurWeaponIdx(_uint iWeaponType);											// 이 무기타입이 어떤 무기로 설정하고 있는가
+	_bool	Can_UseWeapon(_uint iWeaponType);												// 이 무기타입을 지금 사용할 수 있는가
 
 	// state funcs
 public:
@@ -175,8 +176,8 @@ public:
 	void	Change_CamState(_uint iCamState);
 	_float	Get_CamPitch()const;
 
-	void	Set_FKeyEvent(_uint iEvenet, _bool bOn); // f event 활성화 onoff
-	const Vec3& Get_CollidedMonster_Position();
+	void				Set_FKeyEvent(_uint iEvenet, _bool bOn); // f event 활성화 onoff
+	const Vec3&			Get_CollidedMonster_Position();
 
 	HRESULT				Bind_PlayerInfo(class CShader* pShader = nullptr);
 	SHADER_PLAYER_INFO* Get_PlayerInfo() { return &m_tCBPlayerInfo; }		/* 임시용 */
@@ -204,7 +205,7 @@ protected:
 
 private:
 	HRESULT		Ready_WeaponInfo();
-
+	
 	HRESULT		Ready_PartObjects(PLAYER_DESC* pDesc);
 	HRESULT		Ready_PartWeapon(PLAYER_DESC* pDesc);
 	HRESULT		Ready_Components(PLAYER_DESC* pDesc);

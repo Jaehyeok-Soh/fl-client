@@ -77,6 +77,8 @@ private:
 	void						ImGuiUpdate_Env_Desc(ENV_DESC* pDesc);
 	/* Fog */
 	void						ImGuiUpdate_Fog_Desc(FOG_DESC* pDesc);
+	/* Light Object */
+	void						ImGuiUpdate_LightObject_Desc(LIGHTOBJECT_DESC* pDesc);
 
 	/* Batch ฐüทร */
 	void						ImGuiUpdate_Batch_Monster_Desc(BATCH_MONSTER_DESC* pDesc);

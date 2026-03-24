@@ -57,7 +57,7 @@
 #include "Monster_Dog_Body.h"
 #include "Monster_Boomer.h"
 #include "Monster_Boomer_Body.h"
-#include "Moon_SkillE_Obj.h"
+#include "PlayerSkillObj_Headers.h"
 
 //=================
 // GameInstance
@@ -119,6 +119,9 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
+	CQuestManager::GetInstance()->Start_Quest(5, 1);
+
 	return S_OK;
 }
 
@@ -126,7 +129,7 @@ void CLevel_Lianhuo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	static _uint s_iCount = { 0 };
+	/*static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
 	{
 #ifdef _DEBUG
@@ -149,7 +152,7 @@ void CLevel_Lianhuo::Update(const _float fTimeDelta)
 		}
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
-	}
+	}*/
 }
 
 HRESULT CLevel_Lianhuo::Render()
@@ -254,7 +257,7 @@ HRESULT CLevel_Lianhuo::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 	/* Player 置段 持失 */
 	{
-		// SkillObject Pool
+		// Moon skil E
 		{
 			CMoon_SkillE_Obj::GAMEOBJECT_DESC desc{};
 			//TRANSFORM_DESC
@@ -270,6 +273,24 @@ HRESULT CLevel_Lianhuo::Ready_Player_Layer(const wstring& wstrLayerTag)
 				g_wszMoonSkillE__Prototype_Tag,
 				&desc,
 				30)))
+				return E_FAIL;
+		}
+
+		// Moon skil Q attack
+		{
+			CMoon_SkillQAttack_Obj::SKILLOBJECT_SPAWN_DESC desc{};
+			desc.fSpeed = 50.f;
+			desc.fLifeTime = 12.5f;
+			desc.iFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillQAttack,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillQAttack_Prototype_Tag,
+				&desc,
+				10)))
 				return E_FAIL;
 		}
 

@@ -14,9 +14,18 @@
 
 #include "GameInstance.h"
 
+#include "PlayerImguiValues.h"
+
+float g_ImguiFloat1;
+float g_ImguiFloat2;
+float g_ImguiFloat3;
+
 CImGui_StateLayout::CImGui_StateLayout()
 	: Super("StateInfo")
 {
+	g_ImguiFloat1 = 0.f;
+	g_ImguiFloat2 = 0.f;
+	g_ImguiFloat3 = 0.f;
 }
 
 _bool CImGui_StateLayout::Can_Render(CGameObject* pGo)
@@ -108,8 +117,47 @@ void CImGui_StateLayout::Render(CGameObject* pGo)
 		ImGui::TreePop();
 	}
 
+	Render_Float(pGo);
+
 
 	ImGui::EndGroup();
+}
+
+void CImGui_StateLayout::Render_Float(CGameObject* pGo)
+{
+	ImGui::Text("Cur float1 : ");
+	ImGui::SameLine();
+	ImGui::Text("%f", g_ImguiFloat1);
+
+	ImGui::InputFloat("Change Float1", &m_fFloat1, 0.01f, 1.0f, "%.3f");
+	ImGui::SameLine();
+	if (ImGui::Button("Apply##Floatwelpkrwlefkwn"))
+	{
+		g_ImguiFloat1 = m_fFloat1;
+	}
+
+
+	ImGui::Text("Cur flaot2 : ");
+	ImGui::SameLine();
+	ImGui::Text("%f", g_ImguiFloat2);
+
+	ImGui::InputFloat("Change Float2", &m_fFloat2, 0.01f, 1.0f, "%.3f");
+	ImGui::SameLine();
+	if (ImGui::Button("Apply##Floatwelpkrwlefkwn2"))
+	{
+		g_ImguiFloat2 = m_fFloat2;
+	}
+
+	ImGui::Text("Cur float3 : ");
+	ImGui::SameLine();
+	ImGui::Text("%f", g_ImguiFloat3);
+
+	ImGui::InputFloat("Change Float3", &m_fFloat3, 0.01f, 1.0f, "%.3f");
+	ImGui::SameLine();
+	if (ImGui::Button("Apply##Floatwelpkrwlefkwn3"))
+	{
+		g_ImguiFloat3 = m_fFloat3;
+	}
 }
 
 CImGui_StateLayout* CImGui_StateLayout::Create()

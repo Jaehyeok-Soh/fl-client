@@ -3,6 +3,8 @@
 
 #include "Player.h"
 
+#include "PlayerImguiValues.h"
+
 CState_Jump::CState_Jump(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "Jump")
 {
@@ -31,10 +33,12 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 
 	Set_DoubleJumpCount(false);
 	Set_ZeroVerticalVelocity();
-	Jump_Impuls(0.4f);
+	Jump_Impuls(0.6f);
 
 	Set_ApplyGravity(false);
 	Set_YLerp(false);
+
+	Set_RootMotion_Apply(true);
 
 	return S_OK;
 }
@@ -42,8 +46,8 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 void CState_Jump::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
-	if (m_fStateElapsed > 0.28f &&
-		Check_OnGround(0.1f))
+	if (m_fStateElapsed > 12.f / ANIMTIC &&
+		(Check_OnGround(0.1f) || IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES)))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 		return;
@@ -53,7 +57,7 @@ void CState_Jump::Update(const _float fTimeDelta)
 	{
 		Set_ApplyGravity(true);
 
-		//Set_RootMotion_Apply(false);
+		Set_RootMotion_Apply(false);
 	}
 
 	Super::Update(fTimeDelta);
@@ -66,7 +70,7 @@ HRESULT CState_Jump::End()
 
 	Set_ApplyGravity(true);
 
-	Set_RootMotion_Apply(true);
+	//Set_RootMotion_Apply(true);
 
 	Set_YLerp(true);
 

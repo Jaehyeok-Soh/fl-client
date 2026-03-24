@@ -16,6 +16,7 @@
 #include "Light.h"
 #include "DataStruct_Map.h"
 #include "Effect_Env.h"
+#include "CEffectObject.h"
 #include "GameInstance.h"
 
 USING(Tool)
@@ -1005,8 +1006,9 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	case Tool::EClientMakePath::Vine:								ImGuiUpdate_Vine_Desc(static_cast<VINE_DESC*>(pDesc));										return S_OK;
 	case Tool::EClientMakePath::Bush:								ImGuiUpdate_Bush_Desc(static_cast<BUSH_DESC*>(pDesc));										return S_OK;
 
-	case Tool::EClientMakePath::Water:								ImGuiUpdate_Water_Desc(static_cast<WATER_DESC*>(pDesc));										return S_OK;
-	case Tool::EClientMakePath::Env:								ImGuiUpdate_Env_Desc(static_cast<ENV_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Water:								ImGuiUpdate_Water_Desc								(static_cast<WATER_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::Env:								ImGuiUpdate_Env_Desc								(static_cast<ENV_DESC*>(pDesc));										return S_OK;
+	case Tool::EClientMakePath::LightObject:						ImGuiUpdate_LightObject_Desc						(static_cast<LIGHTOBJECT_DESC*>(pDesc));								return S_OK;
 
 
 	case Tool::EClientMakePath::Batch_Monster:						ImGuiUpdate_Batch_Monster_Desc(static_cast<BATCH_MONSTER_DESC*>(pDesc));								return S_OK;
@@ -1320,15 +1322,23 @@ void CPanel_MapObjectList::ImGuiUpdate_Env_Desc(ENV_DESC* pDesc)
 		{
 			// 데이터 구조체 생성 및 추가
 			ENV_EFFECT_INFO tNewInfo{};
+			tNewInfo.tDesc.iSimulationType = (_int)EFFECT_ENV_DESC::E_VFX_SIMULTYPE::VFX_LOCAL;
+			tNewInfo.tDesc.pTransformMatrix = &m_pSelectMapObject->m_pWorldMatPtr;
 			tNewInfo.strTags = masterTags[iSelectedMasterIdx];
 			// 기본값 설정 (필요시)
 			tNewInfo.tDesc.VFX_Scale = { 1.f, 1.f, 1.f };
 
-			targetInfos.push_back(tNewInfo);
 
 			// 실제 맵 객체에도 즉시 생성 요청
 			if (m_pSelectMapObject)
+			{
+				/* PushBack 하게되면 Description이 작성된다 */
 				m_pSelectMapObject->Add_EnvEffect(tNewInfo.strTags);
+
+				const EFFECT_ENV_DESC& tEffectEnvDesc = m_pSelectMapObject->m_vEnvEffectList.back().second;
+				tNewInfo.tDesc = tEffectEnvDesc;
+				targetInfos.push_back(tNewInfo);
+			}
 		}
 	}
 
@@ -1359,10 +1369,90 @@ void CPanel_MapObjectList::ImGuiUpdate_Env_Desc(ENV_DESC* pDesc)
 				// pDesc(데이터)에 있는 Desc를 수정
 				bool bChanged = false;
 				EFFECT_ENV_DESC& tDataDesc = targetInfos[i].tDesc;
+				EFFECT_ENV_DESC& tOriginDataDesc = (*pEnvList)[i].second;
 
 				if (ImGui::DragFloat3("Local Pos", (float*)&tDataDesc.VFX_Target_Position, 0.05f)) bChanged = true;
 				if (ImGui::DragFloat3("Local Rot", (float*)&tDataDesc.VFX_Rotation, 0.5f)) bChanged = true;
 				if (ImGui::DragFloat3("Local Scale", (float*)&tDataDesc.VFX_Scale, 0.01f)) bChanged = true;
+				if (ImGui::DragFloat("Local Speed", (float*)&tDataDesc.VFX_fSpeed, 0.001f, -FLT_MAX, FLT_MAX, "%.3f")) bChanged = true;
+				if (ImGui::ColorEdit3("Local Color", &tDataDesc.VFX_Color.x)) bChanged = true;
+
+
+				ImGui::Separator();
+
+				/* 전체 Part 개수중에서 선택해서 추가 */
+				_uint iOriginPartCount = (_uint)(*pEnvList)[i].first->Get_PartList().size();
+				ImGui::Text(" Change Part Desc Index ");
+				for (_uint iOriginPartIndex = 0; iOriginPartIndex < iOriginPartCount; ++iOriginPartIndex)
+				{
+					ImGui::PushID(iOriginPartIndex);
+					string strButtonTag = std::to_string(iOriginPartIndex) + "##IndexTag" + std::to_string(iOriginPartIndex);
+					if (ImGui::Button(strButtonTag.c_str()))
+					{
+						CEffectObject* pPartEffect = (*pEnvList)[i].first->Get_Part<CEffectObject>(iOriginPartIndex);
+						DTO::TEFFECT_PartsData tData = pPartEffect->Get_EffectDesc();
+						EFFECT_ENV_DESC::ENV_PART_DESC tPartDesc{};
+						tPartDesc.iPartsIndex = _uint(i);
+						tPartDesc.VFX_ParticleDuration_Parts = tData._Effect_Duration;
+						tPartDesc.VFX_ParticleLifeTime_Parts = tData._Effect_LifeTime;
+						tPartDesc.VFX_ParticleRange_Parts = tData._Effect_Range;
+						tPartDesc.VFX_ParticleCount_Parts = tData._Effect_MaxParticle;
+
+						tPartDesc.VFX_Rotation_Parts	= tData._Effect_StartRotation;
+						tPartDesc.VFX_Scale_Parts		= tData._Effect_StartScale;
+						tPartDesc.VFX_Position_Parts	= tData.vWorldMatrix.Translation();
+						tDataDesc.VFX_PartsDescList.push_back(tPartDesc);
+
+						bChanged = true;
+					}
+					ImGui::PopID();
+
+					if (iOriginPartIndex + 1 != iOriginPartCount)
+						ImGui::SameLine();
+				}
+				ImGui::Separator();
+
+				for (_uint iCopyPartIndex = 0; iCopyPartIndex < static_cast<_uint>(tDataDesc.VFX_PartsDescList.size()) ; ++iCopyPartIndex)
+				{
+					_bool isPartChange{ false };
+					ImGui::PushID(iCopyPartIndex);
+					EFFECT_ENV_DESC::ENV_PART_DESC& tCopyPartDesc = tDataDesc.VFX_PartsDescList[iCopyPartIndex]; /* Copy Desc만 일단 적용시켜준다 */
+
+					string strTreeName = " Change PartIndex => [ " + std::to_string(tCopyPartDesc.iPartsIndex) + " ]";
+					if (ImGui::TreeNode(strTreeName.c_str()))
+					{
+						// 1. 시간 관련 제어 (float)
+						if (ImGui::DragFloat("Duration", &tCopyPartDesc.VFX_ParticleDuration_Parts, 0.1f, 0.f, 100.f)) isPartChange = true;
+						if (ImGui::DragFloat("LifeTime", &tCopyPartDesc.VFX_ParticleLifeTime_Parts, 0.1f, 0.f, 100.f)) isPartChange = true;
+
+						// 2. 파티클 개수 (int/uint)
+						if (ImGui::DragInt("Max Particles", (int*)&tCopyPartDesc.VFX_ParticleCount_Parts, 1, 0, 5000)) isPartChange = true;
+
+						// 3. 범위 제어 (float3 혹은 float) 
+						// 만약 Range가 Vector3(float3)라면 아래처럼 캐스팅해서 씁니다. 단일 float라면 DragFloat 쓰시면 됩니다.
+						if (ImGui::DragFloat3("Range", (float*)&tCopyPartDesc.VFX_ParticleRange_Parts, 0.1f)) isPartChange = true;
+
+						ImGui::Separator();
+
+						// 4. Transform 제어 (Vector3 / float3)
+						// DirectXMath의 XMFLOAT3 나 SimpleMath::Vector3를 사용하신다면 (float*)& 로 넘겨주면 ImGui가 알아서 x,y,z로 파싱합니다.
+						if (ImGui::DragFloat3("Position", (float*)&tCopyPartDesc.VFX_Position_Parts, 0.1f)) isPartChange = true;
+						if (ImGui::DragFloat3("Rotation", (float*)&tCopyPartDesc.VFX_Rotation_Parts, 1.0f, -360.f, 360.f)) isPartChange = true;
+						if (ImGui::DragFloat3("Scale", (float*)&tCopyPartDesc.VFX_Scale_Parts, 0.05f, 0.f, 100.f)) isPartChange = true;
+
+						// 값의 변화가 감지되었다면 최종 업데이트 플래그 켜주기
+						if (isPartChange)
+						{
+							bChanged = true;
+							// 필요하다면 여기서 tCopyPartDesc 값을 실제 컴포넌트나 매니저에 즉시 Set해주는 로직을 넣으셔도 됩니다!
+						}
+						ImGui::TreePop();
+					}
+
+					ImGui::PopID();
+				}
+
+				ImGui::Separator();
 
 				// 값이 변경되었다면 실제 렌더링 중인 객체에도 전달
 				if (bChanged && pEnvList && i < pEnvList->size())
@@ -1462,6 +1552,54 @@ void CPanel_MapObjectList::ImGuiUpdate_Fog_Desc(FOG_DESC* pDesc)
 		ImGui::PopID();
 	}
 
+}
+
+void CPanel_MapObjectList::ImGuiUpdate_LightObject_Desc(LIGHTOBJECT_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	ImGui::SeparatorText("Light Object Settings");
+
+	ImGui::DragFloat("Emissive Power",&pDesc->fEmissviePower,0.01f,0.f,FLT_MAX);
+	ImGui::DragFloat3("Offset Postion", &pDesc->vOffsetPosition.x, 0.01f, -FLT_MAX, FLT_MAX);
+
+
+	// 1. 색상 관련 설정 (Diffuse, Ambient, Specular)
+	// Vector4의 x, y, z, w를 float*로 캐스팅하여 사용합니다.
+
+	ImGui::ColorEdit4("Diffuse", (float*)&pDesc->tLightDesc.vDiffuse);
+	ImGui::ColorEdit4("Ambient", (float*)&pDesc->tLightDesc.vAmbient);
+	ImGui::ColorEdit4("Specular", (float*)&pDesc->tLightDesc.vSpecular);
+
+	ImGui::Separator();
+
+	// Flicker 중일 때는 BaseRange를 건드려야 원본이 유지됩니다.
+	if (ImGui::DragFloat("Base Range", &pDesc->fBaseRange, 0.1f, 0.0f, 500.0f))
+	{
+		// 깜빡이지 않을 때는 즉시 적용되도록 처리
+		if (!pDesc->isFlicker)
+		{
+			pDesc->tLightDesc.fRange = pDesc->fBaseRange;
+		}
+	}
+
+	ImGui::SeparatorText("Flicker Options");
+
+	// 3. 깜빡임(Flicker) 관련 설정
+	ImGui::Checkbox("Enable Flicker", (bool*)&pDesc->isFlicker);
+
+	if (pDesc->isFlicker)
+	{
+		ImGui::Indent(); // 옵션 구분을 위해 들여쓰기
+		ImGui::DragFloat("Speed", &pDesc->fFlickerSpeed, 0.001f, 0.f, 1000.f, "%.3f");
+		ImGui::DragFloat("Min Ratio", &pDesc->fFlickerMin, 0.0001f, 0.f, 1.f, "%.4f");
+
+		// 현재 적용 중인 실시간 Range 확인 (Read Only)
+		ImGui::Text("Current Range: %.2f", pDesc->pDebugLight->Get_LightDesc().fRange);
+		ImGui::Unindent();
+	}
+
+	return;
 }
 
 #pragma endregion
@@ -1937,7 +2075,9 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 			OBJECT_ENUM_TAG::NPC_DEFAULT,
 			OBJECT_ENUM_TAG::NPC_PAN,
 			OBJECT_ENUM_TAG::NPC_BERENICA,
-			OBJECT_ENUM_TAG::NPC_TAVERN
+			OBJECT_ENUM_TAG::NPC_TAVERN,
+			OBJECT_ENUM_TAG::NPC_VILLAGER_1,
+			OBJECT_ENUM_TAG::NPC_KID_1
 		};
 
 		for (int i = 0; i < IM_ARRAYSIZE(allTypes); i++)

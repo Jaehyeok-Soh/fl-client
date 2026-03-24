@@ -154,6 +154,7 @@ protected:
 
 	void	LookAt_Monser();
 
+
 	// player 객체 연결 함수들
 protected:
 	_bool	Check_OnGround(_float fMaxDist = 0.6f); // 땅에 있는지 검사 0.8f
@@ -186,8 +187,7 @@ protected:
 	virtual _bool Change_State_WhenLoopDone(const _float fTimeDelta);
 
 	virtual void OwnMove(const _float fTimeDelta) {};		// state 내부에서 알아서 움직일때
-	virtual void Set_NextStateDesc(_uint iNextState);	// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
-
+	virtual void Set_NextStateDesc(_uint iNextState);		// 다음 state에 따라 desc을 작성한다 : 각 state 내부에서
 	virtual void CheckAni_WhenStart() {};					// 만약 자체에서 로직을 통해 바꾸고 싶다면
 
 	virtual _bool Can_CheckKey(const _float fTimeDelta);

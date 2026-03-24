@@ -32,7 +32,6 @@ HRESULT CUIBossStat_Image::Initialize_Prototype()
 HRESULT CUIBossStat_Image::Initialize(void* pArg)
 {
 	BOSS_STAT_IMAGE_DESC* pDesc = static_cast<BOSS_STAT_IMAGE_DESC*>(pArg);
-	m_isInteract = true;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	if (FAILED(Ready_Components(pDesc)))

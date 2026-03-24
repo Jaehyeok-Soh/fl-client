@@ -159,6 +159,7 @@ protected:
 	void SetupLook_CameraLookLerp(const _float fTimeDelta, _float fLerpSpeed);
 	void SetupLookAt(const Vec3 &vPoint);
 	void SetupLook_Target_XZ();
+	void SetupLook_PointLerp(const _float fTimeDelta, Vec3 vPoint, _float fLerpSpeed);
 	_bool Align_Attack(_uint iState);
 
 	_bool Is_Grounded() const;

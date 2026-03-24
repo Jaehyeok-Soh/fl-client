@@ -34,14 +34,16 @@ HRESULT CState_JumpDouble::Start(void* pArg, _bool bForce)
 	Jump_Impuls(0.3f);
 	Set_YLerp(false);
 
+	Set_RootMotion_Apply(true);
+
 	return S_OK;
 }
 
 void CState_JumpDouble::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
-	if (m_fStateElapsed > 0.3f &&
-		Check_OnGround(0.1f))
+	if (m_fStateElapsed > 14.f / ANIMTIC &&
+		(Check_OnGround(0.1f) || IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES)))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 		return;
@@ -51,7 +53,7 @@ void CState_JumpDouble::Update(const _float fTimeDelta)
 	{
 		Set_ApplyGravity(true);
 
-		//Set_RootMotion_Apply(false);
+		Set_RootMotion_Apply(false);
 	}
 
 	Super::Update(fTimeDelta);
@@ -64,7 +66,7 @@ HRESULT CState_JumpDouble::End()
 
 	Set_ApplyGravity(true);
 
-	Set_RootMotion_Apply(true);
+	//Set_RootMotion_Apply(true);
 
 	Set_DoubleJumpCount(true);
 

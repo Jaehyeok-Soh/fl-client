@@ -26,7 +26,6 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void Trigger_User_Use_Skill();
 	void Tick_Use_Skill_Event(const _float fTimeDelta);
 private:
 	HRESULT Ready_Components(SKILL_BG_DESC* pDesc);
@@ -34,6 +33,8 @@ private:
 	virtual HRESULT Attach_Personal_Info()override;
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
+	virtual void Initialize_InVisible_Event()override;
+	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 	virtual void Bind_Events()override;
 private:
 	class CMainPlayer* m_pPlayer = { nullptr };
