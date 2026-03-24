@@ -38,7 +38,6 @@ void CUITutorial_Manager::Initialize()
 
 	pPlayerControlContext->Set_AllKeyFlag(false);			
 	pPlayerControlContext->Set_CheckKey(CPlayerControlContext::KEYFLAGS::MOVE, true);
-
 }
 
 void CUITutorial_Manager::Tutorial_Update(const _float fTimeDelta)
@@ -72,6 +71,9 @@ void CUITutorial_Manager::Tutorial_Update(const _float fTimeDelta)
 		case Client::EUITutorialTypeToPlayerState::UNLOCK_LATTAK:
 			pPlayerControlContext->Set_CheckKey(CPlayerControlContext::KEYFLAGS::COMBO, true);
 			break;
+		case Client::EUITutorialTypeToPlayerState::UNLOCK_DASH:
+			pPlayerControlContext->Set_CheckKey(CPlayerControlContext::KEYFLAGS::DASH, true);
+			break;
 		case Client::EUITutorialTypeToPlayerState::UNLOCK_RATTAK:
 			pPlayerControlContext->Set_CheckKey(CPlayerControlContext::KEYFLAGS::GUN, true);
 			break;
@@ -101,7 +103,6 @@ void CUITutorial_Manager::PlayerState_All_Lock()
 	if (nullptr == p)
 		return;
 
-	p->Set_PreKeyFlag();
 	p->Set_AllKeyFlag(false);
 }
 
@@ -110,8 +111,7 @@ void CUITutorial_Manager::Return_Locked_PlayerState()
 	auto* p = Get_PlayerCtrCtx();
 	if (nullptr == p)
 		return;
-
-	p->Set_AllKeyFlag(true);
+	p->Set_PreKeyFlag();
 }
 
 CPlayerControlContext* CUITutorial_Manager::Get_PlayerCtrCtx()

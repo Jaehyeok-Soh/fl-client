@@ -498,6 +498,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Octree()
 HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 {
 	CDialogueManager::GetInstance()->Initialize();
+	CUITutorial_Manager::GetInstance()->Initialize();
 
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
@@ -516,8 +517,6 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 
-	CUITutorial_Manager::GetInstance()->Initialize();
-	
 	return S_OK;
 }
 
@@ -550,6 +549,41 @@ void CLevel_Tutorial_Village::Update(const _float fTimeDelta)
 //#endif
 //		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 //	}
+
+
+
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		UI_PREFAB_DATA Desc = {};
+		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
+		Desc.Data = PrefabDesc;
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), &Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		UI_PREFAB_DATA Desc = {};
+		UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+		PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
+		Desc.Data = PrefabDesc;
+
+		CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), &Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		UIEVENT_DESC Desc = {};
+		Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
+		CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
+	}
+	if (KEY_BUTTON_DOWN(DIK_8))
+	{
+		m_pGameInstance->Broadcast<MINIGAME_CIRCLE_ON>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_9))
+	{
+		m_pGameInstance->Broadcast<MINIGAME_CIRCLE_OFF>();
+	}
 }
 
 HRESULT CLevel_Tutorial_Village::Render()

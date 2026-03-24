@@ -75,13 +75,13 @@ void CUIMonsterStat_Progress::Update_Late(const _float fTimeDelta)
 
 	if (m_pWorldUIComp->Get_ScaleOffset() < 0.4f || m_fMonsterHPTimeAcc > 3.f)
 	{
-		m_fAlpha_Ratio = 0.f;
+		m_isVisible = false;
 		m_pParentCanvasCache->Get_CommonParam_bool_Ref()[0] = true;
 	}
 	else
 	{
-		m_fAlpha_Ratio = 1.f;
-		m_pParentCanvasCache->Get_CommonParam_bool_Ref()[0] = true;
+		m_isVisible = true;
+		m_pParentCanvasCache->Get_CommonParam_bool_Ref()[0] = false;
 	}
 }
 
@@ -208,6 +208,7 @@ HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
 	m_isDeadRequest = false;
 	m_fCurRatio = 1.f;
 	m_fProgress_Ratio = 1.f;
+	m_fAlpha_Ratio = 1.f;
 	return S_OK;
 }
 
@@ -231,8 +232,7 @@ void CUIMonsterStat_Progress::Bind_Events()
 				{
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -240,16 +240,45 @@ void CUIMonsterStat_Progress::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<MONSTER_DEAD_EVENT_START>([this](CGameObject* pDead)
 			{
 				if (pDead == m_pTargetMoster)
 					this->Set_Invisible();
-			})
-	);
+			}));
+
+
+	// 대화 Event
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{
+				m_isVisible = false;
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{					
+				m_isVisible = true;
+			}));
+
+	// 패널 Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					m_isVisible = false;
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					m_isVisible = true;
+				}
+			}));
 }
 
 HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
@@ -266,7 +295,7 @@ HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 	default:
 		return E_FAIL;
 	}
-	if (fabsf(m_fPreMonsterHPRatio - m_fCurRatio) > FLT_EPSILON)
+	if (fabsf(m_fPreMonsterHPRatio - m_fCurRatio) > 0.f)
 	{
 		m_fMonsterHPTimeAcc = 0.f;
 	}

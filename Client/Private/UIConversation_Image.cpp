@@ -10,6 +10,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
+#include "UITutorial_Manager.h"
 #include "GameInstance.h"
 
 CUIConversation_Image::CUIConversation_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -132,6 +133,14 @@ void CUIConversation_Image::Bind_Events()
 		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
 			{
 				this->Set_Visible();
+				switch (m_eDImageSubClass)
+				{
+				case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
+					break;
+				case DTO::EUIDImageSubClassType::CONVERSATION_BG:
+				CUITutorial_Manager::GetInstance()->PlayerState_All_Lock();
+					break;
+				}
 			})
 	);
 
@@ -139,6 +148,15 @@ void CUIConversation_Image::Bind_Events()
 		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
 			{
 				this->Set_Invisible();
+
+				switch (m_eDImageSubClass)
+				{
+				case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
+					break;
+				case DTO::EUIDImageSubClassType::CONVERSATION_BG:
+				CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
+					break;
+				}
 			})
 	);
 }

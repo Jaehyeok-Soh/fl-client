@@ -136,7 +136,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 				Set_Invisible();
 		}
 	}
-	break;
+		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_HIT:
 	{
 		if (m_isFinVisibleEvent)
@@ -162,7 +162,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 			}
 		}
 	}
-	break;
+		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITCAL:
 	{
 		if (m_isFinVisibleEvent)
@@ -181,7 +181,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 			m_vFontColor.z = 1.f + ((m_vOriginFontColor.z - 1.f) * t);
 		}
 	}
-	break;
+		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_CRITICAL_DAMAGE:
 	{
 		if (m_isFinVisibleEvent)
@@ -193,7 +193,7 @@ void CUIDamageFont_Text::Tick_By_Type(const _float fTimeDelta)
 				Set_Invisible();
 		}
 	}
-	break;
+		break;
 	case DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END:
 		break;
 	case DTO::EUITextSubClassType::END:

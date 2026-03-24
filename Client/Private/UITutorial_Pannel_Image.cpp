@@ -164,23 +164,11 @@ void CUITutorial_Pannel_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
-				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
-				{
-					this->Set_Visible();
-					this->Set_Active(true);
-				}
-			})
-	);
-
-	m_vecEventHandles.push_back(
-		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-			{
 				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 }
 
 void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
@@ -577,7 +565,7 @@ _bool CUITutorial_Pannel_Image::Tick_InVisible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	}
 
 	return false;
@@ -589,7 +577,6 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
-
 	if (auto* pPannel = std::get_if<UI_TUTORIAL_PANNEL_PREFAB_DATA>(&pDesc->Data))
 	{
 		m_pParentCanvasCache = pDesc->pCanvas;
@@ -666,8 +653,10 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 
 	m_isSpawned = true;
 	m_isDeadRequest = false;
+	
+	if(m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BG)
+		CUITutorial_Manager::GetInstance()->PlayerState_All_Lock();
 
-	CUITutorial_Manager::GetInstance()->PlayerState_All_Lock();
 
 	return S_OK;
 }
@@ -684,7 +673,10 @@ HRESULT CUITutorial_Pannel_Image::Despawn_FromPool()
 
 	this->Set_Active(false);
 	m_vecTextureTags.clear();
-	CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
+
+	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BG)
+		CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
+
 	return S_OK;
 }
 

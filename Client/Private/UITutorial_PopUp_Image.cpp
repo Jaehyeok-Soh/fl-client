@@ -194,6 +194,10 @@ void CUITutorial_PopUp_Image::Bind_Events()
 						{
 							Desc.Data = PrefabDesc;
 
+							UIEVENT_DESC EventDesc = {};
+							EventDesc.eEventID = EUIEventID::TUTORIAL_PANNEL_START;
+							CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(EventDesc);
+
 							CUI_Manager::GetInstance()->Request_Add_Prefab(
 								m_pGameInstance->Get_CurrentLevelIndex(),
 								EUIPrefabType::TUTORIAL_PANNEL,
@@ -211,9 +215,7 @@ void CUITutorial_PopUp_Image::Bind_Events()
 						{
 							return;
 						}
-			
 					}
-
 					if (!m_isFirstEntered)
 					{
 						m_isTriggered = true;
@@ -241,10 +243,13 @@ void CUITutorial_PopUp_Image::Bind_Events()
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_6:
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_7:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_LATTAK);
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_8:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_DASH);
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_9:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_RATTAK);
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_10:
 							break;
@@ -280,54 +285,6 @@ void CUITutorial_PopUp_Image::Bind_Events()
 				{
 					m_isTriggered = false;
 					this->Set_Invisible();
-				}
-			})
-	);
-
-
-	m_vecEventHandles.push_back(
-		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-			{
-				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
-				{
-					if (!m_isFirstEntered)
-					{
-
-						EUITutorialPannelTypeID e = static_cast<EUITutorialPannelTypeID>(Desc.iParam0);
-
-						switch (e)
-						{
-						case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_1:
-							if (this->m_eTutorialTypeID == Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_7)
-							{
-								m_isTriggered = true;
-								this->Set_Visible();
-								this->Set_Active(true);
-							}
-							break;
-						case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_2:
-							if (this->m_eTutorialTypeID == Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_9)
-							{
-								m_isTriggered = true;
-								this->Set_Visible();
-								this->Set_Active(true);
-							}
-							break;
-						case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_3:
-							break;
-						case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_4:
-						{
-							m_isTriggered = true;
-							this->Set_Visible();
-							this->Set_Active(true);
-						}
-						break;
-						case Client::EUITutorialPannelTypeID::END:
-							break;
-						default:
-							break;
-						}
-					}
 				}
 			})
 	);

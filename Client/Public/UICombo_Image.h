@@ -30,6 +30,7 @@ private:
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
 	virtual void Tick_By_Type(const _float fTimeDelta)override;
+	virtual void Bind_Events()override;
 private:
 	virtual void Initialize_Visible_Event()override;
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
@@ -47,7 +48,6 @@ private:
 	_uint m_iPreComboCount		= {};
 	_bool m_isCountChange		= { false };
 	_bool m_isComboChange		= { false };
-	_float m_fComboCoolTime		= {};
 
 	// Glow Effect Values
 	Vec2	m_vNoiseUVScale		= {};
