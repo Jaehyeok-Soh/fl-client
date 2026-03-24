@@ -206,6 +206,7 @@
 #include "UIConversation_Image.h"
 #include "UIMouseCursor_Image.h"
 #include "UIMiniGame_Circle_Image.h"
+#include "UIScreenPulse_Image.h"
 //=================
 // Resource
 //=================
@@ -1011,6 +1012,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MouseCursorImage",			CUIMouseCursor_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleImage",		CUIMiniGame_Circle_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleText",		CUIMiniGame_Circle_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ScreenPulseImage",			CUIScreenPulse_Image::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	

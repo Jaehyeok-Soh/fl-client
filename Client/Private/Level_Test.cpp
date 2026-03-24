@@ -166,6 +166,7 @@ void CLevel_Test::Update(const _float fTimeDelta)
 //
 	if (KEY_BUTTON_DOWN(DIK_4))
 	{
+		m_pGameInstance->Broadcast<MINIGAME_CIRCLE_ON>();
 	}
 
 }

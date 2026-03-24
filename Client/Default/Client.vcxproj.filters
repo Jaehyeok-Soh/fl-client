@@ -883,6 +883,9 @@
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Lianhuo">
       <UniqueIdentifier>{cb01ec6c-8cde-422b-a20e-27c984607948}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse">
+      <UniqueIdentifier>{4ab11ed8-f4c7-4a37-b517-e395be659758}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1647,6 +1650,9 @@
     <ClInclude Include="CameraShotUtils.h">
       <Filter>99. ETC\Client_Define</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIScreenPulse_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2397,6 +2403,9 @@
     </ClCompile>
     <ClCompile Include="CameraShotUtils.cpp">
       <Filter>99. ETC\Client_Define</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIScreenPulse_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

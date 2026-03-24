@@ -62,6 +62,10 @@ void CUIPlayerStat_Progress::Update_Priority(const _float fTimeDelta)
 			if (!m_isStartLowHp)
 			{
 				m_isStartLowHp = TRUE;
+				UIEVENT_DESC Desc = {};
+				Desc.eEventID = EUIEventID::PLAYER_LOW_HP;
+				m_pUIManager->Get_UIEvents().Broadcast(Desc);
+
 				m_isEndLowHp = FALSE;
 				m_fTickTimeAcc = 1.f;
 			}
@@ -71,6 +75,10 @@ void CUIPlayerStat_Progress::Update_Priority(const _float fTimeDelta)
 			if (!m_isEndLowHp)
 			{
 				m_isStartLowHp = FALSE;
+				UIEVENT_DESC Desc = {};
+				Desc.eEventID = EUIEventID::PLAYER_NORMAL_HP;
+				m_pUIManager->Get_UIEvents().Broadcast(Desc);
+
 				m_isEndLowHp = TRUE;
 				m_vColorTint = m_vOriginColor;
 				m_vGradiantColorTint = m_vOriginGradiantColor;
