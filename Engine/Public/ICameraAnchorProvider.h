@@ -2,6 +2,11 @@
 #include <string>
 #include "Engine_Define.h"
 
+//////////////////////////////////
+// Body 계열에서 구현할 인터페이스 //
+// bone을 실제로 해석 하는 쪽!    //
+//////////////////////////////////
+
 NS_BEGIN(Engine)
 
 class ICameraAnchorProvider
