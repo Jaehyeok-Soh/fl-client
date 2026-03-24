@@ -129,6 +129,7 @@ namespace Client
 
 		/* Boss */
 		Xibi,
+		Lianhuo,
 		END
 	};
 
@@ -814,6 +815,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]{ L"Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_State_Tag[]{ L"Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_State_Tag[]{ L"Boss_Lianhuo" };
 
 	inline constexpr wchar_t g_wszNPC_Pan_State_Tag[]{ L"NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_State_Tag[]{ L"NPC_Tavern" };
@@ -828,6 +830,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Lianhuo" };
 	
 	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Tavern" };
@@ -842,8 +845,9 @@ namespace Client
 	/* Monster Attack OverLap */
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
-	inline constexpr wchar_t g_wszMonster_Fly_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Fly_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Lianhuo" };
 #pragma endregion
 
 
@@ -926,6 +930,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Shooter_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter" };
 	inline constexpr wchar_t g_wszMonster_Fly_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Lianhuo" };
 
 	/* Monster Body Prototype Name ¸ðÀ½ */
 	inline constexpr wchar_t g_wszMonster_Dog_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Dog_Body" };
@@ -933,6 +938,7 @@ namespace Client
 	inline constexpr wchar_t g_wszBoss_Shooter_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter_Body" };
 	inline constexpr wchar_t g_wszMonster_Fly_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly_Body" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi_Body" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Lianhuo_Body" };
 
 	inline constexpr wchar_t g_wszPool_Monster_Dog[]{ L"Pool_Monster_Dog" };
 	inline constexpr wchar_t g_wszPool_Monster_Boomer[]{ L"Pool_Monster_Boomer" };

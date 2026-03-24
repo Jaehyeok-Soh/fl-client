@@ -850,6 +850,9 @@
     <Filter Include="03. GameObject\PartObjects\NPC\Body\Tavern">
       <UniqueIdentifier>{941ffcde-7e16-44aa-bbe0-d42bee691b50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Lianhuo">
+      <UniqueIdentifier>{cb01ec6c-8cde-422b-a20e-27c984607948}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1581,6 +1584,12 @@
     <ClInclude Include="..\public\CameraEventBinder.h">
       <Filter>07. System\04. Binder</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Boss_Lianhuo_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Lianhuo</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss_Lianhuo.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2301,6 +2310,12 @@
     </ClCompile>
     <ClCompile Include="..\private\CameraEventBinder.cpp">
       <Filter>07. System\04. Binder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Lianhuo_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Lianhuo</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss_Lianhuo.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -169,6 +169,7 @@ private:
 	TargeterState	m_ePreState = { TargeterState::NORMAL };
 
 public:
+
 	static CCameraMan_Targeter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;

@@ -161,6 +161,7 @@
     <ClInclude Include="..\Public\Body.h" />
     <ClInclude Include="..\Public\BonePart.h" />
     <ClInclude Include="..\Public\BossControlContext.h" />
+    <ClInclude Include="..\public\Boss_Lianhuo_Body.h" />
     <ClInclude Include="..\public\Boss_Xibi.h" />
     <ClInclude Include="..\Public\Builder_AttackOverlap.h" />
     <ClInclude Include="..\public\Builder_AttackPreset.h" />
@@ -401,6 +402,7 @@
     <ClInclude Include="..\public\Xibi_Loop_Thunder.h" />
     <ClInclude Include="..\public\Xibi_Oneshot_Thunder.h" />
     <ClInclude Include="..\public\Xibi_Projectile_Circle.h" />
+    <ClInclude Include="Boss_Lianhuo.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -412,6 +414,7 @@
     <ClCompile Include="..\Private\Body.cpp" />
     <ClCompile Include="..\Private\BonePart.cpp" />
     <ClCompile Include="..\Private\BossControlContext.cpp" />
+    <ClCompile Include="..\private\Boss_Lianhuo_Body.cpp" />
     <ClCompile Include="..\private\Boss_Xibi.cpp" />
     <ClCompile Include="..\Private\Builder_AttackOverlap.cpp" />
     <ClCompile Include="..\private\Builder_AttackPreset.cpp" />
@@ -671,6 +674,7 @@
     <ClCompile Include="..\private\Xibi_Oneshot_Thunder.cpp" />
     <ClCompile Include="..\private\Xibi_Projectile_Circle.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
+    <ClCompile Include="Boss_Lianhuo.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Client_Define.cpp" />
     <ClCompile Include="pch.cpp">
