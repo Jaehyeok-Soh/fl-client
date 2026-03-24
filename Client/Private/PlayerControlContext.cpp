@@ -263,7 +263,11 @@ _bool CPlayerControlContext::Is_Skill2Pressed()
 
 _bool CPlayerControlContext::Is_ChargingAttackPressed()
 {
-	return m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::COMBO) &&
+		m_pGameInstance->Mouse_Down(MOUSEKEYSTATE::LB))
+		return true;
+
+	return false;
 }
 
 _bool CPlayerControlContext::Is_AttackLanded()
