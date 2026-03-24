@@ -68,8 +68,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 20.0,
+                        "fMinTime": 20.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -187,8 +187,8 @@
                                         false
                                     ],
                                     "fParam": [
-                                        70.0,
-                                        80.0,
+                                        75.0,
+                                        85.0,
                                         0.0,
                                         0.0
                                     ],
@@ -593,8 +593,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 20.0,
+                        "fMinTime": 20.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -892,6 +892,54 @@
                                     ]
                                 }
                             }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        114.0,
+                                        130.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
                         }
                     ],
                     "vecEndConditionFeature": [
@@ -1118,8 +1166,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 20.0,
+                        "fMinTime": 20.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -1258,8 +1306,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 30.0,
+                        "fMinTime": 30.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -1349,8 +1397,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 20.0,
+                        "fMinTime": 20.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -1489,8 +1537,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 20.0,
+                        "fMinTime": 20.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -1580,8 +1628,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 20.0,
+                        "fMinTime": 20.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -2058,8 +2106,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -2149,8 +2197,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 20.0,
+                        "fMinTime": 20.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -2601,12 +2649,41 @@
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
-                                "L_Turn180": 5.0,
-                                "R_Turn180": 5.0
+                                "L_Turn90": 1.0
                             },
                             "vecConditionEntry": [
                                 {
-                                    "strCondition": "condition_target_behind",
+                                    "strCondition": "condition_target_left90",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+			{
+                            "mapRandomStatePool": {
+                                "R_Turn90": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_right90",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -2632,14 +2709,161 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "AdvanceComboAttack01": 3.0,
-                                "AdvanceComboAttack02": 3.0,
-                                "JumpSpinAttack": 3.0,
-                                "JumpThrustAttack": 3.0
+                                "L_Turn180": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_left180",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "R_Turn180": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_right180",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Backdash": 5.0,
+                                "BackdashAttack": 5.0,
+                                "Screaming": 5.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_close",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "AdvanceComboAttack01": 5.0,
+                                "AdvanceComboAttack02": 5.0,
+                                "BackdashAttack": 5.0
                             },
                             "vecConditionEntry": [
                                 {
                                     "strCondition": "condition_in_melee_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "AdvanceThrustAttack": 5.0,
+                                "JumpSpinAttack": 5.0,
+                                "JumpThrustAttack": 5.0,
+                                "SpawnAttack": 5.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_out_of_melee_attack",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_attack_range",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -2704,8 +2928,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -2795,8 +3019,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -2886,8 +3110,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -2977,8 +3201,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -3068,71 +3292,45 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 10.0,
-                        "fMinTime": 10.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.699999988079071,
-                        "fMinTime": 0.699999988079071,
+                        "fMaxTime": 1.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
                             "strFeature": "feat_move_backward",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        {
+                            "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
                                     false,
@@ -3163,11 +3361,90 @@
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
-                                "Idle": 1.0
+                                "Backdash": 4.0,
+                                "Idle": 3.0
                             },
                             "vecConditionEntry": [
                                 {
                                     "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_target_close",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "AdvanceComboAttack01": 4.0,
+                                "AdvanceComboAttack02": 4.0,
+                                "Idle": 3.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_melee_range",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -3232,71 +3509,45 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 10.0,
-                        "fMinTime": 10.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.699999988079071,
-                        "fMinTime": 0.699999988079071,
+                        "fMaxTime": 1.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
                             "strFeature": "feat_move_backward_left",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        {
+                            "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
                                     false,
@@ -3327,11 +3578,90 @@
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
-                                "Idle": 1.0
+                                "Backdash": 4.0,
+                                "Idle": 3.0
                             },
                             "vecConditionEntry": [
                                 {
                                     "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_target_close",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "AdvanceComboAttack01": 4.0,
+                                "AdvanceComboAttack02": 4.0,
+                                "Idle": 3.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_melee_range",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -3396,71 +3726,45 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 10.0,
-                        "fMinTime": 10.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.699999988079071,
-                        "fMinTime": 0.699999988079071,
+                        "fMaxTime": 1.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
                             "strFeature": "feat_move_backward_right",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        {
+                            "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
                                     false,
@@ -3491,11 +3795,90 @@
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
-                                "Idle": 1.0
+                                "Backdash": 4.0,
+                                "Idle": 3.0
                             },
                             "vecConditionEntry": [
                                 {
                                     "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_target_close",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "AdvanceComboAttack01": 4.0,
+                                "AdvanceComboAttack02": 4.0,
+                                "Idle": 3.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_melee_range",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -3560,71 +3943,45 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 10.0,
-                        "fMinTime": 10.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.699999988079071,
-                        "fMinTime": 0.699999988079071,
+                        "fMaxTime": 1.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
                             "strFeature": "feat_move_front",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        {
+                            "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
                                     false,
@@ -3653,6 +4010,86 @@
                     ],
                     "vecStartConditionFeature": [],
                     "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "AdvanceThrustAttack": 4.0,
+                                "Idle": 3.0,
+                                "JumpSpinAttack": 4.0,
+                                "JumpThrustAttack": 4.0,
+                                "SpawnAttack": 3.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_target_out_of_melee_attack",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_attack_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
                         {
                             "mapRandomStatePool": {
                                 "Idle": 1.0
@@ -3724,71 +4161,45 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 10.0,
-                        "fMinTime": 10.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.699999988079071,
-                        "fMinTime": 0.699999988079071,
+                        "fMaxTime": 1.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
                             "strFeature": "feat_move_front_left",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        {
+                            "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
                                     false,
@@ -3817,6 +4228,86 @@
                     ],
                     "vecStartConditionFeature": [],
                     "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "AdvanceThrustAttack": 4.0,
+                                "Idle": 3.0,
+                                "JumpSpinAttack": 4.0,
+                                "JumpThrustAttack": 4.0,
+                                "SpawnAttack": 3.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_target_out_of_melee_attack",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_attack_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
                         {
                             "mapRandomStatePool": {
                                 "Idle": 1.0
@@ -3888,71 +4379,45 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 10.0,
-                        "fMinTime": 10.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.699999988079071,
-                        "fMinTime": 0.699999988079071,
+                        "fMaxTime": 1.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
                             "strFeature": "feat_move_front_right",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        {
+                            "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
                                     false,
@@ -3981,6 +4446,86 @@
                     ],
                     "vecStartConditionFeature": [],
                     "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "AdvanceThrustAttack": 4.0,
+                                "Idle": 3.0,
+                                "JumpSpinAttack": 4.0,
+                                "JumpThrustAttack": 4.0,
+                                "SpawnAttack": 3.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_target_out_of_melee_attack",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_attack_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
                         {
                             "mapRandomStatePool": {
                                 "Idle": 1.0
@@ -4052,71 +4597,45 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 10.0,
-                        "fMinTime": 10.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.699999988079071,
-                        "fMinTime": 0.699999988079071,
+                        "fMaxTime": 1.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
                             "strFeature": "feat_move_left",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        {
+                            "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
                                     false,
@@ -4216,15 +4735,15 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 10.0,
-                        "fMinTime": 10.0,
+                        "fMaxTime": 15.0,
+                        "fMinTime": 15.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.699999988079071,
-                        "fMinTime": 0.699999988079071,
+                        "fMaxTime": 1.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [

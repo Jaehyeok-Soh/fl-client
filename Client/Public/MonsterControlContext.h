@@ -113,8 +113,12 @@ public:
 	_bool IsTargetAlive() const { return m_tRuntimeDesc.bTargetValid; }
 	_bool IsTargetVisible();
 	_bool IsTargetFOV();
-	_bool IsTargetBehind() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward < 0.0f; }
-	_bool IsTargetSide() const { return m_tRuntimeDesc.bTargetValid && std::abs(m_tRuntimeDesc.fDotForward) < 0.7f; }
+	_bool IsTargetLeft90() const;
+	_bool IsTargetRight90() const;
+	_bool IsTargetLeft180() const;
+	_bool IsTargetRight180() const;
+	_bool IsTargetBehind() const;
+	_bool IsTargetSide() const;
 	_bool IsTargetClose() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDistance <= m_tDesc.fCloseRange; }
 	_bool IsTargetAhead() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward > 0.9f; }
 

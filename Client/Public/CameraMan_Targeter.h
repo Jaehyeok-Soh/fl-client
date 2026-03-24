@@ -21,6 +21,7 @@ enum class TargeterState : _uint
 	SKILL_SEQUENCE,
 	CINEMATIC,
 	TURN,
+	SCRIPTED_SHOT,
 	END
 };
 
@@ -100,6 +101,11 @@ private:
 	void TurnCam_Update(const _float fTimeDelta);
 	void TurnCam_End();
 
+
+	void ScriptedShot_Begin();
+	void ScriptedShot_Update_Priority(const _float fTimeDelta);
+	void ScriptedShot_Update(const _float fTimeDelta);
+	void ScriptedShot_End();
 private:
 	void Update_Input(const _float fTimeDelta);
 	void Chase_Actor(const _float fTimeDelta);
@@ -118,6 +124,13 @@ private:
 	void Update_TurnOff(const _float fTimeDelta);
 	_float Eval_TurnYawDegree() const;
 
+	// For. ScriptShot State
+	_bool Get_CurrentPivotWorldPos(Vec3& vOutPivot) const;
+	void Capture_ScriptedShotSnapshot();
+	void Evaluate_ScriptedShotBasePose(_float fTime, CAMERA_POSE& outBasePose, Vec3& outPivotWS) const;
+	void Evaluate_ScriptedControllerResult(_float fTime, CAMERA_MODIFIER_RESULT& outResult) const;
+	void Apply_CameraPose(const CAMERA_POSE& tPose);
+	void Sync_NormalStateFromCurrentPose();
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
 	CGameObject* m_pLockonTarget = { nullptr };
@@ -167,9 +180,21 @@ private:
 	_float m_fTurnBaseDistance = 0.f;
 
 	TargeterState	m_ePreState = { TargeterState::NORMAL };
-
+	
+private:
+	// For. ScriptShot State
+	SCRIPTED_CAMERA_SHOT_DESC        m_tScriptedShotDesc = {};
+	SCRIPTED_CAMERA_SHOT_RUNTIME     m_tScriptedShotRuntime = {};
+#ifdef _DEBUG
 public:
-
+	void Debug_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& tDesc);
+	void Debug_StopScriptedShot();
+	void Debug_SetScriptedShotTime(_float fTime);
+	void Debug_SetScriptedShotPause(_bool bPause);
+	_bool Debug_IsScriptedShotPlaying() const { return m_tScriptedShotRuntime.bPlaying; }
+	_float Debug_GetScriptedShotTime() const { return m_tScriptedShotRuntime.fElapsed; }
+#endif
+public:
 	static CCameraMan_Targeter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;

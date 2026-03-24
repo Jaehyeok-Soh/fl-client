@@ -11,10 +11,11 @@
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
 #include "Weapon.h"
-#include "GameInstance.h"
 #include "UI_Manager.h"
 #include "UIIcon_Component.h"
+#include "CameraEventBinder.h"
 #include "MyStat.h"
+#include "GameInstance.h"
 
 CBoss_Lianhuo::CBoss_Lianhuo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -56,6 +57,9 @@ HRESULT CBoss_Lianhuo::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_StateIndexForDirecting()))
+		return E_FAIL;
+
+	if (FAILED(Ready_CameraEvent()))
 		return E_FAIL;
 
 	return S_OK;
@@ -277,17 +281,19 @@ HRESULT CBoss_Lianhuo::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
-	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
-	desc.fMeleeRange = 4.f;
-	desc.fAttackRange = 14.f;
-	desc.fCloseRange = 1.f;
-	desc.fDetectionRange = 15.f;
-	desc.fSpeed = 1.f;
-	//desc.iSkillCount;
-	//desc.vecSkillRange;
+	{
+		CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
+		desc.fMeleeRange = 8.f;
+		desc.fAttackRange = 16.f;
+		desc.fCloseRange = 3.f;
+		desc.fDetectionRange = 20.f;
+		desc.fSpeed = 1.f;
+		//desc.iSkillCount;
+		//desc.vecSkillRange;
 
-	if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
-		return E_FAIL;
+		if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
+			return E_FAIL;
+	}
 
 	{
 		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
@@ -323,6 +329,23 @@ HRESULT CBoss_Lianhuo::Ready_StateIndexForDirecting()
 	//if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
 	//	return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_CameraEvent()
+{
+	_uint iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CCameraEventBinder* pResult = CCameraEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/CameraAnimationData/Lianhuo.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
 	return S_OK;
 }
 
