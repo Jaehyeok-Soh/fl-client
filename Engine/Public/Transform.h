@@ -58,6 +58,7 @@ public:
 	inline void Tunr_ToPoint_YAxis(const Vec3 &vTargetPoint, const _float fTimeDelta);
 	inline void Turn_WorldYAxis(const Vec3 &vTargetDir, const _float fTimeDelta);
 	inline void Turn(const Vec3 &vAxis, const _float fTimeDelta);
+	inline void Turn_Radian(const Vec3& vAxis, const _float fRadian); // 시간과 turn 속도에 상관없이 움직이고 싶을때
 	inline void Look_At(const Vec3 &vPoint);
 	inline void Look_At_XZ(Vec3 vPoint);
 	inline void Look_At_Dir(Vec3 vDir);

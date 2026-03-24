@@ -130,6 +130,7 @@ namespace Client
 
 		/* Boss */
 		Xibi,
+		Lianhuo,
 		END
 	};
 
@@ -816,6 +817,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]{ L"Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_State_Tag[]{ L"Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_State_Tag[]{ L"Boss_Lianhuo" };
 
 	inline constexpr wchar_t g_wszNPC_Pan_State_Tag[]{ L"NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_State_Tag[]{ L"NPC_Tavern" };
@@ -832,6 +834,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Lianhuo" };
 	
 	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Tavern" };
@@ -848,8 +851,9 @@ namespace Client
 	/* Monster Attack OverLap */
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
-	inline constexpr wchar_t g_wszMonster_Fly_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Fly_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Lianhuo" };
 #pragma endregion
 
 
@@ -933,6 +937,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Shooter_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter" };
 	inline constexpr wchar_t g_wszMonster_Fly_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Lianhuo" };
 
 	/* Monster Body Prototype Name 모음 */
 	inline constexpr wchar_t g_wszMonster_Dog_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Dog_Body" };
@@ -940,6 +945,7 @@ namespace Client
 	inline constexpr wchar_t g_wszBoss_Shooter_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter_Body" };
 	inline constexpr wchar_t g_wszMonster_Fly_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly_Body" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi_Body" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Lianhuo_Body" };
 
 	inline constexpr wchar_t g_wszPool_Monster_Dog[]{ L"Pool_Monster_Dog" };
 	inline constexpr wchar_t g_wszPool_Monster_Boomer[]{ L"Pool_Monster_Boomer" };
@@ -994,6 +1000,91 @@ namespace Client
 	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
 	inline constexpr wchar_t g_wszInteractiveObjectLayer[]						{ L"InteractiveObject_Layer"};
 #pragma endregion
+
+#pragma region Camera
+	enum class ECameraShotEase : _uint
+	{
+		Linear = 0,
+		SmoothStep,
+		EaseOutQuad,
+		EaseInOutQuad,
+		EaseOutBack,
+		END
+	};
+
+	struct CAMERA_SHOT_KEY_1D
+	{
+		_float fTime = 0.f;
+		_float fValue = 0.f;
+		ECameraShotEase eEase = ECameraShotEase::SmoothStep;
+	};
+
+	struct CAMERA_SHOT_CHANNEL_1D
+	{
+		vector<CAMERA_SHOT_KEY_1D> vecKeys;
+	};
+
+	struct SCRIPTED_PIVOT_SHOT_DESC
+	{
+		_float  fDuration = 0.7f;
+
+		_bool   bFollowLivePivot = true;
+		_bool   bLookAtPivot = true;
+
+		_uint   iPart = 0;
+		wstring strPivotBoneTag;
+
+		// 시작 카메라 local basis 기준
+		CAMERA_SHOT_CHANNEL_1D LocalX;
+		CAMERA_SHOT_CHANNEL_1D LocalY;
+		CAMERA_SHOT_CHANNEL_1D LocalZ;         // +일수록 시작 look 반대방향(뒤)로 멀어짐
+
+		CAMERA_SHOT_CHANNEL_1D OrbitYawDeg;    // pivot 중심 월드 Y 회전
+		CAMERA_SHOT_CHANNEL_1D LookOffsetX;    // framing
+		CAMERA_SHOT_CHANNEL_1D LookOffsetY;
+	};
+
+	struct SCRIPTED_CONTROLLER_LAYER_DESC
+	{
+		CAMERA_SHOT_CHANNEL_1D FovDeltaDeg;
+
+		CAMERA_SHOT_CHANNEL_1D RotYawDeg;
+		CAMERA_SHOT_CHANNEL_1D RotPitchDeg;
+		CAMERA_SHOT_CHANNEL_1D RotRollDeg;
+
+		CAMERA_SHOT_CHANNEL_1D LocalPosX;
+		CAMERA_SHOT_CHANNEL_1D LocalPosY;
+		CAMERA_SHOT_CHANNEL_1D LocalPosZ;
+	};
+
+	struct SCRIPTED_CAMERA_SHOT_DESC
+	{
+		string                          strName;
+		SCRIPTED_PIVOT_SHOT_DESC        Pivot;
+		SCRIPTED_CONTROLLER_LAYER_DESC  Controller;
+	};
+
+	struct SCRIPTED_CAMERA_SHOT_RUNTIME
+	{
+		_bool   bPlaying = false;
+		_bool   bPause = false;
+		_float  fElapsed = 0.f;
+
+		Vec3    vStartPivotWS = Vec3::Zero;
+		Vec3    vStartCamPosWS = Vec3::Zero;
+
+		Vec3    vStartRight = Vec3::Right;
+		Vec3    vStartUp = Vec3::Up;
+		Vec3    vStartLook = Vec3::Forward;
+
+		// 시작 시점 offset을 camera local basis로 저장
+		// x = dot(offset, right)
+		// y = dot(offset, up)
+		// z = dot(offset, -look)  -> 양수면 뒤쪽
+		Vec3    vBaseOffsetLocal = Vec3::Zero;
+	};
+#pragma endregion
+
 
 #pragma region Dialogue
 	//typedef struct EDialogueChoice

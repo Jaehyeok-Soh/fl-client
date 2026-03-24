@@ -72,7 +72,7 @@ HRESULT CModelAnimation::Initialize(void* pArg)
 	return S_OK;
 }
 
-_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform,  CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS, OUT Vec3& vPrepos)
+_bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>& vecBones, _bool& bLoopDone, _float fTimeDelta, _bool isLoop, CTransform* pOwnerTransform,  CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimECS, OUT Vec3& vPrepos, OUT Quat& vPreQuat)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta * m_fAnimationSpeed_Offset;
 
@@ -109,16 +109,16 @@ _bool CModelAnimation::Update_TransformationMatrices(const vector<class CBone*>&
 	{
 		if (iIndex == m_iRootChannelIdx && !m_bApplyRootMotion)
 		{
- 			pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset, vPrepos);
+ 			pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset, vPrepos, vPreQuat);
 			continue;
 		}
 
-		pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset, vPrepos);
+		pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset, vPrepos, vPreQuat);
 	}
 	return false;
 }
 
-void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT,_uint iTotalBoneNum, CComputeShader* pAnimECS, OUT Vec3& vPrepos)
+void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSrtData, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT,_uint iTotalBoneNum, CComputeShader* pAnimECS, OUT Vec3& vPrepos, OUT Quat& vPreQuat)
 {
 	//내 애니메이션 정보 전달
 	Bind_AnimationEData(pAnimECS);
@@ -145,15 +145,15 @@ void CModelAnimation::SetUp_PoseDatasForBlending(std::span<LOCALSRT> spanLocalSr
 	{
 		if (iIndex == m_iRootChannelIdx && !m_bApplyRootMotion)
 		{
-			pChannel->SetUp_PoseData(spanLocalSrtData, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset, vPrepos);
+			pChannel->SetUp_PoseData(spanLocalSrtData, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], pOwnerTransform, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset, vPrepos, vPreQuat);
 			continue;
 		}
 
-		pChannel->SetUp_PoseData(spanLocalSrtData, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset, vPrepos);
+		pChannel->SetUp_PoseData(spanLocalSrtData, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, pOwnerPhyCCT, fTimeDelta, m_fRootMotionOffset, vPrepos, vPreQuat);
 	}
 }
 
-void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _bool bFirst, OUT Vec3& vPrepos)
+void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, CComputeShader* pAnimMixCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, _uint iTotalBoneNum, _bool bFirst, OUT Vec3& vPrepos, OUT Quat& vPreQuat)
 {
 	Bind_AnimationMixData(pAnimMixCS, pPreAnimCS);
 
@@ -189,11 +189,11 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 		{
 			if (iIndex == m_iRootChannelIdx && !m_bApplyRootMotion)
 			{
-				pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, nullptr, fTimeDelta, m_fRootMotionOffset, vPrepos);
+				pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, nullptr, fTimeDelta, m_fRootMotionOffset, vPrepos, vPreQuat);
 				continue;
 			}
 
-			pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, nullptr, fTimeDelta, m_fRootMotionOffset, vPrepos);
+			pChannel->Update_TransformationMatrix(vecBones, m_fCurrentTrackPosition, &m_vecCurrentKeyFrameIndices[iIndex++], nullptr, nullptr, fTimeDelta, m_fRootMotionOffset, vPrepos, vPreQuat);
 		}
 
 		else
@@ -201,7 +201,7 @@ void CModelAnimation::Update_MixAnimation(const vector<class CBone*>& vecBones, 
 	}
 }
 
-void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, const vector<class CChannel*>& vRefChannels,CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float fRatioOffset)
+void CModelAnimation::Update_AdditiveAnimatoin(const vector<class CBone*>& vecBones, const vector<class CChannel*>& vRefChannels,CComputeShader* pAnimAdditiveCS, CComputeShader* pPreAnimCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, _float fRatioOffset, OUT Quat& vPreQuat)
 {
 	Bind_AnimationAdditiveData(pAnimAdditiveCS, pPreAnimCS);
 
@@ -439,12 +439,12 @@ void CModelAnimation::Check_UpdateCpu(const vector<class CBone*>& vecBones)
 	}
 }
 
-void CModelAnimation::Reset_PrePosition(OUT Vec3& vPrepos)
+void CModelAnimation::Reset_PrePosition(OUT Vec3& vPrepos, OUT Quat& vPreQuat)
 {
 	// root bone이 있을때 root channel만 reset 해줌
 	if (m_iRootBoneIdx >= 0)
 	{
-		m_vecChannels[m_iRootChannelIdx]->Reset_PreTranslation(vPrepos);
+		m_vecChannels[m_iRootChannelIdx]->Reset_PreTranslation(vPrepos, vPreQuat);
 	}
 }
 

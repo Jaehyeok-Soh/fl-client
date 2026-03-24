@@ -23,9 +23,11 @@ public:
 private:
 	HRESULT Build_Prototype();
 	HRESULT Build_Files();
+	HRESULT Ready_ShaderSetting();
 	HRESULT Ready_Player_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_UI_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Camera_Layer(const wstring& wstrLayerTag);
+	HRESULT Ready_Boss_Layer(const wstring& wstrLayerTag);
 	HRESULT Ready_Lights();
 	HRESULT Ready_Map();
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);

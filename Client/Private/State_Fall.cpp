@@ -42,7 +42,7 @@ HRESULT CState_Fall::Start(void* pArg, _bool bForce)
 void CState_Fall::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
-	if (Check_OnGround(0.3f))
+	if (Check_OnGround(0.3f) || IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 		return;

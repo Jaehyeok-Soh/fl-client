@@ -880,6 +880,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle">
       <UniqueIdentifier>{e8fc26f0-09fa-4947-8b34-680e5ca04955}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Lianhuo">
+      <UniqueIdentifier>{cb01ec6c-8cde-422b-a20e-27c984607948}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1632,6 +1635,18 @@
     <ClInclude Include="..\Public\UIMiniGame_Circle_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerImguiValues.h">
+      <Filter>99. ETC\46.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_Lianhuo_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Lianhuo</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss_Lianhuo.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraShotUtils.h">
+      <Filter>99. ETC\Client_Define</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2373,6 +2388,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIMiniGame_Circle_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Lianhuo_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Lianhuo</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss_Lianhuo.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraShotUtils.cpp">
+      <Filter>99. ETC\Client_Define</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -82,12 +82,9 @@ void CCameraController::Stop_ByType(ECameraModifierType eType)
 	Remove_ModifiersByType(eType);
 }
 
-void CCameraController::Build_FinalPose(const CAMERA_POSE& basePose, CAMERA_POSE& outPose) const
+void CCameraController::Build_FinalPose_FromResult(const CAMERA_POSE& basePose, const CAMERA_MODIFIER_RESULT& tResult, OUT CAMERA_POSE& outPose) const
 {
 	outPose = basePose;
-
-	CAMERA_MODIFIER_RESULT tResult{};
-	Accumulate_Modifiers(basePose, tResult);
 
 	//////////////////
 	/// 회전 오프셋 ///
@@ -133,6 +130,13 @@ void CCameraController::Build_FinalPose(const CAMERA_POSE& basePose, CAMERA_POSE
 	///////////
 	outPose.fFovRad = basePose.fFovRad + tResult.fFovDeltaRad;
 	outPose.fFovRad = std::clamp(outPose.fFovRad, m_tConfig.fMinFovRad, m_tConfig.fMaxFovRad);
+}
+
+void CCameraController::Build_FinalPose(const CAMERA_POSE& basePose, OUT CAMERA_POSE& outPose) const
+{
+	CAMERA_MODIFIER_RESULT tResult{};
+	Accumulate_Modifiers(basePose, tResult);
+	Build_FinalPose_FromResult(basePose, tResult, outPose);
 }
 
 void CCameraController::Add_Modifier(ICameraModifier* pModifier)

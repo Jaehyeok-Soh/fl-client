@@ -43,7 +43,7 @@ void CState_JumpDouble::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
 	if (m_fStateElapsed > 14.f / ANIMTIC &&
-		Check_OnGround(0.1f))
+		(Check_OnGround(0.1f) || IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES)))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 		return;

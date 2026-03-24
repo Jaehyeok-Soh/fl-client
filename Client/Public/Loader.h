@@ -64,7 +64,7 @@ private:
 	HRESULT Ready_AttackOverlap_Monster_Dog();
 	HRESULT Ready_AttackOverlap_Monster_Boomer();
 	HRESULT Ready_AttackOverlap_Xibi();
-
+	HRESULT Ready_AttackOverlap_Lianhuo();
 
 	HRESULT	Ready_CCS();
 public:

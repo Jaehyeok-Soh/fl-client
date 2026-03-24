@@ -22,6 +22,22 @@ void CTimeScale_Manager::Request_SloMo(_float fScale, _float fUnscaledDurationTi
 	m_tSloMo.time.Start(fUnscaledDurationTime);
 }
 
+
+void CTimeScale_Manager::Active_TimeStop()
+{
+	if (m_tHitstop.Is_Active() == true)
+		return;
+
+	m_tHitstop.time.Start(FLT_MAX);
+}
+void CTimeScale_Manager::Deactive_TimeStop()
+{
+	if (m_tHitstop.Is_Active() == false)
+		return;
+
+	m_tHitstop.time.Clear();
+}
+
 void CTimeScale_Manager::Active_SloMo(_float fScale)
 {
 	if (m_tSloMo.Is_Active() == true)

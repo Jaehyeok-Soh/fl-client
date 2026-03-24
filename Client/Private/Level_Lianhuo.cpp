@@ -91,7 +91,13 @@ HRESULT CLevel_Lianhuo::Initialize()
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
+		return E_FAIL;
+
 	if (FAILED(Ready_Map()))
+		return E_FAIL;
+
+	if (FAILED(Ready_ShaderSetting()))
 		return E_FAIL;
 
 	return S_OK;
@@ -333,14 +339,100 @@ HRESULT CLevel_Lianhuo::Ready_Camera_Layer(const wstring& wstrLayerTag)
 	return S_OK;
 }
 
+HRESULT CLevel_Lianhuo::Ready_ShaderSetting()
+{
+	// Fog
+	{
+		auto& fogDesc = m_pGameInstance->Get_FogParamDesc();
+		fogDesc.vColor = Vec4{ 0.7f, 0.2f, 0.12f, 1.f };
+		fogDesc.vHighColor = Vec4{ 0.7f, 0.2f, 0.12f, 1.f };
+		fogDesc.fFogStart = 0.f;
+		fogDesc.fFogEnd = 500.f;
+		fogDesc.fFogDensity = 0.002f;
+		fogDesc.fFogMaxOpacity = 0.2f;
+		fogDesc.fFogBaseHeight = -5.f;
+		fogDesc.fFogNoiseScale = 0.55f;
+		fogDesc.fFogNoiseSpeed = 0.218f;
+		m_pGameInstance->Commit_FogParam();
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Lianhuo::Ready_Boss_Layer(const wstring& wstrLayerTag)
+{
+	{
+		CGameObject* pResult = { nullptr };
+
+		CMonster_Base::MONSTER_DESC monsterDesc = {};
+		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
+		CTransform::TRANSFORM_DESC transformDesc = {};
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(-2.f, 600.f, -8.f);
+		monsterDesc.pTransform_Desc = &transformDesc;
+		{
+			////////////////////
+			//  BOSS Lianhuo  //
+			////////////////////
+			monsterDesc.wstrBodyModelTag = g_wszBoss_Lianhuo_Model_Prototype_Tag;
+			monsterDesc.wstrPartBodyPrototypeTag = g_wszBoss_Lianhuo_Body_Prototype_Tag;
+			monsterDesc.wstrAttackOverlapPrototypeTag = g_wszBoss_Lianhuo_AttackOverlap_Prototype_Tag;
+			monsterDesc.wstrMonsterStateTag = g_wszBoss_Lianhuo_State_Tag;
+			{
+				PHYSICSCCT_DESC desc;
+				desc.pOwner = nullptr;
+				desc.bIsPlayer = false;
+				desc.eType = EPhysicsCCTType::CAPSULE;
+				desc.pOwnerMatrix = nullptr;
+				desc.fRadius = 1.f;
+				desc.fHeight = 1.f;
+				desc.vExtens = { 2.f, 2.f, 2.f };
+
+				PHYSICSMATERIAL_DESC mtrlDesc{};
+				mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
+				desc.tMaterial = mtrlDesc;
+
+				desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
+				desc.iFilterMask =
+					PHYSICSFILTERGROUP::Enum::MONSTER
+					| PHYSICSFILTERGROUP::Enum::PLAYER
+					| PHYSICSFILTERGROUP::Enum::ATTACK
+					| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
+					| PHYSICSFILTERGROUP::Enum::SKILL
+					| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
+					| PHYSICSFILTERGROUP::Enum::MAP
+					| PHYSICSFILTERGROUP::Enum::OBJECT1
+					| PHYSICSFILTERGROUP::Enum::OBJECT2
+					| PHYSICSFILTERGROUP::Enum::DETECT_MONSTER
+					| PHYSICSFILTERGROUP::Enum::NPC;
+
+				desc.bGravity = { true };
+				desc.fGravity = { -35.f };
+				desc.MSpeed = { 0.f, 1.f };
+				desc.MAccelRate = { 0.f, 10.f };
+				desc.MDeAccelRate = { 0.f, 10.f };
+
+				monsterDesc.tCCTDesc = desc;
+			}
+		}
+
+		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
+			g_wszBoss_Lianhuo_Prototype_Tag,
+			ENUM_TO_UINT(ELevelType::LIANHUO),
+			g_wszBossLayer, &monsterDesc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 HRESULT CLevel_Lianhuo::Ready_Lights()
 {
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
 		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vDiffuse = Vec4(0.9f, 0.8f, 0.7f, 1.f);
+		desc.vAmbient = Vec4(0.3f, 0.1f, 0.1f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
