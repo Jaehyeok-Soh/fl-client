@@ -3,6 +3,8 @@
 
 #include "Player.h"
 
+#include "PlayerImguiValues.h"
+
 CState_Jump::CState_Jump(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "Jump")
 {
@@ -31,7 +33,7 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 
 	Set_DoubleJumpCount(false);
 	Set_ZeroVerticalVelocity();
-	Jump_Impuls(0.4f);
+	Jump_Impuls(0.6f);
 
 	Set_ApplyGravity(false);
 	Set_YLerp(false);
@@ -45,7 +47,7 @@ void CState_Jump::Update(const _float fTimeDelta)
 {
 	// 바닥 충돌 검사 후 change
 	if (m_fStateElapsed > 12.f / ANIMTIC &&
-		Check_OnGround(0.1f))
+		(Check_OnGround(0.1f) || IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES)))
 	{
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 		return;

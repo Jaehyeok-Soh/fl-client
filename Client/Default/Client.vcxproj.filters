@@ -1608,6 +1608,9 @@
     <ClInclude Include="..\Public\NPC_Kid_Body_1.h">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerImguiValues.h">
+      <Filter>99. ETC\46.Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
