@@ -4,7 +4,7 @@
 // 가변 데이터
 struct MU_ELEMENT
 {
-    uint                    iMovingIdx;
+    int                    iMovingIdx;
     uint                    iBoneNums;
     float2                  Padding0;
     
