@@ -293,6 +293,24 @@ void CObject_Manager::Clear_Layer(_uint iLevelIndex, const wstring& wstrLayerTag
 	}
 }
 
+HRESULT CObject_Manager::Set_ScaledDomain(_uint iLevelIndex, const wstring& wstrLayerTag)
+{
+	CLayer* pFindLayer = Find_Layer(iLevelIndex, wstrLayerTag);
+	if (pFindLayer == nullptr)
+		return E_FAIL;
+
+	pFindLayer->Set_ScaledDomain();
+}
+
+HRESULT CObject_Manager::Set_UnscaledDomain(_uint iLevelIndex, const wstring& wstrLayerTag)
+{
+	CLayer* pFindLayer = Find_Layer(iLevelIndex, wstrLayerTag);
+	if (pFindLayer == nullptr)
+		return E_FAIL;
+
+	pFindLayer->Set_UnscaledDomain();
+}
+
 void CObject_Manager::Clear(_uint iLevelIndex)
 {
 	for (auto& Pair : m_pLayers[iLevelIndex])
