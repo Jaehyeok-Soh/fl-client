@@ -865,6 +865,9 @@
     <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Kid_1">
       <UniqueIdentifier>{c6dbeae1-4a69-41e7-af3d-a67094b67d21}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner">
+      <UniqueIdentifier>{0cd91d27-cdc1-42c4-a270-7fd8b5fb3f7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1608,6 +1611,9 @@
     <ClInclude Include="..\Public\NPC_Kid_Body_1.h">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_MonsterWaveSpawner.h">
+      <Filter>03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2340,6 +2346,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\NPC_Kid_Body_1.cpp">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_MonsterWaveSpawner.cpp">
+      <Filter>03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

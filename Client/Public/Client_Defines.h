@@ -923,6 +923,7 @@ namespace Client
 #pragma region Trigger Box ฐüทร
 	inline constexpr wchar_t g_wszTriggerBox_ChangeLevel_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_ChangeLevel" };
 	inline constexpr wchar_t g_wszTriggerBox_MonsterSapwner_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_MonsterSpawner" };
+	inline constexpr wchar_t g_wszTriggerBox_MonsterWaveSpawner_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_MonsterWaveSpawner" };
 	inline constexpr wchar_t g_wszTriggerBox_PhysicsColliderBox_PrototypeTag[]{ L"Prototype_Component_Physics_Collider_TriggerBox" };
 	inline constexpr wchar_t g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_GlobalEvent_BroadCaster" };
 	inline constexpr wchar_t g_wszTriggerBox_TutorialUIEvent_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_TutorialUIEvent" };

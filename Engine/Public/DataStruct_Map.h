@@ -102,6 +102,8 @@ inline std::string MakeNPCType_ToString(OBJECT_ENUM_TAG::Enum eTag)
 	case Engine::OBJECT_ENUM_TAG::NPC_TAVERN:	return "NPC_Tavern";
 	case Engine::OBJECT_ENUM_TAG::NPC_VILLAGER_1:	return "NPC_Villager_1";
 	case Engine::OBJECT_ENUM_TAG::NPC_KID_1:	return "NPC_Kid_1";
+	case Engine::OBJECT_ENUM_TAG::NPC_VETERAN:	return "NPC_Veteran";
+	case Engine::OBJECT_ENUM_TAG::NPC_KID_2:	return "NPC_Kid_2";
 	default:									return "Unknown";
 	}
 }
@@ -114,6 +116,8 @@ inline OBJECT_ENUM_TAG::Enum MakeNPCType_ToEnum(const std::string strType)
 	if (strType == "NPC_Tavern")				return Engine::OBJECT_ENUM_TAG::NPC_TAVERN;
 	if (strType == "NPC_Villager_1")			return Engine::OBJECT_ENUM_TAG::NPC_VILLAGER_1;
 	if (strType == "NPC_Kid_1")					return Engine::OBJECT_ENUM_TAG::NPC_KID_1;
+	if (strType == "NPC_Veteran")				return Engine::OBJECT_ENUM_TAG::NPC_VETERAN;
+	if (strType == "NPC_Kid_2")					return Engine::OBJECT_ENUM_TAG::NPC_KID_2;
 
 	return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
 }
@@ -871,6 +875,82 @@ public:
 	virtual void to_Json(json& SaveJson);
 };
 
+/// <summary>
+/// 웨이브 스포너
+/// </summary>
+
+struct ENGINE_DLL MonsterWaveInfo
+{
+	_float fSpawnTime = { -1.f };
+	_int iTotalSpawnCount = { -1 };
+	_int iCurrentSpawnCount = { -1 };
+	_float fSpawnInterval = { -1.f };
+	_float fAccTime = { 0.f };
+	std::vector<MonsterSpawnData>	vecMonsterSpawnData{};
+
+public:
+	explicit MonsterWaveInfo()
+		: fSpawnTime{ -1.f },
+		iTotalSpawnCount{ -1 },
+		iCurrentSpawnCount{ -1 },
+		fSpawnInterval{ -1.f },
+		fAccTime{ 0.f },
+		vecMonsterSpawnData{}
+	{
+	}
+	explicit MonsterWaveInfo(const MonsterWaveInfo& Copy)
+		: fSpawnTime{ Copy.fSpawnTime },
+		iTotalSpawnCount{ Copy.iTotalSpawnCount },
+		iCurrentSpawnCount{ Copy.iCurrentSpawnCount },
+		fSpawnInterval{ Copy.fSpawnInterval },
+		fAccTime{ Copy.fAccTime },
+		vecMonsterSpawnData{ Copy.vecMonsterSpawnData }
+	{
+	}
+	virtual ~MonsterWaveInfo() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+struct ENGINE_DLL TRIGGERBOX_MONSTERWAVESPAWNER_DESC : public TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	MONSTERSPAWN_WAVE_TYPE eType = MONSTERSPAWN_WAVE_TYPE::TIMER;
+	_int iTotalWaveCount = { -1 };
+	_int iCurrentWaveCount = { -1 };
+	_float fWaveTime = { -1.f };
+	_float fCurrentWaveTime = { -1.f };
+	vector<MonsterWaveInfo> vecWaveInfo;
+
+public:
+	explicit TRIGGERBOX_MONSTERWAVESPAWNER_DESC()
+		: TRIGGERBOX_DESC(),
+		eType{ MONSTERSPAWN_WAVE_TYPE::TIMER },
+		iTotalWaveCount{ -1 },
+		iCurrentWaveCount{ -1 },
+		fWaveTime{ -1.f },
+		fCurrentWaveTime{ -1.f },
+		vecWaveInfo{}
+	{
+	}
+	explicit TRIGGERBOX_MONSTERWAVESPAWNER_DESC(const TRIGGERBOX_MONSTERWAVESPAWNER_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs),
+		eType{rhs.eType },
+		iTotalWaveCount{rhs.iTotalWaveCount },
+		iCurrentWaveCount{rhs.iCurrentWaveCount },
+		fWaveTime{rhs.fWaveTime },
+		fCurrentWaveTime{rhs.fCurrentWaveTime },
+		vecWaveInfo{ rhs.vecWaveInfo }
+	{
+		return;
+	}
+	virtual ~TRIGGERBOX_MONSTERWAVESPAWNER_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
 
 #pragma endregion
 
@@ -1105,6 +1185,7 @@ enum class EClientMakePath
 	/* Trigger Box 관련 */
 	TriggerBox_ChangeLevel,
 	TriggerBox_MonsterSpawner,
+	TriggerBox_MonsterWaveSpawner,
 	TriggerBox_GlobalEvent_BroadCaster,
 	TriggerBox_TutorialUIEvent,
 	TriggerBox_CinematicPlayer,
@@ -1176,6 +1257,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 
 			{EClientMakePath::TriggerBox_ChangeLevel,				"TriggerBox_ChangeLevel"},
 			{EClientMakePath::TriggerBox_MonsterSpawner,			"TriggerBox_MonsterSpawner"},
+			{EClientMakePath::TriggerBox_MonsterWaveSpawner,		"TriggerBox_MonsterWaveSpawner"},
 			{EClientMakePath::TriggerBox_GlobalEvent_BroadCaster,	"TriggerBox_GlobalEvent_BroadCaster"},
 			{EClientMakePath::TriggerBox_TutorialUIEvent,			"TriggerBox_TutorialUIEvent"},
 			{EClientMakePath::TriggerBox_CinematicPlayer,			"TriggerBox_CinematicPlayer"},
