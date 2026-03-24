@@ -113,7 +113,7 @@ HRESULT CLevel_Kuangkeng::Awake(const _uint iLevelID)
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
-	CQuestManager::GetInstance()->Start_Quest(2, 3);
+	CQuestManager::GetInstance()->Start_Quest(4, 1);
 
 	return S_OK;
 }
@@ -365,8 +365,6 @@ HRESULT CLevel_Kuangkeng::Ready_Map()
 		return E_FAIL;
 	if (FAILED(Build_File(iLevelID, eCategory, FilePath.stem().string())))
 		return E_FAIL;
-
-
 
 	/* 갱도는 파일 4개를 빌드해준다. */
 

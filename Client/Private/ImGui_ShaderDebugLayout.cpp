@@ -104,76 +104,76 @@ void CImGui_ShaderDebugLayout::Render(CGameObject* pGo)
         ImGui::EndTable();
     }
 
-    // -----------------------
-    // Baked Shadow Debug
-    // -----------------------
-    if (ImGui::CollapsingHeader("Baked Shadow", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        ImGui::PushID("BakedShadow");
+    //// -----------------------
+    //// Baked Shadow Debug
+    //// -----------------------
+    //if (ImGui::CollapsingHeader("Baked Shadow", ImGuiTreeNodeFlags_DefaultOpen))
+    //{
+    //    ImGui::PushID("BakedShadow");
 
-        static int iSlice = 0;
-        static int iPrevSlice = -1;
+    //    static int iSlice = 0;
+    //    static int iPrevSlice = -1;
 
-        constexpr int iMaxSlice = BAKED_SECTION_COUNT_X * BAKED_SECTION_COUNT_Z - 1;
+    //    constexpr int iMaxSlice = BAKED_SECTION_COUNT_X * BAKED_SECTION_COUNT_Z - 1;
 
-        // Slice 선택
-        ImGui::SliderInt("Slice", &iSlice, 0, iMaxSlice);
+    //    // Slice 선택
+    //    ImGui::SliderInt("Slice", &iSlice, 0, iMaxSlice);
 
-        // 선택 slice가 바뀌면 디버그용 2D 텍스처 갱신
-        if (iPrevSlice != iSlice)
-        {
-            m_pGameInstance->Update_BakedShadowDebugTexture(iSlice);
-            iPrevSlice = iSlice;
-        }
+    //    // 선택 slice가 바뀌면 디버그용 2D 텍스처 갱신
+    //    if (iPrevSlice != iSlice)
+    //    {
+    //        m_pGameInstance->Update_BakedShadowDebugTexture(iSlice);
+    //        iPrevSlice = iSlice;
+    //    }
 
-        // 그리드 좌표 표시
-        const int iX = iSlice % BAKED_SECTION_COUNT_X;
-        const int iZ = iSlice / BAKED_SECTION_COUNT_X;
-        ImGui::Text("Grid: [%d, %d]", iX, iZ);
+    //    // 그리드 좌표 표시
+    //    const int iX = iSlice % BAKED_SECTION_COUNT_X;
+    //    const int iZ = iSlice / BAKED_SECTION_COUNT_X;
+    //    ImGui::Text("Grid: [%d, %d]", iX, iZ);
 
-        // 디버그용 2D SRV 출력
-        ID3D11ShaderResourceView* pSRV = m_pGameInstance->Get_BakedShadowDebugSRV();
-        if (pSRV)
-        {
-            ImGui::Image((ImTextureID)pSRV, ImVec2(256.f, 256.f));
+    //    // 디버그용 2D SRV 출력
+    //    ID3D11ShaderResourceView* pSRV = m_pGameInstance->Get_BakedShadowDebugSRV();
+    //    if (pSRV)
+    //    {
+    //        ImGui::Image((ImTextureID)pSRV, ImVec2(256.f, 256.f));
 
-            if (ImGui::IsItemHovered())
-            {
-                ImGui::BeginTooltip();
-                ImGui::Text("Slice %d", iSlice);
-                ImGui::Text("Grid [%d, %d]", iX, iZ);
-                ImGui::Separator();
-                ImGui::Image((ImTextureID)pSRV, ImVec2(512.f, 512.f));
-                ImGui::EndTooltip();
-            }
-        }
-        else
-        {
-            ImGui::TextColored(ImVec4(1, 0, 0, 1), "Debug slice preview not ready");
-        }
+    //        if (ImGui::IsItemHovered())
+    //        {
+    //            ImGui::BeginTooltip();
+    //            ImGui::Text("Slice %d", iSlice);
+    //            ImGui::Text("Grid [%d, %d]", iX, iZ);
+    //            ImGui::Separator();
+    //            ImGui::Image((ImTextureID)pSRV, ImVec2(512.f, 512.f));
+    //            ImGui::EndTooltip();
+    //        }
+    //    }
+    //    else
+    //    {
+    //        ImGui::TextColored(ImVec4(1, 0, 0, 1), "Debug slice preview not ready");
+    //    }
 
-        // 활성 섹션 정보
-        ImGui::SeparatorText("Active Sections");
-        auto& active = m_pGameInstance->Get_ActiveBakedSectionSet();
-        ImGui::Text("Count: %d", active.iCount);
+    //    // 활성 섹션 정보
+    //    ImGui::SeparatorText("Active Sections");
+    //    auto& active = m_pGameInstance->Get_ActiveBakedSectionSet();
+    //    ImGui::Text("Count: %d", active.iCount);
 
-        bool bSelectedIsActive = false;
+    //    bool bSelectedIsActive = false;
 
-        for (_uint i = 0; i < active.iCount; ++i)
-        {
-            const auto& s = active.sections[i];
+    //    for (_uint i = 0; i < active.iCount; ++i)
+    //    {
+    //        const auto& s = active.sections[i];
 
-            if (s.iArraySlice == iSlice)
-                bSelectedIsActive = true;
+    //        if (s.iArraySlice == iSlice)
+    //            bSelectedIsActive = true;
 
-            ImGui::Text("  [%d] grid(%d,%d) slice=%d",
-                i, s.iSectionX, s.iSectionZ, s.iArraySlice);
-        }
+    //        ImGui::Text("  [%d] grid(%d,%d) slice=%d",
+    //            i, s.iSectionX, s.iSectionZ, s.iArraySlice);
+    //    }
 
-        ImGui::Text("Selected Slice Active: %s", bSelectedIsActive ? "YES" : "NO");
+    //    ImGui::Text("Selected Slice Active: %s", bSelectedIsActive ? "YES" : "NO");
 
-        ImGui::PopID();
-    }
+    //    ImGui::PopID();
+    //}
 
 	ImGui::EndChild();
 #endif
