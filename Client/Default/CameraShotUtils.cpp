@@ -7,19 +7,19 @@ _float Eval_ShotEase(ECameraShotEase eEase, _float fT)
 
     switch (eEase)
     {
-    case Client::ECameraShotEase::Linear:
+    case ECameraShotEase::Linear:
         return fT;
 
-    case Client::ECameraShotEase::SmoothStep:
+    case ECameraShotEase::SmoothStep:
         return Engine_Utils::EvalEase_SmoothStep(fT);
 
-    case Client::ECameraShotEase::EaseOutQuad:
+    case ECameraShotEase::EaseOutQuad:
         return Engine_Utils::EvalEase_EaseOutQuad(fT);
 
-    case Client::ECameraShotEase::EaseInOutQuad:
+    case ECameraShotEase::EaseInOutQuad:
         return Engine_Utils::EvalEase_EaseInOutQuad(fT);
 
-    case Client::ECameraShotEase::EaseOutBack:
+    case ECameraShotEase::EaseOutBack:
         return Engine_Utils::EvalEase_EaseOutBack(fT);
     }
 

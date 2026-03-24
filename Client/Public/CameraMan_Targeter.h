@@ -64,7 +64,7 @@ public:
 	void Change_CamState(_uint iState);
 
 	HRESULT	Ready_GlobalEvent();
-
+	HRESULT Request_PlayScriptedShot( const Engine::SCRIPTED_CAMERA_SHOT_DESC& shotDesc, const Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC& bindingDesc) override;
 	// getter setter
 public:
 	_float	Get_Pitch() const { return m_fPitch; }
@@ -127,6 +127,8 @@ private:
 	// For. ScriptShot State
 	_bool Get_CurrentPivotWorldPos(Vec3& vOutPivot) const;
 	void Capture_ScriptedShotSnapshot();
+	_bool Resolve_ScriptedShotAnchors(OUT CAMERA_ANCHOR_RESULT& outPivot, OUT CAMERA_ANCHOR_RESULT& outLookAt);
+	void Resolve_ShotBasis(const Engine::CAMERA_ANCHOR_RESULT& pivotAnchor, OUT Vec3& outRight, OUT Vec3& outUp, OUT Vec3& outLook);
 	void Evaluate_ScriptedShotBasePose(_float fTime, CAMERA_POSE& outBasePose, Vec3& outPivotWS) const;
 	void Evaluate_ScriptedControllerResult(_float fTime, CAMERA_MODIFIER_RESULT& outResult) const;
 	void Apply_CameraPose(const CAMERA_POSE& tPose);
@@ -183,8 +185,9 @@ private:
 	
 private:
 	// For. ScriptShot State
-	SCRIPTED_CAMERA_SHOT_DESC        m_tScriptedShotDesc = {};
-	SCRIPTED_CAMERA_SHOT_RUNTIME     m_tScriptedShotRuntime = {};
+	SCRIPTED_CAMERA_SHOT_DESC         m_tScriptedShotDesc = {};
+	SCRIPTED_CAMERA_SHOT_BINDING_DESC m_tScriptedShotBinding = {};
+	SCRIPTED_CAMERA_SHOT_RUNTIME      m_tScriptedShotRuntime = {};
 #ifdef _DEBUG
 public:
 	void Debug_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& tDesc);

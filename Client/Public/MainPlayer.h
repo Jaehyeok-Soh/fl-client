@@ -45,7 +45,6 @@ public:
 
 	virtual _bool	On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void	Try_Attack(const HIT_DESC& hitDesc) override;
-
 private:
 	// void Movement_Ground(const _float fTimeDelta);
 	//_bool Try_AttackHit(ECollideLayer eMyLayer, CCollider* pOther);

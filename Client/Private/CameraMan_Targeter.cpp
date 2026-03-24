@@ -7,7 +7,7 @@
 #include "Bone.h"
 #include "PhysicsCCT.h"
 #include "PhysicsSpringArm.h"
-
+#include "CameraAnchorResolver.h"
 #include "GameInstance.h"
 
 USING(Client)
@@ -191,6 +191,11 @@ HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
         });
 
 
+    return S_OK;
+}
+
+HRESULT CCameraMan_Targeter::Request_PlayScriptedShot(const Engine::SCRIPTED_CAMERA_SHOT_DESC& shotDesc, const Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC& bindingDesc)
+{
     return S_OK;
 }
 
@@ -486,7 +491,7 @@ void CCameraMan_Targeter::TurnCam_Begin()
     }
     // 그것도 안되면 걍 world forward
     if (vLookDir.LengthSquared() <= g_XMEpsilon.f[0])
-        vLookDir = Vec3::Forward;
+        vLookDir = Vec3::Backward;
 
     vLookDir.Normalize();
 
@@ -583,7 +588,7 @@ void CCameraMan_Targeter::TurnCam_End()
     }
 
     m_arrPreDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)] = fLength;
-    m_vTurnBaseLookDir = Vec3::Forward;
+    m_vTurnBaseLookDir = Vec3::Backward;
     m_fTurnBaseDistance = 0.f;
 }
 
@@ -869,6 +874,69 @@ _float CCameraMan_Targeter::Eval_TurnYawDegree() const
     }
 
     return 0.f;
+}
+
+_bool CCameraMan_Targeter::Resolve_ScriptedShotAnchors(OUT CAMERA_ANCHOR_RESULT& outPivot, OUT CAMERA_ANCHOR_RESULT& outLookAt)
+{
+    CGameObject* pDefaultActor = Get_Actor();
+
+    _bool bPivotOk = Engine::CCameraAnchorResolver::Resolve(
+        m_tScriptedShotBinding.pviot,
+        pDefaultActor,
+        outPivot);
+
+    if (bPivotOk)
+        m_tScriptedShotRuntime.tLastPivotAnchor = outPivot;
+    else
+        outPivot = m_tScriptedShotRuntime.tLastPivotAnchor;
+
+    if (m_tScriptedShotBinding.bUseSeparateLookAt)
+    {
+        _bool bLookOk = Engine::CCameraAnchorResolver::Resolve(
+            m_tScriptedShotBinding.LookAt,
+            pDefaultActor,
+            outLookAt);
+
+        if (bLookOk)
+            m_tScriptedShotRuntime.tLastLookAtAnchor = outLookAt;
+        else
+            outLookAt = m_tScriptedShotRuntime.tLastLookAtAnchor;
+    }
+    else
+    {
+        outLookAt = outPivot;
+        m_tScriptedShotRuntime.tLastLookAtAnchor = outLookAt;
+    }
+
+    return true;
+}
+
+void CCameraMan_Targeter::Resolve_ShotBasis(const Engine::CAMERA_ANCHOR_RESULT& pivotAnchor, OUT Vec3& outRight, OUT Vec3& outUp, OUT Vec3& outLook)
+{
+    switch (m_tScriptedShotDesc.Pivot.eBasisMode)
+    {
+    case Engine::ECameraBasisMode::START_CAMERA:
+        outRight = m_tScriptedShotRuntime.vStartRight;
+        outUp = m_tScriptedShotRuntime.vStartUp;
+        outLook = m_tScriptedShotRuntime.vStartLook;
+        break;
+
+    case Engine::ECameraBasisMode::ANCHOR_OWNER:
+        outRight = pivotAnchor.vRight;
+        outUp = pivotAnchor.vUp;
+        outLook = pivotAnchor.vLook;
+        break;
+
+    case Engine::ECameraBasisMode::WORLD:
+        outRight = Vec3::Right;
+        outUp = Vec3::Up;
+        outLook = Vec3::Backward;
+        break;
+    }
+
+    outRight.Normalize();
+    outUp.Normalize();
+    outLook.Normalize();
 }
 
 Vec3 CCameraMan_Targeter::CheckCameraCollision(Vec3 vCameraPos, Vec3 vTargetPos)

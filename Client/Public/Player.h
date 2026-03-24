@@ -1,4 +1,5 @@
 #pragma once
+#include "ICameraAnchorHost.h"
 #include "Client_Defines.h"
 #include "ContainerObject.h"
 
@@ -15,6 +16,7 @@ class CBody;
 class CGun;
 
 class CPlayer abstract : public CContainerObject
+					   , public ICameraAnchorHost
 {
 	using Super = CContainerObject;
 public:
@@ -187,6 +189,10 @@ public:
 
 	State				Get_CurState();
 
+public:
+	// Camera Interface
+	virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) override;
+	virtual CTransform* Get_CameraAnchorOwnerTransform() override;
 protected:
 	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 

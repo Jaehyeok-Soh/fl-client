@@ -19,8 +19,8 @@ public:
 public:
     virtual ~ICameraAnchorHost() = default;
 
-    virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) const PURE;
-    virtual CTransform* Get_CameraAnchorOwnerTransform() const PURE;
+    virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) PURE;
+    virtual CTransform* Get_CameraAnchorOwnerTransform() PURE;
 };
 
 NS_END

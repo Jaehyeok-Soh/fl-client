@@ -3,84 +3,62 @@
 #include "ICameraAnchorHost.h"
 #include "CameraAnchorResolver.h"
 
-
-namespace
+void CCameraAnchorResolver::Apply_LocalOffset(OUT CAMERA_ANCHOR_RESULT& outResult, const Vec3& vLocalOffset)
 {
-    void Normalize_AnchorResult(OUT CAMERA_ANCHOR_RESULT& outResult)
+    outResult.vPos += outResult.vRight * vLocalOffset.x;
+    outResult.vPos += outResult.vUp * vLocalOffset.y;
+    outResult.vPos += outResult.vLook * vLocalOffset.z;
+}
+
+_bool CCameraAnchorResolver::Resolve_FromTransform(CGameObject* pOwner, OUT CAMERA_ANCHOR_RESULT& outResult)
+{
+    if (pOwner == nullptr)
+        return false;
+
+    CTransform* pTransform = pOwner->Get_Component<CTransform>();
+    if (pTransform == nullptr)
+        return false;
+
+    outResult.vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+    outResult.vRight = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+    outResult.vUp = pTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
+    outResult.vLook = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+    Normalize_AnchorResult(outResult);
+    return true;
+}
+
+_bool CCameraAnchorResolver::Resolve_FromProvider(
+    CGameObject* pTargetObject,
+    const CAMERA_BIND_TARGET_DESC& tTarget,
+    OUT CAMERA_ANCHOR_RESULT& outResult)
+{
+    if (pTargetObject == nullptr)
+        return false;
+
+    ICameraAnchorHost* pHost = dynamic_cast<ICameraAnchorHost*>(pTargetObject);
+    if (pHost == nullptr)
+        return false;
+
+    ICameraAnchorProvider* pProvider = pHost->Get_CameraAnchorProvider(tTarget.iPartIndex);
+    CTransform* pOwnerTransform = pHost->Get_CameraAnchorOwnerTransform();
+
+    if (pProvider == nullptr || pOwnerTransform == nullptr)
+        return false;
+
+    const Matrix matOwnerWorld = pOwnerTransform->Get_WorldMatrix();
+
+    if (pProvider->Resolve_CameraAnchor(
+        tTarget.eResolve,
+        tTarget.strAnchorTag,
+        matOwnerWorld,
+        outResult) == false)
     {
-        if (outResult.vRight.LengthSquared() > g_XMEpsilon.f[0])
-            outResult.vRight.Normalize();
-        else
-            outResult.vRight = Vec3::Right;
-    
-        if (outResult.vUp.LengthSquared() > g_XMEpsilon.f[0])
-            outResult.vUp.Normalize();
-        else
-            outResult.vUp = Vec3::Up;
-    
-        if (outResult.vLook.LengthSquared() > g_XMEpsilon.f[0])
-            outResult.vLook.Normalize();
-        else
-            outResult.vLook = Vec3::Backward;
-    }
-    
-    void Apply_LocalOffset(OUT CAMERA_ANCHOR_RESULT& outResult, const Vec3& vLocalOffset)
-    {
-        outResult.vPos += outResult.vRight * vLocalOffset.x;
-        outResult.vPos += outResult.vUp * vLocalOffset.y;
-        outResult.vPos += outResult.vLook * vLocalOffset.z;
-    }
-    
-    _bool Resolve_FromTransform(CGameObject* pOwner, OUT CAMERA_ANCHOR_RESULT& outResult)
-    {
-        if (pOwner == nullptr)
-            return false;
-    
-        CTransform* pTransform = pOwner->Get_Component<CTransform>();
-        if (pTransform == nullptr)
-            return false;
-    
-        outResult.vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-        outResult.vRight = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
-        outResult.vUp = pTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
-        outResult.vLook = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-    
-        Normalize_AnchorResult(outResult);
-        return true;
+        return false;
     }
 
-    _bool Resolve_FromProvider(
-        CGameObject* pTargetObject,
-        const CAMERA_BIND_TARGET_DESC& tTarget,
-        OUT CAMERA_ANCHOR_RESULT& outResult)
-    {
-        if (pTargetObject == nullptr)
-            return false;
-
-        ICameraAnchorHost* pHost = dynamic_cast<ICameraAnchorHost*>(pTargetObject);
-        if (pHost == nullptr)
-            return false;
-
-        ICameraAnchorProvider* pProvider = pHost->Get_CameraAnchorProvider(tTarget.iPartIndex);
-        CTransform* pOwnerTransform = pHost->Get_CameraAnchorOwnerTransform();
-
-        if (pProvider == nullptr || pOwnerTransform == nullptr)
-            return false;
-
-        const Matrix matOwnerWorld = pOwnerTransform->Get_WorldMatrix();
-
-        if (pProvider->Resolve_CameraAnchor(
-            tTarget.eResolve,
-            tTarget.wstrAnchorTag,
-            matOwnerWorld,
-            outResult) == false)
-        {
-            return false;
-        }
-
-        Normalize_AnchorResult(outResult);
-        return true;
-    }
+    Normalize_AnchorResult(outResult);
+    return true;
 }
 
 _bool CCameraAnchorResolver::Resolve(const CAMERA_BIND_TARGET_DESC& tTarget, CGameObject* pDefaultActor, OUT CAMERA_ANCHOR_RESULT& outResult)
@@ -90,7 +68,7 @@ _bool CCameraAnchorResolver::Resolve(const CAMERA_BIND_TARGET_DESC& tTarget, CGa
     CGameObject* pTargetObject = nullptr;
 
     //////////////////////
-    // 1) Source Resolve
+    // Source Resolve
     //////////////////////
     switch (tTarget.eSource)
     {
@@ -120,7 +98,7 @@ _bool CCameraAnchorResolver::Resolve(const CAMERA_BIND_TARGET_DESC& tTarget, CGa
         return false;
 
     //////////////////////
-    // 2) Resolve Route
+    // Resolve Route
     //////////////////////
     _bool bSuccess = false;
 
@@ -143,9 +121,27 @@ _bool CCameraAnchorResolver::Resolve(const CAMERA_BIND_TARGET_DESC& tTarget, CGa
         return false;
 
     //////////////////////
-    // 3) Anchor Offset
+    // Anchor Offset
     //////////////////////
     Apply_LocalOffset(outResult, tTarget.vLocalOffset);
 
     return true;
+}
+
+void CCameraAnchorResolver::Normalize_AnchorResult(OUT CAMERA_ANCHOR_RESULT& outResult)
+{
+    if (outResult.vRight.LengthSquared() > g_XMEpsilon.f[0])
+        outResult.vRight.Normalize();
+    else
+        outResult.vRight = Vec3::Right;
+
+    if (outResult.vUp.LengthSquared() > g_XMEpsilon.f[0])
+        outResult.vUp.Normalize();
+    else
+        outResult.vUp = Vec3::Up;
+
+    if (outResult.vLook.LengthSquared() > g_XMEpsilon.f[0])
+        outResult.vLook.Normalize();
+    else
+        outResult.vLook = Vec3::Backward;
 }

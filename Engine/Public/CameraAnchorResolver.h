@@ -13,13 +13,21 @@ NS_BEGIN(Engine)
 
 class CGameObject;
 
-class CCameraAnchorResolver final
+class ENGINE_DLL CCameraAnchorResolver final
 {
 public:
     static _bool Resolve(
         const CAMERA_BIND_TARGET_DESC& tTarget,
         CGameObject* pDefaultActor,
         OUT CAMERA_ANCHOR_RESULT& outResult);
+    static void Normalize_AnchorResult(OUT CAMERA_ANCHOR_RESULT& outResult);
+private:
+    static _bool Resolve_FromProvider(
+        CGameObject* pTargetObject,
+        const CAMERA_BIND_TARGET_DESC& tTarget,
+        OUT CAMERA_ANCHOR_RESULT& outResult);
+    static _bool Resolve_FromTransform(CGameObject* pOwner, OUT CAMERA_ANCHOR_RESULT& outResult);
+    static void Apply_LocalOffset(OUT CAMERA_ANCHOR_RESULT& outResult, const Vec3& vLocalOffset);
 };
 
 NS_END

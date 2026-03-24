@@ -16,9 +16,9 @@ public:
 
 	virtual _bool Resolve_CameraAnchor(
 		ECameraAnchorResolve eResolve,
-		const std::wstring& wstrAnchorTag,
+		const std::string& strAnchorTag,
 		const Matrix& matOwnerWorld,
-		/*OUT*/ CAMERA_ANCHOR_RESULT& outResult) const PURE;
+		OUT CAMERA_ANCHOR_RESULT& outResult) PURE;
 };
 
 NS_END

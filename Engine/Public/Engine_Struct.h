@@ -1264,10 +1264,10 @@ namespace Engine
 
 		class CGameObject* pObject = nullptr;		// OBJECT일 때 사용
 		int         iPartIndex = 0;				// multipart body 대응
-		wstring      wstrAnchorTag;					// bone/socket 이름
+		string      strAnchorTag;					// bone/socket 이름
 
-		SimpleMath::Vector3         vWorldPoint = Vec3::Zero;		// WORLD_POINT일 때 사용
-		SimpleMath::Vector3         vLocalOffset = Vec3::Zero;		// anchor 기준 추가 오프셋
+		SimpleMath::Vector3         vWorldPoint = SimpleMath::Vector3::Zero;		// WORLD_POINT일 때 사용
+		SimpleMath::Vector3         vLocalOffset = SimpleMath::Vector3::Zero;		// anchor 기준 추가 오프셋
 	}CAMERA_BIND_TARGET_DESC;
 	typedef struct tagScriptedCameraShotBindingDesc
 	{
@@ -1297,13 +1297,25 @@ namespace Engine
 
 		ECameraBasisMode eBasisMode = ECameraBasisMode::START_CAMERA;
 
+		//////////////////////////////
+		// Pivot / LookAt 기준점 자체 이동
+		//////////////////////////////
+		CAMERA_SHOT_CHANNEL_1D PivotOffsetX;
+		CAMERA_SHOT_CHANNEL_1D PivotOffsetY;
+		CAMERA_SHOT_CHANNEL_1D PivotOffsetZ;
+
+		CAMERA_SHOT_CHANNEL_1D LookAtOffsetX;
+		CAMERA_SHOT_CHANNEL_1D LookAtOffsetY;
+		CAMERA_SHOT_CHANNEL_1D LookAtOffsetZ;
+
+		//////////////////////////////
+		// 최종 pivot 주변 카메라 이동
+		//////////////////////////////
 		CAMERA_SHOT_CHANNEL_1D LocalX;
 		CAMERA_SHOT_CHANNEL_1D LocalY;
-		CAMERA_SHOT_CHANNEL_1D LocalZ;
+		CAMERA_SHOT_CHANNEL_1D LocalZ;      // +일수록 basis look 반대방향(뒤)로 멀어짐
 
-		CAMERA_SHOT_CHANNEL_1D OrbitYawDeg;
-		CAMERA_SHOT_CHANNEL_1D LookOffsetX;
-		CAMERA_SHOT_CHANNEL_1D LookOffsetY;
+		CAMERA_SHOT_CHANNEL_1D OrbitYawDeg; // pivot 중심 orbit
 	}SCRIPTED_PIVOT_SHOT_DESC;
 
 	typedef struct tagScriptedControllerLayerDesc

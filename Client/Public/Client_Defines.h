@@ -1004,21 +1004,32 @@ namespace Client
 #pragma region Camera
 	typedef struct tagScriptedCameraShotRuntime
 	{
-		bool bPlaying = { false };
-		bool bPause = { false };
-		float fElpased = { 0.f };
-		SimpleMath::Vector3 vStartPivotWS = SimpleMath::Vector3::Zero;
-		SimpleMath::Vector3 vStartCamPosWS = SimpleMath::Vector3::Zero;
+		_bool bPlaying = false;
+		_bool bPause = false;
+		_float fElapsed = 0.f;
 
-		SimpleMath::Vector3 vStartRight = SimpleMath::Vector3::Right;
-		SimpleMath::Vector3 vStartUp = SimpleMath::Vector3::Up;
-		SimpleMath::Vector3 vStartLook = SimpleMath::Vector3::Forward;
+		// resolve 대상 캐시
+		Engine::CGameObject* pResolvedPivotOwner = nullptr;
+		Engine::CGameObject* pResolvedLookAtOwner = nullptr;
 
-		// 시작 시점 offset을 camera local basis로 저장
-		// x = dot(offset, right)
-		// y = dot(offset, up)
-		// z = dot(offset, -look)  -> 양수면 뒤쪽
-		SimpleMath::Vector3 vBaseOffsetLocal = SimpleMath::Vector3::Zero;
+		// 시작 시점 anchor / 마지막 성공 anchor
+		Engine::CAMERA_ANCHOR_RESULT tStartPivotAnchor = {};
+		Engine::CAMERA_ANCHOR_RESULT tStartLookAtAnchor = {};
+
+		Engine::CAMERA_ANCHOR_RESULT tLastPivotAnchor = {};
+		Engine::CAMERA_ANCHOR_RESULT tLastLookAtAnchor = {};
+
+		// 샷 시작 카메라 basis
+		Vec3 vStartCamPosWS = Vec3::Zero;
+		Vec3 vStartRight = Vec3::Right;
+		Vec3 vStartUp = Vec3::Up;
+		Vec3 vStartLook = Vec3::Backward;
+
+		// 시작 시점 pivot 기준 camera local offset
+		// x = dot(camPos - pivotPos, startRight)
+		// y = dot(camPos - pivotPos, startUp)
+		// z = dot(camPos - pivotPos, -startLook)
+		Vec3 vBaseOffsetLocal = Vec3::Zero;
 	}SCRIPTED_CAMERA_SHOT_RUNTIME;
 #pragma endregion
 

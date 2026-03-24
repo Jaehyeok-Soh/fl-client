@@ -327,7 +327,7 @@ void CActionState::SetCCTImpuls_Conversion(Vec3 vLocal)
 	Matrix matWorld = pTransform->Get_WorldMatrix();
 
 	Vec3 vRight = matWorld.Right();
-	Vec3 vLook = matWorld.Forward();
+	Vec3 vLook = matWorld.Backward();
 
 	vRight.y = 0.f;
 	vLook.y = 0.f;

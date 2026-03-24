@@ -26,6 +26,7 @@
 // parts objs
 #include "Weapon.h"
 #include "Body.h"
+#include "Sword.h"
 #include "Gun.h"
 #include "PartEffect.h"
 #include "SocketObject.h"
@@ -654,6 +655,33 @@ CPlayer::State CPlayer::Get_CurState()
     CActionState* pAction = Get_Component<CActionState>();
 
     return static_cast<CPlayer::State>(pAction->Get_CurrentStateIndex());
+}
+
+ICameraAnchorProvider* CPlayer::Get_CameraAnchorProvider(_int iPartIndex)
+{
+    if (iPartIndex < 0 || iPartIndex >= Part::END)
+        return nullptr;
+
+    switch (iPartIndex)
+    {
+    case Part::BODY:
+        return Get_Part<CBody>(Part::BODY);
+    //case Part::SWORD:
+    //    return Get_Part<CSword>(Part::SWORD);
+    //case Part::GUN:
+    //    return Get_Part<CGun>(Part::GUN);
+    //case Part::Dual_R:
+    //    return Get_Part<CSword>(Part::Dual_R);
+    //case Part::Dual_L:
+    //    return Get_Part<CSword>(Part::Dual_L);
+    default:
+        nullptr;
+    }
+}
+
+CTransform* CPlayer::Get_CameraAnchorOwnerTransform()
+{
+    return Get_Component<CTransform>();
 }
 
 HRESULT CPlayer::Ready_BaseStates()
