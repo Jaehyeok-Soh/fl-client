@@ -689,8 +689,22 @@ HRESULT CRender_Manager::Render_NoneBlend()
 	m_visibleFar.clear();
 
 	// Static Object depth Copy하기.
+		// 잠시 그리기 멈추기.
+	m_pGameInstance->End_MRT();
+	// 복사하기
+	if (m_pGameInstance->Get_CurrentLevelIndex() != 2/*Loading이 아닐때 */)
+	{
+		m_pGameInstance->Copy_StaticObject_DepthResource(ERenderTarget::StaticObject_DepthCopy);
 
-	
+		//// 바인딩
+		if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::StaticObject_DepthCopy, m_pShader)))
+			return E_FAIL;
+	}
+
+	// 다시 그리기
+	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::GameObjects, false, true)))
+		return E_FAIL;
+	//
 
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])
 	{
@@ -1320,6 +1334,18 @@ HRESULT CRender_Manager::Ready_RT()
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Depth, &desc)))
 			return E_FAIL;
 	}
+
+	// For. Target_Depth_Copy
+	{
+		CRenderTarget::RENDERTARGET_DESC desc = {};
+		desc.ePixelFormat = DXGI_FORMAT_R32G32_FLOAT;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
+		desc.vClearColor = Vec4::Zero;
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::StaticObject_DepthCopy, &desc)))
+			return E_FAIL;
+	}
+
 	// For. Target_ObjectInfo
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};

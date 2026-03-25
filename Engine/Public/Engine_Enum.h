@@ -162,6 +162,7 @@ namespace Engine
 		PerlinNoise,
 		RT_OIT_Accum,
 		RT_OIT_REVEAL,
+		RT_StaticObject_DepthCopy,
 		COUNT
 	};
 	constexpr const char* g_SRVNames[static_cast<unsigned int>(EFXSRV::COUNT)] =
@@ -190,7 +191,8 @@ namespace Engine
 		"g_SSAONoiseTexture",
 		"g_PerlinNoise",
 		"g_RenderTargetOITAccumTexture",
-		"g_RenderTargetOITRevealTexture"
+		"g_RenderTargetOITRevealTexture",
+		"g_RenderTarget_StaticObject_DepthCopy"
 	};
 	//===================
 	// Sound

@@ -347,6 +347,7 @@ public:
 	HRESULT End_MRT();
 	HRESULT Bind_RT_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
+	HRESULT Copy_StaticObject_DepthResource(ERenderTarget eTarget);
 	ID3D11ShaderResourceView* Get_RenderTargetSRV(ERenderTarget eTarget);
 	SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc();
 	const SHADER_SSAOPARAM_DESC& Get_SSAOParamDesc() const;
