@@ -1,0 +1,50 @@
+{
+    "Category": "MONSTER_STATE",
+    "Objects": [
+        {
+            "setStates": [
+                "Idle"
+            ],
+            "strTag": "NPC_Veteran",
+            "vecMonsterStateDesc": [
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Idle"
+                    ],
+                    "strName": "Idle",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_NPC_Veteran_Npc_Fuer_Idle"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [],
+                    "vecWeaponAnimNames": []
+                }
+            ]
+        }
+    ]
+}

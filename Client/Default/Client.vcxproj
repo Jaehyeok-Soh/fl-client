@@ -177,6 +177,8 @@
     <ClInclude Include="..\Public\Canvas.h" />
     <ClInclude Include="..\Public\NPC_Kid_1.h" />
     <ClInclude Include="..\Public\NPC_Kid_Body_1.h" />
+    <ClInclude Include="..\Public\NPC_Veteran.h" />
+    <ClInclude Include="..\Public\NPC_Veteran_Body.h" />
     <ClInclude Include="..\Public\NPC_Villager_1.h" />
     <ClInclude Include="..\Public\NPC_Villager_Body_1.h" />
     <ClInclude Include="..\Public\State_SpecialDash.h" />
@@ -441,6 +443,8 @@
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\NPC_Kid_1.cpp" />
     <ClCompile Include="..\Private\NPC_Kid_Body_1.cpp" />
+    <ClCompile Include="..\Private\NPC_Veteran.cpp" />
+    <ClCompile Include="..\Private\NPC_Veteran_Body.cpp" />
     <ClCompile Include="..\Private\NPC_Villager_1.cpp" />
     <ClCompile Include="..\Private\NPC_Villager_Body_1.cpp" />
     <ClCompile Include="..\Private\State_SpecialDash.cpp" />

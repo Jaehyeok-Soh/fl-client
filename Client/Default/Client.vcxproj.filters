@@ -847,9 +847,6 @@
     <Filter Include="03. GameObject\ContainerObjects\NPC\Tavern">
       <UniqueIdentifier>{5d36a635-b601-455f-ae50-73e086388a50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\PartObjects\NPC\Body\Tavern">
-      <UniqueIdentifier>{941ffcde-7e16-44aa-bbe0-d42bee691b50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\InteractiveObject\00. WeaponPickUp">
       <UniqueIdentifier>{bec36d74-1c86-4e94-904a-727139f1fa48}</UniqueIdentifier>
     </Filter>
@@ -885,6 +882,15 @@
     </Filter>
     <Filter Include="03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner">
       <UniqueIdentifier>{0cd91d27-cdc1-42c4-a270-7fd8b5fb3f7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Veteran">
+      <UniqueIdentifier>{c9c80261-7d25-442b-8645-de322cc02840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Veteran">
+      <UniqueIdentifier>{aed80655-8a0b-40ce-9b3d-da9533ac621d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Tavern">
+      <UniqueIdentifier>{941ffcde-7e16-44aa-bbe0-d42bee691b50}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse">
       <UniqueIdentifier>{4ab11ed8-f4c7-4a37-b517-e395be659758}</UniqueIdentifier>
@@ -1615,7 +1621,7 @@
       <Filter>03. GameObject\ContainerObjects\NPC\Tavern</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\NPC_Tavern_Body.h">
-      <Filter>03. GameObject\PartObjects\NPC\Body\Tavern</Filter>
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Tavern</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CameraEventBinder.h">
       <Filter>07. System\04. Binder</Filter>
@@ -1655,6 +1661,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\TriggerBox_MonsterWaveSpawner.h">
       <Filter>03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Veteran.h">
+      <Filter>03. GameObject\ContainerObjects\NPC\Veteran</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Veteran_Body.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Veteran</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIScreenPulse_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>
@@ -2375,7 +2387,7 @@
       <Filter>03. GameObject\ContainerObjects\NPC\Tavern</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\NPC_Tavern_Body.cpp">
-      <Filter>03. GameObject\PartObjects\NPC\Body\Tavern</Filter>
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Tavern</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CameraEventBinder.cpp">
       <Filter>07. System\04. Binder</Filter>
@@ -2412,6 +2424,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_MonsterWaveSpawner.cpp">
       <Filter>03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Veteran.cpp">
+      <Filter>03. GameObject\ContainerObjects\NPC\Veteran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Veteran_Body.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Veteran</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIScreenPulse_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>

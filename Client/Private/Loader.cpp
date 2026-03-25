@@ -150,6 +150,8 @@
 #include "NPC_Villager_Body_1.h"
 #include "NPC_Kid_1.h"
 #include "NPC_Kid_Body_1.h"
+#include "NPC_Veteran.h"
+#include "NPC_Veteran_Body.h"
 
 //=================
 // UI
@@ -784,6 +786,23 @@ HRESULT CLoader::Loading_For_Logo()
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Kid_1_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
+	// For.Prototype_Component_Model_NPC_Veteran
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.wstrModelFolderName = L"NPC_Veteran";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = { 3 };
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Veteran_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_CameraController
@@ -937,6 +956,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Kid_1_Prototype_Tag, CNPC_Kid_1::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_NPC_Kid_1_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Kid_1_Body_Prototype_Tag, CNPC_Kid_Body_1::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Veteran
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Veteran_Prototype_Tag, CNPC_Veteran::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Kid_1_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Veteran_Body_Prototype_Tag, CNPC_Veteran_Body::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
