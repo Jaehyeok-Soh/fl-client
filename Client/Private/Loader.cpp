@@ -116,6 +116,7 @@
 //=================
 #include "TriggerBox_LevelChange.h"
 #include "TriggerBox_MonsterSpawner.h"
+#include "TriggerBox_MonsterWaveSpawner.h"
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
 #include "TriggerBox_TutorialUIEvent.h"
 #include "TriggerBox_CinematicPlayer.h"
@@ -897,6 +898,7 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region TriggerBox
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_ChangeLevel_Prototype_Tag,			CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterSapwner_Prototype_Tag,			CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterWaveSpawner_Prototype_Tag,		CTriggerBox_MonsterWaveSpawner::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, CTriggerBox_GlobalEvent_BroadCaster::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_TutorialUIEvent_PrototypeTag,			CTriggerBox_TutorialUIEvent::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_CinematicPlayer_PrototypeTag,			CTriggerBox_CinematicPlayer::Create(m_pDevice, m_pDeviceContext));

@@ -87,6 +87,7 @@ public:
 	HRESULT								Ready_Batch_Object();
 	HRESULT								Ready_Batch_InteractiveObject();
 	HRESULT								Ready_TriggerBox_MonsterSpawner();
+	HRESULT								Ready_TriggerBox_MonsterWaveSpawner();
 
 	HRESULT								Ready_Water();
 	HRESULT								Ready_Env();
@@ -236,6 +237,7 @@ public:
 
 	HRESULT								Render_TriggerBox_ChangeLevel();
 	HRESULT								Render_TriggerBox_MonsterSpawner();
+	HRESULT								Render_TriggerBox_MonsterWaveSpawner();
 	HRESULT								Render_TriggerBox_GlobalEvent_BroadCaster();
 
 	/* Collider Type 전용 Render함수 */
