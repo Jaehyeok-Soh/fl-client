@@ -313,7 +313,8 @@ void CUIQuestNavi_Image::Tick_Navi_Fx(const _float fTimeDelta)
 	if (m_isChange)
 	{
 		m_isChange = false;
-
+		// UI SOUND
+		m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_TUTORIAL_NAVI"), 0.5f);
 		Set_Visible();
 	}
 } 

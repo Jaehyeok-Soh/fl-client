@@ -892,6 +892,9 @@
     <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Tavern">
       <UniqueIdentifier>{941ffcde-7e16-44aa-bbe0-d42bee691b50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse">
+      <UniqueIdentifier>{4ab11ed8-f4c7-4a37-b517-e395be659758}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1665,6 +1668,9 @@
     <ClInclude Include="..\Public\NPC_Veteran_Body.h">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Veteran</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIScreenPulse_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2424,6 +2430,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\NPC_Veteran_Body.cpp">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Veteran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIScreenPulse_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -952,6 +952,9 @@ enum class EUIDImageSubClassType
 	MINIGAME_CIRCLE_CLEAR_CIRCLE_FX,
 	MINIGAME_CIRCLE_END,
 
+	//½ºÅ©¸° ÆÞ½º 
+		SCREEN_PULSE,
+
 	END
 };
 
@@ -1117,6 +1120,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::MINIGAME_CIRCLE_SPACE_ICON,				"MINIGAME_CIRCLE_SPACE_ICON" },
 	{ EUIDImageSubClassType::MINIGAME_CIRCLE_CLEAR_CIRCLE_FX,			"MINIGAME_CIRCLE_CLEAR_CIRCLE_FX" },
 	{ EUIDImageSubClassType::MINIGAME_CIRCLE_END,						"MINIGAME_CIRCLE_END" },
+
+	{ EUIDImageSubClassType::SCREEN_PULSE,								"SCREEN_PULSE" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1284,6 +1289,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MINIGAME_CIRCLE_SPACE_ICON")			return EUIDImageSubClassType::MINIGAME_CIRCLE_SPACE_ICON;
 	if (str == "MINIGAME_CIRCLE_CLEAR_CIRCLE_FX")		return EUIDImageSubClassType::MINIGAME_CIRCLE_CLEAR_CIRCLE_FX;
 	if (str == "MINIGAME_CIRCLE_END")					return EUIDImageSubClassType::MINIGAME_CIRCLE_END;
+	
+	if (str == "SCREEN_PULSE")							return EUIDImageSubClassType::SCREEN_PULSE;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1453,6 +1460,8 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MINIGAME_CIRCLE_SPACE_ICON:				return "MINIGAME_CIRCLE_SPACE_ICON";
 	case EUIDImageSubClassType::MINIGAME_CIRCLE_CLEAR_CIRCLE_FX:		return "MINIGAME_CIRCLE_CLEAR_CIRCLE_FX";
 	case EUIDImageSubClassType::MINIGAME_CIRCLE_END:					return "MINIGAME_CIRCLE_END";
+
+	case EUIDImageSubClassType::SCREEN_PULSE:							return "SCREEN_PULSE";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

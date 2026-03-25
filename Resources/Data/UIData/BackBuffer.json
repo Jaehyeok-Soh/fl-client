@@ -137,6 +137,47 @@
                 "y": 1.0,
                 "z": 0.0
             }
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "PROGRESS_BAR",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 1.0,
+            "fDelay": 0.0,
+            "fHeight": 900.0,
+            "fPosX": 0.0,
+            "fPosY": 0.0,
+            "fPosZ": 1.0,
+            "fRotate": 0.0,
+            "fScale": 1.0,
+            "fWidth": 1600.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 4,
+            "iShaderPass": 1,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": false,
+            "isVisible": true,
+            "strAlphaMaskTextureTag": "",
+            "strCanvasName": "BackBuffer",
+            "strGlowTextureTag": "",
+            "strNoiseTextureTag": "",
+            "strTag": "Bl",
+            "strTextureTag": "Texture_White",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
         }
     ]
 }

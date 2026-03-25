@@ -209,6 +209,7 @@
 #include "UIConversation_Image.h"
 #include "UIMouseCursor_Image.h"
 #include "UIMiniGame_Circle_Image.h"
+#include "UIScreenPulse_Image.h"
 //=================
 // Resource
 //=================
@@ -313,6 +314,7 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_LoadLevel()
 {
+
 #pragma region ToolData
 	{
 		// Regist Document
@@ -1036,6 +1038,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MouseCursorImage",			CUIMouseCursor_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleImage",		CUIMiniGame_Circle_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleText",		CUIMiniGame_Circle_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ScreenPulseImage",			CUIScreenPulse_Image::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	
@@ -1541,6 +1544,12 @@ HRESULT CLoader::Ready_Spawner()
 HRESULT CLoader::Ready_Sounds()
 {
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Tutorial")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Static")))
 		return E_FAIL;
 
 	return S_OK;
