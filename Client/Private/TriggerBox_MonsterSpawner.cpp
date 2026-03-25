@@ -100,7 +100,7 @@ HRESULT CTriggerBox_MonsterSpawner::Register_Pool(_uint iLevelId, _uint iFindPro
     case DTO::EMakeMonsterType::Dog:
     {
         auto desc = CMonster_Dog::Get_PreSetDesc(iLevelId);
-        m_pGameInstance->Regist_Pool(iLevelId, g_wszPool_Monster_Dog, g_wszMonstereLayer, ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Dog_Prototype_Tag, &desc, numPool + 60);
+        m_pGameInstance->Regist_Pool(iLevelId, g_wszPool_Monster_Dog, g_wszMonstereLayer, ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Dog_Prototype_Tag, &desc, numPool + 80);
     }
     break;
     case DTO::EMakeMonsterType::Boomer:
