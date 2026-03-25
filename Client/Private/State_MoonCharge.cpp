@@ -38,8 +38,8 @@ HRESULT CState_MoonCharge::Start(void* pArg, _bool bForce)
 		break;
 
 	case static_cast<_int>(CPlayer::MELEE::DUAL):
-		m_tKeyTimer.fMaxTime = 55.f / ANIMTIC;
-		m_fHoldWeaponTime = 100.f / ANIMTIC;
+		m_tKeyTimer.fMaxTime = 55.f / ANIMTIC_3;
+		m_fHoldWeaponTime = 100.f / ANIMTIC_3;
 		break;
 	}
 

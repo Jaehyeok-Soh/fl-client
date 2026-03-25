@@ -5,6 +5,7 @@
 // 부모 statebase를 하나 생성
 
 #define ANIMTIC (24.f * 1.2f)
+#define ANIMTIC_3 (24.f * 1.3f)
 
 NS_BEGIN(Client)
 class CGun;

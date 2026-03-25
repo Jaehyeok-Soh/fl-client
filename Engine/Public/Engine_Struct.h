@@ -709,6 +709,19 @@ namespace Engine
 
 #pragma endregion
 
+#pragma region BONEMove_CS
+
+	typedef struct tagBoneMoveCB
+	{
+		int							iMovingIdx	= { -1 };
+		unsigned int				iBoneNums	= { 0 };
+		SimpleMath::Vector2			Padding0	= {};
+
+		SimpleMath::Matrix			matOffset = { Matrix::Identity };
+	}CS_CB_MU_BONEMOVE;
+
+#pragma endregion
+
 #pragma region BONECOM_CS
 
 	// output

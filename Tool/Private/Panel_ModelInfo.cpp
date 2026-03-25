@@ -39,6 +39,8 @@ void CPanel_ModelInfo::Update(const _float fTimeDelta)
 		m_iModleRefAnimIdx = pObjModle->Get_RefAdditive_AnimIdx();
 		m_iModelPosanimIdx = pObjModle->Get_PosAdditive_AnimIdx();
 
+		m_bModelMoveOn		= pObjModle->Get_MoveBoneOn();
+		m_iModleMoveAnimIdx = pObjModle->Get_MoveInfo().iMovingIdx;
 		//m_iRootBondIdx = tInfo.pModel->Get_RootBone();
 		//m_fRootMotionOffset = tInfo.pModel->Get_Animatioin_MotionOffset(m_iCurAnimIdx);
 	}
@@ -69,6 +71,8 @@ void CPanel_ModelInfo::Render_ModelInfo()
 	
 	Render_AdditiveInfo();
 
+	Render_MoveBoneInfo();
+
 	ImGui::End();
 }
 
@@ -88,6 +92,23 @@ void CPanel_ModelInfo::Render_RootMotionInfo()
 	if (ImGui::Button("Apply##RootBone"))
 	{
 		Set_RootBone();
+	}
+
+	ImGui::SetNextItemWidth(120.f); // 원하는 픽셀 길이
+	ImGui::InputFloat("RootMotion Offset All", &m_fRootMotionOffsetAll, 0.01f, 1.0f, "%.3f");
+
+	/* 값 보정 */
+	if (m_iRootBondIdx < 0.f)
+		m_iRootBondIdx = 0.f;
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Apply##RootBoneOffsetAlldsdffad"))
+	{
+		if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+		{
+			m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_Animtion_MotionOffset_All(m_fRootMotionOffsetAll);
+		}
 	}
 
 }
@@ -164,7 +185,7 @@ void CPanel_ModelInfo::Render_AdditiveInfo()
 
 	// additive on off?
 	{
-		ImGui::Text("Current Additive On ? : %u", (_int)m_bModelAdditiveOn);
+		ImGui::Text("Current Additive On : %u", (_int)m_bModelAdditiveOn);
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60);
 		ImGui::SliderInt("0 : Off, 1 : On##AddtivieAnimApplyEunbi", &m_iSelectAdditiveOn, 0, 1);
@@ -208,6 +229,76 @@ void CPanel_ModelInfo::Render_AdditiveInfo()
 			if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
 				m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_AdditivePos_AnimIdx(m_iSelectPosanimIdx);
 		}
+	}
+}
+
+void CPanel_ModelInfo::Render_MoveBoneInfo()
+{
+	/* tool */
+
+	ImGui::Separator();
+
+	// MoveBone on off?
+	{
+		ImGui::Text("Current MoveBone On : %u", (_int)m_iSelectMoveOn);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60);
+		ImGui::SliderInt("0 : Off, 1 : On##MoveBoneAnimApplyEunbi", &m_iSelectMoveOn, 0, 1);
+		ImGui::SameLine();
+		if (ImGui::Button("Apply##MoveBoneAnimApplyEunbi"))
+		{
+			if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+				m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_MoveBone((_bool)m_iSelectMoveOn);
+		}
+	}
+
+	// MoveBone index
+	{
+		ImGui::Text("Current MoveBone Index : %d", m_iModleMoveAnimIdx);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(120);
+		ImGui::InputInt("Select MoveBone Index##EnumbiRefAnimiddsfdfsdx", &m_iSelectMoveAnimIdx, 1);
+		// 최소값 -1 제한
+		if (m_iSelectMoveAnimIdx < -1)
+			m_iSelectMoveAnimIdx = -1;
+	}
+
+	// move info
+	{
+		MOVE_SRT();
+	}
+}
+
+void CPanel_ModelInfo::MOVE_SRT()
+{
+	{
+		ImGui::Text("TRANSFORM");
+		ImGui::Spacing();
+
+		ImGui::Text(" SCALE X Y Z");
+		ImGui::InputFloat3("##scale##move", m_vScale);
+		ImGui::Spacing();
+
+		ImGui::Text(" ROTATION X Y Z");
+		ImGui::InputFloat3("##rotation##move", m_vPYR);
+		ImGui::Spacing();
+
+		ImGui::Text(" POSITION X Y Z");
+		ImGui::InputFloat3("##position##move", m_vTranslation);
+		ImGui::Spacing();
+	}
+
+	if (ImGui::Button("Apply MoveInfos Info##move"))
+	{
+		CS_CB_MU_BONEMOVE tCB = {};
+
+		tCB.iMovingIdx = m_iSelectMoveAnimIdx;
+
+		Matrix matSR = Matrix::CreateScale(m_vScale[0], m_vScale[1], m_vScale[2]) * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(m_vPYR[1]), XMConvertToRadians(m_vPYR[0]), XMConvertToRadians(m_vPYR[2]));
+		tCB.matOffset = matSR * Matrix::CreateTranslation(m_vTranslation[0], m_vTranslation[1], m_vTranslation[2]);
+
+		if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+			m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_MoveBoneCS(tCB);
 	}
 }
 

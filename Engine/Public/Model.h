@@ -73,7 +73,7 @@ private:
 		END
 	};
 
-	enum class AnimUpdateState { NORMAL, BLEND, MIX, ADDITIVE, RAGDOLL };
+	enum class AnimUpdateState { NORMAL, BLEND, MIX, ADDITIVE, RAGDOLL, MYMOVE };
 
 	enum class CS_SB_IDX : _uint
 	{
@@ -114,7 +114,7 @@ public:
 	HRESULT								Change_Animation(CComputeShader* pAnimEComShader,_uint iAnimationIndex, _bool bBlend, _bool isLoop = true, _bool bForce = false);
 	void								Add_Animation(class CModelAnimation* pAnimation) { m_vecAnimations.push_back(pAnimation); }
 	// Transform과 CCT를 바인딩 안할 시 RootMotion적용은 되나, 포지션을 반영안한다.
-	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr, CComputeShader* pRagDollCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
+	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr, CComputeShader* pRagDollCS = nullptr, CComputeShader* pBoneMoveCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
 	void								Update_PartModel(CComputeShader* pParentBoneComBineCS, CComputeShader* pChildBonePartCS);
 
 	// bind funcs
@@ -153,6 +153,13 @@ public:
 	_bool	Get_MixBool() const { return m_bMixAnim; }
 	const vector<_int>& Get_MixIdx() const { return m_vecMixAnimIndices; }
 	_uint Get_MixSize() const { return (_uint)m_vecMixAnimIndices.size(); }
+
+public:
+	void Set_MoveBone(_bool bMove) { m_bMoveBone = bMove; }
+	void Set_MoveBoneCS(CS_CB_MU_BONEMOVE tCBData) { m_tBoneMoveCB = tCBData; m_tBoneMoveCB.iBoneNums = Get_BoneCount(); }
+
+	_bool Get_MoveBoneOn() const { return m_bMoveBone; }
+	const CS_CB_MU_BONEMOVE& Get_MoveInfo() const { return m_tBoneMoveCB; }
 
 	// getter funcs
 public:
@@ -262,21 +269,21 @@ private:
 
 	// animation funcs
 private:
-	void								Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
-	void								Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
+	void								Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr, CComputeShader* pBoneMoveCS = nullptr);
+	void								Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr, CComputeShader* pBoneMoveCS = nullptr);
 
 	HRESULT								Build_AnimationIndexTable();
 	void								Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
-	void								Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
+	void								Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr, CComputeShader* pBoneMoveCS = nullptr);
 	void								End_AnimationPlayState(AnimationPlayState eState, AnimationPlayState eNextState);
 	void								Change_AnimationPlayState(AnimationPlayState eState, CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
 
 	void								Play_Begin(CComputeShader* pAnimEvalCS = nullptr, _uint iAnimationIndex =0, _bool bChannelReset = true);
-	void								Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
+	void								Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr, CComputeShader* pBoneMoveCS = nullptr);
 	void								Play_End(AnimationPlayState eNextState);
 
 	void								Blend_Begin(_uint CurAnimationIndex);
-	void								Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr);
+	void								Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditive = nullptr, CComputeShader* pRagDollCS = nullptr, CComputeShader* pBoneMoveCS = nullptr);
 	void								Blend_End();
 
 	// ready funcs
@@ -376,6 +383,10 @@ private:
 	_bool								m_bAdditiveAnim			= { false };
 
 	_uint								m_iBlendRootType = { 0 };
+
+	// move bone
+	_bool								m_bMoveBone = { false };
+	CS_CB_MU_BONEMOVE					m_tBoneMoveCB = {};
 
 	// compute shader 변수
 private:

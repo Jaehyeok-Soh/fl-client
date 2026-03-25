@@ -103,6 +103,8 @@ HRESULT CBody::Initialize(void* pArg)
 		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_04"))->Set_AnimationSpeed(1.3f);
 		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_SlideAttack"))->Set_AnimationSpeed(1.5f);
 		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_FallAttack_End"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_HeavyAttack_Start"))->Set_AnimationSpeed(1.3f);
+		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_HeavyAttack_End"))->Set_AnimationSpeed(1.3f);
 
 		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01"))->Set_AnimationSpeed(1.9f);
 		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02"))->Set_AnimationSpeed(1.3f);
@@ -147,7 +149,7 @@ void CBody::Update(_float fTimeDelta)
 	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
 	Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS, m_pAdditiveMixCS);
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS, m_pAdditiveMixCS,nullptr, m_pBoneMoveCS);
 	Get_Component<CRenderFx>()->Update(fTimeDelta);
 }
 
@@ -580,6 +582,23 @@ HRESULT CBody::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
 		if (FAILED(Add_Script_Component(L"ComputeShader_AnimAdditiveMix", L"Prototype_Component_Shader_AnimAdditiveMix", &ShaderDesc, CAST_VOID_PP(&m_pAdditiveMixCS))))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : BoneMove  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "FINAL_SRT_SRV";
+
+		ShaderDesc.InputBufferNum = 0;
+		ShaderDesc.bMakeSB = false;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "FINAL_SRT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMove", L"Prototype_Component_Shader_BoneMove", &ShaderDesc, CAST_VOID_PP(&m_pBoneMoveCS))))
 			return E_FAIL;
 	}
 

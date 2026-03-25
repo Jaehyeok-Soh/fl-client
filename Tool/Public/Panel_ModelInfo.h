@@ -36,6 +36,8 @@ private:
 
 	_float m_iAnimationSpeed = { 1.f };
 
+	_float m_fRootMotionOffsetAll = { 1.f };
+
 	// additive data
 private:
 	_int	m_iSelectAdditiveOn = { false };
@@ -48,6 +50,18 @@ private:
 
 	CGameObject* pObj = { nullptr };
 
+	// moveBone values
+private:
+	_int	m_iSelectMoveOn = { false };
+	_bool	m_bModelMoveOn	= { false };
+
+	_int	m_iSelectMoveAnimIdx	= { -1 };
+	_int	m_iModleMoveAnimIdx		= { -1 };
+
+	_float m_vScale[3]		= { 1.f,1.f,1.f };
+	_float m_vPYR[3]			= { 0.f,0.f,0.f };
+	_float m_vTranslation[3]	= { 0.f,0.f,0.f };
+
 	// render
 private:
 	void Render_ObjInfo();
@@ -55,6 +69,9 @@ private:
 	void Render_ModelInfo();
 	void Render_RootMotionInfo();
 	void Render_AdditiveInfo();
+
+	void Render_MoveBoneInfo();
+	void MOVE_SRT();
 
 	void Render_AnimationInfo();
 	void Anim_Info();

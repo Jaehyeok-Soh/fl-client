@@ -22,15 +22,13 @@ struct SRT
     float  Padding1;
 };
 
-cbuffer MU_BONENUMS
+cbuffer MU_BONEMOVE
 {
     MU_ELEMENT g_MuElements;
 };
 
-StructuredBuffer<SRT>           MU_PRESRTS;
-
-RWStructuredBuffer<SRT>         BONECOMBINED_TRANSFORMS;
-StructuredBuffer<SRT>           BONECOMBINED_TRANSFORMS_SRV;
+RWStructuredBuffer<SRT>         FINAL_SRT;
+StructuredBuffer<SRT>           FINAL_SRT_SRV;
 
 
 // Warp/Wavefront는 32명씩 묶여서 연산을 한다.
@@ -43,35 +41,33 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     if (iIdx >= g_MuElements.iBoneNums)
         return;
     
+    float4x4 matIdentity = float4x4(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+    );
+    
+    bool bIdentity = (g_MuElements.matOffset == matIdentity);
+    
     // moving할 뼈라면
     if (g_MuElements.iMovingIdx == iIdx)
     {
-        float4x4 matPreTransform = mul(mul(CreateScale(MU_PRESRTS[iIdx].vScale), CreateRotaion_FromQuat(MU_PRESRTS[iIdx].vQuat)),
-                                CreateTranslation(MU_PRESRTS[iIdx].vTranslation));
+        float4x4 matPreTransform = mul(mul(CreateScale(FINAL_SRT[iIdx].vScale), CreateRotaion_FromQuat(FINAL_SRT[iIdx].vQuat)),
+                                CreateTranslation(FINAL_SRT[iIdx].vTranslation));
         
-        float4x4 matMoveingTranform = mul(matPreTransform, g_MuElements.matOffset);
+        float4x4 matMoveingTranform = mul(g_MuElements.matOffset, matPreTransform);
         
         float3 vFinalScale, vFinalTranslation;
         float4 vFinalQuat;
         DecomposeMatrix(matMoveingTranform, vFinalScale, vFinalQuat, vFinalTranslation);
 
-        BONECOMBINED_TRANSFORMS[iIdx].Padding0      = 0.f;
-        BONECOMBINED_TRANSFORMS[iIdx].Padding1      = 0.f;
-        BONECOMBINED_TRANSFORMS[iIdx].vScale        = vFinalScale;
-        BONECOMBINED_TRANSFORMS[iIdx].vQuat         = vFinalQuat;
-        BONECOMBINED_TRANSFORMS[iIdx].vTranslation  = vFinalTranslation;
+        FINAL_SRT[iIdx].Padding0 = 0.f;
+        FINAL_SRT[iIdx].Padding1 = 0.f;
+        FINAL_SRT[iIdx].vScale = vFinalScale;
+        FINAL_SRT[iIdx].vQuat = vFinalQuat;
+        FINAL_SRT[iIdx].vTranslation = vFinalTranslation;
     }
-    
-    // 아니라면 바로 넣기
-    else
-    {
-        BONECOMBINED_TRANSFORMS[iIdx].Padding0      = 0.f;
-        BONECOMBINED_TRANSFORMS[iIdx].Padding1      = 0.f;
-        BONECOMBINED_TRANSFORMS[iIdx].vScale        = MU_PRESRTS[iIdx].vScale;
-        BONECOMBINED_TRANSFORMS[iIdx].vQuat         = MU_PRESRTS[iIdx].vQuat;
-        BONECOMBINED_TRANSFORMS[iIdx].vTranslation  = MU_PRESRTS[iIdx].vTranslation;
-    }
-
 }
 
 technique11 T0
