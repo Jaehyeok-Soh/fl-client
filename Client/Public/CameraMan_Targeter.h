@@ -22,6 +22,7 @@ enum class TargeterState : _uint
 	CINEMATIC,
 	TURN,
 	SCRIPTED_SHOT,
+	SCRIPTED_RECOVER,
 	END
 };
 
@@ -105,6 +106,11 @@ private:
 	void ScriptedShot_Update_Priority(const _float fTimeDelta);
 	void ScriptedShot_Update(const _float fTimeDelta);
 	void ScriptedShot_End();
+
+	void ScriptedRecover_Begin();
+	void ScriptedRecover_Update_Priority(const _float fTimeDelta);
+	void ScriptedRecover_Update(const _float fTimeDelta);
+	void ScriptedRecover_End();
 private:
 	void Update_Input(const _float fTimeDelta);
 	void Chase_Actor(const _float fTimeDelta);
@@ -125,7 +131,7 @@ private:
 
 	// For. ScriptShot State
 	// pivot과 lookat 캡쳐
-	void Capture_ScriptedShotSnapshot();
+	void Initialize_ScriptedShotSnapshot();
 	// camera interface로 등록해놨던 Object들 정보 세팅
 	_bool Resolve_ScriptedShotAnchors(OUT CAMERA_ANCHOR_RESULT& outPivot, OUT CAMERA_ANCHOR_RESULT& outLookAt);
 	// pivot basis를 기준으로 전체 샷의 오프셋을 계산
@@ -145,6 +151,12 @@ private:
 	// Pivot 및 LookAt 오브젝트 레퍼런스 관리
 	void Retain_ScriptedShotBindingObjects();
 	void Release_ScriptedShotBindingObjects();
+
+	// For. ScriptRecover State
+	void Prepare_RecoverFromScript();
+	CAMERA_POSE Solve_GameplayReturnPose();
+	_float Eval_RecoverEase(_float fT);
+	CAMERA_POSE Lerp_CameraPose(const CAMERA_POSE& tA, const CAMERA_POSE& tB, _float fT) const;
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
 	CGameObject* m_pLockonTarget = { nullptr };
@@ -200,7 +212,7 @@ private:
 	SCRIPTED_CAMERA_SHOT_DESC         m_tScriptedShotDesc = {};
 	SCRIPTED_CAMERA_SHOT_BINDING_DESC m_tScriptedShotBinding = {};
 	SCRIPTED_CAMERA_SHOT_RUNTIME      m_tScriptedShotRuntime = {};
-
+	SCRIPTED_RECOVER_RUNTIME		  m_tRecoverRuntime = {};
 	// Update에서 계산해서 Ready_Before_Render에서 소비
 	CAMERA_MODIFIER_RESULT m_tScriptedOverlayResult = {};
 	_bool                  m_bUseScriptedOverlay = false;

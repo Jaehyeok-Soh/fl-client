@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine_Define.h"
+#include "CameraRuntimeTypes.h"
 #include "EngineConsole.h"
 #include <windows.h>
 
@@ -1019,18 +1020,32 @@ namespace Client
 		Engine::CAMERA_ANCHOR_RESULT tLastPivotAnchor = {};
 		Engine::CAMERA_ANCHOR_RESULT tLastLookAtAnchor = {};
 
+		// 연출 시작 직전 상태 저장
+		CAMERA_POSE tPreShotPose = {};
+
 		// 샷 시작 카메라 basis
 		Vec3 vStartCamPosWS = Vec3::Zero;
 		Vec3 vStartRight = Vec3::Right;
 		Vec3 vStartUp = Vec3::Up;
 		Vec3 vStartLook = Vec3::Backward;
 
+		// 실제 shot 시작
 		// 시작 시점 pivot 기준 camera local offset
 		// x = dot(camPos - pivotPos, startRight)
 		// y = dot(camPos - pivotPos, startUp)
 		// z = dot(camPos - pivotPos, -startLook)
 		Vec3 vBaseOffsetLocal = Vec3::Zero;
 	}SCRIPTED_CAMERA_SHOT_RUNTIME;
+	typedef struct tagScriptedRecoverRuntime
+	{
+		bool bActive = { false };
+		float fElapsed = { 0.f };
+		float fDuration = { 0.5f };
+		ECameraShotEase eEase = ECameraShotEase::EaseInOutQuad;
+
+		CAMERA_POSE tStartPose = {};
+		CAMERA_POSE tTargetPose = {};
+	}SCRIPTED_RECOVER_RUNTIME;
 #pragma endregion
 
 

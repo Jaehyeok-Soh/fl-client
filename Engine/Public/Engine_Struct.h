@@ -1256,6 +1256,24 @@ namespace Engine
 		SimpleMath::Vector3 vUp = SimpleMath::Vector3::Up;
 		SimpleMath::Vector3 vLook = SimpleMath::Vector3::Forward;
 	}CAMERA_ANCHOR_RESULT;
+	// Shot 시작
+	typedef struct tagCameraShotStartDesc
+	{
+		ECameraShotStartMode eMode = ECameraShotStartMode::InheritCurrent;
+		// FixedFromPivot일때 사용
+		SimpleMath::Vector3 vLocaloffset = SimpleMath::Vector3::Zero;
+		// Begin시점에 시작 포즈를 transform에 즉시 적용할지
+		bool bApplyStartPoseImmediately = true;
+	}CAMERA_SHOT_START_DESC;
+	// Shot Recover
+	typedef struct tagCameraShotRecoverDesc
+	{
+		ECameraShotRecoverTarget eTarget = ECameraShotRecoverTarget::GameplaySolved;
+		ECameraShotRecoverMethod eMethod = ECameraShotRecoverMethod::Blend;
+
+		float fBlendTime = { 1.f };
+		ECameraShotEase eEase = ECameraShotEase::EaseInOutQuad;
+	}CAMERA_SHOT_RECOVER_DESC;
 	// Shot 바인딩
 	typedef struct tagCameraBindTargetDesc
 	{
@@ -1334,8 +1352,11 @@ namespace Engine
 	typedef struct tagScriptedCameraShotDesc
 	{
 		string                         strName;
+		
+		CAMERA_SHOT_START_DESC         Start;
 		SCRIPTED_PIVOT_SHOT_DESC       Pivot;
 		SCRIPTED_CONTROLLER_LAYER_DESC Controller;
+		CAMERA_SHOT_RECOVER_DESC       Recover;
 	}SCRIPTED_CAMERA_SHOT_DESC;
 #pragma endregion
 

@@ -716,6 +716,29 @@ namespace Engine
 		EaseOutBack,
 		END
 	};
+	//===========================
+	// Camera For Recover
+	//===========================
+	enum class ECameraShotStartMode : unsigned int
+	{
+		InheritCurrent = 0,		// 현재 카메라에서 이어짐
+		FixedFromPivot,			// pivot 기준 고정 local offset으로 시작
+		END
+	};
+
+	enum class ECameraShotRecoverTarget : unsigned int
+	{
+		PreshotSnap = 0,		// 연출 시작 직전 카메라 상태
+		GameplaySolved,			// 연출 종료 시점의 정상 게임플레이 카메라 목표
+		END
+	};
+
+	enum class ECameraShotRecoverMethod : unsigned int
+	{
+		Snap = 0,              // 즉시 복귀
+		Blend,                 // 보간 복귀
+		END
+	};
 #pragma endregion
 	//===================
 	// Object enum tag

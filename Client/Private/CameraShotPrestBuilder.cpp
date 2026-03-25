@@ -12,17 +12,16 @@ namespace
     }
 }
 
-SCRIPTED_CAMERA_SHOT_DESC CCameraShotPrestBuilder::Make_PlayerPullBackShot()
+
+Engine::SCRIPTED_CAMERA_SHOT_DESC CCameraShotPrestBuilder::Make_DebugPlain5SecShot()
 {
     Engine::SCRIPTED_CAMERA_SHOT_DESC tDesc = {};
     tDesc.strName = "DebugPlain5SecShot";
 
-    auto Make_Channel = [](std::initializer_list<Engine::CAMERA_SHOT_KEY_1D> keys)
-        {
-            Engine::CAMERA_SHOT_CHANNEL_1D ch;
-            ch.vecKeys.assign(keys.begin(), keys.end());
-            return ch;
-        };
+    auto& Start = tDesc.Start;
+    Start.eMode = Engine::ECameraShotStartMode::FixedFromPivot;
+    Start.vLocaloffset = Vec3(0.f, 0.5f, 3.0f);
+    Start.bApplyStartPoseImmediately = true;
 
     auto& Pivot = tDesc.Pivot;
     Pivot.fDuration = 5.0f;
@@ -31,7 +30,6 @@ SCRIPTED_CAMERA_SHOT_DESC CCameraShotPrestBuilder::Make_PlayerPullBackShot()
     Pivot.bLookAtTarget = true;
     Pivot.eBasisMode = Engine::ECameraBasisMode::WORLD;
 
-    // pivot/lookat 자체 이동은 디버그 1차에서는 끔
     Pivot.PivotOffsetX = {};
     Pivot.PivotOffsetY = {};
     Pivot.PivotOffsetZ = {};
@@ -40,7 +38,6 @@ SCRIPTED_CAMERA_SHOT_DESC CCameraShotPrestBuilder::Make_PlayerPullBackShot()
     Pivot.LookAtOffsetY = {};
     Pivot.LookAtOffsetZ = {};
 
-    // 시작 위치에서 너무 확 튀지 않게, 천천히 뒤로만 빠짐
     Pivot.LocalX = {};
     Pivot.LocalY = {};
     Pivot.LocalZ = Make_Channel({
@@ -49,84 +46,42 @@ SCRIPTED_CAMERA_SHOT_DESC CCameraShotPrestBuilder::Make_PlayerPullBackShot()
         {5.00f, 1.0f, Engine::ECameraShotEase::SmoothStep},
         });
 
-    // orbit은 아주 약하게만
     Pivot.OrbitYawDeg = Make_Channel({
+        {0.00f, 0.0f, Engine::ECameraShotEase::SmoothStep},
+        {2.50f, 8.0f, Engine::ECameraShotEase::EaseInOutQuad},
+        {5.00f, 0.0f, Engine::ECameraShotEase::EaseInOutQuad},
+        });
+
+    tDesc.Controller = {};
+
+    auto& Recover = tDesc.Recover;
+    Recover.eTarget = Engine::ECameraShotRecoverTarget::GameplaySolved;
+    Recover.eMethod = Engine::ECameraShotRecoverMethod::Blend;
+    Recover.fBlendTime = 0.6f;
+    Recover.eEase = Engine::ECameraShotEase::EaseInOutQuad;
+
+    return tDesc;
+}
+
+Engine::SCRIPTED_CAMERA_SHOT_DESC CCameraShotPrestBuilder::Make_DebugBossPlain5SecShot()
+{
+    Engine::SCRIPTED_CAMERA_SHOT_DESC tDesc = Make_DebugPlain5SecShot();
+    tDesc.strName = "DebugBossPlain5SecShot";
+
+    tDesc.Start.eMode = Engine::ECameraShotStartMode::FixedFromPivot;
+    tDesc.Start.vLocaloffset = Vec3(0.f, 0.8f, 4.0f);
+
+    tDesc.Pivot.eBasisMode = Engine::ECameraBasisMode::WORLD;
+    tDesc.Pivot.OrbitYawDeg = Make_Channel({
         {0.00f,  0.0f, Engine::ECameraShotEase::SmoothStep},
-        {2.50f,  8.0f, Engine::ECameraShotEase::EaseInOutQuad},
+        {2.50f, 12.0f, Engine::ECameraShotEase::EaseInOutQuad},
         {5.00f,  0.0f, Engine::ECameraShotEase::EaseInOutQuad},
         });
 
-    auto& Ctrl = tDesc.Controller;
-
-    // 디버그용은 controller 영향 제거
-    Ctrl.FovDeltaDeg = {};
-    Ctrl.RotYawDeg = {};
-    Ctrl.RotPitchDeg = {};
-    Ctrl.RotRollDeg = {};
-    Ctrl.LocalPosX = {};
-    Ctrl.LocalPosY = {};
-    Ctrl.LocalPosZ = {};
-
     return tDesc;
 }
 
-SCRIPTED_CAMERA_SHOT_DESC CCameraShotPrestBuilder::Make_BossHeadOrbitShot()
-{
-    Engine::SCRIPTED_CAMERA_SHOT_DESC tDesc = {};
-    tDesc.strName = "BossHeadOrbitShot";
-
-    auto& Pivot = tDesc.Pivot;
-    Pivot.fDuration = 0.9f;
-    Pivot.bFollowLivePivot = true;
-    Pivot.bFollowLiveLookAt = true;
-    Pivot.bLookAtTarget = true;
-    Pivot.eBasisMode = Engine::ECameraBasisMode::ANCHOR_OWNER;
-
-    Pivot.PivotOffsetY = Make_Channel({
-        {0.00f, 0.0f,  Engine::ECameraShotEase::SmoothStep},
-        {0.30f, 0.12f, Engine::ECameraShotEase::EaseOutQuad},
-        {0.90f, 0.0f,  Engine::ECameraShotEase::SmoothStep},
-        });
-
-    Pivot.LookAtOffsetY = Make_Channel({
-        {0.00f, 0.0f,  Engine::ECameraShotEase::SmoothStep},
-        {0.20f, 0.08f, Engine::ECameraShotEase::EaseOutQuad},
-        {0.90f, 0.0f,  Engine::ECameraShotEase::SmoothStep},
-        });
-
-    Pivot.LocalZ = Make_Channel({
-        {0.00f, 0.0f,  Engine::ECameraShotEase::SmoothStep},
-        {0.10f, 1.2f,  Engine::ECameraShotEase::EaseOutQuad},
-        {0.32f, 2.3f,  Engine::ECameraShotEase::EaseOutBack},
-        {0.60f, 1.0f,  Engine::ECameraShotEase::EaseInOutQuad},
-        {0.90f, 1.8f,  Engine::ECameraShotEase::SmoothStep},
-        });
-
-    Pivot.OrbitYawDeg = Make_Channel({
-        {0.00f,  0.0f, Engine::ECameraShotEase::SmoothStep},
-        {0.25f, 15.0f, Engine::ECameraShotEase::EaseOutQuad},
-        {0.55f, -8.0f, Engine::ECameraShotEase::EaseInOutQuad},
-        {0.90f,  0.0f, Engine::ECameraShotEase::SmoothStep},
-        });
-
-    auto& Ctrl = tDesc.Controller;
-    Ctrl.FovDeltaDeg = Make_Channel({
-        {0.00f, 0.0f, Engine::ECameraShotEase::SmoothStep},
-        {0.18f, 8.0f, Engine::ECameraShotEase::EaseOutQuad},
-        {0.90f, 0.0f, Engine::ECameraShotEase::SmoothStep},
-        });
-
-    Ctrl.RotRollDeg = Make_Channel({
-        {0.00f, 0.0f, Engine::ECameraShotEase::SmoothStep},
-        {0.30f, 3.0f, Engine::ECameraShotEase::EaseOutQuad},
-        {0.55f, -2.0f, Engine::ECameraShotEase::EaseInOutQuad},
-        {0.90f, 0.0f, Engine::ECameraShotEase::SmoothStep},
-        });
-
-    return tDesc;
-}
-
-SCRIPTED_CAMERA_SHOT_BINDING_DESC CCameraShotPrestBuilder::Make_PlayerCamSocketBinding()
+Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC CCameraShotPrestBuilder::Make_DebugPlayerBinding()
 {
     Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding = {};
 
@@ -140,24 +95,98 @@ SCRIPTED_CAMERA_SHOT_BINDING_DESC CCameraShotPrestBuilder::Make_PlayerCamSocketB
     return tBinding;
 }
 
-SCRIPTED_CAMERA_SHOT_BINDING_DESC CCameraShotPrestBuilder::Make_BossHeadBinding(CGameObject* pBoss)
+Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC CCameraShotPrestBuilder::Make_DebugBossBinding(Engine::CGameObject* pBoss)
 {
     Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding = {};
 
     tBinding.pviot.eSource = Engine::ECameraAnchorSource::OBJECT;
     tBinding.pviot.pObject = pBoss;
-    tBinding.pviot.eResolve = Engine::ECameraAnchorResolve::CAM_SOCKET;
-    tBinding.LookAt.iPartIndex = 0;
-    tBinding.pviot.vLocalOffset = Vec3(0.f, 0.08f, 0.f);
+    tBinding.pviot.eResolve = Engine::ECameraAnchorResolve::BONE;
+    tBinding.pviot.iPartIndex = 0;
+    tBinding.pviot.strAnchorTag = "foot_r";
+    tBinding.pviot.vLocalOffset = Vec3(0.f, 0.05f, 0.f);
 
-    tBinding.bUseSeparateLookAt = true;
-
-    tBinding.LookAt.eSource = Engine::ECameraAnchorSource::OBJECT;
-    tBinding.LookAt.pObject = pBoss;
-    tBinding.LookAt.eResolve = Engine::ECameraAnchorResolve::BONE;
-    tBinding.LookAt.iPartIndex = 0;
-    tBinding.LookAt.strAnchorTag = "foot_r";
-    tBinding.LookAt.vLocalOffset = Vec3(0.f, 0.03f, 0.f);
+    tBinding.bUseSeparateLookAt = false;
 
     return tBinding;
+}
+
+void CCameraShotPrestBuilder::Set_Start_InheritCurrent(Engine::SCRIPTED_CAMERA_SHOT_DESC& tDesc)
+{
+    tDesc.Start.eMode = Engine::ECameraShotStartMode::InheritCurrent;
+    tDesc.Start.vLocaloffset = Vec3(0.f, 0.5f, 3.0f);
+    tDesc.Start.bApplyStartPoseImmediately = true;
+}
+
+void CCameraShotPrestBuilder::Set_Start_FixedFromPivot(
+    Engine::SCRIPTED_CAMERA_SHOT_DESC& tDesc,
+    const Vec3& vLocalOffset,
+    _bool bApplyImmediately)
+{
+    tDesc.Start.eMode = Engine::ECameraShotStartMode::FixedFromPivot;
+    tDesc.Start.vLocaloffset = vLocalOffset;
+    tDesc.Start.bApplyStartPoseImmediately = bApplyImmediately;
+}
+
+void CCameraShotPrestBuilder::Set_Recover_PreShotSnap(Engine::SCRIPTED_CAMERA_SHOT_DESC& tDesc)
+{
+    tDesc.Recover.eTarget = Engine::ECameraShotRecoverTarget::PreshotSnap;
+    tDesc.Recover.eMethod = Engine::ECameraShotRecoverMethod::Snap;
+    tDesc.Recover.fBlendTime = 0.0f;
+    tDesc.Recover.eEase = Engine::ECameraShotEase::EaseInOutQuad;
+}
+
+void CCameraShotPrestBuilder::Set_Recover_PreShotBlend(Engine::SCRIPTED_CAMERA_SHOT_DESC& tDesc, _float fBlendTime)
+{
+    tDesc.Recover.eTarget = Engine::ECameraShotRecoverTarget::PreshotSnap;
+    tDesc.Recover.eMethod = Engine::ECameraShotRecoverMethod::Blend;
+    tDesc.Recover.fBlendTime = fBlendTime;
+    tDesc.Recover.eEase = Engine::ECameraShotEase::EaseInOutQuad;
+}
+
+void CCameraShotPrestBuilder::Set_Recover_GameplayBlend(Engine::SCRIPTED_CAMERA_SHOT_DESC& tDesc, _float fBlendTime)
+{
+    tDesc.Recover.eTarget = Engine::ECameraShotRecoverTarget::GameplaySolved;
+    tDesc.Recover.eMethod = Engine::ECameraShotRecoverMethod::Blend;
+    tDesc.Recover.fBlendTime = fBlendTime;
+    tDesc.Recover.eEase = Engine::ECameraShotEase::EaseInOutQuad;
+}
+
+void CCameraShotPrestBuilder::Make_Test_PlayerShot_PreShotBlend(
+    OUT Engine::SCRIPTED_CAMERA_SHOT_DESC& tDesc,
+    OUT Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding)
+{
+    tDesc = Make_DebugPlain5SecShot();
+    tBinding = Make_DebugPlayerBinding();
+
+    Set_Start_FixedFromPivot(tDesc, Vec3(0.f, 0.5f, 3.0f), true);
+    Set_Recover_PreShotBlend(tDesc, 0.7f);
+}
+
+void CCameraShotPrestBuilder::Make_Test_PlayerShot_GameplayBlend(
+    OUT Engine::SCRIPTED_CAMERA_SHOT_DESC& tDesc,
+    OUT Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding)
+{
+    tDesc = Make_DebugPlain5SecShot();
+    tBinding = Make_DebugPlayerBinding();
+
+    Set_Start_FixedFromPivot(tDesc, Vec3(0.f, 0.5f, 3.0f), true);
+    Set_Recover_GameplayBlend(tDesc, 0.6f);
+}
+
+void CCameraShotPrestBuilder::Make_Test_BossShot_PreShotBlend(Engine::CGameObject* pBoss, OUT Engine::SCRIPTED_CAMERA_SHOT_DESC& tDesc, OUT Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding)
+{
+
+}
+
+void CCameraShotPrestBuilder::Make_Test_BossShot_GameplayBlend(
+    Engine::CGameObject* pBoss,
+    OUT Engine::SCRIPTED_CAMERA_SHOT_DESC& tDesc,
+    OUT Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding)
+{
+    tDesc = Make_DebugBossPlain5SecShot();
+    tBinding = Make_DebugBossBinding(pBoss);
+
+    Set_Start_FixedFromPivot(tDesc, Vec3(0.f, 0.8f, 4.0f), true);
+    Set_Recover_GameplayBlend(tDesc, 2.f);
 }

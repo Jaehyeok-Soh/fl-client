@@ -278,9 +278,11 @@ HRESULT CPlayer::Render()
 
 void CPlayer::Play_DebugShot()
 {
-    auto tDesc = CCameraShotPrestBuilder::Make_PlayerPullBackShot();
-    auto tBinding = CCameraShotPrestBuilder::Make_PlayerCamSocketBinding();
-    m_pGameInstance->Request_PlayCameraShot(tDesc, tBinding);
+    SCRIPTED_CAMERA_SHOT_DESC desc;
+    SCRIPTED_CAMERA_SHOT_BINDING_DESC binding;
+
+    CCameraShotPrestBuilder::Make_Test_PlayerShot_PreShotBlend(desc, binding);
+    m_pGameInstance->Request_PlayCameraShot(desc, binding);
 }
 
 void CPlayer::Play_DebugBossShot()
@@ -289,9 +291,9 @@ void CPlayer::Play_DebugBossShot()
     if (pBoss == nullptr)
         return;
 
-    auto tDesc = CCameraShotPrestBuilder::Make_BossHeadOrbitShot();
-    auto tBinding = CCameraShotPrestBuilder::Make_BossHeadBinding(pBoss);
-
+    Engine::SCRIPTED_CAMERA_SHOT_DESC tDesc;
+    Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding;
+    CCameraShotPrestBuilder::Make_Test_BossShot_GameplayBlend(pBoss, tDesc, tBinding);
     m_pGameInstance->Request_PlayCameraShot(tDesc, tBinding);
 }
 
