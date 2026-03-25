@@ -100,8 +100,10 @@ public:
 public:
 	virtual _uint	Get_Capabilities() const override
 	{
-		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
+		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED) | ENUM_TO_UINT(Engine::StateCapability::MOVE);
 	}
+
+	_uint Get_BoneHitFlag() const { return m_iBoneHitTypeFlag; }
 
 public:
 	virtual void Change_PlayerState(STATEKEY eKey, _bool bForce = false);	// change 랩핑 함수 : 필요시 오버라이드
@@ -109,6 +111,8 @@ public:
 	virtual void Change_PlayerHitState(_uint iState, void* pArg = nullptr);
 	
 protected:
+	_uint					m_iBoneHitTypeFlag = { 0 };
+
 	_uint					m_iEndStateIdx		= { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
 	Flags					m_FMoves			= { 0 };

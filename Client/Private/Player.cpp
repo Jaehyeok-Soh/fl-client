@@ -148,11 +148,13 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         return E_FAIL;
 
     CGameInstance::GetInstance()->Add_Actor_Object(this);
-    CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
+    CPlayerActionState* pPlayerState = static_cast<CPlayerActionState*>(Get_Component<CPlayerActionState>());
     if (pPlayerState)
     {
         if (FAILED(pPlayerState->Awake(iCurrentLevelID)))
             return E_FAIL;
+
+        pPlayerState->Change_ActionBoneState(CPlayerActionState::BONE_STATE::NORMAL);
     }
 
 

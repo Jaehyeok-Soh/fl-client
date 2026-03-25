@@ -38,6 +38,8 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 
 	m_iEndStateIdx = ENUM_TO_UINT(CPlayer::State::END);
 
+	m_iBoneHitTypeFlag = CPlayerActionState::BoneHitType::BHT_FORCE_STRONG;
+
 	return S_OK;
 }
 

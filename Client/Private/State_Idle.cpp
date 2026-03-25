@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "ControlContext.h"
+#include "PlayerActionState.h"
 
 #include "GameInstance.h"
 
@@ -15,6 +16,8 @@ HRESULT CState_Idle::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
+
+	m_iBoneHitTypeFlag = CPlayerActionState::BoneHitType::BHT_FORCE_WEAK;
 
 	return S_OK;
 }

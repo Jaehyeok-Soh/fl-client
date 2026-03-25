@@ -23,12 +23,47 @@ public:
 		, AF_Strong = 0x00008
 	};
 
+	enum class BONE_STATE
+	{
+		NORMAL, HITSTART, HITEND, END
+	};
+
+	enum BoneHitType : Flags
+	{
+		/* hit 방향 : main player -> on hit 함수 내부에서 전해줌*/
+		BHT_Front = 0x00001,
+		BHT_BACK = 0x00002,
+
+		/* hit 세기 : cur state 권한 */
+		BHT_FORCE_WEAK = 0x00004,
+		BHT_FORCE_STRONG = 0x00008,
+	};
+
 	typedef struct tagFKeyData
 	{
 		_uint iKeyEvent = { 0 };				// 어떤 이벤트인지
 		_bool bEventCheckOn = { false };		// 이벤트 활성화 됐니?
 	}FKEY_DATA;
 
+	typedef struct tagBoneRatio
+	{
+		_float fTimeAcc = { 0.f };
+		_uint iHitType = { 0 }; //BoneHitType 설정
+
+		_float fLerpHalfTime	= 0.18f;
+		Matrix matFrontHit_Weak	= Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(20.f), XMConvertToRadians(50.f));
+		Matrix matFrontHit_Strong = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(20.f), XMConvertToRadians(80.f));
+
+		Matrix matBackHit_Weak		= Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-20.f), XMConvertToRadians(-40.f));
+		Matrix matBackHit_Strong = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-20.f), XMConvertToRadians(-80.f));
+
+	}BONEHIT_DATA;
+
+	typedef struct tagBoneChangeArgs
+	{
+		_uint iHitType = { 0 }; //BoneHitType 설정
+	}BONESTATE_CHANGE_ARGS;
+	
 private:
 	CPlayerActionState();
 	CPlayerActionState(const CPlayerActionState& rhs);
@@ -76,7 +111,12 @@ public:
 	void		Set_SpecialDashOn(_bool bOn) { m_bCanSpecialDash = bOn; }
 	_bool		Get_SpecialDashOn() const { return m_bCanSpecialDash; }
 
+public:
+	void			Change_ActionBoneState(BONE_STATE eState, BONESTATE_CHANGE_ARGS* pArgs = nullptr);
+
 private:
+	BONE_STATE		m_eBoneState	= { BONE_STATE::END };
+
 	Flags			m_fAttackFlag	= {};
 	HIT_DESC		m_tPreHitDesc	= {};
 
@@ -87,6 +127,20 @@ private:
 
 	Vec3			m_vPivotPos = {};
 	_bool			m_bCanSpecialDash = { false };
+
+	BONEHIT_DATA	m_tBoneHit = {};
+
+private:
+	void Start_BoneState(BONE_STATE ePreState, BONESTATE_CHANGE_ARGS* tArgs);
+	_bool End_BoneState(BONE_STATE eNextState);
+
+	void Update_BoneState(const _float fTimeDelta);
+
+	void Update_Normal(const _float fTimeDelta);
+	void Update_HitStart(const _float fTimeDelta);
+	void Update_HitEnd(const _float fTimeDelta);
+
+	_uint Get_CurState_BoneHitFlag() const;
 
 public:
 	static CPlayerActionState* Create();
