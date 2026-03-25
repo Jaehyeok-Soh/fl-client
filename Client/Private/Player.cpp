@@ -67,7 +67,8 @@
 #include "State_SpecialDash.h"
 
 #pragma endregion
-
+// 0325 - 테스트 후 지울것
+#include "CameraShotPrestBuilder.h"
 #include "GameInstance.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -201,6 +202,11 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
 
 void CPlayer::Update(const _float fTimeDelta)
 {
+    if (KEY_BUTTON_DOWN(DIK_NUMPAD8))
+        Play_DebugShot();
+    if (KEY_BUTTON_DOWN(DIK_NUMPAD9))
+        Play_DebugBossShot();
+
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
     {
         pPlayerState->Update(fTimeDelta);
@@ -268,6 +274,25 @@ HRESULT CPlayer::Render()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CPlayer::Play_DebugShot()
+{
+    auto tDesc = CCameraShotPrestBuilder::Make_PlayerPullBackShot();
+    auto tBinding = CCameraShotPrestBuilder::Make_PlayerCamSocketBinding();
+    m_pGameInstance->Request_PlayCameraShot(tDesc, tBinding);
+}
+
+void CPlayer::Play_DebugBossShot()
+{
+    CGameObject* pBoss = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer, 0);
+    if (pBoss == nullptr)
+        return;
+
+    auto tDesc = CCameraShotPrestBuilder::Make_BossHeadOrbitShot();
+    auto tBinding = CCameraShotPrestBuilder::Make_BossHeadBinding(pBoss);
+
+    m_pGameInstance->Request_PlayCameraShot(tDesc, tBinding);
 }
 
 _int CPlayer::Get_AnimationIndex(const wstring& wstrName)
@@ -677,6 +702,8 @@ ICameraAnchorProvider* CPlayer::Get_CameraAnchorProvider(_int iPartIndex)
     default:
         nullptr;
     }
+
+    return nullptr;
 }
 
 CTransform* CPlayer::Get_CameraAnchorOwnerTransform()

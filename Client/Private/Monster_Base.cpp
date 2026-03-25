@@ -332,7 +332,7 @@ void CMonster_Base::Set_RootMotion_Apply(_bool bApply)
 
 ICameraAnchorProvider* CMonster_Base::Get_CameraAnchorProvider(_int iPartIndex)
 {
-	if (iPartIndex < 0 || iPartIndex <= Part::Enum::END)
+	if (iPartIndex < 0 || iPartIndex >= Part::Enum::END)
 		return nullptr;
 
 	switch (iPartIndex)

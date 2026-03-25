@@ -799,9 +799,6 @@
     <Filter Include="03. GameObject\Camera\00. CameraMan_Targeter">
       <UniqueIdentifier>{150eb9a6-eecf-45a0-9423-b7c324458d5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\Camera\NewFilter1">
-      <UniqueIdentifier>{d45ded89-5b94-43dd-a5e7-0c0cac2cbc91}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99. ETC\Client_Define">
       <UniqueIdentifier>{fde4a4ac-8ede-492c-a268-bd20661a27dd}</UniqueIdentifier>
     </Filter>
@@ -882,6 +879,9 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Lianhuo">
       <UniqueIdentifier>{cb01ec6c-8cde-422b-a20e-27c984607948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\Camera\Builder">
+      <UniqueIdentifier>{d45ded89-5b94-43dd-a5e7-0c0cac2cbc91}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1647,6 +1647,9 @@
     <ClInclude Include="CameraShotUtils.h">
       <Filter>99. ETC\Client_Define</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CameraShotPrestBuilder.h">
+      <Filter>03. GameObject\Camera\Builder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2397,6 +2400,9 @@
     </ClCompile>
     <ClCompile Include="CameraShotUtils.cpp">
       <Filter>99. ETC\Client_Define</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraShotPrestBuilder.cpp">
+      <Filter>03. GameObject\Camera\Builder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

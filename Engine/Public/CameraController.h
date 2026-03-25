@@ -28,6 +28,7 @@ public:
     void Stop_ByType(ECameraModifierType eType);
     void Build_FinalPose(const CAMERA_POSE& tBasePose, OUT CAMERA_POSE& tOutPose) const;
     void Build_FinalPose_FromResult(const CAMERA_POSE& basePose, const CAMERA_MODIFIER_RESULT& tResult, OUT CAMERA_POSE& outPose) const;
+    void Build_FinalPose_WithOverlay(const CAMERA_POSE& basePose, const CAMERA_MODIFIER_RESULT& tOverlay, OUT CAMERA_POSE& outPose) const;
 private: 
     void Add_Modifier(ICameraModifier* pModifier);
     void Remove_FinishedModifiers();
@@ -37,6 +38,7 @@ private:
     ICameraModifier* Create_PositionOffsetModifier(const CAMERA_POSITION_OFFSET_DESC& desc);
     ICameraModifier* Create_RotationOffsetModifier(const CAMERA_ROTATION_OFFSET_DESC& desc);
     void Accumulate_Modifiers(const CAMERA_POSE& tBasePose, CAMERA_MODIFIER_RESULT& tOutResult) const;
+    void Accumulate_Result(IN OUT CAMERA_MODIFIER_RESULT& ioResult, const CAMERA_MODIFIER_RESULT& tAdd) const;
 private:
     CAMERA_CONTROLLER_DESC m_tConfig = {};
     vector<ICameraModifier*> m_vecModifiers;

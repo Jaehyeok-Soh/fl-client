@@ -181,7 +181,7 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_set_impuls", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(param.fParam[0], param.fParam[1], -param.fParam[2])); });
 	REGISTER_FEATURE("feat_set_impuls_right", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(param.fParam[0], 0.f, 0.f)); });
 	REGISTER_FEATURE("feat_set_impuls_up", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(0.f, param.fParam[0], 0.f)); });
-	REGISTER_FEATURE("feat_set_impuls_front", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(0.f, 0.f, -param.fParam[0])); });
+	REGISTER_FEATURE("feat_set_impuls_front", FEATURE{ MONSTERACTIONSTATE(state)->SetCCTImpuls_Conversion(Vec3(0.f, 0.f, param.fParam[0])); });
 
 	REGISTER_FEATURE("feat_set_root_motion_apply", FEATURE{ MONSTERCC(state)->Set_RootMotion_Apply(param.bParam[0]); });
 	

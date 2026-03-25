@@ -143,6 +143,9 @@ public:
 	virtual void		Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT		Render() override;
 
+	// 0325 - 테스트 후 지울것
+	void Play_DebugShot();
+	void Play_DebugBossShot();
 public:
 	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);

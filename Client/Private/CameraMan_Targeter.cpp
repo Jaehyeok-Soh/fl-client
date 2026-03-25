@@ -126,6 +126,31 @@ void CCameraMan_Targeter::Ready_Before_Render(const _float fTimeDelta)
         break;
     }
 
+    if (m_eCurrentState == Client::TargeterState::SCRIPTED_SHOT)
+    {
+        // 필요하면 CGameObject 수준의 기본 Ready_Before_Render만 호출
+        // 프로젝트 상속 구조에 맞게 조정하십시오.
+        CGameObject::Ready_Before_Render(fTimeDelta);
+
+        CAMERA_POSE basePose = Capture_BasePose_FromTransform();
+        CAMERA_POSE finalPose = basePose;
+
+        if (CCameraController* pController = Get_Component<CCameraController>())
+        {
+            if (m_bUseScriptedOverlay)
+                pController->Build_FinalPose_WithOverlay(basePose, m_tScriptedOverlayResult, finalPose);
+            else
+                pController->Build_FinalPose(basePose, finalPose);
+        }
+
+        // overlay의 local/world offset 때문에 최종 위치가 더 밀릴 수 있으므로
+        // 마지막 collision을 한 번 더
+        finalPose.vPos = CheckCameraCollision(finalPose.vPos, m_vLastScriptedPivotWS);
+
+        Apply_FinalPose_ToCamera(finalPose);
+        return;
+    }
+
     Super::Ready_Before_Render(fTimeDelta);
 }
 
@@ -633,6 +658,11 @@ void CCameraMan_Targeter::ScriptedShot_Begin()
     m_tScriptedShotRuntime.bPlaying = true;
     m_tScriptedShotRuntime.bPause = false;
     m_tScriptedShotRuntime.fElapsed = 0.f;
+
+    m_tScriptedOverlayResult = {};
+    m_bUseScriptedOverlay = false;
+    m_vLastScriptedPivotWS = Vec3::Zero;
+
     Capture_ScriptedShotSnapshot();
 }
 
@@ -660,34 +690,29 @@ void CCameraMan_Targeter::ScriptedShot_Update(const _float fTimeDelta)
     Vec3 vPivotWS{};
     Evaluate_ScriptedShotBasePose(fEvalTime, tPivot, tLookAt, tBasePose, vPivotWS);
 
-    CAMERA_MODIFIER_RESULT tModifierResult{};
-    Evaluate_ScriptedControllerResult(fEvalTime, tModifierResult);
+    // base 위치 기준 collision
+    tBasePose.vPos = CheckCameraCollision(tBasePose.vPos, vPivotWS);
 
-    CAMERA_POSE tFinalPose{};
-    if (CCameraController* pController = Get_Component<CCameraController>())
-    {
-        pController->Build_FinalPose_FromResult(tBasePose, tModifierResult, tFinalPose);
-    }
-    else
-    {
-        tFinalPose = tBasePose;
-    }
+    // controller overlay는 캐시에만 저장
+    Evaluate_ScriptedControllerResult(fEvalTime, m_tScriptedOverlayResult);
+    m_bUseScriptedOverlay = true;
+    m_vLastScriptedPivotWS = vPivotWS;
 
-    // 최종 위치 기준 collision resolve
-    tFinalPose.vPos = CheckCameraCollision(tFinalPose.vPos, vPivotWS);
-
-    Apply_CameraPose(tFinalPose);
+    // Transform만 갱신
+    Apply_CameraPose(tBasePose);
 
     if (m_tScriptedShotRuntime.fElapsed >= fDuration)
-    {
         Change_CamState(TargeterState::NORMAL);
-    }
 }
 
 void CCameraMan_Targeter::ScriptedShot_End()
 {
     m_tScriptedShotRuntime.bPlaying = false;
     m_tScriptedShotRuntime.bPause = false;
+
+    m_tScriptedOverlayResult = {};
+    m_bUseScriptedOverlay = false;
+    m_vLastScriptedPivotWS = Vec3::Zero;
 
     Sync_NormalStateFromCurrentPose();
     Release_ScriptedShotBindingObjects();
@@ -1148,7 +1173,7 @@ void CCameraMan_Targeter::Evaluate_ScriptedShotBasePose(_float fTime, const CAME
     outBasePose.vUp = vUp;
     outBasePose.vLook = vLook;
 
-    outBasePose.fFovRad = Get_Component<CCamera>()->Get_Fov();
+    outBasePose.fFovRad = Get_Component<CCamera>()->Get_BaseFov();
 }
 
 void CCameraMan_Targeter::Evaluate_ScriptedControllerResult(_float fTime, CAMERA_MODIFIER_RESULT& outResult) const
@@ -1184,8 +1209,6 @@ void CCameraMan_Targeter::Apply_CameraPose(const CAMERA_POSE& tPose)
     pTransform->Set_Info(TRANSFORM_INFO_STATE::UP, tPose.vUp);
     pTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, tPose.vLook);
     pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, tPose.vPos);
-
-    Get_Component<CCamera>()->Set_Fov(tPose.fFovRad);
 }
 
 void CCameraMan_Targeter::Sync_NormalStateFromCurrentPose()

@@ -70,7 +70,6 @@ public:
 public:
 	_float	Get_Pitch() const { return m_fPitch; }
 	void	Set_TurnData(TURNCAM_DATA& tData) { m_tTurnData = tData; }
-
 private:
 	void Update_Priority_State(const _float fTimeDelta);
 	void Update_State(const _float fTimeDelta);
@@ -201,6 +200,11 @@ private:
 	SCRIPTED_CAMERA_SHOT_DESC         m_tScriptedShotDesc = {};
 	SCRIPTED_CAMERA_SHOT_BINDING_DESC m_tScriptedShotBinding = {};
 	SCRIPTED_CAMERA_SHOT_RUNTIME      m_tScriptedShotRuntime = {};
+
+	// Update에서 계산해서 Ready_Before_Render에서 소비
+	CAMERA_MODIFIER_RESULT m_tScriptedOverlayResult = {};
+	_bool                  m_bUseScriptedOverlay = false;
+	Vec3                   m_vLastScriptedPivotWS = Vec3::Zero;
 #ifdef _DEBUG
 public:
 	void Debug_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& tDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding);
