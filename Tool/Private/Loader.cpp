@@ -474,8 +474,8 @@ HRESULT CLoader::Loading_For_UI()
 	// Resource Component
 	//=================
 
-	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Tool/";
-	//std::filesystem::path root = L"../../Resources/Textures/UI/UI_Client/";
+	//std::filesystem::path root = L"../../Resources/Textures/UI/UI_Tool/";
+	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Client/";
 
 	for (auto& entry : std::filesystem::recursive_directory_iterator(root))
 	{

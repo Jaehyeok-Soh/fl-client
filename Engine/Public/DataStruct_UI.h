@@ -188,7 +188,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	})
 
 #pragma region 텍스트 서브 클래스
-	enum class EUITextSubClassType
+enum class EUITextSubClassType
 {
 	NONE_OWNER,
 	// 플레이어 스탯 
@@ -314,6 +314,14 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 	MINIGAME_CIRCLE_CLEAR_WORLD_TEXT,
 	MINIGAME_CIRCLE_END,
 
+
+	// 타이틀 
+	TITLE_BEGIN,
+	TITLE_WARNING,
+	TITLE_INFO,
+	TITLE_END,
+
+
 	END
 };
 
@@ -427,6 +435,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT,	"MINIGAME_CIRCLE_CLEAR_WORLD_TEXT" },
 		{ EUITextSubClassType::MINIGAME_CIRCLE_END,					"MINIGAME_CIRCLE_END" },
 
+		{ EUITextSubClassType::TITLE_BEGIN,					"TITLE_BEGIN" },
+		{ EUITextSubClassType::TITLE_WARNING,				"TITLE_WARNING" },
+		{ EUITextSubClassType::TITLE_INFO,					"TITLE_INFO" },
+		{ EUITextSubClassType::TITLE_END,					"TITLE_END" },
+
 		{ EUITextSubClassType::END,									"END" },
 	})
 	inline EUITextSubClassType StringToUITextSubClassType(const std::string& str)
@@ -537,6 +550,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "MINIGAME_CIRCLE_CLEAR_TEXT")				return EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT;
 	else if (str == "MINIGAME_CIRCLE_CLEAR_WORLD_TEXT")			return EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT;
 	else if (str == "MINIGAME_CIRCLE_END")						return EUITextSubClassType::MINIGAME_CIRCLE_END;
+	
+	else if (str == "TITLE_BEGIN")								return EUITextSubClassType::TITLE_BEGIN;
+	else if (str == "TITLE_WARNING")							return EUITextSubClassType::TITLE_WARNING;
+	else if (str == "TITLE_INFO")								return EUITextSubClassType::TITLE_INFO;
+	else if (str == "TITLE_END")								return EUITextSubClassType::TITLE_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -653,6 +671,11 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_TEXT:			return "MINIGAME_CIRCLE_CLEAR_TEXT";
 	case EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:		return "MINIGAME_CIRCLE_CLEAR_WORLD_TEXT";
 	case EUITextSubClassType::MINIGAME_CIRCLE_END:					return "MINIGAME_CIRCLE_END";
+	
+	case EUITextSubClassType::TITLE_BEGIN:							return "TITLE_BEGIN";
+	case EUITextSubClassType::TITLE_WARNING:						return "TITLE_WARNING";
+	case EUITextSubClassType::TITLE_INFO:							return "TITLE_INFO";
+	case EUITextSubClassType::TITLE_END:							return "TITLE_END";
 	
 	default:														return "END";
 	}
@@ -953,7 +976,15 @@ enum class EUIDImageSubClassType
 	MINIGAME_CIRCLE_END,
 
 	//스크린 펄스 
-		SCREEN_PULSE,
+	SCREEN_PULSE,
+
+	// 타이틀
+	TITLE_BEGIN,
+	TITLE_WARNING,
+	TITLE_INFO,
+	TITLE_ICON,
+	TITLE_NAME,
+	TITLE_END,
 
 	END
 };
@@ -1123,6 +1154,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 
 	{ EUIDImageSubClassType::SCREEN_PULSE,								"SCREEN_PULSE" },
 
+	{ EUIDImageSubClassType::TITLE_BEGIN,								"TITLE_BEGIN" },
+	{ EUIDImageSubClassType::TITLE_WARNING,								"TITLE_WARNING" },
+	{ EUIDImageSubClassType::TITLE_INFO,								"TITLE_INFO" },
+	{ EUIDImageSubClassType::TITLE_ICON,								"TITLE_ICON" },
+	{ EUIDImageSubClassType::TITLE_NAME,								"TITLE_NAME" },
+	{ EUIDImageSubClassType::TITLE_END,								"TITLE_END" },
+
 
 	{ EUIDImageSubClassType::END,								"END" }
 	})
@@ -1291,6 +1329,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MINIGAME_CIRCLE_END")					return EUIDImageSubClassType::MINIGAME_CIRCLE_END;
 	
 	if (str == "SCREEN_PULSE")							return EUIDImageSubClassType::SCREEN_PULSE;
+
+	if (str == "TITLE_BEGIN")							return EUIDImageSubClassType::TITLE_BEGIN;
+	if (str == "TITLE_WARNING")							return EUIDImageSubClassType::TITLE_WARNING;
+	if (str == "TITLE_INFO")							return EUIDImageSubClassType::TITLE_INFO;
+	if (str == "TITLE_ICON")							return EUIDImageSubClassType::TITLE_ICON;
+	if (str == "TITLE_NAME")							return EUIDImageSubClassType::TITLE_NAME;
+	if (str == "TITLE_END")								return EUIDImageSubClassType::TITLE_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1462,6 +1507,13 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MINIGAME_CIRCLE_END:					return "MINIGAME_CIRCLE_END";
 
 	case EUIDImageSubClassType::SCREEN_PULSE:							return "SCREEN_PULSE";
+
+	case EUIDImageSubClassType::TITLE_BEGIN:							return "TITLE_BEGIN";
+	case EUIDImageSubClassType::TITLE_WARNING:							return "TITLE_WARNING";
+	case EUIDImageSubClassType::TITLE_INFO:								return "TITLE_INFO";
+	case EUIDImageSubClassType::TITLE_ICON:								return "TITLE_ICON";
+	case EUIDImageSubClassType::TITLE_NAME:								return "TITLE_NAME";
+	case EUIDImageSubClassType::TITLE_END:								return "TITLE_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

@@ -754,6 +754,7 @@ namespace Tool
 		DISOLVE,
 		NOISE,
 		GLOW,
+		SPRITE_ANIMATION,
 		END
 	};
 
@@ -767,6 +768,7 @@ namespace Tool
 		case EUIShaderPass::DISOLVE: return "DISOLVE";
 		case EUIShaderPass::NOISE: return "NOISE";
 		case EUIShaderPass::GLOW: return "GLOW";
+		case EUIShaderPass::SPRITE_ANIMATION: return "SPRITE_ANIMATION";
 		default: return "";
 		}
 	}
@@ -779,6 +781,7 @@ namespace Tool
 		else if (str == "DISOLVE") return EUIShaderPass::DISOLVE;
 		else if (str == "NOISE") return EUIShaderPass::NOISE;
 		else if (str == "GLOW") return EUIShaderPass::GLOW;
+		else if (str == "SPRITE_ANIMATION") return EUIShaderPass::SPRITE_ANIMATION;
 		else return EUIShaderPass::DEFAULT;
 	}
 
