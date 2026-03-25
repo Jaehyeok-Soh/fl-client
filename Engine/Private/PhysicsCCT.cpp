@@ -126,6 +126,12 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 
 	m_tMoveState.vVelocity += m_tMoveState.vAccelation * fTimeDelta;
 
+	if (!bHasInput && (m_tMoveState.vVelocity.x * m_tMoveState.vVelocity.x + m_tMoveState.vVelocity.z * m_tMoveState.vVelocity.z) < 0.01f)
+	{
+		m_tMoveState.vVelocity.x = 0.f;
+		m_tMoveState.vVelocity.z = 0.f;
+	}
+
 	m_tMoveState.vVelocity.y = PxClamp(
 		m_tMoveState.vVelocity.y,
 		m_tMoveState.CMVerticalSpeed.y,
@@ -157,7 +163,7 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 	}
 
 	if (m_CollisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN))
-		m_tMoveState.vVelocity.y = 0.f;
+		m_tMoveState.vVelocity.y = -0.1f;
 
 	m_CollisionFlags = Move((m_tMoveState.vVelocity * fTimeDelta) + m_tMoveState.vFixedMove, 0.001f, fTimeDelta);
 
@@ -295,7 +301,7 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 		finalPos += vLook * m_tDesc.vLocalOffset.z;
 	}
 
-	if (!m_tDesc.vLocalOffset.InBounds(Vec3(1e-5f, 1e-5f, 1e-5f)))
+	if (!m_tDesc.vWorldOffset.InBounds(Vec3(1e-5f, 1e-5f, 1e-5f)))
 	{
 		finalPos.x += m_tDesc.vWorldOffset.x;
 		finalPos.y += m_tDesc.vWorldOffset.y;
@@ -323,7 +329,7 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	transform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 
 	if (collisionFlag & PxControllerCollisionFlag::eCOLLISION_DOWN)
-		m_tMoveState.vVelocity.y = 0;
+		m_tMoveState.vVelocity.y = -0.1f;
 
 	return collisionFlag;
 }
