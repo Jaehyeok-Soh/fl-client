@@ -209,6 +209,62 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
+                    "fStartTrackPosition": 141.35133361816406,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_DangerousSpace",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.10000000149011612,
+                        "z": 8.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 181.0,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_FlameBurst",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 8.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
                     "fStartTrackPosition": 29.0,
                     "iAnimIndex": 21,
                     "iBoneFlag": 4,
@@ -361,7 +417,7 @@
                     "strEffectTag": "Boss_LianHuo_DangerousSpace",
                     "vOffset": {
                         "x": 5.0,
-                        "y": 0.0,
+                        "y": 0.10000000149011612,
                         "z": -5.0
                     },
                     "vRotation": {
@@ -389,7 +445,7 @@
                     "strEffectTag": "Boss_LianHuo_DangerousSpace",
                     "vOffset": {
                         "x": 5.0,
-                        "y": 0.0,
+                        "y": 0.10000000149011612,
                         "z": 5.0
                     },
                     "vRotation": {
@@ -417,7 +473,7 @@
                     "strEffectTag": "Boss_LianHuo_DangerousSpace",
                     "vOffset": {
                         "x": -5.0,
-                        "y": 0.0,
+                        "y": 0.10000000149011612,
                         "z": 5.0
                     },
                     "vRotation": {
@@ -445,7 +501,7 @@
                     "strEffectTag": "Boss_LianHuo_DangerousSpace",
                     "vOffset": {
                         "x": -5.0,
-                        "y": 0.0,
+                        "y": 0.10000000149011612,
                         "z": -5.0
                     },
                     "vRotation": {
@@ -601,20 +657,20 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
-                    "fStartTrackPosition": 141.35133361816406,
-                    "iAnimIndex": 16,
+                    "fStartTrackPosition": 65.0,
+                    "iAnimIndex": 17,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
                     "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
-                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
                     "strDescription": "",
                     "strEffectTag": "Boss_LianHuo_DangerousSpace",
                     "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 8.0
+                        "x": 10.0,
+                        "y": 0.10000000149011612,
+                        "z": 10.0
                     },
                     "vRotation": {
                         "x": 0.0,
@@ -629,20 +685,188 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
-                    "fStartTrackPosition": 181.0,
-                    "iAnimIndex": 16,
+                    "fStartTrackPosition": 65.0,
+                    "iAnimIndex": 17,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
                     "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
-                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_DangerousSpace",
+                    "vOffset": {
+                        "x": 10.0,
+                        "y": 0.10000000149011612,
+                        "z": -10.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 65.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_DangerousSpace",
+                    "vOffset": {
+                        "x": -10.0,
+                        "y": 0.10000000149011612,
+                        "z": 10.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 65.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_DangerousSpace",
+                    "vOffset": {
+                        "x": -10.0,
+                        "y": 0.10000000149011612,
+                        "z": -10.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 103.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
                     "strDescription": "",
                     "strEffectTag": "Boss_LianHuo_FlameBurst",
                     "vOffset": {
+                        "x": 10.0,
+                        "y": 0.0,
+                        "z": 10.0
+                    },
+                    "vRotation": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 8.0
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 103.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_FlameBurst",
+                    "vOffset": {
+                        "x": 10.0,
+                        "y": 0.0,
+                        "z": -10.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 103.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_FlameBurst",
+                    "vOffset": {
+                        "x": -10.0,
+                        "y": 0.0,
+                        "z": -10.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 103.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_FlameBurst",
+                    "vOffset": {
+                        "x": -10.0,
+                        "y": 0.0,
+                        "z": 10.0
                     },
                     "vRotation": {
                         "x": 0.0,
