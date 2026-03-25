@@ -218,6 +218,7 @@ void CUITutorial_PopUp_Image::Bind_Events()
 					}
 					if (!m_isFirstEntered)
 					{
+
 						m_isTriggered = true;
 						this->Set_Visible();
 						this->Set_Active(true);
@@ -461,7 +462,10 @@ void CUITutorial_PopUp_Image::Initialize_Visible_Event()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_ICON:
-		Ready_LerpChange(0.5f, 2.f, 1.f, 1.f, m_fDelay);
+		{
+			Ready_LerpChange(0.5f, 2.f, 1.f, 1.f, m_fDelay);
+			m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_TUTORIAL_POPUP_TRIGGER"), 1.f);
+		}
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BG:

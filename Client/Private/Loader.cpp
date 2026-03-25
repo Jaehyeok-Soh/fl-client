@@ -311,6 +311,7 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_LoadLevel()
 {
+
 #pragma region ToolData
 	{
 		// Regist Document
@@ -1518,6 +1519,12 @@ HRESULT CLoader::Ready_Spawner()
 HRESULT CLoader::Ready_Sounds()
 {
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Tutorial")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Static")))
 		return E_FAIL;
 
 	return S_OK;

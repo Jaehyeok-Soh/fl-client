@@ -268,6 +268,20 @@ HRESULT CUIPlayerStat_Progress::Convert_Stat_To_Ratio()
 		break;
 	case DTO::EUISubClassType::PLAYER_ARMOR:
 		f = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
+		if (f > 0.1f)
+		{
+			if (!m_isDefenseTrigger)
+			{
+				m_isDefenseTrigger = true;
+				UIEVENT_DESC Desc = {};
+				Desc.eEventID = EUIEventID::PLAYER_NORMAL_HP;
+				m_pUIManager->Get_UIEvents().Broadcast(Desc);
+			}
+		}
+		else
+		{
+			m_isDefenseTrigger = false;
+		}
 		break;
 	case DTO::EUISubClassType::PLAYER_ENERGY:
 		f = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::MENTAL);
