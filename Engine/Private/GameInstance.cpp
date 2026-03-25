@@ -1520,8 +1520,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pInput_Manager);
-	Safe_Release(m_pTimer_Manager);
-	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pDataRepository);
@@ -1534,6 +1532,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pObjectPool_Manager);
+	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pPrototype_Manager);

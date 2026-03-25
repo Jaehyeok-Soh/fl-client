@@ -218,6 +218,7 @@ void CUITutorial_PopUp_Image::Bind_Events()
 					}
 					if (!m_isFirstEntered)
 					{
+
 						m_isTriggered = true;
 						this->Set_Visible();
 						this->Set_Active(true);
@@ -254,10 +255,12 @@ void CUITutorial_PopUp_Image::Bind_Events()
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_10:
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_11:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_E);
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_12:
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_13:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_Q);
 							break;
 						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_1:
 							break;
@@ -459,7 +462,10 @@ void CUITutorial_PopUp_Image::Initialize_Visible_Event()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_ICON:
-		Ready_LerpChange(0.5f, 2.f, 1.f, 1.f, m_fDelay);
+		{
+			Ready_LerpChange(0.5f, 2.f, 1.f, 1.f, m_fDelay);
+			m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_TUTORIAL_POPUP_TRIGGER"), 1.f);
+		}
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BG:

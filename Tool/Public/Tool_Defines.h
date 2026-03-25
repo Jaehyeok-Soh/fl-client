@@ -427,6 +427,7 @@ namespace Tool
 		/* Trigger Box 관련 */
 		TriggerBox_ChangeLevel,
 		TriggerBox_MonsterSpawner,
+		TriggerBox_MonsterWaveSpawner,
 		TriggerBox_GlobalEvent_BroadCaster,
 		TriggerBox_TutorialUIEvent,
 		TriggerBox_CinematicPlayer,
@@ -490,6 +491,7 @@ namespace Tool
 			/* -------------- Trigger Box -------------- */
 		case Tool::EClientMakePath::TriggerBox_ChangeLevel:					return "TriggerBox_ChangeLevel";
 		case Tool::EClientMakePath::TriggerBox_MonsterSpawner:				return "TriggerBox_MonsterSpawner";
+		case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:			return "TriggerBox_MonsterWaveSpawner";
 		case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:		return "TriggerBox_GlobalEvent_BroadCaster";
 		case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:				return "TriggerBox_TutorialUIEvent";
 		case Tool::EClientMakePath::TriggerBox_CinematicPlayer:				return "TriggerBox_CinematicPlayer";
@@ -528,6 +530,7 @@ namespace Tool
 		/* Trigger Box 관련 */
 		if (strType == "TriggerBox_ChangeLevel")							return EClientMakePath::TriggerBox_ChangeLevel;
 		if (strType == "TriggerBox_MonsterSpawner")							return EClientMakePath::TriggerBox_MonsterSpawner;
+		if (strType == "TriggerBox_MonsterWaveSpawner")						return EClientMakePath::TriggerBox_MonsterWaveSpawner;
 		if (strType == "TriggerBox_GlobalEvent_BroadCaster")				return EClientMakePath::TriggerBox_GlobalEvent_BroadCaster;
 		if (strType == "TriggerBox_TutorialUIEvent")						return EClientMakePath::TriggerBox_TutorialUIEvent;
 		if (strType == "TriggerBox_CinematicPlayer")						return EClientMakePath::TriggerBox_CinematicPlayer;

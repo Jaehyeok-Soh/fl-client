@@ -823,6 +823,7 @@ namespace Client
 	inline constexpr wchar_t g_wszNPC_Tavern_State_Tag[]{ L"NPC_Tavern" };
 	inline constexpr wchar_t g_wszNPC_Villager_1_State_Tag[]{ L"NPC_Villager_1" };
 	inline constexpr wchar_t g_wszNPC_Kid_1_State_Tag[]{ L"NPC_Kid_1" };
+	inline constexpr wchar_t g_wszNPC_Veteran_State_Tag[]{ L"NPC_Veteran" };
 
 #pragma endregion 
 
@@ -840,6 +841,7 @@ namespace Client
 	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Tavern" };
 	inline constexpr wchar_t g_wszNPC_Villager_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Villager_1" };
 	inline constexpr wchar_t g_wszNPC_Kid_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Kid_1" };
+	inline constexpr wchar_t g_wszNPC_Veteran_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Veteran" };
 
 #pragma endregion
 
@@ -924,6 +926,7 @@ namespace Client
 #pragma region Trigger Box ฐüทร
 	inline constexpr wchar_t g_wszTriggerBox_ChangeLevel_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_ChangeLevel" };
 	inline constexpr wchar_t g_wszTriggerBox_MonsterSapwner_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_MonsterSpawner" };
+	inline constexpr wchar_t g_wszTriggerBox_MonsterWaveSpawner_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_MonsterWaveSpawner" };
 	inline constexpr wchar_t g_wszTriggerBox_PhysicsColliderBox_PrototypeTag[]{ L"Prototype_Component_Physics_Collider_TriggerBox" };
 	inline constexpr wchar_t g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_GlobalEvent_BroadCaster" };
 	inline constexpr wchar_t g_wszTriggerBox_TutorialUIEvent_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_TutorialUIEvent" };
@@ -962,6 +965,8 @@ namespace Client
 	inline constexpr wchar_t g_wszNPC_Villager_1_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Villager_1_Body" };
 	inline constexpr wchar_t g_wszNPC_Kid_1_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Kid_1" };
 	inline constexpr wchar_t g_wszNPC_Kid_1_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Kid_1_Body" };
+	inline constexpr wchar_t g_wszNPC_Veteran_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Veteran" };
+	inline constexpr wchar_t g_wszNPC_Veteran_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Veteran_Body" };
 #pragma endregion
 
 #pragma region Part Objects

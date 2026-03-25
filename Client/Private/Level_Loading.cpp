@@ -52,6 +52,7 @@ HRESULT CLevel_Loading::Initialize(ELevelType eNextLevelID)
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
+
 	m_eNextLevelID = eNextLevelID;
 	return S_OK;
 }

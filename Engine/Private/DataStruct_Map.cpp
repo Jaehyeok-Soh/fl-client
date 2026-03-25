@@ -489,6 +489,7 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 		/* Trigger Box ฐüทร */
 	case DTO::EClientMakePath::TriggerBox_ChangeLevel:				return pSource == nullptr ? new TRIGGERBOX_CHANGELEVEL_DESC				: new TRIGGERBOX_CHANGELEVEL_DESC(*static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			return pSource == nullptr ? new TRIGGERBOX_MONSTERSPAWNER_DESC			: new TRIGGERBOX_MONSTERSPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_MonsterWaveSpawner:		return pSource == nullptr ? new TRIGGERBOX_MONSTERWAVESPAWNER_DESC		: new TRIGGERBOX_MONSTERWAVESPAWNER_DESC(*static_cast<TRIGGERBOX_MONSTERWAVESPAWNER_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	return pSource == nullptr ? new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC : new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC(*static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			return pSource == nullptr ? new TRIGGERBOX_TUTORIALUIEVENT_DESC			: new TRIGGERBOX_TUTORIALUIEVENT_DESC(*static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_CinematicPlayer:			return pSource == nullptr ? new TRIGGERBOX_CINEMATICPLAYER_DESC			: new TRIGGERBOX_CINEMATICPLAYER_DESC(*static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pSource));
@@ -1614,11 +1615,9 @@ void TRIGGERBOX_DESC::from_Json(const json& LoadJson)
 	}
 	if (LoadJson.contains("Rotation"))
 	{
-		//Vec3 vDegree{};
-		//Engine_Utils::read_vec3_xyz(LoadJson["Rotation"], vDegree);
-		//this->vRotation = Vec3(XMConvertToRadians(vDegree.x), XMConvertToRadians(vDegree.y), XMConvertToRadians(vDegree.z));
-		
-		Engine_Utils::read_vec3_xyz(LoadJson["Rotation"], this->vRotation);
+		Vec3 vDegree{};
+		Engine_Utils::read_vec3_xyz(LoadJson["Rotation"], vDegree);
+		this->vRotation = Vec3(XMConvertToRadians(vDegree.x), XMConvertToRadians(vDegree.y), XMConvertToRadians(vDegree.z));
 	}
 
 
@@ -1773,6 +1772,117 @@ void TRIGGERBOX_MONSTERSPAWNER_DESC::to_Json(json& SaveJson)
 	}
 }
 
+
+void MonsterWaveInfo::from_Json(const json& LoadJson)
+{
+	LoadJson.at("fSpawnTime").get_to(this->fSpawnTime);
+
+	if (LoadJson.contains("iTotalSpawnCount"))
+		LoadJson.at("iTotalSpawnCount").get_to(this->iTotalSpawnCount);
+	else
+		this->iTotalSpawnCount = -1;
+
+	if (LoadJson.contains("iCurrentSpawnCount"))
+		LoadJson.at("iCurrentSpawnCount").get_to(this->iCurrentSpawnCount);
+	else
+		this->iCurrentSpawnCount = -1;
+
+	if (LoadJson.contains("fSpawnInterval"))
+		LoadJson.at("fSpawnInterval").get_to(this->fSpawnInterval);
+	else
+		this->fSpawnInterval = -1;
+
+	this->vecMonsterSpawnData.clear();
+	if (LoadJson.contains("Monster Spawn Data"))
+	{
+		const auto& MonsterSpawnData_LoadJsonArray = LoadJson["Monster Spawn Data"];
+		this->vecMonsterSpawnData.reserve(MonsterSpawnData_LoadJsonArray.size());
+		for (auto& MonsterSpawnData_LoadJson : MonsterSpawnData_LoadJsonArray)
+		{
+			if (MonsterSpawnData_LoadJson.is_null())
+				continue;
+			MonsterSpawnData tData{};
+			tData.from_Json(MonsterSpawnData_LoadJson);
+			vecMonsterSpawnData.push_back(tData);
+		}
+	}
+}
+
+void MonsterWaveInfo::to_Json(json& SaveJson)
+{
+	SaveJson["fSpawnTime"] = this->fSpawnTime;
+	SaveJson["iTotalSpawnCount"] = this->iTotalSpawnCount;
+	SaveJson["iCurrentSpawnCount"] = this->iCurrentSpawnCount;
+	SaveJson["fSpawnInterval"] = this->fSpawnInterval;
+
+	for (auto& MonsterSpawnData : this->vecMonsterSpawnData)
+	{
+		json SaveObject{};
+		MonsterSpawnData.to_Json(SaveObject);
+		SaveJson["Monster Spawn Data"].push_back(SaveObject);
+	}
+}
+
+void TRIGGERBOX_MONSTERWAVESPAWNER_DESC::from_Json(const json& LoadJson)
+{
+	Super::from_Json(LoadJson);
+
+	LoadJson.at("eType").get_to(this->eType);
+
+	if (LoadJson.contains("iTotalWaveCount"))
+		LoadJson.at("iTotalWaveCount").get_to(this->iTotalWaveCount);
+	else
+		this->iTotalWaveCount = -1;
+
+	if (LoadJson.contains("iCurrentWaveCount"))
+		LoadJson.at("iCurrentWaveCount").get_to(this->iCurrentWaveCount);
+	else
+		this->iCurrentWaveCount = -1;
+
+	if (LoadJson.contains("fWaveTime"))
+		LoadJson.at("fWaveTime").get_to(this->fWaveTime);
+	else
+		this->fWaveTime = -1.f;
+
+	if (LoadJson.contains("fCurrentWaveTime"))
+		LoadJson.at("fCurrentWaveTime").get_to(this->fCurrentWaveTime);
+	else
+		this->fCurrentWaveTime = -1.f;
+
+	this->vecWaveInfo.clear();
+	if (LoadJson.contains("vecWaveInfo"))
+	{
+		const auto& MonsterSpawnData_LoadJsonArray = LoadJson["vecWaveInfo"];
+		this->vecWaveInfo.reserve(MonsterSpawnData_LoadJsonArray.size());
+		for (auto& MonsterSpawnData_LoadJson : MonsterSpawnData_LoadJsonArray)
+		{
+			if (MonsterSpawnData_LoadJson.is_null())
+				continue;
+			MonsterWaveInfo tData{};
+			tData.from_Json(MonsterSpawnData_LoadJson);
+			vecWaveInfo.push_back(tData);
+		}
+	}
+}
+
+void TRIGGERBOX_MONSTERWAVESPAWNER_DESC::to_Json(json& SaveJson)
+{
+	Super::to_Json(SaveJson);
+
+	SaveJson["eType"] = this->eType;
+	SaveJson["iTotalWaveCount"] = this->iTotalWaveCount;
+	SaveJson["iCurrentWaveCount"] = this->iCurrentWaveCount;
+	SaveJson["fWaveTime"] = this->fWaveTime;
+	SaveJson["fCurrentWaveTime"] = this->fCurrentWaveTime;
+
+	for (auto& MonsterSpawnData : this->vecWaveInfo)
+	{
+		json SaveObject{};
+		MonsterSpawnData.to_Json(SaveObject);
+		SaveJson["vecWaveInfo"].push_back(SaveObject);
+	}
+}
+
 #pragma endregion
 
 
@@ -1868,6 +1978,5 @@ BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectT
 
 
 NS_END
-
 
 

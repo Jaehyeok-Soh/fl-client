@@ -701,6 +701,8 @@ namespace Engine
 			NPC_TAVERN = 4,
 			NPC_VILLAGER_1 = 5,
 			NPC_KID_1 = 6,
+			NPC_VETERAN = 7,
+			NPC_KID_2 = 8,
 
 			// 1000 ~ 1999 오브젝트
 			// OBJECT_
@@ -914,6 +916,18 @@ namespace Engine
 		DEPART,
 		ON_REACH,
 		END_CCS,
+		END,
+	};
+
+#pragma endregion
+
+#pragma region Monster Spawn Wave Type
+
+	enum class MONSTERSPAWN_WAVE_TYPE
+	{
+		LOOP,
+		ALL_KILL,
+		TIMER,
 		END,
 	};
 

@@ -85,6 +85,7 @@ private:
 
 	_float m_fLoadingRatio = {};
 
+
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID);
 	virtual void Free() override;

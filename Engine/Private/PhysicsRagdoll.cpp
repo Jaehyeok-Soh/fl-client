@@ -47,6 +47,9 @@ HRESULT CPhysicsRagdoll::Initialize(void* pArg)
 
 	m_pGameInstance->RagdollRegister(pOwner);
 
+	m_tRagdollElements.pArticulation->putToSleep();
+	m_pGameInstance->RemoveRagdoll(m_tRagdollElements.pArticulation);
+
 	return S_OK;
 }
 

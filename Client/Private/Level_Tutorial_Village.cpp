@@ -517,6 +517,9 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), g_wszUILayer)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -524,6 +527,30 @@ void CLevel_Tutorial_Village::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
+
+
+	#ifdef _DEBUG
+	static _uint s_iCount = { 0 };
+	if (m_pGameInstance->KeyButton_Down(DIK_P))
+	{
+		s_iCount = (s_iCount + 1) % 3;
+		if (s_iCount == 0)
+		{
+			m_fTimeScale = 1.f;
+		}
+		else if (s_iCount == 1)
+		{
+			m_fTimeScale = 2.f;
+		}
+		else
+		{
+			m_fTimeScale = 4.f;
+		}
+
+		m_pGameInstance->Set_GlobalScale(m_fTimeScale);
+	}
+	#endif
+
 
 //	static _uint s_iCount = { 0 };
 //	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
