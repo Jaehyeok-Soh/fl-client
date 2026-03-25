@@ -157,6 +157,7 @@ public:
 public:
 	void Set_MoveBone(_bool bMove) { m_bMoveBone = bMove; }
 	void Set_MoveBoneCS(CS_CB_MU_BONEMOVE tCBData) { m_tBoneMoveCB = tCBData; m_tBoneMoveCB.iBoneNums = Get_BoneCount(); }
+	void Set_MoveBone_Ratio(_float fRatio) { m_tBoneMoveCB.fRatio = fRatio; }
 
 	_bool Get_MoveBoneOn() const { return m_bMoveBone; }
 	const CS_CB_MU_BONEMOVE& Get_MoveInfo() const { return m_tBoneMoveCB; }

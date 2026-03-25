@@ -62,6 +62,8 @@ private:
 	_float m_vPYR[3]			= { 0.f,0.f,0.f };
 	_float m_vTranslation[3]	= { 0.f,0.f,0.f };
 
+	_float m_fRatio = { 0.f };
+
 	// render
 private:
 	void Render_ObjInfo();

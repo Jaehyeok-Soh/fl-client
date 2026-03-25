@@ -4,9 +4,10 @@
 // 가변 데이터
 struct MU_ELEMENT
 {
-    int                    iMovingIdx;
+    int                     iMovingIdx;
     uint                    iBoneNums;
-    float2                  Padding0;
+    float                   fRatio;
+    float                   Padding0;
     
     row_major float4x4      matOffset;
 };
@@ -53,15 +54,26 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     // moving할 뼈라면
     if (g_MuElements.iMovingIdx == iIdx)
     {
-        float4x4 matPreTransform = mul(mul(CreateScale(FINAL_SRT[iIdx].vScale), CreateRotaion_FromQuat(FINAL_SRT[iIdx].vQuat)),
-                                CreateTranslation(FINAL_SRT[iIdx].vTranslation));
+        float3 vPreScale,       vMoveScale,         vFinalScale;
+        float4 vPreQuat,        vMoveQuat,          vFinalQuat;
+        float3 vPreTranslation, vMoveTranslation,   vFinalTranslation;
+        
+        vPreScale           = FINAL_SRT[iIdx].vScale;
+        vPreQuat            = FINAL_SRT[iIdx].vQuat;
+        vPreTranslation     = FINAL_SRT[iIdx].vTranslation;
+        
+        
+        float4x4 matPreTransform = mul(mul(CreateScale(vPreScale), CreateRotaion_FromQuat(vPreQuat)),
+                                CreateTranslation(vPreTranslation));
         
         float4x4 matMoveingTranform = mul(g_MuElements.matOffset, matPreTransform);
         
-        float3 vFinalScale, vFinalTranslation;
-        float4 vFinalQuat;
-        DecomposeMatrix(matMoveingTranform, vFinalScale, vFinalQuat, vFinalTranslation);
-
+        DecomposeMatrix(matMoveingTranform, vMoveScale, vMoveQuat, vMoveTranslation);
+        
+        vFinalScale = lerp(vPreScale, vMoveScale, g_MuElements.fRatio);
+        vFinalQuat = Slerp(vPreQuat, vMoveQuat, g_MuElements.fRatio);
+        vFinalTranslation = lerp(vPreTranslation, vMoveTranslation, g_MuElements.fRatio);
+        
         FINAL_SRT[iIdx].Padding0 = 0.f;
         FINAL_SRT[iIdx].Padding1 = 0.f;
         FINAL_SRT[iIdx].vScale = vFinalScale;

@@ -263,9 +263,30 @@ void CPanel_ModelInfo::Render_MoveBoneInfo()
 			m_iSelectMoveAnimIdx = -1;
 	}
 
+	// MoveBone ratio
+	{
+		ImGui::SetNextItemWidth(120);
+		ImGui::SliderFloat("MoveBone Ratio##EnumbiRefAnimiddsfdfsdx", &m_fRatio, 0.f, 1.f);
+	}
+
 	// move info
 	{
 		MOVE_SRT();
+	}
+
+	if (ImGui::Button("Apply MoveInfos Info##move"))
+	{
+		CS_CB_MU_BONEMOVE tCB = {};
+
+		tCB.iMovingIdx = m_iSelectMoveAnimIdx;
+
+		tCB.fRatio = m_fRatio;
+
+		Matrix matSR = Matrix::CreateScale(m_vScale[0], m_vScale[1], m_vScale[2]) * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(m_vPYR[1]), XMConvertToRadians(m_vPYR[0]), XMConvertToRadians(m_vPYR[2]));
+		tCB.matOffset = matSR * Matrix::CreateTranslation(m_vTranslation[0], m_vTranslation[1], m_vTranslation[2]);
+
+		if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+			m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_MoveBoneCS(tCB);
 	}
 }
 
@@ -286,19 +307,6 @@ void CPanel_ModelInfo::MOVE_SRT()
 		ImGui::Text(" POSITION X Y Z");
 		ImGui::InputFloat3("##position##move", m_vTranslation);
 		ImGui::Spacing();
-	}
-
-	if (ImGui::Button("Apply MoveInfos Info##move"))
-	{
-		CS_CB_MU_BONEMOVE tCB = {};
-
-		tCB.iMovingIdx = m_iSelectMoveAnimIdx;
-
-		Matrix matSR = Matrix::CreateScale(m_vScale[0], m_vScale[1], m_vScale[2]) * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(m_vPYR[1]), XMConvertToRadians(m_vPYR[0]), XMConvertToRadians(m_vPYR[2]));
-		tCB.matOffset = matSR * Matrix::CreateTranslation(m_vTranslation[0], m_vTranslation[1], m_vTranslation[2]);
-
-		if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
-			m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_MoveBoneCS(tCB);
 	}
 }
 

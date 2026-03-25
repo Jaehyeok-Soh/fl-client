@@ -715,7 +715,8 @@ namespace Engine
 	{
 		int							iMovingIdx	= { -1 };
 		unsigned int				iBoneNums	= { 0 };
-		SimpleMath::Vector2			Padding0	= {};
+		float						fRatio		= {0.f};
+		float						Padding0	= {};
 
 		SimpleMath::Matrix			matOffset = { Matrix::Identity };
 	}CS_CB_MU_BONEMOVE;
