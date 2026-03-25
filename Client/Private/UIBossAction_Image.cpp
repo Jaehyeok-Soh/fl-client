@@ -37,7 +37,6 @@ HRESULT CUIBossAction_Image::Initialize(void* pArg)
 	return S_OK;
 }
 
-
 HRESULT CUIBossAction_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
@@ -101,53 +100,58 @@ HRESULT CUIBossAction_Image::Bind_ShaderResources()
 
 HRESULT CUIBossAction_Image::Attach_Personal_Info()
 {
-
-
-	switch (m_eDImageSubClass)
-	{
-	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
-		break;
-	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
-		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
-			{
-				this->Set_Visible();
-			});
-		m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
-			{
-				this->Set_Invisible();
-			});
-		break;
-	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
-		m_pGameInstance->Subscribe<CINEMATIC_START>([this]()
-			{
-				this->Set_Visible();
-			});
-		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-			{
-				this->Set_Invisible();
-			});
-		break;
-	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
-		m_pGameInstance->Subscribe<CINEMATIC_START>([this]()
-			{
-				this->Set_Visible();
-			});
-		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-			{
-				this->Set_Invisible();
-			});
-		break;
-	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
-		break;
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		return E_FAIL;
-	}
 	return S_OK;
 }
 
 void CUIBossAction_Image::Tick_By_Type(const _float fTimeDelta)
 {
+}
+
+void CUIBossAction_Image::Bind_Events()
+{
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
+		m_vecEventHandles.push_back(
+			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
+				{
+					this->Set_Visible();
+				}));
+		m_vecEventHandles.push_back(
+			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
+				{
+					this->Set_Invisible();
+				}));
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
+		m_vecEventHandles.push_back(
+			m_pGameInstance->Subscribe<CINEMATIC_START>([this]()
+				{
+					this->Set_Visible();
+				}));
+		m_vecEventHandles.push_back(
+			m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
+				{
+					this->Set_Invisible();
+				}));
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
+		m_vecEventHandles.push_back(
+			m_pGameInstance->Subscribe<CINEMATIC_START>([this]()
+				{
+					this->Set_Visible();
+				}));
+		m_vecEventHandles.push_back(
+			m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
+				{
+					this->Set_Invisible();
+				}));
+		break;
+	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
+		break;
+	}
 }
 
 void CUIBossAction_Image::Initialize_Visible_Event()
@@ -190,7 +194,7 @@ _bool CUIBossAction_Image::Tick_Visible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
 	{
 		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
@@ -201,7 +205,7 @@ _bool CUIBossAction_Image::Tick_Visible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
 	{
 		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
@@ -212,7 +216,7 @@ _bool CUIBossAction_Image::Tick_Visible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
 		break;
 	}
@@ -259,7 +263,7 @@ _bool CUIBossAction_Image::Tick_InVisible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;;
+		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
 	{
 		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
@@ -270,7 +274,7 @@ _bool CUIBossAction_Image::Tick_InVisible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
 	{
 		_bool isMove = Tick_Lerp_Movement(fTimeDelta);
@@ -281,7 +285,7 @@ _bool CUIBossAction_Image::Tick_InVisible_Event(const _float fTimeDelta)
 			return true;
 		}
 	}
-	break;
+		break;
 	}
 	return false;
 }

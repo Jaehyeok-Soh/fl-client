@@ -107,15 +107,13 @@ HRESULT CUIMenu_Text::Attach_Personal_Info()
 
 void CUIMenu_Text::Bind_Events()
 {
-	m_vecEventHandles.resize(ENUM_TO_UINT(EUIEventID::END));
-
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::MENU_TEXT_BEGIN:
 		break;
 	case DTO::EUITextSubClassType::MENU_ESC_TEXT:
 	{
-		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_ENTER)] = (
+		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
 					if (EUIEventID::MENU_ENTER_ICON_HOVER_ENTER == Desc.eEventID)
@@ -123,7 +121,7 @@ void CUIMenu_Text::Bind_Events()
 						this->Set_Visible();
 					}
 				}));
-		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_EXIT)] = (
+		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
 					if (EUIEventID::MENU_ENTER_ICON_HOVER_EXIT == Desc.eEventID)
@@ -142,16 +140,15 @@ void CUIMenu_Text::Bind_Events()
 					{
 						this->Set_Invisible();
 					}
-				})
-		);
-
-		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-			{
-				if (EUIEventID::MENU_OPEN == Desc.eEventID)
+				}));
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
-					this->Set_Visible();
-				}
-			});
+					if (EUIEventID::MENU_OPEN == Desc.eEventID)
+					{
+						this->Set_Visible();
+					}
+				}));
 	}
 	break;
 	case DTO::EUITextSubClassType::MENU_TEXT_END:

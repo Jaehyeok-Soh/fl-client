@@ -1200,6 +1200,7 @@ void CMainPlayer::Count_Combo()
     switch ((_uint)Get_Component<CActionState>()->Get_CurrentStateIndex())
     {
     case ENUM_TO_UINT(State::COMBO):
+    case ENUM_TO_UINT(State::COMBO_DUAL):
     case ENUM_TO_UINT(State::JUMPATTEND):
     case ENUM_TO_UINT(State::CHARGE):
         pStat->Add_ComboCount();

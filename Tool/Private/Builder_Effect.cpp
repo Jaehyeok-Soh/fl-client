@@ -95,16 +95,16 @@ void CBuilder_Effect::Regist_pool(void* pArg, string& PrefabEffectTag)
 	wstring PrototypeTag = Create_PrototypeTag(PrefabEffectTag);
 	
 	if (PrefabEffectTag == "Boss_Xibi_Lightning_Oneshot")
-		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 200);
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 20);
 
 	else if (PrefabEffectTag == "Boss_Xibi_Bullet_Spawn")
-		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 200);
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 20);
 
 	else if (PrefabEffectTag == "Boss_Xibi_Bullet_Dead")
-		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 200);
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 20);
 
 	else
-		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 30);
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, m_iLevelID, PrototypeTag, pArg, 20);
 
 }
 

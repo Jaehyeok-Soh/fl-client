@@ -1062,6 +1062,7 @@ EMonster_Type CBuilder_Map::Change_MakeMonsterType_To_MonsterType(DTO::EMakeMons
 	case DTO::EMakeMonsterType::Boomer:			return EMonster_Type::Boomer;
 	case DTO::EMakeMonsterType::Shooter:		return EMonster_Type::Shooter;
 	case DTO::EMakeMonsterType::Xibi:			return EMonster_Type::Xibi;
+	case DTO::EMakeMonsterType::Lianhuo:		return EMonster_Type::Lianhuo;
 	default:									return EMonster_Type::END;
 	}
 	return EMonster_Type::END;

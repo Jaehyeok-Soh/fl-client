@@ -112,20 +112,17 @@ HRESULT CUIHover_Image::Attach_Personal_Info()
 	{
 
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::HOVER_POPUP_ICON:
 	{
 
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::HOVER_POPUP_BG:
 	{
 		m_fOriginWidth = m_fWidth;
 	}
-	break;
-	case DTO::EUIDImageSubClassType::END:
-	default:
-		return E_FAIL;
+		break;
 	}
 	return S_OK;
 }
@@ -176,13 +173,11 @@ void CUIHover_Image::Tick_By_Type(const _float fTimeDelta)
 
 void CUIHover_Image::Bind_Events()
 {
-	m_vecEventHandles.resize(ENUM_TO_UINT(EUIEventID::END));
-
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::HOVER_ENTER_MENU_ICON:
 	{
-		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_CLOSE)] = (
+		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
@@ -191,53 +186,83 @@ void CUIHover_Image::Bind_Events()
 					this->Set_Interactable();
 				}
 			}));
+
+		// 대화 Event
+		m_vecEventHandles.push_back(
+			m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+				{
+					this->Set_Invisible();
+				}));
+		m_vecEventHandles.push_back(
+			m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+				{
+					this->Set_Active(true);
+					this->Set_Interactable();
+					this->Set_Visible();
+				}));
+
+		// 패널 Events
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+					{
+						this->Set_Invisible();
+					}
+				}));
+		m_vecEventHandles.push_back(
+			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+				{
+					if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+					{
+						this->Set_Visible();
+						this->Set_Interactable();
+						this->Set_Active(true);
+					}
+				}));
 	}
 	break;
 
 	case DTO::EUIDImageSubClassType::HOVER_POPUP_ICON:
 	{
-		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_ENTER)] = (
+		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
 					if (EUIEventID::MENU_ENTER_ICON_HOVER_ENTER == Desc.eEventID)
 					{
 						this->Set_Visible();
 					}
-				})
-			);
-		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_EXIT)] = (
+				}));
+		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
 					if (EUIEventID::MENU_ENTER_ICON_HOVER_EXIT == Desc.eEventID)
 					{
 						this->Set_Invisible();
 					}
-				})
-			);
+				}));
 	}
 	break;
 	case DTO::EUIDImageSubClassType::HOVER_POPUP_BG:
 	{
 		m_fOriginWidth = m_fWidth;
 
-		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_ENTER)] = (
+		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
 					if (EUIEventID::MENU_ENTER_ICON_HOVER_ENTER == Desc.eEventID)
 					{
 						this->Set_Visible();
 					}
-				})
-			);
-		m_vecEventHandles[ENUM_TO_UINT(EUIEventID::MENU_ENTER_ICON_HOVER_EXIT)] = (
+				}));
+		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
 					if (EUIEventID::MENU_ENTER_ICON_HOVER_EXIT == Desc.eEventID)
 					{
 						this->Set_Invisible();
 					}
-				})
-			);
+				}));
 	}
 	break;
 	}

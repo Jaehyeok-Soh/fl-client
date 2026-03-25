@@ -55,11 +55,9 @@ public:
 	void Set_RopeInfo(const ROPE_INFO& ropeInfo) { m_CurrentRopeInfo = ropeInfo; }
 
 	// 하나하나 컨트롤 
-	void Set_CheckKey(KEYFLAGS FKey, _bool bOn); // 외부에서 onoff를 해야할 시
-	
+	void Set_CheckKey(KEYFLAGS FKey, _bool bOn);	// 외부에서 onoff를 해야할 시
 	// 다 끌꺼면
-	void Set_AllKeyFlag(_bool bOn); // 외부에서 onoff를 해야할 시
-
+	void Set_AllKeyFlag(_bool bOn);					// 외부에서 onoff를 해야할 시
 	// 이전에 플래그대로 활성화
 	void Set_PreKeyFlag();
 

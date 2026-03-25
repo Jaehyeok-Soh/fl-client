@@ -15,7 +15,7 @@ enum class EMakeMonsterType
 
 	/* Boss 관련 */
 	Xibi,
-
+	Lianhuo,
 	Fly,
 
 	END,
@@ -33,6 +33,7 @@ inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
 
 		/* Boss관련 */
 	case DTO::EMakeMonsterType::Xibi:			return "Xibi";
+	case DTO::EMakeMonsterType::Lianhuo:		return "Lianhuo";
 	default:									return "Unknown";
 	}
 }
@@ -46,7 +47,7 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 
 
 	if (strType == "Xibi")		return DTO::EMakeMonsterType::Xibi;
-
+	if (strType == "Lianhuo")	return DTO::EMakeMonsterType::Lianhuo;
 	return EMakeMonsterType::END;
 }
 #pragma endregion

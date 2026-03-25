@@ -6,6 +6,8 @@
 #include "Transform.h"
 #include "PlayerActionState.h"
 
+#include "GameInstance.h"
+
 #define Duration 30.f / ANIMTIC
 
 CState_SpecialDash::CState_SpecialDash(CActionState* pOwnerComponent)
@@ -56,6 +58,8 @@ HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
         vDistance.y = 0.f;
         m_fDistance = vDistance.Length();
     }
+
+    m_pGameInstance->Request_SloMo(0.3f, 0.5f);
 
     return S_OK;
 }

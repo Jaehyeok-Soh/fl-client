@@ -355,10 +355,15 @@ private:
 
 private:
 	_int								m_iRootBoneIdx				= { -1 };
-	Vec3								m_vPreMainPosition = { Vec3::Zero };
-	Vec3								m_vPreBlendPosition = { Vec3::Zero };
-	Vec3								m_vPreMixPosition = { Vec3::Zero };
-	Vec3								m_vPrePosNon = { Vec3::Zero };
+	Vec3								m_vPreMainPosition			= { Vec3::Zero };
+	Vec3								m_vPreBlendPosition			= { Vec3::Zero };
+	Vec3								m_vPreMixPosition			= { Vec3::Zero };
+	Vec3								m_vPrePosNon				= { Vec3::Zero };
+
+	Quat								m_vPreQuat					= { Quat::Identity };
+	Quat								m_vPreBlendQuat				= { Quat::Identity };
+	Quat								m_vPreQuatMix				= { Quat::Identity };
+	Quat								m_vPreQuatNon				= { Quat::Identity };
 
 	// mix anim
 	vector<_int>						m_vecMixAnimIndices;

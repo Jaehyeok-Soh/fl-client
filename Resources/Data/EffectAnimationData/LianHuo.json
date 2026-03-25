@@ -1,0 +1,320 @@
+{
+    "Category": "EFFECTEVENT",
+    "Objects": [
+        {
+            "Type": 2,
+            "iNumPool": 0,
+            "strOwnerTag": "Lianhuo",
+            "vecEffectEvents": [
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 1.0,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 241,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Lianhuo_Charge1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 2.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 68.0,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 241,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 2.5,
+                        "z": 1.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 15.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 112.0,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 241,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Attack1_Up",
+                    "vOffset": {
+                        "x": -2.0,
+                        "y": 6.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -30.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 142.0,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 241,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Attack1",
+                    "vOffset": {
+                        "x": -3.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -110.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 112.0,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Attack1_UpChain",
+                    "vOffset": {
+                        "x": -6.0,
+                        "y": 0.0,
+                        "z": 2.0
+                    },
+                    "vRotation": {
+                        "x": 180.0,
+                        "y": 90.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 82.0,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Attack1",
+                    "vOffset": {
+                        "x": -1.0,
+                        "y": -2.5,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 195.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 92.0,
+                    "iAnimIndex": 16,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 2.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -30.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 29.0,
+                    "iAnimIndex": 21,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 241,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Lianhuo_Skill06",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Lianhuo_Charge1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 2.5,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 0.10999999940395355,
+                    "iAnimIndex": 21,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 241,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Lianhuo_Skill06",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Lianhuo_Charge2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 2.5,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 17.0,
+                    "iAnimIndex": 21,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill06",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Jump",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 55.0,
+                    "iAnimIndex": 21,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 241,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 0,
+                    "strAnimTag": "Animation_Lianhuo_Skill06",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Rianhuo_JumpKick",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 2.0
+                    },
+                    "vRotation": {
+                        "x": 30.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            ]
+        }
+    ]
+}

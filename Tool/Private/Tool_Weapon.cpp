@@ -240,21 +240,18 @@ void CTool_Weapon::Ready_Before_Render(const _float fTimeDelta)
 	case State::HOLD:
 		if (m_pMatSocket)
 		{
-			if (Get_Component<CModel>()->Get_RootBone() >= 0)
-			{
-				//Vec3 vPos{ Vec3::Zero };
-				//Vec3 vScale{ Vec3::One };
-				//Quat qRot{ Quat::Identity };
-				//Matrix* pMat = const_cast<Matrix*>(m_pMatSocket);
-				//pMat->Decompose(vScale, qRot, vPos);
-				//Matrix matfinalMat = Matrix::CreateScale(vScale);
-				//matfinalMat *= Matrix::CreateTranslation(vPos);
-
-				Matrix matfinalMat = Matrix::Identity;
-				matfinalMat.Translation((*m_pMatSocket).Translation());
-				Super::Update_CombinedWorldMatrix(m_matRotation * matfinalMat * (*m_pMatParent));
-			}
-			else
+			//if (Get_Component<CModel>()->Get_RootBone() >= 0)
+			//{
+			//	Vec3 vPos{ Vec3::Zero };
+			//	Vec3 vScale{ Vec3::One };
+			//	Quat qRot{ Quat::Identity };
+			//	Matrix* pMat = const_cast<Matrix*>(m_pMatSocket);
+			//	pMat->Decompose(vScale, qRot, vPos);
+			//	Matrix matfinalMat = Matrix::CreateScale(vScale);
+			//	matfinalMat *= Matrix::CreateTranslation(vPos);
+			//	Super::Update_CombinedWorldMatrix(m_matRotation * matfinalMat * (*m_pMatParent));
+			//}
+			//else
 				Super::Update_CombinedWorldMatrix(m_matRotation * (*m_pMatSocket) * (*m_pMatParent));
 
 		}

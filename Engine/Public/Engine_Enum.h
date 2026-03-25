@@ -18,9 +18,10 @@ namespace Engine
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,
-		VisibleClipped,
-		VisibleFree,
-		Tool,
+		VisibleClipped,		
+		VisibleFree,		
+		InVisibleClipped,	
+		Tool,				
 		END
 	};
 
@@ -750,6 +751,7 @@ namespace Engine
 			// 40000 ~ 49999 보스 몬스터
 			MONSTER_BOSS_DEFAULT = 40000,
 			MONSTER_BOSS_XIBI = 40001,
+			MONSTER_BOSS_LIANHUO = 40002,
 
 			// 99999 Default
 			DEFAULT = 99999,
@@ -800,6 +802,7 @@ namespace Engine
 			// MONSTER_BOSS
 			if (strType == "MONSTER_BOSS_DEFAULT") return OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT;
 			if (strType == "MONSTER_BOSS_XIBI") return OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI;
+			if (strType == "MONSTER_BOSS_LIANHUO") return OBJECT_ENUM_TAG::MONSTER_BOSS_LIANHUO;
 
 			// DEFAULT
 			if (strType == "DEFAULT") return OBJECT_ENUM_TAG::DEFAULT;
@@ -845,6 +848,7 @@ namespace Engine
 
 			case OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT:						return "MONSTER_BOSS_DEFAULT";
 			case OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI:						return "MONSTER_BOSS_XIBI";
+			case OBJECT_ENUM_TAG::MONSTER_BOSS_LIANHUO:						return "MONSTER_BOSS_LIANHUO";
 
 			case OBJECT_ENUM_TAG::DEFAULT:									return "DEFAULT";
 
@@ -883,6 +887,7 @@ namespace Engine
 		OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT,
 		OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT,
 		OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI,
+		OBJECT_ENUM_TAG::MONSTER_BOSS_LIANHUO,
 		OBJECT_ENUM_TAG::DEFAULT
 	};
 

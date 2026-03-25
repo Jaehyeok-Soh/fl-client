@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
+#include "UITutorial_Manager.h"
 #include "GameInstance.h"
 
 // fParam0 -> Prev 버튼		// Hover 이펙트 밝기 조절용으로 사용중 
@@ -163,23 +164,11 @@ void CUITutorial_Pannel_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
-				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
-				{
-					this->Set_Visible();
-					this->Set_Active(true);
-				}
-			})
-	);
-
-	m_vecEventHandles.push_back(
-		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-			{
 				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 }
 
 void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
@@ -202,7 +191,11 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 		break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_ICON:			// 설명 이미지
 	{
-
+		if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_ICON)
+		{
+			if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_vecTextureTags[m_iCurPage], ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
+				return;
+		}
 	}
 	break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON:		// 버튼 0이 Prev, 1이 Next
@@ -263,7 +256,14 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 					m_pParentCanvasCache->Get_CommonParam_bool_Ref()[NEXT_BUTTON] = true;
 
 					if (m_iCurPage == m_iMaxPage)
+					{
 						m_iCurPage = m_iMaxPage;
+
+						UIEVENT_DESC Desc = {};
+						Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
+						Desc.iParam0 = static_cast<_uint>(m_eTutorialID);
+						CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
+					}
 					else
 						m_iCurPage++;
 				}
@@ -272,7 +272,6 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 				m_pParentCanvasCache->Get_CommonParam_uint_Ref()[CUR_PAGE] = m_iCurPage;
 			}
 		}
-
 		// 페이지별 상태
 		{
 			_uint i = m_iCurPage;
@@ -539,6 +538,7 @@ _bool CUITutorial_Pannel_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		{
 			m_isFin_Event = true;
 			m_isActive = true;
+			Set_Active(false);
 			Request_SetDead();
 			return true;
 		}
@@ -560,11 +560,12 @@ _bool CUITutorial_Pannel_Image::Tick_InVisible_Event(const _float fTimeDelta)
 		{
 			m_isFin_Event = true;
 			m_isActive = true;
+			Set_Active(false);
 			Request_SetDead();
 			return true;
 		}
 	}
-	break;
+		break;
 	}
 
 	return false;
@@ -576,12 +577,11 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 		return E_FAIL;
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
-
 	if (auto* pPannel = std::get_if<UI_TUTORIAL_PANNEL_PREFAB_DATA>(&pDesc->Data))
 	{
 		m_pParentCanvasCache = pDesc->pCanvas;
 		m_eTutorialID = pPannel->eTutorialTypeID;
-
+		
 		switch (m_eTutorialID)
 		{
 		case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_1:
@@ -653,6 +653,11 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 
 	m_isSpawned = true;
 	m_isDeadRequest = false;
+	
+	if(m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BG)
+		CUITutorial_Manager::GetInstance()->PlayerState_All_Lock();
+
+
 	return S_OK;
 }
 
@@ -668,6 +673,10 @@ HRESULT CUITutorial_Pannel_Image::Despawn_FromPool()
 
 	this->Set_Active(false);
 	m_vecTextureTags.clear();
+
+	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BG)
+		CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
+
 	return S_OK;
 }
 

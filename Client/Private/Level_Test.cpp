@@ -139,62 +139,35 @@ void CLevel_Test::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	static _uint s_iCount = { 0 };
-	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+//	static _uint s_iCount = { 0 };
+//	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+//	{
+//#ifdef _DEBUG
+//		s_iCount = (s_iCount + 1) % 3;
+//#else
+//		s_iCount = (s_iCount + 1) % 2;
+//#endif
+//		if (s_iCount == 0)
+//		{
+//			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+//		}
+//		else if (s_iCount == 1)
+//		{
+//			m_eCursorMode = ECursorMode::VisibleClipped;
+//		}
+//#ifdef _DEBUG
+//		else
+//		{
+//			m_eCursorMode = ECursorMode::VisibleFree;
+//		}
+//#endif
+//		m_pGameInstance->Request_CursorMode(m_eCursorMode);
+//	}
+//
+	if (KEY_BUTTON_DOWN(DIK_4))
 	{
-#ifdef _DEBUG
-		s_iCount = (s_iCount + 1) % 3;
-#else
-		s_iCount = (s_iCount + 1) % 2;
-#endif
-		if (s_iCount == 0)
-		{
-			m_eCursorMode = ECursorMode::LockedHiddenCenter;
-		}
-		else if (s_iCount == 1)
-		{
-			m_eCursorMode = ECursorMode::VisibleClipped;
-		}
-#ifdef _DEBUG
-		else
-		{
-			m_eCursorMode = ECursorMode::VisibleFree;
-		}
-#endif
-		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}
 
-	//if (KEY_BUTTON_DOWN(DIK_4))
-	//{
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_5))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
-	//	PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
-	//	Desc.Data = PrefabDesc;
-
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_6))
-	//{
-	//	UI_PREFAB_DATA Desc = {};
-	//	UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
-	//	PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
-	//	Desc.Data = PrefabDesc;
-
-	//	CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::TEST), EUIPrefabType::TUTORIAL_PANNEL, ENUM_TO_UINT(ELevelType::TEST), &Desc);
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_7))
-	//{
-	//	UIEVENT_DESC Desc = {};
-	//	Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
-	//	CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
-	//}
-	//if (KEY_BUTTON_DOWN(DIK_8))
-	//{
-	//	m_pGameInstance->Broadcast<BOSS_GROGGY>();
-	//}
 }
 
 HRESULT CLevel_Test::Render()
@@ -548,75 +521,6 @@ HRESULT CLevel_Test::Ready_Monster()
 			L"Prototype_GameObject_Monster_Boomer",
 			ENUM_TO_UINT(ELevelType::TEST),
 			L"Monster", &monsterDesc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_Test::Ready_Boss_Layer(const wstring& wstrLayerTag)
-{
-	// BoneInfo
-	vector<std::pair<_uint, string>> vecboneNames
-	{
-		{ENUM_TO_UINT(CMonster_Body_Base::EBone::RightHand), "hook_arm_r"}
-	};
-
-	{
-		CGameObject* pResult = { nullptr };
-
-		CMonster_Base::MONSTER_DESC monsterDesc = {};
-		CTransform::TRANSFORM_DESC transformDesc = {};
-		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::TEST);
-		monsterDesc.wstrBodyModelTag = L"Prototype_Component_Model_Xibi";
-		monsterDesc.wstrPartBodyPrototypeTag = L"Prototype_GameObject_Boss_Xibi_Body";
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(18.f, 12.f, 19.f));
-		transformDesc.fMovePerSec = 2.f;
-		transformDesc.fRotatePerSec = 4.f;
-		monsterDesc.spanBoneNames = vecboneNames;
-		monsterDesc.pTransform_Desc = &transformDesc;
-		monsterDesc.wstrMonsterStateTag = L"Boss_Xibi";
-
-		{
-			PHYSICSCCT_DESC desc;
-			desc.pOwner = nullptr;
-			desc.bIsPlayer = false;
-			desc.eType = EPhysicsCCTType::CAPSULE;
-			desc.pOwnerMatrix = nullptr;
-			desc.fRadius = 0.5f;
-			desc.fHeight = 0.7f;
-			desc.vExtens = { 1.5f, 1.5f, 1.5f };
-
-			PHYSICSMATERIAL_DESC mtrlDesc{};
-			mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
-			desc.tMaterial = mtrlDesc;
-
-			desc.eFilterLayer = PHYSICSFILTERGROUP::Enum::MONSTER;
-			desc.iFilterMask =
-				PHYSICSFILTERGROUP::Enum::MONSTER
-				| PHYSICSFILTERGROUP::Enum::PLAYER
-				| PHYSICSFILTERGROUP::Enum::ATTACK
-				| PHYSICSFILTERGROUP::Enum::ATTACK_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::SKILL
-				| PHYSICSFILTERGROUP::Enum::SKILL_PROJECTTILE
-				| PHYSICSFILTERGROUP::Enum::MAP
-				| PHYSICSFILTERGROUP::Enum::OBJECT1
-				| PHYSICSFILTERGROUP::Enum::OBJECT2
-				| PHYSICSFILTERGROUP::Enum::NPC;
-
-			desc.bGravity = { true };
-			desc.fGravity = { -35.f };
-			desc.MSpeed = { 0.f, 1.f };
-			desc.MAccelRate = { 0.f, 10.f };
-			desc.MDeAccelRate = { 0.f, 10.f };
-
-			monsterDesc.tCCTDesc = desc;
-		}
-
-		if (!(pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::TEST),
-			L"Prototype_GameObject_Boss_Xibi",
-			ENUM_TO_UINT(ELevelType::TEST),
-			g_wszBossLayer, &monsterDesc)))
 			return E_FAIL;
 	}
 

@@ -52,6 +52,14 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 
 	REGISTER_CONDITION("condition_target_side", CONDITION{ return MONSTERCC(state)->IsTargetSide(); });
 
+	REGISTER_CONDITION("condition_target_left90", CONDITION{ return MONSTERCC(state)->IsTargetLeft90(); });
+
+	REGISTER_CONDITION("condition_target_right90", CONDITION{ return MONSTERCC(state)->IsTargetRight90(); });
+
+	REGISTER_CONDITION("condition_target_left180", CONDITION{ return MONSTERCC(state)->IsTargetLeft180(); });
+
+	REGISTER_CONDITION("condition_target_right180", CONDITION{ return MONSTERCC(state)->IsTargetRight180(); });
+
 	REGISTER_CONDITION("condition_target_close", CONDITION{ return MONSTERCC(state)->IsTargetClose(); });
 
 	REGISTER_CONDITION("condition_target_lost", CONDITION{ return MONSTERCC(state)->IsTargetLost(); });
