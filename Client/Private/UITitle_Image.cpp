@@ -253,8 +253,14 @@ _bool CUITitle_Image::Tick_Visible_Event(const _float fTimeDelta)
 			_uint iMaxFrame = m_iHorizontal * m_iVertical;
 			_uint iFrame = static_cast<_uint>(m_fCurFrame);
 
+			if (iMaxFrame == 0)
+				break;
+
 			if (iFrame >= iMaxFrame)
 			{
+				iFrame = iMaxFrame - 1;
+				m_fCurFrame = static_cast<_float>(iFrame);
+
 				if (isFade)
 					return true;
 			}
