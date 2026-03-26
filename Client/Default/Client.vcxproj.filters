@@ -901,6 +901,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\19.Title">
       <UniqueIdentifier>{fd7c2a9c-2d1f-4eaa-8cb3-428560cfd3e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\15.EnterGame">
+      <UniqueIdentifier>{ae0750d5-1825-47f9-961b-8c1443dba78a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame">
+      <UniqueIdentifier>{e409a8e0-a5de-4e05-9dcb-55ef01a85985}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1683,6 +1689,12 @@
     <ClInclude Include="..\Public\UILoading_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\03.Damage Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIEnterGame_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIEnterGame_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\15.EnterGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2452,6 +2464,13 @@
     <ClCompile Include="..\Private\UITitle_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\19.Title</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIEnterGame_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIEnterGame_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\15.EnterGame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\Client_Defines.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">

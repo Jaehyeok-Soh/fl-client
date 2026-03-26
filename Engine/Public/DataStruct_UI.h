@@ -314,12 +314,17 @@ enum class EUITextSubClassType
 	MINIGAME_CIRCLE_CLEAR_WORLD_TEXT,
 	MINIGAME_CIRCLE_END,
 
-
 	// 타이틀 
 	TITLE_BEGIN,
 	TITLE_WARNING,
 	TITLE_INFO,
 	TITLE_END,
+
+	// 엔터 게임 
+	ENTERGAME_BEGIN,
+	ENTERGAME_GAMESTART_TEXT,
+	ENTERGAME_GAMESTART_WORLDTEXT,
+	ENTERGAME_END,
 
 
 	END
@@ -440,6 +445,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::TITLE_INFO,					"TITLE_INFO" },
 		{ EUITextSubClassType::TITLE_END,					"TITLE_END" },
 
+		{ EUITextSubClassType::ENTERGAME_BEGIN,					"ENTERGAME_BEGIN" },
+		{ EUITextSubClassType::ENTERGAME_GAMESTART_TEXT,		"ENTERGAME_GAMESTART_TEXT" },
+		{ EUITextSubClassType::ENTERGAME_GAMESTART_WORLDTEXT,	"ENTERGAME_GAMESTART_WORLDTEXT" },
+		{ EUITextSubClassType::ENTERGAME_END,					"ENTERGAME_END" },
+
 		{ EUITextSubClassType::END,									"END" },
 	})
 	inline EUITextSubClassType StringToUITextSubClassType(const std::string& str)
@@ -555,6 +565,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "TITLE_WARNING")							return EUITextSubClassType::TITLE_WARNING;
 	else if (str == "TITLE_INFO")								return EUITextSubClassType::TITLE_INFO;
 	else if (str == "TITLE_END")								return EUITextSubClassType::TITLE_END;
+
+	else if (str == "ENTERGAME_BEGIN")							return EUITextSubClassType::ENTERGAME_BEGIN;
+	else if (str == "ENTERGAME_GAMESTART_TEXT")					return EUITextSubClassType::ENTERGAME_GAMESTART_TEXT;
+	else if (str == "ENTERGAME_GAMESTART_WORLDTEXT")			return EUITextSubClassType::ENTERGAME_GAMESTART_WORLDTEXT;
+	else if (str == "ENTERGAME_END")							return EUITextSubClassType::ENTERGAME_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -676,6 +691,11 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::TITLE_WARNING:						return "TITLE_WARNING";
 	case EUITextSubClassType::TITLE_INFO:							return "TITLE_INFO";
 	case EUITextSubClassType::TITLE_END:							return "TITLE_END";
+
+	case EUITextSubClassType::ENTERGAME_BEGIN:						return "ENTERGAME_BEGIN";
+	case EUITextSubClassType::ENTERGAME_GAMESTART_TEXT:				return "ENTERGAME_GAMESTART_TEXT";
+	case EUITextSubClassType::ENTERGAME_GAMESTART_WORLDTEXT:		return "ENTERGAME_GAMESTART_WORLDTEXT";
+	case EUITextSubClassType::ENTERGAME_END:						return "ENTERGAME_END";
 	
 	default:														return "END";
 	}
@@ -986,6 +1006,15 @@ enum class EUIDImageSubClassType
 	TITLE_NAME,
 	TITLE_END,
 
+	// 엔터 게임
+	ENTERGAME_BEGIN,
+	ENTERGAME_BG,
+	ENTERGAME_ICONS,
+	ENTERGAME_QUIT_ICONS,
+	ENTERGAME_START_ICON_LEFT,
+	ENTERGAME_START_ICON_RIGHT,
+	ENTERGAME_END,
+
 	END
 };
 
@@ -1159,7 +1188,15 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::TITLE_INFO,								"TITLE_INFO" },
 	{ EUIDImageSubClassType::TITLE_ICON,								"TITLE_ICON" },
 	{ EUIDImageSubClassType::TITLE_NAME,								"TITLE_NAME" },
-	{ EUIDImageSubClassType::TITLE_END,								"TITLE_END" },
+	{ EUIDImageSubClassType::TITLE_END,									"TITLE_END" },
+
+	{ EUIDImageSubClassType::ENTERGAME_BEGIN,							"ENTERGAME_BEGIN" },
+	{ EUIDImageSubClassType::ENTERGAME_BG,								"ENTERGAME_BG" },
+	{ EUIDImageSubClassType::ENTERGAME_ICONS,							"ENTERGAME_ICONS" },
+	{ EUIDImageSubClassType::ENTERGAME_QUIT_ICONS,						"ENTERGAME_QUIT_ICONS" },
+	{ EUIDImageSubClassType::ENTERGAME_START_ICON_LEFT,					"ENTERGAME_START_ICON_LEFT" },
+	{ EUIDImageSubClassType::ENTERGAME_START_ICON_RIGHT,				"ENTERGAME_START_ICON_RIGHT" },
+	{ EUIDImageSubClassType::ENTERGAME_END,								"ENTERGAME_END" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1336,6 +1373,14 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "TITLE_ICON")							return EUIDImageSubClassType::TITLE_ICON;
 	if (str == "TITLE_NAME")							return EUIDImageSubClassType::TITLE_NAME;
 	if (str == "TITLE_END")								return EUIDImageSubClassType::TITLE_END;
+
+	if (str == "ENTERGAME_BEGIN")						return EUIDImageSubClassType::ENTERGAME_BEGIN;
+	if (str == "ENTERGAME_BG")							return EUIDImageSubClassType::ENTERGAME_BG;
+	if (str == "ENTERGAME_ICONS")						return EUIDImageSubClassType::ENTERGAME_ICONS;
+	if (str == "ENTERGAME_QUIT_ICONS")					return EUIDImageSubClassType::ENTERGAME_QUIT_ICONS;
+	if (str == "ENTERGAME_START_ICON_LEFT")				return EUIDImageSubClassType::ENTERGAME_START_ICON_LEFT;
+	if (str == "ENTERGAME_START_ICON_RIGHT")			return EUIDImageSubClassType::ENTERGAME_START_ICON_RIGHT;
+	if (str == "ENTERGAME_END")							return EUIDImageSubClassType::ENTERGAME_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1514,6 +1559,14 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::TITLE_ICON:								return "TITLE_ICON";
 	case EUIDImageSubClassType::TITLE_NAME:								return "TITLE_NAME";
 	case EUIDImageSubClassType::TITLE_END:								return "TITLE_END";
+
+	case EUIDImageSubClassType::ENTERGAME_BEGIN:						return "ENTERGAME_BEGIN";
+	case EUIDImageSubClassType::ENTERGAME_BG:							return "ENTERGAME_BG";
+	case EUIDImageSubClassType::ENTERGAME_ICONS:						return "ENTERGAME_ICONS";
+	case EUIDImageSubClassType::ENTERGAME_QUIT_ICONS:					return "ENTERGAME_QUIT_ICONS";
+	case EUIDImageSubClassType::ENTERGAME_START_ICON_LEFT:				return "ENTERGAME_START_ICON_LEFT";
+	case EUIDImageSubClassType::ENTERGAME_START_ICON_RIGHT:				return "ENTERGAME_START_ICON_RIGHT";
+	case EUIDImageSubClassType::ENTERGAME_END:							return "ENTERGAME_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";
