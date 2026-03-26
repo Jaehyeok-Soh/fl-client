@@ -118,16 +118,13 @@ void CUIConversation_Image::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
-
+			}));
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_START>(
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
@@ -141,9 +138,7 @@ void CUIConversation_Image::Bind_Events()
 				CUITutorial_Manager::GetInstance()->PlayerState_All_Lock();
 					break;
 				}
-			})
-	);
-
+			}));
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
 			{
@@ -157,8 +152,7 @@ void CUIConversation_Image::Bind_Events()
 				CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
 					break;
 				}
-			})
-	);
+			}));
 }
 
 void CUIConversation_Image::Tick_By_Type(const _float fTimeDelta)

@@ -98,6 +98,10 @@ public:
 	_uint Get_iParmas0() const { return m_iParam0; }
 	_uint Get_iTextParmas0() const { return m_iTextParam0; }
 
+	const Vec2& Get_UVScale() const { return m_vUVScale; }
+	const Vec2& Get_UVOffset() const { return m_vUVOffset; }
+
+
 	void Set_Name(const _string& str) { m_strName = str; }
 	void Set_RectTransformType(ERectTransform value) { m_eRectTransformType = value; }
 	void Set_TextureTag(const _wstring& value) { m_wstrTextureTag = value; }
@@ -115,6 +119,9 @@ public:
 
 	void Set_iParams0(_uint i) { m_iParam0 = i; }
 	void Set_iTextParams0(_uint i) { m_iTextParam0 = i; }
+
+	void Set_UVScale(const Vec2& v) { m_vUVScale = v; }
+	void Set_UVOffset(const Vec2& v) { m_vUVOffset = v; }
 
 	Vec4 Get_ColorTint()			const	{ return m_vColorTint; }
 	Vec4 Get_GradiantColorTint()	const	{ return m_vGradiantColorTint; }
@@ -181,6 +188,17 @@ public:
 	void Set_UITextSubClassType(DTO::EUITextSubClassType eType) { m_eTextSubClassType = eType; }
 	void Set_UIDImageSubClassType(DTO::EUIDImageSubClassType eType) { m_eDImageSubClassType = eType; }
 
+
+	_uint Get_iHorizontal() const { return m_iHorizontal; }
+	_uint Get_iVeriacal() const { return m_iVeriacal; }
+	_float Get_fCurFrame() const { return m_fCurFrame; }
+
+	void Set_iHorizontal(_uint iHorizontal) { m_iHorizontal = iHorizontal; }
+	void Set_iVeriacal(_uint iVeriacal) { m_iVeriacal = iVeriacal; }
+	void Set_fCurFrame(_float fCurFrame) { m_fCurFrame = fCurFrame; }
+	_float Get_fFrameSpeed() const { return m_fFrameSpeed; }
+
+	void Set_fFrameSpeed(_float fFrameSpeed) { m_fFrameSpeed = fFrameSpeed; }
 #pragma endregion
 
 private:
@@ -219,6 +237,13 @@ protected:
 	_float	m_fGlowPulseSpeed			= {};
 	_float	m_fGlowIntensity			= {};
 
+	Vec2 m_vUVScale = {};
+	Vec2 m_vUVOffset = {};
+
+	_uint m_iHorizontal = {1};
+	_uint m_iVeriacal = {1};
+	_float m_fCurFrame = {};
+	_float m_fFrameSpeed = { 1.f };
 
 	// Client Bind Values Text Data
 	DTO::TUI_TextData m_tUITextData					= {};

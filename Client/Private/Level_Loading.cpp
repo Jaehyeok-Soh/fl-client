@@ -52,6 +52,7 @@ HRESULT CLevel_Loading::Initialize(ELevelType eNextLevelID)
 	if (FAILED(Build_Files()))
 		return E_FAIL;
 
+
 	m_eNextLevelID = eNextLevelID;
 	return S_OK;
 }
@@ -148,8 +149,20 @@ HRESULT CLevel_Loading::Build_Files()
 		return E_FAIL;
 
 	CUI_Manager::GetInstance()->Set_LoadingRatio(m_pLoader->Get_LoadingRatio());
+	std::filesystem::path  strUIFolderPath = {};
 
-	std::filesystem::path  strUIFolderPath = L"../../Resources/Data/UIData/Loading/";
+	static _bool s_isTitleLoading = { true };
+
+	if (s_isTitleLoading)
+	{
+		strUIFolderPath = L"../../Resources/Data/UIData/Title/";
+		s_isTitleLoading = false;
+	}
+	else
+	{
+		strUIFolderPath = L"../../Resources/Data/UIData/Loading/";
+	}
+
 	if (std::filesystem::exists(strUIFolderPath))
 	{
 		for (auto iter : std::filesystem::directory_iterator(strUIFolderPath))

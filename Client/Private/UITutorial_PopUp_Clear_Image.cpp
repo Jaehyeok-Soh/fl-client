@@ -208,6 +208,9 @@ void CUITutorial_PopUp_Clear_Image::Initialize_Visible_Event()
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG:
 	{
+		// UI SOUND
+		m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_TUTORIAL_POPUP_CLEAR"), 1.f);
+
 		Ready_Fade(0.5f, 0.f, 1.f, 0.f);
 		Ready_ChageColor(0.2f, 
 			Vec4{ 0.f, 0.f, 0.f, 0.f }, Vec4{ 0.f, 0.f, 0.f, 0.f }, 

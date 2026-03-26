@@ -1,0 +1,377 @@
+#include "pch.h"
+#include "Client_EventDefine.h"
+#include "Boss_Lianhuo.h"
+#include "Sword.h"
+#include "MainPlayer.h"
+#include "Model.h"
+#include "Boss_Lianhuo_Body.h"
+#include "Bone.h"
+#include "StatCom_Boss.h"
+#include "ComputeShader.h"
+#include "MonsterActionState.h"
+#include "MonsterControlContext.h"
+#include "Weapon.h"
+#include "UI_Manager.h"
+#include "UIIcon_Component.h"
+#include "CameraEventBinder.h"
+#include "MyStat.h"
+#include "GameInstance.h"
+
+CBoss_Lianhuo::CBoss_Lianhuo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+	: Super(pDevice, pDeviceContext)
+{
+	m_eMonsterType = EMonster_Type::Lianhuo;
+}
+
+
+CBoss_Lianhuo::CBoss_Lianhuo(const CBoss_Lianhuo& rhs)
+	: Super(rhs)
+{
+	m_arrStateIndex.fill(-1);
+}
+
+HRESULT CBoss_Lianhuo::Initialize_Prototype()
+{
+	if (FAILED(Super::Initialize_Prototype()))
+		return E_FAIL;
+
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_BOSS_LIANHUO);
+
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Initialize(void* pArg)
+{
+	if (FAILED(Super::Initialize(pArg)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Ability()))
+		return E_FAIL;
+
+	Set_Name("지옥불의 교도소장 리안후오");
+
+	if (FAILED(Ready_Weapon()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Components(pArg)))
+		return E_FAIL;
+
+	if (FAILED(Ready_StateIndexForDirecting()))
+		return E_FAIL;
+
+	if (FAILED(Ready_CameraEvent()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_GlobalEvent()
+{
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Awake(const _uint iCurrentLevelID)
+{
+	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
+
+	CTransform* pTrnasform = Get_Component<CTransform>();
+	pTrnasform->Set_MovePerSec(1.5f);
+	pTrnasform->Set_RotatePerSec(3.f);
+
+	{
+		UI_PREFAB_DATA ePrefabData = {};
+		UI_BOSS_NAMEPLATE_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		ePrefabData.Data = Desc;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
+	}
+
+	if (FAILED(Change_State_ForDirecting(EStateForDirecting::Idle)))
+		return E_FAIL;
+
+	if (FAILED(Ready_GlobalEvent()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CBoss_Lianhuo::Update_Priority(const _float fTimeDelta)
+{
+	Super::Update_Priority(fTimeDelta);
+}
+
+void CBoss_Lianhuo::Update(const _float fTimeDelta)
+{
+	Super::Update(fTimeDelta);
+}
+
+void CBoss_Lianhuo::Update_Late(const _float fTimeDelta)
+{
+	Super::Update_Late(fTimeDelta);
+}
+
+void CBoss_Lianhuo::Ready_Before_Render(const _float fTimeDelta)
+{
+	Super::Ready_Before_Render(fTimeDelta);
+}
+
+HRESULT CBoss_Lianhuo::Render()
+{
+	if (FAILED(Super::Render()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CBoss_Lianhuo::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+{
+	Super::OnCollision(iMyColliderLayer, iOtherLayer, pOther);
+}
+
+void CBoss_Lianhuo::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+{
+	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+}
+
+void CBoss_Lianhuo::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+{
+	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
+}
+
+void CBoss_Lianhuo::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+{
+	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
+}
+
+void CBoss_Lianhuo::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+{
+	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
+}
+
+_bool CBoss_Lianhuo::On_Hit(const HIT_DESC& hitDesc)
+{
+	_bool result = Super::On_Hit(hitDesc);
+	//if (result == true)
+	//{
+	//	CMonsterControlContext* pControlContext = Get_Component<CMonsterControlContext>();
+	//	CStatCom_Boss* pComBoss = Get_Component<CStatCom_Boss>();
+	//	// 그로기 일때
+	//	if (pControlContext->IsGroggy() == true)
+	//	{
+	//		// 플레이어 공격이라면
+	//		if (hitDesc.attackDesc.iAttackerLayer == EPhysicsFilterGroup::ATTACK)
+	//		{
+	//			// 확정 static_cast<>
+	//			if (CMainPlayer* pMainPlayer = dynamic_cast<CMainPlayer*>(hitDesc.attackDesc.pAttacker))
+	//			{
+	//				CActionState* pActionState = pMainPlayer->Get_Component<CActionState>();
+	//				// Condemn
+	//				if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::CONDEMN))
+	//				{
+	//					pComBoss->Add_Health(-500.f);
+	//					_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
+	//					if (fHpRatio <= g_XMEpsilon.f[0])
+	//						Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
+	//					else
+	//						Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
+	//				}
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		EGroggyState eGroggy{ EGroggyState::None };
+	//		if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+	//			eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.25f);
+	//		else
+	//			eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
+
+	//		// 그로기 세팅하고 !!리턴!!
+	//		if (eGroggy != EGroggyState::None)
+	//		{
+	//			if (_bool bRequstedSucess = pControlContext->Set_Groggy(eGroggy))
+	//				m_pGameInstance->Broadcast<BOSS_GROGGY>();
+
+	//		}
+	//	}
+	//}
+	return result;
+}
+
+void CBoss_Lianhuo::Try_Attack(const HIT_DESC& hitDesc)
+{
+	Super::Try_Attack(hitDesc);
+
+	Get_Component<CMonsterControlContext>()->Set_AttackLanded();
+}
+
+HRESULT CBoss_Lianhuo::Change_State_ForDirecting(EStateForDirecting eState)
+{
+	if (eState < 0 || eState >= COUNT)
+		return E_FAIL;
+
+	CActionState* pActionState = Get_Component<CActionState>();
+	if (pActionState == nullptr)
+		return E_FAIL;
+
+	if (FAILED(pActionState->Change_State(m_arrStateIndex[eState], true)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_Ability()
+{
+	CStatCom_Boss::BOSS_STAT_DESC desc = {};
+	desc.fCriticalAttack = 30.f;
+	desc.fCriticalRate = 0.4f;
+	desc.fMaxHp = 4500.f;
+	desc.FStatFlags = CMyStat::StatFlags::None;
+	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
+
+	if (FAILED(Add_Component<CStatCom_Boss>(0 /*static*/, L"Prototype_Component_Stat_Boss", &desc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_Weapon()
+{
+	// Weapons
+	{
+		CWeapon::WEAPON_DESC weaponDesc = {};
+		weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_LianhuoWeapon";
+		weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
+		weaponDesc.pMatHandSocket = Get_Part<CBoss_Lianhuo_Body>(Part::BODY)->Get_SocketMatrix(238);
+		weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
+		weaponDesc.eState = CWeapon::State::HAND;
+		weaponDesc.bMianWeapon = true;
+		weaponDesc.FDescFlag = 0;
+		if (FAILED(Add_Part(Part::SWORD, 0, L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_Components(void* pArg)
+{
+	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArg);
+	CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	// TODO : BattleFiled
+
+	{
+		CSword* pSword = Get_Part<CSword>(ENUM_TO_UINT(Part::SWORD));
+		if (pSword == nullptr)
+			return E_FAIL;
+		CComputeShader* pBodyAnimECS = static_cast<CComputeShader*>(pBody->Get_Script_Component(TEXT("ComputeShader_AnimE")));
+		if (pBodyAnimECS == nullptr)
+			return E_FAIL;
+
+		CMonsterActionState::MONSTERACTIONSTATE_DESC desc = {};
+		desc.pOwnerModel = pBody->Get_Component<CModel>();
+		desc.pOwnerWeaponModel = pSword->Get_Component<CModel>();
+		desc.pOwnerAnimECS = pBodyAnimECS;
+		desc.wstrMonsterStateTag = pDesc->wstrMonsterStateTag;
+		desc.iLevelIndex = pDesc->iLevelIndex;
+		if (FAILED(Add_Component<CMonsterActionState>(0, L"Prototype_Component_ActionState_Monster", &desc)))
+			return E_FAIL;
+	}
+
+	{
+		CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
+		desc.fMeleeRange = 8.f;
+		desc.fAttackRange = 16.f;
+		desc.fCloseRange = 3.f;
+		desc.fDetectionRange = 20.f;
+		desc.fSpeed = 1.f;
+		//desc.iSkillCount;
+		//desc.vecSkillRange;
+
+		if (FAILED(Add_Component<CMonsterControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Monster", &desc)))
+			return E_FAIL;
+	}
+
+	{
+		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
+			return E_FAIL;
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_StateIndexForDirecting()
+{
+	CMonsterActionState* pActionState = Get_Component<CMonsterActionState>();
+	if (pActionState == nullptr)
+		return E_FAIL;
+
+	auto setStateIndex = [&](_uint iStateIndex, const string& strStateName)->_bool
+		{
+			_uint iIndex = pActionState->Get_StateIndex(strStateName);
+			if (iIndex < 0)
+				return false;
+			m_arrStateIndex[iStateIndex] = iIndex;
+			return true;
+		};
+
+	if (setStateIndex(EStateForDirecting::Idle, "Idle") == false)
+		return E_FAIL;
+	//if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemned_Die") == false)
+	//	return E_FAIL;
+	//if (setStateIndex(EStateForDirecting::Condemned_Attacked, "Condemned_Attacked") == false)
+	//	return E_FAIL;
+	//if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
+	//	return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_CameraEvent()
+{
+	_uint iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CCameraEventBinder* pResult = CCameraEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/CameraAnimationData/Lianhuo.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
+	return S_OK;
+}
+
+CBoss_Lianhuo* CBoss_Lianhuo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+{
+	CBoss_Lianhuo* pInsatnce = new CBoss_Lianhuo(pDevice, pDeviceContext);
+	if (FAILED(pInsatnce->Initialize_Prototype()))
+	{
+		MSG_BOX("CBoss_Lianhuo::Create, Failed");
+		Safe_Release(pInsatnce);
+	}
+	return pInsatnce;
+}
+
+CGameObject* CBoss_Lianhuo::Clone(void* pArg)
+{
+	CBoss_Lianhuo* pInstance = new CBoss_Lianhuo(*this);
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("CBoss_Lianhuo::Clone, Failed");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+void CBoss_Lianhuo::Free()
+{
+	Super::Free();
+}

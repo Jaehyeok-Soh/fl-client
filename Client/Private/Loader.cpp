@@ -95,7 +95,7 @@
 #include "Xibi_Oneshot_Thunder.h"
 // player
 #include "PlayerSkillObj_Headers.h"
-
+// "Prototype_Component_Model_LianhuoWeapon"
 
 //=================
 // Map Object
@@ -116,6 +116,7 @@
 //=================
 #include "TriggerBox_LevelChange.h"
 #include "TriggerBox_MonsterSpawner.h"
+#include "TriggerBox_MonsterWaveSpawner.h"
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
 #include "TriggerBox_TutorialUIEvent.h"
 #include "TriggerBox_CinematicPlayer.h"
@@ -135,6 +136,8 @@
 //=================
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
+#include "Boss_Lianhuo.h"
+#include "Boss_Lianhuo_Body.h"
 
 //=================
 // NPC
@@ -147,6 +150,8 @@
 #include "NPC_Villager_Body_1.h"
 #include "NPC_Kid_1.h"
 #include "NPC_Kid_Body_1.h"
+#include "NPC_Veteran.h"
+#include "NPC_Veteran_Body.h"
 
 //=================
 // UI
@@ -204,6 +209,7 @@
 #include "UIConversation_Image.h"
 #include "UIMouseCursor_Image.h"
 #include "UIMiniGame_Circle_Image.h"
+#include "UIScreenPulse_Image.h"
 //=================
 // Resource
 //=================
@@ -288,7 +294,7 @@ HRESULT CLoader::Loading()
 		hr = Loading_For_Kuangkeng();
 		break;
 	case Client::ELevelType::LIANHUO:
-		hr = Loading_For_Kuangkeng();
+		hr = Loading_For_Lianhuo();
 		break;
 	case Client::ELevelType::TEST:
 		hr = Loading_For_Test();
@@ -308,6 +314,7 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_LoadLevel()
 {
+
 #pragma region ToolData
 	{
 		// Regist Document
@@ -779,6 +786,23 @@ HRESULT CLoader::Loading_For_Logo()
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Kid_1_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
+	// For.Prototype_Component_Model_NPC_Veteran
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.wstrModelFolderName = L"NPC_Veteran";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = { 3 };
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Veteran_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
 	// For. Prototype_Component_Camera
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Camera", CCamera::Create());
 	// For. Prototype_Component_CameraController
@@ -893,6 +917,7 @@ HRESULT CLoader::Loading_For_Logo()
 #pragma region TriggerBox
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_ChangeLevel_Prototype_Tag,			CTriggerBox_LevelChange::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterSapwner_Prototype_Tag,			CTriggerBox_MonsterSpawner::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_MonsterWaveSpawner_Prototype_Tag,		CTriggerBox_MonsterWaveSpawner::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, CTriggerBox_GlobalEvent_BroadCaster::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_TutorialUIEvent_PrototypeTag,			CTriggerBox_TutorialUIEvent::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_CinematicPlayer_PrototypeTag,			CTriggerBox_CinematicPlayer::Create(m_pDevice, m_pDeviceContext));
@@ -931,6 +956,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Kid_1_Prototype_Tag, CNPC_Kid_1::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_NPC_Kid_1_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Kid_1_Body_Prototype_Tag, CNPC_Kid_Body_1::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Veteran
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Veteran_Prototype_Tag, CNPC_Veteran::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Kid_1_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Veteran_Body_Prototype_Tag, CNPC_Veteran_Body::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
@@ -1009,6 +1038,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MouseCursorImage",			CUIMouseCursor_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleImage",		CUIMiniGame_Circle_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleText",		CUIMiniGame_Circle_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ScreenPulseImage",			CUIScreenPulse_Image::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	
@@ -1083,6 +1113,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_XibiWeapon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
 	// For. Prototype_Component_Xibi_GimmikController
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Xibi_GimmikController", CXibi_GimmikController::Create());
 
@@ -1179,6 +1210,45 @@ HRESULT CLoader::Loading_For_Lianhuo()
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
+#pragma region PretransformMatrix
+	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
+	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
+	Matrix matPreTransformScale150 = Matrix::CreateScale(1.5f, 1.5f, 1.5f);
+	Matrix matPreTransformIdentity = Matrix::Identity;
+	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
+#pragma endregion
+	// For. Prototype_GameObject_Boss_Lianhuo
+	ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Lianhuo_Prototype_Tag, CBoss_Lianhuo::Create(m_pDevice, m_pDeviceContext));
+	// For. Prototype_GameObject_Boss_LianhuoBody
+	ADD_PROTOTYPE(ELevelType::STATIC, g_wszBoss_Lianhuo_Body_Prototype_Tag, CBoss_Lianhuo_Body::Create(m_pDevice, m_pDeviceContext));
+	// For.Prototype_Component_Model_Lianhuo
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Lianhuo";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = { 2, 10,238 };
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 2;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszBoss_Lianhuo_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
+	// For. Prototype_Component_Model_LianhuoWeapon
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformIdentity);
+		desc.wstrModelFolderName = L"LianhuoWeapon";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_LianhuoWeapon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
 
 
 	m_fLoadingRatio = 1.f;
@@ -1333,6 +1403,9 @@ HRESULT CLoader::Ready_AttackOverlap()
 	if (FAILED(Ready_AttackOverlap_Xibi()))
 		return E_FAIL;
 
+	if (FAILED(Ready_AttackOverlap_Lianhuo()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -1471,6 +1544,12 @@ HRESULT CLoader::Ready_Spawner()
 HRESULT CLoader::Ready_Sounds()
 {
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Tutorial")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Static")))
 		return E_FAIL;
 
 	return S_OK;
@@ -1617,6 +1696,27 @@ HRESULT CLoader::Ready_AttackOverlap_Xibi()
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Xibi_Attack.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_AttackOverlap_Lianhuo()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Lianhuo_Attack.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

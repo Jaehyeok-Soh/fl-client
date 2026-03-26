@@ -114,8 +114,12 @@ public:
 #pragma endregion
 
 #pragma region TIMESCALE_MANAGER
+	HRESULT					Set_Layer_UnscaledDomain(_uint iLevelIndex, const wstring& wstrLayerTag);
+	HRESULT					Set_Layer_ScaledDomain(_uint iLevelIndex, const wstring& wstrLayerTag);
 	void					Request_HitStop(_float fUnscaledDurationTime = HITSTOP_TIME);
 	void					Request_SloMo(_float fScale, _float fUnscaledDurationTime);
+	void					Active_TimeStop();
+	void					Deactive_TimeStop();
 	void					Active_SloMo(_float fScale);
 	void					Deactivate_SloMo();
 	void					Set_GlobalScale(_float fScale);

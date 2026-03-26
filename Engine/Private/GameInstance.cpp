@@ -373,6 +373,14 @@ CTimer* CGameInstance::Find_Timer(const _tchar* pTimerTag)
 #pragma endregion
 
 #pragma region TIMESCALE_MANAGER
+HRESULT CGameInstance::Set_Layer_UnscaledDomain(_uint iLevelIndex, const wstring& wstrLayerTag)
+{
+	return m_pObject_Manager->Set_UnscaledDomain(iLevelIndex, wstrLayerTag);
+}
+HRESULT CGameInstance::Set_Layer_ScaledDomain(_uint iLevelIndex, const wstring& wstrLayerTag)
+{
+	return m_pObject_Manager->Set_ScaledDomain(iLevelIndex, wstrLayerTag);
+}
 void CGameInstance::Request_HitStop(_float fUnscaledDurationTime)
 {
 	m_pTimeScale_Manager->Request_HitStop(fUnscaledDurationTime);
@@ -380,6 +388,14 @@ void CGameInstance::Request_HitStop(_float fUnscaledDurationTime)
 void CGameInstance::Request_SloMo(_float fScale, _float fUnscaledDurationTime)
 {
 	m_pTimeScale_Manager->Request_SloMo(fScale, fUnscaledDurationTime);
+}
+void CGameInstance::Active_TimeStop()
+{
+	m_pTimeScale_Manager->Active_TimeStop();
+}
+void CGameInstance::Deactive_TimeStop()
+{
+	m_pTimeScale_Manager->Deactive_TimeStop();
 }
 void CGameInstance::Active_SloMo(_float fScale)
 {
@@ -1504,8 +1520,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pInput_Manager);
-	Safe_Release(m_pTimer_Manager);
-	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pDataRepository);
@@ -1518,6 +1532,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pObjectPool_Manager);
+	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pPrototype_Manager);

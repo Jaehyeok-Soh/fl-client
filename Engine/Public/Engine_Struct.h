@@ -486,7 +486,7 @@ namespace Engine
 		SimpleMath::Vector2 vUVOffset;
 
 		// Row 2
-		SimpleMath::Vector2 vPadding0;
+		SimpleMath::Vector2 vUVPower;
 		float fGlowPower;
 		float fLifeRatio;
 
