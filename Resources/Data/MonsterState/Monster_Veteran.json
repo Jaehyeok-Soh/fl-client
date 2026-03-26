@@ -38,6 +38,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -329,36 +330,6 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Hitlight": 100.0
-                            },
-                            "vecConditionEntry": [
-                                {
-                                    "strCondition": "condition_hit_light",
-                                    "tParam": {
-                                        "bParam": [
-                                            false,
-                                            false,
-                                            false,
-                                            false
-                                        ],
-                                        "fParam": [
-                                            0.0,
-                                            0.0,
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "iParam": [
-                                            0,
-                                            0,
-                                            0,
-                                            0
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "mapRandomStatePool": {
                                 "Turn_L90": 100.0
                             },
                             "vecConditionEntry": [
@@ -487,6 +458,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -602,6 +574,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -748,6 +721,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -918,6 +892,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1088,6 +1063,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1257,7 +1233,8 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
-                    "bLoop": false,
+                    "bLoop": true,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1303,7 +1280,31 @@
                     },
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
-                    "vecFeatureEntry": [],
+                    "vecFeatureEntry": [
+                        {
+                            "strFeature": "feat_chase",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        }
+                    ],
                     "vecGlobalStateTransition": [
                         {
                             "mapRandomStatePool": {
@@ -1434,6 +1435,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1580,6 +1582,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1623,8 +1626,106 @@
                         "fMinTime": 0.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [],
-                    "vecEndConditionFeature": [],
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        70.0,
+                                        75.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_apply_gravity",
+                                "tParam": {
+                                    "bParam": [
+                                        true,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_apply_gravity",
+                                "tParam": {
+                                    "bParam": [
+                                        true,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "vecFeatureEntry": [
                         {
                             "strFeature": "feat_align_attack",
@@ -1708,7 +1809,56 @@
                     "vecMainAnimNames": [
                         "Animation_Monster_Veteran_Skill05"
                     ],
-                    "vecStartConditionFeature": [],
+                    "vecStartConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_apply_gravity",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
@@ -1750,6 +1900,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1795,31 +1946,7 @@
                     },
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
-                    "vecFeatureEntry": [
-                        {
-                            "strFeature": "feat_align_attack",
-                            "tParam": {
-                                "bParam": [
-                                    false,
-                                    false,
-                                    false,
-                                    false
-                                ],
-                                "fParam": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "iParam": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                ]
-                            }
-                        }
-                    ],
+                    "vecFeatureEntry": [],
                     "vecGlobalStateTransition": [
                         {
                             "mapRandomStatePool": {
@@ -1920,6 +2047,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2066,6 +2194,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2109,8 +2238,106 @@
                         "fMinTime": 0.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [],
-                    "vecEndConditionFeature": [],
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        50.0,
+                                        55.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_apply_gravity",
+                                "tParam": {
+                                    "bParam": [
+                                        true,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_apply_gravity",
+                                "tParam": {
+                                    "bParam": [
+                                        true,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "vecFeatureEntry": [],
                     "vecGlobalStateTransition": [
                         {
@@ -2170,7 +2397,56 @@
                     "vecMainAnimNames": [
                         "Animation_Monster_Veteran_Skill12"
                     ],
-                    "vecStartConditionFeature": [],
+                    "vecStartConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_apply_gravity",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
@@ -2212,6 +2488,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2382,6 +2659,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2552,6 +2830,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2597,7 +2876,31 @@
                     },
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
-                    "vecFeatureEntry": [],
+                    "vecFeatureEntry": [
+                        {
+                            "strFeature": "feat_move_backward",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        }
+                    ],
                     "vecGlobalStateTransition": [
                         {
                             "mapRandomStatePool": {
@@ -2705,6 +3008,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2939,6 +3243,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -3173,6 +3478,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -3407,6 +3713,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -3641,6 +3948,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -3875,6 +4183,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4049,6 +4358,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4195,6 +4505,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4341,6 +4652,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4487,6 +4799,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 2.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",

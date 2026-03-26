@@ -748,6 +748,11 @@ void CActionState::Set_AnimationPlayRate(_uint iIndex, _float fSpeed)
 	m_pOwnerModel->Set_AnimationPlayRate(iIndex, fSpeed);
 }
 
+void CActionState::Set_AnimationSpeed(_uint iIndex, _float fSpeed)
+{
+	m_pOwnerModel->Get_Animation(iIndex)->Set_AnimationSpeed(fSpeed);
+}
+
 void CActionState::Additive_MixOn(_bool bOn)
 {
 	if (m_pOwnerModel)

@@ -243,6 +243,7 @@ void CPanel_State::DrawStateDetails()
         ImGui::Checkbox("Loop", &state.bLoop);
         ImGui::SameLine();
         ImGui::Checkbox("Blend", &state.bBlend);
+        ImGui::InputFloat("Anim Speed", &state.fAnimationSpeed);
     }
 
     // 2. ≈∏¿Ã∏” (Time Counters)
