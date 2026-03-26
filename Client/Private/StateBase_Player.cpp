@@ -111,7 +111,7 @@ _uint CStateBase_Player::Get_Capabilities() const
 
 	iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
 
-	if (m_fStateElapsed <= m_fCapHitMoveTime)
+	if (Can_Captablity_Move())
 		iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::MOVE);
 
 	return	 iCapFlag;
@@ -783,6 +783,12 @@ void CStateBase_Player::Reset_WhenStart()
 	m_TChargeCount.x = 0.f;
 
 	Engine_Utils::RemoveHard_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Mask_ChangeWeapons);
+}
+
+_bool CStateBase_Player::Can_Captablity_Move() const
+{
+	// loop이거나, move time 이 아직 안 지났을때
+	return (m_bLoop) || (m_fStateElapsed <= m_fCapHitMoveTime);
 }
 
 HRESULT CStateBase_Player::Start_AttackState(void* pArg)

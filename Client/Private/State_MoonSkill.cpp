@@ -108,6 +108,11 @@ _uint CState_MoonSkill::Get_Capabilities() const
 	return 0;
 }
 
+_bool CState_MoonSkill::Can_Captablity_Move() const
+{
+	return false;
+}
+
 _bool CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
 {
 	SetupLook_CameraLookLerp(fTimeDelta, 10.f);

@@ -21,6 +21,9 @@ public:
 public:
 	virtual _uint	Get_Capabilities() const override;
 
+protected:
+	virtual _bool Can_Captablity_Move() const override;
+
 private:
 	_bool SkillE_Update(const _float fTimeDelta);
 	_bool SkillQ_Update(const _float fTimeDelta);

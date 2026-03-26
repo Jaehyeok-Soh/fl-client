@@ -14,6 +14,8 @@ HRESULT CState_DashBack::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_fCapHitMoveTime = Get_MoveBoneTime(50.f);
+
 	return S_OK;
 }
 

@@ -15,6 +15,8 @@ HRESULT CState_Jump::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_fCapHitMoveTime = Get_MoveBoneTime(24.f);
+
 	return S_OK;
 }
 

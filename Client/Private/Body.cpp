@@ -113,6 +113,7 @@ HRESULT CBody::Initialize(void* pArg)
 		{
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_Loop"))->Set_AnimationSpeed(1.1f);
 
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_01"))->Set_AnimationSpeed(1.9f);
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_02"))->Set_AnimationSpeed(1.3f);
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_03"))->Set_AnimationSpeed(1.3f);
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_04"))->Set_AnimationSpeed(1.3f);

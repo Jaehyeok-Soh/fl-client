@@ -6,6 +6,7 @@
 
 #define ANIMTIC (24.f * 1.2f)
 #define ANIMTIC_3 (24.f * 1.3f)
+#define MOVEBONE_TIME 0.4f
 
 NS_BEGIN(Client)
 class CGun;
@@ -35,7 +36,7 @@ public:
 		,C_Fly		= 0x00010
 		,C_Strong	= 0x00020
 
-		,C_CheckF = 0x00040
+		,C_CheckF	= 0x00040
 	};
 
 	enum WEAPONCHANGEFLAGS : Flags
@@ -212,6 +213,8 @@ protected:
 
 	virtual void Reset_WhenStart();
 
+	virtual _bool Can_Captablity_Move() const;
+
 protected:
 	HRESULT Start_AttackState(void* pArg);
 
@@ -230,3 +233,9 @@ public:
 };
 
 NS_END
+
+
+inline _float Get_MoveBoneTime(_float fDuration, _float fAnimSpeedOffset = 1.2f)
+{
+	return fDuration / (24.f * fAnimSpeedOffset) - (MOVEBONE_TIME + 0.05f);
+}
