@@ -63,8 +63,9 @@ private:
 	HRESULT Ready_AttackOverlap_PlayerMoon();
 	HRESULT Ready_AttackOverlap_Monster_Dog();
 	HRESULT Ready_AttackOverlap_Monster_Boomer();
+	HRESULT Ready_AttackOverlap_Monster_Veteran();
 	HRESULT Ready_AttackOverlap_Xibi();
-
+	HRESULT Ready_AttackOverlap_Lianhuo();
 
 	HRESULT	Ready_CCS();
 public:
@@ -84,6 +85,7 @@ private:
 	_tchar m_szFPS[MAX_PATH] = L"";
 
 	_float m_fLoadingRatio = {};
+
 
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingLevelID);

@@ -498,6 +498,7 @@ HRESULT CLevel_Tutorial_Village::Ready_Octree()
 HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 {
 	CDialogueManager::GetInstance()->Initialize();
+	CUITutorial_Manager::GetInstance()->Initialize();
 
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
@@ -516,6 +517,9 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), g_wszUILayer)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -524,30 +528,54 @@ void CLevel_Tutorial_Village::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
 
+
+	#ifdef _DEBUG
 	static _uint s_iCount = { 0 };
-	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+	if (m_pGameInstance->KeyButton_Down(DIK_P))
 	{
-#ifdef _DEBUG
 		s_iCount = (s_iCount + 1) % 3;
-#else
-		s_iCount = (s_iCount + 1) % 2;
-#endif
 		if (s_iCount == 0)
 		{
-			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+			m_fTimeScale = 1.f;
 		}
 		else if (s_iCount == 1)
 		{
-			m_eCursorMode = ECursorMode::VisibleClipped;
+			m_fTimeScale = 2.f;
 		}
-#ifdef _DEBUG
 		else
 		{
-			m_eCursorMode = ECursorMode::VisibleFree;
+			m_fTimeScale = 4.f;
 		}
-#endif
-		m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
+		m_pGameInstance->Set_GlobalScale(m_fTimeScale);
 	}
+	#endif
+
+
+//	static _uint s_iCount = { 0 };
+//	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+//	{
+//#ifdef _DEBUG
+//		s_iCount = (s_iCount + 1) % 3;
+//#else
+//		s_iCount = (s_iCount + 1) % 2;
+//#endif
+//		if (s_iCount == 0)
+//		{
+//			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+//		}
+//		else if (s_iCount == 1)
+//		{
+//			m_eCursorMode = ECursorMode::VisibleClipped;
+//		}
+//#ifdef _DEBUG
+//		else
+//		{
+//			m_eCursorMode = ECursorMode::VisibleFree;
+//		}
+//#endif
+//		m_pGameInstance->Request_CursorMode(m_eCursorMode);
+//	}
 }
 
 HRESULT CLevel_Tutorial_Village::Render()

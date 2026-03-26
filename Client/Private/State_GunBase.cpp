@@ -40,6 +40,8 @@ HRESULT CState_GunBase::Initialize(void* pArg)
 
     if (FAILED(Super::Initialize(&tSuperDesc)))
         return E_FAIL;
+
+    m_iBoneHitTypeFlag = CPlayerActionState::BoneHitType::BHT_FORCE_WEAK;
     
     return S_OK;
 }

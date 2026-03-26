@@ -372,18 +372,60 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
 #endif // _DEBUG
     CTransform*         pTransform = Get_Component<CTransform>();
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
+    _uint iStateFlag = pPlayerState->Get_CurrentCapabilities();
+
+    /* special dash 분기 처리 */
+    if (Has_Capability(iStateFlag, Engine::StateCapability::SKILL))
+    {
+        _bool bSpecialOn = false;
+        CGameObject* pAttacker = hitDesc.attackDesc.pAttacker;
+
+        // 카테고리 확인
+        DTO::EAttackPresetCategory eCategory = hitDesc.attackDesc.pAttackPreset->eCategory;
+        switch (eCategory)
+        {
+        case DTO::EAttackPresetCategory::BossBasic:
+            bSpecialOn = true;
+        }
+
+        // 카테고리 확인이 됐고, attacker가 살아 있다면
+        if (bSpecialOn && pAttacker)
+        {
+            // pivot 기록 & change state
+            pPlayerState->Set_PivotPos(pAttacker->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS));
+            pPlayerState->Change_State(ENUM_TO_UINT(CPlayer::State::SPECIALDASH), true);
+            return true;
+        }
+    }
 
     // 만약 현재 state가 attack을 받을 수 있다면
-    _uint iStateFlag = pPlayerState->Get_CurrentCapabilities();
     if (Has_Capability(iStateFlag, Engine::StateCapability::BEATTACKED))
     {
         // stat 컴포넌트에 정보 넘겨주기
         _float fDamage = hitDesc.fFinalDamage;
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Add_Health(fDamage * -1.f);
 
-        // action state 내부에 set hit desc 넣어주기 : 다음 update때 state에 정보를 주기 위함
+        // action state 
         if (pPlayerState)
+        {
+            // 내부에 set hit desc 넣어주기 : 다음 update때 state에 정보를 주기 위함
             pPlayerState->Set_HitDesc(hitDesc);
+
+            // action state에 bone move change 해달라고 정보 전달 : 안에서 state 방어중
+            {
+                CPlayerActionState::BONESTATE_CHANGE_ARGS tArg = {};
+                // 내적을 통해 방향 flag 던져줌
+                {
+                    Vec3    vLook   = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+                    Vec3 vHitNormal = hitDesc.vHitNormal;
+                    vHitNormal.y    = 0.f;
+                    _float	fDot    = vLook.Dot(vHitNormal);
+                    tArg.iHitType   = (fDot > 0.f) ? CPlayerActionState::BoneHitType::BHT_BACK : CPlayerActionState::BoneHitType::BHT_Front;
+                }
+                pPlayerState->Change_ActionBoneState(CPlayerActionState::BONE_STATE::HITSTART, &tArg);
+            }
+        }
 
         // Hit 데미지 폰트 // 색 변경은 가능 //
         {
@@ -402,8 +444,6 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
             CUI_Manager::GetInstance()->Request_Add_Prefab(
                 m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_HIT, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
         }
-
-        //if(pPlayerState->Get_AttackFlag())
 
         // Shake & Emissive
         if (CBody* pBody = Get_Part<CBody>(Part::BODY))
@@ -1178,6 +1218,7 @@ void CMainPlayer::Count_Combo()
     switch ((_uint)Get_Component<CActionState>()->Get_CurrentStateIndex())
     {
     case ENUM_TO_UINT(State::COMBO):
+    case ENUM_TO_UINT(State::COMBO_DUAL):
     case ENUM_TO_UINT(State::JUMPATTEND):
     case ENUM_TO_UINT(State::CHARGE):
         pStat->Add_ComboCount();

@@ -486,7 +486,7 @@ namespace Engine
 		SimpleMath::Vector2 vUVOffset;
 
 		// Row 2
-		SimpleMath::Vector2 vPadding0;
+		SimpleMath::Vector2 vUVPower;
 		float fGlowPower;
 		float fLifeRatio;
 
@@ -706,6 +706,20 @@ namespace Engine
 
 		SimpleMath::Matrix			matOffsetTransform = {};
 	}CS_IMMU_BONEMESH;
+
+#pragma endregion
+
+#pragma region BONEMove_CS
+
+	typedef struct tagBoneMoveCB
+	{
+		int							iMovingIdx	= { -1 };
+		unsigned int				iBoneNums	= { 0 };
+		float						fRatio		= {0.f};
+		float						Padding0	= {};
+
+		SimpleMath::Matrix			matOffset = { Matrix::Identity };
+	}CS_CB_MU_BONEMOVE;
 
 #pragma endregion
 

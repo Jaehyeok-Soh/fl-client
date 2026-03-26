@@ -17,15 +17,18 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
-protected:
-	virtual _bool Can_CheckKey(const _float fTimeDelta);
+public:
+	virtual _uint	Get_Capabilities() const override
+	{
+		return	0; // ¹«Àû
+	}
 
 private:
 	Vec3 m_vPivot = { Vec3::Zero };
 
 	Vec3 m_vDir = { Vec3::Zero };
 
-	array<Vec3, 4> m_arrPoses;
+	_float m_fDistance = { 0.f };
 
 public:
 	static CState_SpecialDash* Create(CActionState* pOwnerComponent, void* pArg = nullptr);

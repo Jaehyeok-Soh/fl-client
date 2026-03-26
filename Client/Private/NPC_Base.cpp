@@ -49,6 +49,7 @@
 #include "NPC_Villager_1.h"
 #include "NPC_Kid_1.h"
 #include "NPC_Citizen.h"
+#include "NPC_Veteran.h"
 
 CNPC_Base::CNPC_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -485,6 +486,22 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 		wstrAddLayerName				= g_wszNPCeLayer;
 
 		pArg = &tDesc;
+	}
+	break;
+	case Engine::EObjectEnumTag::NPC_VETERAN:
+	{
+		npcDesc = CNPC_Veteran::Get_PreSetDesc(npcDesc.iLevelIndex);
+		npcDesc.iLevelIndex = iAddLevelType;
+		npcDesc.pTransform_Desc = pTransformDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		wstrFindPrototypeName = g_wszNPC_Veteran_Prototype_Tag;
+		wstrAddLayerName = g_wszNPCeLayer;
 	}
 	break;
 	default:

@@ -275,6 +275,26 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				m_bModified |= true;
 			}
 
+			// ===================  UV Power (Tiling) 설정 추가  =====================
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("UV Power (Tiling)");
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(100.f);
+
+			// _uint 타입이므로 DragInt나 InputInt를 사용합니다.
+			// 0이면 기능 꺼짐, 1이면 기본, 2 이상부터 반복
+			if (ImGui::DragScalar("##UVXPower", ImGuiDataType_U32, &m_tCurrentDesc.Data._Effect_UVXPower, 0.1f))
+			{
+				m_bModified |= true;
+			}
+
+			if (ImGui::DragScalar("##UVYPower", ImGuiDataType_U32, &m_tCurrentDesc.Data._Effect_UVYPower, 0.1f))
+			{
+				m_bModified |= true;
+			}
+
+			ImGui::Spacing();
+
 			ImGui::TreePop();
 		}
 
@@ -1594,6 +1614,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_PParticleTypeList.push_back("DISTOTION");
 					m_PParticleTypeList.push_back("SwordEffect");
 					m_PParticleTypeList.push_back("NONDEPTH_DEFAULT");
+					m_PParticleTypeList.push_back("CHANIN_MESH");
 					break;
 				}
 

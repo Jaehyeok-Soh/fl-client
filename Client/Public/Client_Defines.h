@@ -19,6 +19,7 @@ namespace Client
 	enum class ELevelType : unsigned int
 	{
 		STATIC = 0,
+		TITLE,
 		LOADING,
 		LOGO,				/* 현재 임시 Test Level용 추후 Logo Scene으로 바뀔예정  */
 		TUTORIAL_VILLAGE,	/* 튜토리얼 처음 진입되는 Level */
@@ -129,6 +130,9 @@ namespace Client
 
 		/* Boss */
 		Xibi,
+		Lianhuo,
+
+		Veteran,
 		END
 	};
 
@@ -598,9 +602,6 @@ namespace Client
 	}
 
 
-
-
-
 	enum class EUIPrefabType {
 		NOT_PREFAB,
 		MONSTER_NAMEPLATE,
@@ -635,7 +636,6 @@ namespace Client
 		END
 	};
 
-
 	inline EUITutorialPopUpTypeID UITutorialPopUpTypeID_ToEnum(const std::string& strType)
 	{
 		for (int i = 0; i < (int)EUITutorialPopUpTypeID::END; ++i)
@@ -645,8 +645,6 @@ namespace Client
 		}
 		return EUITutorialPopUpTypeID::END;
 	}
-
-
 
 	inline _wstring UIPrefabtypeToWstring(EUIPrefabType eType)
 	{
@@ -693,7 +691,6 @@ namespace Client
 		CGameObject* pTarget = { nullptr };
 		Vec3 vOffset = {};
 	} UI_NAMEPLATE_PREFAB_DATA;
-
 	typedef struct tagUIDamageFontPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
@@ -702,30 +699,24 @@ namespace Client
 		_uint iDamage = {};
 		Vec3 vRandOffset = {};
 	} UI_DAMAGEFONT_PREFAB_DATA;
-
 	typedef struct tagUIBossNamePlatePrefabData
 	{
 		CGameObject* pTarget = { nullptr };
 	} UI_BOSS_NAMEPLATE_PREFAB_DATA;
-
 	typedef struct tagUIMinimapMonsterIconPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
 	} UI_MINIMAP_MONSTER_ICON_PREFAB_DATA;
-
 	typedef struct tagUITutorialPannelPrefabData
 	{
 		EUITutorialPannelTypeID eTutorialTypeID = {};
 
 	} UI_TUTORIAL_PANNEL_PREFAB_DATA;
-
 	typedef struct tagUITutorialPopUpPrefabData
 	{
 		EUITutorialPopUpTypeID eTutorialTypeID = { EUITutorialPopUpTypeID::END };
 
 	} UI_TUTORIAL_POPUP_PREFAB_DATA;
-
-
 	typedef std::variant<
 		UI_NAMEPLATE_PREFAB_DATA,
 		UI_DAMAGEFONT_PREFAB_DATA,
@@ -741,8 +732,6 @@ namespace Client
 		class CCanvas* pCanvas = {nullptr};
 	} UI_PREFAB_DATA;
 
-
-
 	enum class ECombotype {
 		C, 
 		B, 
@@ -752,7 +741,18 @@ namespace Client
 	};
 
 
-
+	enum class EUITutorialTypeToPlayerState
+	{
+		UNLOCK_JUMP,
+		UNLOCK_SLIDE,
+		UNLOCK_LATTAK,
+		UNLOCK_DASH,
+		UNLOCK_RATTAK,
+		UNLOCK_E,
+		UNLOCK_Q,
+		ALL,
+		END
+	};
 
 #pragma endregion
 
@@ -868,12 +868,15 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Dog_State_Tag[]{ L"Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]{ L"Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_State_Tag[]{ L"Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Veteran_State_Tag[]{ L"Monster_Veteran" };
 	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_State_Tag[]{ L"Boss_Lianhuo" };
 
 	inline constexpr wchar_t g_wszNPC_Pan_State_Tag[]{ L"NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_State_Tag[]{ L"NPC_Tavern" };
 	inline constexpr wchar_t g_wszNPC_Villager_1_State_Tag[]{ L"NPC_Villager_1" };
 	inline constexpr wchar_t g_wszNPC_Kid_1_State_Tag[]{ L"NPC_Kid_1" };
+	inline constexpr wchar_t g_wszNPC_Veteran_State_Tag[]{ L"NPC_Veteran" };
 
 #pragma endregion 
 
@@ -884,19 +887,17 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Dog"};
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]		{ L"Prototype_Component_Model_Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Fly" };
-	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Xibi" };
+	inline constexpr wchar_t g_wszMonster_Veteran_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Veteran" };
+	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Lianhuo" };
 	
-
+	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
 	/* NPC Prototype Tag */
 	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
-	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_NPC_Tavern" };
-	inline constexpr wchar_t g_wszNPC_Villager_1_Model_Prototype_Tag[]		{ L"Prototype_Component_Model_NPC_Villager_1" };
-	inline constexpr wchar_t g_wszNPC_Kid_1_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_NPC_Kid_1" };
-
-	/* NPC Default 관련 Model */
-
-
-	/* ----------------- */
+	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Tavern" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Kid_1" };
+	inline constexpr wchar_t g_wszNPC_Veteran_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Veteran" };
 
 #pragma endregion
 
@@ -908,8 +909,10 @@ namespace Client
 	/* Monster Attack OverLap */
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
-	inline constexpr wchar_t g_wszMonster_Fly_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Fly_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Veteran_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Veteran" };
 	inline constexpr wchar_t g_wszBoss_Xibi_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Lianhuo" };
 #pragma endregion
 
 
@@ -980,6 +983,7 @@ namespace Client
 #pragma region Trigger Box 관련
 	inline constexpr wchar_t g_wszTriggerBox_ChangeLevel_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_ChangeLevel" };
 	inline constexpr wchar_t g_wszTriggerBox_MonsterSapwner_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_MonsterSpawner" };
+	inline constexpr wchar_t g_wszTriggerBox_MonsterWaveSpawner_Prototype_Tag[]{ L"Prototype_GameObject_TriggerBox_MonsterWaveSpawner" };
 	inline constexpr wchar_t g_wszTriggerBox_PhysicsColliderBox_PrototypeTag[]{ L"Prototype_Component_Physics_Collider_TriggerBox" };
 	inline constexpr wchar_t g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_GlobalEvent_BroadCaster" };
 	inline constexpr wchar_t g_wszTriggerBox_TutorialUIEvent_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_TutorialUIEvent" };
@@ -992,22 +996,28 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Boomer_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Shooter_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter" };
 	inline constexpr wchar_t g_wszMonster_Fly_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Veteran_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Veteran" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Lianhuo" };
 
 	/* Monster Body Prototype Name 모음 */
 	inline constexpr wchar_t g_wszMonster_Dog_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Dog_Body" };
 	inline constexpr wchar_t g_wszMonster_Boomer_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer_Body" };
 	inline constexpr wchar_t g_wszBoss_Shooter_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter_Body" };
 	inline constexpr wchar_t g_wszMonster_Fly_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly_Body" };
+	inline constexpr wchar_t g_wszMonster_Veteran_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Veteran_Body" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi_Body" };
+	inline constexpr wchar_t g_wszBoss_Lianhuo_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Lianhuo_Body" };
 
 	inline constexpr wchar_t g_wszPool_Monster_Dog[]{ L"Pool_Monster_Dog" };
 	inline constexpr wchar_t g_wszPool_Monster_Boomer[]{ L"Pool_Monster_Boomer" };
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
 	inline constexpr wchar_t g_wszPool_Monster_Fly[]{ L"Pool_Monster_Fly" };
+	inline constexpr wchar_t g_wszPool_Monster_Veteran[]{ L"Pool_Monster_Veteran" };
 #pragma endregion
 
 #pragma region Npc 관련
+	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]				{ L"Prototype_GameObject_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Pan_Body" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Tavern" };
@@ -1022,7 +1032,8 @@ namespace Client
 	inline constexpr wchar_t g_wszNPC_Citizen_Body_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Citizen_Body"};
 	inline constexpr wchar_t g_wszNPC_Citizen_DecoPart_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Citizen_DecoPart"};
 
-
+	inline constexpr wchar_t g_wszNPC_Veteran_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Veteran" };
+	inline constexpr wchar_t g_wszNPC_Veteran_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Veteran_Body" };
 #pragma endregion
 
 #pragma region Part Objects
@@ -1061,6 +1072,91 @@ namespace Client
 	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
 	inline constexpr wchar_t g_wszInteractiveObjectLayer[]						{ L"InteractiveObject_Layer"};
 #pragma endregion
+
+#pragma region Camera
+	enum class ECameraShotEase : _uint
+	{
+		Linear = 0,
+		SmoothStep,
+		EaseOutQuad,
+		EaseInOutQuad,
+		EaseOutBack,
+		END
+	};
+
+	struct CAMERA_SHOT_KEY_1D
+	{
+		_float fTime = 0.f;
+		_float fValue = 0.f;
+		ECameraShotEase eEase = ECameraShotEase::SmoothStep;
+	};
+
+	struct CAMERA_SHOT_CHANNEL_1D
+	{
+		vector<CAMERA_SHOT_KEY_1D> vecKeys;
+	};
+
+	struct SCRIPTED_PIVOT_SHOT_DESC
+	{
+		_float  fDuration = 0.7f;
+
+		_bool   bFollowLivePivot = true;
+		_bool   bLookAtPivot = true;
+
+		_uint   iPart = 0;
+		wstring strPivotBoneTag;
+
+		// 시작 카메라 local basis 기준
+		CAMERA_SHOT_CHANNEL_1D LocalX;
+		CAMERA_SHOT_CHANNEL_1D LocalY;
+		CAMERA_SHOT_CHANNEL_1D LocalZ;         // +일수록 시작 look 반대방향(뒤)로 멀어짐
+
+		CAMERA_SHOT_CHANNEL_1D OrbitYawDeg;    // pivot 중심 월드 Y 회전
+		CAMERA_SHOT_CHANNEL_1D LookOffsetX;    // framing
+		CAMERA_SHOT_CHANNEL_1D LookOffsetY;
+	};
+
+	struct SCRIPTED_CONTROLLER_LAYER_DESC
+	{
+		CAMERA_SHOT_CHANNEL_1D FovDeltaDeg;
+
+		CAMERA_SHOT_CHANNEL_1D RotYawDeg;
+		CAMERA_SHOT_CHANNEL_1D RotPitchDeg;
+		CAMERA_SHOT_CHANNEL_1D RotRollDeg;
+
+		CAMERA_SHOT_CHANNEL_1D LocalPosX;
+		CAMERA_SHOT_CHANNEL_1D LocalPosY;
+		CAMERA_SHOT_CHANNEL_1D LocalPosZ;
+	};
+
+	struct SCRIPTED_CAMERA_SHOT_DESC
+	{
+		string                          strName;
+		SCRIPTED_PIVOT_SHOT_DESC        Pivot;
+		SCRIPTED_CONTROLLER_LAYER_DESC  Controller;
+	};
+
+	struct SCRIPTED_CAMERA_SHOT_RUNTIME
+	{
+		_bool   bPlaying = false;
+		_bool   bPause = false;
+		_float  fElapsed = 0.f;
+
+		Vec3    vStartPivotWS = Vec3::Zero;
+		Vec3    vStartCamPosWS = Vec3::Zero;
+
+		Vec3    vStartRight = Vec3::Right;
+		Vec3    vStartUp = Vec3::Up;
+		Vec3    vStartLook = Vec3::Forward;
+
+		// 시작 시점 offset을 camera local basis로 저장
+		// x = dot(offset, right)
+		// y = dot(offset, up)
+		// z = dot(offset, -look)  -> 양수면 뒤쪽
+		Vec3    vBaseOffsetLocal = Vec3::Zero;
+	};
+#pragma endregion
+
 
 #pragma region Dialogue
 	//typedef struct EDialogueChoice
@@ -1113,8 +1209,6 @@ namespace Client
 
 	}DIALOGUE_NODE;
 #pragma endregion
-
-
 
 }
 

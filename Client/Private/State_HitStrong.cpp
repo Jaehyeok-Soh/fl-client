@@ -75,6 +75,11 @@ HRESULT CState_HitStrong::End()
 	return S_OK;
 }
 
+_bool CState_HitStrong::Can_Captablity_Move() const
+{
+	return false;
+}
+
 CState_HitStrong* CState_HitStrong::Create(CActionState* pOwnerComponent, void* pArg)
 {
 	CState_HitStrong* pInstance = new CState_HitStrong(pOwnerComponent);

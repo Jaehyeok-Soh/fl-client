@@ -38,6 +38,9 @@ public:
 
 	void Clear_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
 	void Clear(_uint iLevelIndex);
+
+	HRESULT Set_ScaledDomain(_uint iLevelIndex, const wstring& wstrLayerTag);
+	HRESULT Set_UnscaledDomain(_uint iLevelIndex, const wstring& wstrLayerTag);
 private:
 	class CLayer* Find_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
 private:

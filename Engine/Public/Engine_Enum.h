@@ -18,9 +18,10 @@ namespace Engine
 	enum class ECursorMode : unsigned int
 	{
 		LockedHiddenCenter = 0,
-		VisibleClipped,
-		VisibleFree,
-		Tool,
+		VisibleClipped,		
+		VisibleFree,		
+		InVisibleClipped,	
+		Tool,				
 		END
 	};
 
@@ -700,7 +701,9 @@ namespace Engine
 			NPC_TAVERN = 4,
 			NPC_VILLAGER_1 = 5,
 			NPC_KID_1 = 6,
-			NPC_CITIZEN = 7,
+			NPC_VETERAN = 7,
+			NPC_KID_2 = 8,
+			NPC_CITIZEN = 9,
 
 			// 1000 ~ 1999 오브젝트
 			// OBJECT_
@@ -745,10 +748,12 @@ namespace Engine
 
 			// 30000 ~ 39999 앨리트 몬스터
 			MONSTER_ELITE_DEFAULT = 30000,
+			MONSTER_ELITE_VETERAN = 30001,
 
 			// 40000 ~ 49999 보스 몬스터
 			MONSTER_BOSS_DEFAULT = 40000,
 			MONSTER_BOSS_XIBI = 40001,
+			MONSTER_BOSS_LIANHUO = 40002,
 
 			// 99999 Default
 			DEFAULT = 99999,
@@ -796,10 +801,12 @@ namespace Engine
 
 			// MONSTER_ELITE
 			if (strType == "MONSTER_ELITE_DEFAULT") return OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT;
+			if (strType == "MONSTER_ELITE_VETERAN") return OBJECT_ENUM_TAG::MONSTER_ELITE_VETERAN;
 
 			// MONSTER_BOSS
 			if (strType == "MONSTER_BOSS_DEFAULT") return OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT;
 			if (strType == "MONSTER_BOSS_XIBI") return OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI;
+			if (strType == "MONSTER_BOSS_LIANHUO") return OBJECT_ENUM_TAG::MONSTER_BOSS_LIANHUO;
 
 			// DEFAULT
 			if (strType == "DEFAULT") return OBJECT_ENUM_TAG::DEFAULT;
@@ -841,11 +848,13 @@ namespace Engine
 			case OBJECT_ENUM_TAG::MONSTER_DOG:								return "MONSTER_DOG";
 			case OBJECT_ENUM_TAG::MONSTER_FLY:								return "MONSTER_FLY";
 			case OBJECT_ENUM_TAG::MONSTER_BOOMER:							return "MONSTER_BOOMER";
+			case OBJECT_ENUM_TAG::MONSTER_ELITE_VETERAN:					return "MONSTER_ELITE_VETERAN";
 
 			case OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT:					return "MONSTER_ELITE_DEFAULT";
 
 			case OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT:						return "MONSTER_BOSS_DEFAULT";
 			case OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI:						return "MONSTER_BOSS_XIBI";
+			case OBJECT_ENUM_TAG::MONSTER_BOSS_LIANHUO:						return "MONSTER_BOSS_LIANHUO";
 
 			case OBJECT_ENUM_TAG::DEFAULT:									return "DEFAULT";
 
@@ -883,8 +892,10 @@ namespace Engine
 		OBJECT_ENUM_TAG::MONSTER_FLY,
 		OBJECT_ENUM_TAG::MONSTER_BOOMER,
 		OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT,
+		OBJECT_ENUM_TAG::MONSTER_ELITE_VETERAN,
 		OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT,
 		OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI,
+		OBJECT_ENUM_TAG::MONSTER_BOSS_LIANHUO,
 		OBJECT_ENUM_TAG::DEFAULT
 	};
 
@@ -913,6 +924,18 @@ namespace Engine
 		DEPART,
 		ON_REACH,
 		END_CCS,
+		END,
+	};
+
+#pragma endregion
+
+#pragma region Monster Spawn Wave Type
+
+	enum class MONSTERSPAWN_WAVE_TYPE
+	{
+		LOOP,
+		ALL_KILL,
+		TIMER,
 		END,
 	};
 

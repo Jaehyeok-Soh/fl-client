@@ -97,6 +97,8 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
     
     output.vDiffuse = 1.f;
     Compute_Diffse(output.vDiffuse, input.vUV);
+    if(output.vDiffuse.a <= EPSILON)
+        discard;
     
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);

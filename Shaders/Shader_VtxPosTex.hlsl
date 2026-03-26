@@ -216,6 +216,21 @@ PS_OUT PS_GLOW(PS_IN_POS_TEX input)
     return output;
 }
 
+PS_OUT PS_SPRITE_ANIMATION(PS_IN_POS_TEX input)
+{
+    PS_OUT output;
+    float2 Uv = input.vUV * g_vScale + g_vOffset;
+
+    vector vBaseColor = g_DefaultTextures[DEFAULT].Sample(PointSampler, Uv);
+    vBaseColor.a *= g_fAlphaRatio;
+    if (vBaseColor.a < 0.001f)
+        discard;
+    
+    vBaseColor.rgb *= g_fBrightness;
+    output.vColor = vBaseColor;
+    return output;
+}
+
 technique11 T0
 {
     PASS_RS_DS_BS_VP(Default,       RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_MAIN)
@@ -224,4 +239,5 @@ technique11 T0
     PASS_RS_DS_BS_VP(Disolve,       RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_DISOLVE)
     PASS_RS_DS_BS_VP(Noise,         RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_NOISE)
     PASS_RS_DS_BS_VP(Glow, RS_Default, DS_Disabled, BS_AlphaAdditive, VS_MAIN, PS_GLOW)
+    PASS_RS_DS_BS_VP(SpriteAnimation, RS_Default, DS_Disabled, BS_AlphaBlend, VS_MAIN, PS_SPRITE_ANIMATION)
 };

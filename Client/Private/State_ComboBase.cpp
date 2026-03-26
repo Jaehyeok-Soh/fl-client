@@ -84,6 +84,11 @@ HRESULT CState_ComboBase::End()
 	return S_OK;
 }
 
+_bool CState_ComboBase::Can_Captablity_Move() const
+{
+	return (m_fStateElapsed <= (m_tKeyTimer.fMaxTime - MOVEBONE_TIME - 0.05f));
+}
+
 _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 {
 	if (m_tKeyTimer.CountTime(fTimeDelta) == 1.f &&
@@ -101,9 +106,6 @@ void CState_ComboBase::Change_NextCombo()
 
 	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();
 
-	// 먼저 monster를 바라보도록 설정
-	LookAt_Monser();
-
 	Vec3 vDir = Get_MoveDir();
 	if (vDir.LengthSquared() > 0.f)
 	{
@@ -113,6 +115,11 @@ void CState_ComboBase::Change_NextCombo()
 		pPlayerTrans->Look_At(
 			pPlayerTrans->Get_Info(TRANSFORM_INFO_STATE::POS) + vDir
 		);
+	}
+	else
+	{
+		// 먼저 monster를 바라보도록 설정
+		LookAt_Monser();
 	}
 
 	if (m_iComboCount == 4)

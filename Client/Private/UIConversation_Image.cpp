@@ -10,6 +10,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
+#include "UITutorial_Manager.h"
 #include "GameInstance.h"
 
 CUIConversation_Image::CUIConversation_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -117,63 +118,118 @@ void CUIConversation_Image::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
-
+			}));
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_START>(
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
-
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-			{
-				Set_Active(true);
-				this->Set_Visible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
 			{
 				this->Set_Visible();
-			})
-	);
-
+				switch (m_eDImageSubClass)
+				{
+				case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
+					break;
+				case DTO::EUIDImageSubClassType::CONVERSATION_BG:
+				CUITutorial_Manager::GetInstance()->PlayerState_All_Lock();
+					break;
+				}
+			}));
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
 			{
 				this->Set_Invisible();
-			})
-	);
+
+				switch (m_eDImageSubClass)
+				{
+				case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
+					break;
+				case DTO::EUIDImageSubClassType::CONVERSATION_BG:
+				CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
+					break;
+				}
+			}));
 }
 
 void CUIConversation_Image::Tick_By_Type(const _float fTimeDelta)
 {
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
+		break;
+	case DTO::EUIDImageSubClassType::CONVERSATION_BG:
+		break;
+	}
 }
 
 void CUIConversation_Image::Initialize_Visible_Event()
 {
-
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
+		break;
+	case DTO::EUIDImageSubClassType::CONVERSATION_BG:
+		Ready_LerpChange(0.5f, 1.f, 0.f, 3.f, m_fDelay);
+		break;
+	}
 }
 
 _bool CUIConversation_Image::Tick_Visible_Event(const _float fTimeDelta)
 {
-	return true;
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
+		return true;
+		break;
+	case DTO::EUIDImageSubClassType::CONVERSATION_BG:
+	{
+		_bool isChange = Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+
+		if (isChange)
+		{
+			return true;
+		}
+	}
+		break;
+	}
+	return false;
 }
 
 void CUIConversation_Image::Initialize_InVisible_Event()
 {
-
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
+		break;
+	case DTO::EUIDImageSubClassType::CONVERSATION_BG:
+		Ready_LerpChange(1.f, 0.f, 1.f, 3.f, m_fDelay, true);
+		break;
+	}
 }
 
 _bool CUIConversation_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
+	switch (m_eDImageSubClass)
+	{
+	case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
+		return true;
+		break;
+	case DTO::EUIDImageSubClassType::CONVERSATION_BG:
+	{
+		_bool isChange = Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
 
-	return true;
+		if (isChange)
+		{
+			return true;
+		}
+	}
+	break;
+	}
+	return false;
 }
 
 CUIConversation_Image* CUIConversation_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

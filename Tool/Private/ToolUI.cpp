@@ -189,6 +189,8 @@ HRESULT CToolUI::Render()
 
 _bool CToolUI::Calc_HitEvent()
 {
+	return false;
+
 	if (m_isDisable)
 		return FALSE;
 
@@ -251,6 +253,25 @@ HRESULT CToolUI::Bind_ShaderResources()
 	if (FAILED(pShader->Get_Variable("g_fGlowPulseSpeed")->SetRawValue(&m_fGlowPulseSpeed, 0, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(pShader->Get_Variable("g_fGlowIntensity")->SetRawValue(&m_fGlowIntensity, 0, sizeof(_float))))
+		return E_FAIL;
+
+	//Sprite Animation
+	if (m_iHorizontal == 0 || m_iVeriacal == 0)
+		return E_FAIL;
+
+	const _float fWidth = 1.f / static_cast<_float>(m_iHorizontal);
+	const _float fHeight = 1.f / static_cast<_float>(m_iVeriacal);
+
+	const _uint iFrame = static_cast<_uint>(m_fCurFrame);
+	const _uint iCol = iFrame % m_iHorizontal;
+	const _uint iRow = iFrame / m_iHorizontal;
+
+	m_vUVScale = Vec2{ fWidth, fHeight };
+	m_vUVOffset = Vec2{ fWidth * iCol, fHeight * iRow };
+//	m_vUVOffset = Vec2{ fWidth * iCol, 1.f - fHeight * (iRow + 1) };
+	if (FAILED(pShader->Get_Variable("g_vScale")->SetRawValue(&m_vUVScale, 0, sizeof(Vec2))))
+		return E_FAIL;
+	if (FAILED(pShader->Get_Variable("g_vOffset")->SetRawValue(&m_vUVOffset, 0, sizeof(Vec2))))
 		return E_FAIL;
 
 	if(m_eClassType == DTO::EUIClassType::UI_TEXT)

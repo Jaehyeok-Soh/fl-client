@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Engine_Enum.h"
 #include "UIQuest_Text.h"
 #include "Client_Defines.h"
 #include "Client_EventDefine.h"
@@ -179,11 +180,17 @@ void CUIQuest_Text::Bind_Events()
 			})
 	);
 
+
+
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
 			{
 				if (!this->m_isPulseTrigger)
+				{
+					this->m_isPulseTrigger = true;
 					Set_Visible();
+				}
+
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				desc.tScenarioInfo.wstrSubTitle;
 				desc.tChapterInfo.tQuestDesc.wstrTitle;
@@ -316,7 +323,13 @@ void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 		auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 		if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
 		{
-			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle + L"(" + std::to_wstring(desc.tChapterInfo.iCurrentCount) + L"/10)";
+			if(desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_BOSS_XIBI) != desc.tChapterInfo.eTargetType.end())
+				m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
+			else
+			{
+				m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle + L"(" + std::to_wstring(desc.tChapterInfo.iCurrentCount) + 
+					L"/" + std::to_wstring(desc.tChapterInfo.iCount) + L")";
+			}
 		}
 		else
 			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;

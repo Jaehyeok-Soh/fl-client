@@ -68,7 +68,6 @@ void CUIMiniMap_Monster_Icon::Update(const _float fTimeDelta)
 	Rotate_MonsterIcon();
 }
 
-
 void CUIMiniMap_Monster_Icon::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
@@ -111,8 +110,6 @@ HRESULT CUIMiniMap_Monster_Icon::Bind_ShaderResources()
 
 HRESULT CUIMiniMap_Monster_Icon::Attach_Personal_Info()
 {
-
-
 	return S_OK;
 }
 
@@ -134,6 +131,7 @@ void CUIMiniMap_Monster_Icon::Bind_Events()
 			{
 				if (EUIEventID::MENU_CLOSE == Desc.eEventID)
 				{
+					this->Set_Active(true);
 					this->Set_Visible();
 				}
 			})
@@ -147,6 +145,50 @@ void CUIMiniMap_Monster_Icon::Bind_Events()
 				}
 			})
 	);
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_START>(
+			[this]()
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
+			{
+				this->Set_Active(true);
+				this->Set_Visible();
+			}));
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+			{
+				this->Set_Active(true);
+				this->Set_Visible();
+			}));
+
+	// ÆÐ³Î Events
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_START == Desc.eEventID)
+				{
+					this->Set_Invisible();
+				}
+			}));
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::TUTORIAL_PANNEL_END == Desc.eEventID)
+				{
+					this->Set_Visible();
+					this->Set_Active(true);
+				}
+			}));
 }
 
 void CUIMiniMap_Monster_Icon::Initialize_Visible_Event()
@@ -168,6 +210,7 @@ void CUIMiniMap_Monster_Icon::Initialize_InVisible_Event()
 
 _bool CUIMiniMap_Monster_Icon::Tick_InVisible_Event(const _float fTimeDelta)
 {
+	Set_Active(false);
 	return true;
 }
 
@@ -190,20 +233,10 @@ HRESULT CUIMiniMap_Monster_Icon::Spawn_FromPool(void* pArg)
 		m_pTargetIconComp = dynamic_cast<CUIIcon_Component*>(m_pTarget->Get_Script_Component(L"UIIconComp"));
 		if (nullptr == m_pTargetIconComp)
 			return E_FAIL;
-
 	}
-
-	//CGameObject* pResult = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
-	//if (nullptr == pResult)
-	//	return E_FAIL;
-
-	//m_pPlayer = static_cast<CMainPlayer*>(pResult);
-	//if (nullptr == m_pPlayer)
-	//	return E_FAIL;
-
 	Set_Visible();
 	Set_Active(true);
-
+	m_isSpawned = true;
 	return S_OK;
 }
 

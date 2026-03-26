@@ -31,6 +31,11 @@ private:
 	void Ready_ShaderSetting();
 private:
 	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
+
+	_bool m_isDebugging = { false };
+	_bool m_isDebugging2 = { false };
+	_float m_fTimeScale = {};
+
 public:
 	static CLevel_Tutorial_Village*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void					Free() override;

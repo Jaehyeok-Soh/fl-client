@@ -13,9 +13,11 @@ struct LANDSCAPE_DESC;
 
 /* Trigger Box ฐüทร */
 struct MonsterSpawnData;
+struct MonsterWaveInfo;
 struct TRIGGERBOX_DESC;
 struct TRIGGERBOX_CHANGELEVEL_DESC;
 struct TRIGGERBOX_MONSTERSPAWNER_DESC;
+struct TRIGGERBOX_MONSTERWAVESPAWNER_DESC;
 NS_END
 
 
@@ -95,6 +97,7 @@ private:
 	void						ImGuiUpdate_TriggerBox(TRIGGERBOX_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_ChanageLevel_Desc(TRIGGERBOX_CHANGELEVEL_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc);
+	void						ImGuiUpdate_TriggerBox_MonsterWaveSpawner(TRIGGERBOX_MONSTERWAVESPAWNER_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_TutorialUIEvent(TRIGGERBOX_TUTORIALUIEVENT_DESC* pDesc);
 	void						ImGuiUpdate_TriggerBox_CinematicPlayer(TRIGGERBOX_CINEMATICPLAYER_DESC* pDesc);

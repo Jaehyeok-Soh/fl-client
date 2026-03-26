@@ -55,7 +55,7 @@
 #include "Monster_Dog_Body.h"
 #include "Boss_Xibi.h"
 #include "Boss_Xibi_Body.h"
-
+#include "PlayerSkillObj_Headers.h"
 
 //=================
 // Game Instance
@@ -254,11 +254,48 @@ HRESULT CLevel_Square::Ready_Player_Layer(const wstring& wstrLayerTag)
 
 	/* Player 置段 持失 */
 	{
+		// Moon skil E
+		{
+			CMoon_SkillE_Obj::GAMEOBJECT_DESC desc{};
+			//TRANSFORM_DESC
+			CTransform::TRANSFORM_DESC tTransDesc = {};
+			tTransDesc.fMovePerSec = 20.f;
+			desc.pTransform_Desc = &tTransDesc;
+
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillE,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillE__Prototype_Tag,
+				&desc,
+				30)))
+				return E_FAIL;
+		}
+
+		// Moon skil Q attack
+		{
+			CMoon_SkillQAttack_Obj::SKILLOBJECT_SPAWN_DESC desc{};
+			desc.fSpeed = 50.f;
+			desc.fLifeTime = 12.5f;
+			desc.iFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+
+			if (FAILED(m_pGameInstance->Regist_Pool(
+				0,
+				g_wszPool_MoonSkillQAttack,
+				g_wszSkillObjectLayer,
+				0,
+				g_wszMoonSkillQAttack_Prototype_Tag,
+				&desc,
+				10)))
+				return E_FAIL;
+		}
+
 		CGameObject* pResult = { nullptr };
 
 		CPlayer::PLAYER_DESC playerDesc = {};
 		CTransform::TRANSFORM_DESC transformDesc = {};
-		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		playerDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::SQUARE);
 		playerDesc.wstrBodyModelTag = L"Prototype_Component_Model_Moon";
 		transformDesc.TranslationMatrix = Matrix::CreateTranslation(Vec3(15.f, 15.f, 15.f));
 		playerDesc.pTransform_Desc = &transformDesc;
@@ -431,31 +468,31 @@ void CLevel_Square::Update(const _float fTimeDelta)
 {
 
 	Super::Update(fTimeDelta);
-
-	static _uint s_iCount = { 0 };
-	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
-	{
-#ifdef _DEBUG
-		s_iCount = (s_iCount + 1) % 3;
-#else
-		s_iCount = (s_iCount + 1) % 2;
-#endif
-		if (s_iCount == 0)
-		{
-			m_eCursorMode = ECursorMode::LockedHiddenCenter;
-		}
-		else if (s_iCount == 1)
-		{
-			m_eCursorMode = ECursorMode::VisibleClipped;
-		}
-#ifdef _DEBUG
-		else
-		{
-			m_eCursorMode = ECursorMode::VisibleFree;
-		}
-#endif
-		m_pGameInstance->Request_CursorMode(m_eCursorMode);
-	}
+//
+//	static _uint s_iCount = { 0 };
+//	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
+//	{
+//#ifdef _DEBUG
+//		s_iCount = (s_iCount + 1) % 3;
+//#else
+//		s_iCount = (s_iCount + 1) % 2;
+//#endif
+//		if (s_iCount == 0)
+//		{
+//			m_eCursorMode = ECursorMode::LockedHiddenCenter;
+//		}
+//		else if (s_iCount == 1)
+//		{
+//			m_eCursorMode = ECursorMode::VisibleClipped;
+//		}
+//#ifdef _DEBUG
+//		else
+//		{
+//			m_eCursorMode = ECursorMode::VisibleFree;
+//		}
+//#endif
+//		m_pGameInstance->Request_CursorMode(m_eCursorMode);
+//	}
 }
 
 HRESULT CLevel_Square::Render()

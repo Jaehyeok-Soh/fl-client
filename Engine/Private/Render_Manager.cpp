@@ -687,6 +687,9 @@ HRESULT CRender_Manager::Render_NoneBlend()
 	m_visibleNear.clear();
 	m_visibleMid.clear();
 	m_visibleFar.clear();
+
+	// Static Object depth Copy«œ±‚.
+
 	
 
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])

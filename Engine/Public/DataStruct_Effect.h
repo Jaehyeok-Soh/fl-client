@@ -141,6 +141,8 @@ struct TEFFECT_PartsData
     // =========   이펙트 Sprite 사용 여부    ============
     bool                 _Effect_bPlayAnim = { false };
     _float               _Effect_AnimSpeed = { 1.0f };
+    _uint                _Effect_UVXPower = { 0 };
+    _uint                _Effect_UVYPower = { 0 };
 
     // =========   이펙트 Emission 전용   =============
     _float              _Effect_RateOverTime = {};

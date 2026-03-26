@@ -26,14 +26,14 @@ HRESULT CObjectPool_Manager::Regist_Pool(_uint iTargetLevelIndex, const wstring&
 	CObjectPool* pPool = Find_Pool(iTargetLevelIndex, wstrPoolTag);
 	if (pPool != nullptr)
 	{
-		MSG_BOX("CObjectPool_Manager::Regist_Pool, already registed");
+		//MSG_BOX("CObjectPool_Manager::Regist_Pool, already registed");
 		return E_FAIL;
 	}
 
  	CBase* pSeed = CGameInstance::GetInstance()->Clone_Prototype(EPrototypeType::GAMEOBJECT, iSeedLevelID, wstrSeedPrototypeTag, pArg);
 	if (pSeed == nullptr)
 	{
-		MSG_BOX("CObjectPool_Manager::Regist_Pool, seed clone failed");
+		//MSG_BOX("CObjectPool_Manager::Regist_Pool, seed clone failed");
 		return E_FAIL;
 	}
 

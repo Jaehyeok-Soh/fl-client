@@ -408,6 +408,11 @@ void CStateBase::SetupLook_Target_XZ()
 	m_pOwnerStateComp->SetupLook_Target_XZ();
 }
 
+void CStateBase::SetupLook_PointLerp(const _float fTimeDelta, Vec3 vPoint, _float fLerpSpeed)
+{
+	m_pOwnerStateComp->SetupLook_PointLerp(fTimeDelta, vPoint, fLerpSpeed);
+}
+
 _bool CStateBase::Is_Grounded() const
 {
 	return m_pOwnerStateComp->Is_Grounded();

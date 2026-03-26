@@ -32,6 +32,8 @@ public:
 	_float Get_AppliedScale() const { return m_fAppliedScale; }
 	void Request_HitStop(_float fUnscaledDurationTime);
 	void Request_SloMo(_float fScale, _float fUnscaledDurationTime);
+	void Active_TimeStop();
+	void Deactive_TimeStop();
 	void Active_SloMo(_float fScale);
 	void Deactivate_SloMo();
 	void Set_GlobalScale(_float fScale) { m_fGlobalScale = std::clamp(fScale, 0.f, MAX_TIMESCALE); }

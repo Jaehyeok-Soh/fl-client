@@ -443,7 +443,11 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
             return E_FAIL;
 
         break;
+    case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:
+        if (FAILED(Ready_TriggerBox_MonsterWaveSpawner()))
+            return E_FAIL;
 
+        break;
     case Tool::EClientMakePath::Invisible_Wall:
         if (FAILED(Ready_InvisibleWall()))
             return E_FAIL;
@@ -974,6 +978,27 @@ HRESULT CMapObject::Ready_TriggerBox_MonsterSpawner()
     return S_OK;
 }
 
+HRESULT CMapObject::Ready_TriggerBox_MonsterWaveSpawner()
+{
+    if (m_vecClientMakePathDesc.empty())
+        return E_FAIL;
+
+    TRIGGERBOX_MONSTERWAVESPAWNER_DESC* pDesc = dynamic_cast<TRIGGERBOX_MONSTERWAVESPAWNER_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return E_FAIL;
+
+
+    for (auto& waveInfo : pDesc->vecWaveInfo)
+    {
+        for (auto& MonsterSpawnData : waveInfo.vecMonsterSpawnData)
+        {
+            Safe_Release(MonsterSpawnData.pDebugModel);
+            MonsterSpawnData.pDebugModel = m_pMapToolManager->Get_MonsterPreviewModel(MonsterSpawnData.eMakeMonsterType);
+        }
+    }
+
+    return S_OK;
+}
+
 HRESULT CMapObject::Ready_Water()
 {
     CModel* pModel = Get_Component<CModel>();
@@ -1070,6 +1095,9 @@ HRESULT CMapObject::Ready_ColliderTypeName()
     case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
         m_strName = "TriggerBox_CinematicPlayer";
         break;
+    case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:
+        m_strName = "TriggerBox_MonsterWaveSpawner";
+        break;
     case Tool::EClientMakePath::END:
         break;
     default:
@@ -1104,6 +1132,7 @@ void CMapObject::Check_ClientMakePathAndDrawType_TriggerBox()
         {
         case Tool::EClientMakePath::TriggerBox_ChangeLevel:
         case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
+        case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:
         case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
         case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:
         case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
@@ -1770,6 +1799,12 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::Invisible_Wall:
         hr = Render_StaticObject();
         break;
+
+
+    case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:
+        hr = Render_TriggerBox_MonsterWaveSpawner();
+        break;
+
     default:
         hr = Render_StaticObject();
         break;
@@ -1962,6 +1997,7 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::LandScape:
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
     case Tool::EClientMakePath::TriggerBox_MonsterSpawner:
+    case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:
     case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
     case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
     case Tool::EClientMakePath::LightObject:
@@ -3131,6 +3167,60 @@ HRESULT CMapObject::Render_TriggerBox_MonsterSpawner()
             pModel->Render(i);
         }
 
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Render_TriggerBox_MonsterWaveSpawner()
+{
+    if (FAILED(Render_Collider()))
+        return E_FAIL;
+
+
+    if (m_vecClientMakePathDesc.empty()) return E_FAIL;
+
+    /* Debug Mode가 켜져있다면 Model Render를 해보자.....*/
+    TRIGGERBOX_MONSTERWAVESPAWNER_DESC* pDesc = static_cast<TRIGGERBOX_MONSTERWAVESPAWNER_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return E_FAIL;
+
+    Matrix WorldMatrix{ Matrix::Identity };
+
+    CShader* pShader = Get_Component<CShader>();
+    if (pShader == nullptr) return E_FAIL;
+
+    Set_GPU_MapObjectState(pShader);
+
+    for (auto& waveInfo : pDesc->vecWaveInfo)
+    {
+        for (auto& SpawnMonsterData : waveInfo.vecMonsterSpawnData)
+        {
+            if (SpawnMonsterData.isPreviewDebugModel == false)
+                continue;
+            if (SpawnMonsterData.pDebugModel == nullptr)
+                continue;
+
+            WorldMatrix = Matrix::CreateScale(SpawnMonsterData.vScale) *
+                Matrix::CreateFromYawPitchRoll(XMConvertToRadians(SpawnMonsterData.vPitchYawRoll.y), XMConvertToRadians(SpawnMonsterData.vPitchYawRoll.x), XMConvertToRadians(SpawnMonsterData.vPitchYawRoll.z))
+                * Matrix::CreateTranslation(SpawnMonsterData.vPosition);
+
+            pShader->Bind_TransformData(WorldMatrix);
+
+            CModel* pModel = SpawnMonsterData.pDebugModel;
+            _uint iMeshCount = pModel->Get_MeshCount();
+
+            /* Client Make Path를 이용한다 */
+            pShader->Set_Pass(ENUM_TO_UINT(EClientMakePath::StaticObject));
+
+
+            for (_uint i = 0; i < iMeshCount; ++i)
+            {
+                pModel->Bind_Material(pShader, i);
+                pModel->Bind_MaterialInstance(pShader, i);
+                pShader->Apply();
+                pModel->Render(i);
+            }
+        }
     }
 
     return S_OK;

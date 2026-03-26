@@ -31,6 +31,7 @@ private:
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
 	virtual void Tick_By_Type(const _float fTimeDelta)override;
+
 	HRESULT Convert_Stat_To_Text();
 private:
 	virtual void Initialize_Visible_Event()override;

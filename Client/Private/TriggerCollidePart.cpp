@@ -37,6 +37,8 @@ HRESULT CTriggerCollidePart::Initialize(void* pArg)
 	TRIGGER_COLLIDEPART_DESC* pDesc = static_cast<TRIGGER_COLLIDEPART_DESC*>(pArg);
 	m_FUpdate_Flags = pDesc->FUpdate_Flags;
 
+	m_tUpdateValues = pDesc->tValues;
+
 	if (pDesc->pMatSocket)
 	{
 		m_eState = EState::WithBone;
@@ -165,6 +167,11 @@ void CTriggerCollidePart::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLa
 				{
 					Update_MinDistFront(pOther, bPreNull);
 				}
+
+				else if (Engine_Utils::Has_Flag(m_FUpdate_Flags, ENUM_TO_UINT(UPDATEFLAGS::Update_MinDistance_YDiscard)))
+				{
+					Update_MinDistYDiscard(pOther, bPreNull);
+				}
 			}
 		}
 	}
@@ -268,6 +275,37 @@ _bool CTriggerCollidePart::Update_MinDistFront(CGameObject* pNewObj, _bool bPreN
 
 	// 뒤에 있다면 갱신하지 않음
 	if (vNewDist.x < 0)
+		return false;
+
+	// 이전게 null이거나, 캐싱하던 객체가 죽었다면 -> 앞에 있는지 확인 후 갱신
+	if (bPreNull || !(m_pCollidedObj->IsAlive()))
+	{
+		m_pCollidedObj = pNewObj;
+		return true;
+	}
+
+	Vec3 vOldPos = m_pCollidedObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vOldDist = vOldPos - vParentPos;
+
+	// 거리의 길이비교
+	if (vNewDist.Length() < vOldDist.Length())
+	{
+		m_pCollidedObj = pNewObj;
+		return true;
+	}
+
+	return false;
+}
+
+_bool CTriggerCollidePart::Update_MinDistYDiscard(CGameObject* pNewObj, _bool bPreNull)
+{
+	Vec3 vParentPos = Get_Parent()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vNewPos = pNewObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	Vec3 vNewDist = vNewPos - vParentPos;
+
+	// 특정 y값 차이가 나면 
+	if ((vNewDist.y < 0 && vNewDist.y < m_tUpdateValues.fYDiscard * -1.f) ||
+		(vNewDist.y > 0 && vNewDist.y > m_tUpdateValues.fYDiscard))
 		return false;
 
 	// 이전게 null이거나, 캐싱하던 객체가 죽었다면 -> 앞에 있는지 확인 후 갱신

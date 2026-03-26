@@ -131,6 +131,8 @@ void CUILoading_Image::Initialize_Visible_Event()
 	{
 	case DTO::EUIDImageSubClassType::LOADING_BG:
 	{
+		// UI SOUND
+		m_pGameInstance->Play_OneShot(0, TO_HASH("UI_LOADING_START"), 1.f);
 		Ready_Fade(0.5f, 0.f, 1.f, m_fDelay);
 	}
 	break;

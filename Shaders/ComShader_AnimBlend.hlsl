@@ -61,7 +61,11 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     vQuat = Slerp(q0, q1, g_InputMU.fRatio);
     
     if (g_InputMU.iRootMotionBoneIndex == iBoneIdx)
-        vTranslation = float3(0.f, 0.f, 0.f);
+    {
+        vTranslation    = float3(0.f, 0.f, 0.f);
+        vQuat           = float4(0.f, 0.f, 0.f,1.f);
+    }
+
     else
         vTranslation = lerp(MU_PRETRANSFORMS[iBoneIdx].vTranslation, MU_CURTRANSFORMS[iBoneIdx].vTranslation, g_InputMU.fRatio);
     

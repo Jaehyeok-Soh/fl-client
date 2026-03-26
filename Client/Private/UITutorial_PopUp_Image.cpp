@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
+#include "UITutorial_Manager.h"
 #include "GameInstance.h"
 
 // Common Params Bool
@@ -158,13 +159,123 @@ void CUITutorial_PopUp_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<TUTORIAL_POPUP_TRIGGER>([this](EUITutorialPopUpTypeID ID)
 			{
+				if (this->m_eTutorialTypeID == EUITutorialPopUpTypeID::TUTORIAL_POPUP_1)
+				{
+					UI_PREFAB_DATA Desc = {};
+					UI_TUTORIAL_PANNEL_PREFAB_DATA PrefabDesc = {};
+					_bool isValidPannel = false;
+
+					switch (ID)
+					{
+					case EUITutorialPopUpTypeID::TUTORIAL_PANNEL_1:
+						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_1;
+						isValidPannel = true;
+						break;
+
+					case EUITutorialPopUpTypeID::TUTORIAL_PANNEL_2:
+						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_2;
+						isValidPannel = true;
+						break;
+
+					case EUITutorialPopUpTypeID::TUTORIAL_PANNEL_3:
+						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_3;
+						isValidPannel = true;
+						break;
+
+					case EUITutorialPopUpTypeID::TUTORIAL_PANNEL_4:
+						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_4;
+						isValidPannel = true;
+						break;
+					}
+
+					if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BG)
+					{
+						if (isValidPannel)
+						{
+							Desc.Data = PrefabDesc;
+
+							UIEVENT_DESC EventDesc = {};
+							EventDesc.eEventID = EUIEventID::TUTORIAL_PANNEL_START;
+							CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(EventDesc);
+
+							CUI_Manager::GetInstance()->Request_Add_Prefab(
+								m_pGameInstance->Get_CurrentLevelIndex(),
+								EUIPrefabType::TUTORIAL_PANNEL,
+								m_pGameInstance->Get_CurrentLevelIndex(),
+								&Desc);
+						}
+					}
+				}
+
 				if ((this->m_eTutorialTypeID) == ID)
 				{
+					if ((this->m_eTutorialTypeID) == EUITutorialPopUpTypeID::TUTORIAL_POPUP_1)
+					{
+						if (CUITutorial_Manager::GetInstance()->Get_isFirstTutorial())
+						{
+							return;
+						}
+					}
 					if (!m_isFirstEntered)
 					{
+
 						m_isTriggered = true;
 						this->Set_Visible();
 						this->Set_Active(true);
+
+						switch (m_eTutorialTypeID)
+						{
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_1:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_JUMP);
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_2:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_SLIDE);
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_3_1:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_4_1:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_5:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_6:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_7:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_LATTAK);
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_8:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_DASH);
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_9:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_RATTAK);
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_10:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_11:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_E);
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_12:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_13:
+							CUITutorial_Manager::GetInstance()->Set_Current_Tutorial_Step(EUITutorialTypeToPlayerState::UNLOCK_Q);
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_1:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_2:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_3:
+							break;
+						case Client::EUITutorialPopUpTypeID::TUTORIAL_PANNEL_4:
+							break;
+						case Client::EUITutorialPopUpTypeID::END:
+							break;
+						default:
+							break;
+						}
+
 					}
 				}
 			})
@@ -191,7 +302,10 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_1:
 	{
 		if (m_pPlayer->Get_CurState() == CPlayer::State::JUMP)
+		{
 			is = true;
+			CUITutorial_Manager::GetInstance()->Set_isFirstTutorial(true);
+		}
 	}
 	break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_2:
@@ -270,6 +384,7 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 	{
 		if (m_pPlayer->Get_CurState() == CPlayer::State::COMBO)
 		{
+			m_isPannel = false;
 			is = true;
 		}
 	}
@@ -347,7 +462,10 @@ void CUITutorial_PopUp_Image::Initialize_Visible_Event()
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_ICON:
-		Ready_LerpChange(0.5f, 2.f, 1.f, 1.f, m_fDelay);
+		{
+			Ready_LerpChange(0.5f, 2.f, 1.f, 1.f, m_fDelay);
+			m_pGameInstance->Play_OneShot(0, TO_HASH("UI_TUTORIAL_POPUP_TRIGGER"), 1.f);
+		}
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BG:

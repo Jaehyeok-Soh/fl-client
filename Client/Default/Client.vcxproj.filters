@@ -847,9 +847,6 @@
     <Filter Include="03. GameObject\ContainerObjects\NPC\Tavern">
       <UniqueIdentifier>{5d36a635-b601-455f-ae50-73e086388a50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\PartObjects\NPC\Body\Tavern">
-      <UniqueIdentifier>{941ffcde-7e16-44aa-bbe0-d42bee691b50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\InteractiveObject\00. WeaponPickUp">
       <UniqueIdentifier>{bec36d74-1c86-4e94-904a-727139f1fa48}</UniqueIdentifier>
     </Filter>
@@ -876,6 +873,57 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Citizen\Deco Part">
       <UniqueIdentifier>{f160382c-bbd6-4a2b-abab-68f766f45af7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\16.Cursor">
+      <UniqueIdentifier>{7a792138-2c62-4fd9-9607-f51f5db22f20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\17.MiniGame">
+      <UniqueIdentifier>{841fe255-e9ed-4909-a0a2-d8213ce1c08b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\17.MiniGame\00.Circle">
+      <UniqueIdentifier>{1a04d6b2-0b19-430b-a91b-e5490009e98b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\13.MiniGame">
+      <UniqueIdentifier>{3d2366c2-20f7-47f8-bc03-6a6d988b8bad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle">
+      <UniqueIdentifier>{e8fc26f0-09fa-4947-8b34-680e5ca04955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Lianhuo">
+      <UniqueIdentifier>{cb01ec6c-8cde-422b-a20e-27c984607948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner">
+      <UniqueIdentifier>{0cd91d27-cdc1-42c4-a270-7fd8b5fb3f7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Veteran">
+      <UniqueIdentifier>{c9c80261-7d25-442b-8645-de322cc02840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Veteran">
+      <UniqueIdentifier>{aed80655-8a0b-40ce-9b3d-da9533ac621d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Tavern">
+      <UniqueIdentifier>{941ffcde-7e16-44aa-bbe0-d42bee691b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse">
+      <UniqueIdentifier>{4ab11ed8-f4c7-4a37-b517-e395be659758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\14.Title">
+      <UniqueIdentifier>{ef01bcb5-b590-4db4-9ce9-67d3c8081afd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\19.Title">
+      <UniqueIdentifier>{fd7c2a9c-2d1f-4eaa-8cb3-428560cfd3e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\15.EnterGame">
+      <UniqueIdentifier>{ae0750d5-1825-47f9-961b-8c1443dba78a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame">
+      <UniqueIdentifier>{e409a8e0-a5de-4e05-9dcb-55ef01a85985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Veteran">
+      <UniqueIdentifier>{6a4b11b3-ff80-4965-9ee1-c6f624d5ba15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Veteran">
+      <UniqueIdentifier>{891e152c-a400-49cb-8b33-7c6a053f57b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1154,9 +1202,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\SkillBase_MoonQ.h">
       <Filter>05. Component\Skill\Moon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UILoading_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\02.Loading Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIPlayerStat_Progress.h">
       <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Stat</Filter>
@@ -1603,7 +1648,7 @@
       <Filter>03. GameObject\ContainerObjects\NPC\Tavern</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\NPC_Tavern_Body.h">
-      <Filter>03. GameObject\PartObjects\NPC\Body\Tavern</Filter>
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Tavern</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CameraEventBinder.h">
       <Filter>07. System\04. Binder</Filter>
@@ -1628,6 +1673,60 @@
     </ClInclude>
     <ClInclude Include="..\Public\NPC_Citizen_DecoPart.h">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen\Deco Part</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMouseCursor_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\16.Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMiniGame_Circle_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\17.MiniGame\00.Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMiniGame_Circle_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerImguiValues.h">
+      <Filter>99. ETC\46.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Boss_Lianhuo_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Lianhuo</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss_Lianhuo.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraShotUtils.h">
+      <Filter>99. ETC\Client_Define</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_MonsterWaveSpawner.h">
+      <Filter>03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Veteran.h">
+      <Filter>03. GameObject\ContainerObjects\NPC\Veteran</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Veteran_Body.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Veteran</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIScreenPulse_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PUblic\UITitle_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\14.Title</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITitle_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\19.Title</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILoading_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\03.Damage Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIEnterGame_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIEnterGame_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\15.EnterGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Veteran.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Veteran</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Veteran_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2345,7 +2444,7 @@
       <Filter>03. GameObject\ContainerObjects\NPC\Tavern</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\NPC_Tavern_Body.cpp">
-      <Filter>03. GameObject\PartObjects\NPC\Body\Tavern</Filter>
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Tavern</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CameraEventBinder.cpp">
       <Filter>07. System\04. Binder</Filter>
@@ -2370,6 +2469,55 @@
     </ClCompile>
     <ClCompile Include="..\Private\NPC_Citizen_DecoPart.cpp">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen\Deco Part</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMouseCursor_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\16.Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMiniGame_Circle_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\17.MiniGame\00.Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMiniGame_Circle_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Boss_Lianhuo_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Lianhuo</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss_Lianhuo.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraShotUtils.cpp">
+      <Filter>99. ETC\Client_Define</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_MonsterWaveSpawner.cpp">
+      <Filter>03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Veteran.cpp">
+      <Filter>03. GameObject\ContainerObjects\NPC\Veteran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Veteran_Body.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Veteran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIScreenPulse_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITitle_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\14.Title</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITitle_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\19.Title</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIEnterGame_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIEnterGame_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\15.EnterGame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\Client_Defines.cpp" />
+    <ClCompile Include="..\Private\Monster_Veteran.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Veteran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Veteran_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2455,6 +2603,9 @@
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shaders\ComShader_RagDoll.hlsl">
+      <Filter>04. Shaders\ComputeShaders\Animation</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\ComShader_BoneMove.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
   </ItemGroup>

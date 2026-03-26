@@ -1018,6 +1018,7 @@ HRESULT CPanel_MapObjectList::Render_Description()
 
 	case Tool::EClientMakePath::TriggerBox_ChangeLevel:				ImGuiUpdate_TriggerBox_ChanageLevel_Desc(static_cast<TRIGGERBOX_CHANGELEVEL_DESC*>(pDesc));						return S_OK;
 	case Tool::EClientMakePath::TriggerBox_MonsterSpawner:			ImGuiUpdate_TriggerBox_MonsterSpawner(static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:		ImGuiUpdate_TriggerBox_MonsterWaveSpawner(static_cast<TRIGGERBOX_MONSTERWAVESPAWNER_DESC*>(pDesc));					return S_OK;
 	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
 	case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:			ImGuiUpdate_TriggerBox_TutorialUIEvent(static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pDesc));					return S_OK;
 	case Tool::EClientMakePath::TriggerBox_CinematicPlayer:         ImGuiUpdate_TriggerBox_CinematicPlayer(static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pDesc));					return S_OK;
@@ -2095,6 +2096,8 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 			OBJECT_ENUM_TAG::NPC_TAVERN,
 			OBJECT_ENUM_TAG::NPC_VILLAGER_1,
 			OBJECT_ENUM_TAG::NPC_KID_1,
+			OBJECT_ENUM_TAG::NPC_KID_2,
+			OBJECT_ENUM_TAG::NPC_VETERAN
 			OBJECT_ENUM_TAG::NPC_CITIZEN
 		};
 
@@ -2580,6 +2583,140 @@ void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONS
 	}
 
 }
+
+void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterWaveSpawner(TRIGGERBOX_MONSTERWAVESPAWNER_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	// 기본 TriggerBox 공통 데이터 (Extents 등)
+	ImGuiUpdate_TriggerBox(pDesc);
+
+	ImGui::SeparatorText(" Monster Wave Spawner Properties ");
+
+	// 1. 웨이브 스포너 고유 변수들 세팅
+	// eType의 경우 Enum 값이므로 int로 캐스팅하여 Input으로 받거나 Combo를 사용합니다.
+	int iType = static_cast<int>(pDesc->eType);
+	if (ImGui::InputInt("Wave Type (Enum)", &iType))
+	{
+		pDesc->eType = static_cast<Engine::MONSTERSPAWN_WAVE_TYPE>(iType);
+	}
+	ImGui::InputInt("Wave Sequence", &pDesc->iTotalWaveCount);
+	ImGui::InputFloat("Wave Time", &pDesc->fWaveTime);
+
+	ImGui::SeparatorText(" Wave Info List ");
+
+	// [ 웨이브 추가 버튼 ]
+	if (ImGui::Button(" + Add New Wave ", ImVec2(-1, 0)))
+	{
+		pDesc->vecWaveInfo.push_back(Engine::MonsterWaveInfo());
+	}
+
+	ImGui::Spacing();
+
+	int iDeleteWaveIndex = -1;
+
+	// 2. 웨이브 리스트 순회
+	for (int i = 0; i < (int)pDesc->vecWaveInfo.size(); ++i)
+	{
+		// [중요] 중첩된 UI 요소들의 ID 충돌 방지를 위해 Wave 단위로 PushID 적용
+		ImGui::PushID(i);
+
+		Engine::MonsterWaveInfo& waveInfo = pDesc->vecWaveInfo[i];
+
+		// 웨이브 트리 노드
+		string strWaveLabel = "Wave [" + std::to_string(i) + "]";
+		bool bWaveOpen = ImGui::TreeNodeEx(strWaveLabel.c_str(), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen);
+
+		// 우측 끝에 웨이브 삭제 버튼 배치
+		ImGui::SameLine(ImGui::GetWindowWidth() - 90.0f);
+		if (ImGui::Button("Delete Wave", ImVec2(80.f, 0)))
+		{
+			iDeleteWaveIndex = i;
+		}
+
+		if (bWaveOpen)
+		{
+			// 해당 웨이브의 스폰 타임 조절
+			ImGui::InputFloat("Spawn Time", &waveInfo.fSpawnTime);
+			ImGui::InputInt("Total Spawn Count", &waveInfo.iTotalSpawnCount);
+			ImGui::InputFloat("Spawn Interval", &waveInfo.fSpawnInterval);
+
+			ImGui::Spacing();
+
+			// [ 특정 웨이브 안에 몬스터 스폰 데이터 추가 버튼 ]
+			if (ImGui::Button(" + Add Spawn Data to this Wave ", ImVec2(-1, 0)))
+			{
+				waveInfo.vecMonsterSpawnData.push_back(Engine::MonsterSpawnData());
+				Engine::MonsterSpawnData& Data = waveInfo.vecMonsterSpawnData.back();
+				Data.pDebugModel = m_pMapToolManager->Get_MonsterPreviewModel(Data.eMakeMonsterType);
+
+				if (m_pSelectMapObject)
+				{
+					Data.vPosition = m_pSelectMapObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+				}
+			}
+
+			// 테이블 시작: [ID/Type | Control] (기존 Spawner와 동일한 테이블 구조)
+			static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
+			if (ImGui::BeginTable("MonsterSpawnTable", 2, flags))
+			{
+				ImGui::TableSetupColumn("Spawn Info", ImGuiTableColumnFlags_WidthStretch);
+				ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+				ImGui::TableHeadersRow();
+
+				int iDeleteSpawnIndex = -1;
+
+				// 3. 현재 웨이브 안의 몬스터 스폰 데이터 순회
+				for (int j = 0; j < (int)waveInfo.vecMonsterSpawnData.size(); ++j)
+				{
+					// 스폰 데이터 단위로도 PushID 적용 (동일한 이름의 TreeNode와 Button 구별)
+					ImGui::PushID(j);
+
+					ImGui::TableNextRow();
+					ImGui::TableSetColumnIndex(0);
+
+					string strLabel = std::to_string(j) + ": " + DTO::MakeMonsterType_ToString(waveInfo.vecMonsterSpawnData[j].eMakeMonsterType);
+					bool bSpawnOpen = ImGui::TreeNodeEx((void*)(intptr_t)j, ImGuiTreeNodeFlags_SpanFullWidth, strLabel.c_str());
+
+					ImGui::TableSetColumnIndex(1);
+					// 삭제 버튼
+					string strDelBtnLabel = "Delete"; // PushID 덕분에 이름이 중복되어도 상관없음
+					if (ImGui::Button(strDelBtnLabel.c_str(), ImVec2(-1, 0)))
+					{
+						iDeleteSpawnIndex = j;
+					}
+
+					if (bSpawnOpen)
+					{
+						ImGuiUpdate_MonsterSpawnData(&waveInfo.vecMonsterSpawnData[j]);
+						ImGui::TreePop();
+					}
+
+					ImGui::PopID(); // 스폰 데이터 단위 Pop
+				}
+
+				// 스폰 데이터 삭제 처리
+				if (iDeleteSpawnIndex != -1)
+				{
+					waveInfo.vecMonsterSpawnData.erase(waveInfo.vecMonsterSpawnData.begin() + iDeleteSpawnIndex);
+				}
+
+				ImGui::EndTable();
+			}
+
+			ImGui::TreePop(); // 웨이브 트리 Pop
+		}
+
+		ImGui::PopID(); // 웨이브 단위 Pop
+	}
+
+	// 웨이브 삭제 처리
+	if (iDeleteWaveIndex != -1)
+	{
+		pDesc->vecWaveInfo.erase(pDesc->vecWaveInfo.begin() + iDeleteWaveIndex);
+	}
+}
+
 void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC* pDesc)
 {
 	if (pDesc == nullptr) return;
@@ -2711,7 +2848,7 @@ void CPanel_MapObjectList::ImGuiUpdate_Quest(DTO::QUEST_CHAPTERDESC* pDesc)
 	DTO::QUEST_CHAPTERDESC& chapterDesc = *pDesc;
 	DTO::QUESTDESC& questDesc = chapterDesc.tQuestDesc;
 
-	const char* eventTypes[] = { "MONSTER_KILL", "NPC_TALK", "AREA_ENTER", "AREA_EXIT", "OBJECT_INTERACT" };
+	const char* eventTypes[] = { "MONSTER_KILL", "NPC_TALK", "AREA_ENTER", "AREA_EXIT", "OBJECT_INTERACT", "MONSTER_WAVE"};
 	ImGui::Combo("Event Type", (int*)&chapterDesc.eEvent, eventTypes, IM_ARRAYSIZE(eventTypes));
 
 	const char* layerTypes[] = { "SCENARIO", "CHAPTER" };

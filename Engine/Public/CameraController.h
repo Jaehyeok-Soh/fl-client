@@ -26,7 +26,8 @@ public:
     void Play_RotationOffset(const CAMERA_ROTATION_OFFSET_DESC& desc);
     void Stop_All();
     void Stop_ByType(ECameraModifierType eType);
-    void Build_FinalPose(const CAMERA_POSE& tBasePose, CAMERA_POSE& tOutPose) const;
+    void Build_FinalPose(const CAMERA_POSE& tBasePose, OUT CAMERA_POSE& tOutPose) const;
+    void Build_FinalPose_FromResult(const CAMERA_POSE& basePose, const CAMERA_MODIFIER_RESULT& tResult, OUT CAMERA_POSE& outPose) const;
 private: 
     void Add_Modifier(ICameraModifier* pModifier);
     void Remove_FinishedModifiers();
