@@ -19,6 +19,10 @@
 
 IMPLEMENT_SINGLETON(CMapToolManager)
 
+
+std::map<DTO::CITIZEN_TYPE, std::map<DTO::CITIZEN_GENDERTYPE, std::vector<std::string>>>  CMapToolManager::m_mapCitizenModelNames{};
+std::map<DTO::CITIZEN_TYPE, std::map<DTO::CITIZEN_GENDERTYPE, std::map<DTO::CITIZEN_PARTTYPE, std::vector<std::string>>>> CMapToolManager::m_mapCitizenPartsNames{};
+
 CMapToolManager::CMapToolManager()
 	: m_pGameInstance						{ CGameInstance::GetInstance() }
 	, m_pImGui_ToolManager					{ CImGui_ToolManager::GetInstance() }
@@ -92,7 +96,6 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	m_pInstMesh_Shader =
 		static_cast<CShader*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxInstanceMesh_Tool"));
 	if (m_pInstMesh_Shader == nullptr) return E_FAIL;
-
 
 	if (FAILED(Ready_LevelData()))
 		return E_FAIL;
@@ -539,6 +542,86 @@ CModel* CMapToolManager::Get_BatchObjectModel(DTO::EMakeObjectType eType)
 
 	return pModel;
 }
+
+HRESULT CMapToolManager::Ready_CitizenModel()
+{
+	const wstring wstrModelRootFolderName = L"../../Resources/Models/NPC_Citizen/";
+
+	// 1. Age (ex: Old)
+	for (auto& AgePath : std::filesystem::directory_iterator(wstrModelRootFolderName))
+	{
+		if (!AgePath.is_directory()) continue;
+
+		string strAge = AgePath.path().filename().string();
+		DTO::CITIZEN_TYPE eAge = DTO::CitizenType_ToEnum(strAge);
+		if (eAge == DTO::CITIZEN_TYPE::END) continue; // 이상한 폴더면 패스
+
+		// 2. Gender (ex: Female)
+		for (auto& GenderPath : std::filesystem::directory_iterator(AgePath))
+		{
+			if (!GenderPath.is_directory()) continue;
+
+			string strGender = GenderPath.path().filename().string();
+			DTO::CITIZEN_GENDERTYPE eGender = DTO::CitizenGenderType_ToEnum(strGender);
+			if (eGender == DTO::CITIZEN_GENDERTYPE::END) continue;
+
+			// 3. Model Name (ex: CM_LNF_Body01)
+			for (auto& ModelPath : std::filesystem::directory_iterator(GenderPath))
+			{
+				if (!ModelPath.is_directory()) continue; 
+				string strModelName = ModelPath.path().filename().string();
+				m_mapCitizenModelNames[eAge][eGender].push_back(strModelName);
+			}
+		}
+	}
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Ready_CitizenPartsModel()
+{
+	const wstring wstrModelRootFolderName = L"../../Resources/Models/NPC_Citizen_Parts/";
+
+	// 1. Age (ex: Old)
+	for (auto& AgePath : std::filesystem::directory_iterator(wstrModelRootFolderName))
+	{
+		if (!AgePath.is_directory()) continue;
+
+		string strAge = AgePath.path().filename().string();
+		DTO::CITIZEN_TYPE eAge = DTO::CitizenType_ToEnum(strAge);
+		if (eAge == DTO::CITIZEN_TYPE::END) continue;
+
+		// 2. Gender (ex: Female)
+		for (auto& GenderPath : std::filesystem::directory_iterator(AgePath))
+		{
+			if (!GenderPath.is_directory()) continue;
+
+			string strGender = GenderPath.path().filename().string();
+			DTO::CITIZEN_GENDERTYPE eGender = DTO::CitizenGenderType_ToEnum(strGender);
+			if (eGender == DTO::CITIZEN_GENDERTYPE::END) continue;
+
+			// 3. Part Type (ex: Hair)
+			for (auto& PartPath : std::filesystem::directory_iterator(GenderPath))
+			{
+				if (!PartPath.is_directory()) continue;
+
+				string strPartType = PartPath.path().filename().string();
+				DTO::CITIZEN_PARTTYPE ePart = DTO::CitizenPartType_ToEnum(strPartType);
+				if (ePart == DTO::CITIZEN_PARTTYPE::END) continue;
+
+				// 4. Model Name (ex: CM_LNF_Hair01_SM)
+				for (auto& ModelPath : std::filesystem::directory_iterator(PartPath))
+				{
+					if (!ModelPath.is_directory()) continue;
+					string strModelName = ModelPath.path().filename().string();
+					m_mapCitizenPartsNames[eAge][eGender][ePart].push_back(strModelName);
+				}
+			}
+		}
+	}
+	return S_OK;
+}
+
+
 
 HRESULT CMapToolManager::Ready_LevelData()
 {

@@ -35,38 +35,70 @@
     },
     "Objects": [
         {
-            "Client Level Type": "LOGO",
-            "Client Make Path": "Env",
+            "Client Level Type": "STATIC",
+            "Client Make Path": "Batch_NPC",
             "Client Make Path Desc": [
                 {
-                    "Effect Infos": [
-                        {
-                            "Desc": {
+                    "Batch NPC Type": "NPC_Citizen",
+                    "Citizen Data": {
+                        "Atlas Datas": [
+                            {
+                                "Max Colum": 4,
+                                "Max Row": 4,
+                                "Select Row": 0,
+                                "Use Atlas": true
+                            },
+                            {
+                                "Max Colum": 3,
+                                "Max Row": 3,
+                                "Select Row": 0,
+                                "Use Atlas": true
+                            }
+                        ],
+                        "Cloth RGBA Color": {
+                            "B": {
+                                "W": 1.0,
+                                "X": 0.0,
+                                "Y": 0.4324324131011963,
+                                "Z": 1.0
+                            },
+                            "G": {
+                                "W": 1.0,
+                                "X": 1.0,
+                                "Y": 0.8803088665008545,
+                                "Z": 0.0
+                            },
+                            "R": {
+                                "W": 1.0,
+                                "X": 1.0,
+                                "Y": 0.0,
+                                "Z": 0.0
+                            }
+                        },
+                        "Loop Animation Name": "Animation_CM_ZNM_Body01_SM_NPC_Zhongnian_M_Story_Cowardice_Loop",
+                        "Model Name": "Middle/Male/CM_ZNM_Body01_SM",
+                        "Parts Names": {
+                            "Beard": {
                                 "Color": {
-                                    "X": 0.0,
-                                    "Y": 0.0,
-                                    "Z": 0.0
-                                },
-                                "Pos": {
-                                    "X": 0.0,
-                                    "Y": 0.0,
-                                    "Z": 0.0
-                                },
-                                "Rot": {
-                                    "X": 0.0,
-                                    "Y": 0.0,
-                                    "Z": 0.0
-                                },
-                                "Scale": {
+                                    "W": 1.0,
                                     "X": 1.0,
-                                    "Y": 1.0,
+                                    "Y": 0.0,
+                                    "Z": 0.0
+                                },
+                                "Name": "Middle/Male/Beard/CM_ZNM_Beard01_SM"
+                            },
+                            "Hair": {
+                                "Color": {
+                                    "W": 1.0,
+                                    "X": 0.0,
+                                    "Y": 0.1081082820892334,
                                     "Z": 1.0
                                 },
-                                "Speed": 1.0
-                            },
-                            "Tag": "ENV_Brown_Leaf"
+                                "Name": "Middle/Male/Hair/CM_ZNM_Hair06_SM"
+                            }
                         }
-                    ]
+                    },
+                    "bHasQuest": false
                 }
             ],
             "Draw Type": "Default",
@@ -74,15 +106,15 @@
             "SRT": [
                 {
                     "Position": {
-                        "X": -0.2984536290168762,
-                        "Y": 13.718461990356445,
-                        "Z": -13.309491157531738
+                        "X": -1.0136481523513794,
+                        "Y": 4.405984878540039,
+                        "Z": -4.390592575073242
                     },
                     "Quaternion": {
                         "W": 1.0,
-                        "X": 0.0,
+                        "X": -0.0,
                         "Y": 0.0,
-                        "Z": 0.0
+                        "Z": -0.0
                     },
                     "Scale": {
                         "X": 1.0,
@@ -99,7 +131,7 @@
             "Section Number": 0,
             "UE Loaded": false,
             "UE Raw Data Path": "",
-            "strTag": "Cube345"
+            "strTag": "Cube349"
         }
     ]
 }

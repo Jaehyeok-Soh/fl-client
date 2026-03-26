@@ -865,6 +865,18 @@
     <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Kid_1">
       <UniqueIdentifier>{c6dbeae1-4a69-41e7-af3d-a67094b67d21}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Citizen">
+      <UniqueIdentifier>{a9e90325-7087-4546-8e29-e8677251ad3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Citizen">
+      <UniqueIdentifier>{b8c032b0-2da2-4b8f-8a20-8f61003c1c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Citizen\NPC_Citizen">
+      <UniqueIdentifier>{a3b7ad69-9eec-4fa1-b4f3-57493ad3555a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Citizen\Deco Part">
+      <UniqueIdentifier>{f160382c-bbd6-4a2b-abab-68f766f45af7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1608,6 +1620,15 @@
     <ClInclude Include="..\Public\NPC_Kid_Body_1.h">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\NPC_Citizen_Body.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Citizen.h">
+      <Filter>03. GameObject\ContainerObjects\NPC\Citizen\NPC_Citizen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Citizen_DecoPart.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen\Deco Part</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2340,6 +2361,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\NPC_Kid_Body_1.cpp">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Citizen_Body.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Citizen.cpp">
+      <Filter>03. GameObject\ContainerObjects\NPC\Citizen\NPC_Citizen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Citizen_DecoPart.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen\Deco Part</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

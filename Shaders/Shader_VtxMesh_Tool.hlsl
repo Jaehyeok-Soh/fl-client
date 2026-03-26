@@ -367,7 +367,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
     }
     output.vEmissive = float4(vEmissive, 1.f);
        
-    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
     return output;
 }

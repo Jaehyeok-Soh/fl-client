@@ -205,6 +205,16 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			return E_FAIL;
 	}
 
+	// For. Prototype_Component_Shader_PartBoneCombine
+	{
+		//ComShader_BoneCombinePart
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_BoneCombinePart.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_PartBoneCombine",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
+
 	// For. Prototype_Component_Shader_AnimAdditiveCS
 	{
 		//ComShader_AnimMix

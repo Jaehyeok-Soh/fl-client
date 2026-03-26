@@ -147,6 +147,9 @@
 #include "NPC_Villager_Body_1.h"
 #include "NPC_Kid_1.h"
 #include "NPC_Kid_Body_1.h"
+#include "NPC_Citizen.h"
+#include "NPC_Citizen_Body.h"
+#include "NPC_Citizen_DecoPart.h"
 
 //=================
 // UI
@@ -928,6 +931,13 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Kid_1_Prototype_Tag, CNPC_Kid_1::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_NPC_Kid_1_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Kid_1_Body_Prototype_Tag, CNPC_Kid_Body_1::Create(m_pDevice, m_pDeviceContext));
+
+		// For. Prototype_GameObject_NPC_Citizen
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Citizen_Prototype_Tag,			CNPC_Citizen::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Citizen_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Citizen_Body_Prototype_Tag,		CNPC_Citizen_Body::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_NPC_Citizen_Deco
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Citizen_DecoPart_Prototype_Tag,	CNPC_Citizen_DecoPart::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));

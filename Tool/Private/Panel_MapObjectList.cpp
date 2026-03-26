@@ -15,6 +15,7 @@
 #include "MapObject.h"
 #include "Light.h"
 #include "DataStruct_Map.h"
+#include "ModelAnimation.h"
 #include "Effect_Env.h"
 #include "CEffectObject.h"
 #include "GameInstance.h"
@@ -1375,7 +1376,23 @@ void CPanel_MapObjectList::ImGuiUpdate_Env_Desc(ENV_DESC* pDesc)
 				if (ImGui::DragFloat3("Local Rot", (float*)&tDataDesc.VFX_Rotation, 0.5f)) bChanged = true;
 				if (ImGui::DragFloat3("Local Scale", (float*)&tDataDesc.VFX_Scale, 0.01f)) bChanged = true;
 				if (ImGui::DragFloat("Local Speed", (float*)&tDataDesc.VFX_fSpeed, 0.001f, -FLT_MAX, FLT_MAX, "%.3f")) bChanged = true;
-				if (ImGui::ColorEdit3("Local Color", &tDataDesc.VFX_Color.x)) bChanged = true;
+
+				_bool isUseColor = (_bool)tDataDesc.VFX_COLORTYPE;
+
+				if (ImGui::Checkbox("Use Color", &isUseColor))
+				{
+					// 체크박스 상태를 데이터에 다시 반영
+					tDataDesc.VFX_COLORTYPE = (EFFECT_ENV_DESC::E_VFX_COLORMODE)isUseColor;
+					bChanged = true;
+				}
+
+				// isUseColor가 false이면 아래 블록은 비활성화됨
+				ImGui::BeginDisabled(!isUseColor);
+
+				if (ImGui::ColorEdit3("Local Color", &tDataDesc.VFX_Color.x))
+					bChanged = true;
+
+				ImGui::EndDisabled();
 
 
 				ImGui::Separator();
@@ -2077,7 +2094,8 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 			OBJECT_ENUM_TAG::NPC_BERENICA,
 			OBJECT_ENUM_TAG::NPC_TAVERN,
 			OBJECT_ENUM_TAG::NPC_VILLAGER_1,
-			OBJECT_ENUM_TAG::NPC_KID_1
+			OBJECT_ENUM_TAG::NPC_KID_1,
+			OBJECT_ENUM_TAG::NPC_CITIZEN
 		};
 
 		for (int i = 0; i < IM_ARRAYSIZE(allTypes); i++)
@@ -2088,6 +2106,8 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 			if (ImGui::Selectable(typeName.c_str(), is_selected))
 			{
 				pDesc->eBatchNPCType = allTypes[i];
+				if (m_pSelectMapObject)
+					m_pSelectMapObject->Ready_Batch_NPC();
 			}
 
 			if (is_selected)
@@ -2141,8 +2161,353 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 		}
 		ImGui::Unindent();
 	}
+	/* Batch Npc 가 Citizen 일때 */
+	if (pDesc->eBatchNPCType == OBJECT_ENUM_TAG::Enum::NPC_CITIZEN)
+	{
+		auto& CitizenData = pDesc->tNpcCitizenData;
+		auto& CitizenModelNames = m_pMapToolManager->m_mapCitizenModelNames;
+		auto& CitizenPartsNames = m_pMapToolManager->m_mapCitizenPartsNames;
+		CModel* pModel = m_pSelectMapObject ? m_pSelectMapObject->Get_Component<CModel>() : nullptr;
 
-	ImGui::Separator();
+		ImGui::Indent();
+		ImGui::Spacing();
+
+		// =========================================================================
+		// 메인 서브 탭 시작 (Model / Parts / Anim & Detail)
+		// =========================================================================
+		if (ImGui::BeginTabBar("CitizenSettingsTabBar"))
+		{
+			// ---------------------------------------------------------------------
+			// [TAB 1] Model & Body Color
+			// ---------------------------------------------------------------------
+			if (ImGui::BeginTabItem(" 1. Model "))
+			{
+				static DTO::CITIZEN_TYPE eSelectedClothAge = DTO::CITIZEN_TYPE::Child;
+				static DTO::CITIZEN_GENDERTYPE eSelectedClothGender = DTO::CITIZEN_GENDERTYPE::Male;
+				static string strPendingClothModelPath = "";
+
+				ImGui::Spacing();
+				ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "[Current Model] %s", CitizenData.strModelName.empty() ? "None" : CitizenData.strModelName.c_str());
+				ImGui::Separator();
+
+				// 1. 모델 라이브러리
+				ImGui::BeginChild("ModelLibraryRegion", ImVec2(0, 300), true);
+				{
+					if (ImGui::BeginTabBar("ModelAgeTabs"))
+					{
+						for (int i = 0; i < (int)DTO::CITIZEN_TYPE::END; ++i)
+						{
+							DTO::CITIZEN_TYPE eAge = (DTO::CITIZEN_TYPE)i;
+							if (ImGui::BeginTabItem(DTO::CitizenType_ToString(eAge).c_str()))
+							{
+								eSelectedClothAge = eAge;
+
+								ImGui::BeginChild("ModelGenderRegion", ImVec2(0, 0), false);
+								{
+									// 왼쪽: Gender
+									ImGui::BeginChild("GenderList", ImVec2(ImGui::GetContentRegionAvail().x * 0.2f, 0), false, ImGuiWindowFlags_NoScrollbar);
+									ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Gender");
+									ImGui::Separator();
+									for (int j = 0; j < (int)DTO::CITIZEN_GENDERTYPE::END; ++j)
+									{
+										DTO::CITIZEN_GENDERTYPE eGender = (DTO::CITIZEN_GENDERTYPE)j;
+										bool isSelected = (eSelectedClothGender == eGender);
+										if (isSelected) ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_ButtonActive]);
+										if (ImGui::Button(DTO::CitizenGenderType_ToString(eGender).c_str(), ImVec2(-1, 30)))
+											eSelectedClothGender = eGender;
+										if (isSelected) ImGui::PopStyleColor();
+									}
+									ImGui::EndChild();
+									ImGui::SameLine();
+
+									// 오른쪽: Model Grid
+									ImGui::BeginChild("ModelGrid", ImVec2(0, 0), true);
+									if (CitizenModelNames.count(eSelectedClothAge) > 0 && CitizenModelNames[eSelectedClothAge].count(eSelectedClothGender) > 0)
+									{
+										const vector<string>& modelList = CitizenModelNames[eSelectedClothAge][eSelectedClothGender];
+										float window_visible_x2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
+
+										for (int n = 0; n < (int)modelList.size(); n++)
+										{
+											ImGui::PushID(n);
+											const string& modelName = modelList[n];
+											string fullPath = DTO::CitizenType_ToString(eSelectedClothAge) + "/" + DTO::CitizenGenderType_ToString(eSelectedClothGender) + "/" + modelName;
+
+											bool isSelected = (strPendingClothModelPath == fullPath);
+											ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
+											if (ImGui::Selectable(modelName.c_str(), isSelected, ImGuiSelectableFlags_None, ImVec2(120, 40)))
+												strPendingClothModelPath = fullPath;
+											ImGui::PopStyleVar();
+
+											float next_button_x2 = ImGui::GetItemRectMax().x + ImGui::GetStyle().ItemSpacing.x + 120.0f;
+											if (n + 1 < (int)modelList.size() && next_button_x2 < window_visible_x2)
+												ImGui::SameLine();
+											ImGui::PopID();
+										}
+									}
+									ImGui::EndChild();
+								}
+								ImGui::EndChild();
+								ImGui::EndTabItem();
+							}
+						}
+						ImGui::EndTabBar();
+					}
+				}
+				ImGui::EndChild();
+
+				// 2. 모델 적용 버튼
+				ImGui::Spacing();
+				if (ImGui::Button("Apply Selected Model", ImVec2(-1, 40)))
+				{
+					if (!strPendingClothModelPath.empty() && pDesc->tNpcCitizenData.strModelName != strPendingClothModelPath)
+					{
+						pDesc->tNpcCitizenData.strModelName = strPendingClothModelPath;
+
+						/* 모델을 바꾸기전 장착된 정보가들어있는 parts정보삭제 */
+						pDesc->tNpcCitizenData.Reset_PartsData();
+						if (m_pSelectMapObject) m_pSelectMapObject->Ready_Batch_NPC();
+					}
+				}
+
+				// 3. [수정됨] 바디 컬러 세팅 (탭 3에서 이사 옴!)
+				ImGui::Spacing();
+				ImGui::SeparatorText(" Body Color Mapping ");
+				ImGui::Checkbox(" Use Body ColorMapping ", &pDesc->tNpcCitizenData.isUseClothColorMapping);
+				ImGui::BeginDisabled(!pDesc->tNpcCitizenData.isUseClothColorMapping);
+				ImGui::ColorEdit4("R Channel", &pDesc->tNpcCitizenData.tClothRGBColor.vColorR.x);
+				ImGui::ColorEdit4("G Channel", &pDesc->tNpcCitizenData.tClothRGBColor.vColorG.x);
+				ImGui::ColorEdit4("B Channel", &pDesc->tNpcCitizenData.tClothRGBColor.vColorB.x);
+				ImGui::EndDisabled();
+
+				ImGui::EndTabItem();
+			}
+
+			// ---------------------------------------------------------------------
+			// [TAB 2] Parts & Color
+			// ---------------------------------------------------------------------
+			if (ImGui::BeginTabItem(" 2. Parts "))
+			{
+				ImGui::Spacing();
+				if (pModel == nullptr || CitizenData.strModelName.empty())
+				{
+					ImGui::TextColored(ImVec4(1, 0, 0, 1), " Please apply a Base Model first! ");
+				}
+				else
+				{
+					// [추가됨] 현재 장착 중인 모든 파츠 현황판
+					ImGui::SeparatorText(" Current Equipped Parts ");
+					for (int i = 0; i < (int)DTO::CITIZEN_PARTTYPE::END; ++i)
+					{
+						string partName = pDesc->tNpcCitizenData.arrayPartDatas[i].strName;
+						ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.8f, 1.0f), "[%s] : %s",
+							DTO::CitizenPartType_ToString((DTO::CITIZEN_PARTTYPE)i).c_str(),
+							partName.empty() ? "None" : partName.c_str());
+					}
+					ImGui::Spacing();
+					ImGui::Separator();
+
+					size_t firstSlash = CitizenData.strModelName.find('/');
+					size_t secondSlash = CitizenData.strModelName.find('/', firstSlash + 1);
+					string strCurAge = CitizenData.strModelName.substr(0, firstSlash);
+					string strCurGender = CitizenData.strModelName.substr(firstSlash + 1, secondSlash - firstSlash - 1);
+					DTO::CITIZEN_TYPE eCurAge = DTO::CitizenType_ToEnum(strCurAge);
+					DTO::CITIZEN_GENDERTYPE eCurGender = DTO::CitizenGenderType_ToEnum(strCurGender);
+
+					if (eCurAge != DTO::CITIZEN_TYPE::END && eCurGender != DTO::CITIZEN_GENDERTYPE::END)
+					{
+						static DTO::CITIZEN_PARTTYPE eSelectedPartType = (DTO::CITIZEN_PARTTYPE)0;
+						static string strPendingPartModelName = "";
+						static string strPendingPartFullPath = "";
+
+						// 파츠 선택 영역
+						ImGui::BeginChild("PartsRegion", ImVec2(0, 250), true);
+						{
+							// 왼쪽: Part Type List
+							ImGui::BeginChild("PartTypeList", ImVec2(ImGui::GetContentRegionAvail().x * 0.2f, 0), false, ImGuiWindowFlags_NoScrollbar);
+							if (CitizenPartsNames.count(eCurAge) > 0 && CitizenPartsNames[eCurAge].count(eCurGender) > 0)
+							{
+								for (auto& partPair : CitizenPartsNames[eCurAge][eCurGender])
+								{
+									DTO::CITIZEN_PARTTYPE ePartsType = partPair.first;
+									bool isSelected = (eSelectedPartType == ePartsType);
+									if (isSelected) ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_ButtonActive]);
+									if (ImGui::Button(DTO::CitizenPartType_ToString(ePartsType).c_str(), ImVec2(-1, 30)))
+									{
+										eSelectedPartType = ePartsType;
+										strPendingPartModelName = "";
+										strPendingPartFullPath = "";
+									}
+									if (isSelected) ImGui::PopStyleColor();
+								}
+							}
+							ImGui::EndChild();
+							ImGui::SameLine();
+
+							// 오른쪽: Part Model Grid
+							ImGui::BeginChild("PartModelGrid", ImVec2(0, 0), true);
+							if (CitizenPartsNames.count(eCurAge) > 0 && CitizenPartsNames[eCurAge].count(eCurGender) > 0 &&
+								CitizenPartsNames[eCurAge][eCurGender].count(eSelectedPartType) > 0)
+							{
+								auto& vecPartModelNames = CitizenPartsNames[eCurAge][eCurGender][eSelectedPartType];
+
+								ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+								if (ImGui::Button("[ None (Unequip) ]", ImVec2(120, 40)))
+								{
+									strPendingPartModelName = "NONE";
+									strPendingPartFullPath = "NONE";
+								}
+								ImGui::PopStyleColor();
+								ImGui::SameLine();
+
+								float window_visible_x2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
+								for (int i = 0; i < (int)vecPartModelNames.size(); ++i)
+								{
+									ImGui::PushID(i);
+									const string& modelName = vecPartModelNames[i];
+									bool isSelected = (strPendingPartModelName == modelName);
+									ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
+									if (ImGui::Selectable(modelName.c_str(), isSelected, ImGuiSelectableFlags_None, ImVec2(120, 40)))
+									{
+										strPendingPartModelName = modelName;
+										strPendingPartFullPath = strCurAge + "/" + strCurGender + "/" + DTO::CitizenPartType_ToString(eSelectedPartType) + "/" + modelName;
+									}
+									ImGui::PopStyleVar();
+
+									float next_button_x2 = ImGui::GetItemRectMax().x + ImGui::GetStyle().ItemSpacing.x + 120.0f;
+									if (i + 1 < (int)vecPartModelNames.size() && next_button_x2 < window_visible_x2)
+										ImGui::SameLine();
+									ImGui::PopID();
+								}
+							}
+							ImGui::EndChild();
+						}
+						ImGui::EndChild();
+
+						// --- [수정됨] UX 흐름: Apply를 먼저! ---
+						auto& partData = pDesc->tNpcCitizenData.arrayPartDatas[(int)eSelectedPartType];
+
+						ImGui::Spacing();
+						if (ImGui::Button("Apply Selected Part", ImVec2(-1, 45)))
+						{
+							if (!strPendingPartFullPath.empty())
+							{
+								if (strPendingPartFullPath == "NONE")
+								{
+									m_pSelectMapObject->Delete_CitizenBonePart((_uint)eSelectedPartType);
+									partData.strName = "";
+								}
+								else
+								{
+									wstring wstrModelPath = Engine_Utils::ToWString(strPendingPartFullPath);
+									// 생성 시 컬러 상관없이 일단 장착! (Color 파라미터 제외하거나, 기존 파츠 컬러 유지)
+									m_pSelectMapObject->Change_CitizenBonePart((_uint)eSelectedPartType, wstrModelPath, partData.vColor);
+									partData.strName = strPendingPartFullPath;
+								}
+								strPendingPartModelName = "";
+								strPendingPartFullPath = "";
+							}
+						}
+
+						// --- [수정됨] 장착된 파츠만 컬러 변경 가능 ---
+						ImGui::Spacing();
+						ImGui::SeparatorText(" Part Color Setting ");
+
+						bool bIsEquipped = !partData.strName.empty();
+						if (bIsEquipped)
+						{
+							ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Editing Color for: %s", partData.strName.c_str());
+							if (ImGui::ColorEdit4((DTO::CitizenPartType_ToString(eSelectedPartType) + " Color").c_str(), (float*)&partData.vColor))
+							{
+								if (m_pSelectMapObject)
+									m_pSelectMapObject->Change_CitizenPartsColor(partData.vColor, (_uint)eSelectedPartType);
+							}
+						}
+						else
+						{
+							ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "Equip a %s part first to change its color.", DTO::CitizenPartType_ToString(eSelectedPartType).c_str());
+						}
+					}
+				}
+				ImGui::EndTabItem();
+			}
+
+			// ---------------------------------------------------------------------
+			// [TAB 3] Animation & Detail (Atlas)
+			// ---------------------------------------------------------------------
+			if (ImGui::BeginTabItem(" 3. Anim & Detail "))
+			{
+				static int iSelectedIdx = -1;
+				static string strSelectedName = "None";
+
+				ImGui::Spacing();
+				ImGui::SeparatorText(" Animation List ");
+
+				ImGui::BeginChild("AnimListRegion", ImVec2(0, 250), true);
+				if (ImGui::BeginTable("AnimTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY))
+				{
+					ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 30.0f);
+					ImGui::TableSetupColumn("Animation Name", ImGuiTableColumnFlags_WidthStretch);
+					ImGui::TableHeadersRow();
+
+					if (pModel)
+					{
+						const vector<CModelAnimation*>& vecAnim = pModel->Get_Animations();
+						for (int i = 0; i < (int)vecAnim.size(); ++i)
+						{
+							ImGui::TableNextRow();
+							ImGui::TableSetColumnIndex(0);
+							ImGui::Text("%d", i);
+
+							ImGui::TableSetColumnIndex(1);
+							string animName = Engine_Utils::ToString(vecAnim[i]->Get_Name());
+							bool isSelected = (iSelectedIdx == i);
+							if (ImGui::Selectable(animName.c_str(), isSelected, ImGuiSelectableFlags_SpanAllColumns))
+							{
+								iSelectedIdx = i;
+								pDesc->tNpcCitizenData.strLoopAnimationName = strSelectedName = animName;
+								pModel->Change_Animation(m_pSelectMapObject->m_pAnimECS, i, false, true);
+							}
+							if (isSelected) ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndTable();
+				}
+				ImGui::EndChild();
+
+				ImGui::Spacing();
+				ImGui::SeparatorText(" Atlas Configuration ");
+				static const char* atlasNames[] = { "Eye Atlas", "Mouth Atlas" };
+				int atlasCount = (int)DTO::CITIZEN_ATLAS_TYPE::END;
+				for (int i = 0; i < atlasCount; ++i)
+				{
+					ImGui::PushID(i);
+					DTO::CITIZEN_ATLAS_DATA& atlasData = pDesc->tNpcCitizenData.arrayNpcAtlasData[i];
+					if (ImGui::TreeNodeEx(atlasNames[i], ImGuiTreeNodeFlags_DefaultOpen))
+					{
+						ImGui::Checkbox("Use Atlas", &atlasData.isUseAtlas);
+						ImGui::BeginDisabled(!atlasData.isUseAtlas);
+						ImGui::DragInt("Max Row", (int*)&atlasData.iMaxRow, 0.1f, 1, 100);
+						ImGui::DragInt("Max Column", (int*)&atlasData.iMaxColumn, 0.1f, 1, 100);
+						int maxSelectableRow = max(0, (int)atlasData.iMaxRow - 1);
+						ImGui::DragInt("Select Row", (int*)&atlasData.iSelectRow, 0.1f, 0, maxSelectableRow);
+						ImGui::EndDisabled();
+
+						if ((int)atlasData.iMaxRow < 1) atlasData.iMaxRow = 1;
+						if ((int)atlasData.iMaxColumn < 1) atlasData.iMaxColumn = 1;
+						if ((int)atlasData.iSelectRow > maxSelectableRow) atlasData.iSelectRow = maxSelectableRow;
+						ImGui::TreePop();
+					}
+					ImGui::PopID();
+				}
+
+				ImGui::EndTabItem();
+			}
+			ImGui::EndTabBar();
+		}
+
+		ImGui::Unindent();
+	}
 }
 
 void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc)

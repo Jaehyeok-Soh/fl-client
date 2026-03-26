@@ -198,8 +198,8 @@ PS_OUT_SHADOW PS_SHADOW(VS_OUT_SHADOW input)
 
 technique11 T0
 {
-    PASS_RS_DS_BS_VP(P0, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-    PASS_RS_DS_BS_VP(P1, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_RED)
+    PASS_RS_DS_BS_VP(Default, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+    PASS_RS_DS_BS_VP(Red, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_RED)
 
     // RGB mapping : weapon 쪽에서 쓰임
 	PASS_RS_DS_BS_VP(RGBMapping, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
@@ -210,4 +210,9 @@ technique11 T0
     // Index - 4
     // Shadow - 이거추가되면 Render_Shadow에서 Set_Pass Index 바꿔줘야함
     PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_SHADOW, PS_SHADOW)
+
+	PASS_RS_DS_BS_VP(CitizenEye, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(CitizenMouth, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+	PASS_RS_DS_BS_VP(CitizenCloth, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
+	PASS_RS_DS_BS_VP(CitizenBody, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 };

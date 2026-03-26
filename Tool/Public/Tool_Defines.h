@@ -288,6 +288,9 @@ namespace Tool
 	inline constexpr wchar_t g_wszCollider_Sphere_Prototype_Tag[]	{ L"Prototype_Component_Collider_Sphere" };
 	inline constexpr wchar_t g_wszCollider_OBB_Prototype_Tag[]		{ L"Prototype_Component_Collider_OBB" };
 
+	inline constexpr wchar_t g_wszBonePart_PrototypeTag[]		{ L"Prototype_GameObject_PartObject_BonePart"};
+	inline constexpr wchar_t g_wszCitizenPart_PrototypeTag[]		{ L"Prototype_GameObject_PartObject_CitizenPart"};
+
 	inline constexpr _tchar g_wszCameraCinematicData_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json" };
 	inline constexpr _tchar g_wszCameraCinematicSequnceEventManifest_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CCS_EventManifest.json" };
 
@@ -397,6 +400,57 @@ namespace Tool
 	};
 
 #pragma endregion
+
+
+	enum class EAnimShaderPass
+	{
+		Default,
+		Red,
+		RGBMapping,
+		WithRenderFx,
+		Shadow,
+		CitizenEye,
+		CitizenMouth,
+		CitizenCloth,
+		CitizenBody,
+		END,
+	};
+
+	static std::string EAnimShaderPass_ToString(EAnimShaderPass eType)
+	{
+		switch (eType)
+		{
+		case Tool::EAnimShaderPass::Default:		return "Default";
+		case Tool::EAnimShaderPass::Red:			return "Red";
+		case Tool::EAnimShaderPass::RGBMapping:		return "RGBMapping";
+		case Tool::EAnimShaderPass::WithRenderFx:	return "WithRenderFx";
+		case Tool::EAnimShaderPass::Shadow:			return "Shadow";
+		case Tool::EAnimShaderPass::CitizenEye:		return "CitizenEye";
+		case Tool::EAnimShaderPass::CitizenMouth:	return "CitizenMouth";
+		case Tool::EAnimShaderPass::CitizenCloth:	return "CitizenCloth";
+		case Tool::EAnimShaderPass::CitizenBody:	return "CitizenBody";
+
+		default:									return "UnKnown";
+		};
+		return "Unknown";
+	};
+
+	static EAnimShaderPass EAnimShaderPass_ToEnum(std::string strType)
+	{
+		if (strType == "Default")			return Tool::EAnimShaderPass::Default;
+		else if (strType == "Red")			return Tool::EAnimShaderPass::Red;
+		else if (strType == "RGBMapping")	return Tool::EAnimShaderPass::RGBMapping;
+		else if (strType == "WithRenderFx") return Tool::EAnimShaderPass::WithRenderFx;
+		else if (strType == "Shadow")		return Tool::EAnimShaderPass::Shadow;
+		else if (strType == "CitizenEye")	return Tool::EAnimShaderPass::CitizenEye;
+		else if (strType == "CitizenMouth") return Tool::EAnimShaderPass::CitizenMouth;
+		else if (strType == "CitizenCloth") return Tool::EAnimShaderPass::CitizenCloth;
+		else if (strType == "CitizenBody")	return Tool::EAnimShaderPass::CitizenBody;
+
+		return Tool::EAnimShaderPass::END;
+	};
+
+
 
 #pragma region Client Make Path
 

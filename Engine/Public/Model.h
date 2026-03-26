@@ -125,16 +125,15 @@ public:
 
 	// tool funcs
 public:
-	void	Set_RootBone(_int iRootIdx);
-	void	Set_Animtion_MotionOffset(_uint iAnimIdx, _float fOffset);
-	_int	Get_RootBone() const { return m_iRootBoneIdx; }
-	_float	Get_Animatioin_MotionOffset(_uint iAnimIdx);
-	void	Set_Animation_Speed(_uint iAnimIdx, _float fSpeed);
+	void								Set_RootBone(_int iRootIdx);
+	void								Set_Animtion_MotionOffset(_uint iAnimIdx, _float fOffset);
+	_int								Get_RootBone() const { return m_iRootBoneIdx; }
+	_float								Get_Animatioin_MotionOffset(_uint iAnimIdx);
+	void								Set_Animation_Speed(_uint iAnimIdx, _float fSpeed);
 
-	_bool	Get_Is_AdditiveOn() const { return m_bAdditiveAnim; }
-	_int	Get_RefAdditive_AnimIdx() const { return m_iAdditivRef_AnimIdx; }
-	_int	Get_PosAdditive_AnimIdx() const { return m_iAdditivePos_AnimIdx; }
-
+	_bool								Get_Is_AdditiveOn() const { return m_bAdditiveAnim; }
+	_int								Get_RefAdditive_AnimIdx() const { return m_iAdditivRef_AnimIdx; }
+	_int								Get_PosAdditive_AnimIdx() const { return m_iAdditivePos_AnimIdx; }
 	// mix anim funcs
 public:
 	void	Make_MixRatio(_uint iAnimIdx, vector<DATA_ANIMIX>& vecAniMixData, CComputeShader* pAnimMixCS);
@@ -227,6 +226,7 @@ public:
 	void								Set_ApplyRagDoll(_bool bApply) { m_bRagDollOn = bApply; }
 
 public:
+	HRESULT								Set_MI(_uint iIndex, const SHADER_MI_DESC& tDesc);
 	HRESULT								Set_MI_TintColor(_uint iIndex, const Vec4& vColor );
 	HRESULT								Set_MI_EmissiveColor(_uint iIndex, const Vec4& vColor );
 	HRESULT								Set_MI_EmissivePower(_uint iIndex, const float& fPower );
