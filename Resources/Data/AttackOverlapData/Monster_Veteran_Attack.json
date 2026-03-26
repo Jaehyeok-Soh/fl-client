@@ -1,0 +1,73 @@
+{
+    "Category": "OVERLAP_SCRIPT",
+    "Objects": [
+        {
+            "attackEvents": [
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 35.0,
+                    "iAnimIndex": 18,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 16777216,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 0,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 4.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 60.0,
+                    "iAnimIndex": 18,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 16777216,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 0,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 6.0
+                        }
+                    }
+                }
+            ],
+            "iNumPool": 10,
+            "strTag": "Monster_Veteran"
+        }
+    ]
+}

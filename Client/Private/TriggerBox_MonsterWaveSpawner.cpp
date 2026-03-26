@@ -21,6 +21,7 @@
 #include "Monster_Dog.h"
 #include "Monster_Boomer.h"
 #include "Monster_Fly.h"
+#include "Monster_Veteran.h"
 
 CTriggerBox_MonsterWaveSpawner::CTriggerBox_MonsterWaveSpawner(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox(pDevice, pContext)
@@ -115,6 +116,12 @@ HRESULT CTriggerBox_MonsterWaveSpawner::Register_Pool(_uint iLevelId, _uint iFin
 	{
 		auto desc = CMonster_Fly::Get_PreSetDesc(iLevelId);
 		m_pGameInstance->Regist_Pool(iLevelId, g_wszPool_Monster_Fly, g_wszMonstereLayer, ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Fly_Prototype_Tag, &desc, numPool + 60);
+	}
+	break;
+	case DTO::EMakeMonsterType::Veteran:
+	{
+		auto desc = CMonster_Veteran::Get_PreSetDesc(iLevelId);
+		m_pGameInstance->Regist_Pool(iLevelId, g_wszPool_Monster_Veteran, g_wszMonstereLayer, ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Veteran_Prototype_Tag, &desc, numPool + 1);
 	}
 	break;
 	case DTO::EMakeMonsterType::Xibi:
@@ -254,6 +261,9 @@ HRESULT CTriggerBox_MonsterWaveSpawner::SpawnMonster(MonsterWaveInfo& waveInfo)
 			break;
 		case DTO::EMakeMonsterType::Fly:
 			poolTag = g_wszPool_Monster_Fly;
+			break;
+		case DTO::EMakeMonsterType::Veteran:
+			poolTag = g_wszPool_Monster_Veteran;
 			break;
 
 			// todo

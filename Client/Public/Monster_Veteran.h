@@ -1,15 +1,18 @@
 #pragma once
 #include "Monster_Base.h"
 
+NS_BEGIN(Engine)
+NS_END
+
 NS_BEGIN(Client)
 
-class CMonster_Boomer final : public CMonster_Base
+class CMonster_Veteran final : public CMonster_Base
 {
 	using Super = CMonster_Base;
 private:
-	CMonster_Boomer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CMonster_Boomer(const CMonster_Boomer& rhs);
-	virtual ~CMonster_Boomer() = default;
+	CMonster_Veteran(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CMonster_Veteran(const CMonster_Veteran& rhs);
+	virtual ~CMonster_Veteran() = default;
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -45,7 +48,7 @@ public:
 	static MONSTER_DESC Get_PreSetDesc(_uint iLevelId);
 
 public:
-	static CMonster_Boomer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CMonster_Veteran* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

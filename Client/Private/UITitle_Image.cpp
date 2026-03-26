@@ -198,7 +198,7 @@ void CUITitle_Image::Initialize_Visible_Event()
 		break;
 	case DTO::EUIDImageSubClassType::TITLE_NAME:
 		Ready_Fade(1.f, 0.f, 1.f, m_fDelay);
-		m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_TITLE_FX_SOUND"), 1.f);
+		m_pGameInstance->Play_OneShot(0, TO_HASH("UI_TITLE_FX_SOUND"), 1.f);
 		break;
 	}
 }

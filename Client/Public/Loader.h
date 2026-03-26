@@ -63,6 +63,7 @@ private:
 	HRESULT Ready_AttackOverlap_PlayerMoon();
 	HRESULT Ready_AttackOverlap_Monster_Dog();
 	HRESULT Ready_AttackOverlap_Monster_Boomer();
+	HRESULT Ready_AttackOverlap_Monster_Veteran();
 	HRESULT Ready_AttackOverlap_Xibi();
 	HRESULT Ready_AttackOverlap_Lianhuo();
 
