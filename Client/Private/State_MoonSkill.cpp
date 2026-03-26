@@ -99,13 +99,18 @@ _uint CState_MoonSkill::Get_Capabilities() const
 	switch (m_iPlayerState)
 	{
 	case ENUM_TO_UINT(CPlayer::State::SKILL1):
-		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
+		return	Super::Get_Capabilities();
 
 	case ENUM_TO_UINT(CPlayer::State::SKILL2):
 		return	0;
 	}
 
 	return 0;
+}
+
+_bool CState_MoonSkill::Can_Captablity_Move() const
+{
+	return false;
 }
 
 _bool CState_MoonSkill::SkillE_Update(const _float fTimeDelta)

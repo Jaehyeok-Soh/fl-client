@@ -60,6 +60,8 @@ CModel::CModel(const CModel& rhs)
 	, m_vPreQuatMix(rhs.m_vPreQuatMix)
 	, m_vPreQuatNon(rhs.m_vPreQuatNon)
 	, m_vPreBlendQuat(rhs.m_vPreBlendQuat)
+	, m_bMoveBone(rhs.m_bMoveBone)
+	, m_tBoneMoveCB(rhs.m_tBoneMoveCB)
 {
 	m_vecPrevAnimationPose.resize(rhs.m_vecPrevAnimationPose.size());
 	m_vecCurrAnimationPose.resize(rhs.m_vecCurrAnimationPose.size());
@@ -106,6 +108,10 @@ CModel::CModel(const CModel& rhs)
 		//	Safe_AddRef(m_pBoneOuputStagingBuffer[0]);
 		//	Safe_AddRef(m_pBoneOuputStagingBuffer[1]);
 		//}
+	}
+
+	{
+		m_tBoneMoveCB.iBoneNums = Get_BoneCount();
 	}
 
 	Safe_AddRef(m_pDevice);
@@ -346,9 +352,9 @@ HRESULT CModel::Change_Animation(CComputeShader* pAnimEComShader, _uint iAnimati
 	return S_OK;
 }
 
-void CModel::Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimBlendCS, CComputeShader* pAnimMixCS, CComputeShader* pAdditiveCS, CComputeShader* pRagDollCS)
+void CModel::Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimBlendCS, CComputeShader* pAnimMixCS, CComputeShader* pAdditiveCS, CComputeShader* pRagDollCS, CComputeShader* pBoneMoveCS)
 {
-	Update_AnimationPlayState(pBoneComBineCS, pAnimEComShader, pAnimBlendCS, fTimeDelta * m_fAnimationSpeed, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditiveCS, pRagDollCS);
+	Update_AnimationPlayState(pBoneComBineCS, pAnimEComShader, pAnimBlendCS, fTimeDelta * m_fAnimationSpeed, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditiveCS, pRagDollCS, pBoneMoveCS);
 }
 
 void CModel::Update_PartModel(CComputeShader* pParentBoneComBineCS, CComputeShader* pChildBonePartCS)
@@ -997,16 +1003,16 @@ void CModel::Begin_AnimationPlayState(AnimationPlayState eState, CComputeShader*
 	}
 }
 
-void CModel::Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditive, CComputeShader* pRagDollCS)
+void CModel::Update_AnimationPlayState(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditive, CComputeShader* pRagDollCS, CComputeShader* pBoneMoveCS)
 {
 	switch (m_eCurrentAnimationState)
 	{
 	case Engine::CModel::PLAY:
-		Play_Update(pBoneComBineCS, pAnimEvalCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditive, pRagDollCS);
+		Play_Update(pBoneComBineCS, pAnimEvalCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditive, pRagDollCS, pBoneMoveCS);
 		break;
 	case Engine::CModel::BLEND:
 		if(pAnimBlendCS)
-			Blend_Update(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditive, pRagDollCS);
+			Blend_Update(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditive, pRagDollCS, pBoneMoveCS);
 		break;
 	}
 }
@@ -1031,7 +1037,7 @@ void CModel::Change_AnimationPlayState(AnimationPlayState eState, CComputeShader
 	m_eCurrentAnimationState = eState;
 }
 
-void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform , CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditiveCS, CComputeShader* pRagDollCS)
+void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, _float fTimeDelta, CTransform* pOwnerTransform , CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditiveCS, CComputeShader* pRagDollCS, CComputeShader* pBoneMoveCS)
 {
 	// animation update
 	{
@@ -1095,6 +1101,38 @@ void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAni
 		m_eAnim_UpdateState = AnimUpdateState::RAGDOLL;
 	}
 
+	if (m_bMoveBone && pBoneMoveCS)
+	{
+		StructuredBuffer* pPrevSRT = nullptr;
+		switch (m_eAnim_UpdateState)
+		{
+		case  AnimUpdateState::NORMAL:
+			pPrevSRT = pAnimEvalCS->Get_Output_Buffer();
+			break;
+
+		case  AnimUpdateState::MIX:
+			pPrevSRT = pAnimMixCS->Get_Output_Buffer();
+			break;
+
+		case  AnimUpdateState::ADDITIVE:
+			pPrevSRT = pAdditiveCS->Get_Output_Buffer();
+			break;
+
+		case  AnimUpdateState::RAGDOLL:
+			pPrevSRT = pRagDollCS->Get_Output_Buffer();
+			break;
+		}
+
+		pBoneMoveCS->Get_Output_Buffer()->CopyFrom(pPrevSRT);
+		pBoneMoveCS->Bind_Compute_BoneMoveCB(m_tBoneMoveCB);
+
+		// dispatch
+		_uint iGroupX = (Get_BoneCount() + 31) / 32;
+		pBoneMoveCS->Dispatch(iGroupX, 1, 1);
+
+		m_eAnim_UpdateState = AnimUpdateState::MYMOVE;
+	}
+
 	// combine에 값 바인딩
 	{
 		StructuredBuffer* pFinalSRT = { nullptr };
@@ -1114,6 +1152,10 @@ void CModel::Play_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAni
 
 		case  AnimUpdateState::RAGDOLL:
 			pFinalSRT = pRagDollCS->Get_Output_Buffer();
+			break;
+
+		case  AnimUpdateState::MYMOVE:
+			pFinalSRT = pBoneMoveCS->Get_Output_Buffer();
 			break;
 		}
 
@@ -1138,12 +1180,12 @@ void CModel::Play_Begin(CComputeShader* pAnimEvalCS, _uint iAnimationIndex, _boo
 		int a = 0;
 }
 
-void CModel::Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditive, CComputeShader* pRagDollCS)
+void CModel::Play_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditive, CComputeShader* pRagDollCS, CComputeShader* pBoneMoveCS)
 {
 	CModelAnimation* pAnimation = m_vecAnimations[m_iCurrentAnimIndex];
 	m_fAnimPrevTrackPosition = pAnimation->Get_TrackPosition();
 	
-	Play_Animation(pBoneComBineCS, pAnimEvalCS, fTimeDelta,  pOwnerTransform ,  pOwnerPhyCCT, pAnimMixCS, pAdditive, pRagDollCS);
+	Play_Animation(pBoneComBineCS, pAnimEvalCS, fTimeDelta,  pOwnerTransform ,  pOwnerPhyCCT, pAnimMixCS, pAdditive, pRagDollCS, pBoneMoveCS);
 
 	_float fCurrentPosition = pAnimation->Get_TrackPosition();
 	m_bLooped = m_isAnimLoop && (fCurrentPosition < m_fAnimPrevTrackPosition);
@@ -1181,7 +1223,7 @@ void CModel::Blend_Begin(_uint CurAnimationIndex)
 	m_vecAnimations[CurAnimationIndex]->Reset_PrePosition(m_vPreMainPosition,m_vPreQuat);
 }
 
-void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditive, CComputeShader* pRagDollCS)
+void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, const _float fTimeDelta, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditive, CComputeShader* pRagDollCS, CComputeShader* pBoneMoveCS)
 {
 	if (m_fBlendDuration <= 0.f)
 	{
@@ -1199,7 +1241,7 @@ void CModel::Blend_Update(CComputeShader* pBoneComBineCS, CComputeShader* pAnimE
 		_float fRatio = fNormalizedTime * fNormalizedTime * (3.0f - 2.0f * fNormalizedTime);
 
 		//if (pOwnerTransform)
-			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditive, pRagDollCS);
+			Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, pOwnerPhyCCT, pAnimMixCS, pAdditive, pRagDollCS, pBoneMoveCS);
 		//else
 			//Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, pOwnerTransform, m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS, pAdditive);
 			//Blend_Animation(pBoneComBineCS, pAnimEvalCS, pAnimBlendCS, fTimeDelta, fRatio, m_pOwner->Get_Component<CTransform>(), m_pOwner->Get_Component<CPhysicsCCT>(), pAnimMixCS);
@@ -1337,7 +1379,7 @@ void CModel::Update_BoneCombineTransformMatrix(CComputeShader* pBoneComBineCS)
 	}
 }
 
-void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditiveCS, CComputeShader* pRagDollCS)
+void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEvalCS, CComputeShader* pAnimBlendCS, _float fTimeDelta, _float fRatio, CTransform* pOwnerTransform, CPhysicsCCT* pOwnerPhyCCT, CComputeShader* pAnimMixCS, CComputeShader* pAdditiveCS, CComputeShader* pRagDollCS, CComputeShader* pBoneMoveCS)
 {
 	//if (pOwnerTransform)
 	{
@@ -1440,6 +1482,38 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 		m_eAnim_UpdateState = AnimUpdateState::RAGDOLL;
 	}
 
+	if (m_bMoveBone && pBoneMoveCS)
+	{
+		StructuredBuffer* pPrevSRT = nullptr;
+		switch (m_eAnim_UpdateState)
+		{
+		case  AnimUpdateState::BLEND:
+			pPrevSRT = pAnimBlendCS->Get_Output_Buffer();
+			break;
+
+		case  AnimUpdateState::MIX:
+			pPrevSRT = pAnimMixCS->Get_Output_Buffer();
+			break;
+
+		case  AnimUpdateState::ADDITIVE:
+			pPrevSRT = pAdditiveCS->Get_Output_Buffer();
+			break;
+
+		case  AnimUpdateState::RAGDOLL:
+			pPrevSRT = pRagDollCS->Get_Output_Buffer();
+			break;
+		}
+
+		pBoneMoveCS->Get_Output_Buffer()->CopyFrom(pPrevSRT);
+		pBoneMoveCS->Bind_Compute_BoneMoveCB(m_tBoneMoveCB);
+
+		// dispatch
+		_uint iGroupX = (Get_BoneCount() + 31) / 32;
+		pBoneMoveCS->Dispatch(iGroupX, 1, 1);
+
+		m_eAnim_UpdateState = AnimUpdateState::MYMOVE;
+	}
+
 	// combine에 값 바인딩
 	{
 		StructuredBuffer* pFinalSRT = { nullptr };
@@ -1459,6 +1533,10 @@ void CModel::Blend_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAn
 
 		case  AnimUpdateState::RAGDOLL:
 			pFinalSRT = pRagDollCS->Get_Output_Buffer();
+			break;
+
+		case  AnimUpdateState::MYMOVE:
+			pFinalSRT = pBoneMoveCS->Get_Output_Buffer();
 			break;
 		}
 

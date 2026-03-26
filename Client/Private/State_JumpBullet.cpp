@@ -150,6 +150,11 @@ void CState_JumpBullet::Set_NextStateDesc(_uint iNextState)
 	}
 }
 
+_bool CState_JumpBullet::Can_Captablity_Move() const
+{
+	return false;
+}
+
 
 CState_JumpBullet* CState_JumpBullet::Create(CActionState* pOwnerComponent, void* pArg)
 {

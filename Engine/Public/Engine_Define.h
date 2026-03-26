@@ -48,6 +48,8 @@ struct CCS_EVENT { using Signature = void(const Engine::CCS_BROADCAST_DESC& tDes
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
 #define new DBG_NEW 
 
+#define TO_HASH(str) Engine_Utils::ToHash(str)
+
 #endif
 #endif
 

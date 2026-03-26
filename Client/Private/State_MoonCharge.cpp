@@ -35,11 +35,13 @@ HRESULT CState_MoonCharge::Start(void* pArg, _bool bForce)
 	case static_cast<_int>(CPlayer::MELEE::SWORD):
 		m_tKeyTimer.fMaxTime = 1.f;
 		m_fHoldWeaponTime = 2.f;
+		m_fCapHitMoveTime = Get_MoveBoneTime(69.f, 1.3f);
 		break;
 
 	case static_cast<_int>(CPlayer::MELEE::DUAL):
-		m_tKeyTimer.fMaxTime = 55.f / ANIMTIC;
-		m_fHoldWeaponTime = 100.f / ANIMTIC;
+		m_tKeyTimer.fMaxTime = 55.f / ANIMTIC_3;
+		m_fHoldWeaponTime = 100.f / ANIMTIC_3;
+		m_fCapHitMoveTime = Get_MoveBoneTime(190.f, 1.3f);
 		break;
 	}
 

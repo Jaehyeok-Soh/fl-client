@@ -131,6 +131,8 @@
 #include "Monster_Boomer_Body.h"
 #include "Monster_Fly.h"
 #include "Monster_Fly_Body.h"
+#include "Monster_Veteran.h"
+#include "Monster_Veteran_Body.h"
 //=================
 // BOSS
 //=================
@@ -183,6 +185,7 @@
 #include "UICommunity_Text.h"
 #include "UIConversation_Text.h"
 #include "UIMiniGame_Circle_Text.h"
+#include "UIEnterGame_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -210,6 +213,7 @@
 #include "UIMouseCursor_Image.h"
 #include "UIMiniGame_Circle_Image.h"
 #include "UIScreenPulse_Image.h"
+#include "UIEnterGame_Image.h"
 //=================
 // Resource
 //=================
@@ -339,7 +343,7 @@ HRESULT CLoader::Loading_For_Test()
 	Sleep(1000);
 
 	m_fLoadingRatio = 1.f;
-	Sleep(3000);
+	Sleep(1000);
 
 	m_isFinished = true;
 	return S_OK;
@@ -505,6 +509,8 @@ HRESULT CLoader::Loading_For_Logo()
 
 	// For. UI Texture
 	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/")))
+		return E_FAIL;
+	if (FAILED(Loading_Textures(L"../../Resources/Textures/UI/UI_Client/Title/")))
 		return E_FAIL;
 
 	// For. SkyBox
@@ -692,7 +698,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform = &(matPreTransformScale150);
 		desc.wstrModelFolderName = L"Monster_Boomer";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = {3,4, 114, 116 };
+		desc.vecStageBoneIndices = {3};
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 3;
@@ -716,6 +722,23 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pAniChannelData = &tAniChannelData;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Fly_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+
+	// For.Prototype_Component_Model_Monster_Veteran
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::ANIM;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale150);
+		desc.wstrModelFolderName = L"Monster_Veteran";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
+		desc.vecStageBoneIndices = { 3 };
+
+		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
+		tAniChannelData.iRootBoneIndex = 3;
+		desc.pAniChannelData = &tAniChannelData;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Veteran_Model_Prototype_Tag, CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 	// For.Prototype_Component_Model_NPC_Pan
@@ -939,6 +962,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Fly_Prototype_Tag, CMonster_Fly::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_Monster_Fly_Body
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Fly_Body_Prototype_Tag, CMonster_Fly_Body::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Monster_Veteran
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Veteran_Prototype_Tag, CMonster_Veteran::Create(m_pDevice, m_pDeviceContext));
+		// For. Prototype_GameObject_Monster_Veteran_Body
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonster_Veteran_Body_Prototype_Tag, CMonster_Veteran_Body::Create(m_pDevice, m_pDeviceContext));
 
 		// For. Prototype_GameObject_NPC_Pan
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Pan_Prototype_Tag, CNPC_Pan::Create(m_pDevice, m_pDeviceContext));
@@ -1039,6 +1066,8 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleImage",		CUIMiniGame_Circle_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_MiniGameCircleText",		CUIMiniGame_Circle_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ScreenPulseImage",			CUIScreenPulse_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameImage",			CUIEnterGame_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameText",			CUIEnterGame_Text::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	
@@ -1054,7 +1083,8 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 	
 	
 	m_fLoadingRatio = 1.f;
-	Sleep(3000);
+	Sleep(1000);
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -1123,7 +1153,8 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiOneshotThunder_Prototype_Tag, CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(3000);
+	Sleep(1000);
+
 
 
 	m_isFinished = true;
@@ -1143,7 +1174,8 @@ HRESULT CLoader::Loading_For_Square()
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(3000);
+	Sleep(1000);
+
 	m_isFinished = true;
 	return S_OK;
 }
@@ -1161,7 +1193,7 @@ HRESULT CLoader::Loading_For_Tavern()
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(3000);
+	Sleep(1000);
 
 
 
@@ -1186,7 +1218,8 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 
 
 	m_fLoadingRatio = 1.f;
-	Sleep(3000);
+	Sleep(1000);
+
 
 
 
@@ -1252,7 +1285,8 @@ HRESULT CLoader::Loading_For_Lianhuo()
 
 
 	m_fLoadingRatio = 1.f;
-	Sleep(3000);
+	Sleep(1000);
+
 
 	m_isFinished = true;
 
@@ -1398,6 +1432,9 @@ HRESULT CLoader::Ready_AttackOverlap()
 		return E_FAIL;
 	
 	if (FAILED(Ready_AttackOverlap_Monster_Boomer()))
+		return E_FAIL;
+	
+	if (FAILED(Ready_AttackOverlap_Monster_Veteran()))
 		return E_FAIL;
 
 	if (FAILED(Ready_AttackOverlap_Xibi()))
@@ -1675,6 +1712,27 @@ HRESULT CLoader::Ready_AttackOverlap_Monster_Boomer()
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
 	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Monster_Boomer_Attack.json";
+	vector<path> vecfiles;
+
+	if (!std::filesystem::exists(FilePath))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, FilePath)))
+		return E_FAIL;
+
+	if (FAILED(m_pBuilderSystem->Build_File(iLevelID, eCategory, FilePath.stem().string())))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_AttackOverlap_Monster_Veteran()
+{
+	ELevelType eLevelType = ELevelType::LOGO;
+	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
+	_uint iLevelID = ENUM_TO_UINT(eLevelType);
+
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/Monster_Veteran_Attack.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

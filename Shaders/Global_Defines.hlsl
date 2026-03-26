@@ -32,7 +32,10 @@ float4  g_vGradiateColorTint;
 float   g_fDelay;
 int     g_iFlip;
 
-float g_fBrightness;
+float   g_fBrightness;
+
+float2  g_vOffset;
+float2   g_vScale;
 
 /////////
 // SRV //

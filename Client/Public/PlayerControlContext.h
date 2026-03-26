@@ -48,12 +48,6 @@ public:
 	void Count_Time(const _float fTimeDelta); // 내부에서 키 인풋 쿨타임을 카운트 하기 위함 등
 
 public:
-	_bool Is_FootRayEnabled();
-	void Set_Grounded(_bool bGrounded, const COLMESH_HITINFO* pHit);
-	void Clear_Grounded();
-	ROPE_INFO& Get_RopeInfo() { return m_CurrentRopeInfo; }
-	void Set_RopeInfo(const ROPE_INFO& ropeInfo) { m_CurrentRopeInfo = ropeInfo; }
-
 	// 하나하나 컨트롤 
 	void Set_CheckKey(KEYFLAGS FKey, _bool bOn);	// 외부에서 onoff를 해야할 시
 	// 다 끌꺼면
@@ -62,6 +56,8 @@ public:
 	void Set_PreKeyFlag();
 
 	void Set_AttackLanded();
+
+	_bool Get_KeyFlag(KEYFLAGS FKey);;
 
 public:
 	virtual _bool Is_LeftAttackPressed() override;

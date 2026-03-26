@@ -35,6 +35,17 @@ HRESULT CState_DashSky::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pDesc, bForce)))
 		return E_FAIL;
 
+	switch (m_iMainAnimIdx)
+	{
+	case ENUM_TO_UINT(ANI::FRONT):
+		m_fCapHitMoveTime = Get_MoveBoneTime(22.f);
+		break;
+
+	case ENUM_TO_UINT(ANI::BACK):
+		m_fCapHitMoveTime = Get_MoveBoneTime(24.f);
+		break;
+	}
+
 	Set_ApplyGravity(false);
 
 	Set_YLerp(false);
@@ -50,7 +61,6 @@ void CState_DashSky::Update(const _float fTimeDelta)
 	{
 		if(Check_OnGround(0.3f))
 		{
-			//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
 			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::LAND));
 			return;
 		}

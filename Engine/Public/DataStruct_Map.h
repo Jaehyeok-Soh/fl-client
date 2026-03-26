@@ -17,6 +17,7 @@ enum class EMakeMonsterType
 	Xibi,
 	Lianhuo,
 	Fly,
+	Veteran,
 
 	END,
 };
@@ -28,6 +29,7 @@ inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
 	case DTO::EMakeMonsterType::Shooter:		return "Shooter";
 	case DTO::EMakeMonsterType::Boomer:			return "Boomer";
 	case DTO::EMakeMonsterType::Fly:			return "Fly";
+	case DTO::EMakeMonsterType::Veteran:		return "Veteran";
 
 
 
@@ -44,6 +46,7 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 	if (strType == "Shooter")	return DTO::EMakeMonsterType::Shooter;
 	if (strType == "Boomer")	return DTO::EMakeMonsterType::Boomer;
 	if (strType == "Fly")		return DTO::EMakeMonsterType::Fly;
+	if (strType == "Veteran")	return DTO::EMakeMonsterType::Veteran;
 
 
 	if (strType == "Xibi")		return DTO::EMakeMonsterType::Xibi;

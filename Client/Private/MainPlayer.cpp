@@ -405,9 +405,27 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
         _float fDamage = hitDesc.fFinalDamage;
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Add_Health(fDamage * -1.f);
 
-        // action state 내부에 set hit desc 넣어주기 : 다음 update때 state에 정보를 주기 위함
+        // action state 
         if (pPlayerState)
+        {
+            // 내부에 set hit desc 넣어주기 : 다음 update때 state에 정보를 주기 위함
             pPlayerState->Set_HitDesc(hitDesc);
+
+            // action state에 bone move change 해달라고 정보 전달 : 안에서 state 방어중
+            {
+                CPlayerActionState::BONESTATE_CHANGE_ARGS tArg = {};
+                // 내적을 통해 방향 flag 던져줌
+                {
+                    Vec3    vLook   = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+                    Vec3 vHitNormal = hitDesc.vHitNormal;
+                    vHitNormal.y    = 0.f;
+                    _float	fDot    = vLook.Dot(vHitNormal);
+                    tArg.iHitType   = (fDot > 0.f) ? CPlayerActionState::BoneHitType::BHT_BACK : CPlayerActionState::BoneHitType::BHT_Front;
+                }
+                pPlayerState->Change_ActionBoneState(CPlayerActionState::BONE_STATE::HITSTART, &tArg);
+            }
+        }
 
         // Hit 데미지 폰트 // 색 변경은 가능 //
         {

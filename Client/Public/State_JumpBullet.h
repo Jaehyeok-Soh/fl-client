@@ -19,6 +19,7 @@ public:
 
 protected:
 	virtual void Set_NextStateDesc(_uint iNextState) override;
+	virtual _bool Can_Captablity_Move() const override;
 
 private:
 	Vec3 m_vDir = { Vec3::Zero };

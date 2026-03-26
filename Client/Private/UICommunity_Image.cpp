@@ -169,7 +169,7 @@ void CUICommunity_Image::Tick_By_Type(const _float fTimeDelta)
 		if (KEY_BUTTON_UP(DIK_F))
 		{
 			m_pGameInstance->Broadcast<INTERACT_ENTER>(m_pInteractObj);
-			m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_COMMUNITY_ENTER"), 1.f);
+			m_pGameInstance->Play_OneShot(0, TO_HASH("UI_COMMUNITY_ENTER"), 1.f);
 		}
 		break;
 	case DTO::EUIDImageSubClassType::COMMUNITY_OUTLINE:

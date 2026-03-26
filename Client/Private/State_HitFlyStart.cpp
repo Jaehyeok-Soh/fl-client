@@ -68,6 +68,11 @@ HRESULT CState_HitFlyStart::End()
 	return S_OK;
 }
 
+_bool CState_HitFlyStart::Can_Captablity_Move() const
+{
+	return false;
+}
+
 CState_HitFlyStart* CState_HitFlyStart::Create(CActionState* pOwnerComponent, void* pArg)
 {
 	CState_HitFlyStart* pInstance = new CState_HitFlyStart(pOwnerComponent);
