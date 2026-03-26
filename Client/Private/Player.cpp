@@ -1528,10 +1528,10 @@ HRESULT CPlayer::Ready_WeaponInfo()
         {
             WEAPON_INFO tInfo = {};
 
-            tInfo.iPartStartIdx = Part::SKILL;
-            tInfo.iPartSize = 1;
-            tInfo.bHave = false;
-            tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
+            tInfo.iPartStartIdx     = Part::SKILL;
+            tInfo.iPartSize         = 1;
+            tInfo.bHave             = true;
+            tInfo.iWeaponState      = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrSkillInfo[ENUM_TO_SZET(SKILL::MOON)] = tInfo;
         }

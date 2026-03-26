@@ -370,6 +370,7 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
 
     CLOG_INFO(infoContant);
 #endif // _DEBUG
+
     CTransform*         pTransform = Get_Component<CTransform>();
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
     _uint iStateFlag = pPlayerState->Get_CurrentCapabilities();
@@ -461,6 +462,10 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
             pRenderFx->Play_Shake(0.35f);
             pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
         }
+
+        // sound
+
+
         return true;
     }
    
