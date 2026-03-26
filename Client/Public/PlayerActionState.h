@@ -54,7 +54,7 @@ public:
 		Matrix matFrontHit_Weak	= Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(20.f), XMConvertToRadians(50.f));
 		Matrix matFrontHit_Strong = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(20.f), XMConvertToRadians(80.f));
 
-		Matrix matBackHit_Weak		= Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-20.f), XMConvertToRadians(-40.f));
+		Matrix matBackHit_Weak		= Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-25.f), XMConvertToRadians(-50.f));
 		Matrix matBackHit_Strong = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(-20.f), XMConvertToRadians(-80.f));
 
 	}BONEHIT_DATA;

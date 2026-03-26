@@ -1800,7 +1800,7 @@ HRESULT CPlayer::Ready_PartCollider()
 
         {
             tPColliDesc.eShape = EPhysicsShape::SPHERE;
-            tPColliDesc.fRadius = { 4.5f };
+            tPColliDesc.fRadius = { 5.f };
             tPartColliDesc.pColliderDesc = &tPColliDesc;
         }
 
