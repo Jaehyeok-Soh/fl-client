@@ -378,6 +378,28 @@ HRESULT CNPC_Body_Base::Ready_Bones(NPCBODY_DESC* pDesc)
 	return S_OK;
 }
 
+void CNPC_Body_Base::Setting_FaceMix(_uint iFaceBoneIdx, _int iAnimIdx)
+{
+	CModel* pMyModel = Get_Component<CModel>();
+
+	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
+
+	vector<CModel::DATA_ANIMIX> vecMix = { {iFaceBoneIdx,true,1.f} }; // mixing 정보
+
+	pMyModel->Set_MixAnim_ResetSize(0); 								// mix 값 초기화
+	pMyModel->Set_MixAnim(true);										// mix를 키고
+	pMyModel->Set_MixAnim_ResetSize(1);									// mix size 설정 (0 : face)
+	pMyModel->Make_MixRatio(iAnimIdx, vecMix, pAnimMix);			// mixing 정보 할당
+	pMyModel->Set_MixAnim_AnimIndex(0, iAnimIdx);					// model에 mix 애니메이션 설정
+}
+
+void CNPC_Body_Base::Change_FaceAnim(_int iAnimIdx)
+{
+	CModel* pMyModel = Get_Component<CModel>();
+
+	pMyModel->Set_MixAnim_AnimIndex(0, iAnimIdx);
+}
+
 void CNPC_Body_Base::Free()
 {
 	Super::Free();
