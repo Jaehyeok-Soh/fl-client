@@ -32,10 +32,9 @@ public:
 	HRESULT Copy_Preset(const string& strPresetTag, OUT CAMERA_SHOT_PRESET& outPreset) const;
 	vector<string> Get_PresetTags() const;
 	const unordered_map<string, CAMERA_SHOT_PRESET>& Get_AllPresets() const { return m_mapPresets; }
+	std::filesystem::path Make_FilePathFromTag(const string& strTag) const;
 
 	void Clear();
-private:
-	std::filesystem::path Make_FilePathFromTag(const string& strTag) const;
 private:
 	std::filesystem::path m_rootPath;
 	CGameInstance* m_pGameInstance = { nullptr };

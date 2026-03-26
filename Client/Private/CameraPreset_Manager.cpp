@@ -12,6 +12,8 @@ using json = nlohmann::json;
 
 using ordered_json = nlohmann::ordered_json;
 
+NS_BEGIN(Engine)
+
 NLOHMANN_JSON_SERIALIZE_ENUM(Engine::ECameraShotEase,
 {
 	{Engine::ECameraShotEase::Linear,        "Linear"},
@@ -71,6 +73,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Engine::ECameraAnchorResolve,
 	{Engine::ECameraAnchorResolve::END,        "END"},
 }
 )
+
+NS_END
 
 #pragma region Helper
 namespace

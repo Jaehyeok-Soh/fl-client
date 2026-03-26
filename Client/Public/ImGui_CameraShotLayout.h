@@ -61,10 +61,18 @@ private:
 	void Apply_DocFromPreset(const CAMERA_SHOT_PRESET& preset);
 	void Refresh_DocAfterLoad();
 	void Delete_CurrentPreset();
+	void Refresh_PresetList();
+	void OpenFileDialog(_char* pBuffer, const _char* pFilter);
+	void BrowseFolderDialog(_char* pBuffer);
+	void Load_DocumentFromFile();
+	vector<std::pair<const char*, CAMERA_SHOT_CHANNEL_1D*>> Get_AllChannels();
 private:
 	CAMER_SHOT_EDIT_DOC m_tDoc = {};
 
-	string m_strSelectedPresetTag{ "" };
+	_char m_szPresetPath[MAX_PATH]{};
+	_int m_iSelectedPresetIndex = -1;
+	string m_strSelectedPresetTag{""};
+	vector<string> m_vecPresetTags;
 	_bool m_bPause = false;
 	_bool m_bDirty = false;
 	_int  m_iBossIndex = 0;

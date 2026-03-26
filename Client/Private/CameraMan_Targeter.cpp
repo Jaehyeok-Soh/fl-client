@@ -1052,7 +1052,7 @@ _float CCameraMan_Targeter::Eval_TurnYawDegree() const
     if (m_fStateTime < fHalf)
     {
         const _float fT = m_fStateTime / fHalf;
-        return fTargetYawDegree * Engine_Utils::EvalEase_EaseOutQuad(fT);
+        return fTargetYawDegree * Engine_Utils::EvalEase_EaseInOutCubic(fT);
     }
     // À¯Áö
     if (m_fStateTime < fHalf + fHold)
@@ -1063,7 +1063,7 @@ _float CCameraMan_Targeter::Eval_TurnYawDegree() const
     if (m_fStateTime < fHalf * 2.f + fHold)
     {
         const _float fT = (m_fStateTime - fHalf - fHold) / fHalf;
-        return fTargetYawDegree * (1.f - Engine_Utils::EvalEase_EaseOutQuad(fT));
+        return fTargetYawDegree * (1.f - Engine_Utils::EvalEase_EaseInOutCubic(fT));
     }
 
     return 0.f;
