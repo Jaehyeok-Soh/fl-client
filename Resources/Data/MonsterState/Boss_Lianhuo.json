@@ -91,8 +91,8 @@
                                         false
                                     ],
                                     "fParam": [
-                                        15.0,
-                                        20.0,
+                                        5.0,
+                                        23.0,
                                         0.0,
                                         0.0
                                     ],
@@ -140,7 +140,7 @@
                                     ],
                                     "fParam": [
                                         40.0,
-                                        50.0,
+                                        55.0,
                                         0.0,
                                         0.0
                                     ],
@@ -188,7 +188,7 @@
                                     ],
                                     "fParam": [
                                         75.0,
-                                        85.0,
+                                        100.0,
                                         0.0,
                                         0.0
                                     ],
@@ -201,7 +201,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -210,7 +210,7 @@
                                         false
                                     ],
                                     "fParam": [
-                                        0.0,
+                                        1.5,
                                         0.0,
                                         0.0,
                                         0.0
@@ -617,7 +617,7 @@
                                     ],
                                     "fParam": [
                                         25.0,
-                                        50.0,
+                                        65.0,
                                         0.0,
                                         0.0
                                     ],
@@ -678,7 +678,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -687,7 +687,7 @@
                                         false
                                     ],
                                     "fParam": [
-                                        0.0,
+                                        2.0,
                                         0.0,
                                         0.0,
                                         0.0
@@ -918,7 +918,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -927,7 +927,103 @@
                                         false
                                     ],
                                     "fParam": [
+                                        2.0,
                                         0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        71.0,
+                                        80.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        2.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        95.0,
+                                        105.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        2.0,
                                         0.0,
                                         0.0,
                                         0.0
@@ -1189,8 +1285,8 @@
                                         false
                                     ],
                                     "fParam": [
-                                        25.0,
-                                        45.0,
+                                        20.0,
+                                        50.0,
                                         0.0,
                                         0.0
                                     ],
@@ -1203,7 +1299,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -1212,7 +1308,7 @@
                                         false
                                     ],
                                     "fParam": [
-                                        0.0,
+                                        1.5,
                                         0.0,
                                         0.0,
                                         0.0
@@ -1421,7 +1517,7 @@
                                     ],
                                     "fParam": [
                                         13.0,
-                                        55.0,
+                                        70.0,
                                         0.0,
                                         0.0
                                     ],
@@ -1434,7 +1530,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -1443,7 +1539,7 @@
                                         false
                                     ],
                                     "fParam": [
-                                        0.0,
+                                        1.5,
                                         0.0,
                                         0.0,
                                         0.0
@@ -2677,7 +2773,7 @@
                                 }
                             ]
                         },
-			{
+                        {
                             "mapRandomStatePool": {
                                 "R_Turn90": 1.0
                             },
