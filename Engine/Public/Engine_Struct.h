@@ -1260,6 +1260,7 @@ namespace Engine
 	typedef struct tagCameraShotStartDesc
 	{
 		ECameraShotStartMode eMode = ECameraShotStartMode::InheritCurrent;
+		
 		// FixedFromPivot일때 사용
 		SimpleMath::Vector3 vLocaloffset = SimpleMath::Vector3::Zero;
 		// Begin시점에 시작 포즈를 transform에 즉시 적용할지
@@ -1289,7 +1290,7 @@ namespace Engine
 	}CAMERA_BIND_TARGET_DESC;
 	typedef struct tagScriptedCameraShotBindingDesc
 	{
-		CAMERA_BIND_TARGET_DESC pviot;
+		CAMERA_BIND_TARGET_DESC Pivot;
 		CAMERA_BIND_TARGET_DESC LookAt;
 
 		bool bUseSeparateLookAt = false;
@@ -1300,6 +1301,8 @@ namespace Engine
 		float fTime = 0.f;
 		float fValue = 0.f;
 		ECameraShotEase eEase = ECameraShotEase::SmoothStep;
+		// Tool 전용
+		unsigned int iEditorUID = { 0 };
 	}CAMERA_SHOT_KEY_1D;
 	typedef struct tagCameraShotChannel1D
 	{
@@ -1313,7 +1316,7 @@ namespace Engine
 		bool  bFollowLiveLookAt = true;
 		bool  bLookAtTarget = true;
 
-		ECameraBasisMode eBasisMode = ECameraBasisMode::START_CAMERA;
+		ECameraBasisMode eBasisMode = ECameraBasisMode::TARGET_TRANSFORM_YAW;
 
 		//////////////////////////////
 		// Pivot / LookAt 기준점 자체 이동
@@ -1357,6 +1360,9 @@ namespace Engine
 		SCRIPTED_PIVOT_SHOT_DESC       Pivot;
 		SCRIPTED_CONTROLLER_LAYER_DESC Controller;
 		CAMERA_SHOT_RECOVER_DESC       Recover;
+
+		unsigned int iClientStartAction = 0;
+		unsigned int iClientFinishAction = 0;
 	}SCRIPTED_CAMERA_SHOT_DESC;
 #pragma endregion
 

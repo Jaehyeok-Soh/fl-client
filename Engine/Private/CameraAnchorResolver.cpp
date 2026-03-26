@@ -3,6 +3,21 @@
 #include "ICameraAnchorHost.h"
 #include "CameraAnchorResolver.h"
 
+namespace
+{
+    Vec3 Remap_ModelBoneAxis_ToEngine(const Vec3& v)
+    {
+        return Vec3(v.x, v.z, -v.y);
+    }
+
+    void Remap_ModelBoneAnchor_ToEngine(OUT Engine::CAMERA_ANCHOR_RESULT& ioResult)
+    {
+        ioResult.vRight = Remap_ModelBoneAxis_ToEngine(ioResult.vRight);
+        ioResult.vUp = Remap_ModelBoneAxis_ToEngine(ioResult.vUp);
+        ioResult.vLook = Remap_ModelBoneAxis_ToEngine(ioResult.vLook);
+    }
+}
+
 void CCameraAnchorResolver::Apply_LocalOffset(OUT CAMERA_ANCHOR_RESULT& outResult, const Vec3& vLocalOffset)
 {
     outResult.vPos += outResult.vRight * vLocalOffset.x;
@@ -56,7 +71,8 @@ _bool CCameraAnchorResolver::Resolve_FromProvider(
     {
         return false;
     }
-
+    // 우리 좌표계로 변경
+    //Remap_ModelBoneAnchor_ToEngine(outResult);
     Normalize_AnchorResult(outResult);
     return true;
 }

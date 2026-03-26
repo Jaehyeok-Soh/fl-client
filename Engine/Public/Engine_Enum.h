@@ -702,9 +702,8 @@ namespace Engine
 	};
 	enum class ECameraBasisMode : unsigned int
 	{
-		START_CAMERA = 0,	// 샷 시작 시점 카메라 Local 기준
-		ANCHOR_OWNER,		// owner 및 대상 기준
-		WORLD,				// 월드 기준
+		TARGET_TRANSFORM_YAW = 0, // 타겟의 트랜스폼 기준
+		WORLD,					  // 월드 기준
 		END
 	};
 	enum class ECameraShotEase

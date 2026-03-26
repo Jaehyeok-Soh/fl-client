@@ -28,7 +28,7 @@ Engine::SCRIPTED_CAMERA_SHOT_DESC CCameraShotPrestBuilder::Make_DebugPlain5SecSh
     Pivot.bFollowLivePivot = true;
     Pivot.bFollowLiveLookAt = true;
     Pivot.bLookAtTarget = true;
-    Pivot.eBasisMode = Engine::ECameraBasisMode::WORLD;
+    Pivot.eBasisMode = Engine::ECameraBasisMode::TARGET_TRANSFORM_YAW;
 
     Pivot.PivotOffsetX = {};
     Pivot.PivotOffsetY = {};
@@ -71,7 +71,7 @@ Engine::SCRIPTED_CAMERA_SHOT_DESC CCameraShotPrestBuilder::Make_DebugBossPlain5S
     tDesc.Start.eMode = Engine::ECameraShotStartMode::FixedFromPivot;
     tDesc.Start.vLocaloffset = Vec3(0.f, 0.8f, 4.0f);
 
-    tDesc.Pivot.eBasisMode = Engine::ECameraBasisMode::WORLD;
+    tDesc.Pivot.eBasisMode = Engine::ECameraBasisMode::TARGET_TRANSFORM_YAW;
     tDesc.Pivot.OrbitYawDeg = Make_Channel({
         {0.00f,  0.0f, Engine::ECameraShotEase::SmoothStep},
         {2.50f, 12.0f, Engine::ECameraShotEase::EaseInOutQuad},
@@ -85,10 +85,10 @@ Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC CCameraShotPrestBuilder::Make_DebugPla
 {
     Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding = {};
 
-    tBinding.pviot.eSource = Engine::ECameraAnchorSource::ACTOR;
-    tBinding.pviot.eResolve = Engine::ECameraAnchorResolve::CAM_SOCKET;
-    tBinding.pviot.iPartIndex = 0;
-    tBinding.pviot.vLocalOffset = Vec3::Zero;
+    tBinding.Pivot.eSource = Engine::ECameraAnchorSource::ACTOR;
+    tBinding.Pivot.eResolve = Engine::ECameraAnchorResolve::CAM_SOCKET;
+    tBinding.Pivot.iPartIndex = 0;
+    tBinding.Pivot.vLocalOffset = Vec3::Zero;
 
     tBinding.bUseSeparateLookAt = false;
 
@@ -99,12 +99,11 @@ Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC CCameraShotPrestBuilder::Make_DebugBos
 {
     Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding = {};
 
-    tBinding.pviot.eSource = Engine::ECameraAnchorSource::OBJECT;
-    tBinding.pviot.pObject = pBoss;
-    tBinding.pviot.eResolve = Engine::ECameraAnchorResolve::BONE;
-    tBinding.pviot.iPartIndex = 0;
-    tBinding.pviot.strAnchorTag = "foot_r";
-    tBinding.pviot.vLocalOffset = Vec3(0.f, 0.05f, 0.f);
+    tBinding.Pivot.eSource = Engine::ECameraAnchorSource::OBJECT;
+    tBinding.Pivot.pObject = pBoss;
+    tBinding.Pivot.eResolve = Engine::ECameraAnchorResolve::CAM_SOCKET;
+    tBinding.Pivot.iPartIndex = 0;
+    tBinding.Pivot.vLocalOffset = Vec3(0.f, 0.f, -4.f);
 
     tBinding.bUseSeparateLookAt = false;
 
@@ -187,6 +186,6 @@ void CCameraShotPrestBuilder::Make_Test_BossShot_GameplayBlend(
     tDesc = Make_DebugBossPlain5SecShot();
     tBinding = Make_DebugBossBinding(pBoss);
 
-    Set_Start_FixedFromPivot(tDesc, Vec3(0.f, 0.8f, 4.0f), true);
+    Set_Start_FixedFromPivot(tDesc, Vec3(0.f, 0.f, .0f), true);
     Set_Recover_GameplayBlend(tDesc, 2.f);
 }

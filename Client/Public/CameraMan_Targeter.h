@@ -132,7 +132,10 @@ private:
 	// For. ScriptShot State
 	// pivot과 lookat 캡쳐
 	void Initialize_ScriptedShotSnapshot();
+	// 시작용 Resolve 함수
+	_bool Resolve_InitialScriptedShotAnchors(OUT CAMERA_ANCHOR_RESULT& outPivot, OUT CAMERA_ANCHOR_RESULT& outLookAt);
 	// camera interface로 등록해놨던 Object들 정보 세팅
+	// 위 함수와 다르게 시작 이후 프레임들에서 쓸 함수
 	_bool Resolve_ScriptedShotAnchors(OUT CAMERA_ANCHOR_RESULT& outPivot, OUT CAMERA_ANCHOR_RESULT& outLookAt);
 	// pivot basis를 기준으로 전체 샷의 오프셋을 계산
 	void Resolve_ShotBasis(const Engine::CAMERA_ANCHOR_RESULT& pivotAnchor, OUT Vec3& outRight, OUT Vec3& outUp, OUT Vec3& outLook);
@@ -151,6 +154,8 @@ private:
 	// Pivot 및 LookAt 오브젝트 레퍼런스 관리
 	void Retain_ScriptedShotBindingObjects();
 	void Release_ScriptedShotBindingObjects();
+	CTransform* Get_PivotOwnerTransform();
+	void Execute_ShotAction(ECameraEventAction eEvent);
 
 	// For. ScriptRecover State
 	void Prepare_RecoverFromScript();

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "MainApplication.h"
+#include "CameraPreset_Manager.h"
 #include "Collision_Manager.h"
 #include "Material.h"
 #include "MaterialInstance.h"
@@ -556,6 +557,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 
 HRESULT CMainApplication::Ready_Managers()
 {
+	CCameraPreset_Manager::GetInstance()->Initialize(L"../../Resources/Data/CameraPresetData/");
 	CUI_Manager::GetInstance()->Initialize_UIManager(m_pDevice, m_pDeviceContext);
 	return S_OK;
 }

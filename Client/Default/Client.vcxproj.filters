@@ -883,6 +883,15 @@
     <Filter Include="03. GameObject\Camera\Builder">
       <UniqueIdentifier>{d45ded89-5b94-43dd-a5e7-0c0cac2cbc91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Camera">
+      <UniqueIdentifier>{897d9824-2fbf-44e4-a057-77e92c845deb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Camera">
+      <UniqueIdentifier>{4a434c5f-9121-4d32-ba0b-93b55aaa8054}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\05. CameraPreset">
+      <UniqueIdentifier>{48d69df6-5b16-4602-841c-8983a3536121}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1650,6 +1659,15 @@
     <ClInclude Include="..\public\CameraShotPrestBuilder.h">
       <Filter>03. GameObject\Camera\Builder</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ImGui_CameraToolInspector.h">
+      <Filter>07. System\99. Debug_ImGui\Inspector\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_CameraShotLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CameraPreset_Manager.h">
+      <Filter>07. System\05. CameraPreset</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2403,6 +2421,15 @@
     </ClCompile>
     <ClCompile Include="..\private\CameraShotPrestBuilder.cpp">
       <Filter>03. GameObject\Camera\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_CameraToolInspector.cpp">
+      <Filter>07. System\99. Debug_ImGui\Inspector\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_CameraShotLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraPreset_Manager.cpp">
+      <Filter>07. System\05. CameraPreset</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

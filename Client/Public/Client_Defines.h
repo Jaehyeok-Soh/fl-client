@@ -1003,6 +1003,13 @@ namespace Client
 #pragma endregion
 
 #pragma region Camera
+	enum class ECameraEventAction : unsigned int
+	{
+		None = 0,
+		Enalbe_PlayMode,
+		Disable_PlayMode
+	};
+
 	typedef struct tagScriptedCameraShotRuntime
 	{
 		_bool bPlaying = false;
@@ -1025,16 +1032,9 @@ namespace Client
 
 		// 샷 시작 카메라 basis
 		Vec3 vStartCamPosWS = Vec3::Zero;
-		Vec3 vStartRight = Vec3::Right;
-		Vec3 vStartUp = Vec3::Up;
-		Vec3 vStartLook = Vec3::Backward;
 
-		// 실제 shot 시작
-		// 시작 시점 pivot 기준 camera local offset
-		// x = dot(camPos - pivotPos, startRight)
-		// y = dot(camPos - pivotPos, startUp)
-		// z = dot(camPos - pivotPos, -startLook)
-		Vec3 vBaseOffsetLocal = Vec3::Zero;
+		// 실제 shot 시작시점에 확정된 시작 오프셋(월드기준)
+		Vec3 vBaseOffsetWS = Vec3::Zero;
 	}SCRIPTED_CAMERA_SHOT_RUNTIME;
 	typedef struct tagScriptedRecoverRuntime
 	{
@@ -1046,6 +1046,15 @@ namespace Client
 		CAMERA_POSE tStartPose = {};
 		CAMERA_POSE tTargetPose = {};
 	}SCRIPTED_RECOVER_RUNTIME;
+
+	typedef struct tagCameraShotPreset
+	{
+		std::string strPresetTag{ "" };
+		std::string strSourceFilePath{ "" };
+
+		SCRIPTED_CAMERA_SHOT_DESC tShotDesc{};
+		SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding{};
+	}CAMERA_SHOT_PRESET;
 #pragma endregion
 
 
