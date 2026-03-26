@@ -885,6 +885,91 @@ void CUI_Inspector::SetUp_ShaderPass()
 
 			break;
 		}
+		case EUIShaderPass::SPRITE_ANIMATION:
+		{
+			int iHorizontal = static_cast<int>(m_pSelectedUI->Get_iHorizontal());
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::InputInt("Horizontal", &iHorizontal))
+			{
+				if (iHorizontal < 1)
+					iHorizontal = 1;
+
+				m_pSelectedUI->Set_iHorizontal(static_cast<_uint>(iHorizontal));
+			}
+
+			int iVeriacal = static_cast<int>(m_pSelectedUI->Get_iVeriacal());
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::InputInt("Veriacal", &iVeriacal))
+			{
+				if (iVeriacal < 1)
+					iVeriacal = 1;
+
+				m_pSelectedUI->Set_iVeriacal(static_cast<_uint>(iVeriacal));
+			}
+
+			_float fFrameSpeed = m_pSelectedUI->Get_fFrameSpeed();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::InputFloat("Frame Speed", &fFrameSpeed))
+			{
+				if (fFrameSpeed < 0.f)
+					fFrameSpeed = 0.f;
+
+				m_pSelectedUI->Set_fFrameSpeed(fFrameSpeed);
+			}
+
+			static bool s_isPlaySpriteAnimation = false;
+			static void* s_pPrevSelected = nullptr;
+
+			if (s_pPrevSelected != m_pSelectedUI)
+			{
+				s_pPrevSelected = m_pSelectedUI;
+				s_isPlaySpriteAnimation = false;
+				m_pSelectedUI->Set_fCurFrame(0.f);
+			}
+
+			const _uint iHorizontalCount = max(1u, m_pSelectedUI->Get_iHorizontal());
+			const _uint iVeriacalCount = max(1u, m_pSelectedUI->Get_iVeriacal());
+			const _uint iMaxFrame = iHorizontalCount * iVeriacalCount;
+
+			_float fCurFrame = m_pSelectedUI->Get_fCurFrame();
+
+			if (s_isPlaySpriteAnimation)
+			{
+				fCurFrame += (_float)ImGui::GetIO().DeltaTime * m_pSelectedUI->Get_fFrameSpeed();
+
+				if (iMaxFrame > 0)
+				{
+					while (fCurFrame >= static_cast<_float>(iMaxFrame))
+						fCurFrame -= static_cast<_float>(iMaxFrame);
+				}
+
+				m_pSelectedUI->Set_fCurFrame(fCurFrame);
+			}
+
+			if (ImGui::Button(s_isPlaySpriteAnimation ? "Stop##SpriteAnimation" : "Play##SpriteAnimation"))
+			{
+				s_isPlaySpriteAnimation = !s_isPlaySpriteAnimation;
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Reset##SpriteAnimation"))
+			{
+				s_isPlaySpriteAnimation = false;
+				fCurFrame = 0.f;
+				m_pSelectedUI->Set_fCurFrame(fCurFrame);
+			}
+
+			fCurFrame = m_pSelectedUI->Get_fCurFrame();
+
+			ImGui::SetNextItemWidth(300.f);
+			if (ImGui::SliderFloat("Cur Frame", &fCurFrame, 0.f, iMaxFrame > 0 ? static_cast<_float>(iMaxFrame - 1) : 0.f, "%.0f"))
+			{
+				m_pSelectedUI->Set_fCurFrame(fCurFrame);
+			}
+
+			break;
+		}
 		default:
 			break;
 		}

@@ -33,6 +33,18 @@ HRESULT CState_JumpAttEnd::Start(void* pArg, _bool bForce)
 		return E_FAIL;
 
 	Start_Att(ENUM_TO_UINT(CPlayer::State::JUMPATTEND));
+
+	switch (m_iMainAnimIdx)
+	{
+	case 0:
+		m_fCapHitMoveTime = Get_MoveBoneTime(68.f, 1.3f);
+		break;
+
+	case 1:
+		m_fCapHitMoveTime = Get_MoveBoneTime(157.f, 1.3f);
+		break;
+	}
+
 	return S_OK;
 }
 

@@ -464,7 +464,7 @@ void CUITutorial_PopUp_Image::Initialize_Visible_Event()
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_ICON:
 		{
 			Ready_LerpChange(0.5f, 2.f, 1.f, 1.f, m_fDelay);
-			m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_TUTORIAL_POPUP_TRIGGER"), 1.f);
+			m_pGameInstance->Play_OneShot(0, TO_HASH("UI_TUTORIAL_POPUP_TRIGGER"), 1.f);
 		}
 		break;
 

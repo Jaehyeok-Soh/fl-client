@@ -48,46 +48,6 @@ void CPlayerControlContext::Count_Time(const _float fTimeDelta)
 {
 }
 
-_bool CPlayerControlContext::Is_FootRayEnabled()
-{
-	CGameObject* pOwner = Get_Owner();
-	if (pOwner == nullptr)
-		return true;
-
-	CPlayerActionState* pActionState = pOwner->Get_Component<CPlayerActionState>();
-	if (pActionState == nullptr)
-		return true;
-
-	const _int iIndex = pActionState->Get_CurrentStateIndex();
-	if (iIndex <= -1)
-		return true;
-
-	CPlayer::State eState = static_cast<CPlayer::State>(iIndex);
-
-	switch (eState)
-	{
-	case Client::CPlayer::State::IDLE:
-	case Client::CPlayer::State::RUNLOOP:
-
-		return true;
-	default:
-		return true;
-	}
-}
-
-void CPlayerControlContext::Set_Grounded(_bool bGrounded, const COLMESH_HITINFO* pHit)
-{
-	Super::Set_Grounded(bGrounded);
-	if (bGrounded && pHit)
-		m_CurrentGroundInfo = *pHit;
-}
-
-void CPlayerControlContext::Clear_Grounded()
-{
-	Super::Set_Grounded(false);
-	m_CurrentGroundInfo = {};
-}
-
 void CPlayerControlContext::Set_CheckKey(KEYFLAGS FKey, _bool bOn)
 {
 	if (bOn)
@@ -117,6 +77,11 @@ void CPlayerControlContext::Set_PreKeyFlag()
 void CPlayerControlContext::Set_AttackLanded()
 {
 	m_bIsAttackLanded = true;
+}
+
+_bool CPlayerControlContext::Get_KeyFlag(KEYFLAGS FKey)
+{
+	return Engine_Utils::Has_Flag(m_FKeys, FKey);
 }
 
 _bool CPlayerControlContext::Is_LeftAttackPressed()
@@ -263,7 +228,12 @@ _bool CPlayerControlContext::Is_Skill2Pressed()
 
 _bool CPlayerControlContext::Is_ChargingAttackPressed()
 {
-	return m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB);
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::COMBO) &&
+		m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB))
+		return true;
+
+	return false;
+	//return m_pGameInstance->Mouse_Pressing(MOUSEKEYSTATE::LB);
 }
 
 _bool CPlayerControlContext::Is_AttackLanded()
@@ -282,54 +252,36 @@ Vec3 CPlayerControlContext::Get_MoveDir()
 			return Vec3::Zero;
 	}
 
-	_bool bGround = (Is_WallMode() == false);
-	CTransform* pCameraTransform = m_pOwnerTargetCamera->Get_Component<CTransform>();
-	
-	CTransform* pTransform = Get_Owner()->Get_Component<CTransform>();
-	if (!pCameraTransform || !pTransform)
-		return Vec3::Zero;
-
-	Vec3 vDesiredDir = Vec3::Zero;
-	Vec3 vCameraLook = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	Vec3 vCameraRight = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
-	Vec3 vCameraLookXZ = vCameraLook;
-	vCameraLook.y = 0.0f;
-	vCameraLook.Normalize();
-	Vec3 vCameraRightXZ = vCameraRight;
-	vCameraRight.y = 0.0f;
-	vCameraRight.Normalize();
-
-	if (bGround)
+	if (Engine_Utils::Has_Flag(m_FKeys, KEYFLAGS::MOVE))
 	{
-		if (KEY_BUTTON_HOLD(DIK_W))  vDesiredDir += vCameraLookXZ;
-		else if (KEY_BUTTON_HOLD(DIK_S)) vDesiredDir -= vCameraLookXZ;
+		CTransform* pCameraTransform = m_pOwnerTargetCamera->Get_Component<CTransform>();
 
-		if (KEY_BUTTON_HOLD(DIK_D)) vDesiredDir += vCameraRightXZ;
-		else if (KEY_BUTTON_HOLD(DIK_A)) vDesiredDir -= vCameraRightXZ;
-	}
-	else
-	{
-		Vec3 vPlayerUp = pTransform->Get_Info(TRANSFORM_INFO_STATE::UP);
-		Vec3 vCamLookOnWall = vCameraLook - (vPlayerUp * vCameraLook.Dot(vPlayerUp));
-		Vec3 vCamRightOnWall = vCameraRight - (vPlayerUp * vCameraRight.Dot(vPlayerUp));
+		CTransform* pTransform = Get_Owner()->Get_Component<CTransform>();
+		if (!pCameraTransform || !pTransform)
+			return Vec3::Zero;
 
-		if (vCamLookOnWall.LengthSquared() <= g_XMEpsilon.f[0])
+		Vec3 vDesiredDir = Vec3::Zero;
+		Vec3 vCameraLook = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+		Vec3 vCameraRight = pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+		Vec3 vCameraLookXZ = vCameraLook;
+		vCameraLook.y = 0.0f;
+		vCameraLook.Normalize();
+		Vec3 vCameraRightXZ = vCameraRight;
+		vCameraRight.y = 0.0f;
+		vCameraRight.Normalize();
+
 		{
-			vCamLookOnWall = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-			vCamRightOnWall = pTransform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+			if (KEY_BUTTON_HOLD(DIK_W))  vDesiredDir += vCameraLookXZ;
+			else if (KEY_BUTTON_HOLD(DIK_S)) vDesiredDir -= vCameraLookXZ;
+
+			if (KEY_BUTTON_HOLD(DIK_D)) vDesiredDir += vCameraRightXZ;
+			else if (KEY_BUTTON_HOLD(DIK_A)) vDesiredDir -= vCameraRightXZ;
 		}
 
-		vCamLookOnWall.Normalize();
-		vCamRightOnWall.Normalize();
-
-		if (KEY_BUTTON_HOLD(DIK_W))  vDesiredDir += vCamLookOnWall;
-		else if (KEY_BUTTON_HOLD(DIK_S)) vDesiredDir -= vCamLookOnWall;
-
-		if (KEY_BUTTON_HOLD(DIK_D)) vDesiredDir += vCamRightOnWall;
-		else if (KEY_BUTTON_HOLD(DIK_A)) vDesiredDir -= vCamRightOnWall;
+		return vDesiredDir;
 	}
 
-	return vDesiredDir;
+	return Vec3::Zero;
 }
 
 void CPlayerControlContext::Clear_WhenChangeLevel()

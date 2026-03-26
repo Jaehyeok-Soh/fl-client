@@ -20,7 +20,6 @@ public:
 protected:
 	virtual void Set_NextStateDesc(_uint iNextState) override;
 
-
 public:
 	static CState_Jump* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;

@@ -187,11 +187,15 @@
     <ClInclude Include="..\Public\ChangeLevelObject.h" />
     <ClInclude Include="..\Public\NPC_Tavern.h" />
     <ClInclude Include="..\Public\NPC_Tavern_Body.h" />
+    <ClInclude Include="..\Public\UIEnterGame_Image.h" />
+    <ClInclude Include="..\Public\UIEnterGame_Text.h" />
     <ClInclude Include="..\Public\UIMiniGame_Circle_Image.h" />
     <ClInclude Include="..\Public\UIMiniGame_Circle_Text.h" />
     <ClInclude Include="..\Public\UIMouseCursor_Image.h" />
     <ClInclude Include="..\Public\TriggerBox_MonsterWaveSpawner.h" />
     <ClInclude Include="..\Public\UIScreenPulse_Image.h" />
+    <ClInclude Include="..\Public\UITitle_Image.h" />
+    <ClInclude Include="..\PUblic\UITitle_Text.h" />
     <ClInclude Include="..\Public\WeaponPickUp.h" />
     <ClInclude Include="..\Public\InteractiveObject.h" />
     <ClInclude Include="..\Public\LightObject.h" />
@@ -455,11 +459,15 @@
     <ClCompile Include="..\Private\ChangeLevelObject.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern_Body.cpp" />
+    <ClCompile Include="..\Private\UIEnterGame_Image.cpp" />
+    <ClCompile Include="..\Private\UIEnterGame_Text.cpp" />
     <ClCompile Include="..\Private\UIMiniGame_Circle_Image.cpp" />
     <ClCompile Include="..\Private\UIMiniGame_Circle_Text.cpp" />
     <ClCompile Include="..\Private\UIMouseCursor_Image.cpp" />
     <ClCompile Include="..\Private\TriggerBox_MonsterWaveSpawner.cpp" />
     <ClCompile Include="..\Private\UIScreenPulse_Image.cpp" />
+    <ClCompile Include="..\Private\UITitle_Image.cpp" />
+    <ClCompile Include="..\Private\UITitle_Text.cpp" />
     <ClCompile Include="..\Private\WeaponPickUp.cpp" />
     <ClCompile Include="..\Private\InteractiveObject.cpp" />
     <ClCompile Include="..\Private\Monster_Fly.cpp" />
@@ -701,6 +709,7 @@
     <ClCompile Include="..\private\Xibi_Loop_Thunder.cpp" />
     <ClCompile Include="..\private\Xibi_Oneshot_Thunder.cpp" />
     <ClCompile Include="..\private\Xibi_Projectile_Circle.cpp" />
+    <ClCompile Include="..\Public\Client_Defines.cpp" />
     <ClCompile Include="..\Public\Physics_Terrain.cpp" />
     <ClCompile Include="Boss_Lianhuo.cpp" />
     <ClCompile Include="CameraShotUtils.cpp" />
@@ -730,6 +739,7 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneCombinePart.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_BoneMesh.hlsl" />
+    <FxCompile Include="..\..\Shaders\ComShader_BoneMove.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_RagDoll.hlsl" />
     <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">

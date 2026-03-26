@@ -30,9 +30,6 @@ private:
 
 	_float m_fDistance = { 0.f };
 
-
-	array<Vec3, 4> m_arrPoses;
-
 public:
 	static CState_SpecialDash* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;

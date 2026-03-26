@@ -1151,8 +1151,6 @@ namespace Client
 	}DIALOGUE_NODE;
 #pragma endregion
 
-
-
 }
 
 #pragma endregion

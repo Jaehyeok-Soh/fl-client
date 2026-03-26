@@ -253,7 +253,7 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 						m_iCurPage--;
 
 						// UI SOUND
-						m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_COMMON_BTN_CLICK"), 1.f);
+						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_COMMON_BTN_CLICK"), 1.f);
 					}
 				}
 				else if (m_iNumbering == NEXT_BUTTON)
@@ -265,7 +265,7 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 						m_iCurPage = m_iMaxPage;
 
 						// UI SOUND
-						m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_COMMON_BTN_CANCLE"), 1.f);
+						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_COMMON_BTN_CANCLE"), 1.f);
 
 						UIEVENT_DESC Desc = {};
 						Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
@@ -277,7 +277,7 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 						m_iCurPage++;
 
 						// UI SOUND
-						m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_COMMON_BTN_CLICK"), 1.f);
+						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_COMMON_BTN_CLICK"), 1.f);
 					}
 				}
 
@@ -356,7 +356,7 @@ void CUITutorial_Pannel_Image::Initialize_Visible_Event()
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_ICON:		// ? ¾ÆÀÌÄÜ
 		m_pGameInstance->Play_OneShot_Delayed(0, Engine_Utils::ToHash("UI_TUTORIAL_PANNEL_OPEN"), 1.f, 1.f);
-		m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_TUTORIAL_PANNEL_OPEN_TRIGGER"), 1.f);
+		m_pGameInstance->Play_OneShot(0, TO_HASH("UI_TUTORIAL_PANNEL_OPEN_TRIGGER"), 1.f);
 		Ready_Lerp_Movement(Vec2{ 0.f, 235.5 }, Vec2{ 0.f, 0.f }, 1.f, 3.f, 0.5f, true);
 		Ready_LerpChange(0.3f, 2.f, 1.f, 1.f, 0.f);
 		m_fAlpha_Ratio = 1.f;

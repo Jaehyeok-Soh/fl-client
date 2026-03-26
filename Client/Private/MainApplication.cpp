@@ -29,6 +29,8 @@
 #include "UILoading_Text.h"
 #include "UILoading_Progress.h"
 #include "UILoading_Image.h"
+#include "UITitle_Image.h"
+#include "UITitle_Text.h"
 #include "UITutorial_Manager.h"
 
 // Quest
@@ -294,6 +296,16 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
 			return E_FAIL;
 	}
+
+	// For. Prototype_Component_Shader_BoneMove
+	{
+		//ComShader_BoneMove
+		CComputeShader::ComShaderOriginDesc shaderDesc = {};
+		shaderDesc.pShaderFilePath = L"../../Shaders/ComShader_BoneMove.hlsl";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_BoneMove",
+			CComputeShader::Create(m_pDevice, m_pDeviceContext, &shaderDesc))))
+			return E_FAIL;
+	}
 #pragma endregion
 
 #pragma region EFFECT_Shader
@@ -550,8 +562,16 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingText", CUILoading_Text::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TitleText", CUITitle_Text::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_TitleImage", CUITitle_Image::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Loading")))
+		return E_FAIL;	
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Title")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/BGM/UI")))
 		return E_FAIL;
 
 
