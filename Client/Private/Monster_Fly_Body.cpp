@@ -39,7 +39,7 @@ HRESULT CMonster_Fly_Body::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("Monster_Dog_Body");
+	Set_Name("Monster_Fly_Body");
 
 	MONSTERBODY_DESC* pDesc = static_cast<MONSTERBODY_DESC*>(pArg);
 	if (FAILED(Ready_Components(pDesc)))

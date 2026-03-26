@@ -895,6 +895,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse">
       <UniqueIdentifier>{4ab11ed8-f4c7-4a37-b517-e395be659758}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Veteran">
+      <UniqueIdentifier>{6a4b11b3-ff80-4965-9ee1-c6f624d5ba15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Veteran">
+      <UniqueIdentifier>{891e152c-a400-49cb-8b33-7c6a053f57b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1671,6 +1677,12 @@
     <ClInclude Include="..\Public\UIScreenPulse_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster_Veteran.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Veteran</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Veteran_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2433,6 +2445,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIScreenPulse_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\18.Screen Pulse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Veteran.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Veteran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Veteran_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

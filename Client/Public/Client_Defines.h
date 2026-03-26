@@ -131,6 +131,8 @@ namespace Client
 		/* Boss */
 		Xibi,
 		Lianhuo,
+
+		Veteran,
 		END
 	};
 
@@ -816,6 +818,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Dog_State_Tag[]{ L"Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_State_Tag[]{ L"Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_State_Tag[]{ L"Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Veteran_State_Tag[]{ L"Monster_Veteran" };
 	inline constexpr wchar_t g_wszBoss_Xibi_State_Tag[]{ L"Boss_Xibi" };
 	inline constexpr wchar_t g_wszBoss_Lianhuo_State_Tag[]{ L"Boss_Lianhuo" };
 
@@ -834,6 +837,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Monster_Dog"};
 	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Veteran_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Veteran" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
 	inline constexpr wchar_t g_wszBoss_Lianhuo_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Lianhuo" };
 	
@@ -854,6 +858,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Dog_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Dog" };
 	inline constexpr wchar_t g_wszMonster_Boomer_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Veteran_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Monster_Veteran" };
 	inline constexpr wchar_t g_wszBoss_Xibi_AttackOverlap_Prototype_Tag[]		{ L"Prototype_Component_AttackOverlap_Xibi" };
 	inline constexpr wchar_t g_wszBoss_Lianhuo_AttackOverlap_Prototype_Tag[]	{ L"Prototype_Component_AttackOverlap_Lianhuo" };
 #pragma endregion
@@ -939,6 +944,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Boomer_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Shooter_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter" };
 	inline constexpr wchar_t g_wszMonster_Fly_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly" };
+	inline constexpr wchar_t g_wszMonster_Veteran_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Veteran" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi" };
 	inline constexpr wchar_t g_wszBoss_Lianhuo_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Lianhuo" };
 
@@ -947,6 +953,7 @@ namespace Client
 	inline constexpr wchar_t g_wszMonster_Boomer_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Boomer_Body" };
 	inline constexpr wchar_t g_wszBoss_Shooter_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Shooter_Body" };
 	inline constexpr wchar_t g_wszMonster_Fly_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Fly_Body" };
+	inline constexpr wchar_t g_wszMonster_Veteran_Body_Prototype_Tag[]{ L"Prototype_GameObject_Monster_Veteran_Body" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Xibi_Body" };
 	inline constexpr wchar_t g_wszBoss_Lianhuo_Body_Prototype_Tag[]{ L"Prototype_GameObject_Boss_Lianhuo_Body" };
 
@@ -954,6 +961,7 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_Monster_Boomer[]{ L"Pool_Monster_Boomer" };
 	inline constexpr wchar_t g_wszPool_Monster_Shooter[]{ L"Pool_Monster_Shooter" };
 	inline constexpr wchar_t g_wszPool_Monster_Fly[]{ L"Pool_Monster_Fly" };
+	inline constexpr wchar_t g_wszPool_Monster_Veteran[]{ L"Pool_Monster_Veteran" };
 #pragma endregion
 
 #pragma region Npc ฐüทร

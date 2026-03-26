@@ -79,8 +79,8 @@ void CDialogueManager::Ready_Dialogue()
 	// 갱도 진입
 	{
 		CreateNode(114, -1, 115, L"두려움에 떨고있는 아이", L"흑흑... 살려주세요...");
-		CreateNode(115, 114, 116, L"은비", L"일단 여기 숨어있어!");
-		CreateNode(116, 115, 117, L"은비", L"이제 안전해, 어서 집으로 돌아가.");
+		CreateNode(115, 114, -1, L"은비", L"일단 여기 숨어있어!");
+		CreateNode(116, -1, 117, L"은비", L"이제 안전해, 어서 집으로 돌아가.");
 		CreateNode(117, 116, -1, L"두려움에 떨고있는 아이", L"감사합니다!");
 	}
 
