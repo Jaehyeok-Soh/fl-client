@@ -558,6 +558,8 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Loading")))
+		return E_FAIL;	
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Title")))
 		return E_FAIL;
 
 

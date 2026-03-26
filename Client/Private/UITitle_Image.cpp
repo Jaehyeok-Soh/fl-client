@@ -83,8 +83,6 @@ HRESULT CUITitle_Image::Render()
 		return S_OK;
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
-
 	if (FAILED(Super::Render()))
 		return E_FAIL;
 	return S_OK;
@@ -200,7 +198,7 @@ void CUITitle_Image::Initialize_Visible_Event()
 		break;
 	case DTO::EUIDImageSubClassType::TITLE_NAME:
 		Ready_Fade(1.f, 0.f, 1.f, m_fDelay);
-
+		m_pGameInstance->Play_OneShot(0, Engine_Utils::ToHash("UI_TITLE_FX_SOUND"), 1.f);
 		break;
 	}
 }
@@ -256,13 +254,16 @@ _bool CUITitle_Image::Tick_Visible_Event(const _float fTimeDelta)
 			if (iMaxFrame == 0)
 				break;
 
-			if (iFrame >= iMaxFrame)
+			if (iFrame >= iMaxFrame - 1)
 			{
-				iFrame = iMaxFrame - 1;
+				iFrame = iMaxFrame - 2;
 				m_fCurFrame = static_cast<_float>(iFrame);
 
 				if (isFade)
+				{
+					Set_Invisible();
 					return true;
+				}
 			}
 
 			_uint iCol = iFrame % m_iHorizontal;
@@ -295,6 +296,7 @@ void CUITitle_Image::Initialize_InVisible_Event()
 		Ready_Fade(1.5f, 1.f, 0.f, 2.5f);
 		break;
 	case DTO::EUIDImageSubClassType::TITLE_NAME:
+		Ready_Fade(1.5f, 1.f, 0.f, 2.5f);
 		break;
 	}
 }
@@ -346,7 +348,12 @@ _bool CUITitle_Image::Tick_InVisible_Event(const _float fTimeDelta)
 	}
 		break;
 	case DTO::EUIDImageSubClassType::TITLE_NAME:
-		return true;
+	{
+		_bool isFade = Tick_Fade(fTimeDelta);
+
+		if(isFade)
+			return true;
+	}
 		break;
 	}
 

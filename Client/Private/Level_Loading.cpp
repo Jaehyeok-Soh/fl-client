@@ -156,6 +156,7 @@ HRESULT CLevel_Loading::Build_Files()
 	if (s_isTitleLoading)
 	{
 		strUIFolderPath = L"../../Resources/Data/UIData/Title/";
+		s_isTitleLoading = false;
 	}
 	else
 	{
