@@ -1191,11 +1191,6 @@ HRESULT CGameInstance::Copy_SceneHDRResource(ERenderTarget eTarget)
 	return m_pRenderTarget_Manager->Copy_SceneHDRResource(eTarget);
 }
 
-HRESULT CGameInstance::Copy_StaticObject_DepthResource(ERenderTarget eTarget)
-{
-	return m_pRenderTarget_Manager->Copy_StaticObject_DepthCopy(eTarget);
-}
-
 #ifdef _DEBUG
 HRESULT CGameInstance::Ready_RT_Debug(ERenderTarget eTarget, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {

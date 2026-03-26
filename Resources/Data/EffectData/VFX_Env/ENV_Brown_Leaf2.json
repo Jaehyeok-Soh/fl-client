@@ -3,7 +3,7 @@
     "Objects": [
         {
             "ContainerName": "ENV_Brown_Leaf2",
-            "IsPoolingEffect": true,
+            "IsPoolingEffect": false,
             "SimulationType": 3435973836,
             "Type": "EFFECT_CONTAINER",
             "WorldMatrix": [
@@ -215,7 +215,7 @@
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 0,
                     "TextureFlag": 1,
-                    "TimeFlag": 0,
+                    "TimeFlag": 2,
                     "Tool_Render": {
                         "Billboard": false,
                         "DirBillboard": false,
@@ -283,6 +283,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,

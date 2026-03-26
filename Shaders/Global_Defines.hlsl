@@ -61,7 +61,6 @@ Texture2D g_LUT_Stand;
 Texture3D g_PerlinNoise;
 Texture2D g_RenderTargetOITAccumTexture;
 Texture2D g_RenderTargetOITRevealTexture;
-Texture2D g_RenderTarget_StaticObject_DepthCopy;
 
 void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
 {

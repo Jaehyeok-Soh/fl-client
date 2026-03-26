@@ -45,7 +45,6 @@ void CImGui_ShaderDebugLayout::Render(CGameObject* pGo)
         {"Cascade_1", ERenderTarget::Cascade_1},
         {"OIT_Accum", ERenderTarget::OIT_Accum},
         {"OIT_Reveal", ERenderTarget::OIT_Reveal},
-        {"Static_Depth", ERenderTarget::StaticObject_DepthCopy},
 	};
 
     ImGuiTableFlags flags =

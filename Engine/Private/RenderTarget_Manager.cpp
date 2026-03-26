@@ -222,8 +222,6 @@ HRESULT CRenderTarget_Manager::Bind_ShaderResource(ERenderTarget eTarget, CShade
         eSlot = EFXSRV::RT_OIT_Accum; break;
     case Engine::ERenderTarget::OIT_Reveal:
         eSlot = EFXSRV::RT_OIT_REVEAL; break;
-    case Engine::ERenderTarget::StaticObject_DepthCopy:
-        eSlot = EFXSRV::RT_StaticObject_DepthCopy; break;
     default:
         return E_FAIL; 
     }
@@ -244,19 +242,6 @@ HRESULT CRenderTarget_Manager::Copy_SceneHDRResource(ERenderTarget eTarget)
 
     CRenderTarget* pTarget = Get_RenderTarget(eTarget);
 
-    m_pDeviceContext->CopyResource(pTarget->Get_Texture2D(), pSrcResource);
-
-    Safe_Release(pSrcResource);
-    return S_OK;
-}
-
-HRESULT CRenderTarget_Manager::Copy_StaticObject_DepthCopy(ERenderTarget eTarget)
-{
-    ID3D11Resource* pSrcResource = nullptr;
-    m_arrRenderTargets[ENUM_TO_UINT(ERenderTarget::Depth)]->Get_RTV()->GetResource(&pSrcResource);
-
-    CRenderTarget* pTarget = Get_RenderTarget(eTarget);
-    
     m_pDeviceContext->CopyResource(pTarget->Get_Texture2D(), pSrcResource);
 
     Safe_Release(pSrcResource);

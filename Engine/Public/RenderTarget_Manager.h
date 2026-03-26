@@ -26,7 +26,6 @@ enum class ERenderTarget : _uint
 	Shadow_Baked,
 	OIT_Accum,		// 가중치가 적용된 색상 누적
 	OIT_Reveal,		// 배경 투과율 누적
-	StaticObject_DepthCopy,
 	END,
 };
 
@@ -72,7 +71,6 @@ public:
 	HRESULT End_MRT();
 	HRESULT Bind_ShaderResource(ERenderTarget eTarget, class CShader* pShader);
 	HRESULT Copy_SceneHDRResource(ERenderTarget eTarget);
-	HRESULT Copy_StaticObject_DepthCopy(ERenderTarget eTarget);
 
 public:
 	CRenderTarget* Get_RenderTarget(ERenderTarget eTarget) { return m_arrRenderTargets[ENUM_TO_UINT(eTarget)]; }

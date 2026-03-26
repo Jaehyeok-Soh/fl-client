@@ -313,7 +313,6 @@ void CShader::Create_ConstantBuffer()
 		pCache->CB[iSlot]->SetConstantBuffer(m_pObjectInfo_CBuffer->Get_Buffer());
 	}
 
-
 	iSlot = ENUM_TO_UINT(EFXCB::RGBMapping);
 	if (pCache->CB[iSlot])
 	{

@@ -532,6 +532,11 @@ namespace Engine
 
 	} SHADER_EFFECT_DESC;
 
+	typedef struct tagShaderDecalEffectDesc
+	{
+		SimpleMath::Matrix WorldInv = {};
+	}SHADER_DECAL_EFFECT_DESC;
+
 	typedef struct tagShaderBoneDesc
 	{
 		SimpleMath::Matrix transforms[MAX_BONE_TRANSFORMS]{ SimpleMath::Matrix::Identity};
