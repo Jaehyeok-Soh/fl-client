@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "Weapon.h"
+#include "PlayerActionState.h"
 
 CState_GunIdle::CState_GunIdle(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "GunIdle")
@@ -47,6 +48,8 @@ HRESULT CState_GunIdle::Initialize(void* pArg)
 
 	if (FAILED(Super::Initialize(&tSuperDesc)))
 		return E_FAIL;
+
+	m_iBoneHitTypeFlag = CPlayerActionState::BoneHitType::BHT_FORCE_WEAK;
 
 	return S_OK;
 }

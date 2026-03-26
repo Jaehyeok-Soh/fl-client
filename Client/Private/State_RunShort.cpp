@@ -16,6 +16,8 @@ HRESULT CState_RunShort::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_fCapHitMoveTime = Get_MoveBoneTime(30.f);
+
 	return S_OK;
 }
 

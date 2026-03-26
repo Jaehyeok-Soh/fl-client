@@ -17,11 +17,15 @@ HRESULT CPanel_ModelInfo::Initialize()
 
 HRESULT CPanel_ModelInfo::Render(CToolObject* pGo)
 {
-	Render_ObjInfo();
+	if (pGo)
+	{
+		Render_ObjInfo(pGo);
 
-	Render_ModelInfo();
+		Render_ModelInfo();
 
-	Render_AnimationInfo();
+		Render_AnimationInfo();
+	}
+
 
 	return S_OK;
 }
@@ -39,23 +43,30 @@ void CPanel_ModelInfo::Update(const _float fTimeDelta)
 		m_iModleRefAnimIdx = pObjModle->Get_RefAdditive_AnimIdx();
 		m_iModelPosanimIdx = pObjModle->Get_PosAdditive_AnimIdx();
 
+		m_bModelMoveOn		= pObjModle->Get_MoveBoneOn();
+		m_iModleMoveAnimIdx = pObjModle->Get_MoveInfo().iMovingIdx;
 		//m_iRootBondIdx = tInfo.pModel->Get_RootBone();
 		//m_fRootMotionOffset = tInfo.pModel->Get_Animatioin_MotionOffset(m_iCurAnimIdx);
 	}
 
-	pObj = tInfo.pCurrentObject;
+	//pObj = tInfo.pCurrentObject;
 }
 
-void CPanel_ModelInfo::Render_ObjInfo()
+void CPanel_ModelInfo::Render_ObjInfo(CGameObject* pGo)
 {
 	ImGui::Begin("Object Info");
 
-	if (pObj)
+	if (pGo)
 	{
-		Vec3 vPos =	pObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		CTransform* pTrnasf = pGo->Get_Component<CTransform>();
+		if (pTrnasf)
+		{
+			Vec3 vPos = pTrnasf->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-		ImGui::Text("Position : %.3f, %.3f, %.3f",
-			vPos.x, vPos.y, vPos.z);
+			ImGui::Text("Position : %.3f, %.3f, %.3f",
+				vPos.x, vPos.y, vPos.z);
+		}
+
 	}
 
 	ImGui::End();
@@ -68,6 +79,8 @@ void CPanel_ModelInfo::Render_ModelInfo()
 	Render_RootMotionInfo();
 	
 	Render_AdditiveInfo();
+
+	Render_MoveBoneInfo();
 
 	ImGui::End();
 }
@@ -88,6 +101,23 @@ void CPanel_ModelInfo::Render_RootMotionInfo()
 	if (ImGui::Button("Apply##RootBone"))
 	{
 		Set_RootBone();
+	}
+
+	ImGui::SetNextItemWidth(120.f); // 원하는 픽셀 길이
+	ImGui::InputFloat("RootMotion Offset All", &m_fRootMotionOffsetAll, 0.01f, 1.0f, "%.3f");
+
+	/* 값 보정 */
+	if (m_iRootBondIdx < 0.f)
+		m_iRootBondIdx = 0.f;
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Apply##RootBoneOffsetAlldsdffad"))
+	{
+		if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+		{
+			m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_Animtion_MotionOffset_All(m_fRootMotionOffsetAll);
+		}
 	}
 
 }
@@ -164,7 +194,7 @@ void CPanel_ModelInfo::Render_AdditiveInfo()
 
 	// additive on off?
 	{
-		ImGui::Text("Current Additive On ? : %u", (_int)m_bModelAdditiveOn);
+		ImGui::Text("Current Additive On : %u", (_int)m_bModelAdditiveOn);
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60);
 		ImGui::SliderInt("0 : Off, 1 : On##AddtivieAnimApplyEunbi", &m_iSelectAdditiveOn, 0, 1);
@@ -208,6 +238,84 @@ void CPanel_ModelInfo::Render_AdditiveInfo()
 			if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
 				m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_AdditivePos_AnimIdx(m_iSelectPosanimIdx);
 		}
+	}
+}
+
+void CPanel_ModelInfo::Render_MoveBoneInfo()
+{
+	/* tool */
+
+	ImGui::Separator();
+
+	// MoveBone on off?
+	{
+		ImGui::Text("Current MoveBone On : %u", (_int)m_iSelectMoveOn);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60);
+		ImGui::SliderInt("0 : Off, 1 : On##MoveBoneAnimApplyEunbi", &m_iSelectMoveOn, 0, 1);
+		ImGui::SameLine();
+		if (ImGui::Button("Apply##MoveBoneAnimApplyEunbi"))
+		{
+			if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+				m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_MoveBone((_bool)m_iSelectMoveOn);
+		}
+	}
+
+	// MoveBone index
+	{
+		ImGui::Text("Current MoveBone Index : %d", m_iModleMoveAnimIdx);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(120);
+		ImGui::InputInt("Select MoveBone Index##EnumbiRefAnimiddsfdfsdx", &m_iSelectMoveAnimIdx, 1);
+		// 최소값 -1 제한
+		if (m_iSelectMoveAnimIdx < -1)
+			m_iSelectMoveAnimIdx = -1;
+	}
+
+	// MoveBone ratio
+	{
+		ImGui::SetNextItemWidth(120);
+		ImGui::SliderFloat("MoveBone Ratio##EnumbiRefAnimiddsfdfsdx", &m_fRatio, 0.f, 1.f);
+	}
+
+	// move info
+	{
+		MOVE_SRT();
+	}
+
+	if (ImGui::Button("Apply MoveInfos Info##move"))
+	{
+		CS_CB_MU_BONEMOVE tCB = {};
+
+		tCB.iMovingIdx = m_iSelectMoveAnimIdx;
+
+		tCB.fRatio = m_fRatio;
+
+		Matrix matSR = Matrix::CreateScale(m_vScale[0], m_vScale[1], m_vScale[2]) * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(m_vPYR[1]), XMConvertToRadians(m_vPYR[0]), XMConvertToRadians(m_vPYR[2]));
+		tCB.matOffset = matSR * Matrix::CreateTranslation(m_vTranslation[0], m_vTranslation[1], m_vTranslation[2]);
+
+		if (m_pAnimToolManager->Get_AnimControllInfo().pModel)
+			m_pAnimToolManager->Get_AnimControllInfo().pModel->Set_MoveBoneCS(tCB);
+	}
+}
+
+void CPanel_ModelInfo::MOVE_SRT()
+{
+	{
+		ImGui::Text("TRANSFORM");
+		ImGui::Spacing();
+
+		ImGui::Text(" SCALE X Y Z");
+		ImGui::InputFloat3("##scale##move", m_vScale);
+		ImGui::Spacing();
+
+		ImGui::Text(" ROTATION X Y Z");
+		ImGui::InputFloat3("##rotation##move", m_vPYR);
+		ImGui::Spacing();
+
+		ImGui::Text(" POSITION X Y Z");
+		ImGui::InputFloat3("##position##move", m_vTranslation);
+		ImGui::Spacing();
 	}
 }
 

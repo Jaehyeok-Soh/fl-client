@@ -84,6 +84,11 @@ HRESULT CState_ComboBase::End()
 	return S_OK;
 }
 
+_bool CState_ComboBase::Can_Captablity_Move() const
+{
+	return (m_fStateElapsed <= (m_tKeyTimer.fMaxTime - MOVEBONE_TIME - 0.05f));
+}
+
 _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 {
 	if (m_tKeyTimer.CountTime(fTimeDelta) == 1.f &&

@@ -5,6 +5,8 @@
 // 부모 statebase를 하나 생성
 
 #define ANIMTIC (24.f * 1.2f)
+#define ANIMTIC_3 (24.f * 1.3f)
+#define MOVEBONE_TIME 0.4f
 
 NS_BEGIN(Client)
 class CGun;
@@ -34,7 +36,7 @@ public:
 		,C_Fly		= 0x00010
 		,C_Strong	= 0x00020
 
-		,C_CheckF = 0x00040
+		,C_CheckF	= 0x00040
 	};
 
 	enum WEAPONCHANGEFLAGS : Flags
@@ -95,12 +97,25 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
-	// 기본으로는 BEATTACKED 가능. BEATTACKED 불가능한 state에서는 override 필요
+	// state별 flag getter funcs
 public:
-	virtual _uint	Get_Capabilities() const override
-	{
-		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
-	}
+	/*
+	MOVE		: hitBoneMove 가능한지	-> m_fCapHitMoveTime 으로 check
+	SKILL		: special dash 가능한지	-> 특정 state에서만 on
+	BEATTACKED	: 피격 가능한지			-> 기본 on 
+	*/
+	virtual _uint	Get_Capabilities() const override; 
+
+	/*
+	CPlayerActionState::BoneHitType 의 hit 세기 저장
+	state별 세기를 다르게 하기 위함
+
+	기본 : strong
+
+	필요시 super initialize 이후에 셋팅
+
+	*/
+	_uint Get_BoneHitFlag() const { return m_iBoneHitTypeFlag; }
 
 public:
 	virtual void Change_PlayerState(STATEKEY eKey, _bool bForce = false);	// change 랩핑 함수 : 필요시 오버라이드
@@ -108,6 +123,8 @@ public:
 	virtual void Change_PlayerHitState(_uint iState, void* pArg = nullptr);
 	
 protected:
+	_uint					m_iBoneHitTypeFlag = { 0 };
+
 	_uint					m_iEndStateIdx		= { 0 };			// CPlayer::State::END 캐싱 해둠 : 만약 END면 state change x
 
 	Flags					m_FMoves			= { 0 };
@@ -127,6 +144,8 @@ protected:
 
 	_bool					m_bLookAtMonster = { false };
 	Vec3					m_vMonsterPos = { Vec3::Zero };
+
+	_float					m_fCapHitMoveTime = { 0.f };
 
 	// state가 변환 했다면 true
 protected:
@@ -194,6 +213,8 @@ protected:
 
 	virtual void Reset_WhenStart();
 
+	virtual _bool Can_Captablity_Move() const;
+
 protected:
 	HRESULT Start_AttackState(void* pArg);
 
@@ -201,6 +222,7 @@ private:
 	CGun*					m_pOwnerGun = { nullptr };
 
 private:
+	_bool	KeyFlag_On(_uint iKeyFlag);
 	_bool	Has_ChangeState(STATEKEY eKey);
 	_bool	Can_ChangeNextWeapon(_uint iWeaponType);
 
@@ -211,3 +233,9 @@ public:
 };
 
 NS_END
+
+
+inline _float Get_MoveBoneTime(_float fDuration, _float fAnimSpeedOffset = 1.2f)
+{
+	return fDuration / (24.f * fAnimSpeedOffset) - (MOVEBONE_TIME + 0.05f);
+}

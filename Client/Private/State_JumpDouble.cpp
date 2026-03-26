@@ -13,6 +13,8 @@ HRESULT CState_JumpDouble::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_fCapHitMoveTime = Get_MoveBoneTime(28.f);
+
 	return S_OK;
 }
 
