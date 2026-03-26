@@ -96,13 +96,24 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
-	// 기본으로는 BEATTACKED 가능. BEATTACKED 불가능한 state에서는 override 필요
+	// state별 flag getter funcs
 public:
-	virtual _uint	Get_Capabilities() const override
-	{
-		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED) | ENUM_TO_UINT(Engine::StateCapability::MOVE);
-	}
+	/*
+	MOVE		: hitBoneMove 가능한지	-> m_fCapHitMoveTime 으로 check
+	SKILL		: special dash 가능한지	-> 특정 state에서만 on
+	BEATTACKED	: 피격 가능한지			-> 기본 on 
+	*/
+	virtual _uint	Get_Capabilities() const override; 
 
+	/*
+	CPlayerActionState::BoneHitType 의 hit 세기 저장
+	state별 세기를 다르게 하기 위함
+
+	기본 : strong
+
+	필요시 super initialize 이후에 셋팅
+
+	*/
 	_uint Get_BoneHitFlag() const { return m_iBoneHitTypeFlag; }
 
 public:
@@ -132,6 +143,8 @@ protected:
 
 	_bool					m_bLookAtMonster = { false };
 	Vec3					m_vMonsterPos = { Vec3::Zero };
+
+	_float					m_fCapHitMoveTime = { 0.f };
 
 	// state가 변환 했다면 true
 protected:

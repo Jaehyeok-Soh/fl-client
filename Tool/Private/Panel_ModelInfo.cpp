@@ -17,11 +17,15 @@ HRESULT CPanel_ModelInfo::Initialize()
 
 HRESULT CPanel_ModelInfo::Render(CToolObject* pGo)
 {
-	Render_ObjInfo();
+	if (pGo)
+	{
+		Render_ObjInfo(pGo);
 
-	Render_ModelInfo();
+		Render_ModelInfo();
 
-	Render_AnimationInfo();
+		Render_AnimationInfo();
+	}
+
 
 	return S_OK;
 }
@@ -45,19 +49,24 @@ void CPanel_ModelInfo::Update(const _float fTimeDelta)
 		//m_fRootMotionOffset = tInfo.pModel->Get_Animatioin_MotionOffset(m_iCurAnimIdx);
 	}
 
-	pObj = tInfo.pCurrentObject;
+	//pObj = tInfo.pCurrentObject;
 }
 
-void CPanel_ModelInfo::Render_ObjInfo()
+void CPanel_ModelInfo::Render_ObjInfo(CGameObject* pGo)
 {
 	ImGui::Begin("Object Info");
 
-	if (pObj)
+	if (pGo)
 	{
-		Vec3 vPos =	pObj->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+		CTransform* pTrnasf = pGo->Get_Component<CTransform>();
+		if (pTrnasf)
+		{
+			Vec3 vPos = pTrnasf->Get_Info(TRANSFORM_INFO_STATE::POS);
 
-		ImGui::Text("Position : %.3f, %.3f, %.3f",
-			vPos.x, vPos.y, vPos.z);
+			ImGui::Text("Position : %.3f, %.3f, %.3f",
+				vPos.x, vPos.y, vPos.z);
+		}
+
 	}
 
 	ImGui::End();

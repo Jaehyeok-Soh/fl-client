@@ -105,6 +105,18 @@ HRESULT CStateBase_Player::End()
 	return S_OK;
 }
 
+_uint CStateBase_Player::Get_Capabilities() const
+{
+	_uint iCapFlag = { 0 };
+
+	iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
+
+	if (m_fStateElapsed <= m_fCapHitMoveTime)
+		iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::MOVE);
+
+	return	 iCapFlag;
+}
+
 void CStateBase_Player::Change_PlayerState(STATEKEY eKey, _bool bForce)
 {
 	_uint iNextState = m_vecChangeState_ByKey[ENUM_TO_UINT(eKey)];

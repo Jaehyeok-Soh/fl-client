@@ -23,6 +23,8 @@ HRESULT CState_Condemn::Initialize(void* pArg)
 	m_tTurnData.fTurnHalfTime	= 0.4f;
 	m_tTurnData.fTurnHoldTime	= 2.5f;
 
+	m_fCapHitMoveTime = 0.f;
+
 	return S_OK;
 }
 

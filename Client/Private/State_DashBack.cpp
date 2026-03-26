@@ -54,13 +54,13 @@ _uint CState_DashBack::Get_Capabilities() const
 {
 	if (m_fStateElapsed > 0.3f)
 	{
-		return	ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
-
+		return	Super::Get_Capabilities();
 	}
 
 	else
 	{
-		return	ENUM_TO_UINT(Engine::StateCapability::SKILL) | ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
+		_uint iFlag = Super::Get_Capabilities();
+		return	ENUM_TO_UINT(Engine::StateCapability::SKILL) | iFlag;
 	}
 }
 

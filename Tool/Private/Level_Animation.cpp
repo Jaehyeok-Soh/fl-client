@@ -424,7 +424,7 @@ void CLevel_Animation::Create_AnimModel(fs::path animModelPath, ANIM_SRT pretran
 wstring CLevel_Animation::Create_AnimModelPrototype(fs::path animModelPath, ANIM_SRT pretransform)
 {
 	Matrix matScale = Matrix::CreateScale(pretransform.vScale);
-	Matrix matRotation = Matrix::CreateFromYawPitchRoll(pretransform.vRot);
+	Matrix matRotation = Matrix::CreateFromYawPitchRoll(pretransform.vRot * TO_RAD);
 	Matrix matTranslation = Matrix::CreateTranslation(pretransform.vTranslation);
 	Matrix matPreTransform = matScale * matRotation * matTranslation;
 

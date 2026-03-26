@@ -48,8 +48,6 @@ private:
 	_int	m_iModleRefAnimIdx = { -1 };
 	_int	m_iModelPosanimIdx = { -1 };
 
-	CGameObject* pObj = { nullptr };
-
 	// moveBone values
 private:
 	_int	m_iSelectMoveOn = { false };
@@ -66,7 +64,7 @@ private:
 
 	// render
 private:
-	void Render_ObjInfo();
+	void Render_ObjInfo(CGameObject* pGo);
 
 	void Render_ModelInfo();
 	void Render_RootMotionInfo();
