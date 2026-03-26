@@ -225,6 +225,8 @@ HRESULT CUIMonsterStat_Progress::Despawn_FromPool()
 
 void CUIMonsterStat_Progress::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{

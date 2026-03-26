@@ -130,16 +130,20 @@ HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 
 void CUIBossStat_Text::Bind_Events()
 {
-	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_OFF>(
-		[this]() 
-		{
-			this->Set_Invisible();
-		});
-	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_ON>(
-		[this]()
-		{ 
-			this->Set_Visible(); 
-		});
+	Super::Bind_Events();
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<XIBILA_BOSS_UI_OFF>(
+			[this]()
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<XIBILA_BOSS_UI_ON>(
+			[this]()
+			{
+				this->Set_Visible();
+			}));
 }
 
 void CUIBossStat_Text::Initialize_Visible_Event()

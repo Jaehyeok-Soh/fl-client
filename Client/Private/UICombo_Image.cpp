@@ -163,7 +163,6 @@ HRESULT CUICombo_Image::Attach_Personal_Info()
 		return E_FAIL;
 	}
 
-
 	return S_OK;
 }
 
@@ -271,6 +270,8 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 
 void CUICombo_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]()
 			{

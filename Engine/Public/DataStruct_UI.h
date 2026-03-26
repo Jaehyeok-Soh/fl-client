@@ -1015,6 +1015,7 @@ enum class EUIDImageSubClassType
 	ENTERGAME_START_ICON_RIGHT,
 	ENTERGAME_END,
 
+	SCENE_FADE_IN,
 	END
 };
 
@@ -1197,6 +1198,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::ENTERGAME_START_ICON_LEFT,					"ENTERGAME_START_ICON_LEFT" },
 	{ EUIDImageSubClassType::ENTERGAME_START_ICON_RIGHT,				"ENTERGAME_START_ICON_RIGHT" },
 	{ EUIDImageSubClassType::ENTERGAME_END,								"ENTERGAME_END" },
+
+	{ EUIDImageSubClassType::SCENE_FADE_IN,								"SCENE_FADE_IN" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1381,6 +1384,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "ENTERGAME_START_ICON_LEFT")				return EUIDImageSubClassType::ENTERGAME_START_ICON_LEFT;
 	if (str == "ENTERGAME_START_ICON_RIGHT")			return EUIDImageSubClassType::ENTERGAME_START_ICON_RIGHT;
 	if (str == "ENTERGAME_END")							return EUIDImageSubClassType::ENTERGAME_END;
+	
+	if (str == "SCENE_FADE_IN")							return EUIDImageSubClassType::SCENE_FADE_IN;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1567,6 +1572,8 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::ENTERGAME_START_ICON_LEFT:				return "ENTERGAME_START_ICON_LEFT";
 	case EUIDImageSubClassType::ENTERGAME_START_ICON_RIGHT:				return "ENTERGAME_START_ICON_RIGHT";
 	case EUIDImageSubClassType::ENTERGAME_END:							return "ENTERGAME_END";
+	
+	case EUIDImageSubClassType::SCENE_FADE_IN:							return "SCENE_FADE_IN";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

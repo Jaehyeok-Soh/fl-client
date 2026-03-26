@@ -212,6 +212,7 @@
 #include "UIMiniGame_Circle_Image.h"
 #include "UIScreenPulse_Image.h"
 #include "UIEnterGame_Image.h"
+#include "UISceneFade_Image.h"
 //=================
 // Resource
 //=================
@@ -341,7 +342,7 @@ HRESULT CLoader::Loading_For_Test()
 	Sleep(1000);
 
 	m_fLoadingRatio = 1.f;
-	Sleep(1000);
+	Sleep(2000);
 
 	m_isFinished = true;
 	return S_OK;
@@ -1045,6 +1046,7 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_ScreenPulseImage",			CUIScreenPulse_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameImage",			CUIEnterGame_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameText",			CUIEnterGame_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_SceneFadeImage",			CUISceneFade_Image::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	
@@ -1060,7 +1062,8 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 	
 	
 	m_fLoadingRatio = 1.f;
-	Sleep(1000);
+	Sleep(2000);
+
 
 	m_isFinished = true;
 	return S_OK;
@@ -1130,7 +1133,8 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiOneshotThunder_Prototype_Tag, CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(1000);
+	Sleep(2000);
+
 
 
 
@@ -1151,7 +1155,8 @@ HRESULT CLoader::Loading_For_Square()
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(1000);
+	Sleep(2000);
+
 
 	m_isFinished = true;
 	return S_OK;
@@ -1170,7 +1175,8 @@ HRESULT CLoader::Loading_For_Tavern()
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
-	Sleep(1000);
+	Sleep(2000);
+
 
 
 
@@ -1195,7 +1201,8 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 
 
 	m_fLoadingRatio = 1.f;
-	Sleep(1000);
+	Sleep(2000);
+
 
 
 
@@ -1262,7 +1269,7 @@ HRESULT CLoader::Loading_For_Lianhuo()
 
 
 	m_fLoadingRatio = 1.f;
-	Sleep(1000);
+	Sleep(2000);
 
 
 	m_isFinished = true;

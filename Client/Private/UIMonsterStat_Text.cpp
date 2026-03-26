@@ -147,6 +147,8 @@ HRESULT CUIMonsterStat_Text::Convert_Stat_To_Text()
 
 void CUIMonsterStat_Text::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{

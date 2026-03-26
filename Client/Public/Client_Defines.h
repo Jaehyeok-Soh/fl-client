@@ -639,6 +639,7 @@ namespace Client
 		CGameObject* pTarget = { nullptr };
 		Vec3 vOffset = {};
 	} UI_NAMEPLATE_PREFAB_DATA;
+
 	typedef struct tagUIDamageFontPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
@@ -647,24 +648,38 @@ namespace Client
 		_uint iDamage = {};
 		Vec3 vRandOffset = {};
 	} UI_DAMAGEFONT_PREFAB_DATA;
+
 	typedef struct tagUIBossNamePlatePrefabData
 	{
 		CGameObject* pTarget = { nullptr };
 	} UI_BOSS_NAMEPLATE_PREFAB_DATA;
+
 	typedef struct tagUIMinimapMonsterIconPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
 	} UI_MINIMAP_MONSTER_ICON_PREFAB_DATA;
+
 	typedef struct tagUITutorialPannelPrefabData
 	{
 		EUITutorialPannelTypeID eTutorialTypeID = {};
 
 	} UI_TUTORIAL_PANNEL_PREFAB_DATA;
+
 	typedef struct tagUITutorialPopUpPrefabData
 	{
 		EUITutorialPopUpTypeID eTutorialTypeID = { EUITutorialPopUpTypeID::END };
 
 	} UI_TUTORIAL_POPUP_PREFAB_DATA;
+
+	typedef struct tagUILevelFadePrefabData
+	{
+		CGameObject* pTarget = { nullptr };
+		Vec4 vFontColor = {};
+		Vec3 vHitPos = {};
+		_uint iDamage = {};
+		Vec3 vRandOffset = {};
+	} UI_DAMAGEFONT_PREFAB_DATA;
+
 	typedef std::variant<
 		UI_NAMEPLATE_PREFAB_DATA,
 		UI_DAMAGEFONT_PREFAB_DATA,

@@ -135,6 +135,8 @@ HRESULT CUIMiniGame_Circle_Text::Convert_Stat_To_Text()
 
 void CUIMiniGame_Circle_Text::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<MINIGAME_CIRCLE_ON>([this]()
 			{
@@ -154,8 +156,7 @@ void CUIMiniGame_Circle_Text::Bind_Events()
 				case DTO::EUITextSubClassType::MINIGAME_CIRCLE_CLEAR_WORLD_TEXT:
 					break;
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<MINIGAME_CIRCLE_CLEAR>([this]()
@@ -168,14 +169,12 @@ void CUIMiniGame_Circle_Text::Bind_Events()
 					Set_Invisible();
 					break;
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<MINIGAME_CIRCLE_OFF>([this]()
 			{
-			})
-	);
+			}));
 }
 
 void CUIMiniGame_Circle_Text::Initialize_Visible_Event()

@@ -121,6 +121,7 @@ HRESULT CUINameplate_BG::Attach_Personal_Info()
 
 void CUINameplate_BG::Bind_Events()
 {
+	Super::Bind_Events();
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{

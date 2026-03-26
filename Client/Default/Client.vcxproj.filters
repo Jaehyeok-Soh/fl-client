@@ -907,6 +907,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame">
       <UniqueIdentifier>{e409a8e0-a5de-4e05-9dcb-55ef01a85985}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade">
+      <UniqueIdentifier>{4f0b1359-e689-42d3-a27c-4833dd92821d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1686,14 +1689,17 @@
     <ClInclude Include="..\Public\UITitle_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\19.Title</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UILoading_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\03.Damage Text</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIEnterGame_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIEnterGame_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\15.EnterGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILoading_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\02.Loading Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISceneFade_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2471,6 +2477,9 @@
       <Filter>03. GameObject\UIObjects\02.UI\Text\15.EnterGame</Filter>
     </ClCompile>
     <ClCompile Include="..\Public\Client_Defines.cpp" />
+    <ClCompile Include="..\Private\UISceneFade_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">

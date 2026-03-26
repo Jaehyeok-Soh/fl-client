@@ -128,6 +128,7 @@ HRESULT CUIEnterGame_Text::Convert_Stat_To_Text()
 
 void CUIEnterGame_Text::Bind_Events()
 {
+	Super::Bind_Events();
 	return;
 }
 

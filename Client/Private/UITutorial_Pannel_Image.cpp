@@ -161,6 +161,7 @@ HRESULT CUITutorial_Pannel_Image::Attach_Personal_Info()
 
 void CUITutorial_Pannel_Image::Bind_Events()
 {
+	Super::Bind_Events();
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{

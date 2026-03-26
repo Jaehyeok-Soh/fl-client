@@ -137,6 +137,7 @@ HRESULT CUIEnterGame_Image::Attach_Personal_Info()
 
 void CUIEnterGame_Image::Bind_Events()
 {
+	Super::Bind_Events();
 }
 
 void CUIEnterGame_Image::Tick_By_Type(const _float fTimeDelta)
