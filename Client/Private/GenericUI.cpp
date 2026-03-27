@@ -453,6 +453,30 @@ void CGenericUI::Request_SetDead()
 	m_isDeadRequest = true;
 }
 
+void CGenericUI::Bind_Events()
+{
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DEFAULT_UI_VISIBLE>([this]()
+			{
+				if (m_isEventVisible)
+				{
+					Set_Active(true);
+					this->Set_Visible();
+					m_isEventVisible = false;
+				}
+			}));
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<DEFAULT_UI_INVISIBLE>([this]()
+			{
+				if (this->m_isVisible)
+				{
+					this->Set_Invisible();
+					m_isEventVisible = true;
+				}
+			}));
+}
+
 void CGenericUI::Free()
 {
 	for (auto Handle : m_vecEventHandles)

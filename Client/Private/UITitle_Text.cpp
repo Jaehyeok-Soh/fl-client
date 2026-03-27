@@ -131,6 +131,7 @@ HRESULT CUITitle_Text::Convert_Stat_To_Text()
 
 void CUITitle_Text::Bind_Events()
 {
+	Super::Bind_Events();
 	return;
 }
 

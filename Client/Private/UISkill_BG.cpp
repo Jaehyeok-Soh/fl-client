@@ -298,6 +298,8 @@ _bool CUISkill_BG::Tick_InVisible_Event(const _float fTimeDelta)
 
 void CUISkill_BG::Bind_Events()
 {
+	Super::Bind_Events();
+
 	// ¸Þ´º Event
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)

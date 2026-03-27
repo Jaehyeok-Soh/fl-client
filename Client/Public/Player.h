@@ -124,6 +124,8 @@ public:
 		,CONDEMN
 		,SPECIALDASH
 
+		,NPCTALK
+
 		,END
 	};
 protected:

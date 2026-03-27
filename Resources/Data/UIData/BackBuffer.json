@@ -159,7 +159,7 @@
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": false,
-            "isVisible": true,
+            "isVisible": false,
             "strAlphaMaskTextureTag": "",
             "strCanvasName": "BackBuffer",
             "strGlowTextureTag": "",

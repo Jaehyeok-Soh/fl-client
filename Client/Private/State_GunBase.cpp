@@ -360,7 +360,8 @@ void CState_GunBase::Start_MoveState(MoveState eNextState)
     case MoveState::JUMP:
         Set_ApplyGravity(false);
         Set_ZeroVerticalVelocity();
-        Jump_Impuls();
+        Get_OwnerObject()->Get_Component<CPhysicsCCT>()->AddFixedMove(Vec3::UnitY * 0.1f);
+        Jump_Impuls(1.2f);
         Request_MixAnimation(1, m_MixAnim_Indices[JUMP]);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::SHIFT)]   = ENUM_TO_UINT(CPlayer::State::DASHSKY);
         m_vecChangeState_ByKey[ENUM_TO_SZET(STATEKEY::Q)]       = m_iEndStateIdx;

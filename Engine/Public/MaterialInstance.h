@@ -25,6 +25,7 @@ public:
 	void Set_TintColor(const Vec4& vColor) { m_shaderDesc.vTintColor = vColor; }
 	void Set_EmissiveColor(const Vec4& vColor) { m_shaderDesc.vEmissive = vColor; }
 	void Set_EmissivePower(_float fEmissivePower) { m_shaderDesc.fEmissivePower = fEmissivePower; }
+	void Set_MI(const SHADER_MI_DESC& tDesc) { m_shaderDesc = tDesc; }
 private:
 
 private:

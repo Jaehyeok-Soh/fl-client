@@ -118,8 +118,6 @@ HRESULT CUIMonsterStat_Text::Bind_ShaderResources()
 
 HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
 {
-
-
 	if (m_isSpawned)
 	{
 		Set_Visible();
@@ -147,6 +145,8 @@ HRESULT CUIMonsterStat_Text::Convert_Stat_To_Text()
 
 void CUIMonsterStat_Text::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -262,7 +262,6 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 			return E_FAIL;
 	}
 
-	m_isSpawned = true;
 	m_isDeadRequest = false;
 	return S_OK;
 }

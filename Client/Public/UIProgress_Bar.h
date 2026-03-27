@@ -29,7 +29,7 @@ public:
 protected:
 	HRESULT Ready_Components(PROGRESS_BAR_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
+	virtual void Bind_Events()override { Super::Bind_Events(); };
 	void Trigger_Ratio();
 	void Tick_Ratio(const _float fTimeDelta);
 

@@ -109,6 +109,8 @@ void CUIBossAction_Image::Tick_By_Type(const _float fTimeDelta)
 
 void CUIBossAction_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:

@@ -55,7 +55,7 @@ private:
 	Vec4 m_vOriginGradiantColor = {};
 
 	_float m_fPreMonsterHPRatio = {};
-	_float m_fMonsterHPTimeAcc = {};
+	_float m_fMonsterHPTimeAcc = {100.f};
 
 public:
 	static CUIMonsterStat_Progress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

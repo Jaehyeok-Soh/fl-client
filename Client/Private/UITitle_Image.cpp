@@ -140,6 +140,7 @@ HRESULT CUITitle_Image::Attach_Personal_Info()
 
 void CUITitle_Image::Bind_Events()
 {
+	Super::Bind_Events();
 }
 
 void CUITitle_Image::Tick_By_Type(const _float fTimeDelta)

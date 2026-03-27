@@ -289,6 +289,34 @@ void CPlayerControlContext::Clear_WhenChangeLevel()
 	m_pOwnerTargetCamera = nullptr;
 }
 
+void CPlayerControlContext::Save_CurrentState()
+{
+	if (0 == m_FKeys)
+		return;
+
+	m_FPreKeys = m_FKeys;
+}
+
+void CPlayerControlContext::Return_State()
+{
+	m_FKeys = m_FPreKeys;
+}
+
+void CPlayerControlContext::Block_AllState()
+{
+	m_FKeys = 0;
+}
+
+void CPlayerControlContext::Block_SpecificState(const _uint iStateFlag)
+{
+	m_FKeys &= ~iStateFlag;
+}
+
+void CPlayerControlContext::Unlock_SpecificState(const _uint iStateFlag)
+{
+	m_FKeys |= iStateFlag;
+}
+
 void CPlayerControlContext::OnChangeLockonTarget(CGameObject* pGo)
 {
 	if (pGo == m_pTarget)

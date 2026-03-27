@@ -52,6 +52,7 @@ HRESULT CBonePart::Initialize(void* pArg)
 	Set_RenderInfoFlag(OF_Outline, true);
 	Set_RenderInfoFlag(OF_Rim, true);
 	return S_OK;
+
 }
 
 HRESULT CBonePart::Awake(const _uint iCurrentLevelIndex)

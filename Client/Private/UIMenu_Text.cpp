@@ -107,6 +107,7 @@ HRESULT CUIMenu_Text::Attach_Personal_Info()
 
 void CUIMenu_Text::Bind_Events()
 {
+	Super::Bind_Events();
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::MENU_TEXT_BEGIN:
