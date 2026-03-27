@@ -62,6 +62,7 @@ HRESULT CNPC_Citizen::Ready_CitizenParts(CNPC_Citizen::NPC_CITIZEN_DESC* pDesc)
 	tBodyDesc.wstrModelPrototypeTag = Engine_Utils::ToWString(pDesc->tCitizenData.strModelName);
 	tBodyDesc.strLoopAnimName = pDesc->tCitizenData.strLoopAnimationName;
 	tBodyDesc.tRGBColorData			= pDesc->tCitizenData.tClothRGBColor;
+	tBodyDesc.arrayAtlasDatas		= pDesc->tCitizenData.arrayNpcAtlasData;
 
 
 	m_vecPartObjects.resize(1 + (_uint)DTO::CITIZEN_PARTTYPE::END);
@@ -78,6 +79,8 @@ HRESULT CNPC_Citizen::Ready_CitizenParts(CNPC_Citizen::NPC_CITIZEN_DESC* pDesc)
 	_uint i = 0;
 	for (auto& PartData : pDesc->tCitizenData.arrayPartDatas)
 	{
+		if (PartData.strName.empty())
+			continue;
 		tDecoDesc.tTintColor = PartData.vColor;
 		tDecoDesc.wstrPartModelFolderName = Engine_Utils::ToWString(PartData.strName);
 

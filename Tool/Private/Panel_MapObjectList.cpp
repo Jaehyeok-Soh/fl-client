@@ -2096,8 +2096,8 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 			OBJECT_ENUM_TAG::NPC_TAVERN,
 			OBJECT_ENUM_TAG::NPC_VILLAGER_1,
 			OBJECT_ENUM_TAG::NPC_KID_1,
+			OBJECT_ENUM_TAG::NPC_VETERAN,
 			OBJECT_ENUM_TAG::NPC_KID_2,
-			OBJECT_ENUM_TAG::NPC_VETERAN
 			OBJECT_ENUM_TAG::NPC_CITIZEN
 		};
 
@@ -2482,18 +2482,47 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 				ImGui::SeparatorText(" Atlas Configuration ");
 				static const char* atlasNames[] = { "Eye Atlas", "Mouth Atlas" };
 				int atlasCount = (int)DTO::CITIZEN_ATLAS_TYPE::END;
+
+				CModel* pModel = m_pSelectMapObject->Get_Component<CModel>();
+				pModel->Get_Materials();
+
+				array<ID3D11ShaderResourceView*, ENUM_TO_UINT(DTO::CITIZEN_ATLAS_TYPE::END)> arrayFaceSRVs{};
+				for (auto& Mtl : pModel->Get_Materials())
+				{
+					if (Mtl)
+					{
+						wstring wstrName =  Mtl->Get_Name();
+						if (wstrName.find(L"Eye") != std::wstring::npos)
+						{
+							 auto& arraySRVs = Mtl->Get_ArraySRV();
+							 arrayFaceSRVs[ENUM_TO_UINT(DTO::CITIZEN_ATLAS_TYPE::Eye)] = arraySRVs[ENUM_TO_UINT(EMaterialTextureType::DIFFUSE)];
+						}
+						else if (wstrName.find(L"Mouth") != std::wstring::npos)
+						{
+							auto& arraySRVs = Mtl->Get_ArraySRV();
+							arrayFaceSRVs[ENUM_TO_UINT(DTO::CITIZEN_ATLAS_TYPE::Mouth)] = arraySRVs[ENUM_TO_UINT(EMaterialTextureType::DIFFUSE)];
+						}
+					}
+				}
+
+
 				for (int i = 0; i < atlasCount; ++i)
 				{
 					ImGui::PushID(i);
 					DTO::CITIZEN_ATLAS_DATA& atlasData = pDesc->tNpcCitizenData.arrayNpcAtlasData[i];
+
 					if (ImGui::TreeNodeEx(atlasNames[i], ImGuiTreeNodeFlags_DefaultOpen))
 					{
+						ImGui::Image(ImTextureRef(arrayFaceSRVs[i]) , ImVec2(128,128));
+						arrayFaceSRVs[i];
 						ImGui::Checkbox("Use Atlas", &atlasData.isUseAtlas);
 						ImGui::BeginDisabled(!atlasData.isUseAtlas);
 						ImGui::DragInt("Max Row", (int*)&atlasData.iMaxRow, 0.1f, 1, 100);
 						ImGui::DragInt("Max Column", (int*)&atlasData.iMaxColumn, 0.1f, 1, 100);
 						int maxSelectableRow = max(0, (int)atlasData.iMaxRow - 1);
 						ImGui::DragInt("Select Row", (int*)&atlasData.iSelectRow, 0.1f, 0, maxSelectableRow);
+						int maxSelectableColumn = max(0, (int)atlasData.iMaxColumn - 1);
+						ImGui::DragInt("Select Column", (int*)&atlasData.iSelectColumn, 0.1f, 0, maxSelectableColumn);
 						ImGui::EndDisabled();
 
 						if ((int)atlasData.iMaxRow < 1) atlasData.iMaxRow = 1;

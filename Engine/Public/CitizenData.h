@@ -4,6 +4,9 @@
 
 NS_BEGIN(DTO)
 
+
+
+
 #pragma region Citizen Gender Type
 enum class CITIZEN_GENDERTYPE
 {
@@ -110,7 +113,6 @@ enum class CITIZEN_ATLAS_TYPE
 	Mouth,
 	END,
 };
-
 
 
 static std::string CITIZEN_ATLAS_TYPE_ToString(CITIZEN_ATLAS_TYPE eType)
@@ -285,6 +287,22 @@ static CitizenModelInfo Get_CitizenInfo_ByClothPath(const wstring& wstrFolderPat
 }
 
 
+
+struct CittzenFaceUV
+{
+	Vec2 vUVOffset; // 선택된 셀의 시작 UV (예: 0.25, 0.5)
+	Vec2 vUVScale; // 한 셀의 가로세로 크기 (예: 1.0/MaxCol, 1.0/MaxRow)
+};
+
+struct ENGINE_DLL CB_CitizentFaceData
+{
+	CittzenFaceUV	tCitizenFaceUV[ENUM_TO_UINT(CITIZEN_ATLAS_TYPE::END)];
+	// C++ 전용 편의 함수: 쉐이더에는 영향을 주지 않음
+public:
+	void SetFaceUV(CITIZEN_ATLAS_TYPE eType, const struct CITIZEN_ATLAS_DATA* pData);
+};
+
+
 struct CITIZEN_PART_DATA
 {
 	Vec4	vColor{ 1.f,1.f,1.f,1.f };
@@ -302,14 +320,16 @@ struct CITIZEN_ATLAS_DATA
 	_uint		iMaxColumn{};
 
 	_uint		iSelectRow{}; // 입 또는 눈 모양 Column=>추후 애니매이션을 위한것 단순 모양만 일단정하기
+	_uint		iSelectColumn{};
 public:
 	CITIZEN_ATLAS_DATA()
-		: isUseAtlas{ false }, iMaxRow{ 1 }, iMaxColumn{ 1 }, iSelectRow{ 0 }
+		: isUseAtlas{ false }, iMaxRow{ 1 }, iMaxColumn{ 1 }, iSelectRow{ 0 }, iSelectColumn{0}
 	{
 
 	}
-	CITIZEN_ATLAS_DATA(_bool isUse, _uint _iMaxRow, _uint  _iMaxColumn, _uint _iSelectRow)
+	CITIZEN_ATLAS_DATA(_bool isUse, _uint _iMaxRow, _uint  _iMaxColumn, _uint _iSelectRow , _uint _iSelectColumn)
 		: isUseAtlas{ isUse }, iMaxRow{ _iMaxRow }, iMaxColumn{ _iMaxColumn }, iSelectRow{ _iSelectRow }
+		, iSelectColumn{ _iSelectColumn }
 	{
 
 	}
@@ -320,7 +340,7 @@ public:
 
 struct CITIZEN_DATA
 {
-	std::array<CITIZEN_ATLAS_DATA, ENUM_TO_UINT(CITIZEN_ATLAS_TYPE::END)> arrayNpcAtlasData = { CITIZEN_ATLAS_DATA(true , 4 , 4 , 0) , CITIZEN_ATLAS_DATA(true , 3 , 3 ,0) };
+	std::array<CITIZEN_ATLAS_DATA, ENUM_TO_UINT(CITIZEN_ATLAS_TYPE::END)> arrayNpcAtlasData = { CITIZEN_ATLAS_DATA(true , 4 , 4 , 0, 0) , CITIZEN_ATLAS_DATA(true , 3 , 3 ,0,0) };
 	array<CITIZEN_PART_DATA, ENUM_TO_UINT(DTO::CITIZEN_PARTTYPE::END)>	  arrayPartDatas;
 
 	_bool isUseClothColorMapping;
@@ -333,7 +353,7 @@ struct CITIZEN_DATA
 
 public:
 	CITIZEN_DATA()
-		: arrayNpcAtlasData{ CITIZEN_ATLAS_DATA(true , 4 , 4 , 0) , CITIZEN_ATLAS_DATA(true , 3 , 3 ,0) }
+		: arrayNpcAtlasData{ CITIZEN_ATLAS_DATA(true , 4 , 4 , 0 , 0) , CITIZEN_ATLAS_DATA(true , 3 , 3 ,0, 0) }
 		, isUseClothColorMapping{ true }
 		, tClothRGBColor{}
 		, strLoopAnimationName{}

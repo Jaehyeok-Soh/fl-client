@@ -177,7 +177,7 @@ namespace Client
 		else if (strType == "WithRenderFx") return Client::EAnimShaderPass::WithRenderFx;
 		else if (strType == "Shadow")		return Client::EAnimShaderPass::Shadow;
 		else if (strType == "CitizenEye")	return Client::EAnimShaderPass::CitizenEye;
-		else if (strType == "CitizenMouth") return Client::EAnimShaderPass::CitizenMouth;
+		else if (strType == "CitizenMouth")	return Client::EAnimShaderPass::CitizenMouth;
 		else if (strType == "CitizenCloth") return Client::EAnimShaderPass::CitizenCloth;
 		else if (strType == "CitizenBody")	return Client::EAnimShaderPass::CitizenBody;
 
@@ -377,6 +377,7 @@ namespace Client
 		SkyBox,
 		Shadow,
 		LightObject,
+		CitizenFace,
 		END,
 	};
 
@@ -891,11 +892,10 @@ namespace Client
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
 	inline constexpr wchar_t g_wszBoss_Lianhuo_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Lianhuo" };
 	
-	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
 	/* NPC Prototype Tag */
-	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
+	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]					{ L"Prototype_Component_Model_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Tavern" };
-	inline constexpr wchar_t g_wszNPC_Villager_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_NPC_Villager_1" };
 	inline constexpr wchar_t g_wszNPC_Kid_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Kid_1" };
 	inline constexpr wchar_t g_wszNPC_Veteran_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Veteran" };
 
@@ -1017,7 +1017,6 @@ namespace Client
 #pragma endregion
 
 #pragma region Npc ฐüทร
-	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]				{ L"Prototype_GameObject_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Pan_Body" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Tavern" };
@@ -1030,10 +1029,10 @@ namespace Client
 	/* Citizen */
 	inline constexpr wchar_t g_wszNPC_Citizen_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Citizen" };
 	inline constexpr wchar_t g_wszNPC_Citizen_Body_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Citizen_Body"};
-	inline constexpr wchar_t g_wszNPC_Citizen_DecoPart_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Citizen_DecoPart"};
+	inline constexpr wchar_t g_wszNPC_Citizen_DecoPart_Prototype_Tag[]	{ L"Prototype_GameObject_NPC_Citizen_DecoPart"};
 
-	inline constexpr wchar_t g_wszNPC_Veteran_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Veteran" };
-	inline constexpr wchar_t g_wszNPC_Veteran_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Veteran_Body" };
+	inline constexpr wchar_t g_wszNPC_Veteran_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Veteran" };
+	inline constexpr wchar_t g_wszNPC_Veteran_Body_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Veteran_Body" };
 #pragma endregion
 
 #pragma region Part Objects

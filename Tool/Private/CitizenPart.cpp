@@ -15,6 +15,7 @@ CCitizenPart::CCitizenPart(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCo
 CCitizenPart::CCitizenPart(const CCitizenPart& rhs)
 	:Super(rhs)
 	, m_pBoneSocket{rhs.m_pBoneSocket }
+
 {
 }
 
@@ -42,13 +43,28 @@ HRESULT CCitizenPart::Initialize(void* pArg)
 	m_pBoneSocket = pDesc->pBoneSocket;
 	m_tMIDesc.vTintColor = pDesc->tTintColor;
 
+
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
 
-	return S_OK;
 
+
+	return S_OK;
 }
+
+
+HRESULT CCitizenPart::Ready_Components(CITIZENPART_DESC* pDesc)
+{
+	if (FAILED(Change_Model(pDesc->wstrPartModelFolderName)))
+		return E_FAIL;
+
+	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxMesh_Tool", nullptr)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 
 HRESULT CCitizenPart::Change_Model(const wstring& wstrModelFolderName)
 {
@@ -79,8 +95,13 @@ HRESULT CCitizenPart::Change_Model(const wstring& wstrModelFolderName)
 	/* Offset 바로적용 */
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, vOffsetPos);
 
+
+
+
 	return S_OK;
 }
+
+
 
 HRESULT CCitizenPart::Awake(const _uint iCurrentLevelIndex)
 {
@@ -155,6 +176,9 @@ HRESULT CCitizenPart::Render()
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_CombineWorldMatrix);
 
+	/* ---------------------------- */
+
+
 	pShader->Set_Pass((_uint)EMapObjectShaderPass::StaticObject);
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
@@ -175,16 +199,6 @@ void CCitizenPart::Update_PartsModel()
 	return;
 }
 
-HRESULT CCitizenPart::Ready_Components(CITIZENPART_DESC* pDesc)
-{
-	if (FAILED(Change_Model(pDesc->wstrPartModelFolderName)))
-		return E_FAIL;
-
-	if (FAILED(Add_Component<CShader>(0/*static*/, L"Prototype_Component_Shader_VtxMesh_Tool", nullptr)))
-		return E_FAIL;
-
-	return S_OK;
-}
 
 CCitizenPart* CCitizenPart::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
@@ -211,4 +225,5 @@ CGameObject* CCitizenPart::Clone(void* pArg)
 void CCitizenPart::Free()
 {
 	Super::Free();
+
 }

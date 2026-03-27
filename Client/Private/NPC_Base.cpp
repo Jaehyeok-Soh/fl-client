@@ -502,6 +502,7 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 
 		wstrFindPrototypeName = g_wszNPC_Veteran_Prototype_Tag;
 		wstrAddLayerName = g_wszNPCeLayer;
+		pArg = &npcDesc;
 	}
 	break;
 	default:

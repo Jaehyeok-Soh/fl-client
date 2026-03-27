@@ -443,7 +443,7 @@ namespace Tool
 		else if (strType == "WithRenderFx") return Tool::EAnimShaderPass::WithRenderFx;
 		else if (strType == "Shadow")		return Tool::EAnimShaderPass::Shadow;
 		else if (strType == "CitizenEye")	return Tool::EAnimShaderPass::CitizenEye;
-		else if (strType == "CitizenMouth") return Tool::EAnimShaderPass::CitizenMouth;
+		else if (strType == "CitizenMouth")	return Tool::EAnimShaderPass::CitizenMouth;
 		else if (strType == "CitizenCloth") return Tool::EAnimShaderPass::CitizenCloth;
 		else if (strType == "CitizenBody")	return Tool::EAnimShaderPass::CitizenBody;
 
@@ -510,6 +510,7 @@ namespace Tool
 		SkyBox,
 		Shadow,
 		LightObject,
+		CitizenFace,
 		END,
 	};
 

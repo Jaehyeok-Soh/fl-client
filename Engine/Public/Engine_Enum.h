@@ -770,6 +770,8 @@ namespace Engine
 			if (strType == "NPC_TAVERN")	return OBJECT_ENUM_TAG::NPC_TAVERN;
 			if (strType == "NPC_VILLAGER_1")return OBJECT_ENUM_TAG::NPC_VILLAGER_1;
 			if (strType == "NPC_KID_1")		return OBJECT_ENUM_TAG::NPC_KID_1;
+			if (strType == "NPC_VETERAN")	return OBJECT_ENUM_TAG::NPC_VETERAN;
+			if (strType == "NPC_KID_2")		return OBJECT_ENUM_TAG::NPC_KID_2;
 			if (strType == "NPC_CITIZEN")	return OBJECT_ENUM_TAG::NPC_CITIZEN;
 
 			// OBJECT
@@ -825,6 +827,8 @@ namespace Engine
 			case OBJECT_ENUM_TAG::NPC_TAVERN:								return "NPC_TAVERN";
 			case OBJECT_ENUM_TAG::NPC_VILLAGER_1:							return "NPC_VILLAGER_1";
 			case OBJECT_ENUM_TAG::NPC_KID_1:								return "NPC_KID_1";
+			case OBJECT_ENUM_TAG::NPC_VETERAN:								return "NPC_VETERAN";
+			case OBJECT_ENUM_TAG::NPC_KID_2:								return "NPC_KID_2";
 			case OBJECT_ENUM_TAG::NPC_CITIZEN:								return "NPC_CITIZEN";
 
 			case OBJECT_ENUM_TAG::OBJECT_DEFAULT:							return "OBJECT_DEFAULT";
@@ -872,6 +876,8 @@ namespace Engine
 		OBJECT_ENUM_TAG::NPC_TAVERN,
 		OBJECT_ENUM_TAG::NPC_VILLAGER_1,
 		OBJECT_ENUM_TAG::NPC_KID_1,
+		OBJECT_ENUM_TAG::NPC_VETERAN,
+		OBJECT_ENUM_TAG::NPC_KID_2,
 		OBJECT_ENUM_TAG::NPC_CITIZEN,
 		OBJECT_ENUM_TAG::OBJECT_DEFAULT,
 		OBJECT_ENUM_TAG::OBJECT_PICKING_DEFAULT,

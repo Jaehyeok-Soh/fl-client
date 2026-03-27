@@ -48,6 +48,7 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
     , m_pAnimBlendCS{nullptr}
     , m_pAnimMix{nullptr}
     , m_arrayCitizenPart{}
+    , m_tCBCitizenFaceData{}
 { 
     m_arrayCitizenPart.fill(nullptr);
 }
@@ -78,6 +79,7 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_pAnimBlendCS{rhs.m_pAnimBlendCS}
     , m_pAnimMix{rhs.m_pAnimMix}
     , m_arrayCitizenPart{rhs.m_arrayCitizenPart }
+    , m_tCBCitizenFaceData{rhs.m_tCBCitizenFaceData }
 {
     /* Description을 어케해주는게 좋을려나... */
 } 
@@ -920,7 +922,7 @@ HRESULT CMapObject::Ready_Batch_NPC()
                 ePass = EAnimShaderPass::CitizenMouth;
             else if (wstrMtlName.find(L"Cloth") != std::wstring::npos)
                 ePass = EAnimShaderPass::CitizenCloth;
-            else if (wstrMtlName.find(L"Body") != std::wstring::npos)
+            else if (wstrMtlName.find(L"body") != std::wstring::npos)
                 ePass = EAnimShaderPass::CitizenBody;
             m_vecAnimShaderPass[i] = ePass;        
         }
@@ -3029,6 +3031,23 @@ HRESULT CMapObject::Render_Batch_NPC()
         CModel*     pModel = Get_Component<CModel>();
         CTransform* pTransform = Get_Component<CTransform>();  if (pTransform == nullptr)      return E_FAIL;
         _uint       iMeshCount = pModel->Get_MeshCount();
+
+
+        auto& CitizenData = pDesc->tNpcCitizenData;
+
+        /* Render 하기 직전 계산 때려준다 */
+
+
+        for (_uint i = 0; i < (_uint)DTO::CITIZEN_ATLAS_TYPE::END; ++i)
+        {
+            auto& tAtlasData =  CitizenData.arrayNpcAtlasData[i];
+            m_tCBCitizenFaceData.SetFaceUV((DTO::CITIZEN_ATLAS_TYPE)i , &tAtlasData);
+        }
+
+        ID3DX11EffectConstantBuffer* pCB = pShader->Get_ConstantBuffer("CB_CitizentFaceData");
+        if (!pCB->IsValid())
+            return E_FAIL;
+        pCB->SetRawValue(&m_tCBCitizenFaceData , 0 , sizeof(m_tCBCitizenFaceData));
 
         pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
         pShader->Bind_TransformData(pTransform->Get_WorldMatrix());

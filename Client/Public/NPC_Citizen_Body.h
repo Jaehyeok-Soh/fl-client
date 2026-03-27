@@ -1,5 +1,6 @@
 #pragma once
 #include "NPC_Body_Base.h"
+#include "CitizenData.h"
 
 NS_BEGIN(Engine)
 
@@ -16,6 +17,7 @@ class CNPC_Citizen_Body : public CNPC_Body_Base
 public:
 	typedef struct tagNPC_Citizen_Body : public CNPC_Body_Base::NPCBODY_DESC
 	{
+		array<DTO::CITIZEN_ATLAS_DATA, ENUM_TO_UINT(DTO::CITIZEN_ATLAS_TYPE::END)> arrayAtlasDatas{};
 		SHADER_RGBCOLOR_DESC	tRGBColorData{};
 		string					strLoopAnimName{""};
 	}NPC_CITIZEN_BODY;
@@ -43,6 +45,7 @@ protected:
 	HRESULT					Ready_Component(NPC_CITIZEN_BODY* pDesc);
 	HRESULT					Ready_Animation(NPC_CITIZEN_BODY* pDesc);
 	HRESULT					Ready_ShaderPass(NPC_CITIZEN_BODY* pDesc);
+	HRESULT					Ready_FaceData(NPC_CITIZEN_BODY* pDesc);
 private:
 	CComputeShader*			m_pBoneMeshCS;
 	CComputeShader*			m_pBoneCombineCS;
@@ -52,7 +55,9 @@ private:
 
 	SHADER_RGBCOLOR_DESC	m_tRGBColorDesc;
 
-	vector<EAnimShaderPass>	m_vecShaderPass;
+	vector<EAnimShaderPass>			m_vecShaderPass;
+	DTO::CB_CitizentFaceData		m_tCBCitizenFaceData;
+	ID3DX11EffectConstantBuffer*	m_pCBCitizenFaceData;
 
 	string					m_strLoopAninName;
 public:

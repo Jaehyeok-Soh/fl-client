@@ -45,13 +45,15 @@
                             {
                                 "Max Colum": 4,
                                 "Max Row": 4,
+                                "Select Column": 1,
                                 "Select Row": 0,
                                 "Use Atlas": true
                             },
                             {
                                 "Max Colum": 3,
                                 "Max Row": 3,
-                                "Select Row": 0,
+                                "Select Column": 1,
+                                "Select Row": 2,
                                 "Use Atlas": true
                             }
                         ],
@@ -59,13 +61,13 @@
                             "B": {
                                 "W": 1.0,
                                 "X": 0.0,
-                                "Y": 0.4324324131011963,
+                                "Y": 0.0,
                                 "Z": 1.0
                             },
                             "G": {
                                 "W": 1.0,
-                                "X": 1.0,
-                                "Y": 0.8803088665008545,
+                                "X": 0.0,
+                                "Y": 1.0,
                                 "Z": 0.0
                             },
                             "R": {
@@ -75,26 +77,26 @@
                                 "Z": 0.0
                             }
                         },
-                        "Loop Animation Name": "Animation_CM_ZNM_Body01_SM_NPC_Zhongnian_M_Story_Cowardice_Loop",
-                        "Model Name": "Middle/Male/CM_ZNM_Body01_SM",
-                        "Parts Names": {
+                        "Loop Animation Name": "Animation_CM_YNM_Body01_SM_Npc_Younian_Run_Loop",
+                        "Model Name": "Child/Male/CM_YNM_Body01_SM",
+                        "Parts Datas": {
                             "Beard": {
                                 "Color": {
                                     "W": 1.0,
                                     "X": 1.0,
-                                    "Y": 0.0,
-                                    "Z": 0.0
+                                    "Y": 1.0,
+                                    "Z": 1.0
                                 },
-                                "Name": "Middle/Male/Beard/CM_ZNM_Beard01_SM"
+                                "Name": ""
                             },
                             "Hair": {
                                 "Color": {
                                     "W": 1.0,
-                                    "X": 0.0,
-                                    "Y": 0.1081082820892334,
-                                    "Z": 1.0
+                                    "X": 0.6486486196517944,
+                                    "Y": 0.21538139879703522,
+                                    "Z": 0.21538139879703522
                                 },
-                                "Name": "Middle/Male/Hair/CM_ZNM_Hair06_SM"
+                                "Name": "Child/Male/Hair/CM_YNM_Hair05_SM"
                             }
                         }
                     },
@@ -106,15 +108,15 @@
             "SRT": [
                 {
                     "Position": {
-                        "X": -1.0136481523513794,
-                        "Y": 4.405984878540039,
-                        "Z": -4.390592575073242
+                        "X": -1.3753116130828857,
+                        "Y": 3.865774631500244,
+                        "Z": -3.7107954025268555
                     },
                     "Quaternion": {
                         "W": 1.0,
-                        "X": -0.0,
+                        "X": 0.0,
                         "Y": 0.0,
-                        "Z": -0.0
+                        "Z": 0.0
                     },
                     "Scale": {
                         "X": 1.0,
@@ -131,7 +133,7 @@
             "Section Number": 0,
             "UE Loaded": false,
             "UE Raw Data Path": "",
-            "strTag": "Cube349"
+            "strTag": "Cube235"
         }
     ]
 }

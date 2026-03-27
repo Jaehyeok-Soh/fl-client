@@ -341,6 +341,8 @@ public:
 
 	std::array<CCitizenPart*, ENUM_TO_UINT(DTO::CITIZEN_PARTTYPE::END)>  m_arrayCitizenPart;
 
+	DTO::CB_CitizentFaceData			m_tCBCitizenFaceData;
+
 	vector<EAnimShaderPass>				m_vecAnimShaderPass{};
 public:
 	static CMapObject*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

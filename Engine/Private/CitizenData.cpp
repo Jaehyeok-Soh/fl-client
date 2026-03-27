@@ -37,19 +37,20 @@ void CITIZEN_DATA::from_Json(const json& LoadJson)
 	else
 		this->isUseClothColorMapping = false;
 
-	if (LoadJson.contains("Parts Names"))
+	if (LoadJson.contains("Parts Datas"))
 	{
-		auto& PartName_LoadJson = LoadJson["Parts Names"];
+		auto& PartDatas_LoadJson = LoadJson["Parts Datas"];
+		
 		for (_uint i = 0; i < ENUM_TO_UINT(CITIZEN_PARTTYPE::END); ++i)
 		{
-			string strCitizenPartName = CitizenPartType_ToString(CITIZEN_PARTTYPE(i));
-			if (PartName_LoadJson.contains(strCitizenPartName))
+			string strPartName = CitizenPartType_ToString(CITIZEN_PARTTYPE(i));
+			if (PartDatas_LoadJson.contains(strPartName))
 			{
-				this->arrayPartDatas[i].strName = PartName_LoadJson[strCitizenPartName]["Name"];
-				Engine_Utils::read_vec4_xyzw(PartName_LoadJson[strCitizenPartName]["Color"], this->arrayPartDatas[i].vColor);
+				this->arrayPartDatas[i].from_Json(PartDatas_LoadJson[strPartName]);
 			}
 		}
 	}
+
 	if (LoadJson.contains("Loop Animation Name"))
 	{
 		this->strLoopAnimationName = LoadJson["Loop Animation Name"];
@@ -83,14 +84,12 @@ void CITIZEN_DATA::to_Json(json& SaveJson)
 
 	}
 
-	auto& Part_SaveJson = SaveJson["Parts Names"];
+	auto& Parts_SaveJson = SaveJson["Parts Datas"];
 	for (_uint i = 0; i < ENUM_TO_UINT(CITIZEN_PARTTYPE::END); ++i)
 	{
 		string strPartName = CitizenPartType_ToString(CITIZEN_PARTTYPE(i));
-
-		auto& PartName_SaveJson = Part_SaveJson[strPartName];
-		Engine_Utils::write_vec4_xyzw(PartName_SaveJson["Color"], this->arrayPartDatas[i].vColor);
-		PartName_SaveJson["Name"] = this->arrayPartDatas[i].strName;
+		auto& Part_SaveJson = Parts_SaveJson[strPartName];
+		this->arrayPartDatas[i].to_Json(Part_SaveJson);
 	}
 
 	SaveJson["Loop Animation Name"] = this->strLoopAnimationName;
@@ -113,6 +112,9 @@ void CITIZEN_ATLAS_DATA::from_Json(const json& LoadJson)
 
 	if (LoadJson.contains("Select Row"))
 		this->iSelectRow = LoadJson["Select Row"];
+
+	if (LoadJson.contains("Select Column"))
+		this->iSelectColumn = LoadJson["Select Column"];
 }
 
 void CITIZEN_ATLAS_DATA::to_Json(json& SaveJson)
@@ -121,6 +123,7 @@ void CITIZEN_ATLAS_DATA::to_Json(json& SaveJson)
 	SaveJson["Max Colum"] = this->iMaxColumn;
 	SaveJson["Max Row"] = this->iMaxRow;
 	SaveJson["Select Row"] = this->iSelectRow;
+	SaveJson["Select Column"] = this->iSelectColumn;
 }
 #pragma endregion
 
@@ -129,13 +132,41 @@ void CITIZEN_ATLAS_DATA::to_Json(json& SaveJson)
 
 void CITIZEN_PART_DATA::from_Json(const json& LoadJson)
 {
+	if (LoadJson.contains("Color"))
+	{
+		Engine_Utils::read_vec4_xyzw(LoadJson["Color"], this->vColor);
+	}
+
+	if (LoadJson.contains("Name"))
+	{
+		this->strName = LoadJson["Name"];
+	}
 }
 
 void CITIZEN_PART_DATA::to_Json(json& SaveJson)
 {
+	Engine_Utils::write_vec4_xyzw(SaveJson["Color"],this->vColor);
+	SaveJson["Name"] = this->strName;
 }
 
 #pragma endregion
+
+
+void CB_CitizentFaceData::SetFaceUV(CITIZEN_ATLAS_TYPE eType, const struct CITIZEN_ATLAS_DATA* pData)
+{
+
+	if (!pData || !pData->isUseAtlas) {
+		tCitizenFaceUV[ENUM_TO_UINT(eType)] = { {0.f, 0.f}, {1.f, 1.f} };
+		return;
+	}
+
+	float fScaleX = 1.0f / (float)pData->iMaxColumn;
+	float fScaleY = 1.0f / (float)pData->iMaxRow;
+
+	auto& target = tCitizenFaceUV[ENUM_TO_UINT(eType)];
+	target.vUVScale = { fScaleX, fScaleY };
+	target.vUVOffset = { fScaleX * pData->iSelectColumn , fScaleY * pData->iSelectRow};
+}
 
 NS_END
 

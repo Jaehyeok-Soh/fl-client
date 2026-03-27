@@ -16,6 +16,7 @@ CNPC_Citizen_Body::CNPC_Citizen_Body(ID3D11Device* pDevice, ID3D11DeviceContext*
 	, m_pAnimMix{nullptr}
 	, m_vecShaderPass{}
 	, m_tRGBColorDesc{}
+	, m_pCBCitizenFaceData{nullptr}
 { 
 }	 
 
@@ -29,6 +30,7 @@ CNPC_Citizen_Body::CNPC_Citizen_Body(const CNPC_Citizen_Body& rhs)
 	, m_pAnimMix{ rhs.m_pAnimMix }
 	, m_vecShaderPass{rhs.m_vecShaderPass }
 	, m_tRGBColorDesc{rhs.m_tRGBColorDesc}
+	, m_pCBCitizenFaceData{rhs.m_pCBCitizenFaceData }
 {
 }
 
@@ -61,6 +63,9 @@ HRESULT CNPC_Citizen_Body::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(this->Ready_ShaderPass(pDesc)))
+		return E_FAIL;
+
+	if (FAILED(this->Ready_FaceData(pDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -137,6 +142,7 @@ HRESULT CNPC_Citizen_Body::Ready_ShaderPass(NPC_CITIZEN_BODY* pDesc)
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMtlCount = pModel->Get_MaterialCount();
 	m_vecShaderPass.resize(iMtlCount);
+
 	for (_uint i = 0; i < pModel->Get_MaterialCount(); ++i)
 	{
 		EAnimShaderPass ePass{ EAnimShaderPass::Default };
@@ -151,6 +157,26 @@ HRESULT CNPC_Citizen_Body::Ready_ShaderPass(NPC_CITIZEN_BODY* pDesc)
 			ePass = EAnimShaderPass::CitizenBody;
 		m_vecShaderPass[i] = ePass;
 	}
+	return S_OK;
+}
+
+HRESULT CNPC_Citizen_Body::Ready_FaceData(NPC_CITIZEN_BODY* pDesc)
+{
+	for (_uint i = 0; i < (_uint)DTO::CITIZEN_ATLAS_TYPE::END; ++i)
+	{
+		auto& tAtlasData = pDesc->arrayAtlasDatas[i];
+		m_tCBCitizenFaceData.SetFaceUV((DTO::CITIZEN_ATLAS_TYPE)i, &tAtlasData);
+	}
+
+
+	CShader* pShader = Get_Component<CShader>();
+	if (pShader == nullptr) return E_FAIL;
+
+	ID3DX11EffectConstantBuffer* pCB = pShader->Get_ConstantBuffer("CB_CitizentFaceData");
+	if (!pCB->IsValid())
+		return E_FAIL;
+
+	m_pCBCitizenFaceData = pCB;
 
 
 	return S_OK;
@@ -235,6 +261,8 @@ HRESULT CNPC_Citizen_Body::Render()
 
 	pShader->Bind_RGBColorData(m_tRGBColorDesc);
 
+	m_pCBCitizenFaceData->SetRawValue(&m_tCBCitizenFaceData , 0 , sizeof(m_tCBCitizenFaceData) );
+
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
 		pShader->Set_Pass(ENUM_TO_UINT(m_vecShaderPass[i]));
@@ -279,5 +307,7 @@ CGameObject* CNPC_Citizen_Body::Clone(void* pArg)
 void CNPC_Citizen_Body::Free()
 {
 	Super::Free();
+
+	m_pCBCitizenFaceData = nullptr;
 }
 

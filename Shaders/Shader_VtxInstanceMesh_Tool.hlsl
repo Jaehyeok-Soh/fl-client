@@ -34,6 +34,7 @@
 #define SPHERE      1
 
 
+
 bool HasCopickMask() { return (g_iGlobalMask & 1) != 0; }
 bool HasSecNormal() { return (g_iGlobalMask & 2) != 0; }
 
@@ -144,6 +145,7 @@ float4 Get_Modified_Diffuse(float4 vOriginDiffuse, int iCurInstanceID)
     
     return vOutDiffuse;
 }
+
 
 
 

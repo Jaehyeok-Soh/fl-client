@@ -13,10 +13,11 @@ public:
 	{
 		Vec4				tTintColor{ 1.f,1.f,1.f,1.f };
 
-		const Matrix*		pBoneSocket{nullptr};
-		Matrix				ModelPreMatrix{ Matrix::Identity };
-		ELevelType			iAddModelPrototypeLevel{ ELevelType::STATIC };
-		wstring				wstrPartModelFolderName = { L"" };
+
+		const Matrix*				pBoneSocket{nullptr};
+		Matrix						ModelPreMatrix{ Matrix::Identity };
+		ELevelType					iAddModelPrototypeLevel{ ELevelType::STATIC };
+		wstring						wstrPartModelFolderName = { L"" };
 	}CITIZENPART_DESC;
 
 private:
@@ -48,12 +49,12 @@ private:
 
 	const Matrix*	m_pBoneSocket;
 
-	SHADER_MI_DESC	m_tMIDesc{};
+	SHADER_MI_DESC	m_tMIDesc;
 private:
-	HRESULT Ready_Components(CITIZENPART_DESC* pDesc);
+	HRESULT					Ready_Components(CITIZENPART_DESC* pDesc);
 public:
-	static	CCitizenPart* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual CGameObject* Clone(void* pArg)override;
+	static	CCitizenPart*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual CGameObject*	Clone(void* pArg)override;
 	virtual void Free() override;
 };
 
