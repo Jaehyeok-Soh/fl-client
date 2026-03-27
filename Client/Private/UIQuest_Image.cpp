@@ -109,6 +109,8 @@ HRESULT CUIQuest_Image::Attach_Personal_Info()
 
 void CUIQuest_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -120,8 +122,7 @@ void CUIQuest_Image::Bind_Events()
 
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -129,16 +130,14 @@ void CUIQuest_Image::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_START>(
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
@@ -148,8 +147,7 @@ void CUIQuest_Image::Bind_Events()
 					return;
 
 				this->Set_Visible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
@@ -159,8 +157,7 @@ void CUIQuest_Image::Bind_Events()
 				
 				this->m_isPulseTrigger = true;
 				Set_Visible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
@@ -169,8 +166,7 @@ void CUIQuest_Image::Bind_Events()
 					return;
 
 				Set_Visible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
@@ -183,8 +179,7 @@ void CUIQuest_Image::Bind_Events()
 						this->m_isPulseTrigger = true;
 					}
 				}
-			})
-	);
+			}));
 }
 
 void CUIQuest_Image::Tick_By_Type(const _float fTimeDelta)

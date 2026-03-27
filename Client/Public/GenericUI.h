@@ -74,7 +74,7 @@ protected:
 	_bool Tick_ChangeOriginColor(const _float fTimeDelta);
 
 	void Request_SetDead();
-	virtual void Bind_Events() {};
+	virtual void Bind_Events();
 public:
 	void Set_RectPos(const Vec3& pos) { m_vRectPos = pos; }
 	void Set_ParentCanvas(CCanvas* p) { m_pParentCanvasCache = p; }
@@ -170,6 +170,9 @@ private:
 
 	Vec4 m_vChangeColor_OriginColor = {};
 	Vec4 m_vChangeColor_OriginGradColor = {};
+
+
+	_bool m_isEventVisible = { false };
 
 public:
 	virtual void Free()override;

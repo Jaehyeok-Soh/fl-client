@@ -130,36 +130,21 @@ HRESULT CUIWeakness_Text::Attach_Personal_Info()
 
 void CUIWeakness_Text::Bind_Events()
 {
-	m_tEventHandle0 = (m_pGameInstance->Subscribe<BOSS_GROGGY>([this]()
-		{
-			this->Set_Visible();
-		})
-		);
+	Super::Bind_Events();
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<BOSS_GROGGY>([this]()
+			{
+				this->Set_Visible();
+			}));
 
 
-	m_vecEventHandles.push_back(m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
-		{
-			if (EUIEventID::WEAKNESS_FIN == Desc.eEventID)
-				this->Set_Invisible();
-		})
-	);
-
-	switch (m_eTextSubClassType)
-	{
-	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_BEGIN:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_TEXT:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_LEFT:
-		break;
-	case DTO::EUITextSubClassType::BATTLE_WEAKNESS_WORLD_TEXT_RIGHT:
-		break;
-	case DTO::EUITextSubClassType::BSTTLE_WEAKNESS_END:
-		break;
-	case DTO::EUITextSubClassType::END:
-	default:
-		break;
-	}
+	m_vecEventHandles.push_back(
+		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
+			{
+				if (EUIEventID::WEAKNESS_FIN == Desc.eEventID)
+					this->Set_Invisible();
+			}));
 }
 
 void CUIWeakness_Text::Tick_By_Type(const _float fTimeDelta)

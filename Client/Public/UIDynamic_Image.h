@@ -34,7 +34,7 @@ public:
 protected:
 	HRESULT Ready_Components(DIMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
-
+	virtual void Bind_Events()override { Super::Bind_Events(); };
 	inline virtual HRESULT Spawn_FromPool(void* pArg)override { if (FAILED(Super::Spawn_FromPool(pArg)))return E_FAIL; return S_OK; };
 	inline virtual HRESULT Despawn_FromPool()override { if (FAILED(Super::Despawn_FromPool()))return E_FAIL; return S_OK; };
 

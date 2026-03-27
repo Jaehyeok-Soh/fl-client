@@ -925,6 +925,9 @@
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Veteran">
       <UniqueIdentifier>{891e152c-a400-49cb-8b33-7c6a053f57b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade">
+      <UniqueIdentifier>{4f0b1359-e689-42d3-a27c-4833dd92821d}</UniqueIdentifier>
+    </Filter>
     <Filter Include="06. FSM\Player\NPCs">
       <UniqueIdentifier>{6b482b46-4030-4bea-920d-461400b222f6}</UniqueIdentifier>
     </Filter>
@@ -1716,9 +1719,6 @@
     <ClInclude Include="..\Public\UITitle_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\19.Title</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UILoading_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\03.Damage Text</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIEnterGame_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame</Filter>
     </ClInclude>
@@ -1730,6 +1730,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Veteran_Body.h">
       <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILoading_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\02.Loading Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISceneFade_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Npctalk.h">
       <Filter>06. FSM\Player\NPCs</Filter>
@@ -2524,6 +2530,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Veteran_Body.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UISceneFade_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Npctalk.cpp">
       <Filter>06. FSM\Player\NPCs</Filter>

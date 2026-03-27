@@ -51,6 +51,7 @@ private:
 	EUITutorialPannelTypeID m_eTutorialID = {};
 
 	vector<_wstring> m_vecTexts;
+	vector<_wstring> m_vecContentsTexts;
 
 	_uint m_iCurPageIdx = {};
 	_uint m_iMaxPageIdx = {};

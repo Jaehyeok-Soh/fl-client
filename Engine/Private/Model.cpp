@@ -279,7 +279,6 @@ HRESULT CModel::Ready_StaticModelMinMax()
 		if (pCurMinMax == nullptr)
 		{
 			Safe_Delete_Array(m_pStaticModel_MinMax);
-			MSG_BOX("Static Model Min Max 작업중 Min Max가 없습니다");
 			return S_OK;
 		}
 		Engine_Utils::Merge_MinMax(pCurMinMax , m_pStaticModel_MinMax[MIN] , m_pStaticModel_MinMax[MAX]);

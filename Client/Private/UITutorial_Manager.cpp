@@ -103,7 +103,8 @@ void CUITutorial_Manager::PlayerState_All_Lock()
 	if (nullptr == p)
 		return;
 
-	p->Set_AllKeyFlag(false);
+	p->Save_CurrentState();
+	p->Block_AllState();
 }
 
 void CUITutorial_Manager::Return_Locked_PlayerState()
@@ -111,7 +112,8 @@ void CUITutorial_Manager::Return_Locked_PlayerState()
 	auto* p = Get_PlayerCtrCtx();
 	if (nullptr == p)
 		return;
-	p->Set_PreKeyFlag();
+
+	p->Return_State();
 }
 
 CPlayerControlContext* CUITutorial_Manager::Get_PlayerCtrCtx()

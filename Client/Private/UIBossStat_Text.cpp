@@ -120,7 +120,7 @@ HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_LV:
 		break;
 	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME:
-		m_wstrText =Engine_Utils::ToWString( m_pTargetStat->Get_Owner()->Get_Name());
+		m_wstrText = Engine_Utils::ToWString( m_pTargetStat->Get_Owner()->Get_Name());
 		break;
 
 		break;
@@ -130,16 +130,20 @@ HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 
 void CUIBossStat_Text::Bind_Events()
 {
-	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_OFF>(
-		[this]() 
-		{
-			this->Set_Invisible();
-		});
-	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_ON>(
-		[this]()
-		{ 
-			this->Set_Visible(); 
-		});
+	Super::Bind_Events();
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<XIBILA_BOSS_UI_OFF>(
+			[this]()
+			{
+				this->Set_Invisible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<XIBILA_BOSS_UI_ON>(
+			[this]()
+			{
+				this->Set_Visible();
+			}));
 }
 
 void CUIBossStat_Text::Initialize_Visible_Event()
