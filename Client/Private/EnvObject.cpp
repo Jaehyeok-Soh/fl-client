@@ -59,8 +59,9 @@ HRESULT CEnvObject::Ready_Effect(const vector<ENV_EFFECT_INFO>& vecEnvEffectInfo
 
 		// Env_EffectDesc 작성해서 넘기기.
 		EFFECT_ENV_DESC tEnvDesc{};
-		tEnvDesc = Info.tDesc;
 		tEnvDesc.iSimulationType = (int)EFFECT_SPAWN_DESC::E_VFX_SIMULTYPE::VFX_WORLD;
+		tEnvDesc = Info.tDesc;
+
 
 		Matrix EffectLocalMatrix = Matrix::CreateScale(Info.tDesc.VFX_Scale) * Matrix::CreateFromYawPitchRoll(Info.tDesc.VFX_Rotation.y, Info.tDesc.VFX_Rotation.x, Info.tDesc.VFX_Rotation.z)
 								* Matrix::CreateTranslation(Info.tDesc.VFX_Target_Position);;
@@ -70,6 +71,7 @@ HRESULT CEnvObject::Ready_Effect(const vector<ENV_EFFECT_INFO>& vecEnvEffectInfo
 		{
 			tEnvDesc.matWorld = EffectLocalMatrix;
 		}
+
 
 		else
 		{

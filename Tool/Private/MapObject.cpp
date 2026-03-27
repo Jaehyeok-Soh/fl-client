@@ -18,6 +18,10 @@
 #include "Bounding_Sphere.h"
 #include "Light.h"
 #include "CEffectObject.h"
+#include "ComputeShader.h"
+#include "CitizenPart.h"
+#include "Bone.h"
+#include "RenderFx.h"
 // Manager
 #include "Effect_DataManager.h"
 #include "Effect_Env.h"
@@ -38,8 +42,15 @@ CMapObject::CMapObject(EToolObjectType eType, ID3D11Device* pDevice, ID3D11Devic
     , m_tUsingModelInfo{}
     , m_fDT{}
     , m_isModelRender{true}
-{
-
+    , m_pBoneMeshCS{nullptr}
+    , m_pBoneCombineCS{ nullptr }
+    , m_pAnimECS{nullptr}
+    , m_pAnimBlendCS{nullptr}
+    , m_pAnimMix{nullptr}
+    , m_arrayCitizenPart{}
+    , m_tCBCitizenFaceData{}
+{ 
+    m_arrayCitizenPart.fill(nullptr);
 }
 
 
@@ -62,6 +73,13 @@ CMapObject::CMapObject(const CMapObject& rhs)
     , m_tUsingModelInfo{ rhs.m_tUsingModelInfo}
     , m_fDT{rhs.m_fDT }
     , m_isModelRender{ rhs.m_isModelRender}
+    , m_pBoneMeshCS{rhs.m_pBoneMeshCS }
+    , m_pBoneCombineCS{rhs.m_pBoneCombineCS }
+    , m_pAnimECS{rhs.m_pAnimECS }
+    , m_pAnimBlendCS{rhs.m_pAnimBlendCS}
+    , m_pAnimMix{rhs.m_pAnimMix}
+    , m_arrayCitizenPart{rhs.m_arrayCitizenPart }
+    , m_tCBCitizenFaceData{rhs.m_tCBCitizenFaceData }
 {
     /* Description을 어케해주는게 좋을려나... */
 } 
@@ -412,6 +430,11 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
             return E_FAIL;
         break;
 
+    case Tool::EClientMakePath::Batch_NPC:
+        if (FAILED(Ready_Batch_NPC()))
+            return E_FAIL;
+        break;
+
     case Tool::EClientMakePath::Batch_InteractiveObject:
         if (FAILED(Ready_Batch_InteractiveObject()))
             return E_FAIL;
@@ -436,10 +459,12 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
         if (FAILED(Ready_Water()))
             return E_FAIL;
         break;
+
     case Tool::EClientMakePath::Env:
         if (FAILED(Ready_Env()))
             return E_FAIL;
         break;
+
     case Tool::EClientMakePath::LightObject:
         if (FAILED(Ready_LightObject()))
             return E_FAIL;
@@ -463,6 +488,206 @@ HRESULT CMapObject::Ready_PlusData_ByClientMakePath()
     return S_OK;
 }
 
+
+HRESULT CMapObject::Ready_ComputeShader()
+{
+    /* Script 삭제 */
+    CGameObject::Remove_Script_Component(L"ComputeShader_BoneMesh");
+    CGameObject::Remove_Script_Component(L"ComputeShader_BoneCombine");
+    CGameObject::Remove_Script_Component(L"ComputeShader_AnimE");
+    CGameObject::Remove_Script_Component(L"ComputeShader_AnimB");
+    CGameObject::Remove_Script_Component(L"ComputeShader_AnimMix");
+
+    m_pBoneMeshCS = nullptr;
+    m_pBoneCombineCS = nullptr;
+    m_pAnimECS = nullptr;
+    m_pAnimBlendCS = nullptr;
+    m_pAnimMix = nullptr;
+
+
+    _uint iBoneNums = Get_Component<CModel>()->Get_BoneCount();
+    _uint iGetBoneNums = Get_Component<CModel>()->Get_BoneCount();
+
+
+
+
+    // ========   Compute Shader : BoneMesh  ========
+    {
+        CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+        ShaderDesc.Output_SRVBuffer_Name = "BONEFNIMAL_TRANSFORMS_SRV";
+
+        ShaderDesc.InputBufferNum = 2;
+        ShaderDesc.bMakeSB = false;
+        //// 입력 버퍼
+        //ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEDATA";
+        //ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_BONE);
+        //ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+        // 출력 버퍼
+        ShaderDesc.OutPut_StructBuffer.sBufferName = "BONEFNIMAL_TRANSFORMS";
+        ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+        ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+        if (FAILED(Add_Script_Component(L"ComputeShader_BoneMesh", L"Prototype_Component_Shader_BoneMesh", &ShaderDesc)))
+            return E_FAIL;
+    }
+
+    // ========   Compute Shader : BoneCombine  ========
+    {
+        CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+        ShaderDesc.Output_SRVBuffer_Name = "BONECOMBINED_TRANSFORMS_SRV";
+
+        ShaderDesc.InputBufferNum = 3;
+        // 입력 버퍼
+        ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_BONEDATA";
+        ShaderDesc.Input_StructBuffer.iElementSize = sizeof(CS_IMMU_BONE);
+        ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+        // 출력 버퍼
+        ShaderDesc.OutPut_StructBuffer.sBufferName = "BONECOMBINED_TRANSFORMS";
+        ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_OUT_BONE);
+        ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+        if (FAILED(Add_Script_Component(L"ComputeShader_BoneCombine", L"Prototype_Component_Shader_BondCombine", &ShaderDesc)))
+            return E_FAIL;
+    }
+
+    // ========   Compute Shader : AnimE  ========
+    {
+        CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+        ShaderDesc.Output_SRVBuffer_Name = "CHANNEL_OUTPUT_SRV";
+
+        ShaderDesc.InputBufferNum = 2;
+        ShaderDesc.bMakeSB = false;
+        //// 입력 버퍼
+        //ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+        //ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+        //ShaderDesc.Input_StructBuffer.iNumElements = m_tEffectDesc._Effect_MaxParticle;
+
+        // 출력 버퍼
+        ShaderDesc.OutPut_StructBuffer.sBufferName = "CHANNEL_OUTPUT";
+        ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+        ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+        if (FAILED(Add_Script_Component(L"ComputeShader_AnimE", L"Prototype_Component_Shader_AnimEv", &ShaderDesc)))
+            return E_FAIL;
+    }
+
+    // ========   Compute Shader : AnimB  ========
+    {
+        CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+        ShaderDesc.Output_SRVBuffer_Name = "BLEND_OUTPUT_SRV";
+
+        ShaderDesc.InputBufferNum = 2;
+        ShaderDesc.bMakeSB = false;
+        //// 입력 버퍼
+        //ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+        //ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+        //ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+        // 출력 버퍼
+        ShaderDesc.OutPut_StructBuffer.sBufferName = "BLEND_OUTPUT";
+        ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+        ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+        if (FAILED(Add_Script_Component(L"ComputeShader_AnimB", L"Prototype_Component_Shader_AnimB", &ShaderDesc)))
+            return E_FAIL;
+    }
+
+    // ========   Compute Shader : AnimMix  ========
+    {
+        CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+        ShaderDesc.Output_SRVBuffer_Name = "CHANNEL_OUTPUT_SRV";
+
+        ShaderDesc.InputBufferNum = 4;
+        ShaderDesc.bMakeSB = false;
+        //// 입력 버퍼
+        //ShaderDesc.Input_StructBuffer.sBufferName = "IMMU_EFFECT_PARTICLE";
+        //ShaderDesc.Input_StructBuffer.iElementSize = sizeof(EFFECT_PARTICLE_IMMU_ELEMENT);
+        //ShaderDesc.Input_StructBuffer.iNumElements = iBoneNums;
+
+        // 출력 버퍼
+        ShaderDesc.OutPut_StructBuffer.sBufferName = "CHANNEL_OUTPUT";
+        ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+        ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+        if (FAILED(Add_Script_Component(L"ComputeShader_AnimMix", L"Prototype_Component_Shader_AnimMix", &ShaderDesc)))
+            return E_FAIL;
+    }
+
+    m_pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+    m_pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+    m_pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+    m_pAnimBlendCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+    m_pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
+
+    if (FAILED(Get_Component<CModel>()->Ready_ComputeShaders(m_pBoneMeshCS, m_pBoneCombineCS, m_pAnimECS, m_pAnimBlendCS, m_pAnimMix)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Change_CitizenBonePart(_uint iChangeCitizenPartType, const wstring& wstrModelFolderName , const Vec4& vColor)
+{
+    if (wstrModelFolderName.empty())
+    {
+        /* 모델명이 아무것도없는데 모델이 있다면 지워준다 */
+        Safe_Release(m_arrayCitizenPart[iChangeCitizenPartType]);
+        return S_OK;
+    }
+
+    /* Part가 없으면 Part만들어주기 */
+    if (m_arrayCitizenPart[iChangeCitizenPartType] == nullptr)
+    {
+        CCitizenPart::CITIZENPART_DESC tDesc{};
+        tDesc.iAddModelPrototypeLevel   = ELevelType::MAP;
+        tDesc.pMatParent                = this->Get_Component<CTransform>()->Get_WorldMatrixPtr();
+        tDesc.pBoneSocket               = &this->Get_Component<CModel>()->Get_Bone("Jiao")->Get_CombinedTransformMatrix();
+        tDesc.tTintColor = vColor;
+
+
+        tDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+        tDesc.wstrLayerTag = L"None";
+
+        tDesc.wstrPartModelFolderName = L"NPC_Citizen_Parts/" + wstrModelFolderName;
+
+        m_arrayCitizenPart[iChangeCitizenPartType] =
+            static_cast<CCitizenPart*>(m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,ENUM_TO_UINT(ELevelType::STATIC), g_wszCitizenPart_PrototypeTag, &tDesc));
+
+        if (m_arrayCitizenPart[iChangeCitizenPartType] == nullptr)
+            return E_FAIL;
+    }
+    /* Part가 잇다면 */
+    else
+    {
+        /* Tint Color는 유지된다 */
+        m_arrayCitizenPart[iChangeCitizenPartType]->Change_Model(L"NPC_Citizen_Parts/" + wstrModelFolderName);
+    }
+    return S_OK;
+}
+
+HRESULT CMapObject::Delete_CitizenBonePart(_int iChangeCitizenPartType)
+{
+    if (iChangeCitizenPartType == -1)
+    {
+        for (auto& Part : m_arrayCitizenPart)
+            Safe_Release(Part);
+
+    }
+    else
+    {
+        Safe_Release(m_arrayCitizenPart[iChangeCitizenPartType]);
+    }
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Change_CitizenPartsColor(const Vec4& vColor, _int iChangeCitizenPartType)
+{
+    m_arrayCitizenPart[iChangeCitizenPartType]->Change_Color(vColor);
+
+    return S_OK;
+}
 
 HRESULT CMapObject::Ready_Plants()
 {
@@ -604,9 +829,128 @@ HRESULT CMapObject::Ready_Batch_Object()
         m_strName = "Point_Light";
         break;
     }
-    default:                                    break;
+    default:                                    return E_FAIL;
     }
 
+
+    return S_OK;
+}
+
+HRESULT CMapObject::Ready_Batch_NPC()
+{
+    if (m_eClientMakePath != EClientMakePath::Batch_NPC)    return E_FAIL;
+    if (m_vecClientMakePathDesc.empty())                    return E_FAIL;
+
+    BATCH_NPC_DESC* pDesc = static_cast<BATCH_NPC_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr)    return E_FAIL;
+
+    EObjectEnumTag::Enum eNpcType = pDesc->eBatchNPCType;
+
+    static Matrix MatrixIdentity = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
+    static Matrix PreMatrix = Matrix::CreateScale(0.01f, 0.01f, 0.01f) * Matrix::CreateRotationY(XMConvertToRadians(180.f));
+    static Matrix CitizenPreMatrix = MatrixIdentity * Matrix::CreateRotationX(XMConvertToRadians(90.f));
+
+    /* 기존에 있던 모델 삭제 */
+    CGameObject::Remove_Component<CModel>();
+    CGameObject::Remove_Component<CShader>();
+
+    /*  Citizen Model */
+    CModel::MODEL_ORIGIN_DESC tDesc{};
+    tDesc.eType = EModelType::STATIC;
+    tDesc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::MAP);
+    tDesc.pMatPreTransform = &PreMatrix;
+
+    switch (eNpcType)
+    {
+    case Engine::EObjectEnumTag::NPC_CITIZEN:
+    {
+        tDesc.pMatPreTransform = &MatrixIdentity;
+
+        const wstring& wstrCitizenModelName = Engine_Utils::ToWString(pDesc->tNpcCitizenData.strModelName);
+
+        /* 아무 이름이 없다면 Cube모델로 대체 */
+        if(wstrCitizenModelName.empty())
+            break;
+
+        CModel::DATA_ANIMCHANNEL tAnimChannelData{};
+        tAnimChannelData.bMixAni = false;
+        tAnimChannelData.bRootAni = false;
+        tAnimChannelData.iRootBoneIndex = 3;
+        tDesc.pMatPreTransform = &CitizenPreMatrix;
+        tDesc.pAniChannelData = &tAnimChannelData;
+
+        tDesc.FStageBone = CModel::STAGEING_BONE::SB_ALLBONE;
+        tDesc.vecStageBoneIndices = {};
+
+        tDesc.eType = EModelType::ANIM;
+
+        tDesc.wstrModelFolderName = L"NPC_Citizen/" + wstrCitizenModelName;
+
+        const wstring& wstrPrototypeTag = L"Prototype_Component_Model_" + wstrCitizenModelName;
+
+        if (FAILED(CGameObject::Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMesh", nullptr)))
+            return E_FAIL;
+
+        m_pGameInstance->Add_Prototype(tDesc.iPrototypeLevelIndex, wstrPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &tDesc));
+
+        CModel::MODEL_COPY_DESC tCopyDesc{};
+        if (FAILED(Add_Component<CModel>(tDesc.iPrototypeLevelIndex, wstrPrototypeTag , &tCopyDesc)))
+            return E_FAIL;
+
+        /* 아마 Compute Shader생성해줘야함 삭제해야할듯? */
+        if(FAILED(Ready_ComputeShader()))
+            return E_FAIL;
+
+        CModel* pModel =Get_Component<CModel>();
+        if (pModel == nullptr) return E_FAIL;
+
+        /* Animation Setting */
+        _int iIndex = pModel->Get_AnimationIndex(Engine_Utils::ToWString(pDesc->tNpcCitizenData.strLoopAnimationName));
+        if (iIndex == -1)
+            iIndex = 0;
+        pModel->Change_Animation(m_pAnimECS, iIndex , false , true);
+
+        _uint iMtlCount = pModel->Get_MaterialCount();
+        m_vecAnimShaderPass.resize(iMtlCount);
+        for (_uint i = 0; i < pModel->Get_MaterialCount(); ++i)
+        {
+            EAnimShaderPass ePass{ EAnimShaderPass::Default};
+            wstring wstrMtlName = pModel->Get_MaterialName(i);
+            if (wstrMtlName.find(L"Eye") != std::wstring::npos)
+                ePass = EAnimShaderPass::CitizenEye;
+            else if (wstrMtlName.find(L"Mouth") != std::wstring::npos)
+                ePass = EAnimShaderPass::CitizenMouth;
+            else if (wstrMtlName.find(L"Cloth") != std::wstring::npos)
+                ePass = EAnimShaderPass::CitizenCloth;
+            else if (wstrMtlName.find(L"body") != std::wstring::npos)
+                ePass = EAnimShaderPass::CitizenBody;
+            m_vecAnimShaderPass[i] = ePass;        
+        }
+
+        for (_uint i = 0; i < ENUM_TO_UINT(DTO::CITIZEN_PARTTYPE::END); ++i)
+        {
+            Change_CitizenBonePart(i, Engine_Utils::ToWString(pDesc->tNpcCitizenData.arrayPartDatas[i].strName), pDesc->tNpcCitizenData.arrayPartDatas[i].vColor);
+        }
+
+        pModel->Set_ApplyRootMotionAll(false);
+
+        return S_OK;
+    }
+        break;
+    default:                        break;
+    }
+
+    /* Citizen type 제외하고 다열로들어감 */
+
+    /* 그냥 큐브 생성 */
+    //if (FAILED(m_pGameInstance->Add_Prototype(tDesc.iPrototypeLevelIndex,L"Prototype_Component_Model_Cube" , CModel::Create(m_pDevice, m_pDeviceContext, &tDesc))))
+    //    return E_FAIL;
+
+    CModel::MODEL_COPY_DESC tCopyDesc{};
+    if (FAILED(Add_Component<CModel>(tDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_Cube" , &tCopyDesc)))
+        return E_FAIL;
+    if (FAILED(Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxMesh_Tool", nullptr)))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -684,8 +1028,8 @@ HRESULT CMapObject::Ready_Env()
     for (auto& EffectInfo : pDesc->vecEnvEffectInfo)
     {
         Add_EnvEffect(EffectInfo.strTags);
-        EffectInfo.tDesc.iSimulationType = (_int)EFFECT_ENV_DESC::E_VFX_SIMULTYPE::VFX_LOCAL;
-        EffectInfo.tDesc.pTransformMatrix = &m_pWorldMatPtr;
+        EffectInfo.tDesc.iSimulationType   = (_int)EFFECT_ENV_DESC::E_VFX_SIMULTYPE::VFX_LOCAL;
+        EffectInfo.tDesc.pTransformMatrix  = &m_pWorldMatPtr;
         Set_EnvEffectDesc(static_cast<_uint>(m_vEnvEffectList.size()) - 1, EffectInfo.tDesc);
     }
 
@@ -1358,6 +1702,10 @@ void CMapObject::Ready_Before_Render(const _float fTimeDelta)
     case Tool::EClientMakePath::Batch_Object:
         BatchObject_BeforeRender(fTimeDelta);
         break;
+
+    case Tool::EClientMakePath::Batch_NPC:
+        BatchNPC_BeforeRender(fTimeDelta);
+        break;
     default:                            break;
     }
 
@@ -1429,6 +1777,9 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::Batch_Object:
         hr = Render_Batch_Object();
         break;
+    case Tool::EClientMakePath::Batch_NPC:
+        hr = Render_Batch_NPC();
+        break;
     case Tool::EClientMakePath::Batch_InteractiveObject:
         hr = Render_StaticObject();
         break;
@@ -1451,9 +1802,6 @@ HRESULT CMapObject::Render()
         hr = Render_StaticObject();
         break;
 
-    case Tool::EClientMakePath::Batch_NPC:
-        hr = Render_StaticObject();
-        break;
 
     case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:
         hr = Render_TriggerBox_MonsterWaveSpawner();
@@ -1646,6 +1994,7 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::Env:
     case Tool::EClientMakePath::Batch_Player:
     case Tool::EClientMakePath::Batch_Monster:
+    case Tool::EClientMakePath::Batch_NPC:
     case Tool::EClientMakePath::Batch_InteractiveObject:
     case Tool::EClientMakePath::LandScape:
     case Tool::EClientMakePath::TriggerBox_ChangeLevel:
@@ -1780,6 +2129,41 @@ void CMapObject::BatchObject_BeforeRender(const _float fTimeDelta)
         break;
     }
 
+
+    return;
+}
+
+void CMapObject::BatchNPC_BeforeRender(const _float fTimeDelta)
+{
+    if (m_vecClientMakePathDesc.empty()) return;
+    BATCH_NPC_DESC* pDesc = static_cast<BATCH_NPC_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return;
+    
+
+    switch (pDesc->eBatchNPCType)
+    {
+    case EObjectEnumTag::Enum::NPC_CITIZEN:
+    {
+        CModel* pModel = Get_Component<CModel>();
+
+        /* Animatino 먼저돌리고 */
+        if(pModel)
+            if(pModel->Get_Type() == EModelType::ANIM)
+                pModel->Update_Animation(m_pBoneCombineCS, m_pAnimECS, fTimeDelta);
+
+        /* Part 오브젝트 Update */
+        for (auto& Part : m_arrayCitizenPart)
+        {
+            if (!Part)
+                continue;
+            Part->Ready_Before_Render(fTimeDelta);
+        }
+
+    }
+        break;
+    default:
+        break;
+    }
 
     return;
 }
@@ -1937,6 +2321,8 @@ void CMapObject::Free()
 { 
     m_pMapToolManager = nullptr;
 
+    Delete_CitizenBonePart();
+
     for (auto& OverrideMtl : m_vecOverrideMaterials)
         Safe_Release(OverrideMtl);
 
@@ -1948,6 +2334,7 @@ void CMapObject::Free()
         if (EnvEffect.first)
             Safe_Release(EnvEffect.first);
     }
+
 
     m_vEnvEffectList.clear();
     Super::Free();
@@ -2563,6 +2950,7 @@ HRESULT CMapObject::Render_LightObject()
 
         for (_uint i = 0; i < iMeshCount; ++i)
         {
+            pModel->Set_MI_TintColor(i, Vec4(1.f, 1.f, 1.f, 1.f));
             pModel->Set_MI_EmissiveColor(i,vEmissiveColor);
             pModel->Set_MI_EmissivePower(i,pDesc->fEmissviePower * fRange);
             pModel->Bind_MaterialInstance(pShader, i);
@@ -2604,6 +2992,88 @@ HRESULT CMapObject::Render_Batch_Monster()
 
     return S_OK;
 }
+#pragma region Batch NPC
+
+HRESULT CMapObject::Render_Batch_NPC()
+{
+    if (m_eMapObjectDrawType != EMapObject_DrawType::Default)
+        return S_OK;
+    if (m_vecClientMakePathDesc.empty())
+        return E_FAIL;
+
+    BATCH_NPC_DESC* pDesc = static_cast<BATCH_NPC_DESC*>(m_vecClientMakePathDesc.front());
+    if (pDesc == nullptr) return E_FAIL;
+
+    EObjectEnumTag::Enum eNpcType = pDesc->eBatchNPCType;
+
+    switch (eNpcType)
+    {
+    case Engine::EObjectEnumTag::NPC_DEFAULT:
+    case Engine::EObjectEnumTag::NPC_PAN:
+    case Engine::EObjectEnumTag::NPC_BERENICA:
+    case Engine::EObjectEnumTag::NPC_TAVERN:
+    case Engine::EObjectEnumTag::NPC_VILLAGER_1:
+    case Engine::EObjectEnumTag::NPC_KID_1:
+    {
+        if (FAILED(Render_Default(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject))))
+            return E_FAIL;
+    }
+    break;
+    case Engine::EObjectEnumTag::NPC_CITIZEN:
+    {
+        auto& tCitizenData = pDesc->tNpcCitizenData;
+        if (tCitizenData.strModelName.empty())
+        {
+            /* none이라면 큐브일테니 큐브를 렌더해준다 */
+            return Render_Default();
+        }
+        CShader*    pShader = Get_Component<CShader>();
+        CModel*     pModel = Get_Component<CModel>();
+        CTransform* pTransform = Get_Component<CTransform>();  if (pTransform == nullptr)      return E_FAIL;
+        _uint       iMeshCount = pModel->Get_MeshCount();
+
+
+        auto& CitizenData = pDesc->tNpcCitizenData;
+
+        /* Render 하기 직전 계산 때려준다 */
+
+
+        for (_uint i = 0; i < (_uint)DTO::CITIZEN_ATLAS_TYPE::END; ++i)
+        {
+            auto& tAtlasData =  CitizenData.arrayNpcAtlasData[i];
+            m_tCBCitizenFaceData.SetFaceUV((DTO::CITIZEN_ATLAS_TYPE)i , &tAtlasData);
+        }
+
+        ID3DX11EffectConstantBuffer* pCB = pShader->Get_ConstantBuffer("CB_CitizentFaceData");
+        if (!pCB->IsValid())
+            return E_FAIL;
+        pCB->SetRawValue(&m_tCBCitizenFaceData , 0 , sizeof(m_tCBCitizenFaceData));
+
+        pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
+        pShader->Bind_TransformData(pTransform->Get_WorldMatrix());
+        pShader->Bind_RGBColorData(pDesc->tNpcCitizenData.tClothRGBColor);
+
+        /* Citizen Material Pass를 정해줘야하는데... */
+        for (_uint i = 0; i < iMeshCount; ++i)
+        {
+            pShader->Set_Pass(ENUM_TO_UINT(m_vecAnimShaderPass[i]));
+            pModel->Bind_Material(pShader, i);
+            pModel->Bind_Bones(pShader, i, m_pBoneMeshCS, m_pBoneCombineCS);
+            pShader->Apply();
+            pModel->Render(i);
+        }
+    }
+        break;
+    default:
+        break;
+    }
+
+
+
+    return S_OK;
+}
+#pragma endregion
+
 HRESULT CMapObject::Render_Batch_Object()
 {
     if (m_eMapObjectDrawType != EMapObject_DrawType::Default)
@@ -2832,6 +3302,7 @@ void CMapObject::Add_EnvEffect(const string& EffectTag)
     // 초기 Desc 설정
     EFFECT_ENV_DESC Desc = {};
     Desc.iSimulationType = (_uint)EFFECT_ENV_DESC::E_VFX_SIMULTYPE::VFX_LOCAL;
+    Desc.VFX_COLORTYPE = EFFECT_ENV_DESC::E_VFX_COLORMODE::COLOR_NONCHANGE;     /* 기본설정은 NoneChagne */
 
     // MapObject의 Transform 행렬 주소를 넘겨줌
     m_pWorldMatPtr = Get_Component<CTransform>()->Get_WorldMatrixPtr();

@@ -156,6 +156,7 @@ cbuffer CB_MAPPING_RGB
 };
 
 
+
 VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
 {
     VS_OUT_MESH output;

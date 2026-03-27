@@ -298,12 +298,6 @@
     <Filter Include="02. GameObjects\Map\01. LevelData">
       <UniqueIdentifier>{796e0779-af03-4219-87f2-4ff1d7e85f49}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\PartObject">
-      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\PartObject\AnimPart">
-      <UniqueIdentifier>{5f37dc5c-8136-45a1-a390-81efe16de549}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects\ContainerObject">
       <UniqueIdentifier>{849c5ab9-53df-4b2a-8a78-5d3fb0f5bf4a}</UniqueIdentifier>
     </Filter>
@@ -351,6 +345,18 @@
     </Filter>
     <Filter Include="03. Level\Animation\04. CameraControl_Module">
       <UniqueIdentifier>{4669d9e4-7db1-4a0e-bcb5-d8a853c66acf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\PartObject">
+      <UniqueIdentifier>{ab8f52ba-9548-4d59-96fd-3e11792c6f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\PartObject\AnimPart">
+      <UniqueIdentifier>{5f37dc5c-8136-45a1-a390-81efe16de549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\PartObject\BonePart">
+      <UniqueIdentifier>{b6bd4323-c2d6-48ad-8c3c-b2a75aff79ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Map\PartObject\CitizenPart">
+      <UniqueIdentifier>{25f49192-39a8-4106-8b7b-328e6b40c8d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -502,7 +508,7 @@
       <Filter>02. GameObjects\ContainerObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_PartObject.h">
-      <Filter>02. GameObjects\PartObject</Filter>
+      <Filter>02. GameObjects\Map\PartObject</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>98. Defines\pch</Filter>
@@ -619,7 +625,7 @@
       <Filter>09. Builder\Effect\EffectEvent</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_Weapon.h">
-      <Filter>02. GameObjects\PartObject\AnimPart</Filter>
+      <Filter>02. GameObjects\Map\PartObject\AnimPart</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Panel_ModelInfo.h">
       <Filter>06. ImGui\01. Panel\Animation\Panel_ModelInfo</Filter>
@@ -692,6 +698,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Event_CameraControl_Module.h">
       <Filter>03. Level\Animation\04. CameraControl_Module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BonePart.h">
+      <Filter>02. GameObjects\Map\PartObject\BonePart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CitizenPart.h">
+      <Filter>02. GameObjects\Map\PartObject\CitizenPart</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -841,7 +853,7 @@
       <Filter>02. GameObjects\ContainerObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_PartObject.cpp">
-      <Filter>02. GameObjects\PartObject</Filter>
+      <Filter>02. GameObjects\Map\PartObject</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>98. Defines\pch</Filter>
@@ -949,7 +961,7 @@
       <Filter>09. Builder\Effect\EffectEvent</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_Weapon.cpp">
-      <Filter>02. GameObjects\PartObject\AnimPart</Filter>
+      <Filter>02. GameObjects\Map\PartObject\AnimPart</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Panel_ModelInfo.cpp">
       <Filter>06. ImGui\01. Panel\Animation\Panel_ModelInfo</Filter>
@@ -1016,6 +1028,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Event_CameraControl_Module.cpp">
       <Filter>03. Level\Animation\04. CameraControl_Module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BonePart.cpp">
+      <Filter>02. GameObjects\Map\PartObject\BonePart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CitizenPart.cpp">
+      <Filter>02. GameObjects\Map\PartObject\CitizenPart</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

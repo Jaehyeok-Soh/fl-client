@@ -177,6 +177,9 @@
     <ClInclude Include="..\Public\Canvas.h" />
     <ClInclude Include="..\Public\Monster_Veteran.h" />
     <ClInclude Include="..\Public\Monster_Veteran_Body.h" />
+    <ClInclude Include="..\Public\NPC_Citizen_Body.h" />
+    <ClInclude Include="..\Public\NPC_Citizen.h" />
+    <ClInclude Include="..\Public\NPC_Citizen_DecoPart.h" />
     <ClInclude Include="..\Public\NPC_Kid_1.h" />
     <ClInclude Include="..\Public\NPC_Kid_Body_1.h" />
     <ClInclude Include="..\Public\NPC_Veteran.h" />
@@ -450,6 +453,9 @@
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran_Body.cpp" />
+    <ClCompile Include="..\Private\NPC_Citizen_Body.cpp" />
+    <ClCompile Include="..\Private\NPC_Citizen.cpp" />
+    <ClCompile Include="..\Private\NPC_Citizen_DecoPart.cpp" />
     <ClCompile Include="..\Private\NPC_Kid_1.cpp" />
     <ClCompile Include="..\Private\NPC_Kid_Body_1.cpp" />
     <ClCompile Include="..\Private\NPC_Veteran.cpp" />
