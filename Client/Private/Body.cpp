@@ -131,10 +131,10 @@ HRESULT CBody::Initialize(void* pArg)
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End"))->Set_AnimationSpeed(1.3f);
 		}
 
-		// root motion 実特
-		{
-			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Turn_L45"))->Set_ApplyRootMotion(false);
-		}
+		//// root motion 実特
+		//{
+		//	pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Turn_L45"))->Set_ApplyRootMotion(false);
+		//}
 
 	}
 
