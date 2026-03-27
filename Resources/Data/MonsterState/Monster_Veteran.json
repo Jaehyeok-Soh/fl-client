@@ -2036,7 +2036,55 @@
                                         false
                                     ],
                                     "fParam": [
-                                        2.0,
+                                        10.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        90.0,
+                                        120.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_align_attack",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
                                         0.0,
                                         0.0,
                                         0.0
@@ -5680,7 +5728,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMinTime": 2.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -5995,6 +6043,36 @@
                             "vecConditionEntry": [
                                 {
                                     "strCondition": "condition_is_ground",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Jump_Land": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_over_lifetime",
                                     "tParam": {
                                         "bParam": [
                                             false,
