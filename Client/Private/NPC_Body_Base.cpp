@@ -61,6 +61,7 @@ HRESULT CNPC_Body_Base::Initialize(void* pArg)
 		return E_FAIL;
 
 	Set_RenderInfoFlag(OF_Outline, true);
+
 	return S_OK;
 }
 

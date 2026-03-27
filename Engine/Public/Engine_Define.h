@@ -14,8 +14,8 @@
 #define BAKED_SECTION_COUNT_X 5
 #define BAKED_SECTION_COUNT_Z 5
 #define ACTIVE_SECTION_MAX 9
-
 #define TO_HASH(str) Engine_Utils::ToHash(str)
+
 
 // PhysX
 #define PVD_HOST "127.0.0.1"
@@ -49,7 +49,6 @@ struct CCS_EVENT { using Signature = void(const Engine::CCS_BROADCAST_DESC& tDes
 
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
 #define new DBG_NEW 
-
 
 #endif
 #endif

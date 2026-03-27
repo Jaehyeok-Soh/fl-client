@@ -203,7 +203,7 @@ HRESULT CMonster_Fly::Ready_Components(void* pArg)
 	desc.fMeleeRange = 0.5f;
 	desc.fAttackRange = 6.f;
 	desc.fCloseRange = 0.3f;
-	desc.fDetectionRange = 15.f;
+	desc.fDetectionRange = 100.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
 	//desc.vecSkillRange;

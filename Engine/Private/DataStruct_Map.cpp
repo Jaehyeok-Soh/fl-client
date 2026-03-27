@@ -744,6 +744,21 @@ void ENV_DESC::from_Json(const json& LoadJson)
 				Engine_Utils::read_vec3_xyz(DescJson["Rot"]  , tInfo.tDesc.VFX_Rotation);
 				Engine_Utils::read_vec3_xyz(DescJson["Scale"], tInfo.tDesc.VFX_Scale);
 				
+				if (DescJson.contains("Use Color"))
+				{
+					_bool isUseColor = DescJson["Use Color"];
+					if (isUseColor == true)
+					{
+						tInfo.tDesc.VFX_COLORTYPE = EFFECT_ENV_DESC::E_VFX_COLORMODE::COLOR_CHANGE;
+						if(DescJson.contains("Color"))
+						{
+							Engine_Utils::read_vec3_xyz(DescJson["Color"],tInfo.tDesc.VFX_Color);
+						}
+					}
+					else
+						tInfo.tDesc.VFX_COLORTYPE = EFFECT_ENV_DESC::E_VFX_COLORMODE::COLOR_NONCHANGE;
+				}
+
 				if(DescJson.contains("Color"))
 				{
 					Engine_Utils::read_vec3_xyz(DescJson["Color"],tInfo.tDesc.VFX_Color);
@@ -825,8 +840,13 @@ void ENV_DESC::to_Json(json& SaveJson)
 		Engine_Utils::write_vec3_xyz(DescObj["Rot"],tInfo.tDesc.VFX_Rotation);
 		Engine_Utils::write_vec3_xyz(DescObj["Scale"],tInfo.tDesc.VFX_Scale);
 		DescObj["Speed"] = tInfo.tDesc.VFX_fSpeed;
-		Engine_Utils::write_vec3_xyz(DescObj["Color"], tInfo.tDesc.VFX_Color);
 
+		_bool isUseColor = (_bool)tInfo.tDesc.VFX_COLORTYPE;
+		DescObj["Use Color"] = isUseColor;
+		if(isUseColor == true)
+			Engine_Utils::write_vec3_xyz(DescObj["Color"], tInfo.tDesc.VFX_Color);
+
+		
 
 
 		if (!tInfo.tDesc.VFX_PartsDescList.empty())
@@ -1587,6 +1607,14 @@ void BATCH_NPC_DESC::from_Json(const json& LoadJson)
 			this->tQuestObjectDesc.push_back(oldFormatDesc);
 		}
 	}
+
+
+	if (LoadJson.contains("Citizen Data"))
+	{
+		this->tNpcCitizenData.from_Json(LoadJson["Citizen Data"]);
+	}
+
+
 }
 
 void BATCH_NPC_DESC::to_Json(json& SaveJson)
@@ -1597,6 +1625,12 @@ void BATCH_NPC_DESC::to_Json(json& SaveJson)
 
 	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
 		SaveJson["tQuestObjectDesc"] = this->tQuestObjectDesc;
+
+	if (this->eBatchNPCType == EObjectEnumTag::NPC_CITIZEN)
+	{
+		this->tNpcCitizenData.to_Json(SaveJson["Citizen Data"]);
+	}
+
 }
 #pragma endregion
 

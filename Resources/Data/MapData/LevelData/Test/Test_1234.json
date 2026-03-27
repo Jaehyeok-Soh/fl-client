@@ -35,38 +35,72 @@
     },
     "Objects": [
         {
-            "Client Level Type": "LOGO",
-            "Client Make Path": "Env",
+            "Client Level Type": "STATIC",
+            "Client Make Path": "Batch_NPC",
             "Client Make Path Desc": [
                 {
-                    "Effect Infos": [
-                        {
-                            "Desc": {
+                    "Batch NPC Type": "NPC_Citizen",
+                    "Citizen Data": {
+                        "Atlas Datas": [
+                            {
+                                "Max Colum": 4,
+                                "Max Row": 4,
+                                "Select Column": 1,
+                                "Select Row": 0,
+                                "Use Atlas": true
+                            },
+                            {
+                                "Max Colum": 3,
+                                "Max Row": 3,
+                                "Select Column": 1,
+                                "Select Row": 2,
+                                "Use Atlas": true
+                            }
+                        ],
+                        "Cloth RGBA Color": {
+                            "B": {
+                                "W": 1.0,
+                                "X": 0.0,
+                                "Y": 0.0,
+                                "Z": 1.0
+                            },
+                            "G": {
+                                "W": 1.0,
+                                "X": 0.0,
+                                "Y": 1.0,
+                                "Z": 0.0
+                            },
+                            "R": {
+                                "W": 1.0,
+                                "X": 1.0,
+                                "Y": 0.0,
+                                "Z": 0.0
+                            }
+                        },
+                        "Loop Animation Name": "Animation_CM_YNM_Body01_SM_Npc_Younian_Run_Loop",
+                        "Model Name": "Child/Male/CM_YNM_Body01_SM",
+                        "Parts Datas": {
+                            "Beard": {
                                 "Color": {
-                                    "X": 0.0,
-                                    "Y": 0.0,
-                                    "Z": 0.0
-                                },
-                                "Pos": {
-                                    "X": 0.0,
-                                    "Y": 0.0,
-                                    "Z": 0.0
-                                },
-                                "Rot": {
-                                    "X": 0.0,
-                                    "Y": 0.0,
-                                    "Z": 0.0
-                                },
-                                "Scale": {
+                                    "W": 1.0,
                                     "X": 1.0,
                                     "Y": 1.0,
                                     "Z": 1.0
                                 },
-                                "Speed": 1.0
+                                "Name": ""
                             },
-                            "Tag": "ENV_Brown_Leaf"
+                            "Hair": {
+                                "Color": {
+                                    "W": 1.0,
+                                    "X": 0.6486486196517944,
+                                    "Y": 0.21538139879703522,
+                                    "Z": 0.21538139879703522
+                                },
+                                "Name": "Child/Male/Hair/CM_YNM_Hair05_SM"
+                            }
                         }
-                    ]
+                    },
+                    "bHasQuest": false
                 }
             ],
             "Draw Type": "Default",
@@ -74,9 +108,9 @@
             "SRT": [
                 {
                     "Position": {
-                        "X": -0.2984536290168762,
-                        "Y": 13.718461990356445,
-                        "Z": -13.309491157531738
+                        "X": -1.3753116130828857,
+                        "Y": 3.865774631500244,
+                        "Z": -3.7107954025268555
                     },
                     "Quaternion": {
                         "W": 1.0,
@@ -99,7 +133,7 @@
             "Section Number": 0,
             "UE Loaded": false,
             "UE Raw Data Path": "",
-            "strTag": "Cube345"
+            "strTag": "Cube235"
         }
     ]
 }

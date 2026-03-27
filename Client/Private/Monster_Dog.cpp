@@ -203,7 +203,7 @@ HRESULT CMonster_Dog::Ready_Components(void* pArg)
 	desc.fMeleeRange = 2.f;
 	desc.fAttackRange = 4.f;
 	desc.fCloseRange = 1.f;
-	desc.fDetectionRange = 15.f;
+	desc.fDetectionRange = 100.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
 	//desc.vecSkillRange;

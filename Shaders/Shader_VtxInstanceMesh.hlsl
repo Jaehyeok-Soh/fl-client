@@ -27,6 +27,8 @@
 #define RECTANGLE   0
 #define SPHERE      1
 
+
+
 bool HasCopickMask() { return (g_iGlobalMask & 1) != 0; }
 bool HasSecNormal() { return (g_iGlobalMask & 2) != 0; }
 
@@ -102,6 +104,7 @@ cbuffer CB_WaterData
     float2 g_vSparkleUVPower; // 8 Byte (윤슬 자글자글함 크기 조절!)
     
 };
+
 
 
 

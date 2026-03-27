@@ -3,6 +3,7 @@
 #include "DataEnum.h"
 #include "json_forward.h"
 #include "Quest_DataModel.h"
+#include "CitizenData.h"
 
 NS_BEGIN(DTO)
 #pragma region Make Monster Type
@@ -100,14 +101,15 @@ inline std::string MakeNPCType_ToString(OBJECT_ENUM_TAG::Enum eTag)
 {
 	switch (eTag)
 	{
-	case Engine::OBJECT_ENUM_TAG::NPC_DEFAULT:	return "NPC_Default";
-	case Engine::OBJECT_ENUM_TAG::NPC_PAN:		return "NPC_Pan";
-	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:	return "NPC_Berenica";
-	case Engine::OBJECT_ENUM_TAG::NPC_TAVERN:	return "NPC_Tavern";
+	case Engine::OBJECT_ENUM_TAG::NPC_DEFAULT:		return "NPC_Default";
+	case Engine::OBJECT_ENUM_TAG::NPC_PAN:			return "NPC_Pan";
+	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:		return "NPC_Berenica";
+	case Engine::OBJECT_ENUM_TAG::NPC_TAVERN:		return "NPC_Tavern";
 	case Engine::OBJECT_ENUM_TAG::NPC_VILLAGER_1:	return "NPC_Villager_1";
-	case Engine::OBJECT_ENUM_TAG::NPC_KID_1:	return "NPC_Kid_1";
-	case Engine::OBJECT_ENUM_TAG::NPC_VETERAN:	return "NPC_Veteran";
-	case Engine::OBJECT_ENUM_TAG::NPC_KID_2:	return "NPC_Kid_2";
+	case Engine::OBJECT_ENUM_TAG::NPC_KID_1:		return "NPC_Kid_1";
+	case Engine::OBJECT_ENUM_TAG::NPC_KID_2:		return "NPC_Kid_2";
+	case Engine::OBJECT_ENUM_TAG::NPC_VETERAN:		return "NPC_Veteran";
+	case Engine::OBJECT_ENUM_TAG::NPC_CITIZEN:		return "NPC_Citizen";
 	default:									return "Unknown";
 	}
 }
@@ -120,6 +122,7 @@ inline OBJECT_ENUM_TAG::Enum MakeNPCType_ToEnum(const std::string strType)
 	if (strType == "NPC_Tavern")				return Engine::OBJECT_ENUM_TAG::NPC_TAVERN;
 	if (strType == "NPC_Villager_1")			return Engine::OBJECT_ENUM_TAG::NPC_VILLAGER_1;
 	if (strType == "NPC_Kid_1")					return Engine::OBJECT_ENUM_TAG::NPC_KID_1;
+	if (strType == "NPC_Citizen")				return Engine::OBJECT_ENUM_TAG::NPC_CITIZEN;
 	if (strType == "NPC_Veteran")				return Engine::OBJECT_ENUM_TAG::NPC_VETERAN;
 	if (strType == "NPC_Kid_2")					return Engine::OBJECT_ENUM_TAG::NPC_KID_2;
 
@@ -1034,6 +1037,7 @@ public:
 #pragma endregion
 
 #pragma region NPC
+
 struct ENGINE_DLL BATCH_NPC_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
 public:
@@ -1041,12 +1045,17 @@ public:
 
 	_bool		 bHasQuest = { false };
 	vector<DTO::QUEST_CHAPTERDESC>		tQuestObjectDesc = {};
+
+	/* NPC Citizen ฐüทร*/
+	DTO::CITIZEN_DATA tNpcCitizenData{};
+
 public:
 	BATCH_NPC_DESC()
 		:CLIENT_MAKEPATH_DESC_BASE(),
 		eBatchNPCType(OBJECT_ENUM_TAG::NPC_DEFAULT),
 		bHasQuest(false),
 		tQuestObjectDesc()
+		, tNpcCitizenData{}
 	{
 
 	}
@@ -1054,7 +1063,8 @@ public:
 		: CLIENT_MAKEPATH_DESC_BASE(rhs),
 		eBatchNPCType(rhs.eBatchNPCType),
 		bHasQuest(rhs.bHasQuest),
-		tQuestObjectDesc(rhs.tQuestObjectDesc)
+		tQuestObjectDesc(rhs.tQuestObjectDesc),
+		tNpcCitizenData{rhs.tNpcCitizenData}
 	{
 
 	}
