@@ -76,6 +76,9 @@ public:
 	virtual void Update(const _float fTImeDelta) override;
 
 public:
+	void My_Awake(const _uint iCurrentLevelID);
+
+public:
 	_bool Get_KeyFlag(_uint iKeyFlag);
 
 	// hit ฐüทร funcs
@@ -131,6 +134,9 @@ private:
 	BONEHIT_DATA	m_tBoneHit = {};
 
 private:
+	DelegateHandle m_DDialoghandle = {};
+
+private:
 	void Start_BoneState(BONE_STATE ePreState, BONESTATE_CHANGE_ARGS* tArgs);
 	_bool End_BoneState(BONE_STATE eNextState);
 
@@ -141,6 +147,9 @@ private:
 	void Update_HitEnd(const _float fTimeDelta);
 
 	_uint Get_CurState_BoneHitFlag() const;
+
+private:
+	void Check_DialogueBegin(_int iId);
 
 public:
 	static CPlayerActionState* Create();

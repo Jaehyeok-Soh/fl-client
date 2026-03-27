@@ -1,6 +1,8 @@
 #pragma once
 #include "StateBase.h"
 
+#include "PlayerImguiValues.h"
+
 // player의 state들이 공통적으로 처리해야하는 것들을 다루기 위해
 // 부모 statebase를 하나 생성
 
@@ -172,6 +174,7 @@ protected:
 	void	Look_Impuls(_float fOffset = 1.f);
 
 	void	LookAt_Monser();
+	Vec3	Get_Collided_MonsterPos();
 
 
 	// player 객체 연결 함수들
