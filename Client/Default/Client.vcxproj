@@ -186,6 +186,7 @@
     <ClInclude Include="..\Public\NPC_Veteran_Body.h" />
     <ClInclude Include="..\Public\NPC_Villager_1.h" />
     <ClInclude Include="..\Public\NPC_Villager_Body_1.h" />
+    <ClInclude Include="..\Public\State_Npctalk.h" />
     <ClInclude Include="..\Public\State_SpecialDash.h" />
     <ClInclude Include="..\Public\ChangeLevelObject.h" />
     <ClInclude Include="..\Public\NPC_Tavern.h" />
@@ -462,6 +463,7 @@
     <ClCompile Include="..\Private\NPC_Veteran_Body.cpp" />
     <ClCompile Include="..\Private\NPC_Villager_1.cpp" />
     <ClCompile Include="..\Private\NPC_Villager_Body_1.cpp" />
+    <ClCompile Include="..\Private\State_Npctalk.cpp" />
     <ClCompile Include="..\Private\State_SpecialDash.cpp" />
     <ClCompile Include="..\Private\ChangeLevelObject.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern.cpp" />
@@ -750,6 +752,7 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneMove.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_RagDoll.hlsl" />
+    <FxCompile Include="..\..\Shaders\DissolveEffect_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

@@ -83,6 +83,9 @@ HRESULT CLevel_Tutorial_Boss::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dissolve()))
+		return E_FAIL;
+
 	if (FAILED(Build_Prototype()))
 	{
 		MSG_BOX("CLevel_Tutorial_Boss::Initialize, Build_Prototype Create Failed");
@@ -571,6 +574,12 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 	}*/
 
 	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
+}
+
+
+HRESULT CLevel_Tutorial_Boss::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

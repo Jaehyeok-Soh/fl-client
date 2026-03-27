@@ -928,6 +928,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade">
       <UniqueIdentifier>{4f0b1359-e689-42d3-a27c-4833dd92821d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\NPCs">
+      <UniqueIdentifier>{6b482b46-4030-4bea-920d-461400b222f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1734,6 +1737,9 @@
     <ClInclude Include="..\Public\UISceneFade_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_Npctalk.h">
+      <Filter>06. FSM\Player\NPCs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2528,6 +2534,9 @@
     <ClCompile Include="..\Private\UISceneFade_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\State_Npctalk.cpp">
+      <Filter>06. FSM\Player\NPCs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Shaders\Shader_VtxAnimMesh.hlsl">
@@ -2616,6 +2625,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Shaders\ComShader_BoneMove.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shaders\DissolveEffect_Defines.hlsl">
+      <Filter>04. Shaders\Defines</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

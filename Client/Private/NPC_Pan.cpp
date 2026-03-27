@@ -86,6 +86,16 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 	//	CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	//}
 
+	CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>();
+	PxController* pController = pCCT->GetController();
+	PxRigidDynamic* pActor = pController->getActor();
+
+	PxShape* shape = nullptr;
+	pActor->getShapes(&shape, 1);
+
+	if (shape)
+		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+
 	return S_OK;
 }
 
@@ -227,7 +237,7 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 		desc.vLocalOffset = {};
 		desc.vWorldOffset = {};
 
-		desc.bIsHover = { true };
+		desc.bIsHover = { false };
 		desc.fHoverOffset = { 1.f };
 
 		PHYSICSMATERIAL_DESC mtrlDesc{};
@@ -245,7 +255,7 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 
 		desc.bGravity = { false };
 		desc.fGravity = { -35.f };
-		desc.MSpeed = { 0.f, 4.5f };
+		desc.MSpeed = { 0.f, 5.f };
 		desc.MAccelRate = { 0.f, 10.f };
 		desc.MDeAccelRate = { 0.f, 10.f };
 
