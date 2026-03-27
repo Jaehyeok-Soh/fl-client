@@ -42,7 +42,7 @@ void CState_Npctalk::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	SetupLook_PointLerp(fTimeDelta, m_vPivot, 10.f);
+	SetupLook_PointLerp(fTimeDelta, m_vPivot, 5.f);
 }
 
 HRESULT CState_Npctalk::End()

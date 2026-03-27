@@ -66,7 +66,7 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 		//m_vDir = vLook;
 		m_vDir = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 		SetCCTInputDirection(m_vDir);
-		SetCCTImpuls(m_vDir * 15.f);
+		SetCCTImpuls(m_vDir * 18.f);
 
 		// ¸¶ÂûÀ» ¾ø¾ÖÁÜ
 		Set_ZeroDeAccelRate();
