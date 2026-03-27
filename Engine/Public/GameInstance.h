@@ -283,6 +283,8 @@ public:
 	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
 	HRESULT Set_BakedShadowConstantBuffer(class CShader* pShader);
 	HRESULT Bake_StaticShadow(BoundingBox* pRootBox);
+	HRESULT Ready_DissolveSetting();
+	HRESULT Bind_DissolveTexture(class CShader* pShader);
 #ifdef _DEBUG
 	inline void Push_DebugComponent(class CComponent* pComp);
 #endif

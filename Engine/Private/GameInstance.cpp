@@ -877,6 +877,16 @@ HRESULT CGameInstance::Bake_StaticShadow(BoundingBox* pRootBox)
 
 	return S_OK;
 }
+HRESULT CGameInstance::Ready_DissolveSetting()
+{
+	return m_pRender_Manager->Ready_Dissolve();
+}
+
+HRESULT CGameInstance::Bind_DissolveTexture(class CShader* pShader)
+{
+	return m_pRender_Manager->Bind_DissolveTexture(pShader);
+}
+
 SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc()
 {
 	return m_pRender_Manager->Get_SSAOParamDesc();

@@ -2578,5 +2578,8 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneMove.hlsl">
       <Filter>04. Shaders\ComputeShaders\Animation</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Shaders\DissolveEffect_Defines.hlsl">
+      <Filter>04. Shaders\Defines</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

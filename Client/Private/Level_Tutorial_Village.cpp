@@ -79,6 +79,9 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dissolve()))
+		return E_FAIL;
+
 	if (FAILED(Build_Prototype()))
 	{
 		MSG_BOX("CLevel_Tutorial_Village::Initialize, Build_Prototype Create Failed");
@@ -576,6 +579,11 @@ void CLevel_Tutorial_Village::Update(const _float fTimeDelta)
 //#endif
 //		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 //	}
+}
+
+HRESULT CLevel_Tutorial_Village::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
 }
 
 HRESULT CLevel_Tutorial_Village::Render()

@@ -742,6 +742,7 @@
     <FxCompile Include="..\..\Shaders\ComShader_BoneMove.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_GetBoneCombine.hlsl" />
     <FxCompile Include="..\..\Shaders\ComShader_RagDoll.hlsl" />
+    <FxCompile Include="..\..\Shaders\DissolveEffect_Defines.hlsl" />
     <FxCompile Include="..\..\Shaders\Effect_Defines.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

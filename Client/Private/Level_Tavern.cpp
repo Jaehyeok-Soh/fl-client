@@ -76,6 +76,9 @@ HRESULT CLevel_Tavern::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dissolve()))
+		return E_FAIL;
+
 	if (FAILED(Build_Prototype()))
 		return E_FAIL;
 
@@ -466,6 +469,10 @@ HRESULT CLevel_Tavern::Ready_Camera_Setting(const _uint iLevelIndex)
 	return S_OK;
 }
 
+HRESULT CLevel_Tavern::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
+}
 
 CLevel_Tavern* CLevel_Tavern::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
