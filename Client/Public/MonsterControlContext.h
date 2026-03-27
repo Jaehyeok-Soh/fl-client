@@ -120,7 +120,7 @@ public:
 	_bool IsTargetBehind() const;
 	_bool IsTargetSide() const;
 	_bool IsTargetClose() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDistance <= m_tDesc.fCloseRange; }
-	_bool IsTargetAhead() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward > 0.9f; }
+	_bool IsTargetAhead() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward > 0.7f; }
 
 	// Àýº®
 	_bool IsCliffAhead();
@@ -189,6 +189,7 @@ public:
 	void UpdateSideWalk(const _float fTimeDelta);
 	void UpdateTurn90(const _float fTimeDelta);
 	void UpdateTrun180(const _float fTimeDelta);
+
 	void Set_CCT_Collision_Disable();
 	void Set_CCT_Collision_Enable();
 
@@ -203,6 +204,8 @@ public:
 	void Set_Target_Offset(_float fX, _float fY, _float fZ, _float fTimeDelta);
 	void Auto_Teleport_Chase(_float fMaxLength = 10.f);
 	void Genimon_Smart_Chase(_float fX, _float fY, _float fZ, _float fMaxLength, _float fTimeDelta);
+
+	void Set_AnimationSpeed(_float fSpeed);
 
 private:
 	void Clear_RuntimeDesc();

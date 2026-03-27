@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Client_EventDefine.h"
-#include "Monster_Boomer.h"
+#include "Monster_Veteran.h"
 #include "Monster_Body_Base.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
@@ -9,32 +9,32 @@
 #include "PhysicsCCT.h"
 #include "ComputeShader.h"
 #include "UI_Manager.h"
+#include "UIIcon_Component.h"
 #include "GameInstance.h"
 #include "MyStat.h"
-#include "UIIcon_Component.h"
 
-CMonster_Boomer::CMonster_Boomer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CMonster_Veteran::CMonster_Veteran(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
-	m_eMonsterType = EMonster_Type::Boomer;
+	m_eMonsterType = EMonster_Type::Veteran;
 }
 
-CMonster_Boomer::CMonster_Boomer(const CMonster_Boomer& rhs)
+CMonster_Veteran::CMonster_Veteran(const CMonster_Veteran& rhs)
 	: Super(rhs)
 {
 }
 
-HRESULT CMonster_Boomer::Initialize_Prototype()
+HRESULT CMonster_Veteran::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
 
-	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_BOOMER);
+	Set_Object_Enum_Tag(OBJECT_ENUM_TAG::MONSTER_ELITE_VETERAN);
 
 	return S_OK;
 }
 
-HRESULT CMonster_Boomer::Initialize(void* pArg)
+HRESULT CMonster_Veteran::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -42,7 +42,7 @@ HRESULT CMonster_Boomer::Initialize(void* pArg)
 	if (FAILED(Ready_Ability()))
 		return E_FAIL;
 
-	Set_Name("세비지 필토이드");
+	Set_Name("베테랑");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -56,7 +56,7 @@ HRESULT CMonster_Boomer::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
+HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
@@ -64,41 +64,41 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 		UI_PREFAB_DATA tPrefabData = {};
 		UI_NAMEPLATE_PREFAB_DATA Desc = {};
 		Desc.pTarget = this;
-		Desc.vOffset = Vec3{ 0.f, 2.5f, 0.f };
+		Desc.vOffset = Vec3{ 0.f, 1.f, 0.f };
 		tPrefabData.Data = Desc;
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 600.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 5000.f);
 	}
 
 	Ready_StateIndexForDirecting();
-	
+
 	return S_OK;
 }
 
-void CMonster_Boomer::Update_Priority(const _float fTimeDelta)
+void CMonster_Veteran::Update_Priority(const _float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
 }
 
-void CMonster_Boomer::Update(const _float fTimeDelta)
+void CMonster_Veteran::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 }
 
-void CMonster_Boomer::Update_Late(const _float fTimeDelta)
+void CMonster_Veteran::Update_Late(const _float fTimeDelta)
 {
 	Super::Update_Late(fTimeDelta);
 }
 
-void CMonster_Boomer::Ready_Before_Render(const _float fTimeDelta)
+void CMonster_Veteran::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 }
 
-HRESULT CMonster_Boomer::Render()
+HRESULT CMonster_Veteran::Render()
 {
 	if (FAILED(Super::Render()))
 		return E_FAIL;
@@ -106,35 +106,35 @@ HRESULT CMonster_Boomer::Render()
 	return S_OK;
 }
 
-void CMonster_Boomer::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Veteran::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	Super::OnCollision(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Boomer::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+void CMonster_Veteran::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-void CMonster_Boomer::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Veteran::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	Super::OnCollision_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-void CMonster_Boomer::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
+void CMonster_Veteran::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 }
 
-void CMonster_Boomer::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
+void CMonster_Veteran::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
 {
 	Super::OnTrigger_Exit(iMyColliderLayer, iOtherLayer, pOther);
 }
 
-_bool CMonster_Boomer::On_Hit(const HIT_DESC& hitDesc)
+_bool CMonster_Veteran::On_Hit(const HIT_DESC& hitDesc)
 {
 	_bool result = Super::On_Hit(hitDesc);
-	
+
 	auto myStat = Get_Component<CMyStat>();
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
@@ -143,18 +143,18 @@ _bool CMonster_Boomer::On_Hit(const HIT_DESC& hitDesc)
 	return result;
 }
 
-void CMonster_Boomer::Try_Attack(const HIT_DESC& hitDesc)
+void CMonster_Veteran::Try_Attack(const HIT_DESC& hitDesc)
 {
 	Super::Try_Attack(hitDesc);
 }
 
-HRESULT CMonster_Boomer::Ready_Ability()
+HRESULT CMonster_Veteran::Ready_Ability()
 {
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 600.f;
-		desc.fDefense = 100.f;
+		desc.fMaxHp = 5000.f; //수정하기
+		desc.fDefense = 0.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 
 		if (FAILED(Add_Component<CMyStat>(0/* STATIC */, L"Prototype_Component_Stat", &desc)))
@@ -164,28 +164,17 @@ HRESULT CMonster_Boomer::Ready_Ability()
 	return S_OK;
 }
 
-HRESULT CMonster_Boomer::Ready_BaseStates()
-{
-	CMonsterActionState* pActionState = { nullptr };
-	CModel* pModel = Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>();
-	if (!pModel)
-		return E_FAIL;
-
-	if (!(pActionState = Get_Component<CMonsterActionState>()))
-		return E_FAIL;
-
-	TIME_COUNTER tStateLifeTime = {};
-	TIME_COUNTER tStateCoolDownTime = {};
-
-	return S_OK;
-}
-
-HRESULT CMonster_Boomer::Ready_PartObjects()
+HRESULT CMonster_Veteran::Ready_BaseStates()
 {
 	return S_OK;
 }
 
-HRESULT CMonster_Boomer::Ready_Components(void* pArg)
+HRESULT CMonster_Veteran::Ready_PartObjects()
+{
+	return S_OK;
+}
+
+HRESULT CMonster_Veteran::Ready_Components(void* pArg)
 {
 	// TODO : Dummy나 파생클래스의 Desc가 생긴다면 수정해야함
 	MONSTER_DESC* pDesc = static_cast<MONSTER_DESC*>(pArg);
@@ -211,8 +200,8 @@ HRESULT CMonster_Boomer::Ready_Components(void* pArg)
 	}
 
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
-	desc.fMeleeRange = 2.f;
-	desc.fAttackRange = 6.f;
+	desc.fMeleeRange = 10.f;
+	desc.fAttackRange = 100.f;
 	desc.fCloseRange = 1.f;
 	desc.fDetectionRange = 100.f;
 	desc.fSpeed = 1.f;
@@ -229,7 +218,7 @@ HRESULT CMonster_Boomer::Ready_Components(void* pArg)
 	return S_OK;
 }
 
-HRESULT CMonster_Boomer::Ready_StateIndexForDirecting()
+HRESULT CMonster_Veteran::Ready_StateIndexForDirecting()
 {
 	CMonsterActionState* pActionState = Get_Component<CMonsterActionState>();
 	if (pActionState == nullptr)
@@ -254,7 +243,7 @@ HRESULT CMonster_Boomer::Ready_StateIndexForDirecting()
 	return S_OK;
 }
 
-HRESULT CMonster_Boomer::Change_State_ForDirecting(_int iStateIdx)
+HRESULT CMonster_Veteran::Change_State_ForDirecting(_int iStateIdx)
 {
 	CActionState* pActionState = Get_Component<CActionState>();
 	if (pActionState == nullptr)
@@ -266,15 +255,16 @@ HRESULT CMonster_Boomer::Change_State_ForDirecting(_int iStateIdx)
 	return S_OK;
 }
 
-CMonster_Base::MONSTER_DESC CMonster_Boomer::Get_PreSetDesc(_uint iLevelId)
+CMonster_Base::MONSTER_DESC CMonster_Veteran::Get_PreSetDesc(_uint iLevelId)
 {
 	CMonster_Base::MONSTER_DESC monsterDesc = {};
 	monsterDesc.iLevelIndex = iLevelId;
+	monsterDesc.pTransform_Desc = nullptr;
 
-	monsterDesc.wstrPartBodyPrototypeTag = g_wszMonster_Boomer_Body_Prototype_Tag;
-	monsterDesc.wstrBodyModelTag = g_wszMonster_Boomer_Model_Prototype_Tag;
-	monsterDesc.wstrAttackOverlapPrototypeTag = g_wszMonster_Boomer_AttackOverlap_Prototype_Tag;
-	monsterDesc.wstrMonsterStateTag = g_wszMonster_Boomer_State_Tag;
+	monsterDesc.wstrBodyModelTag = g_wszMonster_Veteran_Model_Prototype_Tag;
+	monsterDesc.wstrPartBodyPrototypeTag = g_wszMonster_Veteran_Body_Prototype_Tag;
+	monsterDesc.wstrAttackOverlapPrototypeTag = g_wszMonster_Veteran_AttackOverlap_Prototype_Tag;
+	monsterDesc.wstrMonsterStateTag = g_wszMonster_Veteran_State_Tag;
 
 	{
 		PHYSICSCCT_DESC desc;
@@ -283,8 +273,18 @@ CMonster_Base::MONSTER_DESC CMonster_Boomer::Get_PreSetDesc(_uint iLevelId)
 		desc.eType = EPhysicsCCTType::CAPSULE;
 		desc.pOwnerMatrix = nullptr;
 		desc.fRadius = 1.f;
-		desc.fHeight = 1.5f;
+		desc.fHeight = 1.f;
 		desc.vExtens = { 2.f, 2.f, 2.f };
+
+		desc.fContactOffset = 0.01f;
+		desc.fStepOffset = 0.2f;
+		desc.fSlopeLimit = 0.7f;
+
+		desc.vLocalOffset = {};
+		desc.vWorldOffset = {};
+
+		desc.bIsHover = { false };
+		desc.fHoverOffset = { 2.f };
 
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
@@ -315,30 +315,30 @@ CMonster_Base::MONSTER_DESC CMonster_Boomer::Get_PreSetDesc(_uint iLevelId)
 	return monsterDesc;
 }
 
-CMonster_Boomer* CMonster_Boomer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CMonster_Veteran* CMonster_Veteran::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CMonster_Boomer* pInsatnce = new CMonster_Boomer(pDevice, pDeviceContext);
+	CMonster_Veteran* pInsatnce = new CMonster_Veteran(pDevice, pDeviceContext);
 	if (FAILED(pInsatnce->Initialize_Prototype()))
 	{
-		MSG_BOX("CMonster_Boomer::Create, Failed");
+		MSG_BOX("CMonster_Veteran::Create, Failed");
 		Safe_Release(pInsatnce);
 	}
 
 	return pInsatnce;
 }
 
-CGameObject* CMonster_Boomer::Clone(void* pArg)
+CGameObject* CMonster_Veteran::Clone(void* pArg)
 {
-	CMonster_Boomer* pClone = new CMonster_Boomer(*this);
+	CMonster_Veteran* pClone = new CMonster_Veteran(*this);
 	if (FAILED(pClone->Initialize(pArg)))
 	{
-		MSG_BOX("CMonster_Boomer::Clone, Failed");
+		MSG_BOX("CMonster_Veteran::Clone, Failed");
 		Safe_Release(pClone);
 	}
 	return pClone;
 }
 
-void CMonster_Boomer::Free()
+void CMonster_Veteran::Free()
 {
 	Super::Free();
 }

@@ -197,6 +197,10 @@ void CMonsterControlContext::Genimon_Smart_Chase(_float fX, _float fY, _float fZ
 	Auto_Teleport_Chase(fMaxLength);
 }
 
+void CMonsterControlContext::Set_AnimationSpeed(_float fSpeed)
+{
+}
+
 Vec3 CMonsterControlContext::Get_MoveDir()
 {
 	return m_vMoveDir;

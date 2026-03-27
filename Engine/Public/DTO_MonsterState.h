@@ -189,6 +189,7 @@ namespace DTO
 		bool bBlend = { false };
 		bool bLoop = { false };
 		bool bCancellation = { false };
+		float fAnimationSpeed = { 1.f };
 
 		MONSTERTIME_COUNTER tStateLifeTime = {};
 		MONSTERTIME_COUNTER tStateCoolDownTime = {};
@@ -230,6 +231,7 @@ namespace DTO
 		j["bBlend"] = d.bBlend;
 		j["bLoop"] = d.bLoop;
 		j["bCancellation"] = d.bCancellation;
+		j["fAnimationSpeed"] = d.fAnimationSpeed;
 
 		j["tStateLifeTime"] = d.tStateLifeTime;
 		j["tStateCoolDownTime"] = d.tStateCoolDownTime;
@@ -267,6 +269,11 @@ namespace DTO
 			j.at("bCancellation").get_to(d.bCancellation);
 		else
 			d.bCancellation = false;
+
+		if (j.contains("fAnimationSpeed"))
+			j.at("fAnimationSpeed").get_to(d.fAnimationSpeed);
+		else
+			d.fAnimationSpeed = 1.f;
 
 		j.at("tStateLifeTime").get_to(d.tStateLifeTime);
 		j.at("tStateCoolDownTime").get_to(d.tStateCoolDownTime);

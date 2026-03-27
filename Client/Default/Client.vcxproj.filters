@@ -907,6 +907,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame">
       <UniqueIdentifier>{e409a8e0-a5de-4e05-9dcb-55ef01a85985}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\Monster\Veteran">
+      <UniqueIdentifier>{6a4b11b3-ff80-4965-9ee1-c6f624d5ba15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Veteran">
+      <UniqueIdentifier>{891e152c-a400-49cb-8b33-7c6a053f57b1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade">
       <UniqueIdentifier>{4f0b1359-e689-42d3-a27c-4833dd92821d}</UniqueIdentifier>
     </Filter>
@@ -1695,6 +1701,12 @@
     <ClInclude Include="..\Public\UIEnterGame_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\15.EnterGame</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster_Veteran.h">
+      <Filter>03. GameObject\ContainerObjects\Monster\Veteran</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Veteran_Body.h">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UILoading_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\02.Loading Text</Filter>
     </ClInclude>
@@ -2477,6 +2489,12 @@
       <Filter>03. GameObject\UIObjects\02.UI\Text\15.EnterGame</Filter>
     </ClCompile>
     <ClCompile Include="..\Public\Client_Defines.cpp" />
+    <ClCompile Include="..\Private\Monster_Veteran.cpp">
+      <Filter>03. GameObject\ContainerObjects\Monster\Veteran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Veteran_Body.cpp">
+      <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UISceneFade_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade</Filter>
     </ClCompile>

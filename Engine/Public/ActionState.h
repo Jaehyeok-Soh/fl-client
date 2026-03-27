@@ -84,6 +84,8 @@ public:
 
 	void			Set_YLerp(_bool bApply);
 
+	void			Set_AnimationSpeed(_uint iIndex, _float fSpeed);
+
 	/* animation funcs*/
 protected:
 	HRESULT			Request_MixAnimation(_uint iVectorIdx, _int iAnimIdx);

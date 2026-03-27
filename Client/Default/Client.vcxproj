@@ -175,6 +175,8 @@
     <ClInclude Include="..\public\CameraEventBinder.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\Monster_Veteran.h" />
+    <ClInclude Include="..\Public\Monster_Veteran_Body.h" />
     <ClInclude Include="..\Public\NPC_Kid_1.h" />
     <ClInclude Include="..\Public\NPC_Kid_Body_1.h" />
     <ClInclude Include="..\Public\NPC_Veteran.h" />
@@ -446,6 +448,8 @@
     <ClCompile Include="..\private\CameraEventBinder.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
+    <ClCompile Include="..\Private\Monster_Veteran.cpp" />
+    <ClCompile Include="..\Private\Monster_Veteran_Body.cpp" />
     <ClCompile Include="..\Private\NPC_Kid_1.cpp" />
     <ClCompile Include="..\Private\NPC_Kid_Body_1.cpp" />
     <ClCompile Include="..\Private\NPC_Veteran.cpp" />
