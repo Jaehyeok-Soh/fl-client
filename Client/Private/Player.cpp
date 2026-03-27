@@ -176,7 +176,6 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         Set_FKeyEvent(0, true);
 
     default:
-        Set_FKeyEvent(0, true);
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
     }
 
@@ -2030,8 +2029,8 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
         {
             tPColliDesc.eShape = EPhysicsShape::BOX;
             //tPColliDesc.fHeight = 100.f;
-            tPColliDesc.vCenter = { 0.f, 0.75f, 0.7f };
-            tPColliDesc.vExtents = { 2.f, 1.5f, 4.f };
+            tPColliDesc.vCenter = { 0.f, 0.75f, 0.f }; // ÀÌÀü °ª : 0.f, 0.75f, 0.7f 
+            tPColliDesc.vExtents = { 2.f, 1.5f, 5.f };
 
             //tPColliDesc.fRadius = { 20.f };
             tPColliDesc.bIsTrigger = { true };
