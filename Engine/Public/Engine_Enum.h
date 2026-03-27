@@ -707,6 +707,7 @@ namespace Engine
 			NPC_KID_1 = 6,
 			NPC_VETERAN = 7,
 			NPC_KID_2 = 8,
+			NPC_CITIZEN = 9,
 
 			// 1000 ~ 1999 오브젝트
 			// OBJECT_
@@ -767,12 +768,15 @@ namespace Engine
 			if (strType == "PLAYER") return OBJECT_ENUM_TAG::PLAYER;
 
 			// NPC
-			if (strType == "NPC_DEFAULT") return OBJECT_ENUM_TAG::NPC_DEFAULT;
-			if (strType == "NPC_PAN") return OBJECT_ENUM_TAG::NPC_PAN;
-			if (strType == "NPC_BERENICA") return OBJECT_ENUM_TAG::NPC_BERENICA;
-			if (strType == "NPC_TAVERN") return OBJECT_ENUM_TAG::NPC_TAVERN;
-			if (strType == "NPC_VILLAGER_1") return OBJECT_ENUM_TAG::NPC_VILLAGER_1;
-			if (strType == "NPC_KID_1") return OBJECT_ENUM_TAG::NPC_KID_1;
+			if (strType == "NPC_DEFAULT")	return OBJECT_ENUM_TAG::NPC_DEFAULT;
+			if (strType == "NPC_PAN")		return OBJECT_ENUM_TAG::NPC_PAN;
+			if (strType == "NPC_BERENICA")	return OBJECT_ENUM_TAG::NPC_BERENICA;
+			if (strType == "NPC_TAVERN")	return OBJECT_ENUM_TAG::NPC_TAVERN;
+			if (strType == "NPC_VILLAGER_1")return OBJECT_ENUM_TAG::NPC_VILLAGER_1;
+			if (strType == "NPC_KID_1")		return OBJECT_ENUM_TAG::NPC_KID_1;
+			if (strType == "NPC_VETERAN")	return OBJECT_ENUM_TAG::NPC_VETERAN;
+			if (strType == "NPC_KID_2")		return OBJECT_ENUM_TAG::NPC_KID_2;
+			if (strType == "NPC_CITIZEN")	return OBJECT_ENUM_TAG::NPC_CITIZEN;
 
 			// OBJECT
 			if (strType == "OBJECT_DEFAULT") return OBJECT_ENUM_TAG::OBJECT_DEFAULT;
@@ -827,6 +831,9 @@ namespace Engine
 			case OBJECT_ENUM_TAG::NPC_TAVERN:								return "NPC_TAVERN";
 			case OBJECT_ENUM_TAG::NPC_VILLAGER_1:							return "NPC_VILLAGER_1";
 			case OBJECT_ENUM_TAG::NPC_KID_1:								return "NPC_KID_1";
+			case OBJECT_ENUM_TAG::NPC_VETERAN:								return "NPC_VETERAN";
+			case OBJECT_ENUM_TAG::NPC_KID_2:								return "NPC_KID_2";
+			case OBJECT_ENUM_TAG::NPC_CITIZEN:								return "NPC_CITIZEN";
 
 			case OBJECT_ENUM_TAG::OBJECT_DEFAULT:							return "OBJECT_DEFAULT";
 
@@ -873,6 +880,9 @@ namespace Engine
 		OBJECT_ENUM_TAG::NPC_TAVERN,
 		OBJECT_ENUM_TAG::NPC_VILLAGER_1,
 		OBJECT_ENUM_TAG::NPC_KID_1,
+		OBJECT_ENUM_TAG::NPC_VETERAN,
+		OBJECT_ENUM_TAG::NPC_KID_2,
+		OBJECT_ENUM_TAG::NPC_CITIZEN,
 		OBJECT_ENUM_TAG::OBJECT_DEFAULT,
 		OBJECT_ENUM_TAG::OBJECT_PICKING_DEFAULT,
 		OBJECT_ENUM_TAG::OBJECT_PICKING_FLOWER_1,

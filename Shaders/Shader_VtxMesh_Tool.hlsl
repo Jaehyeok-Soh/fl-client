@@ -47,7 +47,6 @@
 #define SPHERE      1
 
 
-
 //  전체적인 지형이들어갈 Base Texture
 Texture2D       g_Base_Texture;
 //  RGBA 맵에 맵핑될 DH , NBR Texture 2DTextureArray로 되어있다
@@ -189,6 +188,10 @@ cbuffer cbLandScap_TextureUV
     float2 g_LandScape_TextureUV_RB = { 1.f, 1.f };
 };
 
+
+
+
+
 float4 Get_Modified_Diffuse(float4 vOriginDiffuse)
 {
     float4 vOutDiffuse = vOriginDiffuse;
@@ -200,6 +203,10 @@ float4 Get_Modified_Diffuse(float4 vOriginDiffuse)
     
     return vOutDiffuse;
 }
+
+
+
+
 
 VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
 {
@@ -367,7 +374,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
     }
     output.vEmissive = float4(vEmissive, 1.f);
        
-    output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
+    //output.vDiffuse = Get_Modified_Diffuse(output.vDiffuse);
     
     return output;
 }

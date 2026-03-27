@@ -120,7 +120,7 @@ public:
 	_bool IsTargetBehind() const;
 	_bool IsTargetSide() const;
 	_bool IsTargetClose() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDistance <= m_tDesc.fCloseRange; }
-	_bool IsTargetAhead() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward > 0.9f; }
+	_bool IsTargetAhead() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward > 0.7f; }
 
 	// Àýº®
 	_bool IsCliffAhead();

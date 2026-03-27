@@ -144,6 +144,8 @@ HRESULT CUIQuestNavi_Text::Convert_Stat_To_Text()
 
 void CUIQuestNavi_Text::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -151,8 +153,7 @@ void CUIQuestNavi_Text::Bind_Events()
 				{
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -164,16 +165,14 @@ void CUIQuestNavi_Text::Bind_Events()
 
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_START>(
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
@@ -183,8 +182,7 @@ void CUIQuestNavi_Text::Bind_Events()
 					return;
 
 				this->Set_Visible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
@@ -197,8 +195,7 @@ void CUIQuestNavi_Text::Bind_Events()
 					this->Set_Invisible();
 				else
 					this->Set_Visible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
@@ -212,8 +209,7 @@ void CUIQuestNavi_Text::Bind_Events()
 				else
 					this->Set_Visible();
 
-			})
-	);
+			}));
 }
 
 void CUIQuestNavi_Text::Initialize_Visible_Event()

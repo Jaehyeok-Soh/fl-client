@@ -44,6 +44,17 @@ HRESULT CNPC_Veteran_Body::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
+	// face mix 셋팅
+	{
+		CModel* pModel = Get_Component<CModel>();
+
+		// lipsync anim speed 조절
+		_int iLipSyncAnimIdx = pModel->Get_AnimationIndex(L"Animation_NPC_Veteran_Npc_Fuer_LipSync");
+		pModel->Set_Animation_Speed(iLipSyncAnimIdx, 0.4f);
+
+		Setting_FaceMix(103, iLipSyncAnimIdx);
+	}
+
 	return S_OK;
 }
 

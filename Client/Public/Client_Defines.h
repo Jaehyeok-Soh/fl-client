@@ -136,6 +136,56 @@ namespace Client
 		END
 	};
 
+	enum class EAnimShaderPass
+	{
+		Default,
+		Red,
+		RGBMapping,
+		WithRenderFx,
+		Shadow,
+		CitizenEye,
+		CitizenMouth,
+		CitizenCloth,
+		CitizenBody,
+		END,
+	};
+
+	static std::string EAnimShaderPass_ToString(EAnimShaderPass eType)
+	{
+		switch (eType)
+		{
+		case Client::EAnimShaderPass::Default:		return "Default";
+		case Client::EAnimShaderPass::Red:			return "Red";
+		case Client::EAnimShaderPass::RGBMapping:	return "RGBMapping";
+		case Client::EAnimShaderPass::WithRenderFx:	return "WithRenderFx";
+		case Client::EAnimShaderPass::Shadow:		return "Shadow";
+		case Client::EAnimShaderPass::CitizenEye:	return "CitizenEye";
+		case Client::EAnimShaderPass::CitizenMouth:	return "CitizenMouth";
+		case Client::EAnimShaderPass::CitizenCloth:	return "CitizenCloth";
+		case Client::EAnimShaderPass::CitizenBody:	return "CitizenBody";
+
+		default:									return "UnKnown";
+		};
+		return "Unknown";
+	};
+
+	static EAnimShaderPass EAnimShaderPass_ToEnum(std::string strType)
+	{
+		if (strType == "Default")			return Client::EAnimShaderPass::Default;
+		else if (strType == "Red")			return Client::EAnimShaderPass::Red;
+		else if (strType == "RGBMapping")	return Client::EAnimShaderPass::RGBMapping;
+		else if (strType == "WithRenderFx") return Client::EAnimShaderPass::WithRenderFx;
+		else if (strType == "Shadow")		return Client::EAnimShaderPass::Shadow;
+		else if (strType == "CitizenEye")	return Client::EAnimShaderPass::CitizenEye;
+		else if (strType == "CitizenMouth")	return Client::EAnimShaderPass::CitizenMouth;
+		else if (strType == "CitizenCloth") return Client::EAnimShaderPass::CitizenCloth;
+		else if (strType == "CitizenBody")	return Client::EAnimShaderPass::CitizenBody;
+
+		return Client::EAnimShaderPass::END;
+	};
+
+
+
 
 	typedef struct tagColMeshHitInformation
 	{
@@ -327,6 +377,7 @@ namespace Client
 		SkyBox,
 		Shadow,
 		LightObject,
+		CitizenFace,
 		END,
 	};
 
@@ -583,6 +634,7 @@ namespace Client
 		TUTORIAL_PANNEL_3,
 		TUTORIAL_PANNEL_4,
 
+		LEVEL_FADE,
 		END
 	};
 
@@ -628,6 +680,7 @@ namespace Client
 		case Client::EUIPrefabType::TUTORIAL_PANNEL_2:		return L"TUTORIAL_PANNEL_2";
 		case Client::EUIPrefabType::TUTORIAL_PANNEL_3:		return L"TUTORIAL_PANNEL_3";
 		case Client::EUIPrefabType::TUTORIAL_PANNEL_4:		return L"TUTORIAL_PANNEL_4";
+		case Client::EUIPrefabType::LEVEL_FADE:				return L"LEVEL_FADE";
 
 		case Client::EUIPrefabType::END:
 		default:
@@ -641,6 +694,7 @@ namespace Client
 		CGameObject* pTarget = { nullptr };
 		Vec3 vOffset = {};
 	} UI_NAMEPLATE_PREFAB_DATA;
+
 	typedef struct tagUIDamageFontPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
@@ -649,31 +703,42 @@ namespace Client
 		_uint iDamage = {};
 		Vec3 vRandOffset = {};
 	} UI_DAMAGEFONT_PREFAB_DATA;
+
 	typedef struct tagUIBossNamePlatePrefabData
 	{
 		CGameObject* pTarget = { nullptr };
 	} UI_BOSS_NAMEPLATE_PREFAB_DATA;
+
 	typedef struct tagUIMinimapMonsterIconPrefabData
 	{
 		CGameObject* pTarget = { nullptr };
 	} UI_MINIMAP_MONSTER_ICON_PREFAB_DATA;
+
 	typedef struct tagUITutorialPannelPrefabData
 	{
 		EUITutorialPannelTypeID eTutorialTypeID = {};
 
 	} UI_TUTORIAL_PANNEL_PREFAB_DATA;
+
 	typedef struct tagUITutorialPopUpPrefabData
 	{
 		EUITutorialPopUpTypeID eTutorialTypeID = { EUITutorialPopUpTypeID::END };
 
 	} UI_TUTORIAL_POPUP_PREFAB_DATA;
+
+	typedef struct tagUILevelFadePrefabData
+	{
+		_uint iNextLevelID = {};
+	} UI_LEVEL_FADE_PREFAB_DATA;
+
 	typedef std::variant<
 		UI_NAMEPLATE_PREFAB_DATA,
 		UI_DAMAGEFONT_PREFAB_DATA,
 		UI_BOSS_NAMEPLATE_PREFAB_DATA,
 		UI_MINIMAP_MONSTER_ICON_PREFAB_DATA,
 		UI_TUTORIAL_PANNEL_PREFAB_DATA,
-		UI_TUTORIAL_POPUP_PREFAB_DATA
+		UI_TUTORIAL_POPUP_PREFAB_DATA,
+		UI_LEVEL_FADE_PREFAB_DATA
 	> UI_PREFAB_VARIANT;
 
 	typedef struct tagUIPrefabData
@@ -833,17 +898,18 @@ namespace Client
 #pragma region Model Protototype Tag
 
 	/* Monster Model Tag */
-	inline constexpr wchar_t g_wszModel_Prototype_Tag[]							{ L"Prototype_Component_Model_"};
-	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Monster_Dog"};
-	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Boomer" };
+	inline constexpr wchar_t g_wszModel_Prototype_Tag[]						{ L"Prototype_Component_Model_"};
+	inline constexpr wchar_t g_wszMonster_Dog_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Dog"};
+	inline constexpr wchar_t g_wszMonster_Boomer_Model_Prototype_Tag[]		{ L"Prototype_Component_Model_Monster_Boomer" };
 	inline constexpr wchar_t g_wszMonster_Fly_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Fly" };
 	inline constexpr wchar_t g_wszMonster_Veteran_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_Monster_Veteran" };
 	inline constexpr wchar_t g_wszBoss_Xibi_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Xibi" };
 	inline constexpr wchar_t g_wszBoss_Lianhuo_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_Lianhuo" };
 	
-	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Pan" };
+	/* NPC Prototype Tag */
+	inline constexpr wchar_t g_wszNPC_Pan_Model_Prototype_Tag[]					{ L"Prototype_Component_Model_NPC_Pan" };
 	inline constexpr wchar_t g_wszNPC_Tavern_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Tavern" };
-	inline constexpr wchar_t g_wszNPC_Villager_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Model_Prototype_Tag[]			{ L"Prototype_Component_Model_NPC_Villager_1" };
 	inline constexpr wchar_t g_wszNPC_Kid_1_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Kid_1" };
 	inline constexpr wchar_t g_wszNPC_Veteran_Model_Prototype_Tag[]				{ L"Prototype_Component_Model_NPC_Veteran" };
 
@@ -965,16 +1031,22 @@ namespace Client
 #pragma endregion
 
 #pragma region Npc ฐüทร
-	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan" };
-	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Pan_Body" };
-	inline constexpr wchar_t g_wszNPC_Tavern_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Tavern" };
-	inline constexpr wchar_t g_wszNPC_Tavern_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Tavern_Body" };
-	inline constexpr wchar_t g_wszNPC_Villager_1_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Villager_1" };
-	inline constexpr wchar_t g_wszNPC_Villager_1_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Villager_1_Body" };
-	inline constexpr wchar_t g_wszNPC_Kid_1_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Kid_1" };
-	inline constexpr wchar_t g_wszNPC_Kid_1_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Kid_1_Body" };
-	inline constexpr wchar_t g_wszNPC_Veteran_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Veteran" };
-	inline constexpr wchar_t g_wszNPC_Veteran_Body_Prototype_Tag[]{ L"Prototype_GameObject_NPC_Veteran_Body" };
+	inline constexpr wchar_t g_wszNPC_Pan_Prototype_Tag[]				{ L"Prototype_GameObject_NPC_Pan" };
+	inline constexpr wchar_t g_wszNPC_Pan_Body_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Pan_Body" };
+	inline constexpr wchar_t g_wszNPC_Tavern_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Tavern" };
+	inline constexpr wchar_t g_wszNPC_Tavern_Body_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Tavern_Body" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Villager_1" };
+	inline constexpr wchar_t g_wszNPC_Villager_1_Body_Prototype_Tag[]	{ L"Prototype_GameObject_NPC_Villager_1_Body" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_Prototype_Tag[]				{ L"Prototype_GameObject_NPC_Kid_1" };
+	inline constexpr wchar_t g_wszNPC_Kid_1_Body_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Kid_1_Body" };
+
+	/* Citizen */
+	inline constexpr wchar_t g_wszNPC_Citizen_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Citizen" };
+	inline constexpr wchar_t g_wszNPC_Citizen_Body_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Citizen_Body"};
+	inline constexpr wchar_t g_wszNPC_Citizen_DecoPart_Prototype_Tag[]	{ L"Prototype_GameObject_NPC_Citizen_DecoPart"};
+
+	inline constexpr wchar_t g_wszNPC_Veteran_Prototype_Tag[]			{ L"Prototype_GameObject_NPC_Veteran" };
+	inline constexpr wchar_t g_wszNPC_Veteran_Body_Prototype_Tag[]		{ L"Prototype_GameObject_NPC_Veteran_Body" };
 #pragma endregion
 
 #pragma region Part Objects

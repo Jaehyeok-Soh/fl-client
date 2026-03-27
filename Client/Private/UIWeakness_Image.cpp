@@ -152,6 +152,8 @@ HRESULT CUIWeakness_Image::Bind_ShaderResources()
 
 void CUIWeakness_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<BOSS_GROGGY>([this]()
 			{

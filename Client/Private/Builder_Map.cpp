@@ -591,6 +591,7 @@ HRESULT CBuilder_Map::Create_Env(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+
 HRESULT CBuilder_Map::Create_LightObject(const DTO::TMap_MapObjectData& tData)
 {
 	CLightObject::LIGHTOBJECT_DESC tDesc{};
@@ -619,6 +620,7 @@ HRESULT CBuilder_Map::Create_LightObject(const DTO::TMap_MapObjectData& tData)
 
 	return S_OK;
 }
+
 HRESULT CBuilder_Map::Create_Fog(const DTO::TMap_MapObjectData& tData)
 {
 	CFog::FOG_DESC tDesc{};

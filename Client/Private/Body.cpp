@@ -92,7 +92,6 @@ HRESULT CBody::Initialize(void* pArg)
 		{
 			CS_CB_MU_BONEMOVE tCB = {};
 			tCB.iMovingIdx = 85;
-			tCB.matOffset = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(30.f), XMConvertToRadians(70.f));
 
 			pMyModel->Set_MoveBoneCS(tCB); // aim up
 		}
@@ -131,6 +130,11 @@ HRESULT CBody::Initialize(void* pArg)
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_Start"))->Set_AnimationSpeed(1.3f);
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End"))->Set_AnimationSpeed(1.3f);
 		}
+
+		//// root motion ¼ÂÆÃ
+		//{
+		//	pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Turn_L45"))->Set_ApplyRootMotion(false);
+		//}
 
 	}
 

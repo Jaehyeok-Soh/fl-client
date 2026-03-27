@@ -608,6 +608,19 @@ void CStateBase_Player::LookAt_Monser()
 	}
 }
 
+Vec3 CStateBase_Player::Get_Collided_MonsterPos()
+{
+	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
+	if (pPlayer == nullptr)
+		return Vec3::Zero;
+
+	CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
+	if (pPlayerTransform == nullptr)
+		return Vec3::Zero;
+	
+	return pPlayer->Get_CollidedMonster_Position();
+}
+
 _bool CStateBase_Player::Check_OnGround(_float fMaxDist)
 {
 	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround(fMaxDist);

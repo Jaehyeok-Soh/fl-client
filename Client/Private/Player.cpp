@@ -65,6 +65,8 @@
 #include "State_Condemn.h"
 #include "State_SpecialDash.h"
 
+#include "State_Npctalk.h"
+
 #pragma endregion
 
 #include "GameInstance.h"
@@ -154,7 +156,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         if (FAILED(pPlayerState->Awake(iCurrentLevelID)))
             return E_FAIL;
 
-        pPlayerState->Change_ActionBoneState(CPlayerActionState::BONE_STATE::NORMAL);
+        pPlayerState->My_Awake(iCurrentLevelID);
     }
 
 
@@ -356,6 +358,10 @@ void CPlayer::SetWepaponOn_SetState(_uint iWeaponType, _uint iIdx, _bool bOn, _u
         m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
         break;
     }
+
+    // 만약 킬 거라면 main으로 지정
+    if(bOn)
+        Change_MainWeapon(iWeaponType, iIdx);
 
     Change_WeaponState(iWeaponType, iState);
 }
@@ -869,7 +875,7 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
 
         tKeyTimer.bCountTime = true;
-        tKeyTimer.fMaxTime = 0.32f;
+        tKeyTimer.fMaxTime = 0.15f;
         desc.tKeyTimer = tKeyTimer;
         desc.pOwnerGun = pMyGun;
 
@@ -1014,7 +1020,7 @@ HRESULT CPlayer::Ready_BaseStates()
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(State::COMBO);
-        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]           = ENUM_TO_UINT(State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(State::GUNATTACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(State::CHARGE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONEMOVEKEY)] = ENUM_TO_UINT(State::END);
         desc.vecChangeState_ByKey = vecChangeState_ByKey;
@@ -1316,6 +1322,45 @@ HRESULT CPlayer::Ready_BaseStates()
             return E_FAIL;
     }
 
+    // NPCTALK
+    {
+        CState_RunLoop::PLAYER_STATEBASE_DESC  desc = {};
+        //desc.FAniFlags = CStateBase::STATEANI_FLAG::SA_HasPreAni;
+        desc.vecPreAnims = {
+                        {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Turn_L45")}
+        };
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") };
+        desc.bBlend = true;
+        desc.bLoop = true;
+
+        desc.FCollis = 0;
+
+        desc.FMoves = 0;
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)] = ENUM_TO_UINT(State::WALK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)] = ENUM_TO_UINT(State::JUMP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)] = ENUM_TO_UINT(State::DASHBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)] = ENUM_TO_UINT(State::CROUCH);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)] = ENUM_TO_UINT(State::END);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)] = ENUM_TO_UINT(State::IDLE);
+
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)] = ENUM_TO_UINT(State::SKILL1);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)] = ENUM_TO_UINT(State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)] = ENUM_TO_UINT(State::COMBO);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)] = ENUM_TO_UINT(State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)] = ENUM_TO_UINT(State::CHARGE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = false;
+
+        desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
+
+        desc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::None;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::NPCTALK), CState_Npctalk::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
     return S_OK;
 }
 
@@ -1528,10 +1573,10 @@ HRESULT CPlayer::Ready_WeaponInfo()
         {
             WEAPON_INFO tInfo = {};
 
-            tInfo.iPartStartIdx = Part::SKILL;
-            tInfo.iPartSize = 1;
-            tInfo.bHave = false;
-            tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
+            tInfo.iPartStartIdx     = Part::SKILL;
+            tInfo.iPartSize         = 1;
+            tInfo.bHave             = true;
+            tInfo.iWeaponState      = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrSkillInfo[ENUM_TO_SZET(SKILL::MOON)] = tInfo;
         }

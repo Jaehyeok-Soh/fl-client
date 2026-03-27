@@ -109,8 +109,6 @@ HRESULT CUINameplate_BG::Bind_ShaderResources()
 
 HRESULT CUINameplate_BG::Attach_Personal_Info()
 {
-
-
 	if (m_isSpawned)
 	{
 		Set_Visible();
@@ -121,6 +119,7 @@ HRESULT CUINameplate_BG::Attach_Personal_Info()
 
 void CUINameplate_BG::Bind_Events()
 {
+	Super::Bind_Events();
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -236,7 +235,6 @@ HRESULT CUINameplate_BG::Spawn_FromPool(void* pArg)
 		m_pTargetMoster = pNamePlate->pTarget;
 		/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
 	
-		m_isSpawned = true;
 		m_isDeadRequest = false;
 	}
 	return S_OK;

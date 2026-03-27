@@ -23,14 +23,15 @@ public:
 		wstring wstrBodyModelTag = {};
 		wstring wstrPartBodyPrototypeTag = {};
 		wstring wstrNavigationPrototypeTag = {};
-		_int iNavigationCellIndex = { -1 };
-		Vec3 vSpawnPosition = {};
-		wstring wstrNPCStateTag = {};
-		std::span<std::pair<_uint, string>> spanBoneNames;
-		PHYSICSCCT_DESC tCCTDesc{};
 
+		_int	iNavigationCellIndex = { -1 };
+		Vec3	vSpawnPosition = {};
+		wstring wstrNPCStateTag = {};
+
+		std::span<std::pair<_uint, string>>		spanBoneNames;
+		PHYSICSCCT_DESC tCCTDesc{};
 		_bool bHasQuest = { false };
-		vector<DTO::QUEST_CHAPTERDESC>	tQuestObjectDesc = {};
+		vector<DTO::QUEST_CHAPTERDESC>			tQuestObjectDesc = {};
 	}NPC_DESC;
 
 	struct Part
@@ -48,10 +49,8 @@ protected:
 	CNPC_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CNPC_Base(const CNPC_Base& rhs);
 	virtual ~CNPC_Base() = default;
-
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
-
 public:
 	virtual HRESULT		Awake(const _uint iCurrentLevelID) override;
 	virtual void		Update_Priority(const _float fTimeDelta) override;
@@ -75,24 +74,24 @@ public:
 	void				Set_RootMotion_Apply(_bool bApply);
 
 protected:
+
 	HRESULT				Ready_BaseStates();
 	HRESULT				Ready_PartObjects(void* pArg);
 	HRESULT				Ready_Components(void* pArgs);
 	HRESULT				Ready_EffectHandler(void* pArgs);
 	HRESULT				Ready_CCT(void* pArgs);
-
 	void				Ready_Quest(vector<DTO::QUEST_CHAPTERDESC>* pQuestDesc);
 
 protected:
+	
 	// IQuest을(를) 통해 상속됨
-	virtual void QuestEnter() override;
-	virtual void QuestExit() override;
+	virtual void QuestEnter()override;
+	virtual void QuestExit()override;
 
 	// IInteractable을(를) 통해 상속됨
-	virtual void Interact() override;
-
-protected:
-	class CEffectHandler* m_pEffectHandler = { nullptr };
+	virtual void Interact()override;
+private:
+	CEffectHandler* m_pEffectHandler = {nullptr};
 
 public:
 	static  HRESULT			Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc = nullptr);

@@ -86,6 +86,13 @@ public:
 	virtual Vec3  Get_MoveDir() override;
 
 	virtual void Clear_WhenChangeLevel() override;
+
+	void Save_CurrentState();
+	void Return_State();
+	void Block_AllState();
+	void Block_SpecificState(const _uint iStateFlag);
+	void Unlock_SpecificState(const _uint iStateFlag);
+
 private:
 	void OnChangeLockonTarget(CGameObject* pGo);
 

@@ -65,7 +65,39 @@ void CPhysics_CCTHitReport::onShapeHit(const PxControllerShapeHit& hit)
 
 void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 {
+	PxShape* shapeA;
+	PxShape* shapeB;
+	hit.controller->getActor()->getShapes(&shapeA, 1);
+	hit.other->getActor()->getShapes(&shapeB, 1);
+
+	if (shapeA && shapeB)
+	{
+		PxFilterData filterA = shapeA->getQueryFilterData();
+		PxFilterData filterB = shapeB->getQueryFilterData();
+
+		if ((filterA.word0 & PHYSICSFILTERGROUP::GENIEMON) ||
+			(filterB.word0 & PHYSICSFILTERGROUP::GENIEMON))
+			return;
+	}
+
 	if (hit.controller->getUserData() == nullptr || hit.other->getUserData() == nullptr)
+		return;
+
+	CGameObject* pObjA = static_cast<CGameObject*>(hit.controller->getUserData());
+	CGameObject* pObjB = static_cast<CGameObject*>(hit.other->getUserData());
+
+	if (!pObjA->IsAlive() || !pObjB->IsAlive())
+		return;
+
+	_uint layerA = pObjA->Get_Component<CPhysicsCollider>()->GetDesc()->eFilterLayer;
+	_uint layerB = pObjB->Get_Component<CPhysicsCollider>()->GetDesc()->eFilterLayer;
+
+	_bool isGeniemonA = (layerA & PHYSICSFILTERGROUP::GENIEMON) != 0;
+	_bool isGeniemonB = (layerB & PHYSICSFILTERGROUP::GENIEMON) != 0;
+	_bool isPlayerA = (layerA & PHYSICSFILTERGROUP::PLAYER) != 0;
+	_bool isPlayerB = (layerB & PHYSICSFILTERGROUP::PLAYER) != 0;
+
+	if ((isGeniemonA && isPlayerB) || (isGeniemonB && isPlayerA))
 		return;
 
 	GAMEOBJECTINFO info = Get_GameObject(hit.controller->getUserData(), hit.other->getUserData());

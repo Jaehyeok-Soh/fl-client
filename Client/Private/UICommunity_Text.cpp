@@ -118,6 +118,8 @@ HRESULT CUICommunity_Text::Convert_Stat_To_Text()
 
 void CUICommunity_Text::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -125,16 +127,14 @@ void CUICommunity_Text::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_START>(
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
@@ -143,23 +143,20 @@ void CUICommunity_Text::Bind_Events()
 				this->Set_Visible();
 
 				this->m_wstrText = Engine_Utils::ToWString(pObj->Get_Name());
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_LOST>([this](CGameObject* pObj)
 			{
 				this->Set_Invisible();
 
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_ENTER>([this](CGameObject* pObj)
 			{
 				this->Set_Invisible();
-			})
-	);
+			}));
 }
 
 void CUICommunity_Text::Initialize_Visible_Event()

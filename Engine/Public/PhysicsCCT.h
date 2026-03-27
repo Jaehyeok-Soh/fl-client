@@ -178,7 +178,7 @@ public:
     /// 컨트롤러 새로 만들기
     /// 컨트롤러 해제, 재할당 비용은 높지 않음
     /// </summary>
-    void GetController();
+    void CreateController();
 
     /// <summary>
     /// 컨트롤러 해제
@@ -201,6 +201,8 @@ public:
 
     void Set_YLerp(_bool bApply) { m_bYLerp = bApply; }
     void Set_SpeedOffset(_float fSpeedOffset) { m_fSpeedOffset = fSpeedOffset; }
+
+    PxController* GetController() { return m_pController; }
 
 private:
     ID3D11Device* m_pDevice = { nullptr };

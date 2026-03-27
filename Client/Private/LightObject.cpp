@@ -223,6 +223,7 @@ HRESULT CLightObject::Render()
 
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
+		pModel->Set_MI_TintColor(i , Vec4(1.f,1.f,1.f,1.f) );
 		pModel->Set_MI_EmissiveColor(i, vEmissiveColor);
 		pModel->Set_MI_EmissivePower(i, m_fEmissivePower * fRange);
 		pModel->Bind_MaterialInstance(pShader, i);

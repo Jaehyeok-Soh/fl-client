@@ -183,6 +183,8 @@ HRESULT CUIMiniGame_Circle_Image::Attach_Personal_Info()
 
 void CUIMiniGame_Circle_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<MINIGAME_CIRCLE_ON>([this]()
 			{
@@ -224,8 +226,7 @@ void CUIMiniGame_Circle_Image::Bind_Events()
 					Set_Visible();
 					break;
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<MINIGAME_CIRCLE_CLEAR>([this]()
@@ -250,8 +251,7 @@ void CUIMiniGame_Circle_Image::Bind_Events()
 					Set_Invisible();
 					break;
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<MINIGAME_CIRCLE_OFF>([this]()
@@ -271,8 +271,7 @@ void CUIMiniGame_Circle_Image::Bind_Events()
 					Set_Invisible();
 					break;
 				}
-			})
-	);
+			}));
 }
 
 void CUIMiniGame_Circle_Image::Tick_By_Type(const _float fTimeDelta)

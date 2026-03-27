@@ -927,7 +927,7 @@ void CEffectObject::Overwrite_FromEnv(const EFFECT_ENV_DESC::ENV_PART_DESC& pDes
     m_tEffectDesc.Data._bUseStartRotation = true;
     m_tEffectDesc.Data._Effect_StartRotation = pDesc.VFX_Rotation_Parts;
     m_tEffectDesc.Data._Effect_StartScale = pDesc.VFX_Scale_Parts;
-   
+
     m_pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, pDesc.VFX_Position_Parts);
 
     CVIBuffer_Particle::PARTICLE_ORIGIN_DESC ParticleDesc = m_pParticleBuffer->Get_ParticleDesc();

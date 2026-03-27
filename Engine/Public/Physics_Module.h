@@ -91,7 +91,7 @@ public:
 /// CCT
 /// </summary>
 public:
-    PxController* GetController(PHYSICSCCT_DESC* pDesc);
+    PxController* CreateController(PHYSICSCCT_DESC* pDesc);
     CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 
 /// <summary>

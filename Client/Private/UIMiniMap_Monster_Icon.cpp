@@ -126,6 +126,8 @@ void CUIMiniMap_Monster_Icon::Tick_By_Type(const _float fTimeDelta)
 
 void CUIMiniMap_Monster_Icon::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{

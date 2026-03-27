@@ -279,7 +279,6 @@ HRESULT CModel::Ready_StaticModelMinMax()
 		if (pCurMinMax == nullptr)
 		{
 			Safe_Delete_Array(m_pStaticModel_MinMax);
-			MSG_BOX("Static Model Min Max 작업중 Min Max가 없습니다");
 			return S_OK;
 		}
 		Engine_Utils::Merge_MinMax(pCurMinMax , m_pStaticModel_MinMax[MIN] , m_pStaticModel_MinMax[MAX]);
@@ -817,6 +816,20 @@ void CModel::Set_Animation_SpeedOffset_All(_float fOffset)
 	{
 		pAnim->Set_AnimationSpeed(fOffset);
 	}
+}
+
+HRESULT CModel::Set_MI(_uint iIndex, const SHADER_MI_DESC& tDesc)
+{
+	if (iIndex >= m_vecMaterialInstances.size()) return E_FAIL;
+
+	if (m_vecMaterialInstances[iIndex]->Get_MIType() != EMaterialInstanceType::Free)
+	{
+		MSG_BOX(" Material Instance Type이 Free가 아니라면 Setting 불가능 ");
+	}
+
+	m_vecMaterialInstances[iIndex]->Set_MI(tDesc);
+
+	return S_OK;
 }
 
 HRESULT CModel::Set_MI_TintColor(_uint iIndex, const Vec4& vColor)

@@ -30,6 +30,7 @@ public:
 private:
 	HRESULT Ready_Components(LOADING_PROGRESS_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	virtual void Bind_Events()override { Super::Bind_Events(); };
 private:
 	const _float* m_pLoadingRatio = { nullptr };
 public:

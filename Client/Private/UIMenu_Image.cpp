@@ -168,6 +168,7 @@ void CUIMenu_Image::Tick_By_Type(const _float fTimeDelta)
 
 void CUIMenu_Image::Bind_Events()
 {
+	Super::Bind_Events();
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::MENU_BEGIN:

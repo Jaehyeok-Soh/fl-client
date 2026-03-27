@@ -49,7 +49,7 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	m_fHeightOffset = m_tDesc.fHeight * 0.5f;
 	Set_Owner(m_tDesc.pOwner);
 
-	GetController();
+	CreateController();
 	SetUserData(static_cast<void*>(m_tDesc.pOwner));
 
 	auto initPos = m_pController->getFootPosition();
@@ -142,12 +142,12 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 	{
 		Vec3 finalPos = GetFootPosition();
 
-		_float fHitDesc = {};
+		_float fHitDest = {};
 		Vec3 vHitPos = {};
 		Vec3 vRayPos = finalPos;
 		vRayPos.y += 0.3f;
 
-		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDesc, &vHitPos))
+		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDest, &vHitPos))
 		{
 			_float fMinHoverY = vHitPos.y + m_tDesc.fHoverOffset;
 
@@ -270,6 +270,8 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
 	filters.mFilterCallback = m_pQueryFilterCallback;
 
+	filters.mFilterData = &queryFilterData;
+
 	PxControllerCollisionFlags collisionFlag;
 	if (m_bEnableMove && bDisableMove == false)
 		collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
@@ -318,12 +320,6 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 
 		_float yLerp = std::lerp(currentPos.y, finalPos.y, fLerpAmount);
 		finalPos.y = yLerp;
-	}
-
-	// test
-	else
-	{
-		int  a = 0;
 	}
 
 	transform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
@@ -423,9 +419,9 @@ void CPhysicsCCT::GetState(PxControllerState& outState)
 	return m_pController->getState(outState);
 }
 
-void CPhysicsCCT::GetController()
+void CPhysicsCCT::CreateController()
 {
-	m_pController = m_pGameInstance->GetController(&m_tDesc);
+	m_pController = m_pGameInstance->CreateController(&m_tDesc);
 }
 
 void CPhysicsCCT::ReleaseController()

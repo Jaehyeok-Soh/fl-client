@@ -862,6 +862,18 @@
     <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Kid_1">
       <UniqueIdentifier>{c6dbeae1-4a69-41e7-af3d-a67094b67d21}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Citizen">
+      <UniqueIdentifier>{a9e90325-7087-4546-8e29-e8677251ad3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Citizen">
+      <UniqueIdentifier>{b8c032b0-2da2-4b8f-8a20-8f61003c1c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\NPC\Citizen\NPC_Citizen">
+      <UniqueIdentifier>{a3b7ad69-9eec-4fa1-b4f3-57493ad3555a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\NPC\Body\NPC_Citizen\Deco Part">
+      <UniqueIdentifier>{f160382c-bbd6-4a2b-abab-68f766f45af7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\16.Cursor">
       <UniqueIdentifier>{7a792138-2c62-4fd9-9607-f51f5db22f20}</UniqueIdentifier>
     </Filter>
@@ -912,6 +924,12 @@
     </Filter>
     <Filter Include="03. GameObject\PartObjects\Monster\Body\Veteran">
       <UniqueIdentifier>{891e152c-a400-49cb-8b33-7c6a053f57b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade">
+      <UniqueIdentifier>{4f0b1359-e689-42d3-a27c-4833dd92821d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\NPCs">
+      <UniqueIdentifier>{6b482b46-4030-4bea-920d-461400b222f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1653,6 +1671,15 @@
     <ClInclude Include="..\Public\NPC_Kid_Body_1.h">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\NPC_Citizen_Body.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Citizen.h">
+      <Filter>03. GameObject\ContainerObjects\NPC\Citizen\NPC_Citizen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Citizen_DecoPart.h">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen\Deco Part</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UIMouseCursor_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\16.Cursor</Filter>
     </ClInclude>
@@ -1692,9 +1719,6 @@
     <ClInclude Include="..\Public\UITitle_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\19.Title</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UILoading_Text.h">
-      <Filter>03. GameObject\UIObjects\02.UI\Text\03.Damage Text</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIEnterGame_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\20.EnterGame</Filter>
     </ClInclude>
@@ -1706,6 +1730,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Veteran_Body.h">
       <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILoading_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\02.Loading Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISceneFade_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Npctalk.h">
+      <Filter>06. FSM\Player\NPCs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2440,6 +2473,15 @@
     <ClCompile Include="..\Private\NPC_Kid_Body_1.cpp">
       <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Kid_1</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\NPC_Citizen_Body.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Citizen.cpp">
+      <Filter>03. GameObject\ContainerObjects\NPC\Citizen\NPC_Citizen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Citizen_DecoPart.cpp">
+      <Filter>03. GameObject\PartObjects\NPC\Body\NPC_Citizen\Deco Part</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UIMouseCursor_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\16.Cursor</Filter>
     </ClCompile>
@@ -2488,6 +2530,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Veteran_Body.cpp">
       <Filter>03. GameObject\PartObjects\Monster\Body\Veteran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UISceneFade_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\21.Scene Fade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Npctalk.cpp">
+      <Filter>06. FSM\Player\NPCs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

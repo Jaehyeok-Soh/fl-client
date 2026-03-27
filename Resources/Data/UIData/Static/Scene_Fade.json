@@ -1,0 +1,67 @@
+{
+    "Category": "UI",
+    "Objects": [
+        {
+            "Type": "CANVAS",
+            "fHeight": 900.0,
+            "fPosX": 800.0,
+            "fPosY": 450.0,
+            "fPosZ": 0.0,
+            "fWidth": 1600.0,
+            "iEditorSizeX": 1600,
+            "iEditorSizeY": 900,
+            "iLevelIndex": 0,
+            "iNumPrefabs": 0,
+            "iPrefabType": 0,
+            "strTag": "Scene_Fade"
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "DYNAMIC_IMAGE",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 0.5,
+            "fDelay": 0.0,
+            "fHeight": 1000.0,
+            "fPosX": 0.0,
+            "fPosY": 0.0,
+            "fPosZ": 0.0,
+            "fRotate": 0.0,
+            "fScale": 1.0,
+            "fWidth": 1600.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 2,
+            "iRectTransformType": 4,
+            "iShaderPass": 3,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": true,
+            "isVisible": false,
+            "strAlphaMaskTextureTag": "Texture_White",
+            "strCanvasName": "Scene_Fade",
+            "strGlowTextureTag": "",
+            "strNoiseTextureTag": "Texture_T_DissolveZZ001_Mask",
+            "strTag": "Scene_Fade_BG",
+            "strTextureTag": "Texture_White",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "DYNAMIC_IMAGE",
+            "eDISubClassType": "SCENE_FADE_IN",
+            "iParams0": 0,
+            "strOwnerName": "Scene_Fade_BG",
+            "strTag": "Scene_Fade_BG_DImageData"
+        }
+    ]
+}

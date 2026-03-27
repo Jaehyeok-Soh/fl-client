@@ -1,6 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "DataStruct_Map.h"
+#include "CitizenData.h"
 #include "GameData_Struct.h"
 
 NS_BEGIN(Engine)
@@ -163,6 +164,9 @@ public:
 	CModel*						Get_PlayerPreviewModel();
 	CModel*						Get_BatchObjectModel(DTO::EMakeObjectType eType);
 public:
+	HRESULT						Ready_CitizenModel();
+	HRESULT						Ready_CitizenPartsModel();
+public:
 	HRESULT						Ready_LevelData();
 	HRESULT						Apply_LevelData(const DTO::TLevelData* pData);
 	HRESULT						Release_SceneData();
@@ -179,7 +183,6 @@ public:
 	HRESULT						Slice_NBR_Texture();
 public:
 	HRESULT						Register_MapTexture();
-
 	HRESULT						Release_SplatingTextureData();
 	HRESULT						Delete_TextureSplatingInfoData(const wstring& wstrDeleteName);
 	HRESULT						Load_TextureSplatingInfoData();
@@ -363,6 +366,13 @@ private:
 
 	vector<CCS_EVENT_MANIFEST>	m_vecCCS_EventManifest{};
 
+	// 1. Citizen Body(Cloth) 모델 리스트
+	// 구조: [Age][Gender] -> [Model Names]
+	static std::map<DTO::CITIZEN_TYPE, std::map<DTO::CITIZEN_GENDERTYPE, std::vector<std::string>>> m_mapCitizenModelNames;
+
+	// 2. Citizen Parts 모델 리스트
+	// 구조: [Age][Gender][PartType] -> [Model Names]
+	static std::map<DTO::CITIZEN_TYPE, std::map<DTO::CITIZEN_GENDERTYPE, std::map<DTO::CITIZEN_PARTTYPE, std::vector<std::string>>>> m_mapCitizenPartsNames;
 private:
 	virtual void Free() override;
 public:

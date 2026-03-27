@@ -208,10 +208,8 @@ void CWeaponPickUp::Interact()
 	default:													return;
 	}
 
-	/* 무기 On 시켜주기 */
-	pPlayer->Set_WepaponOn( iWeaponType , iIdx , true );
-	/* 무기 State 변환까지 */
-	pPlayer->Change_WeaponState(iWeaponType, ENUM_TO_UINT(CWeapon::State::HOLD));
+	/* 무기 On 시켜주기 & hold state로 변환 */
+	pPlayer->SetWepaponOn_SetState(iWeaponType, iIdx, true, ENUM_TO_UINT(CWeapon::State::HOLD));
 
 }
 #pragma endregion

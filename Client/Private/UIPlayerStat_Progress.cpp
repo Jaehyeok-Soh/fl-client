@@ -156,6 +156,8 @@ _bool CUIPlayerStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 
 void CUIPlayerStat_Progress::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
