@@ -150,7 +150,6 @@ void CMonster_Veteran_Body::DissolveStart()
 	m_tDissolveDesc.Add_DissolveFlag(DS::BIT_DISSOLVE_START, DS::BIT_USE_EDGE,/* DS::BIT_USE_ALPHA_FADE, */DS::BIT_USE_DISSOLVE_MAP);
 }
 
-
 CMonster_Veteran_Body* CMonster_Veteran_Body::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CMonster_Veteran_Body* pInstance = new CMonster_Veteran_Body(pDevice, pDeviceContext);
