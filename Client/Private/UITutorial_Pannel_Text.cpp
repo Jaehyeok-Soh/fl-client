@@ -154,8 +154,10 @@ void CUITutorial_Pannel_Text::Tick_By_Type(const _float fTimeDelta)
 	switch (m_eTextSubClassType)
 	{
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:
+		m_wstrText = m_vecTexts[m_iCurPageIdx];
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
+		m_wstrText = m_vecTexts[m_iCurPageIdx];
 		break;
 	case DTO::EUITextSubClassType::TUTORIAL_PANNEL_PREV_BTN_TEXT:
 	{
@@ -293,6 +295,8 @@ HRESULT CUITutorial_Pannel_Text::Spawn_FromPool(void* pArg)
 {
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
+	
+	m_vecTexts.clear();
 
 	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
 	if (auto* pTutorialPannel = std::get_if<UI_TUTORIAL_PANNEL_PREFAB_DATA>(&pDesc->Data))
@@ -304,12 +308,52 @@ HRESULT CUITutorial_Pannel_Text::Spawn_FromPool(void* pArg)
 		switch (m_eTutorialID)
 		{
 		case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_1:
+			switch (m_eTextSubClassType)
+			{
+			case DTO::EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:
+				m_vecTexts.push_back(L"쉴드/HP");
+				break;
+			case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
+				m_vecTexts.push_back(L"캐릭터가 공격받을 시 기본적으로 하단의 쉴드가 우선적으로 소모되며, 쉴드가 소진되면, HP가 소모됩니다.");
+				break;
+			}
 			break;
 		case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_2:
+			switch (m_eTextSubClassType)
+			{
+			case DTO::EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:
+				m_vecTexts.push_back(L"원거리 무기");
+				m_vecTexts.push_back(L"탄약");
+				break;
+			case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
+				m_vecTexts.push_back(L"원거리 무기로 멀리 있는 적과 높은 곳에 있는 적을 처치할 수 있습니다. 원거리 무기는 장전할 수 있는 탄환 수와 탄약에 제한이 있습니다.");
+				m_vecTexts.push_back(L"적을 처치하거나, 주변의 물체를 파괴하는 등의 방법으로 원거리 무기의 탄약을 보충할 수 있는 탄약을 획득할 수 있습니다.");
+				break;
+			}
 			break;
 		case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_3:
+			switch (m_eTextSubClassType)
+			{
+			case DTO::EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:
+				m_vecTexts.push_back(L"캐릭터 매커니즘: '아스크의 징벌'");
+				m_vecTexts.push_back(L"전투 매커니즘: 전투 태세");
+				break;
+			case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
+				m_vecTexts.push_back(L"행동 능력을 잃은 적은 약점을 드러내며, 이때 적에게 접근해서 강력한 일격을 입힐 수 있습니다. 일부 다이몬은 이러한 일격을 파멸과\n기회를 가져다주는 '아스크의 징벌'이라고 부릅니다.");
+				m_vecTexts.push_back(L"강력한 적은 전투 태세를 유지하며, 아군의 공격으로 전투 태세를 약화시킬 수 있습니다. 전투 태세가 일정 수준으로 약화되면,\n적이 균형을 잃으며, 전투 태세가 완전히 약화되어 무너지면 적이 일시적으로 행동 능력을 잃습니다..");
+				break;
+			}
 			break;
 		case Client::EUITutorialPannelTypeID::TUTORIAL_PANNEL_4:
+			switch (m_eTextSubClassType)
+			{
+			case DTO::EUITextSubClassType::TUTORIAL_PANNEL_TITLE_TEXT:
+				m_vecTexts.push_back(L"캐릭터 종결 스킬: 빛보라");
+				break;
+			case DTO::EUITextSubClassType::TUTORIAL_PANNEL_CONTENTS_TEXT:
+				m_vecTexts.push_back(L"'레조넌스'의 영향으로 플레이어가 종결 스킬을 각성했습니다.\n Q 버튼을 누르면 종결스킬 [빛보라]을 시전할 수 있습니다.\n[빛보라]를 사용하면 추가 쉴드와 강력한 데미지를 줄 수 있습니다.");
+				break;
+			}
 			break;
 		case Client::EUITutorialPannelTypeID::END:
 		default:

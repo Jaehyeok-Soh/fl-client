@@ -41,8 +41,14 @@ void CUI_Manager::Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePref
 void CUI_Manager::Request_LevelChange_With_Fade(const _bool isFadeIn, _uint iNextLevelIndex)
 {
 	EUIPrefabType ePrefabType = {};
-	
-	Request_Add_Prefab(m_pGameInstance->Get_CurrentLevelIndex(), )
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+		Desc.iNextLevelID = iNextLevelIndex;
+		tPrefabData.Data = Desc;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(
+			m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::MONSTER_NAMEPLATE, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+	}
 }
 
 void CUI_Manager::Free()

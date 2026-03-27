@@ -581,6 +581,7 @@ namespace Client
 		TUTORIAL_PANNEL_3,
 		TUTORIAL_PANNEL_4,
 
+		LEVEL_FADE,
 		END
 	};
 
@@ -626,6 +627,7 @@ namespace Client
 		case Client::EUIPrefabType::TUTORIAL_PANNEL_2:		return L"TUTORIAL_PANNEL_2";
 		case Client::EUIPrefabType::TUTORIAL_PANNEL_3:		return L"TUTORIAL_PANNEL_3";
 		case Client::EUIPrefabType::TUTORIAL_PANNEL_4:		return L"TUTORIAL_PANNEL_4";
+		case Client::EUIPrefabType::LEVEL_FADE:				return L"LEVEL_FADE";
 
 		case Client::EUIPrefabType::END:
 		default:
@@ -673,12 +675,8 @@ namespace Client
 
 	typedef struct tagUILevelFadePrefabData
 	{
-		CGameObject* pTarget = { nullptr };
-		Vec4 vFontColor = {};
-		Vec3 vHitPos = {};
-		_uint iDamage = {};
-		Vec3 vRandOffset = {};
-	} UI_DAMAGEFONT_PREFAB_DATA;
+		_uint iNextLevelID = {};
+	} UI_LEVEL_FADE_PREFAB_DATA;
 
 	typedef std::variant<
 		UI_NAMEPLATE_PREFAB_DATA,
@@ -686,7 +684,8 @@ namespace Client
 		UI_BOSS_NAMEPLATE_PREFAB_DATA,
 		UI_MINIMAP_MONSTER_ICON_PREFAB_DATA,
 		UI_TUTORIAL_PANNEL_PREFAB_DATA,
-		UI_TUTORIAL_POPUP_PREFAB_DATA
+		UI_TUTORIAL_POPUP_PREFAB_DATA,
+		UI_LEVEL_FADE_PREFAB_DATA
 	> UI_PREFAB_VARIANT;
 
 	typedef struct tagUIPrefabData

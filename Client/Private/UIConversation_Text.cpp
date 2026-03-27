@@ -18,7 +18,7 @@
 #include "DialogueManager.h"
 #include <UI_Manager.h>
 
-#define TEXT_SPEED 0.2f
+#define TEXT_SPEED 0.1f
 
 
 CUIConversation_Text::CUIConversation_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
