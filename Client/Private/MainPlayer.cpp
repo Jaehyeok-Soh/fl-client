@@ -224,6 +224,12 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
         static_cast<CPlayerControlContext*>(Get_Component<CControlContext>())->Set_AllKeyFlag(true);
     }
 
+    // 무기 전체 해제, 키 인풋 전체 해제 : level에 상관없이 해제하기 위함
+    if (KEY_BUTTON_DOWN(DIK_M))
+    {
+        Change_State(ENUM_TO_UINT(State::SPHIT_START));
+    }
+
     //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
 }
 
@@ -1017,7 +1023,10 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
-        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly
+            | CStateBase_Player::COLLISIONFLAGS::C_CheckF
+            | CStateBase_Player::COLLISIONFLAGS::C_StunHit
+            ;
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         desc.FCollis = 0;
 

@@ -19,8 +19,10 @@ public:
 
 		// 어떤 공격으로 들어온거니
 		, AF_Addtive	= 0x00002
-		, AF_Fly	= 0x00004
-		, AF_Strong = 0x00008
+		, AF_Fly		= 0x00004
+		, AF_Strong		= 0x00008
+		, AF_Stun		= 0x00010
+		, AF_Special	= 0x00020
 	};
 
 	enum class BONE_STATE

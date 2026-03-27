@@ -130,8 +130,7 @@ public:
 
 		,NPCTALK
 
-		,STUN_LOOP
-		,STUN_END
+		,STUN_START
 		,SPHIT_START
 
 		,END
