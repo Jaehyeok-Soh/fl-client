@@ -2097,6 +2097,54 @@
                                     ]
                                 }
                             }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        115.0,
+                                        120.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_zero_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
                         }
                     ],
                     "vecEndConditionFeature": [
@@ -2208,56 +2256,7 @@
                     "vecMainAnimNames": [
                         "Animation_Monster_Veteran_Skill07"
                     ],
-                    "vecStartConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "strFeature": "feat_set_zero_deaccel_rate",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecStartConditionFeature": [],
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {

@@ -1,0 +1,269 @@
+{
+    "Category": "CAMERACONTROLEVENT",
+    "Objects": [
+        {
+            "Type": 11,
+            "strOwnerTag": "Monster_Veteran",
+            "vecCameraControlEvents": [
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 55.0,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 19,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.15000000596046448,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 0.5,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 0.5
+                    },
+                    "strAnimTag": "Animation_Monster_Veteran_Skill02",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 10.0,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 25,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.15000000596046448,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 0.5,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 0.5
+                    },
+                    "strAnimTag": "Animation_Monster_Veteran_Skill04_03",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 125.0,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 27,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.15000000596046448,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 0.5,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 0.5
+                    },
+                    "strAnimTag": "Animation_Monster_Veteran_Skill07",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 35.0,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 31,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 2.0,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 0.5,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 0.5
+                    },
+                    "strAnimTag": "Animation_Monster_Veteran_Skill10",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 60.0,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 33,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.15000000596046448,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 0.5,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 0.5
+                    },
+                    "strAnimTag": "Animation_Monster_Veteran_Skill12",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 24,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 1.2999999523162842,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 0.5,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 0.5
+                    },
+                    "strAnimTag": "Animation_Monster_Veteran_Skill04_02",
+                    "strDescription": "New Camera Event"
+                }
+            ]
+        }
+    ]
+}

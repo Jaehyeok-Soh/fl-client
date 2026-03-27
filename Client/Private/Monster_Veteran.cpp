@@ -12,6 +12,8 @@
 #include "UIIcon_Component.h"
 #include "GameInstance.h"
 #include "MyStat.h"
+#include "Monster_Veteran_Body.h"
+#include "CameraEventBinder.h"
 
 CMonster_Veteran::CMonster_Veteran(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -215,6 +217,24 @@ HRESULT CMonster_Veteran::Ready_Components(void* pArg)
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}
+	return S_OK;
+}
+
+HRESULT CMonster_Veteran::Ready_CameraEvent()
+{
+	_uint iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
+	CMonster_Veteran_Body* pBody = Get_Part<CMonster_Veteran_Body>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CCameraEventBinder* pResult = CCameraEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/CameraAnimationData/Monster_Veteran.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
+
 	return S_OK;
 }
 
