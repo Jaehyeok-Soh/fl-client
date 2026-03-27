@@ -61,9 +61,12 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 
 		pPlayerTransform->Look_At_Dir(vLook);
 
-		m_vDir = vLook;
+		//SetupLook_CameraSameLook();
+
+		//m_vDir = vLook;
+		m_vDir = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 		SetCCTInputDirection(m_vDir);
-		SetCCTImpuls(m_vDir * 10.f);
+		SetCCTImpuls(m_vDir * 15.f);
 
 		// ¸¶ÂûÀ» ¾ø¾ÖÁÜ
 		Set_ZeroDeAccelRate();
@@ -92,7 +95,7 @@ void CState_JumpBullet::Update(const _float fTimeDelta)
 		m_vDir.y = 0.f;
 		pPlayerTransform->Look_At_Dir(m_vDir);
 
-		if(Check_OnGround(0.1f))
+		if(Check_OnGround(0.1f) && !IsOn_CCTFlag(PxControllerCollisionFlag::eCOLLISION_SIDES))
 		{
 			//Get_OwnerObject()->Get_Component<CTransform>()->Is_OnGround(0.1f);
 

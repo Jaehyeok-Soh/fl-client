@@ -228,7 +228,7 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 
     if (KEY_BUTTON_DOWN(DIK_M))
     {
-        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::SKILL), 0, true);
+        static_cast<CPlayerControlContext*>(Get_Component<CControlContext>())->Set_AllKeyFlag(true);
     }
 
     //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
