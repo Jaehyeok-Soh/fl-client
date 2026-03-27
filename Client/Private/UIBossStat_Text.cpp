@@ -120,7 +120,7 @@ HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_LV:
 		break;
 	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME:
-		m_wstrText =Engine_Utils::ToWString( m_pTargetStat->Get_Owner()->Get_Name());
+		m_wstrText = Engine_Utils::ToWString( m_pTargetStat->Get_Owner()->Get_Name());
 		break;
 
 		break;
