@@ -1822,11 +1822,13 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.eState = CWeapon::State::HOLD;
 
         weaponDesc.bMianWeapon = false;
-        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn | CWeapon::WeaponDescFlag::WF_Dissolve;
         weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
         weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
         weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
 
+        weaponDesc.vDissolveColor = { 9.5f, 0.751839f, 0.182292f };
+        weaponDesc.vDissolveTimes = { 0.5f,2.f };
 
         weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
         //weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(10.f), XMConvertToRadians(0.f), XMConvertToRadians(-45.f));
@@ -1868,10 +1870,13 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.eAnimState = CWeapon::AnimState::PLAY_ONCE;
         weaponDesc.bMianWeapon = false;
         weaponDesc.eState = CWeapon::State::HOLD;
-        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn | CWeapon::WeaponDescFlag::WF_Dissolve;
         weaponDesc.vColorR = Vec4(0.947917f, 0.947917f, 0.947917f, 1.f);
         weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
         weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
+
+        weaponDesc.vDissolveColor = { 9.56f, 0.11f,0.f };
+        weaponDesc.vDissolveTimes = { 0.5f,2.f };
 
         weaponDesc.fAllBullet = 1000.f;
         weaponDesc.fCurBullet = 500.f;
@@ -1895,10 +1900,13 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.eState = CWeapon::State::HOLD;
 
         weaponDesc.bMianWeapon = false;
-        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn | CWeapon::WeaponDescFlag::WF_Dissolve;
         weaponDesc.vColorR = Vec4(0.309524f, 0.309524f, 0.309524f, 1.f);
         weaponDesc.vColorG = Vec4(0.10119f, 0.10119f, 0.10119f, 1.f);
         weaponDesc.vColorB = Vec4(0.125f, 0.055804f, 0.055804f, 1.f);
+
+        weaponDesc.vDissolveColor = { 0.f, 0.11f,9.56f };
+        weaponDesc.vDissolveTimes = { 0.5f,2.f };
 
         weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(45.f), XMConvertToRadians(-10.f));
 

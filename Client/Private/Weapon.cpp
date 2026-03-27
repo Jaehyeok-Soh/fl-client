@@ -86,6 +86,13 @@ HRESULT CWeapon::Initialize(void* pArg)
 
 	Set_RenderInfoFlag(OF_Outline, true);
 	Set_RenderInfoFlag(OF_Rim, true);
+
+	if (Is_Dissolve())
+	{
+		if (FAILED(Ready_DissolveEffect_Setting(pDesc)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -108,6 +115,17 @@ void CWeapon::Update_Priority(_float fTimeDelta)
 	//	matSocket.r[i] = ::XMVector3Normalize(matSocket.r[i]);
 	//_matrix matParent = matSocket * ::XMLoadFloat4x4(m_pMatParent);
 	//Super::Update_CombinedWorldMatrix(matParent);
+
+
+	// state에 따른 combineworld 업데이트
+	switch (m_eState)
+	{
+	case State::HOLD:
+	{
+
+	}
+	break;
+	}
 }
 
 void CWeapon::Update(_float fTimeDelta)
@@ -152,8 +170,9 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	{
 	case State::HOLD:
 	{
-		//Matrix matfinalMat = Matrix::Identity;
-		//matfinalMat.Translation((*m_pMatSocket).Translation());
+		if (Is_Dissolve())
+			m_tDissolveDesc.Update(fTimeDelta);
+
 		Super::Update_CombinedWorldMatrix(m_matHoldOffsetMatrix * (*m_pMatSocket) * (*m_pMatParent));
 		Update_HoldingPos();
 	}
@@ -263,6 +282,54 @@ void CWeapon::Set_DefaultSocket()
 		return;
 
 	m_eState = State::NONE;
+}
+
+void CWeapon::Set_WeaponState(State eState)
+{
+	if (m_eState != eState)
+	{
+		m_eState = eState;
+
+		(m_eState == State::NONE) ? Set_Active(false) : Set_Active(true);
+
+		switch (m_eState)
+		{
+		case State::HOLD:
+		{
+			if (Is_Dissolve())
+			{
+				DissolveStart();
+			}
+
+		}
+		break;
+		}
+	}
+}
+
+void CWeapon::Set_WeaponState(_uint iState)
+{
+	State eNewState = static_cast<State>(iState);
+
+	if (m_eState != eNewState)
+	{
+		m_eState = eNewState;
+
+		(m_eState == State::NONE) ? Set_Active(false) : Set_Active(true);
+
+		switch (m_eState)
+		{
+		case State::HOLD:
+		{
+			if (Is_Dissolve())
+			{
+				DissolveStart();
+			}
+
+		}
+		break;
+		}
+	}
 }
 
 _int CWeapon::Get_AnimationIndex(const wstring& wstrName)
@@ -409,16 +476,43 @@ HRESULT CWeapon::Ready_ComputeShaders()
 	return S_OK;
 }
 
+HRESULT CWeapon::Ready_DissolveEffect_Setting(WEAPON_DESC* pDesc)
+{
+	using DS = DissolveEffectDesc;
+	m_tDissolveDesc.Reset();
+
+	m_tDissolveDesc.Add_DissolveFlag(DS::BIT_SPAWN_START,DS::BIT_USE_DISSOLVE_MAP, DS::BIT_USE_EDGE);
+	m_tDissolveDesc.Set_Spawn_Setting(pDesc->vDissolveTimes.x, pDesc->vDissolveTimes.y);
+
+	m_tDissolveDesc.Set_ObjectType(DS::DISSOLVE_OBJECTTYPE::TYPE_SWORD);
+
+	// 스폰 시간 & 디졸브 시간
+	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = Vec3{ 9.56f, 0.11f,0.f };
+	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = pDesc->vDissolveColor;
+	m_tDissolveDesc.ShaderData.fDissolveEdgeWidth = 0.1f;
+
+
+	// 디졸브 셰이더 
+	m_pGameInstance->Bind_DissolveTexture(Get_Component<CShader>());
+
+	return S_OK;
+}
+
 HRESULT CWeapon::Render_StaticWeap()
 {
 	CShader* pShader = Get_Component<CShader>();
 	CModel* pModel = Get_Component<CModel>();
 	_uint iMeshCount = pModel->Get_MeshCount();
 
+	// rgb mapping
 	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn))
 	{
 		pShader->Bind_RGBColorData(m_tColorDesc);
 	}
+
+	// 디졸브 data 넘겨주기
+	if(Is_Dissolve())
+		pShader->Bind_DissolveEffectData(m_tDissolveDesc.ShaderData);
 
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
@@ -429,6 +523,14 @@ HRESULT CWeapon::Render_StaticWeap()
 		pShader->Apply();
 		pModel->Render(i);
 	}
+
+	// 디졸브 바인딩 값 초기화
+	if (Is_Dissolve())
+	{
+		SHADER_DISSOLVE_EFFECT_DESC Desc = {};
+		pShader->Bind_DissolveEffectData(Desc);
+	}
+
 
 	return S_OK;
 }
@@ -444,6 +546,12 @@ HRESULT CWeapon::Render_AnimWeap()
 		pShader->Bind_RGBColorData(m_tColorDesc);
 	}
 
+	// 디졸브 data 넘겨주기
+	if (Is_Dissolve())
+	{
+		pShader->Bind_DissolveEffectData(m_tDissolveDesc.ShaderData);
+	}
+
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
 	for (_uint i = 0; i < iMeshCount; ++i)
@@ -454,7 +562,32 @@ HRESULT CWeapon::Render_AnimWeap()
 		pModel->Render(i);
 	}
 
+	// 디졸브 바인딩 값 초기화
+	if (Is_Dissolve())
+	{
+		SHADER_DISSOLVE_EFFECT_DESC Desc = {};
+		pShader->Bind_DissolveEffectData(Desc);
+	}
+
 	return S_OK;
+}
+
+void CWeapon::DissolveStart()
+{
+	using DS = DissolveEffectDesc;
+
+	if (m_tDissolveDesc.Is_Finished())
+	{
+		m_tDissolveDesc.Reset();
+
+		// reset시 flag 초기화 함 -> start 할때마다 넣어줘야함
+		m_tDissolveDesc.Add_DissolveFlag(DS::BIT_SPAWN_START, DS::BIT_USE_DISSOLVE_MAP, DS::BIT_USE_EDGE);
+	}
+}
+
+_bool CWeapon::Is_Dissolve()
+{
+	return Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_Dissolve);
 }
 
 void CWeapon::Play_Anim(const _float fTimeDelta)
