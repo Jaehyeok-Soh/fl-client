@@ -299,7 +299,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
     m_pShader->Set_Pass(m_tEffectDesc.Data._Effect_ShaderPass);
     m_pShader->Bind_TransformData(m_matCombinedWorld);
 
-    if (m_tEffectDesc.Data._Effect_ShaderPass == 3)
+   if (m_tEffectDesc.Data._Effect_ShaderPass == (_uint)DTO::MESHSHADERPASS::MESH_DISTOTION)
     {
         if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SceneHDR_Copy, m_pShader)))
             return E_FAIL;

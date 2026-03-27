@@ -80,7 +80,6 @@ private:
 	HRESULT Create_ShadowResource();
 	HRESULT Compute_ShadowCascade();
 	
-
 	HRESULT Bind_ActiveBakedSections();
 	HRESULT Create_RootBox(OUT BoundingBox& outRootBox);
 	// 섹션 정의
@@ -168,6 +167,10 @@ private:
 	// 상태 플래그
 	_bool m_bBakedSectionInitialized{ false };
 	_bool m_bActiveBakedSectionDirty{ true };
+
+private:
+	vector<CTextureBase*>  m_pDissolveTextures = { nullptr };
+
 public:
 	static CRender_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
@@ -211,8 +214,9 @@ public:
 	SHADER_BAKED_SHADOW_DESC& Get_BakedShadowParamDesc() { return m_tBakedShadowDesc; }
 	const SHADER_BAKED_SHADOW_DESC& Get_BakedShadowParamDesc() const { return m_tBakedShadowDesc; }
 	HRESULT Commit_BakedShadowParam();
-
 	HRESULT Commit_AllPostParams();
+	HRESULT Ready_Dissolve();
+	HRESULT Bind_DissolveTexture(class CShader* pShader);
 #ifdef  _DEBUG
 	const ACTIVE_BAKED_SET &Get_ActiveBakedSectionSet() const { return m_tActiveBakedSet; }
 	void Update_BakedShadowDebugTexture(_uint iSlice);

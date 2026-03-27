@@ -30,6 +30,7 @@ CShader::CShader(const CShader& rhs)
 	, m_pRGB_CBuffer(rhs.m_pRGB_CBuffer)
 	, m_pRenderFx_CBuffer(rhs.m_pRenderFx_CBuffer)
 	, m_pPlayerInfo_CBuffer{rhs.m_pPlayerInfo_CBuffer}
+	, m_pEffect_Dissolve_CBuffer{rhs.m_pEffect_Dissolve_CBuffer }
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -44,6 +45,7 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pRGB_CBuffer);
 	Safe_AddRef(m_pRenderFx_CBuffer);
 	Safe_AddRef(m_pPlayerInfo_CBuffer);
+	Safe_AddRef(m_pEffect_Dissolve_CBuffer);
 }
 
 HRESULT CShader::Initialize_Prototype(void* pArg)
@@ -219,6 +221,11 @@ HRESULT CShader::Bind_EffectData(const SHADER_EFFECT_DESC& desc)
 	return m_pEffect_CBuffer->Copy_Data(desc);
 }
 
+HRESULT CShader::Bind_DissolveEffectData(const SHADER_DISSOLVE_EFFECT_DESC& Desc)
+{
+	return m_pEffect_Dissolve_CBuffer->Copy_Data(Desc);
+}
+
 HRESULT CShader::Bind_TransformData(const SHADER_TRANSFORMDESC& trnasformDesc)
 {
 	return m_pTransform_CBuffer->Copy_Data(trnasformDesc);
@@ -313,7 +320,6 @@ void CShader::Create_ConstantBuffer()
 		pCache->CB[iSlot]->SetConstantBuffer(m_pObjectInfo_CBuffer->Get_Buffer());
 	}
 
-
 	iSlot = ENUM_TO_UINT(EFXCB::RGBMapping);
 	if (pCache->CB[iSlot])
 	{
@@ -336,6 +342,13 @@ void CShader::Create_ConstantBuffer()
 		pCache->CB[iSlot]->SetConstantBuffer(m_pPlayerInfo_CBuffer->Get_Buffer());
 	}
 
+	// Dissolve
+	iSlot = ENUM_TO_UINT(EFXCB::DISSOLVEEFFECT);
+	if (pCache->CB[iSlot])
+	{
+		m_pEffect_Dissolve_CBuffer = CConstant_Buffer<SHADER_DISSOLVE_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
+		pCache->CB[iSlot]->SetConstantBuffer(m_pEffect_Dissolve_CBuffer->Get_Buffer());
+	}
 }
 
 CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
@@ -372,6 +385,7 @@ void CShader::Clear_ConstantBuffer()
 	Safe_Release(m_pRGB_CBuffer);
 	Safe_Release(m_pRenderFx_CBuffer);
 	Safe_Release(m_pPlayerInfo_CBuffer);
+	Safe_Release(m_pEffect_Dissolve_CBuffer);
 }
 
 void CShader::Free()

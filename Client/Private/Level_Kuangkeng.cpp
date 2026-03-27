@@ -76,6 +76,9 @@ HRESULT CLevel_Kuangkeng::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dissolve()))
+		return E_FAIL;
+
 	if (FAILED(Build_Prototype()))
 		return E_FAIL;
 
@@ -494,6 +497,11 @@ HRESULT CLevel_Kuangkeng::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Change_Target(pPlayer);
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
+}
+
+HRESULT CLevel_Kuangkeng::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
 }
 
 

@@ -638,7 +638,6 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }
     
-
         if (g_InputB.iMoveState == CIRCLE_TRAIL ||
         g_InputB.iMoveState == SEMICIRCLE_TRAIL ||
         g_InputB.iMoveState == SPREAD ||
@@ -671,7 +670,6 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
                 currentData.matTransform[2].xyz = vLook * vScale.z;
             }
         }
-    
     INSTANCE_OUTPUT[dtid.x] = currentData;
 }
 
