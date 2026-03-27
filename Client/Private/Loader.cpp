@@ -589,7 +589,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90wwwwdddd
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices	= {2,3,5,72,285,286,287,288,289,413,414,415,416 ,417,418,419 };
+		desc.vecStageBoneIndices	= {2,3,5,51,72,285,286,287,288,289,413,414,415,416 ,417,418,419 };
 
 		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
@@ -671,6 +671,17 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_DualL", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+	// For. Prototype_Component_Model_CondemnSword
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Weapon_Condemn";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_CondemnSword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 

@@ -87,6 +87,7 @@ CPlayer::CPlayer(const CPlayer& rhs)
     , m_arrMeleeInfo(rhs.m_arrMeleeInfo)
     , m_arrRangeInfo(rhs.m_arrRangeInfo)
     , m_arrSkillInfo(rhs.m_arrSkillInfo)
+    , m_arrCondemnInfo(rhs.m_arrCondemnInfo)
 
 {
     m_vecPartObjects.resize(Part::END, nullptr);
@@ -172,6 +173,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         Set_FKeyEvent(0, true);
 
     default:
+        Set_FKeyEvent(0, true);
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
     }
 
@@ -331,6 +333,13 @@ void CPlayer::Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn)
 
         m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
         break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        if (iIdx >= ENUM_TO_UINT(CONDEMN::END))
+            return;
+
+        m_arrCondemnInfo[size_t(iIdx)].bHave = bOn;
+        break;
     }
 }
 
@@ -356,6 +365,13 @@ void CPlayer::SetWepaponOn_SetState(_uint iWeaponType, _uint iIdx, _bool bOn, _u
             return;
 
         m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        if (iIdx >= ENUM_TO_UINT(CONDEMN::END))
+            return;
+
+        m_arrCondemnInfo[size_t(iIdx)].bHave = bOn;
         break;
     }
 
@@ -389,6 +405,13 @@ _bool CPlayer::Change_MainWeapon(_uint iWeaponType, _uint iIdx)
             return false;
 
         bOn = m_arrSkillInfo[size_t(iIdx)].bHave;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        if (iIdx >= ENUM_TO_UINT(CONDEMN::END))
+            return false;
+
+        bOn = m_arrCondemnInfo[size_t(iIdx)].bHave;
         break;
     }
 
@@ -425,6 +448,11 @@ _bool CPlayer::Change_MainWeaponNext(_uint iWeaponType)
         if (iNextIdx == ENUM_TO_UINT(SKILL::END))
             iNextIdx = 0;
         break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        if (iNextIdx == ENUM_TO_UINT(CONDEMN::END))
+            iNextIdx = 0;
+        break;
     }
 
     return Change_MainWeapon(iWeaponType, iNextIdx);
@@ -436,6 +464,7 @@ void CPlayer::Change_WeaponState(_uint iWeaponType, _uint iState)
     Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
     Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
     Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
+    Set_CurPartWeapon_State(EWEAPON::CONDEMN, ENUM_TO_UINT(CWeapon::State::NONE));
 
     switch (iWeaponType)
     {
@@ -449,6 +478,10 @@ void CPlayer::Change_WeaponState(_uint iWeaponType, _uint iState)
 
     case ENUM_TO_UINT(EWEAPON::SKILL):
         Set_CurPartWeapon_State(EWEAPON::SKILL, iState);
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        Set_CurPartWeapon_State(EWEAPON::CONDEMN, iState);
         break;
     }
 
@@ -1582,6 +1615,20 @@ HRESULT CPlayer::Ready_WeaponInfo()
         }
     }
 
+    /* Condemn */
+    {
+        {
+            WEAPON_INFO tInfo = {};
+
+            tInfo.iPartStartIdx = Part::Condemn;
+            tInfo.iPartSize = 1;
+            tInfo.bHave = true;
+            tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
+
+            m_arrCondemnInfo[ENUM_TO_SZET(CONDEMN::NORMAL)] = tInfo;
+        }
+    }
+
     return S_OK;
 }
 
@@ -1776,6 +1823,22 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
             return E_FAIL;
     }
 
+    // Weapons : Condemn
+    {
+        CWeapon::WEAPON_DESC weaponDesc     = {};
+        weaponDesc.wstrModelPrototypeName   = L"Prototype_Component_Model_CondemnSword";
+        weaponDesc.pMatParent               = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket           = Get_Part<CBody>(Part::BODY)->Get_SocketMatrix(51);
+        weaponDesc.eModel                   = CWeapon::Weapon_ModelType::STATIC;
+        weaponDesc.bMianWeapon              = false;
+        weaponDesc.FDescFlag                = 0;
+
+        weaponDesc.matHandOffsetMatrix      = Matrix::CreateRotationX(XMConvertToRadians(-80.f));
+
+        if (FAILED(Add_Part(Part::Condemn, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+            return E_FAIL;
+    }
+
     return S_OK;
 }
 
@@ -1942,6 +2005,18 @@ void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
             return;
 
         m_arrSkillInfo[size_t(iCurWeapon)].iWeaponState = iState;
+        break;
+
+    case EWEAPON::CONDEMN:
+        // melee중에 현재 weapon
+        iCurWeapon = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::CONDEMN)];
+        iStartPartIdx = m_arrCondemnInfo[size_t(iCurWeapon)].iPartStartIdx;
+        iPartSize = m_arrCondemnInfo[size_t(iCurWeapon)].iPartSize;
+
+        if (!m_arrCondemnInfo[size_t(iCurWeapon)].bHave)
+            return;
+
+        m_arrCondemnInfo[size_t(iCurWeapon)].iWeaponState = iState;
         break;
     }
 
