@@ -92,6 +92,7 @@ public:
 	void Block_AllState();
 	void Block_SpecificState(const _uint iStateFlag);
 	void Unlock_SpecificState(const _uint iStateFlag);
+
 private:
 	void OnChangeLockonTarget(CGameObject* pGo);
 

@@ -118,8 +118,6 @@ HRESULT CUIMonsterStat_Text::Bind_ShaderResources()
 
 HRESULT CUIMonsterStat_Text::Attach_Personal_Info()
 {
-
-
 	if (m_isSpawned)
 	{
 		Set_Visible();
@@ -264,7 +262,6 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 			return E_FAIL;
 	}
 
-	m_isSpawned = true;
 	m_isDeadRequest = false;
 	return S_OK;
 }

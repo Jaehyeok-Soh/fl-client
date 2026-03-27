@@ -109,8 +109,6 @@ HRESULT CUINameplate_BG::Bind_ShaderResources()
 
 HRESULT CUINameplate_BG::Attach_Personal_Info()
 {
-
-
 	if (m_isSpawned)
 	{
 		Set_Visible();
@@ -237,7 +235,6 @@ HRESULT CUINameplate_BG::Spawn_FromPool(void* pArg)
 		m_pTargetMoster = pNamePlate->pTarget;
 		/* ¸ó½ºÅÍ ½ºÅÈ ÄÄÆ÷³ÍÆ® ºÎÂø */
 	
-		m_isSpawned = true;
 		m_isDeadRequest = false;
 	}
 	return S_OK;
