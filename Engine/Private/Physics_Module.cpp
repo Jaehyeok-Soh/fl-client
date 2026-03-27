@@ -355,9 +355,9 @@ RAGDOLLELEMENTS CPhysics_Module::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOI
 	return m_pRagdollSystem->CreateRagdoll(arrRagdollBoneDesc);
 }
 
-PxController* CPhysics_Module::GetController(PHYSICSCCT_DESC* pDesc)
+PxController* CPhysics_Module::CreateController(PHYSICSCCT_DESC* pDesc)
 {
-	return m_pCCTManager->GetController(pDesc);
+	return m_pCCTManager->CreateController(pDesc);
 }
 
 CPhysics_CCTFilterCallback* CPhysics_Module::GetCCTFilterCallback()
@@ -405,11 +405,13 @@ PxFilterFlags CPhysics_Module::FilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	//if ((filterData0.word0 & PHYSICSFILTERGROUP::GENIEMON)
-	//	|| (filterData1.word0 & PHYSICSFILTERGROUP::GENIEMON))
-	//{
-	//	return PxFilterFlag::eSUPPRESS;
-	//}
+	_bool isGeniemon0 = (filterData0.word0 & PHYSICSFILTERGROUP::GENIEMON) != 0;
+	_bool isGeniemon1 = (filterData1.word0 & PHYSICSFILTERGROUP::GENIEMON) != 0;
+	_bool isPlayer0 = (filterData0.word0 & PHYSICSFILTERGROUP::PLAYER) != 0;
+	_bool isPlayer1 = (filterData1.word0 & PHYSICSFILTERGROUP::PLAYER) != 0;
+
+	if ((isGeniemon0 && isPlayer1) || (isGeniemon1 && isPlayer0))
+		return PxFilterFlag::eSUPPRESS;
 	
 	if ((filterData0.word0 & PHYSICSFILTERGROUP::RAGDOLL)
 		|| (filterData1.word0 & PHYSICSFILTERGROUP::RAGDOLL))

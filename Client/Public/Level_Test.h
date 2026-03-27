@@ -33,6 +33,7 @@ private:
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();
 	HRESULT	Ready_SkyBox();
+	HRESULT Ready_Dissolve();
 	void Ready_ShaderSetting();
 	// TEST
 	HRESULT Ready_HybridObject();

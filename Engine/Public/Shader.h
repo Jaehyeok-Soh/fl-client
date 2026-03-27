@@ -57,6 +57,7 @@ public:
 	HRESULT Bind_MaterialData(const SHADER_MATERIALDESC& desc);
 	HRESULT Bind_MaterialInstanceData(const SHADER_MI_DESC& desc);
 	HRESULT Bind_EffectData(const SHADER_EFFECT_DESC& desc);
+	HRESULT Bind_DissolveEffectData(const SHADER_DISSOLVE_EFFECT_DESC& Desc);
 	HRESULT Bind_TransformData(const SHADER_TRANSFORMDESC& trnasformDesc);
 	HRESULT Bind_TransformData(const Matrix& matTransform);
 	HRESULT Bind_BoneData(const SHADER_BONEDESC& boneDesc);
@@ -80,18 +81,20 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext{ nullptr };
 
 	// TODO - 나중에 풀링 / 프레임소스
-	CConstant_Buffer<SHADER_BONEDESC>*			m_pBone_CBuffer{ nullptr };
-	CConstant_Buffer<SHADER_MATERIALDESC>*		m_pMaterial_CBuffer{ nullptr };
-	CConstant_Buffer<SHADER_MI_DESC>*			m_pMI_CBuffer{ nullptr };
-	CConstant_Buffer<SHADER_TRANSFORMDESC>*		m_pTransform_CBuffer{ nullptr };
-	CConstant_Buffer<SHADER_KEYFRAMEDESC>*		m_pKeyFrame_CBuffer{ nullptr };
-	CConstant_Buffer<SHADER_EFFECT_DESC>*		m_pEffect_CBuffer{ nullptr };
-	CConstant_Buffer<SHADER_OBJECTINFO_DESC>*	m_pObjectInfo_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_BONEDESC>*					m_pBone_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_MATERIALDESC>*				m_pMaterial_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_MI_DESC>*					m_pMI_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_TRANSFORMDESC>*				m_pTransform_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_KEYFRAMEDESC>*				m_pKeyFrame_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_EFFECT_DESC>*				m_pEffect_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_DISSOLVE_EFFECT_DESC>*		m_pEffect_Dissolve_CBuffer{ nullptr };
 
-	CConstant_Buffer<SHADER_RGBCOLOR_DESC>*		m_pRGB_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_OBJECTINFO_DESC>*			m_pObjectInfo_CBuffer{ nullptr };
 
-	CConstant_Buffer<SHADER_RENDER_FX_DESC>*	m_pRenderFx_CBuffer{ nullptr };
-	CConstant_Buffer<SHADER_PLAYER_INFO>*		m_pPlayerInfo_CBuffer{nullptr};
+	CConstant_Buffer<SHADER_RGBCOLOR_DESC>*				m_pRGB_CBuffer{ nullptr };
+
+	CConstant_Buffer<SHADER_RENDER_FX_DESC>*			m_pRenderFx_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_PLAYER_INFO>*				m_pPlayerInfo_CBuffer{nullptr};
 
 public:
 	static CShader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg);

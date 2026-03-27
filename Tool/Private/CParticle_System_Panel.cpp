@@ -1285,7 +1285,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 		if (ImGui::Button("Select##SubMask")) ImGui::OpenPopup("TextureSelector##SubMask");
 		ImGui::SameLine();
 		if (ImGui::Checkbox("Use##SubMask", &m_tCurrentDesc.Data._Effect_Tool_SubMaskTexture)) {
-			if (m_tCurrentDesc.Data._Effect_Tool_SubMaskTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 6); // SubMaskTexture 8
+			if (m_tCurrentDesc.Data._Effect_Tool_SubMaskTexture) m_tCurrentDesc.Data._Effect_TextureFlag |= (1 << 8); // SubMaskTexture 8
 			else m_tCurrentDesc.Data._Effect_TextureFlag &= ~(1 << 8);
 			m_bModified = true;
 		}
@@ -1615,6 +1615,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_PParticleTypeList.push_back("SwordEffect");
 					m_PParticleTypeList.push_back("NONDEPTH_DEFAULT");
 					m_PParticleTypeList.push_back("CHANIN_MESH");
+					m_PParticleTypeList.push_back("DECAL");
 					break;
 				}
 

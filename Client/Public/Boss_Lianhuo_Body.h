@@ -20,6 +20,12 @@ public:
 	virtual void Update_Late(_float fTimeDelta) override;
 	virtual void Ready_Before_Render(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+private:
+	HRESULT Ready_DissolveEffect_Setting() override;
+
+protected:
+	virtual void  DissolveStart() override;
 public:
 	static CBoss_Lianhuo_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

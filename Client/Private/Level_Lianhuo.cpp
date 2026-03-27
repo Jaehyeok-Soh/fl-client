@@ -76,6 +76,9 @@ HRESULT CLevel_Lianhuo::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dissolve()))
+		return E_FAIL;
+
 	if (FAILED(Build_Prototype()))
 		return E_FAIL;
 
@@ -556,6 +559,11 @@ HRESULT CLevel_Lianhuo::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Change_Target(pPlayer);
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
+}
+
+HRESULT CLevel_Lianhuo::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
 }
 
 

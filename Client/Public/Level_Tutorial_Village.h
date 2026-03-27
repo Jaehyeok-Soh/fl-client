@@ -25,6 +25,7 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Map();
 	HRESULT	Ready_SkyBox();
+	HRESULT Ready_Dissolve();
 private:
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();

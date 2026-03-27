@@ -104,6 +104,7 @@ namespace Engine
 		BakedShadowparam,
 		SectionShadowparam,
 		PlayerInfoBuffer,
+		DISSOLVEEFFECT,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -130,7 +131,8 @@ namespace Engine
 		"CascadeParamBuffer",
 		"BakedShadowParamBuffer",
 		"ShaderBakedSectionBuffer",
-		"PlayerInfoBuffer"
+		"PlayerInfoBuffer",
+		"CB_DISSOLVE",
 	};
 	//===================
 	// FX SRV
@@ -162,6 +164,7 @@ namespace Engine
 		PerlinNoise,
 		RT_OIT_Accum,
 		RT_OIT_REVEAL,
+		DISSOLVE,
 		COUNT
 	};
 	constexpr const char* g_SRVNames[static_cast<unsigned int>(EFXSRV::COUNT)] =
@@ -190,7 +193,8 @@ namespace Engine
 		"g_SSAONoiseTexture",
 		"g_PerlinNoise",
 		"g_RenderTargetOITAccumTexture",
-		"g_RenderTargetOITRevealTexture"
+		"g_RenderTargetOITRevealTexture",
+		"g_DissolveTexture",
 	};
 	//===================
 	// Sound

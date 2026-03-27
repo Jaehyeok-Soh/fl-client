@@ -155,26 +155,58 @@ void CMonsterControlContext::Set_RootMotion_Apply(_bool bApply)
 
 void CMonsterControlContext::Set_Target_Offset(_float fX, _float fY, _float fZ, _float fTimeDelta)
 {
-	Vec3 vOffsetPos = m_tRuntimeDesc.vOwnerPos;
+	//Vec3 vOffsetPos = m_tRuntimeDesc.vOwnerPos;
+	Vec3 vDestPos = m_tRuntimeDesc.vTargetPos;
 
-	if (fX > 1e-5f)
-		vOffsetPos.x = m_tRuntimeDesc.vTargetPos.x + fX;
+	CTransform* pTargetTr = m_pTarget->Get_Component<CTransform>();
+	Vec3 vTargetRight = pTargetTr->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
+	Vec3 vTargetUp = pTargetTr->Get_Info(TRANSFORM_INFO_STATE::UP);
+	Vec3 vTargetLook = pTargetTr->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 
-	if (fY > 1e-5f)
-		vOffsetPos.y = m_tRuntimeDesc.vTargetPos.y + fY;
+	if (abs(fX) > 1e-5f)
+		vDestPos += vTargetRight * fX;
 
-	if (fZ > 1e-5f)
-		vOffsetPos.z = m_tRuntimeDesc.vTargetPos.z + fZ;
+	if (abs(fY) > 1e-5f)
+		vDestPos += vTargetUp * fY;
+
+	if (abs(fZ) > 1e-5f)
+		vDestPos += vTargetLook * fZ;
 	
-	vOffsetPos = vOffsetPos - m_tRuntimeDesc.vOwnerPos;
+	//vOffsetPos = vOffsetPos - m_tRuntimeDesc.vOwnerPos;
+	Vec3 vDir = vDestPos - m_tRuntimeDesc.vOwnerPos;
 
 	_float fSpeed = 5.f;
-	vOffsetPos *= fSpeed * fTimeDelta;
+	Vec3 vMoveDist = vDir * fSpeed * fTimeDelta * 0.3f;
 
-	if (vOffsetPos.Length() > 0.01f)
-	{
-		Get_Owner()->Get_Component<CPhysicsCCT>()->AddFixedMove(vOffsetPos);
-	}
+	Get_Owner()->Get_Component<CPhysicsCCT>()->AddFixedMove(vMoveDist);
+
+	//if (vMoveDist.Length() > 0.01f)
+	//{
+	//	Get_Owner()->Get_Component<CPhysicsCCT>()->AddFixedMove(vMoveDist);
+	//	//Get_Owner()->Get_Component<CPhysicsCCT>()->AddAccelation(vMoveDist);
+	//}
+
+	//Vec3 vOffsetPos = m_tRuntimeDesc.vOwnerPos;
+
+	//if (fX > 1e-5f)
+	//	vOffsetPos.x = m_tRuntimeDesc.vTargetPos.x + fX;
+
+	//if (fY > 1e-5f)
+	//	vOffsetPos.y = m_tRuntimeDesc.vTargetPos.y + fY;
+
+	//if (fZ > 1e-5f)
+	//	vOffsetPos.z = m_tRuntimeDesc.vTargetPos.z + fZ;
+
+	//vOffsetPos = vOffsetPos - m_tRuntimeDesc.vOwnerPos;
+
+	//_float fSpeed = 5.f;
+	//vOffsetPos *= fSpeed * fTimeDelta * 0.1f;
+
+	//if (vOffsetPos.Length() > 0.f)
+	//	Get_Owner()->Get_Component<CPhysicsCCT>()->AddFixedMove(vOffsetPos);
+
+	////if (vOffsetPos.Length() > 0.01f)
+	////	Get_Owner()->Get_Component<CPhysicsCCT>()->AddFixedMove(vOffsetPos);
 }
 
 void CMonsterControlContext::Auto_Teleport_Chase(_float fMaxLength)
@@ -195,10 +227,6 @@ void CMonsterControlContext::Genimon_Smart_Chase(_float fX, _float fY, _float fZ
 {
 	Set_Target_Offset(fX, fY, fZ, fTimeDelta);
 	Auto_Teleport_Chase(fMaxLength);
-}
-
-void CMonsterControlContext::Set_AnimationSpeed(_float fSpeed)
-{
 }
 
 Vec3 CMonsterControlContext::Get_MoveDir()
