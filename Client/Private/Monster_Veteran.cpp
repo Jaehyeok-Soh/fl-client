@@ -200,8 +200,8 @@ HRESULT CMonster_Veteran::Ready_Components(void* pArg)
 	}
 
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
-	desc.fMeleeRange = 10.f;
-	desc.fAttackRange = 100.f;
+	desc.fMeleeRange = 5.f;
+	desc.fAttackRange = 30.f;
 	desc.fCloseRange = 1.f;
 	desc.fDetectionRange = 100.f;
 	desc.fSpeed = 1.f;

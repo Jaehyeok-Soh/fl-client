@@ -1335,9 +1335,9 @@ RAGDOLLELEMENTS CGameInstance::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT
 	return m_pPhysics_Module->CreateRagdoll(arrRagdollBoneDesc);
 }
 
-PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
+PxController* CGameInstance::CreateController(PHYSICSCCT_DESC* pDesc)
 {
-	return m_pPhysics_Module->GetController(pDesc);
+	return m_pPhysics_Module->CreateController(pDesc);
 }
 
 CPhysics_CCTFilterCallback* CGameInstance::GetCCTFilterCallback()

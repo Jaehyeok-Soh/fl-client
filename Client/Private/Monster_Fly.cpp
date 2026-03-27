@@ -273,15 +273,15 @@ CMonster_Fly::MONSTER_DESC CMonster_Fly::Get_PreSetDesc(_uint iLevelId)
 		desc.bIsPlayer = false;
 		desc.eType = EPhysicsCCTType::CAPSULE;
 		desc.pOwnerMatrix = nullptr;
-		desc.fRadius = 1.f;
-		desc.fHeight = 0.1f;
+		desc.fRadius = 1.5f;
+		desc.fHeight = 0.5f;
 		desc.vExtens = { 2.f, 2.f, 2.f };
 
 		desc.fContactOffset = 0.01f;
 		desc.fStepOffset = 0.2f;
 		desc.fSlopeLimit = 0.7f;
 
-		desc.vLocalOffset = {};
+		desc.vLocalOffset = {0.f, 1.f, 0.f};
 		desc.vWorldOffset = {};
 
 		desc.bIsHover = { true };
