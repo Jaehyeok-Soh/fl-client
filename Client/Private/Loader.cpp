@@ -1606,6 +1606,9 @@ HRESULT CLoader::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Static")))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::Voice, L"../../Resources/Sounds/SFX/Voice")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

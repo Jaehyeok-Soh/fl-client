@@ -2,6 +2,7 @@
 #include "UISceneFade_Image.h"
 #include "Client_Defines.h"
 
+#include "Level_Loading.h"
 #include "Canvas.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -36,7 +37,6 @@ HRESULT CUISceneFade_Image::Initialize(void* pArg)
 	return S_OK;
 }
 
-
 HRESULT CUISceneFade_Image::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
@@ -65,6 +65,8 @@ void CUISceneFade_Image::Update_Late(const _float fTimeDelta)
 void CUISceneFade_Image::Ready_Before_Render(const _float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::BLENDUI, this);
 }
 
 HRESULT CUISceneFade_Image::Render()
@@ -98,6 +100,11 @@ HRESULT CUISceneFade_Image::Bind_ShaderResources()
 
 HRESULT CUISceneFade_Image::Attach_Personal_Info()
 {
+	if (m_isSpawned)
+	{
+		m_isVisible = true;
+		m_isSpawned = false;
+	}
 	return S_OK;
 }
 
@@ -108,6 +115,37 @@ void CUISceneFade_Image::Bind_Events()
 
 void CUISceneFade_Image::Tick_By_Type(const _float fTimeDelta)
 {
+	if (m_pUIManager->Get_ClearDelay())
+	{
+		m_fSceneFade_DelayTimeAcc = m_fSceneFade_DelayTime;
+		m_pUIManager->Set_ClearDelay(false);
+	}
+
+	m_fSceneFade_DelayTimeAcc += fTimeDelta;
+	if (m_fSceneFade_DelayTimeAcc <= m_fSceneFade_DelayTime)
+		return;
+
+	_bool isFade = Tick_Fade(fTimeDelta);
+	_bool isLerpChange = Tick_LerpChange(&m_fProgress_Ratio, fTimeDelta);
+
+	if (isFade && isLerpChange)
+	{
+		m_fEndDelayTimeAcc += fTimeDelta;
+		if (m_fEndDelay < m_fEndDelayTimeAcc)
+		{
+			m_fEndDelayTimeAcc = 0.f;
+			Set_Active(false);
+
+			if (m_isChangeLevel)
+			{
+				m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING),
+					CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
+				return;
+			}
+
+			Request_SetDead();
+		}
+	}
 }
 
 void CUISceneFade_Image::Initialize_Visible_Event()
@@ -126,6 +164,57 @@ void CUISceneFade_Image::Initialize_InVisible_Event()
 _bool CUISceneFade_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
 	return true;
+}
+
+HRESULT CUISceneFade_Image::Spawn_FromPool(void* pArg)
+{
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
+
+	UI_PREFAB_DATA* pDesc = static_cast<UI_PREFAB_DATA*>(pArg);
+
+	if (auto* pLevelFade = std::get_if<UI_LEVEL_FADE_PREFAB_DATA>(&pDesc->Data))
+	{
+		m_eNextLevelID = pLevelFade->eNextLevelID;
+		m_isDeadRequest = false;
+		m_fEndDelay = pLevelFade->fEndDelay;
+
+		m_isFadeIn = pLevelFade->isFadeIn;
+		m_isChangeLevel = pLevelFade->isChangeLevel;
+
+		m_fSceneFade_DelayTime = pLevelFade->fDelay;
+		m_fSceneFade_DelayTimeAcc = 0.f;
+
+		// 점점 보이게 
+		if (pLevelFade->isFadeIn)
+		{
+			Ready_Fade(pLevelFade->fDuration, 1.f, 0.f, 0.f);
+			Ready_LerpChange(pLevelFade->fDuration, 0.f, 1.f, pLevelFade->fEaseValue, 0.f, pLevelFade->isEased);
+			m_fProgress_Ratio = 0.f;
+		}
+		// 점점 안보이게
+		else
+		{
+			Ready_Fade(pLevelFade->fDuration, 0.f, 1.f, 0.f);
+			Ready_LerpChange(pLevelFade->fDuration, 1.f, 0.f, pLevelFade->fEaseValue, 0.f, pLevelFade->isEased);
+			m_fProgress_Ratio = 1.f;
+		}
+		m_isSpawned = true;
+		Set_Active(true);
+	}
+	return S_OK;
+}
+
+HRESULT CUISceneFade_Image::Despawn_FromPool()
+{
+	if (FAILED(Super::Despawn_FromPool()))
+		return E_FAIL;
+
+	m_isVisible = false;
+	m_isVisibleTrigger = false;
+	m_isPreVisible = false;
+	
+	return S_OK;
 }
 
 CUISceneFade_Image* CUISceneFade_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

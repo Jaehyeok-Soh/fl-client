@@ -11,8 +11,8 @@
             "iEditorSizeX": 1600,
             "iEditorSizeY": 900,
             "iLevelIndex": 0,
-            "iNumPrefabs": 0,
-            "iPrefabType": 0,
+            "iNumPrefabs": 1,
+            "iPrefabType": 27,
             "strTag": "Scene_Fade"
         },
         {
@@ -36,7 +36,7 @@
             "isActivate": false,
             "isInteract": false,
             "isUseColorTint": true,
-            "isVisible": false,
+            "isVisible": true,
             "strAlphaMaskTextureTag": "Texture_White",
             "strCanvasName": "Scene_Fade",
             "strGlowTextureTag": "",

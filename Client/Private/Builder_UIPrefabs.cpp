@@ -17,6 +17,7 @@
 #include "UIBossStat_Image.h"
 #include "UIMiniMap_Monster_Icon.h"
 #include "UITutorial_Pannel_Image.h"
+#include "UISceneFade_Image.h"
 // 트리거 클래스
 
 #include"UI_Manager.h"
@@ -316,6 +317,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		const _bool isBossStat			= (Type >= DTO::EUIDImageSubClassType::BOSS_STAT_BEGIN && Type <= DTO::EUIDImageSubClassType::BOSS_STAT_END);
 		const _bool isMonsterIcon		= (Type == DTO::EUIDImageSubClassType::MINIMAP_MONSTER_ICON);
 		const _bool isTutorialPannel	= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BEGIN && Type <= DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_END);
+		const _bool isSceneFade			= (Type == DTO::EUIDImageSubClassType::SCENE_FADE_IN);
 
 		if (isMonsterNameplate)
 		{
@@ -371,6 +373,22 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			Desc.eSubClassType = Type;
 			Desc.iNumbering = iter->second.iParams0;
 			wstrProtoTag = L"Prototype_UI_TutorialPannelImage";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
+		else if (isSceneFade)
+		{
+			CUISceneFade_Image::SCENEFADE_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+
+			wstrProtoTag = L"Prototype_UI_SceneFadeImage";
 			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
 			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
 			{

@@ -728,7 +728,17 @@ namespace Client
 
 	typedef struct tagUILevelFadePrefabData
 	{
-		_uint iNextLevelID = {};
+		ELevelType eNextLevelID = {};
+		_bool isFadeIn = { false };
+		_bool isChangeLevel = { false };
+
+		_float fDelay = {};
+		_float fDuration = {};
+		_bool isEased = {};
+		_float fEaseValue = {};
+
+		_float fEndDelay = {};
+
 	} UI_LEVEL_FADE_PREFAB_DATA;
 
 	typedef std::variant<
