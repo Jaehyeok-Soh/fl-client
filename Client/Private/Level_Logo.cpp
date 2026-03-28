@@ -28,6 +28,7 @@
 #include "EffectObject.h"
 #include "Physics_LandScape.h"
 #include "CinematicCamera.h"
+
 //=================
 // UI
 //=================
@@ -267,8 +268,6 @@ HRESULT CLevel_Logo::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
 }
-
-
 
 CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

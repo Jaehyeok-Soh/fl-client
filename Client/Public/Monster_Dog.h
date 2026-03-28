@@ -40,6 +40,7 @@ private:
 	HRESULT Ready_BaseStates();
 	HRESULT Ready_PartObjects();
 	HRESULT Ready_Components(void *pArg);
+	HRESULT Ready_SkillSpawner();
 
 	HRESULT Ready_StateIndexForDirecting();
 	HRESULT Change_State_ForDirecting(_int iStateIdx);

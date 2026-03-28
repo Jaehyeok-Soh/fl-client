@@ -36,7 +36,9 @@
                     "bCancellation": true,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "Attack_1": "Animation_Monster_Dog_Attack_01",
                         "Attack_2": "Animation_Monster_Dog_Attack_02",
@@ -647,7 +649,9 @@
                     "bCancellation": true,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "Attack_1": "Animation_Monster_Dog_Attack_01",
                         "Attack_2": "Animation_Monster_Dog_Attack_02",
@@ -1114,7 +1118,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "Attack_1": "Animation_Monster_Dog_Attack_01",
                         "Attack_2": "Animation_Monster_Dog_Attack_02",
@@ -1625,7 +1631,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "Attack_1": "Animation_Monster_Dog_Attack_01",
                         "Attack_2": "Animation_Monster_Dog_Attack_02",
@@ -2090,7 +2098,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "Attack_1": "Animation_Monster_Dog_Attack_01",
                         "Attack_2": "Animation_Monster_Dog_Attack_02",
@@ -2555,7 +2565,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "Attack_1": "Animation_Monster_Dog_Attack_01",
                         "Attack_2": "Animation_Monster_Dog_Attack_02",
@@ -2889,7 +2901,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "C01_Skill01_Start": "Animation_Monster_Dog_C01_Skill01_Start"
                     },
@@ -3195,7 +3209,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "C01_Skill01_Loop": "Animation_Monster_Dog_C01_Skill01_Loop"
                     },
@@ -3460,7 +3476,56 @@
                     "vecMainAnimNames": [
                         "Animation_Monster_Dog_C01_Skill01_End"
                     ],
-                    "vecStartConditionFeature": [],
+                    "vecStartConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_skill_spawn_trigger",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
@@ -3801,7 +3866,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -4202,7 +4269,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "Die01": "Animation_Monster_Dog_Die01"
                     },
@@ -4557,7 +4626,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -4861,7 +4932,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -5165,7 +5238,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -5469,7 +5544,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -5773,7 +5850,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {
                         "Hit_Heavy01": "Animation_Monster_Dog_HitHeavy01"
                     },
@@ -6079,7 +6158,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -6383,7 +6464,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -6687,7 +6770,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -7239,7 +7324,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -7567,7 +7654,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -7895,7 +7984,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -8199,7 +8290,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -8503,7 +8596,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -8905,7 +9000,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
