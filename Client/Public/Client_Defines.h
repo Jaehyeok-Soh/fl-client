@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine_Define.h"
+#include "CameraRuntimeTypes.h"
 #include "EngineConsole.h"
 #include <windows.h>
 
@@ -1109,87 +1110,58 @@ namespace Client
 #pragma endregion
 
 #pragma region Camera
-	enum class ECameraShotEase : _uint
+	enum class ECameraEventAction : unsigned int
 	{
-		Linear = 0,
-		SmoothStep,
-		EaseOutQuad,
-		EaseInOutQuad,
-		EaseOutBack,
-		END
+		None = 0,
+		Enalbe_PlayMode,
+		Disable_PlayMode
 	};
 
-	struct CAMERA_SHOT_KEY_1D
+	typedef struct tagScriptedCameraShotRuntime
 	{
-		_float fTime = 0.f;
-		_float fValue = 0.f;
-		ECameraShotEase eEase = ECameraShotEase::SmoothStep;
-	};
+		_bool bPlaying = false;
+		_bool bPause = false;
+		_float fElapsed = 0.f;
 
-	struct CAMERA_SHOT_CHANNEL_1D
+		// resolve 대상 캐시
+		Engine::CGameObject* pResolvedPivotOwner = nullptr;
+		Engine::CGameObject* pResolvedLookAtOwner = nullptr;
+
+		// 시작 시점 anchor / 마지막 성공 anchor
+		Engine::CAMERA_ANCHOR_RESULT tStartPivotAnchor = {};
+		Engine::CAMERA_ANCHOR_RESULT tStartLookAtAnchor = {};
+
+		Engine::CAMERA_ANCHOR_RESULT tLastPivotAnchor = {};
+		Engine::CAMERA_ANCHOR_RESULT tLastLookAtAnchor = {};
+
+		// 연출 시작 직전 상태 저장
+		CAMERA_POSE tPreShotPose = {};
+
+		// 샷 시작 카메라 basis
+		Vec3 vStartCamPosWS = Vec3::Zero;
+
+		// 실제 shot 시작시점에 확정된 시작 오프셋(월드기준)
+		Vec3 vBaseOffsetWS = Vec3::Zero;
+	}SCRIPTED_CAMERA_SHOT_RUNTIME;
+	typedef struct tagScriptedRecoverRuntime
 	{
-		vector<CAMERA_SHOT_KEY_1D> vecKeys;
-	};
+		bool bActive = { false };
+		float fElapsed = { 0.f };
+		float fDuration = { 0.5f };
+		ECameraShotEase eEase = ECameraShotEase::EaseInOutQuad;
 
-	struct SCRIPTED_PIVOT_SHOT_DESC
+		CAMERA_POSE tStartPose = {};
+		CAMERA_POSE tTargetPose = {};
+	}SCRIPTED_RECOVER_RUNTIME;
+
+	typedef struct tagCameraShotPreset
 	{
-		_float  fDuration = 0.7f;
+		std::string strPresetTag{ "" };
+		std::string strSourceFilePath{ "" };
 
-		_bool   bFollowLivePivot = true;
-		_bool   bLookAtPivot = true;
-
-		_uint   iPart = 0;
-		wstring strPivotBoneTag;
-
-		// 시작 카메라 local basis 기준
-		CAMERA_SHOT_CHANNEL_1D LocalX;
-		CAMERA_SHOT_CHANNEL_1D LocalY;
-		CAMERA_SHOT_CHANNEL_1D LocalZ;         // +일수록 시작 look 반대방향(뒤)로 멀어짐
-
-		CAMERA_SHOT_CHANNEL_1D OrbitYawDeg;    // pivot 중심 월드 Y 회전
-		CAMERA_SHOT_CHANNEL_1D LookOffsetX;    // framing
-		CAMERA_SHOT_CHANNEL_1D LookOffsetY;
-	};
-
-	struct SCRIPTED_CONTROLLER_LAYER_DESC
-	{
-		CAMERA_SHOT_CHANNEL_1D FovDeltaDeg;
-
-		CAMERA_SHOT_CHANNEL_1D RotYawDeg;
-		CAMERA_SHOT_CHANNEL_1D RotPitchDeg;
-		CAMERA_SHOT_CHANNEL_1D RotRollDeg;
-
-		CAMERA_SHOT_CHANNEL_1D LocalPosX;
-		CAMERA_SHOT_CHANNEL_1D LocalPosY;
-		CAMERA_SHOT_CHANNEL_1D LocalPosZ;
-	};
-
-	struct SCRIPTED_CAMERA_SHOT_DESC
-	{
-		string                          strName;
-		SCRIPTED_PIVOT_SHOT_DESC        Pivot;
-		SCRIPTED_CONTROLLER_LAYER_DESC  Controller;
-	};
-
-	struct SCRIPTED_CAMERA_SHOT_RUNTIME
-	{
-		_bool   bPlaying = false;
-		_bool   bPause = false;
-		_float  fElapsed = 0.f;
-
-		Vec3    vStartPivotWS = Vec3::Zero;
-		Vec3    vStartCamPosWS = Vec3::Zero;
-
-		Vec3    vStartRight = Vec3::Right;
-		Vec3    vStartUp = Vec3::Up;
-		Vec3    vStartLook = Vec3::Forward;
-
-		// 시작 시점 offset을 camera local basis로 저장
-		// x = dot(offset, right)
-		// y = dot(offset, up)
-		// z = dot(offset, -look)  -> 양수면 뒤쪽
-		Vec3    vBaseOffsetLocal = Vec3::Zero;
-	};
+		SCRIPTED_CAMERA_SHOT_DESC tShotDesc{};
+		SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding{};
+	}CAMERA_SHOT_PRESET;
 #pragma endregion
 
 

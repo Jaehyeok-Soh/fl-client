@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 class CGameObject;
+class CPhysics_QueryFilterCallback;
 NS_END
 
 NS_BEGIN(Client)
@@ -92,6 +93,7 @@ public:
 
 public:
 	virtual Vec3  Get_MoveDir() override;
+	_float Get_Distance() const { return m_tRuntimeDesc.fDistance; }
 	void Set_PhaseTwo() { m_bPhaseTwo = true; }
 	void Set_HitDesc(HIT_DESC hitDesc)
 	{
@@ -138,6 +140,7 @@ public:
 	// 공간
 	_bool IsFalling() const { return Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::FALL); }
 	_bool IsDown() const { return Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::DOWN); }
+	_bool IsGround();
 
 	// 상태
 	_bool IsHit() const { return (m_tHitDesc.attackDesc.pAttackPreset != nullptr) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::HIT); }
@@ -215,6 +218,8 @@ private:
 	//_bool m_bGrounded = { false };
 	//_bool m_bGravity = { false };
 	//_uint m_iJumpCount = { 0 };
+
+	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 
 	Vec3 m_vMoveDir = {};
 	MONSTER_CONTROLCONTEXT_DESC m_tDesc = {};

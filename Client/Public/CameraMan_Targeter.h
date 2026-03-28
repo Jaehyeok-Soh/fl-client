@@ -22,6 +22,7 @@ enum class TargeterState : _uint
 	CINEMATIC,
 	TURN,
 	SCRIPTED_SHOT,
+	SCRIPTED_RECOVER,
 	END
 };
 
@@ -64,12 +65,12 @@ public:
 	void Change_CamState(_uint iState);
 
 	HRESULT	Ready_GlobalEvent();
-
+	HRESULT Request_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& shotDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& bindingDesc) override;
+	HRESULT Request_StopScriptedShot() override;
 	// getter setter
 public:
 	_float	Get_Pitch() const { return m_fPitch; }
 	void	Set_TurnData(TURNCAM_DATA& tData) { m_tTurnData = tData; }
-
 private:
 	void Update_Priority_State(const _float fTimeDelta);
 	void Update_State(const _float fTimeDelta);
@@ -101,11 +102,15 @@ private:
 	void TurnCam_Update(const _float fTimeDelta);
 	void TurnCam_End();
 
-
 	void ScriptedShot_Begin();
 	void ScriptedShot_Update_Priority(const _float fTimeDelta);
 	void ScriptedShot_Update(const _float fTimeDelta);
 	void ScriptedShot_End();
+
+	void ScriptedRecover_Begin();
+	void ScriptedRecover_Update_Priority(const _float fTimeDelta);
+	void ScriptedRecover_Update(const _float fTimeDelta);
+	void ScriptedRecover_End();
 private:
 	void Update_Input(const _float fTimeDelta);
 	void Chase_Actor(const _float fTimeDelta);
@@ -125,12 +130,38 @@ private:
 	_float Eval_TurnYawDegree() const;
 
 	// For. ScriptShot State
-	_bool Get_CurrentPivotWorldPos(Vec3& vOutPivot) const;
-	void Capture_ScriptedShotSnapshot();
-	void Evaluate_ScriptedShotBasePose(_float fTime, CAMERA_POSE& outBasePose, Vec3& outPivotWS) const;
+	// pivot과 lookat 캡쳐
+	void Initialize_ScriptedShotSnapshot();
+	// 시작용 Resolve 함수
+	_bool Resolve_InitialScriptedShotAnchors(OUT CAMERA_ANCHOR_RESULT& outPivot, OUT CAMERA_ANCHOR_RESULT& outLookAt);
+	// camera interface로 등록해놨던 Object들 정보 세팅
+	// 위 함수와 다르게 시작 이후 프레임들에서 쓸 함수
+	_bool Resolve_ScriptedShotAnchors(OUT CAMERA_ANCHOR_RESULT& outPivot, OUT CAMERA_ANCHOR_RESULT& outLookAt);
+	// pivot basis를 기준으로 전체 샷의 오프셋을 계산
+	void Resolve_ShotBasis(const Engine::CAMERA_ANCHOR_RESULT& pivotAnchor, OUT Vec3& outRight, OUT Vec3& outUp, OUT Vec3& outLook);
+	// resolve된 pivot/lookat anchor를 받아서 anchor offset 채널에 반영
+	// camera local xyz, orbit 반영하여 base pose를 생성하는 함수
+	void Evaluate_ScriptedShotBasePose(_float fTime,
+		const CAMERA_ANCHOR_RESULT& pivotAnchor,
+		const CAMERA_ANCHOR_RESULT& lookAtAnchor,
+		OUT CAMERA_POSE& outBasePose,
+		OUT Vec3& outPivotWS);
+	// controller additive
 	void Evaluate_ScriptedControllerResult(_float fTime, CAMERA_MODIFIER_RESULT& outResult) const;
+	// pose 적용 및 normal sync
 	void Apply_CameraPose(const CAMERA_POSE& tPose);
 	void Sync_NormalStateFromCurrentPose();
+	// Pivot 및 LookAt 오브젝트 레퍼런스 관리
+	void Retain_ScriptedShotBindingObjects();
+	void Release_ScriptedShotBindingObjects();
+	CTransform* Get_PivotOwnerTransform();
+	void Execute_ShotAction(ECameraEventAction eEvent);
+
+	// For. ScriptRecover State
+	void Prepare_RecoverFromScript();
+	CAMERA_POSE Solve_GameplayReturnPose();
+	_float Eval_RecoverEase(_float fT);
+	CAMERA_POSE Lerp_CameraPose(const CAMERA_POSE& tA, const CAMERA_POSE& tB, _float fT) const;
 private:
 	TargeterState m_eCurrentState = { TargeterState::NORMAL };
 	CGameObject* m_pLockonTarget = { nullptr };
@@ -183,11 +214,17 @@ private:
 	
 private:
 	// For. ScriptShot State
-	SCRIPTED_CAMERA_SHOT_DESC        m_tScriptedShotDesc = {};
-	SCRIPTED_CAMERA_SHOT_RUNTIME     m_tScriptedShotRuntime = {};
+	SCRIPTED_CAMERA_SHOT_DESC         m_tScriptedShotDesc = {};
+	SCRIPTED_CAMERA_SHOT_BINDING_DESC m_tScriptedShotBinding = {};
+	SCRIPTED_CAMERA_SHOT_RUNTIME      m_tScriptedShotRuntime = {};
+	SCRIPTED_RECOVER_RUNTIME		  m_tRecoverRuntime = {};
+	// Update에서 계산해서 Ready_Before_Render에서 소비
+	CAMERA_MODIFIER_RESULT m_tScriptedOverlayResult = {};
+	_bool                  m_bUseScriptedOverlay = false;
+	Vec3                   m_vLastScriptedPivotWS = Vec3::Zero;
 #ifdef _DEBUG
 public:
-	void Debug_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& tDesc);
+	void Debug_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& tDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding);
 	void Debug_StopScriptedShot();
 	void Debug_SetScriptedShotTime(_float fTime);
 	void Debug_SetScriptedShotPause(_bool bPause);

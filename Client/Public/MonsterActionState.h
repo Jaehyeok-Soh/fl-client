@@ -3,6 +3,8 @@
 
 NS_BEGIN(Client)
 
+class CStateBase_Monster;
+
 class CMonsterActionState final : public CActionState
 {
 	using Super = CActionState;
@@ -35,9 +37,10 @@ public:
 
 	unordered_map<string, _int>& GetUmapState() { return m_umapState; }
 	_int Get_StateIndex(const string& strStateName);
-
 	_bool IsStateReady(_uint iIdx);
 
+	// For. CustomState
+	DTO::MONSTER_STATEBASE_DESC* Get_StateDesc(const string& strStateTag, OUT _int &iStateIndex);
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

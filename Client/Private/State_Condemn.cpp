@@ -60,7 +60,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	vBossLook.Normalize();
 
 	// boss 위치 + look 방향으로 밀어낸 위치
-	Vec3 vNewPos = vBossPos + vBossLook * 1.3f;
+	Vec3 vNewPos = vBossPos + vBossLook * 0.65f;
 	pCCT->SetFootPosition(vNewPos);
 
 	m_tTurnData.vPivot = (vBossPos + vNewPos) * 0.5f;
@@ -77,7 +77,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	pPlayerTransform->Look_At_Dir(vDir);
 
 
-	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::CONDEMN));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::CONDEMN), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	m_tTurnData.vFirstLookDir = vDir;
 	static_cast<CCameraMan_Targeter*>(pPlayer->Get_CameraTargeter())->Set_TurnData(m_tTurnData);
@@ -89,6 +89,11 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 
 void CState_Condemn::Update(const _float fTimeDelta)
 {
+	if (m_fStateElapsed >= 95.f / ANIMTIC)
+	{
+		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::CONDEMN), ENUM_TO_UINT(CWeapon::State::NONE));
+	}
+
 	Super::Update(fTimeDelta);
 }
 
@@ -97,7 +102,7 @@ HRESULT CState_Condemn::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::CONDEMN), ENUM_TO_UINT(CWeapon::State::NONE));
 
 	return S_OK;
 }

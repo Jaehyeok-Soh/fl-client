@@ -1622,7 +1622,7 @@ HRESULT CRender_Manager::Ready_Dissolve()
 
 	// 칼
 	{
-		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceBx004_M")))
+		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceZd016_Mask")))
 		{
 			MSG_BOX("Dissolve Texture가 바인딩 되지 않았습니다. - Render Manager - SWORD");
 			Safe_Release(pTexture);
@@ -2092,7 +2092,7 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 
 	Vec3 vUp = Vec3::Up;
 	if (fabs(input.vLightDir.Dot(vUp)) > 0.98f)
-		vUp = Vec3::Forward;
+		vUp = Vec3::Backward;
 
 	_float fViewBackDist = sqrtf(
 		vReceiverExtents.x * vReceiverExtents.x +

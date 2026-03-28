@@ -52,6 +52,9 @@ protected:
 private:
 	void			Cinematic(const _float fTimeDelta);
 	HRESULT			Ready_Components(void* pArg);
+public:
+	virtual HRESULT Request_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& shotDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& bindingDesc) { return S_OK; }
+	virtual HRESULT Request_StopScriptedShot() { return S_OK; }
 protected:
 	CameraType		m_eType = { CameraType::STATIC };
 	CGameObject*	m_pActor = { nullptr };

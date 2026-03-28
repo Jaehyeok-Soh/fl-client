@@ -1,6 +1,6 @@
 #pragma once
+#include "ICameraAnchorHost.h"
 #include "ContainerObject.h"
-
 #include "Builder_Map.h"
 
 NS_BEGIN(Engine)
@@ -10,6 +10,7 @@ NS_END
 NS_BEGIN(Client)
 
 class CMonster_Base abstract : public CContainerObject
+							 , public ICameraAnchorHost
 {
 	using Super = CContainerObject;
 
@@ -109,7 +110,10 @@ public:
 	virtual void		Try_Attack(const HIT_DESC& hitDesc) override;
 
 	void				Set_RootMotion_Apply(_bool bApply);
-
+public:
+	// Camera Interface
+	virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) override;
+	virtual CTransform* Get_CameraAnchorOwnerTransform() override;
 protected:
 	HRESULT				Ready_BaseStates();
 	HRESULT				Ready_PartObjects(void* pArg);

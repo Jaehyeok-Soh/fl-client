@@ -55,6 +55,19 @@ public:
 			? 2.f * fT * fT
 			: 1.f - std::pow(-2.f * fT + 2.f, 2.f) * 0.5f;
 	}
+	static _float EvalEase_EaseInOutSine(_float fT)
+	{
+		fT = std::clamp(fT, 0.f, 1.f);
+		return -(std::cos(XM_PI * fT) - 1.f) / 2.f;
+	}
+
+	static _float EvalEase_EaseInOutCubic(_float fT)
+	{
+		fT = std::clamp(fT, 0.f, 1.f);
+		return (fT < 0.5f)
+			? 4.f * fT * fT * fT
+			: 1.f - std::pow(-2.f * fT + 2.f, 3.f) * 0.5f;
+	}
 	static _float EvalEase_EaseOutBack(_float fT)
 	{
 		fT = std::clamp(fT, 0.f, 1.f);

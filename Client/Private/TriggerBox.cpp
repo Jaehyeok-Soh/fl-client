@@ -6,7 +6,7 @@
 #include "GameInstance.h"
 #include "TriggerBox_LevelChange.h"
 #include "QuestManager.h"
-
+#include "DialogueManager.h"
 
 CTriggerBox::CTriggerBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject(pDevice, pContext), m_eTriggerBoxType{CTriggerBox::Type::CHANGE_LEVEL}
@@ -184,6 +184,16 @@ void CTriggerBox::QuestEnter()
     SetEnable(true);
     m_bLockedEnter = false;
     m_bLockedExit = false;
+
+    if (Is_Quest_Enabled())
+    {
+        auto chapterDesc = CQuestManager::GetInstance()->Get_QuestChapterInfo();
+
+        auto iter = std::find(chapterDesc.eTargetType.begin(), chapterDesc.eTargetType.end(), m_eObject_Enum_Tag);
+
+        if (iter != chapterDesc.eTargetType.end() && chapterDesc.tQuestDesc.iEnterDialogueId != -1)
+            CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iEnterDialogueId);
+    }
 }
 
 void CTriggerBox::QuestExit()
@@ -191,6 +201,16 @@ void CTriggerBox::QuestExit()
     SetEnable(false);
     m_bLockedEnter = true;
     m_bLockedExit = true;
+
+    if (!Is_Quest_Enabled())
+    {
+        auto chapterDesc = CQuestManager::GetInstance()->Get_QuestChapterInfo();
+
+        auto iter = std::find(chapterDesc.eTargetType.begin(), chapterDesc.eTargetType.end(), m_eObject_Enum_Tag);
+
+        if (iter != chapterDesc.eTargetType.end() && chapterDesc.tQuestDesc.iExitDialogueId != -1)
+            CDialogueManager::GetInstance()->Start_Dialogue(chapterDesc.tQuestDesc.iExitDialogueId);
+    }
 }
 
 

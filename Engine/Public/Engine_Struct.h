@@ -1437,7 +1437,125 @@ namespace Engine
 
 		std::vector<ENV_PART_DESC>						VFX_PartsDescList = {};
 	}EFFECT_ENV_DESC;
+#pragma endregion
 
+#pragma region Camera Targter
+	// Anchor 결과
+	typedef struct tagCameraAnchorResult
+	{
+		SimpleMath::Vector3 vPos = SimpleMath::Vector3::Zero;
+		SimpleMath::Vector3 vRight = SimpleMath::Vector3::Right;
+		SimpleMath::Vector3 vUp = SimpleMath::Vector3::Up;
+		SimpleMath::Vector3 vLook = SimpleMath::Vector3::Forward;
+	}CAMERA_ANCHOR_RESULT;
+	// Shot 시작
+	typedef struct tagCameraShotStartDesc
+	{
+		ECameraShotStartMode eMode = ECameraShotStartMode::InheritCurrent;
+		
+		// FixedFromPivot일때 사용
+		SimpleMath::Vector3 vLocaloffset = SimpleMath::Vector3::Zero;
+		// Begin시점에 시작 포즈를 transform에 즉시 적용할지
+		bool bApplyStartPoseImmediately = true;
+	}CAMERA_SHOT_START_DESC;
+	// Shot Recover
+	typedef struct tagCameraShotRecoverDesc
+	{
+		ECameraShotRecoverTarget eTarget = ECameraShotRecoverTarget::GameplaySolved;
+		ECameraShotRecoverMethod eMethod = ECameraShotRecoverMethod::Blend;
+
+		float fBlendTime = { 1.f };
+		ECameraShotEase eEase = ECameraShotEase::EaseInOutQuad;
+	}CAMERA_SHOT_RECOVER_DESC;
+	// Shot 바인딩
+	typedef struct tagCameraBindTargetDesc
+	{
+		ECameraAnchorSource  eSource = ECameraAnchorSource::ACTOR;
+		ECameraAnchorResolve eResolve = ECameraAnchorResolve::TRANSFORM;
+
+		class CGameObject* pObject = nullptr;		// OBJECT일 때 사용
+		int         iPartIndex = 0;				// multipart body 대응
+		string      strAnchorTag;					// bone/socket 이름
+
+		SimpleMath::Vector3         vWorldPoint = SimpleMath::Vector3::Zero;		// WORLD_POINT일 때 사용
+		SimpleMath::Vector3         vLocalOffset = SimpleMath::Vector3::Zero;		// anchor 기준 추가 오프셋
+	}CAMERA_BIND_TARGET_DESC;
+	typedef struct tagScriptedCameraShotBindingDesc
+	{
+		CAMERA_BIND_TARGET_DESC Pivot;
+		CAMERA_BIND_TARGET_DESC LookAt;
+
+		bool bUseSeparateLookAt = false;
+	}SCRIPTED_CAMERA_SHOT_BINDING_DESC;
+	// shotdesc 데이터
+	typedef struct tagcameraShotKey1D
+	{
+		float fTime = 0.f;
+		float fValue = 0.f;
+		ECameraShotEase eEase = ECameraShotEase::SmoothStep;
+		// Tool 전용
+		unsigned int iEditorUID = { 0 };
+	}CAMERA_SHOT_KEY_1D;
+	typedef struct tagCameraShotChannel1D
+	{
+		vector<CAMERA_SHOT_KEY_1D> vecKeys;
+	}CAMERA_SHOT_CHANNEL_1D;
+	typedef struct tagScriptedPivotShotDesc
+	{
+		float fDuration = 0.7f;
+
+		bool  bFollowLivePivot = true;
+		bool  bFollowLiveLookAt = true;
+		bool  bLookAtTarget = true;
+
+		ECameraBasisMode eBasisMode = ECameraBasisMode::TARGET_TRANSFORM_YAW;
+
+		//////////////////////////////
+		// Pivot / LookAt 기준점 자체 이동
+		//////////////////////////////
+		CAMERA_SHOT_CHANNEL_1D PivotOffsetX;
+		CAMERA_SHOT_CHANNEL_1D PivotOffsetY;
+		CAMERA_SHOT_CHANNEL_1D PivotOffsetZ;
+
+		CAMERA_SHOT_CHANNEL_1D LookAtOffsetX;
+		CAMERA_SHOT_CHANNEL_1D LookAtOffsetY;
+		CAMERA_SHOT_CHANNEL_1D LookAtOffsetZ;
+
+		//////////////////////////////
+		// 최종 pivot 주변 카메라 이동
+		//////////////////////////////
+		CAMERA_SHOT_CHANNEL_1D LocalX;
+		CAMERA_SHOT_CHANNEL_1D LocalY;
+		CAMERA_SHOT_CHANNEL_1D LocalZ;      // +일수록 basis look 반대방향(뒤)로 멀어짐
+
+		CAMERA_SHOT_CHANNEL_1D OrbitYawDeg; // pivot 중심 orbit
+	}SCRIPTED_PIVOT_SHOT_DESC;
+
+	typedef struct tagScriptedControllerLayerDesc
+	{
+		CAMERA_SHOT_CHANNEL_1D FovDeltaDeg;
+
+		CAMERA_SHOT_CHANNEL_1D RotYawDeg;
+		CAMERA_SHOT_CHANNEL_1D RotPitchDeg;
+		CAMERA_SHOT_CHANNEL_1D RotRollDeg;
+
+		CAMERA_SHOT_CHANNEL_1D LocalPosX;
+		CAMERA_SHOT_CHANNEL_1D LocalPosY;
+		CAMERA_SHOT_CHANNEL_1D LocalPosZ;
+	}SCRIPTED_CONTROLLER_LAYER_DESC;
+
+	typedef struct tagScriptedCameraShotDesc
+	{
+		string                         strName;
+		
+		CAMERA_SHOT_START_DESC         Start;
+		SCRIPTED_PIVOT_SHOT_DESC       Pivot;
+		SCRIPTED_CONTROLLER_LAYER_DESC Controller;
+		CAMERA_SHOT_RECOVER_DESC       Recover;
+
+		unsigned int iClientStartAction = 0;
+		unsigned int iClientFinishAction = 0;
+	}SCRIPTED_CAMERA_SHOT_DESC;
 #pragma endregion
 
 #pragma region Global Event Desc

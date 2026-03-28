@@ -34,7 +34,8 @@ public:
 
 	enum WeaponDescFlag : Flags
 	{
-		WF_RGBMappingOn = 0x000001
+		WF_RGBMappingOn = 0x000001,
+		WF_Dissolve		= 0x000002
 	};
 
 	typedef struct tagWeaponDesc : public CPartObject::PARTOBJ_DESC
@@ -60,6 +61,9 @@ public:
 		Matrix matConOffsetMatrix	= Matrix::Identity;
 
 		_uint iStartAnimIdx = { 0 };
+
+		Vec3 vDissolveColor = Vec3::Zero;
+		Vec3 vDissolveValues = Vec3::Zero; // spawn time, speed, Edge
 
 	}WEAPON_DESC;
 
@@ -92,8 +96,8 @@ public:
 	void	Set_HandSocket();
 	void	Set_DefaultSocket();
 	_bool	Is_Hand() const { return m_eState == State::HAND; }
-	void	Set_WeaponState(State eState) { m_eState = eState;  (m_eState == State::NONE) ? Set_Active(false) : Set_Active(true); }
-	void	Set_WeaponState(_uint iState) { m_eState = static_cast<State>(iState); (m_eState == State::NONE) ? Set_Active(false) : Set_Active(true);}
+	void	Set_WeaponState(State eState);
+	void	Set_WeaponState(_uint iState);
 
 	void	Set_Weapon_PlayState(_uint iPlayState) { m_eAnimState = static_cast<AnimState>(iPlayState); m_bPlayOnceYet = true; }
 
@@ -119,15 +123,22 @@ protected:
 
 	_bool				m_bPlayOnceYet = { true };
 
+
+private:
 	SHADER_RGBCOLOR_DESC m_tColorDesc = {};
 	CComputeShader* m_pBoneMeshCS{ nullptr };
 	CComputeShader* m_pBoneCombineCS{ nullptr };
 	CComputeShader* m_pAnimECS{ nullptr };
 	CComputeShader* m_pAnimBlendECS{ nullptr };
+
+protected:
+	DissolveEffectDesc	m_tDissolveDesc = {};
+
 private:
 	HRESULT Ready_Components(WEAPON_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_ComputeShaders();
+	HRESULT Ready_DissolveEffect_Setting(WEAPON_DESC* pDesc);
 
 private:
 	void	Play_Anim(const _float fTimeDelta);
@@ -135,6 +146,10 @@ private:
 
 	HRESULT Render_StaticWeap();
 	HRESULT Render_AnimWeap();
+
+private:
+	void	DissolveStart();
+	_bool	Is_Dissolve();
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

@@ -52,6 +52,7 @@ namespace Tool
         "param_condition_IsTrackPositionAt",
         "condition_attack_landed",
         "condition_attack_none_landed",
+        "condition_is_ground",
 
         // param examples
         "param_condition_distance_over",

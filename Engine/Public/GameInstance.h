@@ -208,6 +208,9 @@ public:
 	HRESULT Request_MainCameraFOV(const CAMERA_FOV_DESC& desc);
 	HRESULT Request_MainCameraPositionOffset(const CAMERA_POSITION_OFFSET_DESC& desc);
 	HRESULT Request_MainCameraRotationOffset(const CAMERA_ROTATION_OFFSET_DESC& desc);
+
+	HRESULT Request_PlayCameraShot(const SCRIPTED_CAMERA_SHOT_DESC& shotDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& bindingDesc);
+	HRESULT Request_StopCameraShot();
 #pragma endregion
 	
 #pragma region SOUND_MANAGER

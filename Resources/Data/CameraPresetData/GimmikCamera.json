@@ -1,0 +1,154 @@
+{
+  "Version": 1,
+  "PresetTag": "GimmikCamera",
+  "ShotDesc": {
+    "Name": "GimmikCamera",
+    "Start": {
+      "Mode": "FixedFromPivot",
+      "LocalOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -1.2999999523162842
+      },
+      "ApplyStartPoseImmediately": true
+    },
+    "Pivot": {
+      "Duration": 3.0,
+      "FollowLivePivot": true,
+      "FollowLiveLookAt": true,
+      "LookAtTarget": true,
+      "BasisMode": "TARGET_TRANSFORM_YAW",
+      "PivotOffsetX": {
+        "Keys": []
+      },
+      "PivotOffsetY": {
+        "Keys": []
+      },
+      "PivotOffsetZ": {
+        "Keys": [
+          {
+            "Time": 0.10000000149011612,
+            "Value": 0.0,
+            "Ease": "SmoothStep",
+            "EditorUID": 3
+          },
+          {
+            "Time": 0.8999999761581421,
+            "Value": -0.5,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 2
+          },
+          {
+            "Time": 2.4000000953674316,
+            "Value": 2.799999952316284,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 10
+          }
+        ]
+      },
+      "LookAtOffsetX": {
+        "Keys": []
+      },
+      "LookAtOffsetY": {
+        "Keys": []
+      },
+      "LookAtOffsetZ": {
+        "Keys": []
+      },
+      "LocalX": {
+        "Keys": []
+      },
+      "LocalY": {
+        "Keys": [
+          {
+            "Time": 0.8999999761581421,
+            "Value": 0.0,
+            "Ease": "SmoothStep",
+            "EditorUID": 12
+          },
+          {
+            "Time": 2.4000000953674316,
+            "Value": -0.699999988079071,
+            "Ease": "SmoothStep",
+            "EditorUID": 11
+          }
+        ]
+      },
+      "LocalZ": {
+        "Keys": []
+      },
+      "OrbitYawDeg": {
+        "Keys": [
+          {
+            "Time": 0.4000000059604645,
+            "Value": 0.0,
+            "Ease": "Linear",
+            "EditorUID": 5
+          },
+          {
+            "Time": 1.0,
+            "Value": -20.0,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 4
+          }
+        ]
+      }
+    },
+    "Controller": {
+      "FovDeltaDeg": {
+        "Keys": []
+      },
+      "RotYawDeg": {
+        "Keys": []
+      },
+      "RotPitchDeg": {
+        "Keys": []
+      },
+      "RotRollDeg": {
+        "Keys": []
+      },
+      "LocalPosX": {
+        "Keys": []
+      },
+      "LocalPosY": {
+        "Keys": []
+      },
+      "LocalPosZ": {
+        "Keys": []
+      }
+    },
+    "Recover": {
+      "Target": "PreshotSnap",
+      "Method": "Snap",
+      "BlendTime": 1.0,
+      "Ease": "Linear"
+    },
+    "ClientStartAction": 0,
+    "ClientFinishAction": 0
+  },
+  "Binding": {
+    "Pivot": {
+      "Source": "OBJECT",
+      "Resolve": "TRANSFORM",
+      "PartIndex": 0,
+      "AnchorTag": "",
+      "LocalOffset": {
+        "x": 0.0,
+        "y": 3.799999952316284,
+        "z": 0.0
+      }
+    },
+    "UseSeparateLookAt": false,
+    "LookAt": {
+      "Source": "OBJECT",
+      "Resolve": "TRANSFORM",
+      "PartIndex": 0,
+      "AnchorTag": "",
+      "LocalOffset": {
+        "x": 0.0,
+        "y": 4.0,
+        "z": 4.0
+      }
+    }
+  }
+}
