@@ -797,10 +797,10 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
         vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
     }
     
-    output.vEmissive = float4(vEmissive, 1.f);
-    
     // dissolve edge emissive
     vEmissive += Get_DissolveEdgeEmissive(input.vUV);
+    
+    output.vEmissive = float4(vEmissive, 1.f);
     
     return output;
 }

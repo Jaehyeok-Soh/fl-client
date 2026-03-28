@@ -9,6 +9,8 @@
 
 #include "GameInstance.h"
 
+#include "PlayerImguiValues.h"
+
 CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Weapon_Type eWeapon)
 	: Super(pDevice, pDeviceContext)
 	, m_eWaeponType(eWeapon)
@@ -303,6 +305,9 @@ void CWeapon::Set_WeaponState(State eState)
 
 		}
 		break;
+
+		default:
+			m_tDissolveDesc.Reset();
 		}
 	}
 }
@@ -328,6 +333,9 @@ void CWeapon::Set_WeaponState(_uint iState)
 
 		}
 		break;
+
+		default:
+			m_tDissolveDesc.Reset();
 		}
 	}
 }
@@ -482,14 +490,13 @@ HRESULT CWeapon::Ready_DissolveEffect_Setting(WEAPON_DESC* pDesc)
 	m_tDissolveDesc.Reset();
 
 	m_tDissolveDesc.Add_DissolveFlag(DS::BIT_SPAWN_START,DS::BIT_USE_DISSOLVE_MAP, DS::BIT_USE_EDGE);
-	m_tDissolveDesc.Set_Spawn_Setting(pDesc->vDissolveTimes.x, pDesc->vDissolveTimes.y);
+	m_tDissolveDesc.Set_Spawn_Setting(pDesc->vDissolveValues.x, pDesc->vDissolveValues.y);
 
 	m_tDissolveDesc.Set_ObjectType(DS::DISSOLVE_OBJECTTYPE::TYPE_SWORD);
 
 	// 스폰 시간 & 디졸브 시간
-	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = Vec3{ 9.56f, 0.11f,0.f };
 	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = pDesc->vDissolveColor;
-	m_tDissolveDesc.ShaderData.fDissolveEdgeWidth = 0.1f;
+	m_tDissolveDesc.ShaderData.fDissolveEdgeWidth = pDesc->vDissolveValues.z;
 
 
 	// 디졸브 셰이더 
@@ -576,7 +583,7 @@ void CWeapon::DissolveStart()
 {
 	using DS = DissolveEffectDesc;
 
-	if (m_tDissolveDesc.Is_Finished())
+	//if (m_tDissolveDesc.Is_Finished())
 	{
 		m_tDissolveDesc.Reset();
 

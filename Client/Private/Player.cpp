@@ -462,27 +462,33 @@ _bool CPlayer::Change_MainWeaponNext(_uint iWeaponType)
 
 void CPlayer::Change_WeaponState(_uint iWeaponType, _uint iState)
 {
-    // 우선 다 none으로 바꾼다음
-    Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
-    Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
-    Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
-    Set_CurPartWeapon_State(EWEAPON::CONDEMN, ENUM_TO_UINT(CWeapon::State::NONE));
-
     switch (iWeaponType)
     {
     case ENUM_TO_UINT(EWEAPON::MELEE):
         Set_CurPartWeapon_State(EWEAPON::MELEE, iState);
+        Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::CONDEMN, ENUM_TO_UINT(CWeapon::State::NONE));
         break;
 
     case ENUM_TO_UINT(EWEAPON::RANGE):
+        Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
         Set_CurPartWeapon_State(EWEAPON::RANGE, iState);
+        Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::CONDEMN, ENUM_TO_UINT(CWeapon::State::NONE));
         break;
 
     case ENUM_TO_UINT(EWEAPON::SKILL):
+        Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
         Set_CurPartWeapon_State(EWEAPON::SKILL, iState);
+        Set_CurPartWeapon_State(EWEAPON::CONDEMN, ENUM_TO_UINT(CWeapon::State::NONE));
         break;
 
     case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
         Set_CurPartWeapon_State(EWEAPON::CONDEMN, iState);
         break;
     }
@@ -1827,8 +1833,8 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
         weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
 
-        weaponDesc.vDissolveColor = { 9.5f, 0.751839f, 0.182292f };
-        weaponDesc.vDissolveTimes = { 0.5f,2.f };
+        weaponDesc.vDissolveColor = { 5.f, 3.5f,0.f };
+        weaponDesc.vDissolveValues = { 1.5f,1.5f,0.03f };
 
         weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
         //weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(10.f), XMConvertToRadians(0.f), XMConvertToRadians(-45.f));
@@ -1876,7 +1882,7 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
 
         weaponDesc.vDissolveColor = { 9.56f, 0.11f,0.f };
-        weaponDesc.vDissolveTimes = { 0.5f,2.f };
+        weaponDesc.vDissolveValues = { 1.5f,1.2f,0.03f };
 
         weaponDesc.fAllBullet = 1000.f;
         weaponDesc.fCurBullet = 500.f;
@@ -1905,8 +1911,8 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.vColorG = Vec4(0.10119f, 0.10119f, 0.10119f, 1.f);
         weaponDesc.vColorB = Vec4(0.125f, 0.055804f, 0.055804f, 1.f);
 
-        weaponDesc.vDissolveColor = { 0.f, 0.11f,9.56f };
-        weaponDesc.vDissolveTimes = { 0.5f,2.f };
+        weaponDesc.vDissolveColor = { 0.f, 1.f,8.f };
+        weaponDesc.vDissolveValues = { 1.5f,1.f,0.05f };
 
         weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(45.f), XMConvertToRadians(-10.f));
 

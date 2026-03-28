@@ -63,7 +63,7 @@ public:
 		_uint iStartAnimIdx = { 0 };
 
 		Vec3 vDissolveColor = Vec3::Zero;
-		Vec2 vDissolveTimes = Vec2::Zero; // spawn time, speed
+		Vec3 vDissolveValues = Vec3::Zero; // spawn time, speed, Edge
 
 	}WEAPON_DESC;
 

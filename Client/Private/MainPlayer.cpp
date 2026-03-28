@@ -887,7 +887,7 @@ HRESULT CMainPlayer::Ready_SoundHandler()
     if (pAnimModel == nullptr)
         return E_FAIL;
     // 내부에서 Add_Component 해줌
-    CSoundEventBinder* pResult = CSoundEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Example.json");
+    CSoundEventBinder* pResult = CSoundEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Player.json");
     if (pResult == nullptr)
         return E_FAIL;
     Safe_Release(pResult);

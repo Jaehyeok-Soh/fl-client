@@ -60,7 +60,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	vBossLook.Normalize();
 
 	// boss 위치 + look 방향으로 밀어낸 위치
-	Vec3 vNewPos = vBossPos + vBossLook * 0.7f;
+	Vec3 vNewPos = vBossPos + vBossLook * 0.65f;
 	pCCT->SetFootPosition(vNewPos);
 
 	m_tTurnData.vPivot = (vBossPos + vNewPos) * 0.5f;

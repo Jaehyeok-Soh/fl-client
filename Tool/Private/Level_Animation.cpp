@@ -265,9 +265,26 @@ HRESULT CLevel_Animation::Ready_Sounds()
 	_uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Weapon/Dual_Blade/")))
+
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Combat\Dual
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Dual")))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Weapon/OneHand_Sword/")))
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Sword")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Gun")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Condemn")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))
+		return E_FAIL;
+
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Basic
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Dodge")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Jump")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Slides")))
 		return E_FAIL;
 
 	return S_OK;
