@@ -525,7 +525,7 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 
 
 	UI_LEVEL_FADE_PREFAB_DATA Desc = {};
-	Desc.fDelay		= 5.f;
+	Desc.fDelay		= 7.f;
 	Desc.fDuration	= 2.f;
 	Desc.isEased	= false;
 	Desc.fEaseValue = 2.f;
