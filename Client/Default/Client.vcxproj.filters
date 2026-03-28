@@ -958,6 +958,9 @@
     <Filter Include="06. FSM\Monster\Lianhuo\Gimmik">
       <UniqueIdentifier>{79d23d34-783c-4333-85ac-5de7d6014807}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\EffectObject\Parent_Effect\DashPanel">
+      <UniqueIdentifier>{7b3ec892-7833-4c49-ae85-19d1b6897024}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\22.Npc Text Bubble">
       <UniqueIdentifier>{6893725a-f13c-4173-a08c-670176ad1907}</UniqueIdentifier>
     </Filter>
@@ -1772,6 +1775,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\State_Npctalk.h">
       <Filter>06. FSM\Player\NPCs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_DashPanel.h">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\DashPanel</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CameraShotPrestBuilder.h">
       <Filter>03. GameObject\Camera\Builder</Filter>
@@ -2653,6 +2659,9 @@
     </ClCompile>
     <ClCompile Include="..\private\State_GimmikRunStart.cpp">
       <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_DashPanel.cpp">
+      <Filter>03. GameObject\EffectObject\Parent_Effect\DashPanel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_SPHitStart.cpp">
       <Filter>06. FSM\Player\Hit\Special\SpecialHIt</Filter>

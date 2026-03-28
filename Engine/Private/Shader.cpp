@@ -31,6 +31,7 @@ CShader::CShader(const CShader& rhs)
 	, m_pRenderFx_CBuffer(rhs.m_pRenderFx_CBuffer)
 	, m_pPlayerInfo_CBuffer{rhs.m_pPlayerInfo_CBuffer}
 	, m_pEffect_Dissolve_CBuffer{rhs.m_pEffect_Dissolve_CBuffer }
+	, m_pEffect_Line_CBuffer{rhs.m_pEffect_Line_CBuffer}
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -46,6 +47,7 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pRenderFx_CBuffer);
 	Safe_AddRef(m_pPlayerInfo_CBuffer);
 	Safe_AddRef(m_pEffect_Dissolve_CBuffer);
+	Safe_AddRef(m_pEffect_Line_CBuffer);
 }
 
 HRESULT CShader::Initialize_Prototype(void* pArg)
@@ -226,6 +228,11 @@ HRESULT CShader::Bind_DissolveEffectData(const SHADER_DISSOLVE_EFFECT_DESC& Desc
 	return m_pEffect_Dissolve_CBuffer->Copy_Data(Desc);
 }
 
+HRESULT CShader::Bind_LineEffectData(const SHADER_LINE_EFFECT_DESC& Desc)
+{
+	return m_pEffect_Line_CBuffer->Copy_Data(Desc);
+}
+
 HRESULT CShader::Bind_TransformData(const SHADER_TRANSFORMDESC& trnasformDesc)
 {
 	return m_pTransform_CBuffer->Copy_Data(trnasformDesc);
@@ -349,6 +356,14 @@ void CShader::Create_ConstantBuffer()
 		m_pEffect_Dissolve_CBuffer = CConstant_Buffer<SHADER_DISSOLVE_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
 		pCache->CB[iSlot]->SetConstantBuffer(m_pEffect_Dissolve_CBuffer->Get_Buffer());
 	}
+
+	// LineEffect
+	iSlot = ENUM_TO_UINT(EFXCB::LINEEFFECT);
+	if (pCache->CB[iSlot])
+	{
+		m_pEffect_Line_CBuffer = CConstant_Buffer<SHADER_LINE_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
+		pCache->CB[iSlot]->SetConstantBuffer(m_pEffect_Line_CBuffer->Get_Buffer());
+	}
 }
 
 CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
@@ -386,6 +401,7 @@ void CShader::Clear_ConstantBuffer()
 	Safe_Release(m_pRenderFx_CBuffer);
 	Safe_Release(m_pPlayerInfo_CBuffer);
 	Safe_Release(m_pEffect_Dissolve_CBuffer);
+	Safe_Release(m_pEffect_Line_CBuffer);
 }
 
 void CShader::Free()

@@ -63,10 +63,6 @@
 #include "Gun.h"
 #include "TriggerCollidePart.h"
 #include "Loader.h"
-#include "Effect.h"
-#include "Effect_Env.h"
-#include "Effect_WarningCircle.h"
-#include "EffectObject.h"
 #include "BattleField.h"
 #include "ColliderModule.h"
 #include "PartEffect.h"
@@ -80,6 +76,15 @@
 #include "WeaponPickUp.h"
 #include "LightObject.h"
 #include "ChangeLevelObject.h"
+
+//=================
+//	EFFECT
+//=================
+#include "Effect.h"
+#include "Effect_Env.h"
+#include "Effect_WarningCircle.h"
+#include "Effect_DashPanel.h"
+#include "EffectObject.h"
 
 //=================
 // SkillObject
@@ -916,7 +921,8 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_WarningCircle", CEffect_WarningCircle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_WarningSpace",			CSkillWarningSpace::Create(m_pDevice, m_pDeviceContext));
-		
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_DashPanel",		CEffect_DashPanel::Create(m_pDevice, m_pDeviceContext));
+
 		// Projectile
 
 		// player effect object

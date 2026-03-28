@@ -177,6 +177,7 @@
     <ClInclude Include="..\public\CameraPreset_Manager.h" />
     <ClInclude Include="..\public\CameraShotPrestBuilder.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\Effect_DashPanel.h" />
     <ClInclude Include="..\Public\Monster_Veteran.h" />
     <ClInclude Include="..\Public\Monster_Veteran_Body.h" />
     <ClInclude Include="..\Public\NPC_Citizen_Body.h" />
@@ -470,6 +471,7 @@
     <ClCompile Include="..\private\CameraPreset_Manager.cpp" />
     <ClCompile Include="..\private\CameraShotPrestBuilder.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
+    <ClCompile Include="..\Private\Effect_DashPanel.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran_Body.cpp" />
     <ClCompile Include="..\Private\NPC_Citizen_Body.cpp" />

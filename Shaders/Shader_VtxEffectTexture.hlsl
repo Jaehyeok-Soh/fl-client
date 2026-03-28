@@ -88,6 +88,113 @@ void GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_
     OutStream.RestartStrip();
 }
 
+[maxvertexcount(6)]
+void Line_GS_Texture(point VS_OUT_POS_GS_PARTICLE In[1], inout TriangleStream<GS_OUT_EFFECT_PARTICLE> OutStream)
+{
+    GS_OUT_EFFECT_PARTICLE Out;
+    matrix matVP = mul(V, P);
+
+    float3 vStart = g_LineEffect.g_StartPos;
+    float3 vEnd = g_LineEffect.g_EndPos;
+    float fHalfWidth = g_LineEffect.g_HalfWidth;
+
+    float3 vLine = vEnd - vStart;
+    float fLength = length(vLine);
+
+    // 길이가 너무 짧으면 그리지 않음
+    if (fLength < 0.0001f)
+        return;
+
+    float3 vLineDir = vLine / fLength;
+
+    // 중심점 기준으로 카메라 방향 계산
+    float3 vCenter = (vStart + vEnd) * 0.5f;
+    float3 vUp = float3(0.f, 1.f, 0.f);
+
+    // 선에 직교하는 폭 방향
+    float3 vSideDir = cross(vUp, vLineDir);
+    float fSideLen = length(vSideDir);
+
+    // 카메라 방향과 선 방향이 거의 평행하면 fallback
+    if (fSideLen < 0.0001f)
+    {
+        vSideDir = cross(float3(0.f, 1.f, 0.f), vLineDir);
+        fSideLen = length(vSideDir);
+
+        if (fSideLen < 0.0001f)
+        {
+            vSideDir = cross(float3(1.f, 0.f, 0.f), vLineDir);
+            fSideLen = length(vSideDir);
+
+            if (fSideLen < 0.0001f)
+                return;
+        }
+    }
+
+    vSideDir /= fSideLen;
+    float3 vOffset = vSideDir * fHalfWidth;
+
+    // 사각형 4점
+    float3 vPos0 = vStart + vOffset; // Start Left
+    float3 vPos1 = vStart - vOffset; // Start Right
+    float3 vPos2 = vEnd + vOffset; // End Left
+    float3 vPos3 = vEnd - vOffset; // End Right
+
+    float2 vUV0 = float2(0.f, 0.f);
+    float2 vUV1 = float2(1.f, 0.f);
+    float2 vUV2 = float2(0.f, 1.f);
+    float2 vUV3 = float2(1.f, 1.f);
+
+    float fViewZ = mul(float4(vCenter, 1.f), V).z;
+
+    // Triangle 1 : vPos0, vPos2, vPos1
+    Out.vPosition = mul(float4(vPos0, 1.f), matVP);
+    Out.vUV = vUV0;
+    Out.vLifeTime = In[0].vLifeTime;
+    Out.vSpriteUV = float2(0.f, 0.f);
+    Out.vViewZ = fViewZ;
+    OutStream.Append(Out);
+
+    Out.vPosition = mul(float4(vPos2, 1.f), matVP);
+    Out.vUV = vUV2;
+    Out.vLifeTime = In[0].vLifeTime;
+    Out.vSpriteUV = float2(0.f, 0.f);
+    Out.vViewZ = fViewZ;
+    OutStream.Append(Out);
+
+    Out.vPosition = mul(float4(vPos1, 1.f), matVP);
+    Out.vUV = vUV1;
+    Out.vLifeTime = In[0].vLifeTime;
+    Out.vSpriteUV = float2(0.f, 0.f);
+    Out.vViewZ = fViewZ;
+    OutStream.Append(Out);
+
+    OutStream.RestartStrip();
+
+    // Triangle 2 : vPos1, vPos2, vPos3
+    Out.vPosition = mul(float4(vPos1, 1.f), matVP);
+    Out.vUV = vUV1;
+    Out.vLifeTime = In[0].vLifeTime;
+    Out.vSpriteUV = float2(0.f, 0.f);
+    Out.vViewZ = fViewZ;
+    OutStream.Append(Out);
+
+    Out.vPosition = mul(float4(vPos2, 1.f), matVP);
+    Out.vUV = vUV2;
+    Out.vLifeTime = In[0].vLifeTime;
+    Out.vSpriteUV = float2(0.f, 0.f);
+    Out.vViewZ = fViewZ;
+    OutStream.Append(Out);
+
+    Out.vPosition = mul(float4(vPos3, 1.f), matVP);
+    Out.vUV = vUV3;
+    Out.vLifeTime = In[0].vLifeTime;
+    Out.vSpriteUV = float2(0.f, 0.f);
+    Out.vViewZ = fViewZ;
+    OutStream.Append(Out);
+
+    OutStream.RestartStrip();
+}
 
 PS_OUT_WBOIT PS_Texture(GS_OUT_EFFECT_PARTICLE In) : SV_TARGET0
 {
@@ -1059,6 +1166,26 @@ technique11 T0
         SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
         SetGeometryShader(CompileShader(gs_5_0, GS_Texture()));
+        SetPixelShader(CompileShader(ps_5_0, PS_GLowTexture()));
+    }
+
+    pass Blend_Line_Texture
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_ReadOnly, 0);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
+        SetGeometryShader(CompileShader(gs_5_0, Line_GS_Texture()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Texture()));
+    }
+
+    pass NoneDepth_Line_Texture
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_Disabled, 0);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_Texture()));
+        SetGeometryShader(CompileShader(gs_5_0, Line_GS_Texture()));
         SetPixelShader(CompileShader(ps_5_0, PS_GLowTexture()));
     }
 }

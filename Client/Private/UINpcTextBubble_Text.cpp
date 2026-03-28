@@ -163,8 +163,11 @@ void CUINpcTextBubble_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
 			{
-				Set_Active(true);
-				this->Set_Visible();
+				if (m_pTargetNPC == pObj)
+				{
+					Set_Active(true);
+					this->Set_Visible();
+				}
 			}));
 
 	// ¥Î»≠ Event
