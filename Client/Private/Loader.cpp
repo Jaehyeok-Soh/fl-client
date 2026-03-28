@@ -1618,6 +1618,19 @@ HRESULT CLoader::Ready_Sounds()
 		return E_FAIL;
 
 	/* player sounds */
+	if (FAILED(Ready_Sounds_Player()))
+	{
+		MSG_BOX("CLoader::Ready_Sounds, Player Sounds Fail");
+		return E_FAIL;
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Sounds_Player()
+{
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Combat\Dual
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Dual")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Sword")))
@@ -1627,6 +1640,26 @@ HRESULT CLoader::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Condemn")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Skill")))
+		return E_FAIL;
+
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Basic
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Cloth")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Dodge")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Jump")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Land")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Movement")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Slide")))
+		return E_FAIL;
+
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Hit
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit")))
 		return E_FAIL;
 
 	return S_OK;
