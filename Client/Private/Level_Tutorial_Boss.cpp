@@ -135,11 +135,11 @@ HRESULT CLevel_Tutorial_Boss::Initialize()
 		return E_FAIL;
 	}
 
-	if (FAILED(Ready_MonsterSkillObjectLayer()))
-	{
-		MSG_BOX("CLevel_Logo::Initialize, Ready_SkillObjectLayer Create Failed");
-		return E_FAIL;
-	}
+	//if (FAILED(Ready_MonsterSkillObjectLayer()))
+	//{
+	//	MSG_BOX("CLevel_Logo::Initialize, Ready_SkillObjectLayer Create Failed");
+	//	return E_FAIL;
+	//}
 
 	return S_OK;
 }
@@ -307,10 +307,10 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 	{
 		CXibi_Projectile_Circle::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
-			0 /* static */,
+			iLevelId,
 			g_wszPool_XibiCircleProjectile,
 			g_wszSkillObjectLayer,
-			0 /* static */,
+			iLevelId,
 			g_wszXibiProjectile_Prototype_Tag,
 			&desc,
 			200)))
@@ -319,10 +319,10 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 	{
 		CXibi_Loop_Thunder::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
-			0 /* static */,
+			iLevelId,
 			g_wszPool_XibiLoopThunder,
 			g_wszSkillObjectLayer,
-			0 /* static */,
+			iLevelId,
 			g_wszXibiLoopThunder_Prototype_Tag,
 			&desc,
 			30)))
@@ -331,10 +331,10 @@ HRESULT CLevel_Tutorial_Boss::Ready_SkillObjectLayer()
 	{
 		CXibi_Oneshot_Thunder::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
-			0 /* static */,
+			iLevelId,
 			g_wszPool_XibiOneshotThunder,
 			g_wszSkillObjectLayer,
-			0 /* static */,
+			iLevelId,
 			g_wszXibiOneshotThunder_Prototype_Tag,
 			&desc,
 			200)))
@@ -618,7 +618,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_MonsterSkillObjectLayer()
 	{
 		CMonster_Dog_Projectile_Circle::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
-			iLevelId,
+			0 /* static */,
 			g_wszPool_MonsterDogCircleProjectile,
 			g_wszSkillObjectLayer,
 			0 /* static */,
@@ -630,7 +630,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_MonsterSkillObjectLayer()
 	{
 		CMonster_Fly_Projectile_Circle::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
-			iLevelId,
+			0 /* static */,
 			g_wszPool_MonsterFlyCircleProjectile,
 			g_wszSkillObjectLayer,
 			0 /* static */,
@@ -642,7 +642,7 @@ HRESULT CLevel_Tutorial_Boss::Ready_MonsterSkillObjectLayer()
 	{
 		CMonster_Veteran_Projectile_Circle::GAMEOBJECT_DESC desc{};
 		if (FAILED(m_pGameInstance->Regist_Pool(
-			iLevelId,
+			0 /* static */,
 			g_wszPool_MonsterVeteranCircleProjectile,
 			g_wszSkillObjectLayer,
 			0 /* static */,

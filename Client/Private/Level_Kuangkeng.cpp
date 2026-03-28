@@ -104,11 +104,11 @@ HRESULT CLevel_Kuangkeng::Initialize()
 	if (FAILED(Ready_Map()))
 		return E_FAIL;
 
-	if (FAILED(Ready_MonsterSkillObjectLayer()))
-	{
-		MSG_BOX("CLevel_Logo::Initialize, Ready_SkillObjectLayer Create Failed");
-		return E_FAIL;
-	}
+	//if (FAILED(Ready_MonsterSkillObjectLayer()))
+	//{
+	//	MSG_BOX("CLevel_Logo::Initialize, Ready_SkillObjectLayer Create Failed");
+	//	return E_FAIL;
+	//}
 
 	return S_OK;
 }
