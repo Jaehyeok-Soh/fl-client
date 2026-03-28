@@ -1615,6 +1615,7 @@ CAMERA_POSE CCameraMan_Targeter::Lerp_CameraPose(const CAMERA_POSE& tA, const CA
     return out;
 }
 
+#ifdef _DEBUG
 void CCameraMan_Targeter::Debug_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& tDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding)
 {
     Request_PlayScriptedShot(tDesc, tBinding);
@@ -1642,6 +1643,7 @@ void CCameraMan_Targeter::Debug_SetScriptedShotPause(_bool bPause)
 
     m_tScriptedShotRuntime.bPause = bPause;
 }
+#endif
 
 CCameraMan_Targeter* CCameraMan_Targeter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

@@ -126,36 +126,39 @@ void CUIBossAction_Text::Bind_Events()
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
+			m_pGameInstance->Subscribe<BOSS_ACTION_ON>([this](const _uint iObjectID)
 				{
 					this->Set_Visible();
+
+
+
 				}));
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
+			m_pGameInstance->Subscribe<BOSS_ACTION_OFF>([this](const _uint iObjectID)
 				{
 					this->Set_Invisible();
 				}));
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
+			m_pGameInstance->Subscribe<BOSS_ACTION_ON>([this](const _uint iObjectID)
 				{
 					this->Set_Visible();
 				}));
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
+			m_pGameInstance->Subscribe<BOSS_ACTION_OFF>([this](const _uint iObjectID)
 				{
 					this->Set_Invisible();
 				}));
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
+			m_pGameInstance->Subscribe<BOSS_ACTION_ON>([this](const _uint iObjectID)
 				{
 					this->Set_Visible();
 				}));
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
+			m_pGameInstance->Subscribe<BOSS_ACTION_OFF>([this](const _uint iObjectID)
 				{
 					this->Set_Invisible();
 				}));

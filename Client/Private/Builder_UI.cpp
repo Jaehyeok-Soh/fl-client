@@ -50,7 +50,6 @@
 #include "UIScreenPulse_Image.h"
 #include "UITitle_Image.h"
 #include "UIEnterGame_Image.h"
-#include "UISceneFade_Image.h"
 
 #include "WorldUI_Component.h"
 
@@ -414,7 +413,6 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isScreenPulse		= (Type == DTO::EUIDImageSubClassType::SCREEN_PULSE);
 		const _bool isTitle				= (Type >= DTO::EUIDImageSubClassType::TITLE_BEGIN && Type <= DTO::EUIDImageSubClassType::TITLE_END);
 		const _bool isEnterGame			= (Type >= DTO::EUIDImageSubClassType::ENTERGAME_BEGIN&& Type <= DTO::EUIDImageSubClassType::ENTERGAME_END);
-		const _bool isSceneFade			= (Type == DTO::EUIDImageSubClassType::SCENE_FADE_IN);
 
 		if (isPlayerSkill)
 		{
@@ -575,13 +573,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			Desc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_EnterGameImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
-		else if (isSceneFade)
-		{
-			CUISceneFade_Image::SCENEFADE_IMAGE_DESC Desc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
-			Desc.eSubClassType = Type;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_SceneFadeImage", m_iLevelID, g_wszUILayer, &Desc);
-		}
+
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- ¾ê°¡ ¹®Á¦";

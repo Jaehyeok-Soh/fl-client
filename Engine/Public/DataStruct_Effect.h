@@ -42,6 +42,9 @@ enum class TEXTURESHADERPASS
     TEXTURE_NONEDEPTH,
     TEXTURE_GLOW,
     TEXTURE_NONEDEPTHGLOW,
+
+    LINE_TEXTURE_Blend,
+    LINE_TEXTURE_NONEDEPTH,
 };
 
 enum class E_EFFECTTYPE { NONE = 0, Particle, Mesh, Trail };
@@ -110,6 +113,16 @@ inline E_RANDOM_FLAG operator~(E_RANDOM_FLAG a) { return static_cast<E_RANDOM_FL
 inline E_RANDOM_FLAG& operator|=(E_RANDOM_FLAG& a, E_RANDOM_FLAG b) { return a = a | b; }
 inline E_RANDOM_FLAG& operator&=(E_RANDOM_FLAG& a, E_RANDOM_FLAG b) { return a = a & b; }
 
+
+struct TLINE_RECT_DATA
+{
+    bool Enable = { false };
+    SimpleMath::Vector3 vStart = { 0.f, 0.f, 0.f };
+    SimpleMath::Vector3 vEnd = { 0.f, 0.f, 0.f };
+
+    float fHalfWidth = { 0.5f};
+};
+
 struct TEFFECT_PartsData
 {
     static constexpr EEffectType eType = EEffectType::EFFECT_PARTS;
@@ -117,6 +130,8 @@ struct TEFFECT_PartsData
     std::string EffectPartsName = {};
     std::string ParentsName = {};
     Matrix      vWorldMatrix = {};
+
+    TLINE_RECT_DATA LineEffectData = {};
 
     _uint eEffectSystemType = ENUM_TO_UINT(E_EffectSystemType::Particle);
     _uint eEffectParticleType = ENUM_TO_UINT(E_PARTICLETYPE::PARTICLE);

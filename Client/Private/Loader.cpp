@@ -64,10 +64,6 @@
 #include "Gun.h"
 #include "TriggerCollidePart.h"
 #include "Loader.h"
-#include "Effect.h"
-#include "Effect_Env.h"
-#include "Effect_WarningCircle.h"
-#include "EffectObject.h"
 #include "BattleField.h"
 #include "ColliderModule.h"
 #include "PartEffect.h"
@@ -81,6 +77,15 @@
 #include "WeaponPickUp.h"
 #include "LightObject.h"
 #include "ChangeLevelObject.h"
+
+//=================
+//	EFFECT
+//=================
+#include "Effect.h"
+#include "Effect_Env.h"
+#include "Effect_WarningCircle.h"
+#include "Effect_DashPanel.h"
+#include "EffectObject.h"
 
 //=================
 // SkillObject
@@ -162,7 +167,7 @@
 #include "NPC_Citizen.h"
 #include "NPC_Citizen_Body.h"
 #include "NPC_Citizen_DecoPart.h"
-
+#include "CitizenData.h"
 //=================
 // UI
 //=================
@@ -194,6 +199,7 @@
 #include "UIConversation_Text.h"
 #include "UIMiniGame_Circle_Text.h"
 #include "UIEnterGame_Text.h"
+#include "UINpcTextBubble_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -223,6 +229,7 @@
 #include "UIScreenPulse_Image.h"
 #include "UIEnterGame_Image.h"
 #include "UISceneFade_Image.h"
+#include "UINpcTextBubble_Image.h"
 //=================
 // Resource
 //=================
@@ -578,6 +585,7 @@ HRESULT CLoader::Loading_For_Logo()
 	//////////////////////////////////////////
 	//////////// Ready Components ////////////
 	//////////////////////////////////////////
+
 #pragma region Component
 	{
 		std::lock_guard<std::mutex> lockguard(m_mutex_1);
@@ -596,7 +604,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.pMatPreTransform		= &(matPreTransformScale);	// matPreTransformScale // matPreTransformTurn90wwwwdddd
 		desc.wstrModelFolderName	= L"PlayerMoon";					// PlayerMoon // Pino
 		desc.FStageBone				= CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices	= {2,3,5,72,285,286,287,288,289,413,414,415,416 ,417,418,419 };
+		desc.vecStageBoneIndices	= {2,3,5,51,72,285,286,287,288,289,413,414,415,416 ,417,418,419 };
 
 		// root bone 정보 셋팅 : 없으면 아예 안 넘겨주면 됨
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
@@ -678,6 +686,17 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_DualL", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
+	}
+	// For. Prototype_Component_Model_CondemnSword
+	{
+		CModel::MODEL_ORIGIN_DESC desc = {};
+		desc.eType = EModelType::STATIC;
+		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
+		desc.pMatPreTransform = &(matPreTransformScale);
+		desc.wstrModelFolderName = L"Weapon_Condemn";
+		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
+
+		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_CondemnSword", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
 
@@ -915,7 +934,8 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_WarningCircle", CEffect_WarningCircle::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_Parts",			CEffectObject::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_WarningSpace",			CSkillWarningSpace::Create(m_pDevice, m_pDeviceContext));
-		
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect_DashPanel",		CEffect_DashPanel::Create(m_pDevice, m_pDeviceContext));
+
 		// Projectile
 
 		// player effect object
@@ -1015,6 +1035,16 @@ HRESULT CLoader::Loading_For_Logo()
 		// For. Prototype_GameObject_NPC_Citizen_Deco
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Citizen_DecoPart_Prototype_Tag,	CNPC_Citizen_DecoPart::Create(m_pDevice, m_pDeviceContext));
 
+		/* Citizen Preset Model 미리 생성 */
+		if (FAILED(DTO::CitizenWayPointOriginData::Load_CitizenWayPointDatas(m_pDevice,m_pDeviceContext)))
+			return E_FAIL;
+		if (FAILED(DTO::CitizenPresetData::Load_CitizenPresetData()))
+			return E_FAIL;
+		if (FAILED(DTO::CitizenPresetData::Add_ModelPrototype(ENUM_TO_UINT(ELevelType::STATIC), m_pDevice, m_pDeviceContext)))
+			return E_FAIL;
+
+
+
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Bone_Prototype_Tag,		CBonePart::Create(m_pDevice, m_pDeviceContext));
@@ -1096,6 +1126,9 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameImage",			CUIEnterGame_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameText",			CUIEnterGame_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_SceneFadeImage",			CUISceneFade_Image::Create(m_pDevice, m_pDeviceContext));
+
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleImage",		CUINpcTextBubble_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleText",		CUINpcTextBubble_Text::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	
@@ -1621,6 +1654,21 @@ HRESULT CLoader::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Static")))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::Voice, L"../../Resources/Sounds/SFX/Voice")))
+		return E_FAIL;
+
+	/* player sounds */
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Dual")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Sword")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Gun")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Condemn")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -1680,7 +1728,7 @@ HRESULT CLoader::Ready_AttackOverlap_PlayerMoon()
 	DTO::ECategory eCategory = DTO::ECategory::OVERLAP_SCRIPT;
 	_uint iLevelID = ENUM_TO_UINT(eLevelType);
 
-	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonFFinal.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/AttackOverlapData/MoonFinal.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

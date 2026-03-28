@@ -33,6 +33,7 @@ CMapToolManager::CMapToolManager()
 	, m_pLevelData							{nullptr}
 	, m_pCamCinematicSequenceRenderModel	{nullptr}
 	, m_pCamCinematicSequenceRenderShader	{nullptr}
+	, m_pCitizenWayPointDebugModel			{nullptr}
 	, m_pInstMesh_Shader					{nullptr}
 	, m_ppTargetSlot						{nullptr}
 	, m_isTexArraySelect					{false}
@@ -44,6 +45,12 @@ CMapToolManager::CMapToolManager()
 	, m_umapMapTextures						{}
 	, m_mapTextureSplatingInfoDatas			{}
 	, m_vecEnvEffectTags{}
+	, m_pCitizenWatPointData{nullptr}
+	, m_strCurrentOriginName{""}
+	, m_iCurrentOriginIndex{-1}
+	, m_strCurrentMapName{""}
+	, m_iCurrentCitizenIndex{-1}
+	, m_bShowOriginalRender{true}
 {
 	Safe_AddRef(m_pGameInstance);
 	m_arrayMapObjectCloneFactory.fill(nullptr);
@@ -120,6 +127,7 @@ HRESULT CMapToolManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	if (FAILED(Update_Camera_Cinematic_Sequence_Names()))
 		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -1152,6 +1160,13 @@ HRESULT CMapToolManager::Render()
 		if (FAILED(m_pCamCinematicSequence->Render_Debug(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject), m_pCamCinematicSequenceRenderModel, m_pCamCinematicSequenceRenderShader)))
 			return E_FAIL;
 
+	if(m_iCurrentOriginIndex != -1)
+		DTO::CitizenWayPointOriginData::Render_CitizenWayPointRenderDebug(m_strCurrentOriginName , m_iCurrentOriginIndex , m_pMesh_Shader , m_pCamCinematicSequenceRenderModel, ENUM_TO_UINT(EMapObjectShaderPass::StaticObject));
+
+	if(m_pCitizenWayPointDebugModel)
+		if(m_pCitizenWatPointData)
+			m_pCitizenWatPointData->Render_Debug(m_pMesh_Shader , m_pCamCinematicSequenceRenderModel, ENUM_TO_UINT(EMapObjectShaderPass::StaticObject));
+
 	return S_OK;
 }
 
@@ -1433,6 +1448,34 @@ void CMapToolManager::Select_MapTexture()
 	}
 }
 
+HRESULT CMapToolManager::Ready_CitizenWayPointData()
+{
+	Safe_Delete(m_pCitizenWatPointData);
+
+	if (FAILED(DTO::CitizenWayPointOriginData::Load_CitizenWayPointDatas(m_pDevice, m_pContext)))
+		return E_FAIL;
+
+	m_pCitizenWatPointData = new DTO::Citizen_WayPoint_Data(m_pDevice,m_pContext);
+	if (!m_pCitizenWatPointData)
+		return E_FAIL;
+
+	if (FAILED(Ready_CitizenDebugModel()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMapToolManager::Ready_CitizenDebugModel()
+{
+	m_pCitizenWayPointDebugModel = 
+		static_cast<CModel*>(m_pGameInstance->Clone_Prototype(EPrototypeType::COMPONENT, ENUM_TO_UINT(ELevelType::MAP), L"Prototype_Component_Model_Cube", nullptr));
+
+	if (!m_pCitizenWayPointDebugModel)
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CMapToolManager::Add_SkyBoxModelName(const vector<string>& vecNames,_bool isClear)
 {
 	if (vecNames.empty())
@@ -1526,6 +1569,7 @@ HRESULT CMapToolManager::Batch_Preview()
 void CMapToolManager::Free()
 {
 	Super::Free();
+	Safe_Delete(m_pCitizenWatPointData);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

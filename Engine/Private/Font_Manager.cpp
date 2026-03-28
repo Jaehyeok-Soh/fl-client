@@ -466,6 +466,16 @@ HRESULT CFont_Manager::Draw_Text(const FONT_DESC& Desc)
 	return S_OK;
 }
 
+Vec2 CFont_Manager::Measure_Font(const _wstring& wstrFontTag, const _tchar* pText)
+{
+	auto* pFont = Find_Font(wstrFontTag);
+	if (nullptr == pFont)
+		return Vec2{};
+
+	
+	return pFont->Measure_Text(pText);
+}
+
 CFont* CFont_Manager::Find_Font(const _wstring& strFontTag)
 {
     auto    iter = m_Fonts.find(strFontTag);

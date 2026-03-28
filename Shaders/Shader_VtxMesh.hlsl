@@ -1,7 +1,7 @@
 #include "Struct_Defines.hlsl"
 #include "Animation_Defines.hlsl"
 #include "Light_Defines.hlsl"
-
+#include "DissolveEffect_Defines.hlsl"
 
 #define MAX_RGBA_TEXTURE_COUNT  2    
 
@@ -155,6 +155,48 @@ cbuffer CB_MAPPING_RGB
     float4 Color_B = { 1.f, 1.f, 1.f, 1.f };
 };
 
+void Apply_Dissolve_Discard_And_Alpha(
+    in PS_IN_MESH input,
+    inout float4 ioDiffuse)
+{
+    uint flags = g_DissolveEffect.g_iDissolveFlag;
+    float amount = saturate(g_DissolveEffect.g_fDissolveAmount);
+
+    if (!Is_Dissolve_Active())
+        return;
+
+    if (Should_Discard_By_Dissolve(input.vUV, flags, amount))
+        discard;
+
+    if (Has_DissolveFlag(flags, DF_USE_ALPHAFADE))
+    {
+        float alpha = Get_DissolveAlphaFactor(flags, amount);
+        ioDiffuse.a *= alpha;
+
+        if (ioDiffuse.a <= EPSILON)
+            discard;
+    }
+}
+
+float3 Get_DissolveEdgeEmissive(float2 uv)
+{
+    uint flags = g_DissolveEffect.g_iDissolveFlag;
+    float amount = saturate(g_DissolveEffect.g_fDissolveAmount);
+
+    if (!Is_Dissolve_Active())
+        return float3(0.f, 0.f, 0.f);
+
+    if (!Has_DissolveFlag(flags, DF_USEEDGE))
+        return float3(0.f, 0.f, 0.f);
+
+    float edge = Compute_DissolveEdge(
+        uv,
+        flags,
+        amount,
+        g_DissolveEffect.g_fDissolveEdgeWidth);
+
+    return g_DissolveEffect.g_vDissolveEdgeColor * edge * 3.0f;
+}
 
 
 VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
@@ -723,9 +765,6 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
         (vDiffuse.r * Color_R.rgb) +
         (vDiffuse.g * Color_G.rgb) +
         (vDiffuse.b * Color_B.rgb);
-     //saturate(vDiffuse.r * Color_R) +
-    // saturate(vDiffuse.g * Color_G) +
-     //saturate(vDiffuse.b * Color_B);
     
     float luminance = dot(final, float3(0.3, 0.59, 0.11));
 
@@ -736,6 +775,9 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
     saturate(finalDiffuse);
     
     output.vDiffuse = finalDiffuse;
+    
+    // 디졸브 디스카드
+    Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
     
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
@@ -754,7 +796,12 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_MESH input)
         float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
         vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
     }
+    
+    // dissolve edge emissive
+    vEmissive += Get_DissolveEdgeEmissive(input.vUV);
+    
     output.vEmissive = float4(vEmissive, 1.f);
+    
     return output;
 }
 

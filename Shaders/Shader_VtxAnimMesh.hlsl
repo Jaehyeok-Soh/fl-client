@@ -243,6 +243,9 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_SKELETON input)
     
     output.vDiffuse = finalDiffuse;
     
+    // 디졸브 디스카드
+    Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
+    
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
@@ -260,6 +263,11 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_SKELETON input)
         float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
         vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
     }
+    
+    
+    // dissolve edge emissive
+    vEmissive += Get_DissolveEdgeEmissive(input.vUV);
+    
     output.vEmissive = float4(vEmissive, 1.f);
     return output;
 }

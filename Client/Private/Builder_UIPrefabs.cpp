@@ -12,11 +12,14 @@
 #include "UIDamageFont_Text.h"
 #include "UIBossStat_Text.h"
 #include "UITutorial_Pannel_Text.h"
+#include "UINpcTextBubble_Text.h"
 // 다이나믹 이미지 클래스
 #include "UINameplate_BG.h"
 #include "UIBossStat_Image.h"
 #include "UIMiniMap_Monster_Icon.h"
 #include "UITutorial_Pannel_Image.h"
+#include "UISceneFade_Image.h"
+#include "UINpcTextBubble_Image.h"
 // 트리거 클래스
 
 #include"UI_Manager.h"
@@ -214,6 +217,7 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		const _bool isDamageFont		= (Type >= DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BATTLE_DAMAGE_TEXT_END);
 		const _bool isBossStat			= (Type >= DTO::EUITextSubClassType::BOSS_STAT_TEXT_BEGIN && Type <= DTO::EUITextSubClassType::BOSS_STAT_TEXT_END);
 		const _bool isTutorialPannel	= (Type >= DTO::EUITextSubClassType::TUTORIAL_PANNEL_BEGIN && Type <= DTO::EUITextSubClassType::TUTORIAL_PANNEL_END);
+		const _bool isNpcTextBubble		= (Type >= DTO::EUITextSubClassType::NPC_TEXT_BUBBLE_BEGIN && Type <= DTO::EUITextSubClassType::NPC_TEXT_BUBBLE_END);
 		
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -285,6 +289,21 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			}
 			m_vecPrefabTags.push_back(wstrPoolTag);
 		}
+		else if (isNpcTextBubble)
+		{
+			CUINpcTextBubble_Text::NPC_TEXT_BUBBLE_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			wstrProtoTag = L"Prototype_UI_NpcTextBubbleText";
+			Desc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -316,6 +335,8 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 		const _bool isBossStat			= (Type >= DTO::EUIDImageSubClassType::BOSS_STAT_BEGIN && Type <= DTO::EUIDImageSubClassType::BOSS_STAT_END);
 		const _bool isMonsterIcon		= (Type == DTO::EUIDImageSubClassType::MINIMAP_MONSTER_ICON);
 		const _bool isTutorialPannel	= (Type >= DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BEGIN && Type <= DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_END);
+		const _bool isSceneFade			= (Type == DTO::EUIDImageSubClassType::SCENE_FADE_IN);
+		const _bool isNpcTextBubble		= (Type >= DTO::EUIDImageSubClassType::NPC_TEXT_BUBBLE_BEGIN&& Type <= DTO::EUIDImageSubClassType::NPC_TEXT_BUBBLE_END);
 
 		if (isMonsterNameplate)
 		{
@@ -380,6 +401,39 @@ HRESULT CBuilder_UIPrefabs::Register_Class(DTO::EUIClassType eClassType, const D
 			}
 			m_vecPrefabTags.push_back(wstrPoolTag);
 		}
+		else if (isSceneFade)
+		{
+			CUISceneFade_Image::SCENEFADE_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+
+			wstrProtoTag = L"Prototype_UI_SceneFadeImage";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
+		else if (isNpcTextBubble)
+		{
+			CUINpcTextBubble_Image::NPC_TEXT_BUBBLE_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			Desc.iComponentFlag = DTO::EComponentTypeFlag::WORLDUI_COMPONENT;
+
+			wstrProtoTag = L"Prototype_UI_NpcTextBubbleImage";
+			_wstring wstrPoolTag = L"Prefab_" + Engine_Utils::ToWString(Desc.strName);
+			if (FAILED(m_pGameInstance->Regist_Pool(m_iLevelID, wstrPoolTag, g_wszUILayer, ENUM_TO_UINT(ELevelType::STATIC), wstrProtoTag, &Desc, m_iNumPrefab)))
+			{
+				_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
+				MSG_BOXW(wstr.c_str());
+				return E_FAIL;
+			}
+			m_vecPrefabTags.push_back(wstrPoolTag);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -419,6 +473,7 @@ CGenericUI::GENERIC_UI_DESC CBuilder_UIPrefabs::Make_DefaultInfo(const DTO::TUI_
 	Desc.iFillDir					= data.iFillDir;
 	Desc.fAlpha						= data.fAlphaRatio;
 	Desc.iFlip						= data.iFlip;
+	Desc.fRotate					= data.fRotate;
 	return Desc;
 }
 

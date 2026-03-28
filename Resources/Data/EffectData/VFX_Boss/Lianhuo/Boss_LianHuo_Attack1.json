@@ -48,9 +48,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 126.0,
-                        "y": 126.0,
-                        "z": 126.0
+                        "x": 83.0,
+                        "y": 83.0,
+                        "z": 83.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -229,9 +229,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 126.0,
-                        "y": 126.0,
-                        "z": 126.0
+                        "x": 83.0,
+                        "y": 83.0,
+                        "z": 83.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -308,17 +308,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        66.76982879638672,
+                        43.983299255371094,
                         0.0,
-                        -106.85404205322266,
+                        -70.38797760009766,
                         0.0,
-                        106.85404968261719,
-                        5.632638931274414e-06,
-                        66.76981353759766,
+                        70.38798522949219,
+                        3.7103891372680664e-06,
+                        43.9832878112793,
                         0.0,
-                        -7.510185241699219e-06,
-                        -125.99998474121094,
-                        1.1265277862548828e-05,
+                        -4.947185516357422e-06,
+                        -82.99999237060547,
+                        7.420778274536133e-06,
                         0.0,
                         0.0,
                         0.0,
@@ -327,6 +327,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -355,9 +357,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 150.0,
-                        "y": 150.0,
-                        "z": 150.0
+                        "x": 99.0,
+                        "y": 99.0,
+                        "z": 99.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -543,9 +545,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 150.0,
-                        "y": 150.0,
-                        "z": 150.0
+                        "x": 99.0,
+                        "y": 99.0,
+                        "z": 99.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -643,16 +645,16 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        -6.2813401222229,
-                        -4.470348358154297e-06,
-                        149.86842346191406,
+                        -4.145684242248535,
+                        -2.950429916381836e-06,
+                        98.91316223144531,
                         0.0,
-                        -149.86842346191406,
+                        -98.91316223144531,
                         0.0,
-                        -6.281349182128906,
+                        -4.145690441131592,
                         0.0,
-                        4.470348358154297e-06,
-                        -149.99998474121094,
+                        2.950429916381836e-06,
+                        -98.99999237060547,
                         0.0,
                         0.0,
                         0.0,
@@ -662,6 +664,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -690,9 +694,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 19.5,
-                        "y": 19.5,
-                        "z": 19.5
+                        "x": 12.869999885559082,
+                        "y": 12.869999885559082,
+                        "z": 12.869999885559082
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -878,9 +882,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 19.5,
-                        "y": 19.5,
-                        "z": 19.5
+                        "x": 12.869999885559082,
+                        "y": 19.1200008392334,
+                        "z": 12.869999885559082
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -978,17 +982,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        18.909738540649414,
+                        12.480426788330078,
                         0.0,
-                        -4.7614922523498535,
+                        -3.142584800720215,
                         0.0,
-                        -1.1352283308951883e-06,
-                        -19.499990463256836,
-                        -4.508432084548986e-06,
+                        -7.492507165807183e-07,
+                        -12.869994163513184,
+                        -2.9755651667073835e-06,
                         0.0,
-                        -4.761492729187012,
-                        4.649162292480469e-06,
-                        -18.909730911254883,
+                        -3.142584800720215,
+                        3.0684466310049174e-06,
+                        -12.48042106628418,
                         0.0,
                         0.0,
                         0.0,
@@ -997,6 +1001,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -1025,9 +1031,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 19.5,
-                        "y": 19.5,
-                        "z": 19.5
+                        "x": 12.869999885559082,
+                        "y": 12.869999885559082,
+                        "z": 12.869999885559082
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -1213,9 +1219,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 19.5,
-                        "y": 19.5,
-                        "z": 19.5
+                        "x": 12.869999885559082,
+                        "y": 12.869999885559082,
+                        "z": 12.869999885559082
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -1313,17 +1319,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        17.70166015625,
+                        11.68309497833252,
                         0.0,
-                        8.179315567016602,
+                        5.398348331451416,
                         0.0,
-                        1.95010125025874e-06,
-                        -19.49999237060547,
-                        -4.220404207444517e-06,
+                        1.2870667660536128e-06,
+                        -12.8699951171875,
+                        -2.7854669042426394e-06,
                         0.0,
-                        8.179315567016602,
-                        4.649161837733118e-06,
-                        -17.70165252685547,
+                        5.398348331451416,
+                        3.068446858378593e-06,
+                        -11.683091163635254,
                         0.0,
                         0.0,
                         0.0,
@@ -1332,6 +1338,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -1360,9 +1368,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 19.5,
-                        "y": 19.5,
-                        "z": 19.5
+                        "x": 12.869999885559082,
+                        "y": 12.869999885559082,
+                        "z": 12.869999885559082
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -1548,9 +1556,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 19.5,
-                        "y": 19.5,
-                        "z": 19.5
+                        "x": 12.869999885559082,
+                        "y": 12.869999885559082,
+                        "z": 12.869999885559082
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -1648,17 +1656,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        8.629717826843262,
+                        5.695612907409668,
                         0.0,
-                        17.486507415771484,
+                        11.541092872619629,
                         0.0,
-                        4.169108251517173e-06,
-                        -19.499988555908203,
-                        -2.057483925455017e-06,
+                        2.751611418716493e-06,
+                        -12.86999225616455,
+                        -1.3579393680629437e-06,
                         0.0,
-                        17.48650550842285,
-                        4.649161837733118e-06,
-                        -8.629705429077148,
+                        11.541091918945313,
+                        3.068446403631242e-06,
+                        -5.6956048011779785,
                         0.0,
                         0.0,
                         0.0,
@@ -1667,6 +1675,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -1695,9 +1705,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 19.5,
-                        "y": 19.5,
-                        "z": 19.5
+                        "x": 12.869999885559082,
+                        "y": 12.869999885559082,
+                        "z": 12.869999885559082
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -1883,9 +1893,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 19.5,
-                        "y": 19.5,
-                        "z": 19.5
+                        "x": 12.869999885559082,
+                        "y": 12.869999885559082,
+                        "z": 12.869999885559082
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -1983,17 +1993,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        -0.9978961944580078,
+                        -0.6586114764213562,
                         0.0,
-                        19.474445343017578,
+                        12.853134155273438,
                         0.0,
-                        4.643070496967994e-06,
-                        -19.49999237060547,
-                        2.3791795911165536e-07,
+                        3.0644264370494056e-06,
+                        -12.8699951171875,
+                        1.5702585187682416e-07,
                         0.0,
-                        19.474445343017578,
-                        4.649161837733118e-06,
-                        0.9979031682014465,
+                        12.853134155273438,
+                        3.0684466310049174e-06,
+                        0.6586160659790039,
                         0.0,
                         0.0,
                         0.0,
@@ -2002,6 +2012,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -2030,9 +2042,9 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 126.0,
-                        "y": 126.0,
-                        "z": 126.0
+                        "x": 83.16000366210938,
+                        "y": 83.16000366210938,
+                        "z": 83.16000366210938
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
@@ -2211,9 +2223,9 @@
                         "z": 0.0
                     },
                     "StartScale": {
-                        "x": 126.0,
-                        "y": 126.0,
-                        "z": 126.0
+                        "x": 83.16000366210938,
+                        "y": 83.16000366210938,
+                        "z": 83.16000366210938
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
@@ -2290,17 +2302,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        66.76982879638672,
+                        44.068092346191406,
                         0.0,
-                        -106.85404205322266,
+                        -70.52367401123047,
                         0.0,
-                        106.85404968261719,
-                        5.632638931274414e-06,
-                        66.76981353759766,
+                        70.523681640625,
+                        3.7175423130975105e-06,
+                        44.06808090209961,
                         0.0,
-                        -7.510185241699219e-06,
-                        -125.99998474121094,
-                        1.1265277862548828e-05,
+                        -4.956722477800213e-06,
+                        -83.15999603271484,
+                        7.435083716700319e-06,
                         0.0,
                         0.0,
                         0.0,
@@ -2309,6 +2321,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,

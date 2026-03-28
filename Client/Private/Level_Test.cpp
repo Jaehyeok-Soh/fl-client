@@ -185,7 +185,18 @@ void CLevel_Test::Update(const _float fTimeDelta)
 	{
 		m_pGameInstance->Broadcast<MINIGAME_CIRCLE_ON>();
 	}
-
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+		Desc.eNextLevelID = ELevelType::TUTORIAL_VILLAGE;
+		Desc.fDelay		= 0.f;
+		Desc.fDuration	= 0.5f;
+		Desc.isEased	= true;
+		Desc.fEaseValue = 2.f;
+		Desc.isFadeIn	= false;
+		Desc.fEndDelay	= 2.f;
+		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+	}
 }
 
 HRESULT CLevel_Test::Render()

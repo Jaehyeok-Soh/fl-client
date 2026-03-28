@@ -111,6 +111,8 @@ private:
 	/* NPC ฐüทร */
 	void						ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc);
 
+	void						ImGuiUPdate_CitizenPresetPopup(DTO::CITIZEN_DATA& currentCitizenData);
+
 public:
 
 private:

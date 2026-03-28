@@ -1,13 +1,21 @@
 #pragma once
 #include "json_forward.h"
 #include "Engine_Utils.h"
+#include "GameInstance.h"
+
+NS_BEGIN(Engine)
+
+class CShader;
+class CModel;
+
+NS_END
+
 
 NS_BEGIN(DTO)
 
-
-
-
 #pragma region Citizen Gender Type
+
+
 enum class CITIZEN_GENDERTYPE
 {
 	Male,
@@ -195,6 +203,24 @@ static const Vec3 g_CitizenPartOffsetTable[ENUM_TO_UINT(CITIZEN_TYPE::END)][ENUM
 }
 };
 
+struct CitizenWalkRunAnimIndex
+{
+	_uint iWalkAnimIndex{};
+	_uint iRunAnimIndex{};
+};
+
+struct ENGINE_DLL CitizenWalkRunAnimIndexData
+{
+private:
+	/* Floder Name을 Hash 값으로해서 보관하자 Preset 데이터에서 뜯은 Hash값으로 */
+	static inline std::map<_uint,CitizenWalkRunAnimIndex>  mapCitizenWalkRunAnimIndex;
+public:
+	static void	 Add_CitizenWalkRunAnimIndex(const std::string& strFolderName , CModel* pPrototypeModel);
+	static const CitizenWalkRunAnimIndex& Get_CitizenWalkRunAnimIndex(const std::string& strFolderName);
+};
+
+
+
 static Vec3 GetCitizenPartOffset(CITIZEN_TYPE eAge, CITIZEN_GENDERTYPE eGender, CITIZEN_PARTTYPE ePart)
 {
 	if (eAge < CITIZEN_TYPE::Child || eAge >= CITIZEN_TYPE::END ||
@@ -349,8 +375,10 @@ struct CITIZEN_DATA
 	string				strModelName;
 	string				strLoopAnimationName; /* 단순 Citizen NPC들이 계속 Loop할 애니매이션 목록 */
 
-	/* 추후 이동을 하는 NPC Type 추가될 예정 */
 
+public:
+	/* Preset으로 만들어진 애들은 모두 Run & Anim Index를 가지고 태어난다 전용 */
+	CitizenWalkRunAnimIndex tWalkRunAnimIndex;
 public:
 	CITIZEN_DATA()
 		: arrayNpcAtlasData{ CITIZEN_ATLAS_DATA(true , 4 , 4 , 0 , 0) , CITIZEN_ATLAS_DATA(true , 3 , 3 ,0, 0) }
@@ -358,6 +386,7 @@ public:
 		, tClothRGBColor{}
 		, strLoopAnimationName{}
 		, strModelName{ "" }
+		, tWalkRunAnimIndex{}
 	{
 		arrayPartDatas.fill(CITIZEN_PART_DATA{});
 	}
@@ -368,6 +397,7 @@ public:
 		, strLoopAnimationName{ rhs.strLoopAnimationName }
 		, strModelName{ rhs.strModelName }
 		, arrayPartDatas{ rhs.arrayPartDatas }
+		, tWalkRunAnimIndex{rhs.tWalkRunAnimIndex }
 	{
 
 	}
@@ -379,7 +409,7 @@ public:
 		this->strLoopAnimationName = rhs.strLoopAnimationName;
 		this->arrayPartDatas = rhs.arrayPartDatas;
 		this->strModelName = rhs.strModelName;
-
+		tWalkRunAnimIndex = rhs.tWalkRunAnimIndex;
 		return *this;
 	}
 public:
@@ -391,6 +421,195 @@ public:
 	void from_Json(const json& LoadJson);
 	void to_Json(json& SaveJson);
 };
+
+inline const wstring& wstrCitizenWaypointDatasPath{L"../../Resources/Data/CitizenData/CitizenWayPointData.json"};
+struct ENGINE_DLL Citizen_WayPoint_Data
+{
+	vector<Vec3>	vecPosition{};					/* 움직일 Position 모음 */
+	Vec3			vStartPitchYawRoll{0.f,0.f,0.f};	/* WayPoint 시작할떄 NPC가 회전해 있을 Rotation값 */
+	float			fDuration{};
+private:
+	ID3D11Device* pDevice;
+	ID3D11DeviceContext* pContext;
+	/* Debug Line을 위한 용도 */
+	PrimitiveBatch<DirectX::VertexPositionColor>* pBatch;
+	BasicEffect* pEffect;
+	ID3D11InputLayout* pInputLayout;
+public:
+	Citizen_WayPoint_Data(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext)
+		: pDevice(_pDevice), pContext{_pContext}
+		, vecPosition{}
+		, vStartPitchYawRoll{}
+		, pEffect{nullptr}
+		, pBatch{nullptr}
+		, pInputLayout{nullptr}
+		, fDuration{20.f}
+	{
+		Safe_AddRef(pDevice);
+		Safe_AddRef(pContext);
+
+		pBatch = new PrimitiveBatch<VertexPositionColor>(pContext);
+		pEffect = new BasicEffect(pDevice);
+
+		const void* pShaderInput = { nullptr };
+		size_t iShaderInputLenght = {};
+		pEffect->GetVertexShaderBytecode(&pShaderInput, &iShaderInputLenght);
+		pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderInput, iShaderInputLenght, &pInputLayout);
+
+	}
+	Citizen_WayPoint_Data(const Citizen_WayPoint_Data& rhs)
+		: pDevice(rhs.pDevice), pContext{ rhs.pContext }
+		, vecPosition{rhs.vecPosition}
+		, vStartPitchYawRoll{rhs.vStartPitchYawRoll}
+		, pEffect{ nullptr }
+		, pBatch{ nullptr }
+		, pInputLayout{ nullptr }
+		, fDuration{rhs.fDuration }
+	{
+		Safe_AddRef(pDevice);
+		Safe_AddRef(pContext);
+
+
+		pBatch = new PrimitiveBatch<VertexPositionColor>(pContext);
+		pEffect = new BasicEffect(pDevice);
+
+		const void* pShaderInput = { nullptr };
+		size_t iShaderInputLenght = {};
+		pEffect->GetVertexShaderBytecode(&pShaderInput, &iShaderInputLenght);
+		pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderInput, iShaderInputLenght, &pInputLayout);
+
+	}
+	Citizen_WayPoint_Data& operator=(const Citizen_WayPoint_Data& rhs)
+	{
+		this->vecPosition	= rhs.vecPosition;
+		this->vStartPitchYawRoll = rhs.vStartPitchYawRoll;
+
+
+		const void* pShaderInput = { nullptr };
+		size_t iShaderInputLenght = {};
+		this->pEffect->GetVertexShaderBytecode(&pShaderInput, &iShaderInputLenght);
+		this->pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderInput, iShaderInputLenght, &this->pInputLayout);
+		this->fDuration = rhs.fDuration;
+
+
+		return *this;
+	}
+	virtual ~Citizen_WayPoint_Data()
+	{
+		Safe_Release(pDevice);
+		Safe_Release(pContext);
+
+		Safe_Delete(pBatch);
+		Safe_Delete(pEffect);
+		Safe_Release(pInputLayout);
+	}
+
+public:
+	void			Render_Debug(CShader* pShader, CModel* pModel, _uint iPassIndex);
+public:
+	void			Load_Json(const json& LoadJson);
+	void			Save_Json(json& LoadJson);
+}; 
+struct ENGINE_DLL CitizenWayPointOriginData
+{
+	static inline map<string, vector<Citizen_WayPoint_Data>> mapCitizenWapointDatas{};
+
+	static HRESULT	Load_CitizenWayPointDatas(ID3D11Device* pDeivce, ID3D11DeviceContext* pContext);
+	static HRESULT	Load_CitizenWayPointDatas(const string& strLevelName, _uint iIndex, Citizen_WayPoint_Data& tOutData);
+
+	static HRESULT	Save_CitizenWayPointDatas(const string& strLevelName, const Citizen_WayPoint_Data& tData, _int iIndex = -1);
+	static HRESULT	Save_CitizenWayPointDatas();
+
+	static void		Render_CitizenWayPointRenderDebug(const string& strLevelName, _uint iIndex, CShader* pShader, CModel* pModel, _uint iPassIndex);
+	static const Citizen_WayPoint_Data* Get_RandomWayPointOrignData(const string& strLevelName);
+public:
+	static void Clear()
+	{
+		mapCitizenWapointDatas.clear();
+	}
+};
+
+
+
+
+/* Preset Data 같은 느낌? */
+/* Pool에 등록을 해도되고... */
+
+
+
+inline const wstring& wstrCitizenPresetDatasPath{ L"../../Resources/Data/CitizenData/CitizenPresetData.json" };
+struct ENGINE_DLL CitizenPresetData
+{
+public:
+	static inline vector<CITIZEN_DATA>	vecDatas{};
+	// 파일 입출력
+public:
+	static HRESULT				Add_ModelPrototype(_uint iAddPrototypeLevel ,ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
+	static CITIZEN_DATA			Get_Preset(_uint iIndex);	
+	static CITIZEN_DATA&		Get_Preset_ForTool(_uint iIndex);
+public:
+	static HRESULT Load_CitizenPresetData();
+	static HRESULT Save_CitizenPresetData(); //JSON은 통째로 굽는 게 안전하므로 인덱스 제거
+
+	// 메모리 제어 (추가/수정/삭제)
+	static HRESULT Update_CitizenPresetData(const CITIZEN_DATA& tData, _int iIndex = -1);
+	static HRESULT Delete_CitizenPresetData(_int iIndex);
+public:
+	static void Clear()
+	{
+		vecDatas.clear();
+	}
+};
+
+
+
+enum class CITIZEN_MOVE_TYPE
+{
+	WALK,	// 걷기
+	RUN,	// 뛰기
+	END,
+};
+
+/* Random Anim  */
+struct Citizen_MoveData
+{
+	const Citizen_WayPoint_Data*	pWayPointData{ nullptr };
+	CITIZEN_MOVE_TYPE				eMoveType{ CITIZEN_MOVE_TYPE::WALK }; // 이동 타입 (기본값 세팅)
+	float							fSpeed{ 2.5 };                       // 타입에 맞는 이동 속도
+};
+
+static Citizen_MoveData Get_RandomCitizenMoveData(const string& strLevelName)
+{
+	/* 그리고 Way Point 랜덤으로 뽑아내기 */
+
+	Citizen_MoveData tData{};
+
+	// 예시: 50% 확률로 걷거나 뜀 (rand() 사용 예제)
+	int iRandom = CGameInstance::GetInstance()->Rand_Int(0, 1);
+
+	//if (iRandom == 0)
+	//{
+	//	tData.eMoveType = CITIZEN_MOVE_TYPE::WALK;
+	//	tData.fSpeed = 2.5f; // 걷기 속도
+	//}
+	//else
+	//{
+	//	tData.eMoveType = CITIZEN_MOVE_TYPE::RUN;
+	//	tData.fSpeed = 4.0f; // 뛰기 속도
+	//}
+	tData.eMoveType = CITIZEN_MOVE_TYPE::WALK;
+	tData.fSpeed = 2.5f;
+	tData.pWayPointData = CitizenWayPointOriginData::Get_RandomWayPointOrignData(strLevelName);
+
+	return tData;
+}
+
+
+static void AllCitizenDatas_Clear()
+{
+	DTO::CitizenWayPointOriginData::Clear();
+	DTO::CitizenPresetData::Clear();
+}
 
 
 NS_END

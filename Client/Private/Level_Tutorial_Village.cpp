@@ -576,9 +576,22 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), g_wszUILayer)))
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
 		return E_FAIL;
 
+	{
+		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+		Desc.fDelay		= 7.f;
+		Desc.fDuration	= 2.f;
+		Desc.isEased	= false;
+		Desc.fEaseValue = 2.f;
+		Desc.isFadeIn	= true;
+		Desc.fEndDelay	= 0.f;
+		Desc.isChangeLevel = false;
+		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+	}
+
+	m_pGameInstance->Play_OneShot(0, TO_HASH("STORY_INTRO_VOICE"), 1.f);
 	return S_OK;
 }
 

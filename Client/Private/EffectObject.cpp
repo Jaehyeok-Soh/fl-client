@@ -102,7 +102,6 @@ HRESULT CEffectObject::Ready_Component(void* pArg)
 
     }
 
-
     Bind_Curve_To_GPU();
 
     return S_OK;
@@ -308,6 +307,11 @@ HRESULT CEffectObject::Bind_ShaderResource()
             return E_FAIL;
     }
 
+   else if (m_tEffectDesc.Data._Effect_ShaderPass == (_uint)DTO::TEXTURESHADERPASS::LINE_TEXTURE_Blend)
+   {
+       m_pShader->Bind_LineEffectData(m_tLineEffectDesc);
+   }
+
 
     // 셰이더에 던질 구조체 작성하기.
     {
@@ -492,7 +496,7 @@ void CEffectObject::Update(const _float fTimeDelta)
             fActiveTime = m_fTimeAccumulation - m_tEffectDesc.Data._Effect_StartDelay;
         }
 
-        else /*if (m_tEffectDesc.Data._Use_Effect_Continue == false || m_tEffectDesc.Data._Effect_Looping == false)*/
+        else
         {
             if (fActiveTime >= (m_tEffectDesc.Data._Effect_Duration + m_tEffectDesc.Data._Effect_LifeTime))
             {
@@ -646,7 +650,7 @@ void CEffectObject::RESET_ForDesPawn()
 
 HRESULT CEffectObject::Process_InitializeDesc(void* pArg)
 {
-    auto EffectDesc = static_cast<EFFECT_SPAWN_DESC*>(pArg);
+    EFFECT_SPAWN_DESC* EffectDesc = static_cast<EFFECT_SPAWN_DESC*>(pArg);
     if (EffectDesc == nullptr) return E_FAIL;
 
     switch (EffectDesc->VFX_COLORTYPE)
@@ -659,6 +663,14 @@ HRESULT CEffectObject::Process_InitializeDesc(void* pArg)
             m_tEffectDesc.Data._Effect_Color = Vec4(EffectDesc->VFX_Color.x, EffectDesc->VFX_Color.y, EffectDesc->VFX_Color.z, m_tEffectDesc.Data._Effect_Color.w);
             break;
         }
+    }
+
+    // Line_Effect
+    EFFECT_LINE_DESC* pDesc = dynamic_cast<EFFECT_LINE_DESC*>(EffectDesc);
+
+    if (pDesc)
+    {
+        m_tLineEffectDesc = pDesc->Get_ShaderData();
     }
 
     m_tEffectDesc.Data._Effect_AnimSpeed = EffectDesc->VFX_fSpeed;

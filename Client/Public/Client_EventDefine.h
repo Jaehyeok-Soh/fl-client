@@ -40,8 +40,8 @@ struct MONSTER_DEAD_EVENT_START { using Signature = void(CGameObject*); }; // 몬
 struct CINEMATIC_START { using Signature = void(); };			// UI 위 아래 나오는 연출
 struct CINEMATIC_END { using Signature = void(); };				// UI 위 아래 들어가는 연출
 
-struct XIBILA_BOSS_ACTION_ON { using Signature = void(); };		// UI 보스 이름 띄우기
-struct XIBILA_BOSS_ACTION_OFF { using Signature = void(); };	// UI 보스 이름 넣기
+struct BOSS_ACTION_ON { using Signature = void(const _uint iObjectID); };		// UI 보스 이름 띄우기
+struct BOSS_ACTION_OFF { using Signature = void(const _uint iObjectID); };	// UI 보스 이름 넣기
 
 struct XIBILA_BOSS_UI_ON { using Signature = void(); };			// 시빌라 체력바 켜기
 struct XIBILA_BOSS_UI_OFF { using Signature = void(); };		// 끄기

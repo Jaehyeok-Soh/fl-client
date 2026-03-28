@@ -102,14 +102,16 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
     {
         switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
         {
-        case DTO::EHitType::Light:
-            m_fAttackFlag |= AF_Addtive;
-            break;
+            case DTO::EHitType::Light:
+                m_fAttackFlag |= AF_Addtive;
+                break;
 
-        case DTO::EHitType::Heavy:
-            m_fAttackFlag |= AF_Fly;
-            break;
+            case DTO::EHitType::Heavy:
+                m_fAttackFlag |= AF_Fly;
+                break;
         }
+
+        //m_fAttackFlag |= AF_Stun;
     }
         break;
 
@@ -125,6 +127,8 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
             m_fAttackFlag |= AF_Fly;
             break;
         }
+
+        m_fAttackFlag |= AF_Special;
     }
     break;
 

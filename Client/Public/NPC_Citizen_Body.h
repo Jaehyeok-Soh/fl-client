@@ -20,6 +20,7 @@ public:
 		array<DTO::CITIZEN_ATLAS_DATA, ENUM_TO_UINT(DTO::CITIZEN_ATLAS_TYPE::END)> arrayAtlasDatas{};
 		SHADER_RGBCOLOR_DESC	tRGBColorData{};
 		string					strLoopAnimName{""};
+		_int					iLoopAnimIndex{-1};
 	}NPC_CITIZEN_BODY;
 protected:
 	CNPC_Citizen_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -41,6 +42,8 @@ public:
 	virtual void			OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool			On_Hit(const HIT_DESC& hitDesc) override;
 	virtual HRESULT			Render() override;
+public:
+	HRESULT					Change_Animation(_uint iAnimIndex);
 protected:
 	HRESULT					Ready_Component(NPC_CITIZEN_BODY* pDesc);
 	HRESULT					Ready_Animation(NPC_CITIZEN_BODY* pDesc);

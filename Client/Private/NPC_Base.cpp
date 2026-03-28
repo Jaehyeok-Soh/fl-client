@@ -113,6 +113,17 @@ HRESULT CNPC_Base::Awake(const _uint iCurrentLevelID)
 
 	Get_Component<CPhysicsCCT>()->Ready_Position();
 
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_NPC_TEXT_BUBBLE_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		Desc.vOffset = Vec3{ 0.f, 1.f, 0.f };
+		// 매번 다른 텍스트 말하게 하고 싶으면 말해주세요.
+		Desc.wstrContents = L"일어나!";
+		tPrefabData.Data = Desc;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::NPC_TEXT_BUBBLE, iCurrentLevelID, &tPrefabData);
+	}
+
 	return S_OK;
 }
 
@@ -491,6 +502,8 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 	case Engine::EObjectEnumTag::NPC_VETERAN:
 	{
 		npcDesc = CNPC_Veteran::Get_PreSetDesc(npcDesc.iLevelIndex);
+
+		/* Preset 등록 */
 		npcDesc.iLevelIndex = iAddLevelType;
 		npcDesc.pTransform_Desc = pTransformDesc;
 
