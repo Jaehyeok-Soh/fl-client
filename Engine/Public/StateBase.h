@@ -132,6 +132,7 @@ protected:
 	_bool Is_MainAnimFinished();
 	_bool Is_AnimTrackPositionAt(_float fRatio);
 	_bool Is_AnimTrackPositionBetween(_float fStartRatio, _float EndRatio);
+	_bool Is_AnimTrackPositionBetweenRaw(_float fTrackA, _float fTrackB);
 	_bool Is_AnimTrackPositionHalf();
 
 	void			Additive_MixOn(_bool bOn);

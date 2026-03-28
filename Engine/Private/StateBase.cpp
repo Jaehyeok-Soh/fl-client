@@ -206,6 +206,14 @@ _bool CStateBase::Is_AnimTrackPositionBetween(_float fStartRatio, _float EndRati
 	return m_pOwnerStateComp->Is_AnimTrackPositionBetween(fStartRatio, EndRatio);
 }
 
+_bool CStateBase::Is_AnimTrackPositionBetweenRaw(_float fTrackA, _float fTrackB)
+{
+	if (m_pOwnerStateComp == nullptr)
+		return false;
+
+	return m_pOwnerStateComp->Is_AnimTrackPositionBetweenRaw(fTrackA, fTrackB);
+}
+
 _bool CStateBase::Is_AnimFinished()
 {
 	if (m_pOwnerStateComp == nullptr)

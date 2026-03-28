@@ -11,16 +11,16 @@
                     "strAnimTag": "Animation_Monster_Veteran_Skill01",
                     "strDescription": "",
                     "tHitboxDesc": {
-                        "eFilterLayer": 16777216,
+                        "eFilterLayer": 64,
                         "eType": 1,
                         "fDamage": 0.0,
                         "fDuration": 0.10000000149011612,
                         "fHeight": 0.0,
-                        "fRadius": 3.0,
+                        "fRadius": 4.0,
                         "fTickTime": -1.0,
-                        "iFilterMask": 0,
+                        "iFilterMask": 1,
                         "iMaxHit": 32,
-                        "strAttackPresetTag": "",
+                        "strAttackPresetTag": "monster_veteran_normal_1",
                         "strName": "",
                         "vExtents": {
                             "x": 0.0,
@@ -30,7 +30,7 @@
                         "vOffset": {
                             "x": 0.0,
                             "y": 0.0,
-                            "z": 4.0
+                            "z": 2.0
                         }
                     }
                 },
@@ -42,16 +42,16 @@
                     "strAnimTag": "Animation_Monster_Veteran_Skill01",
                     "strDescription": "",
                     "tHitboxDesc": {
-                        "eFilterLayer": 16777216,
+                        "eFilterLayer": 64,
                         "eType": 1,
                         "fDamage": 0.0,
                         "fDuration": 0.10000000149011612,
                         "fHeight": 0.0,
-                        "fRadius": 3.0,
+                        "fRadius": 4.0,
                         "fTickTime": -1.0,
-                        "iFilterMask": 0,
+                        "iFilterMask": 1,
                         "iMaxHit": 32,
-                        "strAttackPresetTag": "",
+                        "strAttackPresetTag": "monster_veteran_normal_1",
                         "strName": "",
                         "vExtents": {
                             "x": 0.0,
@@ -61,7 +61,255 @@
                         "vOffset": {
                             "x": 0.0,
                             "y": 0.0,
-                            "z": 6.0
+                            "z": 2.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 55.0,
+                    "iAnimIndex": 19,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 4.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "monster_veteran_heavy_1",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 3.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 24,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill04_02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 1.2999999523162842,
+                        "fHeight": 0.0,
+                        "fRadius": 2.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "monster_veteran_heavy_2",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 3.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 10.0,
+                    "iAnimIndex": 25,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill04_03",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 4.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "monster_veteran_heavy_2",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 2.0,
+                            "z": 3.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 125.0,
+                    "iAnimIndex": 27,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill07",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 0,
+                        "fDamage": 0.0,
+                        "fDuration": 0.5,
+                        "fHeight": 0.0,
+                        "fRadius": 0.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "monster_veteran_heavy_2",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 3.0,
+                            "y": 3.0,
+                            "z": 20.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 1.5,
+                            "z": 10.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 34.84393310546875,
+                    "iAnimIndex": 31,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill10",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 2.0,
+                        "fHeight": 0.0,
+                        "fRadius": 6.0,
+                        "fTickTime": 0.5,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "monster_veteran_heavy_1",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 3.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 30.0,
+                    "iAnimIndex": 29,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill07_02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 3.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "monster_veteran_normal_1",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 60.0,
+                    "iAnimIndex": 33,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill12",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 4.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "monster_veteran_heavy_2",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 2.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 21.0,
+                    "iAnimIndex": 30,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill07_03",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 16777216,
+                        "eType": 0,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 0.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 0,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "monster_veteran_heavy_1",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 3.0,
+                            "y": 3.0,
+                            "z": 20.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
                         }
                     }
                 }

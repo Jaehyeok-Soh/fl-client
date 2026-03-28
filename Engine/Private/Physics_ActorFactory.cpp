@@ -147,7 +147,7 @@ PxRigidActor* CPhysics_ActorFactory::MakeStatic(const Matrix& world, PHYSICS_SRT
 PxRigidActor* CPhysics_ActorFactory::MakeDynamic(const Matrix& world, _float density, vector<PxShape*>& shapes)
 {
 	PxTransform transform = m_pGameInstance->XMMatrixToPxTransform(world);
-	PxVec3 vScale(world.Right().Length(), world.Up().Length(), world.Forward().Length());
+	PxVec3 vScale(world.Right().Length(), world.Up().Length(), world.Backward().Length());
 
 	PxRigidDynamic* dynamicActor = m_pPhysics->createRigidDynamic(transform);
 	for (auto& shape : shapes)

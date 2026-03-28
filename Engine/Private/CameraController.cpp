@@ -132,6 +132,15 @@ void CCameraController::Build_FinalPose_FromResult(const CAMERA_POSE& basePose, 
 	outPose.fFovRad = std::clamp(outPose.fFovRad, m_tConfig.fMinFovRad, m_tConfig.fMaxFovRad);
 }
 
+void CCameraController::Build_FinalPose_WithOverlay(const CAMERA_POSE& basePose, const CAMERA_MODIFIER_RESULT& tOverlay, OUT CAMERA_POSE& outPose) const
+{
+	CAMERA_MODIFIER_RESULT tTotal{};
+	Accumulate_Modifiers(basePose, tTotal);
+	Accumulate_Result(tTotal, tOverlay);
+
+	Build_FinalPose_FromResult(basePose, tTotal, outPose);
+}
+
 void CCameraController::Build_FinalPose(const CAMERA_POSE& basePose, OUT CAMERA_POSE& outPose) const
 {
 	CAMERA_MODIFIER_RESULT tResult{};
@@ -211,6 +220,17 @@ void CCameraController::Accumulate_Modifiers(const CAMERA_POSE& basePose, CAMERA
 		if (pModifier)
 			pModifier->Accumulate(basePose, outResult);
 	}
+}
+
+void CCameraController::Accumulate_Result(IN OUT CAMERA_MODIFIER_RESULT& ioResult, const CAMERA_MODIFIER_RESULT& tAdd) const
+{
+	ioResult.vLocalPosOffset += tAdd.vLocalPosOffset;
+	ioResult.vWorldPosOffset += tAdd.vWorldPosOffset;
+
+	ioResult.fYawOffsetRad += tAdd.fYawOffsetRad;
+	ioResult.fPitchOffsetRad += tAdd.fPitchOffsetRad;
+	ioResult.fRollOffsetRad += tAdd.fRollOffsetRad;
+	ioResult.fFovDeltaRad += tAdd.fFovDeltaRad;
 }
 
 CCameraController* CCameraController::Create()

@@ -688,6 +688,63 @@ namespace Engine
 		};
 	}RAGDOLLJOINT;
 
+#pragma region CameraTargeter
+	//===========================
+	// Camera For Anchor Resolve
+	//===========================
+	enum class ECameraAnchorSource : unsigned int
+	{
+		ACTOR = 0,		// 기본 Actor
+		OBJECT,			// 지정된 GameObject
+		WORLDPOINT,		// 월드 좌표 고정
+		END
+	};
+	enum class ECameraAnchorResolve : unsigned int
+	{
+		TRANSFORM = 0,	// 오브젝트 origin transform
+		CAM_SOCKET,		// 카메라 기본 소켓
+		BONE,			// Bone tag
+		END
+	};
+	enum class ECameraBasisMode : unsigned int
+	{
+		TARGET_TRANSFORM_YAW = 0, // 타겟의 트랜스폼 기준
+		WORLD,					  // 월드 기준
+		END
+	};
+	enum class ECameraShotEase
+	{
+		Linear = 0,
+		SmoothStep,
+		EaseOutQuad,
+		EaseInOutQuad,
+		EaseOutBack,
+		END
+	};
+	//===========================
+	// Camera For Recover
+	//===========================
+	enum class ECameraShotStartMode : unsigned int
+	{
+		InheritCurrent = 0,		// 현재 카메라에서 이어짐
+		FixedFromPivot,			// pivot 기준 고정 local offset으로 시작
+		END
+	};
+
+	enum class ECameraShotRecoverTarget : unsigned int
+	{
+		PreshotSnap = 0,		// 연출 시작 직전 카메라 상태
+		GameplaySolved,			// 연출 종료 시점의 정상 게임플레이 카메라 목표
+		END
+	};
+
+	enum class ECameraShotRecoverMethod : unsigned int
+	{
+		Snap = 0,              // 즉시 복귀
+		Blend,                 // 보간 복귀
+		END
+	};
+#pragma endregion
 	//===================
 	// Object enum tag
 	//===================
@@ -926,7 +983,6 @@ namespace Engine
 	};
 
 #pragma endregion
-
 
 #pragma region Cinematic Camera Sequence BroadCast_Type
 

@@ -184,6 +184,7 @@ namespace DTO
 
 		bool bIsBoss = { false };
 		bool bIsCombo = { false };
+		bool bIsCustom = { false };
 
 		unsigned int FAniFlags = { 0 };
 		bool bBlend = { false };
@@ -226,6 +227,7 @@ namespace DTO
 
 		j["bIsBoss"] = d.bIsBoss;
 		j["bIsCombo"] = d.bIsCombo;
+		j["bIsCustom"] = d.bIsCustom;
 
 		j["FAniFlags"] = d.FAniFlags;
 		j["bBlend"] = d.bBlend;
@@ -260,6 +262,8 @@ namespace DTO
 
 		j.at("bIsBoss").get_to(d.bIsBoss);
 		j.at("bIsCombo").get_to(d.bIsCombo);
+		if (j.contains("bIsCustom"))
+			j.at("bIsCustom").get_to(d.bIsCustom);
 
 		j.at("FAniFlags").get_to(d.FAniFlags);
 		j.at("bBlend").get_to(d.bBlend);
