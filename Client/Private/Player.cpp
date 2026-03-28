@@ -202,11 +202,6 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
 
 void CPlayer::Update(const _float fTimeDelta)
 {
-    if (KEY_BUTTON_DOWN(DIK_NUMPAD8))
-        Play_DebugShot();
-    if (KEY_BUTTON_DOWN(DIK_NUMPAD9))
-        Play_DebugBossShot();
-
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
     {
         pPlayerState->Update(fTimeDelta);
@@ -274,27 +269,6 @@ HRESULT CPlayer::Render()
         return E_FAIL;
 
     return S_OK;
-}
-
-void CPlayer::Play_DebugShot()
-{
-    SCRIPTED_CAMERA_SHOT_DESC desc;
-    SCRIPTED_CAMERA_SHOT_BINDING_DESC binding;
-
-    CCameraShotPrestBuilder::Make_Test_PlayerShot_PreShotBlend(desc, binding);
-    m_pGameInstance->Request_PlayCameraShot(desc, binding);
-}
-
-void CPlayer::Play_DebugBossShot()
-{
-    CGameObject* pBoss = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer, 0);
-    if (pBoss == nullptr)
-        return;
-
-    Engine::SCRIPTED_CAMERA_SHOT_DESC tDesc;
-    Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding;
-    CCameraShotPrestBuilder::Make_Test_BossShot_GameplayBlend(pBoss, tDesc, tBinding);
-    m_pGameInstance->Request_PlayCameraShot(tDesc, tBinding);
 }
 
 _int CPlayer::Get_AnimationIndex(const wstring& wstrName)

@@ -892,6 +892,15 @@
     <Filter Include="07. System\05. CameraPreset">
       <UniqueIdentifier>{48d69df6-5b16-4602-841c-8983a3536121}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Monster\Lianhuo">
+      <UniqueIdentifier>{77cf372f-79a9-41ef-906f-8a45134e57a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster\Lianhuo\Catch">
+      <UniqueIdentifier>{6a13bd38-49fb-4000-b5a8-f30fe0c596e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster\Lianhuo\Gimmik">
+      <UniqueIdentifier>{79d23d34-783c-4333-85ac-5de7d6014807}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1668,6 +1677,30 @@
     <ClInclude Include="..\public\CameraPreset_Manager.h">
       <Filter>07. System\05. CameraPreset</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_GimmikController.h">
+      <Filter>05. Component\GimmikController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_BackdashCatch.h">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_StartCatch.h">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_EndCatch.h">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_GimmikAttack.h">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_GimmikCamera.h">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_GimmikRunLoop.h">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_GimmikRunStart.h">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2430,6 +2463,30 @@
     </ClCompile>
     <ClCompile Include="..\private\CameraPreset_Manager.cpp">
       <Filter>07. System\05. CameraPreset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_GimmikController.cpp">
+      <Filter>05. Component\GimmikController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_BackdashCatch.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_StartCatch.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_EndCatch.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_GimmikAttack.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_GimmikCamera.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_GimmikRunLoop.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_GimmikRunStart.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -213,6 +213,8 @@ void CPanel_State::DrawStateDetails()
         ImGui::Checkbox("Is Boss", &state.bIsBoss);
         ImGui::SameLine();
         ImGui::Checkbox("Is Combo", &state.bIsCombo);
+        ImGui::SameLine();
+        ImGui::Checkbox("Is Custom (logic in client)", &state.bIsCustom);
     }
 
     // 플래그 및 옵션

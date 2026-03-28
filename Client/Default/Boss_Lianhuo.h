@@ -47,9 +47,10 @@ private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_StateIndexForDirecting();
 	HRESULT Ready_CameraEvent();
+	HRESULT Ready_CustomStates();
 private:
 	array<_int, (size_t)EStateForDirecting::COUNT> m_arrStateIndex;
-
+	Vec3 vPos{ Vec3::Zero };
 public:
 	static CBoss_Lianhuo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
