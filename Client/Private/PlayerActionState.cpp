@@ -111,7 +111,7 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
                 break;
         }
 
-        m_fAttackFlag |= AF_Stun;
+        //m_fAttackFlag |= AF_Stun;
     }
         break;
 
