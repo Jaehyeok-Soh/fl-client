@@ -345,7 +345,7 @@ void CNPC_Base::QuestEnter()
 
 void CNPC_Base::QuestExit()
 {
-	if (Is_Quest_Enabled() && m_eQuestEvent == DTO::QUESTEVENT::NPC_TALK)
+	if (!Is_Quest_Enabled() && m_eQuestEvent == DTO::QUESTEVENT::NPC_TALK)
 	{
 		auto chapterDesc = CQuestManager::GetInstance()->Get_QuestChapterInfo();
 

@@ -56,8 +56,8 @@ HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 
 	m_bPhaseTwo = false;
 
-	m_pPhysic_QueryFilter = CPhysics_QueryFilterCallback::Create();
-	m_pPhysic_QueryFilter->SetOwner(Get_Owner());
+	//m_pPhysic_QueryFilter = CPhysics_QueryFilterCallback::Create();
+	//m_pPhysic_QueryFilter->SetOwner(Get_Owner());
 
 	return S_OK;
 }
@@ -351,6 +351,7 @@ _bool CMonsterControlContext::IsGround()
 	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
 
 	return pOwnerTransform->Is_OnGround(0.72f, m_pPhysic_QueryFilter);
+	//return true;
 }
 
 _bool CMonsterControlContext::IsHitAdditive()
