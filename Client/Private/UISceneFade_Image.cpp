@@ -138,12 +138,14 @@ void CUISceneFade_Image::Tick_By_Type(const _float fTimeDelta)
 
 			if (m_isChangeLevel)
 			{
+				m_pGameInstance->Active_TimeStop();
 				m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING),
 					CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
 				return;
 			}
 
 			Request_SetDead();
+			m_pGameInstance->Deactive_TimeStop();
 		}
 	}
 }

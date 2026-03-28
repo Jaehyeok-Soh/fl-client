@@ -189,6 +189,7 @@
 #include "UIConversation_Text.h"
 #include "UIMiniGame_Circle_Text.h"
 #include "UIEnterGame_Text.h"
+#include "UINpcTextBubble_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -218,6 +219,7 @@
 #include "UIScreenPulse_Image.h"
 #include "UIEnterGame_Image.h"
 #include "UISceneFade_Image.h"
+#include "UINpcTextBubble_Image.h"
 //=================
 // Resource
 //=================
@@ -1080,6 +1082,9 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameImage",			CUIEnterGame_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameText",			CUIEnterGame_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_SceneFadeImage",			CUISceneFade_Image::Create(m_pDevice, m_pDeviceContext));
+
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleImage",		CUINpcTextBubble_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleText",		CUINpcTextBubble_Text::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	

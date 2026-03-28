@@ -931,6 +931,12 @@
     <Filter Include="06. FSM\Player\NPCs">
       <UniqueIdentifier>{6b482b46-4030-4bea-920d-461400b222f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\22.Npc Text Bubble">
+      <UniqueIdentifier>{6893725a-f13c-4173-a08c-670176ad1907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\16.Npc Text Bubble">
+      <UniqueIdentifier>{43a90075-9c6b-4af5-93a1-40c5f0aac252}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1740,6 +1746,12 @@
     <ClInclude Include="..\Public\State_Npctalk.h">
       <Filter>06. FSM\Player\NPCs</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UINpcTextBubble_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\22.Npc Text Bubble</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UINpcTextBubble_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\16.Npc Text Bubble</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2536,6 +2548,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Npctalk.cpp">
       <Filter>06. FSM\Player\NPCs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UINpcTextBubble_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\22.Npc Text Bubble</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UINpcTextBubble_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\16.Npc Text Bubble</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

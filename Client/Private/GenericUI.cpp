@@ -126,7 +126,6 @@ void CGenericUI::Update_Priority(const _float fTimeDelta)
 void CGenericUI::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
 }
 
 void CGenericUI::Update_Late(const _float fTimeDelta)

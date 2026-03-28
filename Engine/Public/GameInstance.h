@@ -308,6 +308,7 @@ public:
 	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
 	HRESULT Request_DrawFont(FONT_DESC Desc);
 	HRESULT Render_Fonts();
+	Vec2 Measure_Font(const _wstring& wstrFontTag, const _tchar* pText);
 #pragma endregion
 
 #pragma region EVENTBUS_MANAGER

@@ -118,6 +118,20 @@ HRESULT CLevel_Tavern::Awake(const _uint iLevelID)
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
 	CQuestManager::GetInstance()->Start_Quest(3, 0);
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
+		return E_FAIL;
+
+	{
+		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+		Desc.fDelay = 1.f;
+		Desc.fDuration = 2.f;
+		Desc.isEased = false;
+		Desc.fEaseValue = 2.f;
+		Desc.isFadeIn = true;
+		Desc.fEndDelay = 0.f;
+		Desc.isChangeLevel = false;
+		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+	}
 
 	return S_OK;
 }
