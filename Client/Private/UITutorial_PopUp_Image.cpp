@@ -133,6 +133,8 @@ HRESULT CUITutorial_PopUp_Image::Attach_Personal_Info()
 
 void CUITutorial_PopUp_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -144,8 +146,7 @@ void CUITutorial_PopUp_Image::Bind_Events()
 						this->Set_Active(true);
 					}
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -153,8 +154,7 @@ void CUITutorial_PopUp_Image::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<TUTORIAL_POPUP_TRIGGER>([this](EUITutorialPopUpTypeID ID)
@@ -278,9 +278,7 @@ void CUITutorial_PopUp_Image::Bind_Events()
 
 					}
 				}
-			})
-	);
-
+			}));
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<TUTORIAL_POPUP_CLEAR>([this](EUITutorialPopUpTypeID ID)
 			{
@@ -289,8 +287,7 @@ void CUITutorial_PopUp_Image::Bind_Events()
 					m_isTriggered = false;
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 }
 
 void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)

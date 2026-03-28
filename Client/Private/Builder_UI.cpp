@@ -573,6 +573,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			Desc.eSubClassType = Type;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_EnterGameImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
+
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- ¾ê°¡ ¹®Á¦";

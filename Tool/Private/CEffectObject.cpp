@@ -87,6 +87,11 @@ HRESULT CEffectObject::Ready_Component(void* pArg)
         pSRV->SetResource(pSB->Get_SRV()); 
     }
     m_pComputeShader->Bind_InputStructuredBuffer(1, pSRV, pSB);
+    
+    // 라인 Desc
+    m_tLineEffectDesc.fHalfWidth = m_tEffectDesc.Data.LineEffectData.fHalfWidth;
+    m_tLineEffectDesc.vStart = m_tEffectDesc.Data.LineEffectData.vStart;
+    m_tLineEffectDesc.vEnd = m_tEffectDesc.Data.LineEffectData.vEnd;
 
     return S_OK;
 }
@@ -143,6 +148,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_SubMaskTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::SUB_MASKING));
         }
     }
 
@@ -160,6 +166,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_SubMaskTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::SUB_MASKING));
         }
     }
 
@@ -534,6 +541,16 @@ HRESULT CEffectObject::Bind_ShaderResource()
     if (pShader == nullptr) return S_OK;
     pShader->Set_Pass(m_tEffectDesc.Data._Effect_ShaderPass);
     pShader->Bind_TransformData(m_CombineWorldMatrix);
+
+    {
+        // 라인 Desc
+        m_tLineEffectDesc.fHalfWidth = m_tEffectDesc.Data.LineEffectData.fHalfWidth;
+        m_tLineEffectDesc.vStart = m_tEffectDesc.Data.LineEffectData.vStart;
+        m_tLineEffectDesc.vEnd = m_tEffectDesc.Data.LineEffectData.vEnd;
+
+        pShader->Bind_LineEffectData(m_tLineEffectDesc);
+    }
+
 
     if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SceneHDR_Copy, pShader)))
         return E_FAIL;

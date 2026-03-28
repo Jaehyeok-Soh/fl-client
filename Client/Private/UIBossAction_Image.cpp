@@ -10,6 +10,7 @@
 #include "VIBuffer_Rect_Tex.h"
 #include "GameInstance.h"
 
+#define FIRE_BOSS_TEXTURE	L"Texture_T_HardBoss_CampIcon_Haier"
 CUIBossAction_Image::CUIBossAction_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIDynamic_Image(pDevice, pDeviceContext)
 {
@@ -109,18 +110,34 @@ void CUIBossAction_Image::Tick_By_Type(const _float fTimeDelta)
 
 void CUIBossAction_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_ON>([this]()
+			m_pGameInstance->Subscribe<BOSS_ACTION_ON>([this](const _uint iObjectID)
 				{
 					this->Set_Visible();
+
+					if (iObjectID == EObjectEnumTag::Enum::MONSTER_BOSS_XIBI)
+					{
+
+					}
+					else if (iObjectID == EObjectEnumTag::Enum::MONSTER_BOSS_LIANHUO)
+					{
+						if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(FIRE_BOSS_TEXTURE, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
+							return E_FAIL;
+
+						m_vColorTint = Vec4{ 0.f, 0.f, 0.f, 0.f };
+						m_vGradiantColorTint = Vec4{ 1.f, 0.f, 0.f, 0.f };
+					}
+
 				}));
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<XIBILA_BOSS_ACTION_OFF>([this]()
+			m_pGameInstance->Subscribe<BOSS_ACTION_OFF>([this](const _uint iObjectID)
 				{
 					this->Set_Invisible();
 				}));

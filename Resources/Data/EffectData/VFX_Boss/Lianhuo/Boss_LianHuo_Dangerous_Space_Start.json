@@ -29,10 +29,10 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.9900000095367432,
                     "Color": {
-                        "w": 0.3333333134651184,
-                        "x": 0.7222964763641357,
-                        "y": 0.5113813877105713,
-                        "z": 0.2845996916294098
+                        "w": 0.5686274766921997,
+                        "x": 0.7333333492279053,
+                        "y": 0.37254902720451355,
+                        "z": 0.0784313753247261
                     },
                     "CurveTexture_Tag": "",
                     "DiffuseTexture_Tag": "",
@@ -300,7 +300,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
@@ -312,9 +312,9 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.9900000095367432,
                     "Color": {
-                        "w": 0.13333332538604736,
+                        "w": 0.0,
                         "x": 0.7215686440467834,
-                        "y": 0.5032950639724731,
+                        "y": 0.5882353186607361,
                         "z": 0.2862745225429535
                     },
                     "CurveTexture_Tag": "",
@@ -583,7 +583,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
@@ -596,11 +596,11 @@
                     "AppearRatio": 0.9900000095367432,
                     "Color": {
                         "w": 1.0,
-                        "x": 1.0,
-                        "y": 0.7388671636581421,
-                        "z": 0.4582488536834717
+                        "x": 0.7333333492279053,
+                        "y": 0.37254902720451355,
+                        "z": 0.0784313753247261
                     },
-                    "CurveTexture_Tag": "",
+                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
                     "DiffuseTexture_Tag": "",
                     "DiscardValue": 0.05000000074505806,
                     "DissolveTexture_Tag": "",
@@ -714,9 +714,9 @@
                     "SpriteInfo": {
                         "Curve": {
                             "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 100.0
                         },
                         "Diffuse": {
                             "w": 0.0,
@@ -779,8 +779,8 @@
                         "z": 0.0
                     },
                     "TexOperatorFlag": 0,
-                    "TexRotationFlag": 512,
-                    "TextureFlag": 4,
+                    "TexRotationFlag": 0,
+                    "TextureFlag": 20,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": false,
@@ -790,7 +790,7 @@
                         "Scroll": false
                     },
                     "Tool_Resource": {
-                        "Curve": false,
+                        "Curve": true,
                         "Diffuse": false,
                         "Dissolve": false,
                         "Glow": false,
@@ -866,7 +866,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
@@ -879,11 +879,11 @@
                     "AppearRatio": 0.9900000095367432,
                     "Color": {
                         "w": 1.0,
-                        "x": 1.0,
-                        "y": 0.7184818387031555,
-                        "z": 0.4529367685317993
+                        "x": 0.7333333492279053,
+                        "y": 0.37254902720451355,
+                        "z": 0.0784313753247261
                     },
-                    "CurveTexture_Tag": "",
+                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
                     "DiffuseTexture_Tag": "",
                     "DiscardValue": 0.05000000074505806,
                     "DissolveTexture_Tag": "",
@@ -997,9 +997,9 @@
                     "SpriteInfo": {
                         "Curve": {
                             "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 100.0
                         },
                         "Diffuse": {
                             "w": 0.0,
@@ -1063,7 +1063,7 @@
                     },
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 512,
-                    "TextureFlag": 0,
+                    "TextureFlag": 16,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": false,
@@ -1073,7 +1073,7 @@
                         "Scroll": false
                     },
                     "Tool_Resource": {
-                        "Curve": false,
+                        "Curve": true,
                         "Diffuse": false,
                         "Dissolve": false,
                         "Glow": false,
@@ -1149,7 +1149,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,

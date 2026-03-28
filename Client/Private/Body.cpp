@@ -16,7 +16,9 @@
 #include "ComputeShader.h"
 #include "RenderFx.h"
 
+#include "CameraAnchorResolver.h"
 #include "GameInstance.h"
+#include "Boss_Lianhuo_Body.h"
 
 CBody::CBody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -92,7 +94,6 @@ HRESULT CBody::Initialize(void* pArg)
 		{
 			CS_CB_MU_BONEMOVE tCB = {};
 			tCB.iMovingIdx = 85;
-			tCB.matOffset = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(30.f), XMConvertToRadians(70.f));
 
 			pMyModel->Set_MoveBoneCS(tCB); // aim up
 		}
@@ -131,6 +132,11 @@ HRESULT CBody::Initialize(void* pArg)
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_Start"))->Set_AnimationSpeed(1.3f);
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End"))->Set_AnimationSpeed(1.3f);
 		}
+
+		//// root motion ¼ÂÆÃ
+		//{
+		//	pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Turn_L45"))->Set_ApplyRootMotion(false);
+		//}
 
 	}
 
@@ -274,6 +280,26 @@ HRESULT CBody::Render_Shadow()
 
 	pShader->Set_Pass(iPrevPass);
 	return S_OK;
+}
+
+_bool CBody::Resolve_CameraAnchor(Engine::ECameraAnchorResolve eResolve, const string& strAnchorTag, const Matrix& matOwnerWorld, OUT Engine::CAMERA_ANCHOR_RESULT& outResult)
+{
+	outResult = {};
+
+	CBone* pAnchorBone = Find_CameraAnchorBone(eResolve, strAnchorTag);
+	if (pAnchorBone == nullptr)
+		return false;
+
+	Matrix matAnchorWorld =
+		pAnchorBone->Get_CombinedTransformMatrix() * matOwnerWorld;
+
+	outResult.vPos = matAnchorWorld.Translation();
+	outResult.vRight = matAnchorWorld.Right();
+	outResult.vUp = matAnchorWorld.Up();
+	outResult.vLook = matAnchorWorld.Backward();
+
+	CCameraAnchorResolver::Normalize_AnchorResult(outResult);
+	return true;
 }
 
 const Matrix* CBody::Get_SocketMatrix(const _char* szBoneName)
@@ -645,6 +671,27 @@ HRESULT CBody::Ready_ComputeShader()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+CBone* CBody::Find_CameraAnchorBone(ECameraAnchorResolve eResolve, const string& strAnchorTag)
+{
+	switch (eResolve)
+	{
+	case Engine::ECameraAnchorResolve::CAM_SOCKET:
+	{
+		return Get_CamSocketBone();
+	}
+
+	case Engine::ECameraAnchorResolve::BONE:
+	{
+		if (strAnchorTag.empty())
+			return nullptr;
+
+		return Get_Component<CModel>()->Get_Bone(strAnchorTag.c_str());
+	}
+	}
+
+	return nullptr;
 }
 
 CBody* CBody::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -38,10 +38,23 @@ void CUI_Manager::Request_Add_Prefab(_uint iPoolRegistLevel, EUIPrefabType ePref
 		});
 }
 
-void CUI_Manager::UISound_PlayOneShot(const _char* szSoundTag, const _float fVolume, const _uint iLevelIndex, const _float fPitch, _bool isSteal)
+void CUI_Manager::Request_LevelChange_With_Fade(UI_LEVEL_FADE_PREFAB_DATA ePrefabData)
 {
-	m_pGameInstance->Play_OneShot(iLevelIndex, Engine_Utils::ToHash(szSoundTag), fPitch, isSteal);
+	EUIPrefabType ePrefabType = {};
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		tPrefabData.Data = ePrefabData;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(
+			m_pGameInstance->Get_CurrentLevelIndex(), 
+			EUIPrefabType::LEVEL_FADE,
+			m_pGameInstance->Get_CurrentLevelIndex(), 
+			&tPrefabData);
+	}
+}
 
+void CUI_Manager::Clear_LevelChange_Fade_Delay()
+{
+	m_isClearDelay = true;
 }
 
 void CUI_Manager::Free()

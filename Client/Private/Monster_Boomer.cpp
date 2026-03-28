@@ -60,6 +60,7 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
+
 	{
 		UI_PREFAB_DATA tPrefabData = {};
 		UI_NAMEPLATE_PREFAB_DATA Desc = {};

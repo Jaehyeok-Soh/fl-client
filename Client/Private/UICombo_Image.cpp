@@ -163,7 +163,6 @@ HRESULT CUICombo_Image::Attach_Personal_Info()
 		return E_FAIL;
 	}
 
-
 	return S_OK;
 }
 
@@ -271,6 +270,8 @@ void CUICombo_Image::Tick_By_Type(const _float fTimeDelta)
 
 void CUICombo_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]()
 			{
@@ -286,6 +287,9 @@ void CUICombo_Image::Bind_Events()
 
 void CUICombo_Image::Initialize_Visible_Event()
 {
+	m_iCurComboCount = 0;
+	m_eCurComboType = ECombotype::C;
+
 	m_isFin_Event = false;
 	m_isActive = false;
 }
@@ -297,8 +301,7 @@ _bool CUICombo_Image::Tick_Visible_Event(const _float fTimeDelta)
 
 void CUICombo_Image::Initialize_InVisible_Event()
 {
-	m_iCurComboCount = 0;
-	m_eCurComboType = ECombotype::END;
+
 }
 
 _bool CUICombo_Image::Tick_InVisible_Event(const _float fTimeDelta)

@@ -43,11 +43,11 @@ HRESULT CState_RunShort::Start(void* pArg, _bool bForce)
 
 void CState_RunShort::Update(const _float fTimeDelta)
 {
-	//// 강제로 state change
-	//if (m_fStateElapsed >= 0.5f)
-	//{
-	//	Change_PlayerState(STATEKEY::LOOPDONE);
-	//}
+	// 강제로 state change
+	if (m_fStateElapsed >= 10.f / ANIMTIC)
+	{
+		Turn_byCam(fTimeDelta);
+	}
 
 	if(m_bCanRunLoop)
 	{

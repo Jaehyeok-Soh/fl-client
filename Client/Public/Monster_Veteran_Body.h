@@ -28,6 +28,11 @@ public:
 private:
 	HRESULT Ready_Components(MONSTERBODY_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	HRESULT Ready_DissolveEffect_Setting() override;
+
+protected:
+	virtual void  DissolveStart() override;
+
 public:
 	static CMonster_Veteran_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -132,15 +132,6 @@ HRESULT CUICombo_Text::Attach_Personal_Info()
 		break;
 	}
 
-	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]()
-		{
-			this->Set_Visible();
-		});
-
-	m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]()
-		{
-			this->Set_Invisible();
-		});
 
 	return S_OK;
 }
@@ -228,6 +219,23 @@ HRESULT CUICombo_Text::Convert_Stat_To_Text()
 		break;
 	}
 	return S_OK;
+}
+
+void CUICombo_Text::Bind_Events()
+{
+	Super::Bind_Events();
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]()
+			{
+				this->Set_Visible();
+			}));
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_END>([this]()
+			{
+				this->Set_Invisible();
+			}));
 }
 
 void CUICombo_Text::Initialize_Visible_Event()

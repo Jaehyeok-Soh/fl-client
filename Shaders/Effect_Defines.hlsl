@@ -64,6 +64,20 @@ texture2D g_EffectTexture;
 #define MUL 1 << 2      // Multiply     곱하기
 #define DIV 1 << 3      // Devide       나누기
 
+struct LineEffectDesc
+{
+    // Slot 1
+    float3 g_StartPos;
+    float  Padding0;
+    
+    // Slot 2
+    float3 g_EndPos;
+    float  Padding1;
+    
+    // Slot 3
+    float  g_HalfWidth;
+    float3 Padding2;
+};
 
 struct EffectDesc
 {
@@ -124,6 +138,11 @@ struct EffectDesc
     float4 SubMaskTexture_SpriteInfo;
 };
 
+struct DecalEffectDesc
+{
+    row_major float4x4 matTransformInv;
+};
+
 // ========== StruturedBuffer Binding value  ===========  (CS Shader에서 계산해서 넘어온 값.)
 StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
 
@@ -131,6 +150,16 @@ StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
 cbuffer ConstantBuffer_Effect
 {
     EffectDesc g_Effect;
+};
+
+cbuffer CB_LINEEFFECT
+{
+    LineEffectDesc g_LineEffect;
+};
+
+cbuffer DecalEffect
+{
+    DecalEffectDesc g_DecalEffect;
 };
 
 // ========  Render Flags  =========
@@ -354,7 +383,7 @@ float GlowTextureSample(float2 UV)
 
 float SubMaskTextureSample(float2 UV)
 {
-    return SampleTextureWithFlags(g_DefaultTextures[SUBMASKINGTEXTURE], g_Effect.g_StateFlags, 0, UV);
+    return SampleTextureWithFlags(g_DefaultTextures[SUBMASKINGTEXTURE], g_Effect.g_StateFlags, 24, UV);
 }
 
 float4 SceneTextureSample(float2 UV, uint Flag)
@@ -408,3 +437,31 @@ float3 GetBezierTangent(float3 p0, float3 p1, float3 p2, float t)
     return normalize(2.f * (1.f - t) * (p1 - p0) + 2.f * t * (p2 - p1));
 
 }
+
+//float2 ScreenUVFromProjPos(float4 vProjPos)
+//{
+//    float2 uv = vProjPos.xy / max(vProjPos.w, EPSILON);
+//    uv = uv * 0.5f + 0.5f;
+//    uv.y = 1.0f - uv.y;
+//    return uv;
+//}
+
+//float3 ReconstructViewPosFromDepthTex(float2 screenUV, float fViewZ)
+//{
+//    float3 vViewPos;
+//    vViewPos.z = fViewZ;
+//    vViewPos.x = (screenUV.x * 2.0f - 1.0f) * (fViewZ / P._11);
+//    vViewPos.y = (screenUV.y * -2.0f + 1.0f) * (fViewZ / P._22);
+//    return vViewPos;
+//}
+
+//float3 ReconstructWorldPosFromStaticDepth(float2 screenUV, float fDepthBias)
+//{
+//    float4 vDepthDesc = g_RenderTarget_StaticObject_DepthCopy.Sample(PointSampler, screenUV);
+
+//    float fViewZ = vDepthDesc.y - fDepthBias;
+
+//    float3 vViewPos = ReconstructViewPosFromDepthTex(screenUV, fViewZ);
+//    float4 vWorldPos = mul(float4(vViewPos, 1.0f), InvV);
+//    return vWorldPos.xyz;
+//}

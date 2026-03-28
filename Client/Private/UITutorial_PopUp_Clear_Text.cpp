@@ -116,6 +116,7 @@ HRESULT CUITutorial_PopUp_Clear_Text::Convert_Stat_To_Text()
 
 void CUITutorial_PopUp_Clear_Text::Bind_Events()
 {
+	Super::Bind_Events();
 
 
 	m_vecEventHandles.push_back(
@@ -123,8 +124,7 @@ void CUITutorial_PopUp_Clear_Text::Bind_Events()
 			{
 				this->Set_Visible();
 				this->Set_Active(true);
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
@@ -133,8 +133,7 @@ void CUITutorial_PopUp_Clear_Text::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 }
 
 void CUITutorial_PopUp_Clear_Text::Initialize_Visible_Event()

@@ -35,6 +35,7 @@ private:
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
 	virtual void Tick_By_Type(const _float fTimeDelta)override;
+	virtual void Bind_Events() override { Super::Bind_Events(); };
 private:
 	void Initialize_Visible_Event()override;
 	void Initialize_InVisible_Event()override;

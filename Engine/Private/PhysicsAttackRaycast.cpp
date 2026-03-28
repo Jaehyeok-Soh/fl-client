@@ -148,6 +148,12 @@ _bool CPhysicsAttackRaycast::ShootRay(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist
 	{
 		*hitDist = m_RayCastHitBuffer.block.distance;
 
+		PxShape* shape = { nullptr };
+		m_RayCastHitBuffer.block.actor->getShapes(&shape, 1);
+		PxFilterData filterData = shape->getQueryFilterData();
+		if (filterData.word0 & PHYSICSFILTERGROUP::MAP)
+			return false;
+
 		m_pGameInstance->Raycast_EventCallback(m_pOwner, &m_RayCastHitBuffer, &m_tDesc);
 
 		return m_bRayHit;

@@ -469,6 +469,20 @@ _bool CStateBase_Player::Check_Hit(const _float fTimeDelta)
 		// 해당 hit collision을 체크 할 거고 : state 권한
 		// 해당 hit가 들어왔다면 : action state에서 처리 -> 아님 플레이어?
 
+		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_SpHit) &&
+			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Special))
+		{
+			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::SPHIT_START));
+			return true;
+		}
+
+		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_StunHit) &&
+			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Stun))
+		{
+			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::STUN_START));
+			return true;
+		}
+
 				// strong은 이제 지면 충돌 검사 후 fly, strong 전환 
 		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Strong) &&
 			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Strong))
@@ -606,6 +620,19 @@ void CStateBase_Player::LookAt_Monser()
 
 		m_bLookAtMonster = true;
 	}
+}
+
+Vec3 CStateBase_Player::Get_Collided_MonsterPos()
+{
+	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
+	if (pPlayer == nullptr)
+		return Vec3::Zero;
+
+	CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
+	if (pPlayerTransform == nullptr)
+		return Vec3::Zero;
+	
+	return pPlayer->Get_CollidedMonster_Position();
 }
 
 _bool CStateBase_Player::Check_OnGround(_float fMaxDist)

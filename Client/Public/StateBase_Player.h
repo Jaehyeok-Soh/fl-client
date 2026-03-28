@@ -1,6 +1,8 @@
 #pragma once
 #include "StateBase.h"
 
+#include "PlayerImguiValues.h"
+
 // player의 state들이 공통적으로 처리해야하는 것들을 다루기 위해
 // 부모 statebase를 하나 생성
 
@@ -35,8 +37,11 @@ public:
 		,C_Addtive	= 0x00008
 		,C_Fly		= 0x00010
 		,C_Strong	= 0x00020
+		, C_StunHit		= 0x00040
+		, C_SpHit = 0x00080
 
-		,C_CheckF	= 0x00040
+
+		,C_CheckF	= 0x00100
 	};
 
 	enum WEAPONCHANGEFLAGS : Flags
@@ -172,6 +177,7 @@ protected:
 	void	Look_Impuls(_float fOffset = 1.f);
 
 	void	LookAt_Monser();
+	Vec3	Get_Collided_MonsterPos();
 
 
 	// player 객체 연결 함수들

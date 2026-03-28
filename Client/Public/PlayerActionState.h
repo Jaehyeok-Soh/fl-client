@@ -19,8 +19,10 @@ public:
 
 		// 어떤 공격으로 들어온거니
 		, AF_Addtive	= 0x00002
-		, AF_Fly	= 0x00004
-		, AF_Strong = 0x00008
+		, AF_Fly		= 0x00004
+		, AF_Strong		= 0x00008
+		, AF_Stun		= 0x00010
+		, AF_Special	= 0x00020
 	};
 
 	enum class BONE_STATE
@@ -74,6 +76,9 @@ private:
 
 public:
 	virtual void Update(const _float fTImeDelta) override;
+
+public:
+	void My_Awake(const _uint iCurrentLevelID);
 
 public:
 	_bool Get_KeyFlag(_uint iKeyFlag);
@@ -131,6 +136,9 @@ private:
 	BONEHIT_DATA	m_tBoneHit = {};
 
 private:
+	DelegateHandle m_DDialoghandle = {};
+
+private:
 	void Start_BoneState(BONE_STATE ePreState, BONESTATE_CHANGE_ARGS* tArgs);
 	_bool End_BoneState(BONE_STATE eNextState);
 
@@ -141,6 +149,9 @@ private:
 	void Update_HitEnd(const _float fTimeDelta);
 
 	_uint Get_CurState_BoneHitFlag() const;
+
+private:
+	void Check_DialogueBegin(_int iId);
 
 public:
 	static CPlayerActionState* Create();

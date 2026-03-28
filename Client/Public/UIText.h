@@ -43,6 +43,7 @@ public:
 protected:
 	HRESULT Ready_Components(UI_TEXT_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
+	virtual void Bind_Events()override { Super::Bind_Events(); };
 	void Sync_FontDesc();
 	_wstring Float_To_Wstring(const _float f, _uint iDecimal);
 

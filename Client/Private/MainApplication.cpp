@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "MainApplication.h"
+#include "CameraPreset_Manager.h"
 #include "Collision_Manager.h"
 #include "Material.h"
 #include "MaterialInstance.h"
@@ -582,6 +583,7 @@ HRESULT CMainApplication::Ready_Static_Prototype()
 
 HRESULT CMainApplication::Ready_Managers()
 {
+	CCameraPreset_Manager::GetInstance()->Initialize(L"../../Resources/Data/CameraPresetData/");
 	CUI_Manager::GetInstance()->Initialize_UIManager(m_pDevice, m_pDeviceContext);
 	return S_OK;
 }
@@ -717,6 +719,7 @@ void CMainApplication::Free()
 	CUI_Manager::GetInstance()->DestroyInstance();	// 오브젝트 삭제 이후 삭제해야되는데 / 오브젝트에서 Addref 하고 있어서 안터짐
 	CUIMinimap_Manager::GetInstance()->DestroyInstance();
 	CUITutorial_Manager::GetInstance()->DestroyInstance();
+	CCameraPreset_Manager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();
 

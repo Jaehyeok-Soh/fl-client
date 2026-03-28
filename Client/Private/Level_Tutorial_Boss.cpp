@@ -83,6 +83,9 @@ HRESULT CLevel_Tutorial_Boss::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dissolve()))
+		return E_FAIL;
+
 	if (FAILED(Build_Prototype()))
 	{
 		MSG_BOX("CLevel_Tutorial_Boss::Initialize, Build_Prototype Create Failed");
@@ -530,6 +533,21 @@ HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 
 	//if (FAILED(m_pGameInstance->Bake_StaticShadow()))
 	//	return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
+		return E_FAIL;
+
+	{
+		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+		Desc.fDelay = 1.f;
+		Desc.fDuration = 2.f;
+		Desc.isEased = false;
+		Desc.fEaseValue = 2.f;
+		Desc.isFadeIn = true;
+		Desc.fEndDelay = 0.f;
+		Desc.isChangeLevel = false;
+		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+	}
 	return S_OK;
 }
 
@@ -571,6 +589,12 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 	}*/
 
 	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
+}
+
+
+HRESULT CLevel_Tutorial_Boss::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

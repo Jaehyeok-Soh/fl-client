@@ -71,7 +71,7 @@ void CUIMini_Map::Update(const _float fTimeDelta)
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::MINIMAP_CAMERA_SIGHT)
 	{
 		Matrix CamWorldMat = m_pGameInstance->Get_ViewMatrix().Invert();
-		Vec3 vCamLook = -CamWorldMat.Forward();
+		Vec3 vCamLook = CamWorldMat.Backward();
 		m_fRadian = CUIMinimap_Manager::GetInstance()->WorldLook_Convert_To_Radian(vCamLook);
 		Rotate_Translate_CameraSight();
 	}
@@ -283,6 +283,7 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 
 void CUIMini_Map::Bind_Events()
 {
+	Super::Bind_Events();
 
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)

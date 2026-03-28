@@ -56,6 +56,10 @@ protected:
 	HRESULT Ready_Bones(NPCBODY_DESC* pDesc);
 
 protected:
+	void Setting_FaceMix(_uint iFaceBoneIdx, _int iAnimIdx);
+	void Change_FaceAnim(_int iAnimIdx);
+
+protected:
 	std::vector<_uint> m_vecBoneIndices;
 
 public:

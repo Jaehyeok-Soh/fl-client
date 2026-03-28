@@ -7,6 +7,7 @@
 #include "DataStruct_AttackPreset.h"
 #include "PlayerControlContext.h"
 #include "StateBase_Player.h"
+#include "Player.h"
 
 #include "GameInstance.h"
 
@@ -58,6 +59,16 @@ void CPlayerActionState::Update(const _float fTImeDelta)
     Update_BoneState(fTImeDelta);
 }
 
+void CPlayerActionState::My_Awake(const _uint iCurrentLevelID)
+{
+    Change_ActionBoneState(CPlayerActionState::BONE_STATE::NORMAL);
+
+    m_DDialoghandle = m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+        {
+            Check_DialogueBegin(iId);
+        });
+}
+
 _bool CPlayerActionState::Get_KeyFlag(_uint iKeyFlag)
 {
     return static_cast<CPlayerControlContext*>(m_pOwnerControlContext)->Get_KeyFlag(static_cast<CPlayerControlContext::KEYFLAGS>(iKeyFlag));
@@ -91,14 +102,16 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
     {
         switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
         {
-        case DTO::EHitType::Light:
-            m_fAttackFlag |= AF_Addtive;
-            break;
+            case DTO::EHitType::Light:
+                m_fAttackFlag |= AF_Addtive;
+                break;
 
-        case DTO::EHitType::Heavy:
-            m_fAttackFlag |= AF_Fly;
-            break;
+            case DTO::EHitType::Heavy:
+                m_fAttackFlag |= AF_Fly;
+                break;
         }
+
+        //m_fAttackFlag |= AF_Stun;
     }
         break;
 
@@ -114,6 +127,8 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
             m_fAttackFlag |= AF_Fly;
             break;
         }
+
+        m_fAttackFlag |= AF_Special;
     }
     break;
 
@@ -370,6 +385,11 @@ _uint CPlayerActionState::Get_CurState_BoneHitFlag() const
     return pState->Get_BoneHitFlag();
 }
 
+void CPlayerActionState::Check_DialogueBegin(_int iId)
+{
+    Change_State(ENUM_TO_UINT(CPlayer::State::NPCTALK));
+}
+
 CPlayerActionState* CPlayerActionState::Create()
 {
     CPlayerActionState* pInsatnce = new CPlayerActionState();
@@ -395,4 +415,6 @@ CComponent* CPlayerActionState::Clone(void* pArg)
 void CPlayerActionState::Free()
 {
     Super::Free();
+     
+    m_pGameInstance->Unsubscribe<DIALOGUE_BEGIN>(m_DDialoghandle);
 }

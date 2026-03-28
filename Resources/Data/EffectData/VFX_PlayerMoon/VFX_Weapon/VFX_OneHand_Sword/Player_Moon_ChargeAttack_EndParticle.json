@@ -140,7 +140,7 @@
                     "Shader_Pass": 0,
                     "Shader_Path": "",
                     "Shader_Tag": "Shader_VtxEffectParticle",
-                    "ShapeType": 8,
+                    "ShapeType": 15,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0
@@ -282,7 +282,9 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": true,
                     "_Use_Effect_UV_OverScroll": false,
@@ -403,7 +405,7 @@
                     "Shader_Pass": 0,
                     "Shader_Path": "",
                     "Shader_Tag": "Shader_VtxEffectParticle",
-                    "ShapeType": 8,
+                    "ShapeType": 15,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0
@@ -469,7 +471,7 @@
                         "y": 0.20000000298023224,
                         "z": 1.0
                     },
-                    "StartSpeed": 2.299999952316284,
+                    "StartSpeed": 5.0,
                     "TargetRotation": {
                         "x": 0.0,
                         "y": 0.0,
@@ -545,7 +547,9 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": true,
                     "_Use_Effect_UV_OverScroll": false,
@@ -666,7 +670,7 @@
                     "Shader_Pass": 0,
                     "Shader_Path": "",
                     "Shader_Tag": "Shader_VtxEffectParticle",
-                    "ShapeType": 8,
+                    "ShapeType": 15,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0
@@ -808,7 +812,9 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": true,
                     "_Use_Effect_UV_OverScroll": false,

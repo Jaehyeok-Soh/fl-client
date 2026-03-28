@@ -193,7 +193,7 @@ void Camera_Keyframe_Data::Copy_Camera(CCameraMan* pCameraman)
 	this->vPitchYawRoll.z = XMConvertToDegrees(vEulerRadian.z); // Roll
 
 	/* Fov °ª */
-	this->fFov = XMConvertToDegrees(pCamera->Get_Fov());
+	this->fFov = XMConvertToDegrees(pCamera->Get_BaseFov());
 }
 
 void Camera_Keyframe_Data::UnBind_CashingData()

@@ -55,6 +55,7 @@ public:
 	HRESULT Draw_Text(const _wstring& strFontTag, const _tchar* pText, const Vec2& vPosition, const Vec4 &vColor, EFontPivotType ePivot, const _float fRotate, const _float fScale);
 	HRESULT Draw_Text(const FONT_DESC& Desc);
 
+	Vec2 Measure_Font(const _wstring& wstrFontTag, const _tchar* pText);
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };

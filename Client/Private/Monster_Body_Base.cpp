@@ -16,6 +16,7 @@
 #include "PhysicsRagdoll.h"
 
 #include "UI_Manager.h"
+#include "CameraAnchorResolver.h"
 #include "GameInstance.h"
 
 CMonster_Body_Base::CMonster_Body_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -56,6 +57,8 @@ HRESULT CMonster_Body_Base::Initialize(void* pArg)
 
 	Set_RenderInfoFlag(OF_Outline, true);
 	Set_RenderInfoFlag(OF_Rim, true);
+
+	m_pGameInstance->Bind_DissolveTexture(Get_Component<CShader>());
 	return S_OK;
 }
 
@@ -64,11 +67,15 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	// 어차피 Pool되서 레벨에 배치될 때 Awake 불리니까 이 떄 호출해서 초기화 해준다.
+	if (FAILED(Ready_DissolveEffect_Setting()))
+		return E_FAIL;
+
 	// Shake & Emissive 연출용
 	Get_Component<CShader>()->Set_Pass(3);
 	return S_OK;
 }
-
+ 
 void CMonster_Body_Base::Update_Priority(_float fTimeDelta)
 {
 	Super::Update_Priority(fTimeDelta);
@@ -118,6 +125,9 @@ void CMonster_Body_Base::Update(_float fTimeDelta)
 
 	// Shake & Emissive 연출용
 	Get_Component<CRenderFx>()->Update(fTimeDelta);
+
+	// 디졸브 업데이트
+	m_tDissolveDesc.Update(fTimeDelta);
 }
 
 void CMonster_Body_Base::Update_Late(_float fTimeDelta)
@@ -184,6 +194,10 @@ HRESULT CMonster_Body_Base::Render()
 	pRenderFx->Bind_Resources(pShader);
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
+
+	// 디졸브 값 바인딩
+	pShader->Bind_DissolveEffectData(m_tDissolveDesc.ShaderData);
+
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
 		pModel->Bind_Material(pShader, i);
@@ -191,6 +205,10 @@ HRESULT CMonster_Body_Base::Render()
 		pShader->Apply();
 		pModel->Render(i);
 	}
+
+	// 디졸브 값 초기화
+	SHADER_DISSOLVE_EFFECT_DESC Desc = {};
+	pShader->Bind_DissolveEffectData(Desc);
 
 	return S_OK;
 }
@@ -248,6 +266,47 @@ const Matrix* CMonster_Body_Base::Get_SocketMatrix(_uint iIndex)
 	}
 
 	return nullptr;
+}
+
+CBone* CMonster_Body_Base::Find_CameraAnchorBone(ECameraAnchorResolve eResolve, const string& strAnchorTag)
+{
+	switch (eResolve)
+	{
+	case Engine::ECameraAnchorResolve::CAM_SOCKET:
+	{
+		return Get_Component<CModel>()->Get_Bone("camera_point");
+	}
+
+	case Engine::ECameraAnchorResolve::BONE:
+	{
+		if (strAnchorTag.empty())
+			return nullptr;
+
+		return Get_Component<CModel>()->Get_Bone(strAnchorTag.c_str());
+	}
+	}
+
+	return nullptr;
+}
+
+_bool CMonster_Body_Base::Resolve_CameraAnchor(Engine::ECameraAnchorResolve eResolve, const string& strAnchorTag, const Matrix& matOwnerWorld, OUT Engine::CAMERA_ANCHOR_RESULT& outResult)
+{
+	outResult = {};
+
+	CBone* pAnchorBone = Find_CameraAnchorBone(eResolve, strAnchorTag);
+	if (pAnchorBone == nullptr)
+		return false;
+
+	Matrix matAnchorWorld =
+		pAnchorBone->Get_CombinedTransformMatrix() * matOwnerWorld;
+
+	outResult.vPos = matAnchorWorld.Translation();
+	outResult.vRight = matAnchorWorld.Right();
+	outResult.vUp = matAnchorWorld.Up();
+	outResult.vLook = matAnchorWorld.Backward();
+
+	CCameraAnchorResolver::Normalize_AnchorResult(outResult);
+	return true;
 }
 
 HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)

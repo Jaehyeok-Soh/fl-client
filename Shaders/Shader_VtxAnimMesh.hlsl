@@ -1,6 +1,7 @@
 #include "Struct_Defines.hlsl"
-#include "Animation_Defines.hlsl"
 #include "Light_Defines.hlsl"
+#include "Animation_Defines.hlsl"
+#include "DissolveEffect_Defines.hlsl"
 
 #define RENDERFX_EMISSIVE (1<<0)
 #define RENDERFX_SHAKE (1<<1)
@@ -27,6 +28,49 @@ float3 Apply_Shake(float3 vWorldPos)
     return vWorldPos
         + cameraRight * renderFx.fShakeAmpX
         + cameraUp * renderFx.fShakeAmpY;
+}
+
+void Apply_Dissolve_Discard_And_Alpha(
+    in PS_IN_SKELETON input,
+    inout float4 ioDiffuse)
+{
+    uint flags = g_DissolveEffect.g_iDissolveFlag;
+    float amount = saturate(g_DissolveEffect.g_fDissolveAmount);
+
+    if (!Is_Dissolve_Active())
+        return;
+
+    if (Should_Discard_By_Dissolve(input.vUV, flags, amount))
+        discard;
+
+    if (Has_DissolveFlag(flags, DF_USE_ALPHAFADE))
+    {
+        float alpha = Get_DissolveAlphaFactor(flags, amount);
+        ioDiffuse.a *= alpha;
+
+        if (ioDiffuse.a <= EPSILON)
+            discard;
+    }
+}
+
+float3 Get_DissolveEdgeEmissive(float2 uv)
+{
+    uint flags = g_DissolveEffect.g_iDissolveFlag;
+    float amount = saturate(g_DissolveEffect.g_fDissolveAmount);
+
+    if (!Is_Dissolve_Active())
+        return float3(0.f, 0.f, 0.f);
+
+    if (!Has_DissolveFlag(flags, DF_USEEDGE))
+        return float3(0.f, 0.f, 0.f);
+
+    float edge = Compute_DissolveEdge(
+        uv,
+        flags,
+        amount,
+        g_DissolveEffect.g_fDissolveEdgeWidth);
+
+    return g_DissolveEffect.g_vDissolveEdgeColor * edge * 3.0f;
 }
 
 cbuffer CB_MAPPING_RGB
@@ -122,6 +166,9 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
     if(output.vDiffuse.a <= EPSILON)
         discard;
     
+    // 디졸브 디스카드
+    Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
+    
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
@@ -133,6 +180,8 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
     output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     float3 vEmissive = float3(0.f, 0.f, 0.f);
+    
+    
     // 텍스쳐 Emissive
     if (Has(g_iMaterialMask, EMISSIVE))
     {
@@ -155,8 +204,10 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
         float3 vFlash = renderFx.vEmissiveColor.rgb * fRim * renderFx.fEmissiveIntensity;
 
         vEmissive += vFlash;
-
     }
+    
+    // dissolve edge emissive
+    vEmissive += Get_DissolveEdgeEmissive(input.vUV);
     
     output.vEmissive = float4(vEmissive, 1.f);
     return output;
@@ -192,6 +243,9 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_SKELETON input)
     
     output.vDiffuse = finalDiffuse;
     
+    // 디졸브 디스카드
+    Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
+    
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
@@ -209,6 +263,11 @@ PS_OUT_DEFFERED PS_RGBMAPPING(PS_IN_SKELETON input)
         float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
         vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
     }
+    
+    
+    // dissolve edge emissive
+    vEmissive += Get_DissolveEdgeEmissive(input.vUV);
+    
     output.vEmissive = float4(vEmissive, 1.f);
     return output;
 }

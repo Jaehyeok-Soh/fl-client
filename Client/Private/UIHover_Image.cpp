@@ -173,6 +173,7 @@ void CUIHover_Image::Tick_By_Type(const _float fTimeDelta)
 
 void CUIHover_Image::Bind_Events()
 {
+	Super::Bind_Events();
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::HOVER_ENTER_MENU_ICON:

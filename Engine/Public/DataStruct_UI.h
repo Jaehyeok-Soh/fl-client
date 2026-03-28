@@ -185,7 +185,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 		{ EUISubClassType::BOSS_STAT_HP_PROGRESS,		"BOSS_STAT_HP_PROGRESS"},
 		{ EUISubClassType::BOSS_STAT_ARMOR_PROGRESS,	"BOSS_STAT_ARMOR_PROGRESS"},
 		{ EUISubClassType::BOSS_STAT_END,				"BOSS_STAT_END"},
-	})
+	});
 
 #pragma region 텍스트 서브 클래스
 enum class EUITextSubClassType
@@ -326,6 +326,11 @@ enum class EUITextSubClassType
 	ENTERGAME_GAMESTART_WORLDTEXT,
 	ENTERGAME_END,
 
+	//NPC 말풍선
+	NPC_TEXT_BUBBLE_BEGIN,
+	NPC_TEXT_BUBBLE_NAME_TEXT,
+	NPC_TEXT_BUBBLE_CONTENT_TEXT,
+	NPC_TEXT_BUBBLE_END,
 
 	END
 };
@@ -450,6 +455,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::ENTERGAME_GAMESTART_WORLDTEXT,	"ENTERGAME_GAMESTART_WORLDTEXT" },
 		{ EUITextSubClassType::ENTERGAME_END,					"ENTERGAME_END" },
 
+		{ EUITextSubClassType::NPC_TEXT_BUBBLE_BEGIN,					"NPC_TEXT_BUBBLE_BEGIN" },
+		{ EUITextSubClassType::NPC_TEXT_BUBBLE_NAME_TEXT,					"NPC_TEXT_BUBBLE_NAME_TEXT" },
+		{ EUITextSubClassType::NPC_TEXT_BUBBLE_CONTENT_TEXT,					"NPC_TEXT_BUBBLE_CONTENT_TEXT" },
+		{ EUITextSubClassType::NPC_TEXT_BUBBLE_END,					"NPC_TEXT_BUBBLE_END" },
+
 		{ EUITextSubClassType::END,									"END" },
 	})
 	inline EUITextSubClassType StringToUITextSubClassType(const std::string& str)
@@ -570,6 +580,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "ENTERGAME_GAMESTART_TEXT")					return EUITextSubClassType::ENTERGAME_GAMESTART_TEXT;
 	else if (str == "ENTERGAME_GAMESTART_WORLDTEXT")			return EUITextSubClassType::ENTERGAME_GAMESTART_WORLDTEXT;
 	else if (str == "ENTERGAME_END")							return EUITextSubClassType::ENTERGAME_END;
+
+	else if (str == "NPC_TEXT_BUBBLE_BEGIN")					return EUITextSubClassType::NPC_TEXT_BUBBLE_BEGIN;
+	else if (str == "NPC_TEXT_BUBBLE_NAME_TEXT")				return EUITextSubClassType::NPC_TEXT_BUBBLE_NAME_TEXT;
+	else if (str == "NPC_TEXT_BUBBLE_CONTENT_TEXT")				return EUITextSubClassType::NPC_TEXT_BUBBLE_CONTENT_TEXT;
+	else if (str == "NPC_TEXT_BUBBLE_END")						return EUITextSubClassType::NPC_TEXT_BUBBLE_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -641,9 +656,9 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::BATTLE_COMBO_TEXT_END:				return "BATTLE_COMBO_TEXT_END";
 	
 	case EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:				return "BOSS_CIVILA_ACTION_BEGIN";
-	case EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:			return "BOSS_CIVILA_ACTION_WORLD_TEXT";
-	case EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:				return "BOSS_CIVILA_ACTION_NAME_TEXT";
-	case EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:	return "BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT";
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:		return "BOSS_CIVILA_ACTION_WORLD_TEXT";
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:			return "BOSS_CIVILA_ACTION_NAME_TEXT";
+	case EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:return "BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT";
 	case EUITextSubClassType::BOSS_CIVILA_ACTION_END:				return "BOSS_CIVILA_ACTION_END";
 
 	case EUITextSubClassType::BATTLE_WEAKNESS_BEGIN:				return "BATTLE_WEAKNESS_BEGIN";
@@ -695,11 +710,18 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::ENTERGAME_BEGIN:						return "ENTERGAME_BEGIN";
 	case EUITextSubClassType::ENTERGAME_GAMESTART_TEXT:				return "ENTERGAME_GAMESTART_TEXT";
 	case EUITextSubClassType::ENTERGAME_GAMESTART_WORLDTEXT:		return "ENTERGAME_GAMESTART_WORLDTEXT";
+
+	case EUITextSubClassType::NPC_TEXT_BUBBLE_BEGIN:				return "NPC_TEXT_BUBBLE_BEGIN";
+	case EUITextSubClassType::NPC_TEXT_BUBBLE_NAME_TEXT:			return "NPC_TEXT_BUBBLE_NAME_TEXT";
+	case EUITextSubClassType::NPC_TEXT_BUBBLE_CONTENT_TEXT:			return "NPC_TEXT_BUBBLE_CONTENT_TEXT";
+	case EUITextSubClassType::NPC_TEXT_BUBBLE_END:					return "NPC_TEXT_BUBBLE_END";
+
 	case EUITextSubClassType::ENTERGAME_END:						return "ENTERGAME_END";
 	
 	default:														return "END";
 	}
 }
+
 NLOHMANN_JSON_SERIALIZE_ENUM(EFontPivotType, {
 	{ EFontPivotType::CENTER, "CENTER" },
 	{ EFontPivotType::LEFT,   "LEFT"   },
@@ -1015,6 +1037,13 @@ enum class EUIDImageSubClassType
 	ENTERGAME_START_ICON_RIGHT,
 	ENTERGAME_END,
 
+	SCENE_FADE_IN,
+
+	NPC_TEXT_BUBBLE_BEGIN,
+	NPC_TEXT_BUBBLE_BG,
+	NPC_TEXT_BUBBLE_BG_DOWN,
+	NPC_TEXT_BUBBLE_END,
+
 	END
 };
 
@@ -1197,6 +1226,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::ENTERGAME_START_ICON_LEFT,					"ENTERGAME_START_ICON_LEFT" },
 	{ EUIDImageSubClassType::ENTERGAME_START_ICON_RIGHT,				"ENTERGAME_START_ICON_RIGHT" },
 	{ EUIDImageSubClassType::ENTERGAME_END,								"ENTERGAME_END" },
+
+	{ EUIDImageSubClassType::SCENE_FADE_IN,								"SCENE_FADE_IN" },
+
+	{ EUIDImageSubClassType::NPC_TEXT_BUBBLE_BEGIN,						"NPC_TEXT_BUBBLE_BEGIN" },
+	{ EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG,						"NPC_TEXT_BUBBLE_BG" },
+	{ EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG_DOWN,					"NPC_TEXT_BUBBLE_BG_DOWN" },
+	{ EUIDImageSubClassType::NPC_TEXT_BUBBLE_END,						"NPC_TEXT_BUBBLE_END" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1381,6 +1417,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "ENTERGAME_START_ICON_LEFT")				return EUIDImageSubClassType::ENTERGAME_START_ICON_LEFT;
 	if (str == "ENTERGAME_START_ICON_RIGHT")			return EUIDImageSubClassType::ENTERGAME_START_ICON_RIGHT;
 	if (str == "ENTERGAME_END")							return EUIDImageSubClassType::ENTERGAME_END;
+	
+	if (str == "SCENE_FADE_IN")							return EUIDImageSubClassType::SCENE_FADE_IN;
+
+	if (str == "NPC_TEXT_BUBBLE_BEGIN")					return EUIDImageSubClassType::NPC_TEXT_BUBBLE_BEGIN;
+	if (str == "NPC_TEXT_BUBBLE_BG")					return EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG;
+	if (str == "NPC_TEXT_BUBBLE_BG_DOWN")				return EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG_DOWN;
+	if (str == "NPC_TEXT_BUBBLE_END")					return EUIDImageSubClassType::NPC_TEXT_BUBBLE_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1567,6 +1610,13 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::ENTERGAME_START_ICON_LEFT:				return "ENTERGAME_START_ICON_LEFT";
 	case EUIDImageSubClassType::ENTERGAME_START_ICON_RIGHT:				return "ENTERGAME_START_ICON_RIGHT";
 	case EUIDImageSubClassType::ENTERGAME_END:							return "ENTERGAME_END";
+	
+	case EUIDImageSubClassType::SCENE_FADE_IN:							return "SCENE_FADE_IN";
+
+	case EUIDImageSubClassType::NPC_TEXT_BUBBLE_BEGIN:					return "NPC_TEXT_BUBBLE_BEGIN";
+	case EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG:						return "NPC_TEXT_BUBBLE_BG";
+	case EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG_DOWN:				return "NPC_TEXT_BUBBLE_BG_DOWN";
+	case EUIDImageSubClassType::NPC_TEXT_BUBBLE_END:					return "NPC_TEXT_BUBBLE_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

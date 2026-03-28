@@ -27,8 +27,11 @@ PxQueryHitType::Enum CPhysics_QueryFilterCallback::preFilter(const PxFilterData&
 	if (shapeFilter.word0 & PHYSICSFILTERGROUP::RAGDOLL)
 		return PxQueryHitType::eNONE;
 
-	//if (shapeFilter.word0 & PHYSICSFILTERGROUP::GENIEMON)
-	//	return PxQueryHitType::eNONE;
+	if ((filterData.word0 & PHYSICSFILTERGROUP::GENIEMON) && (shapeFilter.word0 & PHYSICSFILTERGROUP::PLAYER))
+		return PxQueryHitType::eNONE;
+
+	if ((filterData.word0 & PHYSICSFILTERGROUP::PLAYER) && (shapeFilter.word0 & PHYSICSFILTERGROUP::GENIEMON))
+		return PxQueryHitType::eNONE;
 
 	if (shapeFilter.word0 & PHYSICSFILTERGROUP::MAP)
 		return PxQueryHitType::eBLOCK;

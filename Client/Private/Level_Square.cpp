@@ -77,6 +77,10 @@ HRESULT CLevel_Square::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dissolve()))
+		return E_FAIL;
+
+
 	if (FAILED(Build_Prototype()))
 	{
 		MSG_BOX("CLevel_Square::Initialize, Build_Prototype Create Failed");
@@ -144,6 +148,20 @@ HRESULT CLevel_Square::Awake(const _uint iLevelID)
 
 	CQuestManager::GetInstance()->Start_Quest(3, 2);
 
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
+		return E_FAIL;
+
+	{
+		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+		Desc.fDelay = 1.f;
+		Desc.fDuration = 2.f;
+		Desc.isEased = false;
+		Desc.fEaseValue = 2.f;
+		Desc.isFadeIn = true;
+		Desc.fEndDelay = 0.f;
+		Desc.isChangeLevel = false;
+		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+	}
 	return S_OK;
 }
 
@@ -524,6 +542,11 @@ HRESULT CLevel_Square::Ready_Camera_Setting(const _uint iLevelIndex)
 	m_pGameInstance->Change_Target(pPlayer);
 	m_pGameInstance->Ready_Frustrum();
 	return S_OK;
+}
+
+HRESULT CLevel_Square::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
 }
 
 CLevel_Square* CLevel_Square::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

@@ -65,8 +65,11 @@ public:
 
 	void Set_LoadingRatio(const _float* p) { m_pLoadingRatio = p; }
 	
-	void UISound_PlayOneShot(const _char* szSoundTag, const _float fVolume = 1.f,
-		const _uint iLevelIndex = 0, const _float fPitch = 1.f, _bool isSteal = false);
+	void Request_LevelChange_With_Fade(UI_LEVEL_FADE_PREFAB_DATA ePrefabData);
+	void Clear_LevelChange_Fade_Delay();
+
+	_bool Get_ClearDelay() const { return m_isClearDelay; }
+	void Set_ClearDelay(_bool is) { m_isClearDelay = is; }
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	array<_wstring, ENUM_TO_UINT(EUIPrefabType::END)> m_vecPrefabs;
@@ -79,6 +82,8 @@ private:
 private:
 	// UI 전달 변수 
 	const _float* m_pLoadingRatio = { nullptr };
+
+	_bool m_isClearDelay = { false };
 
 public:
 	virtual void Free()override;

@@ -34,7 +34,7 @@ HRESULT CPhysicsSpringArm::Initialize(void* pArg)
 	m_filterData.flags = PxQueryFlag::eSTATIC
 		| physx::PxQueryFlag::ePREFILTER;
 
-	m_pxCameraSphere = PxSphereGeometry(0.5f);
+	m_pxCameraSphere = PxSphereGeometry(0.1f);
 
 	m_pFilterCallback = m_pGameInstance->GetQueryFilterCallback_SpringArm();
 

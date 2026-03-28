@@ -19,7 +19,7 @@
 #include "GameInstance.h"
 
 #include "MyStat.h"
-
+#include "Sword.h"
 #include "Monster_Dog.h"
 #include "Monster_Boomer.h"
 
@@ -279,6 +279,13 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 			Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
 			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();
+
+			// 여기에 Dissolve Flag 발동 시키기.
+			{
+				CMonster_Body_Base* pBody = { nullptr };
+				pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+				pBody->DissolveStart();
+			}
 		}
 	}
 
@@ -328,6 +335,26 @@ void CMonster_Base::Try_Attack(const HIT_DESC& hitDesc)
 void CMonster_Base::Set_RootMotion_Apply(_bool bApply)
 {
 	Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>()->Set_CurAnimation_RootApply(bApply);
+}
+
+ICameraAnchorProvider* CMonster_Base::Get_CameraAnchorProvider(_int iPartIndex)
+{
+	if (iPartIndex < 0 || iPartIndex >= Part::Enum::END)
+		return nullptr;
+
+	switch (iPartIndex)
+	{
+	case Part::Enum::BODY:
+		return Get_Part<CMonster_Body_Base>(Part::Enum::BODY);
+	// TODO - case 추가
+	default:
+		return nullptr;
+	}
+}
+
+CTransform* CMonster_Base::Get_CameraAnchorOwnerTransform()
+{
+	return Get_Component<CTransform>();
 }
 
 HRESULT CMonster_Base::Ready_BaseStates()

@@ -31,8 +31,9 @@ public:
 	const Matrix& Get_ViewMatrix() const { return m_matView; }
 	const Matrix& Get_ProjectionMatrix() const { return m_matProjection; }
 
-	_float Get_Fov() const { return m_fBaseFov; }
-	void Set_Fov(_float fFov) { m_fBaseFov = fFov; Update_Proj(m_fBaseFov); }
+	_float Get_BaseFov() const { return m_fBaseFov; }
+	void Set_BaseFov(_float fFov) { m_fBaseFov = fFov; Update_Proj(m_fBaseFov); }
+	_float Get_RenderFov() const { return m_fRenderFov; }
 	_float Get_ViewWidth() const { return m_fViewWidth; }
 	void Set_ViewWidth(_float fViewWidth) { m_fViewWidth = fViewWidth; Update_Proj(m_fBaseFov); }
 	_float Get_ViewHeight() const { return m_fViewHeight; }

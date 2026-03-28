@@ -79,6 +79,9 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dissolve()))
+		return E_FAIL;
+
 	if (FAILED(Build_Prototype()))
 	{
 		MSG_BOX("CLevel_Tutorial_Village::Initialize, Build_Prototype Create Failed");
@@ -517,9 +520,22 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), g_wszUILayer)))
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
 		return E_FAIL;
 
+	{
+		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+		Desc.fDelay		= 7.f;
+		Desc.fDuration	= 2.f;
+		Desc.isEased	= false;
+		Desc.fEaseValue = 2.f;
+		Desc.isFadeIn	= true;
+		Desc.fEndDelay	= 0.f;
+		Desc.isChangeLevel = false;
+		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+	}
+
+	m_pGameInstance->Play_OneShot(0, TO_HASH("STORY_INTRO_VOICE"), 1.f);
 	return S_OK;
 }
 
@@ -551,31 +567,20 @@ void CLevel_Tutorial_Village::Update(const _float fTimeDelta)
 	}
 	#endif
 
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		m_pGameInstance->Broadcast<DEFAULT_UI_VISIBLE>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		m_pGameInstance->Broadcast<DEFAULT_UI_INVISIBLE>();
+	}
 
-//	static _uint s_iCount = { 0 };
-//	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
-//	{
-//#ifdef _DEBUG
-//		s_iCount = (s_iCount + 1) % 3;
-//#else
-//		s_iCount = (s_iCount + 1) % 2;
-//#endif
-//		if (s_iCount == 0)
-//		{
-//			m_eCursorMode = ECursorMode::LockedHiddenCenter;
-//		}
-//		else if (s_iCount == 1)
-//		{
-//			m_eCursorMode = ECursorMode::VisibleClipped;
-//		}
-//#ifdef _DEBUG
-//		else
-//		{
-//			m_eCursorMode = ECursorMode::VisibleFree;
-//		}
-//#endif
-//		m_pGameInstance->Request_CursorMode(m_eCursorMode);
-//	}
+}
+
+HRESULT CLevel_Tutorial_Village::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
 }
 
 HRESULT CLevel_Tutorial_Village::Render()

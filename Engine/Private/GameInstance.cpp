@@ -682,6 +682,22 @@ HRESULT CGameInstance::Request_MainCameraRotationOffset(const CAMERA_ROTATION_OF
 {
 	return m_pCamera_Manager->Play_MainCameraRotationOffset(desc);
 }
+HRESULT CGameInstance::Request_PlayCameraShot(const SCRIPTED_CAMERA_SHOT_DESC& shotDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& bindingDesc)
+{
+	CCameraMan* pMainCam = m_pCamera_Manager->Get_MainCamera();
+	if (pMainCam == nullptr)
+		return S_OK;
+
+	return pMainCam->Request_PlayScriptedShot(shotDesc, bindingDesc);
+}
+HRESULT CGameInstance::Request_StopCameraShot()
+{
+	CCameraMan* pMainCam = m_pCamera_Manager->Get_MainCamera();
+	if (pMainCam == nullptr)
+		return S_OK;
+
+	return m_pCamera_Manager->Get_MainCamera()->Request_StopScriptedShot();
+}
 #pragma endregion
 
 #pragma region SOUND_MANAGER
@@ -877,6 +893,16 @@ HRESULT CGameInstance::Bake_StaticShadow(BoundingBox* pRootBox)
 
 	return S_OK;
 }
+HRESULT CGameInstance::Ready_DissolveSetting()
+{
+	return m_pRender_Manager->Ready_Dissolve();
+}
+
+HRESULT CGameInstance::Bind_DissolveTexture(class CShader* pShader)
+{
+	return m_pRender_Manager->Bind_DissolveTexture(pShader);
+}
+
 SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc()
 {
 	return m_pRender_Manager->Get_SSAOParamDesc();
@@ -1038,6 +1064,11 @@ HRESULT CGameInstance::Request_DrawFont(FONT_DESC Desc)
 HRESULT CGameInstance::Render_Fonts()
 {
 	return m_pFont_Manager->Render_Fonts();
+}
+
+Vec2 CGameInstance::Measure_Font(const _wstring& wstrFontTag, const _tchar* pText)
+{
+	return m_pFont_Manager->Measure_Font(wstrFontTag, pText);
 }
 #pragma endregion
 
@@ -1335,9 +1366,9 @@ RAGDOLLELEMENTS CGameInstance::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT
 	return m_pPhysics_Module->CreateRagdoll(arrRagdollBoneDesc);
 }
 
-PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
+PxController* CGameInstance::CreateController(PHYSICSCCT_DESC* pDesc)
 {
-	return m_pPhysics_Module->GetController(pDesc);
+	return m_pPhysics_Module->CreateController(pDesc);
 }
 
 CPhysics_CCTFilterCallback* CGameInstance::GetCCTFilterCallback()

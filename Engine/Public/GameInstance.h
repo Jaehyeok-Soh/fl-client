@@ -208,6 +208,9 @@ public:
 	HRESULT Request_MainCameraFOV(const CAMERA_FOV_DESC& desc);
 	HRESULT Request_MainCameraPositionOffset(const CAMERA_POSITION_OFFSET_DESC& desc);
 	HRESULT Request_MainCameraRotationOffset(const CAMERA_ROTATION_OFFSET_DESC& desc);
+
+	HRESULT Request_PlayCameraShot(const SCRIPTED_CAMERA_SHOT_DESC& shotDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& bindingDesc);
+	HRESULT Request_StopCameraShot();
 #pragma endregion
 	
 #pragma region SOUND_MANAGER
@@ -283,6 +286,8 @@ public:
 	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
 	HRESULT Set_BakedShadowConstantBuffer(class CShader* pShader);
 	HRESULT Bake_StaticShadow(BoundingBox* pRootBox);
+	HRESULT Ready_DissolveSetting();
+	HRESULT Bind_DissolveTexture(class CShader* pShader);
 #ifdef _DEBUG
 	inline void Push_DebugComponent(class CComponent* pComp);
 #endif
@@ -306,6 +311,7 @@ public:
 	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
 	HRESULT Request_DrawFont(FONT_DESC Desc);
 	HRESULT Render_Fonts();
+	Vec2 Measure_Font(const _wstring& wstrFontTag, const _tchar* pText);
 #pragma endregion
 
 #pragma region EVENTBUS_MANAGER
@@ -421,7 +427,7 @@ public:
 	vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
 	vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 	RAGDOLLELEMENTS CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc);
-	PxController* GetController(PHYSICSCCT_DESC* pDesc);
+	PxController* CreateController(PHYSICSCCT_DESC* pDesc);
 	class CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	PxQuat GetPureRotation(const Matrix& mat);

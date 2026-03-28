@@ -207,28 +207,27 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
-    if (KEY_BUTTON_DOWN(DIK_C))
-    {
-        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
-
-        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 0, true);
-        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 0);
-    }
-
+    // stat 무적 toggle 키
     if (KEY_BUTTON_DOWN(DIK_B))
     {
-        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 1, true);
-        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 1);
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
     }
 
+
+    // 무기 전체 해제, 키 인풋 전체 해제 : level에 상관없이 해제하기 위함
     if (KEY_BUTTON_DOWN(DIK_N))
     {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 0, true);
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 1, true);
         Set_WepaponOn(ENUM_TO_UINT(EWEAPON::RANGE), 0, true);
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::SKILL), 0, true);
+        static_cast<CPlayerControlContext*>(Get_Component<CControlContext>())->Set_AllKeyFlag(true);
     }
 
+    // 무기 전체 해제, 키 인풋 전체 해제 : level에 상관없이 해제하기 위함
     if (KEY_BUTTON_DOWN(DIK_M))
     {
-        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::SKILL), 0, true);
+        Change_State(ENUM_TO_UINT(State::SPHIT_START));
     }
 
     //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
@@ -370,6 +369,7 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
 
     CLOG_INFO(infoContant);
 #endif // _DEBUG
+
     CTransform*         pTransform = Get_Component<CTransform>();
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
     _uint iStateFlag = pPlayerState->Get_CurrentCapabilities();
@@ -461,6 +461,10 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
             pRenderFx->Play_Shake(0.35f);
             pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
         }
+
+        // sound
+
+
         return true;
     }
    
@@ -883,7 +887,7 @@ HRESULT CMainPlayer::Ready_SoundHandler()
     if (pAnimModel == nullptr)
         return E_FAIL;
     // 내부에서 Add_Component 해줌
-    CSoundEventBinder* pResult = CSoundEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Example.json");
+    CSoundEventBinder* pResult = CSoundEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Player.json");
     if (pResult == nullptr)
         return E_FAIL;
     Safe_Release(pResult);
@@ -1019,7 +1023,10 @@ HRESULT CMainPlayer::Ready_AttackStates()
         desc.bBlend = true;
         desc.bLoop = false;
 
-        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly
+            | CStateBase_Player::COLLISIONFLAGS::C_CheckF
+            | CStateBase_Player::COLLISIONFLAGS::C_StunHit
+            ;
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE;
         desc.FCollis = 0;
 

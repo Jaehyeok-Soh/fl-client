@@ -264,7 +264,7 @@ void CNPC_Veteran::QuestExit()
 {
 	Super::QuestExit();
 
-	Interact_SetDefaultDialogue(211);
+	Interact_SetDefaultDialogue(234);
 }
 
 void CNPC_Veteran::Interact()

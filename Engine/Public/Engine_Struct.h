@@ -532,6 +532,199 @@ namespace Engine
 
 	} SHADER_EFFECT_DESC;
 
+	typedef struct tagShaderDecalEffectDesc
+	{
+		SimpleMath::Matrix WorldInv = {};
+	}SHADER_DECAL_EFFECT_DESC;
+
+	typedef struct tagShaderLineEffectDesc
+	{
+		// Slot 1
+		SimpleMath::Vector3 vStart = { 0.f, 0.f, 0.f };
+		float vPadding0 = {};
+
+		// Slot 2
+		SimpleMath::Vector3 vEnd = { 0.f, 0.f, 0.f };
+		float vPadding1 = {};
+
+		// Slot 3
+		float fHalfWidth = { 0.5f };
+		SimpleMath::Vector3 vPadding2 = {};
+	}SHADER_LINE_EFFECT_DESC;
+
+	typedef struct tagShaderDissolveEffectDesc
+	{
+		// Slot 1
+		float					fDissolveAmount = { 0.f }; //	 진행도 (0 ~ 1)
+		float					fDissolveEdgeWidth = {};
+		SimpleMath::Vector2		fPadding0 = {};
+
+		// slot 2
+		SimpleMath::Vector3		fDissolveEdgeColor = {};
+		unsigned int			iDissolveFlag = {};
+
+	}SHADER_DISSOLVE_EFFECT_DESC;
+
+	typedef struct tagObjectDissolveEffectDesc
+	{
+		enum DISSOLVEFLAG
+		{
+			BIT_NONE = 0,
+			BIT_SPAWN_START = 1 << 0,
+			BIT_DISSOLVE_START = 1 << 1,
+
+			BIT_USE_EDGE = 1 << 2,
+			BIT_USE_ALPHA_FADE = 1 << 3,		// 시간에 따른 alpha 감소
+			BIT_USE_DISSOLVE_MAP = 1 << 4,	// 디졸브 텍스처로 인해 discard 당하는 것.
+
+			BIT_TYPE_MONSTER = 1 << 10,
+			BIT_TYPE_BOSS = 1 << 11,
+			BIT_TYPE_SWORD = 1 << 12,
+			BIT_TYPE_NPC = 1 << 13
+		};
+
+		enum DISSOLVE_OBJECTTYPE
+		{
+			TYPE_NONE = 0,
+			TYPE_MONSTER = 1,
+			TYPE_BOSS = 2,
+			TYPE_SWORD = 3,
+			TYPE_NPC = 4,
+		};
+
+		void Set_Dissolve_Setting(float DissolveTime, float Speed)
+		{
+			fDissolveTime = DissolveTime;
+			fSpeed.x = Speed;
+
+		}
+
+		void Set_Spawn_Setting(float SpawnTime, float Speed)
+		{
+			fSpawnTime = SpawnTime;
+			fSpeed.y = Speed;
+		}
+
+		void Update(float fDT)
+		{
+			// Delay 처리
+			if (bResetReserved)
+			{
+				Reset();
+				bResetReserved = false;
+				return;
+			}
+
+			// ===== SPAWN 시간 계산 ===== 
+			if (ShaderData.iDissolveFlag & BIT_SPAWN_START)
+			{
+				fTimeAccum += fDT * fSpeed.y;
+
+				if (fTimeAccum >= fSpawnTime)
+				{
+					bIsFinished = true;
+				}
+
+				// 0나누기 방어코드
+				if (fSpawnTime <= 0.f)
+					fSpawnTime = 0.01f;
+
+				ShaderData.fDissolveAmount = 1 - (fTimeAccum / fSpawnTime);	// 스폰일 때는 1 -> 0
+
+				// CLAMP 해주기
+				if (ShaderData.fDissolveAmount <= 0.f)
+					ShaderData.fDissolveAmount = 0.f;
+			}
+
+			else if (ShaderData.iDissolveFlag & BIT_DISSOLVE_START)
+			{
+				fTimeAccum += fDT * fSpeed.x;
+
+				if (fTimeAccum >= fDissolveTime)
+				{
+					bIsFinished = true;
+				}
+
+				// 0나누기 방어코드
+				if (fDissolveTime <= 0.f)
+					fDissolveTime = 0.01f;
+
+				ShaderData.fDissolveAmount = fTimeAccum / fDissolveTime; // 디졸브일 때는 0 -> 1
+
+				// CLAMP 해주기
+				if (ShaderData.fDissolveAmount >= 1.f)
+					ShaderData.fDissolveAmount = 1.f;
+			}
+		}
+
+		void Reset()
+		{
+			ShaderData.iDissolveFlag &= ~(BIT_SPAWN_START | BIT_DISSOLVE_START |
+				BIT_USE_ALPHA_FADE | BIT_USE_DISSOLVE_MAP |
+				BIT_USE_EDGE);		// 생성과 소멸 플래그 따로 관리하려면 지우자.
+			ShaderData.fDissolveAmount = 0.f;											// 누적 시간 초기화
+			bIsFinished = false;
+			fTimeAccum = 0.f;
+		}
+
+		void Reset_Delay()
+		{
+			bResetReserved = true;
+		}
+
+		void Add_DissolveFlag(unsigned int flag1, unsigned int flag2 = 0, unsigned int flag3 = 0, unsigned int flag4 = 0)
+		{
+			ShaderData.iDissolveFlag |= flag1;
+			ShaderData.iDissolveFlag |= flag2;
+			ShaderData.iDissolveFlag |= flag3;
+			ShaderData.iDissolveFlag |= flag4;
+		}
+
+		void Set_ObjectType(DISSOLVE_OBJECTTYPE type)
+		{
+			ShaderData.iDissolveFlag &= ~(BIT_TYPE_MONSTER | BIT_TYPE_BOSS | BIT_TYPE_SWORD | BIT_TYPE_NPC);
+
+			switch (type)
+			{
+			case DISSOLVE_OBJECTTYPE::TYPE_MONSTER:
+				ShaderData.iDissolveFlag |= DISSOLVEFLAG::BIT_TYPE_MONSTER;
+				break;
+
+			case DISSOLVE_OBJECTTYPE::TYPE_BOSS:
+				ShaderData.iDissolveFlag |= DISSOLVEFLAG::BIT_TYPE_BOSS;
+				break;
+
+			case DISSOLVE_OBJECTTYPE::TYPE_SWORD:
+				ShaderData.iDissolveFlag |= DISSOLVEFLAG::BIT_TYPE_SWORD;
+				break;
+
+			case DISSOLVE_OBJECTTYPE::TYPE_NPC:
+				ShaderData.iDissolveFlag |= DISSOLVEFLAG::BIT_TYPE_NPC;
+				break;
+			}
+
+			eType = type;
+		}
+
+		bool Is_Finished()
+		{
+			return bIsFinished;
+		}
+
+	public:
+		SHADER_DISSOLVE_EFFECT_DESC ShaderData = {};
+
+	private:
+		float fSpawnTime = { 0.f };
+		float fDissolveTime = { 0.f };
+		float fTimeAccum = { 0.f };
+		SimpleMath::Vector2 fSpeed = { 1.f, 1.f };
+
+		bool  bIsFinished = { false };
+		bool  bResetReserved = { false };		// 딜레이 전용
+		DISSOLVE_OBJECTTYPE	eType = { DISSOLVE_OBJECTTYPE::TYPE_NONE };
+	}DissolveEffectDesc;
+
 	typedef struct tagShaderBoneDesc
 	{
 		SimpleMath::Matrix transforms[MAX_BONE_TRANSFORMS]{ SimpleMath::Matrix::Identity};
@@ -1203,6 +1396,9 @@ namespace Engine
 #pragma region EFFECT
 	typedef struct tagEffectSpawnDesc 
 	{
+	public:
+		virtual ~tagEffectSpawnDesc() = default;
+
 		enum class E_VFX_COLORMODE
 		{
 			COLOR_NONCHANGE,
@@ -1231,10 +1427,41 @@ namespace Engine
 	typedef struct tagWarningEffectDesc : public EFFECT_SPAWN_DESC
 	{
 		SimpleMath::Vector3 VFX_Target_Position = { 0.f, 0.f, 0.f };
-		//SimpleMath::Vector3 VFX_Attacker_Position = { 0.f, 0.f, 0.f };
 		SimpleMath::Vector3 VFX_Scale = { 1.f, 1.f, 1.f };
 		SimpleMath::Vector3 VFX_Rotation = { 0.f, 0.f, 0.f };
 	}EFFECT_WARNING_DESC;
+
+	typedef struct tagLineEffectDesc : public EFFECT_SPAWN_DESC
+	{
+	public:
+		void Set_LinePosition(
+			const SimpleMath::Vector3& IN vStart,
+			const SimpleMath::Vector3& IN vEnd, 
+			float IN fWidth = 0.5f)
+		{
+			tLineDesc.fHalfWidth = fWidth;
+			tLineDesc.vStart = vStart;
+			tLineDesc.vEnd = vEnd;
+		}
+
+		void Get_LinePosition(
+			SimpleMath::Vector3& OUT vStart,
+			SimpleMath::Vector3& OUT vEnd,
+			float& OUT fWidth)
+		{
+			vStart = tLineDesc.vStart;
+			vEnd = tLineDesc.vEnd;
+			fWidth = tLineDesc.fHalfWidth;
+		}
+
+		SHADER_LINE_EFFECT_DESC Get_ShaderData()
+		{
+			return tLineDesc;
+		}
+
+	private:
+		SHADER_LINE_EFFECT_DESC tLineDesc = {};
+	}EFFECT_LINE_DESC;
 
 	typedef struct tagEnvironmentEffectDesc : public EFFECT_SPAWN_DESC
 	{
@@ -1259,7 +1486,125 @@ namespace Engine
 
 		std::vector<ENV_PART_DESC>						VFX_PartsDescList = {};
 	}EFFECT_ENV_DESC;
+#pragma endregion
 
+#pragma region Camera Targter
+	// Anchor 결과
+	typedef struct tagCameraAnchorResult
+	{
+		SimpleMath::Vector3 vPos = SimpleMath::Vector3::Zero;
+		SimpleMath::Vector3 vRight = SimpleMath::Vector3::Right;
+		SimpleMath::Vector3 vUp = SimpleMath::Vector3::Up;
+		SimpleMath::Vector3 vLook = SimpleMath::Vector3::Forward;
+	}CAMERA_ANCHOR_RESULT;
+	// Shot 시작
+	typedef struct tagCameraShotStartDesc
+	{
+		ECameraShotStartMode eMode = ECameraShotStartMode::InheritCurrent;
+		
+		// FixedFromPivot일때 사용
+		SimpleMath::Vector3 vLocaloffset = SimpleMath::Vector3::Zero;
+		// Begin시점에 시작 포즈를 transform에 즉시 적용할지
+		bool bApplyStartPoseImmediately = true;
+	}CAMERA_SHOT_START_DESC;
+	// Shot Recover
+	typedef struct tagCameraShotRecoverDesc
+	{
+		ECameraShotRecoverTarget eTarget = ECameraShotRecoverTarget::GameplaySolved;
+		ECameraShotRecoverMethod eMethod = ECameraShotRecoverMethod::Blend;
+
+		float fBlendTime = { 1.f };
+		ECameraShotEase eEase = ECameraShotEase::EaseInOutQuad;
+	}CAMERA_SHOT_RECOVER_DESC;
+	// Shot 바인딩
+	typedef struct tagCameraBindTargetDesc
+	{
+		ECameraAnchorSource  eSource = ECameraAnchorSource::ACTOR;
+		ECameraAnchorResolve eResolve = ECameraAnchorResolve::TRANSFORM;
+
+		class CGameObject* pObject = nullptr;		// OBJECT일 때 사용
+		int         iPartIndex = 0;				// multipart body 대응
+		string      strAnchorTag;					// bone/socket 이름
+
+		SimpleMath::Vector3         vWorldPoint = SimpleMath::Vector3::Zero;		// WORLD_POINT일 때 사용
+		SimpleMath::Vector3         vLocalOffset = SimpleMath::Vector3::Zero;		// anchor 기준 추가 오프셋
+	}CAMERA_BIND_TARGET_DESC;
+	typedef struct tagScriptedCameraShotBindingDesc
+	{
+		CAMERA_BIND_TARGET_DESC Pivot;
+		CAMERA_BIND_TARGET_DESC LookAt;
+
+		bool bUseSeparateLookAt = false;
+	}SCRIPTED_CAMERA_SHOT_BINDING_DESC;
+	// shotdesc 데이터
+	typedef struct tagcameraShotKey1D
+	{
+		float fTime = 0.f;
+		float fValue = 0.f;
+		ECameraShotEase eEase = ECameraShotEase::SmoothStep;
+		// Tool 전용
+		unsigned int iEditorUID = { 0 };
+	}CAMERA_SHOT_KEY_1D;
+	typedef struct tagCameraShotChannel1D
+	{
+		vector<CAMERA_SHOT_KEY_1D> vecKeys;
+	}CAMERA_SHOT_CHANNEL_1D;
+	typedef struct tagScriptedPivotShotDesc
+	{
+		float fDuration = 0.7f;
+
+		bool  bFollowLivePivot = true;
+		bool  bFollowLiveLookAt = true;
+		bool  bLookAtTarget = true;
+
+		ECameraBasisMode eBasisMode = ECameraBasisMode::TARGET_TRANSFORM_YAW;
+
+		//////////////////////////////
+		// Pivot / LookAt 기준점 자체 이동
+		//////////////////////////////
+		CAMERA_SHOT_CHANNEL_1D PivotOffsetX;
+		CAMERA_SHOT_CHANNEL_1D PivotOffsetY;
+		CAMERA_SHOT_CHANNEL_1D PivotOffsetZ;
+
+		CAMERA_SHOT_CHANNEL_1D LookAtOffsetX;
+		CAMERA_SHOT_CHANNEL_1D LookAtOffsetY;
+		CAMERA_SHOT_CHANNEL_1D LookAtOffsetZ;
+
+		//////////////////////////////
+		// 최종 pivot 주변 카메라 이동
+		//////////////////////////////
+		CAMERA_SHOT_CHANNEL_1D LocalX;
+		CAMERA_SHOT_CHANNEL_1D LocalY;
+		CAMERA_SHOT_CHANNEL_1D LocalZ;      // +일수록 basis look 반대방향(뒤)로 멀어짐
+
+		CAMERA_SHOT_CHANNEL_1D OrbitYawDeg; // pivot 중심 orbit
+	}SCRIPTED_PIVOT_SHOT_DESC;
+
+	typedef struct tagScriptedControllerLayerDesc
+	{
+		CAMERA_SHOT_CHANNEL_1D FovDeltaDeg;
+
+		CAMERA_SHOT_CHANNEL_1D RotYawDeg;
+		CAMERA_SHOT_CHANNEL_1D RotPitchDeg;
+		CAMERA_SHOT_CHANNEL_1D RotRollDeg;
+
+		CAMERA_SHOT_CHANNEL_1D LocalPosX;
+		CAMERA_SHOT_CHANNEL_1D LocalPosY;
+		CAMERA_SHOT_CHANNEL_1D LocalPosZ;
+	}SCRIPTED_CONTROLLER_LAYER_DESC;
+
+	typedef struct tagScriptedCameraShotDesc
+	{
+		string                         strName;
+		
+		CAMERA_SHOT_START_DESC         Start;
+		SCRIPTED_PIVOT_SHOT_DESC       Pivot;
+		SCRIPTED_CONTROLLER_LAYER_DESC Controller;
+		CAMERA_SHOT_RECOVER_DESC       Recover;
+
+		unsigned int iClientStartAction = 0;
+		unsigned int iClientFinishAction = 0;
+	}SCRIPTED_CAMERA_SHOT_DESC;
 #pragma endregion
 
 #pragma region Global Event Desc

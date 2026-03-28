@@ -35,6 +35,8 @@
 #define UNKNOWN 17
 #define MATERIAL_END 18
 
+
+#define DISSOLVE_MAX 4
 ////////////
 // Scalar //
 ////////////
