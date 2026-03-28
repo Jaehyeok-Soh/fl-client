@@ -93,14 +93,13 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(m_pMapToolManager->Ready_CinematicSequenceDebugRender()))
 		return E_FAIL;
 
-	if (FAILED(m_pMapToolManager->Ready_CitizenDebugModel()))
-		return E_FAIL;
-
-	if (FAILED(m_pMapToolManager->Ready_CitizenWayPointData()))
+	if (FAILED(m_pMapToolManager->Ready_CitizenDatas()))
 		return E_FAIL;
 
 	return S_OK;
 }
+
+
 
 HRESULT CLevel_Map::Awake(const _uint iLevelID)
 {
@@ -371,6 +370,8 @@ void CLevel_Map::Free()
 
 	DTO::CitizenWayPointOriginData::Save_CitizenWayPointDatas();
 	DTO::CitizenPresetData::Save_CitizenPresetData();
+
+	DTO::AllCitizenDatas_Clear();
 
 	m_pMapToolManager->UnRegister_MapTexture();
 	m_pMapToolManager->Save_TextureSplatingInfoData();

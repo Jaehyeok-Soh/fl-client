@@ -48,12 +48,24 @@ HRESULT CNPC_Citizen::Initialize(void* pArg)
 
 	CNPC_Citizen::NPC_CITIZEN_DESC* pDesc = static_cast<CNPC_Citizen::NPC_CITIZEN_DESC*>(pArg);
 
-	m_tCitizenData = pDesc->tCitizenData;
+	/* Preset Data 가 알아서 Count가 증가되고 알아서 0~부터 준다 */
+	if (true == (m_isWalking = pDesc->isWalking))
+		pDesc->tCitizenData = m_tCitizenData = DTO::CitizenPresetData::Get_Preset_ForRandom();
+	else
+		m_tCitizenData = pDesc->tCitizenData;
+
 
 	m_tWalkRunAnimIndex = pDesc->tCitizenData.tWalkRunAnimIndex;	/* Walk , Run Anim Index 받아오기 */
 
+	/* UI Text Offset 조정 */
+	m_vUITextOffset = DTO::CitizenUITextData::Get_CitizenTextOffset(Engine_Utils::ToWString(pDesc->tCitizenData.strModelName));
 
 	/* CCT 생성 */
+
+	Set_Name(pDesc->wstrNPCName);
+	m_wstrContents = pDesc->wstrNPCText;
+	m_wstrSoundTag = pDesc->wstrSoundTag;
+
 	if (FAILED(CNPC_Base::Ready_CCT(pArg)))
 		return E_FAIL;
 
@@ -63,44 +75,6 @@ HRESULT CNPC_Citizen::Initialize(void* pArg)
 
 	if (FAILED(Ready_Component(pDesc)))
 		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CNPC_Citizen::Spawn_FromPool(void* pArg)
-{
-	Super::Spawn_FromPool(pArg);
-
-	Reset_MoveData();
-
-	CNPC_Citizen::NPC_CITIZEN_POOL_DESC* pDesc{static_cast<CNPC_Citizen::NPC_CITIZEN_POOL_DESC*>(pArg)};
-	if (pDesc == nullptr) return E_FAIL;
-	if (pDesc->tMoveData.pWayPointData == nullptr) return E_FAIL;
-
-	m_pWayPointData = pDesc->tMoveData.pWayPointData;
-	if (m_pWayPointData == nullptr) return E_FAIL;
-
-	/* 지금 이미 생성된 모델 그대로 유지 */
-	if (m_pWayPointData->vecPosition.empty()) return E_FAIL;
-	
-	CNPC_Citizen_Body* pBody = Get_Part<CNPC_Citizen_Body>(ENUM_TO_UINT(CNPC_Citizen::Part::Body));
-	if (pBody == nullptr) return E_FAIL;
-
-	_uint iChangeAnimIndex{ 0 };
-	pDesc->tMoveData.eMoveType == DTO::CITIZEN_MOVE_TYPE::RUN ? iChangeAnimIndex = m_tWalkRunAnimIndex.iRunAnimIndex : iChangeAnimIndex = m_tWalkRunAnimIndex.iWalkAnimIndex;
-
-	pBody->Change_Animation(iChangeAnimIndex);
-
-	CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>();
-	if (pCCT == nullptr) return E_FAIL;
-	pCCT->SetFootPosition(m_pWayPointData->vecPosition[0]);
-	pCCT->Ready_Position();
-	pCCT->Set_Speed(pDesc->tMoveData.fSpeed);
-
-	CTransform* pTs = Get_Component<CTransform>();
-	if (pTs == nullptr) return  E_FAIL;
-	pTs->Set_Info(TRANSFORM_INFO_STATE::POS, m_pWayPointData->vecPosition[0]);
-
 
 	return S_OK;
 }
@@ -116,11 +90,12 @@ HRESULT CNPC_Citizen::Ready_CitizenParts(CNPC_Citizen::NPC_CITIZEN_DESC* pDesc)
 	tBodyDesc.tRGBColorData			= pDesc->tCitizenData.tClothRGBColor;
 	tBodyDesc.arrayAtlasDatas		= pDesc->tCitizenData.arrayNpcAtlasData;
 
-
 	m_vecPartObjects.resize(1 + (_uint)DTO::CITIZEN_PARTTYPE::END);
 	if (FAILED(Add_Part(ENUM_TO_UINT(CNPC_Citizen::Part::Body), ENUM_TO_UINT(ELevelType::STATIC), g_wszNPC_Citizen_Body_Prototype_Tag, &tBodyDesc)))
 		return E_FAIL;
-	
+
+	/* UI Text Offset 조정 */
+	m_vUITextOffset = DTO::CitizenUITextData::Get_CitizenTextOffset(Engine_Utils::ToWString(pDesc->tCitizenData.strModelName));
 
 	/* Decor Part */
 
@@ -141,8 +116,6 @@ HRESULT CNPC_Citizen::Ready_CitizenParts(CNPC_Citizen::NPC_CITIZEN_DESC* pDesc)
 			return E_FAIL;
 		++i;
 	}
-
-
 	return S_OK;
 }
 
@@ -201,18 +174,53 @@ HRESULT CNPC_Citizen::Change_WalkCitizenModel(const DTO::CITIZEN_DATA& tData)
 
 HRESULT CNPC_Citizen::Awake(const _uint iCurrentLevelID)
 {
-	Set_Awake(true);
+	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
 
-	for (CPartObject*& pPart : m_vecPartObjects)
-	{
-		if (pPart)
-			pPart->Awake(iCurrentLevelID);
-	}
+	return S_OK;
+}
+
+
+HRESULT CNPC_Citizen::Spawn_FromPool(void* pArg)
+{
+	Super::Spawn_FromPool(pArg);
+
+	Reset_MoveData();
+
+	CNPC_Citizen::NPC_CITIZEN_POOL_DESC* pDesc{ static_cast<CNPC_Citizen::NPC_CITIZEN_POOL_DESC*>(pArg) };
+	if (pDesc == nullptr) return E_FAIL;
+	if (pDesc->tMoveData.pWayPointData == nullptr) return E_FAIL;
+
+	m_pWayPointData = pDesc->tMoveData.pWayPointData;
+	if (m_pWayPointData == nullptr) return E_FAIL;
+
+	/* 지금 이미 생성된 모델 그대로 유지 */
+	if (m_pWayPointData->vecPosition.empty()) return E_FAIL;
+
+	CNPC_Citizen_Body* pBody = Get_Part<CNPC_Citizen_Body>(ENUM_TO_UINT(CNPC_Citizen::Part::Body));
+	if (pBody == nullptr) return E_FAIL;
+
+	_uint iChangeAnimIndex{ 0 };
+	pDesc->tMoveData.eMoveType == DTO::CITIZEN_MOVE_TYPE::RUN ? iChangeAnimIndex = m_tWalkRunAnimIndex.iRunAnimIndex : iChangeAnimIndex = m_tWalkRunAnimIndex.iWalkAnimIndex;
+
+	pBody->Change_Animation(iChangeAnimIndex);
 
 	CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>();
+	if (pCCT == nullptr) return E_FAIL;
+	pCCT->SetFootPosition(m_pWayPointData->vecPosition[0]);
 	pCCT->Ready_Position();
+	pCCT->Set_Speed(pDesc->tMoveData.fSpeed);
+
+	CTransform* pTs = Get_Component<CTransform>();
+	if (pTs == nullptr) return  E_FAIL;
+	pTs->Set_Info(TRANSFORM_INFO_STATE::POS, m_pWayPointData->vecPosition[0]);
 
 
+	/* NPC 이름 Text변경 */
+
+	const wstring& wstrModelName = Engine_Utils::ToWString(this->m_tCitizenData.strModelName);
+	m_strName = DTO::CitizenUITextData::Get_RandomCitizenName(wstrModelName);
+	m_wstrContents = Engine_Utils::ToWString(DTO::CitizenUITextData::Get_RandomCitizenText(wstrModelName));
 
 	return S_OK;
 }
@@ -270,12 +278,6 @@ void CNPC_Citizen::Update(const _float fTimeDelta)
 
 	if (pCCT)
 	{
-		// NPC의 걷기 속도 세팅 
-		float fWalkSpeed = 3.0f;
-		pCCT->GetMoveState()->CMSpeed.z = fWalkSpeed;
-
-		// ★ 핵심 포인트 2: vLook에 의존하지 않고, 처음 구한 진짜 타겟 방향(vDir)으로 직진!
-		// 회전(시각)과 이동(물리)을 완벽하게 분리하는 실무 팁이야.
 		pCCT->SetInputDir(vDir);
 
 		pCCT->Update(fTimeDelta);

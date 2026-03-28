@@ -891,7 +891,8 @@ HRESULT CMapObject::Ready_Batch_NPC()
         if (FAILED(CGameObject::Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_AnimMesh", nullptr)))
             return E_FAIL;
 
-        m_pGameInstance->Add_Prototype(tDesc.iPrototypeLevelIndex, wstrPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &tDesc));
+        if( nullptr == m_pGameInstance->Find_Prototype(tDesc.iPrototypeLevelIndex , wstrPrototypeTag))
+            m_pGameInstance->Add_Prototype(tDesc.iPrototypeLevelIndex, wstrPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &tDesc));
 
         CModel::MODEL_COPY_DESC tCopyDesc{};
         if (FAILED(Add_Component<CModel>(tDesc.iPrototypeLevelIndex, wstrPrototypeTag , &tCopyDesc)))

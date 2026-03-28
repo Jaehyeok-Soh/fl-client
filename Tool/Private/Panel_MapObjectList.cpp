@@ -2122,6 +2122,19 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 
 	ImGui::Separator();
 
+	ImGui::SeparatorText("UI Text Setting");
+
+	ImGui::NewLine();
+
+	ImGui::InputText("Npc Name" ,&pDesc->strNPCName);
+	ImGui::InputText("Npc Text" ,&pDesc->strNPCText);
+	ImGui::InputText("Sound Tag",&pDesc->strSountTag);
+
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
+
 	ImGui::Checkbox("Is Quest Object", &pDesc->bHasQuest);
 
 	if (pDesc->bHasQuest)

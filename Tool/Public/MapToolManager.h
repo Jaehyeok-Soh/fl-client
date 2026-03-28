@@ -261,6 +261,7 @@ public:
 public:
 	void						Select_MapTexture();
 public:
+	HRESULT						Ready_CitizenDatas();
 	HRESULT						Ready_CitizenWayPointData();
 	HRESULT						Ready_CitizenDebugModel();
 public:

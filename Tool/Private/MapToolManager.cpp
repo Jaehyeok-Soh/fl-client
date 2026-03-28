@@ -1448,6 +1448,20 @@ void CMapToolManager::Select_MapTexture()
 	}
 }
 
+HRESULT CMapToolManager::Ready_CitizenDatas()
+{
+	if (FAILED(DTO::CitizenPresetData::Load_CitizenPresetData()))
+		return E_FAIL;
+
+	if (FAILED(Ready_CitizenWayPointData()))
+		return E_FAIL;
+
+	if (FAILED(Ready_CitizenDebugModel()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CMapToolManager::Ready_CitizenWayPointData()
 {
 	Safe_Delete(m_pCitizenWatPointData);
@@ -1457,9 +1471,6 @@ HRESULT CMapToolManager::Ready_CitizenWayPointData()
 
 	m_pCitizenWatPointData = new DTO::Citizen_WayPoint_Data(m_pDevice,m_pContext);
 	if (!m_pCitizenWatPointData)
-		return E_FAIL;
-
-	if (FAILED(Ready_CitizenDebugModel()))
 		return E_FAIL;
 
 	return S_OK;
