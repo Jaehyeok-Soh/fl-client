@@ -5,6 +5,7 @@
 #include "ImGui_GlobalInspector.h"
 #include "ImGui_PoolInspector.h"
 #include "ImGui_TextureDebugInspector.h"
+#include "ImGui_CameraToolInspector.h"
 #include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CImGui_ClientDebug)
@@ -66,6 +67,7 @@ HRESULT CImGui_ClientDebug::Ready_Inspector()
 	m_arrInspectors[EInspectorType::Global] = CImGui_GlobalInspector::Create();
 	m_arrInspectors[EInspectorType::TextureDebug] = CImGui_TextureDebugInspector::Create();
 	m_arrInspectors[EInspectorType::PoolDebug] = CImGui_PoolInspector::Create();
+	m_arrInspectors[EInspectorType::Camera] = CImGui_CameraToolInspector::Create();
 	//m_arrInspectors[EInspectorType::Light] = CImGui
 	return S_OK;
 }
@@ -80,7 +82,7 @@ void CImGui_ClientDebug::Render()
 	m_arrInspectors[EInspectorType::Global]->Render(nullptr);
 	m_arrInspectors[EInspectorType::TextureDebug]->Render(nullptr);
 	m_arrInspectors[EInspectorType::PoolDebug]->Render(nullptr);
-
+	m_arrInspectors[EInspectorType::Camera]->Render(m_pPlayer);
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

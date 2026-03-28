@@ -272,8 +272,8 @@ CMonster_Base::MONSTER_DESC CMonster_Veteran::Get_PreSetDesc(_uint iLevelId)
 		desc.bIsPlayer = false;
 		desc.eType = EPhysicsCCTType::CAPSULE;
 		desc.pOwnerMatrix = nullptr;
-		desc.fRadius = 1.f;
-		desc.fHeight = 1.f;
+		desc.fRadius = 2.f;
+		desc.fHeight = 3.f;
 		desc.vExtens = { 2.f, 2.f, 2.f };
 
 		desc.fContactOffset = 0.01f;

@@ -23,6 +23,7 @@ private:
 		Global,
 		TextureDebug,
 		PoolDebug,
+		Camera,
 		Monster,
 		Light,
 		END

@@ -10,6 +10,7 @@
 #include "GameInstance.h"
 #include "Monster_Body_Base.h"
 #include "MainPlayer.h"
+#include "Physics_QueryFilterCallback.h"
 
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
@@ -54,6 +55,10 @@ HRESULT CMonsterControlContext::Awake(const _uint iLevelIndex)
 	m_iOwnerID = Get_Owner()->Get_ID();
 
 	m_bPhaseTwo = false;
+
+	m_pPhysic_QueryFilter = CPhysics_QueryFilterCallback::Create();
+	m_pPhysic_QueryFilter->SetOwner(Get_Owner());
+
 	return S_OK;
 }
 
@@ -341,6 +346,13 @@ _bool CMonsterControlContext::IsCliffAhead()
 	return _bool();
 }
 
+_bool CMonsterControlContext::IsGround()
+{
+	CTransform* pOwnerTransform = Get_Owner()->Get_Component<CTransform>();
+
+	return pOwnerTransform->Is_OnGround(0.72f, m_pPhysic_QueryFilter);
+}
+
 _bool CMonsterControlContext::IsHitAdditive()
 {
 	_bool result;
@@ -602,6 +614,8 @@ CComponent* CMonsterControlContext::Clone(void* pArg)
 
 void CMonsterControlContext::Free()
 {
+	Safe_Release(m_pPhysic_QueryFilter);
+
 	Safe_Release(m_pTarget);
 
 	Super::Free();

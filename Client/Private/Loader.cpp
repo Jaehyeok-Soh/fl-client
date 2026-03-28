@@ -1290,7 +1290,7 @@ HRESULT CLoader::Loading_For_Lianhuo()
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Lianhuo";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = { 2, 10,238 };
+		desc.vecStageBoneIndices = { 2, 10, 209, 235, 238 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;

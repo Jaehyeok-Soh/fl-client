@@ -799,9 +799,6 @@
     <Filter Include="03. GameObject\Camera\00. CameraMan_Targeter">
       <UniqueIdentifier>{150eb9a6-eecf-45a0-9423-b7c324458d5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\Camera\NewFilter1">
-      <UniqueIdentifier>{d45ded89-5b94-43dd-a5e7-0c0cac2cbc91}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99. ETC\Client_Define">
       <UniqueIdentifier>{fde4a4ac-8ede-492c-a268-bd20661a27dd}</UniqueIdentifier>
     </Filter>
@@ -939,6 +936,27 @@
     </Filter>
     <Filter Include="06. FSM\Player\Hit\Special\Stun">
       <UniqueIdentifier>{a265f629-f60d-4c2a-9dc7-0174ffd4d503}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\Camera\Builder">
+      <UniqueIdentifier>{d45ded89-5b94-43dd-a5e7-0c0cac2cbc91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Inspector\Camera">
+      <UniqueIdentifier>{897d9824-2fbf-44e4-a057-77e92c845deb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\99. Debug_ImGui\Layout\Camera">
+      <UniqueIdentifier>{4a434c5f-9121-4d32-ba0b-93b55aaa8054}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. System\05. CameraPreset">
+      <UniqueIdentifier>{48d69df6-5b16-4602-841c-8983a3536121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster\Lianhuo">
+      <UniqueIdentifier>{77cf372f-79a9-41ef-906f-8a45134e57a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster\Lianhuo\Catch">
+      <UniqueIdentifier>{6a13bd38-49fb-4000-b5a8-f30fe0c596e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Monster\Lianhuo\Gimmik">
+      <UniqueIdentifier>{79d23d34-783c-4333-85ac-5de7d6014807}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1749,6 +1767,42 @@
     <ClInclude Include="..\Public\State_Npctalk.h">
       <Filter>06. FSM\Player\NPCs</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CameraShotPrestBuilder.h">
+      <Filter>03. GameObject\Camera\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_CameraToolInspector.h">
+      <Filter>07. System\99. Debug_ImGui\Inspector\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ImGui_CameraShotLayout.h">
+      <Filter>07. System\99. Debug_ImGui\Layout\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CameraPreset_Manager.h">
+      <Filter>07. System\05. CameraPreset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_GimmikController.h">
+      <Filter>05. Component\GimmikController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_BackdashCatch.h">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_StartCatch.h">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_EndCatch.h">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_GimmikAttack.h">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_GimmikCamera.h">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_GimmikRunLoop.h">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\State_GimmikRunStart.h">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\State_SPHitStart.h">
       <Filter>06. FSM\Player\Hit\Special\SpecialHIt</Filter>
     </ClInclude>
@@ -2551,6 +2605,42 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Npctalk.cpp">
       <Filter>06. FSM\Player\NPCs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraShotPrestBuilder.cpp">
+      <Filter>03. GameObject\Camera\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_CameraToolInspector.cpp">
+      <Filter>07. System\99. Debug_ImGui\Inspector\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ImGui_CameraShotLayout.cpp">
+      <Filter>07. System\99. Debug_ImGui\Layout\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraPreset_Manager.cpp">
+      <Filter>07. System\05. CameraPreset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_GimmikController.cpp">
+      <Filter>05. Component\GimmikController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_BackdashCatch.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_StartCatch.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_EndCatch.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Catch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_GimmikAttack.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_GimmikCamera.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_GimmikRunLoop.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_GimmikRunStart.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_SPHitStart.cpp">
       <Filter>06. FSM\Player\Hit\Special\SpecialHIt</Filter>
