@@ -32,11 +32,11 @@ public:
 	// 각 무기가 가지고 있어야 하는 정보들
 	typedef struct tagWeaponInfo
 	{
-		_uint iPartStartIdx = {};		// player part중 몇번째 인지 : 초기 셋팅 값
-		_uint iPartSize		= { 1 };		// part중 몇개를 쓰는지		: 초기 셋팅 값
+		_uint iPartStartIdx = {};			// player part중 몇번째 인지	: 초기 셋팅 값
+		_uint iPartSize		= { 1 };		// part중 몇개를 쓰는지			: 초기 셋팅 값
 		_bool bHave		= { false };		// 해당 무기를 얻었는지
 
-		_uint iWeaponState	= {};		// 무기 state
+		_uint iWeaponState	= {};			// 무기 state
 	}WEAPON_INFO;
 
 	typedef struct tagPlayerDesc : public Super::GAMEOBJECT_DESC
@@ -161,14 +161,20 @@ public:
 public:
 	HRESULT Change_IdleForce();
 
-
 	// weapon 관련 함수
 public:
 	void	Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn);						// weapon on off만 관리
 	void	SetWepaponOn_SetState(_uint iWeaponType, _uint iIdx, _bool bOn, _uint iState);	// weapon on off & state 까지 setting
+	
+	// UI 주석 // iWeaponType = 근거린지 원거린지 
 	_bool	Change_MainWeapon(_uint iWeaponType, _uint iIdx);								// 예시 : 근접무기를 sword -> dual로 바꾸고 싶을때
+	
+	// UI 주석 // iWeaponType = 근거린지 원거린지 
 	_bool	Change_MainWeaponNext(_uint iWeaponType);										// 특정 무기 타입을 다음 인덱스의 weapon으로 바꾸고 싶을때. 안에서 자동으로 인덱스 관리중
+	
+	// UI 주석 // iWeaponType = iState
 	void	Change_WeaponState(_uint iWeaponType, _uint iState);							// 어떤 weapon을 어떤 state로. 단 활성화 되었을때만 조절 가능
+	
 	_int	Get_CurWeaponIdx(_uint iWeaponType);											// 이 무기타입이 어떤 무기로 설정하고 있는가
 	_bool	Can_UseWeapon(_uint iWeaponType);												// 이 무기타입을 지금 사용할 수 있는가
 

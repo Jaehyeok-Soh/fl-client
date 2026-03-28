@@ -14,7 +14,6 @@
 #include "GameInstance.h"
 
 
-
 #define FONTSIZE_X_SLOT 0
 #define FONTSIZE_Y_SLOT 1
 

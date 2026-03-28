@@ -178,6 +178,7 @@
     <ClInclude Include="..\public\CameraShotPrestBuilder.h" />
     <ClInclude Include="..\Public\Canvas.h" />
     <ClInclude Include="..\Public\Effect_DashPanel.h" />
+    <ClInclude Include="..\Public\IItem.h" />
     <ClInclude Include="..\Public\Monster_Veteran.h" />
     <ClInclude Include="..\Public\Monster_Veteran_Body.h" />
     <ClInclude Include="..\Public\NPC_Citizen_Body.h" />
@@ -214,6 +215,8 @@
     <ClInclude Include="..\Public\TriggerBox_MonsterWaveSpawner.h" />
     <ClInclude Include="..\Public\UINpcTextBubble_Image.h" />
     <ClInclude Include="..\Public\UINpcTextBubble_Text.h" />
+    <ClInclude Include="..\Public\UIQuickSlot_Image.h" />
+    <ClInclude Include="..\Public\UIQuickSlot_Manager.h" />
     <ClInclude Include="..\Public\UISceneFade_Image.h" />
     <ClInclude Include="..\Public\UIScreenPulse_Image.h" />
     <ClInclude Include="..\Public\UITitle_Image.h" />
@@ -472,6 +475,7 @@
     <ClCompile Include="..\private\CameraShotPrestBuilder.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\Effect_DashPanel.cpp" />
+    <ClCompile Include="..\Private\IItem.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran_Body.cpp" />
     <ClCompile Include="..\Private\NPC_Citizen_Body.cpp" />
@@ -508,6 +512,8 @@
     <ClCompile Include="..\Private\TriggerBox_MonsterWaveSpawner.cpp" />
     <ClCompile Include="..\Private\UINpcTextBubble_Image.cpp" />
     <ClCompile Include="..\Private\UINpcTextBubble_Text.cpp" />
+    <ClCompile Include="..\Private\UIQuickSlot_Image.cpp" />
+    <ClCompile Include="..\Private\UIQuickSlot_Manager.cpp" />
     <ClCompile Include="..\Private\UISceneFade_Image.cpp" />
     <ClCompile Include="..\Private\UIScreenPulse_Image.cpp" />
     <ClCompile Include="..\Private\UITitle_Image.cpp" />
