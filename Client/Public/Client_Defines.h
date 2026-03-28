@@ -1069,6 +1069,7 @@ namespace Client
 	inline constexpr wchar_t g_wszSkyBoxLayer[]									{ L"SkyBox_Layer" };
 	inline constexpr wchar_t g_wszPointLightLayer[]								{ L"PointLight_Layer" };
 	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
+	inline constexpr wchar_t g_wszNPCCitizenPoolLayer[]							{ L"NPC_Citizen_PoolLayer" };
 	inline constexpr wchar_t g_wszInteractiveObjectLayer[]						{ L"InteractiveObject_Layer"};
 #pragma endregion
 

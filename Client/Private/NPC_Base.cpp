@@ -491,6 +491,8 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 	case Engine::EObjectEnumTag::NPC_VETERAN:
 	{
 		npcDesc = CNPC_Veteran::Get_PreSetDesc(npcDesc.iLevelIndex);
+
+		/* Preset µî·Ï */
 		npcDesc.iLevelIndex = iAddLevelType;
 		npcDesc.pTransform_Desc = pTransformDesc;
 

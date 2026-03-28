@@ -223,7 +223,6 @@ public:
 	void						Set_MakeMapObjectClientMakePath(EClientMakePath eClientMakePathType)	{ m_eMakeMapObjectClientMakePath = eClientMakePathType; }
 	void						Set_MakeMapObjectClientLevelType(EClientLevelType	eClientLevelType)	{ m_eMakeMapObjectClientLevelType = eClientLevelType; }
 	void						Set_MakeMapObjectDrawType(EMapObject_DrawType eMapObjectDrawType)		{ m_eMakeMapObjectDrawType = eMapObjectDrawType; }
-
 public:
 	CMapObject*					Get_PrevieObject()					{ return m_pPreviewMapobject; }
 
@@ -261,7 +260,9 @@ public:
 	HRESULT						Ready_CinematicCameraSequence_EventManifest();
 public:
 	void						Select_MapTexture();
-
+public:
+	HRESULT						Ready_CitizenWayPointData();
+	HRESULT						Ready_CitizenDebugModel();
 public:
 	void						Add_SkyBoxModelName(const vector<string>& vecNames, _bool isClear = false);
 	void						Add_SkyBoxModelName(const string& strName, _bool isClear = false);
@@ -358,21 +359,25 @@ private:
 
 
 	vector<string>				m_vecSkyBoxModelNames{};
-
 	vector<string>				m_vecEnvEffectTags{};
 
 
 
 
 	vector<CCS_EVENT_MANIFEST>	m_vecCCS_EventManifest{};
-
-	// 1. Citizen Body(Cloth) 모델 리스트
-	// 구조: [Age][Gender] -> [Model Names]
 	static std::map<DTO::CITIZEN_TYPE, std::map<DTO::CITIZEN_GENDERTYPE, std::vector<std::string>>> m_mapCitizenModelNames;
-
-	// 2. Citizen Parts 모델 리스트
-	// 구조: [Age][Gender][PartType] -> [Model Names]
 	static std::map<DTO::CITIZEN_TYPE, std::map<DTO::CITIZEN_GENDERTYPE, std::map<DTO::CITIZEN_PARTTYPE, std::vector<std::string>>>> m_mapCitizenPartsNames;
+	DTO::Citizen_WayPoint_Data* m_pCitizenWatPointData;
+	// 매니저 혹은 패널 클래스 내부
+	string						m_strCurrentMapName; // 현재 로드된 맵 이름
+	_int						m_iCurrentCitizenIndex;         // -1이면 "새로 만들기(Push Back)" 상태
+
+	CModel*						m_pCitizenWayPointDebugModel{ nullptr };
+
+
+	string						m_strCurrentOriginName;
+	_int						m_iCurrentOriginIndex;
+	_bool						m_bShowOriginalRender;
 private:
 	virtual void Free() override;
 public:

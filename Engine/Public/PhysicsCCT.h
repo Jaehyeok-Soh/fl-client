@@ -68,6 +68,8 @@ public:
     void UpdateMove(const _float fTimeDelta);
     void SetInputDir(Vec3 vInputDir);
     
+    void Set_Speed(float fSpeed);
+
     void AddAccelation(Vec3 vAccelation);
     void AddFixedMove(Vec3 vFixedMove);
     void SetImpulsAccelation(Vec3 vAccelation);

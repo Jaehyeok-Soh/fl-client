@@ -157,7 +157,7 @@
 #include "NPC_Citizen.h"
 #include "NPC_Citizen_Body.h"
 #include "NPC_Citizen_DecoPart.h"
-
+#include "CitizenData.h"
 //=================
 // UI
 //=================
@@ -570,6 +570,7 @@ HRESULT CLoader::Loading_For_Logo()
 	//////////////////////////////////////////
 	//////////// Ready Components ////////////
 	//////////////////////////////////////////
+
 #pragma region Component
 	{
 		std::lock_guard<std::mutex> lockguard(m_mutex_1);
@@ -997,6 +998,16 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Citizen_Body_Prototype_Tag,		CNPC_Citizen_Body::Create(m_pDevice, m_pDeviceContext));
 		// For. Prototype_GameObject_NPC_Citizen_Deco
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Citizen_DecoPart_Prototype_Tag,	CNPC_Citizen_DecoPart::Create(m_pDevice, m_pDeviceContext));
+
+		/* Citizen Preset Model 미리 생성 */
+		if (FAILED(DTO::CitizenWayPointOriginData::Load_CitizenWayPointDatas(m_pDevice,m_pDeviceContext)))
+			return E_FAIL;
+		if (FAILED(DTO::CitizenPresetData::Load_CitizenPresetData()))
+			return E_FAIL;
+		if (FAILED(DTO::CitizenPresetData::Add_ModelPrototype(ENUM_TO_UINT(ELevelType::STATIC), m_pDevice, m_pDeviceContext)))
+			return E_FAIL;
+
+
 
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));

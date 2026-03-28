@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Panel_MapTool.h"
 #include "GameInstance.h"
 #include "MapObject.h"
@@ -61,7 +61,6 @@ HRESULT CPanel_MapTool::Update_TextureSplatingInfoDataName()
 
 	return S_OK;
 }
-
 
 
 
@@ -149,6 +148,15 @@ HRESULT CPanel_MapTool::Render(CToolObject* pGo)
 		}
 	}
 
+	if (ImGui::CollapsingHeader(" Citizen Way Point Setting "))
+	{
+		if (FAILED((Render_CitizenWayPointSetting())))
+		{
+			ImGui::TreePop();
+			return E_FAIL;
+		}
+	}
+
 	if (ImGui::CollapsingHeader(" Map Tool Setting "))
 	{
 		if (FAILED(Render_CheckAndBind()))
@@ -179,7 +187,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 #pragma region Texture Splating Info Data Save
 
 
-	/* ¹Ì¸® ÀúÀåµÈ µ¥ÀÌÅÍ ¸ğÀ½ */
+	/* ë¯¸ë¦¬ ì €ì¥ëœ ë°ì´í„° ëª¨ìŒ */
 
 	if (m_vecTextureSplatingInfoDataName.empty())
 		ImGui::Text(" Pre Save Texture Splating Info Data is Empty ");
@@ -212,7 +220,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 		if (ImGui::Button(" [ Delete ] Texture Splating Info Data "))
 		{
-			/* ÀúÀåµÈ µ¥ÀÌÅÍµé »èÁ¦½ÃÄÑÁØ´Ù */
+			/* ì €ì¥ëœ ë°ì´í„°ë“¤ ì‚­ì œì‹œì¼œì¤€ë‹¤ */
 			m_pMapToolManager->Delete_TextureSplatingInfoData(Engine_Utils::ToWString(CurSelectTextureSplatingInfoDataName));
 			Update_TextureSplatingInfoDataName();
 		}
@@ -278,7 +286,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 	if (ImGui::TreeNode(" Bind [ Splating DH , NBR ] Tile Texture  "))
 	{
-		/* °³¼ö¸¦ ¹Ì¸® ÃÊ±âÈ­½ÃÄÑÁÖ±â */
+		/* ê°œìˆ˜ë¥¼ ë¯¸ë¦¬ ì´ˆê¸°í™”ì‹œì¼œì£¼ê¸° */
 		m_iBuffer = 0;
 
 		if (m_pMapToolManager->m_tTextureSplattingInfo.pMix_DH_Tile_Texture)
@@ -370,9 +378,9 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 #pragma region RGBA Data Settiong
 
-				/* RGBA Texture°¡ Binding µÇ¾îÀÖÁö ¾Ê´Ù¸é */
+				/* RGBA Textureê°€ Binding ë˜ì–´ìˆì§€ ì•Šë‹¤ë©´ */
 				if (!isRGBATextureBinding) { ImGui::Text(" RGBA Texture is None Binding..... "); }
-				/* DH , NBR Texture °¡ Binding µÇ¾îÀÖÁö ¾Ê´Ù¸é */
+				/* DH , NBR Texture ê°€ Binding ë˜ì–´ìˆì§€ ì•Šë‹¤ë©´ */
 				else if (m_pMapToolManager->m_tTextureSplattingInfo.vecDHTextureArraySlices.empty()) { ImGui::Text(" DH , NBR Texture is None Binding....."); }
 				else
 				{
@@ -385,7 +393,7 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 					/* Red Channel */
 					ImGui::PushID("Red");
-					Render_Single_Channel_Setting("RED", ImVec4(0.f, 0.3f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_R],CurrentData.fRGBA_Mix_Forces[CHANNEL_R], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_R],CurrentData.iUseFlags[CHANNEL_R],&isbOpenTileSelectPopup); // ¸â¹öº¯¼ö µî
+					Render_Single_Channel_Setting("RED", ImVec4(0.f, 0.3f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_R],CurrentData.fRGBA_Mix_Forces[CHANNEL_R], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_R],CurrentData.iUseFlags[CHANNEL_R],&isbOpenTileSelectPopup); // ë©¤ë²„ë³€ìˆ˜ ë“±
 					ImGui::PopID();
 
 
@@ -393,21 +401,21 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 					/* Green Channel */
 					ImGui::PushID("Green");
-					Render_Single_Channel_Setting("Green", ImVec4(0.f, 1.0f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_G], CurrentData.fRGBA_Mix_Forces[CHANNEL_G], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_G], CurrentData.iUseFlags[CHANNEL_G], &isbOpenTileSelectPopup); // ¸â¹öº¯¼ö µî
+					Render_Single_Channel_Setting("Green", ImVec4(0.f, 1.0f, 0.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_G], CurrentData.fRGBA_Mix_Forces[CHANNEL_G], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_G], CurrentData.iUseFlags[CHANNEL_G], &isbOpenTileSelectPopup); // ë©¤ë²„ë³€ìˆ˜ ë“±
 					ImGui::PopID();
 
 					ImGui::SameLine();
 
 					/* Blue Channel */
 					ImGui::PushID("Blue");
-					Render_Single_Channel_Setting("Blue", ImVec4(0.f, 0.f, 1.0f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_B], CurrentData.fRGBA_Mix_Forces[CHANNEL_B], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_B],CurrentData.iUseFlags[CHANNEL_B], &isbOpenTileSelectPopup); // ¸â¹öº¯¼ö µî
+					Render_Single_Channel_Setting("Blue", ImVec4(0.f, 0.f, 1.0f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_B], CurrentData.fRGBA_Mix_Forces[CHANNEL_B], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_B],CurrentData.iUseFlags[CHANNEL_B], &isbOpenTileSelectPopup); // ë©¤ë²„ë³€ìˆ˜ ë“±
 					ImGui::PopID();
 
 					ImGui::SameLine();
 
 					/* Alpha Channel */
 					ImGui::PushID("Alpha");
-					Render_Single_Channel_Setting("Alpha", ImVec4(1.f, 1.f, 1.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_A], CurrentData.fRGBA_Mix_Forces[CHANNEL_A], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_A],CurrentData.iUseFlags[CHANNEL_A], &isbOpenTileSelectPopup); // ¸â¹öº¯¼ö µî
+					Render_Single_Channel_Setting("Alpha", ImVec4(1.f, 1.f, 1.f, 1.f), CurrentData.iRGBA_Connected_Tile_Index[CHANNEL_A], CurrentData.fRGBA_Mix_Forces[CHANNEL_A], CurrentData.fRGBA_Mix_Height_Forces[CHANNEL_A],CurrentData.iUseFlags[CHANNEL_A], &isbOpenTileSelectPopup); // ë©¤ë²„ë³€ìˆ˜ ë“±
 					ImGui::PopID();
 
 					if (isbOpenTileSelectPopup)
@@ -446,29 +454,29 @@ HRESULT CPanel_MapTool::Render_SplatingTextureSetting()
 
 HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const ImVec4& vColor, OUT int& iConnectedIndex, OUT float& fForce, OUT float& fHeightForce, int& iFlag, OUT bool* pIsOpenPopup)
 {
-	ImGui::BeginGroup(); // ±×·ì ½ÃÀÛ
+	ImGui::BeginGroup(); // ê·¸ë£¹ ì‹œì‘
 	{
 		_bool isFixInfo{};
-		// 1. ¶óº§ (»ö»ó ÀÔÈû)
+		// 1. ë¼ë²¨ (ìƒ‰ìƒ ì…í˜)
 		ImGui::TextColored(vColor, "[ %s ]", szLabel);
 
-		// 2. ¹Ì¸®º¸±â ÀÌ¹ÌÁö (ÇöÀç ¼±ÅÃµÈ Å¸ÀÏ)
-		// DH ÅØ½ºÃ³ ¹è¿­ÀÇ ½½¶óÀÌ½º ºä¸¦ °¡Á®¿È (¹üÀ§ Ã¼Å© ÇÊ¼ö)
+		// 2. ë¯¸ë¦¬ë³´ê¸° ì´ë¯¸ì§€ (í˜„ì¬ ì„ íƒëœ íƒ€ì¼)
+		// DH í…ìŠ¤ì²˜ ë°°ì—´ì˜ ìŠ¬ë¼ì´ìŠ¤ ë·°ë¥¼ ê°€ì ¸ì˜´ (ë²”ìœ„ ì²´í¬ í•„ìˆ˜)
 		ID3D11ShaderResourceView* pPreviewSRV = nullptr;
 		if (iConnectedIndex < m_pMapToolManager->m_tTextureSplattingInfo.vecDHTextureArraySlices.size())
 			pPreviewSRV = m_pMapToolManager->m_tTextureSplattingInfo.vecDHTextureArraySlices[iConnectedIndex];
 		else
-			pPreviewSRV = m_pDefaultSRV; // È¤Àº ¿¡·¯ ÀÌ¹ÌÁö
+			pPreviewSRV = m_pDefaultSRV; // í˜¹ì€ ì—ëŸ¬ ì´ë¯¸ì§€
 
-		// 3. ÀÌ¹ÌÁö ¹öÆ° (Å¬¸¯ ½Ã ÆË¾÷ ¿­±â)
+		// 3. ì´ë¯¸ì§€ ë²„íŠ¼ (í´ë¦­ ì‹œ íŒì—… ì—´ê¸°)
 		if (ImGui::ImageButton("##TileBtn", (ImTextureID)pPreviewSRV, ImVec2(50, 50)))
 		{
 			*pIsOpenPopup = true;
 			m_pSelectMixTileTextureIndex = &iConnectedIndex;
 		}
 
-		// Á¤º¸ Ç¥½Ã ¹× Á¶ÀÛ
-		ImGui::PushItemWidth(60); // ÀÔ·ÂÃ¢ ³Êºñ °íÁ¤
+		// ì •ë³´ í‘œì‹œ ë° ì¡°ì‘
+		ImGui::PushItemWidth(60); // ì…ë ¥ì°½ ë„ˆë¹„ ê³ ì •
 
 		if (ImGui::DragFloat("Mix Force##Mix Force", &fForce, 0.1f, 0.1f, 100.0f, "T:%.1f"))
 			isFixInfo = true;
@@ -500,11 +508,236 @@ HRESULT CPanel_MapTool::Render_Single_Channel_Setting(const char* szLabel, const
 			m_pMapToolManager->Bind_Mix_RGBA_Data_And_Count();
 
 	}
-	ImGui::EndGroup(); // ±×·ì ³¡
+	ImGui::EndGroup(); // ê·¸ë£¹ ë
 
 	return S_OK;
 }
 
+HRESULT CPanel_MapTool::Render_CitizenWayPointSetting()
+{
+	// ==========================================
+	// ğŸŒŸ ë§¤ë‹ˆì € ë³€ìˆ˜ ì„¸íŒ…
+	// ==========================================
+	auto& tWorkingData = *m_pMapToolManager->m_pCitizenWatPointData;
+	auto& strWorkingMapName = m_pMapToolManager->m_strCurrentMapName;
+	auto& iWorkingIndex = m_pMapToolManager->m_iCurrentCitizenIndex;
+
+	auto& strOriginName = m_pMapToolManager->m_strCurrentOriginName;
+	auto& iOriginIndex = m_pMapToolManager->m_iCurrentOriginIndex;
+	auto& bShowOriginal = m_pMapToolManager->m_bShowOriginalRender;
+
+	auto& originalMapDatas = DTO::CitizenWayPointOriginData::mapCitizenWapointDatas;
+
+	// ì´ˆê¸° ë¡œë“œ ì‹œ ì²« ë²ˆì§¸ ë§µìœ¼ë¡œ ì„¸íŒ…
+	if (!originalMapDatas.empty() && strOriginName.empty())
+	{
+		strOriginName = originalMapDatas.begin()->first;
+	}
+
+	// ==========================================
+	// 1. Origin Loaded Datas (ì›ë³¸ ë°ì´í„° ì—´ëŒ)
+	// ==========================================
+	ImGui::SeparatorText("1. Origin Loaded Datas");
+
+	if (originalMapDatas.empty())
+	{
+		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "Loaded Data is empty. Please add a new level below.");
+	}
+	else
+	{
+		// A. ë§µ(Level) ì„ íƒ ì½¤ë³´ë°•ìŠ¤
+		ImGui::SetNextItemWidth(250.f);
+		if (ImGui::BeginCombo("Loaded Level", strOriginName.c_str()))
+		{
+			for (auto& pair : originalMapDatas)
+			{
+				bool bSelected = (strOriginName == pair.first);
+				if (ImGui::Selectable(pair.first.c_str(), bSelected))
+				{
+					strOriginName = pair.first;
+					iOriginIndex = -1; // ë ˆë²¨ ë°”ê¾¸ë©´ ì¸ë±ìŠ¤ ì´ˆê¸°í™”
+				}
+				if (bSelected) ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		// ì›ë³¸ ë””ë²„ê·¸ ë Œë”ë§ í† ê¸€
+		ImGui::SameLine();
+		ImGui::Checkbox("Show Render", &bShowOriginal);
+
+		// B. ì„ íƒëœ ë§µì˜ ì¸ë±ìŠ¤ ë¦¬ìŠ¤íŠ¸
+		if (!strOriginName.empty() && originalMapDatas.find(strOriginName) != originalMapDatas.end())
+		{
+			auto& vecCurrentLevelDatas = originalMapDatas[strOriginName];
+
+			if (ImGui::BeginListBox("##DataList", ImVec2(-1, 100)))
+			{
+				for (int i = 0; i < (int)vecCurrentLevelDatas.size(); ++i)
+				{
+					string strLabel = "Index [" + std::to_string(i) + "] - WayPoints: " + std::to_string(vecCurrentLevelDatas[i].vecPosition.size());
+					bool bSelected = (iOriginIndex == i);
+
+					if (ImGui::Selectable(strLabel.c_str(), bSelected))
+					{
+						iOriginIndex = i; // ğŸŒŸ ì—¬ê¸°ì„œ ì„ íƒí•˜ë©´ ì´ë¯¸ ë§Œë“¤ì–´ë‘ì‹  Render_Debugê°€ ëŒì•„ê°
+					}
+				}
+				ImGui::EndListBox();
+			}
+
+			// C. ì„ íƒí•œ ë°ì´í„° ì œì–´ ë²„íŠ¼
+			if (ImGui::Button("Load to Edit (Copy)") && iOriginIndex != -1)
+			{
+				DTO::CitizenWayPointOriginData::Load_CitizenWayPointDatas(strOriginName, iOriginIndex, tWorkingData);
+				strWorkingMapName = strOriginName;
+				iWorkingIndex = iOriginIndex;
+				bShowOriginal = false; // ê²¹ì¹˜ì§€ ì•Šê²Œ ì›ë³¸ ë Œë”ë§ ë„ê¸°
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Delete Selected") && iOriginIndex != -1)
+			{
+				vecCurrentLevelDatas.erase(vecCurrentLevelDatas.begin() + iOriginIndex);
+				if (strWorkingMapName == strOriginName && iWorkingIndex == iOriginIndex) {
+					iWorkingIndex = -1;
+					tWorkingData = DTO::Citizen_WayPoint_Data(m_pDevice, m_pDeviceContext);
+				}
+				iOriginIndex = -1;
+			}
+		}
+	}
+
+	ImGui::Spacing();
+
+	// ==========================================
+	// 2. Add New Data / Level (ìƒˆë¡œ ë§Œë“¤ê¸°)
+	// ==========================================
+	ImGui::SeparatorText("2. Create New");
+
+	// í˜„ì¬ ì„ íƒëœ ë ˆë²¨ì— ë¹ˆ ë°ì´í„°(ê²½ë¡œ)ë¥¼ í•˜ë‚˜ ì¶”ê°€í•˜ê³  ì‹¶ì„ ë•Œ
+	if (ImGui::Button("New Empty Data in Current Level") && !strOriginName.empty())
+	{
+		iOriginIndex = -1;
+		strWorkingMapName = strOriginName;
+		iWorkingIndex = -1; // -1ë¡œ ì„¸íŒ…í•´ì„œ Apply ì‹œ Push_back ë˜ê²Œ í•¨
+		tWorkingData = DTO::Citizen_WayPoint_Data(m_pDevice, m_pDeviceContext);
+	}
+
+	// ì•„ì˜ˆ ìƒˆë¡œìš´ ë§µ(Level)ì„ ì¶”ê°€í•˜ê³  ì‹¶ì„ ë•Œ (Enum ì‚¬ìš©)
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Add New Level:");
+	ImGui::SameLine();
+
+	static Tool::EClientLevelType eLevelToAdd = Tool::EClientLevelType::TUTORIAL_VILLAGE;
+	ImGui::SetNextItemWidth(150.f);
+	if (ImGui::BeginCombo("##LevelToAddCombo", Tool::ClientleveltypeToString(eLevelToAdd).c_str()))
+	{
+		for (int i = 0; i < (int)Tool::EClientLevelType::END; ++i)
+		{
+			Tool::EClientLevelType eType = (Tool::EClientLevelType)i;
+			bool bSelected = (eLevelToAdd == eType);
+			if (ImGui::Selectable(Tool::ClientleveltypeToString(eType).c_str(), bSelected))
+				eLevelToAdd = eType;
+			if (bSelected) ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Add"))
+	{
+		string strNewLevelName = Tool::ClientleveltypeToString(eLevelToAdd);
+		if (originalMapDatas.find(strNewLevelName) == originalMapDatas.end()) {
+			originalMapDatas[strNewLevelName] = vector<DTO::Citizen_WayPoint_Data>();
+		}
+		strOriginName = strNewLevelName;
+		strWorkingMapName = strNewLevelName;
+		iOriginIndex = -1;
+	}
+
+
+	// ==========================================
+		// 3. Edit Working Data (ë‚´ ì‘ì—… ê³µê°„)
+		// ==========================================
+	ImGui::Spacing();
+	ImGui::SeparatorText("3. Edit Working Data");
+
+	if (strWorkingMapName.empty()) {
+		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "No working level selected.");
+	}
+	else {
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Working On: %s [Index: %d]", strWorkingMapName.c_str(), iWorkingIndex);
+	}
+
+	ImGui::Spacing();
+
+	//  [ì¶”ê°€ë¨] NPC ê¸°ë³¸ ì„¸íŒ… (ì‹œê°„ & íšŒì „)
+	ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "[ Base Settings ]");
+	ImGui::Indent();
+	// ë„ì°©ê¹Œì§€ ê±¸ë¦¬ëŠ” ì´ ì‹œê°„ (1ì´ˆ ~ 600ì´ˆ ì œí•œ)
+	ImGui::DragFloat("Total Duration", &tWorkingData.fDuration, 0.1f, 1.0f, 600.0f, "%.1f sec");
+	// ì‹œì‘ ì‹œ ë°”ë¼ë³¼ ë°©í–¥ (Pitch, Yaw, Roll)
+	ImGui::DragFloat3("Start Rotation", (float*)&tWorkingData.vStartPitchYawRoll, 0.5f);
+	ImGui::Unindent();
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	//  ì›¨ì´í¬ì¸íŠ¸(ê²½ë¡œ) ì„¸íŒ…
+	ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "[ WayPoints (Positions) ]");
+
+	if (ImGui::Button("Add WayPoint (End)"))
+	{
+		if (tWorkingData.vecPosition.empty()) tWorkingData.vecPosition.push_back(Vec3{ 0.f, 0.f, 0.f });
+		else tWorkingData.vecPosition.push_back(tWorkingData.vecPosition.back());
+	}
+
+	ImGui::BeginChild("WayPointList", ImVec2(0, 150), true);
+	for (int i = 0; i < (int)tWorkingData.vecPosition.size(); ++i)
+	{
+		ImGui::PushID(i);
+		char buf[32]; sprintf_s(buf, "P %d", i);
+
+		ImGui::DragFloat3(buf, (float*)&tWorkingData.vecPosition[i], 0.1f);
+
+		ImGui::SameLine();
+		if (ImGui::Button("Insert")) {
+			tWorkingData.vecPosition.insert(tWorkingData.vecPosition.begin() + i + 1, tWorkingData.vecPosition[i]);
+			ImGui::PopID(); break;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Del")) {
+			tWorkingData.vecPosition.erase(tWorkingData.vecPosition.begin() + i);
+			ImGui::PopID(); break;
+		}
+		ImGui::PopID();
+	}
+	ImGui::EndChild();
+	// ==========================================
+	// 4. Apply & Save
+	// ==========================================
+	ImGui::SeparatorText("4. Apply & Save");
+
+	if (ImGui::Button("Apply to Memory (DTO)", ImVec2(-1, 30)))
+	{
+		if (!strWorkingMapName.empty())
+		{
+			DTO::CitizenWayPointOriginData::Save_CitizenWayPointDatas(strWorkingMapName, tWorkingData, iWorkingIndex);
+			if (iWorkingIndex == -1) {
+				iWorkingIndex = (int)originalMapDatas[strWorkingMapName].size() - 1;
+				strOriginName = strWorkingMapName;
+				iOriginIndex = iWorkingIndex;
+			}
+		}
+	}
+
+	if (ImGui::Button("Save ALL to JSON File", ImVec2(-1, 30)))
+	{
+		DTO::CitizenWayPointOriginData::Save_CitizenWayPointDatas();
+	}
+
+	return S_OK;
+}
 void CPanel_MapTool::Select_MapTexture()
 {
 	m_pMapToolManager->Select_MapTexture();
@@ -547,7 +780,7 @@ void CPanel_MapTool::Select_MapTexture()
 
 		float totalWidth = ImGui::GetContentRegionAvail().x;
 		float leftPaneWidth = totalWidth * 0.25f; // 25%
-		float rightPaneWidth = totalWidth - leftPaneWidth - ImGui::GetStyle().ItemSpacing.x; // ³ª¸ÓÁö
+		float rightPaneWidth = totalWidth - leftPaneWidth - ImGui::GetStyle().ItemSpacing.x; // ë‚˜ë¨¸ì§€
 		float paneHeight = 350.0f;
 
 
@@ -666,7 +899,7 @@ void CPanel_MapTool::Select_MapTexture()
 		ImGui::EndChild();
 
 		// -----------------------------------------------------------
-		// [ÇÏ´Ü] Ãë¼Ò ¹öÆ°
+		// [í•˜ë‹¨] ì·¨ì†Œ ë²„íŠ¼
 		// -----------------------------------------------------------
 		ImGui::Separator();
 		if (ImGui::Button("Cancel", ImVec2(120, 0)))
@@ -702,18 +935,18 @@ void CPanel_MapTool::Select_MapTexture()
 
 void CPanel_MapTool::Select_MiXTextureIndex()
 {
-	// µ¥ÀÌÅÍ ¾øÀ¸¸é ¸®ÅÏ
+	// ë°ì´í„° ì—†ìœ¼ë©´ ë¦¬í„´
 	if (m_pMapToolManager->m_tTextureSplattingInfo.vecDHTextureArraySlices.empty())
 		return;
 
-	// ÆË¾÷ ½ÃÀÛ
+	// íŒì—… ì‹œì‘
 	if (ImGui::BeginPopup("Mix_Texture_Select"))
 	{
 		ImGui::Text("Select Texture Tile");
 		ImGui::Separator();
 
 		int iSliceCount = (int)m_pMapToolManager->m_tTextureSplattingInfo.vecDHTextureArraySlices.size();
-		int iColCount = 4; // ÇÑ ÁÙ¿¡ 4°³¾¿
+		int iColCount = 4; // í•œ ì¤„ì— 4ê°œì”©
 
 		for (int i = 0; i < iSliceCount; ++i)
 		{
@@ -722,7 +955,7 @@ void CPanel_MapTool::Select_MiXTextureIndex()
 			{
 				ImGui::PushID(i);
 
-				// ÀÌ¹ÌÁö ¹öÆ°
+				// ì´ë¯¸ì§€ ë²„íŠ¼
 				if (ImGui::ImageButton("", (ImTextureID)pSliceSRV, ImVec2(64, 64)))
 				{
 					if (m_pSelectMixTileTextureIndex != nullptr)
@@ -734,7 +967,7 @@ void CPanel_MapTool::Select_MiXTextureIndex()
 				}
 				ImGui::PopID();
 
-				// ÅØ½ºÆ® (ÀÌ¹ÌÁö ¹Ù·Î ¾Æ·¡¿¡ ÂïÈû)
+				// í…ìŠ¤íŠ¸ (ì´ë¯¸ì§€ ë°”ë¡œ ì•„ë˜ì— ì°í˜)
 				ImGui::Text("Index %d", i);
 			}
 			ImGui::EndGroup();
@@ -750,15 +983,15 @@ void CPanel_MapTool::Select_MiXTextureIndex()
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.3f, 0.3f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.7f, 0.1f, 0.1f, 1.0f));
 
-		// Ãë¼Ò ¹öÆ° (°¡·Î ²Ë Â÷°Ô)
+		// ì·¨ì†Œ ë²„íŠ¼ (ê°€ë¡œ ê½‰ ì°¨ê²Œ)
 		if (ImGui::Button(" Cancel ", ImVec2(-1, 0)))
 		{; 
 			ImGui::CloseCurrentPopup();
 		}
 
-		ImGui::PopStyleColor(3); // ½ºÅ¸ÀÏ º¹±¸
+		ImGui::PopStyleColor(3); // ìŠ¤íƒ€ì¼ ë³µêµ¬
 
-		ImGui::EndPopup(); // ÆË¾÷ ³¡
+		ImGui::EndPopup(); // íŒì—… ë
 	}
 }
 
@@ -777,7 +1010,7 @@ HRESULT CPanel_MapTool::Render_CheckAndBind()
 {
 	ImGui::SeparatorText(" Chekc Static & Instance Model  Merget InstanceModel ");
 
-	/* UE Model Data Àü¿ë */
+	/* UE Model Data ì „ìš© */
 	if (ImGui::Button(" Bind Staitc & Instance Model To Instance Model "))
 		m_pMapToolManager->Check_And_Bind_FromUE();
 
@@ -853,13 +1086,13 @@ HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 		ImGui::Spacing();
 		ImGui::Text("Adjust Values (Speed: 0.005)");
 
-		// Vec4 ±¸Á¶Ã¼ÀÇ ½ÃÀÛ ÁÖ¼Ò¸¦ float Æ÷ÀÎÅÍ·Î ¹Ş¾Æ¿É´Ï´Ù.
-		// ¹è¿­Ã³·³ [0], [1], [2], [3] À¸·Î R, G, B, A¿¡ Á¢±ÙÇÒ ¼ö ÀÖ½À´Ï´Ù.
+		// Vec4 êµ¬ì¡°ì²´ì˜ ì‹œì‘ ì£¼ì†Œë¥¼ float í¬ì¸í„°ë¡œ ë°›ì•„ì˜µë‹ˆë‹¤.
+		// ë°°ì—´ì²˜ëŸ¼ [0], [1], [2], [3] ìœ¼ë¡œ R, G, B, Aì— ì ‘ê·¼í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
 		float* pColor = (float*)&m_pMapToolManager->m_vDiscardColor;
 
 		bool bIsChanged = false;
 
-		// ÇÑ ÁÙ¿¡ ÇÏ³ª¾¿! ½Ï½Ï Àß º¸ÀÌ°Ô DragFloat¸¦ 4¹ø µû·Î ¸¸µì´Ï´Ù.
+		// í•œ ì¤„ì— í•˜ë‚˜ì”©! ì‹¹ì‹¹ ì˜ ë³´ì´ê²Œ DragFloatë¥¼ 4ë²ˆ ë”°ë¡œ ë§Œë“­ë‹ˆë‹¤.
 		bIsChanged |= ImGui::DragFloat("R (Red)", &pColor[0], 0.005f, 0.0f, 1.0f, "%.3f");
 		bIsChanged |= ImGui::DragFloat("G (Green)", &pColor[1], 0.005f, 0.0f, 1.0f, "%.3f");
 		bIsChanged |= ImGui::DragFloat("B (Blue)", &pColor[2], 0.005f, 0.0f, 1.0f, "%.3f");
@@ -872,7 +1105,7 @@ HRESULT CPanel_MapTool::Render_MakeMapObjectSetting()
 
 		ImGui::Spacing();
 
-		// Á÷°üÀûÀ¸·Î ¹«½¼ »öÀÎÁö ´«À¸·Î È®ÀÎÇÏ±â À§ÇÑ ÄÃ·¯ ÇÈÄ¿ (¼±ÅÃ »çÇ×)
+		// ì§ê´€ì ìœ¼ë¡œ ë¬´ìŠ¨ ìƒ‰ì¸ì§€ ëˆˆìœ¼ë¡œ í™•ì¸í•˜ê¸° ìœ„í•œ ì»¬ëŸ¬ í”½ì»¤ (ì„ íƒ ì‚¬í•­)
 		ImGui::ColorEdit4("Preview Color", pColor, ImGuiColorEditFlags_NoInputs);
 
 		ImGui::Spacing();
@@ -1167,7 +1400,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	{
 		if (FAILED(m_pMapToolManager->Load_Camera_Cinematic_Sequence(Engine_Utils::ToWString(m_strBuffer))))
 		{
-			MSG_BOX(" Load Camera Cinematic Sequence ½ÇÆĞ");
+			MSG_BOX(" Load Camera Cinematic Sequence ì‹¤íŒ¨");
 		}
 	}
 
@@ -1183,7 +1416,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	static bool bShowManifestEditor = false;
 	if (ImGui::Button("Open Event Manifest Editor"))
 	{
-		bShowManifestEditor = !bShowManifestEditor; // ´©¸¦ ¶§¸¶´Ù On/Off
+		bShowManifestEditor = !bShowManifestEditor; // ëˆ„ë¥¼ ë•Œë§ˆë‹¤ On/Off
 	}
 
 	ImGui::Separator();
@@ -1203,7 +1436,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	{
 		if (FAILED(m_pMapToolManager->Save_Camera_Cinematic_Sequence(Engine_Utils::ToWString(pCamCinematicSequence->strName))))
 		{
-			MSG_BOX(" Save Camera Cinematic Sequence ½ÇÆĞ");
+			MSG_BOX(" Save Camera Cinematic Sequence ì‹¤íŒ¨");
 		}
 	}
 
@@ -1211,7 +1444,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 	if (ImGui::Button(" Reset Camera Cinematic Sequence "))
 	{
-		/* ÀüÃ¼ ¸®¼Â */
+		/* ì „ì²´ ë¦¬ì…‹ */
 		pCamCinematicSequence->Reset_KeyFrameData();
 	}
 
@@ -1227,19 +1460,19 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	vector<CCS_EVENT_MANIFEST>& vecCSS_EventManifest = m_pMapToolManager->m_vecCCS_EventManifest;
 
 
-	// ÆË¾÷Ã¢°ú µ¥ÀÌÅÍ¸¦ ÁÖ°í¹Ş±â À§ÇÑ °øÀ¯ º¯¼öµé
+	// íŒì—…ì°½ê³¼ ë°ì´í„°ë¥¼ ì£¼ê³ ë°›ê¸° ìœ„í•œ ê³µìœ  ë³€ìˆ˜ë“¤
 	static CCS_EVENT_DESC* s_pEditingEvent = nullptr;
 	static string s_strTempSub = "";
-	// ±âÁ¸ÀÇ static string s_strTempAction = ""; ¸¦ ¾Æ·¡Ã³·³ ¹Ù²ß´Ï´Ù!
+	// ê¸°ì¡´ì˜ static string s_strTempAction = ""; ë¥¼ ì•„ë˜ì²˜ëŸ¼ ë°”ê¿‰ë‹ˆë‹¤!
 	static vector<string> s_vecTempActions;
 	static bool s_bTriggerPopup = false;
-#pragma region CCS Event Manifest ¶÷´Ù
-	// ¸¸´É ¸®½ºÆ® ·»´õ¸µ + ´ÙÁß ¼±ÅÃ ÆË¾÷Ã¢ ÅëÇÕ ¶÷´Ù ÇÔ¼ö
+#pragma region CCS Event Manifest ëŒë‹¤
+	// ë§ŒëŠ¥ ë¦¬ìŠ¤íŠ¸ ë Œë”ë§ + ë‹¤ì¤‘ ì„ íƒ íŒì—…ì°½ í†µí•© ëŒë‹¤ í•¨ìˆ˜
 	auto RenderEventListUI = [&](const char* szLabel, vector<CCS_EVENT_DESC>& vecEvents)
 		{
 			ImGui::SeparatorText(szLabel);
 
-			// ¶óº§ ÀÌ¸§À¸·Î °íÀ¯ÇÑ Add ¹öÆ° »ı¼º
+			// ë¼ë²¨ ì´ë¦„ìœ¼ë¡œ ê³ ìœ í•œ Add ë²„íŠ¼ ìƒì„±
 			string strAddBtn = string("Add Event##") + szLabel;
 			if (ImGui::Button(strAddBtn.c_str()))
 			{
@@ -1249,7 +1482,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 			string strPopupName = string("Select Event Data##Popup_") + szLabel;
 			bool bOpenPopup = false;
 
-			ImGui::PushID(szLabel); // ±×·ì ID Çª½Ã
+			ImGui::PushID(szLabel); // ê·¸ë£¹ ID í‘¸ì‹œ
 			for (int i = 0; i < vecEvents.size(); ++i)
 			{
 				ImGui::PushID(i);
@@ -1258,25 +1491,25 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				string strDisplaySub = pEventDesc->strSubscriberName.empty() ? "None" : pEventDesc->strSubscriberName;
 
 				// ======================================================
-				// 1. ¼ö½ÅÀÚ ÀÌ¸§ Ãâ·Â (Ã¹ ¹øÂ° ÁÙ)
+				// 1. ìˆ˜ì‹ ì ì´ë¦„ ì¶œë ¥ (ì²« ë²ˆì§¸ ì¤„)
 				// ======================================================
 				ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "[ %s ]", strDisplaySub.c_str());
 
-				// 2. °°Àº ÁÙ ¿À¸¥ÂÊ ³¡À¸·Î ÀÌµ¿
+				// 2. ê°™ì€ ì¤„ ì˜¤ë¥¸ìª½ ëìœ¼ë¡œ ì´ë™
 				ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
 
-				// 3. [Setting Data] ¹öÆ°
+				// 3. [Setting Data] ë²„íŠ¼
 				if (ImGui::Button("Setting Data"))
 				{
 					s_pEditingEvent = pEventDesc;
 					s_strTempSub = pEventDesc->strSubscriberName;
-					s_vecTempActions = pEventDesc->vecActionNames; // ÅëÂ°·Î vector º¹»ç
+					s_vecTempActions = pEventDesc->vecActionNames; // í†µì§¸ë¡œ vector ë³µì‚¬
 					bOpenPopup = true;
 				}
 
 				ImGui::SameLine();
 
-				// 4. [X] ¹öÆ° (ÀÌº¥Æ® ÀüÃ¼ »èÁ¦)
+				// 4. [X] ë²„íŠ¼ (ì´ë²¤íŠ¸ ì „ì²´ ì‚­ì œ)
 				if (ImGui::Button("X"))
 				{
 					vecEvents.erase(vecEvents.begin() + i);
@@ -1286,7 +1519,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				}
 
 				// ======================================================
-				// 5. ´ÙÀ½ ÁÙºÎÅÍ ¾×¼Ç ¸®½ºÆ® µé¿©¾²±â Ãâ·Â (Æ®¸® ±¸Á¶)
+				// 5. ë‹¤ìŒ ì¤„ë¶€í„° ì•¡ì…˜ ë¦¬ìŠ¤íŠ¸ ë“¤ì—¬ì“°ê¸° ì¶œë ¥ (íŠ¸ë¦¬ êµ¬ì¡°)
 				// ======================================================
 				if (!pEventDesc->vecActionNames.empty())
 				{
@@ -1295,24 +1528,24 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 						string& strActionName = pEventDesc->vecActionNames[j];
 						if (!strActionName.empty())
 						{
-							// '¦¦' ±âÈ£¸¦ ½á¼­ Á¾¼ÓµÈ ´À³¦À» Áİ´Ï´Ù.
-							ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "   ¦¦ [%d] - %s", j, strActionName.c_str());
+							// 'â””' ê¸°í˜¸ë¥¼ ì¨ì„œ ì¢…ì†ëœ ëŠë‚Œì„ ì¤ë‹ˆë‹¤.
+							ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "   â”” [%d] - %s", j, strActionName.c_str());
 						}
 					}
 				}
 				else
 				{
-					ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "   ¦¦ No Actions Selected");
+					ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "   â”” No Actions Selected");
 				}
 
-				ImGui::Spacing(); // ´ÙÀ½ ÀÌº¥Æ® ºí·Ï°úÀÇ °£°İÀ» »ìÂ¦ ¶ç¿öÁİ´Ï´Ù.
-				ImGui::PopID();   // ÇöÀç ÀÌº¥Æ®ÀÇ PushID ÇØÁ¦
+				ImGui::Spacing(); // ë‹¤ìŒ ì´ë²¤íŠ¸ ë¸”ë¡ê³¼ì˜ ê°„ê²©ì„ ì‚´ì§ ë„ì›Œì¤ë‹ˆë‹¤.
+				ImGui::PopID();   // í˜„ì¬ ì´ë²¤íŠ¸ì˜ PushID í•´ì œ
 			}
-			ImGui::PopID(); // szLabel ±×·ìÀÇ PushID ÇØÁ¦
+			ImGui::PopID(); // szLabel ê·¸ë£¹ì˜ PushID í•´ì œ
 
 
 			// =========================================================
-			// [ÆË¾÷ È£Ãâ ¹× ·»´õ¸µ] ´ÙÁß ¼±ÅÃ(Multi-Select) UI
+			// [íŒì—… í˜¸ì¶œ ë° ë Œë”ë§] ë‹¤ì¤‘ ì„ íƒ(Multi-Select) UI
 			// =========================================================
 			if (bOpenPopup)
 			{
@@ -1330,7 +1563,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				ImGui::Spacing();
 
 				// -----------------------------------------------------
-				// [1. Subscriber ÄŞº¸¹Ú½º]
+				// [1. Subscriber ì½¤ë³´ë°•ìŠ¤]
 				// -----------------------------------------------------
 				ImGui::Text("1. Subscriber");
 				ImGui::SetNextItemWidth(350.f);
@@ -1342,7 +1575,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 						if (ImGui::Selectable(manifest.strSubscriberName.c_str(), bSelected))
 						{
 							s_strTempSub = manifest.strSubscriberName;
-							s_vecTempActions.clear(); // ´ë»óÀ» ¹Ù²Ù¸é ¼±ÅÃÇß´ø ¾×¼Çµéµµ ½Ï ÃÊ±âÈ­
+							s_vecTempActions.clear(); // ëŒ€ìƒì„ ë°”ê¾¸ë©´ ì„ íƒí–ˆë˜ ì•¡ì…˜ë“¤ë„ ì‹¹ ì´ˆê¸°í™”
 						}
 						if (bSelected) ImGui::SetItemDefaultFocus();
 					}
@@ -1352,7 +1585,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				ImGui::Spacing();
 
 				// -----------------------------------------------------
-				// [2. Action ´ÙÁß ¼±ÅÃ (Checkbox ¸®½ºÆ®)]
+				// [2. Action ë‹¤ì¤‘ ì„ íƒ (Checkbox ë¦¬ìŠ¤íŠ¸)]
 				// -----------------------------------------------------
 				string strHoveredExplain = "";
 
@@ -1394,7 +1627,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				}
 
 				// -----------------------------------------------------
-				// [3. ¼³¸í(Explain) Ãâ·ÂÃ¢]
+				// [3. ì„¤ëª…(Explain) ì¶œë ¥ì°½]
 				// -----------------------------------------------------
 				ImGui::Spacing();
 				ImGui::Text("Description (Hover over an action):");
@@ -1408,7 +1641,7 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				ImGui::Spacing();
 
 				// -----------------------------------------------------
-				// [4. Àû¿ë(Apply) ¹× Ãë¼Ò(Cancel) ¹öÆ°]
+				// [4. ì ìš©(Apply) ë° ì·¨ì†Œ(Cancel) ë²„íŠ¼]
 				// -----------------------------------------------------
 				if (ImGui::Button("Apply to Data", ImVec2(120, 30)))
 				{
@@ -1436,12 +1669,12 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 #pragma endregion
 
 
-	// 1. Begin Event ±×¸®±â
+	// 1. Begin Event ê·¸ë¦¬ê¸°
 	RenderEventListUI(" Begin Cinematic Events ", pCamCinematicSequence->vecBegin_CCS_EventDesc);
 
 	ImGui::NewLine();
 
-	// 2. End Event ±×¸®±â (ÀÚ·áÇüÀÌ °°´Ù°í °¡Á¤)
+	// 2. End Event ê·¸ë¦¬ê¸° (ìë£Œí˜•ì´ ê°™ë‹¤ê³  ê°€ì •)
 	RenderEventListUI(" End Cinematic Events ", pCamCinematicSequence->vecEnd_CCS_EventDesc);
 
 	ImGui::NewLine();
@@ -1477,23 +1710,23 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 		//m_pMapToolManager->m_pCamCinematicSequence->Render_Debug(ENUM_TO_UINT(EMapObjectShaderPass::StaticObject) , m_pMapToolManager->m_pCamCinematicSequenceRenderModel , m_pMapToolManager->m_pCamCinematicSequenceRenderShader);
 
-		// Å°ÇÁ·¹ÀÓ ¸®½ºÆ® ¼øÈ¸ (»èÁ¦ ½Ã ¾ÈÀüÇÏ°Ô ÀÎµ¦½º¸¦ ´Ù·ç±â À§ÇØ for ·çÇÁ¸¦ ¼öµ¿ Áõ°¨ÇÕ´Ï´Ù)
+		// í‚¤í”„ë ˆì„ ë¦¬ìŠ¤íŠ¸ ìˆœíšŒ (ì‚­ì œ ì‹œ ì•ˆì „í•˜ê²Œ ì¸ë±ìŠ¤ë¥¼ ë‹¤ë£¨ê¸° ìœ„í•´ for ë£¨í”„ë¥¼ ìˆ˜ë™ ì¦ê°í•©ë‹ˆë‹¤)
 		for (_uint i = 0; i < pCamCinematicSequence->vecCamKeyFrameDatas.size(); )
 		{
-			// ¡Ú ¾ÆÁÖ Áß¿ä: ImGui´Â ÀÌ¸§ÀÌ °°À¸¸é °ãÄ¡±â ¶§¹®¿¡, ¹İµå½Ã °íÀ¯ ID¸¦ Çª½ÃÇØ¾ß ÇÕ´Ï´Ù.
+			// â˜… ì•„ì£¼ ì¤‘ìš”: ImGuiëŠ” ì´ë¦„ì´ ê°™ìœ¼ë©´ ê²¹ì¹˜ê¸° ë•Œë¬¸ì—, ë°˜ë“œì‹œ ê³ ìœ  IDë¥¼ í‘¸ì‹œí•´ì•¼ í•©ë‹ˆë‹¤.
 			ImGui::PushID(i);
 
 			_int iDeleteIndex{-1};
 
 			string strTreeNodeName = "KeyFrame[" + std::to_string(i) + "]";
 
-			// TreeNodeEx¸¦ ½á¼­ ±âº»ÀûÀ¸·Î ÆîÃÄÁ® ÀÖ°Ô ÇÏ°Å³ª ´İÇôÀÖ°Ô ¼³Á¤ °¡´É
+			// TreeNodeExë¥¼ ì¨ì„œ ê¸°ë³¸ì ìœ¼ë¡œ í¼ì³ì ¸ ìˆê²Œ í•˜ê±°ë‚˜ ë‹«í˜€ìˆê²Œ ì„¤ì • ê°€ëŠ¥
 			bool bNodeOpen = ImGui::TreeNodeEx(strTreeNodeName.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 
-			// Æ®¸® ³ëµå¿Í °°Àº ÁÙ ¿À¸¥ÂÊ ³¡¿¡ »èÁ¦ ¹öÆ° ¹èÄ¡
+			// íŠ¸ë¦¬ ë…¸ë“œì™€ ê°™ì€ ì¤„ ì˜¤ë¥¸ìª½ ëì— ì‚­ì œ ë²„íŠ¼ ë°°ì¹˜
 			ImGui::SameLine();
 
-			/* Áß°£»çÀÌ¿¡ ³¢¿ö³Ö±â°¡´É */
+			/* ì¤‘ê°„ì‚¬ì´ì— ë¼ì›Œë„£ê¸°ê°€ëŠ¥ */
 			if (ImGui::Button("Insert"))
 			{
 				pCamCinematicSequence->Insert_KeyFrameData(i);
@@ -1526,10 +1759,10 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_WorldMatrix(pCamCinematicSequence->vecCamKeyFrameDatas[i].Get_WorldMatrix());
 			}
 
-			// ³ëµå°¡ ÆîÃÄÁ® ÀÖÀ» ¶§¸¸ ³»ºÎ UI ·»´õ¸µ
+			// ë…¸ë“œê°€ í¼ì³ì ¸ ìˆì„ ë•Œë§Œ ë‚´ë¶€ UI ë Œë”ë§
 			if (bNodeOpen)
 			{
-				// ÄÚµå°¡ ±æ¾îÁö´Ï ·¹ÆÛ·±½º·Î ¹Ş¾Æ¿É´Ï´Ù.
+				// ì½”ë“œê°€ ê¸¸ì–´ì§€ë‹ˆ ë ˆí¼ëŸ°ìŠ¤ë¡œ ë°›ì•„ì˜µë‹ˆë‹¤.
 				auto& KeyFrame = pCamCinematicSequence->vecCamKeyFrameDatas[i];
 
 				ImGui::SeparatorText("Time & FOV Info");
@@ -1538,23 +1771,23 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				ImGui::DragFloat("FOV", &KeyFrame.fFov, 0.5f, 10.f, 180.f, "%.1f");
 
 				ImGui::SeparatorText("Move Info");
-				/* Enum ÄŞº¸¹Ú½º (TODO: ½ÇÁ¦ Enum ¹®ÀÚ¿­¿¡ ¸Â°Ô ¼öÁ¤ ÇÊ¿ä!) */
+				/* Enum ì½¤ë³´ë°•ìŠ¤ (TODO: ì‹¤ì œ Enum ë¬¸ìì—´ì— ë§ê²Œ ìˆ˜ì • í•„ìš”!) */
 				string strPreviewMove = OBJECT_ENUM_TAG::ToString(KeyFrame.eMoveBaseTarget);
 				if (ImGui::BeginCombo("Move Base Target", strPreviewMove.c_str()))
 				{
-					// 2. ¾Æ±î ¸¸µç ¹è¿­À» ¼øÈ¸ÇÕ´Ï´Ù.
+					// 2. ì•„ê¹Œ ë§Œë“  ë°°ì—´ì„ ìˆœíšŒí•©ë‹ˆë‹¤.
 					for (int i = 0; i < sizeof(g_arrAllObjectTags) / sizeof(g_arrAllObjectTags[0]) ; ++i)
 					{
 						OBJECT_ENUM_TAG::Enum eVal = g_arrAllObjectTags[i];
 
-						// ÀÌ Ç×¸ñÀÌ ÇöÀç ¼±ÅÃµÈ Ç×¸ñÀÎÁö Ã¼Å©
+						// ì´ í•­ëª©ì´ í˜„ì¬ ì„ íƒëœ í•­ëª©ì¸ì§€ ì²´í¬
 						bool bSelected = (KeyFrame.eMoveBaseTarget == eVal);
 
-						// ToString()À¸·Î ±ÛÀÚ¸¦ »Ì¾Æ¿Í¼­ ¸®½ºÆ®¿¡ Ãâ·Â!
+						// ToString()ìœ¼ë¡œ ê¸€ìë¥¼ ë½‘ì•„ì™€ì„œ ë¦¬ìŠ¤íŠ¸ì— ì¶œë ¥!
 						string strName = OBJECT_ENUM_TAG::ToString(eVal);
 						if (ImGui::Selectable(strName.c_str(), bSelected))
 						{
-							// Å¬¸¯ÇÏ¸é ¿øº» µ¥ÀÌÅÍ¿¡ ÇØ´ç Enum °ªÀ» ½ï ³Ö¾îÁİ´Ï´Ù.
+							// í´ë¦­í•˜ë©´ ì›ë³¸ ë°ì´í„°ì— í•´ë‹¹ Enum ê°’ì„ ì™ ë„£ì–´ì¤ë‹ˆë‹¤.
 							KeyFrame.eMoveBaseTarget = eVal;
 						}
 
@@ -1574,24 +1807,24 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				ImGui::DragFloat3("Position", (float*)&KeyFrame.vPosition, 0.1f);
 
 				ImGui::SeparatorText("LookAt Info");
-				/* Enum ÄŞº¸¹Ú½º (TODO: ½ÇÁ¦ Enum ¹®ÀÚ¿­¿¡ ¸Â°Ô ¼öÁ¤ ÇÊ¿ä!) */
+				/* Enum ì½¤ë³´ë°•ìŠ¤ (TODO: ì‹¤ì œ Enum ë¬¸ìì—´ì— ë§ê²Œ ìˆ˜ì • í•„ìš”!) */
 
 				strPreviewMove = OBJECT_ENUM_TAG::ToString(KeyFrame.eMoveBaseTarget);
 				if (ImGui::BeginCombo("LookAt Target", strPreviewMove.c_str()))
 				{
-					// 2. ¾Æ±î ¸¸µç ¹è¿­À» ¼øÈ¸ÇÕ´Ï´Ù.
+					// 2. ì•„ê¹Œ ë§Œë“  ë°°ì—´ì„ ìˆœíšŒí•©ë‹ˆë‹¤.
 					for (int i = 0; i < sizeof(g_arrAllObjectTags) / sizeof(g_arrAllObjectTags[0]); ++i)
 					{
 						OBJECT_ENUM_TAG::Enum eVal = g_arrAllObjectTags[i];
 
-						// ÀÌ Ç×¸ñÀÌ ÇöÀç ¼±ÅÃµÈ Ç×¸ñÀÎÁö Ã¼Å©
+						// ì´ í•­ëª©ì´ í˜„ì¬ ì„ íƒëœ í•­ëª©ì¸ì§€ ì²´í¬
 						bool bSelected = (KeyFrame.eMoveBaseTarget == eVal);
 
-						// ToString()À¸·Î ±ÛÀÚ¸¦ »Ì¾Æ¿Í¼­ ¸®½ºÆ®¿¡ Ãâ·Â!
+						// ToString()ìœ¼ë¡œ ê¸€ìë¥¼ ë½‘ì•„ì™€ì„œ ë¦¬ìŠ¤íŠ¸ì— ì¶œë ¥!
 						string strName = OBJECT_ENUM_TAG::ToString(eVal);
 						if (ImGui::Selectable(strName.c_str(), bSelected))
 						{
-							// Å¬¸¯ÇÏ¸é ¿øº» µ¥ÀÌÅÍ¿¡ ÇØ´ç Enum °ªÀ» ½ï ³Ö¾îÁİ´Ï´Ù.
+							// í´ë¦­í•˜ë©´ ì›ë³¸ ë°ì´í„°ì— í•´ë‹¹ Enum ê°’ì„ ì™ ë„£ì–´ì¤ë‹ˆë‹¤.
 							KeyFrame.eMoveBaseTarget = eVal;
 						}
 
@@ -1635,11 +1868,11 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 					RenderEventListUI(" On Reach Events ", KeyFrame.vecOnReach_CCS_EventDesc);
 					ImGui::TreePop();
 				}
-				ImGui::TreePop(); // TreeNode¸¦ ´İ¾ÆÁÜ
+				ImGui::TreePop(); // TreeNodeë¥¼ ë‹«ì•„ì¤Œ
 			}
 
-			ImGui::PopID(); // PushID ÇØÁ¦
-			++i; // »èÁ¦ ¹öÆ°ÀÌ ¾È ´­·ÈÀ» ¶§¸¸ ÀÎµ¦½º Áõ°¡
+			ImGui::PopID(); // PushID í•´ì œ
+			++i; // ì‚­ì œ ë²„íŠ¼ì´ ì•ˆ ëˆŒë ¸ì„ ë•Œë§Œ ì¸ë±ìŠ¤ ì¦ê°€
 		}
 
 		if (iCopyCameraIndex != -1 )
@@ -1767,7 +2000,7 @@ HRESULT CPanel_MapTool::Render_PreViewInfo()
 
 	if (ImGui::BeginTable("SRT_Quat_Display", 5, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_RowBg))
 	{
-		// Çì´õ ¼³Á¤
+		// í—¤ë” ì„¤ì •
 		ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 80.0f);
 		ImGui::TableSetupColumn("X", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("Y", ImGuiTableColumnFlags_WidthStretch);
@@ -1775,15 +2008,15 @@ HRESULT CPanel_MapTool::Render_PreViewInfo()
 		ImGui::TableSetupColumn("W", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableHeadersRow();
 
-		// --- Position Çà ---
+		// --- Position í–‰ ---
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Position");
 		ImGui::TableSetColumnIndex(1); ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "%.2f", vPosition.x);
 		ImGui::TableSetColumnIndex(2); ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "%.2f", vPosition.y);
 		ImGui::TableSetColumnIndex(3); ImGui::TextColored(ImVec4(0.4f, 0.4f, 1.0f, 1.0f), "%.2f", vPosition.z);
-		ImGui::TableSetColumnIndex(4); ImGui::TextUnformatted("-"); // PositionÀº W°¡ ¾øÀ½
+		ImGui::TableSetColumnIndex(4); ImGui::TextUnformatted("-"); // Positionì€ Wê°€ ì—†ìŒ
 
-		// --- Rotation Çà (Quaternion) ---
+		// --- Rotation í–‰ (Quaternion) ---
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Quat Rot");
 		ImGui::TableSetColumnIndex(1); ImGui::Text("%.4f", vQuat.x);
@@ -1791,13 +2024,13 @@ HRESULT CPanel_MapTool::Render_PreViewInfo()
 		ImGui::TableSetColumnIndex(3); ImGui::Text("%.4f", vQuat.z);
 		ImGui::TableSetColumnIndex(4); ImGui::Text("%.4f", vQuat.w);
 
-		// --- Scale Çà ---
+		// --- Scale í–‰ ---
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Scale");
 		ImGui::TableSetColumnIndex(1); ImGui::Text("%.2f", vScale.x);
 		ImGui::TableSetColumnIndex(2); ImGui::Text("%.2f", vScale.y);
 		ImGui::TableSetColumnIndex(3); ImGui::Text("%.2f", vScale.z);
-		ImGui::TableSetColumnIndex(4); ImGui::TextUnformatted("-"); // Scaleµµ W°¡ ¾øÀ½
+		ImGui::TableSetColumnIndex(4); ImGui::TextUnformatted("-"); // Scaleë„ Wê°€ ì—†ìŒ
 
 		ImGui::EndTable();
 	}
@@ -1882,7 +2115,7 @@ HRESULT CPanel_MapTool::Render_SaveLevelDataSetting()
 	ImGui::Separator();
 
 
-	/* È¯°æ ¼¼ÆÃ */
+	/* í™˜ê²½ ì„¸íŒ… */
 	if(FAILED(Render_EnvSetting()))
 		return E_FAIL;
 
