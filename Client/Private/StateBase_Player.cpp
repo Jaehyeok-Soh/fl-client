@@ -38,6 +38,8 @@ HRESULT CStateBase_Player::Initialize(void* pArg)
 
 	m_iEndStateIdx = ENUM_TO_UINT(CPlayer::State::END);
 
+	m_iBoneHitTypeFlag = CPlayerActionState::BoneHitType::BHT_FORCE_STRONG;
+
 	return S_OK;
 }
 
@@ -101,6 +103,18 @@ HRESULT CStateBase_Player::End()
 		Change_Weapon();
 
 	return S_OK;
+}
+
+_uint CStateBase_Player::Get_Capabilities() const
+{
+	_uint iCapFlag = { 0 };
+
+	iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::BEATTACKED);
+
+	if (Can_Captablity_Move())
+		iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::MOVE);
+
+	return	 iCapFlag;
 }
 
 void CStateBase_Player::Change_PlayerState(STATEKEY eKey, _bool bForce)
@@ -309,7 +323,8 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 {
-	if (Can_UseWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE)))
+	if (KeyFlag_On(CPlayerControlContext::KEYFLAGS::COMBO)
+		&&Can_UseWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE)))
 	{
 		// holding 시간 체크
 		if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
@@ -593,6 +608,19 @@ void CStateBase_Player::LookAt_Monser()
 	}
 }
 
+Vec3 CStateBase_Player::Get_Collided_MonsterPos()
+{
+	CPlayer* pPlayer = static_cast<CPlayer*>(Get_OwnerObject());
+	if (pPlayer == nullptr)
+		return Vec3::Zero;
+
+	CTransform* pPlayerTransform = pPlayer->Get_Component<CTransform>();
+	if (pPlayerTransform == nullptr)
+		return Vec3::Zero;
+	
+	return pPlayer->Get_CollidedMonster_Position();
+}
+
 _bool CStateBase_Player::Check_OnGround(_float fMaxDist)
 {
 	return static_cast<CPlayer*>(Get_OwnerObject())->Check_OnGround(fMaxDist);
@@ -770,6 +798,12 @@ void CStateBase_Player::Reset_WhenStart()
 	Engine_Utils::RemoveHard_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Mask_ChangeWeapons);
 }
 
+_bool CStateBase_Player::Can_Captablity_Move() const
+{
+	// loop이거나, move time 이 아직 안 지났을때
+	return (m_bLoop) || (m_fStateElapsed <= m_fCapHitMoveTime);
+}
+
 HRESULT CStateBase_Player::Start_AttackState(void* pArg)
 {
 	// attack은 pre state 기준으로 애니메이션 재생 x
@@ -796,6 +830,11 @@ HRESULT CStateBase_Player::Start_AttackState(void* pArg)
 	Reset_WhenStart();
 
 	return S_OK;
+}
+
+_bool CStateBase_Player::KeyFlag_On(_uint iKeyFlag)
+{
+	return static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Get_KeyFlag(iKeyFlag);
 }
 
 _bool CStateBase_Player::Has_ChangeState(STATEKEY eKey)

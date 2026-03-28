@@ -126,14 +126,17 @@ HRESULT CUIBossStat_Progress::Bind_ShaderResources()
 
 HRESULT CUIBossStat_Progress::Attach_Personal_Info()
 {
-	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_ON>([this]()
-		{
-			this->Set_Visible();
-		});
-	m_pGameInstance->Subscribe<XIBILA_BOSS_UI_OFF>([this]()
-		{
-			this->Set_Invisible();
-		});
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<XIBILA_BOSS_UI_ON>([this]()
+			{
+				this->Set_Visible();
+			}));
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<XIBILA_BOSS_UI_OFF>([this]()
+			{
+				this->Set_Invisible();
+			}));
 
 	return S_OK;
 }
@@ -172,7 +175,7 @@ void CUIBossStat_Progress::Initialize_Visible_Event()
 		break;
 	case DTO::EUISubClassType::BOSS_STAT_HP_PROGRESS:
 	case DTO::EUISubClassType::BOSS_STAT_ARMOR_PROGRESS:
-		Ready_LerpChange(1.5f, 0.f, 1.f, 0.3f, 0.f);
+		Ready_LerpChange(1.f, 0.f, 1.f, 3.f, 0.f, true);
 		break;
 	case DTO::EUISubClassType::BOSS_STAT_END:
 		break;

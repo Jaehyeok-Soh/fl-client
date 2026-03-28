@@ -136,6 +136,8 @@ HRESULT CUIQuestNavi_Image::Attach_Personal_Info()
 
 void CUIQuestNavi_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -147,8 +149,7 @@ void CUIQuestNavi_Image::Bind_Events()
 
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -156,16 +157,14 @@ void CUIQuestNavi_Image::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_START>(
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
@@ -175,8 +174,7 @@ void CUIQuestNavi_Image::Bind_Events()
 					return;
 
 				this->Set_Visible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
@@ -190,8 +188,7 @@ void CUIQuestNavi_Image::Bind_Events()
 					this->Set_Invisible();
 				else
 					this->Set_Visible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
@@ -205,8 +202,7 @@ void CUIQuestNavi_Image::Bind_Events()
 					this->Set_Invisible();
 				else
 					this->Set_Visible();
-			})
-	);
+			}));
 }
 
 void CUIQuestNavi_Image::Tick_By_Type(const _float fTimeDelta)
@@ -313,7 +309,8 @@ void CUIQuestNavi_Image::Tick_Navi_Fx(const _float fTimeDelta)
 	if (m_isChange)
 	{
 		m_isChange = false;
-
+		// UI SOUND
+		m_pGameInstance->Play_OneShot(0, TO_HASH("UI_TUTORIAL_NAVI"), 0.5f);
 		Set_Visible();
 	}
 } 

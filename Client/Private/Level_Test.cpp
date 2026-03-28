@@ -62,7 +62,7 @@
 #include "SkillWarningSpace.h"
 #include "PlayerSkillObj_Headers.h"
 #include "SkyBox.h"
-
+#include "Texture.h"
 //=================
 // GameInstance
 //=================
@@ -81,6 +81,9 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 HRESULT CLevel_Test::Initialize()
 {
 	if (FAILED(Super::Initialize()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Dissolve()))
 		return E_FAIL;
 
 	if (FAILED(Build_Prototype()))
@@ -166,6 +169,7 @@ void CLevel_Test::Update(const _float fTimeDelta)
 //
 	if (KEY_BUTTON_DOWN(DIK_4))
 	{
+		m_pGameInstance->Broadcast<MINIGAME_CIRCLE_ON>();
 	}
 
 }
@@ -666,6 +670,11 @@ HRESULT CLevel_Test::Ready_HybridObject()
 	//m_pGameInstance->Regist_Pool((_uint)ELevelType::TEST, PoolTag, LayTag, 0, PrototypeTag, &Desc, 10);
 
 	return S_OK;
+}
+
+HRESULT CLevel_Test::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
 }
 
 HRESULT CLevel_Test::Spawn_HybridObject()

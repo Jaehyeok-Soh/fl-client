@@ -39,7 +39,7 @@ HRESULT CMonster_Fly_Body::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("Monster_Dog_Body");
+	Set_Name("Monster_Fly_Body");
 
 	MONSTERBODY_DESC* pDesc = static_cast<MONSTERBODY_DESC*>(pArg);
 	if (FAILED(Ready_Components(pDesc)))
@@ -126,6 +126,29 @@ HRESULT CMonster_Fly_Body::Ready_Components(MONSTERBODY_DESC* pDesc)
 HRESULT CMonster_Fly_Body::Bind_ShaderResources()
 {
 	return S_OK;
+}
+
+HRESULT CMonster_Fly_Body::Ready_DissolveEffect_Setting()
+{
+	using DS = DissolveEffectDesc;
+	m_tDissolveDesc.Reset();
+	m_tDissolveDesc.Add_DissolveFlag(DS::BIT_SPAWN_START,/* DS::BIT_USE_ALPHA_FADE, */DS::BIT_USE_DISSOLVE_MAP);
+	m_tDissolveDesc.Set_Dissolve_Setting(2.f, 1.f);
+	m_tDissolveDesc.Set_Spawn_Setting(1.f, 1.f);
+	m_tDissolveDesc.Set_ObjectType(DS::DISSOLVE_OBJECTTYPE::TYPE_MONSTER);
+
+	// 스폰 시간 & 디졸브 시간
+	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = SimpleMath::Vector3(0.11f, 9.56f, 0.f);
+	m_tDissolveDesc.ShaderData.fDissolveEdgeWidth = 0.1f;
+
+	return S_OK;
+}
+
+void CMonster_Fly_Body::DissolveStart()
+{
+	using DS = DissolveEffectDesc;
+	m_tDissolveDesc.Reset();
+	m_tDissolveDesc.Add_DissolveFlag(DS::BIT_DISSOLVE_START, DS::BIT_USE_EDGE,/* DS::BIT_USE_ALPHA_FADE, */DS::BIT_USE_DISSOLVE_MAP);
 }
 
 CMonster_Fly_Body* CMonster_Fly_Body::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

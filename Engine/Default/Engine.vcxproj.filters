@@ -553,6 +553,9 @@
     <Filter Include="00. System\05. Component\Camera\EventHandler">
       <UniqueIdentifier>{537a91d8-65a1-4b8c-b31f-18319af825c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\11. DataRepository\Datas\Citizen">
+      <UniqueIdentifier>{a87d2ace-67b8-4825-9fae-8fd18f3b3d70}</UniqueIdentifier>
+    </Filter>
     <Filter Include="00. System\05. Component\Camera\AnchorInterface">
       <UniqueIdentifier>{a8d1c514-3070-4683-95a8-e4b2c1b669de}</UniqueIdentifier>
     </Filter>
@@ -1110,6 +1113,9 @@
     </ClCompile>
     <ClCompile Include="..\private\CameraEvent_Handler.cpp">
       <Filter>00. System\05. Component\Camera\EventHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CitizenData.cpp">
+      <Filter>01. Utility\11. DataRepository\Datas\Citizen</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CameraAnchorResolver.cpp">
       <Filter>00. System\05. Component\Camera\AnchorInterface</Filter>
@@ -1722,6 +1728,9 @@
     </ClInclude>
     <ClInclude Include="..\public\CameraEvent_Handler.h">
       <Filter>00. System\05. Component\Camera\EventHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CitizenData.h">
+      <Filter>01. Utility\11. DataRepository\Datas\Citizen</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ICameraAnchorProvider.h">
       <Filter>00. System\05. Component\Camera\AnchorInterface</Filter>

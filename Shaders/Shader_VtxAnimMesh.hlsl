@@ -1,9 +1,16 @@
 #include "Struct_Defines.hlsl"
-#include "Animation_Defines.hlsl"
 #include "Light_Defines.hlsl"
+#include "Animation_Defines.hlsl"
+#include "DissolveEffect_Defines.hlsl"
 
 #define RENDERFX_EMISSIVE (1<<0)
 #define RENDERFX_SHAKE (1<<1)
+
+
+#define Citizen_Face_Eye    0
+#define Citizen_Face_Mouth  1
+#define Citizen_Face_END    2
+
 
 bool Has_RenderFx(uint iFlags, uint iMask)
 {
@@ -23,12 +30,71 @@ float3 Apply_Shake(float3 vWorldPos)
         + cameraUp * renderFx.fShakeAmpY;
 }
 
+void Apply_Dissolve_Discard_And_Alpha(
+    in PS_IN_SKELETON input,
+    inout float4 ioDiffuse)
+{
+    uint flags = g_DissolveEffect.g_iDissolveFlag;
+    float amount = saturate(g_DissolveEffect.g_fDissolveAmount);
+
+    if (!Is_Dissolve_Active())
+        return;
+
+    if (Should_Discard_By_Dissolve(input.vUV, flags, amount))
+        discard;
+
+    if (Has_DissolveFlag(flags, DF_USE_ALPHAFADE))
+    {
+        float alpha = Get_DissolveAlphaFactor(flags, amount);
+        ioDiffuse.a *= alpha;
+
+        if (ioDiffuse.a <= EPSILON)
+            discard;
+    }
+}
+
+float3 Get_DissolveEdgeEmissive(float2 uv)
+{
+    uint flags = g_DissolveEffect.g_iDissolveFlag;
+    float amount = saturate(g_DissolveEffect.g_fDissolveAmount);
+
+    if (!Is_Dissolve_Active())
+        return float3(0.f, 0.f, 0.f);
+
+    if (!Has_DissolveFlag(flags, DF_USEEDGE))
+        return float3(0.f, 0.f, 0.f);
+
+    float edge = Compute_DissolveEdge(
+        uv,
+        flags,
+        amount,
+        g_DissolveEffect.g_fDissolveEdgeWidth);
+
+    return g_DissolveEffect.g_vDissolveEdgeColor * edge * 3.0f;
+}
+
 cbuffer CB_MAPPING_RGB
 {
     float4 Color_R = { 1.f, 1.f, 1.f, 1.f };
     float4 Color_G = { 1.f, 1.f, 1.f, 1.f };
     float4 Color_B = { 1.f, 1.f, 1.f, 1.f };
 };
+
+
+struct CittzenFaceUV
+{
+    float2 vUVOffset; // 선택된 셀의 시작 UV (예: 0.25, 0.5)
+    float2 vUVScale; // 한 셀의 가로세로 크기 (예: 1.0/MaxCol, 1.0/MaxRow)
+};
+
+cbuffer CB_CitizentFaceData
+{
+    CittzenFaceUV tCitizenFaceUV[Citizen_Face_END];
+};
+
+
+
+
 
 VS_OUT_SKELETON VS_MAIN(VS_IN_SKELECTON input)
 {
@@ -100,6 +166,9 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
     if(output.vDiffuse.a <= EPSILON)
         discard;
     
+    // 디졸브 디스카드
+    Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
+    
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
@@ -111,6 +180,8 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
     output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
     output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
     float3 vEmissive = float3(0.f, 0.f, 0.f);
+    
+    
     // 텍스쳐 Emissive
     if (Has(g_iMaterialMask, EMISSIVE))
     {
@@ -133,8 +204,10 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
         float3 vFlash = renderFx.vEmissiveColor.rgb * fRim * renderFx.fEmissiveIntensity;
 
         vEmissive += vFlash;
-
     }
+    
+    // dissolve edge emissive
+    vEmissive += Get_DissolveEdgeEmissive(input.vUV);
     
     output.vEmissive = float4(vEmissive, 1.f);
     return output;
@@ -198,10 +271,80 @@ PS_OUT_SHADOW PS_SHADOW(VS_OUT_SHADOW input)
     return output;
 }
 
+
+PS_OUT_DEFFERED PS_CITIZENMOUTH(PS_IN_SKELETON input)
+{
+    PS_OUT_DEFFERED output;
+    
+    output.vDiffuse = 1.f;
+    
+    float2 vUV = input.vUV * tCitizenFaceUV[Citizen_Face_Mouth].vUVScale + tCitizenFaceUV[Citizen_Face_Mouth].vUVOffset;
+    
+    
+    Compute_Diffse(output.vDiffuse, vUV);
+    if (output.vDiffuse.a <= EPSILON)
+        discard;
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    // 텍스쳐 Emissive
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler,vUV ).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    
+    return output;
+}
+PS_OUT_DEFFERED PS_CITIZENEYE(PS_IN_SKELETON input)
+{
+    PS_OUT_DEFFERED output;
+    
+    output.vDiffuse = 1.f;
+    
+    float2 vUV = input.vUV * tCitizenFaceUV[Citizen_Face_Eye].vUVScale + tCitizenFaceUV[Citizen_Face_Eye].vUVOffset;
+    
+    
+    Compute_Diffse(output.vDiffuse, vUV);
+    if (output.vDiffuse.a <= EPSILON)
+        discard;
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    // 텍스쳐 Emissive
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    
+    return output;
+}
+
 technique11 T0
 {
-    PASS_RS_DS_BS_VP(P0, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
-    PASS_RS_DS_BS_VP(P1, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_RED)
+    PASS_RS_DS_BS_VP(Default, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+    PASS_RS_DS_BS_VP(Red, RS_Wire, DS_Default, BS_Default, VS_MAIN, PS_RED)
 
     // RGB mapping : weapon 쪽에서 쓰임
 	PASS_RS_DS_BS_VP(RGBMapping, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
@@ -212,4 +355,9 @@ technique11 T0
     // Index - 4
     // Shadow - 이거추가되면 Render_Shadow에서 Set_Pass Index 바꿔줘야함
     PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_SHADOW, PS_SHADOW)
+
+	PASS_RS_DS_BS_VP(CitizenEye, RS_Default, DS_Default, BS_Default, VS_MAIN , PS_CITIZENEYE)
+	PASS_RS_DS_BS_VP(CitizenMouth, RS_Default, DS_Default, BS_Default, VS_MAIN , PS_CITIZENMOUTH)
+	PASS_RS_DS_BS_VP(CitizenCloth, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
+	PASS_RS_DS_BS_VP(CitizenBody, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
 };

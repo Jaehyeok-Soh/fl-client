@@ -43,6 +43,11 @@ HRESULT CState_HitAdditive::End()
 	return S_OK;
 }
 
+_bool CState_HitAdditive::Can_Captablity_Move() const
+{
+	return false;
+}
+
 CState_HitAdditive* CState_HitAdditive::Create(CActionState* pOwnerComponent, void* pArg)
 {
 	CState_HitAdditive* pInstance = new CState_HitAdditive(pOwnerComponent);

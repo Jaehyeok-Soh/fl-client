@@ -299,7 +299,7 @@ HRESULT CEffectObject::Bind_ShaderResource()
     m_pShader->Set_Pass(m_tEffectDesc.Data._Effect_ShaderPass);
     m_pShader->Bind_TransformData(m_matCombinedWorld);
 
-    if (m_tEffectDesc.Data._Effect_ShaderPass == 3)
+   if (m_tEffectDesc.Data._Effect_ShaderPass == (_uint)DTO::MESHSHADERPASS::MESH_DISTOTION)
     {
         if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SceneHDR_Copy, m_pShader)))
             return E_FAIL;
@@ -379,6 +379,8 @@ HRESULT CEffectObject::Bind_ShaderResource()
             m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.y,
             m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.z,
             (_float)m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::SUB_MASKTEXTURE)]);
+
+        pDesc.vUVPower = Vec2(m_tEffectDesc.Data._Effect_UVXPower, m_tEffectDesc.Data._Effect_UVYPower);
 
         m_pShader->Bind_EffectData(pDesc);
 
@@ -807,6 +809,7 @@ void CEffectObject::Overwrite_FromEnv(const EFFECT_ENV_DESC::ENV_PART_DESC& pDes
     ParticleDesc.vLifeTime.y = pDesc.VFX_ParticleLifeTime_Parts;
     ParticleDesc.vRange = pDesc.VFX_ParticleRange_Parts;
     ParticleDesc.iInstnaceCount = pDesc.VFX_ParticleCount_Parts;
+    ParticleDesc.m_fStartSpeeds = m_tEffectDesc.Data._Effect_AnimSpeed;
 
     m_pParticleBuffer->Set_ParticleDesc(ParticleDesc);
 }

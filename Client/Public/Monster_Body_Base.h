@@ -50,6 +50,8 @@ public:
 	CBone* Get_Bone(CMonster_Body_Base::EBone eBone);
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);
 	const Matrix* Get_SocketMatrix(_uint iIndex);
+
+	virtual void  DissolveStart() {};
 public:
 	// Camera Interface
 	virtual _bool Resolve_CameraAnchor(
@@ -63,6 +65,7 @@ protected:
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_ComputeShader();
 	HRESULT Ready_Bones(MONSTERBODY_DESC* pDesc);
+	virtual HRESULT Ready_DissolveEffect_Setting() { return S_OK; }
 protected:
 	std::vector<_uint> m_vecBoneIndices;
 	CComputeShader* m_pBoneCombineCS{ nullptr };
@@ -75,6 +78,10 @@ protected:
 protected:
 	_bool m_bRagDollOnPre = { false };
 	_bool m_bRagDollOn = { false };
+
+protected:
+	DissolveEffectDesc	m_tDissolveDesc = {};
+
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

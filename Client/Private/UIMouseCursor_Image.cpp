@@ -125,6 +125,7 @@ HRESULT CUIMouseCursor_Image::Attach_Personal_Info()
 
 void CUIMouseCursor_Image::Bind_Events()
 {
+	Super::Bind_Events();
 }
 
 void CUIMouseCursor_Image::Tick_By_Type(const _float fTimeDelta)

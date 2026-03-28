@@ -129,6 +129,8 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	REGISTER_CONDITION("condition_attack_landed", CONDITION{ return MONSTERCC(state)->IsAttackLanded(); });
 	
 	REGISTER_CONDITION("condition_attack_none_landed", CONDITION{ return !MONSTERCC(state)->IsAttackLanded(); });
+	
+	REGISTER_CONDITION("condition_is_ground", CONDITION{ return MONSTERCC(state)->IsGround(); });
 
 	return S_OK;
 }

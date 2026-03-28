@@ -104,6 +104,7 @@ namespace Engine
 		BakedShadowparam,
 		SectionShadowparam,
 		PlayerInfoBuffer,
+		DISSOLVEEFFECT,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -130,7 +131,8 @@ namespace Engine
 		"CascadeParamBuffer",
 		"BakedShadowParamBuffer",
 		"ShaderBakedSectionBuffer",
-		"PlayerInfoBuffer"
+		"PlayerInfoBuffer",
+		"CB_DISSOLVE",
 	};
 	//===================
 	// FX SRV
@@ -162,6 +164,7 @@ namespace Engine
 		PerlinNoise,
 		RT_OIT_Accum,
 		RT_OIT_REVEAL,
+		DISSOLVE,
 		COUNT
 	};
 	constexpr const char* g_SRVNames[static_cast<unsigned int>(EFXSRV::COUNT)] =
@@ -190,7 +193,8 @@ namespace Engine
 		"g_SSAONoiseTexture",
 		"g_PerlinNoise",
 		"g_RenderTargetOITAccumTexture",
-		"g_RenderTargetOITRevealTexture"
+		"g_RenderTargetOITRevealTexture",
+		"g_DissolveTexture",
 	};
 	//===================
 	// Sound
@@ -758,6 +762,9 @@ namespace Engine
 			NPC_TAVERN = 4,
 			NPC_VILLAGER_1 = 5,
 			NPC_KID_1 = 6,
+			NPC_VETERAN = 7,
+			NPC_KID_2 = 8,
+			NPC_CITIZEN = 9,
 
 			// 1000 ~ 1999 오브젝트
 			// OBJECT_
@@ -802,6 +809,7 @@ namespace Engine
 
 			// 30000 ~ 39999 앨리트 몬스터
 			MONSTER_ELITE_DEFAULT = 30000,
+			MONSTER_ELITE_VETERAN = 30001,
 
 			// 40000 ~ 49999 보스 몬스터
 			MONSTER_BOSS_DEFAULT = 40000,
@@ -817,12 +825,15 @@ namespace Engine
 			if (strType == "PLAYER") return OBJECT_ENUM_TAG::PLAYER;
 
 			// NPC
-			if (strType == "NPC_DEFAULT") return OBJECT_ENUM_TAG::NPC_DEFAULT;
-			if (strType == "NPC_PAN") return OBJECT_ENUM_TAG::NPC_PAN;
-			if (strType == "NPC_BERENICA") return OBJECT_ENUM_TAG::NPC_BERENICA;
-			if (strType == "NPC_TAVERN") return OBJECT_ENUM_TAG::NPC_TAVERN;
-			if (strType == "NPC_VILLAGER_1") return OBJECT_ENUM_TAG::NPC_VILLAGER_1;
-			if (strType == "NPC_KID_1") return OBJECT_ENUM_TAG::NPC_KID_1;
+			if (strType == "NPC_DEFAULT")	return OBJECT_ENUM_TAG::NPC_DEFAULT;
+			if (strType == "NPC_PAN")		return OBJECT_ENUM_TAG::NPC_PAN;
+			if (strType == "NPC_BERENICA")	return OBJECT_ENUM_TAG::NPC_BERENICA;
+			if (strType == "NPC_TAVERN")	return OBJECT_ENUM_TAG::NPC_TAVERN;
+			if (strType == "NPC_VILLAGER_1")return OBJECT_ENUM_TAG::NPC_VILLAGER_1;
+			if (strType == "NPC_KID_1")		return OBJECT_ENUM_TAG::NPC_KID_1;
+			if (strType == "NPC_VETERAN")	return OBJECT_ENUM_TAG::NPC_VETERAN;
+			if (strType == "NPC_KID_2")		return OBJECT_ENUM_TAG::NPC_KID_2;
+			if (strType == "NPC_CITIZEN")	return OBJECT_ENUM_TAG::NPC_CITIZEN;
 
 			// OBJECT
 			if (strType == "OBJECT_DEFAULT") return OBJECT_ENUM_TAG::OBJECT_DEFAULT;
@@ -853,6 +864,7 @@ namespace Engine
 
 			// MONSTER_ELITE
 			if (strType == "MONSTER_ELITE_DEFAULT") return OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT;
+			if (strType == "MONSTER_ELITE_VETERAN") return OBJECT_ENUM_TAG::MONSTER_ELITE_VETERAN;
 
 			// MONSTER_BOSS
 			if (strType == "MONSTER_BOSS_DEFAULT") return OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT;
@@ -876,6 +888,9 @@ namespace Engine
 			case OBJECT_ENUM_TAG::NPC_TAVERN:								return "NPC_TAVERN";
 			case OBJECT_ENUM_TAG::NPC_VILLAGER_1:							return "NPC_VILLAGER_1";
 			case OBJECT_ENUM_TAG::NPC_KID_1:								return "NPC_KID_1";
+			case OBJECT_ENUM_TAG::NPC_VETERAN:								return "NPC_VETERAN";
+			case OBJECT_ENUM_TAG::NPC_KID_2:								return "NPC_KID_2";
+			case OBJECT_ENUM_TAG::NPC_CITIZEN:								return "NPC_CITIZEN";
 
 			case OBJECT_ENUM_TAG::OBJECT_DEFAULT:							return "OBJECT_DEFAULT";
 
@@ -898,6 +913,7 @@ namespace Engine
 			case OBJECT_ENUM_TAG::MONSTER_DOG:								return "MONSTER_DOG";
 			case OBJECT_ENUM_TAG::MONSTER_FLY:								return "MONSTER_FLY";
 			case OBJECT_ENUM_TAG::MONSTER_BOOMER:							return "MONSTER_BOOMER";
+			case OBJECT_ENUM_TAG::MONSTER_ELITE_VETERAN:					return "MONSTER_ELITE_VETERAN";
 
 			case OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT:					return "MONSTER_ELITE_DEFAULT";
 
@@ -921,6 +937,9 @@ namespace Engine
 		OBJECT_ENUM_TAG::NPC_TAVERN,
 		OBJECT_ENUM_TAG::NPC_VILLAGER_1,
 		OBJECT_ENUM_TAG::NPC_KID_1,
+		OBJECT_ENUM_TAG::NPC_VETERAN,
+		OBJECT_ENUM_TAG::NPC_KID_2,
+		OBJECT_ENUM_TAG::NPC_CITIZEN,
 		OBJECT_ENUM_TAG::OBJECT_DEFAULT,
 		OBJECT_ENUM_TAG::OBJECT_PICKING_DEFAULT,
 		OBJECT_ENUM_TAG::OBJECT_PICKING_FLOWER_1,
@@ -940,6 +959,7 @@ namespace Engine
 		OBJECT_ENUM_TAG::MONSTER_FLY,
 		OBJECT_ENUM_TAG::MONSTER_BOOMER,
 		OBJECT_ENUM_TAG::MONSTER_ELITE_DEFAULT,
+		OBJECT_ENUM_TAG::MONSTER_ELITE_VETERAN,
 		OBJECT_ENUM_TAG::MONSTER_BOSS_DEFAULT,
 		OBJECT_ENUM_TAG::MONSTER_BOSS_XIBI,
 		OBJECT_ENUM_TAG::MONSTER_BOSS_LIANHUO,
@@ -970,6 +990,18 @@ namespace Engine
 		DEPART,
 		ON_REACH,
 		END_CCS,
+		END,
+	};
+
+#pragma endregion
+
+#pragma region Monster Spawn Wave Type
+
+	enum class MONSTERSPAWN_WAVE_TYPE
+	{
+		LOOP,
+		ALL_KILL,
+		TIMER,
 		END,
 	};
 

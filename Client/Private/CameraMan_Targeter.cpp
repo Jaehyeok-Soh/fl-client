@@ -11,6 +11,8 @@
 #include "CameraShotUtils.h"
 #include "GameInstance.h"
 
+#include "PlayerImguiValues.h"
+
 USING(Client)
 
 CCameraMan_Targeter::CCameraMan_Targeter(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -27,8 +29,8 @@ CCameraMan_Targeter::CCameraMan_Targeter(const CCameraMan_Targeter& rhs)
     , m_fCurRightDistance(rhs.m_fCurRightDistance)
 {
     m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]    = 0.f;
-    m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)]       = 0.f;
-    m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]     = 3.f;
+    m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)]       = 0.2f;
+    m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]     = 3.3f;
 
     m_arrGunDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]       = 0.58f;
     m_arrGunDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)]          = 0.1f;
@@ -61,6 +63,30 @@ HRESULT CCameraMan_Targeter::Awake(const _uint iCurrentLevelID)
     if (FAILED(Super::Awake(iCurrentLevelID)))
         return E_FAIL;
 
+    switch (iCurrentLevelID)
+    {
+    case ENUM_TO_UINT(ELevelType::KUANGKENG):
+    {
+        m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]    = 0.f;
+        m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)]       = 0.5f;
+        m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]     = 4.0f;
+    }
+    break;
+
+    case ENUM_TO_UINT(ELevelType::LIANHUO):
+    {
+        m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]    = 0.f;
+        m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)]       = 0.3f;
+        m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]     = 4.7f;
+    }
+    break;
+
+    default:
+        m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]    = 0.f;
+        m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)]       = 0.2f;
+        m_arrNormalDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]     = 3.3f;
+    }
+
     Change_CamState(TargeterState::TARGETSYNC);
     //m_fK_SpeedTodist = m_fMaxDistanceDelta / m_fMaxSpeed;
 
@@ -76,15 +102,11 @@ void CCameraMan_Targeter::Update_Priority(const _float fTimeDelta)
     if (KEY_BUTTON_HOLD(DIK_UP))
         m_fCurLookDistance -= fTimeDelta;
 
-    if(KEY_BUTTON_HOLD(DIK_DOWN))
+    if (KEY_BUTTON_HOLD(DIK_DOWN))
         m_fCurLookDistance += fTimeDelta;
-
 
     Super::Update_Priority(fTimeDelta);
     Update_Priority_State(fTimeDelta);
-
-
-
 }
 
 void CCameraMan_Targeter::Update(const _float fTimeDelta)
@@ -476,12 +498,12 @@ void CCameraMan_Targeter::TargetSync_Update(const _float fTimeDelta)
 
 void CCameraMan_Targeter::TargetSync_End()
 {
-    m_fYaw_Target = m_fYaw;
-    m_fPitch_Target = m_fPitch;
-    m_bImpactInit = false;
-    m_fStateTime = 0.f;
+    m_fYaw_Target       = m_fYaw;
+    m_fPitch_Target     = m_fPitch;
+    m_bImpactInit       = false;
+    m_fStateTime        = 0.f;
 
-    m_arrPreDistances = m_arrNormalDistances;
+    m_arrPreDistances = m_arrCurDistances;
 }
 
 void CCameraMan_Targeter::GunCam_Begin()

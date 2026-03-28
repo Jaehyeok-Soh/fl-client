@@ -35,6 +35,9 @@ public:
 	virtual HRESULT End() override;
 
 protected:
+	virtual _bool Can_Captablity_Move() const override;
+
+protected:
 	std::array<_float, 4>		m_ComboTimes; // 4번째 콤보에서는 다음 콤보를 받지 않음
 	std::array<_float, 5>		m_ComboEndTimes;
 	_float		m_fSlide_KeyCoolTime = { 0.f };

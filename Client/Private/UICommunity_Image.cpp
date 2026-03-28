@@ -110,6 +110,8 @@ HRESULT CUICommunity_Image::Attach_Personal_Info()
 
 void CUICommunity_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -117,16 +119,13 @@ void CUICommunity_Image::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
-
+			}));
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_START>(
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
@@ -135,24 +134,21 @@ void CUICommunity_Image::Bind_Events()
 				this->Set_Visible();
 
 				m_pInteractObj = pObj;
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_LOST>([this](CGameObject* pObj)
 			{
 				m_pInteractObj = nullptr;
 				this->Set_Invisible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_ENTER>([this](CGameObject* pObj)
 			{
 				this->Set_Invisible();
 				m_isClick = true;
-			})
-	);
+			}));
 }
 
 void CUICommunity_Image::Tick_By_Type(const _float fTimeDelta)
@@ -169,6 +165,7 @@ void CUICommunity_Image::Tick_By_Type(const _float fTimeDelta)
 		if (KEY_BUTTON_UP(DIK_F))
 		{
 			m_pGameInstance->Broadcast<INTERACT_ENTER>(m_pInteractObj);
+			m_pGameInstance->Play_OneShot(0, TO_HASH("UI_COMMUNITY_ENTER"), 1.f);
 		}
 		break;
 	case DTO::EUIDImageSubClassType::COMMUNITY_OUTLINE:

@@ -57,63 +57,87 @@ HRESULT CBody::Initialize(void* pArg)
 	m_iSpine1_Index = Get_Component<CModel>()->Get_BoneIndex("spine_01");
 	m_iCamPos_Index = Get_Component<CModel>()->Get_BoneIndex("camera_point");
 	m_iCamSocket_Index = Get_Component<CModel>()->Get_BoneIndex("camera_socket");
+
+	// model 초기값
 	{
 		CModel* pMyModel = Get_Component<CModel>();
-		// mix 값 초기화를 위함
-		pMyModel->Set_MixAnim_ResetSize(0);
-		//Face_Smile
-		_uint iFaceAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_Angry");
-		_uint iJumpAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart");
-		_uint iBulletAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_BulletJump_Start");
-		vector<CModel::DATA_ANIMIX> vecMix = { {113,false,1.f} };
-		pMyModel->Set_MixAnim(true);
-		pMyModel->Set_MixAnim_ResetSize(2);
-		pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);
-		pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);
-		pMyModel->Set_Animtion_MotionOffset(iJumpAnimIdx, 2.5f);
-		pMyModel->Set_Animtion_MotionOffset(iBulletAnimIdx, 2.f);
 
+		// 전반적인 초기 셋팅
+		{
+			pMyModel->Set_Animation_SpeedOffset_All(1.2f);
+		}
 
-		_uint iAnimMiddle = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MM");
-		vector<CModel::DATA_ANIMIX> vecAnimMix = { {4,true,1.f},{414,true,1.f} };
-		pMyModel->Make_MixRatio(iAnimMiddle-1, vecAnimMix, m_pAdditiveMixCS);	//aim down
-		pMyModel->Make_MixRatio(iAnimMiddle, vecAnimMix, m_pAdditiveMixCS);	// aim middle
-		pMyModel->Make_MixRatio(iAnimMiddle+1, vecAnimMix, m_pAdditiveMixCS); // aim up
+		// face mix 셋팅
+		{
+			vector<CModel::DATA_ANIMIX> vecMix = { {113,false,1.f} }; // mixing 정보
+			_uint iFaceAnimIdx = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Face_Angry");
 
-		pMyModel->Set_AdditiveRef_AnimIdx(99);					// middle aim을 ref 애니메이션으로 잡는다
+			pMyModel->Set_MixAnim_ResetSize(0); 								// mix 값 초기화
+			pMyModel->Set_MixAnim(true);										// mix를 키고
+			pMyModel->Set_MixAnim_ResetSize(2);									// mix size 설정 (0 : face , 1 : Lower body)
+			pMyModel->Make_MixRatio(iFaceAnimIdx, vecMix, m_pBoneAnimMixCS);	// mixing 정보 할당
+			pMyModel->Set_MixAnim_AnimIndex(0, iFaceAnimIdx);					// model에 mix 애니메이션 설정
+		}
 
-		pMyModel->Set_Animation_SpeedOffset_All(1.2f);
+		// additive mix 셋팅
+		{
+			vector<CModel::DATA_ANIMIX> vecAnimMix = { {4,true,1.f},{414,true,1.f} }; // mixing 정보
+			_uint iAnimMiddle = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Shotgun_Aim_MM");
+
+			pMyModel->Set_AdditiveRef_AnimIdx(99);									// middle aim을 ref 애니메이션으로 잡는다
+			pMyModel->Make_MixRatio(iAnimMiddle - 1, vecAnimMix, m_pAdditiveMixCS);	// aim down
+			pMyModel->Make_MixRatio(iAnimMiddle, vecAnimMix, m_pAdditiveMixCS);		// aim middle
+			pMyModel->Make_MixRatio(iAnimMiddle + 1, vecAnimMix, m_pAdditiveMixCS); // aim up
+		}
+
+		// bone move 셋팅
+		{
+			CS_CB_MU_BONEMOVE tCB = {};
+			tCB.iMovingIdx = 85;
+
+			pMyModel->Set_MoveBoneCS(tCB); // aim up
+		}
 
 		// motion offset
-		_uint iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop_Acc");
-		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(0.6f);
-		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dodge_InAir");
-		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.5f);
-		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dodge_To_Run");
-		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.2f);
-		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_01");
-		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.5f);
-		pMyModel->Get_Animation(iRunAnimIds)->Set_AnimationSpeed(1.7f);
-		iRunAnimIds = pMyModel->Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_02");
-		pMyModel->Get_Animation(iRunAnimIds)->Set_MotionOffset(1.8f);
+		{
+			pMyModel->Set_Animtion_MotionOffset(Get_AnimationIndex(L"Animation_PlayerMoon_Run_Loop_Acc"), 0.6f);
+			pMyModel->Set_Animtion_MotionOffset(Get_AnimationIndex(L"Animation_PlayerMoon_Dodge_InAir"), 1.5f);
+			pMyModel->Set_Animtion_MotionOffset(Get_AnimationIndex(L"Animation_PlayerMoon_Dodge_To_Run"), 1.2f);
+			pMyModel->Set_Animtion_MotionOffset(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_01"), 1.7f);
+			pMyModel->Set_Animtion_MotionOffset(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_02"), 1.8f);
+			pMyModel->Set_Animtion_MotionOffset(Get_AnimationIndex(L"Animation_PlayerMoon_FirstJump_InplaceStart"), 2.5f);
+			pMyModel->Set_Animtion_MotionOffset(Get_AnimationIndex(L"Animation_PlayerMoon_BulletJump_Start"), 2.f);
+		}
 
 
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_Loop"))->Set_AnimationSpeed(1.1f);
+		// animation speed 조절
+		{
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_Loop"))->Set_AnimationSpeed(1.1f);
 
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_02"))->Set_AnimationSpeed(1.3f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_03"))->Set_AnimationSpeed(1.3f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_04"))->Set_AnimationSpeed(1.3f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_SlideAttack"))->Set_AnimationSpeed(1.5f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_FallAttack_End"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_01"))->Set_AnimationSpeed(1.9f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_02"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_03"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_RunAttack_04"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_SlideAttack"))->Set_AnimationSpeed(1.5f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_FallAttack_End"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_HeavyAttack_Start"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Dualblade_HeavyAttack_End"))->Set_AnimationSpeed(1.3f);
 
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01"))->Set_AnimationSpeed(1.9f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02"))->Set_AnimationSpeed(1.3f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03"))->Set_AnimationSpeed(1.3f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04"))->Set_AnimationSpeed(1.3f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack"))->Set_AnimationSpeed(1.3f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_End"))->Set_AnimationSpeed(1.3f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_Start"))->Set_AnimationSpeed(1.3f);
-		pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_01"))->Set_AnimationSpeed(1.9f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_02"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_03"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_RunAttack_04"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_SlideAttack"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_End"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_Start"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End"))->Set_AnimationSpeed(1.3f);
+		}
+
+		//// root motion 셋팅
+		//{
+		//	pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Turn_L45"))->Set_ApplyRootMotion(false);
+		//}
+
 	}
 
 	// CascadeBuffer Shader에 연결
@@ -149,7 +173,7 @@ void CBody::Update(_float fTimeDelta)
 	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 
 	Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
-		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS, m_pAdditiveMixCS);
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS, m_pAdditiveMixCS,nullptr, m_pBoneMoveCS);
 	Get_Component<CRenderFx>()->Update(fTimeDelta);
 }
 
@@ -602,6 +626,23 @@ HRESULT CBody::Ready_ComputeShader()
 		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
 
 		if (FAILED(Add_Script_Component(L"ComputeShader_AnimAdditiveMix", L"Prototype_Component_Shader_AnimAdditiveMix", &ShaderDesc, CAST_VOID_PP(&m_pAdditiveMixCS))))
+			return E_FAIL;
+	}
+
+	// ========   Compute Shader : BoneMove  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "FINAL_SRT_SRV";
+
+		ShaderDesc.InputBufferNum = 0;
+		ShaderDesc.bMakeSB = false;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "FINAL_SRT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMove", L"Prototype_Component_Shader_BoneMove", &ShaderDesc, CAST_VOID_PP(&m_pBoneMoveCS))))
 			return E_FAIL;
 	}
 

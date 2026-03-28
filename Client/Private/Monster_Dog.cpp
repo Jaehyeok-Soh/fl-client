@@ -68,9 +68,12 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 		tPrefabData.Data = Desc;
  		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	}
+
 	{
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 300.f);
 	}
+
+	Ready_StateIndexForDirecting();
 
 	return S_OK;
 }
@@ -200,7 +203,7 @@ HRESULT CMonster_Dog::Ready_Components(void* pArg)
 	desc.fMeleeRange = 2.f;
 	desc.fAttackRange = 4.f;
 	desc.fCloseRange = 1.f;
-	desc.fDetectionRange = 15.f;
+	desc.fDetectionRange = 100.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
 	//desc.vecSkillRange;
@@ -212,6 +215,43 @@ HRESULT CMonster_Dog::Ready_Components(void* pArg)
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}
+	return S_OK;
+}
+
+HRESULT CMonster_Dog::Ready_StateIndexForDirecting()
+{
+	CMonsterActionState* pActionState = Get_Component<CMonsterActionState>();
+	if (pActionState == nullptr)
+		return E_FAIL;
+
+	_uint idleIndex = { 0 };
+
+	auto setStateIndex = [&](_uint& iStateIndex, const string& strStateName)->_bool
+		{
+			_uint iIndex = pActionState->Get_StateIndex(strStateName);
+			if (iIndex < 0)
+				return false;
+			iStateIndex = iIndex;
+			return true;
+		};
+
+	if (setStateIndex(idleIndex, "Idle") == false)
+		return E_FAIL;
+
+	Change_State_ForDirecting(idleIndex);
+
+	return S_OK;
+}
+
+HRESULT CMonster_Dog::Change_State_ForDirecting(_int iStateIdx)
+{
+	CActionState* pActionState = Get_Component<CActionState>();
+	if (pActionState == nullptr)
+		return E_FAIL;
+
+	if (FAILED(pActionState->Change_State(iStateIdx, true)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

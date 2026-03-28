@@ -249,6 +249,26 @@ struct VS_OUT_INST_MESH_PARTICLE
 
     float vViewZ : TEXCOORD4;
 };
+
+
+struct VS_OUT_INST_DECALMESH_PARTICLE
+{
+    float4 vPosition : SV_POSITION;
+    float2 vUV : TEXCOORD0;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float3 vBinormal : BINORMAL;
+    
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD3;
+
+    float2 vPSize : PSIZE;
+    float2 vLifeTime : TEXCOORD4;
+    float vViewZ : TEXCOORD5;
+
+    row_major float4x4 matTransformInv : TEXCOORD6;
+};
+
 ///////////////////
 // GeometryInput //
 ///////////////////

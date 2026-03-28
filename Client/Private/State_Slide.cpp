@@ -14,6 +14,8 @@ HRESULT CState_Slide::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
+    m_fCapHitMoveTime = Get_MoveBoneTime(60.f);
+
     return S_OK;
 }
 
@@ -47,9 +49,7 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
     Set_ApplyYLerp(true);
     m_FMoves &= ~MOVEFLAGS::OWN;
 
-    // 가속도 구조로 변경하면서 impuls 한번만 주도록 변경
-    // ownMove에서 이동함
-    // 03/05 소재혁
+
     {
         Look_Impuls(1.f);
         Set_DeAccelRate(0.5f);

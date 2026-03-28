@@ -62,6 +62,10 @@ void CUIPlayerStat_Progress::Update_Priority(const _float fTimeDelta)
 			if (!m_isStartLowHp)
 			{
 				m_isStartLowHp = TRUE;
+				UIEVENT_DESC Desc = {};
+				Desc.eEventID = EUIEventID::PLAYER_LOW_HP;
+				m_pUIManager->Get_UIEvents().Broadcast(Desc);
+
 				m_isEndLowHp = FALSE;
 				m_fTickTimeAcc = 1.f;
 			}
@@ -71,6 +75,10 @@ void CUIPlayerStat_Progress::Update_Priority(const _float fTimeDelta)
 			if (!m_isEndLowHp)
 			{
 				m_isStartLowHp = FALSE;
+				UIEVENT_DESC Desc = {};
+				Desc.eEventID = EUIEventID::PLAYER_NORMAL_HP;
+				m_pUIManager->Get_UIEvents().Broadcast(Desc);
+
 				m_isEndLowHp = TRUE;
 				m_vColorTint = m_vOriginColor;
 				m_vGradiantColorTint = m_vOriginGradiantColor;
@@ -148,6 +156,8 @@ _bool CUIPlayerStat_Progress::Tick_InVisible_Event(const _float fTimeDelta)
 
 void CUIPlayerStat_Progress::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -260,6 +270,20 @@ HRESULT CUIPlayerStat_Progress::Convert_Stat_To_Ratio()
 		break;
 	case DTO::EUISubClassType::PLAYER_ARMOR:
 		f = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::DEFENSE);
+		if (f > 0.1f)
+		{
+			if (!m_isDefenseTrigger)
+			{
+				m_isDefenseTrigger = true;
+				UIEVENT_DESC Desc = {};
+				Desc.eEventID = EUIEventID::PLAYER_NORMAL_HP;
+				m_pUIManager->Get_UIEvents().Broadcast(Desc);
+			}
+		}
+		else
+		{
+			m_isDefenseTrigger = false;
+		}
 		break;
 	case DTO::EUISubClassType::PLAYER_ENERGY:
 		f = m_pPlayerStatCom->Get_Rate(CMyStat::STAT_TYPE::MENTAL);

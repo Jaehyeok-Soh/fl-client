@@ -47,6 +47,7 @@ public:
 protected:
 	CGameObject*  m_pParentObject = { nullptr };
 	Matrix        m_CombineWorldMatrix = {};
+	Matrix		  m_CombineWorldMatrixInv = {};
 	const Matrix* m_pMatParent = { nullptr };
 
 protected:

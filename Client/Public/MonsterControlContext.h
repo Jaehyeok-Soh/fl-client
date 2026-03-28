@@ -3,6 +3,7 @@
 
 NS_BEGIN(Engine)
 class CGameObject;
+class CPhysics_QueryFilterCallback;
 NS_END
 
 NS_BEGIN(Client)
@@ -121,7 +122,7 @@ public:
 	_bool IsTargetBehind() const;
 	_bool IsTargetSide() const;
 	_bool IsTargetClose() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDistance <= m_tDesc.fCloseRange; }
-	_bool IsTargetAhead() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward > 0.9f; }
+	_bool IsTargetAhead() const { return m_tRuntimeDesc.bTargetValid && m_tRuntimeDesc.fDotForward > 0.7f; }
 
 	// 절벽
 	_bool IsCliffAhead();
@@ -139,6 +140,7 @@ public:
 	// 공간
 	_bool IsFalling() const { return Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::FALL); }
 	_bool IsDown() const { return Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::DOWN); }
+	_bool IsGround();
 
 	// 상태
 	_bool IsHit() const { return (m_tHitDesc.attackDesc.pAttackPreset != nullptr) && Engine_Utils::Has_Flag(m_iSubState, SUB_STATE::HIT); }
@@ -190,6 +192,7 @@ public:
 	void UpdateSideWalk(const _float fTimeDelta);
 	void UpdateTurn90(const _float fTimeDelta);
 	void UpdateTrun180(const _float fTimeDelta);
+
 	void Set_CCT_Collision_Disable();
 	void Set_CCT_Collision_Enable();
 
@@ -215,6 +218,8 @@ private:
 	//_bool m_bGrounded = { false };
 	//_bool m_bGravity = { false };
 	//_uint m_iJumpCount = { 0 };
+
+	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 
 	Vec3 m_vMoveDir = {};
 	MONSTER_CONTROLCONTEXT_DESC m_tDesc = {};

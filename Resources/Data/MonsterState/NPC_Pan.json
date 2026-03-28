@@ -20,6 +20,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
@@ -58,8 +59,31 @@
                                     false
                                 ],
                                 "fParam": [
-                                    0.0,
+                                    -1.0,
                                     1.0,
+                                    -1.0,
+                                    0.0
+                                ],
+                                "iParam": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        {
+                            "strFeature": "feat_align_attack",
+                            "tParam": {
+                                "bParam": [
+                                    false,
+                                    false,
+                                    false,
+                                    false
+                                ],
+                                "fParam": [
+                                    0.0,
+                                    0.0,
                                     0.0,
                                     0.0
                                 ],
@@ -178,6 +202,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
@@ -252,6 +277,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
@@ -326,6 +352,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
@@ -400,6 +427,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
@@ -461,9 +489,9 @@
                                     false
                                 ],
                                 "fParam": [
-                                    0.0,
+                                    -1.0,
                                     1.0,
-                                    0.0,
+                                    -1.0,
                                     0.0
                                 ],
                                 "iParam": [
@@ -551,6 +579,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",
@@ -625,6 +654,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Appear",

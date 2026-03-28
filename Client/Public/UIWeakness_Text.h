@@ -42,9 +42,6 @@ private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
 	
-private:
-	DelegateHandle m_tEventHandle0 = {};
-
 public:
 	static CUIWeakness_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Engine_Enum.h"
 #include "UIQuest_Text.h"
 #include "Client_Defines.h"
 #include "Client_EventDefine.h"
@@ -137,6 +138,8 @@ HRESULT CUIQuest_Text::Convert_Stat_To_Text()
 
 void CUIQuest_Text::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -148,8 +151,7 @@ void CUIQuest_Text::Bind_Events()
 
 					this->Set_Visible();
 				}
-			})
-	);
+			}));
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -157,16 +159,14 @@ void CUIQuest_Text::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_START>(
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
@@ -176,10 +176,7 @@ void CUIQuest_Text::Bind_Events()
 					return;
 
 				this->Set_Visible();
-			})
-	);
-
-
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_SCENARIO_NOTIFY>([this]()
@@ -193,8 +190,7 @@ void CUIQuest_Text::Bind_Events()
 				auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 				desc.tScenarioInfo.wstrSubTitle;
 				desc.tChapterInfo.tQuestDesc.wstrTitle;
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<QUEST_CHANGE_CHAPTER_NOTIFY>([this]()
@@ -214,7 +210,7 @@ void CUIQuest_Text::Bind_Events()
 						UIEVENT_DESC Desc = {};
 						Desc.eEventID = EUIEventID::QUEST_NAME_CHANGE;
 						m_pUIManager->Get_UIEvents().Broadcast(Desc);
-
+						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_QUEST_CHANGE"), 1.f);
 						this->m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
 					}
 					break;
@@ -225,8 +221,7 @@ void CUIQuest_Text::Bind_Events()
 				case DTO::EUITextSubClassType::QUEST_END:
 					break;
 				}
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
@@ -239,8 +234,7 @@ void CUIQuest_Text::Bind_Events()
 						this->m_isPulseTrigger = true;
 					}
 				}
-			})
-	);
+			}));
 
 	return;
 }
@@ -322,7 +316,13 @@ void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 		auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 		if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
 		{
-			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle + L"(" + std::to_wstring(desc.tChapterInfo.iCurrentCount) + L"/10)";
+			if(desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_BOSS_XIBI) != desc.tChapterInfo.eTargetType.end())
+				m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
+			else
+			{
+				m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle + L"(" + std::to_wstring(desc.tChapterInfo.iCurrentCount) + 
+					L"/" + std::to_wstring(desc.tChapterInfo.iCount) + L")";
+			}
 		}
 		else
 			m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;

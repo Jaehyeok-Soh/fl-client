@@ -1,15 +1,17 @@
 #pragma once
 #include "ToolObject.h"
-
+#include "CitizenData.h"
 
 NS_BEGIN(Engine)
 class CMaterial;
 struct  CLIENT_MAKEPATH_DESC_BASE;
 class CModel;
 class CShader;
+class CComputeShader;
 NS_END
 
 NS_BEGIN(Tool)
+class CCitizenPart;
 class CMapToolManager;
 class CEffect_Env;
 
@@ -81,12 +83,19 @@ public:
 	HRESULT								Ready_PlusData_ByClientMakePath();
 
 public:
+	HRESULT								Ready_ComputeShader();
+	HRESULT								Change_CitizenBonePart(_uint iChangeCitizenPartType, const wstring& wstrModelFolderName, const Vec4& vColor = {1.f,1.f,1.f,1.f});
+	HRESULT								Delete_CitizenBonePart(_int iChangeCitizenPartType = -1);
+	HRESULT								Change_CitizenPartsColor(const Vec4& vColor , _int iChangeCitizenPartType);
+public:
 	HRESULT								Ready_Plants();
 	HRESULT								Ready_Batch_Player();
 	HRESULT								Ready_Batch_Monster();
 	HRESULT								Ready_Batch_Object();
+	HRESULT								Ready_Batch_NPC();
 	HRESULT								Ready_Batch_InteractiveObject();
 	HRESULT								Ready_TriggerBox_MonsterSpawner();
+	HRESULT								Ready_TriggerBox_MonsterWaveSpawner();
 
 	HRESULT								Ready_Water();
 	HRESULT								Ready_Env();
@@ -205,6 +214,7 @@ public:
 	std::vector < std::pair<CEffect_Env*, EFFECT_ENV_DESC>>* Get_EffectEnvData() { return &m_vEnvEffectList; }
 #pragma region BeforeRender
 	void								BatchObject_BeforeRender(const _float fTimeDelta);
+	void								BatchNPC_BeforeRender(const _float fTimeDelta);
 	void								Env_BeforeRender(const _float fTimeDelta);
 	void								LightObject_BeforeRender(const _float fTimeDelta);
 #pragma endregion
@@ -232,10 +242,12 @@ public:
 
 	HRESULT								Render_Batch_Player();
 	HRESULT								Render_Batch_Monster();
+	HRESULT								Render_Batch_NPC();
 	HRESULT								Render_Batch_Object();
 
 	HRESULT								Render_TriggerBox_ChangeLevel();
 	HRESULT								Render_TriggerBox_MonsterSpawner();
+	HRESULT								Render_TriggerBox_MonsterWaveSpawner();
 	HRESULT								Render_TriggerBox_GlobalEvent_BroadCaster();
 
 	/* Collider Type 전용 Render함수 */
@@ -301,6 +313,9 @@ protected:
 	/* Instance Draw 컬링용 Min Max들고있기 */
 	Vec3								m_vInstanceWorldMinMax[2]{ Vec3(FLT_MAX,FLT_MAX,FLT_MAX) , Vec3(-FLT_MAX,-FLT_MAX,-FLT_MAX)};
 
+
+
+
 public:
 	// pair로 이펙트를 key값으로 가지고 value로 SpawnDesc을 가지고 있는다 
 	void								Add_EnvEffect(const string& EffectTag);
@@ -314,6 +329,21 @@ public:
 	const Matrix*						m_pWorldMatPtr = {nullptr};	// 이거 이중포인터 때문에 반 강제적으로 캐싱해서 들고 있어야함ㅋ
 																	// 폭파의 신 최정우 강림. (클라쪽에서 한번 Awake나 이떄 캐싱해서 들고있어라.)
 	std::vector<std::pair<CEffect_Env*, EFFECT_ENV_DESC>>	m_vEnvEffectList = {};
+
+
+public:
+	CComputeShader* m_pBoneMeshCS;
+	CComputeShader* m_pBoneCombineCS;
+	CComputeShader* m_pAnimECS;
+	CComputeShader* m_pAnimBlendCS;
+	CComputeShader* m_pAnimMix;
+
+
+	std::array<CCitizenPart*, ENUM_TO_UINT(DTO::CITIZEN_PARTTYPE::END)>  m_arrayCitizenPart;
+
+	DTO::CB_CitizentFaceData			m_tCBCitizenFaceData;
+
+	vector<EAnimShaderPass>				m_vecAnimShaderPass{};
 public:
 	static CMapObject*		Create(EToolObjectType eType, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 

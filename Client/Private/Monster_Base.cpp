@@ -279,6 +279,13 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 			Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
 			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();
+
+			// 여기에 Dissolve Flag 발동 시키기.
+			{
+				CMonster_Body_Base* pBody = { nullptr };
+				pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+				pBody->DissolveStart();
+			}
 		}
 	}
 
@@ -292,7 +299,7 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		if (pBody != nullptr && pRagdoll != nullptr)
 		{
 			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
-				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 1.f);
+				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 5.f);
 		}
 	}
 

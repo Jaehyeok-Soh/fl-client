@@ -44,6 +44,11 @@ HRESULT CNPC_Villager_Body_1::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
+	// face mix ¼ÂÆÃ
+	{
+		Setting_FaceMix(108, Get_Component<CModel>()->Get_AnimationIndex(L"Animation_NPC_Villager_1_NPC_Enli_None"));
+	}
+
 	return S_OK;
 }
 

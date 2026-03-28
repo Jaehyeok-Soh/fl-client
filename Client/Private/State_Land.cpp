@@ -29,6 +29,17 @@ HRESULT CState_Land::Start(void* pArg, _bool bForce)
 
 	Set_DoubleJumpCount(false);
 
+	switch (m_iMainAnimIdx)
+	{
+	case 0:
+		m_fCapHitMoveTime = Get_MoveBoneTime(30.f);
+		break;
+
+	case 1:
+		m_fCapHitMoveTime = Get_MoveBoneTime(60.f);
+		break;
+	}
+
 
 	//Set_RootMotion_Apply(false);
 	//Set_YLerp(false);

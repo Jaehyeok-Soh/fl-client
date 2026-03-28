@@ -893,6 +893,16 @@ HRESULT CGameInstance::Bake_StaticShadow(BoundingBox* pRootBox)
 
 	return S_OK;
 }
+HRESULT CGameInstance::Ready_DissolveSetting()
+{
+	return m_pRender_Manager->Ready_Dissolve();
+}
+
+HRESULT CGameInstance::Bind_DissolveTexture(class CShader* pShader)
+{
+	return m_pRender_Manager->Bind_DissolveTexture(pShader);
+}
+
 SHADER_SSAOPARAM_DESC& CGameInstance::Get_SSAOParamDesc()
 {
 	return m_pRender_Manager->Get_SSAOParamDesc();
@@ -1351,9 +1361,9 @@ RAGDOLLELEMENTS CGameInstance::CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT
 	return m_pPhysics_Module->CreateRagdoll(arrRagdollBoneDesc);
 }
 
-PxController* CGameInstance::GetController(PHYSICSCCT_DESC* pDesc)
+PxController* CGameInstance::CreateController(PHYSICSCCT_DESC* pDesc)
 {
-	return m_pPhysics_Module->GetController(pDesc);
+	return m_pPhysics_Module->CreateController(pDesc);
 }
 
 CPhysics_CCTFilterCallback* CGameInstance::GetCCTFilterCallback()
@@ -1536,8 +1546,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pInput_Manager);
-	Safe_Release(m_pTimer_Manager);
-	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pDataRepository);
@@ -1550,6 +1558,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pEffect_Manager);
 	Safe_Release(m_pObjectPool_Manager);
+	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pTimeScale_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pPrototype_Manager);

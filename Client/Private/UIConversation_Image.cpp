@@ -111,6 +111,8 @@ HRESULT CUIConversation_Image::Attach_Personal_Info()
 
 void CUIConversation_Image::Bind_Events()
 {
+	Super::Bind_Events();
+
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -118,16 +120,13 @@ void CUIConversation_Image::Bind_Events()
 				{
 					this->Set_Invisible();
 				}
-			})
-	);
-
+			}));
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<CINEMATIC_START>(
 			[this]()
 			{
 				this->Set_Invisible();
-			})
-	);
+			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
@@ -141,9 +140,7 @@ void CUIConversation_Image::Bind_Events()
 				CUITutorial_Manager::GetInstance()->PlayerState_All_Lock();
 					break;
 				}
-			})
-	);
-
+			}));
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
 			{
@@ -157,8 +154,7 @@ void CUIConversation_Image::Bind_Events()
 				CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
 					break;
 				}
-			})
-	);
+			}));
 }
 
 void CUIConversation_Image::Tick_By_Type(const _float fTimeDelta)
@@ -179,7 +175,7 @@ void CUIConversation_Image::Initialize_Visible_Event()
 	case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
 		break;
 	case DTO::EUIDImageSubClassType::CONVERSATION_BG:
-		Ready_LerpChange(0.5f, 1.f, 0.f, 3.f, m_fDelay);
+		Ready_LerpChange(1.5f, 1.f, 0.f, 3.f, m_fDelay, true);
 		break;
 	}
 }
@@ -212,7 +208,7 @@ void CUIConversation_Image::Initialize_InVisible_Event()
 	case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
 		break;
 	case DTO::EUIDImageSubClassType::CONVERSATION_BG:
-		Ready_LerpChange(1.f, 0.f, 1.f, 3.f, m_fDelay, true);
+		Ready_LerpChange(1.5f, 0.f, 1.f, 3.f, m_fDelay, true);
 		break;
 	}
 }

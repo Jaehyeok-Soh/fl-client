@@ -15,6 +15,7 @@
 #include "Octree_Manager.h"
 #include "EngineConsole.h"
 #include "UIObject.h"
+#include "Texture.h"
 #define STB_PERLIN_IMPLEMENTATION
 #include "stb_perlin.h"
 #include "GameInstance.h"
@@ -49,8 +50,6 @@ HRESULT CRender_Manager::Initialize()
 
 	return S_OK;
 }
-
-
 
 void CRender_Manager::Push_RenderObject(RENDER_CATEGORY eCategory, CGameObject* pGO)
 {
@@ -687,7 +686,6 @@ HRESULT CRender_Manager::Render_NoneBlend()
 	m_visibleNear.clear();
 	m_visibleMid.clear();
 	m_visibleFar.clear();
-	
 
 	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::NONEBLEND)])
 	{
@@ -1317,6 +1315,7 @@ HRESULT CRender_Manager::Ready_RT()
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::Depth, &desc)))
 			return E_FAIL;
 	}
+
 	// For. Target_ObjectInfo
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
@@ -1581,6 +1580,88 @@ HRESULT CRender_Manager::Ready_MRT()
 	}
 
 	return S_OK;
+}
+
+
+HRESULT CRender_Manager::Ready_Dissolve()
+{
+	for (auto Dissolve : m_pDissolveTextures)
+	{
+		Safe_Release(Dissolve);
+	}
+	m_pDissolveTextures.clear();
+
+	CTextureBase* pTexture = { nullptr };
+
+	// 일반 몬스터용
+	{
+		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceMm010_Mask")))
+		{
+			MSG_BOX("Dissolve Texture가 바인딩 되지 않았습니다. - Render Manager - MONSTER");
+			Safe_Release(pTexture);
+			return E_FAIL;
+		}
+
+		else
+			m_pDissolveTextures.push_back(pTexture);
+	}
+
+	// 보스 몬스터용
+	{
+		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceBx006_M")))
+		{
+			MSG_BOX("Dissolve Texture가 바인딩 되지 않았습니다. - Render Manager - BOSS");
+			Safe_Release(pTexture);
+			return E_FAIL;
+		}
+
+		else
+			m_pDissolveTextures.push_back(pTexture);
+	}
+
+	// 칼
+	{
+		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceBx004_M")))
+		{
+			MSG_BOX("Dissolve Texture가 바인딩 되지 않았습니다. - Render Manager - SWORD");
+			Safe_Release(pTexture);
+			return E_FAIL;
+		}
+
+		else
+			m_pDissolveTextures.push_back(pTexture);
+	}
+
+	// NPC
+	{
+		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceFz001_Mask")))
+		{
+			MSG_BOX("Dissolve Texture가 바인딩 되지 않았습니다. - Render Manager - NPC");
+			Safe_Release(pTexture);
+			return E_FAIL;
+		}
+
+		else
+			m_pDissolveTextures.push_back(pTexture);
+	}
+
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Bind_DissolveTexture(CShader* pShader)
+{
+#define DISSOLVE_MAX 4
+
+	if (pShader == nullptr) return E_FAIL;
+
+	ID3D11ShaderResourceView* pSRVs[DISSOLVE_MAX] = {
+	m_pDissolveTextures[0]->Get_SRV(),
+	m_pDissolveTextures[1]->Get_SRV(),
+	m_pDissolveTextures[2]->Get_SRV(),
+	m_pDissolveTextures[3]->Get_SRV(),
+	};
+
+	return pShader->Bind_SRVArray(EFXSRV::DISSOLVE, pSRVs, DISSOLVE_MAX);
 }
 
 HRESULT CRender_Manager::Create_ShadowResource()
@@ -2535,6 +2616,13 @@ void CRender_Manager::Free()
 			Safe_Release(pRenderObject);
 		RenderObjects.clear();
 	}
+
+	for (auto& DissolveTexture : m_pDissolveTextures)
+	{
+		Safe_Release(DissolveTexture);
+	}
+	m_pDissolveTextures.clear();
+
 	//
 	Safe_Release(m_pLUTTexture);
 	Safe_Release(m_pSSAONoiseSRV);

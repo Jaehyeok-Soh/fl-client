@@ -17,6 +17,9 @@ public:
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+protected:
+	virtual _bool Can_Captablity_Move() const override;
+
 public:
 	static CState_HitAdditive* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;

@@ -25,12 +25,18 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Map();
 	HRESULT	Ready_SkyBox();
+	HRESULT Ready_Dissolve();
 private:
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();
 	void Ready_ShaderSetting();
 private:
 	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
+
+	_bool m_isDebugging = { false };
+	_bool m_isDebugging2 = { false };
+	_float m_fTimeScale = {};
+
 public:
 	static CLevel_Tutorial_Village*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void					Free() override;

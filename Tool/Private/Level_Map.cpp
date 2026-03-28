@@ -75,6 +75,12 @@ HRESULT CLevel_Map::Initialize()
 	m_pUEMapDataParser->Initialize(m_pDevice,m_pDeviceContext);
 	m_pMapToolManager->Set_LevelMap(this);
 
+	if (FAILED(m_pMapToolManager->Ready_CitizenModel()))
+		return E_FAIL;
+
+	if (FAILED(m_pMapToolManager->Ready_CitizenPartsModel()))
+		return E_FAIL;
+
 	if (FAILED(m_pMapToolManager->Ready_CinematicCameraSequence_EventManifest()))
 		return E_FAIL;
 

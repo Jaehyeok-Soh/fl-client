@@ -22,7 +22,7 @@ public:
     /// 캐릭터 컨트롤러 팩토리
     /// </summary>
     /// <param name="pDesc"> 캡슐 : radius, height // 박스 : vExtens </param>
-    PxController* GetController(PHYSICSCCT_DESC* pDesc);
+    PxController* CreateController(PHYSICSCCT_DESC* pDesc);
 
     /// <summary>
     /// 캐릭터 끼임 해결 활성/비활성

@@ -29,6 +29,7 @@ private:
 	HRESULT Ready_Monster();
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();
+	HRESULT Ready_Dissolve();
 private:
 	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
 public:

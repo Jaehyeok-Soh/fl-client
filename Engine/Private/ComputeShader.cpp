@@ -36,6 +36,8 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 	, m_pEffect_CurveInfo(rhs.m_pEffect_CurveInfo)
 	, m_pAnimMix_Mutable_Element_CBuffer(rhs.m_pAnimMix_Mutable_Element_CBuffer)
 	, m_pAnimMix_MutableBuffer(rhs.m_pAnimMix_MutableBuffer)
+	, m_pBoneMyMove_Mutable_Element_CBuffer(rhs.m_pBoneMyMove_Mutable_Element_CBuffer)
+	, m_pBoneMyMove_MutableBuffer(rhs.m_pBoneMyMove_MutableBuffer)
 
 {
 	Safe_AddRef(m_pOwner);
@@ -63,6 +65,9 @@ CComputeShader::CComputeShader(const CComputeShader& rhs)
 
 	Safe_AddRef(m_pAnimMix_Mutable_Element_CBuffer);
 	Safe_AddRef(m_pAnimMix_MutableBuffer);
+
+	Safe_AddRef(m_pBoneMyMove_Mutable_Element_CBuffer);
+	Safe_AddRef(m_pBoneMyMove_MutableBuffer);
 
 }
 
@@ -114,7 +119,7 @@ void CComputeShader::Dispatch(_uint iX, _uint iY, _uint iZ)
 	for (auto SB : m_pInputStructuredBuffer)
 	{
 		if (SB.first)
-			SB.first->SetResource(SB.second->Get_SRV());
+ 			SB.first->SetResource(SB.second->Get_SRV());
 		i++;
 	}
 
@@ -311,6 +316,11 @@ void CComputeShader::Bind_Compute_AnimMixCB(const CS_MU_ANIMMIX& desc)
 	m_pAnimMix_Mutable_Element_CBuffer->Copy_Data(desc);
 }
 
+void CComputeShader::Bind_Compute_BoneMoveCB(const CS_CB_MU_BONEMOVE& desc)
+{
+	m_pBoneMyMove_Mutable_Element_CBuffer->Copy_Data(desc);
+}
+
 #pragma endregion
 
 HRESULT CComputeShader::Create_ConstantBuffer()
@@ -357,16 +367,17 @@ HRESULT CComputeShader::Create_ConstantBuffer()
 	}
 
 	// AnimMix 전용
-
-	/*
-	m_pAnimMix_Mutable_Element_CBuffer
-	m_pAnimMix_MutableBuffer		
-	
-	*/
 	if (m_pAnimMix_MutableBuffer = Get_ConstantBuffer("MU_MIX"))
 	{
 		m_pAnimMix_Mutable_Element_CBuffer = CConstant_Buffer<CS_MU_ANIMMIX>::Create(m_pDevice, m_pDeviceContext);
 		m_pAnimMix_MutableBuffer->SetConstantBuffer(m_pAnimMix_Mutable_Element_CBuffer->Get_Buffer());
+	}
+
+	// BoneMove 전용
+	if (m_pBoneMyMove_MutableBuffer = Get_ConstantBuffer("MU_BONEMOVE"))
+	{
+		m_pBoneMyMove_Mutable_Element_CBuffer = CConstant_Buffer<CS_CB_MU_BONEMOVE>::Create(m_pDevice, m_pDeviceContext);
+		m_pBoneMyMove_MutableBuffer->SetConstantBuffer(m_pBoneMyMove_Mutable_Element_CBuffer->Get_Buffer());
 	}
 
 	return S_OK;
@@ -464,6 +475,9 @@ void CComputeShader::Clear_ConstantBuffer()
 
 	Safe_Release(m_pAnimMix_Mutable_Element_CBuffer);
 	Safe_Release(m_pAnimMix_MutableBuffer);
+
+	Safe_Release(m_pBoneMyMove_Mutable_Element_CBuffer);
+	Safe_Release(m_pBoneMyMove_MutableBuffer);
 }
 
 void CComputeShader::Clear_StructBuffer()

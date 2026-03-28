@@ -49,7 +49,7 @@ HRESULT CPhysicsCCT::Initialize(void* pArg)
 	m_fHeightOffset = m_tDesc.fHeight * 0.5f;
 	Set_Owner(m_tDesc.pOwner);
 
-	GetController();
+	CreateController();
 	SetUserData(static_cast<void*>(m_tDesc.pOwner));
 
 	auto initPos = m_pController->getFootPosition();
@@ -126,6 +126,12 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 
 	m_tMoveState.vVelocity += m_tMoveState.vAccelation * fTimeDelta;
 
+	if (!bHasInput && (m_tMoveState.vVelocity.x * m_tMoveState.vVelocity.x + m_tMoveState.vVelocity.z * m_tMoveState.vVelocity.z) < 0.01f)
+	{
+		m_tMoveState.vVelocity.x = 0.f;
+		m_tMoveState.vVelocity.z = 0.f;
+	}
+
 	m_tMoveState.vVelocity.y = PxClamp(
 		m_tMoveState.vVelocity.y,
 		m_tMoveState.CMVerticalSpeed.y,
@@ -136,12 +142,12 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 	{
 		Vec3 finalPos = GetFootPosition();
 
-		_float fHitDesc = {};
+		_float fHitDest = {};
 		Vec3 vHitPos = {};
 		Vec3 vRayPos = finalPos;
 		vRayPos.y += 0.3f;
 
-		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDesc, &vHitPos))
+		if (m_pGameInstance->RayCast(vRayPos, Vec3(0.f, -1.f, 0.f), 500.f, m_pQueryFilterCallback, &fHitDest, &vHitPos))
 		{
 			_float fMinHoverY = vHitPos.y + m_tDesc.fHoverOffset;
 
@@ -157,7 +163,7 @@ void CPhysicsCCT::UpdateMove(const _float fTimeDelta)
 	}
 
 	if (m_CollisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN))
-		m_tMoveState.vVelocity.y = 0.f;
+		m_tMoveState.vVelocity.y = -0.1f;
 
 	m_CollisionFlags = Move((m_tMoveState.vVelocity * fTimeDelta) + m_tMoveState.vFixedMove, 0.001f, fTimeDelta);
 
@@ -264,6 +270,8 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 	filters.mCCTFilterCallback = (PxControllerFilterCallback*)m_pCCTFilterCallback;
 	filters.mFilterCallback = m_pQueryFilterCallback;
 
+	filters.mFilterData = &queryFilterData;
+
 	PxControllerCollisionFlags collisionFlag;
 	if (m_bEnableMove && bDisableMove == false)
 		collisionFlag = m_pController->move(disp, minDist, fTimeDelta, filters);
@@ -295,7 +303,7 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 		finalPos += vLook * m_tDesc.vLocalOffset.z;
 	}
 
-	if (!m_tDesc.vLocalOffset.InBounds(Vec3(1e-5f, 1e-5f, 1e-5f)))
+	if (!m_tDesc.vWorldOffset.InBounds(Vec3(1e-5f, 1e-5f, 1e-5f)))
 	{
 		finalPos.x += m_tDesc.vWorldOffset.x;
 		finalPos.y += m_tDesc.vWorldOffset.y;
@@ -314,16 +322,10 @@ const PxControllerCollisionFlags CPhysicsCCT::Move(PxVec3 disp, _float minDist, 
 		finalPos.y = yLerp;
 	}
 
-	// test
-	else
-	{
-		int  a = 0;
-	}
-
 	transform->Set_Info(TRANSFORM_INFO_STATE::POS, finalPos);
 
 	if (collisionFlag & PxControllerCollisionFlag::eCOLLISION_DOWN)
-		m_tMoveState.vVelocity.y = 0;
+		m_tMoveState.vVelocity.y = -0.1f;
 
 	return collisionFlag;
 }
@@ -417,9 +419,9 @@ void CPhysicsCCT::GetState(PxControllerState& outState)
 	return m_pController->getState(outState);
 }
 
-void CPhysicsCCT::GetController()
+void CPhysicsCCT::CreateController()
 {
-	m_pController = m_pGameInstance->GetController(&m_tDesc);
+	m_pController = m_pGameInstance->CreateController(&m_tDesc);
 }
 
 void CPhysicsCCT::ReleaseController()

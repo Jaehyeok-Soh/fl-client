@@ -51,7 +51,7 @@ HRESULT CNPC_Kid_1::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("¡÷πŒ");
+	Set_Name("æ∆¿Ã");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;

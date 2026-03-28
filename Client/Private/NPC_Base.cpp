@@ -48,6 +48,8 @@
 #include "NPC_Tavern.h"
 #include "NPC_Villager_1.h"
 #include "NPC_Kid_1.h"
+#include "NPC_Citizen.h"
+#include "NPC_Veteran.h"
 
 CNPC_Base::CNPC_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -255,6 +257,7 @@ HRESULT CNPC_Base::Ready_PartObjects(void* pArg)
 {
 	NPC_DESC* pDesc = static_cast<NPC_DESC*>(pArg);
 
+	if(!pDesc->wstrBodyModelTag.empty())
 	{
 		CNPC_Body_Base::NPCBODY_DESC bodyDesc = {};
 		bodyDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
@@ -394,6 +397,9 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 	npcDesc.bHasQuest = pDesc->bHasQuest;
 	npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
 
+	wstrAddLayerName = g_wszNPCeLayer;
+
+	void* pArg{nullptr};
 	switch (pDesc->eBatchNPCType)
 	{
 	case Engine::EObjectEnumTag::NPC_DEFAULT:
@@ -412,6 +418,7 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 
 		wstrFindPrototypeName = g_wszNPC_Pan_Prototype_Tag;
 		wstrAddLayerName = g_wszNPCeLayer;
+		pArg = &npcDesc;
 	}
 		break;
 	case Engine::EObjectEnumTag::NPC_BERENICA:
@@ -430,6 +437,8 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 
 		wstrFindPrototypeName = g_wszNPC_Tavern_Prototype_Tag;
 		wstrAddLayerName = g_wszNPCeLayer;
+		pArg = &npcDesc;
+
 	}
 		break;
 	case Engine::EObjectEnumTag::NPC_VILLAGER_1:
@@ -446,6 +455,7 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 
 		wstrFindPrototypeName = g_wszNPC_Villager_1_Prototype_Tag;
 		wstrAddLayerName = g_wszNPCeLayer;
+		pArg = &npcDesc;
 	}
 	break;
 	case Engine::EObjectEnumTag::NPC_KID_1:
@@ -462,13 +472,44 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 
 		wstrFindPrototypeName = g_wszNPC_Kid_1_Prototype_Tag;
 		wstrAddLayerName = g_wszNPCeLayer;
+		pArg = &npcDesc;
+	}
+	break;
+	case Engine::EObjectEnumTag::NPC_CITIZEN:
+	{
+		static CNPC_Citizen::NPC_CITIZEN_DESC tDesc{};
+		static_cast<CNPC_Citizen::NPC_DESC&>(tDesc) = CNPC_Citizen::Get_PreSetDesc(npcDesc.iLevelIndex);
+		tDesc.pTransform_Desc = pTransformDesc;
+		tDesc.tCitizenData				= pDesc->tNpcCitizenData;
+		tDesc.wstrPartBodyPrototypeTag	= g_wszNPC_Citizen_Body_Prototype_Tag;
+		wstrFindPrototypeName			= g_wszNPC_Citizen_Prototype_Tag;
+		wstrAddLayerName				= g_wszNPCeLayer;
+
+		pArg = &tDesc;
+	}
+	break;
+	case Engine::EObjectEnumTag::NPC_VETERAN:
+	{
+		npcDesc = CNPC_Veteran::Get_PreSetDesc(npcDesc.iLevelIndex);
+		npcDesc.iLevelIndex = iAddLevelType;
+		npcDesc.pTransform_Desc = pTransformDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		npcDesc.bHasQuest = pDesc->bHasQuest;
+		npcDesc.tQuestObjectDesc = pDesc->tQuestObjectDesc;
+
+		wstrFindPrototypeName = g_wszNPC_Veteran_Prototype_Tag;
+		wstrAddLayerName = g_wszNPCeLayer;
+		pArg = &npcDesc;
 	}
 	break;
 	default:
 		return E_FAIL;
 	}
 
-	if (!(pResult = CGameInstance::GetInstance()->Add_GameObject(iFindPrototypeIndex, wstrFindPrototypeName, iAddLevelType, wstrAddLayerName, &npcDesc)))
+	if (!(pResult = CGameInstance::GetInstance()->Add_GameObject(iFindPrototypeIndex, wstrFindPrototypeName, iAddLevelType, wstrAddLayerName,pArg)))
 		return E_FAIL;
 
 	return S_OK;

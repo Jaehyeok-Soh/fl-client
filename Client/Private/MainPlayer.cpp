@@ -207,28 +207,21 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
-    if (KEY_BUTTON_DOWN(DIK_C))
-    {
-        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
-
-        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 0, true);
-        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 0);
-    }
-
+    // stat 무적 toggle 키
     if (KEY_BUTTON_DOWN(DIK_B))
     {
-        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 1, true);
-        Change_MainWeapon(ENUM_TO_UINT(EWEAPON::MELEE), 1);
+        static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
     }
 
+
+    // 무기 전체 해제, 키 인풋 전체 해제 : level에 상관없이 해제하기 위함
     if (KEY_BUTTON_DOWN(DIK_N))
     {
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 0, true);
+        Set_WepaponOn(ENUM_TO_UINT(EWEAPON::MELEE), 1, true);
         Set_WepaponOn(ENUM_TO_UINT(EWEAPON::RANGE), 0, true);
-    }
-
-    if (KEY_BUTTON_DOWN(DIK_M))
-    {
         Set_WepaponOn(ENUM_TO_UINT(EWEAPON::SKILL), 0, true);
+        static_cast<CPlayerControlContext*>(Get_Component<CControlContext>())->Set_AllKeyFlag(true);
     }
 
     //Get_Component<CPlayerControlContext>()->Count_Time(fTimeDelta);
@@ -370,6 +363,7 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
 
     CLOG_INFO(infoContant);
 #endif // _DEBUG
+
     CTransform*         pTransform = Get_Component<CTransform>();
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
     _uint iStateFlag = pPlayerState->Get_CurrentCapabilities();
@@ -405,9 +399,27 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
         _float fDamage = hitDesc.fFinalDamage;
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Add_Health(fDamage * -1.f);
 
-        // action state 내부에 set hit desc 넣어주기 : 다음 update때 state에 정보를 주기 위함
+        // action state 
         if (pPlayerState)
+        {
+            // 내부에 set hit desc 넣어주기 : 다음 update때 state에 정보를 주기 위함
             pPlayerState->Set_HitDesc(hitDesc);
+
+            // action state에 bone move change 해달라고 정보 전달 : 안에서 state 방어중
+            {
+                CPlayerActionState::BONESTATE_CHANGE_ARGS tArg = {};
+                // 내적을 통해 방향 flag 던져줌
+                {
+                    Vec3    vLook   = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+
+                    Vec3 vHitNormal = hitDesc.vHitNormal;
+                    vHitNormal.y    = 0.f;
+                    _float	fDot    = vLook.Dot(vHitNormal);
+                    tArg.iHitType   = (fDot > 0.f) ? CPlayerActionState::BoneHitType::BHT_BACK : CPlayerActionState::BoneHitType::BHT_Front;
+                }
+                pPlayerState->Change_ActionBoneState(CPlayerActionState::BONE_STATE::HITSTART, &tArg);
+            }
+        }
 
         // Hit 데미지 폰트 // 색 변경은 가능 //
         {
@@ -443,6 +455,10 @@ _bool CMainPlayer::On_Hit(const HIT_DESC& hitDesc)
             pRenderFx->Play_Shake(0.35f);
             pRenderFx->Play_EmissivePulse(0.05f, 0.08f, 0.18f);
         }
+
+        // sound
+
+
         return true;
     }
    

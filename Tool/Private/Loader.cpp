@@ -29,6 +29,8 @@
 #include "Gravity_Force.h"
 #include "Tool_Weapon.h"
 #include "CinematicCamera.h"
+#include "BonePart.h"
+#include "CitizenPart.h"
 //=================
 // UI
 //=================
@@ -47,8 +49,6 @@
 #include "MaterialInstance.h"
 #include "Material.h"
 #include "GameInstance.h"
-
-
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, ELevelType eLoadingELevelType)
 	: m_pDevice(pDevice)
@@ -131,6 +131,9 @@ HRESULT CLoader::Loading_For_Logo()
 
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, CCinematicCamera::Create(m_pDevice, m_pDeviceContext));
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_CameraController", CCameraController::Create());
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC),g_wszBonePart_PrototypeTag,CBonePart::Create(m_pDevice, m_pDeviceContext));
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC),g_wszCitizenPart_PrototypeTag,CCitizenPart::Create(m_pDevice, m_pDeviceContext));
+
 
 	return S_OK;
 }
@@ -474,8 +477,8 @@ HRESULT CLoader::Loading_For_UI()
 	// Resource Component
 	//=================
 
-	//std::filesystem::path root = L"../../Resources/Textures/UI/UI_Tool/";
-	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Client/";
+	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Tool/";
+	//std::filesystem::path root = L"../../Resources/Textures/UI/UI_Client/";
 
 	for (auto& entry : std::filesystem::recursive_directory_iterator(root))
 	{

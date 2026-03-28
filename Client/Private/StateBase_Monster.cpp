@@ -230,6 +230,10 @@ HRESULT CStateBase_Monster::Bind_MainAnims()
 	m_vecMainAnims.reserve(m_pDesc->vecMainAnimNames.size());
 	for (auto& animName : m_pDesc->vecMainAnimNames)
 		m_vecMainAnims.push_back(owner->Get_AnimationIndex(Engine_Utils::ToWString(animName)));
+
+	for (auto& index : m_vecMainAnims)
+		m_pOwnerStateComp->Set_AnimationSpeed(index, m_pDesc->fAnimationSpeed);
+
 	// WeaponAni가 있을때
 	if (Engine_Utils::Has_Flag(m_FAniFlags, SA_WeaponAni))
 	{

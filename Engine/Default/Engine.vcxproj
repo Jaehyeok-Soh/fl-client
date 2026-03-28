@@ -172,6 +172,7 @@
     <ClCompile Include="..\private\CameraModifier_RotationOffset.cpp" />
     <ClCompile Include="..\private\CameraModifier_Shake.cpp" />
     <ClCompile Include="..\private\CameraEvent_Handler.cpp" />
+    <ClCompile Include="..\Private\CitizenData.cpp" />
     <ClCompile Include="..\private\DataDocument_CameraControlEvent.cpp" />
     <ClCompile Include="..\private\DataStruct_CameraControlEvent.cpp" />
     <ClCompile Include="..\private\ICameraModifier.cpp" />
@@ -378,6 +379,7 @@
     <ClInclude Include="..\public\CameraModifier_RotationOffset.h" />
     <ClInclude Include="..\public\CameraModifier_Shake.h" />
     <ClInclude Include="..\public\CameraEvent_Handler.h" />
+    <ClInclude Include="..\Public\CitizenData.h" />
     <ClInclude Include="..\public\DataDocument_CameraControlEvent.h" />
     <ClInclude Include="..\public\DataStruct_CameraControlEvent.h" />
     <ClInclude Include="..\Public\ICameraAnchorHost.h" />

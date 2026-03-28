@@ -44,6 +44,11 @@ HRESULT CNPC_Tavern_Body::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
+	// face mix ¼ÂÆÃ
+	{
+		Setting_FaceMix(145, Get_Component<CModel>()->Get_AnimationIndex(L"Animation_NPC_Tavern_Emo_IdleShow_01"));
+	}
+
 	return S_OK;
 }
 

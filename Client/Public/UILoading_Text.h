@@ -35,6 +35,7 @@ private:
 	virtual HRESULT Attach_Personal_Info()override;
 	void Lerp_Percent(const _float fTimeDelta);
 	HRESULT Convert_Value_To_Text();
+	virtual void Bind_Events()override { Super::Bind_Events(); }
 private:
 	virtual void Initialize_Visible_Event()override;
 	virtual void Initialize_InVisible_Event()override;

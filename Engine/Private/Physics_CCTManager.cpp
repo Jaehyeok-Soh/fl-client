@@ -35,7 +35,7 @@ HRESULT CPhysics_CCTManager::Initialize()
 	return S_OK;
 }
 
-PxController* CPhysics_CCTManager::GetController(PHYSICSCCT_DESC* pDesc)
+PxController* CPhysics_CCTManager::CreateController(PHYSICSCCT_DESC* pDesc)
 {
 	switch (pDesc->eType)
 	{

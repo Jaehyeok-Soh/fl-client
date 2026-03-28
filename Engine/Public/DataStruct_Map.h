@@ -3,6 +3,7 @@
 #include "DataEnum.h"
 #include "json_forward.h"
 #include "Quest_DataModel.h"
+#include "CitizenData.h"
 
 NS_BEGIN(DTO)
 #pragma region Make Monster Type
@@ -17,6 +18,7 @@ enum class EMakeMonsterType
 	Xibi,
 	Lianhuo,
 	Fly,
+	Veteran,
 
 	END,
 };
@@ -28,6 +30,7 @@ inline std::string MakeMonsterType_ToString(EMakeMonsterType eType)
 	case DTO::EMakeMonsterType::Shooter:		return "Shooter";
 	case DTO::EMakeMonsterType::Boomer:			return "Boomer";
 	case DTO::EMakeMonsterType::Fly:			return "Fly";
+	case DTO::EMakeMonsterType::Veteran:		return "Veteran";
 
 
 
@@ -44,6 +47,7 @@ inline EMakeMonsterType MakeMonsterType_ToEnum(const std::string strType)
 	if (strType == "Shooter")	return DTO::EMakeMonsterType::Shooter;
 	if (strType == "Boomer")	return DTO::EMakeMonsterType::Boomer;
 	if (strType == "Fly")		return DTO::EMakeMonsterType::Fly;
+	if (strType == "Veteran")	return DTO::EMakeMonsterType::Veteran;
 
 
 	if (strType == "Xibi")		return DTO::EMakeMonsterType::Xibi;
@@ -97,12 +101,15 @@ inline std::string MakeNPCType_ToString(OBJECT_ENUM_TAG::Enum eTag)
 {
 	switch (eTag)
 	{
-	case Engine::OBJECT_ENUM_TAG::NPC_DEFAULT:	return "NPC_Default";
-	case Engine::OBJECT_ENUM_TAG::NPC_PAN:		return "NPC_Pan";
-	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:	return "NPC_Berenica";
-	case Engine::OBJECT_ENUM_TAG::NPC_TAVERN:	return "NPC_Tavern";
+	case Engine::OBJECT_ENUM_TAG::NPC_DEFAULT:		return "NPC_Default";
+	case Engine::OBJECT_ENUM_TAG::NPC_PAN:			return "NPC_Pan";
+	case Engine::OBJECT_ENUM_TAG::NPC_BERENICA:		return "NPC_Berenica";
+	case Engine::OBJECT_ENUM_TAG::NPC_TAVERN:		return "NPC_Tavern";
 	case Engine::OBJECT_ENUM_TAG::NPC_VILLAGER_1:	return "NPC_Villager_1";
-	case Engine::OBJECT_ENUM_TAG::NPC_KID_1:	return "NPC_Kid_1";
+	case Engine::OBJECT_ENUM_TAG::NPC_KID_1:		return "NPC_Kid_1";
+	case Engine::OBJECT_ENUM_TAG::NPC_KID_2:		return "NPC_Kid_2";
+	case Engine::OBJECT_ENUM_TAG::NPC_VETERAN:		return "NPC_Veteran";
+	case Engine::OBJECT_ENUM_TAG::NPC_CITIZEN:		return "NPC_Citizen";
 	default:									return "Unknown";
 	}
 }
@@ -115,6 +122,9 @@ inline OBJECT_ENUM_TAG::Enum MakeNPCType_ToEnum(const std::string strType)
 	if (strType == "NPC_Tavern")				return Engine::OBJECT_ENUM_TAG::NPC_TAVERN;
 	if (strType == "NPC_Villager_1")			return Engine::OBJECT_ENUM_TAG::NPC_VILLAGER_1;
 	if (strType == "NPC_Kid_1")					return Engine::OBJECT_ENUM_TAG::NPC_KID_1;
+	if (strType == "NPC_Citizen")				return Engine::OBJECT_ENUM_TAG::NPC_CITIZEN;
+	if (strType == "NPC_Veteran")				return Engine::OBJECT_ENUM_TAG::NPC_VETERAN;
+	if (strType == "NPC_Kid_2")					return Engine::OBJECT_ENUM_TAG::NPC_KID_2;
 
 	return Engine::OBJECT_ENUM_TAG::NPC_DEFAULT;
 }
@@ -872,6 +882,82 @@ public:
 	virtual void to_Json(json& SaveJson);
 };
 
+/// <summary>
+/// 웨이브 스포너
+/// </summary>
+
+struct ENGINE_DLL MonsterWaveInfo
+{
+	_float fSpawnTime = { -1.f };
+	_int iTotalSpawnCount = { -1 };
+	_int iCurrentSpawnCount = { -1 };
+	_float fSpawnInterval = { -1.f };
+	_float fAccTime = { 0.f };
+	std::vector<MonsterSpawnData>	vecMonsterSpawnData{};
+
+public:
+	explicit MonsterWaveInfo()
+		: fSpawnTime{ -1.f },
+		iTotalSpawnCount{ -1 },
+		iCurrentSpawnCount{ -1 },
+		fSpawnInterval{ -1.f },
+		fAccTime{ 0.f },
+		vecMonsterSpawnData{}
+	{
+	}
+	explicit MonsterWaveInfo(const MonsterWaveInfo& Copy)
+		: fSpawnTime{ Copy.fSpawnTime },
+		iTotalSpawnCount{ Copy.iTotalSpawnCount },
+		iCurrentSpawnCount{ Copy.iCurrentSpawnCount },
+		fSpawnInterval{ Copy.fSpawnInterval },
+		fAccTime{ Copy.fAccTime },
+		vecMonsterSpawnData{ Copy.vecMonsterSpawnData }
+	{
+	}
+	virtual ~MonsterWaveInfo() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
+struct ENGINE_DLL TRIGGERBOX_MONSTERWAVESPAWNER_DESC : public TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	MONSTERSPAWN_WAVE_TYPE eType = MONSTERSPAWN_WAVE_TYPE::TIMER;
+	_int iTotalWaveCount = { -1 };
+	_int iCurrentWaveCount = { -1 };
+	_float fWaveTime = { -1.f };
+	_float fCurrentWaveTime = { -1.f };
+	vector<MonsterWaveInfo> vecWaveInfo;
+
+public:
+	explicit TRIGGERBOX_MONSTERWAVESPAWNER_DESC()
+		: TRIGGERBOX_DESC(),
+		eType{ MONSTERSPAWN_WAVE_TYPE::TIMER },
+		iTotalWaveCount{ -1 },
+		iCurrentWaveCount{ -1 },
+		fWaveTime{ -1.f },
+		fCurrentWaveTime{ -1.f },
+		vecWaveInfo{}
+	{
+	}
+	explicit TRIGGERBOX_MONSTERWAVESPAWNER_DESC(const TRIGGERBOX_MONSTERWAVESPAWNER_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs),
+		eType{rhs.eType },
+		iTotalWaveCount{rhs.iTotalWaveCount },
+		iCurrentWaveCount{rhs.iCurrentWaveCount },
+		fWaveTime{rhs.fWaveTime },
+		fCurrentWaveTime{rhs.fCurrentWaveTime },
+		vecWaveInfo{ rhs.vecWaveInfo }
+	{
+		return;
+	}
+	virtual ~TRIGGERBOX_MONSTERWAVESPAWNER_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
 
 #pragma endregion
 
@@ -951,6 +1037,7 @@ public:
 #pragma endregion
 
 #pragma region NPC
+
 struct ENGINE_DLL BATCH_NPC_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
 public:
@@ -958,12 +1045,17 @@ public:
 
 	_bool		 bHasQuest = { false };
 	vector<DTO::QUEST_CHAPTERDESC>		tQuestObjectDesc = {};
+
+	/* NPC Citizen 관련*/
+	DTO::CITIZEN_DATA tNpcCitizenData{};
+
 public:
 	BATCH_NPC_DESC()
 		:CLIENT_MAKEPATH_DESC_BASE(),
 		eBatchNPCType(OBJECT_ENUM_TAG::NPC_DEFAULT),
 		bHasQuest(false),
 		tQuestObjectDesc()
+		, tNpcCitizenData{}
 	{
 
 	}
@@ -971,7 +1063,8 @@ public:
 		: CLIENT_MAKEPATH_DESC_BASE(rhs),
 		eBatchNPCType(rhs.eBatchNPCType),
 		bHasQuest(rhs.bHasQuest),
-		tQuestObjectDesc(rhs.tQuestObjectDesc)
+		tQuestObjectDesc(rhs.tQuestObjectDesc),
+		tNpcCitizenData{rhs.tNpcCitizenData}
 	{
 
 	}
@@ -1106,6 +1199,7 @@ enum class EClientMakePath
 	/* Trigger Box 관련 */
 	TriggerBox_ChangeLevel,
 	TriggerBox_MonsterSpawner,
+	TriggerBox_MonsterWaveSpawner,
 	TriggerBox_GlobalEvent_BroadCaster,
 	TriggerBox_TutorialUIEvent,
 	TriggerBox_CinematicPlayer,
@@ -1177,6 +1271,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 
 			{EClientMakePath::TriggerBox_ChangeLevel,				"TriggerBox_ChangeLevel"},
 			{EClientMakePath::TriggerBox_MonsterSpawner,			"TriggerBox_MonsterSpawner"},
+			{EClientMakePath::TriggerBox_MonsterWaveSpawner,		"TriggerBox_MonsterWaveSpawner"},
 			{EClientMakePath::TriggerBox_GlobalEvent_BroadCaster,	"TriggerBox_GlobalEvent_BroadCaster"},
 			{EClientMakePath::TriggerBox_TutorialUIEvent,			"TriggerBox_TutorialUIEvent"},
 			{EClientMakePath::TriggerBox_CinematicPlayer,			"TriggerBox_CinematicPlayer"},

@@ -486,7 +486,7 @@ namespace Engine
 		SimpleMath::Vector2 vUVOffset;
 
 		// Row 2
-		SimpleMath::Vector2 vPadding0;
+		SimpleMath::Vector2 vUVPower;
 		float fGlowPower;
 		float fLifeRatio;
 
@@ -531,6 +531,184 @@ namespace Engine
 		SimpleMath::Vector4 SubMaskTexture_SpriteInfo;
 
 	} SHADER_EFFECT_DESC;
+
+	typedef struct tagShaderDecalEffectDesc
+	{
+		SimpleMath::Matrix WorldInv = {};
+	}SHADER_DECAL_EFFECT_DESC;
+
+	typedef struct tagShaderDissolveEffectDesc
+	{
+		// Slot 1
+		float					fDissolveAmount = { 0.f }; //	 진행도 (0 ~ 1)
+		float					fDissolveEdgeWidth = {};
+		SimpleMath::Vector2		fPadding0 = {};
+
+		// slot 2
+		SimpleMath::Vector3		fDissolveEdgeColor = {};
+		unsigned int			iDissolveFlag = {};
+
+	}SHADER_DISSOLVE_EFFECT_DESC;
+
+	typedef struct tagObjectDissolveEffectDesc
+	{
+		enum DISSOLVEFLAG
+		{
+			BIT_NONE = 0,
+			BIT_SPAWN_START = 1 << 0,
+			BIT_DISSOLVE_START = 1 << 1,
+
+			BIT_USE_EDGE = 1 << 2,
+			BIT_USE_ALPHA_FADE = 1 << 3,		// 시간에 따른 alpha 감소
+			BIT_USE_DISSOLVE_MAP = 1 << 4,	// 디졸브 텍스처로 인해 discard 당하는 것.
+
+			BIT_TYPE_MONSTER = 1 << 10,
+			BIT_TYPE_BOSS = 1 << 11,
+			BIT_TYPE_SWORD = 1 << 12,
+			BIT_TYPE_NPC = 1 << 13
+		};
+
+		enum DISSOLVE_OBJECTTYPE
+		{
+			TYPE_NONE = 0,
+			TYPE_MONSTER = 1,
+			TYPE_BOSS = 2,
+			TYPE_SWORD = 3,
+			TYPE_NPC = 4,
+		};
+
+		void Set_Dissolve_Setting(float DissolveTime, float Speed)
+		{
+			fDissolveTime = DissolveTime;
+			fSpeed.x = Speed;
+
+		}
+
+		void Set_Spawn_Setting(float SpawnTime, float Speed)
+		{
+			fSpawnTime = SpawnTime;
+			fSpeed.y = Speed;
+		}
+
+		void Update(float fDT)
+		{
+			// Delay 처리
+			if (bResetReserved)
+			{
+				Reset();
+				bResetReserved = false;
+				return;
+			}
+
+			// ===== SPAWN 시간 계산 ===== 
+			if (ShaderData.iDissolveFlag & BIT_SPAWN_START)
+			{
+				fTimeAccum += fDT * fSpeed.y;
+
+				if (fTimeAccum >= fSpawnTime)
+				{
+					bIsFinished = true;
+				}
+
+				// 0나누기 방어코드
+				if (fSpawnTime <= 0.f)
+					fSpawnTime = 0.01f;
+
+				ShaderData.fDissolveAmount = 1 - (fTimeAccum / fSpawnTime);	// 스폰일 때는 1 -> 0
+
+				// CLAMP 해주기
+				if (ShaderData.fDissolveAmount <= 0.f)
+					ShaderData.fDissolveAmount = 0.f;
+			}
+
+			else if (ShaderData.iDissolveFlag & BIT_DISSOLVE_START)
+			{
+				fTimeAccum += fDT * fSpeed.x;
+
+				if (fTimeAccum >= fDissolveTime)
+				{
+					bIsFinished = true;
+				}
+
+				// 0나누기 방어코드
+				if (fDissolveTime <= 0.f)
+					fDissolveTime = 0.01f;
+
+				ShaderData.fDissolveAmount = fTimeAccum / fDissolveTime; // 디졸브일 때는 0 -> 1
+
+				// CLAMP 해주기
+				if (ShaderData.fDissolveAmount >= 1.f)
+					ShaderData.fDissolveAmount = 1.f;
+			}
+		}
+
+		void Reset()
+		{
+			ShaderData.iDissolveFlag &= ~(BIT_SPAWN_START | BIT_DISSOLVE_START |
+				BIT_USE_ALPHA_FADE | BIT_USE_DISSOLVE_MAP |
+				BIT_USE_EDGE);		// 생성과 소멸 플래그 따로 관리하려면 지우자.
+			ShaderData.fDissolveAmount = 0.f;											// 누적 시간 초기화
+			bIsFinished = false;
+			fTimeAccum = 0.f;
+		}
+
+		void Reset_Delay()
+		{
+			bResetReserved = true;
+		}
+
+		void Add_DissolveFlag(unsigned int flag1, unsigned int flag2 = 0, unsigned int flag3 = 0, unsigned int flag4 = 0)
+		{
+			ShaderData.iDissolveFlag |= flag1;
+			ShaderData.iDissolveFlag |= flag2;
+			ShaderData.iDissolveFlag |= flag3;
+			ShaderData.iDissolveFlag |= flag4;
+		}
+
+		void Set_ObjectType(DISSOLVE_OBJECTTYPE type)
+		{
+			ShaderData.iDissolveFlag &= ~(BIT_TYPE_MONSTER | BIT_TYPE_BOSS | BIT_TYPE_SWORD | BIT_TYPE_NPC);
+
+			switch (type)
+			{
+			case DISSOLVE_OBJECTTYPE::TYPE_MONSTER:
+				ShaderData.iDissolveFlag |= DISSOLVEFLAG::BIT_TYPE_MONSTER;
+				break;
+
+			case DISSOLVE_OBJECTTYPE::TYPE_BOSS:
+				ShaderData.iDissolveFlag |= DISSOLVEFLAG::BIT_TYPE_BOSS;
+				break;
+
+			case DISSOLVE_OBJECTTYPE::TYPE_SWORD:
+				ShaderData.iDissolveFlag |= DISSOLVEFLAG::BIT_TYPE_SWORD;
+				break;
+
+			case DISSOLVE_OBJECTTYPE::TYPE_NPC:
+				ShaderData.iDissolveFlag |= DISSOLVEFLAG::BIT_TYPE_NPC;
+				break;
+			}
+
+			eType = type;
+		}
+
+		bool Is_Finished()
+		{
+			return bIsFinished;
+		}
+
+	public:
+		SHADER_DISSOLVE_EFFECT_DESC ShaderData = {};
+
+	private:
+		float fSpawnTime = { 0.f };
+		float fDissolveTime = { 0.f };
+		float fTimeAccum = { 0.f };
+		SimpleMath::Vector2 fSpeed = { 1.f, 1.f };
+
+		bool  bIsFinished = { false };
+		bool  bResetReserved = { false };		// 딜레이 전용
+		DISSOLVE_OBJECTTYPE	eType = { DISSOLVE_OBJECTTYPE::TYPE_NONE };
+	}DissolveEffectDesc;
 
 	typedef struct tagShaderBoneDesc
 	{
@@ -706,6 +884,20 @@ namespace Engine
 
 		SimpleMath::Matrix			matOffsetTransform = {};
 	}CS_IMMU_BONEMESH;
+
+#pragma endregion
+
+#pragma region BONEMove_CS
+
+	typedef struct tagBoneMoveCB
+	{
+		int							iMovingIdx	= { -1 };
+		unsigned int				iBoneNums	= { 0 };
+		float						fRatio		= {0.f};
+		float						Padding0	= {};
+
+		SimpleMath::Matrix			matOffset = { Matrix::Identity };
+	}CS_CB_MU_BONEMOVE;
 
 #pragma endregion
 

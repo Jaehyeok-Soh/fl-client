@@ -57,6 +57,9 @@ struct MINIGAME_CIRCLE_ON { using Signature = void(); };
 struct MINIGAME_CIRCLE_CLEAR { using Signature = void(); };
 struct MINIGAME_CIRCLE_OFF { using Signature = void(); };
 
+struct DEFAULT_UI_VISIBLE{ using Signature = void(); };
+struct DEFAULT_UI_INVISIBLE{ using Signature = void(); };
+
 // 퀘스트 이벤트
 struct QUEST_NOTIFY{ using Signature = void(DTO::QUEST_EVENT_SIGNATURE ID); }; // 퀘스트 업데이트
 struct QUEST_CHANGE_SCENARIO_NOTIFY{ using Signature = void(); }; // 퀘스트 시나리오 바뀜

@@ -161,6 +161,7 @@ HRESULT CUITutorial_Pannel_Image::Attach_Personal_Info()
 
 void CUITutorial_Pannel_Image::Bind_Events()
 {
+	Super::Bind_Events();
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -249,7 +250,12 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 					if (0 <= m_iCurPage)
 						m_iCurPage = 0;
 					else
+					{
 						m_iCurPage--;
+
+						// UI SOUND
+						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_COMMON_BTN_CLICK"), 1.f);
+					}
 				}
 				else if (m_iNumbering == NEXT_BUTTON)
 				{
@@ -259,13 +265,21 @@ void CUITutorial_Pannel_Image::Tick_By_Type(const _float fTimeDelta)
 					{
 						m_iCurPage = m_iMaxPage;
 
+						// UI SOUND
+						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_COMMON_BTN_CANCLE"), 1.f);
+
 						UIEVENT_DESC Desc = {};
 						Desc.eEventID = EUIEventID::TUTORIAL_PANNEL_END;
 						Desc.iParam0 = static_cast<_uint>(m_eTutorialID);
 						CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
 					}
 					else
+					{
 						m_iCurPage++;
+
+						// UI SOUND
+						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_COMMON_BTN_CLICK"), 1.f);
+					}
 				}
 
 				// 바뀌었다면 바꾸기
@@ -333,45 +347,47 @@ void CUITutorial_Pannel_Image::Initialize_Visible_Event()
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BG:			// 디졸브 배경
-		Ready_LerpChange(0.5f, 1.f, 0.f, 2.f, 1.f);
+		Ready_LerpChange(0.3f, 1.f, 0.f, 2.f, 1.f);
 		m_fAlpha_Ratio = 1.f;
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BOTTOM_BG:		// 투명한 아래 배경
-		Ready_Fade(0.5f, 0.f, 0.6f, 1.f);
+		Ready_Fade(0.3f, 0.f, 0.6f, 1.f);
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_ICON:		// ? 아이콘
+		m_pGameInstance->Play_OneShot_Delayed(0, Engine_Utils::ToHash("UI_TUTORIAL_PANNEL_OPEN"), 1.f, 1.f);
+		m_pGameInstance->Play_OneShot(0, TO_HASH("UI_TUTORIAL_PANNEL_OPEN_TRIGGER"), 1.f);
 		Ready_Lerp_Movement(Vec2{ 0.f, 235.5 }, Vec2{ 0.f, 0.f }, 1.f, 3.f, 0.5f, true);
 		Ready_LerpChange(0.3f, 2.f, 1.f, 1.f, 0.f);
 		m_fAlpha_Ratio = 1.f;
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_ICON:			// 설명 이미지
-		Ready_Fade(0.5f, 0.f, 1.f, 1.f);
+		Ready_Fade(0.3f, 0.f, 1.f, 1.f);
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON:		// 버튼 0이 Prev, 1이 Next
-		Ready_Fade(0.5f, 0.f, 1.f, 1.f);
+		Ready_Fade(0.3f, 0.f, 1.f, 1.f);
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_FX:
-		Ready_Fade(0.5f, 0.f, 1.f, 1.f);
+		Ready_Fade(0.3f, 0.f, 1.f, 1.f);
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BUTTON_OUTLINE:
-		Ready_Fade(0.5f, 0.f, 1.f, 1.f);
+		Ready_Fade(0.3f, 0.f, 1.f, 1.f);
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_NUM_PAGE_ICON:
 	{
 		if (m_isNotVisible)
 		{
-			Ready_Fade(0.5f, 0.f, 0.f, 1.f);
+			Ready_Fade(0.3f, 0.f, 0.f, 1.f);
 		}
 		else
 		{
-			Ready_Fade(0.5f, 0.f, 1.f, 1.f);
+			Ready_Fade(0.3f, 0.f, 1.f, 1.f);
 		}
 		break;
 	}
@@ -654,8 +670,12 @@ HRESULT CUITutorial_Pannel_Image::Spawn_FromPool(void* pArg)
 	m_isSpawned = true;
 	m_isDeadRequest = false;
 	
-	if(m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BG)
+	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BG)
+	{
 		CUITutorial_Manager::GetInstance()->PlayerState_All_Lock();
+
+		m_pGameInstance->Active_TimeStop();
+	}
 
 
 	return S_OK;
@@ -666,6 +686,7 @@ HRESULT CUITutorial_Pannel_Image::Despawn_FromPool()
 	if (FAILED(Super::Despawn_FromPool()))
 		return E_FAIL;
 
+
 	m_isVisible = false;
 	m_isVisibleTrigger = false;
 	m_isPreVisible = false;
@@ -675,7 +696,10 @@ HRESULT CUITutorial_Pannel_Image::Despawn_FromPool()
 	m_vecTextureTags.clear();
 
 	if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_BG)
+	{
 		CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
+		m_pGameInstance->Deactive_TimeStop();
+	}
 
 	return S_OK;
 }

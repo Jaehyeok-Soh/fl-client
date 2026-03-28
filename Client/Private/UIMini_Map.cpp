@@ -283,6 +283,7 @@ HRESULT CUIMini_Map::Attach_Personal_Info()
 
 void CUIMini_Map::Bind_Events()
 {
+	Super::Bind_Events();
 
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)

@@ -3,12 +3,15 @@
 #include "ComboContainer.h"
 
 #include "GameObject.h"
-
+#include "Model.h"
 #include "DataStruct_AttackPreset.h"
+#include "PlayerControlContext.h"
+#include "StateBase_Player.h"
+#include "Player.h"
 
 #include "GameInstance.h"
 
-#include "PlayerControlContext.h"
+#include "PlayerImguiValues.h"
 
 CPlayerActionState::CPlayerActionState()
     : Super()
@@ -20,6 +23,8 @@ CPlayerActionState::CPlayerActionState(const CPlayerActionState& rhs)
     , m_tFKeyData(rhs.m_tFKeyData)
     , m_tGunCoolTimer(rhs.m_tGunCoolTimer)
     , m_bCanSpecialDash(rhs.m_bCanSpecialDash)
+    , m_eBoneState(rhs.m_eBoneState)
+    , m_tBoneHit(rhs.m_tBoneHit)
 {
 }
 
@@ -50,6 +55,23 @@ void CPlayerActionState::Update(const _float fTImeDelta)
     m_tGunCoolTimer.CountTime(fTImeDelta);
 
     Super::Update(fTImeDelta);
+
+    Update_BoneState(fTImeDelta);
+}
+
+void CPlayerActionState::My_Awake(const _uint iCurrentLevelID)
+{
+    Change_ActionBoneState(CPlayerActionState::BONE_STATE::NORMAL);
+
+    m_DDialoghandle = m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+        {
+            Check_DialogueBegin(iId);
+        });
+}
+
+_bool CPlayerActionState::Get_KeyFlag(_uint iKeyFlag)
+{
+    return static_cast<CPlayerControlContext*>(m_pOwnerControlContext)->Get_KeyFlag(static_cast<CPlayerControlContext::KEYFLAGS>(iKeyFlag));
 }
 
 void CPlayerActionState::Set_Flag(Flags FActionFlag, _bool bOn)
@@ -195,6 +217,175 @@ void CPlayerActionState::Set_FKeyEvent(_uint iEvnet, _bool bOn)
     m_tFKeyData.iKeyEvent = iEvnet;
 }
 
+void CPlayerActionState::Change_ActionBoneState(BONE_STATE eState, BONESTATE_CHANGE_ARGS* pArgs)
+{
+    if (m_eBoneState == eState)
+        return;
+
+    // end를 하고 다음 state로 change 할 수 있다면
+    if (End_BoneState(eState))
+    {
+        // 바꿔라
+        BONE_STATE ePreState = m_eBoneState;
+        m_eBoneState = eState;
+
+        Start_BoneState(ePreState, pArgs);
+    }
+}
+
+void CPlayerActionState::Start_BoneState(BONE_STATE ePreState, BONESTATE_CHANGE_ARGS* pArgs)
+{
+    switch (m_eBoneState)
+    {
+    case BONE_STATE::NORMAL:
+        m_pOwnerModel->Set_MoveBone(false);
+        break;
+
+    case BONE_STATE::HITSTART:
+    {
+        if (pArgs)
+        {
+            _uint iHitFlag = pArgs->iHitType | Get_CurState_BoneHitFlag();
+
+            switch (iHitFlag)
+            {
+            case BoneHitType::BHT_Front | BoneHitType::BHT_FORCE_WEAK:
+                m_pOwnerModel->SEt_MoveBone_Matrix(m_tBoneHit.matFrontHit_Weak); break;
+
+            case BoneHitType::BHT_Front | BoneHitType::BHT_FORCE_STRONG:
+                m_pOwnerModel->SEt_MoveBone_Matrix(m_tBoneHit.matFrontHit_Strong); break;
+
+            case BoneHitType::BHT_BACK | BoneHitType::BHT_FORCE_WEAK:
+                m_pOwnerModel->SEt_MoveBone_Matrix(m_tBoneHit.matBackHit_Weak); break;
+
+            case BoneHitType::BHT_BACK | BoneHitType::BHT_FORCE_STRONG:
+                m_pOwnerModel->SEt_MoveBone_Matrix(m_tBoneHit.matBackHit_Strong); break;
+            }
+        }
+    }
+
+    case BONE_STATE::HITEND:
+        m_pOwnerModel->Set_MoveBone(true);
+        m_tBoneHit.fTimeAcc = 0.f;
+        break;
+    }
+}
+
+_bool CPlayerActionState::End_BoneState(BONE_STATE eNextState)
+{
+    _bool bCanChange = false;
+
+    // true 조건 만 on 해준다
+    switch (m_eBoneState)
+    {
+    case BONE_STATE::NORMAL:
+        if (eNextState == BONE_STATE::HITSTART &&
+            Has_Capability(Get_CurrentCapabilities(), Engine::StateCapability::MOVE))
+        {
+            bCanChange = true;
+        }
+
+        break;
+
+    case BONE_STATE::HITSTART:
+        if (m_tBoneHit.fTimeAcc == m_tBoneHit.fTimeAcc)
+        {
+            bCanChange = true;
+        }
+        break;
+
+    case BONE_STATE::HITEND:
+        if (eNextState == BONE_STATE::NORMAL &&
+            m_tBoneHit.fTimeAcc == m_tBoneHit.fTimeAcc)
+        {
+            bCanChange = true;
+        }
+        break;
+
+    case BONE_STATE::END:
+        bCanChange = true;
+    }
+
+    return bCanChange;
+}
+
+void CPlayerActionState::Update_BoneState(const _float fTimeDelta)
+{
+    switch (m_eBoneState)
+    {
+    case BONE_STATE::NORMAL:
+        Update_Normal(fTimeDelta);
+        break;
+
+    case BONE_STATE::HITSTART:
+        Update_HitStart(fTimeDelta);
+        break;
+
+    case BONE_STATE::HITEND:
+        Update_HitEnd(fTimeDelta);
+        break;
+    }
+}
+
+void CPlayerActionState::Update_Normal(const _float fTimeDelta)
+{
+}
+
+void CPlayerActionState::Update_HitStart(const _float fTimeDelta)
+{
+    _bool bEnd = false;
+
+    // 시간 누적
+    m_tBoneHit.fTimeAcc += fTimeDelta;
+    if (m_tBoneHit.fTimeAcc >= m_tBoneHit.fLerpHalfTime)
+    {
+        m_tBoneHit.fTimeAcc = m_tBoneHit.fLerpHalfTime;
+        bEnd = true;
+    }
+
+    // ratio 값 model에게 전달
+    m_pOwnerModel->Set_MoveBone_Ratio(m_tBoneHit.fTimeAcc / m_tBoneHit.fLerpHalfTime);
+
+    // lerp half time 지나면 -> hit end
+    if (bEnd)
+    {
+        Change_ActionBoneState(BONE_STATE::HITEND);
+    }
+}
+
+void CPlayerActionState::Update_HitEnd(const _float fTimeDelta)
+{
+    _bool bEnd = false;
+
+    // 시간 누적
+    m_tBoneHit.fTimeAcc += fTimeDelta;
+    if (m_tBoneHit.fTimeAcc >= m_tBoneHit.fLerpHalfTime)
+    {
+        m_tBoneHit.fTimeAcc = m_tBoneHit.fLerpHalfTime;
+        bEnd = true;
+    }
+
+    // ratio 값 model에게 전달
+    m_pOwnerModel->Set_MoveBone_Ratio((m_tBoneHit.fLerpHalfTime - m_tBoneHit.fTimeAcc) / m_tBoneHit.fLerpHalfTime);
+
+    // lerp half time 지나면 -> hit normal
+    if (bEnd)
+    {
+        Change_ActionBoneState(BONE_STATE::NORMAL);
+    }
+}
+
+_uint CPlayerActionState::Get_CurState_BoneHitFlag() const
+{
+    CStateBase_Player* pState = static_cast<CStateBase_Player*>(m_vecStates[m_iCurrentState]);
+    return pState->Get_BoneHitFlag();
+}
+
+void CPlayerActionState::Check_DialogueBegin(_int iId)
+{
+    Change_State(ENUM_TO_UINT(CPlayer::State::NPCTALK));
+}
+
 CPlayerActionState* CPlayerActionState::Create()
 {
     CPlayerActionState* pInsatnce = new CPlayerActionState();
@@ -220,4 +411,6 @@ CComponent* CPlayerActionState::Clone(void* pArg)
 void CPlayerActionState::Free()
 {
     Super::Free();
+     
+    m_pGameInstance->Unsubscribe<DIALOGUE_BEGIN>(m_DDialoghandle);
 }

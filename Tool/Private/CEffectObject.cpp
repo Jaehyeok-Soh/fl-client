@@ -143,6 +143,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_SubMaskTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::SUB_MASKING));
         }
     }
 
@@ -160,6 +161,7 @@ HRESULT CEffectObject::Ready_Component_Texture()
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GradationTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GRADATION));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_DissolveTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::DISSOLVE));
             pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_GlowTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::GLOW));
+            pInstance->Add_DefaultTexture(s + m_tEffectDesc.Data._Effect_SubMaskTexture_Tag, ENUM_TO_UINT(DTO::E_TEXTURETYPE::SUB_MASKING));
         }
     }
 
@@ -610,6 +612,8 @@ HRESULT CEffectObject::Bind_ShaderResource()
             m_tEffectDesc.Data._Effect_SubMaskTexture_SpriteInfo.z,
             (_float)m_iSpriteCurrentNumber[ENUM_TO_UINT(DTO::TEXTURE_INFO::SUB_MASKTEXTURE)]);
 
+        pDesc.vUVPower = Vec2(m_tEffectDesc.Data._Effect_UVXPower, m_tEffectDesc.Data._Effect_UVYPower);
+
         pShader->Bind_EffectData(pDesc);
 
         // Compute 셰이더가 들고있는 SRV를, Default Shader한테 SRV 꽂아주기.
@@ -923,7 +927,7 @@ void CEffectObject::Overwrite_FromEnv(const EFFECT_ENV_DESC::ENV_PART_DESC& pDes
     m_tEffectDesc.Data._bUseStartRotation = true;
     m_tEffectDesc.Data._Effect_StartRotation = pDesc.VFX_Rotation_Parts;
     m_tEffectDesc.Data._Effect_StartScale = pDesc.VFX_Scale_Parts;
-   
+
     m_pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, pDesc.VFX_Position_Parts);
 
     CVIBuffer_Particle::PARTICLE_ORIGIN_DESC ParticleDesc = m_pParticleBuffer->Get_ParticleDesc();

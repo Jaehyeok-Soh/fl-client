@@ -111,6 +111,7 @@ HRESULT CUITutorial_PopUp_Clear_Image::Attach_Personal_Info()
 
 void CUITutorial_PopUp_Clear_Image::Bind_Events()
 {
+	Super::Bind_Events();
 	m_vecEventHandles.push_back(
 		m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 			{
@@ -131,9 +132,7 @@ void CUITutorial_PopUp_Clear_Image::Bind_Events()
 				{
 					this->Set_Visible();
 					this->Set_Active(true);
-				})
-		);
-
+				}));
 		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
 				{
@@ -141,9 +140,7 @@ void CUITutorial_PopUp_Clear_Image::Bind_Events()
 					{
 						this->Set_Invisible();
 					}
-				})
-		);
-
+				}));
 	}
 	break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_ICON:
@@ -153,8 +150,7 @@ void CUITutorial_PopUp_Clear_Image::Bind_Events()
 				{
 					this->Set_Visible();
 					this->Set_Active(true);
-				})
-		);
+				}));
 
 		m_vecEventHandles.push_back(
 			m_pUIManager->Get_UIEvents().Subscribe([this](const UIEVENT_DESC& Desc)
@@ -163,8 +159,7 @@ void CUITutorial_PopUp_Clear_Image::Bind_Events()
 					{
 						this->Set_Invisible();
 					}
-				})
-		);
+				}));
 	}
 	break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX:
@@ -174,8 +169,7 @@ void CUITutorial_PopUp_Clear_Image::Bind_Events()
 				{
 					this->Set_Visible();
 					this->Set_Active(true);
-				})
-		);
+				}));
 	}
 	break;
 	}
@@ -188,15 +182,15 @@ void CUITutorial_PopUp_Clear_Image::Tick_By_Type(const _float fTimeDelta)
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG:
 	{
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_ICON:
 	{
 	}
-	break;
+		break;
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX:
 	{
 	}
-	break;
+		break;
 	}
 }
 
@@ -208,6 +202,9 @@ void CUITutorial_PopUp_Clear_Image::Initialize_Visible_Event()
 	{
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_BG:
 	{
+		// UI SOUND
+		m_pGameInstance->Play_OneShot(0, TO_HASH("UI_TUTORIAL_POPUP_CLEAR"), 1.f);
+
 		Ready_Fade(0.5f, 0.f, 1.f, 0.f);
 		Ready_ChageColor(0.2f, 
 			Vec4{ 0.f, 0.f, 0.f, 0.f }, Vec4{ 0.f, 0.f, 0.f, 0.f }, 
@@ -226,10 +223,10 @@ void CUITutorial_PopUp_Clear_Image::Initialize_Visible_Event()
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_POPUP_CLEAR_CIRCLE_FX:
 	{
-		Ready_LerpChange(0.3f, 0.f, 400.f, 3.f, 0.f);
+		Ready_LerpChange(0.3f, 0.f, 150.f, 3.f, 0.f, true);
+		Ready_Fade(0.7f, 1.f, 0.f, 0.f);
 		m_fWidth = 0.1f;
 		m_fHeight = 0.1f;
-		m_fAlpha_Ratio = 1.f;
 	}
 	break;
 	}
@@ -281,25 +278,22 @@ _bool CUITutorial_PopUp_Clear_Image::Tick_Visible_Event(const _float fTimeDelta)
 	{
 		_float f = {};
 		_bool is = Tick_LerpChange(&f, fTimeDelta);
+		_bool isFade = Tick_Fade(fTimeDelta);
 
 		m_fProgress_Ratio = 0.f;
 		m_fWidth = f;
 		m_fHeight = f;
 
-		if (is)
+		if (is && isFade)
 		{
-			m_fAlpha_Ratio -= fTimeDelta;
-			if (m_fAlpha_Ratio <= 0.f)
-			{
-				Move_Size(0.1f, 0.1f);
-				Set_Invisible();
-				UIEVENT_DESC Desc = {};
-				Desc.eEventID = EUIEventID::TUTORIAL_POPUP_EVENT2;
-				m_pUIManager->Get_UIEvents().Broadcast(Desc);
+			Move_Size(0.1f, 0.1f);
+			Set_Invisible();
+			UIEVENT_DESC Desc = {};
+			Desc.eEventID = EUIEventID::TUTORIAL_POPUP_EVENT2;
+			m_pUIManager->Get_UIEvents().Broadcast(Desc);
 
-				return true;
-			}
-		}
+			return true;
+		}	
 	}
 	break;
 	}

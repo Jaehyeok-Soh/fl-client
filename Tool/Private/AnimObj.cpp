@@ -309,6 +309,23 @@ HRESULT CAnimObj::Ready_ComputeShaders()
 			return E_FAIL;
 	}
 
+	// ========   Compute Shader : BoneMove  ========
+	{
+		CComputeShader::ComShaderCopyDesc ShaderDesc = {};
+		ShaderDesc.Output_SRVBuffer_Name = "FINAL_SRT_SRV";
+
+		ShaderDesc.InputBufferNum = 0;
+		ShaderDesc.bMakeSB = false;
+
+		// 출력 버퍼
+		ShaderDesc.OutPut_StructBuffer.sBufferName = "FINAL_SRT";
+		ShaderDesc.OutPut_StructBuffer.iElementSize = sizeof(CS_SRT);
+		ShaderDesc.OutPut_StructBuffer.iNumElements = iBoneNums;
+
+		if (FAILED(Add_Script_Component(L"ComputeShader_BoneMove", L"Prototype_Component_Shader_BoneMove", &ShaderDesc)))
+			return E_FAIL;
+	}
+
 	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
 	CComputeShader* pBonCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));

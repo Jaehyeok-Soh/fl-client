@@ -79,6 +79,9 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 	if (FAILED(Super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dissolve()))
+		return E_FAIL;
+
 	if (FAILED(Build_Prototype()))
 	{
 		MSG_BOX("CLevel_Tutorial_Village::Initialize, Build_Prototype Create Failed");
@@ -517,6 +520,9 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), g_wszUILayer)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -525,30 +531,43 @@ void CLevel_Tutorial_Village::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
 
-//	static _uint s_iCount = { 0 };
-//	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
-//	{
-//#ifdef _DEBUG
-//		s_iCount = (s_iCount + 1) % 3;
-//#else
-//		s_iCount = (s_iCount + 1) % 2;
-//#endif
-//		if (s_iCount == 0)
-//		{
-//			m_eCursorMode = ECursorMode::LockedHiddenCenter;
-//		}
-//		else if (s_iCount == 1)
-//		{
-//			m_eCursorMode = ECursorMode::VisibleClipped;
-//		}
-//#ifdef _DEBUG
-//		else
-//		{
-//			m_eCursorMode = ECursorMode::VisibleFree;
-//		}
-//#endif
-//		m_pGameInstance->Request_CursorMode(m_eCursorMode);
-//	}
+
+	#ifdef _DEBUG
+	static _uint s_iCount = { 0 };
+	if (m_pGameInstance->KeyButton_Down(DIK_P))
+	{
+		s_iCount = (s_iCount + 1) % 3;
+		if (s_iCount == 0)
+		{
+			m_fTimeScale = 1.f;
+		}
+		else if (s_iCount == 1)
+		{
+			m_fTimeScale = 2.f;
+		}
+		else
+		{
+			m_fTimeScale = 4.f;
+		}
+
+		m_pGameInstance->Set_GlobalScale(m_fTimeScale);
+	}
+	#endif
+
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		m_pGameInstance->Broadcast<DEFAULT_UI_VISIBLE>();
+	}
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		m_pGameInstance->Broadcast<DEFAULT_UI_INVISIBLE>();
+	}
+
+}
+
+HRESULT CLevel_Tutorial_Village::Ready_Dissolve()
+{
+	return m_pGameInstance->Ready_DissolveSetting();
 }
 
 HRESULT CLevel_Tutorial_Village::Render()

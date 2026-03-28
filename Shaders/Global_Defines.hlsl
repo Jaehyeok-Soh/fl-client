@@ -32,7 +32,10 @@ float4  g_vGradiateColorTint;
 float   g_fDelay;
 int     g_iFlip;
 
-float g_fBrightness;
+float   g_fBrightness;
+
+float2  g_vOffset;
+float2   g_vScale;
 
 /////////
 // SRV //
@@ -61,6 +64,11 @@ Texture2D g_LUT_Stand;
 Texture3D g_PerlinNoise;
 Texture2D g_RenderTargetOITAccumTexture;
 Texture2D g_RenderTargetOITRevealTexture;
+
+///////////////////
+// °ø¿ë DISSOLVE //
+//////////////////
+Texture2D g_DissolveTexture[DISSOLVE_MAX];
 
 void DecodeDepth(float2 vUV, out float fNDCZ, out float fViewZ)
 {

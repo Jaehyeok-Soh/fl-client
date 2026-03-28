@@ -60,6 +60,8 @@ private:
 
 	_float m_fPlayer_PreRatio = {};
 
+	_bool m_isDefenseTrigger = { false };
+
 public:
 	static CUIPlayerStat_Progress* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

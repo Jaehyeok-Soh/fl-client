@@ -1,0 +1,67 @@
+{
+    "Category": "UI",
+    "Objects": [
+        {
+            "Type": "CANVAS",
+            "fHeight": 900.0,
+            "fPosX": 800.0,
+            "fPosY": 450.0,
+            "fPosZ": 0.0,
+            "fWidth": 1600.0,
+            "iEditorSizeX": 1600,
+            "iEditorSizeY": 900,
+            "iLevelIndex": 0,
+            "iNumPrefabs": 0,
+            "iPrefabType": 0,
+            "strTag": "Battle_ScreenPulse"
+        },
+        {
+            "Type": "GENERICUI",
+            "eClassType": "DYNAMIC_IMAGE",
+            "eSubClassType": "NONE_OWNER",
+            "fAlphaRatio": 1.0,
+            "fDelay": 0.0,
+            "fHeight": 1300.0,
+            "fPosX": 0.0,
+            "fPosY": 0.0,
+            "fPosZ": 1.0,
+            "fRotate": 0.0,
+            "fScale": 1.0,
+            "fWidth": 2650.0,
+            "iComponentFlag": 0,
+            "iFillDir": 0,
+            "iFlip": 0,
+            "iRectTransformType": 4,
+            "iShaderPass": 5,
+            "isActivate": false,
+            "isInteract": false,
+            "isUseColorTint": true,
+            "isVisible": false,
+            "strAlphaMaskTextureTag": "Texture_T_DecalMjc002_M",
+            "strCanvasName": "Battle_ScreenPulse",
+            "strGlowTextureTag": "Texture_T_DecalMjc002_M",
+            "strNoiseTextureTag": "Texture_T_WaterWyc004_D",
+            "strTag": "ScreenPulse_BG",
+            "strTextureTag": "Texture_White",
+            "vColorTint": {
+                "w": 0.0,
+                "x": 0.8700000047683716,
+                "y": 0.03999999910593033,
+                "z": 0.0
+            },
+            "vGradiantColorTint": {
+                "w": 0.0,
+                "x": 0.8600000143051147,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "Type": "DYNAMIC_IMAGE",
+            "eDISubClassType": "SCREEN_PULSE",
+            "iParams0": 0,
+            "strOwnerName": "ScreenPulse_BG",
+            "strTag": "ScreenPulse_BG_DImageData"
+        }
+    ]
+}

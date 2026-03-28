@@ -85,6 +85,7 @@ private:
 	CComputeShader* m_pBoneAnimBlendCS		= { nullptr };
 	CComputeShader* m_pBoneAnimMixCS		= { nullptr };
 	CComputeShader* m_pAdditiveMixCS		= { nullptr };
+	CComputeShader* m_pBoneMoveCS = { nullptr };
 
 public:
 	static CBody* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

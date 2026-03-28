@@ -286,6 +286,8 @@ public:
 	HRESULT Set_CascadeShadowConstantBuffer(class CShader* pShader);
 	HRESULT Set_BakedShadowConstantBuffer(class CShader* pShader);
 	HRESULT Bake_StaticShadow(BoundingBox* pRootBox);
+	HRESULT Ready_DissolveSetting();
+	HRESULT Bind_DissolveTexture(class CShader* pShader);
 #ifdef _DEBUG
 	inline void Push_DebugComponent(class CComponent* pComp);
 #endif
@@ -424,7 +426,7 @@ public:
 	vector<PxShape*> CopyShapes(vector<PxShape*>& shapes);
 	vector<PxRigidActor*> GetActor(PHYSICSRIGIDBODY_DESC* rigidBodyDesc, PHYSICSCOLLIDER_DESC* colliderDesc, vector<PxShape*>& shapes);
 	RAGDOLLELEMENTS CreateRagdoll(array<RAGDOLLBONEDESC, RAGDOLLJOINT::END> arrRagdollBoneDesc);
-	PxController* GetController(PHYSICSCCT_DESC* pDesc);
+	PxController* CreateController(PHYSICSCCT_DESC* pDesc);
 	class CPhysics_CCTFilterCallback* GetCCTFilterCallback();
 	void RegisterPhysicsMesh(_uint levelIndex, _wstring prototypeTag);
 	PxQuat GetPureRotation(const Matrix& mat);

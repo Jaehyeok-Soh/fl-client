@@ -157,6 +157,10 @@ HRESULT CEffect_Env::Enable_VFX(void* pArg)
 	m_tEnvDesc = *pDesc;
 
 	m_eDesc._Effect_SimulationType = (DTO::E_SIMULATION_SPACE)pDesc->iSimulationType;
+	m_tEnvDesc.VFX_COLORTYPE = pDesc->VFX_COLORTYPE;
+
+	if (m_tEnvDesc.VFX_COLORTYPE == EFFECT_ENV_DESC::E_VFX_COLORMODE::COLOR_CHANGE)
+		m_tEnvDesc.VFX_Color = pDesc->VFX_Color;
 
 	// 부모 행렬 포인터 연결
 	if (pDesc->pTransformMatrix)

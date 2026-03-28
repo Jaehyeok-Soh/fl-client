@@ -14,6 +14,8 @@
 #define BAKED_SECTION_COUNT_X 5
 #define BAKED_SECTION_COUNT_Z 5
 #define ACTIVE_SECTION_MAX 9
+#define TO_HASH(str) Engine_Utils::ToHash(str)
+
 
 // PhysX
 #define PVD_HOST "127.0.0.1"

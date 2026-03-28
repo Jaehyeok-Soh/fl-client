@@ -102,7 +102,20 @@ void CBuilder_Effect::Regist_pool(void* pArg, string& PrefabEffectTag)
 	else if (PrefabEffectTag == "Boss_Xibi_Bullet_Dead")
 		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 200);
 
-	else
+	// ÇÇ°Ý ÀÌÆåÆ®
+	else if (PrefabEffectTag == "VFX_Sword_Hit")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 50);
+
+	else if (PrefabEffectTag == "VFX_Critical_Hit")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 50);
+
+	else if (PrefabEffectTag == "VFX_Critical_Hit")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 50);
+
+	else if (PrefabEffectTag == "VFX_Blade_Hit")
+		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 200);
+
+	else 
 		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 30);
 
 }

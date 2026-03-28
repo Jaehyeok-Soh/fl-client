@@ -288,6 +288,9 @@ namespace Tool
 	inline constexpr wchar_t g_wszCollider_Sphere_Prototype_Tag[]	{ L"Prototype_Component_Collider_Sphere" };
 	inline constexpr wchar_t g_wszCollider_OBB_Prototype_Tag[]		{ L"Prototype_Component_Collider_OBB" };
 
+	inline constexpr wchar_t g_wszBonePart_PrototypeTag[]		{ L"Prototype_GameObject_PartObject_BonePart"};
+	inline constexpr wchar_t g_wszCitizenPart_PrototypeTag[]		{ L"Prototype_GameObject_PartObject_CitizenPart"};
+
 	inline constexpr _tchar g_wszCameraCinematicData_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CameraCinematicData.json" };
 	inline constexpr _tchar g_wszCameraCinematicSequnceEventManifest_JsonPath[]{ L"../../Resources/Data/CameraCinematicData/CCS_EventManifest.json" };
 
@@ -398,6 +401,57 @@ namespace Tool
 
 #pragma endregion
 
+
+	enum class EAnimShaderPass
+	{
+		Default,
+		Red,
+		RGBMapping,
+		WithRenderFx,
+		Shadow,
+		CitizenEye,
+		CitizenMouth,
+		CitizenCloth,
+		CitizenBody,
+		END,
+	};
+
+	static std::string EAnimShaderPass_ToString(EAnimShaderPass eType)
+	{
+		switch (eType)
+		{
+		case Tool::EAnimShaderPass::Default:		return "Default";
+		case Tool::EAnimShaderPass::Red:			return "Red";
+		case Tool::EAnimShaderPass::RGBMapping:		return "RGBMapping";
+		case Tool::EAnimShaderPass::WithRenderFx:	return "WithRenderFx";
+		case Tool::EAnimShaderPass::Shadow:			return "Shadow";
+		case Tool::EAnimShaderPass::CitizenEye:		return "CitizenEye";
+		case Tool::EAnimShaderPass::CitizenMouth:	return "CitizenMouth";
+		case Tool::EAnimShaderPass::CitizenCloth:	return "CitizenCloth";
+		case Tool::EAnimShaderPass::CitizenBody:	return "CitizenBody";
+
+		default:									return "UnKnown";
+		};
+		return "Unknown";
+	};
+
+	static EAnimShaderPass EAnimShaderPass_ToEnum(std::string strType)
+	{
+		if (strType == "Default")			return Tool::EAnimShaderPass::Default;
+		else if (strType == "Red")			return Tool::EAnimShaderPass::Red;
+		else if (strType == "RGBMapping")	return Tool::EAnimShaderPass::RGBMapping;
+		else if (strType == "WithRenderFx") return Tool::EAnimShaderPass::WithRenderFx;
+		else if (strType == "Shadow")		return Tool::EAnimShaderPass::Shadow;
+		else if (strType == "CitizenEye")	return Tool::EAnimShaderPass::CitizenEye;
+		else if (strType == "CitizenMouth")	return Tool::EAnimShaderPass::CitizenMouth;
+		else if (strType == "CitizenCloth") return Tool::EAnimShaderPass::CitizenCloth;
+		else if (strType == "CitizenBody")	return Tool::EAnimShaderPass::CitizenBody;
+
+		return Tool::EAnimShaderPass::END;
+	};
+
+
+
 #pragma region Client Make Path
 
 	enum class EClientMakePath
@@ -427,6 +481,7 @@ namespace Tool
 		/* Trigger Box 관련 */
 		TriggerBox_ChangeLevel,
 		TriggerBox_MonsterSpawner,
+		TriggerBox_MonsterWaveSpawner,
 		TriggerBox_GlobalEvent_BroadCaster,
 		TriggerBox_TutorialUIEvent,
 		TriggerBox_CinematicPlayer,
@@ -455,6 +510,7 @@ namespace Tool
 		SkyBox,
 		Shadow,
 		LightObject,
+		CitizenFace,
 		END,
 	};
 
@@ -490,6 +546,7 @@ namespace Tool
 			/* -------------- Trigger Box -------------- */
 		case Tool::EClientMakePath::TriggerBox_ChangeLevel:					return "TriggerBox_ChangeLevel";
 		case Tool::EClientMakePath::TriggerBox_MonsterSpawner:				return "TriggerBox_MonsterSpawner";
+		case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:			return "TriggerBox_MonsterWaveSpawner";
 		case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:		return "TriggerBox_GlobalEvent_BroadCaster";
 		case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:				return "TriggerBox_TutorialUIEvent";
 		case Tool::EClientMakePath::TriggerBox_CinematicPlayer:				return "TriggerBox_CinematicPlayer";
@@ -528,6 +585,7 @@ namespace Tool
 		/* Trigger Box 관련 */
 		if (strType == "TriggerBox_ChangeLevel")							return EClientMakePath::TriggerBox_ChangeLevel;
 		if (strType == "TriggerBox_MonsterSpawner")							return EClientMakePath::TriggerBox_MonsterSpawner;
+		if (strType == "TriggerBox_MonsterWaveSpawner")						return EClientMakePath::TriggerBox_MonsterWaveSpawner;
 		if (strType == "TriggerBox_GlobalEvent_BroadCaster")				return EClientMakePath::TriggerBox_GlobalEvent_BroadCaster;
 		if (strType == "TriggerBox_TutorialUIEvent")						return EClientMakePath::TriggerBox_TutorialUIEvent;
 		if (strType == "TriggerBox_CinematicPlayer")						return EClientMakePath::TriggerBox_CinematicPlayer;
@@ -751,6 +809,7 @@ namespace Tool
 		DISOLVE,
 		NOISE,
 		GLOW,
+		SPRITE_ANIMATION,
 		END
 	};
 
@@ -764,6 +823,7 @@ namespace Tool
 		case EUIShaderPass::DISOLVE: return "DISOLVE";
 		case EUIShaderPass::NOISE: return "NOISE";
 		case EUIShaderPass::GLOW: return "GLOW";
+		case EUIShaderPass::SPRITE_ANIMATION: return "SPRITE_ANIMATION";
 		default: return "";
 		}
 	}
@@ -776,6 +836,7 @@ namespace Tool
 		else if (str == "DISOLVE") return EUIShaderPass::DISOLVE;
 		else if (str == "NOISE") return EUIShaderPass::NOISE;
 		else if (str == "GLOW") return EUIShaderPass::GLOW;
+		else if (str == "SPRITE_ANIMATION") return EUIShaderPass::SPRITE_ANIMATION;
 		else return EUIShaderPass::DEFAULT;
 	}
 

@@ -31,6 +31,9 @@ enum class EUIEventID {
 	TUTORIAL_POPUP_EVENT2,	// 이벤트 다 끝났을 때			// 내부 이벤트
 
 	QUEST_NAME_CHANGE,	// 퀘스트 이름 바꼈을 때 
+
+	PLAYER_LOW_HP,
+	PLAYER_NORMAL_HP,
 	END
 };
 
@@ -62,6 +65,8 @@ public:
 
 	void Set_LoadingRatio(const _float* p) { m_pLoadingRatio = p; }
 	
+	void Request_LevelChange_With_Fade(const _bool isFadeIn, _uint iNextLevelIndex);
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	array<_wstring, ENUM_TO_UINT(EUIPrefabType::END)> m_vecPrefabs;
