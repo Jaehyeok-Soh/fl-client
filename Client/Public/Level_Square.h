@@ -26,11 +26,8 @@ private:
 	HRESULT Ready_Monster();
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();
-<<<<<<< HEAD
 	HRESULT Ready_CitizenData();
-=======
 	HRESULT Ready_Dissolve();
->>>>>>> develop
 private:
 	HRESULT Setting_Citizen();
 	void	Check_Citizen();

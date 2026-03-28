@@ -36,7 +36,6 @@ namespace Client
 	};
 
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
-#ifdef _DEBUG
 	static const char* LevelTypeToString(int lv)
 	{
 		static const char* kNames[] =
@@ -58,7 +57,6 @@ namespace Client
 
 		return kNames[lv];
 	}
-#endif
 
 	enum class EGroggyState : unsigned int
 	{
