@@ -1702,9 +1702,9 @@ HRESULT CPanel_MapTool::Render_CameraSetting()
 
 	if (ImGui::TreeNode(" Info Setting "))
 	{
-		float fFov = m_pCamera->Get_Fov() * To_DEGREE;
+		float fFov = m_pCamera->Get_BaseFov() * To_DEGREE;
 		if (ImGui::DragFloat("Fov#Fov", &fFov))
-			m_pCamera->Set_Fov(fFov * TO_RAD);
+			m_pCamera->Set_BaseFov(fFov * TO_RAD);
 		float fFar = m_pCamera->Get_Far();
 		if (ImGui::DragFloat("Far#Far", &fFar))
 			m_pCamera->Set_Far(fFar);

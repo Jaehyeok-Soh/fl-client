@@ -146,7 +146,7 @@ CAMERA_POSE CCameraMan::Capture_BasePose_FromTransform()
     tPose.vRight            = pTrasnform->Get_Info(TRANSFORM_INFO_STATE::RIGHT);
     tPose.vUp               = pTrasnform->Get_Info(TRANSFORM_INFO_STATE::UP);
     tPose.vLook             = pTrasnform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-    tPose.fFovRad           = pCameraComp->Get_Fov();
+    tPose.fFovRad           = pCameraComp->Get_BaseFov();
 
     tPose.vRight.Normalize();
     tPose.vUp.Normalize();

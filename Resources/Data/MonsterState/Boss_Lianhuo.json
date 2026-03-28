@@ -8,8 +8,12 @@
                 "AdvanceThrustAttack",
                 "Backdash",
                 "BackdashAttack",
-                "CatchAttack",
+                "BackdashCatch",
+                "EndCatch",
                 "GimmikAttack",
+                "GimmikCamera",
+                "GimmikRunLoop",
+                "GimmikRunStart",
                 "Idle",
                 "JumpSpinAttack",
                 "JumpThrustAttack",
@@ -26,7 +30,8 @@
                 "R_Turn180",
                 "R_Turn90",
                 "Screaming",
-                "SpawnAttack"
+                "SpawnAttack",
+                "StartCatch"
             ],
             "strTag": "Sample",
             "vecMonsterStateDesc": [
@@ -36,6 +41,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -44,8 +50,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -62,7 +72,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "AdvanceComboAttack01",
                     "tStateCoolDownTime": {
@@ -91,8 +102,8 @@
                                         false
                                     ],
                                     "fParam": [
-                                        15.0,
-                                        20.0,
+                                        5.0,
+                                        23.0,
                                         0.0,
                                         0.0
                                     ],
@@ -140,7 +151,7 @@
                                     ],
                                     "fParam": [
                                         40.0,
-                                        50.0,
+                                        55.0,
                                         0.0,
                                         0.0
                                     ],
@@ -188,7 +199,7 @@
                                     ],
                                     "fParam": [
                                         75.0,
-                                        85.0,
+                                        100.0,
                                         0.0,
                                         0.0
                                     ],
@@ -201,7 +212,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -210,7 +221,7 @@
                                         false
                                     ],
                                     "fParam": [
-                                        0.0,
+                                        1.5,
                                         0.0,
                                         0.0,
                                         0.0
@@ -561,6 +572,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -569,8 +581,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -587,7 +603,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "AdvanceComboAttack02",
                     "tStateCoolDownTime": {
@@ -617,7 +634,7 @@
                                     ],
                                     "fParam": [
                                         25.0,
-                                        50.0,
+                                        65.0,
                                         0.0,
                                         0.0
                                     ],
@@ -678,7 +695,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -687,7 +704,7 @@
                                         false
                                     ],
                                     "fParam": [
-                                        0.0,
+                                        2.0,
                                         0.0,
                                         0.0,
                                         0.0
@@ -918,7 +935,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -927,7 +944,103 @@
                                         false
                                     ],
                                     "fParam": [
+                                        2.0,
                                         0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        71.0,
+                                        80.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        2.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        95.0,
+                                        105.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        2.0,
                                         0.0,
                                         0.0,
                                         0.0
@@ -1134,6 +1247,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -1142,8 +1256,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -1160,7 +1278,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "AdvanceThrustAttack",
                     "tStateCoolDownTime": {
@@ -1189,8 +1308,8 @@
                                         false
                                     ],
                                     "fParam": [
-                                        25.0,
-                                        45.0,
+                                        20.0,
+                                        50.0,
                                         0.0,
                                         0.0
                                     ],
@@ -1203,7 +1322,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -1212,7 +1331,7 @@
                                         false
                                     ],
                                     "fParam": [
-                                        0.0,
+                                        1.5,
                                         0.0,
                                         0.0,
                                         0.0
@@ -1274,6 +1393,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -1282,8 +1402,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -1300,7 +1424,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Screaming",
                     "tStateCoolDownTime": {
@@ -1365,6 +1490,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -1373,8 +1499,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -1391,7 +1521,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "BackdashAttack",
                     "tStateCoolDownTime": {
@@ -1421,7 +1552,7 @@
                                     ],
                                     "fParam": [
                                         13.0,
-                                        55.0,
+                                        70.0,
                                         0.0,
                                         0.0
                                     ],
@@ -1434,7 +1565,7 @@
                                 }
                             },
                             "feat": {
-                                "strFeature": "feat_TurnToTarget_XZ",
+                                "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -1443,7 +1574,7 @@
                                         false
                                     ],
                                     "fParam": [
-                                        0.0,
+                                        1.5,
                                         0.0,
                                         0.0,
                                         0.0
@@ -1505,6 +1636,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -1513,8 +1645,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -1531,7 +1667,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "SpawnAttack",
                     "tStateCoolDownTime": {
@@ -1596,6 +1733,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -1604,8 +1742,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -1622,7 +1764,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "JumpThrustAttack",
                     "tStateCoolDownTime": {
@@ -2074,6 +2217,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -2082,8 +2226,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -2100,7 +2248,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Backdash",
                     "tStateCoolDownTime": {
@@ -2165,6 +2314,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -2173,8 +2323,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -2191,7 +2345,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "JumpSpinAttack",
                     "tStateCoolDownTime": {
@@ -2595,6 +2750,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -2603,8 +2759,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -2621,7 +2781,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Idle",
                     "tStateCoolDownTime": {
@@ -2677,7 +2838,7 @@
                                 }
                             ]
                         },
-			{
+                        {
                             "mapRandomStatePool": {
                                 "R_Turn90": 1.0
                             },
@@ -2896,6 +3057,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -2904,8 +3066,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -2922,7 +3088,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "L_Turn180",
                     "tStateCoolDownTime": {
@@ -2987,6 +3154,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -2995,8 +3163,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -3013,7 +3185,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "L_Turn90",
                     "tStateCoolDownTime": {
@@ -3078,6 +3251,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -3086,8 +3260,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -3104,7 +3282,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "R_Turn180",
                     "tStateCoolDownTime": {
@@ -3169,6 +3348,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -3177,8 +3357,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -3195,7 +3379,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "R_Turn90",
                     "tStateCoolDownTime": {
@@ -3260,6 +3445,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -3268,8 +3454,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -3286,7 +3476,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Move_B",
                     "tStateCoolDownTime": {
@@ -3477,6 +3668,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -3485,8 +3677,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -3503,7 +3699,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Move_BL",
                     "tStateCoolDownTime": {
@@ -3694,6 +3891,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -3702,8 +3900,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -3720,7 +3922,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Move_BR",
                     "tStateCoolDownTime": {
@@ -3911,6 +4114,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -3919,8 +4123,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -3937,7 +4145,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Move_F",
                     "tStateCoolDownTime": {
@@ -4129,6 +4338,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -4137,8 +4347,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -4155,7 +4369,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Move_FL",
                     "tStateCoolDownTime": {
@@ -4347,6 +4562,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -4355,8 +4571,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -4373,7 +4593,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Move_FR",
                     "tStateCoolDownTime": {
@@ -4565,6 +4786,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -4573,8 +4795,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -4591,7 +4817,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Move_L",
                     "tStateCoolDownTime": {
@@ -4703,6 +4930,7 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "mapPreAnimNames": {},
                     "setStates": [
@@ -4711,8 +4939,12 @@
                         "AdvanceThrustAttack",
                         "Backdash",
                         "BackdashAttack",
-                        "CatchAttack",
+                        "BackdashCatch",
+                        "EndCatch",
                         "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
                         "Idle",
                         "JumpSpinAttack",
                         "JumpThrustAttack",
@@ -4729,7 +4961,8 @@
                         "R_Turn180",
                         "R_Turn90",
                         "Screaming",
-                        "SpawnAttack"
+                        "SpawnAttack",
+                        "StartCatch"
                     ],
                     "strName": "Move_R",
                     "tStateCoolDownTime": {
@@ -4859,6 +5092,468 @@
                             ]
                         }
                     ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bIsCustom": true,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "BackdashCatch",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill07_02"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bIsCustom": true,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "StartCatch",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill07_01"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bIsCustom": true,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "EndCatch",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill07_03"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bIsCustom": true,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "GimmikAttack",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill08_03"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bIsCustom": true,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "GimmikCamera",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill08_Camera"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": false,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bIsCustom": true,
+                    "bLoop": false,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "GimmikRunStart",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill08_01"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bIsCustom": true,
+                    "bLoop": true,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "GimmikRunLoop",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill08_02"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [],
                     "vecWeaponAnimNames": []
                 }
             ]

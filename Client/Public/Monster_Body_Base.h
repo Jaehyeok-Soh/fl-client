@@ -1,4 +1,5 @@
 #pragma once
+#include "ICameraAnchorProvider.h"
 #include "PartObject.h"
 
 NS_BEGIN(Engine)
@@ -9,6 +10,7 @@ NS_END
 NS_BEGIN(Client)
 
 class CMonster_Body_Base abstract : public CPartObject
+								  , public ICameraAnchorProvider
 {
 	using Super = CPartObject;
 public:
@@ -50,6 +52,14 @@ public:
 	const Matrix* Get_SocketMatrix(_uint iIndex);
 
 	virtual void  DissolveStart() {};
+public:
+	// Camera Interface
+	virtual _bool Resolve_CameraAnchor(
+		Engine::ECameraAnchorResolve eResolve,
+		const string& strAnchorTag, const Matrix& matOwnerWorld,
+		OUT Engine::CAMERA_ANCHOR_RESULT& outResult) override;
+private:
+	CBone* Find_CameraAnchorBone(ECameraAnchorResolve eResolve, const string& strAnchorTag);
 protected:
 	HRESULT Ready_Components(MONSTERBODY_DESC* pDesc);
 	HRESULT Bind_ShaderResources();

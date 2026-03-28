@@ -113,6 +113,36 @@ DTO::MONSTERSTATE_DESC CMonsterActionState::LoadStateFile(std::filesystem::path 
 	return result;
 }
 
+DTO::MONSTER_STATEBASE_DESC* CMonsterActionState::Get_StateDesc(const string& strStateTag, OUT _int& iStateIndex)
+{
+	auto itr = m_umapState.find(strStateTag.c_str());
+	if (itr == m_umapState.end())
+	{
+		MSG_BOX("CMonsterActionState::Get_StateDesc, invalid state tag");
+		return nullptr;
+	}
+	_uint iIndex = itr->second;
+	if (iIndex >= m_tDesc.vecMonsterStateDesc.size())
+	{
+		MSG_BOX("CMonsterActionState::Get_StateDesc, invalid mapped index");
+		return nullptr;
+	}
+
+	DTO::MONSTER_STATEBASE_DESC* pReturn{nullptr};
+
+	for (_uint i = 0; i < m_tDesc.vecMonsterStateDesc.size(); ++i)
+	{
+		if (std::strcmp(m_tDesc.vecMonsterStateDesc[i].strName.c_str(), strStateTag.c_str()) == 0)
+		{
+			pReturn = &m_tDesc.vecMonsterStateDesc[i];
+			break;
+		}
+	}
+
+	iStateIndex = iIndex;
+	return pReturn;
+}
+
 HRESULT CMonsterActionState::LoadStates(wstring stateTag, _uint iLevelIndex)
 {
 	std::filesystem::path path = L"../../Resources/Data/MonsterState";
@@ -127,6 +157,10 @@ HRESULT CMonsterActionState::LoadStates(wstring stateTag, _uint iLevelIndex)
 	for (auto& stateDesc : m_tDesc.vecMonsterStateDesc)
 	{
 		_uint stateIdx = (*m_umapState.find(stateDesc.strName)).second;
+
+		// StateDesc만 작성후 넘기기 추후에 외부에서 Desc Get해와서 AddState
+		if (stateDesc.bIsCustom == true)
+			continue;
 
 		if (FAILED(Add_State(stateIdx, CState_Monster::Create(this, stateIdx, &stateDesc))))
 			return E_FAIL;

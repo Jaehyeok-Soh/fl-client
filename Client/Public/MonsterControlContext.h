@@ -93,6 +93,7 @@ public:
 
 public:
 	virtual Vec3  Get_MoveDir() override;
+	_float Get_Distance() const { return m_tRuntimeDesc.fDistance; }
 	void Set_PhaseTwo() { m_bPhaseTwo = true; }
 	void Set_HitDesc(HIT_DESC hitDesc)
 	{

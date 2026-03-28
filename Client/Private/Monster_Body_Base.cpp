@@ -16,6 +16,7 @@
 #include "PhysicsRagdoll.h"
 
 #include "UI_Manager.h"
+#include "CameraAnchorResolver.h"
 #include "GameInstance.h"
 
 CMonster_Body_Base::CMonster_Body_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -265,6 +266,47 @@ const Matrix* CMonster_Body_Base::Get_SocketMatrix(_uint iIndex)
 	}
 
 	return nullptr;
+}
+
+CBone* CMonster_Body_Base::Find_CameraAnchorBone(ECameraAnchorResolve eResolve, const string& strAnchorTag)
+{
+	switch (eResolve)
+	{
+	case Engine::ECameraAnchorResolve::CAM_SOCKET:
+	{
+		return Get_Component<CModel>()->Get_Bone("camera_point");
+	}
+
+	case Engine::ECameraAnchorResolve::BONE:
+	{
+		if (strAnchorTag.empty())
+			return nullptr;
+
+		return Get_Component<CModel>()->Get_Bone(strAnchorTag.c_str());
+	}
+	}
+
+	return nullptr;
+}
+
+_bool CMonster_Body_Base::Resolve_CameraAnchor(Engine::ECameraAnchorResolve eResolve, const string& strAnchorTag, const Matrix& matOwnerWorld, OUT Engine::CAMERA_ANCHOR_RESULT& outResult)
+{
+	outResult = {};
+
+	CBone* pAnchorBone = Find_CameraAnchorBone(eResolve, strAnchorTag);
+	if (pAnchorBone == nullptr)
+		return false;
+
+	Matrix matAnchorWorld =
+		pAnchorBone->Get_CombinedTransformMatrix() * matOwnerWorld;
+
+	outResult.vPos = matAnchorWorld.Translation();
+	outResult.vRight = matAnchorWorld.Right();
+	outResult.vUp = matAnchorWorld.Up();
+	outResult.vLook = matAnchorWorld.Backward();
+
+	CCameraAnchorResolver::Normalize_AnchorResult(outResult);
+	return true;
 }
 
 HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)

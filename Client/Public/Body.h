@@ -1,4 +1,5 @@
 #pragma once
+#include "ICameraAnchorProvider.h"
 #include "PartObject.h"
 
 NS_BEGIN(Engine)
@@ -9,6 +10,7 @@ NS_END
 NS_BEGIN(Client)
 
 class CBody final : public CPartObject
+				  , public ICameraAnchorProvider
 {
 	using Super = CPartObject;
 public:
@@ -38,6 +40,12 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Shadow() override;
 public:
+	// Camera Interface
+	virtual _bool Resolve_CameraAnchor(
+		Engine::ECameraAnchorResolve eResolve,
+		const string& strAnchorTag, const Matrix& matOwnerWorld,
+		OUT Engine::CAMERA_ANCHOR_RESULT& outResult) override;
+public:
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);
 	const Matrix* Get_SocketMatrix(_uint iIndex);
 	const Matrix* Get_PosMatrix(_uint iIndex);
@@ -59,6 +67,7 @@ private:
 	HRESULT Ready_Components(BODY_DESC *pDesc);
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_ComputeShader();
+	CBone* Find_CameraAnchorBone(ECameraAnchorResolve eResolve, const string& strAnchorTag);
 private:
 	_int m_iHead_Index = { 0 };
 	_int m_iNeck_Index = { 0 };

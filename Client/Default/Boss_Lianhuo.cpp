@@ -7,6 +7,7 @@
 #include "Boss_Lianhuo_Body.h"
 #include "Bone.h"
 #include "StatCom_Boss.h"
+#include "PhysicsCCT.h"
 #include "ComputeShader.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
@@ -15,6 +16,16 @@
 #include "UIIcon_Component.h"
 #include "CameraEventBinder.h"
 #include "MyStat.h"
+
+// CustomState
+#include "State_BackdashCatch.h"
+#include "State_EndCatch.h"
+#include "State_StartCatch.h"
+#include "State_GimmikAttack.h"
+#include "State_GimmikCamera.h"
+#include "State_GimmikRunLoop.h"
+#include "State_GimmikRunStart.h"
+
 #include "GameInstance.h"
 
 CBoss_Lianhuo::CBoss_Lianhuo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -62,6 +73,9 @@ HRESULT CBoss_Lianhuo::Initialize(void* pArg)
 	if (FAILED(Ready_CameraEvent()))
 		return E_FAIL;
 
+	if (FAILED(Ready_CustomStates()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -76,8 +90,8 @@ HRESULT CBoss_Lianhuo::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	CTransform* pTrnasform = Get_Component<CTransform>();
-	pTrnasform->Set_MovePerSec(1.5f);
-	pTrnasform->Set_RotatePerSec(3.f);
+	pTrnasform->Set_MovePerSec(4.f);
+	pTrnasform->Set_RotatePerSec(5.f);
 
 	{
 		UI_PREFAB_DATA ePrefabData = {};
@@ -93,6 +107,8 @@ HRESULT CBoss_Lianhuo::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Ready_GlobalEvent()))
 		return E_FAIL;
 
+	vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+
 	return S_OK;
 }
 
@@ -104,6 +120,23 @@ void CBoss_Lianhuo::Update_Priority(const _float fTimeDelta)
 void CBoss_Lianhuo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	CMonsterActionState* pActionState = Get_Component<CMonsterActionState>();
+	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD4))
+	{		
+		_int iIndex = pActionState->Get_StateIndex("Idle");
+		pActionState->Change_State(iIndex);
+	}
+	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD5))
+	{
+		_int iIndex = pActionState->Get_StateIndex("GimmikCamera");
+		pActionState->Change_State(iIndex);
+	}
+	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD6))
+	{
+		Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, vPos);
+		Get_Component<CPhysicsCCT>()->SetFootPosition(vPos);
+	}
+
 }
 
 void CBoss_Lianhuo::Update_Late(const _float fTimeDelta)
@@ -346,6 +379,56 @@ HRESULT CBoss_Lianhuo::Ready_CameraEvent()
 	if (pResult == nullptr)
 		return E_FAIL;
 	Safe_Release(pResult);
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_CustomStates()
+{
+	auto AddState = [&]<typename T>(const string & strStateTag, CMonsterActionState * pActionState)->HRESULT
+	{
+		_int iStateIndex{ -1 };
+		DTO::MONSTER_STATEBASE_DESC* pDesc = pActionState->Get_StateDesc(strStateTag, iStateIndex);
+		if (pDesc == nullptr || iStateIndex == -1)
+			return E_FAIL;
+		if (FAILED(pActionState->Add_State(iStateIndex, T::Create(pActionState, iStateIndex, pDesc))))
+			return E_FAIL;
+		return S_OK;
+	};
+
+	CMonsterActionState* pActionState = Get_Component<CMonsterActionState>();
+	if (pActionState == nullptr)
+		return E_FAIL;
+
+#define ADD_CUSTOM_STATE(TYPE, TAG) AddState.operator()<TYPE>(TAG, pActionState)
+
+	// For. State_BackdashCatch
+	if (FAILED(ADD_CUSTOM_STATE(CState_BackdashCatch, "BackdashCatch")))
+		return E_FAIL;
+
+	// For. State_EndCatch
+	if (FAILED(ADD_CUSTOM_STATE(CState_EndCatch, "EndCatch")))
+		return E_FAIL;
+
+	// For. State_StartCatch
+	if (FAILED(ADD_CUSTOM_STATE(CState_StartCatch, "StartCatch")))
+		return E_FAIL;
+
+	// For. State_GimmikAttack
+	if (FAILED(ADD_CUSTOM_STATE(CState_GimmikAttack, "GimmikAttack")))
+		return E_FAIL;
+
+	// For. State_GimmikCamera
+	if (FAILED(ADD_CUSTOM_STATE(CState_GimmikCamera, "GimmikCamera")))
+		return E_FAIL;
+
+	// For. State_GimmikRunLoop
+	if (FAILED(ADD_CUSTOM_STATE(CState_GimmikRunLoop, "GimmikRunLoop")))
+		return E_FAIL;
+
+	// For. State_GimmikRunStart
+	if (FAILED(ADD_CUSTOM_STATE(CState_GimmikRunStart, "GimmikRunStart")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
