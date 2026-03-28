@@ -175,6 +175,7 @@
     <ClInclude Include="..\public\CameraEventBinder.h" />
     <ClInclude Include="..\Public\CameraMan_Targeter.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\Effect_DashPanel.h" />
     <ClInclude Include="..\Public\Monster_Veteran.h" />
     <ClInclude Include="..\Public\Monster_Veteran_Body.h" />
     <ClInclude Include="..\Public\NPC_Citizen_Body.h" />
@@ -452,6 +453,7 @@
     <ClCompile Include="..\private\CameraEventBinder.cpp" />
     <ClCompile Include="..\Private\CameraMan_Targeter.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
+    <ClCompile Include="..\Private\Effect_DashPanel.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran_Body.cpp" />
     <ClCompile Include="..\Private\NPC_Citizen_Body.cpp" />

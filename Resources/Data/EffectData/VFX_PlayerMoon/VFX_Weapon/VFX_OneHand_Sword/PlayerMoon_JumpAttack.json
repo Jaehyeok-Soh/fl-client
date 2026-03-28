@@ -157,7 +157,7 @@
                     "Shader_Pass": 0,
                     "Shader_Path": "../../Shaders\\Shader_VtxEffectMesh.hlsl",
                     "Shader_Tag": "Shader_VtxEffectMesh",
-                    "ShapeType": 8,
+                    "ShapeType": 15,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0
@@ -223,7 +223,7 @@
                         "y": 5.0,
                         "z": 5.0
                     },
-                    "StartSpeed": 1.0,
+                    "StartSpeed": 1.5,
                     "TargetRotation": {
                         "x": 0.0,
                         "y": 0.0,
@@ -311,9 +311,9 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.5,
                     "Color": {
-                        "w": 0.9885714054107666,
+                        "w": 1.0,
                         "x": 1.1764706373214722,
-                        "y": 1.0813140869140625,
+                        "y": 1.079390287399292,
                         "z": 0.9568626880645752
                     },
                     "CurveTexture_Tag": "FX_ColorAtlas_YB",
@@ -607,7 +607,7 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.0,
                     "Color": {
-                        "w": 1.0,
+                        "w": 0.3393939137458801,
                         "x": 0.21052157878875732,
                         "y": 0.20594218373298645,
                         "z": 0.19740957021713257
@@ -654,8 +654,8 @@
                     "NormalTexture_Tag": "",
                     "ParentsName": "PlayerMoon_JumpAttack",
                     "ParticleSize": {
-                        "x": 0.05000000074505806,
-                        "y": 0.15000000596046448
+                        "x": 1.1399999856948853,
+                        "y": 1.149999976158142
                     },
                     "ParticleSystem": 2,
                     "PartsName": "Dust_Textire",
@@ -1481,9 +1481,9 @@
                     "AppearRatio": 0.30000001192092896,
                     "Color": {
                         "w": 1.0,
-                        "x": 1.0,
-                        "y": 0.7329208850860596,
-                        "z": 0.447129487991333
+                        "x": 10.0,
+                        "y": 5.964090824127197,
+                        "z": 0.44705867767333984
                     },
                     "CurveTexture_Tag": "FX_ColorAtlas_YB",
                     "DiffuseTexture_Tag": "",
@@ -1591,7 +1591,7 @@
                     "Shader_Pass": 0,
                     "Shader_Path": "../../Shaders\\Shader_VtxEffectParticle.hlsl",
                     "Shader_Tag": "Shader_VtxEffectParticle",
-                    "ShapeType": 8,
+                    "ShapeType": 15,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0

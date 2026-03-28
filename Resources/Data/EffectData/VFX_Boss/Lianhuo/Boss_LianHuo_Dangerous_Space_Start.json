@@ -29,10 +29,10 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.9900000095367432,
                     "Color": {
-                        "w": 0.5696969628334045,
-                        "x": 0.7222964763641357,
-                        "y": 0.5883141160011292,
-                        "z": 0.2845996916294098
+                        "w": 0.5686274766921997,
+                        "x": 0.7333333492279053,
+                        "y": 0.37254902720451355,
+                        "z": 0.0784313753247261
                     },
                     "CurveTexture_Tag": "",
                     "DiffuseTexture_Tag": "",
@@ -312,7 +312,7 @@
                     "AnimationSpeed": 1.0,
                     "AppearRatio": 0.9900000095367432,
                     "Color": {
-                        "w": 0.13333334028720856,
+                        "w": 0.0,
                         "x": 0.7215686440467834,
                         "y": 0.5882353186607361,
                         "z": 0.2862745225429535
@@ -596,11 +596,11 @@
                     "AppearRatio": 0.9900000095367432,
                     "Color": {
                         "w": 1.0,
-                        "x": 0.6627451181411743,
-                        "y": 0.5568627715110779,
-                        "z": 0.16862745583057404
+                        "x": 0.7333333492279053,
+                        "y": 0.37254902720451355,
+                        "z": 0.0784313753247261
                     },
-                    "CurveTexture_Tag": "",
+                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
                     "DiffuseTexture_Tag": "",
                     "DiscardValue": 0.05000000074505806,
                     "DissolveTexture_Tag": "",
@@ -714,9 +714,9 @@
                     "SpriteInfo": {
                         "Curve": {
                             "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 100.0
                         },
                         "Diffuse": {
                             "w": 0.0,
@@ -779,8 +779,8 @@
                         "z": 0.0
                     },
                     "TexOperatorFlag": 0,
-                    "TexRotationFlag": 512,
-                    "TextureFlag": 4,
+                    "TexRotationFlag": 0,
+                    "TextureFlag": 20,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": false,
@@ -790,7 +790,7 @@
                         "Scroll": false
                     },
                     "Tool_Resource": {
-                        "Curve": false,
+                        "Curve": true,
                         "Diffuse": false,
                         "Dissolve": false,
                         "Glow": false,
@@ -879,11 +879,11 @@
                     "AppearRatio": 0.9900000095367432,
                     "Color": {
                         "w": 1.0,
-                        "x": 0.6615129113197327,
-                        "y": 0.5549836754798889,
-                        "z": 0.16669978201389313
+                        "x": 0.7333333492279053,
+                        "y": 0.37254902720451355,
+                        "z": 0.0784313753247261
                     },
-                    "CurveTexture_Tag": "",
+                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
                     "DiffuseTexture_Tag": "",
                     "DiscardValue": 0.05000000074505806,
                     "DissolveTexture_Tag": "",
@@ -997,9 +997,9 @@
                     "SpriteInfo": {
                         "Curve": {
                             "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 100.0
                         },
                         "Diffuse": {
                             "w": 0.0,
@@ -1063,7 +1063,7 @@
                     },
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 512,
-                    "TextureFlag": 0,
+                    "TextureFlag": 16,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": false,
@@ -1073,7 +1073,7 @@
                         "Scroll": false
                     },
                     "Tool_Resource": {
-                        "Curve": false,
+                        "Curve": true,
                         "Diffuse": false,
                         "Dissolve": false,
                         "Glow": false,

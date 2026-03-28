@@ -537,6 +537,21 @@ namespace Engine
 		SimpleMath::Matrix WorldInv = {};
 	}SHADER_DECAL_EFFECT_DESC;
 
+	typedef struct tagShaderLineEffectDesc
+	{
+		// Slot 1
+		SimpleMath::Vector3 vStart = { 0.f, 0.f, 0.f };
+		float vPadding0 = {};
+
+		// Slot 2
+		SimpleMath::Vector3 vEnd = { 0.f, 0.f, 0.f };
+		float vPadding1 = {};
+
+		// Slot 3
+		float fHalfWidth = { 0.5f };
+		SimpleMath::Vector3 vPadding2 = {};
+	}SHADER_LINE_EFFECT_DESC;
+
 	typedef struct tagShaderDissolveEffectDesc
 	{
 		// Slot 1
@@ -1381,6 +1396,9 @@ namespace Engine
 #pragma region EFFECT
 	typedef struct tagEffectSpawnDesc 
 	{
+	public:
+		virtual ~tagEffectSpawnDesc() = default;
+
 		enum class E_VFX_COLORMODE
 		{
 			COLOR_NONCHANGE,
@@ -1409,10 +1427,41 @@ namespace Engine
 	typedef struct tagWarningEffectDesc : public EFFECT_SPAWN_DESC
 	{
 		SimpleMath::Vector3 VFX_Target_Position = { 0.f, 0.f, 0.f };
-		//SimpleMath::Vector3 VFX_Attacker_Position = { 0.f, 0.f, 0.f };
 		SimpleMath::Vector3 VFX_Scale = { 1.f, 1.f, 1.f };
 		SimpleMath::Vector3 VFX_Rotation = { 0.f, 0.f, 0.f };
 	}EFFECT_WARNING_DESC;
+
+	typedef struct tagLineEffectDesc : public EFFECT_SPAWN_DESC
+	{
+	public:
+		void Set_LinePosition(
+			const SimpleMath::Vector3& IN vStart,
+			const SimpleMath::Vector3& IN vEnd, 
+			float IN fWidth = 0.5f)
+		{
+			tLineDesc.fHalfWidth = fWidth;
+			tLineDesc.vStart = vStart;
+			tLineDesc.vEnd = vEnd;
+		}
+
+		void Get_LinePosition(
+			SimpleMath::Vector3& OUT vStart,
+			SimpleMath::Vector3& OUT vEnd,
+			float& OUT fWidth)
+		{
+			vStart = tLineDesc.vStart;
+			vEnd = tLineDesc.vEnd;
+			fWidth = tLineDesc.fHalfWidth;
+		}
+
+		SHADER_LINE_EFFECT_DESC Get_ShaderData()
+		{
+			return tLineDesc;
+		}
+
+	private:
+		SHADER_LINE_EFFECT_DESC tLineDesc = {};
+	}EFFECT_LINE_DESC;
 
 	typedef struct tagEnvironmentEffectDesc : public EFFECT_SPAWN_DESC
 	{

@@ -2,9 +2,9 @@
     "Category": "EFFECT",
     "Objects": [
         {
-            "ContainerName": "Boss_LianHuo_Attack1_Up",
+            "ContainerName": "Boss_LianHuo_ChainThornAttack",
             "IsPoolingEffect": true,
-            "SimulationType": 2,
+            "SimulationType": 3435973836,
             "Type": "EFFECT_CONTAINER",
             "WorldMatrix": [
                 1.0,
@@ -20,673 +20,27 @@
                 1.0,
                 0.0,
                 20.0,
-                32.5,
+                16.200000762939453,
                 0.0,
                 1.0
             ],
             "_ChildData": [
                 {
                     "AnimationSpeed": 1.0,
-                    "AppearRatio": 0.28999999165534973,
+                    "AppearRatio": 0.20000000298023224,
                     "Color": {
                         "w": 1.0,
-                        "x": 9.56862735748291,
-                        "y": 0.9107086062431335,
+                        "x": 10.0,
+                        "y": 0.4490470886230469,
                         "z": 0.0
                     },
-                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "T_KnifeZd020_Mask",
-                    "DiscardValue": 0.05000000074505806,
-                    "DissolveTexture_Tag": "T_TurbulenceZd006_Mask",
-                    "DistortionScale": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "Duration": 0.10000000149011612,
-                    "EffectSystem": 1,
-                    "EffectType": 1,
-                    "Effect_GlowPower": 1.0,
-                    "EmissionType": 0,
-                    "EndScale": {
-                        "x": 83.16000366210938,
-                        "y": 83.16000366210938,
-                        "z": 83.16000366210938
-                    },
-                    "ExternalForceCurve": [],
-                    "ExternalForceStrength": 1.0,
-                    "GlobalGravityCurve": [],
-                    "GlowPowerCurve": [
-                        {
-                            "Time": 0.009280742146074772,
-                            "Val": 1.9333332777023315
-                        },
-                        {
-                            "Time": 0.988399088382721,
-                            "Val": 0.013333320617675781
-                        }
-                    ],
-                    "GlowTexture_Tag": "T_KnifeZd023_Mask",
-                    "GradationTexture_Tag": "T_GraindZZ002_Mask",
-                    "GravityBase": {
-                        "Mod": 0.0,
-                        "Val": 9.800000190734863
-                    },
-                    "GravityDir": {
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 0.0
-                    },
-                    "LifeTime": 0.3999999761581421,
-                    "Looping": false,
-                    "MaskingTexture_Tag": "T_MaskZd010_Mask",
-                    "MaxParticle": 1,
-                    "Model_Tag": "mesh_blade_cc_003",
-                    "NoiseTexture_Tag": "",
-                    "NormalTexture_Tag": "",
-                    "ParentsName": "Boss_LianHuo_Attack1_Up",
-                    "ParticleSize": {
-                        "x": 0.05000000074505806,
-                        "y": 0.15000000596046448
-                    },
-                    "ParticleSystem": 3,
-                    "PartsName": "Front_SwordMesh",
-                    "PlayAnimation": false,
-                    "PlayBackSpeed": 1.0,
-                    "RandomFlags": 0,
-                    "Range": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "RenderFlag": 10080,
-                    "RotationCurveX": [],
-                    "RotationCurveY": [
-                        {
-                            "Time": 0.009756097570061684,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.47560974955558777,
-                            "Val": 0.746666669845581
-                        },
-                        {
-                            "Time": 0.9804878234863281,
-                            "Val": 0.9666666388511658
-                        }
-                    ],
-                    "RotationCurveZ": [
-                        {
-                            "Time": 0.0,
-                            "Val": 0.013333320617675781
-                        }
-                    ],
-                    "SamplerStateFlag": 130,
-                    "ScaleCurveX": [],
-                    "ScaleCurveY": [],
-                    "ScaleCurveZ": [],
-                    "ScrollSpeed": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "ScrollWeights": {
-                        "Curve": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Diffuse": {
-                            "x": 1.0,
-                            "y": 0.699999988079071
-                        },
-                        "Dissolve": {
-                            "x": 0.0,
-                            "y": 1.0
-                        },
-                        "Glow": {
-                            "x": 1.0,
-                            "y": 1.399999976158142
-                        },
-                        "Gradation": {
-                            "x": 1.0,
-                            "y": 0.20000000298023224
-                        },
-                        "Masking": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Noise": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "SubMasking": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
-                    },
-                    "SeparateAxes": false,
-                    "SeparateScaleAxes": false,
-                    "Shader_Pass": 0,
-                    "Shader_Path": "",
-                    "Shader_Tag": "Shader_VtxEffectMesh",
-                    "ShapeType": 4,
-                    "SpiralData": {
-                        "Radius": 1.0,
-                        "Speed": 1.0
-                    },
-                    "SpriteInfo": {
-                        "Curve": {
-                            "w": 3.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 100.0
-                        },
-                        "Diffuse": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Dissolve": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Glow": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Gradation": {
-                            "w": 4.0,
-                            "x": 0.0,
-                            "y": 1.0,
-                            "z": 100.0
-                        },
-                        "Mask": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Noise": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "SubMask": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        }
-                    },
-                    "StartDelay": 0.0,
-                    "StartRotation": {
-                        "x": 0.0,
-                        "y": 90.0,
-                        "z": 90.0
-                    },
-                    "StartScale": {
-                        "x": 83.16000366210938,
-                        "y": 83.16000366210938,
-                        "z": 83.16000366210938
-                    },
-                    "StartSpeed": 1.0,
-                    "TargetRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "TexOperatorFlag": 0,
-                    "TexRotationFlag": 0,
-                    "TextureFlag": 193,
-                    "TimeFlag": 0,
-                    "Tool_Render": {
-                        "Billboard": false,
-                        "DirBillboard": false,
-                        "Down": false,
-                        "Right": false,
-                        "Scroll": false
-                    },
-                    "Tool_Resource": {
-                        "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
-                        "Glow": true,
-                        "Gradation": false,
-                        "Masking": false,
-                        "Noise": false,
-                        "SubMasking": false
-                    },
-                    "Tool_Samplers": {
-                        "Diffuse": 2,
-                        "Gradation": 0,
-                        "Masking": 2,
-                        "Noise": 0
-                    },
-                    "Tool_ScrollFlags": {
-                        "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
-                        "Glow": false,
-                        "Gradation": true,
-                        "Masking": true,
-                        "Noise": false,
-                        "SubMasking": false
-                    },
-                    "Type": "EFFECT_PARTS",
-                    "UVScrollCurveX": [
-                        {
-                            "Time": 0.003076923079788685,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.2658536732196808,
-                            "Val": 0.6266666650772095
-                        },
-                        {
-                            "Time": 0.6780487895011902,
-                            "Val": 0.9333333373069763
-                        },
-                        {
-                            "Time": 0.992682933807373,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
-                    "UVScrollCurveY": [],
-                    "UV_Offset": {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    "UseExternalForceCurve": false,
-                    "UseGlobalGravityCurve": true,
-                    "UseGlowPowerCurve": true,
-                    "UseRotationCurve": true,
-                    "UseScaleCurve": false,
-                    "UseStartRotation": true,
-                    "UseUVScrollCurve": true,
-                    "WorldMatrix": [
-                        1.982688991120085e-05,
-                        83.15998077392578,
-                        4.956722477800213e-06,
-                        0.0,
-                        4.956722477800213e-06,
-                        1.4870167433400638e-05,
-                        83.15998077392578,
-                        0.0,
-                        83.15998077392578,
-                        0.0,
-                        1.4870167433400638e-05,
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": false,
-                    "_Effect_UVXPower": 0,
-                    "_Effect_UVYPower": 0,
-                    "_Use_Effect_Continue": false,
-                    "_Use_Effect_Particle_Burst": false,
-                    "_Use_Effect_UV_OverScroll": false,
-                    "strTag": "DEFAULT_EFFECT"
-                },
-                {
-                    "AnimationSpeed": 1.0,
-                    "AppearRatio": 0.07000000029802322,
-                    "Color": {
-                        "w": 0.8181818127632141,
-                        "x": 9.56862735748291,
-                        "y": 0.234239861369133,
-                        "z": 0.0
-                    },
-                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "T_KnifeTaki001_Mask",
-                    "DiscardValue": 0.05000000074505806,
-                    "DissolveTexture_Tag": "T_TurbulenceZd003_Mask",
-                    "DistortionScale": {
-                        "x": 0.10000000149011612,
-                        "y": 0.10000000149011612
-                    },
-                    "Duration": 0.009999999776482582,
-                    "EffectSystem": 1,
-                    "EffectType": 1,
-                    "Effect_GlowPower": 1.0,
-                    "EmissionType": 0,
-                    "EndScale": {
-                        "x": 99.0,
-                        "y": 99.0,
-                        "z": 99.0
-                    },
-                    "ExternalForceCurve": [],
-                    "ExternalForceStrength": 1.0,
-                    "GlobalGravityCurve": [],
-                    "GlowPowerCurve": [
-                        {
-                            "Time": 0.00544959120452404,
-                            "Val": 1.306666612625122
-                        },
-                        {
-                            "Time": 0.6267030239105225,
-                            "Val": 0.7733333110809326
-                        },
-                        {
-                            "Time": 0.9673024415969849,
-                            "Val": 0.2933332920074463
-                        }
-                    ],
-                    "GlowTexture_Tag": "T_KnifeZd023_Mask",
-                    "GradationTexture_Tag": "T_GraLz006_D",
-                    "GravityBase": {
-                        "Mod": 0.0,
-                        "Val": 9.800000190734863
-                    },
-                    "GravityDir": {
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 0.0
-                    },
-                    "LifeTime": 0.4000000059604645,
-                    "Looping": false,
-                    "MaskingTexture_Tag": "T_Grandintzz002_Mask",
-                    "MaxParticle": 1,
-                    "Model_Tag": "mesh_blade_bx_002",
-                    "NoiseTexture_Tag": "T_TurbulenceBx001_Mask",
-                    "NormalTexture_Tag": "",
-                    "ParentsName": "Boss_LianHuo_Attack1_Up",
-                    "ParticleSize": {
-                        "x": 0.05000000074505806,
-                        "y": 0.15000000596046448
-                    },
-                    "ParticleSystem": 3,
-                    "PartsName": "Back_SwordMesh",
-                    "PlayAnimation": false,
-                    "PlayBackSpeed": 1.0,
-                    "RandomFlags": 0,
-                    "Range": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "RenderFlag": 9696,
-                    "RotationCurveX": [],
-                    "RotationCurveY": [
-                        {
-                            "Time": 0.01230769231915474,
-                            "Val": 0.03333336114883423
-                        },
-                        {
-                            "Time": 0.08307692408561707,
-                            "Val": 0.4399999976158142
-                        },
-                        {
-                            "Time": 0.23076923191547394,
-                            "Val": 0.6800000071525574
-                        },
-                        {
-                            "Time": 0.42153847217559814,
-                            "Val": 0.8933333158493042
-                        },
-                        {
-                            "Time": 0.9938461780548096,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
-                    "RotationCurveZ": [],
-                    "SamplerStateFlag": 130,
-                    "ScaleCurveX": [],
-                    "ScaleCurveY": [],
-                    "ScaleCurveZ": [],
-                    "ScrollSpeed": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "ScrollWeights": {
-                        "Curve": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Diffuse": {
-                            "x": 1.0,
-                            "y": 0.0
-                        },
-                        "Dissolve": {
-                            "x": 0.0,
-                            "y": 0.5
-                        },
-                        "Glow": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Gradation": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Masking": {
-                            "x": 0.0,
-                            "y": -0.5
-                        },
-                        "Noise": {
-                            "x": 1.0,
-                            "y": 0.0
-                        },
-                        "SubMasking": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
-                    },
-                    "SeparateAxes": false,
-                    "SeparateScaleAxes": false,
-                    "Shader_Pass": 0,
-                    "Shader_Path": "",
-                    "Shader_Tag": "Shader_VtxEffectMesh",
-                    "ShapeType": 4,
-                    "SpiralData": {
-                        "Radius": 1.0,
-                        "Speed": 1.0
-                    },
-                    "SpriteInfo": {
-                        "Curve": {
-                            "w": 32.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 100.0
-                        },
-                        "Diffuse": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Dissolve": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Glow": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Gradation": {
-                            "w": 4.0,
-                            "x": 0.0,
-                            "y": 1.0,
-                            "z": 100.0
-                        },
-                        "Mask": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Noise": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "SubMask": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        }
-                    },
-                    "StartDelay": 0.10000000149011612,
-                    "StartRotation": {
-                        "x": 0.0,
-                        "y": 90.0,
-                        "z": 180.0
-                    },
-                    "StartScale": {
-                        "x": 99.0,
-                        "y": 99.0,
-                        "z": 99.0
-                    },
-                    "StartSpeed": 1.0,
-                    "TargetRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "TexOperatorFlag": 0,
-                    "TexRotationFlag": 0,
-                    "TextureFlag": 199,
-                    "TimeFlag": 0,
-                    "Tool_Render": {
-                        "Billboard": false,
-                        "DirBillboard": false,
-                        "Down": false,
-                        "Right": false,
-                        "Scroll": false
-                    },
-                    "Tool_Resource": {
-                        "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
-                        "Glow": true,
-                        "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
-                        "SubMasking": false
-                    },
-                    "Tool_Samplers": {
-                        "Diffuse": 2,
-                        "Gradation": 0,
-                        "Masking": 2,
-                        "Noise": 0
-                    },
-                    "Tool_ScrollFlags": {
-                        "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
-                        "Glow": false,
-                        "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
-                        "SubMasking": false
-                    },
-                    "Type": "EFFECT_PARTS",
-                    "UVScrollCurveX": [
-                        {
-                            "Time": 0.003076923079788685,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.13081395626068115,
-                            "Val": 0.3933333158493042
-                        },
-                        {
-                            "Time": 0.23546510934829712,
-                            "Val": 0.6000000238418579
-                        },
-                        {
-                            "Time": 0.40406978130340576,
-                            "Val": 0.7266666889190674
-                        },
-                        {
-                            "Time": 0.569767415523529,
-                            "Val": 0.8133333325386047
-                        },
-                        {
-                            "Time": 0.8372092843055725,
-                            "Val": 0.9133333563804626
-                        },
-                        {
-                            "Time": 0.9912790656089783,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
-                    "UVScrollCurveY": [
-                        {
-                            "Time": 0.005780346691608429,
-                            "Val": 0.019999980926513672
-                        },
-                        {
-                            "Time": 0.9942196607589722,
-                            "Val": 0.9866666793823242
-                        }
-                    ],
-                    "UV_Offset": {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    "UseExternalForceCurve": false,
-                    "UseGlobalGravityCurve": false,
-                    "UseGlowPowerCurve": true,
-                    "UseRotationCurve": false,
-                    "UseScaleCurve": false,
-                    "UseStartRotation": true,
-                    "UseUVScrollCurve": true,
-                    "WorldMatrix": [
-                        5.900859832763672e-06,
-                        -2.3603444788022898e-05,
-                        99.0,
-                        0.0,
-                        -7.034371782982385e-12,
-                        -99.0,
-                        -2.3603444788022898e-05,
-                        0.0,
-                        99.0,
-                        -4.220624717776733e-12,
-                        -1.1801721484516747e-05,
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": false,
-                    "_Effect_UVXPower": 0,
-                    "_Effect_UVYPower": 0,
-                    "_Use_Effect_Continue": false,
-                    "_Use_Effect_Particle_Burst": false,
-                    "_Use_Effect_UV_OverScroll": false,
-                    "strTag": "DEFAULT_EFFECT"
-                },
-                {
-                    "AnimationSpeed": 1.0,
-                    "AppearRatio": 0.07000000029802322,
-                    "Color": {
-                        "w": 0.9803921580314636,
-                        "x": 0.5490196347236633,
-                        "y": 0.03529411926865578,
-                        "z": 0.0117647061124444
-                    },
-                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "T_KnifeTaki001_Mask",
+                    "CurveTexture_Tag": "",
+                    "DiffuseTexture_Tag": "T_ObjTaki009_Mask",
                     "DiscardValue": 0.05000000074505806,
                     "DissolveTexture_Tag": "T_TurbulenceBx004_M",
                     "DistortionScale": {
-                        "x": 0.10000000149011612,
-                        "y": 0.10000000149011612
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "Duration": 0.009999999776482582,
                     "EffectSystem": 1,
@@ -694,29 +48,16 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 12.869999885559082,
-                        "y": 12.869999885559082,
-                        "z": 12.869999885559082
+                        "x": 3.0,
+                        "y": 3.0,
+                        "z": 3.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
                     "GlobalGravityCurve": [],
-                    "GlowPowerCurve": [
-                        {
-                            "Time": 0.00544959120452404,
-                            "Val": 1.306666612625122
-                        },
-                        {
-                            "Time": 0.6267030239105225,
-                            "Val": 0.7733333110809326
-                        },
-                        {
-                            "Time": 0.9673024415969849,
-                            "Val": 0.2933332920074463
-                        }
-                    ],
-                    "GlowTexture_Tag": "T_KnifeZd023_Mask",
-                    "GradationTexture_Tag": "T_GraLz006_D",
+                    "GlowPowerCurve": [],
+                    "GlowTexture_Tag": "",
+                    "GradationTexture_Tag": "",
                     "GravityBase": {
                         "Mod": 0.0,
                         "Val": 9.800000190734863
@@ -726,20 +67,20 @@
                         "y": -1.0,
                         "z": 0.0
                     },
-                    "LifeTime": 0.7000000476837158,
+                    "LifeTime": 0.5999999046325684,
                     "Looping": false,
-                    "MaskingTexture_Tag": "T_Grandintzz002_Mask",
+                    "MaskingTexture_Tag": "T_HalfMaskZZ102_Mask",
                     "MaxParticle": 1,
-                    "Model_Tag": "VFX_Lianhuo_WP",
-                    "NoiseTexture_Tag": "T_TurbulenceBx001_Mask",
+                    "Model_Tag": "mesh_object_hf_021_LOD0",
+                    "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "Boss_LianHuo_Attack1_Up",
+                    "ParentsName": "Boss_LianHuo_ChainThornAttack",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
                     },
                     "ParticleSystem": 3,
-                    "PartsName": "Back_SwordTrailMesh1",
+                    "PartsName": "DEFAULT_EFFECT",
                     "PlayAnimation": false,
                     "PlayBackSpeed": 1.0,
                     "RandomFlags": 0,
@@ -748,53 +89,11 @@
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "RenderFlag": 9696,
-                    "RotationCurveX": [
-                        {
-                            "Time": 0.0028901733458042145,
-                            "Val": 0.026666641235351563
-                        },
-                        {
-                            "Time": 0.10404624044895172,
-                            "Val": 0.42000001668930054
-                        },
-                        {
-                            "Time": 0.23699422180652618,
-                            "Val": 0.6800000071525574
-                        },
-                        {
-                            "Time": 0.4364161789417267,
-                            "Val": 0.8933333158493042
-                        },
-                        {
-                            "Time": 0.9855491518974304,
-                            "Val": 1.0
-                        }
-                    ],
-                    "RotationCurveY": [
-                        {
-                            "Time": 0.01230769231915474,
-                            "Val": 0.03333336114883423
-                        },
-                        {
-                            "Time": 0.08307692408561707,
-                            "Val": 0.4399999976158142
-                        },
-                        {
-                            "Time": 0.23076923191547394,
-                            "Val": 0.6800000071525574
-                        },
-                        {
-                            "Time": 0.42153847217559814,
-                            "Val": 0.8933333158493042
-                        },
-                        {
-                            "Time": 0.9938461780548096,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
+                    "RenderFlag": 256,
+                    "RotationCurveX": [],
+                    "RotationCurveY": [],
                     "RotationCurveZ": [],
-                    "SamplerStateFlag": 130,
+                    "SamplerStateFlag": 128,
                     "ScaleCurveX": [],
                     "ScaleCurveY": [],
                     "ScaleCurveZ": [],
@@ -809,11 +108,11 @@
                         },
                         "Diffuse": {
                             "x": 1.0,
-                            "y": 0.0
+                            "y": 1.0
                         },
                         "Dissolve": {
-                            "x": 0.0,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "Glow": {
                             "x": 1.0,
@@ -824,12 +123,12 @@
                             "y": 1.0
                         },
                         "Masking": {
-                            "x": 0.0,
-                            "y": -0.5
+                            "x": 2.0,
+                            "y": 0.0
                         },
                         "Noise": {
                             "x": 1.0,
-                            "y": 0.0
+                            "y": 1.0
                         },
                         "SubMasking": {
                             "x": 1.0,
@@ -839,7 +138,7 @@
                     "SeparateAxes": false,
                     "SeparateScaleAxes": false,
                     "Shader_Pass": 0,
-                    "Shader_Path": "",
+                    "Shader_Path": "../../Shaders\\Shader_VtxEffectMesh.hlsl",
                     "Shader_Tag": "Shader_VtxEffectMesh",
                     "ShapeType": 4,
                     "SpiralData": {
@@ -848,10 +147,10 @@
                     },
                     "SpriteInfo": {
                         "Curve": {
-                            "w": 32.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 100.0
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
                         },
                         "Diffuse": {
                             "w": 0.0,
@@ -872,10 +171,10 @@
                             "z": 0.0
                         },
                         "Gradation": {
-                            "w": 4.0,
+                            "w": 0.0,
                             "x": 0.0,
-                            "y": 1.0,
-                            "z": 100.0
+                            "y": 0.0,
+                            "z": 0.0
                         },
                         "Mask": {
                             "w": 0.0,
@@ -898,24 +197,24 @@
                     },
                     "StartDelay": 0.0,
                     "StartRotation": {
-                        "x": 30.0,
+                        "x": 90.0,
                         "y": 0.0,
-                        "z": 270.0
+                        "z": 0.0
                     },
                     "StartScale": {
-                        "x": 12.869999885559082,
-                        "y": 12.869999885559082,
-                        "z": 12.869999885559082
+                        "x": 3.0,
+                        "y": 3.0,
+                        "z": 3.0
                     },
                     "StartSpeed": 1.0,
                     "TargetRotation": {
-                        "x": -220.0,
+                        "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
                     },
                     "TexOperatorFlag": 0,
-                    "TexRotationFlag": 0,
-                    "TextureFlag": 198,
+                    "TexRotationFlag": 256,
+                    "TextureFlag": 133,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": false,
@@ -926,785 +225,53 @@
                     },
                     "Tool_Resource": {
                         "Curve": false,
-                        "Diffuse": false,
+                        "Diffuse": true,
                         "Dissolve": true,
-                        "Glow": true,
+                        "Glow": false,
                         "Gradation": false,
                         "Masking": true,
-                        "Noise": true,
+                        "Noise": false,
                         "SubMasking": false
                     },
                     "Tool_Samplers": {
-                        "Diffuse": 2,
+                        "Diffuse": 0,
                         "Gradation": 0,
                         "Masking": 2,
                         "Noise": 0
                     },
                     "Tool_ScrollFlags": {
                         "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
+                        "Diffuse": false,
+                        "Dissolve": false,
                         "Glow": false,
                         "Gradation": false,
                         "Masking": true,
-                        "Noise": true,
+                        "Noise": false,
                         "SubMasking": false
                     },
                     "Type": "EFFECT_PARTS",
                     "UVScrollCurveX": [
                         {
-                            "Time": 0.003076923079788685,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.13081395626068115,
-                            "Val": 0.3933333158493042
-                        },
-                        {
-                            "Time": 0.23546510934829712,
-                            "Val": 0.6000000238418579
-                        },
-                        {
-                            "Time": 0.40406978130340576,
-                            "Val": 0.7266666889190674
-                        },
-                        {
-                            "Time": 0.569767415523529,
-                            "Val": 0.8133333325386047
-                        },
-                        {
-                            "Time": 0.8372092843055725,
-                            "Val": 0.9133333563804626
-                        },
-                        {
-                            "Time": 0.9912790656089783,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
-                    "UVScrollCurveY": [
-                        {
-                            "Time": 0.005780346691608429,
+                            "Time": 0.0028901733458042145,
                             "Val": 0.019999980926513672
                         },
                         {
-                            "Time": 0.9942196607589722,
-                            "Val": 0.9866666793823242
-                        }
-                    ],
-                    "UV_Offset": {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    "UseExternalForceCurve": false,
-                    "UseGlobalGravityCurve": false,
-                    "UseGlowPowerCurve": true,
-                    "UseRotationCurve": true,
-                    "UseScaleCurve": false,
-                    "UseStartRotation": true,
-                    "UseUVScrollCurve": true,
-                    "WorldMatrix": [
-                        -2.0676059193647234e-06,
-                        12.67447566986084,
-                        -2.2348508834838867,
-                        0.0,
-                        12.869999885559082,
-                        1.7679528809821932e-06,
-                        -3.8355588571903354e-07,
-                        0.0,
-                        0.0,
-                        -2.2348508834838867,
-                        -12.67447566986084,
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": false,
-                    "_Effect_UVXPower": 0,
-                    "_Effect_UVYPower": 0,
-                    "_Use_Effect_Continue": false,
-                    "_Use_Effect_Particle_Burst": false,
-                    "_Use_Effect_UV_OverScroll": false,
-                    "strTag": "DEFAULT_EFFECT"
-                },
-                {
-                    "AnimationSpeed": 1.0,
-                    "AppearRatio": 0.07000000029802322,
-                    "Color": {
-                        "w": 0.7843137383460999,
-                        "x": 0.5490196347236633,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "T_KnifeTaki001_Mask",
-                    "DiscardValue": 0.05000000074505806,
-                    "DissolveTexture_Tag": "T_TurbulenceZd003_Mask",
-                    "DistortionScale": {
-                        "x": 0.10000000149011612,
-                        "y": 0.10000000149011612
-                    },
-                    "Duration": 0.009999999776482582,
-                    "EffectSystem": 1,
-                    "EffectType": 1,
-                    "Effect_GlowPower": 1.0,
-                    "EmissionType": 0,
-                    "EndScale": {
-                        "x": 12.869999885559082,
-                        "y": 12.869999885559082,
-                        "z": 12.869999885559082
-                    },
-                    "ExternalForceCurve": [],
-                    "ExternalForceStrength": 1.0,
-                    "GlobalGravityCurve": [],
-                    "GlowPowerCurve": [
-                        {
-                            "Time": 0.00544959120452404,
-                            "Val": 1.306666612625122
-                        },
-                        {
-                            "Time": 0.6267030239105225,
-                            "Val": 0.7733333110809326
-                        },
-                        {
-                            "Time": 0.9673024415969849,
-                            "Val": 0.2933332920074463
-                        }
-                    ],
-                    "GlowTexture_Tag": "T_KnifeZd023_Mask",
-                    "GradationTexture_Tag": "T_GraLz006_D",
-                    "GravityBase": {
-                        "Mod": 0.0,
-                        "Val": 9.800000190734863
-                    },
-                    "GravityDir": {
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 0.0
-                    },
-                    "LifeTime": 0.6000000238418579,
-                    "Looping": false,
-                    "MaskingTexture_Tag": "T_Grandintzz002_Mask",
-                    "MaxParticle": 1,
-                    "Model_Tag": "VFX_Lianhuo_WP",
-                    "NoiseTexture_Tag": "T_TurbulenceBx001_Mask",
-                    "NormalTexture_Tag": "",
-                    "ParentsName": "Boss_LianHuo_Attack1_Up",
-                    "ParticleSize": {
-                        "x": 0.05000000074505806,
-                        "y": 0.15000000596046448
-                    },
-                    "ParticleSystem": 3,
-                    "PartsName": "Back_SwordTrailMesh2",
-                    "PlayAnimation": false,
-                    "PlayBackSpeed": 1.0,
-                    "RandomFlags": 0,
-                    "Range": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "RenderFlag": 9696,
-                    "RotationCurveX": [
-                        {
-                            "Time": 0.0202312134206295,
-                            "Val": 0.026666641235351563
-                        },
-                        {
-                            "Time": 0.1011560708284378,
-                            "Val": 0.41333335638046265
-                        },
-                        {
-                            "Time": 0.23699422180652618,
-                            "Val": 0.7200000286102295
-                        },
-                        {
-                            "Time": 0.39306357502937317,
-                            "Val": 0.9133333563804626
-                        },
-                        {
-                            "Time": 0.9942196607589722,
+                            "Time": 0.4768786132335663,
                             "Val": 0.9933333396911621
-                        }
-                    ],
-                    "RotationCurveY": [
-                        {
-                            "Time": 0.01230769231915474,
-                            "Val": 0.03333336114883423
-                        },
-                        {
-                            "Time": 0.08307692408561707,
-                            "Val": 0.4399999976158142
-                        },
-                        {
-                            "Time": 0.23076923191547394,
-                            "Val": 0.6800000071525574
-                        },
-                        {
-                            "Time": 0.42153847217559814,
-                            "Val": 0.8933333158493042
-                        },
-                        {
-                            "Time": 0.9938461780548096,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
-                    "RotationCurveZ": [],
-                    "SamplerStateFlag": 130,
-                    "ScaleCurveX": [],
-                    "ScaleCurveY": [],
-                    "ScaleCurveZ": [],
-                    "ScrollSpeed": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "ScrollWeights": {
-                        "Curve": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Diffuse": {
-                            "x": 1.0,
-                            "y": 0.0
-                        },
-                        "Dissolve": {
-                            "x": 0.0,
-                            "y": 0.5
-                        },
-                        "Glow": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Gradation": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Masking": {
-                            "x": 0.0,
-                            "y": -0.5
-                        },
-                        "Noise": {
-                            "x": 1.0,
-                            "y": 0.0
-                        },
-                        "SubMasking": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
-                    },
-                    "SeparateAxes": false,
-                    "SeparateScaleAxes": false,
-                    "Shader_Pass": 0,
-                    "Shader_Path": "",
-                    "Shader_Tag": "Shader_VtxEffectMesh",
-                    "ShapeType": 4,
-                    "SpiralData": {
-                        "Radius": 1.0,
-                        "Speed": 1.0
-                    },
-                    "SpriteInfo": {
-                        "Curve": {
-                            "w": 32.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 100.0
-                        },
-                        "Diffuse": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Dissolve": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Glow": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Gradation": {
-                            "w": 4.0,
-                            "x": 0.0,
-                            "y": 1.0,
-                            "z": 100.0
-                        },
-                        "Mask": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Noise": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "SubMask": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        }
-                    },
-                    "StartDelay": 0.0,
-                    "StartRotation": {
-                        "x": 30.0,
-                        "y": 0.0,
-                        "z": 270.0
-                    },
-                    "StartScale": {
-                        "x": 12.869999885559082,
-                        "y": 12.869999885559082,
-                        "z": 12.869999885559082
-                    },
-                    "StartSpeed": 1.0,
-                    "TargetRotation": {
-                        "x": -190.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "TexOperatorFlag": 0,
-                    "TexRotationFlag": 0,
-                    "TextureFlag": 198,
-                    "TimeFlag": 0,
-                    "Tool_Render": {
-                        "Billboard": false,
-                        "DirBillboard": false,
-                        "Down": false,
-                        "Right": false,
-                        "Scroll": false
-                    },
-                    "Tool_Resource": {
-                        "Curve": false,
-                        "Diffuse": false,
-                        "Dissolve": true,
-                        "Glow": true,
-                        "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
-                        "SubMasking": false
-                    },
-                    "Tool_Samplers": {
-                        "Diffuse": 2,
-                        "Gradation": 0,
-                        "Masking": 2,
-                        "Noise": 0
-                    },
-                    "Tool_ScrollFlags": {
-                        "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
-                        "Glow": false,
-                        "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
-                        "SubMasking": false
-                    },
-                    "Type": "EFFECT_PARTS",
-                    "UVScrollCurveX": [
-                        {
-                            "Time": 0.003076923079788685,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.13081395626068115,
-                            "Val": 0.3933333158493042
-                        },
-                        {
-                            "Time": 0.23546510934829712,
-                            "Val": 0.6000000238418579
-                        },
-                        {
-                            "Time": 0.40406978130340576,
-                            "Val": 0.7266666889190674
-                        },
-                        {
-                            "Time": 0.569767415523529,
-                            "Val": 0.8133333325386047
-                        },
-                        {
-                            "Time": 0.8372092843055725,
-                            "Val": 0.9133333563804626
-                        },
-                        {
-                            "Time": 0.9912790656089783,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
-                    "UVScrollCurveY": [
-                        {
-                            "Time": 0.005780346691608429,
-                            "Val": 0.019999980926513672
-                        },
-                        {
-                            "Time": 0.9942196607589722,
-                            "Val": 0.9866666793823242
-                        }
-                    ],
-                    "UV_Offset": {
-                        "x": -1.0,
-                        "y": 0.0
-                    },
-                    "UseExternalForceCurve": false,
-                    "UseGlobalGravityCurve": false,
-                    "UseGlowPowerCurve": true,
-                    "UseRotationCurve": true,
-                    "UseScaleCurve": false,
-                    "UseStartRotation": true,
-                    "UseUVScrollCurve": true,
-                    "WorldMatrix": [
-                        -9.588897142975839e-08,
-                        11.993582725524902,
-                        4.668066024780273,
-                        0.0,
-                        12.86999797821045,
-                        3.739669864444295e-06,
-                        9.588897000867291e-07,
-                        0.0,
-                        1.9177792864866205e-07,
-                        4.668066024780273,
-                        -11.993578910827637,
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": false,
-                    "_Effect_UVXPower": 0,
-                    "_Effect_UVYPower": 0,
-                    "_Use_Effect_Continue": false,
-                    "_Use_Effect_Particle_Burst": false,
-                    "_Use_Effect_UV_OverScroll": false,
-                    "strTag": "DEFAULT_EFFECT"
-                },
-                {
-                    "AnimationSpeed": 1.0,
-                    "AppearRatio": 0.07000000029802322,
-                    "Color": {
-                        "w": 0.5882353186607361,
-                        "x": 0.5490196347236633,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "T_KnifeTaki001_Mask",
-                    "DiscardValue": 0.05000000074505806,
-                    "DissolveTexture_Tag": "T_TurbulenceZd003_Mask",
-                    "DistortionScale": {
-                        "x": 0.10000000149011612,
-                        "y": 0.10000000149011612
-                    },
-                    "Duration": 0.009999999776482582,
-                    "EffectSystem": 1,
-                    "EffectType": 1,
-                    "Effect_GlowPower": 1.0,
-                    "EmissionType": 0,
-                    "EndScale": {
-                        "x": 12.869999885559082,
-                        "y": 12.869999885559082,
-                        "z": 12.869999885559082
-                    },
-                    "ExternalForceCurve": [],
-                    "ExternalForceStrength": 1.0,
-                    "GlobalGravityCurve": [],
-                    "GlowPowerCurve": [
-                        {
-                            "Time": 0.00544959120452404,
-                            "Val": 1.306666612625122
-                        },
-                        {
-                            "Time": 0.6267030239105225,
-                            "Val": 0.7733333110809326
-                        },
-                        {
-                            "Time": 0.9673024415969849,
-                            "Val": 0.2933332920074463
-                        }
-                    ],
-                    "GlowTexture_Tag": "T_KnifeZd023_Mask",
-                    "GradationTexture_Tag": "T_GraLz006_D",
-                    "GravityBase": {
-                        "Mod": 0.0,
-                        "Val": 9.800000190734863
-                    },
-                    "GravityDir": {
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 0.0
-                    },
-                    "LifeTime": 0.4000000059604645,
-                    "Looping": false,
-                    "MaskingTexture_Tag": "T_Grandintzz002_Mask",
-                    "MaxParticle": 1,
-                    "Model_Tag": "VFX_Lianhuo_WP",
-                    "NoiseTexture_Tag": "T_TurbulenceBx001_Mask",
-                    "NormalTexture_Tag": "",
-                    "ParentsName": "Boss_LianHuo_Attack1_Up",
-                    "ParticleSize": {
-                        "x": 0.05000000074505806,
-                        "y": 0.15000000596046448
-                    },
-                    "ParticleSystem": 3,
-                    "PartsName": "Back_SwordTrailMesh3",
-                    "PlayAnimation": false,
-                    "PlayBackSpeed": 1.0,
-                    "RandomFlags": 0,
-                    "Range": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "RenderFlag": 9696,
-                    "RotationCurveX": [
-                        {
-                            "Time": 0.0028901733458042145,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.08381503075361252,
-                            "Val": 0.40666669607162476
-                        },
-                        {
-                            "Time": 0.23121386766433716,
-                            "Val": 0.7066667079925537
-                        },
-                        {
-                            "Time": 0.42774567008018494,
-                            "Val": 0.8999999761581421
                         },
                         {
                             "Time": 0.9884393215179443,
                             "Val": 0.9800000190734863
                         }
                     ],
-                    "RotationCurveY": [
-                        {
-                            "Time": 0.01230769231915474,
-                            "Val": 0.03333336114883423
-                        },
-                        {
-                            "Time": 0.08307692408561707,
-                            "Val": 0.4399999976158142
-                        },
-                        {
-                            "Time": 0.23076923191547394,
-                            "Val": 0.6800000071525574
-                        },
-                        {
-                            "Time": 0.42153847217559814,
-                            "Val": 0.8933333158493042
-                        },
-                        {
-                            "Time": 0.9938461780548096,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
-                    "RotationCurveZ": [],
-                    "SamplerStateFlag": 130,
-                    "ScaleCurveX": [],
-                    "ScaleCurveY": [],
-                    "ScaleCurveZ": [],
-                    "ScrollSpeed": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "ScrollWeights": {
-                        "Curve": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Diffuse": {
-                            "x": 1.0,
-                            "y": 0.0
-                        },
-                        "Dissolve": {
-                            "x": 0.0,
-                            "y": 0.5
-                        },
-                        "Glow": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Gradation": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "Masking": {
-                            "x": 0.0,
-                            "y": -0.5
-                        },
-                        "Noise": {
-                            "x": 1.0,
-                            "y": 0.0
-                        },
-                        "SubMasking": {
-                            "x": 1.0,
-                            "y": 1.0
-                        }
-                    },
-                    "SeparateAxes": false,
-                    "SeparateScaleAxes": false,
-                    "Shader_Pass": 0,
-                    "Shader_Path": "",
-                    "Shader_Tag": "Shader_VtxEffectMesh",
-                    "ShapeType": 4,
-                    "SpiralData": {
-                        "Radius": 1.0,
-                        "Speed": 1.0
-                    },
-                    "SpriteInfo": {
-                        "Curve": {
-                            "w": 32.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 100.0
-                        },
-                        "Diffuse": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Dissolve": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Glow": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Gradation": {
-                            "w": 4.0,
-                            "x": 0.0,
-                            "y": 1.0,
-                            "z": 100.0
-                        },
-                        "Mask": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "Noise": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "SubMask": {
-                            "w": 0.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        }
-                    },
-                    "StartDelay": 0.0,
-                    "StartRotation": {
-                        "x": 30.0,
-                        "y": 0.0,
-                        "z": 270.0
-                    },
-                    "StartScale": {
-                        "x": 12.869999885559082,
-                        "y": 12.869999885559082,
-                        "z": 12.869999885559082
-                    },
-                    "StartSpeed": 1.0,
-                    "TargetRotation": {
-                        "x": -160.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "TexOperatorFlag": 0,
-                    "TexRotationFlag": 0,
-                    "TextureFlag": 198,
-                    "TimeFlag": 0,
-                    "Tool_Render": {
-                        "Billboard": false,
-                        "DirBillboard": false,
-                        "Down": false,
-                        "Right": false,
-                        "Scroll": false
-                    },
-                    "Tool_Resource": {
-                        "Curve": false,
-                        "Diffuse": false,
-                        "Dissolve": true,
-                        "Glow": true,
-                        "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
-                        "SubMasking": false
-                    },
-                    "Tool_Samplers": {
-                        "Diffuse": 2,
-                        "Gradation": 0,
-                        "Masking": 2,
-                        "Noise": 0
-                    },
-                    "Tool_ScrollFlags": {
-                        "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
-                        "Glow": false,
-                        "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
-                        "SubMasking": false
-                    },
-                    "Type": "EFFECT_PARTS",
-                    "UVScrollCurveX": [
-                        {
-                            "Time": 0.003076923079788685,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.13081395626068115,
-                            "Val": 0.3933333158493042
-                        },
-                        {
-                            "Time": 0.23546510934829712,
-                            "Val": 0.6000000238418579
-                        },
-                        {
-                            "Time": 0.40406978130340576,
-                            "Val": 0.7266666889190674
-                        },
-                        {
-                            "Time": 0.569767415523529,
-                            "Val": 0.8133333325386047
-                        },
-                        {
-                            "Time": 0.8372092843055725,
-                            "Val": 0.9133333563804626
-                        },
-                        {
-                            "Time": 0.9912790656089783,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
                     "UVScrollCurveY": [
                         {
-                            "Time": 0.005780346691608429,
-                            "Val": 0.019999980926513672
+                            "Time": 0.008670520037412643,
+                            "Val": 0.013333320617675781
                         },
                         {
-                            "Time": 0.9942196607589722,
-                            "Val": 0.9866666793823242
+                            "Time": 0.9971098303794861,
+                            "Val": 1.0
                         }
                     ],
                     "UV_Offset": {
@@ -1713,23 +280,23 @@
                     },
                     "UseExternalForceCurve": false,
                     "UseGlobalGravityCurve": false,
-                    "UseGlowPowerCurve": true,
+                    "UseGlowPowerCurve": false,
                     "UseRotationCurve": true,
                     "UseScaleCurve": false,
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        -1.9177794001734583e-06,
-                        7.7094340324401855,
-                        10.305411338806152,
-                        0.0,
-                        12.869998931884766,
-                        1.9177794001734583e-06,
-                        1.9177794001734583e-06,
+                        3.0,
                         0.0,
                         0.0,
-                        10.305411338806152,
-                        -7.7094340324401855,
+                        0.0,
+                        0.0,
+                        1.7881393432617188e-07,
+                        2.999999523162842,
+                        0.0,
+                        0.0,
+                        -2.999999523162842,
+                        1.7881393432617188e-07,
                         0.0,
                         0.0,
                         0.0,
@@ -1738,29 +305,29 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
-                    "_Effect_UVXPower": 0,
-                    "_Effect_UVYPower": 0,
+                    "_Effect_UVXPower": 20,
+                    "_Effect_UVYPower": 1,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
-                    "strTag": "DEFAULT_EFFECT"
+                    "strTag": "EffectObject"
                 },
                 {
                     "AnimationSpeed": 1.0,
-                    "AppearRatio": 0.07000000029802322,
+                    "AppearRatio": 0.30000001192092896,
                     "Color": {
-                        "w": 0.3921568691730499,
-                        "x": 0.5490196347236633,
+                        "w": 1.0,
+                        "x": 0.08546620607376099,
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "T_KnifeTaki001_Mask",
+                    "CurveTexture_Tag": "",
+                    "DiffuseTexture_Tag": "T_SplashZd003_Mask",
                     "DiscardValue": 0.05000000074505806,
-                    "DissolveTexture_Tag": "T_TurbulenceZd003_Mask",
+                    "DissolveTexture_Tag": "T_TurbulenceBx004_M",
                     "DistortionScale": {
-                        "x": 0.10000000149011612,
-                        "y": 0.10000000149011612
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "Duration": 0.009999999776482582,
                     "EffectSystem": 1,
@@ -1768,29 +335,25 @@
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 12.869999885559082,
-                        "y": 12.869999885559082,
-                        "z": 12.869999885559082
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
                     "GlobalGravityCurve": [],
                     "GlowPowerCurve": [
                         {
-                            "Time": 0.00544959120452404,
-                            "Val": 1.306666612625122
+                            "Time": 0.002320185536518693,
+                            "Val": 0.9999999403953552
                         },
                         {
-                            "Time": 0.6267030239105225,
-                            "Val": 0.7733333110809326
-                        },
-                        {
-                            "Time": 0.9673024415969849,
-                            "Val": 0.2933332920074463
+                            "Time": 0.9930394291877747,
+                            "Val": 0.0666666030883789
                         }
                     ],
-                    "GlowTexture_Tag": "T_KnifeZd023_Mask",
-                    "GradationTexture_Tag": "T_GraLz006_D",
+                    "GlowTexture_Tag": "T_GlowYb001_Mask",
+                    "GradationTexture_Tag": "T_GraMjc002_D",
                     "GravityBase": {
                         "Mod": 0.0,
                         "Val": 9.800000190734863
@@ -1802,79 +365,72 @@
                     },
                     "LifeTime": 0.4000000059604645,
                     "Looping": false,
-                    "MaskingTexture_Tag": "T_Grandintzz002_Mask",
+                    "MaskingTexture_Tag": "T_SplashZd003_Mask",
                     "MaxParticle": 1,
-                    "Model_Tag": "VFX_Lianhuo_WP",
-                    "NoiseTexture_Tag": "T_TurbulenceBx001_Mask",
+                    "Model_Tag": "mesh_plane_wyc_001_LOD0",
+                    "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "Boss_LianHuo_Attack1_Up",
+                    "ParentsName": "Boss_LianHuo_ChainThornAttack",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
                     },
-                    "ParticleSystem": 3,
-                    "PartsName": "Back_SwordTrailMesh4",
+                    "ParticleSystem": 2,
+                    "PartsName": "Texture",
                     "PlayAnimation": false,
-                    "PlayBackSpeed": 1.0,
+                    "PlayBackSpeed": 2.0,
                     "RandomFlags": 0,
                     "Range": {
                         "x": 1.0,
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "RenderFlag": 9696,
-                    "RotationCurveX": [
-                        {
-                            "Time": 0.0028901733458042145,
-                            "Val": 0.026666641235351563
-                        },
-                        {
-                            "Time": 0.08381503075361252,
-                            "Val": 0.41333335638046265
-                        },
-                        {
-                            "Time": 0.22543352842330933,
-                            "Val": 0.7333333492279053
-                        },
-                        {
-                            "Time": 0.42774567008018494,
-                            "Val": 0.90666663646698
-                        },
-                        {
-                            "Time": 0.9942196607589722,
-                            "Val": 0.9866666793823242
-                        }
-                    ],
-                    "RotationCurveY": [
-                        {
-                            "Time": 0.01230769231915474,
-                            "Val": 0.03333336114883423
-                        },
-                        {
-                            "Time": 0.08307692408561707,
-                            "Val": 0.4399999976158142
-                        },
-                        {
-                            "Time": 0.23076923191547394,
-                            "Val": 0.6800000071525574
-                        },
-                        {
-                            "Time": 0.42153847217559814,
-                            "Val": 0.8933333158493042
-                        },
-                        {
-                            "Time": 0.9938461780548096,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
+                    "RenderFlag": 8192,
+                    "RotationCurveX": [],
+                    "RotationCurveY": [],
                     "RotationCurveZ": [],
-                    "SamplerStateFlag": 130,
-                    "ScaleCurveX": [],
-                    "ScaleCurveY": [],
-                    "ScaleCurveZ": [],
+                    "SamplerStateFlag": 0,
+                    "ScaleCurveX": [
+                        {
+                            "Time": 0.0,
+                            "Val": 4.499995708465576
+                        },
+                        {
+                            "Time": 0.08670520037412643,
+                            "Val": 41.999996185302734
+                        }
+                    ],
+                    "ScaleCurveY": [
+                        {
+                            "Time": 0.0,
+                            "Val": 37.0
+                        },
+                        {
+                            "Time": 0.08670520037412643,
+                            "Val": 235.00001525878906
+                        },
+                        {
+                            "Time": 0.9855491518974304,
+                            "Val": 262.5
+                        }
+                    ],
+                    "ScaleCurveZ": [
+                        {
+                            "Time": 0.0,
+                            "Val": 37.0
+                        },
+                        {
+                            "Time": 0.09537572413682938,
+                            "Val": 199.99998474121094
+                        },
+                        {
+                            "Time": 0.9855491518974304,
+                            "Val": 247.5
+                        }
+                    ],
                     "ScrollSpeed": {
-                        "x": 1.0,
-                        "y": 1.0
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "ScrollWeights": {
                         "Curve": {
@@ -1883,11 +439,11 @@
                         },
                         "Diffuse": {
                             "x": 1.0,
-                            "y": 0.0
+                            "y": 1.0
                         },
                         "Dissolve": {
-                            "x": 0.0,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "Glow": {
                             "x": 1.0,
@@ -1898,12 +454,895 @@
                             "y": 1.0
                         },
                         "Masking": {
-                            "x": 0.0,
-                            "y": -0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "Noise": {
                             "x": 1.0,
-                            "y": 0.0
+                            "y": 1.0
+                        },
+                        "SubMasking": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "SeparateAxes": false,
+                    "SeparateScaleAxes": true,
+                    "Shader_Pass": 1,
+                    "Shader_Path": "../../Shaders\\Shader_VtxEffectTexture.hlsl",
+                    "Shader_Tag": "Shader_VtxEffectTexture",
+                    "ShapeType": 4,
+                    "SpiralData": {
+                        "Radius": 1.0,
+                        "Speed": 1.0
+                    },
+                    "SpriteInfo": {
+                        "Curve": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Diffuse": {
+                            "w": 0.0,
+                            "x": 1.0,
+                            "y": 3.0,
+                            "z": 1.0
+                        },
+                        "Dissolve": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Glow": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Gradation": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Mask": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 2.0,
+                            "z": 2.0
+                        },
+                        "Noise": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "SubMask": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "StartDelay": 0.30000001192092896,
+                    "StartRotation": {
+                        "x": 130.89999389648438,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "StartScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "StartSpeed": 1.0,
+                    "TargetRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "TexOperatorFlag": 0,
+                    "TexRotationFlag": 8194,
+                    "TextureFlag": 137,
+                    "TimeFlag": 0,
+                    "Tool_Render": {
+                        "Billboard": false,
+                        "DirBillboard": false,
+                        "Down": false,
+                        "Right": false,
+                        "Scroll": false
+                    },
+                    "Tool_Resource": {
+                        "Curve": false,
+                        "Diffuse": true,
+                        "Dissolve": true,
+                        "Glow": false,
+                        "Gradation": true,
+                        "Masking": false,
+                        "Noise": false,
+                        "SubMasking": false
+                    },
+                    "Tool_Samplers": {
+                        "Diffuse": 0,
+                        "Gradation": 0,
+                        "Masking": 0,
+                        "Noise": 0
+                    },
+                    "Tool_ScrollFlags": {
+                        "Curve": false,
+                        "Diffuse": false,
+                        "Dissolve": false,
+                        "Glow": false,
+                        "Gradation": false,
+                        "Masking": false,
+                        "Noise": false,
+                        "SubMasking": false
+                    },
+                    "Type": "EFFECT_PARTS",
+                    "UVScrollCurveX": [],
+                    "UVScrollCurveY": [],
+                    "UV_Offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "UseExternalForceCurve": false,
+                    "UseGlobalGravityCurve": false,
+                    "UseGlowPowerCurve": true,
+                    "UseRotationCurve": true,
+                    "UseScaleCurve": true,
+                    "UseStartRotation": true,
+                    "UseUVScrollCurve": false,
+                    "WorldMatrix": [
+                        41.999996185302734,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        -171.86944580078125,
+                        198.41160583496094,
+                        0.0,
+                        0.0,
+                        -187.0737762451172,
+                        -162.04832458496094,
+                        0.0,
+                        0.0,
+                        0.6000000238418579,
+                        2.0,
+                        1.0
+                    ],
+                    "_Effect_SubMaskTexture_Tag": "",
+                    "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
+                    "_Use_Effect_Continue": false,
+                    "_Use_Effect_Particle_Burst": false,
+                    "_Use_Effect_UV_OverScroll": false,
+                    "strTag": "EffectObject"
+                },
+                {
+                    "AnimationSpeed": 1.0,
+                    "AppearRatio": 0.30000001192092896,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 0.08546620607376099,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "CurveTexture_Tag": "",
+                    "DiffuseTexture_Tag": "T_SplashZd003_Mask",
+                    "DiscardValue": 0.05000000074505806,
+                    "DissolveTexture_Tag": "T_TurbulenceBx004_M",
+                    "DistortionScale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "Duration": 0.009999999776482582,
+                    "EffectSystem": 1,
+                    "EffectType": 1,
+                    "Effect_GlowPower": 1.0,
+                    "EmissionType": 0,
+                    "EndScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ExternalForceCurve": [],
+                    "ExternalForceStrength": 1.0,
+                    "GlobalGravityCurve": [],
+                    "GlowPowerCurve": [
+                        {
+                            "Time": 0.002320185536518693,
+                            "Val": 0.9999999403953552
+                        },
+                        {
+                            "Time": 0.9930394291877747,
+                            "Val": 0.0666666030883789
+                        }
+                    ],
+                    "GlowTexture_Tag": "T_GlowYb001_Mask",
+                    "GradationTexture_Tag": "T_GraMjc002_D",
+                    "GravityBase": {
+                        "Mod": 0.0,
+                        "Val": 9.800000190734863
+                    },
+                    "GravityDir": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 0.0
+                    },
+                    "LifeTime": 0.4000000059604645,
+                    "Looping": false,
+                    "MaskingTexture_Tag": "T_SplashZd003_Mask",
+                    "MaxParticle": 1,
+                    "Model_Tag": "mesh_plane_wyc_001_LOD0",
+                    "NoiseTexture_Tag": "",
+                    "NormalTexture_Tag": "",
+                    "ParentsName": "Boss_LianHuo_ChainThornAttack",
+                    "ParticleSize": {
+                        "x": 0.05000000074505806,
+                        "y": 0.15000000596046448
+                    },
+                    "ParticleSystem": 2,
+                    "PartsName": "Texture",
+                    "PlayAnimation": false,
+                    "PlayBackSpeed": 2.0,
+                    "RandomFlags": 0,
+                    "Range": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "RenderFlag": 8192,
+                    "RotationCurveX": [],
+                    "RotationCurveY": [],
+                    "RotationCurveZ": [],
+                    "SamplerStateFlag": 0,
+                    "ScaleCurveX": [
+                        {
+                            "Time": 0.0,
+                            "Val": 4.499995708465576
+                        },
+                        {
+                            "Time": 0.09537572413682938,
+                            "Val": 73.5
+                        }
+                    ],
+                    "ScaleCurveY": [
+                        {
+                            "Time": 0.0,
+                            "Val": 37.0
+                        },
+                        {
+                            "Time": 0.08670520037412643,
+                            "Val": 235.00001525878906
+                        },
+                        {
+                            "Time": 0.9855491518974304,
+                            "Val": 262.5
+                        }
+                    ],
+                    "ScaleCurveZ": [
+                        {
+                            "Time": 0.0,
+                            "Val": 37.0
+                        },
+                        {
+                            "Time": 0.09537572413682938,
+                            "Val": 199.99998474121094
+                        },
+                        {
+                            "Time": 0.9855491518974304,
+                            "Val": 247.5
+                        }
+                    ],
+                    "ScrollSpeed": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "ScrollWeights": {
+                        "Curve": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Diffuse": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Dissolve": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Glow": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Gradation": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Masking": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Noise": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "SubMasking": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "SeparateAxes": false,
+                    "SeparateScaleAxes": true,
+                    "Shader_Pass": 1,
+                    "Shader_Path": "../../Shaders\\Shader_VtxEffectTexture.hlsl",
+                    "Shader_Tag": "Shader_VtxEffectTexture",
+                    "ShapeType": 4,
+                    "SpiralData": {
+                        "Radius": 1.0,
+                        "Speed": 1.0
+                    },
+                    "SpriteInfo": {
+                        "Curve": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Diffuse": {
+                            "w": 0.0,
+                            "x": 1.0,
+                            "y": 3.0,
+                            "z": 1.0
+                        },
+                        "Dissolve": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Glow": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Gradation": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Mask": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 2.0,
+                            "z": 2.0
+                        },
+                        "Noise": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "SubMask": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "StartDelay": 0.30000001192092896,
+                    "StartRotation": {
+                        "x": 90.0,
+                        "y": 90.0,
+                        "z": 0.0
+                    },
+                    "StartScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "StartSpeed": 1.0,
+                    "TargetRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "TexOperatorFlag": 0,
+                    "TexRotationFlag": 8194,
+                    "TextureFlag": 137,
+                    "TimeFlag": 0,
+                    "Tool_Render": {
+                        "Billboard": false,
+                        "DirBillboard": false,
+                        "Down": false,
+                        "Right": false,
+                        "Scroll": false
+                    },
+                    "Tool_Resource": {
+                        "Curve": false,
+                        "Diffuse": true,
+                        "Dissolve": true,
+                        "Glow": false,
+                        "Gradation": true,
+                        "Masking": false,
+                        "Noise": false,
+                        "SubMasking": false
+                    },
+                    "Tool_Samplers": {
+                        "Diffuse": 0,
+                        "Gradation": 0,
+                        "Masking": 0,
+                        "Noise": 0
+                    },
+                    "Tool_ScrollFlags": {
+                        "Curve": false,
+                        "Diffuse": false,
+                        "Dissolve": false,
+                        "Glow": false,
+                        "Gradation": false,
+                        "Masking": false,
+                        "Noise": false,
+                        "SubMasking": false
+                    },
+                    "Type": "EFFECT_PARTS",
+                    "UVScrollCurveX": [],
+                    "UVScrollCurveY": [],
+                    "UV_Offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "UseExternalForceCurve": false,
+                    "UseGlobalGravityCurve": false,
+                    "UseGlowPowerCurve": true,
+                    "UseRotationCurve": true,
+                    "UseScaleCurve": true,
+                    "UseStartRotation": true,
+                    "UseUVScrollCurve": false,
+                    "WorldMatrix": [
+                        1.3142824172973633e-05,
+                        0.0,
+                        -73.49998474121094,
+                        0.0,
+                        262.49993896484375,
+                        4.693865776062012e-05,
+                        -1.564621925354004e-05,
+                        0.0,
+                        -1.475214958190918e-05,
+                        -247.49993896484375,
+                        5.900859832763672e-05,
+                        0.0,
+                        1.100000023841858,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "_Effect_SubMaskTexture_Tag": "",
+                    "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
+                    "_Use_Effect_Continue": false,
+                    "_Use_Effect_Particle_Burst": false,
+                    "_Use_Effect_UV_OverScroll": false,
+                    "strTag": "EffectObject"
+                },
+                {
+                    "AnimationSpeed": 1.0,
+                    "AppearRatio": 0.30000001192092896,
+                    "Color": {
+                        "w": 1.0,
+                        "x": 0.08546620607376099,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "CurveTexture_Tag": "",
+                    "DiffuseTexture_Tag": "T_SplashZd003_Mask",
+                    "DiscardValue": 0.05000000074505806,
+                    "DissolveTexture_Tag": "T_TurbulenceBx004_M",
+                    "DistortionScale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "Duration": 0.009999999776482582,
+                    "EffectSystem": 1,
+                    "EffectType": 1,
+                    "Effect_GlowPower": 1.0,
+                    "EmissionType": 0,
+                    "EndScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ExternalForceCurve": [],
+                    "ExternalForceStrength": 1.0,
+                    "GlobalGravityCurve": [],
+                    "GlowPowerCurve": [
+                        {
+                            "Time": 0.002320185536518693,
+                            "Val": 0.9999999403953552
+                        },
+                        {
+                            "Time": 0.9930394291877747,
+                            "Val": 0.0666666030883789
+                        }
+                    ],
+                    "GlowTexture_Tag": "T_GlowYb001_Mask",
+                    "GradationTexture_Tag": "T_GraMjc002_D",
+                    "GravityBase": {
+                        "Mod": 0.0,
+                        "Val": 9.800000190734863
+                    },
+                    "GravityDir": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 0.0
+                    },
+                    "LifeTime": 0.4000000059604645,
+                    "Looping": false,
+                    "MaskingTexture_Tag": "T_SplashZd003_Mask",
+                    "MaxParticle": 1,
+                    "Model_Tag": "mesh_plane_wyc_001_LOD0",
+                    "NoiseTexture_Tag": "",
+                    "NormalTexture_Tag": "",
+                    "ParentsName": "Boss_LianHuo_ChainThornAttack",
+                    "ParticleSize": {
+                        "x": 0.05000000074505806,
+                        "y": 0.15000000596046448
+                    },
+                    "ParticleSystem": 2,
+                    "PartsName": "Texture",
+                    "PlayAnimation": false,
+                    "PlayBackSpeed": 2.0,
+                    "RandomFlags": 0,
+                    "Range": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "RenderFlag": 8192,
+                    "RotationCurveX": [],
+                    "RotationCurveY": [],
+                    "RotationCurveZ": [],
+                    "SamplerStateFlag": 0,
+                    "ScaleCurveX": [
+                        {
+                            "Time": 0.0,
+                            "Val": 4.499995708465576
+                        },
+                        {
+                            "Time": 0.09537572413682938,
+                            "Val": 41.999996185302734
+                        }
+                    ],
+                    "ScaleCurveY": [
+                        {
+                            "Time": 0.0,
+                            "Val": 37.0
+                        },
+                        {
+                            "Time": 0.08670520037412643,
+                            "Val": 235.00001525878906
+                        },
+                        {
+                            "Time": 0.9855491518974304,
+                            "Val": 262.5
+                        }
+                    ],
+                    "ScaleCurveZ": [
+                        {
+                            "Time": 0.0,
+                            "Val": 37.0
+                        },
+                        {
+                            "Time": 0.09537572413682938,
+                            "Val": 199.99998474121094
+                        },
+                        {
+                            "Time": 0.9855491518974304,
+                            "Val": 247.5
+                        }
+                    ],
+                    "ScrollSpeed": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "ScrollWeights": {
+                        "Curve": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Diffuse": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Dissolve": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Glow": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Gradation": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Masking": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Noise": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "SubMasking": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "SeparateAxes": false,
+                    "SeparateScaleAxes": true,
+                    "Shader_Pass": 1,
+                    "Shader_Path": "../../Shaders\\Shader_VtxEffectTexture.hlsl",
+                    "Shader_Tag": "Shader_VtxEffectTexture",
+                    "ShapeType": 4,
+                    "SpiralData": {
+                        "Radius": 1.0,
+                        "Speed": 1.0
+                    },
+                    "SpriteInfo": {
+                        "Curve": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Diffuse": {
+                            "w": 0.0,
+                            "x": 1.0,
+                            "y": 3.0,
+                            "z": 1.0
+                        },
+                        "Dissolve": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Glow": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Gradation": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Mask": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 2.0,
+                            "z": 2.0
+                        },
+                        "Noise": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "SubMask": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "StartDelay": 0.30000001192092896,
+                    "StartRotation": {
+                        "x": 145.3000030517578,
+                        "y": 180.0,
+                        "z": 0.0
+                    },
+                    "StartScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "StartSpeed": 1.0,
+                    "TargetRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "TexOperatorFlag": 0,
+                    "TexRotationFlag": 8194,
+                    "TextureFlag": 137,
+                    "TimeFlag": 0,
+                    "Tool_Render": {
+                        "Billboard": false,
+                        "DirBillboard": false,
+                        "Down": false,
+                        "Right": false,
+                        "Scroll": false
+                    },
+                    "Tool_Resource": {
+                        "Curve": false,
+                        "Diffuse": true,
+                        "Dissolve": true,
+                        "Glow": false,
+                        "Gradation": true,
+                        "Masking": false,
+                        "Noise": false,
+                        "SubMasking": false
+                    },
+                    "Tool_Samplers": {
+                        "Diffuse": 0,
+                        "Gradation": 0,
+                        "Masking": 0,
+                        "Noise": 0
+                    },
+                    "Tool_ScrollFlags": {
+                        "Curve": false,
+                        "Diffuse": false,
+                        "Dissolve": false,
+                        "Glow": false,
+                        "Gradation": false,
+                        "Masking": false,
+                        "Noise": false,
+                        "SubMasking": false
+                    },
+                    "Type": "EFFECT_PARTS",
+                    "UVScrollCurveX": [],
+                    "UVScrollCurveY": [],
+                    "UV_Offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "UseExternalForceCurve": false,
+                    "UseGlobalGravityCurve": false,
+                    "UseGlowPowerCurve": true,
+                    "UseRotationCurve": true,
+                    "UseScaleCurve": true,
+                    "UseStartRotation": true,
+                    "UseUVScrollCurve": false,
+                    "WorldMatrix": [
+                        -41.99998092651367,
+                        0.0,
+                        1.0013578503276221e-05,
+                        0.0,
+                        -3.562827987479977e-05,
+                        -215.812744140625,
+                        -149.43582153320313,
+                        0.0,
+                        4.8513571528019384e-05,
+                        -140.89663696289063,
+                        203.48068237304688,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "_Effect_SubMaskTexture_Tag": "",
+                    "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
+                    "_Use_Effect_Continue": false,
+                    "_Use_Effect_Particle_Burst": false,
+                    "_Use_Effect_UV_OverScroll": false,
+                    "strTag": "EffectObject"
+                },
+                {
+                    "AnimationSpeed": 1.0,
+                    "AppearRatio": 0.6600000262260437,
+                    "Color": {
+                        "w": 0.24242424964904785,
+                        "x": 0.19477951526641846,
+                        "y": 0.1750798523426056,
+                        "z": 0.1637251079082489
+                    },
+                    "CurveTexture_Tag": "",
+                    "DiffuseTexture_Tag": "T_SmokeXy003_Mask",
+                    "DiscardValue": 0.05000000074505806,
+                    "DissolveTexture_Tag": "",
+                    "DistortionScale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "Duration": 0.009999999776482582,
+                    "EffectSystem": 1,
+                    "EffectType": 1,
+                    "Effect_GlowPower": 1.0,
+                    "EmissionType": 1,
+                    "EndScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ExternalForceCurve": [],
+                    "ExternalForceStrength": 1.0,
+                    "GlobalGravityCurve": [],
+                    "GlowPowerCurve": [],
+                    "GlowTexture_Tag": "",
+                    "GradationTexture_Tag": "",
+                    "GravityBase": {
+                        "Mod": 0.0,
+                        "Val": 9.800000190734863
+                    },
+                    "GravityDir": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 0.0
+                    },
+                    "LifeTime": 1.0,
+                    "Looping": false,
+                    "MaskingTexture_Tag": "",
+                    "MaxParticle": 30,
+                    "Model_Tag": "",
+                    "NoiseTexture_Tag": "",
+                    "NormalTexture_Tag": "",
+                    "ParentsName": "Boss_LianHuo_ChainThornAttack",
+                    "ParticleSize": {
+                        "x": 2.299999952316284,
+                        "y": 2.309999942779541
+                    },
+                    "ParticleSystem": 2,
+                    "PartsName": "Dust",
+                    "PlayAnimation": false,
+                    "PlayBackSpeed": 1.0,
+                    "RandomFlags": 7,
+                    "Range": {
+                        "x": 0.10000000149011612,
+                        "y": 0.10000000149011612,
+                        "z": 0.10000000149011612
+                    },
+                    "RenderFlag": 8193,
+                    "RotationCurveX": [],
+                    "RotationCurveY": [],
+                    "RotationCurveZ": [],
+                    "SamplerStateFlag": 0,
+                    "ScaleCurveX": [],
+                    "ScaleCurveY": [],
+                    "ScaleCurveZ": [],
+                    "ScrollSpeed": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "ScrollWeights": {
+                        "Curve": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Diffuse": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Dissolve": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Glow": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Gradation": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Masking": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Noise": {
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "SubMasking": {
                             "x": 1.0,
@@ -1912,20 +1351,20 @@
                     },
                     "SeparateAxes": false,
                     "SeparateScaleAxes": false,
-                    "Shader_Pass": 0,
-                    "Shader_Path": "",
-                    "Shader_Tag": "Shader_VtxEffectMesh",
-                    "ShapeType": 4,
+                    "Shader_Pass": 1,
+                    "Shader_Path": "../../Shaders\\Shader_VtxEffectTexture.hlsl",
+                    "Shader_Tag": "Shader_VtxEffectTexture",
+                    "ShapeType": 3,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0
                     },
                     "SpriteInfo": {
                         "Curve": {
-                            "w": 32.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 100.0
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
                         },
                         "Diffuse": {
                             "w": 0.0,
@@ -1946,10 +1385,10 @@
                             "z": 0.0
                         },
                         "Gradation": {
-                            "w": 4.0,
+                            "w": 0.0,
                             "x": 0.0,
-                            "y": 1.0,
-                            "z": 100.0
+                            "y": 0.0,
+                            "z": 0.0
                         },
                         "Mask": {
                             "w": 0.0,
@@ -1970,29 +1409,29 @@
                             "z": 0.0
                         }
                     },
-                    "StartDelay": 0.0,
+                    "StartDelay": 0.20000000298023224,
                     "StartRotation": {
-                        "x": 30.0,
+                        "x": 90.0,
                         "y": 0.0,
-                        "z": 270.0
+                        "z": 0.0
                     },
                     "StartScale": {
-                        "x": 12.869999885559082,
-                        "y": 12.869999885559082,
-                        "z": 12.869999885559082
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
-                    "StartSpeed": 1.0,
+                    "StartSpeed": 5.0,
                     "TargetRotation": {
-                        "x": -130.0,
+                        "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
                     },
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 0,
-                    "TextureFlag": 198,
+                    "TextureFlag": 1,
                     "TimeFlag": 0,
                     "Tool_Render": {
-                        "Billboard": false,
+                        "Billboard": true,
                         "DirBillboard": false,
                         "Down": false,
                         "Right": false,
@@ -2000,94 +1439,56 @@
                     },
                     "Tool_Resource": {
                         "Curve": false,
-                        "Diffuse": false,
-                        "Dissolve": true,
-                        "Glow": true,
+                        "Diffuse": true,
+                        "Dissolve": false,
+                        "Glow": false,
                         "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
+                        "Masking": false,
+                        "Noise": false,
                         "SubMasking": false
                     },
                     "Tool_Samplers": {
-                        "Diffuse": 2,
+                        "Diffuse": 0,
                         "Gradation": 0,
-                        "Masking": 2,
+                        "Masking": 0,
                         "Noise": 0
                     },
                     "Tool_ScrollFlags": {
                         "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
+                        "Diffuse": false,
+                        "Dissolve": false,
                         "Glow": false,
                         "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
+                        "Masking": false,
+                        "Noise": false,
                         "SubMasking": false
                     },
                     "Type": "EFFECT_PARTS",
-                    "UVScrollCurveX": [
-                        {
-                            "Time": 0.003076923079788685,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.13081395626068115,
-                            "Val": 0.3933333158493042
-                        },
-                        {
-                            "Time": 0.23546510934829712,
-                            "Val": 0.6000000238418579
-                        },
-                        {
-                            "Time": 0.40406978130340576,
-                            "Val": 0.7266666889190674
-                        },
-                        {
-                            "Time": 0.569767415523529,
-                            "Val": 0.8133333325386047
-                        },
-                        {
-                            "Time": 0.8372092843055725,
-                            "Val": 0.9133333563804626
-                        },
-                        {
-                            "Time": 0.9912790656089783,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
-                    "UVScrollCurveY": [
-                        {
-                            "Time": 0.005780346691608429,
-                            "Val": 0.019999980926513672
-                        },
-                        {
-                            "Time": 0.9942196607589722,
-                            "Val": 0.9866666793823242
-                        }
-                    ],
+                    "UVScrollCurveX": [],
+                    "UVScrollCurveY": [],
                     "UV_Offset": {
-                        "x": -1.0,
+                        "x": 0.0,
                         "y": 0.0
                     },
                     "UseExternalForceCurve": false,
                     "UseGlobalGravityCurve": false,
-                    "UseGlowPowerCurve": true,
+                    "UseGlowPowerCurve": false,
                     "UseRotationCurve": true,
                     "UseScaleCurve": false,
                     "UseStartRotation": true,
-                    "UseUVScrollCurve": true,
+                    "UseUVScrollCurve": false,
                     "WorldMatrix": [
-                        -1.15066768557881e-06,
-                        1.8504538536071777,
-                        12.736274719238281,
+                        1.0,
                         0.0,
-                        12.869998931884766,
-                        3.8355588571903354e-07,
-                        1.9177794001734583e-06,
                         0.0,
-                        7.671117714380671e-07,
-                        12.736275672912598,
-                        -1.8504531383514404,
+                        0.0,
+                        0.0,
+                        5.960464477539063e-08,
+                        0.9999998807907104,
+                        0.0,
+                        0.0,
+                        -0.9999998807907104,
+                        5.960464477539063e-08,
                         0.0,
                         0.0,
                         0.0,
@@ -2099,52 +1500,43 @@
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
-                    "_Use_Effect_Particle_Burst": false,
+                    "_Use_Effect_Particle_Burst": true,
                     "_Use_Effect_UV_OverScroll": false,
-                    "strTag": "DEFAULT_EFFECT"
+                    "strTag": "EffectObject"
                 },
                 {
                     "AnimationSpeed": 1.0,
-                    "AppearRatio": 0.28999999165534973,
+                    "AppearRatio": 0.0,
                     "Color": {
                         "w": 1.0,
-                        "x": 9.999999747378752e-05,
-                        "y": 9.999094618251547e-05,
-                        "z": 9.998999303206801e-05
+                        "x": 10.0,
+                        "y": 0.14901961386203766,
+                        "z": 0.0
                     },
-                    "CurveTexture_Tag": "FX_ColorAtlas_YB",
-                    "DiffuseTexture_Tag": "T_KnifeZd020_Mask",
+                    "CurveTexture_Tag": "",
+                    "DiffuseTexture_Tag": "",
                     "DiscardValue": 0.05000000074505806,
-                    "DissolveTexture_Tag": "T_TurbulenceZd006_Mask",
+                    "DissolveTexture_Tag": "",
                     "DistortionScale": {
-                        "x": 0.10000000149011612,
-                        "y": 0.10000000149011612
+                        "x": 0.0,
+                        "y": 0.0
                     },
-                    "Duration": 0.10000000149011612,
+                    "Duration": 0.009999999776482582,
                     "EffectSystem": 1,
                     "EffectType": 1,
                     "Effect_GlowPower": 1.0,
                     "EmissionType": 0,
                     "EndScale": {
-                        "x": 83.16000366210938,
-                        "y": 83.16000366210938,
-                        "z": 83.16000366210938
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "ExternalForceCurve": [],
                     "ExternalForceStrength": 1.0,
                     "GlobalGravityCurve": [],
-                    "GlowPowerCurve": [
-                        {
-                            "Time": 0.009280742146074772,
-                            "Val": 1.9333332777023315
-                        },
-                        {
-                            "Time": 0.988399088382721,
-                            "Val": 0.013333320617675781
-                        }
-                    ],
-                    "GlowTexture_Tag": "T_KnifeZd023_Mask",
-                    "GradationTexture_Tag": "T_GraindZZ002_Mask",
+                    "GlowPowerCurve": [],
+                    "GlowTexture_Tag": "",
+                    "GradationTexture_Tag": "",
                     "GravityBase": {
                         "Mod": 0.0,
                         "Val": 9.800000190734863
@@ -2154,57 +1546,39 @@
                         "y": -1.0,
                         "z": 0.0
                     },
-                    "LifeTime": 1.2000000476837158,
+                    "LifeTime": 5.0,
                     "Looping": false,
-                    "MaskingTexture_Tag": "Alpha_Mask",
-                    "MaxParticle": 1,
-                    "Model_Tag": "mesh_blade_cc_003",
-                    "NoiseTexture_Tag": "T_TurbulenceBx004_M",
+                    "MaskingTexture_Tag": "",
+                    "MaxParticle": 100,
+                    "Model_Tag": "",
+                    "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "Boss_LianHuo_Attack1_Up",
+                    "ParentsName": "Boss_LianHuo_ChainThornAttack",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
                     },
-                    "ParticleSystem": 3,
-                    "PartsName": "Distotion1",
+                    "ParticleSystem": 1,
+                    "PartsName": "Particle",
                     "PlayAnimation": false,
                     "PlayBackSpeed": 1.0,
-                    "RandomFlags": 0,
+                    "RandomFlags": 15,
                     "Range": {
                         "x": 1.0,
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "RenderFlag": 9696,
+                    "RenderFlag": 8192,
                     "RotationCurveX": [],
-                    "RotationCurveY": [
-                        {
-                            "Time": 0.009756097570061684,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.47560974955558777,
-                            "Val": 0.746666669845581
-                        },
-                        {
-                            "Time": 0.9804878234863281,
-                            "Val": 0.9666666388511658
-                        }
-                    ],
-                    "RotationCurveZ": [
-                        {
-                            "Time": 0.0,
-                            "Val": 0.013333320617675781
-                        }
-                    ],
-                    "SamplerStateFlag": 130,
+                    "RotationCurveY": [],
+                    "RotationCurveZ": [],
+                    "SamplerStateFlag": 0,
                     "ScaleCurveX": [],
                     "ScaleCurveY": [],
                     "ScaleCurveZ": [],
                     "ScrollSpeed": {
-                        "x": 1.0,
-                        "y": 1.0
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "ScrollWeights": {
                         "Curve": {
@@ -2213,23 +1587,23 @@
                         },
                         "Diffuse": {
                             "x": 1.0,
-                            "y": 0.699999988079071
+                            "y": 1.0
                         },
                         "Dissolve": {
-                            "x": 0.0,
+                            "x": 1.0,
                             "y": 1.0
                         },
                         "Glow": {
                             "x": 1.0,
-                            "y": 1.399999976158142
+                            "y": 1.0
                         },
                         "Gradation": {
                             "x": 1.0,
-                            "y": 0.20000000298023224
+                            "y": 1.0
                         },
                         "Masking": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "Noise": {
                             "x": 1.0,
@@ -2242,20 +1616,20 @@
                     },
                     "SeparateAxes": false,
                     "SeparateScaleAxes": false,
-                    "Shader_Pass": 3,
+                    "Shader_Pass": 0,
                     "Shader_Path": "",
-                    "Shader_Tag": "Shader_VtxEffectMesh",
-                    "ShapeType": 4,
+                    "Shader_Tag": "Shader_VtxEffectParticle",
+                    "ShapeType": 14,
                     "SpiralData": {
                         "Radius": 1.0,
                         "Speed": 1.0
                     },
                     "SpriteInfo": {
                         "Curve": {
-                            "w": 3.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 100.0
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
                         },
                         "Diffuse": {
                             "w": 0.0,
@@ -2276,10 +1650,10 @@
                             "z": 0.0
                         },
                         "Gradation": {
-                            "w": 4.0,
+                            "w": 0.0,
                             "x": 0.0,
-                            "y": 1.0,
-                            "z": 100.0
+                            "y": 0.0,
+                            "z": 0.0
                         },
                         "Mask": {
                             "w": 0.0,
@@ -2303,15 +1677,15 @@
                     "StartDelay": 0.20000000298023224,
                     "StartRotation": {
                         "x": 0.0,
-                        "y": 90.0,
-                        "z": 90.0
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "StartScale": {
-                        "x": 83.16000366210938,
-                        "y": 83.16000366210938,
-                        "z": 83.16000366210938
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
-                    "StartSpeed": 1.0,
+                    "StartSpeed": 4.0,
                     "TargetRotation": {
                         "x": 0.0,
                         "y": 0.0,
@@ -2319,7 +1693,7 @@
                     },
                     "TexOperatorFlag": 0,
                     "TexRotationFlag": 0,
-                    "TextureFlag": 135,
+                    "TextureFlag": 0,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": false,
@@ -2330,73 +1704,56 @@
                     },
                     "Tool_Resource": {
                         "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
+                        "Diffuse": false,
+                        "Dissolve": false,
                         "Glow": false,
                         "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
+                        "Masking": false,
+                        "Noise": false,
                         "SubMasking": false
                     },
                     "Tool_Samplers": {
-                        "Diffuse": 2,
+                        "Diffuse": 0,
                         "Gradation": 0,
-                        "Masking": 2,
+                        "Masking": 0,
                         "Noise": 0
                     },
                     "Tool_ScrollFlags": {
                         "Curve": false,
-                        "Diffuse": true,
-                        "Dissolve": true,
+                        "Diffuse": false,
+                        "Dissolve": false,
                         "Glow": false,
                         "Gradation": false,
-                        "Masking": true,
-                        "Noise": true,
+                        "Masking": false,
+                        "Noise": false,
                         "SubMasking": false
                     },
                     "Type": "EFFECT_PARTS",
-                    "UVScrollCurveX": [
-                        {
-                            "Time": 0.003076923079788685,
-                            "Val": 0.006666660308837891
-                        },
-                        {
-                            "Time": 0.2658536732196808,
-                            "Val": 0.6266666650772095
-                        },
-                        {
-                            "Time": 0.6780487895011902,
-                            "Val": 0.9333333373069763
-                        },
-                        {
-                            "Time": 0.992682933807373,
-                            "Val": 0.9733333587646484
-                        }
-                    ],
+                    "UVScrollCurveX": [],
                     "UVScrollCurveY": [],
                     "UV_Offset": {
-                        "x": -1.0,
+                        "x": 0.0,
                         "y": 0.0
                     },
                     "UseExternalForceCurve": false,
-                    "UseGlobalGravityCurve": true,
-                    "UseGlowPowerCurve": true,
+                    "UseGlobalGravityCurve": false,
+                    "UseGlowPowerCurve": false,
                     "UseRotationCurve": false,
                     "UseScaleCurve": false,
-                    "UseStartRotation": true,
-                    "UseUVScrollCurve": true,
+                    "UseStartRotation": false,
+                    "UseUVScrollCurve": false,
                     "WorldMatrix": [
-                        2.9740334866801277e-05,
-                        83.16000366210938,
-                        -2.726197271840647e-05,
+                        1.0,
                         0.0,
-                        -2.726197271840647e-05,
-                        2.4783612389001064e-05,
-                        83.16000366210938,
                         0.0,
-                        83.16000366210938,
-                        -3.469705916359089e-05,
-                        2.478361057001166e-05,
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0,
                         0.0,
                         0.0,
                         0.0,
@@ -2408,12 +1765,316 @@
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
+                    "_Use_Effect_Particle_Burst": true,
+                    "_Use_Effect_UV_OverScroll": false,
+                    "strTag": "EffectObject"
+                },
+                {
+                    "AnimationSpeed": 1.0,
+                    "AppearRatio": 0.0,
+                    "Color": {
+                        "w": 0.6606060266494751,
+                        "x": 9.999289613915607e-05,
+                        "y": 9.998999303206801e-05,
+                        "z": 9.999999747378752e-05
+                    },
+                    "CurveTexture_Tag": "",
+                    "DiffuseTexture_Tag": "",
+                    "DiscardValue": 0.05000000074505806,
+                    "DissolveTexture_Tag": "T_NoiseZz088_Mask",
+                    "DistortionScale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "Duration": 0.009999999776482582,
+                    "EffectSystem": 1,
+                    "EffectType": 1,
+                    "Effect_GlowPower": 1.0,
+                    "EmissionType": 0,
+                    "EndScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "ExternalForceCurve": [],
+                    "ExternalForceStrength": 1.0,
+                    "GlobalGravityCurve": [],
+                    "GlowPowerCurve": [],
+                    "GlowTexture_Tag": "",
+                    "GradationTexture_Tag": "",
+                    "GravityBase": {
+                        "Mod": 0.0,
+                        "Val": 9.800000190734863
+                    },
+                    "GravityDir": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 0.0
+                    },
+                    "LifeTime": 0.4000000059604645,
+                    "Looping": false,
+                    "MaskingTexture_Tag": "T_RingWjw001_Mask",
+                    "MaxParticle": 1,
+                    "Model_Tag": "",
+                    "NoiseTexture_Tag": "",
+                    "NormalTexture_Tag": "",
+                    "ParentsName": "Boss_LianHuo_ChainThornAttack",
+                    "ParticleSize": {
+                        "x": 0.05000000074505806,
+                        "y": 0.15000000596046448
+                    },
+                    "ParticleSystem": 2,
+                    "PartsName": "Wave_Texture",
+                    "PlayAnimation": false,
+                    "PlayBackSpeed": 1.0,
+                    "RandomFlags": 0,
+                    "Range": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "RenderFlag": 8192,
+                    "RotationCurveX": [],
+                    "RotationCurveY": [],
+                    "RotationCurveZ": [],
+                    "SamplerStateFlag": 0,
+                    "ScaleCurveX": [
+                        {
+                            "Time": 0.005780346691608429,
+                            "Val": 12.000006675720215
+                        },
+                        {
+                            "Time": 0.32947975397109985,
+                            "Val": 280.0
+                        },
+                        {
+                            "Time": 0.9913294911384583,
+                            "Val": 332.0
+                        }
+                    ],
+                    "ScaleCurveY": [
+                        {
+                            "Time": 0.005780346691608429,
+                            "Val": 12.000006675720215
+                        },
+                        {
+                            "Time": 0.32947975397109985,
+                            "Val": 280.0
+                        },
+                        {
+                            "Time": 0.9913294911384583,
+                            "Val": 332.0
+                        }
+                    ],
+                    "ScaleCurveZ": [
+                        {
+                            "Time": 0.005780346691608429,
+                            "Val": 12.000006675720215
+                        },
+                        {
+                            "Time": 0.32947975397109985,
+                            "Val": 280.0
+                        },
+                        {
+                            "Time": 0.9913294911384583,
+                            "Val": 332.0
+                        }
+                    ],
+                    "ScrollSpeed": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "ScrollWeights": {
+                        "Curve": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Diffuse": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Dissolve": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Glow": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Gradation": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Masking": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "Noise": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "SubMasking": {
+                            "x": 1.0,
+                            "y": 1.0
+                        }
+                    },
+                    "SeparateAxes": false,
+                    "SeparateScaleAxes": false,
+                    "Shader_Pass": 1,
+                    "Shader_Path": "../../Shaders\\Shader_VtxEffectTexture.hlsl",
+                    "Shader_Tag": "Shader_VtxEffectTexture",
+                    "ShapeType": 4,
+                    "SpiralData": {
+                        "Radius": 1.0,
+                        "Speed": 1.0
+                    },
+                    "SpriteInfo": {
+                        "Curve": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Diffuse": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Dissolve": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Glow": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Gradation": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Mask": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Noise": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "SubMask": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "StartDelay": 0.10000000149011612,
+                    "StartRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "StartScale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "StartSpeed": 1.0,
+                    "TargetRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "TexOperatorFlag": 0,
+                    "TexRotationFlag": 0,
+                    "TextureFlag": 132,
+                    "TimeFlag": 0,
+                    "Tool_Render": {
+                        "Billboard": false,
+                        "DirBillboard": false,
+                        "Down": false,
+                        "Right": false,
+                        "Scroll": false
+                    },
+                    "Tool_Resource": {
+                        "Curve": false,
+                        "Diffuse": false,
+                        "Dissolve": true,
+                        "Glow": false,
+                        "Gradation": false,
+                        "Masking": true,
+                        "Noise": false,
+                        "SubMasking": false
+                    },
+                    "Tool_Samplers": {
+                        "Diffuse": 0,
+                        "Gradation": 0,
+                        "Masking": 0,
+                        "Noise": 0
+                    },
+                    "Tool_ScrollFlags": {
+                        "Curve": false,
+                        "Diffuse": false,
+                        "Dissolve": false,
+                        "Glow": false,
+                        "Gradation": false,
+                        "Masking": false,
+                        "Noise": false,
+                        "SubMasking": false
+                    },
+                    "Type": "EFFECT_PARTS",
+                    "UVScrollCurveX": [],
+                    "UVScrollCurveY": [],
+                    "UV_Offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "UseExternalForceCurve": false,
+                    "UseGlobalGravityCurve": false,
+                    "UseGlowPowerCurve": false,
+                    "UseRotationCurve": true,
+                    "UseScaleCurve": true,
+                    "UseStartRotation": true,
+                    "UseUVScrollCurve": false,
+                    "WorldMatrix": [
+                        332.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        332.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        332.0,
+                        0.0,
+                        0.0,
+                        0.20000000298023224,
+                        0.0,
+                        1.0
+                    ],
+                    "_Effect_SubMaskTexture_Tag": "",
+                    "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
+                    "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
-                    "strTag": "DEFAULT_EFFECT"
+                    "strTag": "EffectObject"
                 }
             ],
-            "strTag": "Boss_LianHuo_Attack1_Up"
+            "strTag": "Boss_LianHuo_ChainThornAttack"
         }
     ]
 }

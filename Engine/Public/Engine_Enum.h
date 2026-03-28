@@ -105,6 +105,7 @@ namespace Engine
 		SectionShadowparam,
 		PlayerInfoBuffer,
 		DISSOLVEEFFECT,
+		LINEEFFECT,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -133,6 +134,7 @@ namespace Engine
 		"ShaderBakedSectionBuffer",
 		"PlayerInfoBuffer",
 		"CB_DISSOLVE",
+		"CB_LINEEFFECT"
 	};
 	//===================
 	// FX SRV

@@ -81,6 +81,9 @@ const wstring CBuilder_Effect::Create_PrototypeTag(const string Tag)
 	if (Tag.find("Warning") != std::string::npos)
 		PrototypeTag = L"Prototype_GameObject_Effect_WarningCircle";
 
+	else if (Tag.find("Boss_LianHuo_DashPanel") != std::string::npos)
+		PrototypeTag = L"Prototype_GameObject_Effect_DashPanel";
+
 	else
 		PrototypeTag = L"Prototype_GameObject_Effect";
 
@@ -102,7 +105,7 @@ void CBuilder_Effect::Regist_pool(void* pArg, string& PrefabEffectTag)
 	else if (PrefabEffectTag == "Boss_Xibi_Bullet_Dead")
 		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 200);
 
-	// ÇÇ°Ý ÀÌÆåÆ®
+	//  ============  ÇÇ°Ý ÀÌÆåÆ®  ============  
 	else if (PrefabEffectTag == "VFX_Sword_Hit")
 		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 50);
 
@@ -114,6 +117,8 @@ void CBuilder_Effect::Regist_pool(void* pArg, string& PrefabEffectTag)
 
 	else if (PrefabEffectTag == "VFX_Blade_Hit")
 		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 200);
+
+	//  ============  ÇÇ°Ý ÀÌÆåÆ®  ============  
 
 	else 
 		m_pGameInstance->Regist_Pool(m_iLevelID, PoolTag, LayTag, 0, PrototypeTag, pArg, 30);
