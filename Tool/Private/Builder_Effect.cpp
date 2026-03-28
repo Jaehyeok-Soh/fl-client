@@ -79,11 +79,11 @@ const wstring CBuilder_Effect::Create_PrototypeTag(const string Tag)
 	wstring LayTag = {};
 	wstring PrototypeTag = {};
 
-	//if (Tag.find("Warning") != std::string::npos)
-	//	PrototypeTag = L"Prototype_GameObject_Effect_WarningCircle";
+	if (Tag.find("Boss_LianHuo_DashPanel") != std::string::npos)
+		PrototypeTag = L"Prototype_GameObject_Effect_DashPanel";
 
-	//else
-	PrototypeTag = L"Prototype_GameObject_Effect";
+	else
+		PrototypeTag = L"Prototype_GameObject_Effect";
 
 	return PrototypeTag;
 }

@@ -26,8 +26,14 @@ private:
 	HRESULT Ready_Monster();
 	HRESULT Ready_Camera_Setting(const _uint iLevelIndex);
 	HRESULT Ready_Octree();
+	HRESULT Ready_CitizenData();
 	HRESULT Ready_Dissolve();
 private:
+	HRESULT Setting_Citizen();
+	void	Check_Citizen();
+private:
+	float		m_fAccTime;
+
 	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
 public:
 	static CLevel_Square*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

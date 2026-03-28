@@ -34,7 +34,7 @@
 
 #include "DebugDraw.h"
 #include "DebugLine.h"
-
+#include "CitizenData.h"
 #include "UEMapdataParser.h"
 #include "MapToolManager.h"
 #include "Effect_DataManager.h"
@@ -93,6 +93,11 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(m_pMapToolManager->Ready_CinematicSequenceDebugRender()))
 		return E_FAIL;
 
+	if (FAILED(m_pMapToolManager->Ready_CitizenDebugModel()))
+		return E_FAIL;
+
+	if (FAILED(m_pMapToolManager->Ready_CitizenWayPointData()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -364,6 +369,8 @@ void CLevel_Map::Free()
 	}
 	m_arrayImGuiPanel.fill(nullptr);
 
+	DTO::CitizenWayPointOriginData::Save_CitizenWayPointDatas();
+	DTO::CitizenPresetData::Save_CitizenPresetData();
 
 	m_pMapToolManager->UnRegister_MapTexture();
 	m_pMapToolManager->Save_TextureSplatingInfoData();

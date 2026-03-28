@@ -177,6 +177,7 @@
     <ClInclude Include="..\public\CameraPreset_Manager.h" />
     <ClInclude Include="..\public\CameraShotPrestBuilder.h" />
     <ClInclude Include="..\Public\Canvas.h" />
+    <ClInclude Include="..\Public\Effect_DashPanel.h" />
     <ClInclude Include="..\Public\Monster_Veteran.h" />
     <ClInclude Include="..\Public\Monster_Veteran_Body.h" />
     <ClInclude Include="..\Public\NPC_Citizen_Body.h" />
@@ -202,6 +203,8 @@
     <ClInclude Include="..\Public\ChangeLevelObject.h" />
     <ClInclude Include="..\Public\NPC_Tavern.h" />
     <ClInclude Include="..\Public\NPC_Tavern_Body.h" />
+    <ClInclude Include="..\Public\State_SPHitStart.h" />
+    <ClInclude Include="..\Public\State_Stun.h" />
     <ClInclude Include="..\Public\UIEnterGame_Image.h" />
     <ClInclude Include="..\Public\UIEnterGame_Text.h" />
     <ClInclude Include="..\public\State_StartCatch.h" />
@@ -209,6 +212,8 @@
     <ClInclude Include="..\Public\UIMiniGame_Circle_Text.h" />
     <ClInclude Include="..\Public\UIMouseCursor_Image.h" />
     <ClInclude Include="..\Public\TriggerBox_MonsterWaveSpawner.h" />
+    <ClInclude Include="..\Public\UINpcTextBubble_Image.h" />
+    <ClInclude Include="..\Public\UINpcTextBubble_Text.h" />
     <ClInclude Include="..\Public\UISceneFade_Image.h" />
     <ClInclude Include="..\Public\UIScreenPulse_Image.h" />
     <ClInclude Include="..\Public\UITitle_Image.h" />
@@ -466,6 +471,7 @@
     <ClCompile Include="..\private\CameraPreset_Manager.cpp" />
     <ClCompile Include="..\private\CameraShotPrestBuilder.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
+    <ClCompile Include="..\Private\Effect_DashPanel.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran_Body.cpp" />
     <ClCompile Include="..\Private\NPC_Citizen_Body.cpp" />
@@ -491,6 +497,8 @@
     <ClCompile Include="..\Private\ChangeLevelObject.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern_Body.cpp" />
+    <ClCompile Include="..\Private\State_SPHitStart.cpp" />
+    <ClCompile Include="..\Private\State_Stun.cpp" />
     <ClCompile Include="..\Private\UIEnterGame_Image.cpp" />
     <ClCompile Include="..\Private\UIEnterGame_Text.cpp" />
     <ClCompile Include="..\private\State_StartCatch.cpp" />
@@ -498,6 +506,8 @@
     <ClCompile Include="..\Private\UIMiniGame_Circle_Text.cpp" />
     <ClCompile Include="..\Private\UIMouseCursor_Image.cpp" />
     <ClCompile Include="..\Private\TriggerBox_MonsterWaveSpawner.cpp" />
+    <ClCompile Include="..\Private\UINpcTextBubble_Image.cpp" />
+    <ClCompile Include="..\Private\UINpcTextBubble_Text.cpp" />
     <ClCompile Include="..\Private\UISceneFade_Image.cpp" />
     <ClCompile Include="..\Private\UIScreenPulse_Image.cpp" />
     <ClCompile Include="..\Private\UITitle_Image.cpp" />

@@ -1065,6 +1065,11 @@ HRESULT CGameInstance::Render_Fonts()
 {
 	return m_pFont_Manager->Render_Fonts();
 }
+
+Vec2 CGameInstance::Measure_Font(const _wstring& wstrFontTag, const _tchar* pText)
+{
+	return m_pFont_Manager->Measure_Font(wstrFontTag, pText);
+}
 #pragma endregion
 
 #pragma region EFFECT_MANAGER

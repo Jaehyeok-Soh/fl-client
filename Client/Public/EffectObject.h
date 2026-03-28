@@ -132,6 +132,9 @@ private:
    vector<float>             m_iSpriteAccumulation = {};
 
  private:
+    SHADER_LINE_EFFECT_DESC  m_tLineEffectDesc = {};
+
+ private:
    _bool                     m_bIsEffectFinish = { false };
    _bool                     m_bDespawnFlag = { false };
 };

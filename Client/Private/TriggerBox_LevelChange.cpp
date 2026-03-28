@@ -118,7 +118,18 @@ void CTriggerBox_LevelChange::OnTrigger_Enter(_uint iMyColliderLayer, _uint iOth
 
     if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
     {
-        m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eChangeLevelType));
+        UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+        Desc.eNextLevelID   = m_eChangeLevelType;
+        Desc.fDelay         = 0.f;
+        Desc.fDuration      = 1.f;
+        Desc.isEased        = true;
+        Desc.fEaseValue     = 2.f;
+        Desc.isFadeIn       = false;
+        Desc.fEndDelay      = 1.f;
+        Desc.isChangeLevel   = true;
+        CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+
+      //m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eChangeLevelType));
         Set_Dead();
     }
 }

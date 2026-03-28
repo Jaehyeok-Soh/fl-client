@@ -151,7 +151,7 @@ void CUIConversation_Image::Bind_Events()
 				case DTO::EUIDImageSubClassType::CONVERSATION_DOWN:
 					break;
 				case DTO::EUIDImageSubClassType::CONVERSATION_BG:
-				CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
+  				CUITutorial_Manager::GetInstance()->Return_Locked_PlayerState();
 					break;
 				}
 			}));

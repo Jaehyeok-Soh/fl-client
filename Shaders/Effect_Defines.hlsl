@@ -64,6 +64,21 @@ texture2D g_EffectTexture;
 #define MUL 1 << 2      // Multiply     곱하기
 #define DIV 1 << 3      // Devide       나누기
 
+struct LineEffectDesc
+{
+    // Slot 1
+    float3 g_StartPos;
+    float  Padding0;
+    
+    // Slot 2
+    float3 g_EndPos;
+    float  Padding1;
+    
+    // Slot 3
+    float  g_HalfWidth;
+    float3 Padding2;
+};
+
 struct EffectDesc
 {
     // Row 0
@@ -135,6 +150,11 @@ StructuredBuffer<VTXPARTICLE> INSTANCE_OUTPUT;
 cbuffer ConstantBuffer_Effect
 {
     EffectDesc g_Effect;
+};
+
+cbuffer CB_LINEEFFECT
+{
+    LineEffectDesc g_LineEffect;
 };
 
 cbuffer DecalEffect

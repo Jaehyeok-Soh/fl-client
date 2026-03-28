@@ -1,5 +1,5 @@
 #pragma once
-#include "Resource_Base.h"
+#include "ResourceBase.h"
 
 NS_BEGIN(Engine)
 
@@ -12,9 +12,9 @@ typedef struct tagAnimationKeyframe
     _float fTime = { 0.0f };
 }ANIM_KEYFRAME;
 
-class ENGINE_DLL CAnimation final : public CResource_Base
+class ENGINE_DLL CAnimation final : public CResourceBase
 {
-    using Super = CResource_Base;
+    using Super = CResourceBase;
 public:
     typedef struct tagAnimationDesc : public Super::RESOURCE_BASE_DESC
     {

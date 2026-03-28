@@ -1,0 +1,64 @@
+{
+    "Presets": [
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 7,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 0.43589094281196594,
+                    "Y": 0.7159581184387207,
+                    "Z": 0.830115795135498
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 0.92277991771698,
+                    "Y": 0.7819989323616028,
+                    "Z": 0.07482000440359116
+                }
+            },
+            "Loop Animation Name": "Animation_CM_YNM_Body01_SM_Npc_Younian_Emo_Story_cheer01_Loop_Huanhu_Nan",
+            "Model Name": "Child/Male/CM_YNM_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 0.7081781029701233,
+                        "Y": 0.48085150122642517,
+                        "Z": 0.9884169697761536
+                    },
+                    "Name": "Child/Male/Hair/CM_YNM_Hair02_SM"
+                }
+            }
+        }
+    ]
+}

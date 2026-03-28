@@ -411,11 +411,12 @@ HRESULT CRender_Manager::Render()
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Render_Fonts()))
+		return E_FAIL;
+
 	if (FAILED(Render_BlendUI()))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Render_Fonts()))
-		return E_FAIL;
 
 #ifdef _DEBUG
 	if (m_pGameInstance->KeyButton_Down(DIK_F9))
@@ -1621,7 +1622,7 @@ HRESULT CRender_Manager::Ready_Dissolve()
 
 	// 칼
 	{
-		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceBx004_M")))
+		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceZd016_Mask")))
 		{
 			MSG_BOX("Dissolve Texture가 바인딩 되지 않았습니다. - Render Manager - SWORD");
 			Safe_Release(pTexture);

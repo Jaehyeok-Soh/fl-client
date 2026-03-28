@@ -37,7 +37,6 @@ protected:
 	virtual HRESULT Despawn_FromPool() override;
 
 public:
-
 	virtual HRESULT Enable_VFX(void* pArg) override;
 	virtual HRESULT Disable_VFX() override;
 

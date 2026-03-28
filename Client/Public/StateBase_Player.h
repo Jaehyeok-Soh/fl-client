@@ -37,8 +37,11 @@ public:
 		,C_Addtive	= 0x00008
 		,C_Fly		= 0x00010
 		,C_Strong	= 0x00020
+		, C_StunHit		= 0x00040
+		, C_SpHit = 0x00080
 
-		,C_CheckF	= 0x00040
+
+		,C_CheckF	= 0x00100
 	};
 
 	enum WEAPONCHANGEFLAGS : Flags
