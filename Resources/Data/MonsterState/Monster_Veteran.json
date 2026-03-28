@@ -24,6 +24,12 @@
                 "Jump_Throw",
                 "Melee_01",
                 "Melee_02",
+                "Melee_Combo_01",
+                "Melee_Combo_02",
+                "Melee_Combo_03",
+                "Melee_Combo_04",
+                "Melee_Combo_05",
+                "Melee_Combo_Start",
                 "Shout",
                 "Stomp_Upper_01",
                 "Stomp_Upper_02",
@@ -65,6 +71,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -153,9 +165,12 @@
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
-                                "Jump_Throw": 50.0,
+                                "Away_Enter": 50.0,
+                                "Charge_Start": 50.0,
+                                "Howl_Charge": 50.0,
                                 "Melee_01": 50.0,
                                 "Melee_02": 50.0,
+                                "Melee_Combo_Start": 50.0,
                                 "Shout": 50.0,
                                 "Stomp_Upper_01": 50.0
                             },
@@ -233,12 +248,12 @@
                         },
                         {
                             "mapRandomStatePool": {
-                                "Away_Enter": 50.0,
                                 "Charge_Start": 50.0,
                                 "Chase": 50.0,
                                 "Dive": 50.0,
                                 "Howl_Charge": 50.0,
-                                "Jump_RunStart": 50.0
+                                "Jump_RunStart": 50.0,
+                                "Melee_Combo_Start": 50.0
                             },
                             "vecConditionEntry": [
                                 {
@@ -454,6 +469,59 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Chase": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_out_of_melee_attack",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_target_out_of_range_attack",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
                         }
                     ],
                     "vecWeaponAnimNames": []
@@ -489,6 +557,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -584,7 +658,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -608,6 +682,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -734,7 +814,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -758,6 +838,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -781,33 +867,58 @@
                         "fMinTime": 0.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [],
-                    "vecEndConditionFeature": [],
-                    "vecFeatureEntry": [
+                    "vecConditionFeature": [
                         {
-                            "strFeature": "feat_align_attack",
-                            "tParam": {
-                                "bParam": [
-                                    false,
-                                    false,
-                                    false,
-                                    false
-                                ],
-                                "fParam": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "iParam": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                ]
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        15.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_align_attack",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
                             }
                         }
                     ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
                     "vecGlobalStateTransition": [
                         {
                             "mapRandomStatePool": {
@@ -908,7 +1019,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -932,6 +1043,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -955,33 +1072,58 @@
                         "fMinTime": 0.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [],
-                    "vecEndConditionFeature": [],
-                    "vecFeatureEntry": [
+                    "vecConditionFeature": [
                         {
-                            "strFeature": "feat_align_attack",
-                            "tParam": {
-                                "bParam": [
-                                    false,
-                                    false,
-                                    false,
-                                    false
-                                ],
-                                "fParam": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "iParam": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                ]
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        20.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_align_attack",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
                             }
                         }
                     ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
                     "vecGlobalStateTransition": [
                         {
                             "mapRandomStatePool": {
@@ -1082,7 +1224,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1106,6 +1248,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -1256,7 +1404,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1280,6 +1428,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -1483,7 +1637,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1507,6 +1661,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -1633,7 +1793,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1657,6 +1817,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -1954,7 +2120,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -1978,6 +2144,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -2298,7 +2470,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2322,6 +2494,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -2448,7 +2626,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2472,6 +2650,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -2745,7 +2929,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2769,6 +2953,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -2885,7 +3075,7 @@
                             },
                             "vecConditionEntry": [
                                 {
-                                    "strCondition": "condition_animation_finish",
+                                    "strCondition": "param_condition_IsTrackPositionBetween",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -2894,8 +3084,8 @@
                                             false
                                         ],
                                         "fParam": [
-                                            0.0,
-                                            0.0,
+                                            75.0,
+                                            80.0,
                                             0.0,
                                             0.0
                                         ],
@@ -2919,7 +3109,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -2943,6 +3133,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -3093,7 +3289,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -3117,6 +3313,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -3129,7 +3331,7 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
+                        "fMaxTime": 10.0,
                         "fMinTime": 0.0,
                         "fTimeAcc": 0.0
                     },
@@ -3137,7 +3339,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 1.0,
+                        "fMinTime": 2.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -3274,7 +3476,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -3298,6 +3500,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -3318,7 +3526,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 1.0,
+                        "fMinTime": 2.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -3512,7 +3720,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -3536,6 +3744,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -3556,7 +3770,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 1.0,
+                        "fMinTime": 2.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -3750,7 +3964,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -3774,6 +3988,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -3794,7 +4014,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 1.0,
+                        "fMinTime": 2.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -3988,7 +4208,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4012,6 +4232,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -4032,7 +4258,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 1.0,
+                        "fMinTime": 2.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -4226,7 +4452,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4250,6 +4476,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -4270,7 +4502,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 1.0,
+                        "fMinTime": 2.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -4464,7 +4696,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": true,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4488,6 +4720,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -4600,9 +4838,12 @@
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
+                                "Charge_Start": 50.0,
+                                "Howl_Charge": 50.0,
                                 "Jump_Throw": 50.0,
                                 "Melee_01": 50.0,
                                 "Melee_02": 50.0,
+                                "Melee_Combo_Start": 50.0,
                                 "Shout": 50.0,
                                 "Stomp_Upper_01": 50.0
                             },
@@ -4642,7 +4883,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4666,6 +4907,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -4792,7 +5039,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.500100016593933,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4816,6 +5063,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -4942,7 +5195,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.500100016593933,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -4966,6 +5219,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -5092,7 +5351,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -5116,6 +5375,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -5242,7 +5507,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -5266,6 +5531,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -5278,8 +5549,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 20.0,
+                        "fMinTime": 20.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -5707,6 +5978,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -5727,7 +6004,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 2.0,
+                        "fMinTime": 1.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -6105,7 +6382,7 @@
                     "bIsBoss": false,
                     "bIsCombo": false,
                     "bLoop": false,
-                    "fAnimationSpeed": 2.0,
+                    "fAnimationSpeed": 1.5,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Away_B",
@@ -6129,6 +6406,12 @@
                         "Jump_Throw",
                         "Melee_01",
                         "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
                         "Shout",
                         "Stomp_Upper_01",
                         "Stomp_Upper_02",
@@ -6212,6 +6495,1815 @@
                     ],
                     "vecMainAnimNames": [
                         "Animation_Monster_Veteran_Land_Inplace"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.5,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Away_B",
+                        "Away_Enter",
+                        "Away_L",
+                        "Away_LB",
+                        "Away_R",
+                        "Away_RB",
+                        "Charge_End",
+                        "Charge_Loop",
+                        "Charge_Start",
+                        "Chase",
+                        "Die",
+                        "Dive",
+                        "Hitlight",
+                        "Howl_Charge",
+                        "Idle",
+                        "Jump_FallLoop",
+                        "Jump_Land",
+                        "Jump_RunStart",
+                        "Jump_Throw",
+                        "Melee_01",
+                        "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
+                        "Shout",
+                        "Stomp_Upper_01",
+                        "Stomp_Upper_02",
+                        "Turn_L180",
+                        "Turn_L90",
+                        "Turn_R180",
+                        "Turn_R90"
+                    ],
+                    "strName": "Melee_Combo_Start",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 20.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        15.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_align_attack",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Die": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_dying",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_none_die_process",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Monster_Veteran_Skill01"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Melee_Combo_01": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "param_condition_IsTrackPositionBetween",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            95.0,
+                                            100.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.5,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Away_B",
+                        "Away_Enter",
+                        "Away_L",
+                        "Away_LB",
+                        "Away_R",
+                        "Away_RB",
+                        "Charge_End",
+                        "Charge_Loop",
+                        "Charge_Start",
+                        "Chase",
+                        "Die",
+                        "Dive",
+                        "Hitlight",
+                        "Howl_Charge",
+                        "Idle",
+                        "Jump_FallLoop",
+                        "Jump_Land",
+                        "Jump_RunStart",
+                        "Jump_Throw",
+                        "Melee_01",
+                        "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
+                        "Shout",
+                        "Stomp_Upper_01",
+                        "Stomp_Upper_02",
+                        "Turn_L180",
+                        "Turn_L90",
+                        "Turn_R180",
+                        "Turn_R90"
+                    ],
+                    "strName": "Melee_Combo_01",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        20.0,
+                                        25.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_impuls_front",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        5.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        10.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_align_attack",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        20.0,
+                                        25.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_zero_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        25.0,
+                                        30.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_reset_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_reset_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Die": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_dying",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_none_die_process",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Monster_Veteran_Skill07_03"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Melee_Combo_02": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "param_condition_IsTrackPositionBetween",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            55.0,
+                                            60.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.500100016593933,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Away_B",
+                        "Away_Enter",
+                        "Away_L",
+                        "Away_LB",
+                        "Away_R",
+                        "Away_RB",
+                        "Charge_End",
+                        "Charge_Loop",
+                        "Charge_Start",
+                        "Chase",
+                        "Die",
+                        "Dive",
+                        "Hitlight",
+                        "Howl_Charge",
+                        "Idle",
+                        "Jump_FallLoop",
+                        "Jump_Land",
+                        "Jump_RunStart",
+                        "Jump_Throw",
+                        "Melee_01",
+                        "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
+                        "Shout",
+                        "Stomp_Upper_01",
+                        "Stomp_Upper_02",
+                        "Turn_L180",
+                        "Turn_L90",
+                        "Turn_R180",
+                        "Turn_R90"
+                    ],
+                    "strName": "Melee_Combo_02",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        15.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_align_attack",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Die": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_dying",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_none_die_process",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Monster_Veteran_Skill01"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Melee_Combo_03": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "param_condition_IsTrackPositionBetween",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            95.0,
+                                            100.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.5,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Away_B",
+                        "Away_Enter",
+                        "Away_L",
+                        "Away_LB",
+                        "Away_R",
+                        "Away_RB",
+                        "Charge_End",
+                        "Charge_Loop",
+                        "Charge_Start",
+                        "Chase",
+                        "Die",
+                        "Dive",
+                        "Hitlight",
+                        "Howl_Charge",
+                        "Idle",
+                        "Jump_FallLoop",
+                        "Jump_Land",
+                        "Jump_RunStart",
+                        "Jump_Throw",
+                        "Melee_01",
+                        "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
+                        "Shout",
+                        "Stomp_Upper_01",
+                        "Stomp_Upper_02",
+                        "Turn_L180",
+                        "Turn_L90",
+                        "Turn_R180",
+                        "Turn_R90"
+                    ],
+                    "strName": "Melee_Combo_03",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        20.0,
+                                        25.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_impuls_front",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        5.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        10.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_align_attack",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        20.0,
+                                        25.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_zero_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        25.0,
+                                        30.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_reset_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_reset_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Die": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_dying",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_none_die_process",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Monster_Veteran_Skill07_03"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Melee_Combo_04": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "param_condition_IsTrackPositionBetween",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            55.0,
+                                            60.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.5,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Away_B",
+                        "Away_Enter",
+                        "Away_L",
+                        "Away_LB",
+                        "Away_R",
+                        "Away_RB",
+                        "Charge_End",
+                        "Charge_Loop",
+                        "Charge_Start",
+                        "Chase",
+                        "Die",
+                        "Dive",
+                        "Hitlight",
+                        "Howl_Charge",
+                        "Idle",
+                        "Jump_FallLoop",
+                        "Jump_Land",
+                        "Jump_RunStart",
+                        "Jump_Throw",
+                        "Melee_01",
+                        "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
+                        "Shout",
+                        "Stomp_Upper_01",
+                        "Stomp_Upper_02",
+                        "Turn_L180",
+                        "Turn_L90",
+                        "Turn_R180",
+                        "Turn_R90"
+                    ],
+                    "strName": "Melee_Combo_04",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        15.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_align_attack",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Die": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_dying",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_none_die_process",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Monster_Veteran_Skill01"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Melee_Combo_05": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "param_condition_IsTrackPositionBetween",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            95.0,
+                                            100.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": false,
+                    "bIsCombo": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.5,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "Away_B",
+                        "Away_Enter",
+                        "Away_L",
+                        "Away_LB",
+                        "Away_R",
+                        "Away_RB",
+                        "Charge_End",
+                        "Charge_Loop",
+                        "Charge_Start",
+                        "Chase",
+                        "Die",
+                        "Dive",
+                        "Hitlight",
+                        "Howl_Charge",
+                        "Idle",
+                        "Jump_FallLoop",
+                        "Jump_Land",
+                        "Jump_RunStart",
+                        "Jump_Throw",
+                        "Melee_01",
+                        "Melee_02",
+                        "Melee_Combo_01",
+                        "Melee_Combo_02",
+                        "Melee_Combo_03",
+                        "Melee_Combo_04",
+                        "Melee_Combo_05",
+                        "Melee_Combo_Start",
+                        "Shout",
+                        "Stomp_Upper_01",
+                        "Stomp_Upper_02",
+                        "Turn_L180",
+                        "Turn_L90",
+                        "Turn_R180",
+                        "Turn_R90"
+                    ],
+                    "strName": "Melee_Combo_05",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        20.0,
+                                        25.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_impuls_front",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        5.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        10.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_align_attack",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        20.0,
+                                        25.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_set_zero_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        25.0,
+                                        30.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_reset_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_reset_deaccel_rate",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Die": 100.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_dying",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_none_die_process",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Monster_Veteran_Skill07_03"
                     ],
                     "vecStartConditionFeature": [],
                     "vecStateTransition": [
