@@ -928,6 +928,15 @@
     <Filter Include="06. FSM\Player\NPCs">
       <UniqueIdentifier>{6b482b46-4030-4bea-920d-461400b222f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Player\Hit\Special">
+      <UniqueIdentifier>{afa98ba9-ef18-4b57-b734-1300ceada036}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Hit\Special\SpecialHIt">
+      <UniqueIdentifier>{df43014b-751c-428a-bd44-82727eddec91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. FSM\Player\Hit\Special\Stun">
+      <UniqueIdentifier>{a265f629-f60d-4c2a-9dc7-0174ffd4d503}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\Camera\Builder">
       <UniqueIdentifier>{d45ded89-5b94-43dd-a5e7-0c0cac2cbc91}</UniqueIdentifier>
     </Filter>
@@ -1800,6 +1809,12 @@
     <ClInclude Include="..\public\State_GimmikRunStart.h">
       <Filter>06. FSM\Monster\Lianhuo\Gimmik</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_SPHitStart.h">
+      <Filter>06. FSM\Player\Hit\Special\SpecialHIt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Stun.h">
+      <Filter>06. FSM\Player\Hit\Special\Stun</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2635,6 +2650,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_DashPanel.cpp">
       <Filter>03. GameObject\EffectObject\Parent_Effect\DashPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_SPHitStart.cpp">
+      <Filter>06. FSM\Player\Hit\Special\SpecialHIt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Stun.cpp">
+      <Filter>06. FSM\Player\Hit\Special\Stun</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

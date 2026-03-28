@@ -22,11 +22,12 @@ class CPlayer abstract : public CContainerObject
 public:
 	enum class PLAYER_TYPE { MOON, END };
 
-	enum class EWEAPON { MELEE, RANGE, SKILL, END }; // array 접근용 enum  값
+	enum class EWEAPON { MELEE, RANGE, SKILL,CONDEMN, END }; // array 접근용 enum  값
 
 	enum class MELEE { SWORD, DUAL, END };
 	enum class RANGE { MACHINE, END };
 	enum class SKILL { MOON, END };
+	enum class CONDEMN { NORMAL, END };
 	
 	// 각 무기가 가지고 있어야 하는 정보들
 	typedef struct tagWeaponInfo
@@ -61,6 +62,8 @@ public:
 		// 추가 wepaon
 		Dual_R,
 		Dual_L,
+
+		Condemn,
 
 		EFFECT,
 		DETECTCOLLIDER_UI, // 몬스터 감지용 collider
@@ -101,13 +104,14 @@ public:
 		,FALL
 		,LAND
 
-		,COMBO
-		,COMBO_DUAL
+		/* 근거리 공격 */
+		, COMBO
+		, COMBO_DUAL
 		, JUMPATTSTART
 		, JUMPATTEND
-		,CHARGE
+		, CHARGE
 
-
+		/* 원거리 공격 */
 		,GUNIDLE
 		,GUNWALK
 		,GUNATTACK
@@ -127,6 +131,9 @@ public:
 		,SPECIALDASH
 
 		,NPCTALK
+
+		,STUN_START
+		,SPHIT_START
 
 		,END
 	};
@@ -209,6 +216,7 @@ protected:
 	array<WEAPON_INFO, ENUM_TO_SZET(MELEE::END)>	m_arrMeleeInfo;
 	array<WEAPON_INFO, ENUM_TO_SZET(RANGE::END)>	m_arrRangeInfo;
 	array<WEAPON_INFO, ENUM_TO_SZET(RANGE::END)>	m_arrSkillInfo;
+	array<WEAPON_INFO, ENUM_TO_SZET(CONDEMN::END)>	m_arrCondemnInfo;
 
 private:
 	HRESULT		Ready_WeaponInfo();

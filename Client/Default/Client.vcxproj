@@ -203,6 +203,8 @@
     <ClInclude Include="..\Public\ChangeLevelObject.h" />
     <ClInclude Include="..\Public\NPC_Tavern.h" />
     <ClInclude Include="..\Public\NPC_Tavern_Body.h" />
+    <ClInclude Include="..\Public\State_SPHitStart.h" />
+    <ClInclude Include="..\Public\State_Stun.h" />
     <ClInclude Include="..\Public\UIEnterGame_Image.h" />
     <ClInclude Include="..\Public\UIEnterGame_Text.h" />
     <ClInclude Include="..\public\State_StartCatch.h" />
@@ -493,6 +495,8 @@
     <ClCompile Include="..\Private\ChangeLevelObject.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern_Body.cpp" />
+    <ClCompile Include="..\Private\State_SPHitStart.cpp" />
+    <ClCompile Include="..\Private\State_Stun.cpp" />
     <ClCompile Include="..\Private\UIEnterGame_Image.cpp" />
     <ClCompile Include="..\Private\UIEnterGame_Text.cpp" />
     <ClCompile Include="..\private\State_StartCatch.cpp" />

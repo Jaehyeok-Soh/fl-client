@@ -68,6 +68,9 @@
 
 #include "State_Npctalk.h"
 
+#include "State_Stun.h"
+#include "State_SPHitStart.h"
+
 #pragma endregion
 // 0325 - 테스트 후 지울것
 #include "CameraShotPrestBuilder.h"
@@ -89,6 +92,7 @@ CPlayer::CPlayer(const CPlayer& rhs)
     , m_arrMeleeInfo(rhs.m_arrMeleeInfo)
     , m_arrRangeInfo(rhs.m_arrRangeInfo)
     , m_arrSkillInfo(rhs.m_arrSkillInfo)
+    , m_arrCondemnInfo(rhs.m_arrCondemnInfo)
 
 {
     m_vecPartObjects.resize(Part::END, nullptr);
@@ -333,6 +337,13 @@ void CPlayer::Set_WepaponOn(_uint iWeaponType, _uint iIdx, _bool bOn)
 
         m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
         break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        if (iIdx >= ENUM_TO_UINT(CONDEMN::END))
+            return;
+
+        m_arrCondemnInfo[size_t(iIdx)].bHave = bOn;
+        break;
     }
 }
 
@@ -358,6 +369,13 @@ void CPlayer::SetWepaponOn_SetState(_uint iWeaponType, _uint iIdx, _bool bOn, _u
             return;
 
         m_arrSkillInfo[size_t(iIdx)].bHave = bOn;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        if (iIdx >= ENUM_TO_UINT(CONDEMN::END))
+            return;
+
+        m_arrCondemnInfo[size_t(iIdx)].bHave = bOn;
         break;
     }
 
@@ -391,6 +409,13 @@ _bool CPlayer::Change_MainWeapon(_uint iWeaponType, _uint iIdx)
             return false;
 
         bOn = m_arrSkillInfo[size_t(iIdx)].bHave;
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        if (iIdx >= ENUM_TO_UINT(CONDEMN::END))
+            return false;
+
+        bOn = m_arrCondemnInfo[size_t(iIdx)].bHave;
         break;
     }
 
@@ -427,6 +452,11 @@ _bool CPlayer::Change_MainWeaponNext(_uint iWeaponType)
         if (iNextIdx == ENUM_TO_UINT(SKILL::END))
             iNextIdx = 0;
         break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        if (iNextIdx == ENUM_TO_UINT(CONDEMN::END))
+            iNextIdx = 0;
+        break;
     }
 
     return Change_MainWeapon(iWeaponType, iNextIdx);
@@ -434,23 +464,34 @@ _bool CPlayer::Change_MainWeaponNext(_uint iWeaponType)
 
 void CPlayer::Change_WeaponState(_uint iWeaponType, _uint iState)
 {
-    // 우선 다 none으로 바꾼다음
-    Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
-    Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
-    Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
-
     switch (iWeaponType)
     {
     case ENUM_TO_UINT(EWEAPON::MELEE):
         Set_CurPartWeapon_State(EWEAPON::MELEE, iState);
+        Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::CONDEMN, ENUM_TO_UINT(CWeapon::State::NONE));
         break;
 
     case ENUM_TO_UINT(EWEAPON::RANGE):
+        Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
         Set_CurPartWeapon_State(EWEAPON::RANGE, iState);
+        Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::CONDEMN, ENUM_TO_UINT(CWeapon::State::NONE));
         break;
 
     case ENUM_TO_UINT(EWEAPON::SKILL):
+        Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
         Set_CurPartWeapon_State(EWEAPON::SKILL, iState);
+        Set_CurPartWeapon_State(EWEAPON::CONDEMN, ENUM_TO_UINT(CWeapon::State::NONE));
+        break;
+
+    case ENUM_TO_UINT(EWEAPON::CONDEMN):
+        Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::RANGE, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::SKILL, ENUM_TO_UINT(CWeapon::State::NONE));
+        Set_CurPartWeapon_State(EWEAPON::CONDEMN, iState);
         break;
     }
 
@@ -724,6 +765,8 @@ HRESULT CPlayer::Ready_BaseStates()
                                 ,{ENUM_TO_UINT(State::CROUCHWALK), Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_To_Stand")}
                                 ,{ENUM_TO_UINT(State::SLIDE), Get_AnimationIndex(L"Animation_PlayerMoon_Crouch_To_Stand")}
                                 ,{ENUM_TO_UINT(State::RUNLOOP), Get_AnimationIndex(L"Animation_PlayerMoon_Run_Stop_L_Acc")}
+                                ,{ENUM_TO_UINT(State::STUN_START), Get_AnimationIndex(L"Animation_PlayerMoon_Stun_Common_End")} 
+                                ,{ENUM_TO_UINT(State::SPHIT_START), Get_AnimationIndex(L"Animation_PlayerMoon_HitSP_Lianhuo_Skill07_End")}
         };
         desc.vecMainAnims   = { Get_AnimationIndex(L"Animation_PlayerMoon_Idle") }; //Animation_PlayerMoon_Idle // Animation_PlayerMoon_Turn_L45
         desc.bBlend         = true;
@@ -735,6 +778,7 @@ HRESULT CPlayer::Ready_BaseStates()
                         | CStateBase_Player::COLLISIONFLAGS::C_Strong
                         | CStateBase_Player::COLLISIONFLAGS::C_Fly
                         | CStateBase_Player::COLLISIONFLAGS::C_CheckF
+                        | CStateBase_Player::COLLISIONFLAGS::C_StunHit
                         ;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
@@ -780,6 +824,7 @@ HRESULT CPlayer::Ready_BaseStates()
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
             | CStateBase_Player::COLLISIONFLAGS::C_Fly
             | CStateBase_Player::COLLISIONFLAGS::C_CheckF
+            | CStateBase_Player::COLLISIONFLAGS::C_StunHit
             ;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
@@ -815,6 +860,7 @@ HRESULT CPlayer::Ready_BaseStates()
                      | CStateBase_Player::COLLISIONFLAGS::C_Strong
                      | CStateBase_Player::COLLISIONFLAGS::C_Fly
                      | CStateBase_Player::COLLISIONFLAGS::C_CheckF
+                     | CStateBase_Player::COLLISIONFLAGS::C_StunHit
                      ;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::CROUCHWALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBULLET);
@@ -851,6 +897,7 @@ HRESULT CPlayer::Ready_BaseStates()
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
             | CStateBase_Player::COLLISIONFLAGS::C_Fly
             | CStateBase_Player::COLLISIONFLAGS::C_CheckF
+            | CStateBase_Player::COLLISIONFLAGS::C_StunHit
             ;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBULLET);
@@ -891,7 +938,9 @@ HRESULT CPlayer::Ready_BaseStates()
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly
+            | CStateBase_Player::COLLISIONFLAGS::C_StunHit
+            ;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBULLET);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::RUNSHORT);
@@ -927,7 +976,9 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly
+            | CStateBase_Player::COLLISIONFLAGS::C_StunHit
+            ;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPBACK);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::END);
@@ -962,7 +1013,9 @@ HRESULT CPlayer::Ready_BaseStates()
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::OWN;
 
-        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_Fly;
+        desc.FCollis    = CStateBase_Player::COLLISIONFLAGS::C_Fly
+                        | CStateBase_Player::COLLISIONFLAGS::C_StunHit
+                        ;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::END);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMPDOUBLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::END);
@@ -1003,7 +1056,10 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.FMoves = CStateBase_Player::MOVEFLAGS::UP_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly
+            | CStateBase_Player::COLLISIONFLAGS::C_StunHit
+            ;
+
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::END);
@@ -1042,7 +1098,10 @@ HRESULT CPlayer::Ready_BaseStates()
         desc.FMoves = CStateBase_Player::MOVEFLAGS::NORMAL;
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly
+            | CStateBase_Player::COLLISIONFLAGS::C_StunHit
+            ;
+
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::IDLE);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::END);
@@ -1251,7 +1310,9 @@ HRESULT CPlayer::Ready_BaseStates()
 
         desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_DOWN
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
-            | CStateBase_Player::COLLISIONFLAGS::C_Fly;
+            | CStateBase_Player::COLLISIONFLAGS::C_Fly
+            | CStateBase_Player::COLLISIONFLAGS::C_StunHit
+            ;
 
         desc.FMoves = CStateBase_Player::MOVEFLAGS::PRESS_CHANGE | CStateBase_Player::MOVEFLAGS::LOOP_DONE;
         vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
@@ -1548,6 +1609,74 @@ HRESULT CPlayer::Ready_HitStates()
             return E_FAIL;
     }
 
+    // STUN_START
+    {
+        /* todo_eunbi */
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.vecPreAnims = { {-1, Get_AnimationIndex(L"Animation_PlayerMoon_Stun_Common_Start")} };
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_Stun_Common_Loop") };
+        desc.bBlend = true;
+        desc.bLoop = true;
+
+        desc.FCollis = CStateBase_Player::COLLISIONFLAGS::C_SpHit;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::LOOP_DONE;
+
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::CROUCH);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]       = ENUM_TO_UINT(State::END);
+
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]          = ENUM_TO_UINT(State::SKILL1);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]          = ENUM_TO_UINT(State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]         = ENUM_TO_UINT(CPlayer::State::COMBO);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]         = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]     = ENUM_TO_UINT(CPlayer::State::CHARGE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]   = ENUM_TO_UINT(State::IDLE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = false;
+        desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::STUN_START), CState_Stun::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
+    // SPHIT_START
+    {
+        CStateBase_Player::PLAYER_STATEBASE_DESC  desc = {};
+        desc.FAniFlags = 0;
+        desc.vecMainAnims = { Get_AnimationIndex(L"Animation_PlayerMoon_HitSP_Lianhuo_Skill07_Start") };
+        desc.bBlend = true;
+        desc.bLoop = false;
+
+        desc.FCollis = 0;
+        desc.FMoves = CStateBase_Player::MOVEFLAGS::LOOP_DONE;
+
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::MOVE)]           = ENUM_TO_UINT(State::WALK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SPACE)]          = ENUM_TO_UINT(State::JUMP);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::SHIFT)]          = ENUM_TO_UINT(State::DASHBACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_PRESS)]    = ENUM_TO_UINT(State::CROUCH);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LCRTL_UP)]       = ENUM_TO_UINT(State::END);
+
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::E)]              = ENUM_TO_UINT(State::SKILL1);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::Q)]              = ENUM_TO_UINT(State::SKILL2);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LM)]             = ENUM_TO_UINT(CPlayer::State::COMBO);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::RM)]             = ENUM_TO_UINT(CPlayer::State::GUNATTACK);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::CHARGE)]         = ENUM_TO_UINT(CPlayer::State::CHARGE);
+        vecChangeState_ByKey[ENUM_TO_SZET(CStateBase_Player::STATEKEY::LOOPDONE)]       = ENUM_TO_UINT(State::IDLE);
+        desc.vecChangeState_ByKey = vecChangeState_ByKey;
+
+        tKeyTimer.bCountTime = false;
+        desc.tKeyTimer = tKeyTimer;
+        desc.pOwnerGun = pMyGun;
+
+        if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::SPHIT_START), CState_SPHitStart::Create(pActionState, &desc))))
+            return E_FAIL;
+    }
+
     return S_OK;
 }
 
@@ -1610,6 +1739,20 @@ HRESULT CPlayer::Ready_WeaponInfo()
             tInfo.iWeaponState      = ENUM_TO_UINT(CWeapon::State::NONE);
 
             m_arrSkillInfo[ENUM_TO_SZET(SKILL::MOON)] = tInfo;
+        }
+    }
+
+    /* Condemn */
+    {
+        {
+            WEAPON_INFO tInfo = {};
+
+            tInfo.iPartStartIdx = Part::Condemn;
+            tInfo.iPartSize = 1;
+            tInfo.bHave = true;
+            tInfo.iWeaponState = ENUM_TO_UINT(CWeapon::State::NONE);
+
+            m_arrCondemnInfo[ENUM_TO_SZET(CONDEMN::NORMAL)] = tInfo;
         }
     }
 
@@ -1716,11 +1859,13 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.eState = CWeapon::State::HOLD;
 
         weaponDesc.bMianWeapon = false;
-        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn | CWeapon::WeaponDescFlag::WF_Dissolve;
         weaponDesc.vColorR = Vec4(0.119538f, 0.119538f, 0.119538f, 1.f);
         weaponDesc.vColorG = Vec4(1.f, 0.751839f, 0.182292f, 1.f);
         weaponDesc.vColorB = Vec4(0.458824f, 0.435294f, 0.45098f, 1.f);
 
+        weaponDesc.vDissolveColor = { 5.f, 3.5f,0.f };
+        weaponDesc.vDissolveValues = { 1.5f,1.5f,0.03f };
 
         weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
         //weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(10.f), XMConvertToRadians(0.f), XMConvertToRadians(-45.f));
@@ -1762,10 +1907,13 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.eAnimState = CWeapon::AnimState::PLAY_ONCE;
         weaponDesc.bMianWeapon = false;
         weaponDesc.eState = CWeapon::State::HOLD;
-        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn | CWeapon::WeaponDescFlag::WF_Dissolve;
         weaponDesc.vColorR = Vec4(0.947917f, 0.947917f, 0.947917f, 1.f);
         weaponDesc.vColorG = Vec4(0.364583f, 0.355613f, 0.351292f, 1.f);
         weaponDesc.vColorB = Vec4(0.03954f, 0.035601f, 0.03434f, 1.f);
+
+        weaponDesc.vDissolveColor = { 9.56f, 0.11f,0.f };
+        weaponDesc.vDissolveValues = { 1.5f,1.2f,0.03f };
 
         weaponDesc.fAllBullet = 1000.f;
         weaponDesc.fCurBullet = 500.f;
@@ -1789,10 +1937,13 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.eState = CWeapon::State::HOLD;
 
         weaponDesc.bMianWeapon = false;
-        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+        weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn | CWeapon::WeaponDescFlag::WF_Dissolve;
         weaponDesc.vColorR = Vec4(0.309524f, 0.309524f, 0.309524f, 1.f);
         weaponDesc.vColorG = Vec4(0.10119f, 0.10119f, 0.10119f, 1.f);
         weaponDesc.vColorB = Vec4(0.125f, 0.055804f, 0.055804f, 1.f);
+
+        weaponDesc.vDissolveColor = { 0.f, 1.f,8.f };
+        weaponDesc.vDissolveValues = { 1.5f,1.f,0.05f };
 
         weaponDesc.matHoldOffsetMatrix  = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(45.f), XMConvertToRadians(-10.f));
 
@@ -1804,6 +1955,22 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(10.f), XMConvertToRadians(0.f), XMConvertToRadians(-90.f));
 
         if (FAILED(Add_Part(Part::Dual_L, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
+            return E_FAIL;
+    }
+
+    // Weapons : Condemn
+    {
+        CWeapon::WEAPON_DESC weaponDesc     = {};
+        weaponDesc.wstrModelPrototypeName   = L"Prototype_Component_Model_CondemnSword";
+        weaponDesc.pMatParent               = &Get_Component<CTransform>()->Get_WorldMatrix();
+        weaponDesc.pMatHandSocket           = Get_Part<CBody>(Part::BODY)->Get_SocketMatrix(51);
+        weaponDesc.eModel                   = CWeapon::Weapon_ModelType::STATIC;
+        weaponDesc.bMianWeapon              = false;
+        weaponDesc.FDescFlag                = 0;
+
+        weaponDesc.matHandOffsetMatrix      = Matrix::CreateRotationX(XMConvertToRadians(-80.f));
+
+        if (FAILED(Add_Part(Part::Condemn, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))
             return E_FAIL;
     }
 
@@ -1907,8 +2074,8 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
         {
             tPColliDesc.eShape = EPhysicsShape::BOX;
             //tPColliDesc.fHeight = 100.f;
-            tPColliDesc.vCenter = { 0.f, 0.75f, 0.7f };
-            tPColliDesc.vExtents = { 2.f, 1.5f, 4.f };
+            tPColliDesc.vCenter = { 0.f, 0.75f, 0.f }; // 이전 값 : 0.f, 0.75f, 0.7f 
+            tPColliDesc.vExtents = { 5.f, 1.5f, 7.f };
 
             //tPColliDesc.fRadius = { 20.f };
             tPColliDesc.bIsTrigger = { true };
@@ -1973,6 +2140,18 @@ void CPlayer::Set_CurPartWeapon_State(EWEAPON eWeaponType, _uint iState)
             return;
 
         m_arrSkillInfo[size_t(iCurWeapon)].iWeaponState = iState;
+        break;
+
+    case EWEAPON::CONDEMN:
+        // melee중에 현재 weapon
+        iCurWeapon = m_arrWeaponEnum[ENUM_TO_SZET(EWEAPON::CONDEMN)];
+        iStartPartIdx = m_arrCondemnInfo[size_t(iCurWeapon)].iPartStartIdx;
+        iPartSize = m_arrCondemnInfo[size_t(iCurWeapon)].iPartSize;
+
+        if (!m_arrCondemnInfo[size_t(iCurWeapon)].bHave)
+            return;
+
+        m_arrCondemnInfo[size_t(iCurWeapon)].iWeaponState = iState;
         break;
     }
 
