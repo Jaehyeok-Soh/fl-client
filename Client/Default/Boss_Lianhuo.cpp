@@ -128,7 +128,7 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD5))
 	{
-		_int iIndex = pActionState->Get_StateIndex("GimmikCamera");
+		_int iIndex = pActionState->Get_StateIndex("EndCatch");
 		pActionState->Change_State(iIndex);
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD6))

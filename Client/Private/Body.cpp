@@ -131,6 +131,7 @@ HRESULT CBody::Initialize(void* pArg)
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_FallAttack_End"))->Set_AnimationSpeed(1.3f);
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_Start"))->Set_AnimationSpeed(1.3f);
 			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_Sword_HeavyAttack_End"))->Set_AnimationSpeed(1.3f);
+			pMyModel->Get_Animation(Get_AnimationIndex(L"Animation_PlayerMoon_HitSP_Lianhuo_Skill07_Start"))->Set_AnimationSpeed(1.0f);
 		}
 
 		//// root motion ¼ÂÆÃ
