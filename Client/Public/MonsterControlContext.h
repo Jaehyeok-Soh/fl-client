@@ -208,6 +208,8 @@ public:
 	void Auto_Teleport_Chase(_float fMaxLength = 10.f);
 	void Genimon_Smart_Chase(_float fX, _float fY, _float fZ, _float fMaxLength, _float fTimeDelta);
 
+	void SkillSpawnTrigger(_int iIndex);
+
 private:
 	void Clear_RuntimeDesc();
 

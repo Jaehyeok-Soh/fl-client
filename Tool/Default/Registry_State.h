@@ -112,6 +112,8 @@ namespace Tool
         "feat_set_target_offset",
         "feat_auto_teleport_chase",
         "feat_geniemon_smart_chase",
+
+        "feat_skill_spawn_trigger",
     };
 
     inline constexpr int kConditionCount = (int)(sizeof(kConditionNames) / sizeof(kConditionNames[0]));
