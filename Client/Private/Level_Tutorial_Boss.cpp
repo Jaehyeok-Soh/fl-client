@@ -520,6 +520,7 @@ HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
+
 	if (FAILED(Ready_Octree()))
 		return E_FAIL;
 
@@ -528,6 +529,10 @@ HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
+
+	if (FAILED(m_pGameInstance->Register_CinematicCamera(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszDynamicCameraLayer)))
+		return E_FAIL;
 
 	CQuestManager::GetInstance()->Start_Quest(2, 3);
 

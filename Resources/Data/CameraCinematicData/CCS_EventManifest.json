@@ -40,5 +40,18 @@
             }
         ],
         "Subscriber Name": "Test2"
+    },
+    {
+        "Action Infos": [
+            {
+                "Explain": "XIbi Boss  이름 및 아이콘 UI ",
+                "Name": "Xibi"
+            },
+            {
+                "Explain": "Lianhuo  Boss 아이콘 및 이름 연동",
+                "Name": "Lianhuo"
+            }
+        ],
+        "Subscriber Name": "UI_Boss"
     }
 ]

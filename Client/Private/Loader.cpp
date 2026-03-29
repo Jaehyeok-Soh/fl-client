@@ -76,6 +76,7 @@
 #include "WeaponPickUp.h"
 #include "LightObject.h"
 #include "ChangeLevelObject.h"
+#include "CinematicCamera.h"
 
 //=================
 //	EFFECT
@@ -1858,6 +1859,9 @@ HRESULT CLoader::Ready_CCS()
 {
 	if (FAILED(m_pGameInstance->Load_CameraCinematicSequence(g_wszCameraCinematicData_JsonPath)))
 		return E_FAIL;
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, CCinematicCamera::Create(m_pDevice, m_pDeviceContext));
+
 		
 
 	return S_OK;

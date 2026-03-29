@@ -3271,14 +3271,20 @@ HRESULT CMapObject::Render_Collider()
     //if (m_eMapObjectDrawType != EMapObject_DrawType::Collider)
     //    return E_FAIL;
 
+    TRIGGERBOX_DESC * pDesc = static_cast<TRIGGERBOX_DESC*>(m_vecClientMakePathDesc.front());
     CTransform* pTransform = Get_Component<CTransform>();
     CCollider* pCollider = Get_Component<CCollider>();
+
+    Vec3 vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+    Vec3 vRot = pDesc->vRotation * TO_RAD;
+    Vec3 vScale = pDesc->vExtents;
+   
+
 
     if (pTransform == nullptr) return E_FAIL;
     if (pCollider == nullptr) return E_FAIL;
 
     /* Update전 콜라이더 위치값만 업데이트해주기 */
-    Vec3 vPos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
     pCollider->Update(Matrix::CreateTranslation(vPos));
     pCollider->Render();
 
