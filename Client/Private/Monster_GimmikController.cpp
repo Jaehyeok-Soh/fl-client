@@ -78,6 +78,7 @@ void CMonster_GimmikController::SpawnTrigger(_uint iIndex)
 		if (pTargetTransform)
 		{
 			Vec3 vTargetPos = pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+			vTargetPos.y += 0.55f;
 			vBaseDir = vTargetPos - vSpawnPos;
 			if (vBaseDir != Vec3::Zero)
 				vBaseDir.Normalize();
