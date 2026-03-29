@@ -1133,10 +1133,6 @@ LIGHTOBJECT_DESC::LIGHTOBJECT_DESC(const LIGHTOBJECT_DESC& rhs)
 	, vOffsetPosition{ rhs.vOffsetPosition }
 	, fEmissviePower{ rhs .fEmissviePower}
 {
-	this->tLightDesc.eType = LIGHT_TYPE::POINT;
-	this->tLightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
-	this->tLightDesc.vAmbient = { 1.f,1.f,1.f,1.f };
-	this->tLightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
 	pDebugLight = CLight::Create(this->tLightDesc);
 }
 
@@ -1174,9 +1170,19 @@ void LIGHTOBJECT_DESC::from_Json(const json& LoadJson)
 		this->fEmissviePower = LightData_LoadJson["Emissive Power"];
 	}
 
-	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Diffuse"], this->tLightDesc.vDiffuse);
-	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Ambient"], this->tLightDesc.vAmbient);
-	Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Specular"], this->tLightDesc.vSpecular);
+	if (LightData_LoadJson.contains("Diffuse"))
+	{
+		Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Diffuse"], this->tLightDesc.vDiffuse);
+	}
+	if (LightData_LoadJson.contains("Ambient"))
+	{
+		Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Ambient"], this->tLightDesc.vAmbient);
+	}
+	if (LightData_LoadJson.contains("Specular"))
+	{
+		Engine_Utils::read_vec4_xyzw(LightData_LoadJson["Specular"], this->tLightDesc.vSpecular);
+	}
+
 
 	if (LightData_LoadJson.contains("Range"))
 	{

@@ -48,6 +48,7 @@ private:
 	_float					m_fAccDT{ 0.f };
 	CCollider*				m_pLightCollider{nullptr};
 	_float					m_fEmissivePower{0.f};
+	_float					m_fCurLightRangeRatio{0.f};
 public:
 	static CLightObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg)								override;
