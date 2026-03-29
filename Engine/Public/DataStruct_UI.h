@@ -1039,10 +1039,19 @@ enum class EUIDImageSubClassType
 
 	SCENE_FADE_IN,
 
+	// NPC ¸»Ç³¼±
 	NPC_TEXT_BUBBLE_BEGIN,
 	NPC_TEXT_BUBBLE_BG,
 	NPC_TEXT_BUBBLE_BG_DOWN,
 	NPC_TEXT_BUBBLE_END,
+
+	// ¹«±â Äü½½·Ô
+	WEAPON_QUIKSLOT_BEGIN,
+	WEAPON_QUIKSLOT_CENTER,
+	WEAPON_QUIKSLOT_SIDE_BG,
+	WEAPON_QUIKSLOT_SIDE_BG_FX,
+	WEAPON_QUIKSLOT_SIDE_SLOT,
+	WEAPON_QUIKSLOT_END,
 
 	END
 };
@@ -1234,6 +1243,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG_DOWN,					"NPC_TEXT_BUBBLE_BG_DOWN" },
 	{ EUIDImageSubClassType::NPC_TEXT_BUBBLE_END,						"NPC_TEXT_BUBBLE_END" },
 
+	{ EUIDImageSubClassType::WEAPON_QUIKSLOT_BEGIN,						"WEAPON_QUIKSLOT_BEGIN" },
+	{ EUIDImageSubClassType::WEAPON_QUIKSLOT_CENTER,					"WEAPON_QUIKSLOT_CENTER" },
+	{ EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG,					"WEAPON_QUIKSLOT_SIDE_BG" },
+	{ EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG_FX,				"WEAPON_QUIKSLOT_SIDE_BG_FX" },
+	{ EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_SLOT,					"WEAPON_QUIKSLOT_SIDE_SLOT" },
+	{ EUIDImageSubClassType::WEAPON_QUIKSLOT_END,						"WEAPON_QUIKSLOT_END" },
+
 
 	{ EUIDImageSubClassType::END,								"END" }
 	})
@@ -1424,6 +1440,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "NPC_TEXT_BUBBLE_BG")					return EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG;
 	if (str == "NPC_TEXT_BUBBLE_BG_DOWN")				return EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG_DOWN;
 	if (str == "NPC_TEXT_BUBBLE_END")					return EUIDImageSubClassType::NPC_TEXT_BUBBLE_END;
+
+	if (str == "WEAPON_QUIKSLOT_BEGIN")					return EUIDImageSubClassType::WEAPON_QUIKSLOT_BEGIN;
+	if (str == "WEAPON_QUIKSLOT_CENTER")				return EUIDImageSubClassType::WEAPON_QUIKSLOT_CENTER;
+	if (str == "WEAPON_QUIKSLOT_SIDE_BG")				return EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG;
+	if (str == "WEAPON_QUIKSLOT_SIDE_BG_FX")			return EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG_FX;
+	if (str == "WEAPON_QUIKSLOT_SIDE_SLOT")				return EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_SLOT;
+	if (str == "WEAPON_QUIKSLOT_END")					return EUIDImageSubClassType::WEAPON_QUIKSLOT_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1617,6 +1640,13 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG:						return "NPC_TEXT_BUBBLE_BG";
 	case EUIDImageSubClassType::NPC_TEXT_BUBBLE_BG_DOWN:				return "NPC_TEXT_BUBBLE_BG_DOWN";
 	case EUIDImageSubClassType::NPC_TEXT_BUBBLE_END:					return "NPC_TEXT_BUBBLE_END";
+	
+	case EUIDImageSubClassType::WEAPON_QUIKSLOT_BEGIN:					return "WEAPON_QUIKSLOT_BEGIN";
+	case EUIDImageSubClassType::WEAPON_QUIKSLOT_CENTER:					return "WEAPON_QUIKSLOT_CENTER";
+	case EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG:				return "WEAPON_QUIKSLOT_SIDE_BG";
+	case EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG_FX:				return "WEAPON_QUIKSLOT_SIDE_BG_FX";
+	case EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_SLOT:				return "WEAPON_QUIKSLOT_SIDE_SLOT";
+	case EUIDImageSubClassType::WEAPON_QUIKSLOT_END:					return "WEAPON_QUIKSLOT_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

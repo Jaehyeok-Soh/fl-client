@@ -231,6 +231,7 @@
 #include "UIEnterGame_Image.h"
 #include "UISceneFade_Image.h"
 #include "UINpcTextBubble_Image.h"
+#include "UIQuickSlot_Image.h"
 //=================
 // Resource
 //=================
@@ -1130,6 +1131,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleImage",		CUINpcTextBubble_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleText",		CUINpcTextBubble_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuickSlotImage",			CUIQuickSlot_Image::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	

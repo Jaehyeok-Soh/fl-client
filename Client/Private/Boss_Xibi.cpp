@@ -364,6 +364,7 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 
 	{
 		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		Desc.wstrIconTextureTag = L"Texture_T_Battle_HudRescue_Elite";
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}

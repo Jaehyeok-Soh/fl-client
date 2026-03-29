@@ -89,12 +89,6 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 	PxController* pController = pCCT->GetController();
 	PxRigidDynamic* pActor = pController->getActor();
 
-	PxShape* shape = nullptr;
-	pActor->getShapes(&shape, 1);
-
-	if (shape)
-		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-
 	Bind_Events();
 
 	return S_OK;

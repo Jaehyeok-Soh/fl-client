@@ -44,14 +44,31 @@
     {
         "Action Infos": [
             {
-                "Explain": "XIbi Boss  이름 및 아이콘 UI ",
-                "Name": "Xibi"
+                "Explain": "XIbi Boss  이름 및 아이콘 UI 연출 시작 ",
+                "Name": "Xibi_Begin"
             },
             {
-                "Explain": "Lianhuo  Boss 아이콘 및 이름 연동",
-                "Name": "Lianhuo"
+                "Explain": "Lianhuo Boss  이름 및 아이콘 UI 연출 시작 ",
+                "Name": "Lianhuo_Begin"
+            },
+            {
+                "Explain": "보스 이름 및 아이콘 사라지는 연출",
+                "Name": "Boss_Action_End"
             }
         ],
         "Subscriber Name": "UI_Boss"
+    },
+    {
+        "Action Infos": [
+            {
+                "Explain": "화면의 위 아래에서 검정색 네모가 나오게 하는 연출",
+                "Name": "Letterboxing_Begin"
+            },
+            {
+                "Explain": "화면의 위 아래에서 검정색 네모가 들어가게 하는 연출",
+                "Name": "Letterboxing_End"
+            }
+        ],
+        "Subscriber Name": "Cinematic"
     }
 ]

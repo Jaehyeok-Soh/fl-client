@@ -14,6 +14,7 @@ public:
 	typedef struct tagUIIConComponentDesc
 	{
 		CGameObject* pPlayer = { nullptr };
+		_wstring wstrIconTextureTag = {};
 	}UI_ICON_COMP_DESC;
 
 protected:
@@ -34,12 +35,16 @@ public:
 	_bool Get_isRanged() const { return m_isRanged; }
 	const Vec2& Get_ScreenPos() const { return m_vScreenPos; }
 
+	const _wstring& Get_IconTextureTag()const { return m_wstrTextureTag; }
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	Vec2 m_vScreenPos = {};
 	_bool m_isRanged = { false };
 	
 	CGameObject* m_pPlayer = { nullptr };
+
+	_wstring m_wstrTextureTag = {};
 
 public:
 	static CUIIcon_Component* Create();
