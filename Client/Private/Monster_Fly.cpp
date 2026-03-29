@@ -212,6 +212,7 @@ HRESULT CMonster_Fly::Ready_Components(void* pArg)
 		return E_FAIL;
 	{
 		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		Desc.wstrIconTextureTag = L"Texture_T_Map_Enemy_Sleep";
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}
