@@ -276,7 +276,7 @@ HRESULT CBoss_Xibi::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 35000.f;
+	desc.fMaxHp = 3500000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 
@@ -290,17 +290,17 @@ HRESULT CBoss_Xibi::Ready_Weapon()
 {
 	// Weapons
 	{
-		CWeapon::WEAPON_DESC weaponDesc = {};
-		weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_XibiWeapon";
-		weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-		weaponDesc.pMatHandSocket = Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_SocketMatrix(75);
-		weaponDesc.eModel		= CWeapon::Weapon_ModelType::ANIM;
-		weaponDesc.eAnimState	= CWeapon::AnimState::PLAY;
-		weaponDesc.eState = CWeapon::State::HAND;//CWeapon::State::HAND_ONLY_POS_SCALE;
-		weaponDesc.bMianWeapon = true;
-		weaponDesc.FDescFlag = 0;
+		CWeapon::WEAPON_DESC weaponDesc		= {};
+		weaponDesc.wstrModelPrototypeName	= L"Prototype_Component_Model_XibiWeapon";
+		weaponDesc.pMatParent		= &Get_Component<CTransform>()->Get_WorldMatrix();
+		weaponDesc.pMatHandSocket	= Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_SocketMatrix(75);
+		weaponDesc.eModel			= CWeapon::Weapon_ModelType::ANIM;
+		weaponDesc.eAnimState		= CWeapon::AnimState::PLAY;
+		weaponDesc.eState			= CWeapon::State::HAND;		//CWeapon::State::HAND_ONLY_POS_SCALE;
+		weaponDesc.bMianWeapon		= true;
+		weaponDesc.FDescFlag		= 0;
 
-		weaponDesc.iStartAnimIdx = 2;
+		weaponDesc.iStartAnimIdx	= 2;
 
 
 		weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(180.f), XMConvertToRadians(100.f), XMConvertToRadians(0.f));

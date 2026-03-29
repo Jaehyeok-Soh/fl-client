@@ -49,7 +49,8 @@ protected:
 protected:
 
 protected:
-	virtual _bool Can_CheckKey(const _float fTimeDelta) override;;
+	virtual _bool Can_CheckKey(const _float fTimeDelta) override;
+	virtual _bool Can_Captablity_Special()const			override;
 
 protected:
 	void Change_NextCombo();

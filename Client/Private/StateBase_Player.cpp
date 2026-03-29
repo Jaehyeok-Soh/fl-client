@@ -114,6 +114,9 @@ _uint CStateBase_Player::Get_Capabilities() const
 	if (Can_Captablity_Move())
 		iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::MOVE);
 
+	if(Can_Captablity_Special())
+		iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::SKILL);
+
 	return	 iCapFlag;
 }
 
