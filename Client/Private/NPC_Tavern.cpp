@@ -51,8 +51,6 @@ HRESULT CNPC_Tavern::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("카밀라");
-
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
 
@@ -206,6 +204,10 @@ CNPC_Base::NPC_DESC CNPC_Tavern::Get_PreSetDesc(_uint iLevelId)
 	npcDesc.iLevelIndex = iLevelId;
 	npcDesc.pTransform_Desc = nullptr;
 
+	npcDesc.wstrNPCText.clear();
+	npcDesc.wstrNPCName = L"카밀라";
+	npcDesc.vUITextrOffset = {0.f,3.f,0.f};
+
 	npcDesc.wstrBodyModelTag = g_wszNPC_Tavern_Model_Prototype_Tag;
 	npcDesc.wstrPartBodyPrototypeTag = g_wszNPC_Tavern_Body_Prototype_Tag;
 	npcDesc.wstrNPCStateTag = g_wszNPC_Tavern_State_Tag;
@@ -247,6 +249,7 @@ CNPC_Base::NPC_DESC CNPC_Tavern::Get_PreSetDesc(_uint iLevelId)
 		desc.MSpeed = { 0.f, 4.5f };
 		desc.MAccelRate = { 0.f, 10.f };
 		desc.MDeAccelRate = { 0.f, 10.f };
+
 
 		npcDesc.tCCTDesc = desc;
 	}

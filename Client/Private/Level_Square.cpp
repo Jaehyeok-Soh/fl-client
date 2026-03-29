@@ -22,6 +22,8 @@
 #include "Builder_Map.h"
 #include "Builder_Effect.h"
 
+#include "NPC_Citizen.h"
+#include "CitizenData.h"
 //=================
 // Document
 //=================
@@ -66,6 +68,7 @@
 
 CLevel_Square::CLevel_Square(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CLevel(pDevice , pDeviceContext)
+	, m_fAccTime{0.f}
 {
 }
 
@@ -114,6 +117,12 @@ HRESULT CLevel_Square::Initialize()
 		return E_FAIL;
 	}
 
+	if (FAILED(Ready_CitizenData()))
+	{
+		MSG_BOX("CLevel_Square::Initialize, Ready CitizenData Failed");
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -128,6 +137,9 @@ HRESULT CLevel_Square::Awake(const _uint iLevelID)
 		return E_FAIL;
 
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
+		return E_FAIL;
+	
+	if (FAILED(Setting_Citizen()))
 		return E_FAIL;
 	
 
@@ -458,6 +470,74 @@ HRESULT CLevel_Square::Ready_Octree()
 	return S_OK;
 }
 
+HRESULT CLevel_Square::Ready_CitizenData()
+{
+	_uint iCurLevelIndex = ENUM_TO_UINT(ELevelType::SQUARE);
+
+	auto iter = DTO::CitizenWayPointOriginData::mapCitizenWapointDatas.find(LevelTypeToString(ENUM_TO_UINT(ELevelType::SQUARE)));
+	if (iter == DTO::CitizenWayPointOriginData::mapCitizenWapointDatas.end())
+	{
+		MSG_BOX("로드 된 Citizen Way Point Data가 없습니다");
+		return S_OK;
+	}
+
+	const vector<DTO::CITIZEN_DATA>& vecData = DTO::CitizenPresetData::vecDatas;
+
+	/* Preset 모델 개수만큼 생성 */
+	CNPC_Citizen::NPC_CITIZEN_DESC tDesc{};
+	static_cast<CNPC_Base::NPC_DESC&>(tDesc) = CNPC_Citizen::Get_PreSetDesc(iCurLevelIndex);
+	tDesc.isWalking = true;
+
+
+	/* Preset 개수만큼 */
+	m_pGameInstance->Regist_Pool(ENUM_TO_UINT(ELevelType::SQUARE), L"Pool_Citizen", g_wszNPCCitizenPoolLayer, ENUM_TO_UINT(ELevelType::STATIC),
+		g_wszNPC_Citizen_Prototype_Tag,&tDesc, (_uint)vecData.size());
+
+
+	/* WayPoint 의 개수 만큼 Pool 개수 생성 */
+
+	return S_OK;
+}
+
+HRESULT CLevel_Square::Setting_Citizen()
+{
+	/* 등록된 NPC 재생시키기 */
+	CNPC_Citizen::NPC_CITIZEN_POOL_DESC tPoolDesc{};
+
+	tPoolDesc.tMoveData = { DTO::Get_RandomCitizenMoveData(LevelTypeToString(ENUM_TO_UINT(ELevelType::SQUARE))) };
+
+	if (tPoolDesc.tMoveData.pWayPointData == nullptr)	/* WayPoint가 없다면 Failed */
+		return E_FAIL;
+
+	m_pGameInstance->Request_AddObject(ENUM_TO_UINT(ELevelType::SQUARE) , L"Pool_Citizen", ENUM_TO_UINT(ELevelType::SQUARE) , &tPoolDesc);
+
+	return S_OK;
+}
+
+void CLevel_Square::Check_Citizen()
+{
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::SQUARE);
+	const list<CGameObject*>* pList = m_pGameInstance->Get_GameObject_List(iLevelIndex, g_wszNPCCitizenPoolLayer);
+
+
+	/* 해당 라인에 NPC를 보내준다 */
+
+	for (auto& pObj : *pList)
+	{
+		if (!pObj)
+			continue;
+		_bool isArrive = static_cast<CNPC_Citizen*>(pObj)->Get_IsArrive();
+
+		if (isArrive)
+		{
+			m_pGameInstance->Request_DeleteGameObject(iLevelIndex,pObj);
+		}
+	}
+
+
+	return;
+}
+
 HRESULT CLevel_Square::Ready_Camera_Setting(const _uint iLevelIndex)
 {
 	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
@@ -489,8 +569,21 @@ CLevel_Square* CLevel_Square::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 
 void CLevel_Square::Update(const _float fTimeDelta)
 {
-
 	Super::Update(fTimeDelta);
+	
+	
+	m_fAccTime += fTimeDelta;
+
+
+	if (m_fAccTime >= 10.f)
+	{
+		Setting_Citizen();
+		m_fAccTime = 0.f;
+	}
+
+	Check_Citizen();
+
+
 //
 //	static _uint s_iCount = { 0 };
 //	if (m_pGameInstance->KeyButton_Down(DIK_LALT))

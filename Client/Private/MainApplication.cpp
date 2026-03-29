@@ -22,6 +22,8 @@
 #include "SkillBase.h"
 #include "ActionSkill.h"
 
+#include "CitizenData.h"
+
 // UI
 #include "UI_Manager.h"
 #include "UIMinimap_Manager.h"
@@ -33,6 +35,7 @@
 #include "UITitle_Image.h"
 #include "UITitle_Text.h"
 #include "UITutorial_Manager.h"
+#include "UIQuickSlot_Manager.h"
 
 // Quest
 #include "QuestManager.h"
@@ -110,6 +113,8 @@ void CMainApplication::Update(const _float fTimeDelta)
 	m_pGameInstance->Flush_All();
 
 	m_pGameInstance->Update_Engine(fTimeDelta);
+
+	CUIQuickSlot_Manager::GetInstance()->Tick_Player_Weapon_State(fTimeDelta);
 }
 
 HRESULT CMainApplication::Render()
@@ -706,6 +711,8 @@ void CMainApplication::Register_Quest_Scenario()
 
 void CMainApplication::Free()
 {	
+	DTO::AllCitizenDatas_Clear();
+
 	CMonsterState_Factory::DestroyInstance();
 	CQuestManager::DestroyInstance();
 	CDialogueManager::DestroyInstance();

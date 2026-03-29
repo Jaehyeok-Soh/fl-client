@@ -35,6 +35,7 @@ private:
 	HRESULT	Ready_SkyBox();
 	HRESULT Ready_Dissolve();
 	void Ready_ShaderSetting();
+	HRESULT Ready_MonsterSkillObjectLayer();
 	// TEST
 	HRESULT Ready_HybridObject();
 	HRESULT Spawn_HybridObject();

@@ -151,7 +151,7 @@ public:
 							_uint iCloneLevelIndex, const wstring& wstrLayerTag, void* pArg = nullptr, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
 	// 풀 오브젝트를 스폰하여 EventManager에 Desc 전달하여 다음 프레임에 Layer에 추가
 	void					Request_AddObject(_uint iPoolLevelIndex, const wstring& wstrPoolTag, _uint iSpawnLevelIndex, void* pArg, std::function<void(CGameObject*)> onSpawnedCallback = nullptr);
-	// 해당 오브젝트를 EventManager에 Desc전달 하여 당므 프레임에  레이어에서 삭제 / 풀회수
+	// 해당 오브젝트를 EventManager에 Desc전달 하여 다음 프레임에  레이어에서 삭제 / 풀회수
 	void					Request_DeleteGameObject(_uint iCloneLevelIndex, CGameObject* pGo);
 
 	CGameObject*			Get_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, _uint iObjectIndex);

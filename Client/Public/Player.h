@@ -36,7 +36,7 @@ public:
 		_uint iPartSize		= { 1 };		// part중 몇개를 쓰는지			: 초기 셋팅 값
 		_bool bHave		= { false };		// 해당 무기를 얻었는지
 
-		_uint iWeaponState	= {};			// 무기 state
+		_uint iWeaponState	= {};			// 무기 state // weapon 안에 있는 스테이트
 	}WEAPON_INFO;
 
 	typedef struct tagPlayerDesc : public Super::GAMEOBJECT_DESC
@@ -202,6 +202,13 @@ public:
 	void				End_Attack(State iState);
 
 	State				Get_CurState();
+
+	// Weapon Quick Slot
+public:
+	const array<WEAPON_INFO, ENUM_TO_SZET(MELEE::END)>& Get_MeleeInfo() const { return m_arrMeleeInfo; }
+	array<WEAPON_INFO, ENUM_TO_SZET(MELEE::END)>& Get_MeleeInfo_Ref() { return m_arrMeleeInfo; }
+	const array<WEAPON_INFO, ENUM_TO_SZET(RANGE::END)>& Get_RangeInfo() const { return m_arrRangeInfo; }
+	array<WEAPON_INFO, ENUM_TO_SZET(RANGE::END)>& Get_RangeInfo_Ref() { return m_arrRangeInfo; }
 
 public:
 	// Camera Interface

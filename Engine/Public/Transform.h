@@ -75,7 +75,6 @@ public:
 	void Apply_Force(_float fDeltaTime, CNavigation* pNavigation = nullptr);
 	void Update_PrevPosition();
 	void Force_Clear();
-
 public:
 	void MoveArgWorld_ToMyWorld(Matrix& vNewWorld, _bool isChangeThis = false);
 	void MoveMyWorld_ToArgWorld(Matrix& vNewWorld, _bool isChangeArg = false);

@@ -70,16 +70,23 @@ HRESULT CCitizenPart::Change_Model(const wstring& wstrModelFolderName)
 {
 	CGameObject::Remove_Component<CModel>();
 
+	const wstring& wstrModelPrototypeTag = L"Prototype_Component_Model_" + wstrModelFolderName;
+
 	/* Hair Part 전용이긴해..  */
 	CModel::MODEL_ORIGIN_DESC tOriginDesc;
 	tOriginDesc.iPrototypeLevelIndex	= ENUM_TO_UINT(ELevelType::MAP);
 	tOriginDesc.wstrModelFolderName		= wstrModelFolderName;
 	tOriginDesc.eType					= EModelType::STATIC;
 
-	m_pGameInstance->Add_Prototype(tOriginDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + wstrModelFolderName, CModel::Create(m_pDevice, m_pDeviceContext, &tOriginDesc));
+	if (nullptr == (m_pGameInstance->Find_Prototype(tOriginDesc.iPrototypeLevelIndex, wstrModelPrototypeTag)))
+	{
+		m_pGameInstance->Add_Prototype(tOriginDesc.iPrototypeLevelIndex, wstrModelPrototypeTag , CModel::Create(m_pDevice, m_pDeviceContext, &tOriginDesc));
+	}
 
-	if (FAILED(Add_Component<CModel>(tOriginDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + wstrModelFolderName, nullptr)))
+
+	if (FAILED(Add_Component<CModel>(tOriginDesc.iPrototypeLevelIndex, wstrModelPrototypeTag, nullptr)))
 		return E_FAIL;
+
 
 	CModel* pModel = Get_Component<CModel>();
 	if (pModel == nullptr) return E_FAIL;
@@ -94,8 +101,6 @@ HRESULT CCitizenPart::Change_Model(const wstring& wstrModelFolderName)
 
 	/* Offset 바로적용 */
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, vOffsetPos);
-
-
 
 
 	return S_OK;

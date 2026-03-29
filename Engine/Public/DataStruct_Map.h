@@ -1043,6 +1043,11 @@ struct ENGINE_DLL BATCH_NPC_DESC : public CLIENT_MAKEPATH_DESC_BASE
 public:
 	OBJECT_ENUM_TAG::Enum eBatchNPCType{ OBJECT_ENUM_TAG::NPC_DEFAULT };
 
+
+	string		strSountTag{""};
+	string		strNPCName{""};	/* strName 으로들어갈예정 */
+	string		strNPCText{""};	/* 화면 위에 띄울 Text 으로들어갈예정 */
+
 	_bool		 bHasQuest = { false };
 	vector<DTO::QUEST_CHAPTERDESC>		tQuestObjectDesc = {};
 
@@ -1056,6 +1061,9 @@ public:
 		bHasQuest(false),
 		tQuestObjectDesc()
 		, tNpcCitizenData{}
+		, strNPCName{}
+		, strSountTag{}
+		, strNPCText{}
 	{
 
 	}
@@ -1065,6 +1073,9 @@ public:
 		bHasQuest(rhs.bHasQuest),
 		tQuestObjectDesc(rhs.tQuestObjectDesc),
 		tNpcCitizenData{rhs.tNpcCitizenData}
+		, strNPCName{rhs.strNPCName }
+		, strSountTag{rhs.strSountTag }
+		, strNPCText{rhs.strNPCText }
 	{
 
 	}

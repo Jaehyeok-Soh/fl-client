@@ -133,7 +133,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 
 			case DTO::EClientMakePath::TriggerBox_ChangeLevel:				Create_TriggerBox_ChangeLevel(tData);				break;
 			case DTO::EClientMakePath::TriggerBox_MonsterSpawner:			Create_TriggerBox_MonsterSpawner(tData);			break;
-			case DTO::EClientMakePath::TriggerBox_MonsterWaveSpawner:		Create_TriggerBox_MonsterWaveSpawner(tData);			break;
+			case DTO::EClientMakePath::TriggerBox_MonsterWaveSpawner:		Create_TriggerBox_MonsterWaveSpawner(tData);		break;
 			case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	Create_TriggerBox_GlobalEvent_BroadCaster(tData);	break;
 			case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			Create_TriggerBox_TutorialUIEvent(tData);			break;
 			case DTO::EClientMakePath::TriggerBox_CinematicPlayer:			Create_TriggerBox_CinematicPlayer(tData);			break;
@@ -1046,7 +1046,7 @@ HRESULT CBuilder_Map::Create_TriggerBox_CinematicPlayer(const DTO::TMap_MapObjec
 		tDesc.tQuestObjectDesc = pOrigin->tQuestObjectDesc;
 
 	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC),
-		g_wszTriggerBox_TutorialUIEvent_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
+		g_wszTriggerBox_CinematicPlayer_PrototypeTag, ENUM_TO_UINT(m_eLevelType),
 		g_wszTriggerBoxLayer, &tDesc);
 
 	return S_OK;

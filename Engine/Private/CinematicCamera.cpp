@@ -140,19 +140,20 @@ void CCinematicCamera::Update(const _float fTimeDelta)
     if(iSize < 2 )
         End_Cinematic();
 
+    _int iOriginalStartIndex = m_isPreCamData_AddKeyFrame ? (m_iCurFrameIndex - 1) : m_iCurFrameIndex;
+    _int iOriginalEndIndex = m_isPreCamData_AddKeyFrame ? (m_iCurFrameIndex) : (m_iCurFrameIndex + 1);
 
     auto& tStartCamKeyFrameData = m_vecCamer_KeyFrame_Data[m_iCurFrameIndex];
     auto& tEndCamKeyFrameData = m_vecCamer_KeyFrame_Data[m_iCurFrameIndex + 1];
 
     if (!m_isDepratEvent)
     {
-        if (m_isPreCamData_AddKeyFrame == true)
+        // Dummy 프레임(-1)에서 출발하는 게 아닐 때만 발송!
+        if (iOriginalStartIndex >= 0)
         {
-            if(m_iCurFrameIndex >= 1)
-                m_pCinematicSquence->BroadCast(CCS_BROADCAST_TYPE::DEPART, m_iCurFrameIndex - 1);
+            m_pCinematicSquence->BroadCast(CCS_BROADCAST_TYPE::DEPART, iOriginalStartIndex);
         }
-        else
-            m_pCinematicSquence->BroadCast(CCS_BROADCAST_TYPE::DEPART, m_iCurFrameIndex);
+        m_isDepratEvent = true; // ★ 이거 빼먹으면 매 프레임 발송되니까 조심!
     }
 
 
@@ -298,15 +299,14 @@ void CCinematicCamera::Update(const _float fTimeDelta)
     {
         if (!m_isOnReachEvent)
         {
-            if (m_isPreCamData_AddKeyFrame == true)
+            // 원본 데이터 범위를 벗어나지 않는 안전한 인덱스일 때만 발송
+            _int iOriginalMaxCount = static_cast<_int>(m_pCinematicSquence->vecCamKeyFrameDatas.size());
+            if (iOriginalEndIndex >= 0 && iOriginalEndIndex < iOriginalMaxCount)
             {
-                if (m_iCurFrameIndex >= 1)
-                    m_pCinematicSquence->BroadCast(CCS_BROADCAST_TYPE::ON_REACH, m_iCurFrameIndex - 1);
+                m_pCinematicSquence->BroadCast(CCS_BROADCAST_TYPE::ON_REACH, iOriginalEndIndex);
             }
-            else
-                m_pCinematicSquence->BroadCast(CCS_BROADCAST_TYPE::ON_REACH, m_iCurFrameIndex);
+            m_isOnReachEvent = true; // ★ 필수!
         }
-
     }
 
     /* 이 시간을 넘었다면 */

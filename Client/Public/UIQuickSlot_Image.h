@@ -13,7 +13,6 @@ enum class EQuickSlotVisibleState
 	INVISIBLE,
 	END
 };
-
 class CUIQuickSlot_Image final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
@@ -55,6 +54,9 @@ private:
 	// WEAPON_QUIKSLOT_SIDE_BG_FX
 	void Check_Current_Slot();
 
+	// WEAPON_QUIKSLOT_SIDE_SLOT
+	void WeaponType_To_Icon();
+
 private:
 	_uint m_iNumbering = {};
 	EQuickSlotVisibleState m_eVisibleState = EQuickSlotVisibleState::INVISIBLE;
@@ -66,8 +68,6 @@ private:
 
 	// WEAPON_QUIKSLOT_SIDE_BG_FX
 	_bool m_isSelected = { false };
-
-
 
 public:
 	static CUIQuickSlot_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

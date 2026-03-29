@@ -66,6 +66,13 @@
 #include "Level_Loading.h"
 
 //=================
+// Object : Monster Skill
+//=================
+#include "Monster_Dog_Projectile_Circle.h"
+#include "Monster_Fly_Projectile_Circle.h"
+#include "Monster_Veteran_Projectile_Circle.h"
+
+//=================
 // Game Instance
 //=================
 #include "GameInstance.h"
@@ -127,6 +134,12 @@ HRESULT CLevel_Tutorial_Boss::Initialize()
 		MSG_BOX("CLevel_Tutorial_Boss::Initialize, Ready_SkillObjectLayer Create Failed");
 		return E_FAIL;
 	}
+
+	//if (FAILED(Ready_MonsterSkillObjectLayer()))
+	//{
+	//	MSG_BOX("CLevel_Logo::Initialize, Ready_SkillObjectLayer Create Failed");
+	//	return E_FAIL;
+	//}
 
 	return S_OK;
 }
@@ -520,6 +533,7 @@ HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 	if (FAILED(Super::Awake(iLevelID)))
 		return E_FAIL;
 
+
 	if (FAILED(Ready_Octree()))
 		return E_FAIL;
 
@@ -528,6 +542,10 @@ HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
+
+
+	if (FAILED(m_pGameInstance->Register_CinematicCamera(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszDynamicCameraLayer)))
+		return E_FAIL;
 
 	CQuestManager::GetInstance()->Start_Quest(2, 3);
 
@@ -595,6 +613,50 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 HRESULT CLevel_Tutorial_Boss::Ready_Dissolve()
 {
 	return m_pGameInstance->Ready_DissolveSetting();
+}
+
+HRESULT CLevel_Tutorial_Boss::Ready_MonsterSkillObjectLayer()
+{
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
+
+	// SkillObject Pool
+	{
+		CMonster_Dog_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterDogCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterDogProjectile_Prototype_Tag,
+			&desc,
+			200)))
+			return E_FAIL;
+	}
+	{
+		CMonster_Fly_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterFlyCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterFlyProjectile_Prototype_Tag,
+			&desc,
+			200)))
+			return E_FAIL;
+	}
+	{
+		CMonster_Veteran_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterVeteranCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterVeteranProjectile_Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+	return S_OK;
 }
 
 HRESULT CLevel_Tutorial_Boss::Render()

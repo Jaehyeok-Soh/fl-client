@@ -18,6 +18,7 @@
 #include "ModelAnimation.h"
 #include "Effect_Env.h"
 #include "CEffectObject.h"
+#include "CitizenData.h"
 #include "GameInstance.h"
 
 USING(Tool)
@@ -2121,6 +2122,19 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 
 	ImGui::Separator();
 
+	ImGui::SeparatorText("UI Text Setting");
+
+	ImGui::NewLine();
+
+	ImGui::InputText("Npc Name" ,&pDesc->strNPCName);
+	ImGui::InputText("Npc Text" ,&pDesc->strNPCText);
+	ImGui::InputText("Sound Tag",&pDesc->strSountTag);
+
+	ImGui::NewLine();
+
+	ImGui::Separator();
+
+
 	ImGui::Checkbox("Is Quest Object", &pDesc->bHasQuest);
 
 	if (pDesc->bHasQuest)
@@ -2174,6 +2188,26 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 
 		ImGui::Indent();
 		ImGui::Spacing();
+
+
+		// =========================================================================
+		// 프리셋 매니저 팝업 호출 버튼 추가
+		// =========================================================================
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 0.2f, 1.0f));
+		if (ImGui::Button(" Open Preset Manager ", ImVec2(-1, 30)))
+		{
+			// 버튼을 누르면 팝업 열기 플래그 세팅
+			ImGui::OpenPopup("Preset Manager");
+
+			// 창을 열 때, 최초 1회만 파일에서 최신 데이터를 읽어옴 (옵션)
+			DTO::CitizenPresetData::Load_CitizenPresetData();
+		}
+		ImGui::PopStyleColor();
+
+		ImGuiUPdate_CitizenPresetPopup(CitizenData);
+
+		ImGui::Spacing();
+
 
 		// =========================================================================
 		// 메인 서브 탭 시작 (Model / Parts / Anim & Detail)
@@ -2514,7 +2548,6 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 					if (ImGui::TreeNodeEx(atlasNames[i], ImGuiTreeNodeFlags_DefaultOpen))
 					{
 						ImGui::Image(ImTextureRef(arrayFaceSRVs[i]) , ImVec2(128,128));
-						arrayFaceSRVs[i];
 						ImGui::Checkbox("Use Atlas", &atlasData.isUseAtlas);
 						ImGui::BeginDisabled(!atlasData.isUseAtlas);
 						ImGui::DragInt("Max Row", (int*)&atlasData.iMaxRow, 0.1f, 1, 100);
@@ -2539,6 +2572,100 @@ void CPanel_MapObjectList::ImGuiUpdate_NPC(BATCH_NPC_DESC* pDesc)
 		}
 
 		ImGui::Unindent();
+	}
+}
+
+void CPanel_MapObjectList::ImGuiUPdate_CitizenPresetPopup(DTO::CITIZEN_DATA& currentCitizenData)
+{
+	// 모달 팝업의 중앙 정렬을 위한 세팅
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
+
+	if (ImGui::BeginPopupModal("Preset Manager", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		auto& vecPresets = DTO::CitizenPresetData::vecDatas;
+		static int iSelectedPresetIndex = -1;
+
+		// 1. 프리셋 리스트 렌더링
+		ImGui::SeparatorText(" Saved Presets ");
+		if (vecPresets.empty())
+		{
+			ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "No presets available.");
+		}
+		else
+		{
+			if (ImGui::BeginListBox("##PresetList", ImVec2(-1, 250)))
+			{
+				for (int i = 0; i < (int)vecPresets.size(); ++i)
+				{
+					// 라벨은 모델 이름과 애니메이션 이름 등을 섞어서 표시
+					string strLabel = "[" + std::to_string(i) + "] " + vecPresets[i].strModelName + " / " + vecPresets[i].strLoopAnimationName;
+
+					bool bSelected = (iSelectedPresetIndex == i);
+					if (ImGui::Selectable(strLabel.c_str(), bSelected))
+					{
+						iSelectedPresetIndex = i;
+					}
+				}
+				ImGui::EndListBox();
+			}
+		}
+
+		ImGui::Spacing();
+
+		// 2. 프리셋 제어 버튼 (Load, Delete)
+		if (ImGui::Button("Load Selected", ImVec2(120, 30)) && iSelectedPresetIndex != -1)
+		{
+			// 선택한 프리셋 데이터를 현재 작업 중인 CitizenData로 덮어씌움
+			currentCitizenData = vecPresets[iSelectedPresetIndex];
+
+			if (m_pSelectMapObject) {
+				m_pSelectMapObject->Ready_Batch_NPC();
+			}
+
+			ImGui::CloseCurrentPopup(); // 로드 성공 후 팝업 닫기
+		}
+		ImGui::SameLine();
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+		if (ImGui::Button("Delete Selected", ImVec2(120, 30)) && iSelectedPresetIndex != -1)
+		{
+			DTO::CitizenPresetData::Delete_CitizenPresetData(iSelectedPresetIndex);
+			iSelectedPresetIndex = -1; // 삭제 후 선택 해제
+		}
+		ImGui::PopStyleColor();
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		// 3. 현재 세팅을 프리셋으로 저장
+		ImGui::Text("Save current settings as a new preset:");
+		if (ImGui::Button("Save Current as Preset", ImVec2(-1, 40)))
+		{
+			// 현재 작업 중인 데이터를 프리셋 리스트의 맨 뒤에 추가
+			DTO::CitizenPresetData::Update_CitizenPresetData(currentCitizenData, -1);
+
+			// 추가하자마자 바로 인덱스를 새로 생긴 데이터로 포커싱
+			iSelectedPresetIndex = (int)vecPresets.size() - 1;
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+
+		// 4. 파일 입출력 및 닫기 버튼
+		if (ImGui::Button("Save ALL to JSON File", ImVec2(180, 35)))
+		{
+			DTO::CitizenPresetData::Save_CitizenPresetData();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Close", ImVec2(-1, 35)))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
 	}
 }
 

@@ -710,7 +710,6 @@ HRESULT CinematicCameraSequence::Render_Debug(_uint iPassIndex, CModel* pCameraM
 		}
 
 		pBatch->End();
-
 	}
 
 	return S_OK;

@@ -5,12 +5,13 @@
 //=================
 // Component
 //=================
+#include "Player.h"
 #include "Canvas.h"
-#include "WorldUI_Component.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
+#include "UIQuickSlot_Manager.h"
 #include "GameInstance.h"
 
 
@@ -118,6 +119,8 @@ HRESULT CUIQuickSlot_Image::Attach_Personal_Info()
 	case DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG_FX:
 		break;
 	case DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_SLOT:
+	{
+	}
 		break;
 	}
 
@@ -166,6 +169,9 @@ void CUIQuickSlot_Image::Tick_By_Type(const _float fTimeDelta)
 	}
 		break;
 	case DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_SLOT:
+	{
+		WeaponType_To_Icon();
+	}
 		break;
 	}
 
@@ -300,7 +306,15 @@ void CUIQuickSlot_Image::Check_Current_Slot()
 			m_isSelected = false;
 		}
 	}
+}
 
+void CUIQuickSlot_Image::WeaponType_To_Icon()
+{
+	const auto& Info = CUIQuickSlot_Manager::GetInstance()->Get_Weapons(m_iNumbering);
+
+	_wstring wstrTextureTag = CUIQuickSlot_Manager::GetInstance()->UIWeaponTypeToTextureTag(Info.eWeaponType);
+	
+	Get_Component<CTexture>()->Add_DefaultTexture(wstrTextureTag, ENUM_TO_UINT(EUITextureSlot::DEFAULT));
 }
 
 CUIQuickSlot_Image* CUIQuickSlot_Image::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

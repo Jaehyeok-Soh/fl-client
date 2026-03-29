@@ -36,7 +36,6 @@ namespace Client
 	};
 
 	inline constexpr size_t g_iLevelType_Count = static_cast<size_t>(ELevelType::END);
-#ifdef _DEBUG
 	static const char* LevelTypeToString(int lv)
 	{
 		static const char* kNames[] =
@@ -58,7 +57,6 @@ namespace Client
 
 		return kNames[lv];
 	}
-#endif
 
 	enum class EGroggyState : unsigned int
 	{
@@ -972,6 +970,14 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_XibiCircleProjectile[]					{ L"Pool_Xibi_CircleProjectile" };
 	inline constexpr wchar_t g_wszPool_XibiOneshotThunder[]						{ L"Pool_Xibi_OneshotThunder" };
 
+	/* Monster */
+	inline constexpr wchar_t g_wszMonsterDogProjectile_Prototype_Tag[]{ L"Prototype_GameObject_MonsterDog_CircleProjectile" };
+	inline constexpr wchar_t g_wszMonsterFlyProjectile_Prototype_Tag[]{ L"Prototype_GameObject_MonsterFly_CircleProjectile" };
+	inline constexpr wchar_t g_wszMonsterVeteranProjectile_Prototype_Tag[]{ L"Prototype_GameObject_MonsterVeteran_CircleProjectile" };
+	inline constexpr wchar_t g_wszPool_MonsterDogCircleProjectile[]{ L"Pool_MonsterDog_CircleProjectile" };
+	inline constexpr wchar_t g_wszPool_MonsterFlyCircleProjectile[]{ L"Pool_MonsterFly_CircleProjectile" };
+	inline constexpr wchar_t g_wszPool_MonsterVeteranCircleProjectile[]{ L"Pool_MonsterVeteran_CircleProjectile" };
+
 	inline constexpr wchar_t g_wszMoonSkillE__Prototype_Tag[]								{ L"Prototype_GameObject_Moon_SkillE" };
 	inline constexpr wchar_t g_wszPool_MoonSkillE[]											{ L"Pool_Moon_SkillE" };
 	//inline constexpr wchar_t g_wszMoonSkillQSheild_Prototype_Tag[]							{ L"Prototype_GameObject_Moon_SkillQSheild" };
@@ -988,6 +994,11 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
 	inline constexpr wchar_t g_wszSpawner_XibiGate[]							{ L"Prototype_Spawner_XibiGate" };
+
+	/* Monster */
+	inline constexpr wchar_t g_wszSpawner_MonsterDogOneshotCircleProjectile[]{ L"Prototype_Spawner_MonsterDogOneshotCircleProjectile" };
+	inline constexpr wchar_t g_wszSpawner_MonsterFlyOneshotCircleProjectile[]{ L"Prototype_Spawner_MonsterFlyOneshotCircleProjectile" };
+	inline constexpr wchar_t g_wszSpawner_MonsterVeteranOneshotCircleProjectile[]{ L"Prototype_Spawner_MonsterVeteranOneshotCircleProjectile" };
 
 	inline constexpr wchar_t g_wszSpawner_MoonSkillE[]							{ L"Prototype_Spawner_PlayerMoon_SkillE" };
 	inline constexpr wchar_t g_wszSpawner_MoonSkillQ_Sheild[]					{ L"Prototype_Spawner_PlayerMoon_SkillQ_Sheild" };
@@ -1106,6 +1117,7 @@ namespace Client
 	inline constexpr wchar_t g_wszSkyBoxLayer[]									{ L"SkyBox_Layer" };
 	inline constexpr wchar_t g_wszPointLightLayer[]								{ L"PointLight_Layer" };
 	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
+	inline constexpr wchar_t g_wszNPCCitizenPoolLayer[]							{ L"NPC_Citizen_PoolLayer" };
 	inline constexpr wchar_t g_wszInteractiveObjectLayer[]						{ L"InteractiveObject_Layer"};
 #pragma endregion
 

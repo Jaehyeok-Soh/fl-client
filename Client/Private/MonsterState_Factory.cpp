@@ -190,6 +190,8 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	REGISTER_FEATURE("feat_set_target_offset", FEATURE{ MONSTERCC(state)->Set_Target_Offset(param.fParam[0], param.fParam[1], param.fParam[2], fTimeDelta); });
 	REGISTER_FEATURE("feat_auto_teleport_chase", FEATURE{ MONSTERCC(state)->Auto_Teleport_Chase(param.fParam[0]); });
 	REGISTER_FEATURE("feat_geniemon_smart_chase", FEATURE{ MONSTERCC(state)->Genimon_Smart_Chase(param.fParam[0], param.fParam[1], param.fParam[2], param.fParam[3], fTimeDelta); });
+	
+	REGISTER_FEATURE("feat_skill_spawn_trigger", FEATURE{ MONSTERCC(state)->SkillSpawnTrigger(param.iParam[0]); });
 
 	return S_OK;
 }

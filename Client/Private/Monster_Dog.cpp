@@ -12,6 +12,8 @@
 #include "UIIcon_Component.h"
 #include "GameInstance.h"
 #include "MyStat.h"
+#include "Monster_GimmikController.h"
+#include "SingleSkillSpawner.h"
 
 CMonster_Dog::CMonster_Dog(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -53,6 +55,9 @@ HRESULT CMonster_Dog::Initialize(void* pArg)
 	if (FAILED(Ready_BaseStates()))
 		return E_FAIL;
 
+	if (FAILED(Ready_SkillSpawner()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -75,6 +80,9 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 
 	Ready_StateIndexForDirecting();
 
+	if (FAILED(Get_Component<CMonster_GimmikController>()->Awake(iCurrentLevelID)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -86,6 +94,8 @@ void CMonster_Dog::Update_Priority(const _float fTimeDelta)
 void CMonster_Dog::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
 }
 
 void CMonster_Dog::Update_Late(const _float fTimeDelta)
@@ -201,7 +211,7 @@ HRESULT CMonster_Dog::Ready_Components(void* pArg)
 
 	CMonsterControlContext::MONSTER_CONTROLCONTEXT_DESC desc{};
 	desc.fMeleeRange = 2.f;
-	desc.fAttackRange = 4.f;
+	desc.fAttackRange = 5.f;
 	desc.fCloseRange = 1.f;
 	desc.fDetectionRange = 100.f;
 	desc.fSpeed = 1.f;
@@ -216,6 +226,39 @@ HRESULT CMonster_Dog::Ready_Components(void* pArg)
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}
+	return S_OK;
+}
+
+HRESULT CMonster_Dog::Ready_SkillSpawner()
+{
+	_uint iLevelId = m_pGameInstance->Get_CurrentLevelIndex();
+
+	CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+
+	// GimmikController
+	{
+		CMonster_GimmikController::GIMMIKCTRL_DESC desc{};
+		desc.pOwnerModel = pBody->Get_Component<CModel>();
+		if (FAILED(Add_Component<CMonster_GimmikController>(0 /*static*/, L"Prototype_Component_Monster_GimmikController", &desc)))
+			return E_FAIL;
+	}
+
+	// Oneshot
+	{
+		CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
+		desc.iLevelIndex = 0; /*static*/
+		desc.iSpawnLevelIndex = iLevelId; /*static*/
+
+		CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
+			0 /*static*/, g_wszSpawner_MonsterDogOneshotCircleProjectile, &desc);
+		if (pResult == nullptr)
+			return E_FAIL;
+
+		Get_Component<CMonster_GimmikController>()->AddSkillSpawner(static_cast<CSkillObjectSpawnerBase*>(pResult));
+	}
+
 	return S_OK;
 }
 

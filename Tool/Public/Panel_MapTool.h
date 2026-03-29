@@ -49,9 +49,12 @@ private:
 	HRESULT					Render_CheckAndBind();
 	HRESULT					Render_MakeMapObjectSetting();
 
-
 	/* Camera Cinematic Sequence */
 	HRESULT					Render_CameraCinematicSequnce();
+
+
+	/* Citizen WayPoint Setting */
+	HRESULT					Render_CitizenWayPointSetting();
 
 private:
 	void					Select_MapTexture();
