@@ -60,6 +60,7 @@ private:
 
 	HRESULT Ready_Sounds();
 	HRESULT Ready_Sounds_Player();
+	HRESULT Ready_Sounds_PlayerFoot(ELevelType eType);
 
 	HRESULT Ready_EffectEvent_AnimationData();
 	HRESULT Ready_AttackOverlap_PlayerMoon();
