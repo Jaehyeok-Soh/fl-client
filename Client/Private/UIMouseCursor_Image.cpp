@@ -193,6 +193,9 @@ void CUIMouseCursor_Image::Tick_By_Type(const _float fTimeDelta)
 	default:
 		break;
 	}
+
+	if (m_pUIManager->Get_isCursor_Visible())
+		m_isVisible = false;
 }
 
 void CUIMouseCursor_Image::Initialize_Visible_Event()

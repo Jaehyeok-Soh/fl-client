@@ -49,6 +49,8 @@ HRESULT CUIIcon_Component::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pPlayer = m_pGameInstance->Get_GameObject_Front(ENUM_TO_UINT(ELevelType::STATIC), g_wszPlayerLayer);
+	m_wstrTextureTag = pDesc->wstrIconTextureTag;
+
 	if (nullptr == m_pPlayer)
 		return E_FAIL;
 

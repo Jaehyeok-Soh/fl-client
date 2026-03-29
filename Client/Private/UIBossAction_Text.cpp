@@ -125,47 +125,141 @@ void CUIBossAction_Text::Bind_Events()
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_BEGIN:
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_WORLD_TEXT:
-		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<BOSS_ACTION_ON>([this](const _uint iObjectID)
+	{
+		m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc) {
+
+			for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
+			{
+				_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
+				switch (iHash)
 				{
-					this->Set_Visible();
-
-
-
-				}));
-		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<BOSS_ACTION_OFF>([this](const _uint iObjectID)
+				case TO_HASH("UI_Boss"):
 				{
-					this->Set_Invisible();
-				}));
+					for (auto& ActionName : EventDesc.vecActionNames)
+					{
+						_uint iActionNameHash = Engine_Utils::ToHash(ActionName.c_str());
+						switch (iActionNameHash)
+						{
+						case TO_HASH("Xibi_Begin"):
+						{
+							this->Set_Visible();
+						}
+						break;
+						case TO_HASH("Lianhuo_Begin"):
+						{
+							this->Set_Visible();
+							m_vFontColor = Vec4{ 1.f, 0.f, 0.f, 0.f };
+						}
+						break;
+						case TO_HASH("Boss_Action_End"):
+						{
+							this->Set_Invisible();
+						}
+						break;
+						default:
+							break;
+						}
+					}
+				}
+				break;
+				default:
+					break;
+				}
+			}
+		});
+	}
 		break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_TEXT:
-		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<BOSS_ACTION_ON>([this](const _uint iObjectID)
+	{
+		m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc) {
+
+			for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
+			{
+				_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
+				switch (iHash)
 				{
-					this->Set_Visible();
-				}));
-		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<BOSS_ACTION_OFF>([this](const _uint iObjectID)
+				case TO_HASH("UI_Boss"):
 				{
-					this->Set_Invisible();
-				}));
-		break;
+					for (auto& ActionName : EventDesc.vecActionNames)
+					{
+						_uint iActionNameHash = Engine_Utils::ToHash(ActionName.c_str());
+						switch (iActionNameHash)
+						{
+						case TO_HASH("Xibi_Begin"):
+						{
+							this->Set_Visible();
+						}
+						break;
+						case TO_HASH("Lianhuo_Begin"):
+						{
+							this->Set_Visible();
+						}
+						break;
+						case TO_HASH("Boss_Action_End"):
+						{
+							this->Set_Invisible();
+						}
+						break;
+						default:
+							break;
+						}
+					}
+				}
+				break;
+				default:
+					break;
+				}
+			}
+			});
+	}
+	break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_NAME_NIGHTMARE_TEXT:
-		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<BOSS_ACTION_ON>([this](const _uint iObjectID)
+	{
+		m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc) {
+
+			for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
+			{
+				_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
+				switch (iHash)
 				{
-					this->Set_Visible();
-				}));
-		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<BOSS_ACTION_OFF>([this](const _uint iObjectID)
+				case TO_HASH("UI_Boss"):
 				{
-					this->Set_Invisible();
-				}));
-		break;
+					for (auto& ActionName : EventDesc.vecActionNames)
+					{
+						_uint iActionNameHash = Engine_Utils::ToHash(ActionName.c_str());
+						switch (iActionNameHash)
+						{
+						case TO_HASH("Xibi_Begin"):
+						{
+							this->Set_Visible();
+						}
+						break;
+						case TO_HASH("Lianhuo_Begin"):
+						{
+							this->Set_Visible();
+						}
+						break;
+						case TO_HASH("Boss_Action_End"):
+						{
+							this->Set_Invisible();
+						}
+						break;
+						default:
+							break;
+						}
+					}
+				}
+				break;
+				default:
+					break;
+				}
+			}
+			});
+	}
+	break;
 	case DTO::EUITextSubClassType::BOSS_CIVILA_ACTION_END:
 		break;
-	}
+	};
 }
 
 void CUIBossAction_Text::Initialize_Visible_Event()

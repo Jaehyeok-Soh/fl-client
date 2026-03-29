@@ -60,6 +60,13 @@
 #include "PlayerSkillObj_Headers.h"
 
 //=================
+// Object : Monster Skill
+//=================
+#include "Monster_Dog_Projectile_Circle.h"
+#include "Monster_Fly_Projectile_Circle.h"
+#include "Monster_Veteran_Projectile_Circle.h"
+
+//=================
 // GameInstance
 //=================
 #include "GameInstance.h"
@@ -96,8 +103,14 @@ HRESULT CLevel_Kuangkeng::Initialize()
 
 	if (FAILED(Ready_Map()))
 		return E_FAIL;
-	return S_OK;
 
+	//if (FAILED(Ready_MonsterSkillObjectLayer()))
+	//{
+	//	MSG_BOX("CLevel_Logo::Initialize, Ready_SkillObjectLayer Create Failed");
+	//	return E_FAIL;
+	//}
+
+	return S_OK;
 }
 
 HRESULT CLevel_Kuangkeng::Awake(const _uint iLevelID)
@@ -517,6 +530,50 @@ HRESULT CLevel_Kuangkeng::Ready_Camera_Setting(const _uint iLevelIndex)
 HRESULT CLevel_Kuangkeng::Ready_Dissolve()
 {
 	return m_pGameInstance->Ready_DissolveSetting();
+}
+
+HRESULT CLevel_Kuangkeng::Ready_MonsterSkillObjectLayer()
+{
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::KUANGKENG);
+
+	// SkillObject Pool
+	{
+		CMonster_Dog_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterDogCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterDogProjectile_Prototype_Tag,
+			&desc,
+			200)))
+			return E_FAIL;
+	}
+	{
+		CMonster_Fly_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterFlyCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterFlyProjectile_Prototype_Tag,
+			&desc,
+			200)))
+			return E_FAIL;
+	}
+	{
+		CMonster_Veteran_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterVeteranCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterVeteranProjectile_Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+	return S_OK;
 }
 
 

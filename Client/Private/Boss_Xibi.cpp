@@ -276,7 +276,7 @@ HRESULT CBoss_Xibi::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 4500.f;
+	desc.fMaxHp = 35000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 
@@ -364,6 +364,7 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 
 	{
 		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		Desc.wstrIconTextureTag = L"Texture_T_Battle_HudRescue_Elite";
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}

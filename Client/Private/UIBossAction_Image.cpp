@@ -112,59 +112,181 @@ void CUIBossAction_Image::Bind_Events()
 {
 	Super::Bind_Events();
 
+	m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc) {
+
+		for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
+		{
+			_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
+			switch (iHash)
+			{
+			case TO_HASH("UI_Boss"):
+			{
+				/* UI Image */
+				for (auto ActionName : EventDesc.vecActionNames)
+				{
+					_uint iActionNameHash = TO_HASH(ActionName.c_str());
+					switch (iActionNameHash)
+					{
+					case TO_HASH("Xibi"):
+					{
+						/* Xibi Icon 연출 로직 함수 연결만 하면됨 */
+						int a = 0;
+					}
+					break;
+					case TO_HASH("Lianhuo"):
+					{
+						/* Lianhuo Icon 연출 로직 함수 연결만 하면됨 */
+						int a = 0;
+					}
+					break;
+					default:
+						break;
+					}
+				}
+			}
+			break;
+			default:
+				break;
+			}
+		}
+		});
+
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_ICON:
+	{
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<BOSS_ACTION_ON>([this](const _uint iObjectID)
+			m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc) {
+
+			for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
+			{
+				_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
+				switch (iHash)
 				{
-					this->Set_Visible();
-
-					if (iObjectID == EObjectEnumTag::Enum::MONSTER_BOSS_XIBI)
-					{
-
-					}
-					else if (iObjectID == EObjectEnumTag::Enum::MONSTER_BOSS_LIANHUO)
-					{
-						if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(FIRE_BOSS_TEXTURE, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
-							return E_FAIL;
-
-						m_vColorTint = Vec4{ 0.f, 0.f, 0.f, 0.f };
-						m_vGradiantColorTint = Vec4{ 1.f, 0.f, 0.f, 0.f };
-					}
-
-				}));
-		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<BOSS_ACTION_OFF>([this](const _uint iObjectID)
+				case TO_HASH("UI_Boss"):
 				{
-					this->Set_Invisible();
-				}));
+
+					for (auto ActionName : EventDesc.vecActionNames)
+					{
+						_uint iActionNameHash = TO_HASH(ActionName.c_str());
+						switch (iActionNameHash)
+						{
+						case TO_HASH("Xibi_Begin"):
+						{
+							this->Set_Visible();
+						}
+							break;
+						case TO_HASH("Lianhuo_Begin"):
+						{
+							this->Set_Visible();
+							if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(FIRE_BOSS_TEXTURE, ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
+								return E_FAIL;
+
+							m_vColorTint = Vec4{ 0.f, 0.f, 0.f, 0.f };
+							m_vGradiantColorTint = Vec4{ 1.f, 0.f, 0.f, 0.f };
+						}
+							break;
+						case TO_HASH("Boss_Action_End"):
+						{
+							this->Set_Invisible();
+						}
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				break;
+				default:
+					break;
+				}
+			}
+			}));
+	}
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_TOP_BG:
+	{
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<CINEMATIC_START>([this]()
+			m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc) 
 				{
-					this->Set_Visible();
-				}));
-		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-				{
-					this->Set_Invisible();
-				}));
+					for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
+					{
+						_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
+						switch (iHash)
+						{
+						case TO_HASH("Cinematic"):
+						{
+							for (auto ActionName : EventDesc.vecActionNames)
+							{
+								_uint iActionNameHash = TO_HASH(ActionName.c_str());
+								switch (iActionNameHash)
+								{
+								case TO_HASH("Letterboxing_Begin"):
+								{
+									m_pGameInstance->Broadcast<DEFAULT_UI_INVISIBLE>();
+
+									this->Set_Visible();
+
+								}
+								break;
+								case TO_HASH("Letterboxing_End"):
+								{
+									m_pGameInstance->Broadcast<DEFAULT_UI_VISIBLE>();
+									this->Set_Invisible();
+								}
+								break;
+								default:
+									break;
+								}
+							}
+						}
+							break;
+						default:
+							break;
+					}
+				}}));
+	}
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BOTTOM_BG:
+	{
 		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<CINEMATIC_START>([this]()
+			m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc)
 				{
-					this->Set_Visible();
-				}));
-		m_vecEventHandles.push_back(
-			m_pGameInstance->Subscribe<CINEMATIC_END>([this]()
-				{
-					this->Set_Invisible();
-				}));
+					for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
+					{
+						_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
+						switch (iHash)
+						{
+						case TO_HASH("Cinematic"):
+						{
+							for (auto ActionName : EventDesc.vecActionNames)
+							{
+								_uint iActionNameHash = TO_HASH(ActionName.c_str());
+								switch (iActionNameHash)
+								{
+								case TO_HASH("Letterboxing_Begin"):
+								{
+									this->Set_Visible();
+								}
+								break;
+								case TO_HASH("Letterboxing_End"):
+								{
+									this->Set_Invisible();
+								}
+								break;
+								default:
+									break;
+								}
+							}
+						}
+						break;
+						default:
+							break;
+						}
+					}}));
+	}
 		break;
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_END:
 		break;

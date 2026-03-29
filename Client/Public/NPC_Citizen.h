@@ -83,6 +83,8 @@ protected:
 	float								m_fDeltaTime;
 	const DTO::Citizen_WayPoint_Data*	m_pWayPointData;
 	_uint								m_iCurrentFrameIndex;
+
+
 public:
 
 public:

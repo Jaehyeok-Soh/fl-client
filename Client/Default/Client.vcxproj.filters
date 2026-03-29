@@ -967,6 +967,39 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\16.Npc Text Bubble">
       <UniqueIdentifier>{43a90075-9c6b-4af5-93a1-40c5f0aac252}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\SkillObject\Monster">
+      <UniqueIdentifier>{ac39184e-8159-4ead-9caf-e118b7cd0043}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Monster\Monster_Dog">
+      <UniqueIdentifier>{16f52b5a-8133-4ec8-b99e-26f0fd90b708}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Monster\Monster_Dog\Circle">
+      <UniqueIdentifier>{8b2e3ea1-8082-4351-9be6-73948255a528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Monster\Monster_Fly">
+      <UniqueIdentifier>{75a79ba4-0117-4af7-837f-47c29544da99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Monster\Monster_Fly\Circle">
+      <UniqueIdentifier>{d1e66313-ea73-4eca-bec3-f618b54b6f92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Monster\Monster_Veteran">
+      <UniqueIdentifier>{28daaff1-dcfe-4fbe-92ef-8247947e2530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Monster\Monster_Veteran\Circle">
+      <UniqueIdentifier>{510a3d42-0ef4-4c67-8a7d-aaab993edde6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\Monster\MonsterGimmikController">
+      <UniqueIdentifier>{b57b6818-cbc1-425c-b491-fdb24d42b99c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\23.Weapon Quick Slot">
+      <UniqueIdentifier>{f38873ae-04c0-41ed-9792-d6a8d1960bd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager">
+      <UniqueIdentifier>{9c3dcf90-cc1e-48b0-9298-20a1c532db92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface">
+      <UniqueIdentifier>{865a76ca-33fe-43c2-839b-b050274decd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1827,6 +1860,27 @@
     <ClInclude Include="..\Public\UINpcTextBubble_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\16.Npc Text Bubble</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster_Dog_Projectile_Circle.h">
+      <Filter>03. GameObject\SkillObject\Monster\Monster_Dog\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Fly_Projectile_Circle.h">
+      <Filter>03. GameObject\SkillObject\Monster\Monster_Fly\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Veteran_Projectile_Circle.h">
+      <Filter>03. GameObject\SkillObject\Monster\Monster_Veteran\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_GimmikController.h">
+      <Filter>05. Component\Monster\MonsterGimmikController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQuickSlot_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\23.Weapon Quick Slot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQuickSlot_Manager.h">
+      <Filter>03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\IItem.h">
+      <Filter>03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2674,6 +2728,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\UINpcTextBubble_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\16.Npc Text Bubble</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Dog_Projectile_Circle.cpp">
+      <Filter>03. GameObject\SkillObject\Monster\Monster_Dog\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Fly_Projectile_Circle.cpp">
+      <Filter>03. GameObject\SkillObject\Monster\Monster_Fly\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Veteran_Projectile_Circle.cpp">
+      <Filter>03. GameObject\SkillObject\Monster\Monster_Veteran\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_GimmikController.cpp">
+      <Filter>05. Component\Monster\MonsterGimmikController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuickSlot_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\23.Weapon Quick Slot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQuickSlot_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\IItem.cpp">
+      <Filter>03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

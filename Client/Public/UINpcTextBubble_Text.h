@@ -4,6 +4,7 @@
 
 NS_BEGIN(Client)
 class CWorldUI_Component;
+
 class CUINpcTextBubble_Text final : public CUIText
 {
 	using Super = CUIText;

@@ -299,7 +299,9 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		if (pBody != nullptr && pRagdoll != nullptr)
 		{
 			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
-				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, 5.f);
+				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, hitDesc.attackDesc.pAttackPreset->tCombat.fImpulse);
+			else
+				pRagdoll->RegisterHitImpulse(hitDesc.vHitNormal, hitDesc.attackDesc.pAttackPreset->tCombat.fImpulse);
 		}
 	}
 

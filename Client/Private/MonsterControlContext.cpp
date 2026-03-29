@@ -11,6 +11,7 @@
 #include "Monster_Body_Base.h"
 #include "MainPlayer.h"
 #include "Physics_QueryFilterCallback.h"
+#include "Monster_GimmikController.h"
 
 CMonsterControlContext::CMonsterControlContext()
 	: Super()
@@ -232,6 +233,15 @@ void CMonsterControlContext::Genimon_Smart_Chase(_float fX, _float fY, _float fZ
 {
 	Set_Target_Offset(fX, fY, fZ, fTimeDelta);
 	Auto_Teleport_Chase(fMaxLength);
+}
+
+void CMonsterControlContext::SkillSpawnTrigger(_int iIndex)
+{
+	auto pGimmik = Get_Owner()->Get_Component<CMonster_GimmikController>();
+	if (pGimmik == nullptr)
+		return;
+
+	pGimmik->SpawnTrigger(iIndex);
 }
 
 Vec3 CMonsterControlContext::Get_MoveDir()

@@ -35,6 +35,7 @@
 #include "UITitle_Image.h"
 #include "UITitle_Text.h"
 #include "UITutorial_Manager.h"
+#include "UIQuickSlot_Manager.h"
 
 // Quest
 #include "QuestManager.h"
@@ -112,6 +113,8 @@ void CMainApplication::Update(const _float fTimeDelta)
 	m_pGameInstance->Flush_All();
 
 	m_pGameInstance->Update_Engine(fTimeDelta);
+
+	CUIQuickSlot_Manager::GetInstance()->Tick_Player_Weapon_State(fTimeDelta);
 }
 
 HRESULT CMainApplication::Render()
@@ -720,6 +723,7 @@ void CMainApplication::Free()
 	CUIMinimap_Manager::GetInstance()->DestroyInstance();
 	CUITutorial_Manager::GetInstance()->DestroyInstance();
 	CCameraPreset_Manager::GetInstance()->DestroyInstance();
+	CUIQuickSlot_Manager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();
 

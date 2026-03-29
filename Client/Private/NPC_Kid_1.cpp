@@ -51,8 +51,6 @@ HRESULT CNPC_Kid_1::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("아이");
-
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
 
@@ -205,6 +203,12 @@ CNPC_Base::NPC_DESC CNPC_Kid_1::Get_PreSetDesc(_uint iLevelId)
 	CNPC_Base::NPC_DESC npcDesc = {};
 	npcDesc.iLevelIndex = iLevelId;
 	npcDesc.pTransform_Desc = nullptr;
+
+
+	npcDesc.wstrNPCText.clear();
+	npcDesc.wstrNPCName = L"울고있는 아이";
+	npcDesc.vUITextrOffset = { 0.f,2.f,0.f };
+
 
 	npcDesc.wstrBodyModelTag = g_wszNPC_Kid_1_Model_Prototype_Tag;
 	npcDesc.wstrPartBodyPrototypeTag = g_wszNPC_Kid_1_Body_Prototype_Tag;

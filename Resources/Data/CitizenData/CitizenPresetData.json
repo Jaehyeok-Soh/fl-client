@@ -59,6 +59,66 @@
                     "Name": "Child/Male/Hair/CM_YNM_Hair02_SM"
                 }
             }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 1,
+                    "Select Row": 1,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 1,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 0.9575290679931641,
+                    "Y": 1.0,
+                    "Z": 0.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.03474903106689453,
+                    "Z": 0.05711019039154053
+                }
+            },
+            "Loop Animation Name": "Animation_CM_YNF_Body01_SM_Npc_Younian_M_Emo_OnGround02_Loop",
+            "Model Name": "Child/Female/CM_YNF_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 0.80694979429245,
+                        "Y": 0.30533236265182495,
+                        "Z": 0.30533236265182495
+                    },
+                    "Name": "Child/Female/Hair/CM_YNF_Hair01_SM"
+                }
+            }
         }
     ]
 }

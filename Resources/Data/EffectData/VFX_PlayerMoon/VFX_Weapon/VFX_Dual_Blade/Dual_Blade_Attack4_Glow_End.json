@@ -77,6 +77,20 @@
                         "z": 0.0
                     },
                     "LifeTime": 0.6000000238418579,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_GlowTaki001_Mask",
                     "MaxParticle": 1,
@@ -113,8 +127,8 @@
                             "Val": 180.0
                         },
                         {
-                            "Time": 0.9884393215179443,
-                            "Val": 197.0
+                            "Time": 0.9942196607589722,
+                            "Val": 334.9999694824219
                         }
                     ],
                     "ScaleCurveY": [
@@ -127,8 +141,8 @@
                             "Val": 180.0
                         },
                         {
-                            "Time": 0.9884393215179443,
-                            "Val": 197.0
+                            "Time": 0.9942196607589722,
+                            "Val": 334.9999694824219
                         }
                     ],
                     "ScaleCurveZ": [
@@ -141,8 +155,8 @@
                             "Val": 180.0
                         },
                         {
-                            "Time": 0.9884393215179443,
-                            "Val": 197.0
+                            "Time": 0.9942196607589722,
+                            "Val": 334.9999694824219
                         }
                     ],
                     "ScrollSpeed": {
@@ -330,17 +344,17 @@
                     "UseStartRotation": true,
                     "UseUVScrollCurve": true,
                     "WorldMatrix": [
-                        197.0,
+                        334.9999694824219,
                         0.0,
                         0.0,
                         0.0,
                         0.0,
-                        -67.37794494628906,
-                        185.11944580078125,
+                        -114.57669067382813,
+                        314.7969665527344,
                         0.0,
                         0.0,
-                        -185.11944580078125,
-                        -67.37794494628906,
+                        -314.7969665527344,
+                        -114.57669067382813,
                         0.0,
                         0.0,
                         0.0,
@@ -349,6 +363,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -397,6 +413,20 @@
                         "z": 0.0
                     },
                     "LifeTime": 2.0,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_MaskTaki006_Mask",
                     "MaxParticle": 100,
@@ -612,6 +642,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": true,
                     "_Use_Effect_UV_OverScroll": false,

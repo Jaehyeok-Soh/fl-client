@@ -367,13 +367,13 @@ public:
 struct CITIZEN_DATA
 {
 	std::array<CITIZEN_ATLAS_DATA, ENUM_TO_UINT(CITIZEN_ATLAS_TYPE::END)> arrayNpcAtlasData = { CITIZEN_ATLAS_DATA(true , 4 , 4 , 0, 0) , CITIZEN_ATLAS_DATA(true , 3 , 3 ,0,0) };
-	array<CITIZEN_PART_DATA, ENUM_TO_UINT(DTO::CITIZEN_PARTTYPE::END)>	  arrayPartDatas;
+	std::array<CITIZEN_PART_DATA, ENUM_TO_UINT(DTO::CITIZEN_PARTTYPE::END)>	  arrayPartDatas;
 
 	_bool isUseClothColorMapping;
 	SHADER_RGBCOLOR_DESC tClothRGBColor;
 
-	string				strModelName;
-	string				strLoopAnimationName; /* 단순 Citizen NPC들이 계속 Loop할 애니매이션 목록 */
+	std::string				strModelName;
+	std::string				strLoopAnimationName; /* 단순 Citizen NPC들이 계속 Loop할 애니매이션 목록 */
 
 
 public:
@@ -422,7 +422,7 @@ public:
 	void to_Json(json& SaveJson);
 };
 
-inline const wstring& wstrCitizenWaypointDatasPath{L"../../Resources/Data/CitizenData/CitizenWayPointData.json"};
+inline const std::wstring& wstrCitizenWaypointDatasPath{L"../../Resources/Data/CitizenData/CitizenWayPointData.json"};
 struct ENGINE_DLL Citizen_WayPoint_Data
 {
 	vector<Vec3>	vecPosition{};					/* 움직일 Position 모음 */
@@ -512,7 +512,7 @@ public:
 }; 
 struct ENGINE_DLL CitizenWayPointOriginData
 {
-	static inline map<string, vector<Citizen_WayPoint_Data>> mapCitizenWapointDatas{};
+	static inline std::map<std::string, vector<Citizen_WayPoint_Data>> mapCitizenWapointDatas{};
 
 	static HRESULT	Load_CitizenWayPointDatas(ID3D11Device* pDeivce, ID3D11DeviceContext* pContext);
 	static HRESULT	Load_CitizenWayPointDatas(const string& strLevelName, _uint iIndex, Citizen_WayPoint_Data& tOutData);
@@ -537,23 +537,25 @@ public:
 
 
 
-inline const wstring& wstrCitizenPresetDatasPath{ L"../../Resources/Data/CitizenData/CitizenPresetData.json" };
+inline const std::wstring& wstrCitizenPresetDatasPath{ L"../../Resources/Data/CitizenData/CitizenPresetData.json" };
 struct ENGINE_DLL CitizenPresetData
 {
 public:
-	static inline vector<CITIZEN_DATA>	vecDatas{};
+	static inline _uint iCurIndexForRandom{0};
+	static inline std::vector<CITIZEN_DATA>	vecDatas{};
 	// 파일 입출력
 public:
 	static HRESULT				Add_ModelPrototype(_uint iAddPrototypeLevel ,ID3D11Device* pDevice , ID3D11DeviceContext* pContext);
 	static CITIZEN_DATA			Get_Preset(_uint iIndex);	
 	static CITIZEN_DATA&		Get_Preset_ForTool(_uint iIndex);
+	static CITIZEN_DATA			Get_Preset_ForRandom();
 public:
-	static HRESULT Load_CitizenPresetData();
-	static HRESULT Save_CitizenPresetData(); //JSON은 통째로 굽는 게 안전하므로 인덱스 제거
+	static HRESULT				Load_CitizenPresetData();
+	static HRESULT				Save_CitizenPresetData(); //JSON은 통째로 굽는 게 안전하므로 인덱스 제거
 
 	// 메모리 제어 (추가/수정/삭제)
-	static HRESULT Update_CitizenPresetData(const CITIZEN_DATA& tData, _int iIndex = -1);
-	static HRESULT Delete_CitizenPresetData(_int iIndex);
+	static HRESULT				Update_CitizenPresetData(const CITIZEN_DATA& tData, _int iIndex = -1);
+	static HRESULT				Delete_CitizenPresetData(_int iIndex);
 public:
 	static void Clear()
 	{
@@ -578,7 +580,7 @@ struct Citizen_MoveData
 	float							fSpeed{ 2.5 };                       // 타입에 맞는 이동 속도
 };
 
-static Citizen_MoveData Get_RandomCitizenMoveData(const string& strLevelName)
+static Citizen_MoveData Get_RandomCitizenMoveData(const std::string& strLevelName)
 {
 	/* 그리고 Way Point 랜덤으로 뽑아내기 */
 
@@ -587,18 +589,17 @@ static Citizen_MoveData Get_RandomCitizenMoveData(const string& strLevelName)
 	// 예시: 50% 확률로 걷거나 뜀 (rand() 사용 예제)
 	int iRandom = CGameInstance::GetInstance()->Rand_Int(0, 1);
 
-	//if (iRandom == 0)
-	//{
-	//	tData.eMoveType = CITIZEN_MOVE_TYPE::WALK;
-	//	tData.fSpeed = 2.5f; // 걷기 속도
-	//}
-	//else
-	//{
-	//	tData.eMoveType = CITIZEN_MOVE_TYPE::RUN;
-	//	tData.fSpeed = 4.0f; // 뛰기 속도
-	//}
-	tData.eMoveType = CITIZEN_MOVE_TYPE::WALK;
-	tData.fSpeed = 2.5f;
+	if (iRandom == 0)
+	{
+		tData.eMoveType = CITIZEN_MOVE_TYPE::WALK;
+		tData.fSpeed = 1.0f; // 걷기 속도
+	}
+	else
+	{
+		tData.eMoveType = CITIZEN_MOVE_TYPE::RUN;
+		tData.fSpeed = 4.0f; // 뛰기 속도
+	}
+
 	tData.pWayPointData = CitizenWayPointOriginData::Get_RandomWayPointOrignData(strLevelName);
 
 	return tData;
@@ -610,6 +611,130 @@ static void AllCitizenDatas_Clear()
 	DTO::CitizenWayPointOriginData::Clear();
 	DTO::CitizenPresetData::Clear();
 }
+
+
+/* Random 이름 Data */
+
+struct CitizenUITextData
+{
+public:
+
+	static constexpr size_t AGE_MAX = static_cast<size_t>(DTO::CITIZEN_TYPE::END);
+	static constexpr size_t GENDER_MAX = static_cast<size_t>(DTO::CITIZEN_GENDERTYPE::END);
+
+	using NameArray2D	= std::array<std::array<std::vector<std::string>, GENDER_MAX>, AGE_MAX>;
+
+	using TextArray2D	= std::array<std::array<std::vector<std::string>, GENDER_MAX>, AGE_MAX>;
+
+	using OffsetArray	= std::array< Vec3 , AGE_MAX>;
+
+private:
+	/* Random 이름값 */
+	static inline NameArray2D arrNameDatas = { {
+			// [0] Child (CITIZEN_TYPE::Child)
+			{{
+				{"민준", "서준", "도윤", "시우", "하준", "지훈"}, // [0] Male
+				{"서연", "하은", "지아", "서윤", "지유", "다은"}  // [1] Female
+			}},
+		// [1] Youth (CITIZEN_TYPE::Youth)
+		{{
+			{"현우", "민수", "준호", "지민", "성민", "동현"},
+			{"민지", "지은", "수아", "유진", "혜진", "소민"}
+		}},
+		// [2] Middle (CITIZEN_TYPE::Middle)
+		{{
+			{"정훈", "성호", "상철", "기태", "영수", "동수"},
+			{"미경", "선영", "정희", "영미", "현주", "은주"}
+		}},
+		// [3] Old (CITIZEN_TYPE::Old)
+		{{
+			{"덕배", "춘배", "만수", "칠성", "용식", "팔봉"},
+			{"옥자", "춘자", "점순", "말숙", "순자", "끝순"}
+		}}
+	} };
+
+	static inline TextArray2D arrTextDatas = { {
+			// [0] Child (골목 누비기, 뛰어다님, 시선 분산)
+			{{
+				{"쥬신 학원에 늦겟어 빨리 가야겠어.", "빨리 가서 자리 맡아야지!", "우와, 이 골목 엄청 좁다."}, // Male
+				{"고양이 어디로 숨었지?", "엄마가 빨리 오랬는데...", "이쪽 길로 가면 빠르려나?"}   // Female
+			}},
+		// [1] Youth (발걸음 재촉, 환경 불평, 혼잣말)
+		{{
+			{"아, 먼지 진짜 많네.", "오늘따라 순찰대가 자주 보이네.", "빨리 배달하고 쉬어야지."}, // Male
+			{"이 골목은 맨날 물이 고여있어.", "아휴, 해 지기 전에 가야 하는데.", "지름길로 가면 금방 가겠지."}  // Female
+		}},
+		// [2] Middle (짐 나르기, 바쁘게 걷기, 생활 밀착형 불평)
+		{{
+			{"어허, 길 좀 비켜주쇼! 지나갑니다.", "오늘따라 짐이 더 무겁네.", "바람이 차네. 비 오려나."}, // Male
+			{"어유, 골목에 쓰레기 좀 그만 버리지.", "오늘 저녁거리가 영 시원찮네.", "바쁘다 바빠, 빨리 가자."}  // Female
+		}},
+		// [3] Old (천천히 걷기, 주변 관찰, 느릿한 혼잣말)
+		{{
+			{"에잉, 바닥이 미끄러우니 조심해야지.", "이 동네도 참 많이 변했어.", "천천히 가야지. 서두를 게 뭐 있나."}, // Male
+			{"아이고, 오늘 따라 허리가 더아픈겨..", "어디 보자... 이쪽 길이 맞던가.", "바람이 제법 쌀쌀하구먼."}  // Female
+		}}
+	} };
+
+
+	static inline OffsetArray arrTextOffsets = { {
+			{ 0.f, 2.f, 0.f }, // [0] Child
+			{ 0.f, 3.f, 0.f }, // [1] Youth
+			{ 0.f, 3.f, 0.f }, // [2] Middle
+			{ 0.f, 3.f, 0.f }  // [3] Old
+		} };
+
+public:
+	static inline std::string Get_RandomCitizenName(const std::wstring& wstrFolderName)
+	{
+		CitizenModelInfo tInfo = Get_CitizenInfo_ByClothPath(wstrFolderName);
+
+		size_t iAge = static_cast<size_t>(tInfo.eAge);
+		size_t iGender = static_cast<size_t>(tInfo.eGender);
+
+		if (iAge >= AGE_MAX || iGender >= GENDER_MAX)
+			return std::string("이름모를 시민");
+
+		const std::vector<std::string>& vecNames = arrNameDatas[iAge][iGender];
+
+		if (vecNames.empty())
+			return std::string("이름모를 시민");
+
+		_uint iMaxIndex = static_cast<_uint>(vecNames.size() - 1);
+		return vecNames[CGameInstance::GetInstance()->Rand_Int(0, iMaxIndex)];
+	}
+
+	static inline std::string Get_RandomCitizenText(const std::wstring& wstrFolderName)
+	{
+		CitizenModelInfo tInfo = Get_CitizenInfo_ByClothPath(wstrFolderName);
+
+		size_t iAge = static_cast<size_t>(tInfo.eAge);
+		size_t iGender = static_cast<size_t>(tInfo.eGender);
+
+		if (iAge >= AGE_MAX || iGender >= GENDER_MAX)
+			return std::string("");
+
+		const std::vector<std::string>& vecTexts = arrTextDatas[iAge][iGender];
+
+		if (vecTexts.empty())
+			return std::string("");
+
+		_uint iMaxIndex = static_cast<_uint>(vecTexts.size() - 1);
+		return vecTexts[CGameInstance::GetInstance()->Rand_Int(0, iMaxIndex)];
+	}
+
+	static inline Vec3 Get_CitizenTextOffset(const std::wstring& wstrFolderName)
+	{
+		CitizenModelInfo tInfo = Get_CitizenInfo_ByClothPath(wstrFolderName);
+		size_t iAge = static_cast<size_t>(tInfo.eAge);
+
+		if (iAge >= AGE_MAX)
+			return Vec3(0.f, 3.f, 0.f);
+
+		return arrTextOffsets[iAge];
+	}
+};
+
 
 
 NS_END

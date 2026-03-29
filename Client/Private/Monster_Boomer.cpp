@@ -71,7 +71,7 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 600.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 15000.f);
 	}
 
 	Ready_StateIndexForDirecting();
@@ -154,7 +154,7 @@ HRESULT CMonster_Boomer::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 600.f;
+		desc.fMaxHp = 15000.f;
 		desc.fDefense = 100.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 
@@ -224,6 +224,7 @@ HRESULT CMonster_Boomer::Ready_Components(void* pArg)
 		return E_FAIL;
 	{
 		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		Desc.wstrIconTextureTag = L"Texture_T_Map_Enemy_Sleep";
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}

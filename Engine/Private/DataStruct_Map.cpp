@@ -1587,6 +1587,19 @@ void BATCH_NPC_DESC::from_Json(const json& LoadJson)
 	else
 		this->eBatchNPCType = OBJECT_ENUM_TAG::NPC_DEFAULT;
 
+	if (LoadJson.contains("Sound Tag"))
+	{
+		this->strSountTag = LoadJson["Sount Tag"];
+	}
+	if (LoadJson.contains("Name"))
+	{
+		this->strNPCName = LoadJson["Name"].get<string>();
+	}
+	if (LoadJson.contains("Text"))
+	{
+		this->strNPCText = LoadJson["Text"].get<string>();
+	}
+
 	if (LoadJson.contains("bHasQuest"))
 		LoadJson.at("bHasQuest").get_to(this->bHasQuest);
 	else
@@ -1621,6 +1634,10 @@ void BATCH_NPC_DESC::to_Json(json& SaveJson)
 {
 	SaveJson["Batch NPC Type"] = DTO::MakeNPCType_ToString(this->eBatchNPCType);
 
+	SaveJson["Sount Tag"]	= this->strSountTag;
+	SaveJson["Name"]	= this->strNPCName;
+	SaveJson["Text"]	= this->strNPCText;
+
 	SaveJson["bHasQuest"] = this->bHasQuest;
 
 	if (this->bHasQuest && !this->tQuestObjectDesc.empty())
@@ -1630,8 +1647,8 @@ void BATCH_NPC_DESC::to_Json(json& SaveJson)
 	{
 		this->tNpcCitizenData.to_Json(SaveJson["Citizen Data"]);
 	}
-
 }
+
 #pragma endregion
 
 
