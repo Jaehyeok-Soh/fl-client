@@ -33,12 +33,16 @@ void CUIQuickSlot_Manager::Tick_Player_Weapon_State(const _float fTimeDelta)
 					break;
 
 				m_arrWeapons[m_iCurrentSlotIndex].eWeaponType = EUIWeaponTypes::BASIC;
+				m_arrWeapons[m_iCurrentSlotIndex].iWeaponTypeIndex = ENUM_TO_UINT(CPlayer::EWEAPON::MELEE);
+				m_arrWeapons[m_iCurrentSlotIndex].iWeaponIndex = i;
 				m_iCurrentSlotIndex++;
 			}
 				break;
 			case ENUM_TO_UINT(Client::CPlayer::MELEE::DUAL):
 			{
 				m_arrWeapons[m_iCurrentSlotIndex].eWeaponType = EUIWeaponTypes::DUAL;
+				m_arrWeapons[m_iCurrentSlotIndex].iWeaponTypeIndex = ENUM_TO_UINT(CPlayer::EWEAPON::MELEE);
+				m_arrWeapons[m_iCurrentSlotIndex].iWeaponIndex = i;
 				m_iCurrentSlotIndex++;
 			}
 				break;
@@ -59,6 +63,8 @@ void CUIQuickSlot_Manager::Tick_Player_Weapon_State(const _float fTimeDelta)
 			case ENUM_TO_UINT(Client::CPlayer::RANGE::MACHINE):
 			{
 				m_arrWeapons[m_iCurrentSlotIndex].eWeaponType = EUIWeaponTypes::GUN;
+				m_arrWeapons[m_iCurrentSlotIndex].iWeaponTypeIndex = ENUM_TO_UINT(CPlayer::EWEAPON::RANGE);
+				m_arrWeapons[m_iCurrentSlotIndex].iWeaponIndex = i;
 				m_iCurrentSlotIndex++;
 			}
 				break;
@@ -69,6 +75,16 @@ void CUIQuickSlot_Manager::Tick_Player_Weapon_State(const _float fTimeDelta)
 			}
 		}
 	}
+}
+
+void CUIQuickSlot_Manager::Request_Change_Weapon(_uint iSlotIndex)
+{
+	if (iSlotIndex >= m_arrWeapons.size())
+		return;
+	if (m_arrWeapons[iSlotIndex].eWeaponType == EUIWeaponTypes::END)
+		return;
+
+	m_pPlayer->Change_MainWeapon(m_arrWeapons[iSlotIndex].iWeaponTypeIndex, m_arrWeapons[iSlotIndex].iWeaponIndex);
 }
 
 HRESULT CUIQuickSlot_Manager::Cache_Player()

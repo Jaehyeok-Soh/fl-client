@@ -723,6 +723,7 @@ void CMainApplication::Free()
 	CUIMinimap_Manager::GetInstance()->DestroyInstance();
 	CUITutorial_Manager::GetInstance()->DestroyInstance();
 	CCameraPreset_Manager::GetInstance()->DestroyInstance();
+	CUIQuickSlot_Manager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();
 
