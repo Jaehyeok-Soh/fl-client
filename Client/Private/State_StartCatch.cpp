@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "State_StartCatch.h"
 #include "GameObject.h"
+#include "ActionState.h"
+#include "Player.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
 #include "GameInstance.h"
@@ -37,6 +39,16 @@ HRESULT CState_StartCatch::Start(void* pArg, _bool bForce)
 void CState_StartCatch::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	if (Is_AnimFinished())
+	{
+		CActionState *pActionState = Get_Target()->Get_Component<CActionState>();
+		if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::STUN_START))
+		{
+			Change_MonsterState(m_umapState["BackdashCatch"]);
+		}
+		else
+			Change_MonsterState(m_umapState["Idle"]);
+	}
 }
 
 HRESULT CState_StartCatch::End()

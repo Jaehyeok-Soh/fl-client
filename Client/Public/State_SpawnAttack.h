@@ -3,15 +3,14 @@
 
 NS_BEGIN(Client)
 
-class CMonsterActionState;
-class CMonsterControlContext;
+class CLianhuo_GimmikController;
 
-class CState_GimmikRunStart final : public CStateBase_Monster
+class CState_SpawnAttack : public CStateBase_Monster
 {
 	using Super = CStateBase_Monster;
 private:
-	CState_GimmikRunStart(CActionState* pOwnerComponent, _uint iStateIndex);
-	virtual ~CState_GimmikRunStart() = default;
+	CState_SpawnAttack(CActionState* pOwnerComponent, _uint iStateIndex);
+	virtual ~CState_SpawnAttack() = default;
 
 	virtual HRESULT Initialize(void* pArg) override;
 public:
@@ -19,8 +18,12 @@ public:
 	virtual HRESULT Start(void* pArg, _bool bForce = false) override;
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
+private:
+	void Spawn_Skill();
+private:
+	CLianhuo_GimmikController* m_pOwnerGimmikController{ nullptr };
 public:
-	static CState_GimmikRunStart* Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg = nullptr);
+	static CState_SpawnAttack* Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg = nullptr);
 	virtual void Free() override;
 };
 

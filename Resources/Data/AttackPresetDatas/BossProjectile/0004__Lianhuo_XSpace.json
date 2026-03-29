@@ -3,17 +3,17 @@
     "Objects": [
         {
             "Type": "NORMAL",
-            "eCategory": "BossBasic",
+            "eCategory": "BossProjectile",
             "eColliderType": "Overlap",
-            "iID": 2,
-            "strTag": "Xibi_Attack",
+            "iID": 4,
+            "strTag": "Lianhuo_XSpace",
             "tCombat": {
-                "DamageType": "Electric",
-                "HitType": "Additive",
-                "fBaseDamage": 274.0,
+                "DamageType": "Fire",
+                "HitType": "Heavy",
+                "fBaseDamage": 777.0,
                 "fHitStopSec": 0.0,
                 "fHitStunSec": 0.0,
-                "fImpulse": 5.0,
+                "fImpulse": 15.0,
                 "fPushPower": 0.0
             },
             "tPolicy": {

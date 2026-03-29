@@ -16,6 +16,7 @@
 #include "UIIcon_Component.h"
 #include "CameraEventBinder.h"
 #include "MyStat.h"
+#include "Lianhuo_GimmikController.h"
 
 // CustomState
 #include "State_BackdashCatch.h"
@@ -25,6 +26,7 @@
 #include "State_GimmikCamera.h"
 #include "State_GimmikRunLoop.h"
 #include "State_GimmikRunStart.h"
+#include "State_SpawnAttack.h"
 
 #include "GameInstance.h"
 
@@ -89,6 +91,9 @@ HRESULT CBoss_Lianhuo::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
+	if (FAILED(Get_Component<CLianhuo_GimmikController>()->Awake(iCurrentLevelID)))
+		return E_FAIL;
+
 	CTransform* pTrnasform = Get_Component<CTransform>();
 	pTrnasform->Set_MovePerSec(4.f);
 	pTrnasform->Set_RotatePerSec(5.f);
@@ -108,7 +113,7 @@ HRESULT CBoss_Lianhuo::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-
+	Get_Component<CLianhuo_GimmikController>()->Set_SpawnPositionm(vPos);
 	return S_OK;
 }
 
@@ -120,6 +125,7 @@ void CBoss_Lianhuo::Update_Priority(const _float fTimeDelta)
 void CBoss_Lianhuo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	Get_Component<CLianhuo_GimmikController>()->Update(fTimeDelta);
 	CMonsterActionState* pActionState = Get_Component<CMonsterActionState>();
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD4))
 	{		
@@ -128,7 +134,7 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD5))
 	{
-		_int iIndex = pActionState->Get_StateIndex("BackdashCatch");
+		_int iIndex = pActionState->Get_StateIndex("SpawnAttack");
 		pActionState->Change_State(iIndex);
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD6))
@@ -347,7 +353,12 @@ HRESULT CBoss_Lianhuo::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
-
+	{
+		CLianhuo_GimmikController::tagGimmikControllerDesc desc = {};
+		desc.pOwnerModel = Get_Part<CBoss_Lianhuo_Body>(Part::Enum::BODY)->Get_Component<CModel>();
+		if (FAILED(Add_Component<CLianhuo_GimmikController>(0, L"Prototype_Component_Lianhuo_GimmikController", &desc)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -440,6 +451,10 @@ HRESULT CBoss_Lianhuo::Ready_CustomStates()
 
 	// For. State_GimmikRunStart
 	if (FAILED(ADD_CUSTOM_STATE(CState_GimmikRunStart, "GimmikRunStart")))
+		return E_FAIL;
+
+	// For. State_SpawnAttack
+	if (FAILED(ADD_CUSTOM_STATE(CState_SpawnAttack, "SpawnAttack")))
 		return E_FAIL;
 
 	return S_OK;

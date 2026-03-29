@@ -101,7 +101,8 @@ HRESULT CEffect_DashPanel::Spawn_FromPool(void* pArg)
 	if (nullptr == pArg) return E_FAIL;
 	m_bIsEffectFinish = false;
 
-	Spawn_PositionCalculate(pArg);
+	if (FAILED(Super::Spawn_FromPool(pArg)))
+		return E_FAIL;
 
 	return S_OK;
 }

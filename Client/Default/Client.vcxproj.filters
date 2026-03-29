@@ -1000,6 +1000,21 @@
     <Filter Include="03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface">
       <UniqueIdentifier>{865a76ca-33fe-43c2-839b-b050274decd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Monster\Lianhuo\SpawnAttack">
+      <UniqueIdentifier>{2a03db4d-082e-41d2-be00-42a4d58004a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Lianhuo">
+      <UniqueIdentifier>{066f0f81-2521-41f8-a90b-c743b5cf8a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Lianhuo\XSpace">
+      <UniqueIdentifier>{72bdc475-25a1-41ba-85d0-639cccaa2a1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Lianhuo\FirePlain">
+      <UniqueIdentifier>{b021043a-996e-4c54-825d-56aedcceb93f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Lianhuo\ChainThron">
+      <UniqueIdentifier>{ee775835-e207-4c16-a652-9d949684c289}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1881,6 +1896,18 @@
     <ClInclude Include="..\Public\IItem.h">
       <Filter>03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\State_SpawnAttack.h">
+      <Filter>06. FSM\Monster\Lianhuo\SpawnAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_XSpace.h">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\XSpace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_ChainThron.h">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_FirePlain.h">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\FirePlain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2749,6 +2776,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\IItem.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_SpawnAttack.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\SpawnAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_XSpace.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\XSpace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_ChainThron.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_FirePlain.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\FirePlain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

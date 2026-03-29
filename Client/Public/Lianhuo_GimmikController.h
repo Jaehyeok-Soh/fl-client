@@ -1,6 +1,12 @@
 #pragma once
 #include "GimmikController.h"
 
+
+NS_BEGIN(Engine)
+class CSkillObjectSpawner_RandomXZ;
+class CSingleSkillSpawner;
+NS_END
+
 NS_BEGIN(Client)
 
 class CLianhuo_GimmikController final : public CGimmikController
@@ -18,17 +24,34 @@ private:
 
 	virtual HRESULT						Initialize_Prototype() override;
 	virtual HRESULT						Initialize(void* pArg) override;
-private:
+public:
 	HRESULT Awake(const _uint iCurLevelIndex);
 	void Update(const _float fTimeDelta);
-public:
+	void Set_SpawnPositionm(const Vec3& vPosition);
+	void Trigger_XSpace(const Vec3& vPosition);
+private:
 	virtual HRESULT Bind_Events() override;
 private:
+	HRESULT Ready_Spawner();
+	void Spawn_RandomSkill(const _float fTimeDelta);
+	void Trigger_FirePlain();
+	void Trigger_ChainThron();
 protected:
 	///////////////
 	//// Event ////
 	///////////////
 	virtual void On_ModelAnimNotify(const AnimNotifyKey& key) override;
+private:
+	// TODO - BattleField·Î »©±â
+	Vec3 m_vSpawnPosition{ Vec3::Zero };
+	_float m_fFieldMaxRange{ 15.f };
+
+	TIME_LINE m_tFirePlainTimer{};
+	TIME_LINE m_tChainThronTimer{};
+
+	CSkillObjectSpawner_RandomXZ* m_pRandomFirePlain = { nullptr };
+	CSkillObjectSpawner_RandomXZ* m_pRandomChainThron = { nullptr };
+	CSingleSkillSpawner* m_pXSpaceSpawner = { nullptr };
 public:
 	static CLianhuo_GimmikController* Create();
 	virtual CComponent* Clone(void* pArg) override;

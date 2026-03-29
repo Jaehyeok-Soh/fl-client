@@ -5,15 +5,15 @@
             "Type": "NORMAL",
             "eCategory": "BossBasic",
             "eColliderType": "Overlap",
-            "iID": 2,
-            "strTag": "Xibi_Attack",
+            "iID": 6,
+            "strTag": "Lianhuo_Attack_2",
             "tCombat": {
-                "DamageType": "Electric",
+                "DamageType": "Fire",
                 "HitType": "Additive",
-                "fBaseDamage": 274.0,
+                "fBaseDamage": 533.0,
                 "fHitStopSec": 0.0,
                 "fHitStunSec": 0.0,
-                "fImpulse": 5.0,
+                "fImpulse": 10.0,
                 "fPushPower": 0.0
             },
             "tPolicy": {

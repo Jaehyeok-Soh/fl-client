@@ -43,6 +43,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -116,6 +117,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -164,6 +167,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -212,6 +217,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -260,6 +267,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -308,6 +317,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_zero_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -356,6 +367,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -404,6 +417,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -454,6 +469,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -502,6 +519,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -574,6 +593,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -647,6 +667,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ",
                                 "tParam": {
                                     "bParam": [
@@ -695,6 +717,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -743,6 +767,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -791,6 +817,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_zero_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -839,6 +867,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -887,6 +917,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -935,6 +967,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -983,6 +1017,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -1031,6 +1067,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -1081,6 +1119,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -1129,6 +1169,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_impuls",
                                 "tParam": {
                                     "bParam": [
@@ -1177,6 +1219,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -1249,6 +1293,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1322,6 +1367,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -1395,6 +1442,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1492,6 +1540,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1565,6 +1614,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -1636,8 +1687,9 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
-                    "bIsCustom": false,
+                    "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1693,38 +1745,7 @@
                         "Animation_Lianhuo_Skill05"
                     ],
                     "vecStartConditionFeature": [],
-                    "vecStateTransition": [
-                        {
-                            "mapRandomStatePool": {
-                                "Idle": 1.0
-                            },
-                            "vecConditionEntry": [
-                                {
-                                    "strCondition": "condition_animation_finish",
-                                    "tParam": {
-                                        "bParam": [
-                                            false,
-                                            false,
-                                            false,
-                                            false
-                                        ],
-                                        "fParam": [
-                                            0.0,
-                                            0.0,
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "iParam": [
-                                            0,
-                                            0,
-                                            0,
-                                            0
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    ],
+                    "vecStateTransition": [],
                     "vecWeaponAnimNames": []
                 },
                 {
@@ -1735,6 +1756,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1808,6 +1830,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ",
                                 "tParam": {
                                     "bParam": [
@@ -1856,6 +1880,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_impuls_front",
                                 "tParam": {
                                     "bParam": [
@@ -1904,6 +1930,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -1952,6 +1980,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2002,6 +2032,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2050,6 +2082,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2105,6 +2139,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2153,6 +2189,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_zero_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2219,6 +2257,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -2316,6 +2355,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -2389,6 +2429,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ",
                                 "tParam": {
                                     "bParam": [
@@ -2437,6 +2479,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2485,6 +2529,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2535,6 +2581,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2583,6 +2631,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2638,6 +2688,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_zero_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2686,6 +2738,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2752,6 +2806,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3047,6 +3102,188 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "GimmikCamera": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_out_of_melee_attack",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_attack_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_phase_two",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "StartCatch": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_phase_two",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_melee_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "StartCatch": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_phase_two",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_target_close",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
                         }
                     ],
                     "vecWeaponAnimNames": []
@@ -3059,6 +3296,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3156,6 +3394,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3253,6 +3492,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3350,6 +3590,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3447,6 +3688,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3498,6 +3740,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_backward",
                             "tParam": {
                                 "bParam": [
@@ -3521,6 +3765,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -3670,6 +3916,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3721,6 +3968,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_backward_left",
                             "tParam": {
                                 "bParam": [
@@ -3744,6 +3993,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -3893,6 +4144,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3944,6 +4196,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_backward_right",
                             "tParam": {
                                 "bParam": [
@@ -3967,6 +4221,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -4116,6 +4372,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -4167,6 +4424,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_front",
                             "tParam": {
                                 "bParam": [
@@ -4190,6 +4449,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -4340,6 +4601,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -4391,6 +4653,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_front_left",
                             "tParam": {
                                 "bParam": [
@@ -4414,6 +4678,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -4564,6 +4830,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -4615,6 +4882,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_front_right",
                             "tParam": {
                                 "bParam": [
@@ -4638,6 +4907,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -4788,6 +5059,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -4839,6 +5111,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_left",
                             "tParam": {
                                 "bParam": [
@@ -4862,6 +5136,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -4932,6 +5208,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5005,6 +5282,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ",
                                 "tParam": {
                                     "bParam": [
@@ -5032,6 +5311,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_right",
                             "tParam": {
                                 "bParam": [
@@ -5098,10 +5379,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5164,10 +5446,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5204,8 +5487,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 60.0,
+                        "fMinTime": 60.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -5230,10 +5513,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5296,10 +5580,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5362,10 +5647,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5402,8 +5688,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 60.0,
+                        "fMinTime": 60.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -5428,10 +5714,11 @@
                     "FAniFlags": 0,
                     "bBlend": false,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5494,10 +5781,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",

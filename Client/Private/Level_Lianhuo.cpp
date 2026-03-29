@@ -60,6 +60,13 @@
 #include "PlayerSkillObj_Headers.h"
 
 //=================
+// Skill Object
+//=================
+#include "Lianhuo_FirePlain.h"
+#include "Lianhuo_ChainThron.h"
+#include "Lianhuo_XSpace.h"
+
+//=================
 // GameInstance
 //=================
 #include "GameInstance.h"
@@ -94,17 +101,19 @@ HRESULT CLevel_Lianhuo::Initialize()
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
-		return E_FAIL;
-
 	if (FAILED(Ready_Map()))
 		return E_FAIL;
 
 	if (FAILED(Ready_ShaderSetting()))
 		return E_FAIL;
 
-	return S_OK;
+	if (FAILED(Ready_SkillObjectLayer()))
+		return E_FAIL;
 
+	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
@@ -565,6 +574,49 @@ HRESULT CLevel_Lianhuo::Ready_Dissolve()
 	return m_pGameInstance->Ready_DissolveSetting();
 }
 
+HRESULT CLevel_Lianhuo::Ready_SkillObjectLayer()
+{
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::LIANHUO);
+
+	// SkillObject Pool
+	{
+		CLianhuo_FirePlain::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_LianhuoFirePlain,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszLianhuoFirePlain_Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+	{
+		CLianhuo_ChainThron::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_LianhuoChainThron,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszLianhuoChainThron_Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+	{
+		CLianhuo_XSpace::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_LianhuoXSpace,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszLianhuoXSpace_Prototype_Tag,
+			&desc,
+			10)))
+			return E_FAIL;
+	}
+	return S_OK;
+}
 
 CLevel_Lianhuo* CLevel_Lianhuo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

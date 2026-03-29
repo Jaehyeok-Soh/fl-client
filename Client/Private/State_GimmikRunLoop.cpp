@@ -55,9 +55,10 @@ HRESULT CState_GimmikRunLoop::Start(void* pArg, _bool bForce)
 	if (m_bPathReady == false)
 		return E_FAIL;
 
-	pCCT->SetFootPosition(m_arrDashLine[0].vStart);
+	pCCT->SetFootPosition(m_arrDashLine[m_iDashIndex].vStart);
 	Resolve_DashDirection();
-	SetupLookAt(m_arrDashLine[0].vEnd);
+	SetupLookAt(m_arrDashLine[m_iDashIndex].vEnd);
+	Spawn_Line(m_arrDashLine[m_iDashIndex].vStart, m_arrDashLine[m_iDashIndex].vEnd);
 	pGo->Set_Render(true);
 	return S_OK;
 }
@@ -98,9 +99,8 @@ void CState_GimmikRunLoop::Update(const _float fTimeDelta)
 			m_ePhase = ERunPhase::Hold;
 			return;
 		}
-
+		
 		SetupLookAt(vTarget);
-
 		if (vToTarget.LengthSquared() > g_XMEpsilon.f[0])
 			vToTarget.Normalize();
 
@@ -115,7 +115,7 @@ void CState_GimmikRunLoop::Update(const _float fTimeDelta)
 		{
 			++m_iDashIndex;
 
-			if (m_iDashIndex >= 3)
+			if (m_iDashIndex >= DASH_COUNT)
 			{
 				Change_MonsterState(m_umapState["GimmikAttack"]);
 				return;
@@ -125,6 +125,7 @@ void CState_GimmikRunLoop::Update(const _float fTimeDelta)
 			Resolve_DashDirection();
 			SetupLookAt(m_arrDashLine[m_iDashIndex].vEnd);
 			pOwner->Set_Render(true);
+			Spawn_Line(m_arrDashLine[m_iDashIndex].vStart, m_arrDashLine[m_iDashIndex].vEnd);
 			m_ePhase = ERunPhase::Dash;
 		}
 		break;
@@ -186,6 +187,23 @@ void CState_GimmikRunLoop::Resolve_DashDirection()
 		m_vDashDir.Normalize();
 }
 
+void CState_GimmikRunLoop::Spawn_Line(const Vec3& vStart, const Vec3& vEnd)
+{
+	_float fDistance = 0.2f;
+	Vec3 vS = vStart;
+	Vec3 vE = vEnd;
+	vS.y += fDistance;
+	vE.y += fDistance;
+	_uint iLevelID = ENUM_TO_UINT(ELevelType::LIANHUO);
+	EFFECT_LINE_DESC desc{};
+	desc.Set_LinePosition(vS, vE);
+	m_pGameInstance->Request_AddObject(
+		iLevelID,
+		L"POOL_Boss_LianHuo_DashPanel",
+		iLevelID,
+		&desc);
+}
+
 _bool CState_GimmikRunLoop::Build_DashLines()
 {
 	_float fBaseAxis = ::XMConvertToRadians(
@@ -193,7 +211,7 @@ _bool CState_GimmikRunLoop::Build_DashLines()
 
 	const _float fSector = XM_PI / 3.f; // 60µµ °£°Ý
 
-	for (_int i = 0; i < 3; ++i)
+	for (_int i = 0; i < DASH_COUNT; ++i)
 	{
 		_float fAxisAngle = fBaseAxis + fSector * i;
 

@@ -15,6 +15,7 @@
 #include "Collider.h"
 #include "Xibi_GimmikController.h"
 #include "Monster_GimmikController.h"
+#include "Lianhuo_GimmikController.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
 #include "VIBuffer_Particle_Point.h"
@@ -100,6 +101,10 @@
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
 #include "Xibi_Oneshot_Thunder.h"
+// Lianhuo
+#include "Lianhuo_FirePlain.h"
+#include "Lianhuo_ChainThron.h"
+#include "Lianhuo_XSpace.h"
 // player
 #include "PlayerSkillObj_Headers.h"
 // "Prototype_Component_Model_LianhuoWeapon"
@@ -1351,6 +1356,13 @@ HRESULT CLoader::Loading_For_Lianhuo()
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_LianhuoWeapon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
+	// For. Prototype_Component_Lianhuo_GimmikController
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Lianhuo_GimmikController", CLianhuo_GimmikController::Create());
+
+	// Projectile
+	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoFirePlain_Prototype_Tag, CLianhuo_FirePlain::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoChainThron_Prototype_Tag, CLianhuo_ChainThron::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoXSpace_Prototype_Tag, CLianhuo_XSpace::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
@@ -1524,84 +1536,126 @@ HRESULT CLoader::Ready_EffectEvent()
 
 HRESULT CLoader::Ready_Spawner()
 {
-	_uint iLevelID = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
+	{
+		_uint iLevelID = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
+		/* Xibi */
+		// SingleSkill
+		{
+			CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 0.5f;
+			originDesc.fStartDelay = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotSingleThunder,
+				CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		// RandomXZ 
+		{
+			CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 0.5f;
+			originDesc.fInterval = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotRandomThunder,
+				CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		// 360Circle
+		{
+			CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+			desc.iPoolLevelIndex = iLevelID;
+			desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
+			desc.fLifeTime = 5.f;
+			desc.fInterval = 0.05f;
+			desc.fSpeed = 6.5f;
+			desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360CircleProjectile,
+				CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
+		// 360Thunder
+		{
+			CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+			desc.iPoolLevelIndex = iLevelID;
+			desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
+			desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			desc.fLifeTime = 7.f;
+			desc.fInterval = 0.03f;
 
-	/* Xibi */
-	// SingleSkill
-	{
-		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
-		originDesc.iPoolLevelIndex = iLevelID;
-		originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
-		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		originDesc.fLifeTime = 0.5f;
-		originDesc.fStartDelay = 0.1f;
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotSingleThunder,
-			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
-			return E_FAIL;
-	}
-	// RandomXZ 
-	{
-		CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
-		originDesc.iPoolLevelIndex = iLevelID;
-		originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
-		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		originDesc.fLifeTime = 0.5f;
-		originDesc.fInterval = 0.1f;
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotRandomThunder,
-			CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
-			return E_FAIL;
-	}
-	// 360Circle
-	{
-		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = iLevelID;
-		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
-		desc.fLifeTime = 5.f;
-		desc.fInterval = 0.05f;
-		desc.fSpeed = 6.5f;
-		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360CircleProjectile,
-			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-	}
-	// 360Thunder
-	{
-		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = iLevelID;
-		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
-		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		desc.fLifeTime = 7.f;
-		desc.fInterval = 0.03f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360ThunderProjectile,
+				CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
+		// 3wayThunder
+		{
+			CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+			desc.iPoolLevelIndex = iLevelID;
+			desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
+			desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			desc.fLifeTime = 7.f;
 
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360ThunderProjectile,
-			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
+				CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
+		// 8GateSpawner
+		{
+			CXibi_GateSpawner::SPAWNER_ORIGIN_DESC desc{};
+			desc.iPoolLevelIndex = iLevelID;
+			desc.fLifeTime = 7.f;
+			desc.fInterval = 0.6f;
+			desc.fSpeed = 4.5f;
+			desc.fMaxDistance = 30.f;
+			desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
+			desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiGate,
+				CXibi_GateSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
 	}
-	// 3wayThunder
+	
 	{
-		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = iLevelID;
-		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
-		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		desc.fLifeTime = 7.f;
-
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
-			CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-	}
-	// 8GateSpawner
-	{
-		CXibi_GateSpawner::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = iLevelID;
-		desc.fLifeTime = 7.f;
-		desc.fInterval = 0.6f;
-		desc.fSpeed = 4.5f;
-		desc.fMaxDistance = 30.f;
-		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
-		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiGate,
-			CXibi_GateSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
+		_uint iLevelID = ENUM_TO_UINT(ELevelType::LIANHUO);
+		// RandSpawn FirePlain
+		// RandomXZ 
+		{
+			CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_LianhuoFirePlain;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 5.f;
+			originDesc.fInterval = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_LianhuoSpawnerFirePlain,
+				CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		// RandSpawn ChaineThroneAttack
+		// RandomXZ 
+		{
+			CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_LianhuoChainThron;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 5.f;
+			originDesc.fInterval = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_LianhuoSpawnerChainThron,
+				CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		{
+			CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_LianhuoXSpace;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 0.5f;
+			originDesc.fStartDelay = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_LianhuoSpawnerXSpace,
+				CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
 	}
 
 	/* player */

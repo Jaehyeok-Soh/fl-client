@@ -970,6 +970,14 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_XibiCircleProjectile[]					{ L"Pool_Xibi_CircleProjectile" };
 	inline constexpr wchar_t g_wszPool_XibiOneshotThunder[]						{ L"Pool_Xibi_OneshotThunder" };
 
+	/* Lianhuo */
+	inline constexpr wchar_t g_wszLianhuoChainThron_Prototype_Tag[]{ L"Prototype_GameObject_Lian_ChainThron" };
+	inline constexpr wchar_t g_wszLianhuoFirePlain_Prototype_Tag[]{ L"Prototype_GameObject_Lian_FirePlain" };
+	inline constexpr wchar_t g_wszLianhuoXSpace_Prototype_Tag[]{ L"Prototype_GameObject_Lian_XSpace" };
+	inline constexpr wchar_t g_wszPool_LianhuoChainThron[]{ L"Pool_Lianhuo_ChainThron" };
+	inline constexpr wchar_t g_wszPool_LianhuoFirePlain[]{ L"Pool_Lianhuo_FirePlain" };
+	inline constexpr wchar_t g_wszPool_LianhuoXSpace[]{ L"Pool_Lianhuo_XSpace" };
+
 	/* Monster */
 	inline constexpr wchar_t g_wszMonsterDogProjectile_Prototype_Tag[]{ L"Prototype_GameObject_MonsterDog_CircleProjectile" };
 	inline constexpr wchar_t g_wszMonsterFlyProjectile_Prototype_Tag[]{ L"Prototype_GameObject_MonsterFly_CircleProjectile" };
@@ -994,6 +1002,11 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
 	inline constexpr wchar_t g_wszSpawner_XibiGate[]							{ L"Prototype_Spawner_XibiGate" };
+
+	/* Lianhuo */
+	inline constexpr wchar_t g_wszSpawner_LianhuoSpawnerFirePlain[]				{ L"Prototype_Spawner_LianhuoRandomFirePlain" };
+	inline constexpr wchar_t g_wszSpawner_LianhuoSpawnerChainThron[]			{ L"Prototype_Spawner_LianhuoRandomChainThron" };
+	inline constexpr wchar_t g_wszSpawner_LianhuoSpawnerXSpace[]				{ L"Prototype_Spawner_LianhuoRandomXSpace" };
 
 	/* Monster */
 	inline constexpr wchar_t g_wszSpawner_MonsterDogOneshotCircleProjectile[]{ L"Prototype_Spawner_MonsterDogOneshotCircleProjectile" };

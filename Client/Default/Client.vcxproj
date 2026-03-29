@@ -178,6 +178,9 @@
     <ClInclude Include="..\public\CameraShotPrestBuilder.h" />
     <ClInclude Include="..\Public\Canvas.h" />
     <ClInclude Include="..\Public\Effect_DashPanel.h" />
+    <ClInclude Include="..\public\Lianhuo_ChainThron.h" />
+    <ClInclude Include="..\public\Lianhuo_FirePlain.h" />
+    <ClInclude Include="..\public\Lianhuo_XSpace.h" />
     <ClInclude Include="..\Public\Monster_Dog_Projectile_Circle.h" />
     <ClInclude Include="..\Public\Monster_Fly_Projectile_Circle.h" />
     <ClInclude Include="..\Public\Monster_GimmikController.h" />
@@ -204,6 +207,7 @@
     <ClInclude Include="..\public\State_GimmikCamera.h" />
     <ClInclude Include="..\public\State_GimmikRunLoop.h" />
     <ClInclude Include="..\public\State_GimmikRunStart.h" />
+    <ClInclude Include="..\public\State_SpawnAttack.h" />
     <ClInclude Include="..\Public\State_SpecialDash.h" />
     <ClInclude Include="..\Public\ChangeLevelObject.h" />
     <ClInclude Include="..\Public\NPC_Tavern.h" />
@@ -479,6 +483,9 @@
     <ClCompile Include="..\private\CameraShotPrestBuilder.cpp" />
     <ClCompile Include="..\Private\Canvas.cpp" />
     <ClCompile Include="..\Private\Effect_DashPanel.cpp" />
+    <ClCompile Include="..\private\Lianhuo_ChainThron.cpp" />
+    <ClCompile Include="..\private\Lianhuo_FirePlain.cpp" />
+    <ClCompile Include="..\private\Lianhuo_XSpace.cpp" />
     <ClCompile Include="..\Private\Monster_Dog_Projectile_Circle.cpp" />
     <ClCompile Include="..\Private\Monster_Fly_Projectile_Circle.cpp" />
     <ClCompile Include="..\Private\Monster_GimmikController.cpp" />
@@ -505,6 +512,7 @@
     <ClCompile Include="..\private\State_GimmikCamera.cpp" />
     <ClCompile Include="..\private\State_GimmikRunLoop.cpp" />
     <ClCompile Include="..\private\State_GimmikRunStart.cpp" />
+    <ClCompile Include="..\private\State_SpawnAttack.cpp" />
     <ClCompile Include="..\Private\State_SpecialDash.cpp" />
     <ClCompile Include="..\Private\ChangeLevelObject.cpp" />
     <ClCompile Include="..\Private\NPC_Tavern.cpp" />
