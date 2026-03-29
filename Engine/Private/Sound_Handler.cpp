@@ -165,6 +165,12 @@ void CSound_Handler::CallbackEvent(const AnimNotifyKey& key)
     const _bool bSteal = key.bParam0;
     const _bool bLoop = key.bParam1;
 
+
+    _bool bPlayerFootHash = { false };
+
+    if (iSoundHash == m_iPlayerFootSoundHash || iSoundHash == m_iPlayerLandSoundHash)
+        bPlayerFootHash = true;
+
     switch (eCommand)
     {
     case DTO::EAnimSoundCommand::OneShot:
@@ -172,10 +178,21 @@ void CSound_Handler::CallbackEvent(const AnimNotifyKey& key)
         if (iSoundHash == 0)
             return;
 
-        if (fDelay > 0.f)
-            m_pGameInstance->Play_OneShot_Delayed(0 /* static */, iSoundHash, fDelay, fVolume, fPitch, bSteal);
+        if (bPlayerFootHash)
+        {
+            if (fDelay > 0.f)
+                m_pGameInstance->Play_OneShot_Delayed(m_pGameInstance->Get_CurrentLevelIndex(), iSoundHash, fDelay, fVolume, fPitch, bSteal);
+            else
+                m_pGameInstance->Play_OneShot(m_pGameInstance->Get_CurrentLevelIndex(), iSoundHash, fVolume, fPitch, bSteal);
+        }
+
         else
-            m_pGameInstance->Play_OneShot(0 /* static */, iSoundHash, fVolume, fPitch, bSteal);
+        {
+            if (fDelay > 0.f)
+                m_pGameInstance->Play_OneShot_Delayed(0 /* static */, iSoundHash, fDelay, fVolume, fPitch, bSteal);
+            else
+                m_pGameInstance->Play_OneShot(0 /* static */, iSoundHash, fVolume, fPitch, bSteal);
+        }
     }
     break;
 
@@ -183,6 +200,11 @@ void CSound_Handler::CallbackEvent(const AnimNotifyKey& key)
     {
         if (iSoundHash == 0 || iControlledId == INVALID_CONTROLLED_ID)
             return;
+
+        if (bPlayerFootHash)
+        {
+           m_pGameInstance->Play_Controlled(m_pGameInstance->Get_CurrentLevelIndex(), iSoundHash, iControlledId, fVolume, bLoop, fPitch);
+        }
 
         m_pGameInstance->Play_Controlled(0 /* static */, iSoundHash, iControlledId, fVolume, bLoop, fPitch);
     }
