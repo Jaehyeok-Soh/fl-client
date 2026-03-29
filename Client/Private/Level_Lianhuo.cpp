@@ -386,9 +386,8 @@ HRESULT CLevel_Lianhuo::Ready_Boss_Layer(const wstring& wstrLayerTag)
 				desc.bIsPlayer = false;
 				desc.eType = EPhysicsCCTType::CAPSULE;
 				desc.pOwnerMatrix = nullptr;
-				desc.fRadius = 1.f;
-				desc.fHeight = 1.f;
-				desc.vExtens = { 2.f, 2.f, 2.f };
+				desc.fRadius = 0.5f;
+				desc.fHeight = 2.5f;
 
 				PHYSICSMATERIAL_DESC mtrlDesc{};
 				mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;

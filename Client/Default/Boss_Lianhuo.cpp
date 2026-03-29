@@ -128,7 +128,7 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD5))
 	{
-		_int iIndex = pActionState->Get_StateIndex("EndCatch");
+		_int iIndex = pActionState->Get_StateIndex("BackdashCatch");
 		pActionState->Change_State(iIndex);
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD6))
@@ -136,7 +136,11 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 		Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, vPos);
 		Get_Component<CPhysicsCCT>()->SetFootPosition(vPos);
 	}
-
+	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD8))
+	{
+		_int iIndex = pActionState->Get_StateIndex("GimmikCamera");
+		pActionState->Change_State(iIndex);
+	}
 }
 
 void CBoss_Lianhuo::Update_Late(const _float fTimeDelta)
@@ -237,6 +241,14 @@ void CBoss_Lianhuo::Try_Attack(const HIT_DESC& hitDesc)
 	Super::Try_Attack(hitDesc);
 
 	Get_Component<CMonsterControlContext>()->Set_AttackLanded();
+}
+
+const Matrix* CBoss_Lianhuo::Get_PlayerLocBonePosition()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	CModel* pModel = pBody->Get_Component<CModel>();
+	CBone* pBone = pModel->Get_Bone(178);
+	return &pBone->Get_CombinedTransformMatrix();
 }
 
 HRESULT CBoss_Lianhuo::Change_State_ForDirecting(EStateForDirecting eState)

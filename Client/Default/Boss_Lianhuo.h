@@ -40,6 +40,7 @@ public:
 
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
+	const Matrix* Get_PlayerLocBonePosition();
 	HRESULT Change_State_ForDirecting(EStateForDirecting eState);
 private:
 	HRESULT Ready_Ability();

@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "PhysicsCCT.h"
+#include "GameObject.h"
 #include "State_SPHitStart.h"
 
 CState_SPHitStart::CState_SPHitStart(CActionState* pOwnerComponent)
@@ -30,13 +32,23 @@ HRESULT CState_SPHitStart::Start(void* pArg, _bool bForce)
     Set_ApplyYLerp(true);
     Set_ApplyGravity(false);
     Set_ZeroVerticalVelocity();
-
+    if (CPhysicsCCT* cct = Get_OwnerObject()->Get_Component<CPhysicsCCT>())
+    {
+        cct->SetHeight(0.1f);
+    }
+    m_bOnce = false;
     return S_OK;
 }
 
 void CState_SPHitStart::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
+    if (m_bOnce == false && Is_AnimTrackPositionBetweenRaw(55.f, 65.f))
+    {
+        m_bOnce = true;
+        Set_ApplyYLerp(false);
+        Set_ApplyGravity(true);
+    }
 }
 
 HRESULT CState_SPHitStart::End()
@@ -46,6 +58,12 @@ HRESULT CState_SPHitStart::End()
 
     Set_ApplyYLerp(false);
     Set_ApplyGravity(true);
+
+    CPhysicsCCT* cct = { nullptr };
+    if (cct = Get_OwnerObject()->Get_Component<CPhysicsCCT>())
+    {
+        cct->SetHeight(0.7f); // todo_eunbi : player cct height 값 바뀌면 여기도 바꿔줘야 함
+    }
     // hp 깎아야 하지 않나..?
 
     return S_OK;
