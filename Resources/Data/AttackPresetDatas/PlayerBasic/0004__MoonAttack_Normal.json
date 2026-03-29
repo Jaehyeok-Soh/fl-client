@@ -10,10 +10,10 @@
             "tCombat": {
                 "DamageType": "END",
                 "HitType": "Light",
-                "fBaseDamage": 20.0,
+                "fBaseDamage": 1000.0,
                 "fHitStopSec": 0.0,
                 "fHitStunSec": 0.0,
-                "fImpulse": 0.0,
+                "fImpulse": 5.0,
                 "fPushPower": 0.0
             },
             "tPolicy": {

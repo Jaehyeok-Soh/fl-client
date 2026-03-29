@@ -183,6 +183,8 @@ void CContainerObject::Set_PartCollideEnabled(_uint iPartIndex, _bool bCollide)
 
 void CContainerObject::Remove_Part(_uint iPartID)
 {
+	if (iPartID >= m_vecPartObjects.size()) return;
+
 	if (m_vecPartObjects[iPartID])
 		Safe_Release(m_vecPartObjects[iPartID]);
 

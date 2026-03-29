@@ -82,7 +82,7 @@ HRESULT CNPC_Citizen_Body::Ready_Component(NPC_CITIZEN_BODY* pDesc)
 	const wstring& wstrModelFolderPath = pDesc->wstrModelPrototypeTag;
 	const wstring& wstrModelFoloderFullPath = wstrCitizenTag + wstrModelFolderPath;
 
-	const wstring& wstrBodyPrototypeTag = L"Prototype_GameObject_PartObject_" + pDesc->wstrModelPrototypeTag;	/* FolderPath */
+	const wstring& wstrModelPrototypeTag = g_wszModel_Prototype_Tag + wstrModelFolderPath ;	/* FolderPath */
 
 	CModel::MODEL_ORIGIN_DESC tDesc{};
 	tDesc.eType = EModelType::ANIM;
@@ -101,16 +101,18 @@ HRESULT CNPC_Citizen_Body::Ready_Component(NPC_CITIZEN_BODY* pDesc)
 	tDesc.pAniChannelData = &tAnimChannelData;
 
 	CBase* pResult{ nullptr };
-	if ( nullptr == m_pGameInstance->Find_Prototype(tDesc.iPrototypeLevelIndex , wstrBodyPrototypeTag))
+	if (nullptr == (pResult = m_pGameInstance->Find_Prototype(tDesc.iPrototypeLevelIndex, wstrModelPrototypeTag)))
 	{
 		/* 찾았는데 없다면 */
-		if (FAILED(m_pGameInstance->Add_Prototype(tDesc.iPrototypeLevelIndex, wstrBodyPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &tDesc))))
+		if (FAILED(m_pGameInstance->Add_Prototype(tDesc.iPrototypeLevelIndex, wstrModelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &tDesc))))
 			return E_FAIL;
 	}
 
 	/* Model Add */
-	if (FAILED(Add_Component<CModel>(tDesc.iPrototypeLevelIndex,wstrBodyPrototypeTag,nullptr)))
+	if (FAILED(Add_Component<CModel>(tDesc.iPrototypeLevelIndex, wstrModelPrototypeTag, nullptr)))
 		return E_FAIL;
+
+
 
 	/* Shader Add */
 	if (FAILED(CGameObject::Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
@@ -131,8 +133,17 @@ HRESULT CNPC_Citizen_Body::Ready_Animation(NPC_CITIZEN_BODY* pDesc)
 	CModel* pModel = Get_Component<CModel>();
 	if (pModel == nullptr) return E_FAIL;
 
-	if (FAILED(pModel->Change_Animation(m_pAnimECS, pModel->Get_AnimationIndex(Engine_Utils::ToWString(m_strLoopAninName)), false , true)))
-		return E_FAIL;
+
+	if (pDesc->iLoopAnimIndex == -1)
+	{
+		if (FAILED(pModel->Change_Animation(m_pAnimECS, pModel->Get_AnimationIndex(Engine_Utils::ToWString(m_strLoopAninName)), false, true)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(pModel->Change_Animation(m_pAnimECS, pDesc->iLoopAnimIndex, false, true)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -274,6 +285,14 @@ HRESULT CNPC_Citizen_Body::Render()
 
 
 	return S_OK;
+}
+
+HRESULT CNPC_Citizen_Body::Change_Animation(_uint iAnimIndex)
+{
+	CModel* pModel = Get_Component<CModel>();
+	if (!pModel) return E_FAIL;
+
+	return pModel->Change_Animation(m_pAnimECS, iAnimIndex, false, true);
 }
 
 CNPC_Citizen_Body* CNPC_Citizen_Body::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

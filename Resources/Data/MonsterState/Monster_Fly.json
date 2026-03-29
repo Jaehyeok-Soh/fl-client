@@ -20,7 +20,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -384,7 +386,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -415,6 +419,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_chase",
                             "tParam": {
                                 "bParam": [
@@ -749,7 +755,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -803,6 +811,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_off_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -851,6 +861,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_root_motion_apply",
                                 "tParam": {
                                     "bParam": [
@@ -1119,6 +1131,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_on_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -1167,6 +1181,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_root_motion_apply",
                                 "tParam": {
                                     "bParam": [
@@ -1232,7 +1248,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -1259,10 +1277,63 @@
                         "fMinTime": 0.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [],
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        43.0,
+                                        50.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": true,
+                                "strFeature": "feat_skill_spawn_trigger",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -1627,7 +1698,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -1900,6 +1973,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_on_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -1948,6 +2023,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_die_process",
                                 "tParam": {
                                     "bParam": [
@@ -1996,6 +2073,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_root_motion_apply",
                                 "tParam": {
                                     "bParam": [
@@ -2060,7 +2139,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -2113,6 +2194,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_dead",
                                 "tParam": {
                                     "bParam": [
@@ -2382,6 +2465,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_die_pose",
                                 "tParam": {
                                     "bParam": [
@@ -2415,7 +2500,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -2703,7 +2790,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",

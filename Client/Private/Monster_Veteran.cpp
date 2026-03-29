@@ -14,6 +14,8 @@
 #include "MyStat.h"
 #include "Monster_Veteran_Body.h"
 #include "CameraEventBinder.h"
+#include "Monster_GimmikController.h"
+#include "SingleSkillSpawner.h"
 
 CMonster_Veteran::CMonster_Veteran(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -58,6 +60,9 @@ HRESULT CMonster_Veteran::Initialize(void* pArg)
 	if (FAILED(Ready_CameraEvent()))
 		return E_FAIL;
 
+	if (FAILED(Ready_SkillSpawner()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -80,6 +85,9 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 
 	Ready_StateIndexForDirecting();
 
+	if (FAILED(Get_Component<CMonster_GimmikController>()->Awake(iCurrentLevelID)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -91,6 +99,8 @@ void CMonster_Veteran::Update_Priority(const _float fTimeDelta)
 void CMonster_Veteran::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
 }
 
 void CMonster_Veteran::Update_Late(const _float fTimeDelta)
@@ -158,7 +168,7 @@ HRESULT CMonster_Veteran::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 5000.f; //수정하기
+		desc.fMaxHp = 35000.f; //수정하기
 		desc.fDefense = 0.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 
@@ -217,6 +227,7 @@ HRESULT CMonster_Veteran::Ready_Components(void* pArg)
 		return E_FAIL;
 	{
 		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		Desc.wstrIconTextureTag = L"Texture_T_Battle_HudElite";
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}
@@ -237,6 +248,39 @@ HRESULT CMonster_Veteran::Ready_CameraEvent()
 	if (pResult == nullptr)
 		return E_FAIL;
 	Safe_Release(pResult);
+
+	return S_OK;
+}
+
+HRESULT CMonster_Veteran::Ready_SkillSpawner()
+{
+	_uint iLevelId = m_pGameInstance->Get_CurrentLevelIndex();
+
+	CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+
+	// GimmikController
+	{
+		CMonster_GimmikController::GIMMIKCTRL_DESC desc{};
+		desc.pOwnerModel = pBody->Get_Component<CModel>();
+		if (FAILED(Add_Component<CMonster_GimmikController>(0 /*static*/, L"Prototype_Component_Monster_GimmikController", &desc)))
+			return E_FAIL;
+	}
+
+	// Oneshot
+	{
+		CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
+		desc.iLevelIndex = 0; /*static*/
+		desc.iSpawnLevelIndex = iLevelId; /*static*/
+
+		CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
+			0 /*static*/, g_wszSpawner_MonsterVeteranOneshotCircleProjectile, &desc);
+		if (pResult == nullptr)
+			return E_FAIL;
+
+		Get_Component<CMonster_GimmikController>()->AddSkillSpawner(static_cast<CSkillObjectSpawnerBase*>(pResult));
+	}
 
 	return S_OK;
 }

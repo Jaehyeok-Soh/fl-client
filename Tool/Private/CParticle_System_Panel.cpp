@@ -997,6 +997,66 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 			}
 		}
 	}
+
+	// ===============================//
+//      Shape / Emission Area     //
+// ===============================//
+	if (ImGui::CollapsingHeader("Emission Shape (Line-Rect)"))
+	{
+		auto& lineData = m_tCurrentDesc.Data.LineEffectData;
+
+		// 1. 활성화 체크박스
+		if (ImGui::Checkbox("Enable Line-Rect Shape", &lineData.Enable))
+		{
+			m_bModified = true;
+		}
+
+		if (lineData.Enable)
+		{
+			ImGui::Spacing();
+			ImGui::Indent(10.f);
+
+			// 2. 시작점과 끝점 설정 (Line의 뼈대)
+			ImGui::SeparatorText("Line Settings");
+
+			ImGui::Text("Start Pos");
+			if (ImGui::DragFloat3("##LineStart", &lineData.vStart.x, 0.1f)) m_bModified = true;
+
+			ImGui::Text("End Pos");
+			if (ImGui::DragFloat3("##LineEnd", &lineData.vEnd.x, 0.1f)) m_bModified = true;
+
+			ImGui::Spacing();
+
+			// 3. 폭 설정 (Half Width)
+			ImGui::SeparatorText("Rect Settings");
+
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Half Width");
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(-1.0f);
+			if (ImGui::DragFloat("##HalfWidth", &lineData.fHalfWidth, 0.05f, 0.0f, 50.f, "%.2f"))
+			{
+				m_bModified = true;
+			}
+
+			// 4. 시각적 가이드 (Debug용 텍스트)
+			float fLength = Vector3::Distance(lineData.vStart, lineData.vEnd);
+			ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "Current Line Length: %.3f", fLength);
+			ImGui::TextColored(ImVec4(0.4f, 0.7f, 1.0f, 1.0f), "Total Width: %.3f", lineData.fHalfWidth * 2.f);
+
+			// 5. 편의 기능: 원점 초기화 버튼
+			if (ImGui::Button("Reset to Center"))
+			{
+				lineData.vStart = Vector3(-0.5f, 0.f, 0.f);
+				lineData.vEnd = Vector3(0.5f, 0.f, 0.f);
+				lineData.fHalfWidth = 0.5f;
+				m_bModified = true;
+			}
+
+			ImGui::Unindent(10.f);
+		}
+	}
+
 	// ==================//
    //       Shape       //
   // ==================//
@@ -1051,6 +1111,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
 				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF" , "STRONGWIND_LEAF",
 				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN",
+				"SNOW_SPLASH",
 			};
 
 			std::vector<const char*> iTems;
@@ -1079,7 +1140,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_FOUNTAIN): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_FOUNTAIN); break;
-
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SNOW_SPLASH): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SNOW_SPLASH); break;
 				}
 			}
 
@@ -1093,7 +1154,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				"NONE", "DROP", "RISE", "SPREAD", "STOP", 
 				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
 				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF", "STRONGWIND_LEAF", 
-				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN"};
+				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN",
+			"SNOW_SPLASH"};
 			int currentIndex = (int)m_tCurrentDesc.Data._Effect_ShapeType;
 
 			ImGui::Spacing();
@@ -1606,6 +1668,9 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_PParticleTypeList.push_back("NONDEPTH_DEFAULT");
 					m_PParticleTypeList.push_back("Glow_Texture");
 					m_PParticleTypeList.push_back("NONEDEPTH_Glow_Texture");
+					m_PParticleTypeList.push_back("LineTexture_Blend");
+					m_PParticleTypeList.push_back("LineTexture_NoneDepth");
+					m_PParticleTypeList.push_back("Distotion_Texture");
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");

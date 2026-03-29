@@ -60,6 +60,13 @@
 #include "PlayerSkillObj_Headers.h"
 
 //=================
+// Object : Monster Skill
+//=================
+#include "Monster_Dog_Projectile_Circle.h"
+#include "Monster_Fly_Projectile_Circle.h"
+#include "Monster_Veteran_Projectile_Circle.h"
+
+//=================
 // Game Instance
 //=================
 #include "GameInstance.h"
@@ -118,6 +125,11 @@ HRESULT CLevel_Tutorial_Village::Initialize()
 		return E_FAIL;
 	}
 
+	if (FAILED(Ready_MonsterSkillObjectLayer()))
+	{
+		MSG_BOX("CLevel_Logo::Initialize, Ready_SkillObjectLayer Create Failed");
+		return E_FAIL;
+	}
 
 	Ready_ShaderSetting();
 	return S_OK;
@@ -155,6 +167,50 @@ void CLevel_Tutorial_Village::Ready_ShaderSetting()
 		fogDesc.fFogNoiseSpeed = 0.2f;
 		m_pGameInstance->Commit_FogParam();
 	}
+}
+
+HRESULT CLevel_Tutorial_Village::Ready_MonsterSkillObjectLayer()
+{
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE);
+
+	// SkillObject Pool
+	{
+		CMonster_Dog_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterDogCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterDogProjectile_Prototype_Tag,
+			&desc,
+			200)))
+			return E_FAIL;
+	}
+	{
+		CMonster_Fly_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterFlyCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterFlyProjectile_Prototype_Tag,
+			&desc,
+			200)))
+			return E_FAIL;
+	}
+	{
+		CMonster_Veteran_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterVeteranCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterVeteranProjectile_Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+	return S_OK;
 }
 
 HRESULT CLevel_Tutorial_Village::Ready_SkyBox()
@@ -520,9 +576,22 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE), g_wszUILayer)))
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
 		return E_FAIL;
 
+	{
+		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+		Desc.fDelay		= 7.f;
+		Desc.fDuration	= 2.f;
+		Desc.isEased	= false;
+		Desc.fEaseValue = 2.f;
+		Desc.isFadeIn	= true;
+		Desc.fEndDelay	= 0.f;
+		Desc.isChangeLevel = false;
+		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+	}
+
+	m_pGameInstance->Play_OneShot(0, TO_HASH("STORY_INTRO_VOICE"), 1.f);
 	return S_OK;
 }
 

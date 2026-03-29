@@ -65,6 +65,14 @@ void to_json(json& j, const TEFFECT_PartsData& data)
             data.vWorldMatrix._41, data.vWorldMatrix._42, data.vWorldMatrix._43, data.vWorldMatrix._44
         }},
 
+        // --- Line Effect Data 추가 ---
+        { "LineEffectData", {
+            {"Enable", data.LineEffectData.Enable},
+            {"vStart", {{"x", data.LineEffectData.vStart.x}, {"y", data.LineEffectData.vStart.y}, {"z", data.LineEffectData.vStart.z}}},
+            {"vEnd",   {{"x", data.LineEffectData.vEnd.x},   {"y", data.LineEffectData.vEnd.y},   {"z", data.LineEffectData.vEnd.z}}},
+            {"fHalfWidth", data.LineEffectData.fHalfWidth}
+        }},
+
         // --- Effect Types & Shapes ---
         {"EffectSystem", data.eEffectSystemType},
         {"ParticleSystem", data.eEffectParticleType},
@@ -250,6 +258,26 @@ void from_json(const json& j, TEFFECT_PartsData& data)
         data.vWorldMatrix._41 = m[12]; data.vWorldMatrix._42 = m[13]; data.vWorldMatrix._43 = m[14]; data.vWorldMatrix._44 = m[15];
     }
 
+    // --- Line Effect Data 복구 ---
+    if (j.contains("LineEffectData")) {
+        const auto& line = j.at("LineEffectData");
+        line.at("Enable").get_to(data.LineEffectData.Enable);
+
+        if (line.contains("vStart")) {
+            data.LineEffectData.vStart.x = line.at("vStart").at("x");
+            data.LineEffectData.vStart.y = line.at("vStart").at("y");
+            data.LineEffectData.vStart.z = line.at("vStart").at("z");
+        }
+
+        if (line.contains("vEnd")) {
+            data.LineEffectData.vEnd.x = line.at("vEnd").at("x");
+            data.LineEffectData.vEnd.y = line.at("vEnd").at("y");
+            data.LineEffectData.vEnd.z = line.at("vEnd").at("z");
+        }
+
+        line.at("fHalfWidth").get_to(data.LineEffectData.fHalfWidth);
+    }
+
     // 타입 설정
     j.at("EffectSystem").get_to(data.eEffectSystemType);
     j.at("ParticleSystem").get_to(data.eEffectParticleType);
@@ -267,7 +295,7 @@ void from_json(const json& j, TEFFECT_PartsData& data)
     data._Effect_NormalTexture_Tag = Engine_Utils::ToWString(j.at("NormalTexture_Tag").get<string>());
     if (j.contains("DissolveTexture_Tag")) data._Effect_DissolveTexture_Tag = Engine_Utils::ToWString(j.at("DissolveTexture_Tag").get<string>());
     if (j.contains("GlowTexture_Tag")) data._Effect_GlowTexture_Tag = Engine_Utils::ToWString(j.at("GlowTexture_Tag").get<string>());
-    if (j.contains("SubMaskTexture_Tag")) data._Effect_SubMaskTexture_Tag = Engine_Utils::ToWString(j.at("SubMaskTexture_Tag").get<string>());
+    if (j.contains("_Effect_SubMaskTexture_Tag")) data._Effect_SubMaskTexture_Tag = Engine_Utils::ToWString(j.at("_Effect_SubMaskTexture_Tag").get<string>());
     if (j.contains("Shader_Path")) data._Effect_Shader_Path = Engine_Utils::ToWString(j.at("Shader_Path").get<string>());
     data._Effect_Shader_Tag = Engine_Utils::ToWString(j.at("Shader_Tag").get<string>());
     j.at("Shader_Pass").get_to(data._Effect_ShaderPass);

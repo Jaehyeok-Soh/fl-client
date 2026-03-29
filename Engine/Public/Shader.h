@@ -58,6 +58,7 @@ public:
 	HRESULT Bind_MaterialInstanceData(const SHADER_MI_DESC& desc);
 	HRESULT Bind_EffectData(const SHADER_EFFECT_DESC& desc);
 	HRESULT Bind_DissolveEffectData(const SHADER_DISSOLVE_EFFECT_DESC& Desc);
+	HRESULT Bind_LineEffectData(const SHADER_LINE_EFFECT_DESC& Desc);
 	HRESULT Bind_TransformData(const SHADER_TRANSFORMDESC& trnasformDesc);
 	HRESULT Bind_TransformData(const Matrix& matTransform);
 	HRESULT Bind_BoneData(const SHADER_BONEDESC& boneDesc);
@@ -86,8 +87,10 @@ private:
 	CConstant_Buffer<SHADER_MI_DESC>*					m_pMI_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_TRANSFORMDESC>*				m_pTransform_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_KEYFRAMEDESC>*				m_pKeyFrame_CBuffer{ nullptr };
+
 	CConstant_Buffer<SHADER_EFFECT_DESC>*				m_pEffect_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_DISSOLVE_EFFECT_DESC>*		m_pEffect_Dissolve_CBuffer{ nullptr };
+	CConstant_Buffer<SHADER_LINE_EFFECT_DESC>*			m_pEffect_Line_CBuffer{ nullptr };
 
 	CConstant_Buffer<SHADER_OBJECTINFO_DESC>*			m_pObjectInfo_CBuffer{ nullptr };
 

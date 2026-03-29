@@ -49,6 +49,14 @@ private:
 
 	virtual void Interact() override;
 
+	void Bind_Events();
+	void Set_IsDialogue(_bool bVal);
+
+private:
+	DelegateHandle m_BeginDialogueEventHandle;
+	DelegateHandle m_EndDialogueEventHandle;
+	_bool m_bIsDialogue = { false };
+
 public:
 	static CNPC_Pan* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;

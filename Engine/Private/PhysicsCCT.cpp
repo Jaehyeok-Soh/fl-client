@@ -175,6 +175,11 @@ void CPhysicsCCT::SetInputDir(Vec3 vInputDir)
 	m_tMoveState.vInputDir = ToPxVec3(vInputDir);
 }
 
+void CPhysicsCCT::Set_Speed(float fSpeed)
+{
+	m_tMoveState.CMSpeed.z = fSpeed;
+}
+
 void CPhysicsCCT::AddAccelation(Vec3 vAccelation)
 {
 	m_tMoveState.vExternAccelation += ToPxVec3(vAccelation);
