@@ -14,6 +14,7 @@
 #include "MyStat.h"
 #include "Monster_GimmikController.h"
 #include "SingleSkillSpawner.h"
+#include "SoundEventBinder.h"
 
 CMonster_Dog::CMonster_Dog(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -56,6 +57,9 @@ HRESULT CMonster_Dog::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_SkillSpawner()))
+		return E_FAIL;
+
+	if (FAILED(Ready_SoundHandler()))
 		return E_FAIL;
 
 	return S_OK;
@@ -259,6 +263,23 @@ HRESULT CMonster_Dog::Ready_SkillSpawner()
 		Get_Component<CMonster_GimmikController>()->AddSkillSpawner(static_cast<CSkillObjectSpawnerBase*>(pResult));
 	}
 
+	return S_OK;
+}
+
+HRESULT CMonster_Dog::Ready_SoundHandler()
+{
+	_uint iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
+	CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CSoundEventBinder* pResult = CSoundEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Monster_Dog.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
 	return S_OK;
 }
 
