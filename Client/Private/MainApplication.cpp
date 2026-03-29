@@ -35,6 +35,7 @@
 #include "UITitle_Image.h"
 #include "UITitle_Text.h"
 #include "UITutorial_Manager.h"
+#include "UIQuickSlot_Manager.h"
 
 // Quest
 #include "QuestManager.h"
@@ -112,6 +113,8 @@ void CMainApplication::Update(const _float fTimeDelta)
 	m_pGameInstance->Flush_All();
 
 	m_pGameInstance->Update_Engine(fTimeDelta);
+
+	CUIQuickSlot_Manager::GetInstance()->Tick_Player_Weapon_State(fTimeDelta);
 }
 
 HRESULT CMainApplication::Render()

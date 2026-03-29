@@ -70,6 +70,10 @@ public:
 
 	_bool Get_ClearDelay() const { return m_isClearDelay; }
 	void Set_ClearDelay(_bool is) { m_isClearDelay = is; }
+
+	_bool	Get_isCursor_Visible() const { return m_isCursorVisible; }
+	void	Set_isCursor_Visible(_bool is) { m_isCursorVisible = is; }
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	array<_wstring, ENUM_TO_UINT(EUIPrefabType::END)> m_vecPrefabs;
@@ -84,7 +88,7 @@ private:
 	const _float* m_pLoadingRatio = { nullptr };
 
 	_bool m_isClearDelay = { false };
-
+	_bool m_isCursorVisible = { false };
 public:
 	virtual void Free()override;
 

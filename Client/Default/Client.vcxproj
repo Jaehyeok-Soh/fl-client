@@ -181,6 +181,7 @@
     <ClInclude Include="..\Public\Monster_Dog_Projectile_Circle.h" />
     <ClInclude Include="..\Public\Monster_Fly_Projectile_Circle.h" />
     <ClInclude Include="..\Public\Monster_GimmikController.h" />
+    <ClInclude Include="..\Public\IItem.h" />
     <ClInclude Include="..\Public\Monster_Veteran.h" />
     <ClInclude Include="..\Public\Monster_Veteran_Body.h" />
     <ClInclude Include="..\Public\Monster_Veteran_Projectile_Circle.h" />
@@ -218,6 +219,8 @@
     <ClInclude Include="..\Public\TriggerBox_MonsterWaveSpawner.h" />
     <ClInclude Include="..\Public\UINpcTextBubble_Image.h" />
     <ClInclude Include="..\Public\UINpcTextBubble_Text.h" />
+    <ClInclude Include="..\Public\UIQuickSlot_Image.h" />
+    <ClInclude Include="..\Public\UIQuickSlot_Manager.h" />
     <ClInclude Include="..\Public\UISceneFade_Image.h" />
     <ClInclude Include="..\Public\UIScreenPulse_Image.h" />
     <ClInclude Include="..\Public\UITitle_Image.h" />
@@ -479,6 +482,7 @@
     <ClCompile Include="..\Private\Monster_Dog_Projectile_Circle.cpp" />
     <ClCompile Include="..\Private\Monster_Fly_Projectile_Circle.cpp" />
     <ClCompile Include="..\Private\Monster_GimmikController.cpp" />
+    <ClCompile Include="..\Private\IItem.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran_Body.cpp" />
     <ClCompile Include="..\Private\Monster_Veteran_Projectile_Circle.cpp" />
@@ -516,6 +520,8 @@
     <ClCompile Include="..\Private\TriggerBox_MonsterWaveSpawner.cpp" />
     <ClCompile Include="..\Private\UINpcTextBubble_Image.cpp" />
     <ClCompile Include="..\Private\UINpcTextBubble_Text.cpp" />
+    <ClCompile Include="..\Private\UIQuickSlot_Image.cpp" />
+    <ClCompile Include="..\Private\UIQuickSlot_Manager.cpp" />
     <ClCompile Include="..\Private\UISceneFade_Image.cpp" />
     <ClCompile Include="..\Private\UIScreenPulse_Image.cpp" />
     <ClCompile Include="..\Private\UITitle_Image.cpp" />

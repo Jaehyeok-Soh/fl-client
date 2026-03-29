@@ -22,6 +22,8 @@ public:
 		STATIC, ANIM
 	};
 
+	// UI 주석 // NONE 안보이게 // HOLD 등뒤에 // HAND 손에 쥐고 있을 때
+	//
 	enum class State : _uint
 	{
 		NONE, HOLD, HAND, HAND_ONLY_POS, HAND_ONLY_POS_SCALE, CONDEMN
