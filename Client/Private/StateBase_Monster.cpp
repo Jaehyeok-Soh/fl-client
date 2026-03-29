@@ -98,6 +98,13 @@ HRESULT CStateBase_Monster::Start(void* pArg, _bool bForce)
 
 	Update_CooldownTime(0.f, true);
 
+	// execute once 초기화
+	for (auto& feat : m_vecFeature)
+		feat.bIsExecuted = false;
+
+	for (auto& conditionfeature : m_vecConditionFeature)
+		conditionfeature.bIsExecuted = false;
+
 	// 혹시 dt관련 호출한다면 0.f 고정이오
 	for (auto& conditionFeature : m_vecStartConditionFeature)
 		if (conditionFeature.condition(conditionFeature.condParam))
@@ -118,7 +125,7 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 	// 글로벌 전이부터 검사 ( Die, Damage 등)
 	if (Check_Transition(m_pDesc->vecGlobalStateTransition))
 		return;
-	
+
 	// 로컬 상태 전이
 	if (Check_Transition(m_pDesc->vecStateTransition))
 		return;
@@ -176,7 +183,7 @@ void CStateBase_Monster::Update_CooldownTime(_float fTimeDelta, _bool bEntryStar
 	{
 		if (bEntryStart)
 			m_tStateCoolDownTime.fTimeAcc = 0.f;
-		else if(m_tStateCoolDownTime.fTimeAcc != m_tStateCoolDownTime.fMaxTime)
+		else if (m_tStateCoolDownTime.fTimeAcc != m_tStateCoolDownTime.fMaxTime)
 		{
 			m_tStateCoolDownTime.fTimeAcc += fTimeDelta;
 			if (m_tStateCoolDownTime.fTimeAcc >= m_tStateCoolDownTime.fMaxTime)
@@ -227,7 +234,7 @@ HRESULT CStateBase_Monster::Bind_PreAnims()
 		auto itr = m_umapState.find(keyValue.first);
 		if (itr == m_umapState.end())
 			return E_FAIL;
-		const auto &state = *itr;
+		const auto& state = *itr;
 		m_vecPreAnims.emplace_back(state.second, owner->Get_AnimationIndex(Engine_Utils::ToWString(keyValue.second)));
 	}
 
@@ -308,29 +315,29 @@ HRESULT CStateBase_Monster::Bind_Feature()
 	m_vecFeature.clear();
 	m_vecFeature.reserve(m_pDesc->vecFeatureEntry.size());
 	// Entry 순회
-    for (auto& entry : m_pDesc->vecFeatureEntry)
-    {
+	for (auto& entry : m_pDesc->vecFeatureEntry)
+	{
 		// Feature 이름으로 가져오기
-        auto func = factory->GetFeature(entry.strFeature);
-        if (func == nullptr)
-            return E_FAIL;
+		auto func = factory->GetFeature(entry.strFeature);
+		if (func == nullptr)
+			return E_FAIL;
 
 		// 파람 및 함수 바인딩 후 벡터에 밀어넣기
-        BOUND_FEATURE bound{};
+		BOUND_FEATURE bound{};
 		// 원본 시그니쳐 = state, fTimeDelta, param
 		// state(this)는 지금 고정
 		// fTimeDelta(_1) 호출시 첫번째 인자로 받겠다.
 		// param(_2) 호출시 두번째 인자로 받겠다.
-        bound.func = std::bind(func, this, std::placeholders::_1, std::placeholders::_2);
-        bound.tParam = entry.tParam;
+		bound.func = std::bind(func, this, std::placeholders::_1, std::placeholders::_2);
+		bound.tParam = entry.tParam;
 
 		bound.bIsOnce = entry.IsOnce;
 		bound.bIsExecuted = entry.IsExecuted;
 
 		m_vecFeature.push_back(bound);
-    }
+	}
 
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CStateBase_Monster::Bind_ConditionFeature()
