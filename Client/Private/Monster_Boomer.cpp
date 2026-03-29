@@ -71,7 +71,7 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 600.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 15000.f);
 	}
 
 	Ready_StateIndexForDirecting();
@@ -154,7 +154,7 @@ HRESULT CMonster_Boomer::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 600.f;
+		desc.fMaxHp = 15000.f;
 		desc.fDefense = 100.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 
