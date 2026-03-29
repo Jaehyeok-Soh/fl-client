@@ -20,6 +20,7 @@
 #define STRONGWIND_LEAF 13
 #define IRREGULAR_SPREAD 14
 #define IRREGULAR_FOUNTAIN 15
+#define SNOW_SPLASH 16
 
 // 시간 데이터
 #define PLAY 0
@@ -637,6 +638,46 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         // 6. 위치 업데이트
         currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }
+    else if (g_InputB.iMoveState == SNOW_SPLASH)
+    {
+        float fTime = currentData.vLifeTime.x;
+        float fSeed = (float) dtid.x + g_InputB.vRandomSeed;
+
+        float3 vForward = g_InputB.vLook;
+        vForward.y = 0.f;
+        if (length(vForward) < 0.001f)
+            vForward = float3(0.f, 0.f, 1.f);
+        else
+            vForward = normalize(vForward);
+
+        float3 vWorldUp = float3(0.f, 1.f, 0.f);
+        float3 vRight = cross(vWorldUp, vForward);
+        if (length(vRight) < 0.001f)
+            vRight = float3(1.f, 0.f, 0.f);
+        else
+            vRight = normalize(vRight);
+
+        float3 vActualUp = normalize(cross(vForward, vRight));
+
+        float fSpreadHorizontal = (GetRandom(float2(fSeed, 1.1f)) - 0.5f) * 1.5f;
+        float fSpreadVertical = GetRandom(float2(fSeed, 2.2f)) * 1.2f;
+
+        float3 vDir = normalize(vForward + (vRight * fSpreadHorizontal) + (vActualUp * fSpreadVertical));
+
+        float fInitialSpeed = max(0.1f, g_InputB.fStartSpeed * input.vSpeed * 2.5f);
+        float fResistance = exp(-fTime * 3.0f);
+
+        vVelocity = vDir * fInitialSpeed * fResistance + (vAppliedGravity * fTime);
+
+        float3 vScale = float3(length(input.vRight.xyz), length(input.vUp.xyz), length(input.vLook.xyz));
+        vScale *= (1.0f - fRatio * 0.5f);
+
+        currentData.matTransform[0].xyz = float3(vScale.x, 0, 0);
+        currentData.matTransform[1].xyz = float3(0, vScale.y, 0);
+        currentData.matTransform[2].xyz = float3(0, 0, vScale.z);
+
+        currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
+    }
     
         if (g_InputB.iMoveState == CIRCLE_TRAIL ||
         g_InputB.iMoveState == SEMICIRCLE_TRAIL ||
@@ -646,8 +687,9 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         g_InputB.iMoveState == LEAF ||
         g_InputB.iMoveState == STRONGWIND_LEAF ||
         g_InputB.iMoveState == WIND_LEAF ||
-        g_InputB.iMoveState == IRREGULAR_SPREAD||
-        g_InputB.iMoveState == IRREGULAR_FOUNTAIN
+        g_InputB.iMoveState == IRREGULAR_SPREAD ||
+        g_InputB.iMoveState == IRREGULAR_FOUNTAIN ||
+        g_InputB.iMoveState == SNOW_SPLASH
         )
         {
             if (length(vVelocity) > 0.001f)

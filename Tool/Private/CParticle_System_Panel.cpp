@@ -1111,6 +1111,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
 				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF" , "STRONGWIND_LEAF",
 				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN",
+				"SNOW_SPLASH",
 			};
 
 			std::vector<const char*> iTems;
@@ -1139,7 +1140,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_FOUNTAIN): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_FOUNTAIN); break;
-
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SNOW_SPLASH): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SNOW_SPLASH); break;
 				}
 			}
 
@@ -1153,7 +1154,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				"NONE", "DROP", "RISE", "SPREAD", "STOP", 
 				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
 				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF", "STRONGWIND_LEAF", 
-				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN"};
+				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN",
+			"SNOW_SPLASH"};
 			int currentIndex = (int)m_tCurrentDesc.Data._Effect_ShapeType;
 
 			ImGui::Spacing();
