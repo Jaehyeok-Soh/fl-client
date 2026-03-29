@@ -665,8 +665,8 @@ HRESULT CMainPlayer::Ready_Ability()
         desc.fComboCoolTime     = 7.f;
         desc.fDashCoolTime      = 2.f;
 
-        desc.fMeleeAttack       = 20.f;
-        desc.fGunAttack         = 20.f;
+        desc.fMeleeAttack       = 1000.f;
+        desc.fGunAttack         = 150.f;
 
         desc.pESkill = pESkill;
         desc.pQSkill = pQSkill;

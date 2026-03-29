@@ -132,32 +132,33 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 			}
 		}
 
-	// critical이나 다른 값들 그 다음에 추가 한다
-	// critical 정보 처리 : test용으로 일단 무조건 criticla
-	if (m_fCriticalRate + m_fCirticalRate_Add > 1.f ||
-		m_fCriticalRate + m_fCirticalRate_Add >= m_pGameInstance->Rand_Float(0.f, 1.f))
-	{
-		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
+		// critical이나 다른 값들 그 다음에 추가 한다
+		// critical 정보 처리 : test용으로 일단 무조건 criticla
+		if (m_fCriticalRate + m_fCirticalRate_Add > 1.f ||
+			m_fCriticalRate + m_fCirticalRate_Add >= m_pGameInstance->Rand_Float(0.f, 1.f))
+		{
+			m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::CRITICAL);
 
-		// critical은 일단 더하기로 하는걸로
-		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
+			// critical은 일단 더하기로 하는걸로
+			// 현재 공격력 *  0.1 ~ 0.3
+			m_tExtra_AttackDesc.fAddDamage = m_fAttack * m_pGameInstance->Rand_Float(0.3f, 0.6f);
+		}
+
+		else
+		{
+			m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);
+		}
+
+		m_tExtra_AttackDesc.fRandomAdd_Rate += 0.5f;
+		m_tExtra_AttackDesc.vRandomAdd_MinMax = { -100.f,100.f };
+
+		// 연산 순서 : 우선은 stat 복사 생성시 desc으로 받도록 하자
+		// 좀 복잡해진다면 flag mask 검사후 order 지정
+
+		return m_tExtra_AttackDesc;
 	}
 
-	else
-	{
-		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);
-	}
-
-	m_tExtra_AttackDesc.fRandomAdd_Rate		+= 0.5f;
-	m_tExtra_AttackDesc.vRandomAdd_MinMax	= { -3.f,3.f };
-
-	// 연산 순서 : 우선은 stat 복사 생성시 desc으로 받도록 하자
-	// 좀 복잡해진다면 flag mask 검사후 order 지정
-
-	return m_tExtra_AttackDesc;
-}
-
-_bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
+	_bool CStatCom_Player::Set_AttackState(_uint iState, _bool bOn)
 {
 	// flag를 키거나 꺼줌
 	if (bOn)

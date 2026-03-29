@@ -152,6 +152,7 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
     case DTO::EAttackPresetCategory::MonsterPorjectile:
         m_fAttackFlag |= AF_Addtive;
         m_eHitSound = HIT_SOUND::Projectile;
+
         break;
 
         // bossÂÊ
@@ -178,7 +179,8 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
             m_fAttackFlag |= AF_Strong;
             m_fAttackFlag |= AF_Fly;
 
-            m_eHitSound = HIT_SOUND::ElectricBall;
+            // sound
+            m_eHitSound = HIT_SOUND::ElectricBall; break; // xibi
             break;
         }
     }
