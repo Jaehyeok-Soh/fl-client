@@ -15,15 +15,57 @@ public:
 	enum AttackFlag : Flags
 	{
 		// hit가 되었니
-		AF_OnHit	= 0x00001
+		AF_OnHit	= 0x000001
 
 		// 어떤 공격으로 들어온거니
-		, AF_Addtive	= 0x00002
-		, AF_Fly		= 0x00004
-		, AF_Strong		= 0x00008
-		, AF_Stun		= 0x00010
-		, AF_Special	= 0x00020
+		, AF_Addtive	= 0x000002
+		, AF_Fly		= 0x000004
+		, AF_Strong		= 0x000008
+		, AF_Stun		= 0x000010
+		, AF_Special	= 0x000020
+
+		// 잡몸
+		, AFS_Wind
+
+		// xibi
+		, AFS_WhipNormal
+		, AFS_WhipHeavy
+		, AFS_ElectricSamll
+		, AFS_ElectricBall
+
+		// lian
+		, AFS_HeavySword
+		, AFS_Fire
 	};
+
+	enum class HIT_SOUND
+	{
+		// 잡몸
+		Wind
+		,Projectile
+
+		// xibi
+		, WhipNormal
+		, WhipHeavy
+		, ElectricSamll
+		, ElectricBall
+
+		// lian
+		, HeavySword
+		, Fire
+
+		// 엘리트
+
+		, END
+	};
+
+	struct HitSoundInfo
+	{
+		_uint		iSoundHash = { 1000000 };
+		_float		fVolum = { 1.f };
+	};
+
+
 
 	enum class BONE_STATE
 	{
@@ -136,6 +178,10 @@ private:
 	BONEHIT_DATA	m_tBoneHit = {};
 
 private:
+	HIT_SOUND m_eHitSound = { HIT_SOUND::END };
+	array<HitSoundInfo, ENUM_TO_SZET(HIT_SOUND::END)> m_arrHitSoundHashes;
+
+private:
 	DelegateHandle m_DDialoghandle = {};
 
 private:
@@ -152,6 +198,7 @@ private:
 
 private:
 	void Check_DialogueBegin(_int iId);
+	void Play_HitSound();
 
 public:
 	static CPlayerActionState* Create();

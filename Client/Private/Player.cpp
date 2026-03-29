@@ -1916,8 +1916,9 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.vDissolveValues = { 1.5f,1.2f,0.03f };
 
         weaponDesc.fAllBullet = 1000.f;
-        weaponDesc.fCurBullet = 500.f;
+        weaponDesc.fCurBullet = 10.f; // 500
         weaponDesc.fAttackCoolTime = 0.2f; // 0.15 넘 빠름 // 0.3 너무 느림
+        weaponDesc.iFireSoundHash = TO_HASH("sfx_weapon_Machinegun_Chixing_shoot_fire_r");
 
         weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(180.f), XMConvertToRadians(90.f), XMConvertToRadians(0.f));
         weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(90.f));

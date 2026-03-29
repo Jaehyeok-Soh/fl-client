@@ -50,6 +50,8 @@ HRESULT CGun::Initialize(void* pArg)
 	m_tFireTimeCounter.fMaxTime		= pDesc->fAttackCoolTime;
 	m_tFireTimeCounter.fTimeAcc		= m_tFireTimeCounter.fMaxTime * 0.5f; // 처음에 바로 쏠 수 있도록 하기 위함
 
+	m_iFireSoundHash = pDesc->iFireSoundHash;
+
 	return S_OK;
 }
 
@@ -238,6 +240,9 @@ void CGun::Reload_Update(const _float fTimeDelta)
 
 void CGun::Fire()
 {
+	// sound
+	m_pGameInstance->Play_OneShot(0, m_iFireSoundHash, 1.f);
+
 	Vec3 pos = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
 	Vec3 dir = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	_float dist = {};

@@ -28,6 +28,9 @@ public:
 		_float fAllBullet		= { 0.f };
 		_float fCurBullet		= { 0.f };
 		_float fAttackCoolTime	= { 0.f };
+
+		_uint iFireSoundHash = {};
+
 	}GUN_DESC;
 
 private:
@@ -85,6 +88,8 @@ private:
 	_bool m_isFire = { false };
 
 	_bool m_bOnTarget = { false }; // 조준 히트
+
+	_uint m_iFireSoundHash = {};
 
 private:
 	void NoAttack_Update(const _float fTimeDelta);
