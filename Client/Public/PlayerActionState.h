@@ -23,19 +23,6 @@ public:
 		, AF_Strong		= 0x000008
 		, AF_Stun		= 0x000010
 		, AF_Special	= 0x000020
-
-		// Àâ¸ö
-		, AFS_Wind
-
-		// xibi
-		, AFS_WhipNormal
-		, AFS_WhipHeavy
-		, AFS_ElectricSamll
-		, AFS_ElectricBall
-
-		// lian
-		, AFS_HeavySword
-		, AFS_Fire
 	};
 
 	enum class HIT_SOUND

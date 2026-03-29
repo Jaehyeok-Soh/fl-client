@@ -1205,6 +1205,10 @@ HRESULT CLoader::Loading_For_Square()
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
+
+	// player foot sound
+	Ready_Sounds_PlayerFoot(ELevelType::SQUARE);
+
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
 
@@ -1225,6 +1229,9 @@ HRESULT CLoader::Loading_For_Tavern()
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
+	// player foot sound
+	Ready_Sounds_PlayerFoot(ELevelType::TAVERN);
+
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
 
@@ -1244,6 +1251,9 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 
 
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::KUANGKENG);
+
+	// player foot sound
+	Ready_Sounds_PlayerFoot(ELevelType::KUANGKENG);
 
 
 	// ÀÌÆåÆ® Object
@@ -1317,6 +1327,9 @@ HRESULT CLoader::Loading_For_Lianhuo()
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_LianhuoWeapon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
+
+	// player foot sound
+	Ready_Sounds_PlayerFoot(ELevelType::LIANHUO);
 
 
 	m_fLoadingRatio = 1.f;
@@ -1669,6 +1682,10 @@ HRESULT CLoader::Ready_Sounds_Player()
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit/Xibi")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit/Lian")))
+		return E_FAIL;
+	
+	// voice
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Voice")))
 		return E_FAIL;
 
 	return S_OK;

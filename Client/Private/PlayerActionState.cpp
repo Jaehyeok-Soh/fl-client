@@ -40,7 +40,7 @@ HRESULT CPlayerActionState::Initialize_Prototype()
     m_tGunCoolTimer.fMaxTime = 0.15f;
     m_tGunCoolTimer.fTimeAcc = 0.f;
 
-    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::Wind)]          = { TO_HASH("sfx_common_player_windHit_r"),0.8f };
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::Wind)]          = { TO_HASH("sfx_common_player_windHit_r"),0.5f };
     m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::Projectile)]    = { TO_HASH("sfx_common_player_fireHit_normal_r"),1.f };
                                                                   
     m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::WhipNormal)]    = { TO_HASH("sfx_common_player_swordWhipHit_normal_r"),0.5f };
