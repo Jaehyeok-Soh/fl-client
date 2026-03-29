@@ -20,6 +20,11 @@ class CNPC_Base abstract :
 public:
 	typedef struct tagNPCDesc : public Super::GAMEOBJECT_DESC
 	{
+		std::wstring wstrNPCName{L""};
+		std::wstring wstrNPCText{ L""};
+		std::wstring wstrSoundTag{ L""};
+		Vec3		vUITextrOffset{0.f,0.f,0.f};
+
 		wstring wstrBodyModelTag = {};
 		wstring wstrPartBodyPrototypeTag = {};
 		wstring wstrNavigationPrototypeTag = {};
@@ -81,7 +86,11 @@ protected:
 	HRESULT				Ready_EffectHandler(void* pArgs);
 	HRESULT				Ready_CCT(void* pArgs);
 	void				Ready_Quest(vector<DTO::QUEST_CHAPTERDESC>* pQuestDesc);
-
+protected:
+	HRESULT				Setting_NPCText(_uint iCurrentLevelID);
+public:
+	const _wstring&	Get_SoundTag()		const { return m_wstrSoundTag; }
+	const _wstring& Get_UITExtContext() const { return m_wstrContents; }
 protected:
 	
 	// IQuest을(를) 통해 상속됨
@@ -90,9 +99,16 @@ protected:
 
 	// IInteractable을(를) 통해 상속됨
 	virtual void Interact()override;
-private:
+protected:
 	CEffectHandler* m_pEffectHandler = {nullptr};
 
+	_bool			m_isMakeUIText{ false };
+
+
+	/* UI Text 관련 */
+	Vec3			m_vUITextOffset;
+	_wstring		m_wstrSoundTag;
+	_wstring		m_wstrContents;
 public:
 	static  HRESULT			Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelType, _uint iAddLevelType, CTransform::TRANSFORM_DESC* pTransformDesc = nullptr);
 	virtual CGameObject*	Clone(void* pArg) PURE;

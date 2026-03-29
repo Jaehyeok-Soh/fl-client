@@ -51,8 +51,6 @@ HRESULT CNPC_Veteran::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("º£Å×¶û ¿ù¼® »ç³É²Û");
-
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
 
@@ -206,6 +204,10 @@ CNPC_Base::NPC_DESC CNPC_Veteran::Get_PreSetDesc(_uint iLevelId)
 	CNPC_Base::NPC_DESC npcDesc = {};
 	npcDesc.iLevelIndex = iLevelId;
 	npcDesc.pTransform_Desc = nullptr;
+
+	npcDesc.wstrNPCText.clear();
+	npcDesc.wstrNPCName = L"º£Å×¶û ¿ù¼® »ç³É²Û";
+	npcDesc.vUITextrOffset = { 0.f,3.f,0.f };
 
 	npcDesc.wstrBodyModelTag = g_wszNPC_Veteran_Model_Prototype_Tag;
 	npcDesc.wstrPartBodyPrototypeTag = g_wszNPC_Veteran_Body_Prototype_Tag;

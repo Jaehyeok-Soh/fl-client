@@ -191,8 +191,6 @@ HRESULT CCamera_Manager::Play_CameraCinematic(CinematicCameraSequence* pCameraCi
 
 	pCinematiCam->Play_Cinematic(pCameraCinematicSequence);
 
-	this->Change_MainCamera(CameraType::DYNAMIC,g_wszCinematicCameraTag);
-
 	return S_OK;
 }
 

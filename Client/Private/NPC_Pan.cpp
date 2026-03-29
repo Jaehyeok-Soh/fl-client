@@ -51,7 +51,6 @@ HRESULT CNPC_Pan::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("마령 판신");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -226,6 +225,11 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 	CNPC_Base::NPC_DESC npcDesc = {};
 	npcDesc.iLevelIndex = iLevelId;
 	npcDesc.pTransform_Desc = nullptr;
+
+	npcDesc.wstrNPCText.clear();
+	npcDesc.wstrNPCName = L"마령 판신";
+	npcDesc.vUITextrOffset = { 0.f,3.f,0.f };
+
 
 	npcDesc.wstrBodyModelTag = g_wszNPC_Pan_Model_Prototype_Tag;
 	npcDesc.wstrPartBodyPrototypeTag = g_wszNPC_Pan_Body_Prototype_Tag;

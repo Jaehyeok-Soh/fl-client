@@ -82,10 +82,11 @@ HRESULT CCitizenPart::Change_Model(const wstring& wstrModelFolderName)
 	{
 		m_pGameInstance->Add_Prototype(tOriginDesc.iPrototypeLevelIndex, wstrModelPrototypeTag , CModel::Create(m_pDevice, m_pDeviceContext, &tOriginDesc));
 	}
-	{
-		if (FAILED(Add_Component<CModel>(tOriginDesc.iPrototypeLevelIndex, wstrModelPrototypeTag, nullptr)))
-			return E_FAIL;
-	}
+
+
+	if (FAILED(Add_Component<CModel>(tOriginDesc.iPrototypeLevelIndex, wstrModelPrototypeTag, nullptr)))
+		return E_FAIL;
+
 
 	CModel* pModel = Get_Component<CModel>();
 	if (pModel == nullptr) return E_FAIL;
@@ -100,8 +101,6 @@ HRESULT CCitizenPart::Change_Model(const wstring& wstrModelFolderName)
 
 	/* Offset 바로적용 */
 	Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, vOffsetPos);
-
-
 
 
 	return S_OK;

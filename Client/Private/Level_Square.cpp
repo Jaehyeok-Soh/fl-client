@@ -481,15 +481,20 @@ HRESULT CLevel_Square::Ready_CitizenData()
 		return S_OK;
 	}
 
+	const vector<DTO::CITIZEN_DATA>& vecData = DTO::CitizenPresetData::vecDatas;
+
 	/* Preset 모델 개수만큼 생성 */
 	CNPC_Citizen::NPC_CITIZEN_DESC tDesc{};
 	static_cast<CNPC_Base::NPC_DESC&>(tDesc) = CNPC_Citizen::Get_PreSetDesc(iCurLevelIndex);
 	tDesc.isWalking = true;
-	tDesc.tCitizenData = DTO::CitizenPresetData::Get_Preset(0);
+
+
+	/* Preset 개수만큼 */
+	m_pGameInstance->Regist_Pool(ENUM_TO_UINT(ELevelType::SQUARE), L"Pool_Citizen", g_wszNPCCitizenPoolLayer, ENUM_TO_UINT(ELevelType::STATIC),
+		g_wszNPC_Citizen_Prototype_Tag,&tDesc, (_uint)vecData.size());
+
 
 	/* WayPoint 의 개수 만큼 Pool 개수 생성 */
-	m_pGameInstance->Regist_Pool( ENUM_TO_UINT(ELevelType::SQUARE) , L"Pool_Citizen" , g_wszNPCCitizenPoolLayer , ENUM_TO_UINT(ELevelType::STATIC) ,
-		g_wszNPC_Citizen_Prototype_Tag , &tDesc ,iter->second.size()+2);
 
 	return S_OK;
 }
@@ -500,6 +505,7 @@ HRESULT CLevel_Square::Setting_Citizen()
 	CNPC_Citizen::NPC_CITIZEN_POOL_DESC tPoolDesc{};
 
 	tPoolDesc.tMoveData = { DTO::Get_RandomCitizenMoveData(LevelTypeToString(ENUM_TO_UINT(ELevelType::SQUARE))) };
+
 	if (tPoolDesc.tMoveData.pWayPointData == nullptr)	/* WayPoint가 없다면 Failed */
 		return E_FAIL;
 
@@ -524,7 +530,6 @@ void CLevel_Square::Check_Citizen()
 
 		if (isArrive)
 		{
-			Setting_Citizen();
 			m_pGameInstance->Request_DeleteGameObject(iLevelIndex,pObj);
 		}
 	}
@@ -569,6 +574,12 @@ void CLevel_Square::Update(const _float fTimeDelta)
 	
 	m_fAccTime += fTimeDelta;
 
+
+	if (m_fAccTime >= 10.f)
+	{
+		Setting_Citizen();
+		m_fAccTime = 0.f;
+	}
 
 	Check_Citizen();
 

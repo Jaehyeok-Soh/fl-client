@@ -499,6 +499,17 @@ CITIZEN_DATA CitizenPresetData::Get_Preset(_uint iIndex)
 	return  vecDatas[iIndex];
 }
 
+
+CITIZEN_DATA CitizenPresetData::Get_Preset_ForRandom()
+{
+	_uint iCurIndex = iCurIndexForRandom;
+	iCurIndexForRandom++;
+	if (iCurIndexForRandom >= vecDatas.size())
+		iCurIndexForRandom = 0;
+
+	return vecDatas[iCurIndex];
+}
+
 CITIZEN_DATA& CitizenPresetData::Get_Preset_ForTool(_uint iIndex)
 {
 	return vecDatas[iIndex];
