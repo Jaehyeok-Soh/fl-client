@@ -74,12 +74,17 @@ namespace DTO
 	{
 		string strFeature{ "" };
 		STATE_PARAM tParam{};
+		bool IsOnce = { false };
+		bool IsExecuted = { false };
 	}FEATURE_ENTRY;
 
 	inline void to_json(json& j, const FEATURE_ENTRY& d)
 	{
 		j["strFeature"] = d.strFeature;
 		j["tParam"] = d.tParam;
+
+		j["IsOnce"] = d.IsOnce;
+		j["IsExecuted"] = d.IsExecuted;
 	}
 
 	inline void from_json(const json& j, FEATURE_ENTRY& d)
@@ -87,6 +92,12 @@ namespace DTO
 		j.at("strFeature").get_to(d.strFeature);
 		if (j.contains("tParam"))
 			j.at("tParam").get_to(d.tParam);
+		
+		if (j.contains("IsOnce"))
+			j.at("IsOnce").get_to(d.IsOnce);
+
+		if (j.contains("IsExecuted"))
+			j.at("IsExecuted").get_to(d.IsExecuted);
 	}
 
 

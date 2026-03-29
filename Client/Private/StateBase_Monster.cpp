@@ -125,12 +125,26 @@ void CStateBase_Monster::Update(const _float fTimeDelta)
 
 	// 기능 실행
 	for (auto& feat : m_vecFeature)
+	{
+		if (feat.bIsOnce && feat.bIsExecuted)
+			continue;
+
 		feat.func(fTimeDelta, feat.tParam);
+
+		feat.bIsExecuted = true;
+	}
 
 	for (auto& conditionfeature : m_vecConditionFeature)
 	{
 		if (conditionfeature.condition(conditionfeature.condParam))
+		{
+			if (conditionfeature.bIsOnce && conditionfeature.bIsExecuted)
+				continue;
+
 			conditionfeature.feature(fTimeDelta, conditionfeature.featParam);
+
+			conditionfeature.bIsExecuted = true;
+		}
 	}
 }
 
@@ -309,6 +323,10 @@ HRESULT CStateBase_Monster::Bind_Feature()
 		// param(_2) 호출시 두번째 인자로 받겠다.
         bound.func = std::bind(func, this, std::placeholders::_1, std::placeholders::_2);
         bound.tParam = entry.tParam;
+
+		bound.bIsOnce = entry.IsOnce;
+		bound.bIsExecuted = entry.IsExecuted;
+
 		m_vecFeature.push_back(bound);
     }
 
@@ -332,6 +350,9 @@ HRESULT CStateBase_Monster::Bind_ConditionFeature()
 		BOUND_CONDFEATURE bound{};
 		bound.condParam = conditionfeature.cond.tParam;
 		bound.featParam = conditionfeature.feat.tParam;
+
+		bound.bIsOnce = conditionfeature.feat.IsOnce;
+		bound.bIsExecuted = conditionfeature.feat.IsExecuted;
 
 		bound.condition = std::bind(condFunc, this, std::placeholders::_1);
 		bound.feature = std::bind(featFunc, this, std::placeholders::_1, std::placeholders::_2);
