@@ -14,6 +14,7 @@
 #include "StatCom_Player.h"
 #include "Collider.h"
 #include "Xibi_GimmikController.h"
+#include "Monster_GimmikController.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
 #include "VIBuffer_Particle_Point.h"
@@ -76,6 +77,7 @@
 #include "WeaponPickUp.h"
 #include "LightObject.h"
 #include "ChangeLevelObject.h"
+#include "CinematicCamera.h"
 
 //=================
 //	EFFECT
@@ -101,6 +103,10 @@
 // player
 #include "PlayerSkillObj_Headers.h"
 // "Prototype_Component_Model_LianhuoWeapon"
+// monster
+#include "Monster_Dog_Projectile_Circle.h"
+#include "Monster_Fly_Projectile_Circle.h"
+#include "Monster_Veteran_Projectile_Circle.h"
 
 //=================
 // Map Object
@@ -162,7 +168,7 @@
 #include "NPC_Citizen.h"
 #include "NPC_Citizen_Body.h"
 #include "NPC_Citizen_DecoPart.h"
-
+#include "CitizenData.h"
 //=================
 // UI
 //=================
@@ -194,6 +200,7 @@
 #include "UIConversation_Text.h"
 #include "UIMiniGame_Circle_Text.h"
 #include "UIEnterGame_Text.h"
+#include "UINpcTextBubble_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -223,6 +230,7 @@
 #include "UIScreenPulse_Image.h"
 #include "UIEnterGame_Image.h"
 #include "UISceneFade_Image.h"
+#include "UINpcTextBubble_Image.h"
 //=================
 // Resource
 //=================
@@ -350,6 +358,8 @@ HRESULT CLoader::Loading_For_Test()
 {
 	m_fLoadingRatio = 0.f;
 	Sleep(1000);
+
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
 
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
@@ -576,6 +586,7 @@ HRESULT CLoader::Loading_For_Logo()
 	//////////////////////////////////////////
 	//////////// Ready Components ////////////
 	//////////////////////////////////////////
+
 #pragma region Component
 	{
 		std::lock_guard<std::mutex> lockguard(m_mutex_1);
@@ -876,6 +887,9 @@ HRESULT CLoader::Loading_For_Logo()
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_EffectHandler_SkillObject", CEffectHandler::Create(&desc));
 	}
 
+	if (FAILED(Ready_MonsterSkill_Spawner(0)))
+		return E_FAIL;
+
 	/* player components */
 	// For. Prototype_Component_Stat_Player
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Stat_Player", CStatCom_Player::Create());
@@ -892,6 +906,8 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 	}
 
+	// For. Prototype_Component_Monster_GimmikController
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Monster_GimmikController", CMonster_GimmikController::Create());
 
 #pragma endregion
 
@@ -933,6 +949,10 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszSkyBox_Prototype_Tag ,					CSkyBox::Create(m_pDevice, m_pDeviceContext));
 		/* Point Light */
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPointLight_Prototype_Tag ,				CPointLight::Create(m_pDevice, m_pDeviceContext));
+
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonsterDogProjectile_Prototype_Tag, CMonster_Dog_Projectile_Circle::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonsterFlyProjectile_Prototype_Tag, CMonster_Fly_Projectile_Circle::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszMonsterVeteranProjectile_Prototype_Tag, CMonster_Veteran_Projectile_Circle::Create(m_pDevice, m_pDeviceContext));
 
 #pragma region Map Object
 		/* Map Object */
@@ -1016,6 +1036,16 @@ HRESULT CLoader::Loading_For_Logo()
 		// For. Prototype_GameObject_NPC_Citizen_Deco
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszNPC_Citizen_DecoPart_Prototype_Tag,	CNPC_Citizen_DecoPart::Create(m_pDevice, m_pDeviceContext));
 
+		/* Citizen Preset Model 미리 생성 */
+		if (FAILED(DTO::CitizenWayPointOriginData::Load_CitizenWayPointDatas(m_pDevice,m_pDeviceContext)))
+			return E_FAIL;
+		if (FAILED(DTO::CitizenPresetData::Load_CitizenPresetData()))
+			return E_FAIL;
+		if (FAILED(DTO::CitizenPresetData::Add_ModelPrototype(ENUM_TO_UINT(ELevelType::STATIC), m_pDevice, m_pDeviceContext)))
+			return E_FAIL;
+
+
+
 #pragma region PartObjs
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Effect_Prototype_Tag, CPartEffect::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszPartObj_Bone_Prototype_Tag,		CBonePart::Create(m_pDevice, m_pDeviceContext));
@@ -1098,6 +1128,9 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameText",			CUIEnterGame_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_SceneFadeImage",			CUISceneFade_Image::Create(m_pDevice, m_pDeviceContext));
 
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleImage",		CUINpcTextBubble_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleText",		CUINpcTextBubble_Text::Create(m_pDevice, m_pDeviceContext));
+
 #pragma endregion
 	
 	m_isFinished = true;
@@ -1110,7 +1143,8 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 	m_fLoadingRatio = 0.f;
 	Sleep(1000);
 	
-	
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE);
+
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
 
@@ -1125,6 +1159,7 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	m_fLoadingRatio = 0.f;
 	Sleep(1000);
 
+	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
 
 #pragma region PretransformMatrix
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
@@ -1244,7 +1279,6 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::KUANGKENG);
 
-
 	// 이펙트 Object
 	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
@@ -1269,9 +1303,7 @@ HRESULT CLoader::Loading_For_Lianhuo()
 	m_fLoadingRatio = 0.f;
 	Sleep(1000);
 
-
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
-
 
 	// 이펙트 Object
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
@@ -1623,6 +1655,9 @@ HRESULT CLoader::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::UI, L"../../Resources/Sounds/SFX/UI/Static")))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::Voice, L"../../Resources/Sounds/SFX/Voice")))
+		return E_FAIL;
+
 	/* player sounds */
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Dual")))
 		return E_FAIL;
@@ -1634,6 +1669,56 @@ HRESULT CLoader::Ready_Sounds()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_MonsterSkill_Spawner(_uint iLevelID)
+{
+	/* Dog */
+	// SingleSkill
+	{
+		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+		originDesc.iPoolLevelIndex = iLevelID;
+		originDesc.wstrSkillPoolTag = g_wszPool_MonsterDogCircleProjectile;
+		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer) | ENUM_TO_UINT(ESkillObjectFlag::Move_Straight);
+		originDesc.fLifeTime = 5.f;
+		originDesc.fInterval = 0.05f;
+		originDesc.fSpeed = 6.5f;
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_MonsterDogOneshotCircleProjectile,
+			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+			return E_FAIL;
+	}
+
+	/* Fly */
+	// SingleSkill
+	{
+		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+		originDesc.iPoolLevelIndex = iLevelID;
+		originDesc.wstrSkillPoolTag = g_wszPool_MonsterFlyCircleProjectile;
+		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer) | ENUM_TO_UINT(ESkillObjectFlag::Move_Straight);
+		originDesc.fLifeTime = 5.f;
+		originDesc.fInterval = 0.05f;
+		originDesc.fSpeed = 6.5f;
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_MonsterFlyOneshotCircleProjectile,
+			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+			return E_FAIL;
+	}
+
+	/* Veteran */
+	// SingleSkill
+	{
+		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+		originDesc.iPoolLevelIndex = iLevelID;
+		originDesc.wstrSkillPoolTag = g_wszPool_MonsterVeteranCircleProjectile;
+		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer) | ENUM_TO_UINT(ESkillObjectFlag::Move_Straight);
+		originDesc.fLifeTime = 5.f;
+		originDesc.fInterval = 0.05f;
+		originDesc.fSpeed = 6.5f;
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_MonsterVeteranOneshotCircleProjectile,
+			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -1839,6 +1924,9 @@ HRESULT CLoader::Ready_CCS()
 {
 	if (FAILED(m_pGameInstance->Load_CameraCinematicSequence(g_wszCameraCinematicData_JsonPath)))
 		return E_FAIL;
+
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, CCinematicCamera::Create(m_pDevice, m_pDeviceContext));
+
 		
 
 	return S_OK;

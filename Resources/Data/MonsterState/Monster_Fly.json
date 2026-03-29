@@ -20,7 +20,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -384,7 +386,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -749,7 +753,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -1232,7 +1238,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -1259,7 +1267,56 @@
                         "fMinTime": 0.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [],
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "param_condition_IsTrackPositionBetween",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        43.0,
+                                        44.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "strFeature": "feat_skill_spawn_trigger",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
@@ -1627,7 +1684,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -2060,7 +2119,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -2415,7 +2476,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",
@@ -2703,7 +2766,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "C01_Skill01",

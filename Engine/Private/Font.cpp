@@ -47,6 +47,11 @@ HRESULT CFont::Draw_Text(SpriteBatch* pBatch, const _tchar* pText, const Vec2& v
 	return S_OK;
 }
 
+Vec2 CFont::Measure_Text(const _tchar* pText)
+{
+	return m_pFont->MeasureString(pText);
+}
+
 
 CFont* CFont::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pFontFilePath)
 {

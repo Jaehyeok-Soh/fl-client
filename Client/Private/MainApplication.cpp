@@ -22,6 +22,8 @@
 #include "SkillBase.h"
 #include "ActionSkill.h"
 
+#include "CitizenData.h"
+
 // UI
 #include "UI_Manager.h"
 #include "UIMinimap_Manager.h"
@@ -706,6 +708,8 @@ void CMainApplication::Register_Quest_Scenario()
 
 void CMainApplication::Free()
 {	
+	DTO::AllCitizenDatas_Clear();
+
 	CMonsterState_Factory::DestroyInstance();
 	CQuestManager::DestroyInstance();
 	CDialogueManager::DestroyInstance();

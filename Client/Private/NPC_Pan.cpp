@@ -51,7 +51,6 @@ HRESULT CNPC_Pan::Initialize(void* pArg)
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 
-	Set_Name("마령 판신");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -96,21 +95,32 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 	if (shape)
 		shape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
+	Bind_Events();
+
 	return S_OK;
 }
 
 void CNPC_Pan::Update_Priority(const _float fTimeDelta)
 {
+	if (m_bIsDialogue == true)
+		return;
+
 	Super::Update_Priority(fTimeDelta);
 }
 
 void CNPC_Pan::Update(const _float fTimeDelta)
 {
+	if (m_bIsDialogue == true)
+		return;
+
 	Super::Update(fTimeDelta);
 }
 
 void CNPC_Pan::Update_Late(const _float fTimeDelta)
 {
+	if (m_bIsDialogue == true)
+		return;
+
 	Super::Update_Late(fTimeDelta);
 }
 
@@ -216,6 +226,11 @@ CNPC_Base::NPC_DESC CNPC_Pan::Get_PreSetDesc(_uint iLevelId)
 	npcDesc.iLevelIndex = iLevelId;
 	npcDesc.pTransform_Desc = nullptr;
 
+	npcDesc.wstrNPCText.clear();
+	npcDesc.wstrNPCName = L"마령 판신";
+	npcDesc.vUITextrOffset = { 0.f,3.f,0.f };
+
+
 	npcDesc.wstrBodyModelTag = g_wszNPC_Pan_Model_Prototype_Tag;
 	npcDesc.wstrPartBodyPrototypeTag = g_wszNPC_Pan_Body_Prototype_Tag;
 	npcDesc.wstrNPCStateTag = g_wszNPC_Pan_State_Tag;
@@ -280,6 +295,24 @@ void CNPC_Pan::Interact()
 	Super::Interact();
 }
 
+void CNPC_Pan::Bind_Events()
+{
+	m_BeginDialogueEventHandle = m_pGameInstance->Subscribe<DIALOGUE_BEGIN>([this](_int iId)
+		{
+			this->Set_IsDialogue(true);
+		});
+
+	m_EndDialogueEventHandle = m_pGameInstance->Subscribe<DIALOGUE_END>([this]()
+		{
+			this->Set_IsDialogue(false);
+		});
+}
+
+void CNPC_Pan::Set_IsDialogue(_bool bVal)
+{
+	m_bIsDialogue = bVal;
+}
+
 CNPC_Pan* CNPC_Pan::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CNPC_Pan* pInsatnce = new CNPC_Pan(pDevice, pDeviceContext);
@@ -305,5 +338,8 @@ CGameObject* CNPC_Pan::Clone(void* pArg)
 
 void CNPC_Pan::Free()
 {
+	m_pGameInstance->Unsubscribe<DIALOGUE_BEGIN>(m_BeginDialogueEventHandle);
+	m_pGameInstance->Unsubscribe<DIALOGUE_END>(m_EndDialogueEventHandle);
+
 	Super::Free();
 }

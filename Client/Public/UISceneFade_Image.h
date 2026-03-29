@@ -33,6 +33,21 @@ private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
+	virtual HRESULT Spawn_FromPool(void* pArg)override;
+	virtual HRESULT Despawn_FromPool()override;
+private:
+	ELevelType m_eNextLevelID			= {};
+	_float m_fEndDelay					= {};
+	_float m_fEndDelayTimeAcc			= {};
+
+	_bool m_isSpawned					= { false };
+
+	_bool m_isFadeIn					= { false };
+	_bool m_isChangeLevel				= { false };
+
+
+	_float m_fSceneFade_DelayTime		= {};
+	_float m_fSceneFade_DelayTimeAcc	= {};
 
 public:
 	static CUISceneFade_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

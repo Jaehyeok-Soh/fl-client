@@ -53,12 +53,20 @@
 
 CNPC_Base::CNPC_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
+	, m_vUITextOffset{0.f,0.f,0.f}
+	, m_wstrSoundTag{L""}
+	, m_wstrContents{L""}
+	, m_isMakeUIText{false}
 {
 	m_vecPartObjects.resize(Part::END, nullptr);
 }
 
 CNPC_Base::CNPC_Base(const CNPC_Base& rhs)
 	: Super(rhs)
+	, m_vUITextOffset{rhs.m_vUITextOffset}
+	, m_wstrSoundTag{rhs.m_wstrSoundTag}
+	, m_wstrContents{rhs.m_wstrContents}
+	, m_isMakeUIText{rhs.m_isMakeUIText }
 {
 	m_vecPartObjects.resize(Part::END, nullptr);
 }
@@ -89,8 +97,18 @@ HRESULT CNPC_Base::Initialize(void* pArg)
 
 	NPC_DESC* pDesc = static_cast<NPC_DESC*>(pArg);
 
+
+	Set_Name(pDesc->wstrNPCName);
+	this->m_vUITextOffset	= pDesc->vUITextrOffset;
+	this->m_wstrSoundTag	= pDesc->wstrSoundTag;
+	this->m_wstrContents	= pDesc->wstrNPCText;
+
 	if (pDesc->bHasQuest)
 		Ready_Quest(&pDesc->tQuestObjectDesc);
+
+
+
+
 
 	return S_OK;
 }
@@ -100,18 +118,45 @@ HRESULT CNPC_Base::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
+	if (!m_isMakeUIText)
+	{
+		if (FAILED(Setting_NPCText(ENUM_TO_UINT(ELevelType::SQUARE))))
+			return E_FAIL;
+		m_isMakeUIText = true;
+	}
+
 	CGameInstance::GetInstance()->Add_Actor_Object(this);
 	if (CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>())
 		if (FAILED(pMonsterState->Awake(iCurrentLevelID)))
 			return E_FAIL;
 
-	if (FAILED(Get_Component<CMonsterActionState>()->Change_State(0)))
-		return E_FAIL;
+	CMonsterActionState* pMonsterActionState = Get_Component<CMonsterActionState>();
+	if (pMonsterActionState)
+		pMonsterActionState->Change_State(0);
 
-	if (FAILED(Get_Component<CControlContext>()->Awake(iCurrentLevelID)))
-		return E_FAIL;
+	CControlContext* pControlContext = Get_Component<CControlContext>();
+	if (pControlContext)
+		pControlContext->Awake(iCurrentLevelID);
 
-	Get_Component<CPhysicsCCT>()->Ready_Position();
+	CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>();
+	if (pCCT)
+		pCCT->Ready_Position();
+
+
+	return S_OK;
+}
+
+HRESULT CNPC_Base::Setting_NPCText(_uint iCurrentLevelID)
+{
+	/* 추후에 이름이 바뀌면 Set_Name으로 이름바꾸기 , Text가 바뀐다면 ? 모르겠다 */
+
+	UI_PREFAB_DATA tPrefabData = {};
+	UI_NPC_TEXT_BUBBLE_PREFAB_DATA Desc = {};
+	Desc.pTarget = this;
+	Desc.vOffset = m_vUITextOffset;
+	Desc.wstrContents = m_wstrContents;
+	tPrefabData.Data = Desc;
+	CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::NPC_TEXT_BUBBLE, iCurrentLevelID, &tPrefabData);
 
 	return S_OK;
 }
@@ -485,12 +530,18 @@ HRESULT CNPC_Base::Create_NPC(BATCH_NPC_DESC* pDesc, _uint iFindPrototypeLevelTy
 		wstrFindPrototypeName			= g_wszNPC_Citizen_Prototype_Tag;
 		wstrAddLayerName				= g_wszNPCeLayer;
 
+		tDesc.wstrNPCText = Engine_Utils::ToWString(pDesc->strNPCText);
+		tDesc.wstrNPCName = Engine_Utils::ToWString(pDesc->strNPCName);
+		tDesc.wstrSoundTag = Engine_Utils::ToWString(pDesc->strSountTag);
+
 		pArg = &tDesc;
 	}
 	break;
 	case Engine::EObjectEnumTag::NPC_VETERAN:
 	{
 		npcDesc = CNPC_Veteran::Get_PreSetDesc(npcDesc.iLevelIndex);
+
+		/* Preset 등록 */
 		npcDesc.iLevelIndex = iAddLevelType;
 		npcDesc.pTransform_Desc = pTransformDesc;
 

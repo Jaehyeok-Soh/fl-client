@@ -64,7 +64,11 @@ HRESULT CNPC_Citizen_DecoPart::Change_Model(const wstring& wstrModelFolderName)
 	tOriginDesc.wstrModelFolderName = wstrCitizenPartTag + wstrModelFolderName;
 	tOriginDesc.eType = EModelType::STATIC;
 
-	m_pGameInstance->Add_Prototype(tOriginDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + wstrModelFolderName, CModel::Create(m_pDevice, m_pDeviceContext, &tOriginDesc));
+
+	if (nullptr == m_pGameInstance->Find_Prototype(tOriginDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + wstrModelFolderName))
+	{
+		m_pGameInstance->Add_Prototype(tOriginDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + wstrModelFolderName, CModel::Create(m_pDevice, m_pDeviceContext, &tOriginDesc));
+	}
 
 	if (FAILED(Add_Component<CModel>(tOriginDesc.iPrototypeLevelIndex, L"Prototype_Component_Model_" + wstrModelFolderName, nullptr)))
 		return E_FAIL;

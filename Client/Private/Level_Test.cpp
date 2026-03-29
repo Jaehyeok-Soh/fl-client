@@ -63,6 +63,14 @@
 #include "PlayerSkillObj_Headers.h"
 #include "SkyBox.h"
 #include "Texture.h"
+
+//=================
+// Object : Monster Skill
+//=================
+#include "Monster_Dog_Projectile_Circle.h"
+#include "Monster_Fly_Projectile_Circle.h"
+#include "Monster_Veteran_Projectile_Circle.h"
+
 //=================
 // GameInstance
 //=================
@@ -112,6 +120,12 @@ HRESULT CLevel_Test::Initialize()
 
 	//if (FAILED(Ready_SkyBox()))
 	//	return E_FAIL;
+
+	if (FAILED(Ready_MonsterSkillObjectLayer()))
+	{
+		MSG_BOX("CLevel_Logo::Initialize, Ready_SkillObjectLayer Create Failed");
+		return E_FAIL;
+	}
 
 	Ready_ShaderSetting();
 	return S_OK;
@@ -171,7 +185,18 @@ void CLevel_Test::Update(const _float fTimeDelta)
 	{
 		m_pGameInstance->Broadcast<MINIGAME_CIRCLE_ON>();
 	}
-
+	if (KEY_BUTTON_DOWN(DIK_5))
+	{
+		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+		Desc.eNextLevelID = ELevelType::TUTORIAL_VILLAGE;
+		Desc.fDelay		= 0.f;
+		Desc.fDuration	= 0.5f;
+		Desc.isEased	= true;
+		Desc.fEaseValue = 2.f;
+		Desc.isFadeIn	= false;
+		Desc.fEndDelay	= 2.f;
+		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+	}
 }
 
 HRESULT CLevel_Test::Render()
@@ -641,6 +666,50 @@ void CLevel_Test::Ready_ShaderSetting()
 		fogDesc.fFogNoiseSpeed = 0.218f;
 		m_pGameInstance->Commit_FogParam();
 	}
+}
+
+HRESULT CLevel_Test::Ready_MonsterSkillObjectLayer()
+{
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::TEST);
+
+	// SkillObject Pool
+	{
+		CMonster_Dog_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterDogCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterDogProjectile_Prototype_Tag,
+			&desc,
+			200)))
+			return E_FAIL;
+	}
+	{
+		CMonster_Fly_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterFlyCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterFlyProjectile_Prototype_Tag,
+			&desc,
+			200)))
+			return E_FAIL;
+	}
+	{
+		CMonster_Veteran_Projectile_Circle::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			0 /* static */,
+			g_wszPool_MonsterVeteranCircleProjectile,
+			g_wszSkillObjectLayer,
+			0 /* static */,
+			g_wszMonsterVeteranProjectile_Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+	return S_OK;
 }
 
 HRESULT CLevel_Test::Ready_Camera_Setting(const _uint iLevelIndex)
