@@ -206,6 +206,8 @@ void CPhysicsRagdoll::Awake()
 
 		m_tRagdollElements.pArticulation->wakeUp();
 	}
+
+	ApplyHitImpulse(vLastImpulseDir, fLastImpulsePower);
 }
 
 void CPhysicsRagdoll::Update()
@@ -271,8 +273,8 @@ void CPhysicsRagdoll::ApplyHitImpulse(Vec3 vDir, _float fPower)
 	if (!m_tRagdollElements.pArticulation)
 		return;
 
-	if (static_cast<CPartObject*>(Get_Owner())->Get_Parent()->IsAlive() == false)
-		return;
+	//if (static_cast<CPartObject*>(Get_Owner())->Get_Parent()->IsAlive() == false)
+	//	return;
 
 	PxArticulationLink* pRootLink = m_tRagdollElements.vecPhysicsLink[RAGDOLLJOINT::PELVIS].first;
 

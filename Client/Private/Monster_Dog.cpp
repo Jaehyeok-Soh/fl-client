@@ -75,7 +75,7 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 300.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 10000.f);
 	}
 
 	Ready_StateIndexForDirecting();
@@ -163,7 +163,7 @@ HRESULT CMonster_Dog::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 50.f; // 수정하기
+		desc.fMaxHp = 10000.f; // 수정하기
 		desc.fDefense = 50.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 

@@ -71,7 +71,14 @@ RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAG
 	//{
 	//	PxShape* pShape = m_pPhysics->createShape(PxCapsuleGeometry(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fRadius, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].fHeight), *material, true);
 
-		pShape->setLocalPose(arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].matOffsetTransform);
+		PxTransform offsetTransform = arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].matOffsetTransform;
+
+		PxQuat capsuleStandUp(PxPi / 2.f, PxVec3(0.f, 0.f, 1.f));
+
+		offsetTransform.q = offsetTransform.q * capsuleStandUp;
+		offsetTransform.q.normalize();
+
+		pShape->setLocalPose(offsetTransform);
 
 		pShape->setSimulationFilterData(filterData);
 		pShape->setQueryFilterData(filterData);
@@ -169,7 +176,14 @@ void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<
 	//{
 	//	PxShape* pShape = m_pPhysics->createShape(PxCapsuleGeometry(arrRagdollBoneDesc[index].fRadius, arrRagdollBoneDesc[index].fHeight), *material, true);
 
-		pShape->setLocalPose(arrRagdollBoneDesc[index].matOffsetTransform);
+		PxTransform offsetTransform = arrRagdollBoneDesc[index].matOffsetTransform;
+
+		PxQuat capsuleStandUp(PxPi / 2.f, PxVec3(1.f, 0.f, 0.f));
+
+		offsetTransform.q = offsetTransform.q * capsuleStandUp;
+		offsetTransform.q.normalize();
+
+		pShape->setLocalPose(offsetTransform);
 
 		pShape->setSimulationFilterData(filterData);
 		pShape->setQueryFilterData(filterData);
