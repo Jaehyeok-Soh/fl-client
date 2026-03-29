@@ -225,11 +225,16 @@ void CUIBossAction_Image::Bind_Events()
 								{
 								case TO_HASH("Letterboxing_Begin"):
 								{
+									m_pGameInstance->Broadcast<DEFAULT_UI_INVISIBLE>();
+
 									this->Set_Visible();
+
+
 								}
 								break;
 								case TO_HASH("Letterboxing_End"):
 								{
+									m_pGameInstance->Broadcast<DEFAULT_UI_VISIBLE>();
 									this->Set_Invisible();
 								}
 								break;
