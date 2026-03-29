@@ -13,7 +13,7 @@
         "Camera Key Frame Datas": [
             {
                 "Duration": 1.0,
-                "Fov": 60.0,
+                "Fov": 6w0.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
                 "Look At Lerp Type": "Linear",

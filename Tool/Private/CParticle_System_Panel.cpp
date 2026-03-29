@@ -1668,6 +1668,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_PParticleTypeList.push_back("NONEDEPTH_Glow_Texture");
 					m_PParticleTypeList.push_back("LineTexture_Blend");
 					m_PParticleTypeList.push_back("LineTexture_NoneDepth");
+					m_PParticleTypeList.push_back("Distotion_Texture");
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");

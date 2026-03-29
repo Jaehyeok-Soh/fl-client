@@ -2,7 +2,7 @@
     "Category": "EFFECT",
     "Objects": [
         {
-            "ContainerName": "Boss_Xibi_Lightning_Signal",
+            "ContainerName": "Monster_Veteran_Signal",
             "IsPoolingEffect": true,
             "SimulationType": 1,
             "Type": "EFFECT_CONTAINER",
@@ -20,7 +20,7 @@
                 1.0,
                 0.0,
                 20.0,
-                17.0,
+                20.700000762939453,
                 0.0,
                 1.0
             ],
@@ -30,9 +30,9 @@
                     "AppearRatio": 0.30000001192092896,
                     "Color": {
                         "w": 1.0,
-                        "x": 0.3305535912513733,
-                        "y": 0.10196086764335632,
-                        "z": 3.098039150238037
+                        "x": 10.0,
+                        "y": 0.0,
+                        "z": 0.060057640075683594
                     },
                     "CurveTexture_Tag": "FX_ColorAtlas_YB",
                     "DiffuseTexture_Tag": "T_FlareZZ002_D",
@@ -88,7 +88,7 @@
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "Boss_Xibi_Lightning_Signal",
+                    "ParentsName": "Monster_Veteran_Signal",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
@@ -361,9 +361,9 @@
                     "AppearRatio": 0.0,
                     "Color": {
                         "w": 0.30980393290519714,
-                        "x": 0.9159592986106873,
-                        "y": 0.10196086764335632,
-                        "z": 3.098039150238037
+                        "x": 10.0,
+                        "y": 0.0,
+                        "z": 0.05882352963089943
                     },
                     "CurveTexture_Tag": "",
                     "DiffuseTexture_Tag": "",
@@ -419,7 +419,7 @@
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
-                    "ParentsName": "Boss_Xibi_Lightning_Signal",
+                    "ParentsName": "Monster_Veteran_Signal",
                     "ParticleSize": {
                         "x": 0.05000000074505806,
                         "y": 0.15000000596046448
@@ -434,7 +434,7 @@
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "RenderFlag": 8193,
+                    "RenderFlag": 8192,
                     "RotationCurveX": [],
                     "RotationCurveY": [],
                     "RotationCurveZ": [],
@@ -601,7 +601,7 @@
                     "TextureFlag": 4,
                     "TimeFlag": 0,
                     "Tool_Render": {
-                        "Billboard": true,
+                        "Billboard": false,
                         "DirBillboard": false,
                         "Down": false,
                         "Right": false,
@@ -675,7 +675,7 @@
                     "strTag": "EffectObject"
                 }
             ],
-            "strTag": "Boss_Xibi_Lightning_Signal"
+            "strTag": "Monster_Veteran_Signal"
         }
     ]
 }
