@@ -229,7 +229,6 @@ void CUIBossAction_Image::Bind_Events()
 
 									this->Set_Visible();
 
-
 								}
 								break;
 								case TO_HASH("Letterboxing_End"):

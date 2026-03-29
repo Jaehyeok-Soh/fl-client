@@ -19,7 +19,6 @@ class CUIQuickSlot_Manager final : public CBase
 	{
 		BASIC, DUAL, GUN, END
 	};
-
 	_wstring UIWeaponTypeToTextureTag(EUIWeaponTypes eType)
 	{
 		switch (eType)
@@ -37,19 +36,21 @@ class CUIQuickSlot_Manager final : public CBase
 			return L"";
 		}
 	}
-
 	typedef struct tagUIWeaponInfo
 	{
 		EUIWeaponTypes eWeaponType = { EUIWeaponTypes::END };
 
+		_uint iWeaponTypeIndex = {};
+		_uint iWeaponIndex = {};
 	}UI_WEAPON_INFO;
-
 private:
 	CUIQuickSlot_Manager();
 	virtual ~CUIQuickSlot_Manager() = default;
 
 public:
 	void Tick_Player_Weapon_State(const _float fTimeDelta);
+	void Request_Change_Weapon(_uint iSlotIndex);
+
 private:
 	HRESULT Cache_Player();
 
@@ -64,6 +65,7 @@ private:
 
 	class CPlayer* m_pPlayer = { nullptr };
 	_uint m_iCurrentSlotIndex = {};
+
 
 public:
 	virtual void Free()override;
