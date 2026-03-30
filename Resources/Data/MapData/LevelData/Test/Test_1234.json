@@ -8,16 +8,68 @@
                 "Y": 1.0,
                 "Z": 1.0
             },
+            "Sky Box": {
+                "Cloud Base Color": {
+                    "W": 1.0,
+                    "X": 0.800000011920929,
+                    "Y": 0.800000011920929,
+                    "Z": 0.800000011920929
+                },
+                "Cloud Highlight Color": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "Cloud Highlight Power": 1.0,
+                "Cloud Shadow Color": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "Cloud Shadow Power": 1.0,
+                "Model Name": "SM_Env",
+                "PitchYawRoll": {
+                    "Pitch": -0.0,
+                    "Roll": -0.0,
+                    "Yaw": 0.0
+                },
+                "Polar Radiuse Scale": 1.0,
+                "Position Offset": {
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "Sky Color": {
+                    "W": 1.0,
+                    "X": 0.30000001192092896,
+                    "Y": 0.699999988079071,
+                    "Z": 0.800000011920929
+                },
+                "Texture Name": "T_Com_Sky_02A_D",
+                "Texture Shape Type": 1,
+                "UV Speed": {
+                    "X": 0.0024999999441206455,
+                    "Y": 0.0
+                },
+                "Use ChannelPacking": false
+            },
             "Wind Data": {
                 "Direction": {
                     "X": 1.0,
-                    "Y": 0.0,
+                    "Y": 0.10000000149011612,
                     "Z": 1.0
                 },
-                "Power": 1.0
+                "Power": 0.10000000149011612
             }
         },
-        "Level Type": "STATIC",
+        "Level Type": "TEST",
         "Map Box": {
             "Center": {
                 "X": 0.0,
@@ -25,9 +77,9 @@
                 "Z": 0.0
             },
             "Extents": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "X": 100.0,
+                "Y": 100.0,
+                "Z": 100.0
             }
         },
         "Texture Splating Info": "None",
@@ -35,82 +87,52 @@
     },
     "Objects": [
         {
-            "Client Level Type": "STATIC",
-            "Client Make Path": "Batch_NPC",
+            "Client Level Type": "LOGO",
+            "Client Make Path": "LightObject",
             "Client Make Path Desc": [
                 {
-                    "Batch NPC Type": "NPC_Citizen",
-                    "Citizen Data": {
-                        "Atlas Datas": [
-                            {
-                                "Max Colum": 4,
-                                "Max Row": 4,
-                                "Select Column": 1,
-                                "Select Row": 0,
-                                "Use Atlas": true
-                            },
-                            {
-                                "Max Colum": 3,
-                                "Max Row": 3,
-                                "Select Column": 1,
-                                "Select Row": 2,
-                                "Use Atlas": true
-                            }
-                        ],
-                        "Cloth RGBA Color": {
-                            "B": {
-                                "W": 1.0,
-                                "X": 0.0,
-                                "Y": 0.0,
-                                "Z": 1.0
-                            },
-                            "G": {
-                                "W": 1.0,
-                                "X": 0.0,
-                                "Y": 1.0,
-                                "Z": 0.0
-                            },
-                            "R": {
-                                "W": 1.0,
-                                "X": 1.0,
-                                "Y": 0.0,
-                                "Z": 0.0
-                            }
+                    "Light Data": {
+                        "Ambient": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
                         },
-                        "Loop Animation Name": "Animation_CM_YNM_Body01_SM_Npc_Younian_Run_Loop",
-                        "Model Name": "Child/Male/CM_YNM_Body01_SM",
-                        "Parts Datas": {
-                            "Beard": {
-                                "Color": {
-                                    "W": 1.0,
-                                    "X": 1.0,
-                                    "Y": 1.0,
-                                    "Z": 1.0
-                                },
-                                "Name": ""
-                            },
-                            "Hair": {
-                                "Color": {
-                                    "W": 1.0,
-                                    "X": 0.6486486196517944,
-                                    "Y": 0.21538139879703522,
-                                    "Z": 0.21538139879703522
-                                },
-                                "Name": "Child/Male/Hair/CM_YNM_Hair05_SM"
-                            }
-                        }
-                    },
-                    "bHasQuest": false
+                        "Diffuse": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        },
+                        "Emissive Power": 1.0,
+                        "Flicker": {
+                            "Min": 0.5,
+                            "Speed": 2.0
+                        },
+                        "Offset Position": {
+                            "X": 0.0,
+                            "Y": 0.0,
+                            "Z": 0.0
+                        },
+                        "Range": 3.0,
+                        "Specular": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        },
+                        "Type": "POINT"
+                    }
                 }
             ],
             "Draw Type": "Default",
-            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\BasicShapes\\Model\\Cube.mesh",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\EN001_Ailixian\\Jingjiedao\\JJD_Village\\Mesh\\Model\\SM_Vil_Nos01.mesh",
             "SRT": [
                 {
                     "Position": {
-                        "X": -1.3753116130828857,
-                        "Y": 3.865774631500244,
-                        "Z": -3.7107954025268555
+                        "X": -46.73783493041992,
+                        "Y": 102.66085815429688,
+                        "Z": -55.09693145751953
                     },
                     "Quaternion": {
                         "W": 1.0,
@@ -133,7 +155,7 @@
             "Section Number": 0,
             "UE Loaded": false,
             "UE Raw Data Path": "",
-            "strTag": "Cube235"
+            "strTag": "SM_Vil_Nos01_LightObject463"
         }
     ]
 }

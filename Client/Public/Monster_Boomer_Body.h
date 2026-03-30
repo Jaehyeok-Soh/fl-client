@@ -13,6 +13,7 @@ private:
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+	virtual HRESULT Ready_ShaderPass()override;
 
 public:
 	virtual HRESULT Awake(const _uint iCurrentLevelIndex) override;

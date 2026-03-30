@@ -17,6 +17,9 @@ CNPC_Citizen::CNPC_Citizen(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCo
 	, m_fDeltaTime{0}
 	, m_tWalkRunAnimIndex{}
 	, m_isArrive{false}
+	, m_vLastPosition{}
+	, m_fDisloveRange{}
+	, m_isOnReachWayPointtDissloveStart{ false }
 {
 }
 
@@ -29,6 +32,9 @@ CNPC_Citizen::CNPC_Citizen(const CNPC_Citizen& rhs)
 	, m_fDeltaTime{rhs.m_fDeltaTime }
 	, m_tWalkRunAnimIndex{rhs.m_tWalkRunAnimIndex }
 	, m_isArrive{rhs.m_isArrive }
+	, m_vLastPosition{rhs.m_vLastPosition }
+	, m_fDisloveRange{rhs.m_fDisloveRange }
+	, m_isOnReachWayPointtDissloveStart{rhs.m_isOnReachWayPointtDissloveStart }
 {
 }
 
@@ -194,6 +200,9 @@ HRESULT CNPC_Citizen::Spawn_FromPool(void* pArg)
 	m_pWayPointData = pDesc->tMoveData.pWayPointData;
 	if (m_pWayPointData == nullptr) return E_FAIL;
 
+	_uint iSize = (_uint)m_pWayPointData->vecPosition.size();
+	m_vLastPosition = m_pWayPointData->vecPosition[iSize - 1];
+
 	/* 지금 이미 생성된 모델 그대로 유지 */
 	if (m_pWayPointData->vecPosition.empty()) return E_FAIL;
 
@@ -202,6 +211,7 @@ HRESULT CNPC_Citizen::Spawn_FromPool(void* pArg)
 
 	_uint iChangeAnimIndex{ 0 };
 	pDesc->tMoveData.eMoveType == DTO::CITIZEN_MOVE_TYPE::RUN ? iChangeAnimIndex = m_tWalkRunAnimIndex.iRunAnimIndex : iChangeAnimIndex = m_tWalkRunAnimIndex.iWalkAnimIndex;
+	pDesc->tMoveData.eMoveType == DTO::CITIZEN_MOVE_TYPE::RUN ? m_fDisloveRange = 5.f : m_fDisloveRange = 3.f;
 
 	pBody->Change_Animation(iChangeAnimIndex);
 
@@ -217,10 +227,12 @@ HRESULT CNPC_Citizen::Spawn_FromPool(void* pArg)
 
 
 	/* NPC 이름 Text변경 */
-
 	const wstring& wstrModelName = Engine_Utils::ToWString(this->m_tCitizenData.strModelName);
 	m_strName = DTO::CitizenUITextData::Get_RandomCitizenName(wstrModelName);
 	m_wstrContents = Engine_Utils::ToWString(DTO::CitizenUITextData::Get_RandomCitizenText(wstrModelName));
+
+
+	static_cast<CNPC_Citizen_Body*>(m_vecPartObjects[(_uint)Part::Body])->Ready_DissolveEffect_Setting();
 
 	return S_OK;
 }
@@ -232,7 +244,7 @@ void CNPC_Citizen::Update_Priority(const _float fTimeDelta)
 
 void CNPC_Citizen::Update(const _float fTimeDelta)
 {
-	//Super::Update(fTimeDelta);
+	Super::Update(fTimeDelta);
 
 	if (!m_pWayPointData)
 		return;
@@ -276,6 +288,8 @@ void CNPC_Citizen::Update(const _float fTimeDelta)
 	}
 
 
+
+
 	if (pCCT)
 	{
 		pCCT->SetInputDir(vDir);
@@ -283,6 +297,18 @@ void CNPC_Citizen::Update(const _float fTimeDelta)
 		pCCT->Update(fTimeDelta);
 	}
 
+
+	if (!m_isOnReachWayPointtDissloveStart)
+	{
+
+		float fLastPosDistance = Vec3::Distance(m_vLastPosition, vCurPos);
+		if (fLastPosDistance < m_fDisloveRange)
+		{
+			static_cast<CNPC_Citizen_Body*>(m_vecPartObjects[(_uint)Part::Body])->DissolveStarts();
+
+			m_isOnReachWayPointtDissloveStart = true;
+		}
+	}
 
 	return;
 }
@@ -368,6 +394,9 @@ void CNPC_Citizen::Reset_WayPoint()
 
 void CNPC_Citizen::Reset_MoveData()
 {
+	m_isOnReachWayPointtDissloveStart = false;
+	m_fDisloveRange = 0.f;
+	m_vLastPosition = {0.f,0.f,0.f};
 	m_fDeltaTime = 0.f;
 	m_iCurrentFrameIndex = 0;
 	m_pWayPointData = nullptr;
