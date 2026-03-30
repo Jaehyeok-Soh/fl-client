@@ -886,9 +886,6 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\13.MiniGame\00.Circle">
       <UniqueIdentifier>{e8fc26f0-09fa-4947-8b34-680e5ca04955}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. GameObject\PartObjects\Monster\Body\Lianhuo">
-      <UniqueIdentifier>{cb01ec6c-8cde-422b-a20e-27c984607948}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. GameObject\TriggerBox\05. TriggerBox_MonsterWaveSpawner">
       <UniqueIdentifier>{0cd91d27-cdc1-42c4-a270-7fd8b5fb3f7e}</UniqueIdentifier>
     </Filter>
@@ -999,6 +996,9 @@
     </Filter>
     <Filter Include="03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface">
       <UniqueIdentifier>{865a76ca-33fe-43c2-839b-b050274decd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\PartObjects\Monster\Body\Lianhuo">
+      <UniqueIdentifier>{cb01ec6c-8cde-422b-a20e-27c984607948}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,9 @@
             "strOwnerTag": "Monster_Boomer",
             "vecEffectEvents": [
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "PreRender",
                     "fDuration": 1.0,
@@ -15,6 +17,7 @@
                     "iAnimIndex": 0,
                     "iBoneFlag": 4,
                     "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_Monster_Boomer_Attack_01",
@@ -32,57 +35,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "PreRender",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 25.0,
-                    "iAnimIndex": 1,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_Monster_Boomer_Attack_02",
-                    "strDescription": "",
-                    "strEffectTag": "Monster_Boomer_Attack1",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.20000000298023224,
-                        "z": 0.10000000149011612
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 17.19512367248535,
-                    "iAnimIndex": 2,
-                    "iBoneFlag": 4,
-                    "iBoneIndex": 3,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_Monster_Boomer_C01_Skill01_End",
-                    "strDescription": "",
-                    "strEffectTag": "Monster_Boomer_SplashAttack_Explosion",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.699999988079071,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 90.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -90,6 +45,7 @@
                     "iAnimIndex": 3,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Monster_Boomer_C01_Skill01_Loop",
@@ -107,7 +63,9 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 0.0,
@@ -115,6 +73,7 @@
                     "iAnimIndex": 3,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Monster_Boomer_C01_Skill01_Loop",
@@ -132,7 +91,65 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "PreRender",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 25.0,
+                    "iAnimIndex": 1,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Boomer_Attack_02",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.20000000298023224,
+                        "z": 0.10000000149011612
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 17.19512367248535,
+                    "iAnimIndex": 2,
+                    "iBoneFlag": 4,
+                    "iBoneIndex": 3,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Boomer_C01_Skill01_End",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_SplashAttack_Explosion",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.699999988079071,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 90.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
@@ -140,6 +157,7 @@
                     "iAnimIndex": 36,
                     "iBoneFlag": 4,
                     "iBoneIndex": 4,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 0,
                     "strAnimTag": "Animation_Monster_Boomer_Skill_01_Loop",
@@ -147,7 +165,63 @@
                     "strEffectTag": "Monster_Boomer_Roll_Loop",
                     "vOffset": {
                         "x": 0.0,
-                        "y": -0.3,
+                        "y": 0.800000011920929,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.10000000149011612,
+                    "fStartTrackPosition": 15.0,
+                    "iAnimIndex": 35,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Boomer_Skill_01_End",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_RollEnd",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.10000000149011612,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 0.0,
+                    "fStartTrackPosition": 54.0,
+                    "iAnimIndex": 38,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Boomer_Skill_02",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Boomer_RollEnd",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "vRotation": {
