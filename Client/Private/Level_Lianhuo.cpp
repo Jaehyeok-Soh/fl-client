@@ -134,6 +134,9 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
+	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
+		return E_FAIL;
+
 	CQuestManager::GetInstance()->Start_Quest(5, 1);
 
 	m_pGameInstance->PlayBGM(0, TO_HASH("LIANHUO_BOSS_BGM"), 0.5f);

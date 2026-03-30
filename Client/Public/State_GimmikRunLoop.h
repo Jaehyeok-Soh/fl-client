@@ -48,7 +48,7 @@ private:
 	Vec3 m_vDashDir = {};
 	// TODO : BattleField
 	Vec3	m_vFieldCenter = {};
-	const _float m_fFieldRadius = 15.f;
+	_float m_fFieldRadius = 15.f;
 
 	const _float m_fOuterRadiusMin = 0.95f;
 	const _float m_fOuterRadiusMax = 1.00f;

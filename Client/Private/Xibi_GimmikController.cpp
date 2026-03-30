@@ -2,6 +2,7 @@
 #include "Xibi_GimmikController.h"
 
 #include "Model.h"
+#include "BattleField.h"
 #include "GameObject.h"
 #include "ModelAnimation.h"
 #include "ActionState.h"
@@ -11,6 +12,8 @@
 #include "ProjectileSpawner_Fan.h"
 #include "ProjectileSpawner_Radial360.h"
 #include "Xibi_GateSpawner.h"
+#include "Collider.h"
+#include "Bounding_Sphere.h"
 #include "GameInstance.h"
 
 CXibi_GimmikController::CXibi_GimmikController()
@@ -52,6 +55,12 @@ HRESULT CXibi_GimmikController::Awake(const _uint iCurLevelIndex)
 	m_pGateSpawner->Awake(iCurLevelIndex);
 
 	m_vSpawnPosition = Get_Owner()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	//CBattleField* pBattleField = static_cast<CBattleField*>(m_pGameInstance->Get_GameObject(iCurLevelIndex, g_wszBattleFieldLayer, 0));
+	//CCollider* pCollider = pBattleField->Get_Component<CCollider>();
+	//BoundingSphere* pSphere = static_cast<CBounding_Sphere*>(pCollider->Get_Bounding())->Get_Desc();
+	//m_vSpawnPosition = pSphere->Center;
+	//m_fFieldMaxRange = pSphere->Radius * 2.f;
+	m_tThunderTimer.Start(30.f);
 	return S_OK;
 }
 
@@ -291,6 +300,21 @@ void CXibi_GimmikController::On_ModelAnimNotify(const AnimNotifyKey& key)
 	}
 }
 
+void CXibi_GimmikController::Trigger_RandomThunder()
+{
+	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
+	CGameObject* pOwner = Get_Owner();
+	if (pOwner->IsDead())
+		return;
+
+	CSkillObjectSpawnerBase::SPAWNER_COPY_DESC desc{};
+	desc.iLevelIndex = iLevelIndex;
+	desc.iSpawnLevelIndex = iLevelIndex;
+	desc.vOrigin = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	m_pRandomThunderSpawner2->Trigger(desc);
+}
+
 void CXibi_GimmikController::Teleport_To(const Vec3& vPos)
 {
 	CTransform* pTransform = Get_Owner()->Get_Component<CTransform>();
@@ -299,6 +323,21 @@ void CXibi_GimmikController::Teleport_To(const Vec3& vPos)
 	pCCT->SetFootPosition(vPos);
 	//Vec3 vFinal = pCCT->GetFootPosition();
 	//pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vFinal);
+}
+
+void CXibi_GimmikController::Spawn_RandomSkill(const _float fTimeDelta)
+{
+	CGameObject* pOwner = Get_Owner();
+	if (pOwner == nullptr || pOwner->IsDead())
+		return;
+
+	if (m_tThunderTimer.Tick(fTimeDelta))
+	{
+		Trigger_RandomThunder();
+
+		const _float fNextDelay = m_pGameInstance->Rand_Float(8.f, 17.f);
+		m_tThunderTimer.Start(fNextDelay);
+	}
 }
 
 Vec3 CXibi_GimmikController::Compute_RandomTeleportPosition(const Vec3& vCurrentPos)
@@ -471,8 +510,8 @@ HRESULT CXibi_GimmikController::Ready_Spawner()
 		CSkillObjectSpawner_RandomXZ::SPAWNER_RAND_COPY_DESC desc{};
 		desc.iLevelIndex = iLevelId;
 		desc.iSpawnLevelIndex = iLevelId;
-		desc.fRadiusMin = 1.3f;
-		desc.fRadiusMax = m_fFieldMaxRange;
+		desc.fRadiusMin = 1.5f;
+		desc.fRadiusMax = 6.f;
 		desc.iPerTick = 1;
 		desc.fDurationSec = 3.5f;
 		desc.bUseForwardDir = false;
@@ -484,7 +523,24 @@ HRESULT CXibi_GimmikController::Ready_Spawner()
 
 		m_pRandomThunderSpawner = static_cast<CSkillObjectSpawner_RandomXZ*>(pResult);
 	}
+	// Rand
+	{
+		CSkillObjectSpawner_RandomXZ::SPAWNER_RAND_COPY_DESC desc{};
+		desc.iLevelIndex = iLevelId;
+		desc.iSpawnLevelIndex = iLevelId;
+		desc.fRadiusMin = 2.3f;
+		desc.fRadiusMax = m_fFieldMaxRange;
+		desc.iPerTick = 1;
+		desc.fDurationSec = 0.2f;
+		desc.bUseForwardDir = false;
 
+		CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
+			iLevelId, g_wszSpawner_XibiOneshotRandomThunder, &desc);
+		if (pResult == nullptr)
+			return E_FAIL;
+
+		m_pRandomThunderSpawner2 = static_cast<CSkillObjectSpawner_RandomXZ*>(pResult);
+	}
 	// 3wayThunder
 	{
 		CProjectileSpawner_Fan::PR_SPAWNER_FAN_DESC desc{};
@@ -571,6 +627,7 @@ CComponent* CXibi_GimmikController::Clone(void* pArg)
 void CXibi_GimmikController::Free()
 {
 	Safe_Release(m_pOneshotThunderSpawner);
+	Safe_Release(m_pRandomThunderSpawner2);
 	Safe_Release(m_pRandomThunderSpawner);
 	Safe_Release(m_p360ThunderSpawner);
 	Safe_Release(m_p3wayThunderSpawner);

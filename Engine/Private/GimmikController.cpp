@@ -41,7 +41,7 @@ HRESULT CGimmikController::Initialize(void* pArg)
 
 HRESULT CGimmikController::Bind_Events()
 {
-    // Bind_ModelAnimNotify();
+    Bind_ModelAnimNotify();
     return S_OK;
 }
 

@@ -113,7 +113,6 @@ HRESULT CBoss_Lianhuo::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Get_Component<CLianhuo_GimmikController>()->Set_SpawnPositionm(vPos);
 	return S_OK;
 }
 
@@ -231,11 +230,11 @@ _bool CBoss_Lianhuo::On_Hit(const HIT_DESC& hitDesc)
 		{
 			EGroggyState eGroggy{ EGroggyState::None };
 			if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
-				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.25f);
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.125f);
 			else if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::DUAL)))
-				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.7f);
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.5f);
 			else
-				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(1.f);
 
 			// 그로기 세팅하고 !!리턴!!
 			if (eGroggy != EGroggyState::None)
@@ -247,6 +246,13 @@ _bool CBoss_Lianhuo::On_Hit(const HIT_DESC& hitDesc)
 		}
 	}
 	return result;
+}
+
+void CBoss_Lianhuo::On_Dying()
+{
+	CMonsterControlContext* pControlContext = Get_Component<CMonsterControlContext>();
+	if (_bool bRequestedSucess = pControlContext->Set_Groggy(EGroggyState::Final))
+		m_pGameInstance->Broadcast<BOSS_GROGGY>();
 }
 
 void CBoss_Lianhuo::Try_Attack(const HIT_DESC& hitDesc)
@@ -284,7 +290,7 @@ HRESULT CBoss_Lianhuo::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 2100000.f;
+	desc.fMaxHp = 300000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 

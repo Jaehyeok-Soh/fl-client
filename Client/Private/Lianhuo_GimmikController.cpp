@@ -4,6 +4,9 @@
 #include "Boss_Lianhuo_Body.h"
 #include "SkillObjectSpawner_RandomXZ.h"
 #include "SingleSkillSpawner.h"
+#include "BattleField.h"
+#include "Collider.h"
+#include "Bounding_Sphere.h"
 #include "GameInstance.h"
 
 CLianhuo_GimmikController::CLianhuo_GimmikController()
@@ -45,6 +48,12 @@ HRESULT CLianhuo_GimmikController::Awake(const _uint iCurLevelIndex)
 	//if (FAILED(Set_Event()))
 	//	return E_FAIL;
 
+	CBattleField* pBattleField = static_cast<CBattleField*>(m_pGameInstance->Get_GameObject(iCurLevelIndex, g_wszBattleFieldLayer, 0));
+	CCollider* pCollider = pBattleField->Get_Component<CCollider>();
+	BoundingSphere* pSphere = static_cast<CBounding_Sphere*>(pCollider->Get_Bounding())->Get_Desc();
+	m_vSpawnPosition = pSphere->Center;
+	m_fFieldMaxRange = pSphere->Radius * 2.f;
+
 	m_tFirePlainTimer.Start(30.f);
 	m_tChainThronTimer.Start(35.f);
 	return S_OK;
@@ -56,11 +65,6 @@ void CLianhuo_GimmikController::Update(const _float fTimeDelta)
 	m_pRandomChainThron->Update(fTimeDelta);
 	m_pXSpaceSpawner->Update(fTimeDelta);
 	m_pStunChainSpawner->Update(fTimeDelta);
-}
-
-void CLianhuo_GimmikController::Set_SpawnPositionm(const Vec3& vPosition)
-{
-	m_vSpawnPosition = vPosition;
 }
 
 void CLianhuo_GimmikController::Trigger_XSpace(const Vec3 &vPosition)

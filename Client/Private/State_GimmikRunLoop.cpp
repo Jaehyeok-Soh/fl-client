@@ -2,6 +2,7 @@
 #include "State_GimmikRunLoop.h"
 #include "GameObject.h"
 #include "PhysicsCCT.h"
+#include "Lianhuo_GimmikController.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
 #include "GameInstance.h"
@@ -49,11 +50,13 @@ HRESULT CState_GimmikRunLoop::Start(void* pArg, _bool bForce)
 	m_pOwnerActionState->Set_ZeroHorizontalVelocity();
 	m_pOwnerControlContext->Set_RootMotion_Apply(false);
 
-	m_vFieldCenter = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-
 	m_bPathReady = Build_DashLines();
 	if (m_bPathReady == false)
 		return E_FAIL;
+
+	CLianhuo_GimmikController* pGimmik = pGo->Get_Component<CLianhuo_GimmikController>();
+	m_vFieldCenter = pGimmik->Get_BattleFieldCenter();
+	m_fFieldRadius = pGimmik->Get_BattleFiledMaxRange() / 2.f;
 
 	pCCT->SetFootPosition(m_arrDashLine[m_iDashIndex].vStart);
 	Resolve_DashDirection();

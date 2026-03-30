@@ -27,9 +27,10 @@ private:
 public:
 	HRESULT Awake(const _uint iCurLevelIndex);
 	void Update(const _float fTimeDelta);
-	void Set_SpawnPositionm(const Vec3& vPosition);
 	void Trigger_XSpace(const Vec3& vPosition);
 	void Trigger_StunChain(const Vec3& vPosition);
+	const Vec3& Get_BattleFieldCenter() const { return m_vSpawnPosition; }
+	_float Get_BattleFiledMaxRange() const { return m_fFieldMaxRange; }
 private:
 	virtual HRESULT Bind_Events() override;
 private:
