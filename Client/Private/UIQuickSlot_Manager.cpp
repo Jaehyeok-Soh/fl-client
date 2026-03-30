@@ -94,6 +94,7 @@ void CUIQuickSlot_Manager::Request_Change_Weapon(_uint iSlotIndex)
 	m_pPlayer->Change_MainWeapon(m_arrWeapons[iSlotIndex].iWeaponTypeIndex, m_arrWeapons[iSlotIndex].iWeaponIndex);
 	// 그 선택된 종류의 무기를 hold로 교체
 	m_pPlayer->Change_WeaponState(m_arrWeapons[iSlotIndex].iWeaponTypeIndex, ENUM_TO_UINT(CWeapon::State::HOLD));
+	m_pGameInstance->Play_OneShot(0, TO_HASH("UI_WEAPON_CHANGE"), 0.5f);
 }
 
 HRESULT CUIQuickSlot_Manager::Cache_Player()

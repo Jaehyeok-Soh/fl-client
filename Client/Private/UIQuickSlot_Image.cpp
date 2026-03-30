@@ -301,6 +301,7 @@ void CUIQuickSlot_Image::Check_Current_Slot()
 		{
 			Ready_Fade(0.3f, 0.f, 0.7f, m_fDelay);
 			m_isSelected = true;
+			m_pGameInstance->Play_OneShot(0, TO_HASH("UI_QUICK_SLOT_HOVER"), 0.5f);
 		}
 	}
 	else
