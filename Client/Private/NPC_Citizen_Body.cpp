@@ -140,12 +140,13 @@ HRESULT CNPC_Citizen_Body::Ready_Animation(NPC_CITIZEN_BODY* pDesc)
 
 	if (pDesc->iLoopAnimIndex == -1)
 	{
-		if (FAILED(pModel->Change_Animation(m_pAnimECS, pModel->Get_AnimationIndex(Engine_Utils::ToWString(m_strLoopAninName)), false, true)))
+		m_iAnimIndex = pModel->Get_AnimationIndex(Engine_Utils::ToWString(m_strLoopAninName));
+		if (FAILED(pModel->Change_Animation(m_pAnimECS, m_iAnimIndex , false, true , true)))
 			return E_FAIL;
 	}
 	else
 	{
-		if (FAILED(pModel->Change_Animation(m_pAnimECS, pDesc->iLoopAnimIndex, false, true)))
+		if (FAILED(pModel->Change_Animation(m_pAnimECS, m_iAnimIndex , false, true, true)))
 			return E_FAIL;
 	}
 
@@ -205,6 +206,11 @@ HRESULT CNPC_Citizen_Body::Awake(const _uint iCurrentLevelIndex)
 
 	if (FAILED(Ready_DissolveEffect_Setting()))
 		return E_FAIL;
+
+
+	/* 애니매이션 버그 고치기 프로젝트 */
+
+
 
 
 	return S_OK;
