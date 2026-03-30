@@ -1939,7 +1939,7 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.vDissolveValues = { 1.5f,1.2f,0.03f };
 
         weaponDesc.fAllBullet = 1000.f;
-        weaponDesc.fCurBullet = 10.f; // 500
+        weaponDesc.fCurBullet = 100.f; // 500
         weaponDesc.fAttackCoolTime = 0.2f; // 0.15 넘 빠름 // 0.3 너무 느림
         weaponDesc.iFireSoundHash = TO_HASH("sfx_weapon_Machinegun_Chixing_shoot_fire_r");
 
