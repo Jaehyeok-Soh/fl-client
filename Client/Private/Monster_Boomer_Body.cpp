@@ -44,6 +44,41 @@ HRESULT CMonster_Boomer_Body::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
+
+	m_tCBMonsterEmotion.vSkinColor = { 0.f , 0.f, 0.f, 1.25f };
+
+	m_tCBMonsterEmotion.vEmotionColor = { 1.f,1.f,1.f,1.f };
+
+	return S_OK;
+}
+
+HRESULT CMonster_Boomer_Body::Ready_ShaderPass()
+{
+	CModel* pModel = Get_Component<CModel>();
+	if (pModel == nullptr) return E_FAIL;
+
+	_uint iMeshCount = pModel->Get_MeshCount();
+
+	m_vecAnimShaderPass.reserve(iMeshCount);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		wstring wstrMtlName = pModel->Get_MaterialName(i);
+
+		if (wstrMtlName.empty())
+			continue;
+
+		_int iPass{ (_int)EAnimShaderPass::WithRenderFx };
+
+		if (wstrMtlName.find(L"Face") != std::wstring::npos)
+			iPass = (_uint)EAnimShaderPass::MonsterFace;
+		else if (wstrMtlName.find(L"Empty") != std::wstring::npos)
+			iPass = -1;
+		else if (wstrMtlName.find(L"Line") != std::wstring::npos)
+			iPass = (_uint)EAnimShaderPass::MonsterFace;
+
+		m_vecAnimShaderPass.push_back(iPass);
+	}
+
 	return S_OK;
 }
 
@@ -53,6 +88,10 @@ HRESULT CMonster_Boomer_Body::Awake(const _uint iCurrentLevelIndex)
 		return E_FAIL;
 
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+
+
+	m_eEmotionType = (EMonster_Emontion_Type)1;
+
 
 	Get_Component<CModel>()->Change_Animation(pAnimECS, 1, true, true, false);
 

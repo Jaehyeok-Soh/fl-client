@@ -20,6 +20,7 @@ CLightObject::CLightObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	, m_eShaderPass{ EMapObjectShaderPass::StaticObject }
 	, m_pLightCollider{nullptr}
 	, m_fEmissivePower{1.f}
+	, m_fCurLightRangeRatio{0.f}
 {
 }
 
@@ -35,6 +36,7 @@ CLightObject::CLightObject(const CLightObject& rhs)
 	, m_eShaderPass{rhs.m_eShaderPass }
 	, m_pLightCollider{rhs.m_pLightCollider }
 	, m_fEmissivePower{rhs.m_fEmissivePower }
+	, m_fCurLightRangeRatio{rhs.m_fCurLightRangeRatio }
 {
 }
 
@@ -56,6 +58,7 @@ HRESULT CLightObject::Initialize(void* pArg)
 
 	m_isFlicker = pDesc->isFlicker;
 	m_fBaseRange = pDesc->tLightDesc.fRange;
+	m_fEmissivePower = pDesc->fEmissivePower;
 
 	if (m_isFlicker)
 	{
@@ -71,7 +74,6 @@ HRESULT CLightObject::Initialize(void* pArg)
 
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
-
 
 	return S_OK;
 }
@@ -145,10 +147,12 @@ void CLightObject::Update(const _float fTimeDelta)
 	{
 		float fSinValue = sinf(m_fAccDT * m_fFlickerSpeed);	/* -1 ~ 1 사이 값 */
 		fSinValue = (fSinValue + 1.f) * 0.5f;			/* 0.f ~ 1.f 사이값으로 변환 */
-		float fFinalLightRangeRatio = m_fFlickerMin + fSinValue * (1.f - m_fFlickerMin);
-		fFinalRange = m_fBaseRange * fFinalLightRangeRatio;
+		m_fCurLightRangeRatio = m_fFlickerMin + fSinValue * (1.f - m_fFlickerMin);
+		fFinalRange = m_fBaseRange * m_fCurLightRangeRatio;
 		m_pLight->Setup_Range(fFinalRange);
 	}
+	else
+		m_fCurLightRangeRatio = 1.f;
 
 
 	/* 깜빡거리는 애들이라면 프레임단위로 계산해준다 */
@@ -225,7 +229,7 @@ HRESULT CLightObject::Render()
 	{
 		pModel->Set_MI_TintColor(i , Vec4(1.f,1.f,1.f,1.f) );
 		pModel->Set_MI_EmissiveColor(i, vEmissiveColor);
-		pModel->Set_MI_EmissivePower(i, m_fEmissivePower * fRange);
+		pModel->Set_MI_EmissivePower(i, m_fEmissivePower * m_fCurLightRangeRatio);	/* 기본적인 Emmisve 파워를 뜻할듯 */
 		pModel->Bind_MaterialInstance(pShader, i);
 		pModel->Bind_Material(pShader, i);
 		pShader->Apply();

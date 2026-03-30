@@ -1,8 +1,11 @@
 #include "pch.h"
 #include "UIQuickSlot_Manager.h"
+
 #include "Player.h"
 #include "Canvas.h"
 #include "GenericUI.h"
+#include "Weapon.h"
+
 #include "GameInstance.h"
 
 NS_BEGIN(Client)
@@ -75,6 +78,9 @@ void CUIQuickSlot_Manager::Tick_Player_Weapon_State(const _float fTimeDelta)
 			}
 		}
 	}
+
+	// quick slot 열 수 있는지 체크
+	m_bQuickSlotOpen = m_pPlayer->Get_CanQuickSlotOpen();
 }
 
 void CUIQuickSlot_Manager::Request_Change_Weapon(_uint iSlotIndex)
@@ -84,7 +90,10 @@ void CUIQuickSlot_Manager::Request_Change_Weapon(_uint iSlotIndex)
 	if (m_arrWeapons[iSlotIndex].eWeaponType == EUIWeaponTypes::END)
 		return;
 
+	// 각 무기 종류별로 main으로 들고 있을 인덱스 교체 
 	m_pPlayer->Change_MainWeapon(m_arrWeapons[iSlotIndex].iWeaponTypeIndex, m_arrWeapons[iSlotIndex].iWeaponIndex);
+	// 그 선택된 종류의 무기를 hold로 교체
+	m_pPlayer->Change_WeaponState(m_arrWeapons[iSlotIndex].iWeaponTypeIndex, ENUM_TO_UINT(CWeapon::State::HOLD));
 }
 
 HRESULT CUIQuickSlot_Manager::Cache_Player()

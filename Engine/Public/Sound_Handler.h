@@ -50,6 +50,9 @@ private:
 
     _uint m_iSoundLevelID = 0;
 
+    const _uint m_iPlayerFootSoundHash = { TO_HASH("footstep") };
+    const _uint m_iPlayerLandSoundHash = { TO_HASH("landHeavy") };
+
 public:
     static CSound_Handler* Create();
     virtual CComponent* Clone(void* pArg) override;

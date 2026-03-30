@@ -160,7 +160,6 @@ HRESULT CRender_Manager::Build_BakedShadowSections()
 #ifdef _DEBUG
 	if (FAILED(Create_BakedShadowSliceSRV()))
 		return E_FAIL;
-
 #endif
 	return S_OK;
 }
@@ -1594,7 +1593,7 @@ HRESULT CRender_Manager::Ready_Dissolve()
 
 	CTextureBase* pTexture = { nullptr };
 
-	// 일반 몬스터용
+	// 일반 몬스터용	0
 	{
 		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceMm010_Mask")))
 		{
@@ -1607,7 +1606,7 @@ HRESULT CRender_Manager::Ready_Dissolve()
 			m_pDissolveTextures.push_back(pTexture);
 	}
 
-	// 보스 몬스터용
+	// 보스 몬스터용 1
 	{
 		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceBx006_M")))
 		{
@@ -1620,7 +1619,7 @@ HRESULT CRender_Manager::Ready_Dissolve()
 			m_pDissolveTextures.push_back(pTexture);
 	}
 
-	// 칼
+	// 칼 2
 	{
 		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceZd016_Mask")))
 		{
@@ -1633,11 +1632,50 @@ HRESULT CRender_Manager::Ready_Dissolve()
 			m_pDissolveTextures.push_back(pTexture);
 	}
 
-	// NPC
+	// NPC 3
 	{
 		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_T_TurbulenceFz001_Mask")))
 		{
 			MSG_BOX("Dissolve Texture가 바인딩 되지 않았습니다. - Render Manager - NPC");
+			Safe_Release(pTexture);
+			return E_FAIL;
+		}
+
+		else
+			m_pDissolveTextures.push_back(pTexture);
+	}
+
+	// Monster Emotion 4
+	{
+		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_Monster_Emotion")))
+		{
+			MSG_BOX("Monster Emotion Texture가 바인딩 되지 않았습니다. - Render Manager - Monster Emotion");
+			Safe_Release(pTexture);
+			return E_FAIL;
+		}
+
+		else
+			m_pDissolveTextures.push_back(pTexture);
+	}
+
+	// Monster 피부 Noise 5
+	{
+		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_Monster_Skin_Noise01")))
+		{
+			MSG_BOX("Texture_Monster_Skin_Noise 가 바인딩 되지 않았습니다. - Render Manager - Texture_Monster_Skin_Noise");
+			Safe_Release(pTexture);
+			return E_FAIL;
+		}
+
+		else
+			m_pDissolveTextures.push_back(pTexture);
+	}
+
+	// Monster 피부 Noise 6
+	{
+		if (!(pTexture = m_pGameInstance->Get_Resource<CTextureBase>(L"Texture_Monster_Skin_Noise02")))
+		{
+			MSG_BOX("Texture_Monster_Skin_Noise 가 바인딩 되지 않았습니다. - Render Manager - Texture_Monster_Skin_Noise");
 			Safe_Release(pTexture);
 			return E_FAIL;
 		}
@@ -1651,7 +1689,7 @@ HRESULT CRender_Manager::Ready_Dissolve()
 
 HRESULT CRender_Manager::Bind_DissolveTexture(CShader* pShader)
 {
-#define DISSOLVE_MAX 4
+#define DISSOLVE_MAX 7
 
 	if (pShader == nullptr) return E_FAIL;
 
@@ -1660,6 +1698,9 @@ HRESULT CRender_Manager::Bind_DissolveTexture(CShader* pShader)
 	m_pDissolveTextures[1]->Get_SRV(),
 	m_pDissolveTextures[2]->Get_SRV(),
 	m_pDissolveTextures[3]->Get_SRV(),
+	m_pDissolveTextures[4]->Get_SRV(),
+	m_pDissolveTextures[5]->Get_SRV(),
+	m_pDissolveTextures[6]->Get_SRV(),
 	};
 
 	return pShader->Bind_SRVArray(EFXSRV::DISSOLVE, pSRVs, DISSOLVE_MAX);

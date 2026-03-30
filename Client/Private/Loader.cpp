@@ -207,6 +207,7 @@
 #include "UIMiniGame_Circle_Text.h"
 #include "UIEnterGame_Text.h"
 #include "UINpcTextBubble_Text.h"
+#include "UIQTE_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -238,6 +239,7 @@
 #include "UISceneFade_Image.h"
 #include "UINpcTextBubble_Image.h"
 #include "UIQuickSlot_Image.h"
+#include "UIQTE_Image.h"
 //=================
 // Resource
 //=================
@@ -255,6 +257,7 @@
 		ENUM_TO_UINT(EGlobal_Broadcast_Type::EventStructName), \
 		[pGameInstance = m_pGameInstance]() { pGameInstance->Broadcast<EventStructName>(); } \
 	)
+
 #pragma endregion
 
 
@@ -366,7 +369,7 @@ HRESULT CLoader::Loading_For_Test()
 	m_fLoadingRatio = 0.f;
 	Sleep(1000);
 
-	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
+	Ready_Sounds_PlayerFoot(ELevelType::TEST);
 
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
@@ -1134,10 +1137,11 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameImage",			CUIEnterGame_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_EnterGameText",			CUIEnterGame_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_SceneFadeImage",			CUISceneFade_Image::Create(m_pDevice, m_pDeviceContext));
-
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleImage",		CUINpcTextBubble_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_NpcTextBubbleText",		CUINpcTextBubble_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuickSlotImage",			CUIQuickSlot_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QTEImage",					CUIQTE_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QTEText",					CUIQTE_Text::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	
@@ -1153,6 +1157,9 @@ HRESULT CLoader::Loading_For_Tutorial_Village()
 	
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE);
 
+
+	Ready_Sounds_PlayerFoot(ELevelType::TUTORIAL_VILLAGE);
+	
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
 
@@ -1225,6 +1232,9 @@ HRESULT CLoader::Loading_For_Tutorial_Boss()
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiLoopThunder_Prototype_Tag, CXibi_Loop_Thunder::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::TUTORIAL_BOSS, g_wszXibiOneshotThunder_Prototype_Tag, CXibi_Oneshot_Thunder::Create(m_pDevice, m_pDeviceContext));
 
+	// player foot sound
+	Ready_Sounds_PlayerFoot(ELevelType::TUTORIAL_BOSS);
+
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
 
@@ -1247,6 +1257,10 @@ HRESULT CLoader::Loading_For_Square()
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect", Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::SQUARE, L"Prototype_GameObject_Effect_Parts", CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
+
+	// player foot sound
+	Ready_Sounds_PlayerFoot(ELevelType::SQUARE);
+
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
 
@@ -1267,6 +1281,9 @@ HRESULT CLoader::Loading_For_Tavern()
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(iLevelIndex, L"Prototype_GameObject_Effect_Parts",	CEffectObject::Create(m_pDevice, m_pDeviceContext));
 
+	// player foot sound
+	Ready_Sounds_PlayerFoot(ELevelType::TAVERN);
+
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
 
@@ -1286,6 +1303,10 @@ HRESULT CLoader::Loading_For_Kuangkeng()
 
 
 	_uint iLevelIndex = ENUM_TO_UINT(ELevelType::KUANGKENG);
+
+	// player foot sound
+	Ready_Sounds_PlayerFoot(ELevelType::KUANGKENG);
+
 
 	// 이펙트 Object
 	ADD_PROTOTYPE(iLevelIndex , L"Prototype_GameObject_Effect",			Effect::Create(m_pDevice, m_pDeviceContext));
@@ -1357,6 +1378,8 @@ HRESULT CLoader::Loading_For_Lianhuo()
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_LianhuoWeapon", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
 	}
 
+	// player foot sound
+	Ready_Sounds_PlayerFoot(ELevelType::LIANHUO);
 	// For. Prototype_Component_Lianhuo_GimmikController
 	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Lianhuo_GimmikController", CLianhuo_GimmikController::Create());
 
@@ -1727,6 +1750,19 @@ HRESULT CLoader::Ready_Sounds()
 		return E_FAIL;
 
 	/* player sounds */
+	if (FAILED(Ready_Sounds_Player()))
+	{
+		MSG_BOX("CLoader::Ready_Sounds, Player Sounds Fail");
+		return E_FAIL;
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Sounds_Player()
+{
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Combat\Dual
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Dual")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Sword")))
@@ -1736,6 +1772,53 @@ HRESULT CLoader::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Condemn")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Skill")))
+		return E_FAIL;
+
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Basic
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Cloth")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Dodge")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Jump")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Movement")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Slide")))
+		return E_FAIL;
+
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Hit
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit/Xibi")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit/Lian")))
+		return E_FAIL;
+	
+	// voice
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Voice")))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Sounds_PlayerFoot(ELevelType eType)
+{
+	_wstring FootSoundFilePath = {};
+
+	switch (eType)
+	{
+	case ELevelType::TUTORIAL_VILLAGE:	FootSoundFilePath = L"../../Resources/Sounds/SFX/Player/FootSound/TutorialVillage"; break;
+	case ELevelType::TUTORIAL_BOSS:		FootSoundFilePath = L"../../Resources/Sounds/SFX/Player/FootSound/TutorialBoss"; break;
+	case ELevelType::SQUARE:			FootSoundFilePath = L"../../Resources/Sounds/SFX/Player/FootSound/Square"; break;
+	case ELevelType::TAVERN:			FootSoundFilePath = L"../../Resources/Sounds/SFX/Player/FootSound/Tavern"; break;
+	case ELevelType::KUANGKENG:			FootSoundFilePath = L"../../Resources/Sounds/SFX/Player/FootSound/Kuangkeng"; break;
+	case ELevelType::LIANHUO:			FootSoundFilePath = L"../../Resources/Sounds/SFX/Player/FootSound/Lianhuo"; break;
+	case ELevelType::TEST:				FootSoundFilePath = L"../../Resources/Sounds/SFX/Player/FootSound/Test"; break;
+	}
+
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(eType), ESoundCategory::SFX, FootSoundFilePath)))
 		return E_FAIL;
 
 	return S_OK;

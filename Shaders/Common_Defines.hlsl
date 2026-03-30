@@ -36,7 +36,7 @@
 #define MATERIAL_END 18
 
 
-#define DISSOLVE_MAX 4
+#define DISSOLVE_MAX 7
 ////////////
 // Scalar //
 ////////////

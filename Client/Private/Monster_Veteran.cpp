@@ -80,7 +80,7 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 5000.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 35000.f); // 시연회 때 35만으로 설정하면 좋을 듯.
 	}
 
 	Ready_StateIndexForDirecting();
@@ -88,6 +88,10 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Get_Component<CMonster_GimmikController>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
 
+	m_pGameInstance->StopBGM_FadeOut(1.f);
+	m_pGameInstance->PlayBGM_FadeIn(0, TO_HASH("ELITE_BOSS_BGM"), 0.5f, 1.f);
+
+	
 	return S_OK;
 }
 
@@ -152,8 +156,13 @@ _bool CMonster_Veteran::On_Hit(const HIT_DESC& hitDesc)
 
 	auto myStat = Get_Component<CMyStat>();
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
+
 	if (vHp.x <= 0)
+	{
+		m_pGameInstance->StopBGM_FadeOut(1.f);
+		m_pGameInstance->PlayBGM_FadeIn(0, TO_HASH("KUANGKENG_BGM"), 0.5f, 1.f);
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+	}
 
 	return result;
 }

@@ -909,6 +909,62 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
+                    "fStartTrackPosition": 100.0,
+                    "iAnimIndex": 17,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Attack1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 2.0,
+                        "z": 1.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 60.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 27.0,
+                    "iAnimIndex": 27,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill08_03",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_GaeJiRal_End",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": -5.0,
+                        "z": 10.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
                     "fStartTrackPosition": 45.0,
                     "iAnimIndex": 19,
                     "iBoneFlag": 0,
@@ -1161,34 +1217,6 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
-                    "fStartTrackPosition": 51.0,
-                    "iAnimIndex": 27,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_Lianhuo_Skill08_03",
-                    "strDescription": "",
-                    "strEffectTag": "Boss_LianHuo_GaeJiRal_End",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": -0.44999998807907104,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 1.0,
                     "fStartTrackPosition": 27.0,
                     "iAnimIndex": 15,
                     "iBoneFlag": 0,
@@ -1319,6 +1347,34 @@
                     "vRotation": {
                         "x": 180.0,
                         "y": 150.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 50.0,
+                    "iAnimIndex": 24,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill07_03",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Catch_End",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
                         "z": 0.0
                     }
                 }

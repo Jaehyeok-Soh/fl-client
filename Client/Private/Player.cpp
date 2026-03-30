@@ -93,6 +93,7 @@ CPlayer::CPlayer(const CPlayer& rhs)
     , m_arrRangeInfo(rhs.m_arrRangeInfo)
     , m_arrSkillInfo(rhs.m_arrSkillInfo)
     , m_arrCondemnInfo(rhs.m_arrCondemnInfo)
+    , m_bQuickSlotOpen(rhs.m_bQuickSlotOpen)
 
 {
     m_vecPartObjects.resize(Part::END, nullptr);
@@ -528,6 +529,28 @@ _bool CPlayer::Can_UseWeapon(_uint iWeaponType)
     }
 
     return false;
+}
+
+_bool CPlayer::Can_AttackWeapon(_uint iWeaponType)
+{
+    _uint iCurIndex = Get_CurWeaponIdx(iWeaponType);
+    _uint iCurState = { 100 };
+    if (Can_UseWeapon(iWeaponType))
+    {
+        switch (iWeaponType)
+        {
+        case ENUM_TO_UINT(EWEAPON::MELEE):
+            iCurState = m_arrMeleeInfo[size_t(iCurIndex)].iWeaponState; break;
+
+        case ENUM_TO_UINT(EWEAPON::RANGE):
+            iCurState = m_arrRangeInfo[size_t(iCurIndex)].iWeaponState; break;
+
+        case ENUM_TO_UINT(EWEAPON::SKILL):
+            iCurState = m_arrSkillInfo[size_t(iCurIndex)].iWeaponState; break;
+        }
+    }
+
+    return (iCurState != ENUM_TO_UINT(CWeapon::State::NONE));
 }
 
 _bool CPlayer::Check_OnGround(_float fMaxDist)
@@ -1916,8 +1939,9 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.vDissolveValues = { 1.5f,1.2f,0.03f };
 
         weaponDesc.fAllBullet = 1000.f;
-        weaponDesc.fCurBullet = 500.f;
+        weaponDesc.fCurBullet = 100.f; // 500
         weaponDesc.fAttackCoolTime = 0.2f; // 0.15 넘 빠름 // 0.3 너무 느림
+        weaponDesc.iFireSoundHash = TO_HASH("sfx_weapon_Machinegun_Chixing_shoot_fire_r");
 
         weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(180.f), XMConvertToRadians(90.f), XMConvertToRadians(0.f));
         weaponDesc.matHoldOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(90.f));
@@ -2075,7 +2099,7 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
             tPColliDesc.eShape = EPhysicsShape::BOX;
             //tPColliDesc.fHeight = 100.f;
             tPColliDesc.vCenter = { 0.f, 0.75f, 0.f }; // 이전 값 : 0.f, 0.75f, 0.7f 
-            tPColliDesc.vExtents = { 5.f, 1.5f, 7.f };
+            tPColliDesc.vExtents = { 3.5f, 1.5f, 4.5f };
 
             //tPColliDesc.fRadius = { 20.f };
             tPColliDesc.bIsTrigger = { true };

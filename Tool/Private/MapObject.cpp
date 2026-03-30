@@ -2193,25 +2193,28 @@ void CMapObject::LightObject_BeforeRender(const _float fTimeDelta)
     /* 로직 */
 
     /* 깜빡거리는 애들이라면 프레임단위로 계산해준다 */
-    float fFinalLightRangeRatio{ 1.f };
+    _float fFinalRange = pLightObjectDesc->fBaseRange;
     if (pLightObjectDesc->isFlicker)
     {
         float fSinValue = sinf(m_fDT * pLightObjectDesc->fFlickerSpeed);	/* -1 ~ 1 사이 값 */
         fSinValue = (fSinValue + 1.f) * 0.5f;			/* 0.f ~ 1.f 사이값으로 변환 */
-        fFinalLightRangeRatio = pLightObjectDesc->fFlickerMin + fSinValue * (1.f - pLightObjectDesc->fFlickerMin);
+        pLightObjectDesc->fCurLightRangeRatio = pLightObjectDesc->fFlickerMin + fSinValue * (1.f - pLightObjectDesc->fFlickerMin);
+        fFinalRange = pLightObjectDesc->fBaseRange * pLightObjectDesc->fCurLightRangeRatio;
     }
+    else
+        pLightObjectDesc->fCurLightRangeRatio = 1.f;
 
     if (pLightObjectDesc->pDebugLight)
     {
         /* Update를 해주자 */
         const Vec3& vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
         pLightObjectDesc->Update_Light(Vec4(vPos.x, vPos.y, vPos.z, 1.f));
-        pLightObjectDesc->pDebugLight->Setup_Range(pLightObjectDesc->fBaseRange * fFinalLightRangeRatio);
+        pLightObjectDesc->pDebugLight->Setup_Range(pLightObjectDesc->fBaseRange * fFinalRange);
         m_pGameInstance->Push_Light(pLightObjectDesc->pDebugLight);
     }
 
     return;
-}
+} 
 
 _int CMapObject::Get_InstanceCount()
 {

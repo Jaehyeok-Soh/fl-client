@@ -47,6 +47,18 @@ void CEffect_DashPanel::Update_Priority(const _float fTimeDelta)
 void CEffect_DashPanel::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	if (m_bDashFinishedFlag == false)
+	{
+		m_fTimeAccumulation += fTimeDelta;
+
+		if (m_fTimeAccumulation >= m_fStateChangeTime)
+		{
+			m_bDashFinishedFlag = true;
+			m_fTimeAccumulation = 0.f;
+			DashFinished();
+		}
+	}
 }
 
 void CEffect_DashPanel::Update_Late(const _float fTimeDelta)
@@ -100,6 +112,8 @@ HRESULT CEffect_DashPanel::Spawn_FromPool(void* pArg)
 {
 	if (nullptr == pArg) return E_FAIL;
 	m_bIsEffectFinish = false;
+	m_bDashFinishedFlag = false;
+	m_fTimeAccumulation = 0.f;
 
 	if (FAILED(Super::Spawn_FromPool(pArg)))
 		return E_FAIL;
