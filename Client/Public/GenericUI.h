@@ -124,6 +124,8 @@ protected:
 	_float m_fBrightness				= {};
 
 private:
+	_float m_fOriginAlpha = {};
+private:
 	_float m_fTimeAcc = {};
 
 	// Lerp Movement Values

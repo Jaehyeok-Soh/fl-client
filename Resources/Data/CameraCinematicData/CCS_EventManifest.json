@@ -70,5 +70,53 @@
             }
         ],
         "Subscriber Name": "Cinematic"
+    },
+    {
+        "Action Infos": [
+            {
+                "Explain": "기본 시네마틱 보스 연출자세 (Xibla)",
+                "Name": "Default"
+            }
+        ],
+        "Subscriber Name": "Xibila_Cinematic_State"
+    },
+    {
+        "Action Infos": [
+            {
+                "Explain": "시빌라 연출 끝나고난뒤 플레이어 포지션 이동",
+                "Name": "Xibila_Cinematic_End_Position"
+            }
+        ],
+        "Subscriber Name": "Player_ChangePosition"
+    },
+    {
+        "Action Infos": [
+            {
+                "Explain": "",
+                "Name": "Set_Active_True"
+            },
+            {
+                "Explain": "",
+                "Name": "Set_Active_False"
+            },
+            {
+                "Explain": "",
+                "Name": "Set_KeyInput_False"
+            },
+            {
+                "Explain": "",
+                "Name": "Set_KeyInput_True"
+            }
+        ],
+        "Subscriber Name": "Player_State"
+    },
+    {
+        "Action Infos": [
+            {
+                "Explain": "플레이어랑 싱크 맞추기",
+                "Name": "Change_CamState_TARGETSYNC"
+            }
+        ],
+        "Subscriber Name": "CameraMan_Targeter"
     }
 ]
