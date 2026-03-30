@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "PhysicsCCT.h"
 #include "ComputeShader.h"
+#include "NPC_Citizen.h"
 #include "GameInstance.h"
 
 CNPC_Citizen_Body::CNPC_Citizen_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -68,6 +69,8 @@ HRESULT CNPC_Citizen_Body::Initialize(void* pArg)
 	if (FAILED(this->Ready_FaceData(pDesc)))
 		return E_FAIL;
 
+	m_pGameInstance->Bind_DissolveTexture(Get_Component<CShader>());
+
 	return S_OK;
 }
 
@@ -117,6 +120,7 @@ HRESULT CNPC_Citizen_Body::Ready_Component(NPC_CITIZEN_BODY* pDesc)
 	/* Shader Add */
 	if (FAILED(CGameObject::Add_Component<CShader>(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Shader_VtxAnimMesh", nullptr)))
 		return E_FAIL;
+
 
 
 	return S_OK;
@@ -198,6 +202,11 @@ HRESULT CNPC_Citizen_Body::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+
+	if (FAILED(Ready_DissolveEffect_Setting()))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -209,6 +218,8 @@ void CNPC_Citizen_Body::Update_Priority(_float fTimeDelta)
 void CNPC_Citizen_Body::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	m_tDissolveDesc.Update(fTimeDelta);
 }
 
 void CNPC_Citizen_Body::Update_Late(_float fTimeDelta)
@@ -269,8 +280,9 @@ HRESULT CNPC_Citizen_Body::Render()
 
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
-
 	pShader->Bind_RGBColorData(m_tRGBColorDesc);
+	pShader->Bind_DissolveEffectData(m_tDissolveDesc.ShaderData);
+
 
 	m_pCBCitizenFaceData->SetRawValue(&m_tCBCitizenFaceData , 0 , sizeof(m_tCBCitizenFaceData) );
 
@@ -283,8 +295,34 @@ HRESULT CNPC_Citizen_Body::Render()
 		pModel->Render(i);
 	}
 
+	// 디졸브 값 초기화
+	SHADER_DISSOLVE_EFFECT_DESC Desc = {};
+	pShader->Bind_DissolveEffectData(Desc);
 
 	return S_OK;
+}
+
+HRESULT CNPC_Citizen_Body::Ready_DissolveEffect_Setting()
+{
+	using DS = DissolveEffectDesc;
+	m_tDissolveDesc.Reset();
+	m_tDissolveDesc.Add_DissolveFlag(DS::BIT_SPAWN_START,/* DS::BIT_USE_ALPHA_FADE, */DS::BIT_USE_DISSOLVE_MAP);
+	m_tDissolveDesc.Set_Dissolve_Setting(3.f,1.f);
+	m_tDissolveDesc.Set_Spawn_Setting(1.f, 1.f);
+	m_tDissolveDesc.Set_ObjectType(DS::DISSOLVE_OBJECTTYPE::TYPE_NPC);
+
+	// 스폰 시간 & 디졸브 시간
+	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = SimpleMath::Vector3(1.f,1.f,1.f);
+	m_tDissolveDesc.ShaderData.fDissolveEdgeWidth = 0.1f;
+
+	return S_OK;
+}
+
+void CNPC_Citizen_Body::DissolveStarts()
+{
+	using DS = DissolveEffectDesc;
+	m_tDissolveDesc.Reset();
+	m_tDissolveDesc.Add_DissolveFlag(DS::BIT_DISSOLVE_START, DS::BIT_USE_EDGE,/* DS::BIT_USE_ALPHA_FADE, */DS::BIT_USE_DISSOLVE_MAP);
 }
 
 HRESULT CNPC_Citizen_Body::Change_Animation(_uint iAnimIndex)

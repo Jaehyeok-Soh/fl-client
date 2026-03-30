@@ -92,7 +92,6 @@ protected:
 	CB_MonsterEmotion				m_tCBMonsterEmotion{};
 	EMonster_Emontion_Type			m_eEmotionType{ EMonster_Emontion_Type::END };
 	ID3DX11EffectConstantBuffer*	m_pCBMonsterEmotion{ nullptr };
-
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;
