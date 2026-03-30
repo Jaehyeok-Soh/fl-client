@@ -92,8 +92,12 @@ cbuffer CB_CitizentFaceData
     CittzenFaceUV tCitizenFaceUV[Citizen_Face_END];
 };
 
-
-
+cbuffer CB_MonsterEmotion
+{   
+    float4 vMonsterSkinColor = float4(1.f, 1.f, 1.f, 1.f);
+    float4 vMonsterEmotionColor = float4(1.f,1.f,1.f,1.f);
+    CittzenFaceUV tMonsterEmotionUV;
+};
 
 
 VS_OUT_SKELETON VS_MAIN(VS_IN_SKELECTON input)
@@ -293,6 +297,8 @@ PS_OUT_DEFFERED PS_CITIZENMOUTH(PS_IN_SKELETON input)
     if (output.vDiffuse.a <= EPSILON)
         discard;
     
+    Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
+    
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, vUV);
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
@@ -312,8 +318,14 @@ PS_OUT_DEFFERED PS_CITIZENMOUTH(PS_IN_SKELETON input)
         vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
     }
     
+
+    vEmissive += Get_DissolveEdgeEmissive(input.vUV);
+    
+
+    
     return output;
 }
+
 PS_OUT_DEFFERED PS_CITIZENEYE(PS_IN_SKELETON input)
 {
     PS_OUT_DEFFERED output;
@@ -326,6 +338,9 @@ PS_OUT_DEFFERED PS_CITIZENEYE(PS_IN_SKELETON input)
     Compute_Diffse(output.vDiffuse, vUV);
     if (output.vDiffuse.a <= EPSILON)
         discard;
+    
+    Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
+    
     
     float3 vNormal = input.vNormal;
     Compute_Normal(vNormal, input.vTangent, input.vBinormal, vUV);
@@ -346,8 +361,67 @@ PS_OUT_DEFFERED PS_CITIZENEYE(PS_IN_SKELETON input)
         vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
     }
     
+    
+    vEmissive += Get_DissolveEdgeEmissive(input.vUV);
+    
     return output;
 }
+
+
+PS_OUT_DEFFERED PS_MONSTERFACE(PS_IN_SKELETON input)
+{
+    PS_OUT_DEFFERED output;
+    
+    output.vDiffuse = 1.f;
+    
+    // UV ÁÂÇ¥ ÀúÀå
+    float2 vOriginUV = input.vUV;
+    
+    float2 vNoiseTileUV = vOriginUV * vMonsterSkinColor.a;
+
+    
+    float fWidthNoise = g_DissolveTexture[5].Sample(LinearSampler, vNoiseTileUV).r;
+    float fHeightNoise = g_DissolveTexture[6].Sample(LinearSampler, vNoiseTileUV).r;
+    
+    float fMixNoise = saturate(fWidthNoise * fHeightNoise);
+
+    
+    if (fMixNoise < 0.1f)
+        discard;
+    
+    output.vDiffuse = float4(vMonsterSkinColor.rgb, 1.f);
+
+    Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
+    
+    
+    
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = float3(1.f, 1.f, 0.f);
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler,input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo.r = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    // ÅØ½ºÃÄ Emissive
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    
+    vEmissive += Get_DissolveEdgeEmissive(input.vUV);    
+        
+    return output;
+}
+
+
+
 
 technique11 T0
 {
@@ -368,4 +442,8 @@ technique11 T0
 	PASS_RS_DS_BS_VP(CitizenMouth, RS_Default, DS_Default, BS_Default, VS_MAIN , PS_CITIZENMOUTH)
 	PASS_RS_DS_BS_VP(CitizenCloth, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_RGBMAPPING)
 	PASS_RS_DS_BS_VP(CitizenBody, RS_Default, DS_Default, BS_Default, VS_MAIN, PS_MAIN)
+
+
+    //ÈçµéÈçµé¿­¸Å 
+	PASS_RS_DS_BS_VP(MonsterFace, RS_Default, DS_Default, BS_Default, VS_WITHSHAKE, PS_MONSTERFACE)
 };

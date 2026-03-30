@@ -1111,6 +1111,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
 				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF" , "STRONGWIND_LEAF",
 				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN",
+				"SNOW_SPLASH",
 			};
 
 			std::vector<const char*> iTems;
@@ -1139,7 +1140,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_FOUNTAIN): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_FOUNTAIN); break;
-
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SNOW_SPLASH): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SNOW_SPLASH); break;
 				}
 			}
 
@@ -1153,7 +1154,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				"NONE", "DROP", "RISE", "SPREAD", "STOP", 
 				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
 				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF", "STRONGWIND_LEAF", 
-				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN"};
+				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN",
+			"SNOW_SPLASH"};
 			int currentIndex = (int)m_tCurrentDesc.Data._Effect_ShapeType;
 
 			ImGui::Spacing();
@@ -1668,6 +1670,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_PParticleTypeList.push_back("NONEDEPTH_Glow_Texture");
 					m_PParticleTypeList.push_back("LineTexture_Blend");
 					m_PParticleTypeList.push_back("LineTexture_NoneDepth");
+					m_PParticleTypeList.push_back("Distotion_Texture");
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");
@@ -1772,10 +1775,10 @@ void CParticle_System_Panel::Draw_Rotation_Texture(CToolObject* pGo)
 	{
 		if (ImGui::BeginTable("RotationTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
 		{
-			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Curve", "Normal", "Glow", "SubMasking"};
+			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Curve", "Normal", "Glow", "X","SubMasking"};
 			const char* rotationLabels[] = { "0", "90", "180", "270" };
 
-			for (int i = 0; i < 8; i++)
+			for (int i = 0; i < 9; i++)
 			{
 				ImGui::TableNextColumn();
 				ImGui::Text("%s", textureNames[i]);
@@ -1944,7 +1947,7 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 void CParticle_System_Panel::UpdateRotationFlags()
 {
 	uint32_t packed = 0;
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		packed |= (static_cast<uint32_t>(m_iRotIndices[i]) << (i * 4));
 	}
@@ -1960,7 +1963,7 @@ void CParticle_System_Panel::Draw_Preview_Texture(CToolObject* pGo)
 	{
 		const char* SlotName[] = { "Diffuse", "Noise", "Mask", "Gradation", "Curve", "Normal" };
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 9; i++)
 		{
 			ImGui::BeginGroup();
 

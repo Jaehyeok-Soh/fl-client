@@ -168,10 +168,12 @@ void CNPC_Base::Update_Priority(const _float fTimeDelta)
 
 void CNPC_Base::Update(const _float fTimeDelta)
 {
-	if (CMonsterControlContext* pMonsterControlContext = Get_Component<CMonsterControlContext>())
-		pMonsterControlContext->Update_RuntimeDesc(fTimeDelta);
 
-	if (CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>())
+	CMonsterControlContext* pMonsterControlContext = Get_Component<CMonsterControlContext>();
+	if (pMonsterControlContext)
+		pMonsterControlContext->Update_RuntimeDesc(fTimeDelta);
+	CMonsterActionState* pMonsterState = Get_Component<CMonsterActionState>();
+	if (pMonsterState)
 		pMonsterState->Update(fTimeDelta);
 
 	if (m_pEffectHandler)

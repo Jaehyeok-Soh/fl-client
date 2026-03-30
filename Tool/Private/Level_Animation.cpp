@@ -266,9 +266,9 @@ HRESULT CLevel_Animation::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
 		return E_FAIL;
 
-	//Resources\Sounds\SFX\Monster\Common
-	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Common")))
-		return E_FAIL;
+	////Resources\Sounds\SFX\Monster\Common
+	//if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Common")))
+	//	return E_FAIL;
 	////Resources\Sounds\SFX\Monster\Boomer
 	//if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Boomer")))
 	//	return E_FAIL;
@@ -278,11 +278,10 @@ HRESULT CLevel_Animation::Ready_Sounds()
 	////Resources\Sounds\SFX\Monster\Fly
 	//if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Fly")))
 	//	return E_FAIL;
-	//Resources\Sounds\SFX\Monster\Veteran
-	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Veteran")))
-		return E_FAIL;
+	////Resources\Sounds\SFX\Monster\Veteran
+	//if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Veteran")))
+	//	return E_FAIL;
 
-	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static
 	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Combat\Dual
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Dual")))
 		return E_FAIL;
@@ -294,13 +293,27 @@ HRESULT CLevel_Animation::Ready_Sounds()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))
 		return E_FAIL;
-
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Skill")))
+		return E_FAIL;
 	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Basic
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Cloth")))
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Dodge")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Jump")))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Slides")))
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Movement")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Slide")))
+		return E_FAIL;
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static\Hit
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit")))
+		return E_FAIL;
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\FootSound\TutorialVillage
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/FootSound/TutorialVillage")))
+		return E_FAIL;
+	//"C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Voice"
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Voice")))
 		return E_FAIL;
 
 	return S_OK;

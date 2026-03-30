@@ -146,6 +146,7 @@ namespace Client
 		CitizenMouth,
 		CitizenCloth,
 		CitizenBody,
+		MonsterFace,
 		END,
 	};
 
@@ -162,6 +163,7 @@ namespace Client
 		case Client::EAnimShaderPass::CitizenMouth:	return "CitizenMouth";
 		case Client::EAnimShaderPass::CitizenCloth:	return "CitizenCloth";
 		case Client::EAnimShaderPass::CitizenBody:	return "CitizenBody";
+		case Client::EAnimShaderPass::MonsterFace:	return "MonsterFace";
 
 		default:									return "UnKnown";
 		};
@@ -179,6 +181,7 @@ namespace Client
 		else if (strType == "CitizenMouth")	return Client::EAnimShaderPass::CitizenMouth;
 		else if (strType == "CitizenCloth") return Client::EAnimShaderPass::CitizenCloth;
 		else if (strType == "CitizenBody")	return Client::EAnimShaderPass::CitizenBody;
+		else if (strType == "MonsterFace")	return Client::EAnimShaderPass::MonsterFace;
 
 		return Client::EAnimShaderPass::END;
 	};
@@ -273,6 +276,21 @@ namespace Client
 		/* 16 Byte */
 	};
 
+	struct WaterRippleEffect
+	{
+		// ---------------- [ 파동 기본 형태 조절 ] ----------------
+		_float fMaxRadius{1.f}; // 파동이 퍼져나가는 최대 반경 (예: 15.0f)
+		_float fRippleFreq{1.f}; // 파동의 촘촘함. 높을수록 물결이 좁아짐 (예: 8.0f)
+		_float fRippleSpeed{1.f}; // 파동이 퍼져나가는 속도 (예: 5.0f)
+		_float fRippleAmp{0.5f}; // 파동의 최대 강도/높이 (예: 0.5f)
+
+
+		_float				fRingThickness{ 1.f };
+		_int				iActiveRippleCount{ 0 }; // 현재 켜져 있는 파동 개수
+		_int				isUseRipple[2]{true,true};         // ★ 16바이트 정렬용 패딩 (4 + 12 = 16)
+		array<Vec4, 20> arrayRipplesPos{}; // 파동 배열 (x, y, z, w=나이)
+	};
+
 
 	struct CB_WaterData
 	{
@@ -288,6 +306,9 @@ namespace Client
 
 		float   g_fSparklePower;                                        // 4 Byte (윤슬 눈뽕 강도!)
 		Vec2    g_vSparkleUVPower;                                      // 8 Byte (윤슬 자글자글함 크기 조절!)
+
+
+		WaterRippleEffect tWaterRippleEffect{};							//  16Byte 정렬완료
 	};
 
 	struct CB_GrassData
@@ -349,7 +370,36 @@ namespace Client
 
 		return 0;
 	}
-	
+
+#define MonsterEmotionRow 4
+#define MonsterEmotionColunm 4
+
+	enum class EMonster_Emontion_Type
+	{
+		OnlyEye,
+		WithMouth,
+		END,
+	};
+
+	enum class EMonster_Emontion_State_Type
+	{
+		Idle,
+		Dead,
+		Hit,
+		Attack,
+		END,
+	};
+
+	struct CB_MonsterEmotion
+	{
+		Vec4 vSkinColor{0.f,0.f,0.f,1.f};		/* Skin Color */
+		Vec4 vEmotionColor{1.f,0.f,0.f,1.f};	/* Emotion Color */
+
+		Vec2 vUVOffset{ 0.f,0.f };
+		Vec2 vUVScale{ 0.f,0.f };
+	};
+
+
 
 	enum class EMapObject_DrawType
 	{
@@ -635,6 +685,7 @@ namespace Client
 
 		LEVEL_FADE,
 		NPC_TEXT_BUBBLE,
+		QTE,
 		END
 	};
 
@@ -682,6 +733,7 @@ namespace Client
 		case Client::EUIPrefabType::TUTORIAL_PANNEL_4:		return L"TUTORIAL_PANNEL_4";
 		case Client::EUIPrefabType::LEVEL_FADE:				return L"LEVEL_FADE";
 		case Client::EUIPrefabType::NPC_TEXT_BUBBLE:		return L"NPC_TEXT_BUBBLE";
+		case Client::EUIPrefabType::QTE:					return L"QTE";
 
 		case Client::EUIPrefabType::END:
 		default:
@@ -751,6 +803,18 @@ namespace Client
 
 	} UI_NPC_TEXT_BUBBLE_PREFAB_DATA;
 
+	typedef struct tagUIQTEPrefabData
+	{
+		_uint iNodeIndex		= {};
+		Vec2 vSpawnOffset		= {};
+		Vec2 vPreSpawnOffset	= {};
+		_uint iKeyType			= {};
+
+		_float fDelayTime		= {}; // 내가 보여질 시간
+		_float fTimingTime		= {}; // Success 되는 타이밍
+
+	}UI_QTE_PREFAB_DATA;
+
 	typedef std::variant<
 		UI_NAMEPLATE_PREFAB_DATA,
 		UI_DAMAGEFONT_PREFAB_DATA,
@@ -759,7 +823,8 @@ namespace Client
 		UI_TUTORIAL_PANNEL_PREFAB_DATA,
 		UI_TUTORIAL_POPUP_PREFAB_DATA,
 		UI_LEVEL_FADE_PREFAB_DATA,
-		UI_NPC_TEXT_BUBBLE_PREFAB_DATA
+		UI_NPC_TEXT_BUBBLE_PREFAB_DATA,
+		UI_QTE_PREFAB_DATA
 	> UI_PREFAB_VARIANT;
 
 	typedef struct tagUIPrefabData
@@ -1119,6 +1184,7 @@ namespace Client
 	inline constexpr wchar_t g_wszNPCeLayer[]									{ L"NPC_Layer" };
 	inline constexpr wchar_t g_wszNPCCitizenPoolLayer[]							{ L"NPC_Citizen_PoolLayer" };
 	inline constexpr wchar_t g_wszInteractiveObjectLayer[]						{ L"InteractiveObject_Layer"};
+	inline constexpr wchar_t g_wszWaterLayer[]										{ L"Water_Layer"};
 #pragma endregion
 
 #pragma region Camera

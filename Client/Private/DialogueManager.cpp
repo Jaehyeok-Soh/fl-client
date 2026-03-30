@@ -147,7 +147,7 @@ void CDialogueManager::Start_Dialogue(_int iId)
 		return;
 	}
 
-	m_iCurrentNode = iId;
+	m_iCurrentNodeIndex = iId;
 	m_pCurrentNode = &m_umapContents[iId];
 
 	m_pGameInstance->Broadcast<DIALOGUE_BEGIN>(iId);
@@ -163,8 +163,8 @@ void CDialogueManager::OnInputNext()
 		return;
 	}
 
-	m_iCurrentNode = m_pCurrentNode->iNextId;
-	m_pCurrentNode = &m_umapContents[m_iCurrentNode];
+	m_iCurrentNodeIndex = m_pCurrentNode->iNextId;
+	m_pCurrentNode = &m_umapContents[m_iCurrentNodeIndex];
 
 	FlushTrigger();
 }
@@ -177,8 +177,8 @@ void CDialogueManager::OnInputPrev()
 		return;
 	}
 
-	m_iCurrentNode = m_pCurrentNode->iPrevId;
-	m_pCurrentNode = &m_umapContents[m_iCurrentNode];
+	m_iCurrentNodeIndex = m_pCurrentNode->iPrevId;
+	m_pCurrentNode = &m_umapContents[m_iCurrentNodeIndex];
 
 	FlushTrigger();
 }
@@ -193,15 +193,15 @@ void CDialogueManager::OnSelectChoice(_int choiceIndex)
 		return;
 	}
 
-	m_iCurrentNode = m_pCurrentNode->vecChoices[choiceIndex].iTransitionId;
-	m_pCurrentNode = &m_umapContents[m_iCurrentNode];
+	m_iCurrentNodeIndex = m_pCurrentNode->vecChoices[choiceIndex].iTransitionId;
+	m_pCurrentNode = &m_umapContents[m_iCurrentNodeIndex];
 
 	FlushTrigger();
 }
 
 void CDialogueManager::FinishCurrentDialogue()
 {
-	m_iCurrentNode = -1;
+	m_iCurrentNodeIndex = -1;
 	m_pCurrentNode = nullptr;
 
 	FinishBroadcast();

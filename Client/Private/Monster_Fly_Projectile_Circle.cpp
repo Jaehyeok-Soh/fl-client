@@ -65,7 +65,7 @@ HRESULT CMonster_Fly_Projectile_Circle::Ready_Moduels()
 		{
 			if (FAILED(Add_EffectModule(
 				0 /* static */,
-				"Boss_Xibi_Bullet_Spawn",
+				"Monster_Fly_Bullet",
 				wstrDefaultPrototypeTag,
 				ENUM_TO_UINT(EState::FLY))))
 				return E_FAIL;
@@ -95,7 +95,7 @@ HRESULT CMonster_Fly_Projectile_Circle::Ready_Moduels()
 		colliderDesc.bSetOnlyFilter = false;
 		colliderDesc.bIsActive = true;
 		colliderDesc.fRadius = 0.3f;
-		colliderDesc.strAttackPresetTag = "Xibi_Circle";
+		colliderDesc.strAttackPresetTag = "Dog_Projectile";
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 		colliderDesc.tMaterial = mtrlDesc;

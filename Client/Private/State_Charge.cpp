@@ -63,7 +63,7 @@ void CState_Charge::Update(const _float fTimeDelta)
 	// weapon change time
 	if (m_fHoldWeaponTime <= m_fStateElapsed)
 	{
-		Change_Weapon();
+		//Change_Weapon();
 		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 	}
 }

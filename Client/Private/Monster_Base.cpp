@@ -479,6 +479,7 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 	return S_OK;
 }
 
+
 void CMonster_Base::OnHit_Sword(const HIT_DESC& hitDesc)
 {
 	_uint iDamageFlag = hitDesc.iDamageFlag;
@@ -747,6 +748,18 @@ void CMonster_Base::Hit_Sound(EPlayerAttackFlag eFlag, DTO::EHitType eHitType)
 		break;
 	}
 }
+
+void CMonster_Base::Compute_MonsterEmotionUV(EMonster_Emontion_State_Type  eType)
+{
+	if (m_vecPartObjects[ENUM_TO_UINT(Part::BODY)] == nullptr) return;
+
+
+	static_cast<CMonster_Body_Base*>(m_vecPartObjects[ENUM_TO_UINT(Part::BODY)])
+		->Compute_MonsterEmotionUV(eType);
+
+	return;
+}
+
 
 void CMonster_Base::OnHit_Dual(const HIT_DESC& hitDesc)
 {

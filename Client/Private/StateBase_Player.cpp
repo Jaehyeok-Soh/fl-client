@@ -58,6 +58,10 @@ HRESULT CStateBase_Player::Start(void* pArg, _bool bForce)
 
 	Reset_WhenStart();
 
+	// check를 할거고 다음 프레임에 바로 바꿔줄거라면
+	_bool bChangeWeapon = Engine_Utils::Has_OnlyFlag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_Check | WEAPONCHANGEFLAGS::Change_NextFrame);
+	static_cast<CPlayer*>(Get_OwnerObject())->Set_CanQuickSlopOpen(bChangeWeapon);
+
 	return S_OK;
 }
 
@@ -65,9 +69,9 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	// 만약 이전  프레임에 weapon change key가 눌렸다면 weapon을 change
-	if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_NextFrame))
-		Change_Weapon();
+	//// 만약 이전  프레임에 weapon change key가 눌렸다면 weapon을 change
+	//if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_NextFrame))
+	//	Change_Weapon();
 
 	if (Check_Collis(fTimeDelta))
 		return;
@@ -88,9 +92,9 @@ void CStateBase_Player::Update(const _float fTimeDelta)
 	if (Check_Keys(fTimeDelta))
 		return;
 
-	// weapon key check / todo_eunbi : check key안으로 일단 넣지는 않음
-	if (Check_WeaponChnage(fTimeDelta))
-		return;
+	//// weapon key check / todo_eunbi : check key안으로 일단 넣지는 않음
+	//if (Check_WeaponChnage(fTimeDelta))
+	//	return;
 }
 
 HRESULT CStateBase_Player::End()
@@ -98,9 +102,9 @@ HRESULT CStateBase_Player::End()
 	if (FAILED(Super::End()))
 		return E_FAIL;
 
-	// 만약 이전  프레임에 weapon change key가 눌렸다면 weapon을 change
-	if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_End))
-		Change_Weapon();
+	//// 만약 이전  프레임에 weapon change key가 눌렸다면 weapon을 change
+	//if (Engine_Utils::Has_Flag(m_FWeaponChanges, WEAPONCHANGEFLAGS::Change_End))
+	//	Change_Weapon();
 
 	return S_OK;
 }
@@ -113,6 +117,9 @@ _uint CStateBase_Player::Get_Capabilities() const
 
 	if (Can_Captablity_Move())
 		iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::MOVE);
+
+	if(Can_Captablity_Special())
+		iCapFlag |= ENUM_TO_UINT(Engine::StateCapability::SKILL);
 
 	return	 iCapFlag;
 }
@@ -323,100 +330,108 @@ _bool CStateBase_Player::Check_CtrlUpKey(const _float fTimeDelta)
 
 _bool CStateBase_Player::Check_MeleeKey(const _float fTimeDelta)
 {
-	if (KeyFlag_On(CPlayerControlContext::KEYFLAGS::COMBO)
-		&&Can_UseWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE)))
+	if (static_cast<CPlayer*>(Get_OwnerObject())->Can_AttackWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE)))
 	{
-		// holding 시간 체크
-		if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
+		if (KeyFlag_On(CPlayerControlContext::KEYFLAGS::COMBO)
+			&& Can_UseWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE)))
 		{
-			m_TChargeCount.x += fTimeDelta;
-
-			if (Has_ChangeState(STATEKEY::CHARGE))
+			// holding 시간 체크
+			if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::CHARGATT)))
 			{
-				if (m_TChargeCount.x >= m_TChargeCount.y)
-				{
-					Change_PlayerState(STATEKEY::CHARGE);
-					m_TChargeCount.x = 0.f;
-					return true;
-				}
-			}
-		}
+				m_TChargeCount.x += fTimeDelta;
 
-		// 만약에 마우스를 땠다면
-		else if (MOUSE_LBUTTON_UP)
-		{
-			if (Has_ChangeState(STATEKEY::CHARGE))
-			{
-				if (m_TChargeCount.x >= m_TChargeCount.y)
+				if (Has_ChangeState(STATEKEY::CHARGE))
 				{
-					Change_PlayerState(STATEKEY::CHARGE);
-					return true;
-				}
-			}
-
-			if (Has_ChangeState(STATEKEY::LM))
-			{
-				if (Check_OnGround(0.3f))
-				{
-					// combo state 전환 : 무기 체크후 전환
-					_int iCurMelee = Get_WeaponIdx(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE));
-
-					switch (iCurMelee)
+					if (m_TChargeCount.x >= m_TChargeCount.y)
 					{
-					case ENUM_TO_UINT(CPlayer::MELEE::SWORD):
-						Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO));
-						break;
+						Change_PlayerState(STATEKEY::CHARGE);
+						m_TChargeCount.x = 0.f;
+						return true;
+					}
+				}
+			}
 
-					case ENUM_TO_UINT(CPlayer::MELEE::DUAL):
-						Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO_DUAL));
-						break;
+			// 만약에 마우스를 땠다면
+			else if (MOUSE_LBUTTON_UP)
+			{
+				if (Has_ChangeState(STATEKEY::CHARGE))
+				{
+					if (m_TChargeCount.x >= m_TChargeCount.y)
+					{
+						Change_PlayerState(STATEKEY::CHARGE);
+						return true;
+					}
+				}
+
+				if (Has_ChangeState(STATEKEY::LM))
+				{
+					if (Check_OnGround(0.3f))
+					{
+						// combo state 전환 : 무기 체크후 전환
+						_int iCurMelee = Get_WeaponIdx(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE));
+
+						switch (iCurMelee)
+						{
+						case ENUM_TO_UINT(CPlayer::MELEE::SWORD):
+							Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO));
+							break;
+
+						case ENUM_TO_UINT(CPlayer::MELEE::DUAL):
+							Change_PlayerState(ENUM_TO_UINT(CPlayer::State::COMBO_DUAL));
+							break;
+						}
+
 					}
 
+					else
+					{
+						Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTSTART));
+					}
+					return true;
 				}
 
-				else
-				{
-					Change_PlayerState(ENUM_TO_UINT(CPlayer::State::JUMPATTSTART));
-				}
-				return true;
+				m_TChargeCount.x = 0.f;
 			}
-
-			m_TChargeCount.x = 0.f;
 		}
 	}
+
 
 	return false;
 }
 
 _bool CStateBase_Player::Check_RangeKey(const _float fTimeDelta)
 {
-	if (Can_UseWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE))&&
-		Has_ChangeState(STATEKEY::RM) &&
-		Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::RATT))&&
-		static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Can_ChangeGunState()
-		)
+	if (static_cast<CPlayer*>(Get_OwnerObject())->Can_AttackWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE)))
 	{
-		if (m_pOwnerGun)
+		if (Can_UseWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::RANGE)) &&
+			Has_ChangeState(STATEKEY::RM) &&
+			Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::RATT)) &&
+			static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Can_ChangeGunState()
+			)
 		{
-			// 공격이 가능 하다면 : attack
-			if (Can_Fire())
+			if (m_pOwnerGun)
 			{
-				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
-				//Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
-				return true;
-			}
+				// 공격이 가능 하다면 : attack
+				if (Can_Fire())
+				{
+					Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+					//Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNATTACK));
+					return true;
+				}
 
-			// 공격은 불가능 하지만 reload는 가능 하다면 : reload
-			else if (Can_Reload())
-			{
-				Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
-				//Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
-				return true;
-			}
+				// 공격은 불가능 하지만 reload는 가능 하다면 : reload
+				else if (Can_Reload())
+				{
+					Change_PlayerState(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
+					//Request_Change_State(ENUM_TO_UINT(CPlayer::State::GUNRELOAD));
+					return true;
+				}
 
-			return false;
+				return false;
+			}
 		}
 	}
+
 
 	return false;
 }

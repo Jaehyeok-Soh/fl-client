@@ -23,7 +23,7 @@ HRESULT CSkillBase_MoonE::Initialize(void* pArg)
 
 	SKILL_INFO tSkill = {};
 	{
-		tSkill.fStatAttack = 10.f;
+		tSkill.fStatAttack = 0.f;
 		tSkill.fStatSheild = 0.f;
 		tSkill.eSkillType = SKILL_TYPE::DAMAGE;
 		tSkill.fNeedMental = 15.f;

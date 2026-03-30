@@ -220,6 +220,7 @@ protected:
 	virtual void Reset_WhenStart();
 
 	virtual _bool Can_Captablity_Move() const;
+	virtual _bool Can_Captablity_Special() const { return false; }
 
 protected:
 	HRESULT Start_AttackState(void* pArg);

@@ -68,6 +68,20 @@
                         "z": 0.0
                     },
                     "LifeTime": 0.6000000238418579,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_FlareZd002_Mask",
                     "MaxParticle": 1,
@@ -335,6 +349,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,
@@ -383,6 +399,20 @@
                         "z": 0.0
                     },
                     "LifeTime": 0.6000000238418579,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_RingWjw001_Mask",
                     "MaxParticle": 1,
@@ -404,7 +434,7 @@
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "RenderFlag": 8192,
+                    "RenderFlag": 8193,
                     "RotationCurveX": [],
                     "RotationCurveY": [],
                     "RotationCurveZ": [],
@@ -571,7 +601,7 @@
                     "TextureFlag": 4,
                     "TimeFlag": 0,
                     "Tool_Render": {
-                        "Billboard": false,
+                        "Billboard": true,
                         "DirBillboard": false,
                         "Down": false,
                         "Right": false,
@@ -637,6 +667,8 @@
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
                     "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_UVXPower": 0,
+                    "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
                     "_Use_Effect_Particle_Burst": false,
                     "_Use_Effect_UV_OverScroll": false,

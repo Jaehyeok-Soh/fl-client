@@ -210,6 +210,9 @@ public:
 
 	void SkillSpawnTrigger(_int iIndex);
 
+
+	void Emotion_Change(_int iEmotionState);
+
 private:
 	void Clear_RuntimeDesc();
 

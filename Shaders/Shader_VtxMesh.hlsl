@@ -84,6 +84,21 @@ cbuffer CB_GrassData
 };
 
 
+struct WaterRippleEffect
+{
+    // ---------------- [ 파동 기본 형태 조절 ] ----------------
+    float fMaxRadius; // 파동이 퍼져나가는 최대 반경 (예: 15.0f)
+    float fRippleFreq; // 파동의 촘촘함. 높을수록 물결이 좁아짐 (예: 8.0f)
+    float fRippleSpeed; // 파동이 퍼져나가는 속도 (예: 5.0f)
+    float fRippleAmp; // 파동의 최대 강도/높이 (예: 0.5f)
+    
+    float   fRingThickness;
+    int     g_iActiveRippleCount;
+    int     g_vPadding[2];
+    // ★ 이름과 크기(20)를 C++에 맞춰서 변경!
+    float4 g_arrayRipplesPos[20];
+};
+
 
 Texture2D g_WaterTexture[MAX_WATER_TEXTURE_COUNT];
 cbuffer CB_WaterData
@@ -107,6 +122,11 @@ cbuffer CB_WaterData
     float g_fSparklePower; // 4 Byte (윤슬 눈뽕 강도!)
     float2 g_vSparkleUVPower; // 8 Byte (윤슬 자글자글함 크기 조절!)
     
+    
+    
+    
+    // Ripple Data
+    WaterRippleEffect tWaterRippleEffect;   // 16Byte 정렬완료
 };
 
 
@@ -860,6 +880,74 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
                     
         bHasAnyNormal = true;
     }
+    
+    
+    float3 vPlayerPos = tPlayerInfo.matWorld._41_42_43;
+    
+    float fDist = distance(input.vWorldPos.xz, vPlayerPos.xz);
+    float fMaxRadius = 0.5f;
+  
+ 
+    
+    float2 vTotalSlope = float2(0.f, 0.f);
+    bool bHasRippleNormal = false;
+
+    //if(tWaterRippleEffect.g_vPadding[0] == true)
+    //{
+        for (int i = 0; i < tWaterRippleEffect.g_iActiveRippleCount; ++i)
+        {
+            float3 vRipplePos = tWaterRippleEffect.g_arrayRipplesPos[i].xyz;
+            float fRippleAge = tWaterRippleEffect.g_arrayRipplesPos[i].w;
+
+            float fDist = distance(input.vWorldPos.xz, vRipplePos.xz);
+        
+            float fRandomSeed = frac(sin(dot(vRipplePos.xz, float2(12.9898f, 78.233f))) * 43758.5453f);
+        
+            float fRandomMaxRadius = tWaterRippleEffect.fMaxRadius * lerp(0.7f, 1.3f, fRandomSeed);
+          
+        // 1. 현재 파동이 퍼져나간 '반지름' (테두리의 위치)
+            float fCurrentRadius = fRippleAge * tWaterRippleEffect.fRippleSpeed;
+        
+        // 2. 현재 픽셀이 그 테두리에서 얼마나 떨어져 있는가? (핵심!)
+            float fDistFromRing = fDist - fCurrentRadius;
+        
+        // 3. 파동의 두께 (이 두께 안에서만 파동이 존재함)
+            float fRingThickness = tWaterRippleEffect.fRingThickness;
+        
+        // 현재 픽셀이 링 두께 안에 있을 때만 연산
+            if (fDist < fRandomMaxRadius && abs(fDistFromRing) < fRingThickness)
+            {
+            // 4. 뚝 끊기지 않게 테두리를 부드럽게 풀어줌 (smoothstep 사용)
+                float fRingFade = smoothstep(fRingThickness, 0.0f, abs(fDistFromRing));
+
+            // 5. 나이가 들수록 투명해짐 (예: 3초 뒤 소멸)
+                float fAgeFade = saturate(1.0f - (fCurrentRadius / fRandomMaxRadius));
+            // fRippleAge를 곱하던 걸 빼버리고, 
+            // "테두리와의 거리차이(fDistFromRing)"에만 의존해서 sin 곡선을 그림!
+            // 이렇게 하면 파동의 형태가 링의 확장을 완벽하게 똑같이 따라감.
+                float fSlope = sin(fDistFromRing * tWaterRippleEffect.fRippleFreq) * tWaterRippleEffect.fRippleAmp;
+            
+            // 페이드 적용
+                fSlope *= (fRingFade * fAgeFade);
+
+            // 7. 방향 적용
+                float2 vDirXZ = input.vWorldPos.xz - vRipplePos.xz;
+                if (length(vDirXZ) > 0.001f)
+                {
+                    float2 vDirFromCenter = normalize(vDirXZ);
+                
+                    vTotalSlope += (vDirFromCenter * fSlope);
+                    bHasRippleNormal = true;
+                }
+            }
+        }
+    //}
+    
+    if (bHasRippleNormal)
+    {
+        vLocalNormal.xy += vTotalSlope;
+        bHasAnyNormal = true; // 파동이 생겼으니 노멀 맵 연산을 하도록 플래그 ON!
+    }
 
     // 3. 월드 노멀로 변환
     if (bHasAnyNormal)
@@ -881,7 +969,6 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
    
     output.vDiffuse = vDiffuse;
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
-    
     
     float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
     if (Has(g_WaterTexBindingFlags, Water_Lighting))

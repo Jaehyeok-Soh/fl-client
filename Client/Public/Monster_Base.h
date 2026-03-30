@@ -10,9 +10,11 @@ NS_END
 NS_BEGIN(Client)
 
 class CMonster_Base abstract : public CContainerObject
-							 , public ICameraAnchorHost
+	, public ICameraAnchorHost
 {
 	using Super = CContainerObject;
+
+public:
 
 public:
 	typedef struct tagMonsterDesc : public Super::GAMEOBJECT_DESC
@@ -71,6 +73,7 @@ public:
 			END
 		};
 	};
+
 	struct SubState
 	{
 		enum Enum
@@ -118,12 +121,12 @@ public:
 	virtual void		Update_Late(const _float fTimeDelta) override;
 	virtual void		Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT		Render() override;
-	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;	
+	virtual _int		Get_AnimationIndex(const wstring& wstrName) override;
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
 public:
 	virtual void		OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
-	virtual void		OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo) override;
+	virtual void		OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void		OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual void		OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void		OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
@@ -144,6 +147,8 @@ protected:
 	HRESULT				Ready_EffectHandler(void* pArgs);
 	HRESULT				Ready_CCT(void* pArgs);
 
+	HRESULT				Ready_MonsterEmotion();
+
 protected:
 	void				OnHit_Sword(const HIT_DESC& hitDesc);
 	void				OnHit_Dual(const HIT_DESC& hitDesc);
@@ -153,6 +158,9 @@ protected:
 	void				Hit_Sound(EPlayerAttackFlag eFlag, DTO::EHitType eHitType);
 
 protected:
+	void				Compute_MonsterEmotionUV(EMonster_Emontion_State_Type eType);
+protected:
+
 	EMonster_Type			m_eMonsterType{ EMonster_Type::END};
 	class CEffectHandler*	m_pEffectHandler = { nullptr };
 	array<_uint, HitSoundHashNum::END> m_arrHitSoundHash;

@@ -10,7 +10,7 @@
             "tCombat": {
                 "DamageType": "END",
                 "HitType": "Light",
-                "fBaseDamage": 1000.0,
+                "fBaseDamage": 1000.5,
                 "fHitStopSec": 0.0,
                 "fHitStunSec": 0.0,
                 "fImpulse": 1.0,

@@ -592,6 +592,7 @@ HRESULT CLevel_Tutorial_Village::Awake(const _uint iLevelID)
 	}
 
 	m_pGameInstance->Play_OneShot(0, TO_HASH("STORY_INTRO_VOICE"), 1.f);
+	m_pGameInstance->PlayBGM(0, TO_HASH("TUTORIAL_VILLAGE_BGM"), 0.5f);
 	return S_OK;
 }
 

@@ -51,6 +51,11 @@ public:
 	void Tick_Player_Weapon_State(const _float fTimeDelta);
 	void Request_Change_Weapon(_uint iSlotIndex);
 
+
+	// image가 받을 bool 값
+public:
+	_bool Get_QuickSlotOpen() const { return m_bQuickSlotOpen; }
+
 private:
 	HRESULT Cache_Player();
 
@@ -66,6 +71,8 @@ private:
 	class CPlayer* m_pPlayer = { nullptr };
 	_uint m_iCurrentSlotIndex = {};
 
+	// quick slot 열 수 있는지 -> player쪽에서 넘겨줌
+	_bool m_bQuickSlotOpen = { false };
 
 public:
 	virtual void Free()override;

@@ -67,7 +67,7 @@
                         "y": -1.0,
                         "z": 0.0
                     },
-                    "LifeTime": 5.0,
+                    "LifeTime": 3.0,
                     "LineEffectData": {
                         "Enable": true,
                         "fHalfWidth": 0.5,
@@ -83,7 +83,7 @@
                         }
                     },
                     "Looping": true,
-                    "MaskingTexture_Tag": "",
+                    "MaskingTexture_Tag": "T_HalfMaskZZ102_Mask",
                     "MaxParticle": 1,
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "",
@@ -103,11 +103,11 @@
                         "y": 1.0,
                         "z": 1.0
                     },
-                    "RenderFlag": 64,
+                    "RenderFlag": 320,
                     "RotationCurveX": [],
                     "RotationCurveY": [],
                     "RotationCurveZ": [],
-                    "SamplerStateFlag": 0,
+                    "SamplerStateFlag": 128,
                     "ScaleCurveX": [],
                     "ScaleCurveY": [],
                     "ScaleCurveZ": [],
@@ -137,8 +137,8 @@
                             "y": 1.0
                         },
                         "Masking": {
-                            "x": 1.0,
-                            "y": 1.0
+                            "x": 0.0,
+                            "y": -1.0
                         },
                         "Noise": {
                             "x": 1.0,
@@ -227,8 +227,8 @@
                         "z": 0.0
                     },
                     "TexOperatorFlag": 0,
-                    "TexRotationFlag": 69888,
-                    "TextureFlag": 137,
+                    "TexRotationFlag": 4608,
+                    "TextureFlag": 141,
                     "TimeFlag": 0,
                     "Tool_Render": {
                         "Billboard": false,
@@ -243,14 +243,14 @@
                         "Dissolve": true,
                         "Glow": false,
                         "Gradation": true,
-                        "Masking": false,
+                        "Masking": true,
                         "Noise": false,
                         "SubMasking": false
                     },
                     "Tool_Samplers": {
                         "Diffuse": 0,
                         "Gradation": 0,
-                        "Masking": 0,
+                        "Masking": 2,
                         "Noise": 0
                     },
                     "Tool_ScrollFlags": {
@@ -259,26 +259,26 @@
                         "Dissolve": false,
                         "Glow": false,
                         "Gradation": false,
-                        "Masking": false,
+                        "Masking": true,
                         "Noise": false,
                         "SubMasking": false
                     },
                     "Type": "EFFECT_PARTS",
                     "UVScrollCurveX": [
                         {
-                            "Time": 0.005780346691608429,
-                            "Val": 0.07999998331069946
+                            "Time": 0.0,
+                            "Val": 0.019999980926513672
                         }
                     ],
                     "UVScrollCurveY": [
                         {
                             "Time": 0.0028901733458042145,
-                            "Val": 0.07999998331069946
+                            "Val": 0.10000002384185791
                         }
                     ],
                     "UV_Offset": {
                         "x": 0.0,
-                        "y": 0.0
+                        "y": 1.0
                     },
                     "UseExternalForceCurve": false,
                     "UseGlobalGravityCurve": false,

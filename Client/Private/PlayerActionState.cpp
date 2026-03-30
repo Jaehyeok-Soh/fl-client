@@ -25,6 +25,7 @@ CPlayerActionState::CPlayerActionState(const CPlayerActionState& rhs)
     , m_bCanSpecialDash(rhs.m_bCanSpecialDash)
     , m_eBoneState(rhs.m_eBoneState)
     , m_tBoneHit(rhs.m_tBoneHit)
+    , m_arrHitSoundHashes(rhs.m_arrHitSoundHashes)
 {
 }
 
@@ -38,6 +39,17 @@ HRESULT CPlayerActionState::Initialize_Prototype()
 
     m_tGunCoolTimer.fMaxTime = 0.15f;
     m_tGunCoolTimer.fTimeAcc = 0.f;
+
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::Wind)]          = { TO_HASH("sfx_common_player_windHit_r"),0.5f };
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::Projectile)]    = { TO_HASH("sfx_common_player_fireHit_normal_r"),1.f };
+                                                                  
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::WhipNormal)]    = { TO_HASH("sfx_common_player_swordWhipHit_normal_r"),0.5f };
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::WhipHeavy)]     = { TO_HASH("sfx_common_player_swordWhipHit_heavy_r"),0.5f };
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::ElectricSamll)] = { TO_HASH("sfx_common_player_electrict_small_hit_r"),1.f };
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::ElectricBall)]  = { TO_HASH("sfx_boss_Xibi_electricBall_hit_r"),1.f };
+                                                                  
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::HeavySword)]    = { TO_HASH("sfx_common_player_heavySwordHit_heavy_r"),0.8f };
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::Fire)]          =  { TO_HASH("sfx_player_Nvzhu_fire_hit_r"),0.8f };
 
 	return S_OK;
 }
@@ -53,7 +65,7 @@ HRESULT CPlayerActionState::Initialize(void* pArg)
 void CPlayerActionState::Update(const _float fTImeDelta)
 {
     m_tGunCoolTimer.CountTime(fTImeDelta);
-
+    
     Super::Update(fTImeDelta);
 
     Update_BoneState(fTImeDelta);
@@ -93,6 +105,12 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
     m_fAttackFlag |= AF_OnHit;  
     m_tPreHitDesc = tHit;
 
+    // stun 검사
+    if (tHit.attackDesc.pAttackPreset->tCombat.fHitStunSec >= 100.f) 
+    {
+        m_fAttackFlag |= AF_Stun;
+    }
+
     // todo_eunbi : 몬스터 종류 늘어나고, 공격이 다양해지면 id 까지 검사
     DTO::EAttackPresetCategory eCategory =  tHit.attackDesc.pAttackPreset->eCategory;
     switch (eCategory)
@@ -104,14 +122,14 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
         {
             case DTO::EHitType::Light:
                 m_fAttackFlag |= AF_Addtive;
+                m_eHitSound = HIT_SOUND::Wind;
                 break;
 
             case DTO::EHitType::Heavy:
                 m_fAttackFlag |= AF_Fly;
+                m_eHitSound = HIT_SOUND::Wind;
                 break;
         }
-
-        //m_fAttackFlag |= AF_Stun;
     }
         break;
 
@@ -121,41 +139,70 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
         {
         case DTO::EHitType::Light:
             m_fAttackFlag |= AF_Addtive;
+            m_eHitSound = HIT_SOUND::Wind;
             break;
 
         case DTO::EHitType::Heavy:
             m_fAttackFlag |= AF_Fly;
+            m_eHitSound = HIT_SOUND::Wind;
             break;
         }
-
-        m_fAttackFlag |= AF_Special;
     }
     break;
 
 
     case DTO::EAttackPresetCategory::MonsterPorjectile:
         m_fAttackFlag |= AF_Addtive;
+        m_eHitSound = HIT_SOUND::Projectile;
+
         break;
 
         // boss쪽
     case DTO::EAttackPresetCategory::BossBasic:
     {
+        /* xibi */
         m_fAttackFlag |= AF_Strong;
         m_fAttackFlag |= AF_Fly;
+
+        m_eHitSound = HIT_SOUND::WhipHeavy;
         break;
     }
     case DTO::EAttackPresetCategory::BossSkill:
+    {
+        switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
+        {
+        case DTO::EHitType::Additive:
+            m_fAttackFlag |= AF_Addtive;
+
+            m_eHitSound = HIT_SOUND::ElectricSamll;
+            break;
+
+        case DTO::EHitType::Heavy:
+            m_fAttackFlag |= AF_Strong;
+            m_fAttackFlag |= AF_Fly;
+
+            // sound
+            m_eHitSound = HIT_SOUND::ElectricBall; break; // xibi
+            break;
+        }
+    }
+    break;
+
     case DTO::EAttackPresetCategory::BossProjectile:
     {
         switch (tHit.attackDesc.pAttackPreset->tCombat.eHitType)
         {
         case DTO::EHitType::Additive:
             m_fAttackFlag |= AF_Addtive;
+
+            m_eHitSound = HIT_SOUND::ElectricSamll;
             break;
 
         case DTO::EHitType::Heavy:
             m_fAttackFlag |= AF_Strong;
             m_fAttackFlag |= AF_Fly;
+
+            m_eHitSound = HIT_SOUND::ElectricSamll;
             break;
         }
     }
@@ -165,6 +212,8 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
     default:
         m_fAttackFlag = 0;
     }
+
+    Play_HitSound();
 }
 
 _bool CPlayerActionState::Is_OnHit()
@@ -388,6 +437,19 @@ _uint CPlayerActionState::Get_CurState_BoneHitFlag() const
 void CPlayerActionState::Check_DialogueBegin(_int iId)
 {
     Change_State(ENUM_TO_UINT(CPlayer::State::NPCTALK));
+}
+
+void CPlayerActionState::Play_HitSound()
+{
+    // 방어 코드
+    if (m_fAttackFlag == 0 || m_eHitSound == HIT_SOUND::END)
+        return;
+
+    // 캐싱해둔 hash 값으로 재생
+    m_pGameInstance->Play_OneShot(0, m_arrHitSoundHashes[ENUM_TO_SZET(m_eHitSound)].iSoundHash, m_arrHitSoundHashes[ENUM_TO_SZET(m_eHitSound)].fVolum);
+
+    // sound 값 리셋
+    m_eHitSound = HIT_SOUND::END;
 }
 
 CPlayerActionState* CPlayerActionState::Create()
