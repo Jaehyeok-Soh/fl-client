@@ -93,6 +93,7 @@ CPlayer::CPlayer(const CPlayer& rhs)
     , m_arrRangeInfo(rhs.m_arrRangeInfo)
     , m_arrSkillInfo(rhs.m_arrSkillInfo)
     , m_arrCondemnInfo(rhs.m_arrCondemnInfo)
+    , m_bQuickSlotOpen(rhs.m_bQuickSlotOpen)
 
 {
     m_vecPartObjects.resize(Part::END, nullptr);
@@ -528,6 +529,28 @@ _bool CPlayer::Can_UseWeapon(_uint iWeaponType)
     }
 
     return false;
+}
+
+_bool CPlayer::Can_AttackWeapon(_uint iWeaponType)
+{
+    _uint iCurIndex = Get_CurWeaponIdx(iWeaponType);
+    _uint iCurState = { 100 };
+    if (Can_UseWeapon(iWeaponType))
+    {
+        switch (iWeaponType)
+        {
+        case ENUM_TO_UINT(EWEAPON::MELEE):
+            iCurState = m_arrMeleeInfo[size_t(iCurIndex)].iWeaponState; break;
+
+        case ENUM_TO_UINT(EWEAPON::RANGE):
+            iCurState = m_arrRangeInfo[size_t(iCurIndex)].iWeaponState; break;
+
+        case ENUM_TO_UINT(EWEAPON::SKILL):
+            iCurState = m_arrSkillInfo[size_t(iCurIndex)].iWeaponState; break;
+        }
+    }
+
+    return (iCurState != ENUM_TO_UINT(CWeapon::State::NONE));
 }
 
 _bool CPlayer::Check_OnGround(_float fMaxDist)
