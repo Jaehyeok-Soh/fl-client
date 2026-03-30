@@ -4,6 +4,39 @@
 #define MAX_SOUND_CHANNEL 32
 #define LIMIT_ONESHOT_SOUNDS 5
 
+#define MINPITCH 0.3f
+#define MINVOLUME 0.5f
+
+typedef struct tagGlobalMixPulse
+{
+    _bool bActive = { false };
+    TIME_LINE tTimer{};
+
+    _float fMinPitchMul = MINPITCH;
+    _float fMinVolumeMul = MINVOLUME;
+
+    void Start(_float fDuration, _float fPitchMul, _float fVolumeMul)
+    {
+        bActive = true;
+        tTimer.Start(fDuration);
+        fMinPitchMul = std::clamp(fPitchMul, 0.01f, 1.f);
+        fMinVolumeMul = std::clamp(fVolumeMul, 0.f, 1.f);
+    }
+
+    void Clear()
+    {
+        bActive = false;
+        tTimer.Clear();
+        fMinPitchMul = 1.f;
+        fMinVolumeMul = 1.f;
+    }
+
+    _bool Is_Active() const
+    {
+        return bActive && tTimer.Is_Active();
+    }
+}GLOBAL_MIX_PULSE;
+
 typedef struct tagPendingSound
 {
     _uint iLevelID = 0;
@@ -72,6 +105,11 @@ public:
     void Play_OneShot_Delayed(_uint iLevelID, _uint iSoundHash, _float fDelayedTime, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
     void Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch = 1.f, _bool bSteal = false);
 
+    // 이벤트
+    void Play_GlobalMixPulse(_float fDuration, _bool m_bContainVolume = false);
+    void Deactive_Slomo();
+    void Active_Slomo();
+
     // Tool, 디버그용
     vector<SOUND_META> Get_SoundMetas(_uint iLevelID) const;
     const SOUND_META* Find_SoundMeta(_uint iLevelID, _uint iSoundHash) const;
@@ -117,11 +155,19 @@ private:
 
     void Update_PendingOneShots(_float fTimeDelta);
     void Update_PendingBGMs(_float fTimeDelta);
+
+    // 이벤트
+    void Update_GlobalMixPulse(_float fTimeDelta);
+    void Apply_GlobalMix(_float fPitchMul, _float fVolumeMul);
+    void Reset_GlobalMixPulse();
 private:
     const _uint ONE_SHOT_BEGIN = ENUM_TO_UINT(EControlledChannel::COUNT);
     const _uint ONE_SHOT_END = MAX_SOUND_CHANNEL;
 
 private:
+    _float m_fGlobalPitch = { 1.f };
+    _float m_fGlobalSound = { 1.f };
+
     FMOD::System* m_pSystem = nullptr;
     FMOD::Channel* m_pChannelArr[MAX_SOUND_CHANNEL]{};
 
@@ -134,6 +180,11 @@ private:
     vector<PENDING_BGM> m_vecPendingBGMs;
 
     _float m_arrCategoryVolume[ENUM_TO_UINT(ESoundCategory::END)]{};
+
+    // 이벤트
+    FMOD::ChannelGroup* m_pMasterGroup = { nullptr };
+    GLOBAL_MIX_PULSE m_tGlobalMixPulse{};
+
 
     // 라이브 볼륨 재계산, 그룹 추적용
     _float         m_arrChannelBaseVolume[MAX_SOUND_CHANNEL]{};

@@ -231,6 +231,10 @@ public:
 	void Set_ControlledPitch(_uint iControlledId, _float fPitch);
 	void Stop_All();
 
+	void Request_SoundSlomo(_float fDuration, _bool bContainVolume = false);
+	void Deactive_SoundSlomo();
+	void Active_SoundSlomo();
+
 	vector<SOUND_META> Get_SoundMetas(_uint iLevelID) const;
 	const SOUND_META* Find_SoundMeta(_uint iLevelID, _uint iSoundHash) const;
 	_bool Has_SoundTag(_uint iLevelID, const string& strTag) const;
