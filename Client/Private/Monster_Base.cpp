@@ -70,7 +70,6 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	
 	if (m_pEffectHandler)
 		m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
-
 	return S_OK;
 }
 
@@ -300,7 +299,8 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		{
 			if (m_pGameInstance->CheckRagdollState(pBody->Get_ID()))
 				pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, hitDesc.attackDesc.pAttackPreset->tCombat.fImpulse);
-			//pRagdoll->ApplyHitImpulse(hitDesc.vHitNormal, hitDesc.attackDesc.pAttackPreset->tCombat.fImpulse);
+			else
+				pRagdoll->RegisterHitImpulse(hitDesc.vHitNormal, hitDesc.attackDesc.pAttackPreset->tCombat.fImpulse);
 		}
 	}
 
@@ -456,6 +456,7 @@ HRESULT CMonster_Base::Ready_CCT(void* pArgs)
 
 	return S_OK;
 }
+
 
 void CMonster_Base::OnHit_Sword(const HIT_DESC& hitDesc)
 {
@@ -670,6 +671,18 @@ void CMonster_Base::OnHit_Skill(const HIT_DESC& hitDesc)
 		}
 	}
 }
+
+void CMonster_Base::Compute_MonsterEmotionUV(EMonster_Emontion_State_Type  eType)
+{
+	if (m_vecPartObjects[ENUM_TO_UINT(Part::BODY)] == nullptr) return;
+
+
+	static_cast<CMonster_Body_Base*>(m_vecPartObjects[ENUM_TO_UINT(Part::BODY)])
+		->Compute_MonsterEmotionUV(eType);
+
+	return;
+}
+
 
 void CMonster_Base::OnHit_Dual(const HIT_DESC& hitDesc)
 {

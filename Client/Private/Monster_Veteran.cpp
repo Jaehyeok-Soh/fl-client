@@ -80,7 +80,7 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 5000.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 35000.f); // 시연회 때 35만으로 설정하면 좋을 듯.
 	}
 
 	Ready_StateIndexForDirecting();
@@ -168,7 +168,7 @@ HRESULT CMonster_Veteran::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 5000.f; //수정하기
+		desc.fMaxHp = 35000.f; //수정하기
 		desc.fDefense = 0.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 

@@ -138,7 +138,8 @@ void CUIQuickSlot_Image::Tick_By_Type(const _float fTimeDelta)
 	{
 	case DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_CENTER:
 	{
-		if (KEY_BUTTON_HOLD(DIK_Z))
+		// 버튼이 눌렸고, open이 활성화 되었다면
+		if (KEY_BUTTON_HOLD(DIK_Z) && CUIQuickSlot_Manager::GetInstance()->Get_QuickSlotOpen())
 		{
 			m_pParentCanvasCache->Get_CommonParam_bool_Ref()[BOOLEAN_SLOT_Z_KEY_HOLDING] = true;
 			m_pUIManager->Set_isCursor_Visible(true);

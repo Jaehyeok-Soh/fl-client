@@ -75,10 +75,13 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 300.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 10000.f);
 	}
 
 	Ready_StateIndexForDirecting();
+
+	
+
 
 	if (FAILED(Get_Component<CMonster_GimmikController>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
@@ -96,6 +99,8 @@ void CMonster_Dog::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 
 	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
+	EMonster_Emontion_State_Type eType = EMonster_Emontion_State_Type::Idle;
+	Compute_MonsterEmotionUV(eType);
 }
 
 void CMonster_Dog::Update_Late(const _float fTimeDelta)
@@ -163,7 +168,7 @@ HRESULT CMonster_Dog::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 50.f; // 수정하기
+		desc.fMaxHp = 10000.f; // 수정하기
 		desc.fDefense = 50.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 

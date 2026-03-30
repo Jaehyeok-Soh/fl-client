@@ -75,7 +75,7 @@ HRESULT CMonster_Fly::Awake(const _uint iCurrentLevelID)
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 150.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 5000.f);
 	}
 
 	Ready_StateIndexForDirecting();
@@ -96,6 +96,10 @@ void CMonster_Fly::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 
 	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
+
+	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
+	EMonster_Emontion_State_Type eType = EMonster_Emontion_State_Type::Idle;
+	Compute_MonsterEmotionUV(eType);
 }
 
 void CMonster_Fly::Update_Late(const _float fTimeDelta)
@@ -163,7 +167,7 @@ HRESULT CMonster_Fly::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 50.f; //수정하기
+		desc.fMaxHp = 5000.f; //수정하기
 		desc.fDefense = 50.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 

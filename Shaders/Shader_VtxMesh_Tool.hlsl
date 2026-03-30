@@ -811,8 +811,7 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
     
     float4 vDiffuse = 1.f;
     vDiffuse = MIDesc.vTintColor.rgba;          //기본색깔 입히기
-
-    
+       
     bool bHasAnyNormal = false;
     float3 vNormal = input.vNormal;
     float3 vLocalNormal = float3(0.0f, 0.0f, 1.0f);
@@ -838,6 +837,7 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
         
         bHasAnyNormal = true;
     }
+   
     
     // 2. 물결 2 계산 (Speed2, Normal_2, uv2 사용!)
     if (Has(g_WaterTexBindingFlags, Water_Normal_2))
@@ -855,7 +855,9 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
                     
         bHasAnyNormal = true;
     }
-
+    
+    
+    
     // 3. 월드 노멀로 변환
     if (bHasAnyNormal)
     {
@@ -876,7 +878,6 @@ PS_OUT_DEFFERED PS_WATER(PS_IN_MESH input)
    
     output.vDiffuse = vDiffuse;
     output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
-    
     
     float3 vSpecMask = float3(1.f,1.f,0.f);
     if (Has(g_WaterTexBindingFlags, Water_Lighting))

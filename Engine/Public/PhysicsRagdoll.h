@@ -31,6 +31,7 @@ public:
 	_int FindRagdollJointByBoneIndex(_uint boneIdx);
 
 	void ApplyHitImpulse(Vec3 vDir, _float fPower);
+	void RegisterHitImpulse(Vec3 vDir, _float fPower) { vLastImpulseDir = vDir; fLastImpulsePower = fPower; }
 
 	// getter func
 public:
@@ -58,6 +59,9 @@ private:
 	RAGDOLLELEMENTS m_tRagdollElements = {};
 	class CModel* m_pSharedModel = { nullptr };
 	uint64 m_iObjectID = {};
+
+	Vec3 vLastImpulseDir = {};
+	_float fLastImpulsePower = {};
 
 private:
 	StructuredBuffer*						m_pMatrixBuffer { nullptr };

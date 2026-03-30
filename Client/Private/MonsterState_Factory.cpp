@@ -193,6 +193,9 @@ HRESULT CMonsterState_Factory::Ready_Feature()
 	
 	REGISTER_FEATURE("feat_skill_spawn_trigger", FEATURE{ MONSTERCC(state)->SkillSpawnTrigger(param.iParam[0]); });
 
+
+	REGISTER_FEATURE("monster_emotion", FEATURE{ MONSTERCC(state)->SkillSpawnTrigger(param.iParam[0]); });
+
 	return S_OK;
 }
 

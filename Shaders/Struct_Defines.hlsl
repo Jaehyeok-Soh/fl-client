@@ -230,6 +230,9 @@ struct VS_OUT_POS_GS_PARTICLE
     uint vInstID : TEXCOORD1;
     row_major float4x4 matTransform : WORLD;
     
+    float4 vWorldPos : TEXCOORD3;
+    float4 vProjPos : TEXCOORD4;
+    
     float vViewZ : TEXCOORD2;
 };
 
@@ -297,6 +300,9 @@ struct GS_OUT_EFFECT_PARTICLE
     float2 vSpriteUV : TEXCOORD1;
     float2 vLifeTime : TEXCOORD2;
     float vViewZ : TEXCOORD3;
+    
+    float4 vWorldPos : TEXCOORD4;
+    float4 vProjPos : TEXCOORD5;
 };
 
 ////////////////

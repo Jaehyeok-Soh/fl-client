@@ -259,7 +259,7 @@ HRESULT CBoss_Lianhuo::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 4500.f;
+	desc.fMaxHp = 35000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 

@@ -43,7 +43,7 @@ public:
 public:
 	void			Update_PartsModel();
 private:
-	const Matrix* m_pBoneSocket;
+	const Matrix*	m_pBoneSocket;
 	SHADER_MI_DESC	m_tMIDesc{};
 private:
 	HRESULT Ready_Components(NPC_CITIZEN_DECOPARTDESC* pDesc);
