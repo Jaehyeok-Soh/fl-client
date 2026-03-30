@@ -318,6 +318,7 @@ void CTriggerBox_MonsterWaveSpawner::Update_WaveTimer(_float fTimeDelta)
 				MSG_BOX("Mosnter Spawner 작동 오류");
 
 			waveInfo.iCurrentSpawnCount++;
+			waveInfo.fAccTime = 0.f;
 		}
 		else
 		{
@@ -329,6 +330,7 @@ void CTriggerBox_MonsterWaveSpawner::Update_WaveTimer(_float fTimeDelta)
 					MSG_BOX("Mosnter Spawner 작동 오류");
 
 				waveInfo.iCurrentSpawnCount++;
+				waveInfo.fAccTime = 0.f;
 			}
 		}
 
