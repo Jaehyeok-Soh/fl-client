@@ -7,13 +7,17 @@
             "strOwnerTag": "Monster_Dog",
             "vecEffectEvents": [
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
+                    "ePhase": "Immediatley",
                     "fDuration": 1.0,
                     "fStartTrackPosition": 14.5,
                     "iAnimIndex": 1,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Monster_Dog_Attack_02",
@@ -31,13 +35,17 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
+                    "ePhase": "Immediatley",
                     "fDuration": 1.0,
                     "fStartTrackPosition": 13.5,
                     "iAnimIndex": 0,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Monster_Dog_Attack_01",
@@ -55,13 +63,17 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
+                    "ePhase": "Immediatley",
                     "fDuration": 1.0,
                     "fStartTrackPosition": 23.0,
                     "iAnimIndex": 2,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Monster_Dog_Attack_03",
@@ -79,13 +91,17 @@
                     }
                 },
                 {
+                    "ChildPartNumber": -1,
                     "bFollowBone": true,
+                    "bUseChildBone": false,
                     "eEventType": 1,
+                    "ePhase": "Immediatley",
                     "fDuration": 1.0,
                     "fStartTrackPosition": 13.5,
                     "iAnimIndex": 2,
                     "iBoneFlag": 0,
                     "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
                     "iNotifyId": 4,
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Monster_Dog_Attack_03",
@@ -100,6 +116,34 @@
                         "x": 0.0,
                         "y": 180.0,
                         "z": -5.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 0.10000000149011612,
+                    "iAnimIndex": 4,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Dog_C01_Skill01_Loop",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Dog_Charge",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.5,
+                        "z": -1.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
                     }
                 }
             ]

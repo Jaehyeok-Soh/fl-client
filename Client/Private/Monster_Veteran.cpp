@@ -80,7 +80,7 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 5000.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 35000.f); // 시연회 때 35만으로 설정하면 좋을 듯.
 	}
 
 	Ready_StateIndexForDirecting();

@@ -197,6 +197,13 @@ void CLevel_Test::Update(const _float fTimeDelta)
 		Desc.fEndDelay	= 2.f;
 		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
 	}
+
+	if (m_pGameInstance->KeyButton_Down(DIK_9))
+	{
+		EFFECT_LINE_DESC Desc = {};
+		Desc.Set_LinePosition(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 30.f, 0.f));
+		m_pGameInstance->Request_Effect("Boss_LianHuo_DashPanel", Desc);
+	}
 }
 
 HRESULT CLevel_Test::Render()
