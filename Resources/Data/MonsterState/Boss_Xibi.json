@@ -6130,7 +6130,58 @@
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
-                    "vecEndConditionFeature": [],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_end_groggy",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "vecFeatureEntry": [],
                     "vecGlobalStateTransition": [
                         {
@@ -6197,58 +6248,7 @@
                     "vecMainAnimNames": [
                         "Animation_Xibi_Condemned_EndLoop"
                     ],
-                    "vecStartConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_true_always",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "IsExecuted": false,
-                                "IsOnce": false,
-                                "strFeature": "feat_end_groggy",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        }
-                    ],
+                    "vecStartConditionFeature": [],
                     "vecStateTransition": [
                         {
                             "mapRandomStatePool": {
@@ -6711,7 +6711,108 @@
                         "fMinTime": 0.0,
                         "fTimeAcc": 0.0
                     },
-                    "vecConditionFeature": [],
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_animation_finish",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_trigger_dissolve",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "condition_is_dissolve_ended",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_set_dead",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
                     "vecGlobalStateTransition": [

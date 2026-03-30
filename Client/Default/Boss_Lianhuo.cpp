@@ -69,13 +69,13 @@ HRESULT CBoss_Lianhuo::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_StateIndexForDirecting()))
-		return E_FAIL;
-
 	if (FAILED(Ready_CameraEvent()))
 		return E_FAIL;
 
 	if (FAILED(Ready_CustomStates()))
+		return E_FAIL;
+
+	if (FAILED(Ready_StateIndexForDirecting()))
 		return E_FAIL;
 
 	return S_OK;
@@ -392,9 +392,9 @@ HRESULT CBoss_Lianhuo::Ready_StateIndexForDirecting()
 
 	if (setStateIndex(EStateForDirecting::Idle, "Idle") == false)
 		return E_FAIL;
-	if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemned_Die") == false)
+	if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemnde_Die") == false)
 		return E_FAIL;
-	if (setStateIndex(EStateForDirecting::Condemned_Attacked, "Condemned_Attacked") == false)
+	if (setStateIndex(EStateForDirecting::Condemned_Attacked, "Condemnde_Attacked") == false)
 		return E_FAIL;
 	//if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
 	//	return E_FAIL;

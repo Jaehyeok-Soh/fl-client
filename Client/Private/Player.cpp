@@ -70,6 +70,7 @@
 
 #include "State_Stun.h"
 #include "State_SPHitStart.h"
+#include "PlayerControlContext.h"
 
 #pragma endregion
 // 0325 - 테스트 후 지울것
@@ -178,6 +179,9 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
         Set_FKeyEvent(0, true);
 
+    case ENUM_TO_UINT(ELevelType::LIANHUO):
+        Set_FKeyEvent(0, true);
+
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
     }
@@ -186,6 +190,9 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
 
     Get_Component<CActionSkill>()->Awake(iCurrentLevelID);
 
+
+    if (FAILED(Ready_GlobalEvent()))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -304,12 +311,96 @@ _wstring CPlayer::Get_AnimationName(_uint iAniIndex)
     return L"";
 }
 
+HRESULT CPlayer::Ready_GlobalEvent()
+{
+    m_pGameInstance->Subscribe<CCS_EVENT>([this](const CCS_BROADCAST_DESC& tDesc) {
+        Set_Render(true);
+
+        for (auto& CCS_Event : tDesc.vecCCS_Event_Desc)
+        {
+            _uint iSubscribeHash = TO_HASH(CCS_Event.strSubscriberName.c_str());
+
+            switch (iSubscribeHash)
+            {
+            case TO_HASH("Player_ChangePosition"):
+            {
+                for (auto& Action : CCS_Event.vecActionNames)
+                {
+                    _uint iActionHash = TO_HASH(Action.c_str());
+                    switch (iActionHash)
+                    {
+                    case TO_HASH("Xibila_Cinematic_End_Position"):
+                    {
+                        Vec3 vChangePos = Vec3(339.393f, 270.5f, -323.06f);
+                        Get_Component<CPhysicsCCT>()->SetFootPosition(vChangePos);
+
+                        CGameObject* pBoss = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer, 0);
+                        if (pBoss == nullptr) return E_FAIL;
+                        Vec3 BossPos = pBoss->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+                        BossPos.y = 0.f;
+                        vChangePos.y = 0.f;
+                        Get_Component<CTransform>()->Look_At_Dir(BossPos - vChangePos);
+                        return S_OK;
+                    }
+                    default:
+                        break;
+                    }
+                }
+            }
+            break;
+            case TO_HASH("Player_State"):
+            {
+                /* TO HASH */
+                for (auto& Action : CCS_Event.vecActionNames)
+                {
+                    _uint iActionHash = TO_HASH(Action.c_str());
+                    switch (iActionHash)
+                    {
+                    case TO_HASH("Set_Active_True"):
+                    {
+                        Set_Active(true);
+                        return S_OK;
+                    }
+                    case TO_HASH("Set_Active_False"):
+                    {
+                        Set_Active(false);
+                        return S_OK;
+                    }
+                    case TO_HASH("Set_KeyInput_False"):
+                    {
+                        CPlayer::Change_IdleForce();
+                        CControlContext* pCCC = Get_Component<CControlContext>();
+                        static_cast<CPlayerControlContext*>(pCCC)->Set_AllKeyFlag(false);
+                        return S_OK;
+                    }
+                    case TO_HASH("Set_KeyInput_True"):
+                    {
+                        CPlayer::Change_IdleForce();
+                        CControlContext* pCCC = Get_Component<CControlContext>();
+                        static_cast<CPlayerControlContext*>(pCCC)->Set_AllKeyFlag(true);
+                        return S_OK;
+                    }
+                    default:
+                        break;
+                    }
+                }
+            }
+            break;
+            default:
+                break;
+            }
+        }
+        });
+
+    return S_OK;
+}
+
 HRESULT CPlayer::Change_IdleForce()
 {
     CStateBase::STATE_START_DESC tDesc = {};
     tDesc.bCheckPre = false;
 
-    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE), false, &tDesc)))
+    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE), true , &tDesc)))
         return E_FAIL;
 
     return S_OK;

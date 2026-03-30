@@ -2209,7 +2209,7 @@ void CMapObject::LightObject_BeforeRender(const _float fTimeDelta)
         /* Update를 해주자 */
         const Vec3& vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
         pLightObjectDesc->Update_Light(Vec4(vPos.x, vPos.y, vPos.z, 1.f));
-        pLightObjectDesc->pDebugLight->Setup_Range(pLightObjectDesc->fBaseRange * fFinalRange);
+        pLightObjectDesc->pDebugLight->Setup_Range(fFinalRange);
         m_pGameInstance->Push_Light(pLightObjectDesc->pDebugLight);
     }
 
@@ -2956,7 +2956,7 @@ HRESULT CMapObject::Render_LightObject()
         {
             pModel->Set_MI_TintColor(i, Vec4(1.f, 1.f, 1.f, 1.f));
             pModel->Set_MI_EmissiveColor(i,vEmissiveColor);
-            pModel->Set_MI_EmissivePower(i,pDesc->fEmissviePower * fRange);
+            pModel->Set_MI_EmissivePower(i,pDesc->fEmissviePower * pDesc->fCurLightRangeRatio);
             pModel->Bind_MaterialInstance(pShader, i);
             pModel->Bind_Material(pShader, i);
             pShader->Apply();

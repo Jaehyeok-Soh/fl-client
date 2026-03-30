@@ -84,6 +84,46 @@ HRESULT CBoss_Xibi::Ready_GlobalEvent()
 		return S_OK;
 		});
 
+
+	m_pGameInstance->Subscribe<CCS_EVENT>([this](const CCS_BROADCAST_DESC& tDesc) {
+		Set_Render(true);
+	
+		for (auto& CCS_Event : tDesc.vecCCS_Event_Desc)
+		{
+			_uint iSubscribeHash = TO_HASH(CCS_Event.strSubscriberName.c_str());
+
+			switch (iSubscribeHash)
+			{
+			case TO_HASH("Xibila_Cinematic_State"):
+			{
+				for (auto& Action : CCS_Event.vecActionNames)
+				{
+					_uint iActionHash = TO_HASH(Action.c_str());
+					switch (iActionHash)
+					{
+					case TO_HASH("Default"):
+					{
+						if (FAILED(Change_State_ForDirecting(CBoss_Xibi::EStateForDirecting::Direction)))
+						{
+							MSG_BOX(" Boss 연출 Direction 실패 ");
+							return E_FAIL;
+						}
+						return S_OK;
+					}
+					default:
+						break;
+					}
+
+				}
+			}
+				break;
+			default:
+				break;
+			}
+		}
+		});
+
+
 	m_pGameInstance->Subscribe<XIBI_CHANGE_STATE_BOSS_IDLE>([this]() {
 		if (FAILED(Change_State_ForDirecting(CBoss_Xibi::EStateForDirecting::Idle)))
 		{
@@ -246,7 +286,7 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 					m_pGameInstance->Broadcast<BOSS_GROGGY>();
 
 			}
-		}		
+		}
 	}
 	return result;
 }

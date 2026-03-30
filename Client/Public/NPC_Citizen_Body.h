@@ -53,6 +53,8 @@ protected:
 	HRESULT					Ready_ShaderPass(NPC_CITIZEN_BODY* pDesc);
 	HRESULT					Ready_FaceData(NPC_CITIZEN_BODY* pDesc);
 private:
+	_int					m_iAnimIndex{};
+
 	CComputeShader*			m_pBoneMeshCS;
 	CComputeShader*			m_pBoneCombineCS;
 	CComputeShader*			m_pAnimECS;

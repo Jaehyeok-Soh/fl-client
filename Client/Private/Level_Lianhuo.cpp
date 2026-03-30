@@ -134,6 +134,9 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 

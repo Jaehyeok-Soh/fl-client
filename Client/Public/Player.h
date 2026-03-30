@@ -156,6 +156,8 @@ public:
 	virtual _wstring	Get_AnimationName(_uint iAniIndex);
 
 public:
+	HRESULT				Ready_GlobalEvent();
+public:
 	PLAYER_TYPE Get_PlayerType() const { return m_ePlayerType; }
 
 public:

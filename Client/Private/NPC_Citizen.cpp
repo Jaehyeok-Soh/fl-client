@@ -372,17 +372,17 @@ void CNPC_Citizen::Try_Attack(const HIT_DESC& hitDesc)
 
 void CNPC_Citizen::QuestEnter()
 {
-	Super::QuestEnter();
+	//Super::QuestEnter();
 }
 
 void CNPC_Citizen::QuestExit()
 {
-	Super::QuestExit();
+	//Super::QuestExit();
 }
 
 void CNPC_Citizen::Interact()
 {
-	Super::Interact();
+	//Super::Interact();
 }
 
 void CNPC_Citizen::Reset_WayPoint()

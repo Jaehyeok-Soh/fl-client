@@ -486,6 +486,13 @@ _bool CMonsterControlContext::IsPathBlocked()
 	return _bool();
 }
 
+_bool CMonsterControlContext::IsDissolveEnded()
+{
+	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
+	if (body != nullptr)
+		return body->Is_DissolveEnded();
+}
+
 void CMonsterControlContext::UpdateWalk(const _float fTimeDelta)
 {
 	m_vMoveDir = m_tRuntimeDesc.vOwnerLook;

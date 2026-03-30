@@ -343,6 +343,11 @@ const Matrix* CMonster_Body_Base::Get_SocketMatrix(_uint iIndex)
 	return nullptr;
 }
 
+_bool CMonster_Body_Base::Is_DissolveEnded()
+{
+	return m_tDissolveDesc.Is_Finished();
+}
+
 CBone* CMonster_Body_Base::Find_CameraAnchorBone(ECameraAnchorResolve eResolve, const string& strAnchorTag)
 {
 	switch (eResolve)

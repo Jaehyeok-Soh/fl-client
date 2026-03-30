@@ -47,6 +47,7 @@ HRESULT CXibi_GimmikController::Initialize(void* pArg)
 
 HRESULT CXibi_GimmikController::Awake(const _uint iCurLevelIndex)
 {
+	m_pRandomThunderSpawner2->Awake(iCurLevelIndex);
 	m_pOneshotThunderSpawner->Awake(iCurLevelIndex);
 	m_pRandomThunderSpawner->Awake(iCurLevelIndex);
 	m_p3wayThunderSpawner->Awake(iCurLevelIndex);
@@ -54,18 +55,18 @@ HRESULT CXibi_GimmikController::Awake(const _uint iCurLevelIndex)
 	m_p360ThunderSpawner->Awake(iCurLevelIndex);
 	m_pGateSpawner->Awake(iCurLevelIndex);
 
-	m_vSpawnPosition = Get_Owner()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-	//CBattleField* pBattleField = static_cast<CBattleField*>(m_pGameInstance->Get_GameObject(iCurLevelIndex, g_wszBattleFieldLayer, 0));
-	//CCollider* pCollider = pBattleField->Get_Component<CCollider>();
-	//BoundingSphere* pSphere = static_cast<CBounding_Sphere*>(pCollider->Get_Bounding())->Get_Desc();
-	//m_vSpawnPosition = pSphere->Center;
-	//m_fFieldMaxRange = pSphere->Radius * 2.f;
+	CBattleField* pBattleField = static_cast<CBattleField*>(m_pGameInstance->Get_GameObject(iCurLevelIndex, g_wszBattleFieldLayer, 0));
+	CCollider* pCollider = pBattleField->Get_Component<CCollider>();
+	BoundingSphere* pSphere = static_cast<CBounding_Sphere*>(pCollider->Get_Bounding())->Get_Desc();
+	m_vSpawnPosition = pSphere->Center;
+	m_fFieldMaxRange = pSphere->Radius * 2.f;
 	m_tThunderTimer.Start(30.f);
 	return S_OK;
 }
 
 void CXibi_GimmikController::Update(const _float fTiemDelta)
 {
+	Spawn_RandomSkill(fTiemDelta);
 	m_pRandomThunderSpawner->Update(fTiemDelta);
 	m_p3wayThunderSpawner->Update(fTiemDelta);
 	m_pOneshotThunderSpawner->Update(fTiemDelta);

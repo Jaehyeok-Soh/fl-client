@@ -207,15 +207,6 @@ void CCameraMan_Targeter::Change_CamState(_uint iState)
 HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
 {
     /* Xibi_Cinematic Event 구독 */
-    m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT>([this]() {
-        m_pGameInstance->Play_CameraCinematic(L"Xibi_Cinematic_Cuve");
-        Change_CamState(TargeterState::CINEMATIC);
-        m_pActor->Set_Active(false);
-
-        return S_OK;
-        });
-
-    /* Xibi_Cinematic Event 구독 */
     m_pGameInstance->Subscribe<TUTORIAL_BOSS_CONTATCT_END>([this]() {
         Change_CamState(TargeterState::NORMAL);
         m_pActor->Set_Active(true);
@@ -235,6 +226,42 @@ HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
 
         return S_OK;
         });
+
+
+    m_pGameInstance->Subscribe<CCS_EVENT>([this](const CCS_BROADCAST_DESC& tDesc) {
+        Set_Render(true);
+
+        for (auto& CCS_Event : tDesc.vecCCS_Event_Desc)
+        {
+            _uint iSubscribeHash = TO_HASH(CCS_Event.strSubscriberName.c_str());
+
+            switch (iSubscribeHash)
+            {
+            case TO_HASH("CameraMan_Targeter"):
+            {
+                for (auto& Action : CCS_Event.vecActionNames)
+                {
+                    _uint iActionHash = TO_HASH(Action.c_str());
+                    switch (iActionHash)
+                    {
+                    case TO_HASH("Change_CamState_TARGETSYNC"):
+                    {
+                        this->Change_CamState(TargeterState::TARGETSYNC);
+                        return S_OK;
+                    }
+                    default:
+                        break;
+                    }
+
+                }
+            }
+            default:
+                break;
+            }
+        }
+        });
+
+
 
 
     return S_OK;

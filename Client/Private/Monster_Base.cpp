@@ -366,6 +366,16 @@ void CMonster_Base::Trigger_Dissolve()
 	pBody->DissolveStart();
 }
 
+_bool CMonster_Base::Is_DissolveEnded()
+{
+	CMonster_Body_Base* pBody = { nullptr };
+	pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return false;
+
+	return pBody->Is_DissolveEnded();
+}
+
 ICameraAnchorProvider* CMonster_Base::Get_CameraAnchorProvider(_int iPartIndex)
 {
 	if (iPartIndex < 0 || iPartIndex >= Part::Enum::END)
