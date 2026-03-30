@@ -33,7 +33,9 @@
 #include "TriggerCollidePart.h"
 #include "BonePart.h"
 
+// 접근 headers
 #include "CameraMan_Targeter.h"
+#include "Monster_Base.h"
 
 #pragma region States
 #include "State_Idle.h"
@@ -94,6 +96,7 @@ CPlayer::CPlayer(const CPlayer& rhs)
     , m_arrSkillInfo(rhs.m_arrSkillInfo)
     , m_arrCondemnInfo(rhs.m_arrCondemnInfo)
     , m_bQuickSlotOpen(rhs.m_bQuickSlotOpen)
+    , m_bBossStage(rhs.m_bBossStage)
 
 {
     m_vecPartObjects.resize(Part::END, nullptr);
@@ -167,7 +170,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     }
 
 
-    Set_FKeyEvent(0, false);
+    m_bBossStage = false;
     // level 별 관리 : 주로 테스트용
     switch (iCurrentLevelID)
     {
@@ -176,7 +179,8 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         break;
 
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
-        Set_FKeyEvent(0, true);
+    case ENUM_TO_UINT(ELevelType::LIANHUO):
+        m_bBossStage = true;
 
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
@@ -198,8 +202,10 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
 
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
 
+    // monster control context -> is grogy
+
     // special dash on일때만 pivot 넘겨줌 : 보스전에만 가능
-    if (pPlayerState->Get_SpecialDashOn())
+    if (pPlayerState->Get_SpecialDashOn() && m_bBossStage)
     {
         CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
         if (pBoss)
@@ -209,6 +215,20 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
 
 void CPlayer::Update(const _float fTimeDelta)
 {
+    // boss stage일때는 groggy를 체크 한다
+    if (m_bBossStage)
+    {
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
+        if (pBoss &&
+            static_cast<CMonster_Base*>(pBoss)->Monster_IsGroggy())
+        {
+            Set_FKeyEvent(0, true);
+        }
+
+        else
+            Set_FKeyEvent(0, false);
+    }
+
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
     {
         pPlayerState->Update(fTimeDelta);
@@ -309,7 +329,7 @@ HRESULT CPlayer::Change_IdleForce()
     CStateBase::STATE_START_DESC tDesc = {};
     tDesc.bCheckPre = false;
 
-    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE), false, &tDesc)))
+    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE), true, &tDesc)))
         return E_FAIL;
 
     return S_OK;
