@@ -1675,6 +1675,12 @@ HRESULT CLoader::Ready_Sounds()
 	//Resources\Sounds\SFX\Monster\Common
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Common")))
 		return E_FAIL;
+	//Resources\Sounds\SFX\Monster\HitCommon
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/HitCommon")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Monster\Hit
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Hit")))
+		return E_FAIL;
 	//Resources\Sounds\SFX\Monster\Boomer
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Boomer")))
 		return E_FAIL;
@@ -1683,6 +1689,9 @@ HRESULT CLoader::Ready_Sounds()
 		return E_FAIL;
 	//Resources\Sounds\SFX\Monster\Fly
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Fly")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Monster\Veteran
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Veteran")))
 		return E_FAIL;
 
 	return S_OK;

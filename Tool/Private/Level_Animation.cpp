@@ -266,7 +266,7 @@ HRESULT CLevel_Animation::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Test/")))
 		return E_FAIL;
 
-	//Resources\Sounds\SFX\Monster\Dog
+	//Resources\Sounds\SFX\Monster\Common
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Common")))
 		return E_FAIL;
 	////Resources\Sounds\SFX\Monster\Boomer
@@ -275,8 +275,11 @@ HRESULT CLevel_Animation::Ready_Sounds()
 	////Resources\Sounds\SFX\Monster\Dog
 	//if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Dog")))
 	//	return E_FAIL;
-	//Resources\Sounds\SFX\Monster\Fly
-	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Fly")))
+	////Resources\Sounds\SFX\Monster\Fly
+	//if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Fly")))
+	//	return E_FAIL;
+	//Resources\Sounds\SFX\Monster\Veteran
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Veteran")))
 		return E_FAIL;
 
 	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Player\Static

@@ -71,6 +71,19 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (m_pEffectHandler)
 		m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
 
+	m_arrHitSoundHash[HitSoundHashNum::SWORD_NORMAL] = TO_HASH("sfx_common_player_swordHit_normal_r");
+	m_arrHitSoundHash[HitSoundHashNum::SWORD_HEAVY] = TO_HASH("sfx_common_player_swordHit_heavy_r");
+	m_arrHitSoundHash[HitSoundHashNum::DUAL_NORMAL] = TO_HASH("sfx_common_player_hit_weapon_dualbladeHit_combo_r");
+	m_arrHitSoundHash[HitSoundHashNum::DUAL_HEAVY] = TO_HASH("sfx_common_player_hit_weapon_dualbladeHit_heavy_r");
+	m_arrHitSoundHash[HitSoundHashNum::GUN_FLESH] = TO_HASH("sfx_common_player_bulletHit_fleshMonster_r");
+	m_arrHitSoundHash[HitSoundHashNum::GUN_FLYBASE] = TO_HASH("sfx_common_player_bulletHit_flybase_r");
+	m_arrHitSoundHash[HitSoundHashNum::GUN_DEATH_HIT] = TO_HASH("sfx_common_player_bulletHit_death_hit_r");
+	m_arrHitSoundHash[HitSoundHashNum::SHIELD_HIT] = TO_HASH("sfx_common_enemy_hit_shield_hit_r");
+	m_arrHitSoundHash[HitSoundHashNum::ENERGY_HIT] = TO_HASH("sfx_common_player_energy_hit_r");
+	m_arrHitSoundHash[HitSoundHashNum::LIGHTING_HIT] = TO_HASH("sfx_common_player_lightingHit_r");
+	m_arrHitSoundHash[HitSoundHashNum::WEAPONHIT_METAL] = TO_HASH("sfx_common_player_weaponHit_metal_r");
+	m_arrHitSoundHash[HitSoundHashNum::CRITICAL] = TO_HASH("sfx_player_Baonu_passive_r");
+
 	return S_OK;
 }
 
@@ -235,21 +248,29 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 		if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SWORD)))
 		{
 			OnHit_Sword(hitDesc);
+			Hit_Sound(EPlayerAttackFlag::SWORD, hitDesc.attackDesc.pAttackPreset->tCombat.eHitType);
 		}
 
 		else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
 		{
 			OnHit_Gun(hitDesc);
+			Hit_Sound(EPlayerAttackFlag::GUN, hitDesc.attackDesc.pAttackPreset->tCombat.eHitType);
 		}
 
 		else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::DUAL)))
 		{
 			OnHit_Dual(hitDesc);
+			Hit_Sound(EPlayerAttackFlag::DUAL, hitDesc.attackDesc.pAttackPreset->tCombat.eHitType);
 		}
 
 		else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE)))
 		{
 			OnHit_Skill(hitDesc);
+
+			if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLQ)))
+				Hit_Sound(EPlayerAttackFlag::SKILLQ, hitDesc.attackDesc.pAttackPreset->tCombat.eHitType);
+			else if (Engine_Utils::Has_Flag(iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::SKILLE)))
+				Hit_Sound(EPlayerAttackFlag::SKILLE, hitDesc.attackDesc.pAttackPreset->tCombat.eHitType);
 		}
 
 		// Shake & Emissive
@@ -669,6 +690,61 @@ void CMonster_Base::OnHit_Skill(const HIT_DESC& hitDesc)
 			CUI_Manager::GetInstance()->Request_Add_Prefab(
 				m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::DAMAGE_FONTS_COMMON, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
 		}
+	}
+}
+
+void CMonster_Base::Hit_Sound(EPlayerAttackFlag eFlag, DTO::EHitType eHitType)
+{
+	//m_arrHitSoundHash[HitSoundHashNum::SWORD_NORMAL] = TO_HASH("sfx_common_player_swordHit_normal_r");
+	//m_arrHitSoundHash[HitSoundHashNum::SWORD_HEAVY] = TO_HASH("sfx_common_player_swordHit_heavy_r");
+	//m_arrHitSoundHash[HitSoundHashNum::DUAL_NORMAL] = TO_HASH("sfx_common_player_hit_weapon_dualbladeHit_combo_r");
+	//m_arrHitSoundHash[HitSoundHashNum::DUAL_HEAVY] = TO_HASH("sfx_common_player_hit_weapon_dualbladeHit_heavy_r");
+	//m_arrHitSoundHash[HitSoundHashNum::GUN_FLESH] = TO_HASH("sfx_common_player_bulletHit_fleshMonster_r");
+	//m_arrHitSoundHash[HitSoundHashNum::GUN_FLYBASE] = TO_HASH("sfx_common_player_bulletHit_flybase_r");
+	//m_arrHitSoundHash[HitSoundHashNum::GUN_DEATH_HIT] = TO_HASH("sfx_common_player_bulletHit_death_hit_r01");
+	//m_arrHitSoundHash[HitSoundHashNum::SHIELD_HIT] = TO_HASH("sfx_common_enemy_hit_shield_hit_r");
+	//m_arrHitSoundHash[HitSoundHashNum::ENERGY_HIT] = TO_HASH("sfx_common_player_energy_hit_r");
+	//m_arrHitSoundHash[HitSoundHashNum::LIGHTING_HIT] = TO_HASH("sfx_common_player_lightingHit_r");
+	//m_arrHitSoundHash[HitSoundHashNum::WEAPONHIT_METAL] = TO_HASH("sfx_common_player_weaponHit_metal_r");
+	//m_arrHitSoundHash[HitSoundHashNum::CRITICAL] = TO_HASH("sfx_player_Baonu_passive_r");
+
+	switch (eFlag)
+	{
+	case Client::EPlayerAttackFlag::SWORD:
+	{
+		if (eHitType == DTO::EHitType::Heavy)
+			m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::SWORD_HEAVY], 0.5f, 1.f, false);
+		else
+			m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::SWORD_NORMAL], 0.5f, 1.f, false);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::WEAPONHIT_METAL], 0.5f, 1.f, false);
+	}
+		break;
+	case Client::EPlayerAttackFlag::DUAL:
+	{
+		if (eHitType == DTO::EHitType::Heavy)
+			m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::DUAL_NORMAL], 0.5f, 1.f, false);
+		else
+			m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::DUAL_HEAVY], 0.5f, 1.f, false);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::WEAPONHIT_METAL], 0.5f, 1.f, false);
+	}
+		break;
+	case Client::EPlayerAttackFlag::CRITICAL:
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::CRITICAL], 0.5f, 1.f, false);
+		break;
+	case Client::EPlayerAttackFlag::SKILLE:
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::LIGHTING_HIT], 0.5f, 1.f, false);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::WEAPONHIT_METAL], 0.5f, 1.f, false);
+		break;
+	case Client::EPlayerAttackFlag::SKILLQ:
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::LIGHTING_HIT], 0.5f, 1.f, false);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::SHIELD_HIT], 0.5f, 1.f, false);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::ENERGY_HIT], 0.5f, 1.f, false);
+		break;
+	case Client::EPlayerAttackFlag::GUN:
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::GUN_FLESH], 0.5f, 1.f, false);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::GUN_FLYBASE], 0.5f, 1.f, false);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::GUN_DEATH_HIT], 0.5f, 1.f, false);
+		break;
 	}
 }
 

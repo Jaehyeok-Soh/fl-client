@@ -62,6 +62,9 @@ HRESULT CMonster_Dog::Initialize(void* pArg)
 	if (FAILED(Ready_SoundHandler()))
 		return E_FAIL;
 
+	m_arrHitSoundHash[HitSoundHashNum::DEATH01_VO] = TO_HASH("sfx_enemy_Gr_Jichong_vo_death_r");
+	m_arrHitSoundHash[HitSoundHashNum::HURT01_VO] = TO_HASH("sfx_enemy_Gr_Jichong_vo_be_hit_r");
+
 	return S_OK;
 }
 
@@ -152,7 +155,12 @@ _bool CMonster_Dog::On_Hit(const HIT_DESC& hitDesc)
 	auto myStat = Get_Component<CMyStat>();
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
+	{
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::DEATH01_VO], 0.5f, 1.f, false);
+	}
+	else
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::HURT01_VO], 0.5f, 1.f, false);
 
 	return result;
 }

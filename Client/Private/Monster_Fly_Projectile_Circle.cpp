@@ -30,6 +30,10 @@ HRESULT CMonster_Fly_Projectile_Circle::Initialize(void* pArg)
 	if (FAILED(Ready_Moduels()))
 		return E_FAIL;
 
+	m_arrHitSoundHash[HitSoundHashNum::LAUNCHED] = TO_HASH("sfx_enemy_Gr_Piaofu_C01_attack01_cast_r");
+	m_arrHitSoundHash[HitSoundHashNum::LOOP] = TO_HASH("sfx_enemy_Gr_Piaofu_C01_skill01_bullet_loop");
+	m_arrHitSoundHash[HitSoundHashNum::LANDED] = TO_HASH("sfx_enemy_Gr_Piaofu_C01_skill01_bullet_hit_r");
+
 	return S_OK;
 }
 
