@@ -34,6 +34,8 @@ enum class EUIEventID {
 
 	PLAYER_LOW_HP,
 	PLAYER_NORMAL_HP,
+
+	QTE_SUCCESS,
 	END
 };
 
@@ -42,6 +44,8 @@ typedef struct tagUIEventesc
 	EUIEventID eEventID = { EUIEventID::END };
 
 	_uint iParam0 = {};
+	_uint iParam1 = {};
+	_uint iParam2 = {};
 
 }UIEVENT_DESC;
 

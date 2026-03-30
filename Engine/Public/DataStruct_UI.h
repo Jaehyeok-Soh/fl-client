@@ -332,6 +332,8 @@ enum class EUITextSubClassType
 	NPC_TEXT_BUBBLE_CONTENT_TEXT,
 	NPC_TEXT_BUBBLE_END,
 
+	//QTE
+		QTE_TEXT,
 	END
 };
 
@@ -459,6 +461,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::NPC_TEXT_BUBBLE_NAME_TEXT,					"NPC_TEXT_BUBBLE_NAME_TEXT" },
 		{ EUITextSubClassType::NPC_TEXT_BUBBLE_CONTENT_TEXT,					"NPC_TEXT_BUBBLE_CONTENT_TEXT" },
 		{ EUITextSubClassType::NPC_TEXT_BUBBLE_END,					"NPC_TEXT_BUBBLE_END" },
+		
+		{ EUITextSubClassType::QTE_TEXT,					"QTE_TEXT" },
 
 		{ EUITextSubClassType::END,									"END" },
 	})
@@ -585,6 +589,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "NPC_TEXT_BUBBLE_NAME_TEXT")				return EUITextSubClassType::NPC_TEXT_BUBBLE_NAME_TEXT;
 	else if (str == "NPC_TEXT_BUBBLE_CONTENT_TEXT")				return EUITextSubClassType::NPC_TEXT_BUBBLE_CONTENT_TEXT;
 	else if (str == "NPC_TEXT_BUBBLE_END")						return EUITextSubClassType::NPC_TEXT_BUBBLE_END;
+
+	else if (str == "QTE_TEXT")									return EUITextSubClassType::QTE_TEXT;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -717,6 +723,8 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::NPC_TEXT_BUBBLE_END:					return "NPC_TEXT_BUBBLE_END";
 
 	case EUITextSubClassType::ENTERGAME_END:						return "ENTERGAME_END";
+	
+	case EUITextSubClassType::QTE_TEXT:						return "QTE_TEXT";
 	
 	default:														return "END";
 	}
@@ -1053,6 +1061,19 @@ enum class EUIDImageSubClassType
 	WEAPON_QUIKSLOT_SIDE_SLOT,
 	WEAPON_QUIKSLOT_END,
 
+	// QTE
+	QTE_BEGIN,
+	QTE_BG,
+	QTE_BG_DECO,
+	QTE_LINE,
+	QTE_KEYICON,
+	QTE_TIMING_CIRCLE,
+	QTE_CLEAR_KEYICON_FX,
+	QTE_CLEAR_CIRCLE_FX,
+	QTE_CLEAR_BG_CIRCLE_FX,
+	QTE_TEXT_FX,
+	QTE_END,
+	
 	END
 };
 
@@ -1249,6 +1270,18 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG_FX,				"WEAPON_QUIKSLOT_SIDE_BG_FX" },
 	{ EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_SLOT,					"WEAPON_QUIKSLOT_SIDE_SLOT" },
 	{ EUIDImageSubClassType::WEAPON_QUIKSLOT_END,						"WEAPON_QUIKSLOT_END" },
+	
+	{ EUIDImageSubClassType::QTE_BEGIN,									"QTE_BEGIN" },
+	{ EUIDImageSubClassType::QTE_BG,									"QTE_BG" },
+	{ EUIDImageSubClassType::QTE_BG_DECO,								"QTE_BG_DECO" },
+	{ EUIDImageSubClassType::QTE_LINE,									"QTE_LINE" },
+	{ EUIDImageSubClassType::QTE_KEYICON,								"QTE_KEYICON" },
+	{ EUIDImageSubClassType::QTE_TIMING_CIRCLE,							"QTE_TIMING_CIRCLE" },
+	{ EUIDImageSubClassType::QTE_CLEAR_KEYICON_FX,						"QTE_CLEAR_KEYICON_FX" },
+	{ EUIDImageSubClassType::QTE_CLEAR_CIRCLE_FX,						"QTE_CLEAR_CIRCLE_FX" },
+	{ EUIDImageSubClassType::QTE_CLEAR_BG_CIRCLE_FX,					"QTE_CLEAR_BG_CIRCLE_FX" },
+	{ EUIDImageSubClassType::QTE_TEXT_FX,								"QTE_TEXT_FX" },
+	{ EUIDImageSubClassType::QTE_END,									"QTE_END" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1447,6 +1480,18 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "WEAPON_QUIKSLOT_SIDE_BG_FX")			return EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG_FX;
 	if (str == "WEAPON_QUIKSLOT_SIDE_SLOT")				return EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_SLOT;
 	if (str == "WEAPON_QUIKSLOT_END")					return EUIDImageSubClassType::WEAPON_QUIKSLOT_END;
+	
+	if (str == "QTE_BEGIN")								return EUIDImageSubClassType::QTE_BEGIN;
+	if (str == "QTE_BG")								return EUIDImageSubClassType::QTE_BG;
+	if (str == "QTE_BG_DECO")							return EUIDImageSubClassType::QTE_BG_DECO;
+	if (str == "QTE_LINE")								return EUIDImageSubClassType::QTE_LINE;
+	if (str == "QTE_KEYICON")							return EUIDImageSubClassType::QTE_KEYICON;
+	if (str == "QTE_TIMING_CIRCLE")						return EUIDImageSubClassType::QTE_TIMING_CIRCLE;
+	if (str == "QTE_CLEAR_KEYICON_FX")					return EUIDImageSubClassType::QTE_CLEAR_KEYICON_FX;
+	if (str == "QTE_CLEAR_CIRCLE_FX")					return EUIDImageSubClassType::QTE_CLEAR_CIRCLE_FX;
+	if (str == "QTE_CLEAR_BG_CIRCLE_FX")				return EUIDImageSubClassType::QTE_CLEAR_BG_CIRCLE_FX;
+	if (str == "QTE_TEXT_FX")							return EUIDImageSubClassType::QTE_TEXT_FX;
+	if (str == "QTE_END")								return EUIDImageSubClassType::QTE_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1647,6 +1692,18 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_BG_FX:				return "WEAPON_QUIKSLOT_SIDE_BG_FX";
 	case EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_SLOT:				return "WEAPON_QUIKSLOT_SIDE_SLOT";
 	case EUIDImageSubClassType::WEAPON_QUIKSLOT_END:					return "WEAPON_QUIKSLOT_END";
+	
+	case EUIDImageSubClassType::QTE_BEGIN:								return "QTE_BEGIN";
+	case EUIDImageSubClassType::QTE_BG:									return "QTE_BG";
+	case EUIDImageSubClassType::QTE_BG_DECO:							return "QTE_BG_DECO";
+	case EUIDImageSubClassType::QTE_LINE:								return "QTE_LINE";
+	case EUIDImageSubClassType::QTE_KEYICON:							return "QTE_KEYICON";
+	case EUIDImageSubClassType::QTE_TIMING_CIRCLE:						return "QTE_TIMING_CIRCLE";
+	case EUIDImageSubClassType::QTE_CLEAR_KEYICON_FX:					return "QTE_CLEAR_KEYICON_FX";
+	case EUIDImageSubClassType::QTE_CLEAR_CIRCLE_FX:					return "QTE_CLEAR_CIRCLE_FX";
+	case EUIDImageSubClassType::QTE_CLEAR_BG_CIRCLE_FX:					return "QTE_CLEAR_BG_CIRCLE_FX";
+	case EUIDImageSubClassType::QTE_TEXT_FX:							return "QTE_TEXT_FX";
+	case EUIDImageSubClassType::QTE_END:								return "QTE_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

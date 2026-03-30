@@ -103,7 +103,13 @@ void CDialogueManager::Ready_Dialogue()
 		CreateNode(232, 231, 233, L"추억에 젖은 베테랑 월석 사냥꾼", L"나도 자네 같은 신입 시절에 선배에게 받은 소중한 것이 있네.");
 		CreateNode(233, 232, 234, L"추억에 젖은 베테랑 월석 사냥꾼", L"이젠 자네에게 넘겨주도록 하지.");
 		CreateNode(234, 233, -1, L"선배 월석 사냥꾼", L"좋은 곳에 쓰도록 하게.");
+	}
 
+	// 추가
+	{
+		CreateNode(300, -1, -1, L"마령 판신", L"이상할 정도로 필토이드가 많아... 조심해야겠어.");
+		CreateNode(301, -1, -1, L"마령 판신", L"저 너머에서 인기척이 느껴저, 그 아이의 친구들일지도 몰라.");
+		CreateNode(302, -1, -1, L"마령 판신", L"윽... 이 열기는 뭐지? 열기의 근원을 찾아야해.");
 	}
 }
 
@@ -147,7 +153,7 @@ void CDialogueManager::Start_Dialogue(_int iId)
 		return;
 	}
 
-	m_iCurrentNode = iId;
+	m_iCurrentNodeIndex = iId;
 	m_pCurrentNode = &m_umapContents[iId];
 
 	m_pGameInstance->Broadcast<DIALOGUE_BEGIN>(iId);
@@ -163,8 +169,8 @@ void CDialogueManager::OnInputNext()
 		return;
 	}
 
-	m_iCurrentNode = m_pCurrentNode->iNextId;
-	m_pCurrentNode = &m_umapContents[m_iCurrentNode];
+	m_iCurrentNodeIndex = m_pCurrentNode->iNextId;
+	m_pCurrentNode = &m_umapContents[m_iCurrentNodeIndex];
 
 	FlushTrigger();
 }
@@ -177,8 +183,8 @@ void CDialogueManager::OnInputPrev()
 		return;
 	}
 
-	m_iCurrentNode = m_pCurrentNode->iPrevId;
-	m_pCurrentNode = &m_umapContents[m_iCurrentNode];
+	m_iCurrentNodeIndex = m_pCurrentNode->iPrevId;
+	m_pCurrentNode = &m_umapContents[m_iCurrentNodeIndex];
 
 	FlushTrigger();
 }
@@ -193,15 +199,15 @@ void CDialogueManager::OnSelectChoice(_int choiceIndex)
 		return;
 	}
 
-	m_iCurrentNode = m_pCurrentNode->vecChoices[choiceIndex].iTransitionId;
-	m_pCurrentNode = &m_umapContents[m_iCurrentNode];
+	m_iCurrentNodeIndex = m_pCurrentNode->vecChoices[choiceIndex].iTransitionId;
+	m_pCurrentNode = &m_umapContents[m_iCurrentNodeIndex];
 
 	FlushTrigger();
 }
 
 void CDialogueManager::FinishCurrentDialogue()
 {
-	m_iCurrentNode = -1;
+	m_iCurrentNodeIndex = -1;
 	m_pCurrentNode = nullptr;
 
 	FinishBroadcast();

@@ -190,8 +190,6 @@ void CUILevelChange_Image::Trigger_By_InteractState()
 		Desc.fEndDelay		= 0.f;
 		Desc.isChangeLevel	= true;
 		m_pUIManager->Request_LevelChange_With_Fade(Desc);
-
-		//m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
 	}
 }
 

@@ -125,6 +125,7 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 
 	CQuestManager::GetInstance()->Start_Quest(5, 1);
 
+	m_pGameInstance->PlayBGM(0, TO_HASH("LIANHUO_BOSS_BGM"), 0.5f);
 	return S_OK;
 }
 

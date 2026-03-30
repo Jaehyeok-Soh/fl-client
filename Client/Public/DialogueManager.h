@@ -61,7 +61,7 @@ private:
 
 	array<DelegateHandle, EDialogueInnerEvent::END> m_arrEventHandles;
 
-	_int m_iCurrentNode = { -1 };
+	_int m_iCurrentNodeIndex = { -1 };
 	DIALOGUE_NODE* m_pCurrentNode = { nullptr };
 	unordered_map<_int, DIALOGUE_NODE> m_umapContents;
 

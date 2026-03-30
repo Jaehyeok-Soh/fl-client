@@ -180,6 +180,11 @@ public:
 	_int	Get_CurWeaponIdx(_uint iWeaponType);											// 이 무기타입이 어떤 무기로 설정하고 있는가
 	_bool	Can_UseWeapon(_uint iWeaponType);												// 이 무기타입을 지금 사용할 수 있는가
 
+	_bool	Get_CanQuickSlotOpen() const { return m_bQuickSlotOpen; }						// 지금 quick slot open 할 수 있는지 -> player state쪽에서 정보 넘겨줌
+	void	Set_CanQuickSlopOpen(_bool bOpen) { m_bQuickSlotOpen = bOpen; }
+
+	_bool	Can_AttackWeapon(_uint iWeaponType);
+
 	// state funcs
 public:
 	_bool	Check_OnGround(_float fMaxDist = 0.72f);
@@ -224,6 +229,8 @@ protected:
 	PLAYER_TYPE			m_ePlayerType = { PLAYER_TYPE::END };
 	_bool				m_bMainPlayer = { false };
 	SHADER_PLAYER_INFO	m_tCBPlayerInfo{};
+
+	_bool				m_bQuickSlotOpen = { false };
 
 protected:
 	array<_int, ENUM_TO_SZET(EWEAPON::END)>			m_arrWeaponEnum; // 각 무기 종류에서 어떤거를 들고 있는가. 만약 없다면 -1

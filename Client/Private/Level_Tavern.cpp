@@ -133,6 +133,8 @@ HRESULT CLevel_Tavern::Awake(const _uint iLevelID)
 		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
 	}
 
+	m_pGameInstance->PlayBGM(0, TO_HASH("TAVERN_BGM"), 0.5f);
+
 	return S_OK;
 }
 

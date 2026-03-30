@@ -54,7 +54,7 @@ void CState_JumpAttEnd::Update(const _float fTimeDelta)
 
 	if (m_fStateElapsed >= (2.3f / 1.3f))
 	{
-		Change_Weapon();
+		//Change_Weapon();
 		Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 	}
 }

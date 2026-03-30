@@ -40,8 +40,8 @@ HRESULT CState_HitFlyStart::Start(void* pArg, _bool bForce)
 		pOwnerTransform->Look_At_XZ(vTargetPos);
 	}
 
+	Jump_Impuls(5.f);
 	Look_Impuls(-10.f);
-	Jump_Impuls(1.f);
 
 	return S_OK;
 }
