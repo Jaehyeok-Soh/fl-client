@@ -724,6 +724,14 @@
                 "Move Lerp Type": "Curve",
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
+                "On Reach Event": [
+                    {
+                        "Action Names": [
+                            "Letterboxing_Begin"
+                        ],
+                        "Subscriber Name": "Cinematic"
+                    }
+                ],
                 "Pitch Yaw Roll": {
                     "X": -14.395999908447266,
                     "Y": -158.7239990234375,
@@ -1159,9 +1167,9 @@
                 "On Reach Event": [
                     {
                         "Action Names": [
-                            "Xibi"
+                            "Letterboxing_End"
                         ],
-                        "Subscriber Name": "UI_Boss"
+                        "Subscriber Name": "Cinematic"
                     }
                 ],
                 "Pitch Yaw Roll": {

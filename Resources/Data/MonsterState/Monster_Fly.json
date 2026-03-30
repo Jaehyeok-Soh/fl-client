@@ -419,6 +419,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_chase",
                             "tParam": {
                                 "bParam": [
@@ -809,6 +811,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_off_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -857,6 +861,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_root_motion_apply",
                                 "tParam": {
                                     "bParam": [
@@ -1125,6 +1131,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_on_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -1173,6 +1181,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_root_motion_apply",
                                 "tParam": {
                                     "bParam": [
@@ -1280,7 +1290,7 @@
                                     ],
                                     "fParam": [
                                         43.0,
-                                        44.0,
+                                        50.0,
                                         0.0,
                                         0.0
                                     ],
@@ -1293,6 +1303,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": true,
                                 "strFeature": "feat_skill_spawn_trigger",
                                 "tParam": {
                                     "bParam": [
@@ -1320,6 +1332,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -1959,6 +1973,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_on_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -2007,6 +2023,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_die_process",
                                 "tParam": {
                                     "bParam": [
@@ -2055,6 +2073,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_root_motion_apply",
                                 "tParam": {
                                     "bParam": [
@@ -2174,6 +2194,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_dead",
                                 "tParam": {
                                     "bParam": [
@@ -2443,6 +2465,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_die_pose",
                                 "tParam": {
                                     "bParam": [

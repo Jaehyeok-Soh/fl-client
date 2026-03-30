@@ -33,6 +33,9 @@ private:
 		std::function<_bool(const DTO::STATE_PARAM&)>               condition;
 		std::function<void(const _float&, const DTO::STATE_PARAM&)> feature;
 
+		_bool bIsOnce = { false };
+		_bool bIsExecuted = { false };
+
 		DTO::STATE_PARAM condParam;
 		DTO::STATE_PARAM featParam;
 	}BOUND_CONDFEATURE;
@@ -41,6 +44,9 @@ private:
 	{
 		std::function<void(const _float&, const DTO::STATE_PARAM&)> func;
 		DTO::STATE_PARAM tParam{};
+
+		_bool bIsOnce = { false };
+		_bool bIsExecuted = { false };
 	}BOUND_FEATURE;
 protected:
 	using Super = CStateBase;

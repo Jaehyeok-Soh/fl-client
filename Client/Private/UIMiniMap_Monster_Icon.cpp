@@ -235,7 +235,11 @@ HRESULT CUIMiniMap_Monster_Icon::Spawn_FromPool(void* pArg)
 		m_pTargetIconComp = dynamic_cast<CUIIcon_Component*>(m_pTarget->Get_Script_Component(L"UIIconComp"));
 		if (nullptr == m_pTargetIconComp)
 			return E_FAIL;
+
+		if (FAILED(Get_Component<CTexture>()->Add_DefaultTexture(m_pTargetIconComp->Get_IconTextureTag(), ENUM_TO_UINT(EUITextureSlot::DEFAULT))))
+			return E_FAIL;
 	}
+
 	Set_Visible();
 	Set_Active(true);
 	m_isSpawned = true;

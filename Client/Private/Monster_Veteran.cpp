@@ -168,7 +168,7 @@ HRESULT CMonster_Veteran::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 5000.f; //수정하기
+		desc.fMaxHp = 35000.f; //수정하기
 		desc.fDefense = 0.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 
@@ -227,6 +227,7 @@ HRESULT CMonster_Veteran::Ready_Components(void* pArg)
 		return E_FAIL;
 	{
 		CUIIcon_Component::UI_ICON_COMP_DESC Desc = {};
+		Desc.wstrIconTextureTag = L"Texture_T_Battle_HudElite";
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}

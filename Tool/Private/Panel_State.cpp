@@ -953,6 +953,8 @@ void CPanel_State::RenderFeatureEntryModal(DTO::MONSTER_STATEBASE_DESC& state)
         if (!m_tFeatDraft.strFeature.empty() && !valid)
             ImGui::Text("Unknown feature (not in Registry_State.h)");
 
+        ImGui::Checkbox("Is Once", &m_tFeatDraft.IsOnce);
+
         RenderStateParamEditor(m_tFeatDraft.tParam);
 
         ImGui::Separator();
@@ -1137,6 +1139,8 @@ void CPanel_State::RenderConditionFeatureModal(DTO::MONSTER_STATEBASE_DESC& stat
             if (!m_tCondFeatDraft.feat.strFeature.empty() && !bFeatOk)
                 ImGui::Text("Unknown feature (not in Registry_State.h)");
         }
+
+        ImGui::Checkbox("Is Once", &m_tCondFeatDraft.feat.IsOnce);
 
         // Parameter Editor 모달 그림
         RenderStateParamEditor(m_tCondFeatDraft.feat.tParam);
