@@ -32,10 +32,18 @@ HRESULT CLianhuo_FirePlain::Initialize(void* pArg)
 	if (FAILED(Ready_Modules()))
 		return E_FAIL;
 
-	m_tWarnDesc.VFX_COLORTYPE = EFFECT_SPAWN_DESC::E_VFX_COLORMODE::COLOR_CHANGE;
-	m_tWarnDesc.VFX_Color = Vec3{ 187.f / 255.f, 45.f / 255.f, 20.f / 255.f };
-	m_tWarnDesc.VFX_Scale = Vec3{ 3.f, 3.f, 3.f };
 	return S_OK;
+}
+
+void CLianhuo_FirePlain::Build_WarningDesc()
+{
+		m_tWarnDesc = {};
+		m_tDesc.vSpawnPos.y += 0.01f;
+		m_tWarnDesc.VFX_Target_Position = m_tDesc.vSpawnPos;
+		m_tWarnDesc.VFX_COLORTYPE = EFFECT_SPAWN_DESC::E_VFX_COLORMODE::COLOR_CHANGE;
+		m_tWarnDesc.VFX_Color = Vec3{ 187.f / 255.f, 45.f / 255.f, 20.f / 255.f };
+		m_tWarnDesc.VFX_Scale = Vec3{ 3.f, 3.f, 3.f };;
+		m_tWarnDesc.iSimulationType = ENUM_TO_UINT(EFFECT_WARNING_DESC::E_VFX_SIMULTYPE::VFX_WORLD);
 }
 
 HRESULT CLianhuo_FirePlain::Ready_Modules()

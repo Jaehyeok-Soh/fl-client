@@ -180,6 +180,7 @@
     <ClInclude Include="..\Public\Effect_DashPanel.h" />
     <ClInclude Include="..\public\Lianhuo_ChainThron.h" />
     <ClInclude Include="..\public\Lianhuo_FirePlain.h" />
+    <ClInclude Include="..\public\Lianhuo_StunChainThron.h" />
     <ClInclude Include="..\public\Lianhuo_XSpace.h" />
     <ClInclude Include="..\Public\Monster_Dog_Projectile_Circle.h" />
     <ClInclude Include="..\Public\Monster_Fly_Projectile_Circle.h" />
@@ -485,6 +486,7 @@
     <ClCompile Include="..\Private\Effect_DashPanel.cpp" />
     <ClCompile Include="..\private\Lianhuo_ChainThron.cpp" />
     <ClCompile Include="..\private\Lianhuo_FirePlain.cpp" />
+    <ClCompile Include="..\private\Lianhuo_StunChainThron.cpp" />
     <ClCompile Include="..\private\Lianhuo_XSpace.cpp" />
     <ClCompile Include="..\Private\Monster_Dog_Projectile_Circle.cpp" />
     <ClCompile Include="..\Private\Monster_Fly_Projectile_Circle.cpp" />

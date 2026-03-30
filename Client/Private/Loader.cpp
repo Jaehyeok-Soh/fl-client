@@ -105,6 +105,7 @@
 #include "Lianhuo_FirePlain.h"
 #include "Lianhuo_ChainThron.h"
 #include "Lianhuo_XSpace.h"
+#include "Lianhuo_StunChainThron.h"
 // player
 #include "PlayerSkillObj_Headers.h"
 // "Prototype_Component_Model_LianhuoWeapon"
@@ -1363,10 +1364,10 @@ HRESULT CLoader::Loading_For_Lianhuo()
 	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoFirePlain_Prototype_Tag, CLianhuo_FirePlain::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoChainThron_Prototype_Tag, CLianhuo_ChainThron::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoXSpace_Prototype_Tag, CLianhuo_XSpace::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoStunChain_Prototype_Tag, CLianhuo_StunChainThron::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
-
 
 	m_isFinished = true;
 
@@ -1653,6 +1654,17 @@ HRESULT CLoader::Ready_Spawner()
 			originDesc.fLifeTime = 0.5f;
 			originDesc.fStartDelay = 0.1f;
 			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_LianhuoSpawnerXSpace,
+				CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		{
+			CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_LianhuoStunChain;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 0.5f;
+			originDesc.fStartDelay = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_LianhuoSpawnerStunChain,
 				CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
 				return E_FAIL;
 		}

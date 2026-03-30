@@ -13,7 +13,7 @@
                 "fBaseDamage": 489.0,
                 "fHitStopSec": 0.0,
                 "fHitStunSec": 0.0,
-                "fImpulse": 5.0,
+                "fImpulse": 1.0,
                 "fPushPower": 0.0
             },
             "tPolicy": {

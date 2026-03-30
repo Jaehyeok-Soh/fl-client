@@ -232,8 +232,10 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 		else
 		{
 			EGroggyState eGroggy{ EGroggyState::None };
-			if(Engine_Utils::Has_Flag( hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+			if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
 				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.25f);
+			else if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::DUAL)))
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.7f);
 			else
 				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
 

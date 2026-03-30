@@ -65,6 +65,8 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 		m_FAttState = Attack_State::Melee;
 		pDesc->fAttack = m_fMeleeAtt;
 
+		// SlomoTimer 초기화
+		m_tSlomoTimer.Start(SLOMO_COOL);
 		return S_OK;
 	}
 
@@ -81,6 +83,8 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 			Fill_StatFull(STAT_TYPE::HP);
 			Fill_StatFull(STAT_TYPE::MENTAL);
 		}
+
+		m_bCanSlomo = m_tSlomoTimer.Tick(fTimeDelta);
 	}
 
 	const EXTRA_ATTACK_DESC& CStatCom_Player::Get_ExtraAttack_Desc()
@@ -141,8 +145,15 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 
 		// critical은 일단 더하기로 하는걸로
 		m_tExtra_AttackDesc.fAddDamage = m_fCirticalAttack;
-	}
 
+		// Slomo 가능한 상태이면 Slomo
+		if (m_bCanSlomo && (Engine_Utils::Has_Flag(m_FAttState, Attack_State::Gun) == false))
+		{
+			m_pGameInstance->Request_SloMo(0.1f, 0.3f);
+			m_tSlomoTimer.Start(SLOMO_COOL);
+			m_bCanSlomo = false;
+		}
+	}
 	else
 	{
 		m_tExtra_AttackDesc.iDamageFlag |= ENUM_TO_UINT(EPlayerAttackFlag::NORMAL);

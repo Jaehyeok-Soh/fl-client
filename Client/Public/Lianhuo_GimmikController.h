@@ -29,6 +29,7 @@ public:
 	void Update(const _float fTimeDelta);
 	void Set_SpawnPositionm(const Vec3& vPosition);
 	void Trigger_XSpace(const Vec3& vPosition);
+	void Trigger_StunChain(const Vec3& vPosition);
 private:
 	virtual HRESULT Bind_Events() override;
 private:
@@ -52,6 +53,7 @@ private:
 	CSkillObjectSpawner_RandomXZ* m_pRandomFirePlain = { nullptr };
 	CSkillObjectSpawner_RandomXZ* m_pRandomChainThron = { nullptr };
 	CSingleSkillSpawner* m_pXSpaceSpawner = { nullptr };
+	CSingleSkillSpawner* m_pStunChainSpawner = { nullptr };
 public:
 	static CLianhuo_GimmikController* Create();
 	virtual CComponent* Clone(void* pArg) override;

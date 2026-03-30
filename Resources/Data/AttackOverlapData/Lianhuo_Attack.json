@@ -6,38 +6,7 @@
                 {
                     "eEventType": 4,
                     "ePhase": "Immediatley",
-                    "fStartTrackPosition": 29.5,
-                    "iAnimIndex": 15,
-                    "strAnimTag": "Animation_Lianhuo_Skill01",
-                    "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 64,
-                        "eType": 1,
-                        "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
-                        "fHeight": 0.0,
-                        "fRadius": 4.0,
-                        "fTickTime": -1.0,
-                        "iFilterMask": 1,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "Lianhuo_Attack",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 4.0,
-                            "y": 4.0,
-                            "z": 4.0
-                        },
-                        "vOffset": {
-                            "x": 1.5,
-                            "y": 0.0,
-                            "z": 4.0
-                        }
-                    }
-                },
-                {
-                    "eEventType": 4,
-                    "ePhase": "Immediatley",
-                    "fStartTrackPosition": 30.0,
+                    "fStartTrackPosition": 60.14507293701172,
                     "iAnimIndex": 15,
                     "strAnimTag": "Animation_Lianhuo_Skill01",
                     "strDescription": "",
@@ -59,16 +28,16 @@
                             "z": 0.0
                         },
                         "vOffset": {
-                            "x": -2.5,
-                            "y": 2.0,
-                            "z": 4.0
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 3.0
                         }
                     }
                 },
                 {
                     "eEventType": 4,
                     "ePhase": "Immediatley",
-                    "fStartTrackPosition": 62.0,
+                    "fStartTrackPosition": 60.14507293701172,
                     "iAnimIndex": 15,
                     "strAnimTag": "Animation_Lianhuo_Skill01",
                     "strDescription": "",
@@ -78,7 +47,38 @@
                         "fDamage": 0.0,
                         "fDuration": 0.10000000149011612,
                         "fHeight": 0.0,
-                        "fRadius": 3.0,
+                        "fRadius": 4.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Lianhuo_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 7.0,
+                            "z": 1.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 108.54359436035156,
+                    "iAnimIndex": 15,
+                    "strAnimTag": "Animation_Lianhuo_Skill01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.10000000149011612,
+                        "fHeight": 0.0,
+                        "fRadius": 4.0,
                         "fTickTime": -1.0,
                         "iFilterMask": 1,
                         "iMaxHit": 32,
@@ -92,14 +92,14 @@
                         "vOffset": {
                             "x": 0.0,
                             "y": 1.0,
-                            "z": 4.0
+                            "z": 3.0
                         }
                     }
                 },
                 {
                     "eEventType": 4,
                     "ePhase": "Immediatley",
-                    "fStartTrackPosition": 62.0,
+                    "fStartTrackPosition": 107.57783508300781,
                     "iAnimIndex": 15,
                     "strAnimTag": "Animation_Lianhuo_Skill01",
                     "strDescription": "",
@@ -109,7 +109,7 @@
                         "fDamage": 0.0,
                         "fDuration": 0.10000000149011612,
                         "fHeight": 0.0,
-                        "fRadius": 3.0,
+                        "fRadius": 4.0,
                         "fTickTime": -1.0,
                         "iFilterMask": 1,
                         "iMaxHit": 32,
@@ -122,70 +122,8 @@
                         },
                         "vOffset": {
                             "x": 0.0,
-                            "y": 6.0,
-                            "z": 2.0
-                        }
-                    }
-                },
-                {
-                    "eEventType": 4,
-                    "ePhase": "Immediatley",
-                    "fStartTrackPosition": 110.36787414550781,
-                    "iAnimIndex": 15,
-                    "strAnimTag": "Animation_Lianhuo_Skill01",
-                    "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 64,
-                        "eType": 1,
-                        "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
-                        "fHeight": 0.0,
-                        "fRadius": 3.0,
-                        "fTickTime": -1.0,
-                        "iFilterMask": 1,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "Lianhuo_Attack",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "vOffset": {
-                            "x": 0.0,
-                            "y": 1.0,
-                            "z": 4.0
-                        }
-                    }
-                },
-                {
-                    "eEventType": 4,
-                    "ePhase": "Immediatley",
-                    "fStartTrackPosition": 110.36786651611328,
-                    "iAnimIndex": 15,
-                    "strAnimTag": "Animation_Lianhuo_Skill01",
-                    "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 64,
-                        "eType": 1,
-                        "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
-                        "fHeight": 0.0,
-                        "fRadius": 3.0,
-                        "fTickTime": -1.0,
-                        "iFilterMask": 1,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "Lianhuo_Attack",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "vOffset": {
-                            "x": 0.0,
-                            "y": 6.0,
-                            "z": 2.0
+                            "y": 7.0,
+                            "z": 1.0
                         }
                     }
                 },
@@ -440,7 +378,7 @@
                 {
                     "eEventType": 4,
                     "ePhase": "Immediatley",
-                    "fStartTrackPosition": 74.61140441894531,
+                    "fStartTrackPosition": 114.55673217773438,
                     "iAnimIndex": 16,
                     "strAnimTag": "Animation_Lianhuo_Skill02_01",
                     "strDescription": "",
@@ -448,193 +386,7 @@
                         "eFilterLayer": 64,
                         "eType": 1,
                         "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
-                        "fHeight": 0.0,
-                        "fRadius": 3.0,
-                        "fTickTime": -1.0,
-                        "iFilterMask": 1,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "Lianhuo_Attack",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "vOffset": {
-                            "x": 3.0,
-                            "y": 2.0,
-                            "z": 3.0
-                        }
-                    }
-                },
-                {
-                    "eEventType": 4,
-                    "ePhase": "Immediatley",
-                    "fStartTrackPosition": 74.61140441894531,
-                    "iAnimIndex": 16,
-                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
-                    "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 64,
-                        "eType": 1,
-                        "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
-                        "fHeight": 0.0,
-                        "fRadius": 3.0,
-                        "fTickTime": -1.0,
-                        "iFilterMask": 1,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "Lianhuo_Attack",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "vOffset": {
-                            "x": -3.0,
-                            "y": 0.0,
-                            "z": 3.0
-                        }
-                    }
-                },
-                {
-                    "eEventType": 4,
-                    "ePhase": "Immediatley",
-                    "fStartTrackPosition": 87.09844970703125,
-                    "iAnimIndex": 16,
-                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
-                    "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 64,
-                        "eType": 1,
-                        "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
-                        "fHeight": 0.0,
-                        "fRadius": 3.0,
-                        "fTickTime": -1.0,
-                        "iFilterMask": 1,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "Lianhuo_Attack",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "vOffset": {
-                            "x": 3.0,
-                            "y": 1.0,
-                            "z": 2.0
-                        }
-                    }
-                },
-                {
-                    "eEventType": 4,
-                    "ePhase": "Immediatley",
-                    "fStartTrackPosition": 87.0,
-                    "iAnimIndex": 16,
-                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
-                    "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 64,
-                        "eType": 1,
-                        "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
-                        "fHeight": 0.0,
-                        "fRadius": 3.0,
-                        "fTickTime": -1.0,
-                        "iFilterMask": 1,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "Lianhuo_Attack",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "vOffset": {
-                            "x": -3.0,
-                            "y": 0.0,
-                            "z": 2.0
-                        }
-                    }
-                },
-                {
-                    "eEventType": 4,
-                    "ePhase": "Immediatley",
-                    "fStartTrackPosition": 97.4093246459961,
-                    "iAnimIndex": 16,
-                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
-                    "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 64,
-                        "eType": 1,
-                        "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
-                        "fHeight": 0.0,
-                        "fRadius": 3.0,
-                        "fTickTime": -1.0,
-                        "iFilterMask": 1,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "Lianhuo_Attack",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "vOffset": {
-                            "x": 3.0,
-                            "y": 0.0,
-                            "z": 2.0
-                        }
-                    }
-                },
-                {
-                    "eEventType": 4,
-                    "ePhase": "Immediatley",
-                    "fStartTrackPosition": 97.4093246459961,
-                    "iAnimIndex": 16,
-                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
-                    "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 64,
-                        "eType": 1,
-                        "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
-                        "fHeight": 0.0,
-                        "fRadius": 3.0,
-                        "fTickTime": -1.0,
-                        "iFilterMask": 1,
-                        "iMaxHit": 32,
-                        "strAttackPresetTag": "Lianhuo_Attack",
-                        "strName": "",
-                        "vExtents": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "vOffset": {
-                            "x": -3.0,
-                            "y": 2.0,
-                            "z": 2.0
-                        }
-                    }
-                },
-                {
-                    "eEventType": 4,
-                    "ePhase": "Immediatley",
-                    "fStartTrackPosition": 118.22565460205078,
-                    "iAnimIndex": 16,
-                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
-                    "strDescription": "",
-                    "tHitboxDesc": {
-                        "eFilterLayer": 64,
-                        "eType": 1,
-                        "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
+                        "fDuration": 0.30000001192092896,
                         "fHeight": 0.0,
                         "fRadius": 3.0,
                         "fTickTime": -1.0,
@@ -657,7 +409,7 @@
                 {
                     "eEventType": 4,
                     "ePhase": "Immediatley",
-                    "fStartTrackPosition": 118.51325988769531,
+                    "fStartTrackPosition": 112.28539276123047,
                     "iAnimIndex": 16,
                     "strAnimTag": "Animation_Lianhuo_Skill02_01",
                     "strDescription": "",
@@ -665,7 +417,7 @@
                         "eFilterLayer": 64,
                         "eType": 1,
                         "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
+                        "fDuration": 0.30000001192092896,
                         "fHeight": 0.0,
                         "fRadius": 3.0,
                         "fTickTime": -1.0,
@@ -688,7 +440,7 @@
                 {
                     "eEventType": 4,
                     "ePhase": "Immediatley",
-                    "fStartTrackPosition": 149.0973663330078,
+                    "fStartTrackPosition": 143.29425048828125,
                     "iAnimIndex": 16,
                     "strAnimTag": "Animation_Lianhuo_Skill02_01",
                     "strDescription": "",
@@ -696,7 +448,7 @@
                         "eFilterLayer": 64,
                         "eType": 1,
                         "fDamage": 0.0,
-                        "fDuration": 0.10000000149011612,
+                        "fDuration": 0.30000001192092896,
                         "fHeight": 0.0,
                         "fRadius": 3.0,
                         "fTickTime": -1.0,
@@ -750,7 +502,7 @@
                 {
                     "eEventType": 4,
                     "ePhase": "Immediatley",
-                    "fStartTrackPosition": 63.90327835083008,
+                    "fStartTrackPosition": 62.625213623046875,
                     "iAnimIndex": 17,
                     "strAnimTag": "Animation_Lianhuo_Skill02_02",
                     "strDescription": "",
@@ -936,7 +688,7 @@
                 {
                     "eEventType": 4,
                     "ePhase": "Immediatley",
-                    "fStartTrackPosition": 80.0,
+                    "fStartTrackPosition": 75.73400115966797,
                     "iAnimIndex": 19,
                     "strAnimTag": "Animation_Lianhuo_Skill04",
                     "strDescription": "",
@@ -1519,6 +1271,161 @@
                             "x": -5.0,
                             "y": 5.0,
                             "z": -5.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 99.68910217285156,
+                    "iAnimIndex": 17,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.20000000298023224,
+                        "fHeight": 0.0,
+                        "fRadius": 7.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Lianhuo_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 31.047786712646484,
+                    "iAnimIndex": 15,
+                    "strAnimTag": "Animation_Lianhuo_Skill01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.5,
+                        "fHeight": 0.0,
+                        "fRadius": 6.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Lianhuo_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 3.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 70.93803405761719,
+                    "iAnimIndex": 16,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.30000001192092896,
+                        "fHeight": 0.0,
+                        "fRadius": 6.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Lianhuo_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 3.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 81.55753326416016,
+                    "iAnimIndex": 16,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.30000001192092896,
+                        "fHeight": 0.0,
+                        "fRadius": 6.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Lianhuo_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 3.0
+                        }
+                    }
+                },
+                {
+                    "eEventType": 4,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 94.3008804321289,
+                    "iAnimIndex": 16,
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "",
+                    "tHitboxDesc": {
+                        "eFilterLayer": 64,
+                        "eType": 1,
+                        "fDamage": 0.0,
+                        "fDuration": 0.30000001192092896,
+                        "fHeight": 0.0,
+                        "fRadius": 6.0,
+                        "fTickTime": -1.0,
+                        "iFilterMask": 1,
+                        "iMaxHit": 32,
+                        "strAttackPresetTag": "Lianhuo_Attack",
+                        "strName": "",
+                        "vExtents": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 3.0
                         }
                     }
                 }

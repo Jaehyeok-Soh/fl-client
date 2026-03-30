@@ -1908,6 +1908,9 @@
     <ClInclude Include="..\public\Lianhuo_FirePlain.h">
       <Filter>03. GameObject\SkillObject\Boss\Lianhuo\FirePlain</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_StunChainThron.h">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2788,6 +2791,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Lianhuo_FirePlain.cpp">
       <Filter>03. GameObject\SkillObject\Boss\Lianhuo\FirePlain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_StunChainThron.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

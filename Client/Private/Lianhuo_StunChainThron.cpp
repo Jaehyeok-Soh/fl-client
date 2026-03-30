@@ -1,22 +1,22 @@
 #include "pch.h"
-#include "Lianhuo_ChainThron.h"
+#include "Lianhuo_StunChainThron.h"
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 #include "GameInstance.h"
 
-CLianhuo_ChainThron::CLianhuo_ChainThron(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CLianhuo_StunChainThron::CLianhuo_StunChainThron(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
 
 }
 
-CLianhuo_ChainThron::CLianhuo_ChainThron(const CLianhuo_ChainThron& rhs)
+CLianhuo_StunChainThron::CLianhuo_StunChainThron(const CLianhuo_StunChainThron& rhs)
 	: Super(rhs)
 {
 
 }
 
-HRESULT CLianhuo_ChainThron::Initialize_Prototype()
+HRESULT CLianhuo_StunChainThron::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
@@ -24,7 +24,7 @@ HRESULT CLianhuo_ChainThron::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CLianhuo_ChainThron::Initialize(void* pArg)
+HRESULT CLianhuo_StunChainThron::Initialize(void* pArg)
 {
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
@@ -35,7 +35,7 @@ HRESULT CLianhuo_ChainThron::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CLianhuo_ChainThron::Build_WarningDesc()
+void CLianhuo_StunChainThron::Build_WarningDesc()
 {
 	m_tWarnDesc = {};
 	m_tDesc.vSpawnPos.y += 0.01f;
@@ -46,7 +46,7 @@ void CLianhuo_ChainThron::Build_WarningDesc()
 	m_tWarnDesc.iSimulationType = ENUM_TO_UINT(EFFECT_WARNING_DESC::E_VFX_SIMULTYPE::VFX_WORLD);
 }
 
-HRESULT CLianhuo_ChainThron::Ready_Modules()
+HRESULT CLianhuo_StunChainThron::Ready_Modules()
 {
 	wstring wstrDefaultPrototypeTag = L"Prototype_GameObject_Effect";
 
@@ -86,8 +86,8 @@ HRESULT CLianhuo_ChainThron::Ready_Modules()
 		colliderDesc.bIsTrigger = true;
 		colliderDesc.bSetOnlyFilter = false;
 		colliderDesc.bIsActive = true;
-		colliderDesc.fRadius = 4.f;
-		colliderDesc.strAttackPresetTag = "ChainThron";
+		colliderDesc.fRadius = 5.f;
+		colliderDesc.strAttackPresetTag = "Lianhuo_Stun";
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 		colliderDesc.tMaterial = mtrlDesc;
@@ -111,29 +111,29 @@ HRESULT CLianhuo_ChainThron::Ready_Modules()
 	return S_OK;
 }
 
-CLianhuo_ChainThron* CLianhuo_ChainThron::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CLianhuo_StunChainThron* CLianhuo_StunChainThron::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
-	CLianhuo_ChainThron* pInstance = new CLianhuo_ChainThron(pDevice, pDeviceContext);
+	CLianhuo_StunChainThron* pInstance = new CLianhuo_StunChainThron(pDevice, pDeviceContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("CLianhuo_ChainThron::Create, Failed");
+		MSG_BOX("CLianhuo_StunChainThron::Create, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject* CLianhuo_ChainThron::Clone(void* pArg)
+CGameObject* CLianhuo_StunChainThron::Clone(void* pArg)
 {
-	CLianhuo_ChainThron* pInstance = new CLianhuo_ChainThron(*this);
+	CLianhuo_StunChainThron* pInstance = new CLianhuo_StunChainThron(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CLianhuo_ChainThron::Clone, Failed");
+		MSG_BOX("CLianhuo_StunChainThron::Clone, Failed");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CLianhuo_ChainThron::Free()
+void CLianhuo_StunChainThron::Free()
 {
 	Super::Free();
 }

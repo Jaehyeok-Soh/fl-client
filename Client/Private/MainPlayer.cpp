@@ -311,7 +311,6 @@ void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, C
     desc.tHitInfo = tHitInfo;
 
     desc.tExtraDesc = Get_Component<CStatCom_Player>()->Get_ExtraAttack_Desc();
-
     m_pGameInstance->Push_CollidedData(desc);
 }
 

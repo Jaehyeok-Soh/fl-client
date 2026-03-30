@@ -65,6 +65,7 @@
 #include "Lianhuo_FirePlain.h"
 #include "Lianhuo_ChainThron.h"
 #include "Lianhuo_XSpace.h"
+#include "Lianhuo_StunChainThron.h"
 
 //=================
 // GameInstance
@@ -613,6 +614,18 @@ HRESULT CLevel_Lianhuo::Ready_SkillObjectLayer()
 			g_wszLianhuoXSpace_Prototype_Tag,
 			&desc,
 			10)))
+			return E_FAIL;
+	}
+	{
+		CLianhuo_StunChainThron::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_LianhuoStunChain,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszLianhuoStunChain_Prototype_Tag,
+			&desc,
+			5)))
 			return E_FAIL;
 	}
 	return S_OK;

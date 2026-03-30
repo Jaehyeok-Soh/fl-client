@@ -55,6 +55,7 @@ void CLianhuo_GimmikController::Update(const _float fTimeDelta)
 	m_pRandomFirePlain->Update(fTimeDelta);
 	m_pRandomChainThron->Update(fTimeDelta);
 	m_pXSpaceSpawner->Update(fTimeDelta);
+	m_pStunChainSpawner->Update(fTimeDelta);
 }
 
 void CLianhuo_GimmikController::Set_SpawnPositionm(const Vec3& vPosition)
@@ -75,6 +76,21 @@ void CLianhuo_GimmikController::Trigger_XSpace(const Vec3 &vPosition)
 	desc.vOrigin = vPosition;
 	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	m_pXSpaceSpawner->Trigger(desc);
+}
+
+void CLianhuo_GimmikController::Trigger_StunChain(const Vec3& vPosition)
+{
+	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
+	CGameObject* pOwner = Get_Owner();
+	if (pOwner->IsDead())
+		return;
+
+	CSkillObjectSpawnerBase::SPAWNER_COPY_DESC desc{};
+	desc.iLevelIndex = iLevelIndex;
+	desc.iSpawnLevelIndex = iLevelIndex;
+	desc.vOrigin = vPosition;
+	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	m_pStunChainSpawner->Trigger(desc);
 }
 
 HRESULT CLianhuo_GimmikController::Bind_Events()
@@ -134,6 +150,19 @@ HRESULT CLianhuo_GimmikController::Ready_Spawner()
 			return E_FAIL;
 
 		m_pXSpaceSpawner = static_cast<CSingleSkillSpawner*>(pResult);
+	}
+	// Oneshot
+	{
+		CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
+		desc.iLevelIndex = iLevelId;
+		desc.iSpawnLevelIndex = iLevelId;
+
+		CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
+			iLevelId, g_wszSpawner_LianhuoSpawnerStunChain, &desc);
+		if (pResult == nullptr)
+			return E_FAIL;
+
+		m_pStunChainSpawner = static_cast<CSingleSkillSpawner*>(pResult);
 	}
 	return S_OK;
 }
@@ -219,5 +248,9 @@ CComponent* CLianhuo_GimmikController::Clone(void* pArg)
 
 void CLianhuo_GimmikController::Free()
 {
+	Safe_Release(m_pRandomFirePlain);
+	Safe_Release(m_pRandomChainThron);
+	Safe_Release(m_pXSpaceSpawner);
+	Safe_Release(m_pStunChainSpawner);
 	Super::Free();
 }

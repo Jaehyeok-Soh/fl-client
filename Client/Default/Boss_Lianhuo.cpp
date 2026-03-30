@@ -127,6 +127,11 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 	Get_Component<CLianhuo_GimmikController>()->Update(fTimeDelta);
 	CMonsterActionState* pActionState = Get_Component<CMonsterActionState>();
+	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD2))
+	{
+		_int iIndex = pActionState->Get_StateIndex("StartCatch");
+		pActionState->Change_State(iIndex);
+	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD4))
 	{		
 		_int iIndex = pActionState->Get_StateIndex("Idle");
@@ -134,7 +139,7 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD5))
 	{
-		_int iIndex = pActionState->Get_StateIndex("SpawnAttack");
+		_int iIndex = pActionState->Get_StateIndex("BackdashCatch");
 		pActionState->Change_State(iIndex);
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD6))
@@ -195,50 +200,52 @@ void CBoss_Lianhuo::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CG
 _bool CBoss_Lianhuo::On_Hit(const HIT_DESC& hitDesc)
 {
 	_bool result = Super::On_Hit(hitDesc);
-	//if (result == true)
-	//{
-	//	CMonsterControlContext* pControlContext = Get_Component<CMonsterControlContext>();
-	//	CStatCom_Boss* pComBoss = Get_Component<CStatCom_Boss>();
-	//	// 그로기 일때
-	//	if (pControlContext->IsGroggy() == true)
-	//	{
-	//		// 플레이어 공격이라면
-	//		if (hitDesc.attackDesc.iAttackerLayer == EPhysicsFilterGroup::ATTACK)
-	//		{
-	//			// 확정 static_cast<>
-	//			if (CMainPlayer* pMainPlayer = dynamic_cast<CMainPlayer*>(hitDesc.attackDesc.pAttacker))
-	//			{
-	//				CActionState* pActionState = pMainPlayer->Get_Component<CActionState>();
-	//				// Condemn
-	//				if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::CONDEMN))
-	//				{
-	//					pComBoss->Add_Health(-500.f);
-	//					_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
-	//					if (fHpRatio <= g_XMEpsilon.f[0])
-	//						Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
-	//					else
-	//						Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
-	//				}
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		EGroggyState eGroggy{ EGroggyState::None };
-	//		if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
-	//			eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.25f);
-	//		else
-	//			eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
+	if (result == true)
+	{
+		CMonsterControlContext* pControlContext = Get_Component<CMonsterControlContext>();
+		CStatCom_Boss* pComBoss = Get_Component<CStatCom_Boss>();
+		// 그로기 일때
+		if (pControlContext->IsGroggy() == true)
+		{
+			// 플레이어 공격이라면
+			if (hitDesc.attackDesc.iAttackerLayer == EPhysicsFilterGroup::ATTACK)
+			{
+				// 확정 static_cast<>
+				if (CMainPlayer* pMainPlayer = dynamic_cast<CMainPlayer*>(hitDesc.attackDesc.pAttacker))
+				{
+					CActionState* pActionState = pMainPlayer->Get_Component<CActionState>();
+					// Condemn
+					if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::CONDEMN))
+					{
+						pComBoss->Add_Health(-500.f);
+						_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
+						if (fHpRatio <= g_XMEpsilon.f[0])
+							Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
+						else
+							Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
+					}
+				}
+			}
+		}
+		else
+		{
+			EGroggyState eGroggy{ EGroggyState::None };
+			if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.25f);
+			else if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::DUAL)))
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.7f);
+			else
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
 
-	//		// 그로기 세팅하고 !!리턴!!
-	//		if (eGroggy != EGroggyState::None)
-	//		{
-	//			if (_bool bRequstedSucess = pControlContext->Set_Groggy(eGroggy))
-	//				m_pGameInstance->Broadcast<BOSS_GROGGY>();
+			// 그로기 세팅하고 !!리턴!!
+			if (eGroggy != EGroggyState::None)
+			{
+				if (_bool bRequstedSucess = pControlContext->Set_Groggy(eGroggy))
+					m_pGameInstance->Broadcast<BOSS_GROGGY>();
 
-	//		}
-	//	}
-	//}
+			}
+		}
+	}
 	return result;
 }
 
@@ -379,10 +386,10 @@ HRESULT CBoss_Lianhuo::Ready_StateIndexForDirecting()
 
 	if (setStateIndex(EStateForDirecting::Idle, "Idle") == false)
 		return E_FAIL;
-	//if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemned_Die") == false)
-	//	return E_FAIL;
-	//if (setStateIndex(EStateForDirecting::Condemned_Attacked, "Condemned_Attacked") == false)
-	//	return E_FAIL;
+	if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemned_Die") == false)
+		return E_FAIL;
+	if (setStateIndex(EStateForDirecting::Condemned_Attacked, "Condemned_Attacked") == false)
+		return E_FAIL;
 	//if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
 	//	return E_FAIL;
 

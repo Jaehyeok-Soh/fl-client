@@ -14,6 +14,8 @@ private:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 private:
+	virtual void Build_WarningDesc() override;
+private:
 	HRESULT Ready_Modules();
 public:
 	static CLianhuo_ChainThron* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
