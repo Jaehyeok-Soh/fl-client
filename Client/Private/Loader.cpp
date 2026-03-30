@@ -1821,6 +1821,28 @@ HRESULT CLoader::Ready_Sounds_PlayerFoot(ELevelType eType)
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(eType), ESoundCategory::SFX, FootSoundFilePath)))
 		return E_FAIL;
 
+	//Resources\Sounds\SFX\Monster\Common
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Common")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Monster\HitCommon
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/HitCommon")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Monster\Hit
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Hit")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Monster\Boomer
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Boomer")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Monster\Dog
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Dog")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Monster\Fly
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Fly")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Monster\Veteran
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Veteran")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

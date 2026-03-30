@@ -73,10 +73,10 @@ RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAG
 
 		PxTransform offsetTransform = arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].matOffsetTransform;
 
-		PxQuat capsuleStandUp(PxPi / 2.f, PxVec3(0.f, 0.f, 1.f));
+		//PxQuat capsuleStandUp(PxPi / 2.f, PxVec3(0.f, 0.f, 1.f));
 
-		offsetTransform.q = offsetTransform.q * capsuleStandUp;
-		offsetTransform.q.normalize();
+		//offsetTransform.q = offsetTransform.q * capsuleStandUp;
+		//offsetTransform.q.normalize();
 
 		pShape->setLocalPose(offsetTransform);
 
@@ -178,10 +178,10 @@ void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<
 
 		PxTransform offsetTransform = arrRagdollBoneDesc[index].matOffsetTransform;
 
-		PxQuat capsuleStandUp(PxPi / 2.f, PxVec3(1.f, 0.f, 0.f));
+		//PxQuat capsuleStandUp(PxPi / 2.f, PxVec3(1.f, 0.f, 0.f));
 
-		offsetTransform.q = offsetTransform.q * capsuleStandUp;
-		offsetTransform.q.normalize();
+		//offsetTransform.q = offsetTransform.q * capsuleStandUp;
+		//offsetTransform.q.normalize();
 
 		pShape->setLocalPose(offsetTransform);
 

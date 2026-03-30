@@ -42,6 +42,7 @@ private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_CameraEvent();
 	HRESULT Ready_SkillSpawner();
+	HRESULT Ready_SoundHandler();
 
 	HRESULT Ready_StateIndexForDirecting();
 	HRESULT Change_State_ForDirecting(_int iStateIdx);
