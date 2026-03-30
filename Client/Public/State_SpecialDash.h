@@ -24,8 +24,6 @@ public:
 	}
 
 private:
-	_bool m_bOnce = { false };
-
 	Vec3 m_vPivot = { Vec3::Zero };
 
 	Vec3 m_vDir = { Vec3::Zero };

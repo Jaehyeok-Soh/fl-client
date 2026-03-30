@@ -23,6 +23,7 @@ enum class TargeterState : _uint
 	TURN,
 	SCRIPTED_SHOT,
 	SCRIPTED_RECOVER,
+	LOOK_LOCK,
 	END
 };
 
@@ -111,6 +112,11 @@ private:
 	void ScriptedRecover_Update_Priority(const _float fTimeDelta);
 	void ScriptedRecover_Update(const _float fTimeDelta);
 	void ScriptedRecover_End();
+
+	void LookLock_Begin();
+	void LookLock_Update_Priority(const _float fTimeDelta);
+	void LookLock_Update(const _float fTimeDelta);
+	void LookLock_End();
 private:
 	void Update_Input(const _float fTimeDelta);
 	void Chase_Actor(const _float fTimeDelta);
@@ -212,6 +218,10 @@ private:
 
 	TargeterState	m_ePreState = { TargeterState::NORMAL };
 	
+	// For. LookLock State
+	_float  m_fLookFollowBlendDuration = 0.05f;
+	Vec3    m_vLookFollowBeginPos = Vec3::Zero;
+	Quat    m_qLookFollowBeginRot = Quat::Identity;
 private:
 	// For. ScriptShot State
 	SCRIPTED_CAMERA_SHOT_DESC         m_tScriptedShotDesc = {};

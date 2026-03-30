@@ -296,6 +296,10 @@ void CCameraMan_Targeter::Update_Priority_State(const _float fTimeDelta)
     case Client::TargeterState::SCRIPTED_RECOVER:
         ScriptedShot_Update_Priority(fTimeDelta);
         break;
+
+    case Client::TargeterState::LOOK_LOCK:
+        LookLock_Update_Priority(fTimeDelta);
+        break;
     }
 }
 
@@ -330,6 +334,10 @@ void CCameraMan_Targeter::Update_State(const _float fTimeDelta)
     case Client::TargeterState::SCRIPTED_RECOVER:
         ScriptedRecover_Update(fTimeDelta);
         break;
+
+    case Client::TargeterState::LOOK_LOCK:
+        LookLock_Update(fTimeDelta);
+        break;
     }
 }
 
@@ -357,6 +365,9 @@ void CCameraMan_Targeter::State_Begin(TargeterState eState)
         break;
     case Client::TargeterState::SCRIPTED_RECOVER:
         ScriptedRecover_Begin();
+        break;
+    case Client::TargeterState::LOOK_LOCK:
+        LookLock_Begin();
         break;
     }
 }
@@ -390,6 +401,10 @@ void CCameraMan_Targeter::State_End(TargeterState eState)
 
     case Client::TargeterState::SCRIPTED_RECOVER:
         ScriptedRecover_End();
+        break;
+
+    case Client::TargeterState::LOOK_LOCK:
+        LookLock_End();
         break;
     }
 }
@@ -806,6 +821,131 @@ void CCameraMan_Targeter::ScriptedRecover_End()
     Execute_ShotAction(static_cast<ECameraEventAction>(m_tScriptedShotDesc.iClientFinishAction));
 }
 
+void CCameraMan_Targeter::LookLock_Begin()
+{
+    m_fStateTime = 0.f;
+    m_bImpactInit = false;
+
+    CTransform* pCamTransform = Get_Component<CTransform>();
+    if (!pCamTransform)
+        return;
+
+    m_vLookFollowBeginPos = pCamTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+
+    Vec3 vCamLook = pCamTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+    if (vCamLook.LengthSquared() > g_XMEpsilon.f[0])
+        vCamLook.Normalize();
+    else
+        vCamLook = Vec3::Backward;
+
+    const _float fBeginYaw = std::atan2(vCamLook.x, vCamLook.z);
+    const _float fBeginPitch = std::asin(std::clamp(vCamLook.y, -1.f, 1.f)) * -1.f;
+
+    m_qLookFollowBeginRot = Quat::CreateFromYawPitchRoll(Vec3(fBeginPitch, fBeginYaw, 0.f));
+    m_qLookFollowBeginRot.Normalize();
+}
+
+void CCameraMan_Targeter::LookLock_Update_Priority(const _float fTimeDelta)
+{
+    CGameObject* pActor = Get_Actor();
+    if (!pActor)
+        return;
+
+    CTransform* pPlayerTransform = pActor->Get_Component<CTransform>();
+    CContainerObject* pPlayer = dynamic_cast<CContainerObject*>(pActor);
+    if (!pPlayer || !pPlayerTransform)
+        return;
+
+    CBody* pBody = pPlayer->Get_Part<CBody>(0);
+    if (!pBody)
+        return;
+
+    // Chase pivot 추적
+    Vec3 vChasePositionRaw = Get_CamBoneWorldPos_FromBody(pBody, pPlayerTransform);
+
+    if (!m_bImpactInit)
+    {
+        m_vChaseFiltered = vChasePositionRaw;
+        m_bImpactInit = true;
+    }
+
+    const _float fT_Chase = 1.f - std::exp(-fTimeDelta / m_fTau_Pos);
+    m_vChaseFiltered = Vec3::Lerp(m_vChaseFiltered, vChasePositionRaw, fT_Chase);
+
+    // 매 프레임 PlayerLook을 읽어서 CameraLook 목표를 만든다
+    Vec3 vPlayerLook = pPlayerTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+    vPlayerLook.y = 0.f;
+
+    if (vPlayerLook.LengthSquared() <= g_XMEpsilon.f[0])
+        return;
+
+    vPlayerLook.Normalize();
+
+    const _float fYawTarget = std::atan2(vPlayerLook.x, vPlayerLook.z);
+
+    // pitch는 현재 카메라 pitch 유지
+    Quat qTrackRot = Quat::CreateFromYawPitchRoll(Vec3(m_fPitch, fYawTarget, 0.f));
+    qTrackRot.Normalize();
+
+    // 진입 초반만 부드럽게 blend-in
+    _float fAlpha = (m_fLookFollowBlendDuration <= 0.f)
+        ? 1.f
+        : std::clamp(m_fStateTime / m_fLookFollowBlendDuration, 0.f, 1.f);
+
+    fAlpha = Engine_Utils::EvalEase_EaseInOutSine(fAlpha);
+
+    Quat qBegin = m_qLookFollowBeginRot;
+    if (qBegin.Dot(qTrackRot) < 0.f)
+        qTrackRot = -qTrackRot;
+
+    Quat qFinal = Quat::Slerp(qBegin, qTrackRot, fAlpha);
+    qFinal.Normalize();
+
+    Matrix matRotation = Matrix::CreateFromQuaternion(qFinal);
+
+    Vec3 vRight = Vec3::TransformNormal(Vec3::Right, matRotation);
+    Vec3 vUp = Vec3::TransformNormal(Vec3::Up, matRotation);
+    Vec3 vLook = Vec3::TransformNormal(Vec3::Backward, matRotation);
+    vRight.Normalize();
+    vUp.Normalize();
+    vLook.Normalize();
+
+    // 기존 Distance 유지
+    Vec3 vDesiredPos =
+        m_vChaseFiltered
+        + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
+        - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
+        + Vec3{ 0.f, 1.f, 0.f } *m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
+
+    Vec3 vFinalPos = Vec3::Lerp(m_vLookFollowBeginPos, vDesiredPos, fAlpha);
+
+    CTransform* pCameraTransform = Get_Component<CTransform>();
+    if (!pCameraTransform)
+        return;
+
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::UP, vUp);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::LOOK, vLook);
+    pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::POS, vFinalPos);
+
+    m_fYaw = std::atan2(vLook.x, vLook.z);
+    m_fPitch = std::asin(std::clamp(vLook.y, -1.f, 1.f)) * -1.f;
+}
+
+void CCameraMan_Targeter::LookLock_Update(const _float fTimeDelta)
+{
+}
+
+void CCameraMan_Targeter::LookLock_End()
+{
+    m_fYaw_Target = m_fYaw;
+    m_fPitch_Target = m_fPitch;
+    m_bImpactInit = false;
+    m_fStateTime = 0.f;
+
+    m_arrPreDistances = m_arrCurDistances;
+}
+
 void CCameraMan_Targeter::Update_Input(const _float fTimeDelta)
 {
     if (!m_pActor)
@@ -942,11 +1082,12 @@ Vec3 CCameraMan_Targeter::Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform*
     case TargeterState::SCRIPTED_SHOT:
     case TargeterState::TARGETSYNC:
     case TargeterState::SCRIPTED_RECOVER:
-        {
-            matReturn = pBody->Get_CamSocketBone()->Get_CombinedTransformMatrix() * matWorld;
-            //matReturn = (*(pBody->Get_SocketMatrix(413))) * matWorld;
-        }
-        break;
+    case TargeterState::LOOK_LOCK:
+    {
+        matReturn = pBody->Get_CamSocketBone()->Get_CombinedTransformMatrix() * matWorld;
+        //matReturn = (*(pBody->Get_SocketMatrix(413))) * matWorld;
+    }
+    break;
     }
 
     return matReturn.Translation(); // bondM * camM의 Position return

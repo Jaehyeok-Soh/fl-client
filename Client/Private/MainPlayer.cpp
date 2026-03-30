@@ -213,7 +213,6 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
     }
 
-
     // 무기 전체 해제, 키 인풋 전체 해제 : level에 상관없이 해제하기 위함
     if (KEY_BUTTON_DOWN(DIK_N))
     {

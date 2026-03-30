@@ -6,6 +6,7 @@
 // Manager
 //=================
 #include "UI_Manager.h"
+#include "UIQTE_Manager.h"
 
 //=================
 // Data Struct
@@ -142,7 +143,7 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 void CLevel_Lianhuo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
+	CUIQTE_Manager::GetInstance()->Tick_QTE(fTimeDelta);
 	/*static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
 	{
