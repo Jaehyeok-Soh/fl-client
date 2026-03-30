@@ -12,10 +12,13 @@
 #include "MonsterControlContext.h"
 #include "Xibi_GimmikController.h"
 #include "Weapon.h"
-#include "GameInstance.h"
+#include "MyStat.h"
 #include "UI_Manager.h"
 #include "UIIcon_Component.h"
-#include "MyStat.h"
+#include "SoundEventBinder.h"
+#include "Body.h"
+
+#include "GameInstance.h"
 
 CBoss_Xibi::CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -61,6 +64,9 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_StateIndexForDirecting()))
+		return E_FAIL;
+
+	if (FAILED(Ready_SoundHandler()))
 		return E_FAIL;
 	
 	return S_OK;
@@ -276,7 +282,7 @@ HRESULT CBoss_Xibi::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 35000.f;
+	desc.fMaxHp = 180000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 
@@ -400,6 +406,21 @@ HRESULT CBoss_Xibi::Ready_StateIndexForDirecting()
 	return S_OK;
 }
 
+HRESULT CBoss_Xibi::Ready_SoundHandler()
+{
+	CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CSoundEventBinder* pResult = CSoundEventBinder::Create(0, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Boss_Xibi.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
+	return S_OK;
+}
 CBoss_Xibi* CBoss_Xibi::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CBoss_Xibi* pInsatnce = new CBoss_Xibi(pDevice, pDeviceContext);
