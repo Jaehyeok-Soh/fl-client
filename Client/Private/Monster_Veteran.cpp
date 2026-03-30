@@ -16,6 +16,7 @@
 #include "CameraEventBinder.h"
 #include "Monster_GimmikController.h"
 #include "SingleSkillSpawner.h"
+#include "SoundEventBinder.h"
 
 CMonster_Veteran::CMonster_Veteran(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -62,6 +63,12 @@ HRESULT CMonster_Veteran::Initialize(void* pArg)
 
 	if (FAILED(Ready_SkillSpawner()))
 		return E_FAIL;
+
+	if (FAILED(Ready_SoundHandler()))
+		return E_FAIL;
+
+	m_arrHitSoundHash[HitSoundHashNum::HURT01_VO] = TO_HASH("sfx_boss_Lizhanzhe_hit_r");
+	m_arrHitSoundHash[HitSoundHashNum::HURT02_VO] = TO_HASH("sfx_boss_Lizhanzhe_hitLight_vo_r");
 
 	return S_OK;
 }
@@ -154,6 +161,11 @@ _bool CMonster_Veteran::On_Hit(const HIT_DESC& hitDesc)
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+	else
+	{
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::HURT01_VO], 0.5f, 1.f, false);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::HURT02_VO], 0.5f, 1.f, false);
+	}
 
 	return result;
 }
@@ -282,6 +294,23 @@ HRESULT CMonster_Veteran::Ready_SkillSpawner()
 		Get_Component<CMonster_GimmikController>()->AddSkillSpawner(static_cast<CSkillObjectSpawnerBase*>(pResult));
 	}
 
+	return S_OK;
+}
+
+HRESULT CMonster_Veteran::Ready_SoundHandler()
+{
+	_uint iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
+	CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CSoundEventBinder* pResult = CSoundEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Monster_Veteran.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
 	return S_OK;
 }
 

@@ -23,6 +23,14 @@ private:
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+
+public:
+	virtual void Update(const _float fTimeDelta) override;
+
+	// ป๓ลย Enter / Exit
+	virtual void On_StateEnter(_uint iState) override;
+	virtual void On_StateExit(_uint iState) override;
+
 private:
 	HRESULT Ready_Moduels();
 private:
