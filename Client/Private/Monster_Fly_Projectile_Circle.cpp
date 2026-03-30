@@ -40,12 +40,12 @@ HRESULT CMonster_Fly_Projectile_Circle::Initialize(void* pArg)
 void CMonster_Fly_Projectile_Circle::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-	m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::LOOP], 0.1f, 1.f, false);
 }
 
 void CMonster_Fly_Projectile_Circle::On_StateEnter(_uint iState)
 {
 	Super::On_StateEnter(iState);
+	m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::LOOP], 0.1f, 1.f, false);
 	m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::LAUNCHED], 0.1f, 1.f, false);
 }
 
