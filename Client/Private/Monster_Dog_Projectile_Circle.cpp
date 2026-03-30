@@ -43,7 +43,7 @@ HRESULT CMonster_Dog_Projectile_Circle::Ready_Moduels()
 		{
 			if (FAILED(Add_EffectModule(
 				0 /* static */,
-				"Boss_Xibi_Bullet_Spawn",
+				"Monster_Dog_Bullet",
 				wstrDefaultPrototypeTag,
 				ENUM_TO_UINT(EState::FLY))))
 				return E_FAIL;

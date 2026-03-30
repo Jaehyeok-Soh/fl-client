@@ -1775,10 +1775,10 @@ void CParticle_System_Panel::Draw_Rotation_Texture(CToolObject* pGo)
 	{
 		if (ImGui::BeginTable("RotationTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
 		{
-			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Curve", "Normal", "Glow", "SubMasking"};
+			const char* textureNames[] = { "Diffuse", "Noise", "Masking", "Gradation", "Curve", "Normal", "Glow", "X","SubMasking"};
 			const char* rotationLabels[] = { "0", "90", "180", "270" };
 
-			for (int i = 0; i < 8; i++)
+			for (int i = 0; i < 9; i++)
 			{
 				ImGui::TableNextColumn();
 				ImGui::Text("%s", textureNames[i]);
@@ -1947,7 +1947,7 @@ void CParticle_System_Panel::Draw_Sprite_Texture(CToolObject* pGo)
 void CParticle_System_Panel::UpdateRotationFlags()
 {
 	uint32_t packed = 0;
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		packed |= (static_cast<uint32_t>(m_iRotIndices[i]) << (i * 4));
 	}
@@ -1963,7 +1963,7 @@ void CParticle_System_Panel::Draw_Preview_Texture(CToolObject* pGo)
 	{
 		const char* SlotName[] = { "Diffuse", "Noise", "Mask", "Gradation", "Curve", "Normal" };
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 9; i++)
 		{
 			ImGui::BeginGroup();
 

@@ -43,6 +43,11 @@ public:
 	static CEffect_DashPanel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
+
+private:
+	_bool		m_bDashFinishedFlag = false;
+	float		m_fTimeAccumulation = 0.f;
+	float		m_fStateChangeTime = 3.f;
 };
 
 NS_END

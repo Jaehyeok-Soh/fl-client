@@ -68,6 +68,20 @@
                         "z": 0.0
                     },
                     "LifeTime": 30.0,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_TurbulenceFz002_Mask",
                     "MaxParticle": 10,
@@ -327,7 +341,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "T_MaskFz009_Mask",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
@@ -378,6 +392,20 @@
                         "z": 0.0
                     },
                     "LifeTime": 30.0,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_maskzz004_Mask",
                     "MaxParticle": 1,
@@ -676,6 +704,20 @@
                         "z": 0.0
                     },
                     "LifeTime": 30.0,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_maskzz004_Mask",
                     "MaxParticle": 1,
@@ -974,6 +1016,20 @@
                         "z": 0.0
                     },
                     "LifeTime": 30.0,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_maskzz004_Mask",
                     "MaxParticle": 1,
@@ -1272,9 +1328,23 @@
                         "z": 0.0
                     },
                     "LifeTime": 5.0,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "",
-                    "MaxParticle": 100,
+                    "MaxParticle": 300,
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
@@ -1486,7 +1556,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
@@ -1537,9 +1607,23 @@
                         "z": 0.0
                     },
                     "LifeTime": 0.6000000238418579,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_TurbulenceXl010_Mask",
-                    "MaxParticle": 20,
+                    "MaxParticle": 50,
                     "Model_Tag": "",
                     "NoiseTexture_Tag": "",
                     "NormalTexture_Tag": "",
@@ -1769,7 +1853,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": true,
+                    "_Effect_Tool_UseLifeDissolve": false,
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,
@@ -1820,6 +1904,20 @@
                         "z": 0.0
                     },
                     "LifeTime": 30.0,
+                    "LineEffectData": {
+                        "Enable": false,
+                        "fHalfWidth": 0.5,
+                        "vEnd": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "vStart": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
                     "Looping": false,
                     "MaskingTexture_Tag": "T_maskzz004_Mask",
                     "MaxParticle": 1,
