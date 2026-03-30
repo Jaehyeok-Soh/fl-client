@@ -78,6 +78,7 @@
 #include "GameInstance.h"
 #include "QuestManager.h"
 #include "DialogueManager.h"
+#include "UIQTE_Manager.h"
 #include "UITutorial_Manager.h"
 
 CLevel_Tutorial_Boss::CLevel_Tutorial_Boss(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -612,6 +613,9 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 	}*/
 
 	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
+
+	CUIQTE_Manager::GetInstance()->Tick_QTE(fTimeDelta);
+
 }
 
 
