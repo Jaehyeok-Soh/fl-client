@@ -135,6 +135,9 @@ public:
 	virtual void		Try_Attack(const HIT_DESC& hitDesc) override;
 
 	void				Set_RootMotion_Apply(_bool bApply);
+
+	void				Trigger_Dissolve();
+
 public:
 	// Camera Interface
 	virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) override;

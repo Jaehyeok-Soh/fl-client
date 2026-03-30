@@ -26,13 +26,13 @@
 #include "PhysicsRagdoll.h"
 
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: Super(pDevice, pDeviceContext), m_eMonsterType{ EMonster_Type::END}
+	: Super(pDevice, pDeviceContext), m_eMonsterType{ EMonster_Type::END }
 {
 	m_vecPartObjects.resize(Part::END, nullptr);
 }
 
 CMonster_Base::CMonster_Base(const CMonster_Base& rhs)
-	: Super(rhs), m_eMonsterType{rhs.m_eMonsterType }
+	: Super(rhs), m_eMonsterType{ rhs.m_eMonsterType }
 {
 	m_vecPartObjects.resize(Part::END, nullptr);
 }
@@ -67,7 +67,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	CPhysicsAttackOverlap* pAttackOverlap = { nullptr };
 	if (pAttackOverlap = Get_Component<CPhysicsAttackOverlap>())
 		pAttackOverlap->Bind_Events();
-	
+
 	if (m_pEffectHandler)
 		m_pEffectHandler->Setup_ForOwner(this, Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>());
 
@@ -104,7 +104,7 @@ HRESULT CMonster_Base::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	Get_Component<CPhysicsCCT>()->Ready_Position();
-	
+
 	// 래그돌 초기화
 	{
 		Quat quat = ToQuaternion(PxQuat(PxIdentity));
@@ -203,7 +203,7 @@ void CMonster_Base::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGame
 {
 }
 
-void CMonster_Base::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO &tHitInfo)
+void CMonster_Base::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
 	COLLIDED_DESC collidedDesc{};
 	collidedDesc.iCollisionType = COLLISIONEVENT::ON_COLLISION_ENTER;
@@ -300,13 +300,6 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 			Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
 			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
 			Set_Dying();
-
-			// 여기에 Dissolve Flag 발동 시키기.
-			{
-				CMonster_Body_Base* pBody = { nullptr };
-				pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
-				pBody->DissolveStart();
-			}
 		}
 	}
 
@@ -360,6 +353,13 @@ void CMonster_Base::Set_RootMotion_Apply(_bool bApply)
 	Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>()->Set_CurAnimation_RootApply(bApply);
 }
 
+void CMonster_Base::Trigger_Dissolve()
+{
+	CMonster_Body_Base* pBody = { nullptr };
+	pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	pBody->DissolveStart();
+}
+
 ICameraAnchorProvider* CMonster_Base::Get_CameraAnchorProvider(_int iPartIndex)
 {
 	if (iPartIndex < 0 || iPartIndex >= Part::Enum::END)
@@ -369,7 +369,7 @@ ICameraAnchorProvider* CMonster_Base::Get_CameraAnchorProvider(_int iPartIndex)
 	{
 	case Part::Enum::BODY:
 		return Get_Part<CMonster_Body_Base>(Part::Enum::BODY);
-	// TODO - case 추가
+		// TODO - case 추가
 	default:
 		return nullptr;
 	}
@@ -411,7 +411,7 @@ HRESULT CMonster_Base::Ready_PartObjects(void* pArg)
 		bodyDesc.wstrModelPrototypeTag = pDesc->wstrBodyModelTag;
 		bodyDesc.spanBoneNames = pDesc->spanBoneNames;
 		// TODO : 재혁아 이거 LevelID 바꿔야할수도있다 Static에 넣어두고 쓸까 ...?
-		if (FAILED(Add_Part(Part::BODY,ENUM_TO_UINT(ELevelType::STATIC), pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
+		if (FAILED(Add_Part(Part::BODY, ENUM_TO_UINT(ELevelType::STATIC), pDesc->wstrPartBodyPrototypeTag, &bodyDesc)))
 			return E_FAIL;
 	}
 
@@ -426,7 +426,7 @@ HRESULT CMonster_Base::Ready_Components(void* pArgs)
 		return E_FAIL;
 
 	if (FAILED(Ready_AttackOverlap(pDesc->wstrAttackOverlapPrototypeTag)))
-			return E_FAIL;
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -719,7 +719,7 @@ void CMonster_Base::Hit_Sound(EPlayerAttackFlag eFlag, DTO::EHitType eHitType)
 			m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::SWORD_NORMAL], 0.5f, 1.f, false);
 		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::WEAPONHIT_METAL], 0.5f, 1.f, false);
 	}
-		break;
+	break;
 	case Client::EPlayerAttackFlag::DUAL:
 	{
 		if (eHitType == DTO::EHitType::Heavy)
@@ -728,7 +728,7 @@ void CMonster_Base::Hit_Sound(EPlayerAttackFlag eFlag, DTO::EHitType eHitType)
 			m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::DUAL_HEAVY], 0.5f, 1.f, false);
 		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::WEAPONHIT_METAL], 0.5f, 1.f, false);
 	}
-		break;
+	break;
 	case Client::EPlayerAttackFlag::CRITICAL:
 		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::CRITICAL], 0.5f, 1.f, false);
 		break;
@@ -863,8 +863,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		monsterDesc.iLevelIndex = iAddLevelType;
 		monsterDesc.pTransform_Desc = pTransformDesc;
 
-		wstrFindPrototypeName	= g_wszMonster_Dog_Prototype_Tag;
-		wstrAddLayerName		= g_wszMonstereLayer;
+		wstrFindPrototypeName = g_wszMonster_Dog_Prototype_Tag;
+		wstrAddLayerName = g_wszMonstereLayer;
 	}
 	break;
 	case EMonster_Type::Shooter:
@@ -882,8 +882,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		monsterDesc.iLevelIndex = iAddLevelType;
 		monsterDesc.pTransform_Desc = pTransformDesc;
 
-		wstrFindPrototypeName		= g_wszMonster_Boomer_Prototype_Tag;
-		wstrAddLayerName			= g_wszMonstereLayer;
+		wstrFindPrototypeName = g_wszMonster_Boomer_Prototype_Tag;
+		wstrAddLayerName = g_wszMonstereLayer;
 	}
 	break;
 	case EMonster_Type::Xibi:
@@ -891,10 +891,10 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		/////////////////
 		//  BOSS Xibi  //
 		/////////////////
-		monsterDesc.wstrBodyModelTag				= g_wszBoss_Xibi_Model_Prototype_Tag;
-		monsterDesc.wstrPartBodyPrototypeTag		= g_wszBoss_Xibi_Body_Prototype_Tag;
-		monsterDesc.wstrAttackOverlapPrototypeTag	= g_wszBoss_Xibi_AttackOverlap_Prototype_Tag;
-		monsterDesc.wstrMonsterStateTag				= g_wszBoss_Xibi_State_Tag;
+		monsterDesc.wstrBodyModelTag = g_wszBoss_Xibi_Model_Prototype_Tag;
+		monsterDesc.wstrPartBodyPrototypeTag = g_wszBoss_Xibi_Body_Prototype_Tag;
+		monsterDesc.wstrAttackOverlapPrototypeTag = g_wszBoss_Xibi_AttackOverlap_Prototype_Tag;
+		monsterDesc.wstrMonsterStateTag = g_wszBoss_Xibi_State_Tag;
 		{
 			PHYSICSCCT_DESC desc;
 			desc.pOwner = nullptr;
@@ -931,8 +931,8 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 
 			monsterDesc.tCCTDesc = desc;
 		}
-		wstrFindPrototypeName		= g_wszBoss_Xibi_Prototype_Tag;
-		wstrAddLayerName			= g_wszBossLayer;
+		wstrFindPrototypeName = g_wszBoss_Xibi_Prototype_Tag;
+		wstrAddLayerName = g_wszBossLayer;
 	}
 	break;
 	case EMonster_Type::Lianhuo:
@@ -988,7 +988,7 @@ HRESULT CMonster_Base::Create_Mosnter(EMonster_Type eCreateMonsterType, _uint iF
 		break;
 	}
 
-	if (!(pResult = CGameInstance::GetInstance()->Add_GameObject(iFindPrototypeIndex, wstrFindPrototypeName,iAddLevelType, wstrAddLayerName, &monsterDesc)))
+	if (!(pResult = CGameInstance::GetInstance()->Add_GameObject(iFindPrototypeIndex, wstrFindPrototypeName, iAddLevelType, wstrAddLayerName, &monsterDesc)))
 		return E_FAIL;
 
 	return S_OK;

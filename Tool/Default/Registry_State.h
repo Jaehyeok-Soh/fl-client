@@ -114,6 +114,8 @@ namespace Tool
         "feat_geniemon_smart_chase",
 
         "feat_skill_spawn_trigger",
+
+        "feat_trigger_dissolve",
     };
 
     inline constexpr int kConditionCount = (int)(sizeof(kConditionNames) / sizeof(kConditionNames[0]));
