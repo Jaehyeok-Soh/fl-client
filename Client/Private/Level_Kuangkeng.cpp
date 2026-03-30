@@ -145,6 +145,7 @@ HRESULT CLevel_Kuangkeng::Awake(const _uint iLevelID)
 		Desc.isChangeLevel = false;
 		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
 	}
+	m_pGameInstance->PlayBGM(0, TO_HASH("KUANGKENG_BGM"), 0.5f);
 
 	return S_OK;
 }

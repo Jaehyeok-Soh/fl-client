@@ -134,7 +134,6 @@ HRESULT CLevel_Tavern::Awake(const _uint iLevelID)
 	}
 
 	m_pGameInstance->PlayBGM(0, TO_HASH("TAVERN_BGM"), 0.5f);
-	m_pGameInstance->PlayBGM(0, TO_HASH("ELITE_BOSS_BGM"), 0.5f);
 
 	return S_OK;
 }
