@@ -635,6 +635,7 @@ namespace Client
 
 		LEVEL_FADE,
 		NPC_TEXT_BUBBLE,
+		QTE,
 		END
 	};
 
@@ -682,6 +683,7 @@ namespace Client
 		case Client::EUIPrefabType::TUTORIAL_PANNEL_4:		return L"TUTORIAL_PANNEL_4";
 		case Client::EUIPrefabType::LEVEL_FADE:				return L"LEVEL_FADE";
 		case Client::EUIPrefabType::NPC_TEXT_BUBBLE:		return L"NPC_TEXT_BUBBLE";
+		case Client::EUIPrefabType::QTE:					return L"QTE";
 
 		case Client::EUIPrefabType::END:
 		default:
@@ -751,6 +753,18 @@ namespace Client
 
 	} UI_NPC_TEXT_BUBBLE_PREFAB_DATA;
 
+	typedef struct tagUIQTEPrefabData
+	{
+		_uint iNodeIndex		= {};
+		Vec2 vSpawnOffset		= {};
+		Vec2 vPreSpawnOffset	= {};
+		_uint iKeyType			= {};
+
+		_float fDelayTime		= {}; // 내가 보여질 시간
+		_float fTimingTime		= {}; // Success 되는 타이밍
+
+	}UI_QTE_PREFAB_DATA;
+
 	typedef std::variant<
 		UI_NAMEPLATE_PREFAB_DATA,
 		UI_DAMAGEFONT_PREFAB_DATA,
@@ -759,7 +773,8 @@ namespace Client
 		UI_TUTORIAL_PANNEL_PREFAB_DATA,
 		UI_TUTORIAL_POPUP_PREFAB_DATA,
 		UI_LEVEL_FADE_PREFAB_DATA,
-		UI_NPC_TEXT_BUBBLE_PREFAB_DATA
+		UI_NPC_TEXT_BUBBLE_PREFAB_DATA,
+		UI_QTE_PREFAB_DATA
 	> UI_PREFAB_VARIANT;
 
 	typedef struct tagUIPrefabData

@@ -154,6 +154,7 @@ void CUIQuickSlot_Image::Tick_By_Type(const _float fTimeDelta)
 		{
 			m_pParentCanvasCache->Get_CommonParam_bool_Ref()[BOOLEAN_SLOT_Z_KEY_HOLDING] = false;
 			m_pUIManager->Set_isCursor_Visible(false);
+
 			m_pGameInstance->Deactivate_SloMo();
 		}
 

@@ -51,9 +51,9 @@ HRESULT CCanvas::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
-	m_vecCommonParams_uint.resize(5);
-	m_vecCommonParams_float.resize(5);
-	m_vecCommonParams_bool.resize(5);
+	m_vecCommonParams_uint.resize(20);
+	m_vecCommonParams_float.resize(20);
+	m_vecCommonParams_bool.resize(20);
 
 	return S_OK;
 }

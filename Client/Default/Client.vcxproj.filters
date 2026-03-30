@@ -1000,6 +1000,15 @@
     <Filter Include="03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface">
       <UniqueIdentifier>{865a76ca-33fe-43c2-839b-b050274decd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\24.QTE">
+      <UniqueIdentifier>{f7c93962-e8b3-4b93-92d0-0f209262d44e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\17.QTE">
+      <UniqueIdentifier>{6345baff-4423-450e-a167-955877c1eddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\00.Manager\03.QTE Manager">
+      <UniqueIdentifier>{f92e75b3-714d-4ee1-b26d-9fa146d9ce64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1881,6 +1890,15 @@
     <ClInclude Include="..\Public\IItem.h">
       <Filter>03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIQTE_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\24.QTE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQTE_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\17.QTE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQTE_Manager.h">
+      <Filter>03. GameObject\UIObjects\00.Manager\03.QTE Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2749,6 +2767,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\IItem.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\02.Quick Slot Manager\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQTE_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\24.QTE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQTE_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\17.QTE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQTE_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\00.Manager\03.QTE Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -38,6 +38,7 @@
 //=================
 #include "Canvas.h"
 #include "GenericUI.h"
+#include "UIQTE_Manager.h"
 
 //=================
 // Component
@@ -146,6 +147,9 @@ HRESULT CLevel_Test::Awake(const _uint iLevelID)
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	CDialogueManager::GetInstance()->Initialize();
 
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
+		return E_FAIL;
+
 	//CQuestManager::GetInstance()->Start_Quest(0);
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
@@ -197,6 +201,20 @@ void CLevel_Test::Update(const _float fTimeDelta)
 		Desc.fEndDelay	= 2.f;
 		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
 	}
+
+	if (KEY_BUTTON_DOWN(DIK_6))
+	{
+		UI_PREFAB_DATA tPrefabData = {};
+		UI_QTE_PREFAB_DATA Desc = {};
+		tPrefabData.Data = Desc;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::QTE, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+	}
+
+	if (KEY_BUTTON_DOWN(DIK_7))
+	{
+		CUIQTE_Manager::GetInstance()->Start_QTE(10);
+	}
+	CUIQTE_Manager::GetInstance()->Tick_QTE(fTimeDelta);
 }
 
 HRESULT CLevel_Test::Render()
