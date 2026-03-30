@@ -490,6 +490,31 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     {
         Count_Combo();
     }
+
+    // Slomo 가능한 상태이면 Slomo
+    CActionState* pActionstate = Get_Component<CActionState>();
+    _uint iStateIndex = pActionstate->Get_CurrentStateIndex();
+    if (iStateIndex != ENUM_TO_UINT(State::GUNATTACK))
+    {
+        _bool bEnable = { false };
+        if ((iStateIndex == ENUM_TO_UINT(State::CHARGE) && pActionstate->Get_CurrentAnimation()->Is_TrackPositionAt(0.6f))
+            || iStateIndex == ENUM_TO_UINT(State::JUMPATTEND))
+            bEnable = true;
+
+        if (bEnable == false)
+        {
+            _int iDice = m_pGameInstance->Rand_Int(-1, 2);
+            if (iDice < 0)
+                bEnable = true;
+        }
+        if (bEnable)
+        {
+            CAMERA_SHAKE_DESC camerashakeDesc{};
+            camerashakeDesc.fDuration = 0.1f;
+            m_pGameInstance->Request_MainCameraShake(camerashakeDesc);
+            m_pGameInstance->Request_SloMo(0.1f, 0.07f);
+        }
+    }
 }
 
 #pragma region Legacy

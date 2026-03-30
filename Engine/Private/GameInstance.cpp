@@ -757,18 +757,6 @@ void CGameInstance::Stop_All()
 {
 	m_pSound_Manager->StopAll();
 }
-void CGameInstance::Request_SoundSlomo(_float fDuration, _bool bContainVolume)
-{
-	m_pSound_Manager->Play_GlobalMixPulse(fDuration, bContainVolume);
-}
-void CGameInstance::Deactive_SoundSlomo()
-{
-	m_pSound_Manager->Deactive_Slomo();
-}
-void CGameInstance::Active_SoundSlomo()
-{
-	m_pSound_Manager->Active_Slomo();
-}
 vector<SOUND_META> CGameInstance::Get_SoundMetas(_uint iLevelID) const
 {
 	return m_pSound_Manager->Get_SoundMetas(iLevelID);

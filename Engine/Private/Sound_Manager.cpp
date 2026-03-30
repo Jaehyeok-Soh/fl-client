@@ -34,6 +34,7 @@ HRESULT CSound_Manager::Initialize(_uint iLevelCount)
     m_umapSoundMetaData.resize(iLevelCount);
     m_vecPendingBGMs.resize(iLevelCount);
     Reset_OneShotPool();
+    Reset_GlobalMixPulse();
     return S_OK;
 }
 

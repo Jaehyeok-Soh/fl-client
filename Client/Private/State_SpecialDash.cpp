@@ -2,6 +2,7 @@
 #include "State_SpecialDash.h"
 
 #include "GameObject.h"
+#include "CameraMan_Targeter.h"
 #include "PhysicsCCT.h"
 #include "Transform.h"
 #include "PlayerActionState.h"
@@ -60,7 +61,7 @@ HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
     }
 
     m_pGameInstance->Request_SloMo(0.3f, 0.5f);
-
+    m_bOnce = false;
     return S_OK;
 }
 
@@ -77,6 +78,16 @@ void CState_SpecialDash::Update(const _float fTimeDelta)
 
         Change_PlayerState(STATEKEY::LOOPDONE);			// 다음 state로 change
         return;
+    }
+
+    if (m_bOnce == false && Is_AnimTrackPositionAt(0.7f))
+    {
+        m_bOnce = true;
+        // 시점 싱크
+        Vec3 vNewPivot = static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Get_PivotPos();
+        CCameraMan* pCamera = m_pGameInstance->Get_MainCamera();
+        if (CCameraMan_Targeter* pTargeter = dynamic_cast<CCameraMan_Targeter*>(pCamera))
+            pTargeter->Change_CamState(TargeterState::TARGETSYNC);
     }
 
     // pivot 갱신 및 자연스럽게 바라보도록

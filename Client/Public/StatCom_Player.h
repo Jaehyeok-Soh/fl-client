@@ -14,8 +14,6 @@
  따라서 player control key onoff를 여기서 관리한다
 */
 
-#define SLOMO_COOL 2.f
-
 NS_BEGIN(Client)
 
 class CStatCom_Player final : public CMyStat
@@ -154,9 +152,6 @@ private:
 
 	// 공격 관련 
 private:
-	_bool						m_bCanSlomo = {};
-	TIME_LINE					m_tSlomoTimer = {};
-
 	Flags						m_FAttState		= { 0 };
 	_uint						m_iSkillAttack	= { 0 };			// 만약 skill 공격력이 따로 있어야 한다면.. todo : 이거는 뺄지도
 

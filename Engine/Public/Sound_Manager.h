@@ -4,7 +4,7 @@
 #define MAX_SOUND_CHANNEL 32
 #define LIMIT_ONESHOT_SOUNDS 5
 
-#define MINPITCH 0.3f
+#define MINPITCH 0.8f
 #define MINVOLUME 0.5f
 
 typedef struct tagGlobalMixPulse

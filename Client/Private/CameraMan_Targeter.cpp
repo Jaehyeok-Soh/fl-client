@@ -12,6 +12,7 @@
 #include "GameInstance.h"
 
 #include "PlayerImguiValues.h"
+#include "PlayerImguiValues.h"
 
 USING(Client)
 
@@ -476,10 +477,10 @@ void CCameraMan_Targeter::TargetSync_Update_Priority(const _float fTimeDelta)
     m_fYaw = std::atan2(vLook.x, vLook.z);
     m_fPitch = std::asin(std::clamp(vLook.y, -1.f, 1.f)) * -1.f; 
 
-    Vec3 vDesiredPos =       vChasePositionRaw
+    Vec3 vDesiredPos = vChasePositionRaw
         + vRight * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::RIGHT)]
         - vLook * m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::LOOK)]
-            + Vec3{ 0.f,1.f,0.f } *m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
+        + Vec3{ 0.f,1.f,0.f } *m_arrCurDistances[ENUM_TO_SZET(DISTANCE_DATA::UP)];
 
     CTransform* pCameraTransform = Get_Component<CTransform>();
     pCameraTransform->Set_Info(TRANSFORM_INFO_STATE::RIGHT, vRight);
@@ -939,6 +940,7 @@ Vec3 CCameraMan_Targeter::Get_CamBoneWorldPos_FromBody(CBody* pBody, CTransform*
     case TargeterState::NORMAL:
     case TargeterState::GUN:
     case TargeterState::SCRIPTED_SHOT:
+    case TargeterState::TARGETSYNC:
     case TargeterState::SCRIPTED_RECOVER:
         {
             matReturn = pBody->Get_CamSocketBone()->Get_CombinedTransformMatrix() * matWorld;
