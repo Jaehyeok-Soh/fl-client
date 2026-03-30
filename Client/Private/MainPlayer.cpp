@@ -1138,6 +1138,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
             | CStateBase_Player::COLLISIONFLAGS::C_Fly
             | CStateBase_Player::COLLISIONFLAGS::C_CheckF;
 
+
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNIDLE), CState_GunIdle::Create(pActionState, &tDesc))))
             return E_FAIL;
     }
@@ -1154,6 +1156,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
             | CStateBase_Player::COLLISIONFLAGS::C_Fly 
             | CStateBase_Player::COLLISIONFLAGS::C_CheckF;
+
+        
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNWALK), CState_GunWalk::Create(pActionState, &tDesc))))
             return E_FAIL;

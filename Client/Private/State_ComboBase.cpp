@@ -102,7 +102,7 @@ _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 
 _bool CState_ComboBase::Can_Captablity_Special() const
 {
-	return (m_fStateElapsed <= 0.3f && KEY_BUTTON_DOWN(DIK_LSHIFT));
+	return (m_fStateElapsed <= (m_tKeyTimer.fMaxTime - 0.1f) && KEY_BUTTON_DOWN(DIK_LSHIFT));
 }
 
 void CState_ComboBase::Change_NextCombo()

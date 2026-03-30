@@ -36,6 +36,7 @@ public:
 
 protected:
 	virtual _bool Can_Captablity_Move() const override;
+	virtual _bool Can_Captablity_Special()const			override;
 
 protected:
 	std::array<_float, 4>		m_ComboTimes; // 4번째 콤보에서는 다음 콤보를 받지 않음
@@ -50,7 +51,6 @@ protected:
 
 protected:
 	virtual _bool Can_CheckKey(const _float fTimeDelta) override;
-	virtual _bool Can_Captablity_Special()const			override;
 
 protected:
 	void Change_NextCombo();

@@ -105,8 +105,11 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
     m_fAttackFlag |= AF_OnHit;  
     m_tPreHitDesc = tHit;
 
-    //tHit.attackDesc.pAttackPreset->tCombat.fHitStunSec
-    //tHit.attackDesc.pAttackPreset->tCombat.fImpulse
+    // stun 검사
+    if (tHit.attackDesc.pAttackPreset->tCombat.fHitStunSec >= 100.f) 
+    {
+        m_fAttackFlag |= AF_Stun;
+    }
 
     // todo_eunbi : 몬스터 종류 늘어나고, 공격이 다양해지면 id 까지 검사
     DTO::EAttackPresetCategory eCategory =  tHit.attackDesc.pAttackPreset->eCategory;
@@ -127,8 +130,6 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
                 m_eHitSound = HIT_SOUND::Wind;
                 break;
         }
-
-        //m_fAttackFlag |= AF_Stun;
     }
         break;
 
@@ -146,8 +147,6 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
             m_eHitSound = HIT_SOUND::Wind;
             break;
         }
-
-        m_fAttackFlag |= AF_Special;
     }
     break;
 
