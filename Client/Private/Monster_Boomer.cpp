@@ -53,6 +53,7 @@ HRESULT CMonster_Boomer::Initialize(void* pArg)
 	if (FAILED(Ready_BaseStates()))
 		return E_FAIL;
 
+
 	return S_OK;
 }
 
@@ -74,6 +75,9 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 600.f);
 	}
 
+
+
+
 	Ready_StateIndexForDirecting();
 	
 	return S_OK;
@@ -87,6 +91,10 @@ void CMonster_Boomer::Update_Priority(const _float fTimeDelta)
 void CMonster_Boomer::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+
+	EMonster_Emontion_State_Type  eType = EMonster_Emontion_State_Type::Idle;
+	Super::Compute_MonsterEmotionUV(eType);
 }
 
 void CMonster_Boomer::Update_Late(const _float fTimeDelta)

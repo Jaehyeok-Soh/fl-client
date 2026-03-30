@@ -80,6 +80,9 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 
 	Ready_StateIndexForDirecting();
 
+	
+
+
 	if (FAILED(Get_Component<CMonster_GimmikController>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
 
@@ -96,6 +99,8 @@ void CMonster_Dog::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 
 	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
+	EMonster_Emontion_State_Type eType = EMonster_Emontion_State_Type::Idle;
+	Compute_MonsterEmotionUV(eType);
 }
 
 void CMonster_Dog::Update_Late(const _float fTimeDelta)

@@ -96,6 +96,10 @@ void CMonster_Fly::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 
 	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
+
+	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
+	EMonster_Emontion_State_Type eType = EMonster_Emontion_State_Type::Idle;
+	Compute_MonsterEmotionUV(eType);
 }
 
 void CMonster_Fly::Update_Late(const _float fTimeDelta)

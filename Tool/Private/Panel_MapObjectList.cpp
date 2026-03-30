@@ -1221,6 +1221,9 @@ void CPanel_MapObjectList::ImGuiUpdate_Water_Desc(WATER_DESC* pDesc)
 
 	ImGui::Text(" if Instance Model) Index 0 Descripton Color Only Apply  ");
 
+
+	ImGui::Checkbox("Use Ripple",&pDesc->isUseRipple);
+
 	ImGui::NewLine();
 
 	ImGui::ColorEdit4("Water Color", (float*)&pDesc->vMI_TintColor);

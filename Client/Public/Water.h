@@ -1,12 +1,18 @@
 #pragma once
 #include "MapObject.h"
 
+
+NS_BEGIN(Client)
+
+class CPlayer;
+
 class CWater : public CMapObject
 {
 	using Super = Client::CMapObject;
 public:
 	typedef struct Water_Desc : public CMapObject::MAPOBJECT_DESC
 	{
+		_bool		 isUseRipple{false};
 		Vec4		 vMI_TintColor{1.f,1.f ,1.f ,1.f };
 		CB_WaterData tCBWaterData{};
 		/* 텍슬러 SRV들을 그대로받아오기 */
@@ -29,7 +35,13 @@ public:
 	virtual void			Update_Late(const _float fTimeelta)				override;
 	virtual void			Ready_Before_Render(const _float fTimeDelta)	override;
 	virtual HRESULT			Render()										override;
+public:
+	CB_WaterData*			Get_WaterData() { return &m_tCBWaterData; }
 private:
+	_bool									m_isRipple{};
+	_uint									m_iRippleIndex{};
+	CPlayer*								m_pPlayer{};
+	float									m_fDT{};
 	Vec4									m_vMI_TintColor{1.f,1.f,1.f,1.f};
 	array<ID3D11ShaderResourceView*, ENUM_TO_UINT(EWaterTextureType::END)>	m_arrayWaterSRVs{};
 	CB_WaterData							m_tCBWaterData{};
@@ -40,4 +52,5 @@ public:
 	virtual CGameObject*	Clone(void* pArg)override;
 	virtual					void Free() override;
 };
+NS_END
 

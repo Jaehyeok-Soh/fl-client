@@ -525,9 +525,11 @@ HRESULT CBuilder_Map::Create_Water(const DTO::TMap_MapObjectData& tData)
 
 	tDesc.vMI_TintColor								= pOriginDesc->vMI_TintColor;
 
+	tDesc.isUseRipple = pOriginDesc->isUseRipple;
+
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszWater_Prototype_Tag ,
-		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
+		tDesc.iLevelIndex, g_wszWaterLayer, &tDesc);
 
 	return S_OK;
 }

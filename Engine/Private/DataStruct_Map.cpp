@@ -893,6 +893,7 @@ WATER_DESC::WATER_DESC(const WATER_DESC& rhs)
 	, vDistortionUVPower{rhs.vDistortionUVPower }
 	, vSparkleUVPower{rhs.vSparkleUVPower}
 	, fSparklePower{rhs.fSparklePower}
+	, isUseRipple{rhs.isUseRipple }
 {
 	for (auto& Tex : arrayTextureBase)
 		Safe_AddRef(Tex);
@@ -907,6 +908,12 @@ WATER_DESC::~WATER_DESC()
 
 void WATER_DESC::from_Json(const json& LoadJson)
 {
+
+	if (LoadJson.contains("Use Ripple"))
+	{
+		this->isUseRipple = LoadJson["Use Ripple"];
+	}
+
 	if (LoadJson.contains("Color"))
 	{
 		Engine_Utils::read_vec4_xyzw(LoadJson["Color"],this->vMI_TintColor);
@@ -979,7 +986,7 @@ void WATER_DESC::from_Json(const json& LoadJson)
 }
 void WATER_DESC::to_Json(json& SaveJson)
 {
-	
+	SaveJson["Use Ripple"] = this->isUseRipple;
 	Engine_Utils::write_vec4_xyzw(SaveJson["Color"] , this->vMI_TintColor );
 	Engine_Utils::write_vec2_xy(SaveJson["Speed 1"],this->vSpeed1);
 	Engine_Utils::write_vec2_xy(SaveJson["Speed 2"],this->vSpeed2);
@@ -1114,6 +1121,7 @@ LIGHTOBJECT_DESC::LIGHTOBJECT_DESC()
 	, tLightDesc{}
 	, vOffsetPosition{ Vec3::Zero }
 	, fEmissviePower{1.f}
+	, fCurLightRangeRatio{0.f}
 { 
 	this->tLightDesc.eType = LIGHT_TYPE::POINT;
 	this->tLightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
@@ -1132,6 +1140,7 @@ LIGHTOBJECT_DESC::LIGHTOBJECT_DESC(const LIGHTOBJECT_DESC& rhs)
 	, pDebugLight{ nullptr }
 	, vOffsetPosition{ rhs.vOffsetPosition }
 	, fEmissviePower{ rhs .fEmissviePower}
+	, fCurLightRangeRatio{rhs.fCurLightRangeRatio }
 {
 	pDebugLight = CLight::Create(this->tLightDesc);
 }
