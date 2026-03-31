@@ -39,6 +39,7 @@ public:
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Shadow() override;
+	virtual HRESULT Render_GhostTrail() override;
 public:
 	// Camera Interface
 	virtual _bool Resolve_CameraAnchor(

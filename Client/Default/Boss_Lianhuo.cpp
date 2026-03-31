@@ -16,6 +16,7 @@
 #include "UIIcon_Component.h"
 #include "CameraEventBinder.h"
 #include "MyStat.h"
+#include "Lianhuo_GimmikController.h"
 
 // CustomState
 #include "State_BackdashCatch.h"
@@ -25,6 +26,7 @@
 #include "State_GimmikCamera.h"
 #include "State_GimmikRunLoop.h"
 #include "State_GimmikRunStart.h"
+#include "State_SpawnAttack.h"
 
 #include "GameInstance.h"
 
@@ -67,15 +69,16 @@ HRESULT CBoss_Lianhuo::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_StateIndexForDirecting()))
-		return E_FAIL;
-
 	if (FAILED(Ready_CameraEvent()))
 		return E_FAIL;
 
 	if (FAILED(Ready_CustomStates()))
 		return E_FAIL;
 
+	if (FAILED(Ready_StateIndexForDirecting()))
+		return E_FAIL;
+
+	Set_GhostTrailDesc();
 	return S_OK;
 }
 
@@ -87,6 +90,9 @@ HRESULT CBoss_Lianhuo::Ready_GlobalEvent()
 HRESULT CBoss_Lianhuo::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(Super::Awake(iCurrentLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Get_Component<CLianhuo_GimmikController>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
 
 	CTransform* pTrnasform = Get_Component<CTransform>();
@@ -108,7 +114,6 @@ HRESULT CBoss_Lianhuo::Awake(const _uint iCurrentLevelID)
 		return E_FAIL;
 
 	vPos = Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-
 	return S_OK;
 }
 
@@ -120,7 +125,13 @@ void CBoss_Lianhuo::Update_Priority(const _float fTimeDelta)
 void CBoss_Lianhuo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	Get_Component<CLianhuo_GimmikController>()->Update(fTimeDelta);
 	CMonsterActionState* pActionState = Get_Component<CMonsterActionState>();
+	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD2))
+	{
+		_int iIndex = pActionState->Get_StateIndex("StartCatch");
+		pActionState->Change_State(iIndex);
+	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD4))
 	{		
 		_int iIndex = pActionState->Get_StateIndex("Idle");
@@ -128,7 +139,7 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD5))
 	{
-		_int iIndex = pActionState->Get_StateIndex("GimmikCamera");
+		_int iIndex = pActionState->Get_StateIndex("BackdashCatch");
 		pActionState->Change_State(iIndex);
 	}
 	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD6))
@@ -136,7 +147,11 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 		Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, vPos);
 		Get_Component<CPhysicsCCT>()->SetFootPosition(vPos);
 	}
-
+	if (m_pGameInstance->KeyButton_Down(DIK_NUMPAD8))
+	{
+		_int iIndex = pActionState->Get_StateIndex("GimmikCamera");
+		pActionState->Change_State(iIndex);
+	}
 }
 
 void CBoss_Lianhuo::Update_Late(const _float fTimeDelta)
@@ -185,51 +200,63 @@ void CBoss_Lianhuo::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CG
 _bool CBoss_Lianhuo::On_Hit(const HIT_DESC& hitDesc)
 {
 	_bool result = Super::On_Hit(hitDesc);
-	//if (result == true)
-	//{
-	//	CMonsterControlContext* pControlContext = Get_Component<CMonsterControlContext>();
-	//	CStatCom_Boss* pComBoss = Get_Component<CStatCom_Boss>();
-	//	// 그로기 일때
-	//	if (pControlContext->IsGroggy() == true)
-	//	{
-	//		// 플레이어 공격이라면
-	//		if (hitDesc.attackDesc.iAttackerLayer == EPhysicsFilterGroup::ATTACK)
-	//		{
-	//			// 확정 static_cast<>
-	//			if (CMainPlayer* pMainPlayer = dynamic_cast<CMainPlayer*>(hitDesc.attackDesc.pAttacker))
-	//			{
-	//				CActionState* pActionState = pMainPlayer->Get_Component<CActionState>();
-	//				// Condemn
-	//				if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::CONDEMN))
-	//				{
-	//					pComBoss->Add_Health(-500.f);
-	//					_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
-	//					if (fHpRatio <= g_XMEpsilon.f[0])
-	//						Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
-	//					else
-	//						Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
-	//				}
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		EGroggyState eGroggy{ EGroggyState::None };
-	//		if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
-	//			eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.25f);
-	//		else
-	//			eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
+	if (result == true)
+	{
+		CMonsterControlContext* pControlContext = Get_Component<CMonsterControlContext>();
+		CStatCom_Boss* pComBoss = Get_Component<CStatCom_Boss>();
+		// 그로기 일때
+		if (pControlContext->IsGroggy() == true)
+		{
+			// 플레이어 공격이라면
+			if (hitDesc.attackDesc.iAttackerLayer == EPhysicsFilterGroup::ATTACK)
+			{
+				// 확정 static_cast<>
+				if (CMainPlayer* pMainPlayer = dynamic_cast<CMainPlayer*>(hitDesc.attackDesc.pAttacker))
+				{
+					CActionState* pActionState = pMainPlayer->Get_Component<CActionState>();
+					// Condemn
+					if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::CONDEMN))
+					{
+						pComBoss->Add_Health(-1247.f);
+						_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
+						if (fHpRatio <= g_XMEpsilon.f[0])
+						{
+							Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
+							m_pGameInstance->Broadcast<BOSS_UI_OFF>();
+						}
+						else
+							Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
+					}
+				}
+			}
+		}
+		else
+		{
+			EGroggyState eGroggy{ EGroggyState::None };
+			if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.125f);
+			else if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::DUAL)))
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.5f);
+			else
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(1.f);
 
-	//		// 그로기 세팅하고 !!리턴!!
-	//		if (eGroggy != EGroggyState::None)
-	//		{
-	//			if (_bool bRequstedSucess = pControlContext->Set_Groggy(eGroggy))
-	//				m_pGameInstance->Broadcast<BOSS_GROGGY>();
+			// 그로기 세팅하고 !!리턴!!
+			if (eGroggy != EGroggyState::None)
+			{
+				if (_bool bRequstedSucess = pControlContext->Set_Groggy(eGroggy))
+					m_pGameInstance->Broadcast<BOSS_GROGGY>();
 
-	//		}
-	//	}
-	//}
+			}
+		}
+	}
 	return result;
+}
+
+void CBoss_Lianhuo::On_Dying()
+{
+	CMonsterControlContext* pControlContext = Get_Component<CMonsterControlContext>();
+	if (_bool bRequestedSucess = pControlContext->Set_Groggy(EGroggyState::Final))
+		m_pGameInstance->Broadcast<BOSS_GROGGY>();
 }
 
 void CBoss_Lianhuo::Try_Attack(const HIT_DESC& hitDesc)
@@ -237,6 +264,14 @@ void CBoss_Lianhuo::Try_Attack(const HIT_DESC& hitDesc)
 	Super::Try_Attack(hitDesc);
 
 	Get_Component<CMonsterControlContext>()->Set_AttackLanded();
+}
+
+const Matrix* CBoss_Lianhuo::Get_PlayerLocBonePosition()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	CModel* pModel = pBody->Get_Component<CModel>();
+	CBone* pBone = pModel->Get_Bone(178);
+	return &pBone->Get_CombinedTransformMatrix();
 }
 
 HRESULT CBoss_Lianhuo::Change_State_ForDirecting(EStateForDirecting eState)
@@ -254,12 +289,39 @@ HRESULT CBoss_Lianhuo::Change_State_ForDirecting(EStateForDirecting eState)
 	return S_OK;
 }
 
+void CBoss_Lianhuo::Play_GhostTrail()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	if (pBody == nullptr)
+		return;
+
+	pBody->Get_Component<CModel>()->Enable_GhostTrail();
+}
+
+void CBoss_Lianhuo::Stop_GhostTrail()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	if (pBody == nullptr)
+		return;
+
+	pBody->Get_Component<CModel>()->Disable_GhostTrail();
+}
+
+void CBoss_Lianhuo::Clear_GhostTrail()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	if (pBody == nullptr)
+		return;
+
+	pBody->Get_Component<CModel>()->Clear_GhostTrail();
+}
+
 HRESULT CBoss_Lianhuo::Ready_Ability()
 {
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 35000.f;
+	desc.fMaxHp = 320000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 
@@ -335,7 +397,12 @@ HRESULT CBoss_Lianhuo::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
-
+	{
+		CLianhuo_GimmikController::tagGimmikControllerDesc desc = {};
+		desc.pOwnerModel = Get_Part<CBoss_Lianhuo_Body>(Part::Enum::BODY)->Get_Component<CModel>();
+		if (FAILED(Add_Component<CLianhuo_GimmikController>(0, L"Prototype_Component_Lianhuo_GimmikController", &desc)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -356,10 +423,10 @@ HRESULT CBoss_Lianhuo::Ready_StateIndexForDirecting()
 
 	if (setStateIndex(EStateForDirecting::Idle, "Idle") == false)
 		return E_FAIL;
-	//if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemned_Die") == false)
-	//	return E_FAIL;
-	//if (setStateIndex(EStateForDirecting::Condemned_Attacked, "Condemned_Attacked") == false)
-	//	return E_FAIL;
+	if (setStateIndex(EStateForDirecting::Condemned_Die, "Condemnde_Die") == false)
+		return E_FAIL;
+	if (setStateIndex(EStateForDirecting::Condemned_Attacked, "Condemnde_Attacked") == false)
+		return E_FAIL;
 	//if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
 	//	return E_FAIL;
 
@@ -430,7 +497,24 @@ HRESULT CBoss_Lianhuo::Ready_CustomStates()
 	if (FAILED(ADD_CUSTOM_STATE(CState_GimmikRunStart, "GimmikRunStart")))
 		return E_FAIL;
 
+	// For. State_SpawnAttack
+	if (FAILED(ADD_CUSTOM_STATE(CState_SpawnAttack, "SpawnAttack")))
+		return E_FAIL;
+
 	return S_OK;
+}
+
+void CBoss_Lianhuo::Set_GhostTrailDesc()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	if (pBody == nullptr)
+		return;
+
+	CModel::GHOST_TRAIL_DESC desc{};
+	desc.fInterval = 0.15f;
+	desc.iMaxCount = 12;
+	desc.vColor = Vec4(1.00f, 0.32f, 0.18f, 0.42f);
+	pBody->Get_Component<CModel>()->Set_GhostTrailDesc(desc);
 }
 
 CBoss_Lianhuo* CBoss_Lianhuo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

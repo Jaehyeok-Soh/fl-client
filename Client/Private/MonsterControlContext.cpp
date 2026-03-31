@@ -182,7 +182,7 @@ void CMonsterControlContext::Set_Target_Offset(_float fX, _float fY, _float fZ, 
 	Vec3 vDir = vDestPos - m_tRuntimeDesc.vOwnerPos;
 
 	_float fSpeed = 5.f;
-	Vec3 vMoveDist = vDir * fSpeed * fTimeDelta * 0.3f;
+	Vec3 vMoveDist = vDir * fSpeed * fTimeDelta * 0.1f;
 
 	Get_Owner()->Get_Component<CPhysicsCCT>()->AddFixedMove(vMoveDist);
 
@@ -484,6 +484,15 @@ _bool CMonsterControlContext::IsArrived()
 _bool CMonsterControlContext::IsPathBlocked()
 {
 	return _bool();
+}
+
+_bool CMonsterControlContext::IsDissolveEnded()
+{
+	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
+	if (body != nullptr)
+		return body->Is_DissolveEnded();
+
+	return false;
 }
 
 void CMonsterControlContext::UpdateWalk(const _float fTimeDelta)

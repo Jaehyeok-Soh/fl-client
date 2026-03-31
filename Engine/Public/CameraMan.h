@@ -31,7 +31,7 @@ protected:
 	virtual HRESULT Initialize_Prototype() PURE;
 	virtual HRESULT Initialize(void* pArg) PURE;
 public:
-	virtual HRESULT Awake(const _uint iCurrentLevelID) override;
+	virtual HRESULT Awake(const _uint iCurrentLevelID) override; 
 	virtual void	Update_Priority(const _float fTimeDelta) override;
 	virtual void	Update(const _float fTimeDelta) override;
 	virtual void	Update_Late(const _float fTimeDelta) override;

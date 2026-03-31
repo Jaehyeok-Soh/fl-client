@@ -348,6 +348,479 @@
                     },
                     "strAnimTag": "Animation_Lianhuo_Skill01",
                     "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 174.9947052001953,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 15,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.15000000596046448,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.10000000149011612,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill01",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 189.8584442138672,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 16,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.20000000298023224,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.10000000149011612,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill02_01",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 126.10359954833984,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 17,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.20000000298023224,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.10000000149011612,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill02_02",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 43.621761322021484,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 18,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.30000001192092896,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.10000000149011612,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill03",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 100.80531311035156,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 19,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.5,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.10000000149011612,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill04",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 128.9486541748047,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 21,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.20000000298023224,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.10000000149011612,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill06",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 0.009999999776482582,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 24,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.30000001192092896,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.10000000149011612,
+                        "fYawAmplitudeDeg": 0.10000000149011612
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill07_03",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "FOV",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 0.009999999776482582,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.10000000149011612,
+                        "fBlendOutTime": 0.30000001192092896,
+                        "fHoldTime": 0.5,
+                        "fValueDeg": 10.0
+                    },
+                    "iAnimIndex": 24,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.15000000596046448,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 0.5,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 0.5
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill07_03",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 62.67357635498047,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 27,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.30000001192092896,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 2.0,
+                        "fPosAmplitude": 0.20000000298023224,
+                        "fYawAmplitudeDeg": 2.0
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill08_03",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 57.11399459838867,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 24,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.30000001192092896,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 2.0,
+                        "fPosAmplitude": 0.20000000298023224,
+                        "fYawAmplitudeDeg": 2.0
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill07_03",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "RotationOffset",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 27.160619735717773,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 24,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.8999999761581421,
+                        "fBlendOutTime": 0.30000001192092896,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 10.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.15000000596046448,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 0.5,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 0.5
+                    },
+                    "strAnimTag": "Animation_Lianhuo_Skill07_03",
+                    "strDescription": "New Camera Event"
                 }
             ]
         }

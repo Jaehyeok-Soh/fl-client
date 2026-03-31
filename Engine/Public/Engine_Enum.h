@@ -13,7 +13,7 @@ namespace Engine
 	enum class LIGHT_TYPE : unsigned int { DIRECTIONAL, POINT , END };
 	enum class EPOINT { A, B, C, END };
 	enum class ELINE { AB, BC, CA, END };
-	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND , COMPUTELIGHT_BLEND , NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, SHADOW_DYNAMIC, END };
+	enum class RENDER_CATEGORY : unsigned int { PRIORITY, BLEND,NONEBLEND , COMPUTELIGHT_BLEND , NONELIGHT, ENVIRONMENT, DISTOTION, BLENDUI, UI, SHADOW_DYNAMIC, GHOST_TRAIL, END };
 	enum class DEFFERRED { DEBUG, DIRECTIONAL, POINT, OUTLINE, SSAO_GEN, SSAO_BLURH, SSAO_BLURV, SSAO_UPSAMPLE, COMBINED, BLOOM_EXTRACT, BLOOM_BLURH, BLOOM_BLURV, TONEMAP, WBOIT, END };
 	enum class ECursorMode : unsigned int
 	{
@@ -106,6 +106,7 @@ namespace Engine
 		PlayerInfoBuffer,
 		DISSOLVEEFFECT,
 		LINEEFFECT,
+		GhostTrailBuffer,
 		COUNT
 	};
 	constexpr const char* g_CBNames[static_cast<unsigned int>(EFXCB::COUNT)] =
@@ -134,7 +135,8 @@ namespace Engine
 		"ShaderBakedSectionBuffer",
 		"PlayerInfoBuffer",
 		"CB_DISSOLVE",
-		"CB_LINEEFFECT"
+		"CB_LINEEFFECT",
+		"GhostTrailBuffer"
 	};
 	//===================
 	// FX SRV

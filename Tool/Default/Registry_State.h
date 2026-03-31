@@ -53,7 +53,7 @@ namespace Tool
         "condition_attack_landed",
         "condition_attack_none_landed",
         "condition_is_ground",
-
+        "condition_is_dissolve_ended",
         // param examples
         "param_condition_distance_over",
     };

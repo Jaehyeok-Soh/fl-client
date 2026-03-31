@@ -35,7 +35,7 @@ protected:
 	virtual void On_StateExit(_uint iState) override;
 	virtual void On_EffectModuleEnter(CGameObject* pModule) override;
 protected:
-	void Build_WarningDesc();
+	virtual void Build_WarningDesc();
 protected:
 	EFFECT_WARNING_DESC m_tWarnDesc{};
 public:

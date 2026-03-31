@@ -151,7 +151,7 @@ void CUIQuickSlot_Image::Tick_By_Type(const _float fTimeDelta)
 
 			m_pParentCanvasCache->Get_CommonParam_uint_Ref()[UINT_SLOT_CURRENT_SLOT_INDEX] = m_iCurSlotIndex;
 		}
-		else
+		else if (KEY_BUTTON_UP(DIK_Z))
 		{
 			m_pParentCanvasCache->Get_CommonParam_bool_Ref()[BOOLEAN_SLOT_Z_KEY_HOLDING] = false;
 			m_pUIManager->Set_isCursor_Visible(false);

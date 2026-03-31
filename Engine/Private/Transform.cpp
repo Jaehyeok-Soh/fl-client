@@ -449,7 +449,9 @@ inline void CTransform::Look_At_XZ(Vec3 vPoint)
 	Vec3 vCurrentPosition = Get_Info(TRANSFORM_INFO_STATE::POS);
 	vPoint.y = vCurrentPosition.y;
 	Vec3 vLookDir = vPoint - vCurrentPosition;
+	vLookDir.Normalize();
 	Vec3 vRightDir = Vec3::Up.Cross(vLookDir);
+	vRightDir.Normalize();
 	Vec3 vUpDir = vLookDir.Cross(vRightDir);
 	vLookDir.Normalize();
 	vRightDir.Normalize();

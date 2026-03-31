@@ -9,6 +9,11 @@
                 "Backdash",
                 "BackdashAttack",
                 "BackdashCatch",
+                "Condemnde_Attacked",
+                "Condemnde_Die",
+                "Condemnde_End",
+                "Condemnde_Loop",
+                "Condemnde_Start",
                 "EndCatch",
                 "GimmikAttack",
                 "GimmikCamera",
@@ -43,6 +48,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -51,6 +57,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -116,6 +127,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -164,6 +177,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -212,6 +227,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -260,6 +277,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -308,6 +327,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_zero_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -356,6 +377,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -404,6 +427,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -454,6 +479,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -502,6 +529,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -527,7 +556,68 @@
                         }
                     ],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill01"
                     ],
@@ -574,6 +664,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -582,6 +673,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -647,6 +743,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ",
                                 "tParam": {
                                     "bParam": [
@@ -695,6 +793,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -743,6 +843,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -791,6 +893,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_zero_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -839,6 +943,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -887,6 +993,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -935,6 +1043,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -983,6 +1093,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -1031,6 +1143,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -1081,6 +1195,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -1129,6 +1245,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_impuls",
                                 "tParam": {
                                     "bParam": [
@@ -1177,6 +1295,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -1202,7 +1322,68 @@
                         }
                     ],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill02_01"
                     ],
@@ -1249,6 +1430,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1257,6 +1439,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -1322,6 +1509,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -1348,7 +1537,68 @@
                     ],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill02_02"
                     ],
@@ -1395,6 +1645,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1403,6 +1654,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -1445,7 +1701,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill03"
                     ],
@@ -1492,6 +1809,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1500,6 +1818,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -1565,6 +1888,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ_Ratio",
                                 "tParam": {
                                     "bParam": [
@@ -1591,7 +1916,68 @@
                     ],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill04"
                     ],
@@ -1636,8 +2022,9 @@
                     "bCancellation": false,
                     "bIsBoss": true,
                     "bIsCombo": false,
-                    "bIsCustom": false,
+                    "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1646,6 +2033,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -1688,19 +2080,44 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
-                    "vecMainAnimNames": [
-                        "Animation_Lianhuo_Skill05"
-                    ],
-                    "vecStartConditionFeature": [],
-                    "vecStateTransition": [
+                    "vecGlobalStateTransition": [
                         {
                             "mapRandomStatePool": {
-                                "Idle": 1.0
+                                "Condemnde_Start": 1.0
                             },
                             "vecConditionEntry": [
                                 {
-                                    "strCondition": "condition_animation_finish",
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -1725,6 +2142,11 @@
                             ]
                         }
                     ],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Skill05"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [],
                     "vecWeaponAnimNames": []
                 },
                 {
@@ -1735,6 +2157,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -1743,6 +2166,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -1808,6 +2236,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ",
                                 "tParam": {
                                     "bParam": [
@@ -1856,6 +2286,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_impuls_front",
                                 "tParam": {
                                     "bParam": [
@@ -1904,6 +2336,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -1952,6 +2386,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2002,6 +2438,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2050,6 +2488,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2075,7 +2515,68 @@
                         }
                     ],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill06"
                     ],
@@ -2105,6 +2606,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2153,6 +2656,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_zero_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2219,6 +2724,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -2227,6 +2733,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -2269,7 +2780,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill09"
                     ],
@@ -2316,6 +2888,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -2324,6 +2897,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -2389,6 +2967,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ",
                                 "tParam": {
                                     "bParam": [
@@ -2437,6 +3017,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2485,6 +3067,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2535,6 +3119,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_reset_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2583,6 +3169,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2608,7 +3196,68 @@
                         }
                     ],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill10"
                     ],
@@ -2638,6 +3287,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_zero_deaccel_rate",
                                 "tParam": {
                                     "bParam": [
@@ -2686,6 +3337,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -2752,6 +3405,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -2760,6 +3414,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -2802,7 +3461,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_FightIdle"
                     ],
@@ -2905,6 +3625,188 @@
                             "vecConditionEntry": [
                                 {
                                     "strCondition": "condition_target_right180",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "GimmikCamera": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_target_out_of_melee_attack",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_attack_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_phase_two",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "StartCatch": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_phase_two",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_in_melee_range",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "StartCatch": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_phase_two",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "strCondition": "condition_target_close",
                                     "tParam": {
                                         "bParam": [
                                             false,
@@ -3059,6 +3961,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3067,6 +3970,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -3109,7 +4017,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Turn_L180"
                     ],
@@ -3156,6 +4125,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3164,6 +4134,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -3206,7 +4181,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Turn_L90"
                     ],
@@ -3253,6 +4289,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3261,6 +4298,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -3303,7 +4345,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Turn_R180"
                     ],
@@ -3350,6 +4453,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3358,6 +4462,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -3400,7 +4509,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Turn_R90"
                     ],
@@ -3447,6 +4617,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3455,6 +4626,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -3498,6 +4674,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_backward",
                             "tParam": {
                                 "bParam": [
@@ -3521,6 +4699,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -3544,7 +4724,68 @@
                             }
                         }
                     ],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_WalkLoop_B"
                     ],
@@ -3670,6 +4911,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3678,6 +4920,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -3721,6 +4968,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_backward_left",
                             "tParam": {
                                 "bParam": [
@@ -3744,6 +4993,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -3767,7 +5018,68 @@
                             }
                         }
                     ],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_WalkLoop_LB"
                     ],
@@ -3893,6 +5205,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -3901,6 +5214,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -3944,6 +5262,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_backward_right",
                             "tParam": {
                                 "bParam": [
@@ -3967,6 +5287,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -3990,7 +5312,68 @@
                             }
                         }
                     ],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_WalkLoop_RB"
                     ],
@@ -4116,6 +5499,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -4124,6 +5508,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -4167,6 +5556,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_front",
                             "tParam": {
                                 "bParam": [
@@ -4190,6 +5581,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -4213,7 +5606,68 @@
                             }
                         }
                     ],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_WalkLoop_F"
                     ],
@@ -4340,6 +5794,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -4348,6 +5803,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -4391,6 +5851,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_front_left",
                             "tParam": {
                                 "bParam": [
@@ -4414,6 +5876,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -4437,7 +5901,68 @@
                             }
                         }
                     ],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_WalkLoop_LF"
                     ],
@@ -4564,6 +6089,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -4572,6 +6098,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -4615,6 +6146,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_front_right",
                             "tParam": {
                                 "bParam": [
@@ -4638,6 +6171,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -4661,7 +6196,68 @@
                             }
                         }
                     ],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_WalkLoop_RF"
                     ],
@@ -4788,6 +6384,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -4796,6 +6393,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -4839,6 +6441,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_left",
                             "tParam": {
                                 "bParam": [
@@ -4862,6 +6466,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_TurnToTarget_XZ",
                             "tParam": {
                                 "bParam": [
@@ -4885,7 +6491,68 @@
                             }
                         }
                     ],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_WalkLoop_L"
                     ],
@@ -4932,6 +6599,7 @@
                     "bIsCombo": false,
                     "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -4940,6 +6608,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -5005,6 +6678,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_TurnToTarget_XZ",
                                 "tParam": {
                                     "bParam": [
@@ -5032,6 +6707,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_move_right",
                             "tParam": {
                                 "bParam": [
@@ -5055,7 +6732,68 @@
                             }
                         }
                     ],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_WalkLoop_R"
                     ],
@@ -5098,10 +6836,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5110,6 +6849,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -5152,7 +6896,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill07_02"
                     ],
@@ -5164,10 +6969,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5176,6 +6982,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -5204,8 +7015,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 90.0,
+                        "fMinTime": 90.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -5218,7 +7029,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill07_01"
                     ],
@@ -5230,10 +7102,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5242,6 +7115,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -5284,7 +7162,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill07_03"
                     ],
@@ -5296,10 +7235,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5308,6 +7248,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -5350,7 +7295,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill08_03"
                     ],
@@ -5362,10 +7368,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5374,6 +7381,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -5402,8 +7414,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 0.0,
-                        "fMinTime": 0.0,
+                        "fMaxTime": 90.0,
+                        "fMinTime": 90.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -5416,7 +7428,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill08_Camera"
                     ],
@@ -5428,10 +7501,11 @@
                     "FAniFlags": 0,
                     "bBlend": false,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5440,6 +7514,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -5482,7 +7561,68 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill08_01"
                     ],
@@ -5494,10 +7634,11 @@
                     "FAniFlags": 0,
                     "bBlend": true,
                     "bCancellation": false,
-                    "bIsBoss": false,
+                    "bIsBoss": true,
                     "bIsCombo": false,
                     "bIsCustom": true,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "AdvanceComboAttack01",
@@ -5506,6 +7647,11 @@
                         "Backdash",
                         "BackdashAttack",
                         "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
                         "EndCatch",
                         "GimmikAttack",
                         "GimmikCamera",
@@ -5548,12 +7694,1218 @@
                     "vecConditionFeature": [],
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [],
-                    "vecGlobalStateTransition": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecMainAnimNames": [
                         "Animation_Lianhuo_Skill08_02"
                     ],
                     "vecStartConditionFeature": [],
                     "vecStateTransition": [],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bIsCustom": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.2000000476837158,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "Condemnde_Attacked",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_end_groggy",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Condemned_End"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bIsCustom": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.0,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "Condemnde_Die",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_is_dissolve_ended",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_set_dead",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_end_groggy",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Condemned_Die"
+                    ],
+                    "vecStartConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_trigger_dissolve",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecStateTransition": [],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bIsCustom": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.0,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "Condemnde_End",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_end_groggy",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Condemned_EndLoop"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Idle": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bIsCustom": false,
+                    "bLoop": true,
+                    "fAnimationSpeed": 1.0,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "Condemnde_Loop",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Condemned_Loop"
+                    ],
+                    "vecStartConditionFeature": [],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_End": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_not_groggy",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecWeaponAnimNames": []
+                },
+                {
+                    "FAniFlags": 0,
+                    "bBlend": true,
+                    "bCancellation": false,
+                    "bIsBoss": true,
+                    "bIsCombo": false,
+                    "bIsCustom": false,
+                    "bLoop": false,
+                    "fAnimationSpeed": 1.0,
+                    "mapPreAnimNames": {},
+                    "setStates": [
+                        "AdvanceComboAttack01",
+                        "AdvanceComboAttack02",
+                        "AdvanceThrustAttack",
+                        "Backdash",
+                        "BackdashAttack",
+                        "BackdashCatch",
+                        "Condemnde_Attacked",
+                        "Condemnde_Die",
+                        "Condemnde_End",
+                        "Condemnde_Loop",
+                        "Condemnde_Start",
+                        "EndCatch",
+                        "GimmikAttack",
+                        "GimmikCamera",
+                        "GimmikRunLoop",
+                        "GimmikRunStart",
+                        "Idle",
+                        "JumpSpinAttack",
+                        "JumpThrustAttack",
+                        "L_Turn180",
+                        "L_Turn90",
+                        "Move_B",
+                        "Move_BL",
+                        "Move_BR",
+                        "Move_F",
+                        "Move_FL",
+                        "Move_FR",
+                        "Move_L",
+                        "Move_R",
+                        "R_Turn180",
+                        "R_Turn90",
+                        "Screaming",
+                        "SpawnAttack",
+                        "StartCatch"
+                    ],
+                    "strName": "Condemnde_Start",
+                    "tStateCoolDownTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "tStateLifeTime": {
+                        "bCountTime": true,
+                        "bTimeReset": true,
+                        "fMaxTime": 0.0,
+                        "fMinTime": 0.0,
+                        "fTimeAcc": 0.0
+                    },
+                    "vecConditionFeature": [],
+                    "vecEndConditionFeature": [],
+                    "vecFeatureEntry": [],
+                    "vecGlobalStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_normal_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Start": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_final_groggy_requested",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "vecMainAnimNames": [
+                        "Animation_Lianhuo_Condemned_Start"
+                    ],
+                    "vecStartConditionFeature": [
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_keep_look_target",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_consume_groggy",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "vecStateTransition": [
+                        {
+                            "mapRandomStatePool": {
+                                "Condemnde_Loop": 1.0
+                            },
+                            "vecConditionEntry": [
+                                {
+                                    "strCondition": "condition_animation_finish",
+                                    "tParam": {
+                                        "bParam": [
+                                            false,
+                                            false,
+                                            false,
+                                            false
+                                        ],
+                                        "fParam": [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "iParam": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
                     "vecWeaponAnimNames": []
                 }
             ]

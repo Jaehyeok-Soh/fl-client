@@ -265,12 +265,17 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 					// Condemn
 					if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::CONDEMN))
 					{
-						pComBoss->Add_Health(-500.f);
+						pComBoss->Add_Health(-1247.f);
 						_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
 						if (fHpRatio <= g_XMEpsilon.f[0])
+						{
 							Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
+							m_pGameInstance->Broadcast<BOSS_UI_OFF>();
+						}
 						else
+						{
 							Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
+						}
 					}
 				}
 			}
@@ -278,10 +283,12 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 		else
 		{
 			EGroggyState eGroggy{ EGroggyState::None };
-			if(Engine_Utils::Has_Flag( hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
-				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.25f);
+			if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.125f);
+			else if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::DUAL)))
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.5f);
 			else
-				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(2.f);
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(1.f);
 
 			// 그로기 세팅하고 !!리턴!!
 			if (eGroggy != EGroggyState::None)
@@ -290,9 +297,16 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 					m_pGameInstance->Broadcast<BOSS_GROGGY>();
 
 			}
-		}		
+		}
 	}
 	return result;
+}
+
+void CBoss_Xibi::On_Dying()
+{
+	CMonsterControlContext* pControlContext = Get_Component<CMonsterControlContext>();
+	if (_bool bRequestedSucess = pControlContext->Set_Groggy(EGroggyState::Final))
+		m_pGameInstance->Broadcast<BOSS_GROGGY>();
 }
 
 void CBoss_Xibi::Try_Attack(const HIT_DESC& hitDesc)
@@ -322,7 +336,7 @@ HRESULT CBoss_Xibi::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 180000.f;
+	desc.fMaxHp = 290000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 
@@ -392,7 +406,7 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 	desc.fMeleeRange = 2.f;
 	desc.fAttackRange = 8.f;
 	desc.fCloseRange = 1.f;
-	desc.fDetectionRange = 15.f;
+	desc.fDetectionRange = 13.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
 	//desc.vecSkillRange;
