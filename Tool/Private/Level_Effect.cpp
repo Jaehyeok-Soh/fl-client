@@ -257,7 +257,7 @@ HRESULT CLevel_Effect::Ready_DevMap()
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_Map>(iLevelID, eCategory)))
 		return E_FAIL;
 
-	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Test/Test.json";
+	std::filesystem::path FilePath = L"../../Resources/Data/MapData/LevelData/Tutorial/Boss/Tutorial_Boss.json";
 	vector<path> vecfiles;
 
 	if (!std::filesystem::exists(FilePath))

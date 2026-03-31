@@ -115,6 +115,98 @@ VS_OUT_INST_DECALMESH_PARTICLE
 }
 
 
+VS_OUT_INST_MESH_PARTICLE VS_BUTTERFLY(VS_IN_INST_MESH_PARTICLE In)
+{
+    VS_OUT_INST_MESH_PARTICLE Out;
+
+    // -----------------------------
+    // 1. 로컬 버텍스 기준 wing flap
+    // -----------------------------
+    float3 localPos = In.vPosition;
+    localPos.z *= -1.f;
+
+    float time = fAccTime;      // 전역 시간 변수
+
+    // flap 기본값
+    float flapSpeed = 8.0f; // 날갯짓 속도
+    float flapAmp = 1.3f; // 최대 회전 라디안값(약 40도 정도)
+
+    // 좌/우 날개 구분
+    float side = (localPos.x >= 0.0f) ? 1.0f : -1.0f;
+
+    // 중심부는 덜 움직이고 바깥쪽일수록 더 움직이게
+    float wingWeight = saturate(abs(localPos.x) / 0.5f);
+    wingWeight = pow(wingWeight, 1.5f);
+
+    // flap 각도
+    float flap = sin(time * flapSpeed) * flapAmp;
+    float angle = flap * side * wingWeight;
+
+    // 중심선(x=0)을 접는 축으로 보고 Z축 기준 회전
+    // 만약 방향이 이상하면 Z축 회전 대신 Y축 회전 버전으로 바꿔야 함
+    float c = cos(angle);
+    float s = sin(angle);
+
+    float3 deformedPos = localPos;
+    deformedPos.x = localPos.x * c - localPos.y * s;
+    deformedPos.y = localPos.x * s + localPos.y * c;
+
+    // 살짝 flutter를 주고 싶으면 선택적으로 추가
+    deformedPos.z += sin(time * flapSpeed * 1.3f + abs(localPos.x) * 6.0f) * 0.01f * wingWeight;
+
+    // -----------------------------
+    // 2. 노멀/탄젠트도 같은 회전 적용
+    // -----------------------------
+    float3 localNormal = In.vNormal;
+    float3 localTangent = In.vTangent;
+    float3 localBinormal = In.vBinormal;
+
+    float3 deformedNormal;
+    deformedNormal.x = localNormal.x * c - localNormal.y * s;
+    deformedNormal.y = localNormal.x * s + localNormal.y * c;
+    deformedNormal.z = localNormal.z;
+
+    float3 deformedTangent;
+    deformedTangent.x = localTangent.x * c - localTangent.y * s;
+    deformedTangent.y = localTangent.x * s + localTangent.y * c;
+    deformedTangent.z = localTangent.z;
+
+    float3 deformedBinormal;
+    deformedBinormal.x = localBinormal.x * c - localBinormal.y * s;
+    deformedBinormal.y = localBinormal.x * s + localBinormal.y * c;
+    deformedBinormal.z = localBinormal.z;
+
+    // -----------------------------
+    // 3. 이후 기존 transform 진행
+    // -----------------------------
+    float4 vWorldPos = mul(float4(deformedPos, 1.f), INSTANCE_OUTPUT[In.vInstID].matTransform);
+    vWorldPos = mul(vWorldPos, W);
+    float4 vViewPos = mul(vWorldPos, V);
+    Out.vPosition = mul(vViewPos, P);
+
+    Out.vWorldPos = vWorldPos;
+    Out.vProjPos = Out.vPosition;
+
+    Out.vNormal = normalize(mul(deformedNormal, (float3x3) INSTANCE_OUTPUT[In.vInstID].matTransform));
+    Out.vTangent = normalize(mul(deformedTangent, (float3x3) INSTANCE_OUTPUT[In.vInstID].matTransform));
+    Out.vBinormal = normalize(mul(deformedBinormal, (float3x3) INSTANCE_OUTPUT[In.vInstID].matTransform));
+
+    Out.vUV = In.vUV;
+    
+    INSTANCE_OUTPUT[In.vInstID].matTransform;
+
+    Out.vPSize = float2(
+        length(INSTANCE_OUTPUT[In.vInstID].matTransform[0].xyz),
+        length(INSTANCE_OUTPUT[In.vInstID].matTransform[1].xyz)
+    );
+
+    Out.vLifeTime = INSTANCE_OUTPUT[In.vInstID].vLifeTime;
+    Out.vViewZ = vViewPos.z;
+
+    return Out;
+}
+
+
 PS_OUT_WBOIT PS_DefaultMesh(VS_OUT_INST_MESH_PARTICLE In)
 {
     PS_OUT_WBOIT Out;
@@ -1794,180 +1886,180 @@ PS_OUT_WBOIT PS_Chain(VS_OUT_INST_MESH_PARTICLE In)
 // 4) UV 판정 : 변환된 좌표가 Circle 메시의 평면 범위 안에 있는지 확인하고,
 // 그 좌표를 UV 삼아 사슬이나 경고 패턴 텍스처를 입힌다.
 
-//float4 PS_DECAL(VS_OUT_INST_DECALMESH_PARTICLE In) : SV_Target0
-//{
-//    if (In.vLifeTime.x < 0.0f)
-//        discard;
+float4 PS_DECAL(VS_OUT_INST_DECALMESH_PARTICLE In) : SV_Target0
+{
+    if (In.vLifeTime.x < 0.0f)
+        discard;
     
-//    float2 finalUV = In.vUV;
+    float2 finalUV = In.vUV;
 
-//    float4 DiffuseSample = float4(1, 1, 1, 1);
-//    float4 noiseSample = float4(1, 1, 1, 1);
-//    float4 MaskSample = float4(1, 1, 1, 1);
-//    float4 GradationSample = float4(1, 1, 1, 1);
-//    float4 GlowSample = float4(0, 0, 0, 0);
-//    float4 DissolveSample = float4(1, 1, 1, 1);
-//    float4 CurveSample = float4(1, 1, 1, 1);
-//    float4 SubMaskSample = float4(1, 1, 1, 1);
+    float4 DiffuseSample = float4(1, 1, 1, 1);
+    float4 noiseSample = float4(1, 1, 1, 1);
+    float4 MaskSample = float4(1, 1, 1, 1);
+    float4 GradationSample = float4(1, 1, 1, 1);
+    float4 GlowSample = float4(0, 0, 0, 0);
+    float4 DissolveSample = float4(1, 1, 1, 1);
+    float4 CurveSample = float4(1, 1, 1, 1);
+    float4 SubMaskSample = float4(1, 1, 1, 1);
 
-//    float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
-//    float DissolveProgress = saturate((LifeRatio - g_Effect.g_AppearRatio) / max(0.001f, 1.0f - g_Effect.g_AppearRatio));
+    float LifeRatio = saturate(In.vLifeTime.x / In.vLifeTime.y);
+    float DissolveProgress = saturate((LifeRatio - g_Effect.g_AppearRatio) / max(0.001f, 1.0f - g_Effect.g_AppearRatio));
 
-//    float2 distortionOffset = float2(0.0f, 0.0f);
+    float2 distortionOffset = float2(0.0f, 0.0f);
 
-//    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
-//    {
-//        float2 noiseUV = finalUV;
+    if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+    {
+        float2 noiseUV = finalUV;
 
-//        if (HasTextureScroll(SCROLL_NOISE))
-//        {
-//            noiseUV += g_Effect.g_UVOffset;
-//            noiseUV += g_Effect.g_ScrollOffset * g_Effect.NoiseTexture_ScrollWeight;
-//        }
+        if (HasTextureScroll(SCROLL_NOISE))
+        {
+            noiseUV += g_Effect.g_UVOffset;
+            noiseUV += g_Effect.g_ScrollOffset * g_Effect.NoiseTexture_ScrollWeight;
+        }
 
-//        noiseSample = NoiseTextureSample(Get90DegreeRotatedUV(noiseUV, g_Effect.g_RotationFlags, NOISETEXTURE));
-//        distortionOffset.x = (noiseSample.r - 0.5f) * g_Effect.g_DistortionScale.x;
-//        distortionOffset.y = (noiseSample.g - 0.5f) * g_Effect.g_DistortionScale.y;
-//    }
+        noiseSample = NoiseTextureSample(Get90DegreeRotatedUV(noiseUV, g_Effect.g_RotationFlags, NOISETEXTURE));
+        distortionOffset.x = (noiseSample.r - 0.5f) * g_Effect.g_DistortionScale.x;
+        distortionOffset.y = (noiseSample.g - 0.5f) * g_Effect.g_DistortionScale.y;
+    }
 
-//    float2 distortionUV = distortionOffset;
+    float2 distortionUV = distortionOffset;
 
-//    if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
-//    {
-//        float2 diffuseUV = finalUV;
+    if (Has(g_Effect.g_TextureFlags, DEFAULTTEXTURE))
+    {
+        float2 diffuseUV = finalUV;
 
-//        if (HasTextureSprite(g_Effect.DiffuseTexture_SpriteInfo))
-//            diffuseUV = GetStaticSpriteUV(diffuseUV, g_Effect.DiffuseTexture_SpriteInfo);
+        if (HasTextureSprite(g_Effect.DiffuseTexture_SpriteInfo))
+            diffuseUV = GetStaticSpriteUV(diffuseUV, g_Effect.DiffuseTexture_SpriteInfo);
 
-//        if (HasTextureScroll(SCROLL_DIFFUSE))
-//        {
-//            diffuseUV += g_Effect.g_UVOffset;
-//            diffuseUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
-//        }
+        if (HasTextureScroll(SCROLL_DIFFUSE))
+        {
+            diffuseUV += g_Effect.g_UVOffset;
+            diffuseUV += g_Effect.g_ScrollOffset * g_Effect.DiffuseTexture_ScrollWeight;
+        }
 
-//        if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
-//            diffuseUV += distortionUV;
+        if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+            diffuseUV += distortionUV;
 
-//        DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(diffuseUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
-//    }
+        DiffuseSample = DefaultTextureSample(Get90DegreeRotatedUV(diffuseUV, g_Effect.g_RotationFlags, DEFAULTTEXTURE));
+    }
 
-//    if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
-//    {
-//        float2 gradUV = finalUV;
+    if (Has(g_Effect.g_TextureFlags, GRADATIONTEXTURE))
+    {
+        float2 gradUV = finalUV;
 
-//        if (HasTextureSprite(g_Effect.GradationTexture_SpriteInfo))
-//            gradUV = GetStaticSpriteUV(gradUV, g_Effect.GradationTexture_SpriteInfo);
+        if (HasTextureSprite(g_Effect.GradationTexture_SpriteInfo))
+            gradUV = GetStaticSpriteUV(gradUV, g_Effect.GradationTexture_SpriteInfo);
 
-//        if (HasTextureScroll(SCROLL_GRADATION))
-//        {
-//            gradUV += g_Effect.g_UVOffset;
-//            gradUV += g_Effect.g_ScrollOffset * g_Effect.GradationTexture_ScrollWeight;
-//        }
+        if (HasTextureScroll(SCROLL_GRADATION))
+        {
+            gradUV += g_Effect.g_UVOffset;
+            gradUV += g_Effect.g_ScrollOffset * g_Effect.GradationTexture_ScrollWeight;
+        }
 
-//        GradationSample = GradationTextureSample(Get90DegreeRotatedUV(gradUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
-//    }
+        GradationSample = GradationTextureSample(Get90DegreeRotatedUV(gradUV, g_Effect.g_RotationFlags, GRADATIONTEXTURE));
+    }
 
-//    if (Has(g_Effect.g_TextureFlags, GLOWTEXTURE))
-//    {
-//        float2 glowUV = finalUV;
+    if (Has(g_Effect.g_TextureFlags, GLOWTEXTURE))
+    {
+        float2 glowUV = finalUV;
 
-//        if (HasTextureSprite(g_Effect.GlowTexture_SpriteInfo))
-//            glowUV = GetStaticSpriteUV(glowUV, g_Effect.GlowTexture_SpriteInfo);
+        if (HasTextureSprite(g_Effect.GlowTexture_SpriteInfo))
+            glowUV = GetStaticSpriteUV(glowUV, g_Effect.GlowTexture_SpriteInfo);
 
-//        if (HasTextureScroll(SCROLL_GLOW))
-//        {
-//            glowUV += g_Effect.g_UVOffset;
-//            glowUV += g_Effect.g_ScrollOffset * g_Effect.GlowTexture_ScrollWeight;
-//        }
+        if (HasTextureScroll(SCROLL_GLOW))
+        {
+            glowUV += g_Effect.g_UVOffset;
+            glowUV += g_Effect.g_ScrollOffset * g_Effect.GlowTexture_ScrollWeight;
+        }
 
-//        if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
-//            glowUV += distortionUV;
+        if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+            glowUV += distortionUV;
 
-//        GlowSample = GlowTextureSample(Get90DegreeRotatedUV(glowUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
-//    }
+        GlowSample = GlowTextureSample(Get90DegreeRotatedUV(glowUV, g_Effect.g_RotationFlags, GLOWTEXTURE));
+    }
 
-//    if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
-//    {
-//        float2 maskUV = finalUV;
+    if (Has(g_Effect.g_TextureFlags, MASKINGTEXTURE))
+    {
+        float2 maskUV = finalUV;
 
-//        if (HasTextureSprite(g_Effect.MaskTexture_SpriteInfo))
-//            maskUV = GetStaticSpriteUV(maskUV, g_Effect.MaskTexture_SpriteInfo);
+        if (HasTextureSprite(g_Effect.MaskTexture_SpriteInfo))
+            maskUV = GetStaticSpriteUV(maskUV, g_Effect.MaskTexture_SpriteInfo);
 
-//        if (HasTextureScroll(SCROLL_MASKING))
-//        {
-//            maskUV += g_Effect.g_UVOffset;
-//            maskUV += g_Effect.g_ScrollOffset * g_Effect.MaskingTexture_ScrollWeight;
-//        }
+        if (HasTextureScroll(SCROLL_MASKING))
+        {
+            maskUV += g_Effect.g_UVOffset;
+            maskUV += g_Effect.g_ScrollOffset * g_Effect.MaskingTexture_ScrollWeight;
+        }
 
-//        if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
-//            maskUV += distortionUV;
+        if (Has(g_Effect.g_TextureFlags, NOISETEXTURE))
+            maskUV += distortionUV;
 
-//        MaskSample = MaskTextureSample(Get90DegreeRotatedUV(maskUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
-//    }
+        MaskSample = MaskTextureSample(Get90DegreeRotatedUV(maskUV, g_Effect.g_RotationFlags, MASKINGTEXTURE));
+    }
 
-//    if (Has(g_Effect.g_TextureFlags, SUBMASKINGTEXTURE))
-//    {
-//        float2 subMaskUV = finalUV;
+    if (Has(g_Effect.g_TextureFlags, SUBMASKINGTEXTURE))
+    {
+        float2 subMaskUV = finalUV;
 
-//        if (HasTextureSprite(g_Effect.SubMaskTexture_SpriteInfo))
-//            subMaskUV = GetStaticSpriteUV(subMaskUV, g_Effect.SubMaskTexture_SpriteInfo);
+        if (HasTextureSprite(g_Effect.SubMaskTexture_SpriteInfo))
+            subMaskUV = GetStaticSpriteUV(subMaskUV, g_Effect.SubMaskTexture_SpriteInfo);
 
-//        if (HasTextureScroll(SCROLL_SUBMASKING))
-//        {
-//            subMaskUV += g_Effect.g_UVOffset;
-//            subMaskUV += g_Effect.g_ScrollOffset * g_Effect.SubMaskTexture_ScrollWeight;
-//        }
+        if (HasTextureScroll(SCROLL_SUBMASKING))
+        {
+            subMaskUV += g_Effect.g_UVOffset;
+            subMaskUV += g_Effect.g_ScrollOffset * g_Effect.SubMaskTexture_ScrollWeight;
+        }
 
-//        SubMaskSample = SubMaskTextureSample(Get90DegreeRotatedUV(subMaskUV, g_Effect.g_RotationFlags, SUBMASKINGTEXTURE));
-//    }
+        SubMaskSample = SubMaskTextureSample(Get90DegreeRotatedUV(subMaskUV, g_Effect.g_RotationFlags, SUBMASKINGTEXTURE));
+    }
 
-//    float dissolveMask = 1.0f;
-//    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
-//    {
-//        float2 dissolveUV = finalUV;
+    float dissolveMask = 1.0f;
+    if (Has(g_Effect.g_TextureFlags, DISSOLVETEXTURE))
+    {
+        float2 dissolveUV = finalUV;
 
-//        if (HasTextureSprite(g_Effect.DissolveTexture_SpriteInfo))
-//            dissolveUV = GetStaticSpriteUV(dissolveUV, g_Effect.DissolveTexture_SpriteInfo);
+        if (HasTextureSprite(g_Effect.DissolveTexture_SpriteInfo))
+            dissolveUV = GetStaticSpriteUV(dissolveUV, g_Effect.DissolveTexture_SpriteInfo);
 
-//        if (HasTextureScroll(SCROLL_DISSOLVE))
-//        {
-//            dissolveUV += g_Effect.g_UVOffset;
-//            dissolveUV += g_Effect.g_ScrollOffset * g_Effect.DissolveTexture_ScrollWeight;
-//        }
+        if (HasTextureScroll(SCROLL_DISSOLVE))
+        {
+            dissolveUV += g_Effect.g_UVOffset;
+            dissolveUV += g_Effect.g_ScrollOffset * g_Effect.DissolveTexture_ScrollWeight;
+        }
 
-//        DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(dissolveUV, g_Effect.g_RotationFlags, DISSOLVETEXTURE));
-//        dissolveMask = step(DissolveProgress, DissolveSample.r);
-//    }
+        DissolveSample = DissolveTextureSample(Get90DegreeRotatedUV(dissolveUV, g_Effect.g_RotationFlags, DISSOLVETEXTURE));
+        dissolveMask = step(DissolveProgress, DissolveSample.r);
+    }
 
-//    float CurvePowerStrength = 1.0f;
-//    if (Has(g_Effect.g_TextureFlags, CURVETEXTURE))
-//    {
-//        float2 curveUV = finalUV;
+    float CurvePowerStrength = 1.0f;
+    if (Has(g_Effect.g_TextureFlags, CURVETEXTURE))
+    {
+        float2 curveUV = finalUV;
 
-//        if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
-//            curveUV = GetStaticSpriteUV(curveUV, g_Effect.CurveTexture_SpriteInfo);
+        if (HasTextureSprite(g_Effect.CurveTexture_SpriteInfo))
+            curveUV = GetStaticSpriteUV(curveUV, g_Effect.CurveTexture_SpriteInfo);
 
-//        if (HasTextureScroll(SCROLL_CURVE))
-//            curveUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
+        if (HasTextureScroll(SCROLL_CURVE))
+            curveUV += g_Effect.g_ScrollOffset * g_Effect.CurveTexture_ScrollWeight;
 
-//        CurveSample = CurveTextureSample(Get90DegreeRotatedUV(curveUV, g_Effect.g_RotationFlags, CURVETEXTURE));
-//        CurvePowerStrength = CurveSample.r * 2.5f;
-//    }
+        CurveSample = CurveTextureSample(Get90DegreeRotatedUV(curveUV, g_Effect.g_RotationFlags, CURVETEXTURE));
+        CurvePowerStrength = CurveSample.r * 2.5f;
+    }
 
-//    float3 finalRGB = DiffuseSample.rgb * GradationSample.rgb * g_Effect.g_EffectColor.rgb * CurvePowerStrength;
-//    finalRGB += GlowSample.rgb * g_Effect.g_GlowPower;
+    float3 finalRGB = DiffuseSample.rgb * GradationSample.rgb * g_Effect.g_EffectColor.rgb * CurvePowerStrength;
+    finalRGB += GlowSample.rgb * g_Effect.g_GlowPower;
 
-//    float lifeAlpha = 1.0f - DissolveProgress;
-//    float finalAlpha = DiffuseSample.a * MaskSample.r * SubMaskSample.r * dissolveMask * g_Effect.g_EffectColor.a;
+    float lifeAlpha = 1.0f - DissolveProgress;
+    float finalAlpha = DiffuseSample.a * MaskSample.r * SubMaskSample.r * dissolveMask * g_Effect.g_EffectColor.a;
 
-//    if (HasLifeDissolve())
-//        finalAlpha *= lifeAlpha;
+    if (HasLifeDissolve())
+        finalAlpha *= lifeAlpha;
 
-//    if (finalAlpha <= g_Effect.g_DiscardValue)
-//        discard;
+    if (finalAlpha <= g_Effect.g_DiscardValue)
+        discard;
 
-//    return float4(finalRGB, finalAlpha);
-//}
+    return float4(finalRGB, finalAlpha);
+}
 
 technique11 T0
 {
@@ -2041,14 +2133,24 @@ technique11 T0
         SetPixelShader(CompileShader(ps_5_0, PS_Chain()));
     }
 
-    //pass Decal_Shader
-    //{
-    //    SetRasterizerState(RS_Default_CullNone);
-    //    SetDepthStencilState(DS_ReadOnly, 0);
-    //    SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-    //    SetVertexShader(CompileShader(vs_5_0, VS_DECAL()));
-    //    GeometryShader = NULL;
-    //    SetPixelShader(CompileShader(ps_5_0, PS_DECAL()));
-    //}
+    pass Decal_Shader
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_ReadOnly, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_DECAL()));
+        GeometryShader = NULL;
+        SetPixelShader(CompileShader(ps_5_0, PS_DECAL()));
+    }
+
+    pass Butterfly_Shader
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_ReadOnly, 0);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_BUTTERFLY()));
+        GeometryShader = NULL;
+        SetPixelShader(CompileShader(ps_5_0, PS_DefaultMesh()));
+    }
 
 }
