@@ -187,6 +187,11 @@ struct ShaderBakedSectionParam
     float3 vPadding;
     ShaderBakedSection sections[ACTIVE_BAKED_SECTION_COUNT];
 };
+
+struct GhostTrailParam
+{
+    float4 vColor;
+};
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -283,6 +288,10 @@ cbuffer PlayerInfoBuffer
 cbuffer ShaderBakedSectionBuffer
 {
     ShaderBakedSectionParam shaderBakedSectionParam;
+};
+cbuffer GhostTrailBuffer
+{
+    GhostTrailParam ghostTrailParam;
 };
 //////////
 // Func //

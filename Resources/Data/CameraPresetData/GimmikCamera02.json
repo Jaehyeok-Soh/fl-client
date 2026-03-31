@@ -1,0 +1,311 @@
+{
+  "Version": 1,
+  "PresetTag": "GimmikCamera02",
+  "ShotDesc": {
+    "Name": "GimmikCamera02",
+    "Start": {
+      "Mode": "FixedFromPivot",
+      "LocalOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ApplyStartPoseImmediately": true
+    },
+    "Pivot": {
+      "Duration": 4.5,
+      "FollowLivePivot": true,
+      "FollowLiveLookAt": true,
+      "LookAtTarget": true,
+      "BasisMode": "TARGET_TRANSFORM_YAW",
+      "PivotOffsetX": {
+        "Keys": []
+      },
+      "PivotOffsetY": {
+        "Keys": []
+      },
+      "PivotOffsetZ": {
+        "Keys": []
+      },
+      "LookAtOffsetX": {
+        "Keys": []
+      },
+      "LookAtOffsetY": {
+        "Keys": []
+      },
+      "LookAtOffsetZ": {
+        "Keys": []
+      },
+      "LocalX": {
+        "Keys": [
+          {
+            "Time": 0.0,
+            "Value": -5.820000171661377,
+            "Ease": "SmoothStep",
+            "EditorUID": 24
+          },
+          {
+            "Time": 0.6299999952316284,
+            "Value": -5.820000171661377,
+            "Ease": "SmoothStep",
+            "EditorUID": 25
+          },
+          {
+            "Time": 1.0399999618530273,
+            "Value": -6.679999828338623,
+            "Ease": "SmoothStep",
+            "EditorUID": 26
+          },
+          {
+            "Time": 1.190000057220459,
+            "Value": -9.890000343322754,
+            "Ease": "SmoothStep",
+            "EditorUID": 27
+          },
+          {
+            "Time": 2.109999895095825,
+            "Value": -3.240000009536743,
+            "Ease": "SmoothStep",
+            "EditorUID": 28
+          },
+          {
+            "Time": 2.299999952316284,
+            "Value": -4.409999847412109,
+            "Ease": "SmoothStep",
+            "EditorUID": 29
+          },
+          {
+            "Time": 2.6600000858306885,
+            "Value": -4.409999847412109,
+            "Ease": "SmoothStep",
+            "EditorUID": 30
+          },
+          {
+            "Time": 4.489999771118164,
+            "Value": -4.400000095367432,
+            "Ease": "SmoothStep",
+            "EditorUID": 31
+          }
+        ]
+      },
+      "LocalY": {
+        "Keys": [
+          {
+            "Time": 0.0,
+            "Value": 0.0,
+            "Ease": "SmoothStep",
+            "EditorUID": 16
+          },
+          {
+            "Time": 0.6299999952316284,
+            "Value": 0.05000000074505806,
+            "Ease": "SmoothStep",
+            "EditorUID": 17
+          },
+          {
+            "Time": 1.0399999618530273,
+            "Value": -0.4399999976158142,
+            "Ease": "SmoothStep",
+            "EditorUID": 18
+          },
+          {
+            "Time": 1.190000057220459,
+            "Value": -1.399999976158142,
+            "Ease": "SmoothStep",
+            "EditorUID": 19
+          },
+          {
+            "Time": 2.109999895095825,
+            "Value": 0.4300000071525574,
+            "Ease": "SmoothStep",
+            "EditorUID": 20
+          },
+          {
+            "Time": 2.2300000190734863,
+            "Value": -3.0,
+            "Ease": "SmoothStep",
+            "EditorUID": 22
+          },
+          {
+            "Time": 2.6600000858306885,
+            "Value": -3.0,
+            "Ease": "SmoothStep",
+            "EditorUID": 21
+          },
+          {
+            "Time": 4.489999771118164,
+            "Value": 1.5,
+            "Ease": "EaseOutQuad",
+            "EditorUID": 23
+          }
+        ]
+      },
+      "LocalZ": {
+        "Keys": [
+          {
+            "Time": 0.0,
+            "Value": -8.760000228881836,
+            "Ease": "SmoothStep",
+            "EditorUID": 8
+          },
+          {
+            "Time": 0.5299999713897705,
+            "Value": -8.760000228881836,
+            "Ease": "SmoothStep",
+            "EditorUID": 9
+          },
+          {
+            "Time": 0.8700000047683716,
+            "Value": -3.990000009536743,
+            "Ease": "SmoothStep",
+            "EditorUID": 10
+          },
+          {
+            "Time": 1.0,
+            "Value": -6.139999866485596,
+            "Ease": "SmoothStep",
+            "EditorUID": 11
+          },
+          {
+            "Time": 1.7699999809265137,
+            "Value": -8.239999771118164,
+            "Ease": "SmoothStep",
+            "EditorUID": 12
+          },
+          {
+            "Time": 1.9299999475479126,
+            "Value": -7.809999942779541,
+            "Ease": "SmoothStep",
+            "EditorUID": 13
+          },
+          {
+            "Time": 2.2300000190734863,
+            "Value": -6.940000057220459,
+            "Ease": "SmoothStep",
+            "EditorUID": 14
+          },
+          {
+            "Time": 3.0,
+            "Value": -6.389999866485596,
+            "Ease": "SmoothStep",
+            "EditorUID": 15
+          }
+        ]
+      },
+      "OrbitYawDeg": {
+        "Keys": [
+          {
+            "Time": 0.0,
+            "Value": 37.099998474121094,
+            "Ease": "SmoothStep",
+            "EditorUID": 32
+          },
+          {
+            "Time": 0.6299999952316284,
+            "Value": 37.099998474121094,
+            "Ease": "SmoothStep",
+            "EditorUID": 33
+          },
+          {
+            "Time": 0.8700000047683716,
+            "Value": 37.79999923706055,
+            "Ease": "SmoothStep",
+            "EditorUID": 34
+          },
+          {
+            "Time": 1.1100000143051147,
+            "Value": 49.79999923706055,
+            "Ease": "SmoothStep",
+            "EditorUID": 35
+          },
+          {
+            "Time": 1.75,
+            "Value": 20.700000762939453,
+            "Ease": "SmoothStep",
+            "EditorUID": 36
+          },
+          {
+            "Time": 2.109999895095825,
+            "Value": 13.100000381469727,
+            "Ease": "SmoothStep",
+            "EditorUID": 37
+          },
+          {
+            "Time": 2.2300000190734863,
+            "Value": 13.600000381469727,
+            "Ease": "SmoothStep",
+            "EditorUID": 38
+          },
+          {
+            "Time": 2.950000047683716,
+            "Value": 18.0,
+            "Ease": "SmoothStep",
+            "EditorUID": 39
+          },
+          {
+            "Time": 4.489999771118164,
+            "Value": 20.200000762939453,
+            "Ease": "SmoothStep",
+            "EditorUID": 40
+          }
+        ]
+      }
+    },
+    "Controller": {
+      "FovDeltaDeg": {
+        "Keys": []
+      },
+      "RotYawDeg": {
+        "Keys": []
+      },
+      "RotPitchDeg": {
+        "Keys": []
+      },
+      "RotRollDeg": {
+        "Keys": []
+      },
+      "LocalPosX": {
+        "Keys": []
+      },
+      "LocalPosY": {
+        "Keys": []
+      },
+      "LocalPosZ": {
+        "Keys": []
+      }
+    },
+    "Recover": {
+      "Target": "GameplaySolved",
+      "Method": "Blend",
+      "BlendTime": 1.0,
+      "Ease": "EaseInOutQuad"
+    },
+    "ClientStartAction": 0,
+    "ClientFinishAction": 0
+  },
+  "Binding": {
+    "Pivot": {
+      "Source": "OBJECT",
+      "Resolve": "TRANSFORM",
+      "PartIndex": 0,
+      "AnchorTag": "",
+      "LocalOffset": {
+        "x": 0.0,
+        "y": 3.0,
+        "z": 0.0
+      }
+    },
+    "UseSeparateLookAt": false,
+    "LookAt": {
+      "Source": "ACTOR",
+      "Resolve": "TRANSFORM",
+      "PartIndex": 0,
+      "AnchorTag": "",
+      "LocalOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    }
+  }
+}

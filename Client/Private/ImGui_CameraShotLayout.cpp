@@ -154,6 +154,28 @@ void CImGui_CameraShotLayout::Refresh_DocAfterLoad()
 		Ensure_ChannelKeyUIDs(*pChannel);
 		Clamp_ChannelToDuration(*pChannel, fDuration);
 	}
+
+	Ensure_ChannelKeyUIDs(m_tDoc.tShotDesc.Controller.LocalPosX);
+	Ensure_ChannelKeyUIDs(m_tDoc.tShotDesc.Controller.LocalPosY);
+	Ensure_ChannelKeyUIDs(m_tDoc.tShotDesc.Controller.LocalPosZ);
+
+	Clamp_ChannelToDuration(m_tDoc.tShotDesc.Controller.FovDeltaDeg, fDuration);
+	Clamp_ChannelToDuration(m_tDoc.tShotDesc.Controller.RotYawDeg, fDuration);
+	Clamp_ChannelToDuration(m_tDoc.tShotDesc.Controller.RotPitchDeg, fDuration);
+	Clamp_ChannelToDuration(m_tDoc.tShotDesc.Controller.RotRollDeg, fDuration);
+	Clamp_ChannelToDuration(m_tDoc.tShotDesc.Controller.LocalPosX, fDuration);
+	Clamp_ChannelToDuration(m_tDoc.tShotDesc.Controller.LocalPosY, fDuration);
+	Clamp_ChannelToDuration(m_tDoc.tShotDesc.Controller.LocalPosZ, fDuration);
+
+	Sort_Channel(m_tDoc.tShotDesc.Controller.FovDeltaDeg);
+	Sort_Channel(m_tDoc.tShotDesc.Controller.RotYawDeg);
+	Sort_Channel(m_tDoc.tShotDesc.Controller.RotPitchDeg);
+	Sort_Channel(m_tDoc.tShotDesc.Controller.RotRollDeg);
+	Sort_Channel(m_tDoc.tShotDesc.Controller.LocalPosX);
+	Sort_Channel(m_tDoc.tShotDesc.Controller.LocalPosY);
+	Sort_Channel(m_tDoc.tShotDesc.Controller.LocalPosZ);
+
+	Rebuild_NexctChannelKeyUID();
 }
 
 // ÆÄÀÏ IO
@@ -233,6 +255,49 @@ void CImGui_CameraShotLayout::Load_DocumentFromFile()
 		return;
 
 	Apply_DocFromPreset(*pPreset);
+}
+
+_int CImGui_CameraShotLayout::Find_MaxChannelKeyUID() const
+{
+	_int iMaxUID = 0;
+
+	auto CheckChannel = [&iMaxUID](const CAMERA_SHOT_CHANNEL_1D& ch)
+		{
+			for (const auto& key : ch.vecKeys)
+				iMaxUID = (std::max)(iMaxUID, static_cast<_int>(key.iEditorUID));
+		};
+
+	const auto& p = m_tDoc.tShotDesc.Pivot;
+	CheckChannel(p.PivotOffsetX);
+	CheckChannel(p.PivotOffsetY);
+	CheckChannel(p.PivotOffsetZ);
+	CheckChannel(p.LookAtOffsetX);
+	CheckChannel(p.LookAtOffsetY);
+	CheckChannel(p.LookAtOffsetZ);
+	CheckChannel(p.LocalX);
+	CheckChannel(p.LocalY);
+	CheckChannel(p.LocalZ);
+	CheckChannel(p.OrbitYawDeg);
+
+	const auto& c = m_tDoc.tShotDesc.Controller;
+	CheckChannel(c.FovDeltaDeg);
+	CheckChannel(c.RotYawDeg);
+	CheckChannel(c.RotPitchDeg);
+	CheckChannel(c.RotRollDeg);
+	CheckChannel(c.LocalPosX);
+	CheckChannel(c.LocalPosY);
+	CheckChannel(c.LocalPosZ);
+
+	return iMaxUID;
+}
+
+void CImGui_CameraShotLayout::Rebuild_NexctChannelKeyUID()
+{
+	const _int iMaxUID = Find_MaxChannelKeyUID();
+	m_iNextChannelKeyUID = iMaxUID + 1;
+
+	if (m_iNextChannelKeyUID <= 0)
+		m_iNextChannelKeyUID = 1;
 }
 
 void CImGui_CameraShotLayout::Delete_CurrentPreset()

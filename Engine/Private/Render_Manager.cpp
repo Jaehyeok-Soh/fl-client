@@ -371,6 +371,7 @@ HRESULT CRender_Manager::Render()
 			// 투명 물체들 값 저장.
 			if (FAILED(Render_NonLights())) return E_FAIL;
 			if (FAILED(Render_Blend())) return E_FAIL;
+			if (FAILED(Render_GhostTrail())) return E_FAIL;
 
 			if (FAILED(m_pGameInstance->End_MRT())) return E_FAIL;
 		}
@@ -909,6 +910,23 @@ HRESULT CRender_Manager::Render_Outline()
 	m_pVIBuffer->Bind_Resource();
 	m_pVIBuffer->Render();
 
+	return S_OK;
+}
+
+HRESULT CRender_Manager::Render_GhostTrail()
+{
+	for (CGameObject* pElement : m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::GHOST_TRAIL)])
+	{
+		if (FAILED(pElement->Render_GhostTrail()))
+		{
+			Safe_Release(pElement);
+			m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::GHOST_TRAIL)].clear();
+			return E_FAIL;
+		}
+
+		Safe_Release(pElement);
+	}
+	m_renderObjects[ENUM_TO_UINT(RENDER_CATEGORY::GHOST_TRAIL)].clear();
 	return S_OK;
 }
 

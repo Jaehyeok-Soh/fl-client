@@ -23,7 +23,7 @@ void CUIQTE_Manager::Start_QTE(_uint iNodeCount)
 		MSG_BOX("iNodeCount is Zero");
 		return;
 	}
-	m_pGameInstance->Active_TimeStop();
+	m_pGameInstance->Active_SloMo(0.1f);
 
 	m_vecQTEData.clear();
 
@@ -124,7 +124,7 @@ void CUIQTE_Manager::Success_QTE()
 		// QTE 이벤트 끝 //
 		m_isStartQTE = false;
 		m_pGameInstance->Broadcast<QTE_CLEAR>();
-		m_pGameInstance->Deactive_TimeStop();
+		m_pGameInstance->Deactivate_SloMo();
 	}
 }
 

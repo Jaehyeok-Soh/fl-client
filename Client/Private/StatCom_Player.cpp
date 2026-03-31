@@ -64,7 +64,6 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 		// 초기는 우선 근접 무기로 설정해둠
 		m_FAttState = Attack_State::Melee;
 		pDesc->fAttack = m_fMeleeAtt;
-
 		return S_OK;
 	}
 

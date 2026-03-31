@@ -370,6 +370,171 @@ void CModel::Update_PartModel(CComputeShader* pParentBoneComBineCS, CComputeShad
 	}
 }
 
+_bool CModel::Has_GhostTrailSnapshots() const
+{
+	return m_vecGhostSnapshots.empty() == false;
+}
+
+void CModel::Set_GhostTrailDesc(const GHOST_TRAIL_DESC& desc)
+{
+	m_tGhostTrail = desc;
+}
+
+void CModel::Enable_GhostTrail()
+{
+	Clear_GhostTrail();
+
+	m_tGhostTrail = Init_GhostTrailDesc(m_tGhostTrail);
+	m_bGhostActive = true;
+	m_iGhostSpawnedCount = 0;
+	m_fGhostAccTime = 0.f;
+	m_vecGhostSnapshots.reserve(m_tGhostTrail.iMaxCount);
+}
+
+void CModel::Disable_GhostTrail()
+{
+	m_bGhostActive = false;
+	m_fGhostAccTime = 0.f;
+}
+
+void CModel::Clear_GhostTrail()
+{
+	m_bGhostActive = false;
+	m_iGhostSpawnedCount = 0;
+	m_fGhostAccTime = 0.f;
+
+	for (auto& s : m_vecGhostSnapshots)
+		Safe_Release(s.pBoneBuffer);
+
+	m_vecGhostSnapshots.clear();
+}
+
+void CModel::Set_GhostColor(const Vec4& vColor)
+{
+	m_tGhostTrail.vColor = vColor;
+}
+
+void CModel::Update_GhostTrail(_float fTimeDelta)
+{
+	if (m_vecGhostSnapshots.empty() && !m_bGhostActive)
+		return;
+
+	for (auto it = m_vecGhostSnapshots.begin(); it != m_vecGhostSnapshots.end(); )
+	{
+		it->fElapsed += fTimeDelta;
+
+		const _float fLifeTime = (std::max)(g_XMEpsilon.f[0], it->fLifeTime);
+		if (it->fElapsed >= fLifeTime)
+		{
+			Safe_Release(it->pBoneBuffer);
+			it = m_vecGhostSnapshots.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+	m_fGhostTrailDelta = fTimeDelta;
+}
+
+void CModel::Capture_Ghsot(CComputeShader* pBoneCombineCS, const Matrix& matWorld)
+{
+	if (m_bGhostActive == false || !pBoneCombineCS)
+		return;
+
+	if (m_tGhostTrail.iMaxCount == 0)
+		return;
+
+	if (m_iGhostSpawnedCount >= m_tGhostTrail.iMaxCount)
+	{
+		m_bGhostActive = false;
+		return;
+	}
+
+	m_fGhostAccTime += m_fGhostTrailDelta;
+	if (m_fGhostAccTime < m_tGhostTrail.fInterval)
+		return;
+
+	m_fGhostAccTime -= m_tGhostTrail.fInterval;
+
+	StructuredBuffer* pSrc = pBoneCombineCS->Get_Output_Buffer();
+	if (pSrc == nullptr)
+		return;
+
+	StructuredBuffer* pCopy = StructuredBuffer::Create(
+		m_pDevice, m_pDeviceContext,
+		pSrc->m_iElementSize,
+		pSrc->m_iElementCount);
+
+	pCopy->CopyFrom(pSrc);
+
+	GHOST_SNAPSHOT tSnap;
+	tSnap.pBoneBuffer = pCopy;
+	tSnap.matWorld = matWorld;
+	tSnap.fLifeTime = m_tGhostTrail.fLifeTime;
+	tSnap.fElapsed = 0.f;
+
+	m_vecGhostSnapshots.push_back(std::move(tSnap));
+	++m_iGhostSpawnedCount;
+
+	if (m_iGhostSpawnedCount >= m_tGhostTrail.iMaxCount)
+		m_bGhostActive = false;
+}
+
+HRESULT CModel::Render_GhostTrail(CShader* pShader, CComputeShader* pBoneMeshCS, CComputeShader* pBoneCombineCS, _uint iGhostPass)
+{
+	if (m_vecGhostSnapshots.empty())
+		return S_OK;
+
+	if (pShader == nullptr || pBoneMeshCS == nullptr || pBoneCombineCS == nullptr)
+		return E_FAIL;
+
+	// 원본 백업
+	StructuredBuffer* pOriginal = pBoneCombineCS->Get_Output_Buffer();
+	if (pOriginal == nullptr)
+		return E_FAIL;
+	_uint iOriginPassIndex = pShader->Get_CurrentPass();
+	
+	pShader->Set_Pass(iGhostPass);
+	for (auto& tSnap : m_vecGhostSnapshots)
+	{
+		if (tSnap.pBoneBuffer == nullptr)
+			continue;
+
+		const _float fLifeTime = (std::max)(g_XMEpsilon.f[0], tSnap.fLifeTime);
+		const _float fT = (std::min)(1.f, tSnap.fElapsed / fLifeTime);
+
+		// 선형보다 약간 더 부드럽게 사라지게
+		const _float fAlpha = 1.f - fT * fT;
+
+		SHADER_GHOST_TRAIL trailDesc{};
+		trailDesc.vColor = m_tGhostTrail.vColor;
+		trailDesc.vColor.w *= (std::max)(0.f, fAlpha);
+
+		pShader->Bind_GhostTrail(trailDesc);
+		pShader->Bind_TransformData(tSnap.matWorld);
+
+		pBoneCombineCS->Set_OutputStructuredBuffer(tSnap.pBoneBuffer);
+
+		for (_uint i = 0; i < Get_MeshCount(); ++i)
+		{
+			// 전제:
+			// Bind_Bones 내부가 snapshot output buffer를 덮어쓰지 않아야 함
+			Bind_Bones(pShader, i, pBoneMeshCS, pBoneCombineCS);
+
+			pShader->Apply();
+			m_vecMeshes[i]->Bind_Resource();
+			m_vecMeshes[i]->Render();
+		}
+	}
+
+	// 원본 복원
+	pBoneCombineCS->Set_OutputStructuredBuffer(pOriginal);
+	pShader->Set_Pass(iOriginPassIndex);
+	return S_OK;
+}
+
 HRESULT CModel::Set_PassByMesh(class CShader* pShader, _uint iMeshIndex)
 {
 	if (pShader == nullptr || iMeshIndex >= m_vecMeshes.size())
@@ -2189,6 +2354,21 @@ RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT
 	return desc;
 }
 
+CModel::GHOST_TRAIL_DESC CModel::Init_GhostTrailDesc(CModel::GHOST_TRAIL_DESC tDesc)
+{
+	if (tDesc.fInterval <= 0.f)
+		tDesc.fInterval = 0.03f;
+
+	if (tDesc.fLifeTime <= 0.f)
+		tDesc.fLifeTime = 0.18f;
+
+	if (tDesc.iMaxCount == 0)
+		tDesc.iMaxCount = 1;
+
+	tDesc.vColor.w = (std::max)(0.f, tDesc.vColor.w);
+	return tDesc;
+}
+
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
 {
 	CModel* pInstance = new CModel(pDevice, pDeviceContext);
@@ -2214,6 +2394,8 @@ CComponent* CModel::Clone(void* pArg)
 void CModel::Free()
 {
 	Super::Free();
+
+	Clear_GhostTrail();
 
 	/* Prototype 일떄만 지운다 */
 	if (!CComponent::IsClone())

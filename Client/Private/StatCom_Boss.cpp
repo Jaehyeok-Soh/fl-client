@@ -75,6 +75,7 @@ void CStatCom_Boss::Sub_Hp(_float fHealth)
 
 	if (m_vHealth.x < 0)
 		m_vHealth.x = 0;
+
 	else if ((m_vHealth.x / m_vHealth.y <= 0.5f))
 	{
 		CMonsterControlContext* pCC = Get_Owner()->Get_Component<CMonsterControlContext>();

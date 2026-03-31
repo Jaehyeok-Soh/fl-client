@@ -8,12 +8,12 @@
       "LocalOffset": {
         "x": 0.0,
         "y": 0.0,
-        "z": -1.2999999523162842
+        "z": 0.0
       },
       "ApplyStartPoseImmediately": true
     },
     "Pivot": {
-      "Duration": 3.0,
+      "Duration": 5.400000095367432,
       "FollowLivePivot": true,
       "FollowLiveLookAt": true,
       "LookAtTarget": true,
@@ -25,71 +25,283 @@
         "Keys": []
       },
       "PivotOffsetZ": {
-        "Keys": [
-          {
-            "Time": 0.10000000149011612,
-            "Value": 0.0,
-            "Ease": "SmoothStep",
-            "EditorUID": 3
-          },
-          {
-            "Time": 0.8999999761581421,
-            "Value": -0.5,
-            "Ease": "EaseInOutQuad",
-            "EditorUID": 2
-          },
-          {
-            "Time": 2.4000000953674316,
-            "Value": 2.799999952316284,
-            "Ease": "EaseInOutQuad",
-            "EditorUID": 10
-          }
-        ]
+        "Keys": []
       },
       "LookAtOffsetX": {
         "Keys": []
       },
       "LookAtOffsetY": {
-        "Keys": []
+        "Keys": [
+          {
+            "Time": 0.0,
+            "Value": 0.0,
+            "Ease": "SmoothStep",
+            "EditorUID": 141
+          },
+          {
+            "Time": 2.4800000190734863,
+            "Value": 0.0,
+            "Ease": "SmoothStep",
+            "EditorUID": 143
+          },
+          {
+            "Time": 3.180000066757202,
+            "Value": -0.6000000238418579,
+            "Ease": "SmoothStep",
+            "EditorUID": 142
+          }
+        ]
       },
       "LookAtOffsetZ": {
         "Keys": []
       },
       "LocalX": {
-        "Keys": []
+        "Keys": [
+          {
+            "Time": 0.0,
+            "Value": 0.9300000071525574,
+            "Ease": "SmoothStep",
+            "EditorUID": 70
+          },
+          {
+            "Time": 0.6399999856948853,
+            "Value": 0.6000000238418579,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 71
+          },
+          {
+            "Time": 0.6800000071525574,
+            "Value": 0.6000000238418579,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 72
+          },
+          {
+            "Time": 2.2799999713897705,
+            "Value": -3.4100000858306885,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 73
+          },
+          {
+            "Time": 2.4000000953674316,
+            "Value": -2.859999895095825,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 74
+          },
+          {
+            "Time": 2.4800000190734863,
+            "Value": 0.8700000047683716,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 75
+          },
+          {
+            "Time": 3.180000066757202,
+            "Value": 1.8700000047683716,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 76
+          },
+          {
+            "Time": 3.509999990463257,
+            "Value": 1.399999976158142,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 77
+          },
+          {
+            "Time": 4.28000020980835,
+            "Value": -1.7799999713897705,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 79
+          },
+          {
+            "Time": 5.400000095367432,
+            "Value": -3.2100000381469727,
+            "Ease": "SmoothStep",
+            "EditorUID": 81
+          }
+        ]
       },
       "LocalY": {
         "Keys": [
           {
-            "Time": 0.8999999761581421,
-            "Value": 0.0,
+            "Time": 0.0,
+            "Value": -0.10999999940395355,
             "Ease": "SmoothStep",
-            "EditorUID": 12
+            "EditorUID": 123
+          },
+          {
+            "Time": 0.6399999856948853,
+            "Value": 0.0,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 124
+          },
+          {
+            "Time": 0.6800000071525574,
+            "Value": 0.0,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 125
+          },
+          {
+            "Time": 2.2799999713897705,
+            "Value": -2.0799999237060547,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 126
           },
           {
             "Time": 2.4000000953674316,
-            "Value": -0.699999988079071,
+            "Value": -1.5199999809265137,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 127
+          },
+          {
+            "Time": 2.4800000190734863,
+            "Value": -3.619999885559082,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 128
+          },
+          {
+            "Time": 3.180000066757202,
+            "Value": -3.7899999618530273,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 129
+          },
+          {
+            "Time": 3.509999990463257,
+            "Value": -3.509999990463257,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 130
+          },
+          {
+            "Time": 3.690000057220459,
+            "Value": -2.1700000762939453,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 131
+          },
+          {
+            "Time": 4.28000020980835,
+            "Value": -2.0999999046325684,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 132
+          },
+          {
+            "Time": 5.389999866485596,
+            "Value": -2.869999885559082,
             "Ease": "SmoothStep",
-            "EditorUID": 11
+            "EditorUID": 134
           }
         ]
       },
       "LocalZ": {
-        "Keys": []
+        "Keys": [
+          {
+            "Time": 0.0,
+            "Value": -1.8700000047683716,
+            "Ease": "SmoothStep",
+            "EditorUID": 29
+          },
+          {
+            "Time": 0.6399999856948853,
+            "Value": -1.190000057220459,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 30
+          },
+          {
+            "Time": 0.6800000071525574,
+            "Value": -1.190000057220459,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 31
+          },
+          {
+            "Time": 2.2799999713897705,
+            "Value": -8.819999694824219,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 32
+          },
+          {
+            "Time": 2.4000000953674316,
+            "Value": -9.0,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 33
+          },
+          {
+            "Time": 2.4800000190734863,
+            "Value": -14.0,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 34
+          },
+          {
+            "Time": 3.180000066757202,
+            "Value": -14.199999809265137,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 35
+          },
+          {
+            "Time": 3.509999990463257,
+            "Value": -13.0,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 36
+          },
+          {
+            "Time": 4.28000020980835,
+            "Value": -2.8399999141693115,
+            "Ease": "EaseInOutQuad",
+            "EditorUID": 38
+          },
+          {
+            "Time": 5.389999866485596,
+            "Value": -3.9700000286102295,
+            "Ease": "SmoothStep",
+            "EditorUID": 40
+          }
+        ]
       },
       "OrbitYawDeg": {
         "Keys": [
           {
-            "Time": 0.4000000059604645,
-            "Value": 0.0,
+            "Time": 0.0,
+            "Value": -25.299999237060547,
             "Ease": "Linear",
             "EditorUID": 5
           },
           {
-            "Time": 1.0,
-            "Value": -20.0,
+            "Time": 0.6399999856948853,
+            "Value": -25.299999237060547,
             "Ease": "EaseInOutQuad",
             "EditorUID": 4
+          },
+          {
+            "Time": 2.2799999713897705,
+            "Value": 24.5,
+            "Ease": "SmoothStep",
+            "EditorUID": 16
+          },
+          {
+            "Time": 2.4000000953674316,
+            "Value": 27.299999237060547,
+            "Ease": "SmoothStep",
+            "EditorUID": 135
+          },
+          {
+            "Time": 2.4800000190734863,
+            "Value": 18.700000762939453,
+            "Ease": "SmoothStep",
+            "EditorUID": 136
+          },
+          {
+            "Time": 3.380000114440918,
+            "Value": -0.10000000149011612,
+            "Ease": "SmoothStep",
+            "EditorUID": 137
+          },
+          {
+            "Time": 4.28000020980835,
+            "Value": -4.900000095367432,
+            "Ease": "SmoothStep",
+            "EditorUID": 138
+          },
+          {
+            "Time": 5.389999866485596,
+            "Value": 44.20000076293945,
+            "Ease": "SmoothStep",
+            "EditorUID": 140
           }
         ]
       }

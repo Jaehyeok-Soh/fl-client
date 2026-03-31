@@ -617,9 +617,7 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 	}*/
 
 	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
-
 	CUIQTE_Manager::GetInstance()->Tick_QTE(fTimeDelta);
-
 }
 
 
