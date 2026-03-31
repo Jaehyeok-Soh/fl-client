@@ -31,6 +31,7 @@ enum class MESHSHADERPASS
     MESH_NONEDEPTH,
     MESH_CHAIN,
     MESH_DECAL,
+    MESH_BUTTERFLY,
 };
 
 enum class TEXTURESHADERPASS
@@ -45,6 +46,8 @@ enum class TEXTURESHADERPASS
 
     LINE_TEXTURE_Blend,
     LINE_TEXTURE_NONEDEPTH,
+    Distotion_Texture,
+    CampFire_Texture,
 };
 
 enum class E_EFFECTTYPE { NONE = 0, Particle, Mesh, Trail };
@@ -68,7 +71,7 @@ enum class E_SHAPETYPE {
     DROP,
     RISE,
     SPREAD,
-    STRAIGHT,
+    STOP,
     SPIRAL,
     DNA,
     GATHER,   // 중앙으로 모이기
@@ -81,6 +84,10 @@ enum class E_SHAPETYPE {
     IRREGULAR_SPREAD,
     IRREGULAR_FOUNTAIN,
     SNOW_SPLASH,
+    BUTTERFLY_ORBIT,
+    BUTTERFLY_MOBIUS,
+    FIREFLIES,
+    BOUNCEDROP
 };
 enum class E_SIMULATION_SPACE { LOCAL, WORLD };
 enum class E_EMISSION_TYPE { BOX = 0, CIRCLE, SPHERE, CONE, CIRCLE_EDGE};

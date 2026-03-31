@@ -464,6 +464,8 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Twist")))
 			return E_FAIL;
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Animal")))
+			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/SkyBox")))
 			return E_FAIL;
 
