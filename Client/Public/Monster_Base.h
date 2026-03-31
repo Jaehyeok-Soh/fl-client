@@ -142,6 +142,10 @@ public:
 	// Camera Interface
 	virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) override;
 	virtual CTransform* Get_CameraAnchorOwnerTransform() override;
+
+public:
+	_bool Monster_IsGroggy();
+
 protected:
 	HRESULT				Ready_BaseStates();
 	HRESULT				Ready_PartObjects(void* pArg);
