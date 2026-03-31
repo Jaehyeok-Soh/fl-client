@@ -512,7 +512,7 @@ void CBoss_Lianhuo::Set_GhostTrailDesc()
 
 	CModel::GHOST_TRAIL_DESC desc{};
 	desc.fInterval = 0.15f;
-	desc.iMaxCount = 8;
+	desc.iMaxCount = 12;
 	desc.vColor = Vec4(1.00f, 0.32f, 0.18f, 0.42f);
 	pBody->Get_Component<CModel>()->Set_GhostTrailDesc(desc);
 }

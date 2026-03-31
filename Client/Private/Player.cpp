@@ -908,7 +908,9 @@ void CPlayer::Set_GhostTrailDesc()
         return;
 
     CModel::GHOST_TRAIL_DESC desc{};
-    desc.vColor = Vec4(1.00f, 0.92f, 0.70f, 0.36f);
+    desc.iMaxCount = 13;
+    desc.fLifeTime = 0.5f;
+    desc.vColor = Vec4(1.00f, 0.92f, 0.70f, 0.26f);
     pBody->Get_Component<CModel>()->Set_GhostTrailDesc(desc);
 }
 

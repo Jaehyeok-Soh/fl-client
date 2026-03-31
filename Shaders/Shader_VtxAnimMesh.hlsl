@@ -432,7 +432,7 @@ PS_OUT_WBOIT PS_GHOST(PS_IN_SKELETON input)
     float fFresnel = pow(1.f - saturate(dot(vViewDir, vNormal)), 2.f);
 
     float3 srcRGB = ghostTrailParam.vColor.rgb + ghostTrailParam.vColor.rgb * fFresnel * 0.5f;
-    float srcAlpha = ghostTrailParam.vColor.a * (0.5f + fFresnel * 0.5f);
+    float srcAlpha = ghostTrailParam.vColor.a * (0.5f + fFresnel * 0.2f);
     float w = pow(saturate(1.0f - input.fViewZ / 1000.0f), 3.0f); // 3승으로 변화율 조절
     w = clamp(w, 0.01f, 3000.0f); // 상한선을 적당히 열어주되, 하한선으로 방어
 
