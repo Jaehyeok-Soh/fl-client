@@ -12,10 +12,13 @@
 #include "MonsterControlContext.h"
 #include "Xibi_GimmikController.h"
 #include "Weapon.h"
-#include "GameInstance.h"
+#include "MyStat.h"
 #include "UI_Manager.h"
 #include "UIIcon_Component.h"
-#include "MyStat.h"
+#include "SoundEventBinder.h"
+#include "Body.h"
+
+#include "GameInstance.h"
 
 CBoss_Xibi::CBoss_Xibi(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -62,6 +65,9 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 
 	if (FAILED(Ready_StateIndexForDirecting()))
 		return E_FAIL;
+
+	if (FAILED(Ready_SoundHandler()))
+		return E_FAIL;
 	
 	return S_OK;
 }
@@ -83,6 +89,46 @@ HRESULT CBoss_Xibi::Ready_GlobalEvent()
 
 		return S_OK;
 		});
+
+
+	m_pGameInstance->Subscribe<CCS_EVENT>([this](const CCS_BROADCAST_DESC& tDesc) {
+		Set_Render(true);
+	
+		for (auto& CCS_Event : tDesc.vecCCS_Event_Desc)
+		{
+			_uint iSubscribeHash = TO_HASH(CCS_Event.strSubscriberName.c_str());
+
+			switch (iSubscribeHash)
+			{
+			case TO_HASH("Xibila_Cinematic_State"):
+			{
+				for (auto& Action : CCS_Event.vecActionNames)
+				{
+					_uint iActionHash = TO_HASH(Action.c_str());
+					switch (iActionHash)
+					{
+					case TO_HASH("Default"):
+					{
+						if (FAILED(Change_State_ForDirecting(CBoss_Xibi::EStateForDirecting::Direction)))
+						{
+							MSG_BOX(" Boss 연출 Direction 실패 ");
+							return E_FAIL;
+						}
+						return S_OK;
+					}
+					default:
+						break;
+					}
+
+				}
+			}
+				break;
+			default:
+				break;
+			}
+		}
+		});
+
 
 	m_pGameInstance->Subscribe<XIBI_CHANGE_STATE_BOSS_IDLE>([this]() {
 		if (FAILED(Change_State_ForDirecting(CBoss_Xibi::EStateForDirecting::Idle)))
@@ -276,7 +322,7 @@ HRESULT CBoss_Xibi::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 35000.f;
+	desc.fMaxHp = 180000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 
@@ -290,17 +336,17 @@ HRESULT CBoss_Xibi::Ready_Weapon()
 {
 	// Weapons
 	{
-		CWeapon::WEAPON_DESC weaponDesc = {};
-		weaponDesc.wstrModelPrototypeName = L"Prototype_Component_Model_XibiWeapon";
-		weaponDesc.pMatParent = &Get_Component<CTransform>()->Get_WorldMatrix();
-		weaponDesc.pMatHandSocket = Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_SocketMatrix(75);
-		weaponDesc.eModel		= CWeapon::Weapon_ModelType::ANIM;
-		weaponDesc.eAnimState	= CWeapon::AnimState::PLAY;
-		weaponDesc.eState = CWeapon::State::HAND;//CWeapon::State::HAND_ONLY_POS_SCALE;
-		weaponDesc.bMianWeapon = true;
-		weaponDesc.FDescFlag = 0;
+		CWeapon::WEAPON_DESC weaponDesc		= {};
+		weaponDesc.wstrModelPrototypeName	= L"Prototype_Component_Model_XibiWeapon";
+		weaponDesc.pMatParent		= &Get_Component<CTransform>()->Get_WorldMatrix();
+		weaponDesc.pMatHandSocket	= Get_Part<CBoss_Xibi_Body>(Part::BODY)->Get_SocketMatrix(75);
+		weaponDesc.eModel			= CWeapon::Weapon_ModelType::ANIM;
+		weaponDesc.eAnimState		= CWeapon::AnimState::PLAY;
+		weaponDesc.eState			= CWeapon::State::HAND;		//CWeapon::State::HAND_ONLY_POS_SCALE;
+		weaponDesc.bMianWeapon		= true;
+		weaponDesc.FDescFlag		= 0;
 
-		weaponDesc.iStartAnimIdx = 2;
+		weaponDesc.iStartAnimIdx	= 2;
 
 
 		weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(180.f), XMConvertToRadians(100.f), XMConvertToRadians(0.f));
@@ -400,6 +446,21 @@ HRESULT CBoss_Xibi::Ready_StateIndexForDirecting()
 	return S_OK;
 }
 
+HRESULT CBoss_Xibi::Ready_SoundHandler()
+{
+	CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CSoundEventBinder* pResult = CSoundEventBinder::Create(0, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Boss_Xibi.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
+	return S_OK;
+}
 CBoss_Xibi* CBoss_Xibi::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {
 	CBoss_Xibi* pInsatnce = new CBoss_Xibi(pDevice, pDeviceContext);

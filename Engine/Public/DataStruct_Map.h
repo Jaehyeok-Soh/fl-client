@@ -593,6 +593,8 @@ inline EWaterTextureType WaterTextureType_ToEnum(const std::string& strType)
 
 struct WATER_DESC : public CLIENT_MAKEPATH_DESC_BASE
 {
+	_bool isUseRipple{false};
+
 	/* Binding 시켜주고있을 TextureBase 슬롯  */
 	Vec4	vMI_TintColor{1.f,1.f,1.f,1.f};
 
@@ -619,6 +621,7 @@ public:
 		, vDistortionUVPower{1.f,1.f}
 		, fSparklePower{1.f}
 		, vSparkleUVPower{1.f,1.f}
+		, isUseRipple{false}
 	{
 		arrayTextureBase.fill(nullptr);
 	}
@@ -740,7 +743,7 @@ public:
 	Vec3		vOffsetPosition{0.f,0.f,0.f};	// Model위치에 따른 Offset 포지션
 
 	float       fEmissviePower{};
-
+	float		fCurLightRangeRatio{};
 	/* Debug용 */
 	class CLight* pDebugLight{ nullptr };
 public:

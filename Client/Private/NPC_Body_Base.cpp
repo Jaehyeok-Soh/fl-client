@@ -100,7 +100,10 @@ void CNPC_Body_Base::Update(_float fTimeDelta)
 		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pAnimMix);
 
 	// Shake & Emissive ¿¬Ãâ¿ë
-	Get_Component<CRenderFx>()->Update(fTimeDelta);
+
+	CRenderFx* pFx = Get_Component<CRenderFx>();
+	if(pFx)
+		pFx->Update(fTimeDelta);
 }
 
 void CNPC_Body_Base::Update_Late(_float fTimeDelta)

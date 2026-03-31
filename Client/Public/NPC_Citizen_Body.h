@@ -42,7 +42,10 @@ public:
 	virtual void			OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool			On_Hit(const HIT_DESC& hitDesc) override;
 	virtual HRESULT			Render() override;
+	virtual HRESULT			Ready_DissolveEffect_Setting();
+
 public:
+	void					DissolveStarts();
 	HRESULT					Change_Animation(_uint iAnimIndex);
 protected:
 	HRESULT					Ready_Component(NPC_CITIZEN_BODY* pDesc);
@@ -50,6 +53,8 @@ protected:
 	HRESULT					Ready_ShaderPass(NPC_CITIZEN_BODY* pDesc);
 	HRESULT					Ready_FaceData(NPC_CITIZEN_BODY* pDesc);
 private:
+	_int					m_iAnimIndex{};
+
 	CComputeShader*			m_pBoneMeshCS;
 	CComputeShader*			m_pBoneCombineCS;
 	CComputeShader*			m_pAnimECS;
@@ -57,6 +62,10 @@ private:
 	CComputeShader*			m_pAnimMix;
 
 	SHADER_RGBCOLOR_DESC	m_tRGBColorDesc;
+
+
+	DissolveEffectDesc		m_tDissolveDesc = {};
+
 
 	vector<EAnimShaderPass>			m_vecShaderPass;
 	DTO::CB_CitizentFaceData		m_tCBCitizenFaceData;

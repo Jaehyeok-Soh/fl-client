@@ -213,6 +213,7 @@ HRESULT CBuilder_Map::LevelData_Setting(const DTO::TLevelData& tData)
 		tDesc.wstrTextureTag = Engine_Utils::ToWString(tData.strSKyBoxTextureName);
 
 		CTransform::TRANSFORM_DESC tTsDesc{};
+		tTsDesc.ScaleMatrix = Matrix::CreateScale(tData.vSkyBoxScale);
 		tTsDesc.RotationMatrix = Matrix::CreateFromYawPitchRoll(
 			XMConvertToRadians(tData.vSkyBoxPitchYawRoll.y), XMConvertToRadians(tData.vSkyBoxPitchYawRoll.x), XMConvertToRadians(tData.vSkyBoxPitchYawRoll.z));
 		tTsDesc.TranslationMatrix = Matrix::CreateTranslation(tData.vSkyBoxPositionOffset);
@@ -525,9 +526,11 @@ HRESULT CBuilder_Map::Create_Water(const DTO::TMap_MapObjectData& tData)
 
 	tDesc.vMI_TintColor								= pOriginDesc->vMI_TintColor;
 
+	tDesc.isUseRipple = pOriginDesc->isUseRipple;
+
 	m_pGameInstance->Add_GameObject(
 		ENUM_TO_UINT(ELevelType::STATIC), g_wszWater_Prototype_Tag ,
-		tDesc.iLevelIndex, g_wszStaticObjectLayer, &tDesc);
+		tDesc.iLevelIndex, g_wszWaterLayer, &tDesc);
 
 	return S_OK;
 }

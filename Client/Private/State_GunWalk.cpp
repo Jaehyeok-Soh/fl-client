@@ -43,7 +43,7 @@ HRESULT CState_GunWalk::Initialize(void* pArg)
 
 	tSuperDesc.vecChangeState_ByKey = vecChangeState_ByKey;
 
-	tSuperDesc.FWeaponChanges = CStateBase_Player::WEAPONCHANGEFLAGS::Change_Check | CStateBase_Player::WEAPONCHANGEFLAGS::Change_NextFrame;
+	tSuperDesc.FWeaponChanges = 0;
 
 	if (FAILED(Super::Initialize(&tSuperDesc)))
 		return E_FAIL;

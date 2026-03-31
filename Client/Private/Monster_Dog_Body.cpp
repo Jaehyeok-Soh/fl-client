@@ -44,6 +44,36 @@ HRESULT CMonster_Dog_Body::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
+
+	m_tCBMonsterEmotion.vSkinColor		= {0.f,0.f,0.f,10.f};
+	m_tCBMonsterEmotion.vEmotionColor	= {1.f,1.f,1.f,1.f};
+
+	return S_OK;
+}
+
+HRESULT CMonster_Dog_Body::Ready_ShaderPass()
+{
+	CModel* pModel = Get_Component<CModel>();
+	if (pModel == nullptr) return E_FAIL;
+
+	_uint iMeshCount = pModel->Get_MeshCount();
+
+	m_vecAnimShaderPass.reserve(iMeshCount);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		wstring wstrMtlName = pModel->Get_MaterialName(i);
+
+		if (wstrMtlName.empty())
+			continue;
+
+		EAnimShaderPass ePass{ EAnimShaderPass::WithRenderFx };
+		
+		if (wstrMtlName.find(L"Face") != std::wstring::npos)
+			ePass = EAnimShaderPass::MonsterFace;
+
+		m_vecAnimShaderPass.push_back(_int(ePass));
+	}
+
 	return S_OK;
 }
 
@@ -53,6 +83,9 @@ HRESULT CMonster_Dog_Body::Awake(const _uint iCurrentLevelIndex)
 		return E_FAIL;
 
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+
+
+	m_eEmotionType = EMonster_Emontion_Type::OnlyEye;
 
 	Get_Component<CModel>()->Change_Animation(pAnimECS, 1, true, true, false);
 

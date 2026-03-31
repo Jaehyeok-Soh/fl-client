@@ -73,7 +73,7 @@ HRESULT CMonster_Dog_Projectile_Circle::Ready_Moduels()
 		colliderDesc.bSetOnlyFilter = false;
 		colliderDesc.bIsActive = true;
 		colliderDesc.fRadius = 0.3f;
-		colliderDesc.strAttackPresetTag = "Xibi_Circle";
+		colliderDesc.strAttackPresetTag = "Dog_Projectile";
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 		colliderDesc.tMaterial = mtrlDesc;

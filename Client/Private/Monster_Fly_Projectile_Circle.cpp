@@ -30,7 +30,29 @@ HRESULT CMonster_Fly_Projectile_Circle::Initialize(void* pArg)
 	if (FAILED(Ready_Moduels()))
 		return E_FAIL;
 
+	m_arrHitSoundHash[HitSoundHashNum::LAUNCHED] = TO_HASH("sfx_enemy_Gr_Piaofu_C01_attack01_cast_r");
+	m_arrHitSoundHash[HitSoundHashNum::LOOP] = TO_HASH("sfx_enemy_Gr_Piaofu_C01_skill01_bullet_loop");
+	m_arrHitSoundHash[HitSoundHashNum::LANDED] = TO_HASH("sfx_enemy_Gr_Piaofu_C01_skill01_bullet_hit_r");
+
 	return S_OK;
+}
+
+void CMonster_Fly_Projectile_Circle::Update(const _float fTimeDelta)
+{
+	Super::Update(fTimeDelta);
+}
+
+void CMonster_Fly_Projectile_Circle::On_StateEnter(_uint iState)
+{
+	Super::On_StateEnter(iState);
+	m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::LOOP], 0.1f, 1.f, false);
+	m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::LAUNCHED], 0.1f, 1.f, false);
+}
+
+void CMonster_Fly_Projectile_Circle::On_StateExit(_uint iState)
+{
+	Super::On_StateExit(iState);
+	m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::LANDED], 0.1f, 1.f, false);
 }
 
 HRESULT CMonster_Fly_Projectile_Circle::Ready_Moduels()
@@ -73,7 +95,7 @@ HRESULT CMonster_Fly_Projectile_Circle::Ready_Moduels()
 		colliderDesc.bSetOnlyFilter = false;
 		colliderDesc.bIsActive = true;
 		colliderDesc.fRadius = 0.3f;
-		colliderDesc.strAttackPresetTag = "Xibi_Circle";
+		colliderDesc.strAttackPresetTag = "Dog_Projectile";
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 		colliderDesc.tMaterial = mtrlDesc;

@@ -704,6 +704,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_chase",
                             "tParam": {
                                 "bParam": [
@@ -1173,6 +1175,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -1686,6 +1690,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -2153,6 +2159,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -2620,6 +2628,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -3502,6 +3512,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_skill_spawn_trigger",
                                 "tParam": {
                                     "bParam": [
@@ -3908,7 +3920,7 @@
                         "bCountTime": false,
                         "bTimeReset": false,
                         "fMaxTime": 0.0,
-                        "fMinTime": 1.0,
+                        "fMinTime": 3.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [],
@@ -4157,6 +4169,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_die_process",
                                 "tParam": {
                                     "bParam": [
@@ -4205,6 +4219,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_on_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -4562,7 +4578,59 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_die_pose",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_trigger_dissolve",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -7373,6 +7441,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -7703,6 +7773,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -8668,6 +8740,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_off_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -8936,6 +9010,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_on_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -9291,6 +9367,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_dead",
                                 "tParam": {
                                     "bParam": [

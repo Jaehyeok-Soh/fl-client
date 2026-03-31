@@ -665,8 +665,8 @@ HRESULT CMainPlayer::Ready_Ability()
         desc.fComboCoolTime     = 7.f;
         desc.fDashCoolTime      = 2.f;
 
-        desc.fMeleeAttack       = 20.f;
-        desc.fGunAttack         = 20.f;
+        desc.fMeleeAttack       = 1000.f;
+        desc.fGunAttack         = 150.f;
 
         desc.pESkill = pESkill;
         desc.pQSkill = pQSkill;
@@ -1138,6 +1138,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
             | CStateBase_Player::COLLISIONFLAGS::C_Fly
             | CStateBase_Player::COLLISIONFLAGS::C_CheckF;
 
+
+
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNIDLE), CState_GunIdle::Create(pActionState, &tDesc))))
             return E_FAIL;
     }
@@ -1154,6 +1156,8 @@ HRESULT CMainPlayer::Ready_AttackStates()
             | CStateBase_Player::COLLISIONFLAGS::C_Strong
             | CStateBase_Player::COLLISIONFLAGS::C_Fly 
             | CStateBase_Player::COLLISIONFLAGS::C_CheckF;
+
+        
 
         if (FAILED(pActionState->Add_State(ENUM_TO_UINT(State::GUNWALK), CState_GunWalk::Create(pActionState, &tDesc))))
             return E_FAIL;

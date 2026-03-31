@@ -51,13 +51,13 @@ void CState_RunShort::Update(const _float fTimeDelta)
 
 	if(m_bCanRunLoop)
 	{
-		if (m_fStateElapsed <= 0.5f &&
+		if (m_fStateElapsed <= 9.5f / ANIMTIC &&
 			KEY_BUTTON_UP(DIK_LSHIFT))
 		{
 			m_bCanRunLoop = false;
 		}
 
-		else if(m_fStateElapsed > 0.5f)
+		else if(m_fStateElapsed > 9.5f / ANIMTIC)
 		{
 			Change_PlayerState(ENUM_TO_UINT(CPlayer::State::RUNLOOP));
 			return;

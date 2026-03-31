@@ -92,6 +92,9 @@ HRESULT CCinematicCamera::Play_Cinematic(CinematicCameraSequence* pCamCinematicS
 
     this->Get_Component<CTransform>()->Set_WorldMatrix(ReusltMatrix);
 
+
+    m_pCinematicSquence->BroadCast(CCS_BROADCAST_TYPE::BEGIN_CCS);
+
     m_pGameInstance->Change_MainCamera(CameraType::DYNAMIC,g_wszCinematicCameraTag);
 
     return S_OK;

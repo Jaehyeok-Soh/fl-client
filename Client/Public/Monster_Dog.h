@@ -16,7 +16,6 @@ private:
 
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
-
 public:
 	virtual HRESULT		Awake(const _uint iCurrentLevelID) override;
 	virtual void		Update_Priority(const _float fTimeDelta) override;
@@ -41,6 +40,7 @@ private:
 	HRESULT Ready_PartObjects();
 	HRESULT Ready_Components(void *pArg);
 	HRESULT Ready_SkillSpawner();
+	HRESULT Ready_SoundHandler();
 
 	HRESULT Ready_StateIndexForDirecting();
 	HRESULT Change_State_ForDirecting(_int iStateIdx);

@@ -219,6 +219,9 @@
     <ClInclude Include="..\Public\TriggerBox_MonsterWaveSpawner.h" />
     <ClInclude Include="..\Public\UINpcTextBubble_Image.h" />
     <ClInclude Include="..\Public\UINpcTextBubble_Text.h" />
+    <ClInclude Include="..\Public\UIQTE_Image.h" />
+    <ClInclude Include="..\Public\UIQTE_Manager.h" />
+    <ClInclude Include="..\Public\UIQTE_Text.h" />
     <ClInclude Include="..\Public\UIQuickSlot_Image.h" />
     <ClInclude Include="..\Public\UIQuickSlot_Manager.h" />
     <ClInclude Include="..\Public\UISceneFade_Image.h" />
@@ -520,6 +523,9 @@
     <ClCompile Include="..\Private\TriggerBox_MonsterWaveSpawner.cpp" />
     <ClCompile Include="..\Private\UINpcTextBubble_Image.cpp" />
     <ClCompile Include="..\Private\UINpcTextBubble_Text.cpp" />
+    <ClCompile Include="..\Private\UIQTE_Image.cpp" />
+    <ClCompile Include="..\Private\UIQTE_Manager.cpp" />
+    <ClCompile Include="..\Private\UIQTE_Text.cpp" />
     <ClCompile Include="..\Private\UIQuickSlot_Image.cpp" />
     <ClCompile Include="..\Private\UIQuickSlot_Manager.cpp" />
     <ClCompile Include="..\Private\UISceneFade_Image.cpp" />

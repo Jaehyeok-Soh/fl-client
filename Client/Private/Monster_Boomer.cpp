@@ -12,6 +12,7 @@
 #include "GameInstance.h"
 #include "MyStat.h"
 #include "UIIcon_Component.h"
+#include "SoundEventBinder.h"
 
 CMonster_Boomer::CMonster_Boomer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -53,6 +54,11 @@ HRESULT CMonster_Boomer::Initialize(void* pArg)
 	if (FAILED(Ready_BaseStates()))
 		return E_FAIL;
 
+	if (FAILED(Ready_SoundHandler()))
+		return E_FAIL;
+
+	m_arrHitSoundHash[HitSoundHashNum::HURT01_VO] = TO_HASH("sfx_enemy_Gr_Baotu_vo_hurt_r");
+
 	return S_OK;
 }
 
@@ -74,6 +80,9 @@ HRESULT CMonster_Boomer::Awake(const _uint iCurrentLevelID)
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 15000.f);
 	}
 
+
+
+
 	Ready_StateIndexForDirecting();
 	
 	return S_OK;
@@ -87,6 +96,10 @@ void CMonster_Boomer::Update_Priority(const _float fTimeDelta)
 void CMonster_Boomer::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+
+	EMonster_Emontion_State_Type  eType = EMonster_Emontion_State_Type::Idle;
+	Super::Compute_MonsterEmotionUV(eType);
 }
 
 void CMonster_Boomer::Update_Late(const _float fTimeDelta)
@@ -140,7 +153,9 @@ _bool CMonster_Boomer::On_Hit(const HIT_DESC& hitDesc)
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
-
+	else
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::HURT01_VO], 0.5f, 1.f, false);
+	
 	return result;
 }
 
@@ -228,6 +243,23 @@ HRESULT CMonster_Boomer::Ready_Components(void* pArg)
 		if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 			return E_FAIL;
 	}
+	return S_OK;
+}
+
+HRESULT CMonster_Boomer::Ready_SoundHandler()
+{
+	_uint iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
+	CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CSoundEventBinder* pResult = CSoundEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Monster_Boomer.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
 	return S_OK;
 }
 

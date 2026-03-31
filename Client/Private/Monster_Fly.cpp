@@ -14,6 +14,7 @@
 #include "MyStat.h"
 #include "Monster_GimmikController.h"
 #include "SingleSkillSpawner.h"
+#include "SoundEventBinder.h"
 
 CMonster_Fly::CMonster_Fly(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
@@ -58,6 +59,12 @@ HRESULT CMonster_Fly::Initialize(void* pArg)
 	if (FAILED(Ready_SkillSpawner()))
 		return E_FAIL;
 
+	if (FAILED(Ready_SoundHandler()))
+		return E_FAIL;
+
+	m_arrHitSoundHash[HitSoundHashNum::DEATH01_VO] = TO_HASH("sfx_enemy_Gr_Piaofu_vo_death_r");
+	m_arrHitSoundHash[HitSoundHashNum::HURT01_VO] = TO_HASH("sfx_enemy_Gr_Piaofu_vo_be_hit_r");
+
 	return S_OK;
 }
 
@@ -96,6 +103,10 @@ void CMonster_Fly::Update(const _float fTimeDelta)
 	Super::Update(fTimeDelta);
 
 	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
+
+	Get_Component<CMonster_GimmikController>()->Update(fTimeDelta);
+	EMonster_Emontion_State_Type eType = EMonster_Emontion_State_Type::Idle;
+	Compute_MonsterEmotionUV(eType);
 }
 
 void CMonster_Fly::Update_Late(const _float fTimeDelta)
@@ -148,7 +159,12 @@ _bool CMonster_Fly::On_Hit(const HIT_DESC& hitDesc)
 	auto myStat = Get_Component<CMyStat>();
 	auto vHp = myStat->Get_Stat_Vec2(CMyStat::STAT_TYPE::HP);
 	if (vHp.x <= 0)
+	{
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::DEATH01_VO], 0.5f, 1.f, false);
+	}
+	else
+		m_pGameInstance->Play_OneShot(0 /* static */, m_arrHitSoundHash[HitSoundHashNum::HURT01_VO], 0.5f, 1.f, false);
 
 	return result;
 }
@@ -259,6 +275,23 @@ HRESULT CMonster_Fly::Ready_SkillSpawner()
 		Get_Component<CMonster_GimmikController>()->AddSkillSpawner(static_cast<CSkillObjectSpawnerBase*>(pResult));
 	}
 
+	return S_OK;
+}
+
+HRESULT CMonster_Fly::Ready_SoundHandler()
+{
+	_uint iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
+	CMonster_Body_Base* pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CSoundEventBinder* pResult = CSoundEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Monster_Fly.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
 	return S_OK;
 }
 

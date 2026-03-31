@@ -182,16 +182,14 @@ void CUILevelChange_Image::Trigger_By_InteractState()
 
 		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
 		Desc.eNextLevelID	= m_eNextLevelID;
-		Desc.fDelay			= 3.f;
+		Desc.fDelay			= 0.f;
 		Desc.fDuration		= 1.f;
 		Desc.isEased		= true;
 		Desc.fEaseValue		= 2.f;
 		Desc.isFadeIn		= false;
-		Desc.fEndDelay		= 2.f;
+		Desc.fEndDelay		= 0.f;
 		Desc.isChangeLevel	= true;
 		m_pUIManager->Request_LevelChange_With_Fade(Desc);
-
-		//m_pGameInstance->Request_ChangeLevel(ENUM_TO_UINT(ELevelType::LOADING), CLevel_Loading::Create(m_pDevice, m_pDeviceContext, m_eNextLevelID));
 	}
 }
 

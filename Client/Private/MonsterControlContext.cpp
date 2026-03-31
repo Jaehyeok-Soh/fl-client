@@ -244,6 +244,18 @@ void CMonsterControlContext::SkillSpawnTrigger(_int iIndex)
 	pGimmik->SpawnTrigger(iIndex);
 }
 
+void CMonsterControlContext::Emotion_Change(_int iEmotionState)
+{
+
+}
+
+void CMonsterControlContext::Trigger_Dissolve()
+{
+	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
+	if (body != nullptr)
+		body->DissolveStart();
+}
+
 Vec3 CMonsterControlContext::Get_MoveDir()
 {
 	return m_vMoveDir;

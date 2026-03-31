@@ -34,7 +34,6 @@ struct COMBO_ATTACK_EVENT_END	{ using Signature = void(); };
 
 struct MONSTER_DEAD_EVENT_START { using Signature = void(CGameObject*); }; // 몬스터 NamePlate 사라지게 하기
 
-
 // 연출관련으로 Delegate를 들고있고 
 
 struct CINEMATIC_START { using Signature = void(); };			// UI 위 아래 나오는 연출
@@ -59,6 +58,8 @@ struct MINIGAME_CIRCLE_OFF { using Signature = void(); };
 
 struct DEFAULT_UI_VISIBLE{ using Signature = void(); };
 struct DEFAULT_UI_INVISIBLE{ using Signature = void(); };
+
+struct QTE_CLEAR { using Signature = void(); };
 
 // 퀘스트 이벤트
 struct QUEST_NOTIFY{ using Signature = void(DTO::QUEST_EVENT_SIGNATURE ID); }; // 퀘스트 업데이트

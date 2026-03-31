@@ -5,6 +5,7 @@
 #include "Weapon.h"
 #include "PhysicsCCT.h"
 
+#include "UIQTE_Manager.h"
 #include "GameInstance.h"
 
 CState_Condemn::CState_Condemn(CActionState* pOwnerComponent)
@@ -83,6 +84,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	static_cast<CCameraMan_Targeter*>(pPlayer->Get_CameraTargeter())->Set_TurnData(m_tTurnData);
 	pPlayer->Change_CamState(ENUM_TO_UINT(Client::TargeterState::TURN));
 
+	CUIQTE_Manager::GetInstance()->Start_QTE(5);
 	return S_OK;
 }
 

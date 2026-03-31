@@ -551,28 +551,42 @@ void CinematicCameraSequence::Insert_KeyFrameData(_uint iCurIndex, CCameraMan* p
 
 	Camera_Keyframe_Data newData{};
 
-	if (pCamera == nullptr)
+	// (선택사항) 새로 추가할 때 기존 키프레임의 Fov나 시간 데이터를 기본으로 복사해두면 편합니다.
+	if (!this->vecCamKeyFrameDatas.empty())
+	{
+		newData = this->vecCamKeyFrameDatas[iCurIndex];
+		// 이벤트나 불필요한 고유 데이터가 같이 복사되는게 싫다면 여기서 초기화
+		newData.vecDepart_CCS_EventDesc.clear();
+		newData.vecOnReach_CCS_EventDesc.clear();
+	}
+
+	// [수정 1] nullptr 조건문 로직을 올바르게 변경 (!= 로 수정)
+	if (pCamera != nullptr)
 	{
 		Vec3 vScale{};
 		Quat vQuat{};
 		Matrix WorldMatrix = pCamera->Get_Component<CTransform>()->Get_WorldMatrix();
 		WorldMatrix.Decompose(vScale, vQuat, newData.vPosition);
-		newData.vPosition = WorldMatrix.Translation();
+
 		Vec3 vRoatation = vQuat.ToEuler();
 		newData.vPitchYawRoll = { XMConvertToDegrees(vRoatation.x), XMConvertToDegrees(vRoatation.y), XMConvertToDegrees(vRoatation.z) };
 	}
 	else
 	{
+		// 카메라가 없다면 선택한 인덱스의 매트릭스 정보를 그대로 가져옵니다.
 		Vec3 vScale{};
 		Quat vQuat{};
 		Matrix WorldMatrix = this->vecCamKeyFrameDatas[iCurIndex].Get_WorldMatrix();
 		WorldMatrix.Decompose(vScale, vQuat, newData.vPosition);
-		newData.vPosition = WorldMatrix.Translation();
+
 		Vec3 vRoatation = vQuat.ToEuler();
 		newData.vPitchYawRoll = { XMConvertToDegrees(vRoatation.x), XMConvertToDegrees(vRoatation.y), XMConvertToDegrees(vRoatation.z) };
 	}
-}
 
+	// [수정 2] 벡터에 실제로 데이터를 밀어 넣는 로직 추가 (현재 인덱스 바로 '다음'에 삽입)
+	auto iter = this->vecCamKeyFrameDatas.begin() + iCurIndex + 1;
+	this->vecCamKeyFrameDatas.insert(iter, newData);
+}
 void CinematicCameraSequence::BroadCast(CCS_BROADCAST_TYPE eType, _int iIndex)
 {
 	CCS_BROADCAST_DESC tDesc{};

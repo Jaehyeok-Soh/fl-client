@@ -34,7 +34,9 @@
                     "bCancellation": true,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -564,7 +566,9 @@
                     "bCancellation": true,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -609,6 +613,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_chase",
                             "tParam": {
                                 "bParam": [
@@ -1023,7 +1029,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -1068,6 +1076,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -1480,7 +1490,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -1525,6 +1537,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -1937,7 +1951,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -2226,6 +2242,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_cct_collision_disable",
                                 "tParam": {
                                     "bParam": [
@@ -2274,6 +2292,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_die_process",
                                 "tParam": {
                                     "bParam": [
@@ -2338,7 +2358,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -2405,6 +2427,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_dead",
                                 "tParam": {
                                     "bParam": [
@@ -2676,7 +2700,59 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_die_pose",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_trigger_dissolve",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -2740,7 +2816,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -3044,7 +3122,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -3348,7 +3428,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -3652,7 +3734,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -3956,7 +4040,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -4023,6 +4109,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_walk",
                                 "tParam": {
                                     "bParam": [
@@ -4071,6 +4159,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -4119,6 +4209,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_impuls_front",
                                 "tParam": {
                                     "bParam": [
@@ -4169,6 +4261,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -4439,6 +4533,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_apply_gravity",
                                 "tParam": {
                                     "bParam": [
@@ -4503,7 +4599,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -5054,7 +5152,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -5099,6 +5199,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_set_impuls_front",
                             "tParam": {
                                 "bParam": [
@@ -5122,6 +5224,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -5435,7 +5539,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -5739,7 +5845,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -6028,6 +6136,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_cct_collision_disable",
                                 "tParam": {
                                     "bParam": [
@@ -6076,7 +6186,59 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_die_process",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "cond": {
+                                "strCondition": "condition_true_always",
+                                "tParam": {
+                                    "bParam": [
+                                        false,
+                                        false,
+                                        false,
+                                        false
+                                    ],
+                                    "fParam": [
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "iParam": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                }
+                            },
+                            "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
+                                "strFeature": "feat_trigger_dissolve",
                                 "tParam": {
                                     "bParam": [
                                         false,
@@ -6140,7 +6302,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -6185,6 +6349,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -6468,7 +6634,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -6513,6 +6681,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -6796,7 +6966,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -7085,6 +7257,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_dead",
                                 "tParam": {
                                     "bParam": [
@@ -7118,7 +7292,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -7422,7 +7598,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -7726,7 +7904,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -8030,7 +8210,9 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
+                    "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
                     "setStates": [
                         "Attack_1",
@@ -8098,6 +8280,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_off_ragdoll",
                                 "tParam": {
                                     "bParam": [
@@ -8368,6 +8552,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_set_on_ragdoll",
                                 "tParam": {
                                     "bParam": [

@@ -21,6 +21,8 @@
 
 CMonster_Body_Base::CMonster_Body_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
+	, m_iFaceMtlIndex{-1}
+	, m_vecAnimShaderPass{}
 {
 }
 
@@ -28,6 +30,8 @@ CMonster_Body_Base::CMonster_Body_Base(const CMonster_Body_Base& rhs)
 	: Super(rhs)
 	, m_bRagDollOn(rhs.m_bRagDollOn)
 	, m_bRagDollOnPre(rhs.m_bRagDollOnPre)
+	, m_iFaceMtlIndex{rhs.m_iFaceMtlIndex }
+	, m_vecAnimShaderPass{rhs.m_vecAnimShaderPass }
 {
 }
 
@@ -55,12 +59,53 @@ HRESULT CMonster_Body_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Bones(pDesc)))
 		return E_FAIL;
 
+
+	if (FAILED(Ready_MonsterEmotion()))
+		return E_FAIL;
+
+
+	if (FAILED(Ready_ShaderPass()))
+		return E_FAIL;
+
 	Set_RenderInfoFlag(OF_Outline, true);
 	Set_RenderInfoFlag(OF_Rim, true);
 
 	m_pGameInstance->Bind_DissolveTexture(Get_Component<CShader>());
+
+
 	return S_OK;
 }
+
+
+
+
+
+HRESULT CMonster_Body_Base::Ready_MonsterEmotion()
+{
+
+	CShader* pShader = Get_Component<CShader>();
+	if (pShader == nullptr) return E_FAIL;
+
+	m_pCBMonsterEmotion = pShader->Get_ConstantBuffer("CB_MonsterEmotion");
+	if (m_pCBMonsterEmotion->IsValid() == false)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMonster_Body_Base::Ready_ShaderPass()
+{
+	/* Shader Pass */
+	CModel* pModel = Get_Component<CModel>();
+	if (pModel == nullptr) return E_FAIL;
+	m_vecAnimShaderPass.resize(pModel->Get_MeshCount());
+
+	for (auto& Pass : m_vecAnimShaderPass)
+		Pass = (_int)EAnimShaderPass::WithRenderFx;
+
+	return S_OK;
+}
+
 
 HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 {
@@ -71,8 +116,15 @@ HRESULT CMonster_Body_Base::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Ready_DissolveEffect_Setting()))
 		return E_FAIL;
 
+
 	// Shake & Emissive 연출용
 	Get_Component<CShader>()->Set_Pass(3);
+
+
+	if (FAILED(Ready_MonsterEmotion()))
+		return E_FAIL;
+
+
 	return S_OK;
 }
  
@@ -195,11 +247,17 @@ HRESULT CMonster_Body_Base::Render()
 	pShader->Bind_ObjectInfoData(m_tObjectInfoDesc);
 	pShader->Bind_TransformData(m_matCombinedWorld);
 
+
+	m_pCBMonsterEmotion->SetRawValue(&m_tCBMonsterEmotion, 0, sizeof(m_tCBMonsterEmotion));
+
 	// 디졸브 값 바인딩
 	pShader->Bind_DissolveEffectData(m_tDissolveDesc.ShaderData);
 
 	for (_uint i = 0; i < iMeshCount; ++i)
 	{
+		if (m_vecAnimShaderPass[i] == -1)
+			continue;
+		pShader->Set_Pass(m_vecAnimShaderPass[i]);
 		pModel->Bind_Material(pShader, i);
 		pModel->Bind_Bones(pShader, i, m_pBoneMeshCS, m_pBoneCombineCS);
 		pShader->Apply();
@@ -238,6 +296,23 @@ HRESULT CMonster_Body_Base::Render_Shadow()
 	pShader->Set_Pass(iPrevPass);
 	return S_OK;
 }
+
+
+void CMonster_Body_Base::Compute_MonsterEmotionUV(EMonster_Emontion_State_Type eType)
+{
+	m_tCBMonsterEmotion.vUVScale = { 1.f / MonsterEmotionColunm ,1.f / MonsterEmotionRow };
+
+	// eType(Row): 0(눈만), 1(입포함)
+	// eState(Col): 0(Idle), 1(Dead), 2(Hit), 3(Attack)
+
+	int iRow = static_cast<int>(m_eEmotionType);
+	int iCol = static_cast<int>(eType);
+
+
+	m_tCBMonsterEmotion.vUVOffset = Vec2(iCol * m_tCBMonsterEmotion.vUVScale.x,
+		iRow * m_tCBMonsterEmotion.vUVScale.y);
+}
+
 
 CBone* CMonster_Body_Base::Get_Bone(CMonster_Body_Base::EBone eBone)
 {
@@ -332,6 +407,23 @@ HRESULT CMonster_Body_Base::Ready_Components(MONSTERBODY_DESC* pDesc)
 		if (FAILED(Add_Component<CRenderFx>(0, L"Prototype_Component_RenderFx", &desc)))
 			return E_FAIL;
 	}
+
+
+
+
+	/* Face Material Index 찾기 */
+	CModel* pModel = Get_Component<CModel>();
+	if (!pModel) return E_FAIL;
+	_uint iMtlCount = pModel->Get_MaterialCount();
+	for (_uint i = 0; i < iMtlCount; i++)
+	{
+		wstring wstrName = pModel->Get_MaterialName(i);
+		if (wstrName.find(L"Face") != std::wstring::npos)
+		{
+			m_iFaceMtlIndex = i;
+		}
+
+	} 
 
 	return S_OK;
 }

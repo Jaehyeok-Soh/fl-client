@@ -18,13 +18,13 @@ HRESULT CSkillBase_MoonQ::Initialize(void* pArg)
 
 	tMyDesc.bCountTime = true;
 	tMyDesc.fSkillTime = 12.f;
-	tMyDesc.FSkillFlags = Sheild_Add | SkillAtt_Add | Mental_Sub  | Sheild_Sub | SkillAtt_Sub;
+	tMyDesc.FSkillFlags = Sheild_Add  | Mental_Sub  | Sheild_Sub;
 
 	SKILL_INFO tSkill = {};
 	{
 		tSkill.fSkillAttack = 10.f;
 
-		tSkill.fStatAttack = 0.f;
+		tSkill.fStatAttack = 9000.f;
 		tSkill.fStatSheild = 10.f;
 		tSkill.eSkillType = SKILL_TYPE::BUFF;
 		tSkill.fNeedMental = 35.f;

@@ -100,6 +100,11 @@ _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 	return false;
 }
 
+_bool CState_ComboBase::Can_Captablity_Special() const
+{
+	return (KEY_BUTTON_DOWN(DIK_LSHIFT));
+}
+
 void CState_ComboBase::Change_NextCombo()
 {
 	Reset_WhenStart();
@@ -192,7 +197,7 @@ void CState_ComboBase::Check_Combo()
 	if (m_fStateElapsed > m_ComboEndTimes[m_iMainAnimIdx])
 	{
 		{
-			Change_Weapon();
+			//Change_Weapon();
 			Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
 		}
 		return;

@@ -5,6 +5,9 @@ NS_BEGIN(Client)
 
 
 
+
+
+
 /* 임마가 Childe인지 뭔지 아닌지에대해서 업데이트를 할때 알게뭐야. */
 
 class CNPC_Citizen final : public CNPC_Base
@@ -78,12 +81,14 @@ protected:
 
 
 	/* WayPoint 전용 */
+	_bool								m_isOnReachWayPointtDissloveStart;
 	_bool								m_isArrive;
 	DTO::CitizenWalkRunAnimIndex		m_tWalkRunAnimIndex;
 	float								m_fDeltaTime;
 	const DTO::Citizen_WayPoint_Data*	m_pWayPointData;
 	_uint								m_iCurrentFrameIndex;
-
+	Vec3								m_vLastPosition;
+	float								m_fDisloveRange;
 
 public:
 
