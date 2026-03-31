@@ -150,6 +150,7 @@ void CUIWaveTimer_Image::Bind_Events()
 				else if(desc.tChapterInfo.eEvent != DTO::EQuestEvent::MONSTER_KILL)
 				{
 					this->Set_Invisible();
+					m_pGameInstance->Broadcast<BOSS_UI_ON>();
 				}
 			}));
 }
@@ -164,7 +165,7 @@ void CUIWaveTimer_Image::Tick_By_Type(const _float fTimeDelta)
 		if (nullptr == m_pSpawner)
 			break;
 
-		if((m_pSpawner->GetWaveData()->iCurrentWaveCount - 1) == m_iNumbering)
+		if((m_pSpawner->GetWaveData()->iCurrentWaveCount) == m_iNumbering)
 		{
 			m_isWaveTrigger = true;
 		}
@@ -183,7 +184,7 @@ void CUIWaveTimer_Image::Tick_By_Type(const _float fTimeDelta)
 		if (nullptr == m_pSpawner)
 			break;
 
-		if ((m_pSpawner->GetWaveData()->iCurrentWaveCount - 1) == m_iNumbering)
+		if ((m_pSpawner->GetWaveData()->iCurrentWaveCount) == m_iNumbering)
 		{
 			m_isWaveTrigger = true;
 		}

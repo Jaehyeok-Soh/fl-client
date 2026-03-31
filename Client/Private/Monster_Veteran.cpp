@@ -106,7 +106,7 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
 	}
 
-	m_pGameInstance->Broadcast<BOSS_UI_ON>();
+
 
 	return S_OK;
 }

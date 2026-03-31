@@ -1018,6 +1018,9 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\18.Wave Timer">
       <UniqueIdentifier>{b5218c0e-0951-43af-8afe-d637ddb8a1e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager">
+      <UniqueIdentifier>{cda240a0-3f3c-4c4d-aca0-450799e4722f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1917,6 +1920,9 @@
     <ClInclude Include="..\Public\UIWaveTimer_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\18.Wave Timer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIAmbSound_Manager.h">
+      <Filter>03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2803,6 +2809,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIWaveTimer_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\18.Wave Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIAmbSound_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -140,6 +140,7 @@ void CUIWaveTimer_Progress::Bind_Events()
 				}
 				else if (desc.tChapterInfo.eEvent != DTO::EQuestEvent::MONSTER_KILL)
 				{
+					if (m_isVisible)
 					this->Set_Invisible();
 				}
 			}));
@@ -178,36 +179,48 @@ HRESULT CUIWaveTimer_Progress::Convert_Stat_To_Ratio()
 	if (nullptr == pWaveData)
 		return E_FAIL;
 
-	if (pWaveData->vecWaveInfo.empty())
+
+	m_fCurRatio = 0.f;
+
+	_float fSectionStartTime = 0.f;
+	_float fSectionEndTime = 0.f;
+	_float fCurrentTime = max(0.f, pWaveData->fCurrentWaveTime);
+
+	switch (pWaveData->iCurrentWaveCount)
 	{
+	case 0: // °³
+		fSectionStartTime = 0.f;
+		fSectionEndTime = pWaveData->vecWaveInfo[1].fSpawnTime;
+		break;
+
+	case 1: // ¿ÀÂ¡¾î 
+		fSectionStartTime = pWaveData->vecWaveInfo[1].fSpawnTime;
+		fSectionEndTime = pWaveData->vecWaveInfo[2].fSpawnTime;
+		break;
+
+	case 2: // ºÎ¸Ó
+		fSectionStartTime = pWaveData->vecWaveInfo[2].fSpawnTime;
+		fSectionEndTime = pWaveData->vecWaveInfo[3].fSpawnTime;
+		break;
+
+	case 3: // ¿¤¸®Æ®
+		fSectionStartTime = pWaveData->vecWaveInfo[3].fSpawnTime;
+		fSectionEndTime = pWaveData->fWaveTime;
+		break;
+
+	default:
 		m_fCurRatio = 0.f;
 		return S_OK;
 	}
 
-	_int iNextWaveIndex = pWaveData->iCurrentWaveCount;
+	fSectionStartTime = max(0.f, fSectionStartTime);
+	fSectionEndTime = max(0.f, fSectionEndTime);
 
-	if (iNextWaveIndex < 0)
-		iNextWaveIndex = 0;
+	if (fCurrentTime < fSectionStartTime)
+		fCurrentTime = fSectionStartTime;
 
-	if (iNextWaveIndex >= static_cast<_int>(pWaveData->vecWaveInfo.size()))
-	{
-		m_fCurRatio = 0.f;
-		return S_OK;
-	}
-
-	_float fPrevSpawnTime = 0.f;
-	if (iNextWaveIndex > 0)
-		fPrevSpawnTime = pWaveData->vecWaveInfo[iNextWaveIndex - 1].fSpawnTime;
-
-	_float fNextSpawnTime = pWaveData->vecWaveInfo[iNextWaveIndex].fSpawnTime;
-	_float fCurrentTime = pWaveData->fCurrentWaveTime;
-
-	fPrevSpawnTime = max(0.f, fPrevSpawnTime);
-	fNextSpawnTime = max(0.f, fNextSpawnTime);
-	fCurrentTime = max(0.f, fCurrentTime);
-
-	_float fSectionTime = fNextSpawnTime - fPrevSpawnTime;
-	_float fRemainTime = fNextSpawnTime - fCurrentTime;
+	_float fSectionTime = fSectionEndTime - fSectionStartTime;
+	_float fRemainTime = fSectionEndTime - fCurrentTime;
 
 	fSectionTime = max(0.f, fSectionTime);
 	fRemainTime = max(0.f, fRemainTime);
