@@ -47,7 +47,7 @@ HRESULT CMonster_Veteran::Initialize(void* pArg)
 	if (FAILED(Ready_Ability()))
 		return E_FAIL;
 
-	Set_Name("베테랑");
+	Set_Name("천번 찔린 베테랑");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -78,15 +78,6 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 	{
-		UI_PREFAB_DATA tPrefabData = {};
-		UI_NAMEPLATE_PREFAB_DATA Desc = {};
-		Desc.pTarget = this;
-		Desc.vOffset = Vec3{ 0.f, 1.f, 0.f };
-		tPrefabData.Data = Desc;
-		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
-	}
-
-	{
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 35000.f); // 시연회 때 35만으로 설정하면 좋을 듯.
 	}
 
@@ -106,7 +97,7 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
 	}
 
-	m_pGameInstance->Broadcast<BOSS_UI_ON>();
+
 
 	return S_OK;
 }

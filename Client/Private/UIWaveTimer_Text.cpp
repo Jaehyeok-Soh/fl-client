@@ -145,6 +145,7 @@ void CUIWaveTimer_Text::Tick_By_Type(const _float fTimeDelta)
 	{
 	case DTO::EUITextSubClassType::MONSTER_WAVE_INFO_TEXT:
 		break;
+
 	case DTO::EUITextSubClassType::MONSTER_WAVE_TIMER_TEXT:
 	{
 		if (nullptr == m_pSpawner)
@@ -154,33 +155,36 @@ void CUIWaveTimer_Text::Tick_By_Type(const _float fTimeDelta)
 		if (nullptr == pWaveData)
 			break;
 
-		if (pWaveData->vecWaveInfo.empty())
+		_float fWaveEnd = {};
+
+		switch (pWaveData->iCurrentWaveCount)
 		{
+		case 0: // °³
+			fWaveEnd = pWaveData->vecWaveInfo[1].fSpawnTime;
+			break;
+
+		case 1: // ¿ÀÂ¡¾î
+			fWaveEnd = pWaveData->vecWaveInfo[2].fSpawnTime;
+			break;
+
+		case 2: // ºÎ¸Ó
+			fWaveEnd = pWaveData->vecWaveInfo[3].fSpawnTime;
+			break;
+
+		case 3: // ¿¤¸®Æ®
+			m_wstrText = L"00:00";
+			break;
+
+		default:
 			m_wstrText = L"00:00";
 			break;
 		}
 
-		_int iNextWaveIndex = pWaveData->iCurrentWaveCount;
-
-		if (iNextWaveIndex < 0)
-			iNextWaveIndex = 0;
-
-		if (iNextWaveIndex >= static_cast<_int>(pWaveData->vecWaveInfo.size()))
-		{
-			m_wstrText = L"00:00";
+		if (3 <= pWaveData->iCurrentWaveCount || 0 > pWaveData->iCurrentWaveCount)
 			break;
-		}
 
-		_float fNextSpawnTime = pWaveData->vecWaveInfo[iNextWaveIndex].fSpawnTime;
-		_float fCurrentTime = pWaveData->fCurrentWaveTime;
-
-		if (fNextSpawnTime < 0.f)
-			fNextSpawnTime = 0.f;
-
-		if (fCurrentTime < 0.f)
-			fCurrentTime = 0.f;
-
-		_float fRemainTime = fNextSpawnTime - fCurrentTime;
+		_float fCurrentTime = max(0.f, pWaveData->fCurrentWaveTime);
+		_float fRemainTime = fWaveEnd - fCurrentTime;
 
 		if (fRemainTime < 0.f)
 			fRemainTime = 0.f;
@@ -194,10 +198,9 @@ void CUIWaveTimer_Text::Tick_By_Type(const _float fTimeDelta)
 
 		m_wstrText = wstrMinute + L":" + wstrSecond;
 	}
-		break;
+	break;
 	}
 }
-
 HRESULT CUIWaveTimer_Text::Convert_Stat_To_Text()
 {
 	return S_OK;

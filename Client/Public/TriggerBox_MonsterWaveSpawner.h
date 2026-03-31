@@ -53,6 +53,7 @@ protected:
 	TRIGGERBOX_MONSTERWAVESPAWNER_DESC	m_tWaveData{};
 
 	_bool m_bIsAction = { false };
+	_float m_fCurWaveTime = { 0.f };
 
 public:
 	static CTriggerBox_MonsterWaveSpawner* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
