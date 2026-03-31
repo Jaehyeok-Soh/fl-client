@@ -37,7 +37,7 @@ void CUIQuickSlot_Manager::Tick_Player_Weapon_State(const _float fTimeDelta)
 
 				m_arrWeapons[m_iCurrentSlotIndex].eWeaponType = EUIWeaponTypes::BASIC;
 				m_arrWeapons[m_iCurrentSlotIndex].iWeaponTypeIndex = ENUM_TO_UINT(CPlayer::EWEAPON::MELEE);
-				m_arrWeapons[m_iCurrentSlotIndex].iWeaponIndex = i;
+				m_arrWeapons[m_iCurrentSlotIndex].iWeaponIndex = (_uint)i;
 				m_iCurrentSlotIndex++;
 			}
 				break;
@@ -45,7 +45,7 @@ void CUIQuickSlot_Manager::Tick_Player_Weapon_State(const _float fTimeDelta)
 			{
 				m_arrWeapons[m_iCurrentSlotIndex].eWeaponType = EUIWeaponTypes::DUAL;
 				m_arrWeapons[m_iCurrentSlotIndex].iWeaponTypeIndex = ENUM_TO_UINT(CPlayer::EWEAPON::MELEE);
-				m_arrWeapons[m_iCurrentSlotIndex].iWeaponIndex = i;
+				m_arrWeapons[m_iCurrentSlotIndex].iWeaponIndex = (_uint)i;
 				m_iCurrentSlotIndex++;
 			}
 				break;
@@ -67,7 +67,7 @@ void CUIQuickSlot_Manager::Tick_Player_Weapon_State(const _float fTimeDelta)
 			{
 				m_arrWeapons[m_iCurrentSlotIndex].eWeaponType = EUIWeaponTypes::GUN;
 				m_arrWeapons[m_iCurrentSlotIndex].iWeaponTypeIndex = ENUM_TO_UINT(CPlayer::EWEAPON::RANGE);
-				m_arrWeapons[m_iCurrentSlotIndex].iWeaponIndex = i;
+				m_arrWeapons[m_iCurrentSlotIndex].iWeaponIndex = (_uint)i;
 				m_iCurrentSlotIndex++;
 			}
 				break;

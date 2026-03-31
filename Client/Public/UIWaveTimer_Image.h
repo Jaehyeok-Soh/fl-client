@@ -2,17 +2,19 @@
 #include "UIDynamic_Image.h"
 
 NS_BEGIN(Client)
-class CUIQTE_Image final : public  CUIDynamic_Image
+
+class CUIWaveTimer_Image final : public  CUIDynamic_Image
 {
 	using Super = CUIDynamic_Image;
 public:
-	typedef struct tagUIQTEImageDesc : public DIMAGE_DESC
+	typedef struct tagUIWaveTimerImageDesc : public DIMAGE_DESC
 	{
-	}QTE_IMAGE_DESC;
+		_uint iNumbering = {};
+	}WAVE_TIMER_IMAGE_DESC;
 private:
-	CUIQTE_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	CUIQTE_Image(const CUIQTE_Image& rhs);
-	virtual ~CUIQTE_Image() = default;
+	CUIWaveTimer_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	CUIWaveTimer_Image(const CUIWaveTimer_Image& rhs);
+	virtual ~CUIWaveTimer_Image() = default;
 public:
 	HRESULT Initialize_Prototype() override;
 	HRESULT Initialize(void* pArg) override;
@@ -24,7 +26,7 @@ public:
 	virtual void Ready_Before_Render(const _float fTimeDelta) override;
 	virtual HRESULT Render() override;
 private:
-	HRESULT Ready_Components(QTE_IMAGE_DESC* pDesc);
+	HRESULT Ready_Components(WAVE_TIMER_IMAGE_DESC* pDesc);
 	HRESULT Bind_ShaderResources();
 	virtual HRESULT Attach_Personal_Info()override;
 	virtual void Bind_Events()override;
@@ -34,34 +36,16 @@ private:
 	virtual _bool Tick_Visible_Event(const _float fTimeDelta)override;
 	virtual void Initialize_InVisible_Event()override;
 	virtual _bool Tick_InVisible_Event(const _float fTimeDelta)override;
-	virtual HRESULT Spawn_FromPool(void* pArg)override;
-	virtual HRESULT Despawn_FromPool()override;
 private:
-	void KeyType_To_Texturetag(_uint iKeyIndex);
-
-private:
-	_bool m_isSpawned = { false };
 	_uint m_iNumbering = {};
+	_float m_fGlowIntensity = {};
+
+	class CTriggerBox_MonsterWaveSpawner* m_pSpawner = {};
 	
-	//QTE_LINE
-	Vec2 m_vCurrentNodePosOffset = {};
-	Vec2 m_vPrevNodePosOffset = {};
-
-	// QTE_KEYICON
-	_uint m_iKeyType = {};
-
-	// QTE_TIMING_CIRCLE
-	_float m_fTimingDuration = {};
-	_bool m_isOneTimeVisible = { false };
-
-	// Glow Effect Values
-	_float m_fTargetGlowInstensity = {};
-	_float	m_fGlowIntensity = {};
-
-	_uint m_iTimingType = {};
+	_bool m_isWaveTrigger = {};
 
 public:
-	static CUIQTE_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CUIWaveTimer_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);
 	virtual void Free()override;
 };
