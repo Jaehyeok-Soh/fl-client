@@ -19,6 +19,7 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
@@ -50,6 +51,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_set_target_offset",
                             "tParam": {
                                 "bParam": [
@@ -59,9 +62,9 @@
                                     false
                                 ],
                                 "fParam": [
-                                    -1.0,
+                                    -0.30000001192092896,
                                     1.0,
-                                    -1.0,
+                                    -0.30000001192092896,
                                     0.0
                                 ],
                                 "iParam": [
@@ -73,6 +76,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_align_attack",
                             "tParam": {
                                 "bParam": [
@@ -201,6 +206,7 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
@@ -276,6 +282,7 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
@@ -351,6 +358,7 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
@@ -426,6 +434,7 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": true,
                     "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
@@ -457,6 +466,8 @@
                     "vecEndConditionFeature": [],
                     "vecFeatureEntry": [
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_chase",
                             "tParam": {
                                 "bParam": [
@@ -480,6 +491,8 @@
                             }
                         },
                         {
+                            "IsExecuted": false,
+                            "IsOnce": false,
                             "strFeature": "feat_set_target_offset",
                             "tParam": {
                                 "bParam": [
@@ -489,9 +502,9 @@
                                     false
                                 ],
                                 "fParam": [
-                                    -1.0,
+                                    -0.30000001192092896,
                                     1.0,
-                                    -1.0,
+                                    -0.30000001192092896,
                                     0.0
                                 ],
                                 "iParam": [
@@ -578,6 +591,7 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
@@ -653,6 +667,7 @@
                     "bCancellation": false,
                     "bIsBoss": false,
                     "bIsCombo": false,
+                    "bIsCustom": false,
                     "bLoop": false,
                     "fAnimationSpeed": 1.0,
                     "mapPreAnimNames": {},
@@ -707,6 +722,8 @@
                                 }
                             },
                             "feat": {
+                                "IsExecuted": false,
+                                "IsOnce": false,
                                 "strFeature": "feat_geniemon_smart_chase",
                                 "tParam": {
                                     "bParam": [

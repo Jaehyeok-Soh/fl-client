@@ -199,6 +199,14 @@ public:
 	_float Get_fFrameSpeed() const { return m_fFrameSpeed; }
 
 	void Set_fFrameSpeed(_float fFrameSpeed) { m_fFrameSpeed = fFrameSpeed; }
+
+	const Vec2& Get_NoiseTexelScale() const { return m_vNoiseTexelScale; }
+	const Vec2& Get_NoiseFlow() const { return m_vNoiseFlow; }
+	_float Get_NoiseAspect() const { return m_fNoiseAspect; }
+
+	void Set_NoiseTexelScale(const Vec2& vNoiseTexelScale) { m_vNoiseTexelScale = vNoiseTexelScale; }
+	void Set_NoiseFlow(const Vec2& vNoiseFlow) { m_vNoiseFlow = vNoiseFlow; }
+	void Set_NoiseAspect(const _float fNoiseAspect) { m_fNoiseAspect = fNoiseAspect; }
 #pragma endregion
 
 private:
@@ -245,6 +253,10 @@ protected:
 	_float m_fCurFrame = {};
 	_float m_fFrameSpeed = { 1.f };
 
+	Vec2 m_vNoiseTexelScale;
+	Vec2 m_vNoiseFlow;
+	_float  m_fNoiseAspect;
+	
 	// Client Bind Values Text Data
 	DTO::TUI_TextData m_tUITextData					= {};
 	std::wstring m_wstrText_TextData				= {};

@@ -9,6 +9,7 @@
 #include "UILoading_Progress.h"
 #include "UIMonsterStat_Progress.h"
 #include "UIPlayerAmmo_Progress.h"
+#include "UIWaveTimer_Progress.h"
 // 텍스트 클래스
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
@@ -26,6 +27,7 @@
 #include "UIMiniGame_Circle_Text.h"
 #include "UITitle_Text.h"
 #include "UIEnterGame_Text.h"
+#include "UIWaveTimer_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -51,6 +53,7 @@
 #include "UITitle_Image.h"
 #include "UIEnterGame_Image.h"
 #include "UIQuickSlot_Image.h"
+#include "UIWaveTimer_Image.h"
 
 #include "WorldUI_Component.h"
 
@@ -203,28 +206,36 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isLoading		= Type == DTO::EUISubClassType::LOADING_PROGRESS;
 		const _bool isMonsterStat	= Type >= DTO::EUISubClassType::MONSTER_STAT_BEGIN && Type <= DTO::EUISubClassType::MONSTER_STAT_END;
 		const _bool isPlayerAmmo	= Type == DTO::EUISubClassType::PLAYER_AMMO_PROGRESS;
+		const _bool isWaveTimer		= Type == DTO::EUISubClassType::MONSTER_WAVE_TIMER_PROGRESS;
 
 		if (isPlayerStat)
 		{
-			CUIPlayerStat_Progress::PLAYER_STAT_PROGRESS_DESC  PlayerStatProgressDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(PlayerStatProgressDesc) = DefaultDesc;
-			PlayerStatProgressDesc.eOwner = data.eSubClassType;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_PlayerStatProgress", m_iLevelID, g_wszUILayer, &PlayerStatProgressDesc);
+			CUIPlayerStat_Progress::PLAYER_STAT_PROGRESS_DESC  Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eOwner = data.eSubClassType;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_PlayerStatProgress", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isLoading)
 		{
-			CUILoading_Progress::LOADING_PROGRESS_DESC  LoadingProgressDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(LoadingProgressDesc) = DefaultDesc;
-			LoadingProgressDesc.eOwner = data.eSubClassType;
-			LoadingProgressDesc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingProgress", m_iLevelID, g_wszUILayer, &LoadingProgressDesc);
+			CUILoading_Progress::LOADING_PROGRESS_DESC  Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eOwner = data.eSubClassType;
+			Desc.pLoadingRatio = CUI_Manager::GetInstance()->Get_LoadingRatio();
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_LoadingProgress", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else if (isPlayerAmmo)
 		{
-			CUIPlayerAmmo_Progress::PLAYER_AMMO_PROGRESS_DESC  PlayerAmmoDesc = {};
-			static_cast<CGenericUI::GENERIC_UI_DESC&>(PlayerAmmoDesc) = DefaultDesc;
-			PlayerAmmoDesc.eOwner = data.eSubClassType;
-			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_PlayerAmmoProgress", m_iLevelID, g_wszUILayer, &PlayerAmmoDesc);
+			CUIPlayerAmmo_Progress::PLAYER_AMMO_PROGRESS_DESC  Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eOwner = data.eSubClassType;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_PlayerAmmoProgress", m_iLevelID, g_wszUILayer, &Desc);
+		}
+		else if (isWaveTimer)
+		{
+			CUIWaveTimer_Progress::WAVE_TIMER_PROGRESS_DESC	Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eOwner = data.eSubClassType;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WaveTimerProgress", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else
 		{
@@ -260,6 +271,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isMiniGameCircle	= (Type >= DTO::EUITextSubClassType::MINIGAME_CIRCLE_BEGIN && Type <= DTO::EUITextSubClassType::MINIGAME_CIRCLE_END);
 		const _bool isTitle				= (Type >= DTO::EUITextSubClassType::TITLE_BEGIN && Type <= DTO::EUITextSubClassType::TITLE_END);
 		const _bool isEnterGame			= (Type >= DTO::EUITextSubClassType::ENTERGAME_BEGIN && Type <= DTO::EUITextSubClassType::ENTERGAME_END);
+		const _bool isWaveTimer			= (Type >= DTO::EUITextSubClassType::MONSTER_WAVE_BEGIN&& Type <= DTO::EUITextSubClassType::MONSTER_WAVE_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -365,6 +377,12 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_EnterGameText", m_iLevelID, g_wszUILayer, &Desc);
 		}
+		else if (isWaveTimer)
+		{
+			CUIWaveTimer_Text::WAVE_TIMER_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WaveTimerText", m_iLevelID, g_wszUILayer, &Desc);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -415,6 +433,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isTitle				= (Type >= DTO::EUIDImageSubClassType::TITLE_BEGIN && Type <= DTO::EUIDImageSubClassType::TITLE_END);
 		const _bool isEnterGame			= (Type >= DTO::EUIDImageSubClassType::ENTERGAME_BEGIN&& Type <= DTO::EUIDImageSubClassType::ENTERGAME_END);
 		const _bool isQuickSlot			= (Type >= DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_BEGIN&& Type <= DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_END);
+		const _bool isWaveTimer			= (Type >= DTO::EUIDImageSubClassType::MONSTER_WAVE_BEGIN&& Type <= DTO::EUIDImageSubClassType::MONSTER_WAVE_END);
 
 		if (isPlayerSkill)
 		{
@@ -582,6 +601,14 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			Desc.eSubClassType = Type;
 			Desc.iNumbering = iter->second.iParams0;;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_QuickSlotImage", m_iLevelID, g_wszUILayer, &Desc);
+		}
+		else if (isWaveTimer)
+		{
+			CUIWaveTimer_Image::WAVE_TIMER_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			Desc.iNumbering = iter->second.iParams0;;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WaveTimerImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else
 		{

@@ -813,6 +813,49 @@ void CUI_Inspector::SetUp_ShaderPass()
 			ImGui::SetNextItemWidth(150.f);
 			if (ImGui::DragFloat4("GradiantColor Tint", (float*)&vGradiantColorTint, 0.01f, 0.f, 1.f))
 				m_pSelectedUI->Set_GradiantColorTint(vGradiantColorTint);
+
+			Vec2 vNoiseTexelScale = m_pSelectedUI->Get_NoiseTexelScale();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat2("Noise Texel Scale", (float*)&vNoiseTexelScale, 0.01f, 0.f, 100.f))
+				m_pSelectedUI->Set_NoiseTexelScale(vNoiseTexelScale);
+
+			Vec2 vNoiseFlow = m_pSelectedUI->Get_NoiseFlow();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat2("Noise Flow", (float*)&vNoiseFlow, 0.01f, -10.f, 10.f))
+				m_pSelectedUI->Set_NoiseFlow(vNoiseFlow);
+
+			_float fNoiseAspect = m_pSelectedUI->Get_NoiseAspect();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Noise Aspect", &fNoiseAspect, 0.01f, 0.f, 10.f))
+				m_pSelectedUI->Set_NoiseAspect(fNoiseAspect);
+
+			_float fAlphaRatio = m_pSelectedUI->Get_AlphaRatio();
+			ImGui::SetNextItemWidth(150.f);
+			if (ImGui::DragFloat("Alpha Ratio", &fAlphaRatio, 0.01f, 0.f, 1.f))
+				m_pSelectedUI->Set_AlphaRatio(fAlphaRatio);
+
+			static bool s_isPlayNoise = false;
+			static void* s_pPrevSelected = nullptr;
+
+			if (s_pPrevSelected != m_pSelectedUI)
+			{
+				s_pPrevSelected = m_pSelectedUI;
+				s_isPlayNoise = false;
+				m_pSelectedUI->Set_Time(0.f);
+			}
+
+			if (s_isPlayNoise)
+				m_pSelectedUI->Set_Time(m_pSelectedUI->Get_Time() + (_float)ImGui::GetIO().DeltaTime);
+
+			if (ImGui::Button(s_isPlayNoise ? "Stop##Noise" : "Play##Noise"))
+			{
+				s_isPlayNoise = !s_isPlayNoise;
+				if (!s_isPlayNoise)
+					m_pSelectedUI->Set_Time(0.f);
+			}
+			ImGui::SameLine();
+			ImGui::TextDisabled("Time: %.3f", m_pSelectedUI->Get_Time());
+
 			break;
 		}
 

@@ -187,6 +187,7 @@
 #include "UIMonsterStat_Progress.h"
 #include "UIPlayerAmmo_Progress.h"
 #include "UIBossStat_Progress.h"
+#include "UIWaveTimer_Progress.h"
 // 텍스트 
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
@@ -208,6 +209,7 @@
 #include "UIEnterGame_Text.h"
 #include "UINpcTextBubble_Text.h"
 #include "UIQTE_Text.h"
+#include "UIWaveTimer_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -240,6 +242,7 @@
 #include "UINpcTextBubble_Image.h"
 #include "UIQuickSlot_Image.h"
 #include "UIQTE_Image.h"
+#include "UIWaveTimer_Image.h"
 //=================
 // Resource
 //=================
@@ -1144,6 +1147,9 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuickSlotImage",			CUIQuickSlot_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QTEImage",					CUIQTE_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QTEText",					CUIQTE_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WaveTimerImage",			CUIWaveTimer_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WaveTimerText",			CUIWaveTimer_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WaveTimerProgress",		CUIWaveTimer_Progress::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	

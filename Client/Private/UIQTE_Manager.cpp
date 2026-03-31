@@ -117,6 +117,8 @@ void CUIQTE_Manager::Success_QTE()
 	Desc.iParam2 = ENUM_TO_UINT(m_eCurrentQTETIming);
 	CUI_Manager::GetInstance()->Get_UIEvents().Broadcast(Desc);
 
+	m_pGameInstance->Play_OneShot(0, TO_HASH("UI_QTE_NODE_CLEAR"), 0.5f);
+
 	if (m_iMaxNodeCount <= m_iCurrentNodeIndex)
 	{
 		// QTE 이벤트 끝 //

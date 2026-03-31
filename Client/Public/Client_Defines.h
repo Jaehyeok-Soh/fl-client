@@ -615,6 +615,8 @@ namespace Client
 		TUTORIAL_PANNEL_2,
 		TUTORIAL_PANNEL_3,
 		TUTORIAL_PANNEL_4,
+
+		MINIGAME_CIRCLE,
 		END,
 	};
 
@@ -640,6 +642,8 @@ namespace Client
 		"TUTORIAL_PANNEL_2",
 		"TUTORIAL_PANNEL_3",
 		"TUTORIAL_PANNEL_4",
+
+		"MINIGAME_CIRCLE",
 	};
 
 	inline std::string UITutorialPopUpTypeID_ToString(EUITutorialPopUpTypeID eType)
@@ -746,6 +750,7 @@ namespace Client
 	{
 		CGameObject* pTarget = { nullptr };
 		Vec3 vOffset = {};
+		_string strTargetBoneName = {};
 	} UI_NAMEPLATE_PREFAB_DATA;
 
 	typedef struct tagUIDamageFontPrefabData
@@ -800,6 +805,7 @@ namespace Client
 		Vec3 vOffset = {};
 		_string strSoundTag = {};
 		_wstring wstrContents = {};
+		_string strTargetBoneName = {};
 
 	} UI_NPC_TEXT_BUBBLE_PREFAB_DATA;
 

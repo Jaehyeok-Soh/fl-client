@@ -98,7 +98,16 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 	m_pGameInstance->StopBGM_FadeOut(1.f);
 	m_pGameInstance->PlayBGM_FadeIn(0, TO_HASH("ELITE_BOSS_BGM"), 0.5f, 1.f);
 
-	
+	{
+		UI_PREFAB_DATA ePrefabData = {};
+		UI_BOSS_NAMEPLATE_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		ePrefabData.Data = Desc;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
+	}
+
+	m_pGameInstance->Broadcast<BOSS_UI_ON>();
+
 	return S_OK;
 }
 
@@ -169,6 +178,8 @@ _bool CMonster_Veteran::On_Hit(const HIT_DESC& hitDesc)
 		m_pGameInstance->StopBGM_FadeOut(1.f);
 		m_pGameInstance->PlayBGM_FadeIn(0, TO_HASH("KUANGKENG_BGM"), 0.5f, 1.f);
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+		m_pGameInstance->Broadcast<BOSS_UI_OFF>();
+
 	}
 	else
 	{

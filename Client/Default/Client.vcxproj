@@ -233,6 +233,9 @@
     <ClInclude Include="..\Public\UIScreenPulse_Image.h" />
     <ClInclude Include="..\Public\UITitle_Image.h" />
     <ClInclude Include="..\PUblic\UITitle_Text.h" />
+    <ClInclude Include="..\Public\UIWaveTimer_Image.h" />
+    <ClInclude Include="..\Public\UIWaveTimer_Progress.h" />
+    <ClInclude Include="..\Public\UIWaveTimer_Text.h" />
     <ClInclude Include="..\Public\WeaponPickUp.h" />
     <ClInclude Include="..\Public\InteractiveObject.h" />
     <ClInclude Include="..\Public\LightObject.h" />
@@ -542,6 +545,9 @@
     <ClCompile Include="..\Private\UIScreenPulse_Image.cpp" />
     <ClCompile Include="..\Private\UITitle_Image.cpp" />
     <ClCompile Include="..\Private\UITitle_Text.cpp" />
+    <ClCompile Include="..\Private\UIWaveTimer_Image.cpp" />
+    <ClCompile Include="..\Private\UIWaveTimer_Progress.cpp" />
+    <ClCompile Include="..\Private\UIWaveTimer_Text.cpp" />
     <ClCompile Include="..\Private\WeaponPickUp.cpp" />
     <ClCompile Include="..\Private\InteractiveObject.cpp" />
     <ClCompile Include="..\Private\Monster_Fly.cpp" />

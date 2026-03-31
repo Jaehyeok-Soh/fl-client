@@ -1024,6 +1024,15 @@
     <Filter Include="03. GameObject\SkillObject\Boss\Lianhuo\ChainThron">
       <UniqueIdentifier>{ee775835-e207-4c16-a652-9d949684c289}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\25.Wave Timer">
+      <UniqueIdentifier>{f5f9bdba-261e-4824-a00c-30a905ebad9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Wave Timer">
+      <UniqueIdentifier>{311a9c41-db3c-4ae8-adfd-afc25ecb696c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\18.Wave Timer">
+      <UniqueIdentifier>{b5218c0e-0951-43af-8afe-d637ddb8a1e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1929,6 +1938,15 @@
     <ClInclude Include="..\public\Lianhuo_StunChainThron.h">
       <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIWaveTimer_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\25.Wave Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIWaveTimer_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Wave Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIWaveTimer_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\18.Wave Timer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2821,6 +2839,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Lianhuo_StunChainThron.cpp">
       <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIWaveTimer_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\25.Wave Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIWaveTimer_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Wave Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIWaveTimer_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\18.Wave Timer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
