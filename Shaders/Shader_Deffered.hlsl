@@ -64,7 +64,7 @@ float SampleBakedShadowSection(float3 vWorldPos, float3 vWorldNormal, float fNDo
         }
     }
 
-    fShadow /= 9.f;
+    fShadow /= 25.f;
     return lerp(1.f - fStrength, 1.f, fShadow);
 }
 
@@ -693,8 +693,8 @@ PS_OUT_AO PS_MAIN_SSAOGEN(PS_IN_POS_TEX input)
     // Noise -> ·£´ý È¸Àü º¤ÅÍ(View)
     //============================
     float2 vNoiseUV = input.vUV * SSAOkernel.vNoiseScale;
-    float3 vRand = g_SSAONoiseTexture.Sample(PointSampler, vNoiseUV).xyz;
-    vRand.z = 0.f;
+    float2 vSampleRand = g_SSAONoiseTexture.Sample(PointSampler, vNoiseUV).xy;
+    float3 vRand = float3(vSampleRand.x, vSampleRand.y, 0.f);
     vRand = normalize(vRand);
     
     //============================
@@ -962,7 +962,6 @@ technique11 T0
     PASS_RS_DS_BS_VP(SSAOGen, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOGEN)
     PASS_RS_DS_BS_VP(SSAOBLURH, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURH)
     PASS_RS_DS_BS_VP(SSAOBLURV, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAOBLURV)
-    PASS_RS_DS_BS_VP(SSAOUpsample, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_SSAO_UPSAMPLE)
     PASS_RS_DS_BS_VP(CombinedHDR, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_COMBINED)
     PASS_RS_DS_BS_VP(BloomExtract, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_BLOOM_EXTRACT)
     PASS_RS_DS_BS_VP(BloomPing, RS_Default, DS_Disabled, BS_Default, VS_MAIN, PS_MAIN_BLOOM_PING)

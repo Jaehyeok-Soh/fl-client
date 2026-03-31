@@ -725,7 +725,7 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     
     Compute_Diffse(vDiffuse, input.vUV);
     
-    if (length(vDiffuse.rgb) < 0.1f)
+    if (length(vDiffuse.rgb) < 0.5f)
         discard;
     
     if (vDiffuse.a < 0.3f)
