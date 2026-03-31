@@ -42,6 +42,7 @@
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
 #include "TriggerBox_TutorialUIEvent.h"
 #include "TriggerBox_CinematicPlayer.h"
+#include "TriggerBox_EnvJukebox.h"
 #pragma endregion
 
 
@@ -137,6 +138,7 @@ HRESULT CBuilder_Map::Build(const CDataDocumentBase& document)
 			case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	Create_TriggerBox_GlobalEvent_BroadCaster(tData);	break;
 			case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			Create_TriggerBox_TutorialUIEvent(tData);			break;
 			case DTO::EClientMakePath::TriggerBox_CinematicPlayer:			Create_TriggerBox_CinematicPlayer(tData);			break;
+			case DTO::EClientMakePath::TriggerBox_EnvJukebox:				Create_TriggerBox_EnvJukebox(tData);				break;
 
 
 
@@ -1055,6 +1057,36 @@ HRESULT CBuilder_Map::Create_TriggerBox_CinematicPlayer(const DTO::TMap_MapObjec
 	return S_OK;
 }
 #pragma endregion
+HRESULT CBuilder_Map::Create_TriggerBox_EnvJukebox(const DTO::TMap_MapObjectData& tData)
+{
+	if (tData.vecSRTs.empty()) return E_FAIL;
+	if (tData.vecClientMakePathDesc.empty()) return E_FAIL;
+
+	TRIGGERBOX_ENVJUKEBOX_DESC* pOrigin = static_cast<TRIGGERBOX_ENVJUKEBOX_DESC*> (tData.vecClientMakePathDesc.front());
+	if (pOrigin == nullptr) return E_FAIL;
+
+	DTO::SRT_DATA tSRT{ tData.vecSRTs.front() };
+	CTriggerBox_EnvJukebox::TRIGGERBOX_ENVJUKEBOX_DESC  tDesc{};
+	CTransform::TRANSFORM_DESC transformDesc = {};
+	transformDesc.TranslationMatrix = { tSRT.Get_World() };
+
+	tDesc.iLevelIndex = ENUM_TO_UINT(m_eLevelType);
+	tDesc.pSRTData = &tSRT;
+	tDesc.pTransform_Desc = &transformDesc;
+	tDesc.vTriggerBox_Extents = pOrigin->vExtents;
+	tDesc.vTriggerBox_Rotation = pOrigin->vRotation;
+
+	tDesc.eType = pOrigin->eType;
+	tDesc.strSoundTag = pOrigin->strSoundTag;
+	tDesc.iSoundHash = pOrigin->iSoundHash;
+	tDesc.fRadius = pOrigin->fRadius;
+
+	if (tDesc.bHasQuest = pOrigin->bHasQuest)
+		tDesc.tQuestObjectDesc = pOrigin->tQuestObjectDesc;
+
+	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszTriggerBox_EnvJukebox_PrototypeTag, ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &tDesc);
+	return S_OK;
+}
 
 
 

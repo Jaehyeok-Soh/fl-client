@@ -55,6 +55,7 @@ private:
 	HRESULT	Create_TriggerBox_GlobalEvent_BroadCaster(const DTO::TMap_MapObjectData& tData);
 	HRESULT	Create_TriggerBox_TutorialUIEvent(const DTO::TMap_MapObjectData& tData);
 	HRESULT	Create_TriggerBox_CinematicPlayer(const DTO::TMap_MapObjectData& tData);
+	HRESULT	Create_TriggerBox_EnvJukebox(const DTO::TMap_MapObjectData& tData);
 
 	/* Invisible Wall */
 	HRESULT	Create_InvisibleWall(const DTO::TMap_MapObjectData& tData);

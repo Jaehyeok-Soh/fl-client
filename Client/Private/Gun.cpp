@@ -72,7 +72,13 @@ void CGun::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
 
-	m_pCameraTransform = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>();
+	auto pMainCamera = m_pGameInstance->Get_MainCamera();
+	if (pMainCamera == nullptr)
+		return;
+
+	m_pCameraTransform = pMainCamera->Get_Component<CTransform>();
+	if (m_pCameraTransform == nullptr)
+		return;
 
 	Attack_Update(fTimeDelta);
 

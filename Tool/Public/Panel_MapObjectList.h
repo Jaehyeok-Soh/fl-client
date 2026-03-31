@@ -18,6 +18,7 @@ struct TRIGGERBOX_DESC;
 struct TRIGGERBOX_CHANGELEVEL_DESC;
 struct TRIGGERBOX_MONSTERSPAWNER_DESC;
 struct TRIGGERBOX_MONSTERWAVESPAWNER_DESC;
+struct TRIGGERBOX_ENVJUKEBOX_DESC;
 NS_END
 
 
@@ -113,6 +114,8 @@ private:
 
 	void						ImGuiUPdate_CitizenPresetPopup(DTO::CITIZEN_DATA& currentCitizenData);
 
+	void						ImGuiUpdate_EnvJukebox(TRIGGERBOX_ENVJUKEBOX_DESC* pDesc);
+
 public:
 
 private:
@@ -178,6 +181,7 @@ private:
 
 
 	char						m_szObjectTagNames[ARRAYSIZE(g_arrAllObjectTags)][MAX_PATH];
+	char						m_szJukeboxTypeTagNames[ARRAYSIZE(g_arrAllJukeboxTypeTags)][MAX_PATH];
 
 public:
 	static  CPanel_MapObjectList* Create(const _char* pLabel, CLevel* pOwner, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -333,7 +333,7 @@ void CTriggerBox_MonsterWaveSpawner::Update_WaveTimer(_float fTimeDelta)
 				waveInfo.fAccTime = 0.f;
 			}
 		}
-
+		
 		if (waveInfo.iCurrentSpawnCount >= waveInfo.iTotalSpawnCount)
 			m_tWaveData.iCurrentWaveCount++;
 	}
