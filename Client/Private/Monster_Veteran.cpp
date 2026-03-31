@@ -200,7 +200,7 @@ HRESULT CMonster_Veteran::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 35000.f; //수정하기
+		desc.fMaxHp = 100000.f; //수정하기
 		desc.fDefense = 0.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 

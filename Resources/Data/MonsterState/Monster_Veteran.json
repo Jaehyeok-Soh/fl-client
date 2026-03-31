@@ -253,7 +253,6 @@
                                 "Chase": 50.0,
                                 "Dive": 50.0,
                                 "Howl_Charge": 50.0,
-                                "Jump_RunStart": 50.0,
                                 "Melee_Combo_Start": 50.0
                             },
                             "vecConditionEntry": [
@@ -5072,7 +5071,6 @@
                             "mapRandomStatePool": {
                                 "Charge_Start": 50.0,
                                 "Howl_Charge": 50.0,
-                                "Jump_Throw": 50.0,
                                 "Melee_01": 50.0,
                                 "Melee_02": 50.0,
                                 "Melee_Combo_Start": 50.0,
