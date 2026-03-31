@@ -38,6 +38,7 @@ HRESULT CColliderModule::Initialize(void* pArg)
 	m_pOwner = pDesc->pOwner;
 	if (FAILED(Add_Component<CPhysicsCollider>(0, L"Prototype_Component_Physics_Collider", pDesc->pPhysicsColliderDesc)))
 		return E_FAIL;
+
 	if (FAILED(Add_Component<CPhysicsRigidBody>(0, L"Prototype_Component_Physics_RigidBody", pDesc->pPhysicsRigidbodyDesc)))
 		return E_FAIL;
 

@@ -187,6 +187,11 @@ struct ShaderBakedSectionParam
     float3 vPadding;
     ShaderBakedSection sections[ACTIVE_BAKED_SECTION_COUNT];
 };
+
+struct GhostTrailParam
+{
+    float4 vColor;
+};
 /////////////////
 // ConstBuffer //
 /////////////////
@@ -284,6 +289,10 @@ cbuffer ShaderBakedSectionBuffer
 {
     ShaderBakedSectionParam shaderBakedSectionParam;
 };
+cbuffer GhostTrailBuffer
+{
+    GhostTrailParam ghostTrailParam;
+};
 //////////
 // Func //
 //////////
@@ -297,15 +306,43 @@ void Compute_Diffse(inout float4 _vDiffuse, float2 _vUV)
         _vDiffuse = g_MaterialTextures[DIFFUSE].Sample(LinearSampler, _vUV);
 }
 
+// DDS BC5 포멧 적용으로 주석처리 - 2026-03-31 소재혁
+//void Compute_Normal(inout float3 _vNormal, float3 _vTangent, float3 _vBinormal, float2 _vUV)
+//{
+//    if (Has(g_iMaterialMask, NORMAL))
+//    {
+//        // T, B, N
+//        float3x3 matWorld = float3x3(_vTangent, _vBinormal, _vNormal);
+//        float3 vNormalDesc = g_MaterialTextures[NORMAL].Sample(LinearSampler, _vUV).xyz;
+//        _vNormal = vNormalDesc * 2.f - 1.f;
+//        _vNormal = mul(_vNormal, matWorld);
+//    }
+//}
+
+// DDS BC5 포멧 적용으로 추가 gemini - 2026-03-31 소재혁
 void Compute_Normal(inout float3 _vNormal, float3 _vTangent, float3 _vBinormal, float2 _vUV)
 {
     if (Has(g_iMaterialMask, NORMAL))
     {
-        // T, B, N
+        // TBN 행렬 구성 (탄젠트 스페이스 -> 월드/뷰 스페이스 변환용)
         float3x3 matWorld = float3x3(_vTangent, _vBinormal, _vNormal);
-        float3 vNormalDesc = g_MaterialTextures[NORMAL].Sample(LinearSampler, _vUV).xyz;
-        _vNormal = vNormalDesc * 2.f - 1.f;
-        _vNormal = mul(_vNormal, matWorld);
+
+        // 1. [BC5 대응] 텍스처에서 R, G (X, Y축) 채널만 읽어옵니다.
+        float2 normalXY = g_MaterialTextures[NORMAL].Sample(LinearSampler, _vUV).xy;
+
+        // 2. 0.0 ~ 1.0 범위의 값을 -1.0 ~ 1.0 범위의 방향 벡터로 확장(Unpack)합니다.
+        normalXY = normalXY * 2.0f - 1.0f;
+
+        // 3. 피타고라스 정리로 날아간 Z축 완벽 복원! (Z = sqrt(1 - X^2 - Y^2))
+        // dot(normalXY, normalXY)는 X^2 + Y^2 와 같습니다.
+        // saturate()는 연산 오차로 인해 음수가 나와 sqrt가 NaN 에러를 뿜는 것을 막아주는 필수 안전장치입니다.
+        float normalZ = sqrt(saturate(1.0f - dot(normalXY, normalXY)));
+
+        // 4. 완성된 X, Y, Z를 하나의 벡터로 합칩니다.
+        float3 vNormalDesc = float3(normalXY, normalZ);
+
+        // 5. 복원된 노멀 벡터를 TBN 행렬과 곱해 최종 노멀 방향을 구합니다.
+        _vNormal = normalize(mul(vNormalDesc, matWorld));
     }
 }
 

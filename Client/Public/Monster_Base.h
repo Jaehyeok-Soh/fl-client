@@ -133,11 +133,12 @@ public:
 
 	virtual _bool		On_Hit(const HIT_DESC& hitDesc) override;
 	virtual void		Try_Attack(const HIT_DESC& hitDesc) override;
+	virtual void		On_Dying();
 
 	void				Set_RootMotion_Apply(_bool bApply);
-
+	
 	void				Trigger_Dissolve();
-
+	_bool				Is_DissolveEnded();
 public:
 	// Camera Interface
 	virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) override;

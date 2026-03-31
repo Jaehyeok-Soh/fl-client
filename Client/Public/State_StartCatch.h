@@ -3,8 +3,7 @@
 
 NS_BEGIN(Client)
 
-class CMonsterActionState;
-class CMonsterControlContext;
+class CLianhuo_GimmikController;
 
 class CState_StartCatch final : public CStateBase_Monster
 {
@@ -20,7 +19,8 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 private:
-
+	_bool m_bOnce{ false };
+	CLianhuo_GimmikController* m_pOwnerGimmikController{ nullptr };
 public:
 	static CState_StartCatch* Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg = nullptr);
 	virtual void Free() override;

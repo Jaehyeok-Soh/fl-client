@@ -115,7 +115,7 @@ HRESULT CVIBuffer_Particle_Mesh::Set_ResizeBuffer_SpecificRandom()
 
 		_float fMaxLifeTime = m_tParticleDesc.vLifeTime.y;
 		if (iFlags & DTO::E_RANDOM_FLAG::RAND_LIFE)
-			fMaxLifeTime = m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.x, m_tParticleDesc.vLifeTime.y);
+			fMaxLifeTime = m_pGameInstance->Rand_Float(m_tParticleDesc.vLifeTime.y * 0.3f, m_tParticleDesc.vLifeTime.y);
 
 		if (iFlags & DTO::E_RANDOM_FLAG::RAND_SPEED)
 			fSpeed = m_pGameInstance->Rand_Float(0.1f, 1.f);

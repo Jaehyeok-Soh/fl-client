@@ -151,7 +151,7 @@ void CUIQuickSlot_Image::Tick_By_Type(const _float fTimeDelta)
 
 			m_pParentCanvasCache->Get_CommonParam_uint_Ref()[UINT_SLOT_CURRENT_SLOT_INDEX] = m_iCurSlotIndex;
 		}
-		else
+		else if (KEY_BUTTON_UP(DIK_Z))
 		{
 			m_pParentCanvasCache->Get_CommonParam_bool_Ref()[BOOLEAN_SLOT_Z_KEY_HOLDING] = false;
 			m_pUIManager->Set_isCursor_Visible(false);
@@ -264,7 +264,6 @@ void CUIQuickSlot_Image::Calc_Current_SlotIndex()
 	const _float m_fTotalSlotCount = 8.f;
 	m_iTargetSlotIndex = (_uint)(fRadian / (XM_2PI / m_fTotalSlotCount));
 
-	CLOG_INFO("Current Slot : " + std::to_string(m_iTargetSlotIndex));
 }
 
 void CUIQuickSlot_Image::Tick_Follow_TargetSlot(const _float fTimeDelta)
@@ -301,6 +300,7 @@ void CUIQuickSlot_Image::Check_Current_Slot()
 		{
 			Ready_Fade(0.3f, 0.f, 0.7f, m_fDelay);
 			m_isSelected = true;
+			m_pGameInstance->Play_OneShot(0, TO_HASH("UI_QUICK_SLOT_HOVER"), 0.5f);
 		}
 	}
 	else

@@ -408,7 +408,7 @@ namespace Engine
 		float  fNormalBias = { 0.04f };
 
 		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
-		float fShadowStrength = { 0.4f };
+		float fShadowStrength = { 0.7f };
 		float fCascadeIndex = { 0.f };
 	}SHADER_CASCADE_SHADOW_DESC;
 
@@ -416,8 +416,8 @@ namespace Engine
 	{
 		SimpleMath::Matrix matLightVP{ SimpleMath::Matrix::Identity };
 		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
-		float fShadowBias = { 0.0002f };
-		float fShadowStrength = { 0.4f };
+		float fShadowBias = { 0.0001f };
+		float fShadowStrength = { 0.8f };
 	}SHADER_BAKED_SHADOW_DESC;
 
 	typedef struct tagShaderFogParamDesc
@@ -814,6 +814,10 @@ namespace Engine
 		float		fMaxSpeed{5.f};						/* 시각적 효과를 위한 MaxSpeed 조절가능 */
 	}SHADER_PLAYER_INFO;
 
+	typedef struct tagShaderGhostTrail
+	{
+		SimpleMath::Vector4 vColor = { SimpleMath::Vector4::One };
+	}SHADER_GHOST_TRAIL;
 #pragma endregion
 
 #pragma region Shader_StructuredBuffer

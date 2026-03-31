@@ -59,6 +59,7 @@ private:
 	_float	m_fGlowIntensity = {};
 
 	_uint m_iTimingType = {};
+
 public:
 	static CUIQTE_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

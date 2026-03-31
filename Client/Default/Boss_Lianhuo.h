@@ -39,8 +39,14 @@ public:
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
+	virtual void On_Dying() override;
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
+	const Matrix* Get_PlayerLocBonePosition();
 	HRESULT Change_State_ForDirecting(EStateForDirecting eState);
+
+	virtual void Play_GhostTrail() override;
+	virtual void Stop_GhostTrail() override;
+	virtual void Clear_GhostTrail() override;
 private:
 	HRESULT Ready_Ability();
 	HRESULT Ready_Weapon();
@@ -49,7 +55,9 @@ private:
 	HRESULT Ready_CameraEvent();
 	HRESULT Ready_CustomStates();
 	HRESULT Ready_SoundHandler();
+	void Set_GhostTrailDesc();
 private:
+	_bool m_bFirst = { false };
 	array<_int, (size_t)EStateForDirecting::COUNT> m_arrStateIndex;
 	Vec3 vPos{ Vec3::Zero };
 public:

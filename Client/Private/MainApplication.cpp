@@ -44,6 +44,9 @@
 // Dialogue
 #include "DialogueManager.h"
 
+// QTE
+#include "UIQTE_Manager.h"
+
 USING(Client)
 
 CMainApplication::CMainApplication()
@@ -724,6 +727,7 @@ void CMainApplication::Free()
 	CUITutorial_Manager::GetInstance()->DestroyInstance();
 	CCameraPreset_Manager::GetInstance()->DestroyInstance();
 	CUIQuickSlot_Manager::GetInstance()->DestroyInstance();
+	CUIQTE_Manager::GetInstance()->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	m_pGameInstance->Destroy_Engine();
 

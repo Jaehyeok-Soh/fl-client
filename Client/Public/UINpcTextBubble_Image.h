@@ -42,6 +42,8 @@ private:
 
 	_bool m_isSpawned = { false };
 
+	_bool m_isNoText = { false };
+
 public:
 	static CUINpcTextBubble_Image* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -248,6 +248,9 @@ HRESULT CLoader::Loading_For_Map()
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Sphere/Model/")))
 		return E_FAIL;
 
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::MAP), L"../../Resources/Models/Effect_FBX/Animal/Model/")))
+		return E_FAIL;
+
 	Safe_Release(pMapDataLoader);
 
 
@@ -330,6 +333,9 @@ HRESULT CLoader::Loading_For_Animation()
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Claw/Model/")))
 		return E_FAIL;
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Sphere/Model/")))
+		return E_FAIL;
+
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), L"../../Resources/Models/Effect_FBX/Animal/Model/")))
 		return E_FAIL;
 
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::ANIMATION), basicBoxPath)))
@@ -447,6 +453,9 @@ HRESULT CLoader::Loading_For_Effect()
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Sphere/Model/")))
 		return E_FAIL;
 
+	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), L"../../Resources/Models/Effect_FBX/Animal/Model/")))
+		return E_FAIL;
+
 	if (FAILED(pMapDataLoader->Make_Prototype(ENUM_TO_UINT(ELevelType::EFFECT), basicBoxPath)))
 		return E_FAIL;
 
@@ -477,8 +486,8 @@ HRESULT CLoader::Loading_For_UI()
 	// Resource Component
 	//=================
 
-	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Tool/";
-	//std::filesystem::path root = L"../../Resources/Textures/UI/UI_Client/";
+	//std::filesystem::path root = L"../../Resources/Textures/UI/UI_Tool/";
+	std::filesystem::path root = L"../../Resources/Textures/UI/UI_Client/";
 
 	for (auto& entry : std::filesystem::recursive_directory_iterator(root))
 	{

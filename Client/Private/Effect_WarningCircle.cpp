@@ -74,8 +74,6 @@ void CEffect_WarningCircle::Spawn_PositionCalculate(void* pArg)
 	Matrix WorldMatrix = WorldMatrix_Calculate(pDesc);
 	Get_Component<CTransform>()->Set_WorldMatrix(WorldMatrix);
 
-	pDesc->VFX_Color = {};
-
 	// 타이머 및 자식들 초기화
 	for (auto effectObject : m_vecPartObjects)
 	{

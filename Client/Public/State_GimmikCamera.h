@@ -21,7 +21,7 @@ public:
 	virtual HRESULT End() override;
 private:
 	_float m_fElapsed = { 0.f };
-	const _float m_fHoldTime = { 1.f };
+	const _float m_fHoldTime = { 0.5f };
 public:
 	static CState_GimmikCamera* Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg = nullptr);
 	virtual void Free() override;

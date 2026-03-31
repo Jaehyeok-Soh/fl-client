@@ -2,6 +2,7 @@
 #include "State_SpecialDash.h"
 
 #include "GameObject.h"
+#include "CameraMan_Targeter.h"
 #include "PhysicsCCT.h"
 #include "Transform.h"
 #include "PlayerActionState.h"
@@ -61,6 +62,12 @@ HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
 
     m_pGameInstance->Request_SloMo(0.3f, 0.5f);
 
+    // CameraState Change - Look으로 따라가게
+    CCameraMan* pCamera = m_pGameInstance->Get_MainCamera();
+    if (CCameraMan_Targeter* pTargeter = dynamic_cast<CCameraMan_Targeter*>(pCamera))
+        pTargeter->Change_CamState(TargeterState::LOOK_LOCK);
+
+    Get_OwnerObject()->Play_GhostTrail();
     return S_OK;
 }
 
@@ -136,6 +143,10 @@ HRESULT CState_SpecialDash::End()
     // pivot 갱신을 위해 true로 해둠
     static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Set_SpecialDashOn(false);
 
+    // Camera ChangeState - 다시 Normal
+    CCameraMan* pCamera = m_pGameInstance->Get_MainCamera();
+    if (CCameraMan_Targeter* pTargeter = dynamic_cast<CCameraMan_Targeter*>(pCamera))
+        pTargeter->Change_CamState(TargeterState::NORMAL);
     return S_OK;
 }
 

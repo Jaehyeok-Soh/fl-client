@@ -49,10 +49,10 @@ float SampleBakedShadowSection(float3 vWorldPos, float3 vWorldNormal, float fNDo
     
     float fShadow = 0.f;
     [unroll]
-    for (int y = -1; y <= 1; ++y)
+    for (int y = -2; y <= 2; ++y)
     {
         [unroll]
-        for (int x = -1; x <= 1; ++x)
+        for (int x = -2; x <= 2; ++x)
         {
             float2 vOffset = float2(x, y) * vInvSize;
             float fStored = g_RenderTargetShadowBaked.SampleLevel(

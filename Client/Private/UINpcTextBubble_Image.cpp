@@ -137,6 +137,9 @@ void CUINpcTextBubble_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
 			{
+				if (m_isNoText)
+					return;
+
 				if (m_pTargetNPC == pObj)
 				{
 					Set_Active(true);
@@ -172,7 +175,7 @@ void CUINpcTextBubble_Image::Tick_By_Type(const _float fTimeDelta)
 
 void CUINpcTextBubble_Image::Initialize_Visible_Event()
 {
-	Ready_Fade(0.3f, 0.f, 1.f, m_fDelay);
+	Ready_Fade(0.3f, 0.f, 0.7f, m_fDelay);
 }
 
 _bool CUINpcTextBubble_Image::Tick_Visible_Event(const _float fTimeDelta)
@@ -215,6 +218,13 @@ HRESULT CUINpcTextBubble_Image::Spawn_FromPool(void* pArg)
 		m_pWorldUIComp->Set_TargetWorldOffset(pTextBubble->vOffset);
 		m_pTargetNPC = pTextBubble->pTarget;
 		m_strSoundTag = pTextBubble->strSoundTag;
+		m_pWorldUIComp->Set_TargetBoneName(pTextBubble->strTargetBoneName);
+
+
+		if (pTextBubble->wstrContents == L"")
+			m_isNoText = true;
+		else
+			m_isNoText = false;
 
 		m_isDeadRequest = false;
 	}

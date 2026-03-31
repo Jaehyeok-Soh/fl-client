@@ -111,46 +111,6 @@ void CUIBossAction_Image::Tick_By_Type(const _float fTimeDelta)
 void CUIBossAction_Image::Bind_Events()
 {
 	Super::Bind_Events();
-
-	m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc) {
-
-		for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
-		{
-			_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
-			switch (iHash)
-			{
-			case TO_HASH("UI_Boss"):
-			{
-				/* UI Image */
-				for (auto ActionName : EventDesc.vecActionNames)
-				{
-					_uint iActionNameHash = TO_HASH(ActionName.c_str());
-					switch (iActionNameHash)
-					{
-					case TO_HASH("Xibi"):
-					{
-						/* Xibi Icon 연출 로직 함수 연결만 하면됨 */
-						int a = 0;
-					}
-					break;
-					case TO_HASH("Lianhuo"):
-					{
-						/* Lianhuo Icon 연출 로직 함수 연결만 하면됨 */
-						int a = 0;
-					}
-					break;
-					default:
-						break;
-					}
-				}
-			}
-			break;
-			default:
-				break;
-			}
-		}
-		});
-
 	switch (m_eDImageSubClass)
 	{
 	case DTO::EUIDImageSubClassType::BOSS_CIVILA_ACTION_BEGIN:

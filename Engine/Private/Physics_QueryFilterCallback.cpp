@@ -24,7 +24,12 @@ PxQueryHitType::Enum CPhysics_QueryFilterCallback::preFilter(const PxFilterData&
 
 	PxFilterData shapeFilter = shape->getQueryFilterData();
 
-	if (shapeFilter.word0 & PHYSICSFILTERGROUP::RAGDOLL)
+	if (((shapeFilter.word0 & PHYSICSFILTERGROUP::RAGDOLL) != 0)
+		|| ((shapeFilter.word0 & PHYSICSFILTERGROUP::GENIEMON) != 0)
+		|| ((shapeFilter.word0 & PHYSICSFILTERGROUP::MONSTER_ATTACK) != 0)
+		|| ((shapeFilter.word0 & PHYSICSFILTERGROUP::MONSTER_ATTACK_PROJECTTILE) != 0)
+		|| ((shapeFilter.word0 & PHYSICSFILTERGROUP::MONSTER_SKILL) != 0)
+		|| ((shapeFilter.word0 & PHYSICSFILTERGROUP::MONSTER_SKILL_PROJECTTILE) != 0))
 		return PxQueryHitType::eNONE;
 
 	if ((filterData.word0 & PHYSICSFILTERGROUP::GENIEMON) && (shapeFilter.word0 & PHYSICSFILTERGROUP::PLAYER))

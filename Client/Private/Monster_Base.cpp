@@ -296,10 +296,10 @@ _bool CMonster_Base::On_Hit(const HIT_DESC& hitDesc)
 			callback.eTargetType = m_eObject_Enum_Tag;
 			callback.iCount = 1;
 			CGameInstance::GetInstance()->Broadcast<QUEST_NOTIFY>(callback);
-
-			Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
 			CUIMinimap_Manager::GetInstance()->Delete_Ranged_Object(this);
-			Set_Dying();
+			
+			// 03 31 병준 - 보스랑 몬스터 다르게 처리하기 위해 가상함수
+			On_Dying();
 		}
 	}
 
@@ -348,6 +348,12 @@ void CMonster_Base::Try_Attack(const HIT_DESC& hitDesc)
 #endif // _DEBUG
 }
 
+void CMonster_Base::On_Dying()
+{
+	Get_Component<CMonsterControlContext>()->Set_CCT_Collision_Disable();
+	Set_Dying();
+}
+
 void CMonster_Base::Set_RootMotion_Apply(_bool bApply)
 {
 	Get_Part<CMonster_Body_Base>(Part::BODY)->Get_Component<CModel>()->Set_CurAnimation_RootApply(bApply);
@@ -358,6 +364,16 @@ void CMonster_Base::Trigger_Dissolve()
 	CMonster_Body_Base* pBody = { nullptr };
 	pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
 	pBody->DissolveStart();
+}
+
+_bool CMonster_Base::Is_DissolveEnded()
+{
+	CMonster_Body_Base* pBody = { nullptr };
+	pBody = Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return false;
+
+	return pBody->Is_DissolveEnded();
 }
 
 ICameraAnchorProvider* CMonster_Base::Get_CameraAnchorProvider(_int iPartIndex)

@@ -219,7 +219,7 @@ void CLevel_Test::Update(const _float fTimeDelta)
 
 	if (KEY_BUTTON_DOWN(DIK_7))
 	{
-		CUIQTE_Manager::GetInstance()->Start_QTE(10);
+		CUIQTE_Manager::GetInstance()->Start_QTE(5);
 	}
 	CUIQTE_Manager::GetInstance()->Tick_QTE(fTimeDelta);
 }
