@@ -140,7 +140,6 @@ void CUIWaveTimer_Progress::Bind_Events()
 				}
 				else if (desc.tChapterInfo.eEvent != DTO::EQuestEvent::MONSTER_KILL)
 				{
-					if (m_isVisible)
 					this->Set_Invisible();
 				}
 			}));
@@ -180,53 +179,42 @@ HRESULT CUIWaveTimer_Progress::Convert_Stat_To_Ratio()
 		return E_FAIL;
 
 
-	m_fCurRatio = 0.f;
+	_float fWaveStart = {};
+	_float fWaveEnd = {};
 
-	_float fSectionStartTime = 0.f;
-	_float fSectionEndTime = 0.f;
-	_float fCurrentTime = max(0.f, pWaveData->fCurrentWaveTime);
+
+	_float fDuration = {};
 
 	switch (pWaveData->iCurrentWaveCount)
 	{
 	case 0: // 개
-		fSectionStartTime = 0.f;
-		fSectionEndTime = pWaveData->vecWaveInfo[1].fSpawnTime;
+		fWaveStart = 0.f;
+		fWaveEnd = pWaveData->vecWaveInfo[1].fSpawnTime;
 		break;
 
 	case 1: // 오징어 
-		fSectionStartTime = pWaveData->vecWaveInfo[1].fSpawnTime;
-		fSectionEndTime = pWaveData->vecWaveInfo[2].fSpawnTime;
+		fWaveStart = pWaveData->vecWaveInfo[1].fSpawnTime;
+		fWaveEnd = pWaveData->vecWaveInfo[2].fSpawnTime; 
 		break;
 
 	case 2: // 부머
-		fSectionStartTime = pWaveData->vecWaveInfo[2].fSpawnTime;
-		fSectionEndTime = pWaveData->vecWaveInfo[3].fSpawnTime;
+		fWaveStart = pWaveData->vecWaveInfo[2].fSpawnTime;
+		fWaveEnd = pWaveData->vecWaveInfo[3].fSpawnTime; 
 		break;
 
 	case 3: // 엘리트
-		fSectionStartTime = pWaveData->vecWaveInfo[3].fSpawnTime;
-		fSectionEndTime = pWaveData->fWaveTime;
+		m_fProgress_Ratio = 1.f;
 		break;
 
 	default:
-		m_fCurRatio = 0.f;
+		m_fProgress_Ratio = 1.f;
 		return S_OK;
 	}
+	_float fCurrentTime = max(0.f, (pWaveData->fCurrentWaveTime - fWaveStart)); // 0 ~ wavetime까지 
 
-	fSectionStartTime = max(0.f, fSectionStartTime);
-	fSectionEndTime = max(0.f, fSectionEndTime);
+	fDuration = fWaveEnd - fWaveStart;
 
-	if (fCurrentTime < fSectionStartTime)
-		fCurrentTime = fSectionStartTime;
-
-	_float fSectionTime = fSectionEndTime - fSectionStartTime;
-	_float fRemainTime = fSectionEndTime - fCurrentTime;
-
-	fSectionTime = max(0.f, fSectionTime);
-	fRemainTime = max(0.f, fRemainTime);
-
-	m_fCurRatio = (fSectionTime > 0.f) ? (fRemainTime / fSectionTime) : 0.f;
-	m_fCurRatio = max(0.f, std::min(1.f, m_fCurRatio));
+	m_fProgress_Ratio = 1.f - fCurrentTime / fDuration ;
 
 	return S_OK;
 }

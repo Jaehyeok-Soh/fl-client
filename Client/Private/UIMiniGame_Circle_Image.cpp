@@ -350,6 +350,7 @@ void CUIMiniGame_Circle_Image::Tick_For_Point(const _float fTimeDelta)
 			m_pParentCanvasCache->Get_CommonParam_bool_Ref()[m_iNumbering] = true;
 			if (!m_isFirstEntered)
 			{
+				m_fRotateSpeed = m_pGameInstance->Rand_Float(1.f, 10.f);
 				Set_Invisible();
 				m_isFirstEntered = true;
 			}

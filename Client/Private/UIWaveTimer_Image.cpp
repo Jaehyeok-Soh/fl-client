@@ -150,6 +150,9 @@ void CUIWaveTimer_Image::Bind_Events()
 				else if(desc.tChapterInfo.eEvent != DTO::EQuestEvent::MONSTER_KILL)
 				{
 					this->Set_Invisible();
+				}
+				else if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL && this->m_isVisible)
+				{
 					m_pGameInstance->Broadcast<BOSS_UI_ON>();
 				}
 			}));

@@ -215,6 +215,8 @@ HRESULT CUIBossStat_Text::Spawn_FromPool(void* pArg)
 		m_pTargetStat = pBossNamePlate->pTarget->Get_Component<CMyStat>();
 		if (nullptr == m_pTargetStat)
 			return E_FAIL;
+
+		m_wstrText = Engine_Utils::ToWString( pBossNamePlate->pTarget->Get_Name());
 	}
 
 	m_isSpawned = true;
