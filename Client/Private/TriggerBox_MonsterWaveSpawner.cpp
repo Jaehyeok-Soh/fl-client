@@ -309,6 +309,11 @@ void CTriggerBox_MonsterWaveSpawner::Update_WaveTimer(_float fTimeDelta)
 		return;
 
 	MonsterWaveInfo& waveInfo = m_tWaveData.vecWaveInfo[m_tWaveData.iCurrentWaveCount];
+	_float nextSpawnTime = { -1.f };
+	if (m_tWaveData.iCurrentWaveCount + 1 < m_tWaveData.iTotalWaveCount)
+		nextSpawnTime = m_tWaveData.vecWaveInfo[m_tWaveData.iCurrentWaveCount + 1].fSpawnTime;
+	else
+		nextSpawnTime = m_tWaveData.vecWaveInfo[m_tWaveData.iTotalWaveCount - 1].fSpawnTime;
 
 	m_fCurWaveTime += fTimeDelta;
 
@@ -326,8 +331,10 @@ void CTriggerBox_MonsterWaveSpawner::Update_WaveTimer(_float fTimeDelta)
 		else
 		{
 			waveInfo.fAccTime += fTimeDelta;
-			if (waveInfo.fAccTime >= waveInfo.fSpawnInterval)
+			if (waveInfo.fAccTime >= waveInfo.fSpawnInterval && waveInfo.iCurrentSpawnCount <= waveInfo.iTotalSpawnCount)
 			{
+
+
 				if (FAILED(SpawnMonster(waveInfo)))
 					MSG_BOX("Mosnter Spawner 작동 오류");
 
@@ -336,8 +343,8 @@ void CTriggerBox_MonsterWaveSpawner::Update_WaveTimer(_float fTimeDelta)
 			}
 		}
 
-		if (waveInfo.iCurrentSpawnCount >= waveInfo.iTotalSpawnCount && m_fCurWaveTime >= waveInfo.fSpawnTime)
-		{
+
+		if (waveInfo.iCurrentSpawnCount >= waveInfo.iTotalSpawnCount && m_tWaveData.fCurrentWaveTime >= nextSpawnTime)
 			m_tWaveData.iCurrentWaveCount++;
 			m_fCurWaveTime = 0.f;
 		}

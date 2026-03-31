@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "BossSkill",
+            "eColliderType": "Overlap",
+            "iID": 2,
+            "strTag": "Lianhuo_Stun",
+            "tCombat": {
+                "DamageType": "Fire",
+                "HitType": "Additive",
+                "fBaseDamage": 333.0,
+                "fHitStopSec": 101.0,
+                "fHitStunSec": 101.0,
+                "fImpulse": 0.0,
+                "fPushPower": 0.0
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

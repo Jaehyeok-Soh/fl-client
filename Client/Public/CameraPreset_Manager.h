@@ -4,9 +4,12 @@
 
 NS_BEGIN(Engine)
 class CGameInstance;
+class CGameObject;
 NS_END
 
 NS_BEGIN(Client)
+
+class CCameraMan_Targeter;
 
 class CCameraPreset_Manager final : public CBase
 {
@@ -34,7 +37,12 @@ public:
 	const unordered_map<string, CAMERA_SHOT_PRESET>& Get_AllPresets() const { return m_mapPresets; }
 	std::filesystem::path Make_FilePathFromTag(const string& strTag) const;
 
+	HRESULT Play_Preset(const string& strPresetTag);
+	HRESULT Play_Preset(const string& strPresetTag, CGameObject* pOverrideTarget);
+
 	void Clear();
+private:
+	CCameraMan_Targeter* Get_Targeter() const;
 private:
 	std::filesystem::path m_rootPath;
 	CGameInstance* m_pGameInstance = { nullptr };

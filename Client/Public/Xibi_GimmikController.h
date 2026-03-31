@@ -50,7 +50,9 @@ private:
 	void On_TeleportCenter_Appear();
 	virtual void On_ModelAnimNotify(const AnimNotifyKey& key) override;
 private:
+	void Trigger_RandomThunder();
 	void Teleport_To(const Vec3& vPos);
+	void Spawn_RandomSkill(const _float fTimeDelta);
 	Vec3 Compute_RandomTeleportPosition(const Vec3& vCurrentPos);
 	void SpawnSingleThunder();
 	void On_SpawnThunderRandom();
@@ -61,18 +63,31 @@ private:
 private:
 	HRESULT Ready_Spawner();
 private:
-	// TODO - BattleField·Î »©±â
+	TIME_LINE m_tThunderTimer{};
+
 	Vec3 m_vSpawnPosition{Vec3::Zero};
-	_float m_fFieldMaxRange{ 5.f };
+	_float m_fFieldMaxRange{ 6.f };
 	_float m_fMinTargetDist = { 1.3f };
-	_float m_fRandomTeleportRange{ 3.f };
+	_float m_fRandomTeleportRange{ 5.f };
 
 	CSingleSkillSpawner* m_pOneshotThunderSpawner{ nullptr };
 	CSkillObjectSpawner_RandomXZ* m_pRandomThunderSpawner{ nullptr };
+	CSkillObjectSpawner_RandomXZ* m_pRandomThunderSpawner2{ nullptr };
 	CProjectileSpawner_Fan* m_p3wayThunderSpawner{ nullptr };
 	CProjectileSpawner_Radial360* m_p360CircleSpawner{ nullptr };
 	CProjectileSpawner_Radial360* m_p360ThunderSpawner{ nullptr };
 	CXibi_GateSpawner* m_pGateSpawner{ nullptr };
+
+	// sound hash Ä³½Ì
+private:
+	_uint m_iSoundHash_OneShotThunder = {};
+	_uint m_iSoundHash_MovingThunder = {};
+	_uint m_iSoundHash_Dummy = {};
+	_uint m_iSoundHash_Ball = {};
+
+	_uint m_iSoundHash_Dissappear = {  };
+	_uint m_iSoundHash_Appear = {  };
+
 public:
 	static CXibi_GimmikController* Create();
 	virtual CComponent* Clone(void* pArg) override;

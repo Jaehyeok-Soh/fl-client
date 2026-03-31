@@ -615,6 +615,8 @@ namespace Client
 		TUTORIAL_PANNEL_2,
 		TUTORIAL_PANNEL_3,
 		TUTORIAL_PANNEL_4,
+
+		MINIGAME_CIRCLE,
 		END,
 	};
 
@@ -640,6 +642,8 @@ namespace Client
 		"TUTORIAL_PANNEL_2",
 		"TUTORIAL_PANNEL_3",
 		"TUTORIAL_PANNEL_4",
+
+		"MINIGAME_CIRCLE",
 	};
 
 	inline std::string UITutorialPopUpTypeID_ToString(EUITutorialPopUpTypeID eType)
@@ -746,6 +750,7 @@ namespace Client
 	{
 		CGameObject* pTarget = { nullptr };
 		Vec3 vOffset = {};
+		_string strTargetBoneName = {};
 	} UI_NAMEPLATE_PREFAB_DATA;
 
 	typedef struct tagUIDamageFontPrefabData
@@ -800,6 +805,7 @@ namespace Client
 		Vec3 vOffset = {};
 		_string strSoundTag = {};
 		_wstring wstrContents = {};
+		_string strTargetBoneName = {};
 
 	} UI_NPC_TEXT_BUBBLE_PREFAB_DATA;
 
@@ -1035,6 +1041,16 @@ namespace Client
 	inline constexpr wchar_t g_wszPool_XibiCircleProjectile[]					{ L"Pool_Xibi_CircleProjectile" };
 	inline constexpr wchar_t g_wszPool_XibiOneshotThunder[]						{ L"Pool_Xibi_OneshotThunder" };
 
+	/* Lianhuo */
+	inline constexpr wchar_t g_wszLianhuoChainThron_Prototype_Tag[]{ L"Prototype_GameObject_Lian_ChainThron" };
+	inline constexpr wchar_t g_wszLianhuoFirePlain_Prototype_Tag[]{ L"Prototype_GameObject_Lian_FirePlain" };
+	inline constexpr wchar_t g_wszLianhuoXSpace_Prototype_Tag[]{ L"Prototype_GameObject_Lian_XSpace" };
+	inline constexpr wchar_t g_wszLianhuoStunChain_Prototype_Tag[]{ L"Prototype_GameObject_Lian_StunChain" };
+	inline constexpr wchar_t g_wszPool_LianhuoChainThron[]{ L"Pool_Lianhuo_ChainThron" };
+	inline constexpr wchar_t g_wszPool_LianhuoFirePlain[]{ L"Pool_Lianhuo_FirePlain" };
+	inline constexpr wchar_t g_wszPool_LianhuoXSpace[]{ L"Pool_Lianhuo_XSpace" };
+	inline constexpr wchar_t g_wszPool_LianhuoStunChain[]{ L"Pool_Lianhuo_StunChain" };
+
 	/* Monster */
 	inline constexpr wchar_t g_wszMonsterDogProjectile_Prototype_Tag[]{ L"Prototype_GameObject_MonsterDog_CircleProjectile" };
 	inline constexpr wchar_t g_wszMonsterFlyProjectile_Prototype_Tag[]{ L"Prototype_GameObject_MonsterFly_CircleProjectile" };
@@ -1059,6 +1075,12 @@ namespace Client
 	inline constexpr wchar_t g_wszSpawner_Xibi360ThunderProjectile[]			{ L"Prototype_Spawner_Xibi360ThunderProjectile" };
 	inline constexpr wchar_t g_wszSpawner_Xibi3wayLoopThunder[]					{ L"Prototype_Spawner_Xibi3wayLoopThunder" };
 	inline constexpr wchar_t g_wszSpawner_XibiGate[]							{ L"Prototype_Spawner_XibiGate" };
+
+	/* Lianhuo */
+	inline constexpr wchar_t g_wszSpawner_LianhuoSpawnerFirePlain[]				{ L"Prototype_Spawner_LianhuoRandomFirePlain" };
+	inline constexpr wchar_t g_wszSpawner_LianhuoSpawnerChainThron[]			{ L"Prototype_Spawner_LianhuoRandomChainThron" };
+	inline constexpr wchar_t g_wszSpawner_LianhuoSpawnerXSpace[]				{ L"Prototype_Spawner_LianhuoRandomXSpace" };
+	inline constexpr wchar_t g_wszSpawner_LianhuoSpawnerStunChain[]				{ L"Prototype_Spawner_LianhuoRandomStunChain" };
 
 	/* Monster */
 	inline constexpr wchar_t g_wszSpawner_MonsterDogOneshotCircleProjectile[]{ L"Prototype_Spawner_MonsterDogOneshotCircleProjectile" };

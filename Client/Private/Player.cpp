@@ -33,7 +33,9 @@
 #include "TriggerCollidePart.h"
 #include "BonePart.h"
 
+// 접근 headers
 #include "CameraMan_Targeter.h"
+#include "Monster_Base.h"
 
 #pragma region States
 #include "State_Idle.h"
@@ -95,6 +97,7 @@ CPlayer::CPlayer(const CPlayer& rhs)
     , m_arrSkillInfo(rhs.m_arrSkillInfo)
     , m_arrCondemnInfo(rhs.m_arrCondemnInfo)
     , m_bQuickSlotOpen(rhs.m_bQuickSlotOpen)
+    , m_bBossStage(rhs.m_bBossStage)
 
 {
     m_vecPartObjects.resize(Part::END, nullptr);
@@ -149,6 +152,7 @@ HRESULT CPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Interact_PartCollider()))
         return E_FAIL;
 
+    Set_GhostTrailDesc();
     return S_OK;
 }
 
@@ -168,7 +172,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     }
 
 
-    Set_FKeyEvent(0, false);
+    m_bBossStage = false;
     // level 별 관리 : 주로 테스트용
     switch (iCurrentLevelID)
     {
@@ -177,8 +181,9 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
         break;
 
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
-        Set_FKeyEvent(0, true);
-
+    case ENUM_TO_UINT(ELevelType::LIANHUO):
+        m_bBossStage = true;
+        
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
     }
@@ -202,8 +207,10 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
 
     CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>();
 
+    // monster control context -> is grogy
+
     // special dash on일때만 pivot 넘겨줌 : 보스전에만 가능
-    if (pPlayerState->Get_SpecialDashOn())
+    if (pPlayerState->Get_SpecialDashOn() && m_bBossStage)
     {
         CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
         if (pBoss)
@@ -213,6 +220,20 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
 
 void CPlayer::Update(const _float fTimeDelta)
 {
+    // boss stage일때는 groggy를 체크 한다
+    if (m_bBossStage)
+    {
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
+        if (pBoss &&
+            static_cast<CMonster_Base*>(pBoss)->Monster_IsGroggy())
+        {
+            Set_FKeyEvent(0, true);
+        }
+
+        else
+            Set_FKeyEvent(0, false);
+    }
+
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
     {
         pPlayerState->Update(fTimeDelta);
@@ -398,7 +419,7 @@ HRESULT CPlayer::Change_IdleForce()
     CStateBase::STATE_START_DESC tDesc = {};
     tDesc.bCheckPre = false;
 
-    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE), true , &tDesc)))
+    if (FAILED(Get_Component<CPlayerActionState>()->Change_State(ENUM_TO_UINT(State::IDLE), true, &tDesc)))
         return E_FAIL;
 
     return S_OK;
@@ -589,6 +610,14 @@ void CPlayer::Change_WeaponState(_uint iWeaponType, _uint iState)
     {
         Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::HOLD));
     }
+
+
+    // ui 및 stat에게 정보 바꿔주기 위함
+    if (Can_AttackWeapon(ENUM_TO_UINT(EWEAPON::MELEE)))
+        Start_Attack(State::COMBO);
+    else if(Can_AttackWeapon(ENUM_TO_UINT(EWEAPON::RANGE)))
+        Start_Attack(State::GUNIDLE);
+
 }
 
 _int CPlayer::Get_CurWeaponIdx(_uint iWeaponType)
@@ -817,6 +846,33 @@ CPlayer::State CPlayer::Get_CurState()
     return static_cast<CPlayer::State>(pAction->Get_CurrentStateIndex());
 }
 
+void CPlayer::Play_GhostTrail()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    pBody->Get_Component<CModel>()->Enable_GhostTrail();
+}
+
+void CPlayer::Stop_GhostTrail()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    pBody->Get_Component<CModel>()->Disable_GhostTrail();
+}
+
+void CPlayer::Clear_GhostTrail()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    pBody->Get_Component<CModel>()->Clear_GhostTrail();
+}
+
 ICameraAnchorProvider* CPlayer::Get_CameraAnchorProvider(_int iPartIndex)
 {
     if (iPartIndex < 0 || iPartIndex >= Part::END)
@@ -844,6 +900,19 @@ ICameraAnchorProvider* CPlayer::Get_CameraAnchorProvider(_int iPartIndex)
 CTransform* CPlayer::Get_CameraAnchorOwnerTransform()
 {
     return Get_Component<CTransform>();
+}
+
+void CPlayer::Set_GhostTrailDesc()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    CModel::GHOST_TRAIL_DESC desc{};
+    desc.iMaxCount = 13;
+    desc.fLifeTime = 0.5f;
+    desc.vColor = Vec4(1.00f, 0.92f, 0.70f, 0.26f);
+    pBody->Get_Component<CModel>()->Set_GhostTrailDesc(desc);
 }
 
 HRESULT CPlayer::Ready_BaseStates()
@@ -2172,7 +2241,7 @@ HRESULT CPlayer::Ready_PartCollider()
 
 HRESULT CPlayer::Ready_Interact_PartCollider()
 {
-    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc;
+    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc = {};
     {
         PHYSICSRIGIDBODY_DESC tRigiDesc = {};
         {
@@ -2187,8 +2256,8 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
         {
             tPColliDesc.eShape = EPhysicsShape::BOX;
             //tPColliDesc.fHeight = 100.f;
-            tPColliDesc.vCenter = { 0.f, 0.75f, 0.f }; // 이전 값 : 0.f, 0.75f, 0.7f 
-            tPColliDesc.vExtents = { 3.5f, 1.5f, 4.5f };
+            tPColliDesc.vCenter = { 0.f, 1.25f, 0.5f }; // 이전 값 : 0.f, 0.75f, 0.7f 
+            tPColliDesc.vExtents = { 1.f, 2.5f, 5.5f };
 
             //tPColliDesc.fRadius = { 20.f };
             tPColliDesc.bIsTrigger = { true };

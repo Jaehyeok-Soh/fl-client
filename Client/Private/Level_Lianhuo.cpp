@@ -6,6 +6,7 @@
 // Manager
 //=================
 #include "UI_Manager.h"
+#include "UIQTE_Manager.h"
 
 //=================
 // Data Struct
@@ -60,6 +61,14 @@
 #include "PlayerSkillObj_Headers.h"
 
 //=================
+// Skill Object
+//=================
+#include "Lianhuo_FirePlain.h"
+#include "Lianhuo_ChainThron.h"
+#include "Lianhuo_XSpace.h"
+#include "Lianhuo_StunChainThron.h"
+
+//=================
 // GameInstance
 //=================
 #include "GameInstance.h"
@@ -94,17 +103,19 @@ HRESULT CLevel_Lianhuo::Initialize()
 	if (FAILED(Ready_Camera_Layer(g_wszDynamicCameraLayer)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
-		return E_FAIL;
-
 	if (FAILED(Ready_Map()))
 		return E_FAIL;
 
 	if (FAILED(Ready_ShaderSetting()))
 		return E_FAIL;
 
-	return S_OK;
+	if (FAILED(Ready_SkillObjectLayer()))
+		return E_FAIL;
 
+	if (FAILED(Ready_Boss_Layer(g_wszBossLayer)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
@@ -123,6 +134,12 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
+	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
+		return E_FAIL;
+
 	CQuestManager::GetInstance()->Start_Quest(5, 1);
 
 	m_pGameInstance->PlayBGM(0, TO_HASH("LIANHUO_BOSS_BGM"), 0.5f);
@@ -132,7 +149,7 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 void CLevel_Lianhuo::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
-
+	CUIQTE_Manager::GetInstance()->Tick_QTE(fTimeDelta);
 	/*static _uint s_iCount = { 0 };
 	if (m_pGameInstance->KeyButton_Down(DIK_LALT))
 	{
@@ -387,9 +404,8 @@ HRESULT CLevel_Lianhuo::Ready_Boss_Layer(const wstring& wstrLayerTag)
 				desc.bIsPlayer = false;
 				desc.eType = EPhysicsCCTType::CAPSULE;
 				desc.pOwnerMatrix = nullptr;
-				desc.fRadius = 1.f;
-				desc.fHeight = 1.f;
-				desc.vExtens = { 2.f, 2.f, 2.f };
+				desc.fRadius = 0.5f;
+				desc.fHeight = 2.5f;
 
 				PHYSICSMATERIAL_DESC mtrlDesc{};
 				mtrlDesc.eMaterial = EPhysicsMaterial::PLAYER;
@@ -424,6 +440,14 @@ HRESULT CLevel_Lianhuo::Ready_Boss_Layer(const wstring& wstrLayerTag)
 			ENUM_TO_UINT(ELevelType::LIANHUO),
 			g_wszBossLayer, &monsterDesc)))
 			return E_FAIL;
+
+		{
+			UI_PREFAB_DATA ePrefabData = {};
+			UI_BOSS_NAMEPLATE_PREFAB_DATA Desc = {};
+			Desc.pTarget = pResult;
+			ePrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LIANHUO), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::LIANHUO), &ePrefabData);
+		}
 	}
 
 	return S_OK;
@@ -567,6 +591,61 @@ HRESULT CLevel_Lianhuo::Ready_Dissolve()
 	return m_pGameInstance->Ready_DissolveSetting();
 }
 
+HRESULT CLevel_Lianhuo::Ready_SkillObjectLayer()
+{
+	_uint iLevelId = ENUM_TO_UINT(ELevelType::LIANHUO);
+
+	// SkillObject Pool
+	{
+		CLianhuo_FirePlain::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_LianhuoFirePlain,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszLianhuoFirePlain_Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+	{
+		CLianhuo_ChainThron::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_LianhuoChainThron,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszLianhuoChainThron_Prototype_Tag,
+			&desc,
+			30)))
+			return E_FAIL;
+	}
+	{
+		CLianhuo_XSpace::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_LianhuoXSpace,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszLianhuoXSpace_Prototype_Tag,
+			&desc,
+			10)))
+			return E_FAIL;
+	}
+	{
+		CLianhuo_StunChainThron::GAMEOBJECT_DESC desc{};
+		if (FAILED(m_pGameInstance->Regist_Pool(
+			iLevelId,
+			g_wszPool_LianhuoStunChain,
+			g_wszSkillObjectLayer,
+			iLevelId,
+			g_wszLianhuoStunChain_Prototype_Tag,
+			&desc,
+			5)))
+			return E_FAIL;
+	}
+	return S_OK;
+}
 
 CLevel_Lianhuo* CLevel_Lianhuo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 {

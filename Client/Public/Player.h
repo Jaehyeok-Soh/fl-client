@@ -210,6 +210,10 @@ public:
 
 	State				Get_CurState();
 
+	virtual void Play_GhostTrail() override;
+	virtual void Stop_GhostTrail() override;
+	virtual void Clear_GhostTrail() override;
+
 	// Weapon Quick Slot
 public:
 	const array<WEAPON_INFO, ENUM_TO_SZET(MELEE::END)>& Get_MeleeInfo() const { return m_arrMeleeInfo; }
@@ -221,6 +225,8 @@ public:
 	// Camera Interface
 	virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) override;
 	virtual CTransform* Get_CameraAnchorOwnerTransform() override;
+private:
+	void Set_GhostTrailDesc();
 protected:
 	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 
@@ -231,6 +237,7 @@ protected:
 	SHADER_PLAYER_INFO	m_tCBPlayerInfo{};
 
 	_bool				m_bQuickSlotOpen = { false };
+	_bool				m_bBossStage = { false };
 
 protected:
 	array<_int, ENUM_TO_SZET(EWEAPON::END)>			m_arrWeaponEnum; // 각 무기 종류에서 어떤거를 들고 있는가. 만약 없다면 -1

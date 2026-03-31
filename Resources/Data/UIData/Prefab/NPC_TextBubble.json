@@ -105,7 +105,7 @@
             "fDelay": 0.0,
             "fHeight": 50.0,
             "fPosX": 0.0,
-            "fPosY": 30.0,
+            "fPosY": 33.099998474121094,
             "fPosZ": 0.0,
             "fRotate": -1.5707963705062866,
             "fScale": 1.0,
@@ -181,7 +181,7 @@
         },
         {
             "Type": "UI_TEXT",
-            "ePivot": 5,
+            "ePivot": 6,
             "eShaderType": 9,
             "eTextSubClassType": "NPC_TEXT_BUBBLE_CONTENT_TEXT",
             "fRotate": 0.0,

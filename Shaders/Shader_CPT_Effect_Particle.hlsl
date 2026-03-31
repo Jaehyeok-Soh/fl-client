@@ -21,6 +21,10 @@
 #define IRREGULAR_SPREAD 14
 #define IRREGULAR_FOUNTAIN 15
 #define SNOW_SPLASH 16
+#define BUTTERFLY_ORBIT 17
+#define BUTTERFLY_MOBIUS 18
+#define FIREFLIES 19
+#define BOUNCEDROP 20
 
 // 시간 데이터
 #define PLAY 0
@@ -161,6 +165,17 @@ float GetRandom(float2 seed)
     return frac(sin(dot(seed, float2(12.9898f, 78.223f))) * 4378.5453);
 }
 
+float Random01(float baseSeed, float offset)
+{
+    return GetRandom(float2(baseSeed, offset));
+}
+
+float RandomRange(float baseSeed, float offset, float minV, float maxV)
+{
+    return lerp(minV, maxV, Random01(baseSeed, offset));
+}
+
+
 float3 CalculateEmissionPosition(float seed, uint type, float3 vRange, float3 vCenter)
 {
     float3 vPos = vCenter;
@@ -211,6 +226,185 @@ float3 CalculateEmissionPosition(float seed, uint type, float3 vRange, float3 vC
     return vPos;
 }
 
+
+void UpdateButterflyOrbit(
+    in IMMU_ELEMENT input,
+    inout VTXPARTICLE currentData,
+    float fTime,
+    float fRatio,
+    uint particleID,
+    out float3 vOutVelocity)
+{
+    float baseSeed = (float) particleID + (float) g_InputB.vRandomSeed;
+
+    float radius = RandomRange(baseSeed, 1.1f, max(0.2f, g_InputB.vRange.x * 0.4f), max(0.3f, g_InputB.vRange.x));
+    float angSpeed = RandomRange(baseSeed, 2.2f, 0.8f, 2.2f) * g_InputB.fStartSpeed;
+    float verticalAmp = RandomRange(baseSeed, 3.3f, 0.05f, max(0.08f, g_InputB.vRange.y));
+    float verticalFreq = RandomRange(baseSeed, 4.4f, 1.0f, 3.0f);
+    float phase = RandomRange(baseSeed, 5.5f, 0.0f, 6.28318f);
+
+    float dirSign = (Random01(baseSeed, 6.6f) < 0.5f) ? -1.0f : 1.0f;
+
+    float angle = phase + fTime * angSpeed * dirSign;
+
+    float3 center = g_InputB.vPivot;
+    
+    if (g_InputB.vRandomSeed & RAND_POS)
+    {
+        float3 randOffset = CalculateEmissionPosition(
+        baseSeed,
+        g_InputB.iEmissionType,
+        g_InputB.vRange,
+        float3(0.f, 0.f, 0.f)
+    );
+        center += randOffset;
+    }
+    
+    float3 newPos;
+    newPos.x = center.x + cos(angle) * radius;
+    newPos.z = center.z + sin(angle) * radius;
+    newPos.y = center.y + sin(fTime * verticalFreq + phase) * verticalAmp;
+    
+    if (fTime < g_InputB.fTimeDelta * 1.5f)
+    {
+        vOutVelocity = float3(0, 0, 0);
+    }
+    else
+    {
+        float3 oldPos = currentData.matTransform._41_42_43;
+        vOutVelocity = (newPos - oldPos) / max(g_InputB.fTimeDelta, 0.0001f);
+    }
+
+    currentData.matTransform._41_42_43 = newPos;
+}
+
+void UpdateButterflyMobius(
+    in IMMU_ELEMENT input,
+    inout VTXPARTICLE currentData,
+    float fTime,
+    float fRatio,
+    uint particleID,
+    out float3 vOutVelocity)
+{
+    float baseSeed = (float) particleID + (float) g_InputB.vRandomSeed;
+
+    float R = RandomRange(baseSeed, 1.1f, max(0.3f, g_InputB.vRange.x * 0.5f), max(0.5f, g_InputB.vRange.x));
+    float halfWidth = RandomRange(baseSeed, 2.2f, 0.02f, max(0.05f, g_InputB.vRange.y * 0.5f));
+    float speed = RandomRange(baseSeed, 3.3f, 0.7f, 1.8f) * g_InputB.fStartSpeed;
+    float phase = RandomRange(baseSeed, 4.4f, 0.0f, 6.28318f);
+    float lane = RandomRange(baseSeed, 5.5f, -halfWidth, halfWidth);
+
+    float dirSign = (Random01(baseSeed, 6.6f) < 0.5f) ? -1.0f : 1.0f;
+
+    float t = phase + fTime * speed * dirSign;
+    float v = lane;
+
+    float ct = cos(t);
+    float st = sin(t);
+    float c2 = cos(t * 0.5f);
+    float s2 = sin(t * 0.5f);
+
+    float3 center = g_InputB.vPivot;
+    
+    if (g_InputB.vRandomSeed & RAND_POS)
+    {
+        float3 randOffset = CalculateEmissionPosition(
+        baseSeed,
+        g_InputB.iEmissionType,
+        g_InputB.vRange,
+        float3(0.f, 0.f, 0.f)
+    );
+        center += randOffset;
+    }
+    
+    float3 radial = normalize(float3(ct, 0.0f, st));
+    float3 sideDir = normalize(float3(-st, 0.0f, ct));
+
+    float3 ringPos = center + radial * R;
+    float3 stripOffset = radial * (v * c2) + sideDir * (v * s2);
+    float3 newPos = ringPos + stripOffset;
+
+    // --- [속도 튀는 현상 방지 로직] ---
+    // 수명이 리셋된 직후(루프 발생 프레임)라면 속도를 계산하지 않음
+    if (fTime < g_InputB.fTimeDelta * 1.5f)
+    {
+        vOutVelocity = float3(0, 0, 0);
+    }
+    else
+    {
+        float3 oldPos = currentData.matTransform._41_42_43;
+        vOutVelocity = (newPos - oldPos) / max(g_InputB.fTimeDelta, 0.0001f);
+    }
+
+    currentData.matTransform._41_42_43 = newPos;
+}
+
+void UpdateFirefly(
+    in IMMU_ELEMENT input,
+    inout VTXPARTICLE currentData,
+    float fTime,
+    float fRatio,
+    uint particleID,
+    out float3 vOutVelocity)
+{
+    float baseSeed = (float) particleID + (float) g_InputB.vRandomSeed;
+    float3 center = g_InputB.vPivot;
+    
+    if (g_InputB.vRandomSeed & RAND_POS)
+    {
+        float3 randOffset = CalculateEmissionPosition(
+        baseSeed,
+        g_InputB.iEmissionType,
+        g_InputB.vRange,
+        float3(0.f, 0.f, 0.f)
+    );
+        center += randOffset;
+    }
+
+    float phaseX = RandomRange(baseSeed, 1.1f, 0.0f, 6.28318f);
+    float phaseY = RandomRange(baseSeed, 2.2f, 0.0f, 6.28318f);
+    float phaseZ = RandomRange(baseSeed, 3.3f, 0.0f, 6.28318f);
+
+    float freqX = RandomRange(baseSeed, 4.4f, 0.3f, 0.9f);
+    float freqY = RandomRange(baseSeed, 5.5f, 0.4f, 1.2f);
+    float freqZ = RandomRange(baseSeed, 6.6f, 0.3f, 0.9f);
+
+    float ampX = RandomRange(baseSeed, 7.7f, g_InputB.vRange.x * 0.15f, g_InputB.vRange.x * 0.5f);
+    float ampY = RandomRange(baseSeed, 8.8f, g_InputB.vRange.y * 0.05f, g_InputB.vRange.y * 0.25f);
+    float ampZ = RandomRange(baseSeed, 9.9f, g_InputB.vRange.z * 0.15f, g_InputB.vRange.z * 0.5f);
+
+    float speedMul = max(0.01f, g_InputB.fStartSpeed);
+
+    float x = sin(fTime * freqX * speedMul + phaseX) * ampX
+            + cos(fTime * (freqX * 0.47f) * speedMul + phaseZ) * ampX * 0.35f;
+    float y = sin(fTime * freqY * speedMul + phaseY) * ampY
+            + cos(fTime * (freqY * 0.31f) * speedMul + phaseX) * ampY * 0.25f;
+    float z = cos(fTime * freqZ * speedMul + phaseZ) * ampZ
+            + sin(fTime * (freqZ * 0.53f) * speedMul + phaseY) * ampZ * 0.35f;
+
+    float3 driftDir = normalize(float3(
+        RandomRange(baseSeed, 10.1f, -1.0f, 1.0f),
+        RandomRange(baseSeed, 10.2f, -0.2f, 0.2f),
+        RandomRange(baseSeed, 10.3f, -1.0f, 1.0f)
+    ));
+
+    float driftStrength = RandomRange(baseSeed, 10.4f, 0.02f, 0.12f) * speedMul;
+    float3 newPos = center + float3(x, y, z) + driftDir * fTime * driftStrength;
+
+    // --- [속도 튀는 현상 방지 로직] ---
+    if (fTime < g_InputB.fTimeDelta * 1.5f)
+    {
+        vOutVelocity = float3(0, 0, 0);
+    }
+    else
+    {
+        float3 oldPos = currentData.matTransform._41_42_43;
+        vOutVelocity = (newPos - oldPos) / max(g_InputB.fTimeDelta, 0.0001f);
+    }
+
+    currentData.matTransform._41_42_43 = newPos;
+}
+
 // Read Write가 둘다 된다고 해서 RWStructuredBuffer
 // Warp/Wavefront는 32명씩 묶여서 연산을 한다.
 [numthreads(32, 1, 1)]
@@ -245,57 +439,162 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         }
     }
     
-    // currentData.vLifeTime.y는 툴에서 준 개별 파티클의 최대 수명
-    if ((g_InputB.UseContinueFlag != CONTINUE_DISTROY) && g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
-    {
-        //[기존 위치 공식]
-        //currentData.vLifeTime.x = 0.0f; // 리셋 후에는 대기 없이 0부터 시작
-        //currentData.matTransform = input.vOriginMatrix;
-        //INSTANCE_OUTPUT[dtid.x] = currentData;
-        //return;
+    //// currentData.vLifeTime.y는 툴에서 준 개별 파티클의 최대 수명
+    //if ((g_InputB.UseContinueFlag != CONTINUE_DISTROY) && g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
+    //{        
+    //    currentData.vLifeTime.x = 0.0f; // 시간 리셋
         
-        currentData.vLifeTime.x = 0.0f; // 시간 리셋
+    //    float baseSeed = (float) dtid.x + (float) g_InputB.vRandomSeed + g_InputB.fTotalTime;
         
-        float baseSeed = (float) dtid.x + (float) g_InputB.vRandomSeed + g_InputB.fTotalTime;
-        
-        float3 vOriginPos = input.vOriginMatrix._41_42_43;
-        float3 vFinalPos = vOriginPos;
-        if (g_InputB.vRandomSeed & RAND_POS)
-        {
-            float3 vRandOffset;
-            vRandOffset = CalculateEmissionPosition(g_InputB.vRandomSeed, g_InputB.iEmissionType, g_InputB.vRange, input.vOriginMatrix._41_42_43);
+    //    float3 vOriginPos = input.vOriginMatrix._41_42_43;
+    //    float3 vFinalPos = vOriginPos;
+    //    if (g_InputB.vRandomSeed & RAND_POS)
+    //    {
+    //        float3 vRandOffset;
+    //        vRandOffset = CalculateEmissionPosition(g_InputB.vRandomSeed, g_InputB.iEmissionType, g_InputB.vRange, input.vOriginMatrix._41_42_43);
             
-            vFinalPos = vRandOffset;
-        }
+    //        vFinalPos = vRandOffset;
+    //    }
         
-        float fNewMaxLife = input.vLifeTime.y;
+    //    float fNewMaxLife = input.vLifeTime.y;
+    //    if (g_InputB.vRandomSeed & RAND_LIFE)
+    //    {
+    //        // input.vLifeTime.x와 y 사이의 값으로 보간
+    //        float randRatio = GetRandom(float2(baseSeed, 4.4f));
+    //        fNewMaxLife = lerp(input.vLifeTime.y * 0.3f, input.vLifeTime.y, randRatio);
+    //        if (fNewMaxLife < 0.5f)
+    //            fNewMaxLife = 0.5f;
+    //    }
+    //    currentData.vLifeTime.y = fNewMaxLife;
+
+    //    float3 vScale = float3(length(input.vRight.xyz), length(input.vUp.xyz), length(input.vLook.xyz));
+    //    if (g_InputB.vRandomSeed & RAND_SIZE)
+    //    {
+    //        // 기준 크기(vScale)의 0.5 ~ 1.5배 사이로 조절
+    //        float sizeRatio = GetRandom(float2(baseSeed, 5.5f)) + 0.5f;
+    //        vScale *= sizeRatio;
+    //    }
+        
+    //    currentData.matTransform = input.vOriginMatrix;
+    //    currentData.matTransform._41_42_43 = vFinalPos;
+        
+    //    currentData.matTransform[0].xyz = normalize(currentData.matTransform[0].xyz) * vScale.x;
+    //    currentData.matTransform[1].xyz = normalize(currentData.matTransform[1].xyz) * vScale.y;
+    //    currentData.matTransform[2].xyz = normalize(currentData.matTransform[2].xyz) * vScale.z;
+
+    //    INSTANCE_OUTPUT[dtid.x] = currentData;
+    //    return;
+    //}
+    
+    //if ((g_InputB.UseContinueFlag != CONTINUE_DISTROY) && g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
+    //{
+    //    float fOverTime = currentData.vLifeTime.x - currentData.vLifeTime.y;
+    //    currentData.vLifeTime.x = fOverTime;
+
+    //    float baseSeed = (float) dtid.x + (float) g_InputB.vRandomSeed; // + g_InputB.fTotalTime 빼보기
+
+    //    float3 vFinalPos = input.vOriginMatrix._41_42_43;
+
+    //    if (g_InputB.vRandomSeed & RAND_POS)
+    //    {
+    //        vFinalPos = CalculateEmissionPosition(baseSeed, g_InputB.iEmissionType, g_InputB.vRange, input.vOriginMatrix._41_42_43);
+    //    }
+
+    //    float fNewMaxLife = input.vLifeTime.y;
+    //    if (g_InputB.vRandomSeed & RAND_LIFE)
+    //    {
+    //        float randRatio = GetRandom(float2(baseSeed, 4.4f));
+    //        fNewMaxLife = lerp(input.vLifeTime.y * 0.8f, input.vLifeTime.y, randRatio);
+    //        if (fNewMaxLife < 0.5f)
+    //            fNewMaxLife = 0.5f;
+    //    }
+
+    //    currentData.vLifeTime.y = fNewMaxLife;
+    //    currentData.matTransform._41_42_43 = vFinalPos;
+
+    //    INSTANCE_OUTPUT[dtid.x] = currentData;
+    //    return;
+    //}
+    
+    //if ((g_InputB.UseContinueFlag != CONTINUE_DISTROY) && g_InputB.bIsLoop && currentData.vLifeTime.x >= currentData.vLifeTime.y)
+    //{
+    //    float fOverTime = currentData.vLifeTime.x - currentData.vLifeTime.y;
+    //    currentData.vLifeTime.x = fOverTime;
+
+    //    float baseSeed = (float) dtid.x + (float) g_InputB.vRandomSeed;
+
+    //    // [중요] 위치만 바꾸지 말고, 행렬 전체를 원본으로 초기화!
+    //    currentData.matTransform = input.vOriginMatrix; // 회전/스케일 초기화
+
+    //    float3 vFinalPos = input.vOriginMatrix._41_42_43;
+    //    if (g_InputB.vRandomSeed & RAND_POS)
+    //    {
+    //        vFinalPos = CalculateEmissionPosition(baseSeed, g_InputB.iEmissionType, g_InputB.vRange, input.vOriginMatrix._41_42_43);
+    //    }
+        
+    //    // 초기화된 행렬에 새로운 위치만 대입
+    //    currentData.matTransform._41_42_43 = vFinalPos;
+
+    //    // 수명 랜덤화 (기존 로직 유지)
+    //    if (g_InputB.vRandomSeed & RAND_LIFE)
+    //    {
+    //        float randRatio = GetRandom(float2(baseSeed, 4.4f));
+    //        currentData.vLifeTime.y = lerp(input.vLifeTime.y * 0.8f, input.vLifeTime.y, randRatio);
+    //    }
+
+    //    INSTANCE_OUTPUT[dtid.x] = currentData;
+    //    return;
+    //}
+    
+    bool bPathBasedMotion =
+    (g_InputB.iMoveState == BUTTERFLY_ORBIT) ||
+    (g_InputB.iMoveState == BUTTERFLY_MOBIUS) ||
+    (g_InputB.iMoveState == FIREFLIES);
+
+    if ((g_InputB.UseContinueFlag != CONTINUE_DISTROY) &&
+    g_InputB.bIsLoop &&
+    currentData.vLifeTime.x >= currentData.vLifeTime.y)
+    {
+        float fOverTime = currentData.vLifeTime.x - currentData.vLifeTime.y;
+        currentData.vLifeTime.x = fOverTime;
+        float baseSeed = (float) dtid.x + (float) g_InputB.vRandomSeed + g_InputB.fTotalTime;
+
+        currentData.matTransform = input.vOriginMatrix;
+
+    // 수명 랜덤화
         if (g_InputB.vRandomSeed & RAND_LIFE)
         {
-            // input.vLifeTime.x와 y 사이의 값으로 보간
             float randRatio = GetRandom(float2(baseSeed, 4.4f));
-            fNewMaxLife = lerp(input.vLifeTime.x, input.vLifeTime.y, randRatio);
-            if (fNewMaxLife < 0.1f)
-                fNewMaxLife = 0.1f;
+            currentData.vLifeTime.y = lerp(input.vLifeTime.y * 0.8f, input.vLifeTime.y, randRatio);
         }
-        currentData.vLifeTime.y = fNewMaxLife;
-
-        float3 vScale = float3(length(input.vRight.xyz), length(input.vUp.xyz), length(input.vLook.xyz));
-        if (g_InputB.vRandomSeed & RAND_SIZE)
+        else
         {
-            // 기준 크기(vScale)의 0.5 ~ 1.5배 사이로 조절
-            float sizeRatio = GetRandom(float2(baseSeed, 5.5f)) + 0.5f;
-            vScale *= sizeRatio;
+            currentData.vLifeTime.y = input.vLifeTime.y;
         }
-        
-        currentData.matTransform = input.vOriginMatrix;
-        currentData.matTransform._41_42_43 = vFinalPos;
-        
-        currentData.matTransform[0].xyz = normalize(currentData.matTransform[0].xyz) * vScale.x;
-        currentData.matTransform[1].xyz = normalize(currentData.matTransform[1].xyz) * vScale.y;
-        currentData.matTransform[2].xyz = normalize(currentData.matTransform[2].xyz) * vScale.z;
 
-        INSTANCE_OUTPUT[dtid.x] = currentData;
-        return;
+    // 누적 이동형만 리스폰 위치를 여기서 확정
+        if (!bPathBasedMotion)
+        {
+            float3 vFinalPos = input.vOriginMatrix._41_42_43;
+
+            if (g_InputB.vRandomSeed & RAND_POS)
+            {
+                vFinalPos = CalculateEmissionPosition(
+                baseSeed,
+                g_InputB.iEmissionType,
+                g_InputB.vRange,
+                input.vOriginMatrix._41_42_43
+            );
+            }
+
+            currentData.matTransform._41_42_43 = vFinalPos;
+
+            INSTANCE_OUTPUT[dtid.x] = currentData;
+            return;
+        }
+
+    // path 기반이면 return하지 않음
+    // 아래 UpdateButterflyOrbit / Mobius / Firefly까지 내려가게 둔다
     }
     
     if (fLife < 0.0f)
@@ -315,7 +614,6 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         }
     }
     
-    
     float3 vVelocity = float3(0.f, 0.f, 0.f);
 
     // 중력 커브 샘플링
@@ -326,7 +624,7 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
     if (g_InputB.iMoveState == DROP)
     {
         vVelocity = float3(0.f, -input.vSpeed, 0.f);
-        currentData.matTransform._42 += vVelocity.y * g_InputB.fTimeDelta;
+        currentData.matTransform._42 += vVelocity.y * g_InputB.fTimeDelta * g_InputB.fStartSpeed;
     }
     else if (g_InputB.iMoveState == RISE)
     {
@@ -679,6 +977,112 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         currentData.matTransform._41_42_43 += vVelocity * g_InputB.fTimeDelta;
     }
     
+    else if (g_InputB.iMoveState == BUTTERFLY_ORBIT)
+    {
+        UpdateButterflyOrbit(
+        input,
+        currentData,
+        currentData.vLifeTime.x,
+        fRatio,
+        dtid.x,
+        vVelocity
+    );
+    }
+    else if (g_InputB.iMoveState == BUTTERFLY_MOBIUS)
+    {
+        UpdateButterflyMobius(
+        input,
+        currentData,
+        currentData.vLifeTime.x,
+        fRatio,
+        dtid.x,
+        vVelocity
+    );
+    }
+    else if (g_InputB.iMoveState == FIREFLIES)
+    {
+        UpdateFirefly(
+        input,
+        currentData,
+        currentData.vLifeTime.x,
+        fRatio,
+        dtid.x,
+        vVelocity
+    );
+}
+    else if (g_InputB.iMoveState == BOUNCEDROP)
+    {
+        float fTime = currentData.vLifeTime.x;
+        float fSeed = (float) dtid.x + g_InputB.vRandomSeed;
+
+        float3 vStartPos = input.vTranslation.xyz;
+
+        float3 vForward = g_InputB.vLook;
+        vForward.y = 0.f;
+        if (length(vForward) < 0.001f)
+            vForward = float3(0.f, 0.f, 1.f);
+        else
+            vForward = normalize(vForward);
+
+    // 전진 거리: 시간이 갈수록 느려짐
+        float fMoveSpeed = max(0.05f, input.vSpeed * g_InputB.fStartSpeed * 0.6f);
+        float fForwardDist = fMoveSpeed * fTime * exp(-fTime * 0.35f);
+
+    // 바운스 높이: 점점 줄어드는 감쇠 바운스
+        float fBounceFreq = 6.0f;
+        float fBounceHeight = max(0.1f, g_InputB.fStartSpeed * 1.2f);
+        float fBounce = abs(sin(fTime * fBounceFreq)) * fBounceHeight * exp(-fTime * 1.2f);
+
+    // 중력에 의한 전체 하강
+        float fFall = 0.5f * abs(vAppliedGravity.y) * fTime * fTime;
+
+    // 좌우 미세 흔들림
+        float3 vRightNoise = normalize(cross(float3(0, 1, 0), vForward));
+        if (length(vRightNoise) < 0.001f)
+            vRightNoise = float3(1, 0, 0);
+
+        float fSideNoise = sin(fTime * 4.3f + fSeed * 0.37f) * 0.08f * exp(-fTime * 0.8f);
+
+        float3 vNewPos = vStartPos
+                   + vForward * fForwardDist
+                   + vRightNoise * fSideNoise
+                   + float3(0.f, fBounce - fFall, 0.f);
+
+    // 속도는 "새 위치 - 이전 위치"로 계산
+        float3 vOldPos = currentData.matTransform._41_42_43;
+
+        if (fTime <= g_InputB.fTimeDelta * 1.5f)
+            vVelocity = float3(0.f, 0.f, 0.f);
+        else
+            vVelocity = (vNewPos - vOldPos) / max(g_InputB.fTimeDelta, 0.0001f);
+
+        currentData.matTransform._41_42_43 = vNewPos;
+
+    // tumbling 회전: velocity-align과 섞지 않고 여기서만 처리
+        float fSpinBase = 8.0f + GetRandom(float2(fSeed, 0.5f)) * 4.0f;
+        float fSpinSpeed = fTime * fSpinBase;
+
+        float sp, cp, sy, cy, sr, cr;
+        sincos(fSpinSpeed * 1.17f, sp, cp); // Pitch
+        sincos(fSpinSpeed * 0.83f, sy, cy); // Yaw
+        sincos(fSpinSpeed * 1.41f, sr, cr); // Roll
+
+        float3x3 rotMat;
+        rotMat[0] = float3(cy * cr + sy * sp * sr, sr * cp, -sy * cr + cy * sp * sr);
+        rotMat[1] = float3(-cy * sr + sy * sp * cr, cr * cp, sr * sy + cy * sp * cr);
+        rotMat[2] = float3(sy * cp, -sp, cy * cp);
+
+        float3 vScale = float3(
+        length(input.vRight.xyz),
+        length(input.vUp.xyz),
+        length(input.vLook.xyz)
+    );
+
+        currentData.matTransform[0].xyz = mul(float3(1, 0, 0), rotMat) * vScale.x;
+        currentData.matTransform[1].xyz = mul(float3(0, 1, 0), rotMat) * vScale.y;
+        currentData.matTransform[2].xyz = mul(float3(0, 0, 1), rotMat) * vScale.z;
+    }
+    
         if (g_InputB.iMoveState == CIRCLE_TRAIL ||
         g_InputB.iMoveState == SEMICIRCLE_TRAIL ||
         g_InputB.iMoveState == SPREAD ||
@@ -689,7 +1093,10 @@ void CS_Main(int3 dtid : SV_DispatchThreadID)
         g_InputB.iMoveState == WIND_LEAF ||
         g_InputB.iMoveState == IRREGULAR_SPREAD ||
         g_InputB.iMoveState == IRREGULAR_FOUNTAIN ||
-        g_InputB.iMoveState == SNOW_SPLASH
+        g_InputB.iMoveState == SNOW_SPLASH ||
+        g_InputB.iMoveState == BUTTERFLY_ORBIT ||
+        g_InputB.iMoveState == BUTTERFLY_MOBIUS ||
+        g_InputB.iMoveState == FIREFLIES
         )
         {
             if (length(vVelocity) > 0.001f)

@@ -41,8 +41,16 @@
 
 void CPhysics_CCTHitReport::onShapeHit(const PxControllerShapeHit& hit)
 {
-	// 아직 미사용 2026 02 26
-	return;
+	PxShape* shapeA;
+	hit.controller->getActor()->getShapes(&shapeA, 1);
+
+	if (shapeA)
+	{
+		PxFilterData filterA = shapeA->getQueryFilterData();
+
+		if ((filterA.word0 & PHYSICSFILTERGROUP::GENIEMON) != 0)
+			return;
+	}
 
 	if (hit.shape->getQueryFilterData().word0 & PHYSICSFILTERGROUP::MAP)
 		return;
@@ -75,8 +83,8 @@ void CPhysics_CCTHitReport::onControllerHit(const PxControllersHit& hit)
 		PxFilterData filterA = shapeA->getQueryFilterData();
 		PxFilterData filterB = shapeB->getQueryFilterData();
 
-		if ((filterA.word0 & PHYSICSFILTERGROUP::GENIEMON) ||
-			(filterB.word0 & PHYSICSFILTERGROUP::GENIEMON))
+		if (((filterA.word0 & PHYSICSFILTERGROUP::GENIEMON) != 0) ||
+			((filterB.word0 & PHYSICSFILTERGROUP::GENIEMON) != 0))
 			return;
 	}
 

@@ -1035,6 +1035,8 @@ namespace Tool
 		TUTORIAL_PANNEL_2,
 		TUTORIAL_PANNEL_3,
 		TUTORIAL_PANNEL_4,
+
+		MINIGAME_CIRCLE,
 		END,
 	};
 
@@ -1060,6 +1062,7 @@ namespace Tool
 		"TUTORIAL_PANNEL_2",
 		"TUTORIAL_PANNEL_3",
 		"TUTORIAL_PANNEL_4",
+		"MINIGAME_CIRCLE",
 	};
 	inline string UITutorialPopUpTypeID_ToString(EUITutorialPopUpTypeID eType)
 	{

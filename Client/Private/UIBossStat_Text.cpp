@@ -115,16 +115,7 @@ HRESULT CUIBossStat_Text::Attach_Personal_Info()
 
 HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 {
-	switch (m_eTextSubClassType)
-	{
-	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_LV:
-		break;
-	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME:
-		m_wstrText = Engine_Utils::ToWString( m_pTargetStat->Get_Owner()->Get_Name());
-		break;
 
-		break;
-	}
 	return S_OK;
 }
 
@@ -172,8 +163,6 @@ void CUIBossStat_Text::Bind_Events()
 				}
 			}
 			}));
-
-
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<BOSS_UI_ON>([this]()
@@ -226,6 +215,8 @@ HRESULT CUIBossStat_Text::Spawn_FromPool(void* pArg)
 		m_pTargetStat = pBossNamePlate->pTarget->Get_Component<CMyStat>();
 		if (nullptr == m_pTargetStat)
 			return E_FAIL;
+
+		m_wstrText = Engine_Utils::ToWString( pBossNamePlate->pTarget->Get_Name());
 	}
 
 	m_isSpawned = true;

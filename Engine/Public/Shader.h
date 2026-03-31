@@ -67,6 +67,7 @@ public:
 	HRESULT Bind_RGBColorData(const SHADER_RGBCOLOR_DESC& RGBColorDesc);
 	HRESULT Bind_RenderFxData(const SHADER_RENDER_FX_DESC& renderFxDesc);
 	HRESULT Bind_PlayerInfo(const SHADER_PLAYER_INFO& playerInfo);
+	HRESULT Bind_GhostTrail(const SHADER_GHOST_TRAIL& ghostTrail);
 
 	// 외부에서 ConstantBuffer를 생성후 바인딩할 때
 	HRESULT Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer);
@@ -98,7 +99,7 @@ private:
 
 	CConstant_Buffer<SHADER_RENDER_FX_DESC>*			m_pRenderFx_CBuffer{ nullptr };
 	CConstant_Buffer<SHADER_PLAYER_INFO>*				m_pPlayerInfo_CBuffer{nullptr};
-
+	CConstant_Buffer<SHADER_GHOST_TRAIL>*				m_pGhostTrail_CBuffer{ nullptr };
 public:
 	static CShader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg);
 	virtual CComponent* Clone(void* pArg) override;

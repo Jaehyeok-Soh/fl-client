@@ -40,6 +40,7 @@ public:
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
+	virtual void On_Dying() override;
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
 	HRESULT Change_State_ForDirecting(EStateForDirecting eState);
 private:
@@ -47,6 +48,8 @@ private:
 	HRESULT Ready_Weapon();
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_StateIndexForDirecting();
+	HRESULT Ready_SoundHandler();
+
 private:
 	array<_int, (size_t)EStateForDirecting::COUNT> m_arrStateIndex;
 

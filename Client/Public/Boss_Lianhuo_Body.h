@@ -20,7 +20,7 @@ public:
 	virtual void Update_Late(_float fTimeDelta) override;
 	virtual void Ready_Before_Render(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
+	virtual HRESULT Render_GhostTrail() override;
 private:
 	HRESULT Ready_DissolveEffect_Setting() override;
 

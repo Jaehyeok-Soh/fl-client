@@ -126,18 +126,6 @@ HRESULT CUIBossStat_Progress::Bind_ShaderResources()
 
 HRESULT CUIBossStat_Progress::Attach_Personal_Info()
 {
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<BOSS_UI_ON>([this]()
-			{
-				this->Set_Visible();
-			}));
-
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<BOSS_UI_OFF>([this]()
-			{
-				this->Set_Invisible();
-			}));
-
 	return S_OK;
 }
 
@@ -222,6 +210,65 @@ void CUIBossStat_Progress::Bind_Events()
 			}));
 
 	return;
+}
+
+void CUIBossStat_Progress::Bind_Events()
+{
+	Super::Bind_Events();
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc) {
+
+			for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
+			{
+				_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
+				switch (iHash)
+				{
+				case TO_HASH("UI_Boss"):
+				{
+
+					for (auto ActionName : EventDesc.vecActionNames)
+					{
+						_uint iActionNameHash = TO_HASH(ActionName.c_str());
+						switch (iActionNameHash)
+						{
+						case TO_HASH("Xibi_Begin"):
+						{
+						}
+						break;
+						case TO_HASH("Lianhuo_Begin"):
+						{
+						}
+						break;
+						case TO_HASH("Boss_Action_End"):
+						{
+							this->Set_Visible();
+						}
+						break;
+						default:
+							break;
+						}
+					}
+				}
+				break;
+				default:
+					break;
+				}
+			}
+			}));
+
+
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<BOSS_UI_ON>([this]()
+			{
+				this->Set_Visible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<BOSS_UI_OFF>([this]()
+			{
+				this->Set_Invisible();
+			}));
 }
 
 void CUIBossStat_Progress::Initialize_Visible_Event()

@@ -1009,6 +1009,33 @@
     <Filter Include="03. GameObject\UIObjects\00.Manager\03.QTE Manager">
       <UniqueIdentifier>{f92e75b3-714d-4ee1-b26d-9fa146d9ce64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. FSM\Monster\Lianhuo\SpawnAttack">
+      <UniqueIdentifier>{2a03db4d-082e-41d2-be00-42a4d58004a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Lianhuo">
+      <UniqueIdentifier>{066f0f81-2521-41f8-a90b-c743b5cf8a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Lianhuo\XSpace">
+      <UniqueIdentifier>{72bdc475-25a1-41ba-85d0-639cccaa2a1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Lianhuo\FirePlain">
+      <UniqueIdentifier>{b021043a-996e-4c54-825d-56aedcceb93f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\SkillObject\Boss\Lianhuo\ChainThron">
+      <UniqueIdentifier>{ee775835-e207-4c16-a652-9d949684c289}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\25.Wave Timer">
+      <UniqueIdentifier>{f5f9bdba-261e-4824-a00c-30a905ebad9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Progress Bar\Wave Timer">
+      <UniqueIdentifier>{311a9c41-db3c-4ae8-adfd-afc25ecb696c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\18.Wave Timer">
+      <UniqueIdentifier>{b5218c0e-0951-43af-8afe-d637ddb8a1e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager">
+      <UniqueIdentifier>{cda240a0-3f3c-4c4d-aca0-450799e4722f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1899,6 +1926,33 @@
     <ClInclude Include="..\Public\UIQTE_Manager.h">
       <Filter>03. GameObject\UIObjects\00.Manager\03.QTE Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\State_SpawnAttack.h">
+      <Filter>06. FSM\Monster\Lianhuo\SpawnAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_XSpace.h">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\XSpace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_ChainThron.h">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_FirePlain.h">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\FirePlain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Lianhuo_StunChainThron.h">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIWaveTimer_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\25.Wave Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIWaveTimer_Progress.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Wave Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIWaveTimer_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\18.Wave Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIAmbSound_Manager.h">
+      <Filter>03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2776,6 +2830,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIQTE_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\03.QTE Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\State_SpawnAttack.cpp">
+      <Filter>06. FSM\Monster\Lianhuo\SpawnAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_XSpace.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\XSpace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_ChainThron.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_FirePlain.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\FirePlain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lianhuo_StunChainThron.cpp">
+      <Filter>03. GameObject\SkillObject\Boss\Lianhuo\ChainThron</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIWaveTimer_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\25.Wave Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIWaveTimer_Progress.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Progress Bar\Wave Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIWaveTimer_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\18.Wave Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIAmbSound_Manager.cpp">
+      <Filter>03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

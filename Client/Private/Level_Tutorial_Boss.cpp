@@ -553,6 +553,10 @@ HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 	//if (FAILED(m_pGameInstance->Bake_StaticShadow()))
 	//	return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
+		return E_FAIL;
+
+
 	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
 		return E_FAIL;
 
@@ -613,9 +617,7 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 	}*/
 
 	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
-
 	CUIQTE_Manager::GetInstance()->Tick_QTE(fTimeDelta);
-
 }
 
 

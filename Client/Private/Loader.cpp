@@ -15,6 +15,7 @@
 #include "Collider.h"
 #include "Xibi_GimmikController.h"
 #include "Monster_GimmikController.h"
+#include "Lianhuo_GimmikController.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle_Rect.h"
 #include "VIBuffer_Particle_Point.h"
@@ -100,6 +101,11 @@
 #include "Xibi_Projectile_Circle.h"
 #include "Xibi_Loop_Thunder.h"
 #include "Xibi_Oneshot_Thunder.h"
+// Lianhuo
+#include "Lianhuo_FirePlain.h"
+#include "Lianhuo_ChainThron.h"
+#include "Lianhuo_XSpace.h"
+#include "Lianhuo_StunChainThron.h"
 // player
 #include "PlayerSkillObj_Headers.h"
 // "Prototype_Component_Model_LianhuoWeapon"
@@ -181,6 +187,7 @@
 #include "UIMonsterStat_Progress.h"
 #include "UIPlayerAmmo_Progress.h"
 #include "UIBossStat_Progress.h"
+#include "UIWaveTimer_Progress.h"
 // 텍스트 
 #include "UIMenu_Text.h"
 #include "UIPlayerStat_Text.h"
@@ -202,6 +209,7 @@
 #include "UIEnterGame_Text.h"
 #include "UINpcTextBubble_Text.h"
 #include "UIQTE_Text.h"
+#include "UIWaveTimer_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -234,6 +242,7 @@
 #include "UINpcTextBubble_Image.h"
 #include "UIQuickSlot_Image.h"
 #include "UIQTE_Image.h"
+#include "UIWaveTimer_Image.h"
 //=================
 // Resource
 //=================
@@ -463,6 +472,8 @@ HRESULT CLoader::Loading_For_Logo()
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Sphere")))
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Twist")))
+			return E_FAIL;
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Animal")))
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/SkyBox")))
 			return E_FAIL;
@@ -1136,6 +1147,9 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QuickSlotImage",			CUIQuickSlot_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QTEImage",					CUIQTE_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_QTEText",					CUIQTE_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WaveTimerImage",			CUIWaveTimer_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WaveTimerText",			CUIWaveTimer_Text::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WaveTimerProgress",		CUIWaveTimer_Progress::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	
@@ -1351,7 +1365,7 @@ HRESULT CLoader::Loading_For_Lianhuo()
 		desc.pMatPreTransform = &(matPreTransformScale);
 		desc.wstrModelFolderName = L"Lianhuo";
 		desc.FStageBone = CModel::STAGEING_BONE::SB_SPCIPICBONE;
-		desc.vecStageBoneIndices = { 2, 10, 209, 235, 238 };
+		desc.vecStageBoneIndices = { 2, 10, 178, 209, 235, 238 };
 
 		CModel::DATA_ANIMCHANNEL tAniChannelData = {};
 		tAniChannelData.iRootBoneIndex = 2;
@@ -1374,11 +1388,17 @@ HRESULT CLoader::Loading_For_Lianhuo()
 
 	// player foot sound
 	Ready_Sounds_PlayerFoot(ELevelType::LIANHUO);
+	// For. Prototype_Component_Lianhuo_GimmikController
+	m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Lianhuo_GimmikController", CLianhuo_GimmikController::Create());
 
+	// Projectile
+	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoFirePlain_Prototype_Tag, CLianhuo_FirePlain::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoChainThron_Prototype_Tag, CLianhuo_ChainThron::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoXSpace_Prototype_Tag, CLianhuo_XSpace::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::LIANHUO, g_wszLianhuoStunChain_Prototype_Tag, CLianhuo_StunChainThron::Create(m_pDevice, m_pDeviceContext));
 
 	m_fLoadingRatio = 1.f;
 	Sleep(2000);
-
 
 	m_isFinished = true;
 
@@ -1548,84 +1568,137 @@ HRESULT CLoader::Ready_EffectEvent()
 
 HRESULT CLoader::Ready_Spawner()
 {
-	_uint iLevelID = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
+	{
+		_uint iLevelID = ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS);
+		/* Xibi */
+		// SingleSkill
+		{
+			CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 0.5f;
+			originDesc.fStartDelay = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotSingleThunder,
+				CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		// RandomXZ 
+		{
+			CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 0.5f;
+			originDesc.fInterval = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotRandomThunder,
+				CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		// 360Circle
+		{
+			CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+			desc.iPoolLevelIndex = iLevelID;
+			desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
+			desc.fLifeTime = 5.f;
+			desc.fInterval = 0.05f;
+			desc.fSpeed = 6.5f;
+			desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360CircleProjectile,
+				CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
+		// 360Thunder
+		{
+			CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+			desc.iPoolLevelIndex = iLevelID;
+			desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
+			desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			desc.fLifeTime = 7.f;
+			desc.fInterval = 0.03f;
 
-	/* Xibi */
-	// SingleSkill
-	{
-		CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
-		originDesc.iPoolLevelIndex = iLevelID;
-		originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
-		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		originDesc.fLifeTime = 0.5f;
-		originDesc.fStartDelay = 0.1f;
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotSingleThunder,
-			CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
-			return E_FAIL;
-	}
-	// RandomXZ 
-	{
-		CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
-		originDesc.iPoolLevelIndex = iLevelID;
-		originDesc.wstrSkillPoolTag = g_wszPool_XibiOneshotThunder;
-		originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		originDesc.fLifeTime = 0.5f;
-		originDesc.fInterval = 0.1f;
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiOneshotRandomThunder,
-			CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
-			return E_FAIL;
-	}
-	// 360Circle
-	{
-		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = iLevelID;
-		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
-		desc.fLifeTime = 5.f;
-		desc.fInterval = 0.05f;
-		desc.fSpeed = 6.5f;
-		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360CircleProjectile,
-			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-	}
-	// 360Thunder
-	{
-		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = iLevelID;
-		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
-		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		desc.fLifeTime = 7.f;
-		desc.fInterval = 0.03f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360ThunderProjectile,
+				CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
+		// 3wayThunder
+		{
+			CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
+			desc.iPoolLevelIndex = iLevelID;
+			desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
+			desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			desc.fLifeTime = 7.f;
 
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi360ThunderProjectile,
-			CProjectileSpawner_Radial360::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
+				CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
+		// 8GateSpawner
+		{
+			CXibi_GateSpawner::SPAWNER_ORIGIN_DESC desc{};
+			desc.iPoolLevelIndex = iLevelID;
+			desc.fLifeTime = 7.f;
+			desc.fInterval = 0.6f;
+			desc.fSpeed = 4.5f;
+			desc.fMaxDistance = 30.f;
+			desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
+			desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiGate,
+				CXibi_GateSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
+				return E_FAIL;
+		}
 	}
-	// 3wayThunder
+	
 	{
-		CProjectileSpawner_Radial360::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = iLevelID;
-		desc.wstrSkillPoolTag = g_wszPool_XibiLoopThunder;
-		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		desc.fLifeTime = 7.f;
-
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_Xibi3wayLoopThunder,
-			CProjectileSpawner_Fan::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
-	}
-	// 8GateSpawner
-	{
-		CXibi_GateSpawner::SPAWNER_ORIGIN_DESC desc{};
-		desc.iPoolLevelIndex = iLevelID;
-		desc.fLifeTime = 7.f;
-		desc.fInterval = 0.6f;
-		desc.fSpeed = 4.5f;
-		desc.fMaxDistance = 30.f;
-		desc.wstrSkillPoolTag = g_wszPool_XibiCircleProjectile;
-		desc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Move_Straight) | ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_XibiGate,
-			CXibi_GateSpawner::Create(m_pDevice, m_pDeviceContext, &desc))))
-			return E_FAIL;
+		_uint iLevelID = ENUM_TO_UINT(ELevelType::LIANHUO);
+		// RandSpawn FirePlain
+		// RandomXZ 
+		{
+			CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_LianhuoFirePlain;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 5.f;
+			originDesc.fInterval = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_LianhuoSpawnerFirePlain,
+				CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		// RandSpawn ChaineThroneAttack
+		// RandomXZ 
+		{
+			CSkillObjectSpawner_RandomXZ::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_LianhuoChainThron;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 5.f;
+			originDesc.fInterval = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_LianhuoSpawnerChainThron,
+				CSkillObjectSpawner_RandomXZ::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		{
+			CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_LianhuoXSpace;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 0.5f;
+			originDesc.fStartDelay = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_LianhuoSpawnerXSpace,
+				CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
+		{
+			CSingleSkillSpawner::SPAWNER_ORIGIN_DESC originDesc{};
+			originDesc.iPoolLevelIndex = iLevelID;
+			originDesc.wstrSkillPoolTag = g_wszPool_LianhuoStunChain;
+			originDesc.iSkillObjectFlags = ENUM_TO_UINT(ESkillObjectFlag::Life_Timer);
+			originDesc.fLifeTime = 0.5f;
+			originDesc.fStartDelay = 0.1f;
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelID, g_wszSpawner_LianhuoSpawnerStunChain,
+				CSingleSkillSpawner::Create(m_pDevice, m_pDeviceContext, &originDesc))))
+				return E_FAIL;
+		}
 	}
 
 	/* player */
@@ -1684,6 +1757,10 @@ HRESULT CLoader::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::Voice, L"../../Resources/Sounds/SFX/Voice")))
 		return E_FAIL;
 
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Die
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Die")))
+		return E_FAIL;
+
 	/* player sounds */
 	if (FAILED(Ready_Sounds_Player()))
 	{
@@ -1691,6 +1768,12 @@ HRESULT CLoader::Ready_Sounds()
 		return E_FAIL;
 	}
 
+	/* boss sounds */
+	if (FAILED(Ready_Sounds_Boss()))
+	{
+		MSG_BOX("CLoader::Ready_Sounds, Boss Sounds Fail");
+		return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -1702,8 +1785,8 @@ HRESULT CLoader::Ready_Sounds_Player()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Sword")))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Gun")))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Gun")))
+	//	return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Condemn")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))
@@ -1777,6 +1860,19 @@ HRESULT CLoader::Ready_Sounds_PlayerFoot(ELevelType eType)
 	//Resources\Sounds\SFX\Monster\Veteran
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Veteran")))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Sounds_Boss()
+{
+	// xibi
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Boss\Xibi
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Boss/Xibi")))
+		return E_FAIL;
+	//// lian
+	//if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit/Lian")))
+	//	return E_FAIL;
 
 	return S_OK;
 }

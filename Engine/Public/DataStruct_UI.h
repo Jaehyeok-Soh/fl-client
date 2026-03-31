@@ -99,6 +99,7 @@ enum class EUISubClassType
 	BOSS_STAT_ARMOR_PROGRESS,
 	BOSS_STAT_END,
 
+	MONSTER_WAVE_TIMER_PROGRESS,
 	END
 };
 
@@ -127,6 +128,8 @@ inline std::string UISubClasstypeToString(EUISubClassType eType)
 	case EUISubClassType::BOSS_STAT_HP_PROGRESS:	return "BOSS_STAT_HP_PROGRESS";
 	case EUISubClassType::BOSS_STAT_ARMOR_PROGRESS:	return "BOSS_STAT_ARMOR_PROGRESS";
 	case EUISubClassType::BOSS_STAT_END:			return "BOSS_STAT_END";
+
+	case EUISubClassType::MONSTER_WAVE_TIMER_PROGRESS:			return "MONSTER_WAVE_TIMER_PROGRESS";
 			
 	case EUISubClassType::END:						return "END";
 	default: return "";
@@ -157,6 +160,8 @@ inline EUISubClassType StringToUISubClassType(const std::string& str)
 	else if (str == "BOSS_STAT_HP_PROGRESS")		return EUISubClassType::BOSS_STAT_HP_PROGRESS;
 	else if (str == "BOSS_STAT_ARMOR_PROGRESS")		return EUISubClassType::BOSS_STAT_ARMOR_PROGRESS;
 	else if (str == "BOSS_STAT_END")				return EUISubClassType::BOSS_STAT_END;
+
+	else if (str == "MONSTER_WAVE_TIMER_PROGRESS")				return EUISubClassType::MONSTER_WAVE_TIMER_PROGRESS;
 	
 	else return EUISubClassType::END;
 }
@@ -185,6 +190,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUISubClassType,
 		{ EUISubClassType::BOSS_STAT_HP_PROGRESS,		"BOSS_STAT_HP_PROGRESS"},
 		{ EUISubClassType::BOSS_STAT_ARMOR_PROGRESS,	"BOSS_STAT_ARMOR_PROGRESS"},
 		{ EUISubClassType::BOSS_STAT_END,				"BOSS_STAT_END"},
+
+		{ EUISubClassType::MONSTER_WAVE_TIMER_PROGRESS,				"MONSTER_WAVE_TIMER_PROGRESS"},
+
 	});
 
 #pragma region 텍스트 서브 클래스
@@ -333,7 +341,15 @@ enum class EUITextSubClassType
 	NPC_TEXT_BUBBLE_END,
 
 	//QTE
-		QTE_TEXT,
+	QTE_TEXT,
+	
+	
+	// 몬스터 웨이브
+	MONSTER_WAVE_BEGIN,
+	MONSTER_WAVE_INFO_TEXT,
+	MONSTER_WAVE_TIMER_TEXT,
+	MONSTER_WAVE_END,
+
 	END
 };
 
@@ -464,6 +480,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		
 		{ EUITextSubClassType::QTE_TEXT,					"QTE_TEXT" },
 
+		{ EUITextSubClassType::MONSTER_WAVE_BEGIN,					"MONSTER_WAVE_BEGIN" },
+		{ EUITextSubClassType::MONSTER_WAVE_INFO_TEXT,					"MONSTER_WAVE_INFO_TEXT" },
+		{ EUITextSubClassType::MONSTER_WAVE_TIMER_TEXT,					"MONSTER_WAVE_TIMER_TEXT" },
+		{ EUITextSubClassType::MONSTER_WAVE_END,					"MONSTER_WAVE_END" },
+
 		{ EUITextSubClassType::END,									"END" },
 	})
 	inline EUITextSubClassType StringToUITextSubClassType(const std::string& str)
@@ -591,6 +612,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "NPC_TEXT_BUBBLE_END")						return EUITextSubClassType::NPC_TEXT_BUBBLE_END;
 
 	else if (str == "QTE_TEXT")									return EUITextSubClassType::QTE_TEXT;
+
+	else if (str == "MONSTER_WAVE_BEGIN")						return EUITextSubClassType::MONSTER_WAVE_BEGIN;
+	else if (str == "MONSTER_WAVE_INFO_TEXT")					return EUITextSubClassType::MONSTER_WAVE_INFO_TEXT;
+	else if (str == "MONSTER_WAVE_TIMER_TEXT")					return EUITextSubClassType::MONSTER_WAVE_TIMER_TEXT;
+	else if (str == "MONSTER_WAVE_END")							return EUITextSubClassType::MONSTER_WAVE_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -724,7 +750,12 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 
 	case EUITextSubClassType::ENTERGAME_END:						return "ENTERGAME_END";
 	
-	case EUITextSubClassType::QTE_TEXT:						return "QTE_TEXT";
+	case EUITextSubClassType::QTE_TEXT:								return "QTE_TEXT";
+
+	case EUITextSubClassType::MONSTER_WAVE_BEGIN:					return "MONSTER_WAVE_BEGIN";
+	case EUITextSubClassType::MONSTER_WAVE_INFO_TEXT:				return "MONSTER_WAVE_INFO_TEXT";
+	case EUITextSubClassType::MONSTER_WAVE_TIMER_TEXT:				return "MONSTER_WAVE_TIMER_TEXT";
+	case EUITextSubClassType::MONSTER_WAVE_END:						return "MONSTER_WAVE_END";
 	
 	default:														return "END";
 	}
@@ -1074,6 +1105,13 @@ enum class EUIDImageSubClassType
 	QTE_TEXT_FX,
 	QTE_END,
 	
+	// 몬스터 웨이브
+	MONSTER_WAVE_BEGIN,
+	MONSTER_WAVE_NODE,
+	MONSTER_WAVE_NODE_LINE,
+	MONSTER_WAVE_TIMER_BG,
+	MONSTER_WAVE_END,
+
 	END
 };
 
@@ -1282,6 +1320,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::QTE_CLEAR_BG_CIRCLE_FX,					"QTE_CLEAR_BG_CIRCLE_FX" },
 	{ EUIDImageSubClassType::QTE_TEXT_FX,								"QTE_TEXT_FX" },
 	{ EUIDImageSubClassType::QTE_END,									"QTE_END" },
+
+	{ EUIDImageSubClassType::MONSTER_WAVE_BEGIN,						"MONSTER_WAVE_BEGIN" },
+	{ EUIDImageSubClassType::MONSTER_WAVE_NODE,							"MONSTER_WAVE_NODE" },
+	{ EUIDImageSubClassType::MONSTER_WAVE_NODE_LINE,					"MONSTER_WAVE_NODE_LINE" },
+	{ EUIDImageSubClassType::MONSTER_WAVE_TIMER_BG,						"MONSTER_WAVE_TIMER_BG" },
+	{ EUIDImageSubClassType::MONSTER_WAVE_END,							"MONSTER_WAVE_END" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1492,6 +1536,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "QTE_CLEAR_BG_CIRCLE_FX")				return EUIDImageSubClassType::QTE_CLEAR_BG_CIRCLE_FX;
 	if (str == "QTE_TEXT_FX")							return EUIDImageSubClassType::QTE_TEXT_FX;
 	if (str == "QTE_END")								return EUIDImageSubClassType::QTE_END;
+
+	if (str == "MONSTER_WAVE_BEGIN")					return EUIDImageSubClassType::MONSTER_WAVE_BEGIN;
+	if (str == "MONSTER_WAVE_NODE")						return EUIDImageSubClassType::MONSTER_WAVE_NODE;
+	if (str == "MONSTER_WAVE_NODE_LINE")				return EUIDImageSubClassType::MONSTER_WAVE_NODE_LINE;
+	if (str == "MONSTER_WAVE_TIMER_BG")					return EUIDImageSubClassType::MONSTER_WAVE_TIMER_BG;
+	if (str == "MONSTER_WAVE_END")						return EUIDImageSubClassType::MONSTER_WAVE_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1704,6 +1754,12 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::QTE_CLEAR_BG_CIRCLE_FX:					return "QTE_CLEAR_BG_CIRCLE_FX";
 	case EUIDImageSubClassType::QTE_TEXT_FX:							return "QTE_TEXT_FX";
 	case EUIDImageSubClassType::QTE_END:								return "QTE_END";
+
+	case EUIDImageSubClassType::MONSTER_WAVE_BEGIN:						return "MONSTER_WAVE_BEGIN";
+	case EUIDImageSubClassType::MONSTER_WAVE_NODE:						return "MONSTER_WAVE_NODE";
+	case EUIDImageSubClassType::MONSTER_WAVE_NODE_LINE:					return "MONSTER_WAVE_NODE_LINE";
+	case EUIDImageSubClassType::MONSTER_WAVE_TIMER_BG:					return "MONSTER_WAVE_TIMER_BG";
+	case EUIDImageSubClassType::MONSTER_WAVE_END:						return "MONSTER_WAVE_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

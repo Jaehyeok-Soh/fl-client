@@ -47,7 +47,7 @@ HRESULT CMonster_Veteran::Initialize(void* pArg)
 	if (FAILED(Ready_Ability()))
 		return E_FAIL;
 
-	Set_Name("베테랑");
+	Set_Name("천번 찔린 베테랑");
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -78,15 +78,6 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 	{
-		UI_PREFAB_DATA tPrefabData = {};
-		UI_NAMEPLATE_PREFAB_DATA Desc = {};
-		Desc.pTarget = this;
-		Desc.vOffset = Vec3{ 0.f, 1.f, 0.f };
-		tPrefabData.Data = Desc;
-		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
-	}
-
-	{
 		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 35000.f); // 시연회 때 35만으로 설정하면 좋을 듯.
 	}
 
@@ -98,7 +89,16 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 	m_pGameInstance->StopBGM_FadeOut(1.f);
 	m_pGameInstance->PlayBGM_FadeIn(0, TO_HASH("ELITE_BOSS_BGM"), 0.5f, 1.f);
 
-	
+	{
+		UI_PREFAB_DATA ePrefabData = {};
+		UI_BOSS_NAMEPLATE_PREFAB_DATA Desc = {};
+		Desc.pTarget = this;
+		ePrefabData.Data = Desc;
+		CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::BOSS_NAMEPLATE, iCurrentLevelID, &ePrefabData);
+	}
+
+
+
 	return S_OK;
 }
 
@@ -169,6 +169,8 @@ _bool CMonster_Veteran::On_Hit(const HIT_DESC& hitDesc)
 		m_pGameInstance->StopBGM_FadeOut(1.f);
 		m_pGameInstance->PlayBGM_FadeIn(0, TO_HASH("KUANGKENG_BGM"), 0.5f, 1.f);
 		m_pGameInstance->Broadcast<MONSTER_DEAD_EVENT_START>(this);
+		m_pGameInstance->Broadcast<BOSS_UI_OFF>();
+
 	}
 	else
 	{
@@ -189,7 +191,7 @@ HRESULT CMonster_Veteran::Ready_Ability()
 	// stat
 	{
 		CMyStat::STAT_DESC desc = {};
-		desc.fMaxHp = 35000.f; //수정하기
+		desc.fMaxHp = 100000.f; //수정하기
 		desc.fDefense = 0.f;
 		desc.FStatFlags = CMyStat::StatFlags::HpUpdate | CMyStat::StatFlags::DefenseUpdtae;
 

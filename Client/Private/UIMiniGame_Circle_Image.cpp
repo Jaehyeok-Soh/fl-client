@@ -201,6 +201,8 @@ void CUIMiniGame_Circle_Image::Bind_Events()
 				{
 				case DTO::EUIDImageSubClassType::MINIGAME_CIRCLE_TIMER_CIRCLE:
 				{
+					m_pGameInstance->Active_TimeStop();
+
 					Set_Visible();
 					m_vColorTint = Vec4{ 1.f, 1.f, 1.f, 1.f };
 					m_vGradiantColorTint = Vec4{ 1.f, 1.f, 1.f, 1.f };
@@ -234,6 +236,7 @@ void CUIMiniGame_Circle_Image::Bind_Events()
 				switch (m_eDImageSubClass)
 				{
 				case DTO::EUIDImageSubClassType::MINIGAME_CIRCLE_BG:
+					m_pGameInstance->Deactive_TimeStop();
 				case DTO::EUIDImageSubClassType::MINIGAME_CIRCLE_INNER_BG:
 				case DTO::EUIDImageSubClassType::MINIGAME_CIRCLE_TIMER_BG:
 				case DTO::EUIDImageSubClassType::MINIGAME_CIRCLE_TIMER_CIRCLE:
@@ -304,6 +307,7 @@ void CUIMiniGame_Circle_Image::Tick_By_Type(const _float fTimeDelta)
 			{
 				Set_Invisible();
 				m_isFirstEntered = true;
+				m_pGameInstance->Play_OneShot(0, TO_HASH("UI_MINIGAME_CIRCLE"), 0.5f);
 			}
 		}
 		break;
@@ -346,6 +350,7 @@ void CUIMiniGame_Circle_Image::Tick_For_Point(const _float fTimeDelta)
 			m_pParentCanvasCache->Get_CommonParam_bool_Ref()[m_iNumbering] = true;
 			if (!m_isFirstEntered)
 			{
+				m_fRotateSpeed = m_pGameInstance->Rand_Float(1.f, 10.f);
 				Set_Invisible();
 				m_isFirstEntered = true;
 			}
@@ -495,6 +500,7 @@ _bool CUIMiniGame_Circle_Image::Tick_Visible_Event(const _float fTimeDelta)
 				if (!m_pParentCanvasCache->Get_CommonParam_bool()[i])
  					return true;
 			}
+			m_pGameInstance->Play_OneShot(0, TO_HASH("UI_MINIGAME_CIRCLE_CLEAR"), 0.5f);
 			m_pParentCanvasCache->Get_CommonParam_bool_Ref()[ALL_POINT_CLEAR_SLOT] = true;
 			return true;
 		}

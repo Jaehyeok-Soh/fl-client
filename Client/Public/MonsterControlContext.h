@@ -175,6 +175,7 @@ public:
 	_bool IsArrived();
 	_bool IsPathBlocked();
 
+	_bool IsDissolveEnded();
 /// <summary>
 /// Feature
 /// </summary>

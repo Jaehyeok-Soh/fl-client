@@ -2,6 +2,8 @@
 #include "TriggerBox.h"
 #include "DataStruct_Map.h"
 
+NS_BEGIN(Client)
+
 class CTriggerBox_MonsterWaveSpawner final : public CTriggerBox
 {
 	using Super = CTriggerBox;
@@ -59,3 +61,4 @@ public:
 	virtual	void					Free()override;
 };
 
+NS_END

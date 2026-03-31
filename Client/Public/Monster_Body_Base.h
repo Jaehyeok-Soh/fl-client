@@ -56,6 +56,7 @@ public:
 	const Matrix*		Get_SocketMatrix(_uint iIndex);
 
 	virtual void		DissolveStart() {};
+	_bool				Is_DissolveEnded();
 public:
 	// Camera Interface
 	virtual _bool Resolve_CameraAnchor(

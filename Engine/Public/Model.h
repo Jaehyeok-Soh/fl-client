@@ -4,6 +4,7 @@
 
 NS_BEGIN(Engine)
 
+class CShader;
 class CTransform;
 class CPhysicsCCT;
 class CComputeShader;
@@ -69,6 +70,21 @@ public:
 		ID3DX11EffectShaderResourceVariable*	pInputGroupSB_SRV	= { nullptr };
 	};
 	
+	typedef struct tagGhostTrailDesc
+	{
+		_float	fInterval = { 0.15f };
+		_float	fLifeTime = { 0.4f };
+		_uint	iMaxCount = { 5 };
+		Vec4	vColor = { 0.3f, 0.5f, 1.f, 0.7f };
+	}GHOST_TRAIL_DESC;
+
+	typedef struct tagGhostSnapshot
+	{
+		StructuredBuffer* pBoneBuffer = { nullptr };
+		Matrix			  matWorld = { Matrix::Identity };
+		_float			  fElapsed = { 0.f };
+		_float			  fLifeTime = { 0.3f };
+	}GHOST_SNAPSHOT;
 private:
 	enum AnimationPlayState
 	{
@@ -121,6 +137,18 @@ public:
 	void								Update_Animation(CComputeShader* pBoneComBineCS, CComputeShader* pAnimEComShader, _float fTimeDelta, CTransform* pOwnerTransform = nullptr, CPhysicsCCT* pOwnerPhyCCT = nullptr, CComputeShader* pAnimBlendCS = nullptr, CComputeShader* pAnimMixCS = nullptr, CComputeShader* pAdditiveCS = nullptr, CComputeShader* pRagDollCS = nullptr, CComputeShader* pBoneMoveCS = nullptr); // transform, phsics는 rootmotion 적용시 넘겨줘야함
 	void								Update_PartModel(CComputeShader* pParentBoneComBineCS, CComputeShader* pChildBonePartCS);
 
+	// ghots trail funcs
+public:
+	_bool Is_ActiveGhostTrail() const { return m_bGhostActive; }
+	_bool Has_GhostTrailSnapshots() const;
+	void Set_GhostTrailDesc(const GHOST_TRAIL_DESC& desc);
+	void Enable_GhostTrail();
+	void Disable_GhostTrail();
+	void Clear_GhostTrail();
+	void Set_GhostColor(const Vec4& vColor);
+	void Update_GhostTrail(_float fTimeDelta);
+	void Capture_Ghsot(CComputeShader* pBoneCombineCS, const Matrix& matWorld);
+	HRESULT Render_GhostTrail(CShader* pShader, CComputeShader* pBoneMeshCS, CComputeShader* pBoneCombineCS, _uint iGhostPass);
 	// bind funcs
 public:
 	HRESULT								Bind_Material(class CShader* pShader, _uint iMeshIndex);
@@ -336,7 +364,10 @@ public:
 private:
 	void								Mapping_Ragdoll_Bone();
 	RAGDOLLBONEDESC						Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT::Enum eParentJoint, RAGDOLLJOINT::Enum eChildJoint);
-	
+
+private:
+	CModel::GHOST_TRAIL_DESC			Init_GhostTrailDesc(CModel::GHOST_TRAIL_DESC tDesc);
+
 private:
 	EModelType							m_eType						= { EModelType::END };
 	Matrix								m_matPreTransform			= {};
@@ -367,6 +398,13 @@ private:
 	vector<LOCALSRT>					m_vecPrevAnimationPose;
 	vector<LOCALSRT>					m_vecCurrAnimationPose;
 
+	/* ghost trail */
+	_bool								m_bGhostActive				= { false };
+	_uint								m_iGhostSpawnedCount		= { 0 };
+	GHOST_TRAIL_DESC					m_tGhostTrail				= {};
+	_float								m_fGhostTrailDelta			= { 0.f };
+	_float								m_fGhostAccTime				= { 0.f };
+	vector<GHOST_SNAPSHOT>				m_vecGhostSnapshots;
 private:
 	_int								m_iRootBoneIdx				= { -1 };
 	Vec3								m_vPreMainPosition			= { Vec3::Zero };

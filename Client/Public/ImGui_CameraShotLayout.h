@@ -65,6 +65,8 @@ private:
 	void OpenFileDialog(_char* pBuffer, const _char* pFilter);
 	void BrowseFolderDialog(_char* pBuffer);
 	void Load_DocumentFromFile();
+	_int Find_MaxChannelKeyUID() const;
+	void Rebuild_NexctChannelKeyUID();
 	vector<std::pair<const char*, CAMERA_SHOT_CHANNEL_1D*>> Get_AllChannels();
 private:
 	CAMER_SHOT_EDIT_DOC m_tDoc = {};

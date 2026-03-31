@@ -1111,7 +1111,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
 				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF" , "STRONGWIND_LEAF",
 				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN",
-				"SNOW_SPLASH",
+				"SNOW_SPLASH","BUTTERFLY_ORBIT", "BUTTERFLY_MOBIUS",
+				"FIREFLIES","BOUNCEDROP",
 			};
 
 			std::vector<const char*> iTems;
@@ -1129,7 +1130,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::DROP): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DROP); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::RISE): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::RISE); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SPREAD): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SPREAD); break;
-				case ENUM_TO_UINT(DTO::E_SHAPETYPE::STRAIGHT): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::STRAIGHT); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::STOP): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::STOP); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SPIRAL): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SPIRAL); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::DNA); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::GATHER); break;
@@ -1138,9 +1139,14 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::CIRCLETRAIL): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::CIRCLETRAIL); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SEMI_CIRCLETRAIL): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SEMI_CIRCLETRAIL); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::WIND_LEAF); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::STRONGWIND_LEAF): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::STRONGWIND_LEAF); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_SPREAD); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_FOUNTAIN): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::IRREGULAR_FOUNTAIN); break;
 				case ENUM_TO_UINT(DTO::E_SHAPETYPE::SNOW_SPLASH): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::SNOW_SPLASH); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::BUTTERFLY_ORBIT): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::BUTTERFLY_ORBIT); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::BUTTERFLY_MOBIUS): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::BUTTERFLY_MOBIUS); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::FIREFLIES): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::FIREFLIES); break;
+				case ENUM_TO_UINT(DTO::E_SHAPETYPE::BOUNCEDROP): m_tCurrentDesc.Data._Effect_ShapeType = ENUM_TO_UINT(DTO::E_SHAPETYPE::BOUNCEDROP); break;
 				}
 			}
 
@@ -1155,7 +1161,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 				"SPIRAL", "DNA", "GATHER", "FOUNTAIN", "LEAF", 
 				"CIRCLE_TRAIL", "SEMI_CIRCLETRAIL", "WIND_LEAF", "STRONGWIND_LEAF", 
 				"IRREGULAR_SPREAD", "IRREGULAR_FOUNTAIN",
-			"SNOW_SPLASH"};
+				"SNOW_SPLASH", "BUTTERFLY_ORBIT", "BUTTERFLY_MOBIUS",
+				"FIREFLIES", "BOUNCEDROP"};
 			int currentIndex = (int)m_tCurrentDesc.Data._Effect_ShapeType;
 
 			ImGui::Spacing();
@@ -1671,6 +1678,8 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_PParticleTypeList.push_back("LineTexture_Blend");
 					m_PParticleTypeList.push_back("LineTexture_NoneDepth");
 					m_PParticleTypeList.push_back("Distotion_Texture");
+					m_PParticleTypeList.push_back("CampFire_Texture");
+
 					break;
 				case (_uint)DTO::E_PARTICLETYPE::MESH:
 					m_PParticleTypeList.push_back("DEFAULT_MESH");
@@ -1681,6 +1690,7 @@ void CParticle_System_Panel::Draw_ParticleSystem(CToolObject* pGo)
 					m_PParticleTypeList.push_back("NONDEPTH_DEFAULT");
 					m_PParticleTypeList.push_back("CHANIN_MESH");
 					m_PParticleTypeList.push_back("DECAL");
+					m_PParticleTypeList.push_back("BUTTERFLY");
 					break;
 				}
 

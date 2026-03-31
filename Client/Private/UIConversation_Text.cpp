@@ -159,7 +159,7 @@ void CUIConversation_Text::Bind_Events()
 				case DTO::EUITextSubClassType::CONVERSATION_NAME:
 				{
 				}
-				break;
+					break;
 				case DTO::EUITextSubClassType::CONVERSATION_TEXT:
 				{
 					auto* p = dynamic_cast<IInteractable*>(pObj);
@@ -167,8 +167,26 @@ void CUIConversation_Text::Bind_Events()
 						return;
 
 					p->Interact();
+					m_pConversationTarget = pObj;
 				}
-				break;
+					break;
+				}
+			}));
+
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<INTERACT_LOST>([this](CGameObject* pObj)
+			{
+				switch (m_eTextSubClassType)
+				{
+				case DTO::EUITextSubClassType::CONVERSATION_NAME:
+				{
+				}
+					break;
+				case DTO::EUITextSubClassType::CONVERSATION_TEXT:
+				{
+					m_pConversationTarget = nullptr;
+				}
+					break;
 				}
 			}));
 
@@ -177,6 +195,13 @@ void CUIConversation_Text::Bind_Events()
 			{				
 				this->Set_Visible();
 				this->Set_Active(true);
+
+				if (nullptr != this->m_pConversationTarget)
+				{
+					this->m_pConversationTarget; // 이게 지금 말하고 있는 대상일 듯
+
+				}
+
 			}));
 
 	m_vecEventHandles.push_back(
