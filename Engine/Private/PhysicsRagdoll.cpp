@@ -254,6 +254,7 @@ void CPhysicsRagdoll::Update()
 	rootTransform.q.normalize();
 	Quat quat = ToQuaternion(rootTransform.q);
 
+	rootTransform.p.y += 0.3f;
 	static_cast<CPartObject*>(Get_Owner())->Get_Parent()->Get_Component<CPhysicsCCT>()->SetFootPosition(ToVector3(rootTransform.p));
 	pOwnerTransform->Rotation(quat);
 }
@@ -289,7 +290,7 @@ void CPhysicsRagdoll::ApplyHitImpulse(Vec3 vDir, _float fPower)
 	else
 		vDir.Normalize();
 
-	vDir.y += 0.5f;
+	vDir.y += 1.5f;
 	vDir.Normalize();
 
 	PxVec3 pxImpulse = ToPxVec3(vDir) * fPower;
