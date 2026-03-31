@@ -246,21 +246,20 @@ HRESULT CCameraMan_Targeter::Ready_GlobalEvent()
                     case TO_HASH("Change_CamState_TARGETSYNC"):
                     {
                         this->Change_CamState(TargeterState::TARGETSYNC);
-                        return S_OK;
                     }
+                    break;
                     default:
                         break;
                     }
-
                 }
             }
             default:
                 break;
             }
         }
+
+        return S_OK;
         });
-
-
 
 
     return S_OK;

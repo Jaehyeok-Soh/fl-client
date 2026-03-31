@@ -181,8 +181,17 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 			m_bStageBones = false;
 		}
 
+		if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_STAGEING_FOR_NAME))
+		{
+			// string vector를 int vector로 치환 해준다
+			for (auto& Name : pDesc->vecStageBoneName)
+			{
+				pDesc->vecStageBoneIndices.push_back(Get_BoneIndex(Name));
+			}
+		}
+
 		// 빼돌릴건데 모든 뼈를 빼돌리고 싶다면
-		else if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ALLBONE))
+		if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ALLBONE))
 		{
 			pDesc->vecStageBoneIndices.reserve(Get_BoneCount());
 
@@ -194,8 +203,6 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 
 		// staging 정보 생성
 		//Make_Staging(pDesc);
-
-		// 
 		if (m_bStageBones)
 		{
 			// 재귀로 지정뼈 ~ 부모뼈 update on
@@ -765,6 +772,22 @@ _int CModel::Get_AnimationIndex(const wstring& wstrName)
 		return -1;
 
 	return static_cast<_int>(itr->second);
+}
+
+_int CModel::Get_BoneIndex(const string& strName)
+{
+	_int iOutBoneIndex{ -1 };
+
+
+	for (_uint i = 0; i < static_cast<_uint>(m_vecBones.size()); ++i)
+	{
+		if (strName == m_vecBones[i]->Get_Name())
+		{
+			iOutBoneIndex = i;
+			break;
+		}
+	}
+	return iOutBoneIndex;
 }
 
 wstring CModel::Get_MaterialName(_uint iIndex) const

@@ -788,6 +788,10 @@ _bool CGameInstance::KeyButton_None(_ubyte eKeyID)
 {
 	return m_pInput_Manager->KeyButton_None(eKeyID);
 }
+void CGameInstance::Clear_AllKeyInput()
+{
+	return m_pInput_Manager->Clear();
+}
 _bool CGameInstance::Mouse_Down(MOUSEKEYSTATE eMouseKeyID)
 {
 	return m_pInput_Manager->Mouse_Down(eMouseKeyID);

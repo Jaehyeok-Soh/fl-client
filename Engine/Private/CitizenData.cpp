@@ -414,13 +414,10 @@ void Citizen_WayPoint_Data::Save_Json(json& SaveJson)
 	}
 }
 
-
-
 HRESULT CitizenPresetData::Add_ModelPrototype(_uint iAddPrototypeLevel, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	if (vecDatas.empty())
 		return S_OK;
-
 
 	auto* pGameInstance = CGameInstance::GetInstance();
 
@@ -452,6 +449,7 @@ HRESULT CitizenPresetData::Add_ModelPrototype(_uint iAddPrototypeLevel, ID3D11De
 
 		tBodyOriginDesc.pAniChannelData = &tAnimChannelData;
 
+
 		if (nullptr == pGameInstance->Find_Prototype(iAddPrototypeLevel, wstrPrototypeModelTag + wstrBodyModelFolderName))
 		{
 			/* 찾았는데 없다면 */
@@ -465,6 +463,9 @@ HRESULT CitizenPresetData::Add_ModelPrototype(_uint iAddPrototypeLevel, ID3D11De
 			DTO::CitizenWalkRunAnimIndexData::Add_CitizenWalkRunAnimIndex(Data.strModelName , pPrototype_Model);
 			Data.tWalkRunAnimIndex = DTO::CitizenWalkRunAnimIndexData::Get_CitizenWalkRunAnimIndex(Data.strModelName);
 		}
+		else
+			Data.tWalkRunAnimIndex = DTO::CitizenWalkRunAnimIndexData::Get_CitizenWalkRunAnimIndex(Data.strModelName);
+
 
 		for (auto& Parts : Data.arrayPartDatas)
 		{
@@ -489,7 +490,6 @@ HRESULT CitizenPresetData::Add_ModelPrototype(_uint iAddPrototypeLevel, ID3D11De
 			}
 		}
 	}
-
 	return S_OK;
 }
 

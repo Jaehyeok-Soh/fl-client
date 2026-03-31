@@ -109,6 +109,7 @@ HRESULT CNPC_Citizen::Ready_CitizenParts(CNPC_Citizen::NPC_CITIZEN_DESC* pDesc)
 	tDecoDesc.pBoneSocket	= &m_vecPartObjects[ENUM_TO_UINT(CNPC_Citizen::Part::Body)]->Get_Component<CModel>()->Get_Bone("Jiao")->Get_CombinedTransformMatrix();
 	tDecoDesc.pMatParent	= Get_Component<CTransform>()->Get_WorldMatrixPtr();
 	tDecoDesc.iLevelIndex	= pDesc->iLevelIndex;
+
 	_uint i = 0;
 	for (auto& PartData : pDesc->tCitizenData.arrayPartDatas)
 	{

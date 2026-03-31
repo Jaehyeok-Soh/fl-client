@@ -162,6 +162,11 @@ HRESULT CLevel_Square::Awake(const _uint iLevelID)
 		Desc.isChangeLevel = false;
 		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
 	}
+
+
+	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
+		return E_FAIL;
+
 	return S_OK;
 }
 

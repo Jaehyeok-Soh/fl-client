@@ -750,33 +750,6 @@
                 }
             },
             {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": -18.235713958740234,
-                    "Y": -157.65283203125,
-                    "Z": 1.57310987560777e-05
-                },
-                "Position": {
-                    "X": 368.3128356933594,
-                    "Y": 266.6697692871094,
-                    "Z": -223.48020935058594
-                }
-            },
-            {
                 "Duration": 1.5,
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
@@ -831,60 +804,6 @@
                 }
             },
             {
-                "Duration": 1.5,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 1.2812693119049072,
-                    "Y": -167.51661682128906,
-                    "Z": 2.1189556719036773e-05
-                },
-                "Position": {
-                    "X": 362.11248779296875,
-                    "Y": 275.2981262207031,
-                    "Z": -254.3499755859375
-                }
-            },
-            {
-                "Duration": 1.5,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 13.855734825134277,
-                    "Y": -158.1570587158203,
-                    "Z": -8.793614142632578e-06
-                },
-                "Position": {
-                    "X": 367.13677978515625,
-                    "Y": 278.7282409667969,
-                    "Z": -260.8797607421875
-                }
-            },
-            {
                 "Duration": 1.0,
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
@@ -901,41 +820,14 @@
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
-                    "X": 8.692877769470215,
-                    "Y": -144.48992919921875,
-                    "Z": 3.6707042454509065e-06
+                    "X": 6.1502556800842285,
+                    "Y": 170.66676330566406,
+                    "Z": 1.2505051927291788e-05
                 },
                 "Position": {
-                    "X": 374.9230041503906,
-                    "Y": 286.1504821777344,
-                    "Z": -265.9142761230469
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 5.837561130523682,
-                    "Y": -133.02919006347656,
-                    "Z": 1.4589810234610923e-05
-                },
-                "Position": {
-                    "X": 379.1789855957031,
-                    "Y": 289.7870178222656,
-                    "Z": -270.8368835449219
+                    "X": 360.5697021484375,
+                    "Y": 282.57232666015625,
+                    "Z": -258.07568359375
                 }
             },
             {
@@ -982,33 +874,6 @@
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
-                    "X": 18.06891632080078,
-                    "Y": -113.0902099609375,
-                    "Z": -1.9757371774176136e-05
-                },
-                "Position": {
-                    "X": 389.3950500488281,
-                    "Y": 293.5987854003906,
-                    "Z": -292.9886779785156
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
                     "X": 15.782341003417969,
                     "Y": -115.37767028808594,
                     "Z": -2.7060215870733373e-05
@@ -1017,33 +882,6 @@
                     "X": 391.3445739746094,
                     "Y": 295.9055480957031,
                     "Z": -306.45635986328125
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 21.972360610961914,
-                    "Y": -98.343994140625,
-                    "Z": -0.00013901741476729512
-                },
-                "Position": {
-                    "X": 392.4886169433594,
-                    "Y": 298.0506896972656,
-                    "Z": -318.50103759765625
                 }
             },
             {
@@ -1144,33 +982,6 @@
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
-                    "X": 39.265933990478516,
-                    "Y": -118.70130157470703,
-                    "Z": -0.0001852633577072993
-                },
-                "Position": {
-                    "X": 382.0965576171875,
-                    "Y": 287.8236083984375,
-                    "Z": -351.7214050292969
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
                     "X": 34.11857604980469,
                     "Y": -91.3709487915039,
                     "Z": -0.00014437903882935643
@@ -1252,60 +1063,6 @@
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
-                    "X": 10.693904876708984,
-                    "Y": -96.62235260009766,
-                    "Z": -6.082045365474187e-05
-                },
-                "Position": {
-                    "X": 360.0259704589844,
-                    "Y": 271.1360778808594,
-                    "Z": -359.8204345703125
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 23.233383178710938,
-                    "Y": -95.95153045654297,
-                    "Z": -0.00010313231905456632
-                },
-                "Position": {
-                    "X": 357.7293701171875,
-                    "Y": 269.7826232910156,
-                    "Z": -360.2072448730469
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
                     "X": 7.75042200088501,
                     "Y": -90.75753784179688,
                     "Z": -9.82275087153539e-05
@@ -1341,60 +1098,6 @@
                     "X": 347.2904357910156,
                     "Y": 268.07110595703125,
                     "Z": -361.6478271484375
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": -7.04193115234375,
-                    "Y": -97.23271179199219,
-                    "Z": -9.957541624316946e-05
-                },
-                "Position": {
-                    "X": 344.632080078125,
-                    "Y": 268.36090087890625,
-                    "Z": -362.00262451171875
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": -27.81169891357422,
-                    "Y": -46.21625900268555,
-                    "Z": 1.2548599443107378e-05
-                },
-                "Position": {
-                    "X": 340.91424560546875,
-                    "Y": 269.930419921875,
-                    "Z": -363.28106689453125
                 }
             },
             {
@@ -1468,33 +1171,6 @@
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
-                    "X": -21.935283660888672,
-                    "Y": -1.6962189674377441,
-                    "Z": 6.644174573011696e-05
-                },
-                "Position": {
-                    "X": 336.2351379394531,
-                    "Y": 276.1827392578125,
-                    "Z": -350.5655822753906
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
                     "X": -16.23775863647461,
                     "Y": 27.944137573242188,
                     "Z": 7.11396787664853e-05
@@ -1503,33 +1179,6 @@
                     "X": 336.1592712402344,
                     "Y": 278.86968994140625,
                     "Z": -346.5487365722656
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": -4.638543605804443,
-                    "Y": -8.561636924743652,
-                    "Z": 5.546349711949006e-05
-                },
-                "Position": {
-                    "X": 338.33612060546875,
-                    "Y": 280.14202880859375,
-                    "Z": -344.3354187011719
                 }
             },
             {
@@ -1576,60 +1225,6 @@
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
-                    "X": 11.2284517288208,
-                    "Y": -45.77171325683594,
-                    "Z": 6.441219011321664e-05
-                },
-                "Position": {
-                    "X": 339.836669921875,
-                    "Y": 284.3982849121094,
-                    "Z": -335.47698974609375
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 30.742061614990234,
-                    "Y": -66.3608627319336,
-                    "Z": -2.9800917218381073e-06
-                },
-                "Position": {
-                    "X": 338.780029296875,
-                    "Y": 286.8807678222656,
-                    "Z": -327.63116455078125
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
                     "X": 35.89791488647461,
                     "Y": -68.65254974365234,
                     "Z": -1.475543285778258e-05
@@ -1638,60 +1233,6 @@
                     "X": 338.7850341796875,
                     "Y": 286.7983093261719,
                     "Z": -327.6835632324219
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 37.04133605957031,
-                    "Y": -77.81512451171875,
-                    "Z": -2.139244315912947e-06
-                },
-                "Position": {
-                    "X": 336.20086669921875,
-                    "Y": 284.726318359375,
-                    "Z": -322.2796936035156
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 31.88483428955078,
-                    "Y": -95.57707977294922,
-                    "Z": 3.820864367298782e-05
-                },
-                "Position": {
-                    "X": 333.814453125,
-                    "Y": 281.1886291503906,
-                    "Z": -316.78057861328125
                 }
             },
             {
@@ -1725,62 +1266,8 @@
                 "Duration": 1.0,
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
+                "HoldTime": 7.0,
                 "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 25.787107467651367,
-                    "Y": -136.7429962158203,
-                    "Z": 1.896396861411631e-05
-                },
-                "Position": {
-                    "X": 327.7009582519531,
-                    "Y": 277.310302734375,
-                    "Z": -310.4714050292969
-                }
-            },
-            {
-                "Duration": 1.0,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 0.0,
-                "Look At Lerp Type": "Curve",
-                "Look At Offset": {
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0
-                },
-                "Look At Target": "DEFAULT",
-                "Look At Target Bone Index": -1,
-                "Move Lerp Type": "Curve",
-                "MoveBase Target": "DEFAULT",
-                "MoveBase Target Bone Index": -1,
-                "Pitch Yaw Roll": {
-                    "X": 24.436288833618164,
-                    "Y": -156.3128662109375,
-                    "Z": 2.156889604520984e-05
-                },
-                "Position": {
-                    "X": 324.00823974609375,
-                    "Y": 274.9764099121094,
-                    "Z": -311.717529296875
-                }
-            },
-            {
-                "Duration": 1.5,
-                "Fov": 60.0,
-                "Fov Lerp Type": "NONE",
-                "HoldTime": 8.0,
-                "Look At Lerp Type": "SmoothStep",
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1803,23 +1290,17 @@
                             "Default"
                         ],
                         "Subscriber Name": "Xibila_Cinematic_State"
-                    },
-                    {
-                        "Action Names": [
-                            "Xibila_Cinematic_End_Position"
-                        ],
-                        "Subscriber Name": "Player_ChangePosition"
                     }
                 ],
                 "Pitch Yaw Roll": {
-                    "X": 16.33555030822754,
-                    "Y": -162.96177673339844,
-                    "Z": 1.957316999323666e-05
+                    "X": 8.914188385009766,
+                    "Y": -147.93927001953125,
+                    "Z": 2.160529817274437e-07
                 },
                 "Position": {
-                    "X": 320.3031005859375,
-                    "Y": 272.06011962890625,
-                    "Z": -316.35845947265625
+                    "X": 319.4421691894531,
+                    "Y": 271.85638427734375,
+                    "Z": -318.5728454589844
                 }
             }
         ],
@@ -1838,15 +1319,21 @@
             },
             {
                 "Action Names": [
-                    "Change_CamState_TARGETSYNC"
+                    "Xibila_Cinematic_End_Position"
                 ],
-                "Subscriber Name": "CameraMan_Targeter"
+                "Subscriber Name": "Player_ChangePosition"
             },
             {
                 "Action Names": [
                     "Set_KeyInput_True"
                 ],
                 "Subscriber Name": "Player_State"
+            },
+            {
+                "Action Names": [
+                    "Change_CamState_TARGETSYNC"
+                ],
+                "Subscriber Name": "CameraMan_Targeter"
             }
         ]
     }

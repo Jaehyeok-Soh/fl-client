@@ -160,7 +160,7 @@ static const Vec3 g_CitizenPartOffsetTable[ENUM_TO_UINT(CITIZEN_TYPE::END)][ENUM
 {
 	// [Male]
 	{
-		{ 0.0f, -0.025f, 1.530f }, // Hair
+		{ 0.0f, 0.025f, 1.530f }, // Hair
 		{ 0.0f,  0.0f,   0.0f }    // Beard (¾øÀ½)
 	},
 	// [Female]
