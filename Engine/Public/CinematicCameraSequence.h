@@ -15,13 +15,17 @@ struct ENGINE_DLL Camera_Keyframe_Data
 {
 public:
 	/* Json 저장용 데이터 */
+
 	/* 카메라가 움직일 기준이될 Target정보  */
-	EObjectEnumTag::Enum	eMoveBaseTarget{ EObjectEnumTag::DEFAULT };	/* 타겟 정보를 들고온다 */
+	EObjectEnumTag::Enum	eMoveBaseTarget{ EObjectEnumTag::DEFAULT };		/* 타겟 정보를 들고온다 */
+	wstring					wstrMoveBaseLayerTag{L""};						/* LayerTag에서 가져올수 있도록한다 특정 보스 Layer정도는 접근가능 front로 빼왔을 떄*/
+	_int					iMoveBaseLevelType{-1};							/* LayerTag에서 Level로 검색을할떄 쓴다 -1 일 경우 쓰지 않는다 */
+
 	_int					iMoveBaseTarget_EventHandleIndex{NONE_INDEX};	/* Target을 가져올 HandleIndex */
 	_int					iMoveBaseTargetBoneIndex{NONE_INDEX};			/* BoneIndex 정보 없으면 -1 있다면 0 이상 */
 	Vec3					vPosition{ Vec3::Zero };						/* 포지션 Target이 있으면 Offset 값으로 적용된다 */
 	
-	ELerpType				eMoveLerpType{ ELerpType::Linear };			/* 이번 포지션값   이동에 Lerp를 쓸건지 말건지 */
+	ELerpType				eMoveLerpType{ ELerpType::Linear };				/* 이번 포지션값   이동에 Lerp를 쓸건지 말건지 */
 	ELerpType				eLookAtLerpType{ ELerpType::Linear };			/* 이번 LookAt    이동에  Lerp를 쓸지 말지 */
 	ELerpType				eFovLerpType{ ELerpType::NONE };				/* 이번 Fov값에   이동에  Lerp를 쓸지 말지 */
 
@@ -32,17 +36,22 @@ public:
 	_float					fFov{ 60.f };									/* 카메라 줌인용 Fov 값 */
 
 	/* 카메라가 바라볼 대상 */
-	EObjectEnumTag::Enum    eLookAtTarget{ EObjectEnumTag::DEFAULT };	/* 바라볼 대상 */
-	_bool					isUseRotation{ true } ;						/* 기본적으로 Rotation으로 설정 회전으로 할지 LookAt 바라볼건지 둘중 하나 */
-	Vec3					vPitchYawRoll{ 0.f,0.f,0.f };				/* 바라볼 대상이 없다면 사용할 데이터 */
-	Vec3					vLookAtOffset{ Vec3::Zero };				/* 타겟 위치에서 약간 위/아래를 볼 때 쓰는 오프셋 // 타겟이있으면 Offset 없으면 Target으로 잡힌다 */
+	EObjectEnumTag::Enum    eLookAtTarget{ EObjectEnumTag::DEFAULT };		/* 바라볼 대상 */
+	wstring					wstrLookAtLayerTag{L"" };						/* LayerTag에서 가져올수 있도록한다 특정 보스 Layer정도는 접근가능 front로 빼왔을 떄*/
+	_int					iLookAtLevelType{ -1 };							/* LayerTag에서 Level로 검색을할떄 쓴다 -1 일 경우 쓰지 않는다 */
+
+	/* 카메라가 바라볼 대상 */
+	_bool					isUseRotation{ true } ;							/* 기본적으로 Rotation으로 설정 회전으로 할지 LookAt 바라볼건지 둘중 하나 */
+	Vec3					vPitchYawRoll{ 0.f,0.f,0.f };					/* 바라볼 대상이 없다면 사용할 데이터 */
+	Vec3					vLookAtOffset{ Vec3::Zero };					/* 타겟 위치에서 약간 위/아래를 볼 때 쓰는 오프셋 // 타겟이있으면 Offset 없으면 Target으로 잡힌다 */
+	
 	/* 바라볼 대상이 있을때 사용할 데이터들 */
-	_int					iLookAtBoneIndex{ NONE_BONE_INDEX };		/* 바라볼 대상의 특정 뼈 */
+	_int					iLookAtBoneIndex{ NONE_BONE_INDEX };			/* 바라볼 대상의 특정 뼈 */
 
 public:
 	/* Event 관련 */
-	vector<CCS_EVENT_DESC>	vecOnReach_CCS_EventDesc{};					/* 이 KeyFrame에 도착했을떄 발송할 이벤트 Desc */
-	vector<CCS_EVENT_DESC>	vecDepart_CCS_EventDesc{};					/* 이 KeyFrame이 다음 Index를 향해 출발할때 발송될 이벤트 Desc */
+	vector<CCS_EVENT_DESC>	vecOnReach_CCS_EventDesc{};						/* 이 KeyFrame에 도착했을떄 발송할 이벤트 Desc */
+	vector<CCS_EVENT_DESC>	vecDepart_CCS_EventDesc{};						/* 이 KeyFrame이 다음 Index를 향해 출발할때 발송될 이벤트 Desc */
 public:
 	_bool					isOnReachEventWork{ false };
 	_bool					isDepartEventWork{ false };
@@ -63,8 +72,6 @@ public:
 	Matrix				Get_WorldMatrix() const;
 
 	/* BroadCast */
-	void				BroadCast_DepartEvent();		/* Hold Time이 끝나고 불릴 함수 정확히말하면 HoldTime이 끝나고 또 불릴 일이 있나 카메라시퀀스 진입시, HoldTime이 끝나면 진입 완료 */
-	void				BroadCast_OnReachEvent();	/* 다음 인덱스로 도착했을때 ? */
 	void				Reset_EventWork();
 public:
 	void				Reset();

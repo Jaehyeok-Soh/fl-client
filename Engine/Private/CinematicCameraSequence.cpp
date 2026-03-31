@@ -4,7 +4,7 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "Model.h"
-
+#include "Bone.h"
 #include "json.hpp"
 #include "GameInstance.h"
 
@@ -124,26 +124,95 @@ Camera_Keyframe_Data::~Camera_Keyframe_Data()
 
 Matrix Camera_Keyframe_Data::Get_WorldMatrix() const
 {
-	return Matrix::CreateFromYawPitchRoll(XMConvertToRadians(this->vPitchYawRoll.y), XMConvertToRadians(this->vPitchYawRoll.x), XMConvertToRadians(this->vPitchYawRoll.z))
-		* Matrix::CreateTranslation(this->vPosition);
-}
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 
-void Camera_Keyframe_Data::BroadCast_OnReachEvent()
-{
-	if (this->isOnReachEventWork == true)
-		return;
+	// ==========================================
+	// 1. 카메라의 최종 위치 (Translation) 계산
+	// ==========================================
+	Vec3 vFinalPosition = this->vPosition; // 기본값 (타겟이 없으면 월드 좌표로 사용)
 
-	auto* pMgr = CGameInstance::GetInstance();
-
-	for (auto& Index : this->vecOnReach_CCS_EventDesc)
+	if (false == this->wstrMoveBaseLayerTag.empty())
 	{
+		// 이동 기준이 될 타겟 객체 찾기
+		CGameObject* pMoveTarget = pGameInstance->Get_GameObject_Front(this->iMoveBaseLevelType, this->wstrMoveBaseLayerTag);
 
+		if (nullptr != pMoveTarget)
+		{
+			// 타겟 객체 자체의 월드 매트릭스를 가져옵니다. (CTransform 컴포넌트 접근 방식은 엔진 구조에 맞춰 수정해주세요)
+			Matrix targetWorldMatrix = pMoveTarget->Get_Component<CTransform>()->Get_WorldMatrix();
+
+			if (this->iMoveBaseTargetBoneIndex >= 0)
+			{
+				CModel* pModel = pMoveTarget->Get_Component<CModel>();
+				if (nullptr != pModel)
+				{
+					// 뼈의 CombinedMatrix를 가져온 뒤, 객체의 월드 매트릭스와 곱하여 최종 뼈의 월드 매트릭스를 계산합니다.
+					Matrix boneCombinedMatrix = pModel->Get_Bone(this->iMoveBaseTargetBoneIndex)->Get_CombinedTransformMatrix();
+					targetWorldMatrix = boneCombinedMatrix * targetWorldMatrix;
+				}
+			}
+
+			// 뼈(혹은 객체)의 월드 좌표에 저장된 오프셋(vPosition)을 더해줍니다.
+			vFinalPosition += targetWorldMatrix.Translation();
+		}
 	}
 
-	this->isOnReachEventWork = true;
+	// ==========================================
+	// 2. 카메라의 최종 회전 (Rotation) 및 Matrix 생성
+	// ==========================================
+	Matrix matWorld = Matrix::Identity;
 
-	return;
+	if (this->isUseRotation)
+	{
+		// [방식 A] 명시적인 Pitch, Yaw, Roll 회전값을 사용하는 경우
+		Matrix matRotation = Matrix::CreateFromYawPitchRoll(
+			XMConvertToRadians(this->vPitchYawRoll.y), // Yaw
+			XMConvertToRadians(this->vPitchYawRoll.x), // Pitch
+			XMConvertToRadians(this->vPitchYawRoll.z)  // Roll
+		);
+
+		matWorld = matRotation * Matrix::CreateTranslation(vFinalPosition);
+	}
+	else
+	{
+		// [방식 B] LookAt (특정 대상을 바라보는) 방식을 사용하는 경우
+		Vec3 vFinalLookAt = this->vLookAtOffset; // 기본값 (타겟 없으면 해당 좌표를 바로 바라봄)
+
+		if (false == this->wstrLookAtLayerTag.empty())
+		{
+			CGameObject* pLookAtTarget = pGameInstance->Get_GameObject_Front(this->iLookAtLevelType, this->wstrLookAtLayerTag);
+
+			if (nullptr != pLookAtTarget)
+			{
+				// 바라볼 타겟 객체의 월드 매트릭스를 가져옵니다.
+				Matrix lookAtTargetWorldMatrix = pLookAtTarget->Get_Component<CTransform>()->Get_WorldMatrix();
+
+				if (this->iLookAtBoneIndex >= 0)
+				{
+					CModel* pModel = pLookAtTarget->Get_Component<CModel>();
+					if (nullptr != pModel)
+					{
+						// LookAt 대상의 특정 뼈를 추적하는 경우
+						Matrix boneCombinedMatrix = pModel->Get_Bone(this->iLookAtBoneIndex)->Get_CombinedTransformMatrix();
+						lookAtTargetWorldMatrix = boneCombinedMatrix * lookAtTargetWorldMatrix;
+					}
+				}
+
+				// 뼈(혹은 객체)의 월드 좌표에 룩앳 오프셋을 더해 최종 바라볼 지점을 구합니다.
+				vFinalLookAt += lookAtTargetWorldMatrix.Translation();
+			}
+		}
+
+		// DirectX 기준 LookAt 뷰 매트릭스 생성 (카메라 위치, 바라볼 곳, Up 벡터)
+		Matrix matView = XMMatrixLookAtLH(vFinalPosition, vFinalLookAt, Vec3::Up);
+
+		// Camera의 View 매트릭스를 역행렬(Invert) 처리하여 Camera의 World 매트릭스로 변환합니다.
+		matWorld = matView.Invert();
+	}
+
+	return matWorld;
 }
+
 
 void Camera_Keyframe_Data::Reset()
 {
@@ -215,12 +284,17 @@ void Camera_Keyframe_Data::Save_Json(json& SaveJson)
 {
 	/* Move 관련 */
 	SaveJson["MoveBase Target"] = EObjectEnumTag::ToString(this->eMoveBaseTarget);
+	SaveJson["MoveBase Layer Tag"] = Engine_Utils::ToString(this->wstrMoveBaseLayerTag); 
+	SaveJson["MoveBase Level Type"] = this->iMoveBaseLevelType;
 	SaveJson["Move Lerp Type"] = Engine_Utils::LerpType_ToString(this->eMoveLerpType);
 	SaveJson["MoveBase Target Bone Index"] = this->iMoveBaseTargetBoneIndex;
 	Engine_Utils::write_vec3_xyz(SaveJson["Position"], this->vPosition);
 
 	/* Look At 관련 */
+	SaveJson["Is Use Rotation"] = this->isUseRotation;
 	SaveJson["Look At Target"] = EObjectEnumTag::ToString(this->eLookAtTarget);
+	SaveJson["Look At Layer Tag"] = Engine_Utils::ToString(this->wstrLookAtLayerTag);
+	SaveJson["Look At Level Type"] = this->iLookAtLevelType;
 	SaveJson["Look At Lerp Type"] = Engine_Utils::LerpType_ToString(this->eLookAtLerpType);
 	SaveJson["Look At Target Bone Index"] = this->iLookAtBoneIndex;
 	Engine_Utils::write_vec3_xyz(SaveJson["Look At Offset"], this->vLookAtOffset);
@@ -230,39 +304,42 @@ void Camera_Keyframe_Data::Save_Json(json& SaveJson)
 	SaveJson["Fov Lerp Type"] = Engine_Utils::LerpType_ToString(this->eFovLerpType);
 	SaveJson["Fov"] = this->fFov;
 
+	/* 시간 관련 */
 	SaveJson["Duration"] = this->fDuration;
 	SaveJson["HoldTime"] = this->fHoldTime;
 
 
-	/* Event */
+	/* Event: Depart (출발 시 이벤트) */
 	if (!this->vecDepart_CCS_EventDesc.empty())
 	{
 		auto& Depart_SaveJson = SaveJson["Depart Event"];
-		for (auto& Desc : this->vecOnReach_CCS_EventDesc)
+		// [수정] 오타 수정: vecDepart_CCS_EventDesc 순회로 변경
+		for (const auto& Desc : this->vecDepart_CCS_EventDesc)
 		{
-			if (Desc.strSubscriberName.empty())
+			if (Desc.strSubscriberName.empty() || Desc.vecActionNames.empty())
 				continue;
-			if (Desc.vecActionNames.empty())
-				continue;
-			json Desc_SaveJson{json::object()};
 
+			json Desc_SaveJson = json::object();
 			Desc_SaveJson["Subscriber Name"] = Desc.strSubscriberName;
 			Desc_SaveJson["Action Names"] = Desc.vecActionNames;
+
 			Depart_SaveJson.push_back(Desc_SaveJson);
 		}
 	}
+
+	/* Event: On Reach (도착 시 이벤트) */
 	if (!this->vecOnReach_CCS_EventDesc.empty())
 	{
 		auto& OnReach_SaveJson = SaveJson["On Reach Event"];
-		for (auto& Desc : this->vecOnReach_CCS_EventDesc)
+		for (const auto& Desc : this->vecOnReach_CCS_EventDesc)
 		{
-			if (Desc.strSubscriberName.empty())
+			if (Desc.strSubscriberName.empty() || Desc.vecActionNames.empty())
 				continue;
-			if (Desc.vecActionNames.empty())
-				continue;
-			json Desc_SaveJson{ json::object() };
-			Desc_SaveJson["Subscriber Name"]	= Desc.strSubscriberName;
-			Desc_SaveJson["Action Names"]		= Desc.vecActionNames;
+
+			json Desc_SaveJson = json::object();
+			Desc_SaveJson["Subscriber Name"] = Desc.strSubscriberName;
+			Desc_SaveJson["Action Names"] = Desc.vecActionNames;
+
 			OnReach_SaveJson.push_back(Desc_SaveJson);
 		}
 	}
@@ -270,9 +347,15 @@ void Camera_Keyframe_Data::Save_Json(json& SaveJson)
 
 void Camera_Keyframe_Data::Load_Json(const json& LoadJson)
 {
-
+	/* Move 관련 */
 	if (LoadJson.contains("MoveBase Target"))
 		this->eMoveBaseTarget = EObjectEnumTag::ToEnum(LoadJson["MoveBase Target"].get<string>());
+
+	if (LoadJson.contains("MoveBase Layer Tag"))
+		this->wstrMoveBaseLayerTag = Engine_Utils::ToWString(LoadJson["MoveBase Layer Tag"].get<string>());
+
+	if (LoadJson.contains("MoveBase Level Type"))
+		this->iMoveBaseLevelType = LoadJson["MoveBase Level Type"].get<_int>();
 
 	if (LoadJson.contains("Move Lerp Type"))
 		this->eMoveLerpType = Engine_Utils::LerpType_ToEnum(LoadJson["Move Lerp Type"].get<string>());
@@ -285,8 +368,17 @@ void Camera_Keyframe_Data::Load_Json(const json& LoadJson)
 
 
 	/* Look At 관련 */
+	if (LoadJson.contains("Is Use Rotation"))
+		this->isUseRotation = LoadJson["Is Use Rotation"].get<bool>();
+
 	if (LoadJson.contains("Look At Target"))
 		this->eLookAtTarget = EObjectEnumTag::ToEnum(LoadJson["Look At Target"].get<string>());
+
+	if (LoadJson.contains("Look At Layer Tag"))
+		this->wstrLookAtLayerTag = Engine_Utils::ToWString(LoadJson["Look At Layer Tag"].get<string>());
+
+	if (LoadJson.contains("Look At Level Type"))
+		this->iLookAtLevelType = LoadJson["Look At Level Type"].get<_int>();
 
 	if (LoadJson.contains("Look At Lerp Type"))
 		this->eLookAtLerpType = Engine_Utils::LerpType_ToEnum(LoadJson["Look At Lerp Type"].get<string>());
@@ -308,6 +400,7 @@ void Camera_Keyframe_Data::Load_Json(const json& LoadJson)
 	if (LoadJson.contains("Fov"))
 		this->fFov = LoadJson["Fov"].get<_float>();
 
+
 	/* 시간 관련 */
 	if (LoadJson.contains("Duration"))
 		this->fDuration = LoadJson["Duration"].get<_float>();
@@ -316,55 +409,56 @@ void Camera_Keyframe_Data::Load_Json(const json& LoadJson)
 		this->fHoldTime = LoadJson["HoldTime"].get<_float>();
 
 
+	/* Event: Depart (출발 시 이벤트) */
+	if (LoadJson.contains("Depart Event"))
+	{
+		// [수정] 오타 수정: vecDepart_CCS_EventDesc 초기화 및 데이터 채우기
+		this->vecDepart_CCS_EventDesc.clear();
+
+		const auto& DepartEvent_LoadJsonArray = LoadJson["Depart Event"];
+		if (DepartEvent_LoadJsonArray.is_array())
+		{
+			this->vecDepart_CCS_EventDesc.reserve(DepartEvent_LoadJsonArray.size());
+
+			for (const auto& DepartEvent_LoadJson : DepartEvent_LoadJsonArray)
+			{
+				if (DepartEvent_LoadJson.is_null())
+					continue;
+
+				CCS_EVENT_DESC tDesc{};
+				if (DepartEvent_LoadJson.contains("Subscriber Name"))
+					tDesc.strSubscriberName = DepartEvent_LoadJson.at("Subscriber Name").get<string>();
+
+				if (DepartEvent_LoadJson.contains("Action Names"))
+					tDesc.vecActionNames = DepartEvent_LoadJson.at("Action Names").get<vector<string>>();
+
+				this->vecDepart_CCS_EventDesc.push_back(tDesc);
+			}
+		}
+	}
+
+	/* Event: On Reach (도착 시 이벤트) */
 	if (LoadJson.contains("On Reach Event"))
 	{
 		this->vecOnReach_CCS_EventDesc.clear();
 
-		auto& OnReachEvent_LoadJsonArray = LoadJson["On Reach Event"];
+		const auto& OnReachEvent_LoadJsonArray = LoadJson["On Reach Event"];
 		if (OnReachEvent_LoadJsonArray.is_array())
 		{
-			vecOnReach_CCS_EventDesc.reserve(OnReachEvent_LoadJsonArray.size());
-			for(auto& OnReachEvent_LoadJson : OnReachEvent_LoadJsonArray)
+			this->vecOnReach_CCS_EventDesc.reserve(OnReachEvent_LoadJsonArray.size());
+
+			for (const auto& OnReachEvent_LoadJson : OnReachEvent_LoadJsonArray)
 			{
 				if (OnReachEvent_LoadJson.is_null())
 					continue;
+
 				CCS_EVENT_DESC tDesc{};
-
 				if (OnReachEvent_LoadJson.contains("Subscriber Name"))
-				{
 					tDesc.strSubscriberName = OnReachEvent_LoadJson.at("Subscriber Name").get<string>();
-				}
-				if (OnReachEvent_LoadJson.contains("Action Names"))
-				{
-					tDesc.vecActionNames = OnReachEvent_LoadJson.at("Action Names").get<vector<string>>();
-				}
-				this->vecOnReach_CCS_EventDesc.push_back(tDesc);
-			}
-		}
-	}
-	
-	if (LoadJson.contains("Depart Event"))
-	{
-		this->vecOnReach_CCS_EventDesc.clear();
 
-		auto& OnReachEvent_LoadJsonArray = LoadJson["Depart Event"];
-		if (OnReachEvent_LoadJsonArray.is_array())
-		{
-			vecOnReach_CCS_EventDesc.reserve(OnReachEvent_LoadJsonArray.size());
-			for (auto& OnReachEvent_LoadJson : OnReachEvent_LoadJsonArray)
-			{
-				if (OnReachEvent_LoadJson.is_null())
-					continue;
-				CCS_EVENT_DESC tDesc{};
-
-				if (OnReachEvent_LoadJson.contains("Subscriber Name"))
-				{
-					tDesc.strSubscriberName = OnReachEvent_LoadJson.at("Subscriber Name").get<string>();
-				}
 				if (OnReachEvent_LoadJson.contains("Action Names"))
-				{
 					tDesc.vecActionNames = OnReachEvent_LoadJson.at("Action Names").get<vector<string>>();
-				}
+
 				this->vecOnReach_CCS_EventDesc.push_back(tDesc);
 			}
 		}
