@@ -115,16 +115,7 @@ HRESULT CUIBossStat_Text::Attach_Personal_Info()
 
 HRESULT CUIBossStat_Text::Convert_Stat_To_Text()
 {
-	switch (m_eTextSubClassType)
-	{
-	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_LV:
-		break;
-	case DTO::EUITextSubClassType::BOSS_STAT_TEXT_NICKNAME:
-		m_wstrText = Engine_Utils::ToWString( m_pTargetStat->Get_Owner()->Get_Name());
-		break;
 
-		break;
-	}
 	return S_OK;
 }
 
@@ -133,17 +124,46 @@ void CUIBossStat_Text::Bind_Events()
 	Super::Bind_Events();
 
 	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<XIBILA_BOSS_UI_OFF>(
-			[this]()
+		m_pGameInstance->Subscribe<CCS_EVENT>([this](const Engine::CCS_BROADCAST_DESC& tDesc) {
+
+			for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
 			{
-				this->Set_Invisible();
+				_uint iHash = Engine_Utils::ToHash(EventDesc.strSubscriberName.c_str());
+				switch (iHash)
+				{
+				case TO_HASH("UI_Boss"):
+				{
+
+					for (auto ActionName : EventDesc.vecActionNames)
+					{
+						_uint iActionNameHash = TO_HASH(ActionName.c_str());
+						switch (iActionNameHash)
+						{
+						case TO_HASH("Xibi_Begin"):
+						{
+						}
+						break;
+						case TO_HASH("Lianhuo_Begin"):
+						{
+						}
+						break;
+						case TO_HASH("Boss_Action_End"):
+						{
+							this->Set_Visible();
+						}
+						break;
+						default:
+							break;
+						}
+					}
+				}
+				break;
+				default:
+					break;
+				}
+			}
 			}));
-	m_vecEventHandles.push_back(
-		m_pGameInstance->Subscribe<XIBILA_BOSS_UI_ON>(
-			[this]()
-			{
-				this->Set_Visible();
-			}));
+
 }
 
 void CUIBossStat_Text::Initialize_Visible_Event()
