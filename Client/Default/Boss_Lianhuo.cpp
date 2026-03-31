@@ -221,7 +221,10 @@ _bool CBoss_Lianhuo::On_Hit(const HIT_DESC& hitDesc)
 						pComBoss->Add_Health(-10000000.f);
 						_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
 						if (fHpRatio <= g_XMEpsilon.f[0])
+						{
 							Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
+							// m_pGameInstance->Broadcast<BOSS_UI_OFF>();
+						}
 						else
 							Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
 					}

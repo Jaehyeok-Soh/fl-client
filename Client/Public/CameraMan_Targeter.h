@@ -232,9 +232,12 @@ private:
 	CAMERA_MODIFIER_RESULT m_tScriptedOverlayResult = {};
 	_bool                  m_bUseScriptedOverlay = false;
 	Vec3                   m_vLastScriptedPivotWS = Vec3::Zero;
-#ifdef _DEBUG
+
 public:
 	void Debug_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& tDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding);
+
+#ifdef _DEBUG
+public:
 	void Debug_StopScriptedShot();
 	void Debug_SetScriptedShotTime(_float fTime);
 	void Debug_SetScriptedShotPause(_bool bPause);

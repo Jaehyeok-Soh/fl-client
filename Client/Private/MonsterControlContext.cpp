@@ -491,6 +491,8 @@ _bool CMonsterControlContext::IsDissolveEnded()
 	auto body = static_cast<CMonster_Base*>(Get_Owner())->Get_Part<CMonster_Body_Base>(CMonster_Base::Part::BODY);
 	if (body != nullptr)
 		return body->Is_DissolveEnded();
+
+	return false;
 }
 
 void CMonsterControlContext::UpdateWalk(const _float fTimeDelta)

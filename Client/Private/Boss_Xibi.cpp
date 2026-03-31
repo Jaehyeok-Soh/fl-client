@@ -270,7 +270,10 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 						if (fHpRatio <= g_XMEpsilon.f[0])
 							Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
 						else
+						{
 							Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
+							//m_pGameInstance->Broadcast<BOSS_UI_OFF>();
+						}
 					}
 				}
 			}

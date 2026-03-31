@@ -1785,12 +1785,12 @@ CAMERA_POSE CCameraMan_Targeter::Lerp_CameraPose(const CAMERA_POSE& tA, const CA
     return out;
 }
 
-#ifdef _DEBUG
+
 void CCameraMan_Targeter::Debug_PlayScriptedShot(const SCRIPTED_CAMERA_SHOT_DESC& tDesc, const SCRIPTED_CAMERA_SHOT_BINDING_DESC& tBinding)
 {
     Request_PlayScriptedShot(tDesc, tBinding);
 }
-
+#ifdef _DEBUG
 void CCameraMan_Targeter::Debug_StopScriptedShot()
 {
     Request_StopScriptedShot();

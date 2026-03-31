@@ -685,8 +685,8 @@ HRESULT CMainPlayer::Ready_Ability()
     // stat
     {
         CStatCom_Player::PLAYER_STATCOMP_DESC desc = {};
-        desc.fMaxHp     = 320.f;
-        desc.fDefense   = 400.f;
+        desc.fMaxHp     = 2430.f;
+        desc.fDefense   = 1200.f;
         desc.fMental    = 105.f;
         desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate;
 
