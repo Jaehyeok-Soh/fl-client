@@ -1036,6 +1036,9 @@
     <Filter Include="03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager">
       <UniqueIdentifier>{cda240a0-3f3c-4c4d-aca0-450799e4722f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\TriggerBox\06. TiggerObx_EnvJukebox">
+      <UniqueIdentifier>{f769402a-c7aa-431f-bd8b-2b6d95d21d8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1953,6 +1956,9 @@
     <ClInclude Include="..\Public\UIAmbSound_Manager.h">
       <Filter>03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_EnvJukebox.h">
+      <Filter>03. GameObject\TriggerBox\06. TiggerObx_EnvJukebox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2857,6 +2863,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIAmbSound_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_EnvJukebox.cpp">
+      <Filter>03. GameObject\TriggerBox\06. TiggerObx_EnvJukebox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,11 @@ HRESULT CSound_Handler::Initialize(void* pArg)
     if (FAILED(Ready_Desc(pArg)))
         return E_FAIL;
 
+    m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::GRASS] = TO_HASH("sfx_footstep_grass_r");
+    m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::SAND] = TO_HASH("sfx_footstep_sand_r");
+    m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::WATER] = TO_HASH("sfx_footstep_water_r");
+    m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::WOOD] = TO_HASH("sfx_footstep_wood_r");
+
     return S_OK;
 }
 
@@ -180,6 +185,12 @@ void CSound_Handler::CallbackEvent(const AnimNotifyKey& key)
 
         if (bPlayerFootHash)
         {
+            if (m_eCurrentEnvFootStep < EFOOTSOUNDTYPE::END)
+            {
+                EnvFootSound(iSoundHash, fVolume, fPitch, bSteal);
+                return;
+            }
+
             if (fDelay > 0.f)
                 m_pGameInstance->Play_OneShot_Delayed(m_pGameInstance->Get_CurrentLevelIndex(), iSoundHash, fDelay, fVolume, fPitch, bSteal);
             else
@@ -238,6 +249,33 @@ void CSound_Handler::CallbackEvent(const AnimNotifyKey& key)
     break;
 
     default:
+        break;
+    }
+}
+
+void CSound_Handler::EnvFootSound(_uint iSoundHash, _float fVolume, _float fPitch, _bool bSteal)
+{
+    //m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::GRASS] = TO_HASH("sfx_footstep_grass_r");
+    //m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::SAND] = TO_HASH("sfx_footstep_sand_r");
+    //m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::WATER] = TO_HASH("sfx_footstep_water_r");
+    //m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::WOOD] = TO_HASH("sfx_footstep_wood_r");
+
+    switch (m_eCurrentEnvFootStep)
+    {
+    case Engine::CSound_Handler::EFootSoundType::GRASS:
+        m_pGameInstance->Play_OneShot(0 /* static */, m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::GRASS], fVolume, fPitch, bSteal);
+        break;
+    case Engine::CSound_Handler::EFootSoundType::SAND:
+        m_pGameInstance->Play_OneShot(0 /* static */, m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::SAND], fVolume, fPitch, bSteal);
+        break;
+    case Engine::CSound_Handler::EFootSoundType::WATER:
+        m_pGameInstance->Play_OneShot(0 /* static */, m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::WATER], fVolume, fPitch, bSteal);
+        break;
+    case Engine::CSound_Handler::EFootSoundType::WOOD:
+        m_pGameInstance->Play_OneShot(0 /* static */, m_iPlayerSecondFootSoundHash[EFOOTSOUNDTYPE::WOOD], fVolume, fPitch, bSteal);
+        break;
+    default:
+        m_pGameInstance->Play_OneShot(m_pGameInstance->Get_CurrentLevelIndex(), iSoundHash, fVolume, fPitch, bSteal);
         break;
     }
 }
