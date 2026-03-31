@@ -63,6 +63,7 @@ HRESULT CState_GimmikRunLoop::Start(void* pArg, _bool bForce)
 	SetupLookAt(m_arrDashLine[m_iDashIndex].vEnd);
 	Spawn_Line(m_arrDashLine[m_iDashIndex].vStart, m_arrDashLine[m_iDashIndex].vEnd);
 	pGo->Set_Render(true);
+	Get_OwnerObject()->Play_GhostTrail();
 	return S_OK;
 }
 
@@ -130,6 +131,7 @@ void CState_GimmikRunLoop::Update(const _float fTimeDelta)
 			pOwner->Set_Render(true);
 			Spawn_Line(m_arrDashLine[m_iDashIndex].vStart, m_arrDashLine[m_iDashIndex].vEnd);
 			m_ePhase = ERunPhase::Dash;
+			Get_OwnerObject()->Play_GhostTrail();
 		}
 		break;
 	}

@@ -285,6 +285,33 @@ HRESULT CBoss_Lianhuo::Change_State_ForDirecting(EStateForDirecting eState)
 	return S_OK;
 }
 
+void CBoss_Lianhuo::Play_GhostTrail()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	if (pBody == nullptr)
+		return;
+
+	pBody->Get_Component<CModel>()->Enable_GhostTrail();
+}
+
+void CBoss_Lianhuo::Stop_GhostTrail()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	if (pBody == nullptr)
+		return;
+
+	pBody->Get_Component<CModel>()->Disable_GhostTrail();
+}
+
+void CBoss_Lianhuo::Clear_GhostTrail()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	if (pBody == nullptr)
+		return;
+
+	pBody->Get_Component<CModel>()->Clear_GhostTrail();
+}
+
 HRESULT CBoss_Lianhuo::Ready_Ability()
 {
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
@@ -471,6 +498,19 @@ HRESULT CBoss_Lianhuo::Ready_CustomStates()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CBoss_Lianhuo::Set_GhostTrailDesc()
+{
+	CBoss_Lianhuo_Body* pBody = Get_Part<CBoss_Lianhuo_Body>(Part::BODY);
+	if (pBody == nullptr)
+		return;
+
+	CModel::GHOST_TRAIL_DESC desc{};
+	desc.fInterval = 0.15f;
+	desc.iMaxCount = 8;
+	desc.vColor = Vec4(1.00f, 0.32f, 0.18f, 0.42f);
+	pBody->Get_Component<CModel>()->Set_GhostTrailDesc(desc);
 }
 
 CBoss_Lianhuo* CBoss_Lianhuo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)

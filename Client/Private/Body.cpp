@@ -176,6 +176,9 @@ void CBody::Update(_float fTimeDelta)
 	Get_Component<CModel>()->Update_Animation(m_pBoneCombineCS, m_pBoneAnimEvaluateCS, fTimeDelta,
 		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), m_pBoneAnimBlendCS, m_pBoneAnimMixCS, m_pAdditiveMixCS,nullptr, m_pBoneMoveCS);
 	Get_Component<CRenderFx>()->Update(fTimeDelta);
+
+	// GhostTrail
+	Get_Component<CModel>()->Update_GhostTrail(fTimeDelta);
 }
 
 
@@ -191,10 +194,14 @@ void CBody::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
-
-	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
+	CModel *pModel = Get_Component<CModel>();
+	pModel->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
+	if (pModel->Has_GhostTrailSnapshots() || pModel->Is_ActiveGhostTrail())
+	{
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::GHOST_TRAIL, this);
+	}
 	//CComputeShader* pGetBoneCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_GetBone")));
 	//Get_Component<CModel>()->Get_BoneMatrix(pGetBoneCS);
 
@@ -281,6 +288,17 @@ HRESULT CBody::Render_Shadow()
 
 	pShader->Set_Pass(iPrevPass);
 	return S_OK;
+}
+
+HRESULT CBody::Render_GhostTrail()
+{
+	Get_Component<CModel>()->Capture_Ghsot(m_pBoneCombineCS, m_matCombinedWorld);
+	CShader* pShader = Get_Component<CShader>();
+	return Get_Component<CModel>()->Render_GhostTrail(
+		pShader,
+		m_pBoneMeshCS,
+		m_pBoneCombineCS,
+		/*  */10);
 }
 
 _bool CBody::Resolve_CameraAnchor(Engine::ECameraAnchorResolve eResolve, const string& strAnchorTag, const Matrix& matOwnerWorld, OUT Engine::CAMERA_ANCHOR_RESULT& outResult)

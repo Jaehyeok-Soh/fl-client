@@ -58,6 +58,7 @@ private:
 	HRESULT Render_Environment();
 	HRESULT Render_Fog();
 	HRESULT Render_Outline();
+	HRESULT Render_GhostTrail();
 	HRESULT Render_NonLights();
 	// 이펙트 전용 (디스토션)
 	HRESULT Render_Distotion();

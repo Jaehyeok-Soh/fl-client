@@ -207,6 +207,11 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
+    if(KEY_BUTTON_DOWN(DIK_NUMPAD1))
+    {
+        Get_Part<CBody>(Part::BODY)->Get_Component<CModel>()->Enable_GhostTrail();
+    }
+
     // stat ¹«Àû toggle Å°
     if (KEY_BUTTON_DOWN(DIK_B))
     {

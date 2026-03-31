@@ -43,6 +43,10 @@ public:
 	virtual void Try_Attack(const HIT_DESC& hitDesc) override;
 	const Matrix* Get_PlayerLocBonePosition();
 	HRESULT Change_State_ForDirecting(EStateForDirecting eState);
+
+	virtual void Play_GhostTrail() override;
+	virtual void Stop_GhostTrail() override;
+	virtual void Clear_GhostTrail() override;
 private:
 	HRESULT Ready_Ability();
 	HRESULT Ready_Weapon();
@@ -50,6 +54,7 @@ private:
 	HRESULT Ready_StateIndexForDirecting();
 	HRESULT Ready_CameraEvent();
 	HRESULT Ready_CustomStates();
+	void Set_GhostTrailDesc();
 private:
 	array<_int, (size_t)EStateForDirecting::COUNT> m_arrStateIndex;
 	Vec3 vPos{ Vec3::Zero };

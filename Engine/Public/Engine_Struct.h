@@ -814,6 +814,10 @@ namespace Engine
 		float		fMaxSpeed{5.f};						/* 시각적 효과를 위한 MaxSpeed 조절가능 */
 	}SHADER_PLAYER_INFO;
 
+	typedef struct tagShaderGhostTrail
+	{
+		SimpleMath::Vector4 vColor = { SimpleMath::Vector4::One };
+	}SHADER_GHOST_TRAIL;
 #pragma endregion
 
 #pragma region Shader_StructuredBuffer

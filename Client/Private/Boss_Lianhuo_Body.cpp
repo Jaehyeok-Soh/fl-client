@@ -62,6 +62,8 @@ void CBoss_Lianhuo_Body::Update_Priority(_float fTimeDelta)
 void CBoss_Lianhuo_Body::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	// GhostTrail
+	Get_Component<CModel>()->Update_GhostTrail(fTimeDelta);
 }
 
 void CBoss_Lianhuo_Body::Update_Late(_float fTimeDelta)
@@ -72,6 +74,11 @@ void CBoss_Lianhuo_Body::Update_Late(_float fTimeDelta)
 void CBoss_Lianhuo_Body::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
+	CModel* pModel = Get_Component<CModel>();
+	if (pModel->Has_GhostTrailSnapshots() || pModel->Is_ActiveGhostTrail())
+	{
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::GHOST_TRAIL, this);
+	}
 }
 
 HRESULT CBoss_Lianhuo_Body::Render()
@@ -80,6 +87,17 @@ HRESULT CBoss_Lianhuo_Body::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo_Body::Render_GhostTrail()
+{
+	Get_Component<CModel>()->Capture_Ghsot(m_pBoneCombineCS, m_matCombinedWorld);
+	CShader* pShader = Get_Component<CShader>();
+	return Get_Component<CModel>()->Render_GhostTrail(
+		pShader,
+		m_pBoneMeshCS,
+		m_pBoneCombineCS,
+		/*  */10);
 }
 
 HRESULT CBoss_Lianhuo_Body::Ready_DissolveEffect_Setting()

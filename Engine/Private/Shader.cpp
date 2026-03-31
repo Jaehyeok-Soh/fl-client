@@ -32,6 +32,7 @@ CShader::CShader(const CShader& rhs)
 	, m_pPlayerInfo_CBuffer{rhs.m_pPlayerInfo_CBuffer}
 	, m_pEffect_Dissolve_CBuffer{rhs.m_pEffect_Dissolve_CBuffer }
 	, m_pEffect_Line_CBuffer{rhs.m_pEffect_Line_CBuffer}
+	, m_pGhostTrail_CBuffer(rhs.m_pGhostTrail_CBuffer)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -48,6 +49,7 @@ CShader::CShader(const CShader& rhs)
 	Safe_AddRef(m_pPlayerInfo_CBuffer);
 	Safe_AddRef(m_pEffect_Dissolve_CBuffer);
 	Safe_AddRef(m_pEffect_Line_CBuffer);
+	Safe_AddRef(m_pGhostTrail_CBuffer);
 }
 
 HRESULT CShader::Initialize_Prototype(void* pArg)
@@ -270,6 +272,11 @@ HRESULT CShader::Bind_PlayerInfo(const SHADER_PLAYER_INFO& playerInfo)
 	return m_pPlayerInfo_CBuffer->Copy_Data(playerInfo);
 }
 
+HRESULT CShader::Bind_GhostTrail(const SHADER_GHOST_TRAIL& ghostTrail)
+{
+	return m_pGhostTrail_CBuffer->Copy_Data(ghostTrail);
+}
+
 HRESULT CShader::Set_ConstantBuffer(EFXCB eSlot, ID3D11Buffer* pBuffer)
 {
 	auto* BindingCache = m_pVariant->Get_EffectAsset()->Get_BindingCache();
@@ -364,6 +371,14 @@ void CShader::Create_ConstantBuffer()
 		m_pEffect_Line_CBuffer = CConstant_Buffer<SHADER_LINE_EFFECT_DESC>::Create(m_pDevice, m_pDeviceContext);
 		pCache->CB[iSlot]->SetConstantBuffer(m_pEffect_Line_CBuffer->Get_Buffer());
 	}
+
+	// GhostTrail
+	iSlot = ENUM_TO_UINT(EFXCB::GhostTrailBuffer);
+	if (pCache->CB[iSlot])
+	{
+		m_pGhostTrail_CBuffer = CConstant_Buffer<SHADER_GHOST_TRAIL>::Create(m_pDevice, m_pDeviceContext);
+		pCache->CB[iSlot]->SetConstantBuffer(m_pGhostTrail_CBuffer->Get_Buffer());
+	}
 }
 
 CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)
@@ -402,6 +417,7 @@ void CShader::Clear_ConstantBuffer()
 	Safe_Release(m_pPlayerInfo_CBuffer);
 	Safe_Release(m_pEffect_Dissolve_CBuffer);
 	Safe_Release(m_pEffect_Line_CBuffer);
+	Safe_Release(m_pGhostTrail_CBuffer);
 }
 
 void CShader::Free()

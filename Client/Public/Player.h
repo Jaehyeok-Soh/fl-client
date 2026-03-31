@@ -210,6 +210,10 @@ public:
 
 	State				Get_CurState();
 
+	virtual void Play_GhostTrail() override;
+	virtual void Stop_GhostTrail() override;
+	virtual void Clear_GhostTrail() override;
+
 	// Weapon Quick Slot
 public:
 	const array<WEAPON_INFO, ENUM_TO_SZET(MELEE::END)>& Get_MeleeInfo() const { return m_arrMeleeInfo; }
@@ -221,6 +225,8 @@ public:
 	// Camera Interface
 	virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) override;
 	virtual CTransform* Get_CameraAnchorOwnerTransform() override;
+private:
+	void Set_GhostTrailDesc();
 protected:
 	CPhysics_QueryFilterCallback* m_pPhysic_QueryFilter = { nullptr };
 

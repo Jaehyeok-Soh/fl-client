@@ -66,6 +66,8 @@ HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
     CCameraMan* pCamera = m_pGameInstance->Get_MainCamera();
     if (CCameraMan_Targeter* pTargeter = dynamic_cast<CCameraMan_Targeter*>(pCamera))
         pTargeter->Change_CamState(TargeterState::LOOK_LOCK);
+
+    Get_OwnerObject()->Play_GhostTrail();
     return S_OK;
 }
 

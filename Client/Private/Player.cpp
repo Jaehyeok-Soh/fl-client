@@ -149,6 +149,7 @@ HRESULT CPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Interact_PartCollider()))
         return E_FAIL;
 
+    Set_GhostTrailDesc();
     return S_OK;
 }
 
@@ -819,6 +820,33 @@ CPlayer::State CPlayer::Get_CurState()
     return static_cast<CPlayer::State>(pAction->Get_CurrentStateIndex());
 }
 
+void CPlayer::Play_GhostTrail()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    pBody->Get_Component<CModel>()->Enable_GhostTrail();
+}
+
+void CPlayer::Stop_GhostTrail()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    pBody->Get_Component<CModel>()->Disable_GhostTrail();
+}
+
+void CPlayer::Clear_GhostTrail()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    pBody->Get_Component<CModel>()->Clear_GhostTrail();
+}
+
 ICameraAnchorProvider* CPlayer::Get_CameraAnchorProvider(_int iPartIndex)
 {
     if (iPartIndex < 0 || iPartIndex >= Part::END)
@@ -846,6 +874,17 @@ ICameraAnchorProvider* CPlayer::Get_CameraAnchorProvider(_int iPartIndex)
 CTransform* CPlayer::Get_CameraAnchorOwnerTransform()
 {
     return Get_Component<CTransform>();
+}
+
+void CPlayer::Set_GhostTrailDesc()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    CModel::GHOST_TRAIL_DESC desc{};
+    desc.vColor = Vec4(1.00f, 0.92f, 0.70f, 0.36f);
+    pBody->Get_Component<CModel>()->Set_GhostTrailDesc(desc);
 }
 
 HRESULT CPlayer::Ready_BaseStates()
