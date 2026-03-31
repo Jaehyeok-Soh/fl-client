@@ -51,8 +51,8 @@ HRESULT CTriggerCollidePart::Initialize(void* pArg)
 	}
 
 	if (FAILED(Ready_Components(pDesc)))
-		return E_FAIL;
-
+		                                            return E_FAIL;
+	 
 	return S_OK;
 }
 
