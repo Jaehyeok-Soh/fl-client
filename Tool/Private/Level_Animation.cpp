@@ -326,6 +326,24 @@ HRESULT CLevel_Animation::Ready_XibiSound()
 	return S_OK;
 }
 
+HRESULT CLevel_Animation::Ready_LianSound()
+{
+	_uint iLevelID = ENUM_TO_UINT(ELevelType::ANIMATION);
+
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Cloth")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Basic/Slide")))
+		return E_FAIL;
+
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Boss\Xibi
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Boss/Lian")))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_Animation::Release_Event()
 {
 	m_pGameInstance->Unsubscribe<LoadAnimModel>(m_EventHandles[Event::LOAD]);
@@ -345,10 +363,13 @@ HRESULT CLevel_Animation::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Die")))
 		return E_FAIL;
 
-	if (FAILED(Ready_PlayerSound()))
-		return E_FAIL;
+	//if (FAILED(Ready_PlayerSound()))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_XibiSound()))
+		return E_FAIL;
+
+	if (FAILED(Ready_LianSound()))
 		return E_FAIL;
 
 	return S_OK;

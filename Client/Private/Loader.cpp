@@ -1797,9 +1797,9 @@ HRESULT CLoader::Ready_Sounds_Boss()
 	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Boss\Xibi
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Boss/Xibi")))
 		return E_FAIL;
-	//// lian
-	//if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit/Lian")))
-	//	return E_FAIL;
+	// lian
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Boss/Lian")))
+		return E_FAIL;
 
 	return S_OK;
 }

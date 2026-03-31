@@ -16,6 +16,8 @@
 #include "UIIcon_Component.h"
 #include "CameraEventBinder.h"
 #include "MyStat.h"
+#include "SoundEventBinder.h"
+#include "Body.h"
 
 // CustomState
 #include "State_BackdashCatch.h"
@@ -74,6 +76,9 @@ HRESULT CBoss_Lianhuo::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_CustomStates()))
+		return E_FAIL;
+
+	if (FAILED(Ready_SoundHandler()))
 		return E_FAIL;
 
 	return S_OK;
@@ -430,6 +435,22 @@ HRESULT CBoss_Lianhuo::Ready_CustomStates()
 	if (FAILED(ADD_CUSTOM_STATE(CState_GimmikRunStart, "GimmikRunStart")))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_SoundHandler()
+{
+	CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CSoundEventBinder* pResult = CSoundEventBinder::Create(0, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Boss_Lian.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
 	return S_OK;
 }
 

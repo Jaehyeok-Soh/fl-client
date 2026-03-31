@@ -48,6 +48,7 @@ private:
 	HRESULT Ready_StateIndexForDirecting();
 	HRESULT Ready_CameraEvent();
 	HRESULT Ready_CustomStates();
+	HRESULT Ready_SoundHandler();
 private:
 	array<_int, (size_t)EStateForDirecting::COUNT> m_arrStateIndex;
 	Vec3 vPos{ Vec3::Zero };
