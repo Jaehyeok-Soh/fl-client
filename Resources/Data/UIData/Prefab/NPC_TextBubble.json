@@ -181,7 +181,7 @@
         },
         {
             "Type": "UI_TEXT",
-            "ePivot": 5,
+            "ePivot": 6,
             "eShaderType": 9,
             "eTextSubClassType": "NPC_TEXT_BUBBLE_CONTENT_TEXT",
             "fRotate": 0.0,

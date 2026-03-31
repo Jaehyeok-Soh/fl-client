@@ -89,7 +89,7 @@ void CUINpcTextBubble_Text::Ready_Before_Render(const _float fTimeDelta)
 	{
 		_float fx = m_pParentCanvasCache->Get_CommonParam_float_Ref()[FONTSIZE_X_SLOT];
 		_float fy = m_pParentCanvasCache->Get_CommonParam_float_Ref()[FONTSIZE_Y_SLOT];
-		m_vFontPos.x -= fx / 2.f - 5.f;
+		m_vFontPos.x -= fx * 0.5f;
 		m_vFontPos.y += 5.f;
 	}
 }

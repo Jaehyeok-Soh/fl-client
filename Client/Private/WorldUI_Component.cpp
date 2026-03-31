@@ -74,9 +74,16 @@ void CWorldUI_Component::Proj_World_To_Screen()
 		//CLOG_INFO(wstr);
 
 		//auto* p = static_cast<CMonster_Base*>(m_pTargetObject);
-		//const Matrix worldMat = *(p->Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(CMonster_Base::Part::BODY))->Get_SocketMatrix("camera_test"));
-		//vWorldPos = Vec3::Transform(vWorldPos, worldMat);
-		//vWorldPos = Vec3{ worldMat._41,worldMat._42,worldMat._43 };
+
+		//const Matrix matObjWorld =
+		//	m_pTargetObject->Get_Component<CTransform>()->Get_WorldMatrix();
+
+		//const Matrix matSocketLocal =
+		//	*(p->Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(CMonster_Base::Part::BODY))->Get_SocketMatrix("camera_test"));
+
+		//Matrix matSocketWorld = matSocketLocal * matObjWorld;
+
+		//vWorldPos = Vec3{ matSocketWorld._41, matSocketWorld._42, matSocketWorld._43 };
 	}
 	else
 	{

@@ -253,6 +253,19 @@ HRESULT CLevel_Kuangkeng::Build_Files()
 			return E_FAIL;
 	}
 
+	strUIFolderPath = L"../../Resources/Data/UIData/Gang/";
+	for (auto& iter : std::filesystem::recursive_directory_iterator(strUIFolderPath))
+	{
+		if (!iter.is_regular_file())
+			continue;
+
+		if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+			return E_FAIL;
+
+		if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+			return E_FAIL;
+	}
+
 	eCategory = DTO::ECategory::UI_PREFAB;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
