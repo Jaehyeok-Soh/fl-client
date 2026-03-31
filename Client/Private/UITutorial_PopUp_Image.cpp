@@ -391,7 +391,7 @@ void CUITutorial_PopUp_Image::Tick_By_Type(const _float fTimeDelta)
 	break;
 	case Client::EUITutorialPopUpTypeID::TUTORIAL_POPUP_8:
 	{
-		if (m_pPlayer->Get_CurState() == CPlayer::State::RUNSHORT)
+		if (m_pPlayer->Get_CurState() == CPlayer::State::DASHBACK)
 		{
 			is = true;
 		}
