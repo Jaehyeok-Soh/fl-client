@@ -185,6 +185,8 @@ private:
 	void Count_Dash(const _float fTimeDelta);
 	void Count_Combo(const _float fTimeDelta);
 
+	void Recover_Hp(const _float fTimeDelta);
+
 	// ³»ºÎ util funcs
 private:
 	void Set_PlayerKey(Flags FKeyFlag, _bool bOn);
