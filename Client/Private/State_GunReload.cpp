@@ -15,6 +15,10 @@ HRESULT CState_GunReload::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
+    m_bMouseInputCheck = false;
+
+    m_FCollisions = CStateBase_Player::COLLISIONFLAGS::C_DOWN;
+
     return S_OK;
 }
 
@@ -50,7 +54,7 @@ void CState_GunReload::Update(const _float fTimeDelta)
         // 2. 키에 따른 state change
 
         // 2.1 만약 우클릭 하지 않았다면
-        if (MOUSE_RBUTTON_UP)
+        if (!(MOUSE_RBUTTON_DOWN || MOUSE_RBUTTON_HOLD))
         {
             GunEnd();
             return;

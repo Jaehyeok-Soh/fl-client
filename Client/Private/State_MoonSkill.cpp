@@ -117,7 +117,7 @@ _bool CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
 {
 	SetupLook_CameraLookLerp(fTimeDelta, 10.f);
 
-	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime - (0.3f / 1.2f))
+	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime - (0.3f / 1.3f))
 	{
 		Set_ApplyGravity(true);
 		m_FCollisions |= COLLISIONFLAGS::C_DOWN;

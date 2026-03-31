@@ -100,7 +100,7 @@ void CState_GunBase::Update(const _float fTimeDelta)
     }
 
     // 0. 만약 r button 눌림이 끝났다면 gun state 탈출
-    if (m_fStateElapsed > 0.45f &&
+    if (m_fStateElapsed > 0.45f && m_bMouseInputCheck &&
         !(MOUSE_RBUTTON_DOWN || MOUSE_RBUTTON_HOLD)) // 최소 유지 타임 : 0.5f if you need it? desc
     {
         // move 상태에 따라

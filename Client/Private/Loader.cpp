@@ -1785,8 +1785,8 @@ HRESULT CLoader::Ready_Sounds_Player()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Sword")))
 		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Gun")))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Gun")))
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Condemn")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))

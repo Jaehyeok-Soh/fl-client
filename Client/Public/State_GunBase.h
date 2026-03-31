@@ -90,6 +90,8 @@ protected:
 	TimeCount m_TJumpTime = { 0.f, 0.28f };
 	TimeCount m_TLandTime = { 0.f, 1.f };
 
+	_bool m_bMouseInputCheck = { true };
+
 protected:
 	virtual void Change_PlayerState(STATEKEY eKey, _bool bForce = false) override;
 

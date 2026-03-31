@@ -73,7 +73,6 @@ CStatCom_Player::CStatCom_Player(const CStatCom_Player& rhs)
 
 		Count_Dash(fTimeDelta);
 		Count_Combo(fTimeDelta);
-		Recover_Hp(fTimeDelta); 
 
 		if (m_bInvincible)
 		{
@@ -301,19 +300,6 @@ void CStatCom_Player::Count_Combo(const _float fTimeDelta)
 			m_tComboTimeCounter.bCountTime = false;
 			m_iComboCount = 0;
 		}
-	}
-}
-
-void CStatCom_Player::Recover_Hp(const _float fTimeDelta)
-{
-	// hp가 부족한데 defense가 있을 때
-	if (m_vHealth.x < m_vHealth.y && m_vDefense.x > 0)
-	{
-		// mental을 깎고
-		Add_Mental(fTimeDelta * -1.f);
-
-		// hp를 올리고
-		Add_Hp(fTimeDelta);
 	}
 }
 

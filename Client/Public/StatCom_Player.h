@@ -145,6 +145,10 @@ public:
 	void Set_Attack_AddRate(_float fRate) { m_fAttack = m_fAttack *(1.f + fRate); }
 	void Set_Critical_AddRate(_float fRate) { m_fCirticalRate_Add = fRate; }
 
+	// hp가 다 full일때만
+protected:
+	virtual _bool Can_DefencseUpdatec(const _float fTimeDelta) { return (m_vHealth.x == m_vHealth.y); }
+
 	// counts
 private:
 	_int			m_iDashCount	= { 2 };
@@ -184,8 +188,6 @@ private:
 private:
 	void Count_Dash(const _float fTimeDelta);
 	void Count_Combo(const _float fTimeDelta);
-
-	void Recover_Hp(const _float fTimeDelta);
 
 	// 내부 util funcs
 private:

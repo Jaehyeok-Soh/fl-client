@@ -213,6 +213,12 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
     }
 
     // stat 公利 toggle 虐
+    if (KEY_BUTTON_DOWN(DIK_V))
+    {
+        static_cast<CPlayerControlContext*>(Get_Component<CControlContext>())->Set_AllKeyFlag(false);
+    }
+
+    // stat 公利 toggle 虐
     if (KEY_BUTTON_DOWN(DIK_B))
     {
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
@@ -687,8 +693,9 @@ HRESULT CMainPlayer::Ready_Ability()
         CStatCom_Player::PLAYER_STATCOMP_DESC desc = {};
         desc.fMaxHp     = 2430.f;
         desc.fDefense   = 1200.f;
-        desc.fMental    = 105.f;
-        desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate;
+        desc.fMental    = 620.f; // 105
+        desc.fHpUpdate_Rate = 2.f;
+        desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate | CStatCom_Player::StatFlags::HpUpdate;
 
         desc.fComboCoolTime     = 7.f;
         desc.fDashCoolTime      = 2.f;
