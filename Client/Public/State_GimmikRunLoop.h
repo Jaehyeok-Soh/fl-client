@@ -42,6 +42,8 @@ private:
 	void Spawn_Line(const Vec3& vStart, const Vec3& vEnd);
 private:
 	_bool Build_DashLines();
+
+	void Play_RunSound(const _float fTimeDelta);
 private:
 	CMonsterActionState* m_pOwnerActionState{ nullptr };
 	CMonsterControlContext* m_pOwnerControlContext{ nullptr };
@@ -65,6 +67,10 @@ private:
 	_float m_fArriveTolerance = 0.2f;
 
 	_bool m_bPathReady = { false };
+private:
+	TimeCount	m_TSoundTimer = { 0.f,1.5f };
+	const _uint m_iSoundHash_Run = TO_HASH("sfx_boss_Lianhuo_skill08_cast07");
+
 public:
 	static CState_GimmikRunLoop* Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg = nullptr);
 	virtual void Free() override;
