@@ -19,6 +19,8 @@ public:
 		_float fVPTopLeftY;
 		Vec2 fInitOffset;
 
+		_string strBoneName = {};
+
 	}WOLRD_UI_COMP_DESC;
 
 protected:
@@ -42,6 +44,7 @@ public:
 	const _float Get_ScaleOffset() const { return m_fScaleOffset; }
 
 	void Set_Target(CGameObject* pTarget) { m_pTargetObject = pTarget; }
+	void Set_TargetBoneName(const _string& str) { m_strBoneName = str; }
 	void Set_TargetPos(const Vec3& vPos ) { m_vTargetPos = vPos; }
 	void Set_TargetWorldOffset(const Vec3& vOffset ) { m_vTargetWorldOffset = vOffset; }
 
@@ -65,6 +68,8 @@ private:
 	_float m_fRequestScaleOffset = {};
 
 	Vec3 m_vTargetPos = {};
+
+	_string m_strBoneName = {};
 
 public:
 	static CWorldUI_Component* Create();

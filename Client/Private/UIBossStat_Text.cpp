@@ -164,6 +164,16 @@ void CUIBossStat_Text::Bind_Events()
 			}
 			}));
 
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<BOSS_UI_ON>([this]()
+			{
+				this->Set_Visible();
+			}));
+	m_vecEventHandles.push_back(
+		m_pGameInstance->Subscribe<BOSS_UI_OFF>([this]()
+			{
+				this->Set_Invisible();
+			}));
 }
 
 void CUIBossStat_Text::Initialize_Visible_Event()

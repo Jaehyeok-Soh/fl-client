@@ -232,6 +232,7 @@ HRESULT CUINameplate_BG::Spawn_FromPool(void* pArg)
 
 		m_pWorldUIComp->Set_Target(pNamePlate->pTarget);
 		m_pWorldUIComp->Set_TargetWorldOffset(pNamePlate->vOffset);
+		m_pWorldUIComp->Set_TargetBoneName(pNamePlate->strTargetBoneName);
 		m_pTargetMoster = pNamePlate->pTarget;
 		/* 몬스터 스탯 컴포넌트 부착 */
 	

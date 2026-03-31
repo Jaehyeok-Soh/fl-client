@@ -256,6 +256,7 @@ HRESULT CUIMonsterStat_Text::Spawn_FromPool(void* pArg)
 		m_pWorldUIComp->Set_Target(pNamePlate->pTarget);
 		m_pTargetMoster = pNamePlate->pTarget;
 		m_pWorldUIComp->Set_TargetWorldOffset(pNamePlate->vOffset);
+		m_pWorldUIComp->Set_TargetBoneName(pNamePlate->strTargetBoneName);
 
 		m_pTargetStat = pNamePlate->pTarget->Get_Component<CMyStat>();
 		if (nullptr == m_pTargetStat)

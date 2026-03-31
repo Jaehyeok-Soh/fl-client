@@ -4,6 +4,8 @@
 #include "WorldUI_Component.h"
 #include "Monster_Base.h"
 #include "Monster_Body_Base.h"
+#include "NPC_Body_Base.h"
+#include "NPC_Base.h"
 #include <iostream>
 #include "GameInstance.h"
 
@@ -48,7 +50,8 @@ HRESULT CWorldUI_Component::Initialize(void* pArg)
 	m_fVPHegiht		= pDesc->fVPHegiht;
 	m_fVPTopLeftX	= pDesc->fVPTopLeftX;
 	m_fVPTopLeftY	= pDesc->fVPTopLeftY;
-	m_fInitOffset = pDesc->fInitOffset;
+	m_fInitOffset	= pDesc->fInitOffset;
+	m_strBoneName	= pDesc->strBoneName;
 	if (FAILED(Super::Initialize(pArg)))
 		return E_FAIL;
 	m_WorldProjMatrix = m_pGameInstance->Get_ProjMatrix();
@@ -65,25 +68,20 @@ void CWorldUI_Component::Proj_World_To_Screen()
 	Vec3 vWorldPos = {};
 	if (nullptr != m_pTargetObject)
 	{
-		vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-		vWorldPos += m_vTargetWorldOffset;
-
-		//_wstring wstr = L"World Pos X : " + std::to_wstring(vWorldPos.x) +
-		//	L"World Pos Y : " + std::to_wstring(vWorldPos.y) +
-		//	L"World Pos Z : " + std::to_wstring(vWorldPos.z);
-		//CLOG_INFO(wstr);
-
-		//auto* p = static_cast<CMonster_Base*>(m_pTargetObject);
-
-		//const Matrix matObjWorld =
-		//	m_pTargetObject->Get_Component<CTransform>()->Get_WorldMatrix();
-
-		//const Matrix matSocketLocal =
-		//	*(p->Get_Part<CMonster_Body_Base>(ENUM_TO_UINT(CMonster_Base::Part::BODY))->Get_SocketMatrix("camera_test"));
-
-		//Matrix matSocketWorld = matSocketLocal * matObjWorld;
-
-		//vWorldPos = Vec3{ matSocketWorld._41, matSocketWorld._42, matSocketWorld._43 };
+		if (m_strBoneName == "")
+		{
+			vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
+			vWorldPos += m_vTargetWorldOffset;
+		}
+		else
+		{
+			auto* p = static_cast<CNPC_Base*>(m_pTargetObject);
+			const Matrix matObjWorld = m_pTargetObject->Get_Component<CTransform>()->Get_WorldMatrix();
+			const Matrix matSocketLocal =
+				*(p->Get_Part<CNPC_Body_Base>(ENUM_TO_UINT(CNPC_Base::Part::BODY))->Get_SocketMatrix(m_strBoneName.c_str()));
+			Matrix matSocketWorld = matSocketLocal * matObjWorld;
+			vWorldPos = Vec3{ matSocketWorld._41, matSocketWorld._42, matSocketWorld._43 };
+		}
 	}
 	else
 	{

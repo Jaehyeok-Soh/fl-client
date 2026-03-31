@@ -186,6 +186,9 @@ void CUITutorial_PopUp_Image::Bind_Events()
 						PrefabDesc.eTutorialTypeID = EUITutorialPannelTypeID::TUTORIAL_PANNEL_4;
 						isValidPannel = true;
 						break;
+					case EUITutorialPopUpTypeID::MINIGAME_CIRCLE:
+						m_pGameInstance->Broadcast<MINIGAME_CIRCLE_ON>();
+						break;
 					}
 
 					if (m_eDImageSubClass == DTO::EUIDImageSubClassType::TUTORIAL_POPUP_BG)

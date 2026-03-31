@@ -45,11 +45,15 @@ private:
 	virtual HRESULT Spawn_FromPool(void* pArg)override;
 	virtual HRESULT Despawn_FromPool()override;
 private:
-	CWorldUI_Component* m_pWorldUIComp = { nullptr };
-	CGameObject* m_pTargetNPC = { nullptr };
-	_bool m_isSpawned = { false };
-	_wstring m_wstrNpcText = {};
-	Vec2 m_vFontSize = {};
+	CWorldUI_Component* m_pWorldUIComp	= { nullptr };
+	CGameObject* m_pTargetObj			= { nullptr };
+	class CNPC_Base* m_pTargetNPC			= { nullptr };
+	_bool m_isSpawned					= { false };
+	_wstring m_wstrNpcText				= {};
+	Vec2 m_vFontSize					= {};
+
+	_bool m_isNoText = { false };
+
 public:
 	static CUINpcTextBubble_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	CGameObject* Clone(void* pArg);

@@ -264,7 +264,6 @@ void CUIQuickSlot_Image::Calc_Current_SlotIndex()
 	const _float m_fTotalSlotCount = 8.f;
 	m_iTargetSlotIndex = (_uint)(fRadian / (XM_2PI / m_fTotalSlotCount));
 
-	CLOG_INFO("Current Slot : " + std::to_string(m_iTargetSlotIndex));
 }
 
 void CUIQuickSlot_Image::Tick_Follow_TargetSlot(const _float fTimeDelta)

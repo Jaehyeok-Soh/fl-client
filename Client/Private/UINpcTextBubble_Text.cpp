@@ -12,6 +12,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect_Tex.h"
 #include "UI_Manager.h"
+#include "NPC_Base.h"
 #include "GameInstance.h"
 
 
@@ -89,7 +90,7 @@ void CUINpcTextBubble_Text::Ready_Before_Render(const _float fTimeDelta)
 	{
 		_float fx = m_pParentCanvasCache->Get_CommonParam_float_Ref()[FONTSIZE_X_SLOT];
 		_float fy = m_pParentCanvasCache->Get_CommonParam_float_Ref()[FONTSIZE_Y_SLOT];
-		m_vFontPos.x -= fx * 0.5f;
+		//m_vFontPos.x -= fx * 0.5f;
 		m_vFontPos.y += 5.f;
 	}
 }
@@ -163,6 +164,9 @@ void CUINpcTextBubble_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
 			{
+				if (m_isNoText)
+					return;
+
 				if (m_pTargetNPC == pObj)
 				{
 					Set_Active(true);
@@ -198,8 +202,16 @@ void CUINpcTextBubble_Text::Tick_By_Type(const _float fTimeDelta)
 		break;
 	case DTO::EUITextSubClassType::NPC_TEXT_BUBBLE_CONTENT_TEXT:
 	{
-		m_wstrText = m_wstrNpcText;
-		m_vFontSize = m_pGameInstance->Measure_Font(m_wstrFontTag, m_wstrNpcText.c_str());
+		if (nullptr == m_pTargetNPC)
+		{
+			m_wstrText = m_wstrNpcText;
+		}
+		else
+		{
+			m_wstrText = m_pTargetNPC->Get_UITextContext();
+		}
+
+		m_vFontSize = m_pGameInstance->Measure_Font(m_wstrFontTag, m_wstrText.c_str());
 		m_pParentCanvasCache->Get_CommonParam_float_Ref()[FONTSIZE_X_SLOT] = m_vFontSize.x;
 		m_pParentCanvasCache->Get_CommonParam_float_Ref()[FONTSIZE_Y_SLOT] = m_vFontSize.y;
 	}
@@ -250,8 +262,19 @@ HRESULT CUINpcTextBubble_Text::Spawn_FromPool(void* pArg)
 
 		m_pWorldUIComp->Set_Target(pTextBubble->pTarget);
 		m_pWorldUIComp->Set_TargetWorldOffset(pTextBubble->vOffset);
-		m_pTargetNPC	= pTextBubble->pTarget;
+
+		m_pTargetNPC	= dynamic_cast<CNPC_Base*>(pTextBubble->pTarget);
+		if (nullptr == m_pTargetNPC)
+			m_pTargetObj = pTextBubble->pTarget;
+
 		m_wstrNpcText	= pTextBubble->wstrContents;
+
+		if (pTextBubble->wstrContents == L"")
+			m_isNoText = true;
+		else
+			m_isNoText = false;
+
+		m_pWorldUIComp->Set_TargetBoneName(pTextBubble->strTargetBoneName);
 
 		switch (m_eTextSubClassType)
 		{
