@@ -1,0 +1,25 @@
+{
+    "Category": "ATTACK_PRESET",
+    "Objects": [
+        {
+            "Type": "NORMAL",
+            "eCategory": "BossProjectile",
+            "eColliderType": "Overlap",
+            "iID": 5,
+            "strTag": "Lianhuo_FirePlain",
+            "tCombat": {
+                "DamageType": "Fire",
+                "HitType": "Additive",
+                "fBaseDamage": 321.0,
+                "fHitStopSec": 0.0,
+                "fHitStunSec": 0.0,
+                "fImpulse": 1.0,
+                "fPushPower": 0.0
+            },
+            "tPolicy": {
+                "PolicyType": "Once",
+                "fIntervalSec": 0.0
+            }
+        }
+    ]
+}

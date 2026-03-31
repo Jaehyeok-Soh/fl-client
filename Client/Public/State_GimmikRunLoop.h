@@ -3,6 +3,8 @@
 
 NS_BEGIN(Client)
 
+#define DASH_COUNT 4
+
 class CMonsterActionState;
 class CMonsterControlContext;
 
@@ -37,6 +39,7 @@ private:
 	_float AngleXZ(const Vec3& vFrom, const Vec3& vTo);
 	Vec3 PointOnCircleXZ(const Vec3& vCenter, _float fRadius, _float fAngle);
 	void Resolve_DashDirection();
+	void Spawn_Line(const Vec3& vStart, const Vec3& vEnd);
 private:
 	_bool Build_DashLines();
 private:
@@ -45,7 +48,7 @@ private:
 	Vec3 m_vDashDir = {};
 	// TODO : BattleField
 	Vec3	m_vFieldCenter = {};
-	const _float m_fFieldRadius = 15.f;
+	_float m_fFieldRadius = 15.f;
 
 	const _float m_fOuterRadiusMin = 0.95f;
 	const _float m_fOuterRadiusMax = 1.00f;
@@ -54,7 +57,7 @@ private:
 	_float m_fHoldTime = 0.35f;
 	_float m_fHoldAcc = 0.f;
 
-	DASH_LINE m_arrDashLine[3] = {};
+	DASH_LINE m_arrDashLine[DASH_COUNT] = {};
 	_int m_iDashIndex = 0;
 	ERunPhase m_ePhase = ERunPhase::Dash;
 

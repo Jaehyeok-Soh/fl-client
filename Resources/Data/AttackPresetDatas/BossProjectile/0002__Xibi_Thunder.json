@@ -8,12 +8,12 @@
             "iID": 2,
             "strTag": "Xibi_Thunder",
             "tCombat": {
-                "DamageType": "Physical",
+                "DamageType": "Electric",
                 "HitType": "Additive",
-                "fBaseDamage": 32.0,
+                "fBaseDamage": 213.0,
                 "fHitStopSec": 0.0,
                 "fHitStunSec": 0.0,
-                "fImpulse": 0.0,
+                "fImpulse": 5.0,
                 "fPushPower": 0.0
             },
             "tPolicy": {

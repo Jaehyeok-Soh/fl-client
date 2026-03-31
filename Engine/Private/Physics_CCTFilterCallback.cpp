@@ -24,11 +24,11 @@ bool CPhysics_CCTFilterCallback::filter(const PxController& a, const PxControlle
 	PxFilterData filterA = shapeA->getQueryFilterData();
 	PxFilterData filterB = shapeB->getQueryFilterData();
 
-	if ((filterA.word0 & PHYSICSFILTERGROUP::GENIEMON) ||
-		(filterB.word0 & PHYSICSFILTERGROUP::GENIEMON))
-	{
+	if ((filterA.word0 & PHYSICSFILTERGROUP::GENIEMON) != 0)
+		return true;
+
+	if ((filterB.word0 & PHYSICSFILTERGROUP::GENIEMON) != 0)
 		return false;
-	}
 
 	if (a.getUserData() == nullptr || b.getUserData() == nullptr)
 		return false;
@@ -45,8 +45,8 @@ bool CPhysics_CCTFilterCallback::filter(const PxController& a, const PxControlle
 	if (!aIsAlive || !bIsAlive)
 		return false;
 
-	if (pObjA->Get_Component<CPhysicsCollider>()->GetDesc()->eFilterLayer & PHYSICSFILTERGROUP::GENIEMON
-		|| pObjB->Get_Component<CPhysicsCollider>()->GetDesc()->eFilterLayer & PHYSICSFILTERGROUP::GENIEMON)
+	if (((pObjA->Get_Component<CPhysicsCollider>()->GetDesc()->eFilterLayer & PHYSICSFILTERGROUP::GENIEMON) != 0)
+		|| ((pObjB->Get_Component<CPhysicsCollider>()->GetDesc()->eFilterLayer & PHYSICSFILTERGROUP::GENIEMON)) != 0)
 	{
 		return false;
 	}

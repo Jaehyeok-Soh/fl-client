@@ -208,6 +208,7 @@ struct VS_OUT_SKELETON
     
     float4 vWorldPos : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+    float fViewZ : TEXCOORD3;
 };
 
 struct VS_OUT_SHADOW
@@ -380,6 +381,7 @@ struct PS_IN_SKELETON
     
     float4 vWorldPos : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+    float fViewZ : TEXCOORD3;
 };
 
 struct PS_IN_POS_TEX_PARTICLE

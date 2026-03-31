@@ -51,16 +51,8 @@ HRESULT CTriggerCollidePart::Initialize(void* pArg)
 	}
 
 	if (FAILED(Ready_Components(pDesc)))
-		return E_FAIL;
-
-	Get_Component<CPhysicsRigidBody>()->Awake();
-
-	auto actor = Get_Component<CPhysicsRigidBody>()->GetActor(0);
-	PxShape* pShape = { nullptr };
-	actor->getShapes(&pShape, 1);
-
-	pShape->setLocalPose(PxTransform(PxVec3(0.f), PxQuat(0.f, 0.f, PxHalfPi, 1.f)));
-
+		                                            return E_FAIL;
+	 
 	return S_OK;
 }
 

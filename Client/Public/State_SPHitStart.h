@@ -19,6 +19,8 @@ public:
 public:
 	virtual _uint	Get_Capabilities() const override { return 0; };
 
+private:
+	_bool m_bOnce = { false };
 protected:
 	virtual _bool Can_CheckKey(const _float fTimeDelta) override;
 

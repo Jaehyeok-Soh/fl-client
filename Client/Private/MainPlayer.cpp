@@ -207,12 +207,16 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
 {
     Super::Update_Priority(fTimeDelta);
 
+    if(KEY_BUTTON_DOWN(DIK_NUMPAD1))
+    {
+        Get_Part<CBody>(Part::BODY)->Get_Component<CModel>()->Enable_GhostTrail();
+    }
+
     // stat 무적 toggle 키
     if (KEY_BUTTON_DOWN(DIK_B))
     {
         static_cast<CStatCom_Player*>(Get_Component<CMyStat>())->Toggle_Invincible();
     }
-
 
     // 무기 전체 해제, 키 인풋 전체 해제 : level에 상관없이 해제하기 위함
     if (KEY_BUTTON_DOWN(DIK_N))
@@ -311,7 +315,6 @@ void CMainPlayer::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, C
     desc.tHitInfo = tHitInfo;
 
     desc.tExtraDesc = Get_Component<CStatCom_Player>()->Get_ExtraAttack_Desc();
-
     m_pGameInstance->Push_CollidedData(desc);
 }
 
@@ -491,6 +494,31 @@ void CMainPlayer::Try_Attack(const HIT_DESC& hitDesc)
     {
         Count_Combo();
     }
+
+    // Slomo 가능한 상태이면 Slomo
+    CActionState* pActionstate = Get_Component<CActionState>();
+    _uint iStateIndex = pActionstate->Get_CurrentStateIndex();
+    if (iStateIndex != ENUM_TO_UINT(State::GUNATTACK))
+    {
+        _bool bEnable = { false };
+        if ((iStateIndex == ENUM_TO_UINT(State::CHARGE) && pActionstate->Get_CurrentAnimation()->Is_TrackPositionAt(0.6f))
+            || iStateIndex == ENUM_TO_UINT(State::JUMPATTEND))
+            bEnable = true;
+
+        if (bEnable == false)
+        {
+            _int iDice = m_pGameInstance->Rand_Int(-1, 2);
+            if (iDice < 0)
+                bEnable = true;
+        }
+        if (bEnable)
+        {
+            CAMERA_SHAKE_DESC camerashakeDesc{};
+            camerashakeDesc.fDuration = 0.1f;
+            m_pGameInstance->Request_MainCameraShake(camerashakeDesc);
+            m_pGameInstance->Request_SloMo(0.1f, 0.07f);
+        }
+    }
 }
 
 #pragma region Legacy
@@ -657,8 +685,8 @@ HRESULT CMainPlayer::Ready_Ability()
     // stat
     {
         CStatCom_Player::PLAYER_STATCOMP_DESC desc = {};
-        desc.fMaxHp     = 320.f;
-        desc.fDefense   = 400.f;
+        desc.fMaxHp     = 2430.f;
+        desc.fDefense   = 1200.f;
         desc.fMental    = 105.f;
         desc.FStatFlags = CStatCom_Player::StatFlags::DefenseUpdtae | CStatCom_Player::StatFlags::MentalUpdate;
 

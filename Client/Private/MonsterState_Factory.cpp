@@ -132,6 +132,7 @@ HRESULT CMonsterState_Factory::Ready_Condition()
 	
 	REGISTER_CONDITION("condition_is_ground", CONDITION{ return MONSTERCC(state)->IsGround(); });
 
+	REGISTER_CONDITION("condition_is_dissolve_ended", CONDITION{ return MONSTERCC(state)->IsDissolveEnded(); });
 	return S_OK;
 }
 

@@ -152,6 +152,7 @@ HRESULT CPlayer::Initialize(void* pArg)
     if (FAILED(Ready_Interact_PartCollider()))
         return E_FAIL;
 
+    Set_GhostTrailDesc();
     return S_OK;
 }
 
@@ -182,7 +183,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
     case ENUM_TO_UINT(ELevelType::LIANHUO):
         m_bBossStage = true;
-
+        
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
     }
@@ -844,6 +845,33 @@ CPlayer::State CPlayer::Get_CurState()
     return static_cast<CPlayer::State>(pAction->Get_CurrentStateIndex());
 }
 
+void CPlayer::Play_GhostTrail()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    pBody->Get_Component<CModel>()->Enable_GhostTrail();
+}
+
+void CPlayer::Stop_GhostTrail()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    pBody->Get_Component<CModel>()->Disable_GhostTrail();
+}
+
+void CPlayer::Clear_GhostTrail()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    pBody->Get_Component<CModel>()->Clear_GhostTrail();
+}
+
 ICameraAnchorProvider* CPlayer::Get_CameraAnchorProvider(_int iPartIndex)
 {
     if (iPartIndex < 0 || iPartIndex >= Part::END)
@@ -871,6 +899,19 @@ ICameraAnchorProvider* CPlayer::Get_CameraAnchorProvider(_int iPartIndex)
 CTransform* CPlayer::Get_CameraAnchorOwnerTransform()
 {
     return Get_Component<CTransform>();
+}
+
+void CPlayer::Set_GhostTrailDesc()
+{
+    CBody* pBody = Get_Part<CBody>(Part::BODY);
+    if (pBody == nullptr)
+        return;
+
+    CModel::GHOST_TRAIL_DESC desc{};
+    desc.iMaxCount = 13;
+    desc.fLifeTime = 0.5f;
+    desc.vColor = Vec4(1.00f, 0.92f, 0.70f, 0.26f);
+    pBody->Get_Component<CModel>()->Set_GhostTrailDesc(desc);
 }
 
 HRESULT CPlayer::Ready_BaseStates()
@@ -2199,7 +2240,7 @@ HRESULT CPlayer::Ready_PartCollider()
 
 HRESULT CPlayer::Ready_Interact_PartCollider()
 {
-    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc;
+    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc = {};
     {
         PHYSICSRIGIDBODY_DESC tRigiDesc = {};
         {
@@ -2214,8 +2255,8 @@ HRESULT CPlayer::Ready_Interact_PartCollider()
         {
             tPColliDesc.eShape = EPhysicsShape::BOX;
             //tPColliDesc.fHeight = 100.f;
-            tPColliDesc.vCenter = { 0.f, 0.75f, 0.f }; // 이전 값 : 0.f, 0.75f, 0.7f 
-            tPColliDesc.vExtents = { 3.5f, 1.5f, 4.5f };
+            tPColliDesc.vCenter = { 0.f, 1.25f, 0.5f }; // 이전 값 : 0.f, 0.75f, 0.7f 
+            tPColliDesc.vExtents = { 1.f, 2.5f, 5.5f };
 
             //tPColliDesc.fRadius = { 20.f };
             tPColliDesc.bIsTrigger = { true };

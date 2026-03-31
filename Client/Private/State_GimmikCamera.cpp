@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
+#include "CameraPreset_Manager.h"
 #include "GameInstance.h"
 
 CState_GimmikCamera::CState_GimmikCamera(CActionState* pOwnerComponent, _uint iStateIndex)
@@ -31,6 +32,7 @@ HRESULT CState_GimmikCamera::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	CCameraPreset_Manager::GetInstance()->Play_Preset("GimmikCamera", Get_OwnerObject());
 	m_fElapsed = 0.f;
 	return S_OK;
 }

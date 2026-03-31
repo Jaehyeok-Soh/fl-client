@@ -8,12 +8,12 @@
             "iID": 3,
             "strTag": "Xibi_Attack_Heavy",
             "tCombat": {
-                "DamageType": "Physical",
+                "DamageType": "Electric",
                 "HitType": "Heavy",
-                "fBaseDamage": 62.0,
+                "fBaseDamage": 359.0,
                 "fHitStopSec": 0.0,
                 "fHitStunSec": 0.0,
-                "fImpulse": 0.0,
+                "fImpulse": 2.0,
                 "fPushPower": 0.0
             },
             "tPolicy": {

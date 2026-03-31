@@ -107,7 +107,8 @@ VS_OUT_SKELETON VS_MAIN(VS_IN_SKELECTON input)
     
     float4 vWorldPosition = mul(float4(input.vPosition, 1.f), matBone);
     vWorldPosition = mul(vWorldPosition, W);
-    float4 vProjPosition = mul(vWorldPosition, VP);
+    float4 vViewPosition = mul(vWorldPosition, V);
+    float4 vProjPosition = mul(vViewPosition, P);
     
     input.vNormal = normalize(mul(input.vNormal, (float3x3) matBone));
     input.vTangent = normalize(mul(input.vTangent, (float3x3) matBone));
@@ -121,6 +122,7 @@ VS_OUT_SKELETON VS_MAIN(VS_IN_SKELECTON input)
     
     output.vWorldPos = vWorldPosition;
     output.vProjPos = vProjPosition;
+    output.fViewZ = vViewPosition.z;
     return output;
 }
 
@@ -130,10 +132,10 @@ VS_OUT_SKELETON VS_WITHSHAKE(VS_IN_SKELECTON input)
     float4x4 matBone = Get_BoneMatrix(input);
     
     float4 vWorldPosition = mul(float4(input.vPosition, 1.f), matBone);
-    vWorldPosition = mul(vWorldPosition, W);
-    vWorldPosition.xyz = Apply_Shake(vWorldPosition.xyz);
-    
-    float4 vProjPosition = mul(vWorldPosition, VP);
+    vWorldPosition = mul(vWorldPosition, W);    
+    vWorldPosition.xyz = Apply_Shake(vWorldPosition.xyz);    
+    float4 vViewPosition = mul(vWorldPosition, V);
+    float4 vProjPosition = mul(vViewPosition, P);
     
     input.vNormal = normalize(mul(input.vNormal, (float3x3) matBone));
     input.vTangent = normalize(mul(input.vTangent, (float3x3) matBone));
@@ -147,6 +149,7 @@ VS_OUT_SKELETON VS_WITHSHAKE(VS_IN_SKELECTON input)
     
     output.vWorldPos = vWorldPosition;
     output.vProjPos = vProjPosition;
+    output.fViewZ = vViewPosition.z;
     return output;
 }
 
@@ -420,7 +423,23 @@ PS_OUT_DEFFERED PS_MONSTERFACE(PS_IN_SKELETON input)
     return output;
 }
 
+PS_OUT_WBOIT PS_GHOST(PS_IN_SKELETON input)
+{
+    PS_OUT_WBOIT output;
 
+    float3 vViewDir = normalize(CameraPosition().xyz - input.vWorldPos.xyz);
+    float3 vNormal = normalize(input.vNormal);
+    float fFresnel = pow(1.f - saturate(dot(vViewDir, vNormal)), 2.f);
+
+    float3 srcRGB = ghostTrailParam.vColor.rgb + ghostTrailParam.vColor.rgb * fFresnel * 0.5f;
+    float srcAlpha = ghostTrailParam.vColor.a * (0.5f + fFresnel * 0.2f);
+    float w = pow(saturate(1.0f - input.fViewZ / 1000.0f), 3.0f); // 3승으로 변화율 조절
+    w = clamp(w, 0.01f, 3000.0f); // 상한선을 적당히 열어주되, 하한선으로 방어
+
+    output.vAccum = float4(srcRGB * srcAlpha, srcAlpha) * w;
+    output.vReveal = srcAlpha;
+    return output;
+}
 
 
 technique11 T0
@@ -446,4 +465,15 @@ technique11 T0
 
     //흔들흔들열매 
 	PASS_RS_DS_BS_VP(MonsterFace, RS_Default, DS_Default, BS_Default, VS_WITHSHAKE, PS_MONSTERFACE)
+
+    //잔상 - index 10
+    pass BLOOM_SWORDEFFECT
+    {
+        SetRasterizerState(RS_Default_CullNone);
+        SetDepthStencilState(DS_ReadOnly, 0);
+        SetBlendState(BS_WBOIT_Accumulate, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetVertexShader(CompileShader(vs_5_0, VS_MAIN()));
+        GeometryShader = NULL;
+        SetPixelShader(CompileShader(ps_5_0, PS_GHOST()));
+    }
 };

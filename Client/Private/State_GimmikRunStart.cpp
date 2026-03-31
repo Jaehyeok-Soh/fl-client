@@ -37,6 +37,11 @@ HRESULT CState_GimmikRunStart::Start(void* pArg, _bool bForce)
 void CState_GimmikRunStart::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	if (Is_AnimFinished())
+	{
+		Change_MonsterState(m_umapState["GimmikRunLoop"]);
+		return;
+	}
 }
 
 HRESULT CState_GimmikRunStart::End()

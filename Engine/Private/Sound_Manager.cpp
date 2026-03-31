@@ -19,6 +19,8 @@ HRESULT CSound_Manager::Initialize(_uint iLevelCount)
     if (fmodResult != FMOD_OK)
         return E_FAIL;
 
+    FMOD_CALL(m_pSystem->getMasterChannelGroup(&m_pMasterGroup));
+
     for (_uint i = 0; i < MAX_SOUND_CHANNEL; ++i)
     {
         m_pChannelArr[i] = nullptr;
@@ -32,11 +34,14 @@ HRESULT CSound_Manager::Initialize(_uint iLevelCount)
     m_umapSoundMetaData.resize(iLevelCount);
     m_vecPendingBGMs.resize(iLevelCount);
     Reset_OneShotPool();
+    Reset_GlobalMixPulse();
     return S_OK;
 }
 
 void CSound_Manager::Update(const _float fTimeDelta)
 {
+    Update_GlobalMixPulse(fTimeDelta);
+
     if (m_pSystem)
         FMOD_CALL(m_pSystem->update());
 
@@ -401,6 +406,27 @@ void CSound_Manager::Play_OneShot(_uint iLevelID, _uint iSoundHash, _float fVolu
 void CSound_Manager::Play_RandOneShot(_uint iLevelID, _uint iSoundHash, _float fVolume, _float fPitch, _bool bSteal)
 {
     Play_OneShot(iLevelID, iSoundHash, fVolume, fPitch, bSteal);
+}
+
+void CSound_Manager::Play_GlobalMixPulse(_float fDuration, _bool m_bContainVolume)
+{
+    if (fDuration <= 0.f)
+    {
+        Reset_GlobalMixPulse();
+        return;
+    }
+
+    m_tGlobalMixPulse.Start(fDuration, MINPITCH, m_bContainVolume == true ? MINVOLUME : 1.f);
+}
+
+void CSound_Manager::Deactive_Slomo()
+{
+    Play_GlobalMixPulse(FLT_MAX);
+}
+
+void CSound_Manager::Active_Slomo()
+{
+    Play_GlobalMixPulse(FLT_MIN);
 }
 
 vector<SOUND_META> CSound_Manager::Get_SoundMetas(_uint iLevelID) const
@@ -983,6 +1009,60 @@ void CSound_Manager::Update_PendingBGMs(_float fTimeDelta)
 
         ++i;
     }
+}
+
+void CSound_Manager::Update_GlobalMixPulse(_float fTimeDelta)
+{
+    if (m_tGlobalMixPulse.bActive == false)
+        return;
+
+    if (m_tGlobalMixPulse.tTimer.fDuration <= 0.f)
+    {
+        Reset_GlobalMixPulse();
+        return;
+    }
+
+    const _bool bFinished = m_tGlobalMixPulse.tTimer.Tick(fTimeDelta);
+    const _float fAlpha = m_tGlobalMixPulse.tTimer.Get_Alpha();
+
+    _float fBlend = 0.f;
+    if (fAlpha <= 0.5f)
+        fBlend = fAlpha * 2.f;
+    else
+        fBlend = (1.f - fAlpha) * 2.f;
+
+    fBlend = std::clamp(fBlend, 0.f, 1.f);
+
+    const _float fPitchMul =
+        1.f + (m_tGlobalMixPulse.fMinPitchMul - 1.f) * fBlend;
+
+    const _float fVolumeMul =
+        1.f + (m_tGlobalMixPulse.fMinVolumeMul - 1.f) * fBlend;
+
+    Apply_GlobalMix(fPitchMul, fVolumeMul);
+
+    if (bFinished)
+        Reset_GlobalMixPulse();
+}
+
+void CSound_Manager::Apply_GlobalMix(_float fPitchMul, _float fVolumeMul)
+{
+    if (m_pMasterGroup == nullptr)
+        return;
+
+    if (fPitchMul <= 0.f)
+        fPitchMul = 0.01f;
+
+    fVolumeMul = std::clamp(fVolumeMul, 0.f, 1.f);
+
+    FMOD_CALL(m_pMasterGroup->setPitch(fPitchMul));
+    FMOD_CALL(m_pMasterGroup->setVolume(fVolumeMul));
+}
+
+void CSound_Manager::Reset_GlobalMixPulse()
+{
+    m_tGlobalMixPulse.Clear();
+    Apply_GlobalMix(1.f, 1.f);
 }
 
 CSound_Manager* CSound_Manager::Create(_uint iLevelCount)

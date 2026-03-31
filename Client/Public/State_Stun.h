@@ -25,7 +25,7 @@ protected:
 	virtual _bool Can_CheckKey(const _float fTimeDelta) override;
 
 private:
-	const _float m_fStunCoolTime = { 3.f };
+	const _float m_fStunCoolTime = { 6.f };
 
 public:
 	static CState_Stun* Create(CActionState* pOwnerComponent, void* pArg = nullptr);

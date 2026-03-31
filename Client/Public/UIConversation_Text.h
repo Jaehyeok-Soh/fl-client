@@ -46,6 +46,8 @@ private:
 	void Tick_For_ConversationCurrentText(const _float fTimeDelta, auto* pDialogue);
 
 private:
+	CGameObject* m_pConversationTarget = { nullptr };
+
 	_wstring m_wstrCurrentText = {};
 
 	_float m_fConversation_TimeAcc = {};

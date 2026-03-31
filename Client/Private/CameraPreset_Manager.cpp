@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CameraPreset_Manager.h"
+#include "CameraMan_Targeter.h"
 #include "FileUtils.h"
 #pragma push_macro("new")
 #undef new
@@ -627,6 +628,66 @@ void CCameraPreset_Manager::Clear()
 std::filesystem::path CCameraPreset_Manager::Make_FilePathFromTag(const string& strTag) const
 {
 	return m_rootPath / (strTag + ".json");
+}
+
+HRESULT CCameraPreset_Manager::Play_Preset(const string& strPresetTag)
+{
+	if (strPresetTag.empty())
+		return E_FAIL;
+
+	const CAMERA_SHOT_PRESET* pPreset = Find_Preset(strPresetTag);
+	if (pPreset == nullptr)
+		return E_FAIL;
+
+	CCameraMan_Targeter* pTargeter = Get_Targeter();
+	if (pTargeter == nullptr)
+		return E_FAIL;
+
+	SCRIPTED_CAMERA_SHOT_DESC tShotDesc = pPreset->tShotDesc;
+	SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding = pPreset->tBinding;
+	pTargeter->Debug_PlayScriptedShot(tShotDesc, tBinding);
+	return S_OK;
+}
+
+HRESULT CCameraPreset_Manager::Play_Preset(const string& strPresetTag, CGameObject* pOverrideTarget)
+{
+	if (strPresetTag.empty())
+		return E_FAIL;
+
+	const CAMERA_SHOT_PRESET* pPreset = Find_Preset(strPresetTag);
+	if (pPreset == nullptr)
+		return E_FAIL;
+
+	Client::CCameraMan_Targeter* pTargeter = Get_Targeter();
+	if (pTargeter == nullptr)
+		return E_FAIL;
+
+	Engine::SCRIPTED_CAMERA_SHOT_DESC tShotDesc = pPreset->tShotDesc;
+	Engine::SCRIPTED_CAMERA_SHOT_BINDING_DESC tBinding = pPreset->tBinding;
+
+	if (pOverrideTarget != nullptr)
+	{
+		tBinding.Pivot.eSource = Engine::ECameraAnchorSource::OBJECT;
+		tBinding.Pivot.pObject = pOverrideTarget;
+
+		if (tBinding.bUseSeparateLookAt)
+		{
+			tBinding.LookAt.eSource = Engine::ECameraAnchorSource::OBJECT;
+			tBinding.LookAt.pObject = pOverrideTarget;
+		}
+	}
+
+	pTargeter->Debug_PlayScriptedShot(tShotDesc, tBinding);
+	return S_OK;
+}
+
+CCameraMan_Targeter* CCameraPreset_Manager::Get_Targeter() const
+{
+	CCameraMan* pCamera = m_pGameInstance->Get_MainCamera();
+	if (pCamera == nullptr)
+		return nullptr;
+
+	return dynamic_cast<CCameraMan_Targeter*>(pCamera);
 }
 
 void CCameraPreset_Manager::Free()

@@ -108,7 +108,6 @@ _bool CTextureBase::IsSRGB_ByName(const std::filesystem::path texturePath)
 	if (Engine_Utils::Has_Token(stem, L"_D"))    return true;
 
 	return false;
-	return _bool();
 }
 
 CTextureBase* CTextureBase::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg)

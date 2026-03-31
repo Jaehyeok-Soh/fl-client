@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "State_StartCatch.h"
 #include "GameObject.h"
+#include "ActionState.h"
+#include "Player.h"
+#include "Lianhuo_GimmikController.h"
 #include "MonsterActionState.h"
 #include "MonsterControlContext.h"
 #include "GameInstance.h"
@@ -23,6 +26,7 @@ HRESULT CState_StartCatch::Awake(const _uint iLevelIndex)
 	if (FAILED(Super::Awake(iLevelIndex)))
 		return E_FAIL;
 
+	m_pOwnerGimmikController = Get_OwnerObject()->Get_Component<CLianhuo_GimmikController>();
 	return S_OK;
 }
 
@@ -31,12 +35,30 @@ HRESULT CState_StartCatch::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	m_bOnce = false;
 	return S_OK;
 }
 
 void CState_StartCatch::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+	if (Is_AnimFinished())
+	{
+		CActionState *pActionState = Get_Target()->Get_Component<CActionState>();
+		if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::STUN_START))
+		{
+			Change_MonsterState(m_umapState["BackdashCatch"]);
+		}
+		else
+			Change_MonsterState(m_umapState["Idle"]);
+	}
+
+	if (m_bOnce == false && Is_AnimTrackPositionAt(0.3f))
+	{
+		m_bOnce = true;
+		CTransform* pTargetTransform = Get_Target()->Get_Component<CTransform>();
+		m_pOwnerGimmikController->Trigger_StunChain(pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS));
+	}
 }
 
 HRESULT CState_StartCatch::End()

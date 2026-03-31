@@ -20,7 +20,6 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 private:
-	_bool m_bOnce = { false };
 	CMonsterActionState* m_pOwnerActionState{ nullptr };
 	CMonsterControlContext* m_pOwnerControlContext{ nullptr };
 public:
