@@ -401,7 +401,7 @@ HRESULT CBoss_Xibi::Ready_Components(void* pArg)
 	desc.fMeleeRange = 2.f;
 	desc.fAttackRange = 8.f;
 	desc.fCloseRange = 1.f;
-	desc.fDetectionRange = 15.f;
+	desc.fDetectionRange = 13.f;
 	desc.fSpeed = 1.f;
 	//desc.iSkillCount;
 	//desc.vecSkillRange;

@@ -217,7 +217,8 @@ _bool CBoss_Lianhuo::On_Hit(const HIT_DESC& hitDesc)
 					// Condemn
 					if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::CONDEMN))
 					{
-						pComBoss->Add_Health(-500.f);
+						// pComBoss->Add_Health(-10000000.f);
+						pComBoss->Add_Health(-10000000.f);
 						_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
 						if (fHpRatio <= g_XMEpsilon.f[0])
 							Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
@@ -231,7 +232,8 @@ _bool CBoss_Lianhuo::On_Hit(const HIT_DESC& hitDesc)
 		{
 			EGroggyState eGroggy{ EGroggyState::None };
 			if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::GUN)))
-				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.125f);
+				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(100.f);
+				//eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.125f);
 			else if (Engine_Utils::Has_Flag(hitDesc.iDamageFlag, ENUM_TO_UINT(EPlayerAttackFlag::DUAL)))
 				eGroggy = Get_Component<CStatCom_Boss>()->Sub_Groggy(0.5f);
 			else

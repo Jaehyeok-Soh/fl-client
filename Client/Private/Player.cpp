@@ -183,10 +183,7 @@ HRESULT CPlayer::Awake(const _uint iCurrentLevelID)
     case ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS):
     case ENUM_TO_UINT(ELevelType::LIANHUO):
         m_bBossStage = true;
-
-    case ENUM_TO_UINT(ELevelType::LIANHUO):
-        Set_FKeyEvent(0, true);
-
+        
     default:
         Change_WeaponState(ENUM_TO_UINT(EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));
     }
