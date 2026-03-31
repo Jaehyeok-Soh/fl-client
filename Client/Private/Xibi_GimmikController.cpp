@@ -23,6 +23,12 @@ CXibi_GimmikController::CXibi_GimmikController()
 
 CXibi_GimmikController::CXibi_GimmikController(const CXibi_GimmikController& rhs)
 	: Super(rhs)
+	, m_iSoundHash_OneShotThunder(rhs.m_iSoundHash_OneShotThunder)
+	, m_iSoundHash_MovingThunder(rhs.m_iSoundHash_MovingThunder)
+	, m_iSoundHash_Dummy(rhs.m_iSoundHash_Dummy)
+	, m_iSoundHash_Ball(rhs.m_iSoundHash_Ball)
+	, m_iSoundHash_Dissappear(rhs.m_iSoundHash_Dissappear)
+	, m_iSoundHash_Appear(rhs.m_iSoundHash_Appear)
 {
 }
 
@@ -30,6 +36,14 @@ HRESULT CXibi_GimmikController::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
+
+	m_iSoundHash_OneShotThunder = TO_HASH("sfx_boss_Xibi_skill07_attack");
+	m_iSoundHash_MovingThunder = TO_HASH("sfx_boss_Xibi_skill05_ballfly_lp");
+	m_iSoundHash_Dummy = TO_HASH("sfx_boss_Xibi_dummy_move");
+	m_iSoundHash_Ball = TO_HASH("sfx_boss_Xibi_skill03_electricity_burst_s");
+
+	m_iSoundHash_Dissappear = TO_HASH("sfx_boss_Xibi_skill06_disappear");
+	m_iSoundHash_Appear = TO_HASH("sfx_boss_Xibi_skill06_fall");
 
 	return S_OK;
 }
@@ -239,11 +253,15 @@ void CXibi_GimmikController::On_TeleportRandom_Disappear()
 	SpawnSingleThunder();
 	Vec3 vCurPos = Get_Owner()->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	Teleport_To(Compute_RandomTeleportPosition(vCurPos));
+
+	m_pGameInstance->Play_OneShot(0, m_iSoundHash_Dissappear, 1.f);
 }
 
 void CXibi_GimmikController::On_TeleportRandom_Appear()
 {
 	Get_Owner()->Set_Render(true);
+
+	m_pGameInstance->Play_OneShot(0, m_iSoundHash_Appear, 1.f);
 }
 
 void CXibi_GimmikController::On_TeleportCenter_Disappear()
@@ -253,11 +271,15 @@ void CXibi_GimmikController::On_TeleportCenter_Disappear()
 	// Todo. BattleField에서 센터 위치 계산
 	// Todo. 순간이동시 Physics 처리
 	Teleport_To(m_vSpawnPosition);
+
+	m_pGameInstance->Play_OneShot(0, m_iSoundHash_Dissappear, 1.f);
 }
 
 void CXibi_GimmikController::On_TeleportCenter_Appear()
 {
 	Get_Owner()->Set_Render(true);
+
+	m_pGameInstance->Play_OneShot(0, m_iSoundHash_Appear, 1.f);
 }
 
 void CXibi_GimmikController::On_ModelAnimNotify(const AnimNotifyKey& key)
@@ -287,6 +309,7 @@ void CXibi_GimmikController::On_ModelAnimNotify(const AnimNotifyKey& key)
 		On_SpawnThunderRandom();
 		break;
 	case Client::CXibi_GimmikController::EGimmikType::SpawnThunder3way:
+		m_pGameInstance->Play_OneShot(0, m_iSoundHash_MovingThunder, 0.6f);
 		On_SpawnThunder3way();
 		break;
 	case Client::CXibi_GimmikController::EGimmikType::Spawn360Circle:
@@ -403,6 +426,8 @@ void CXibi_GimmikController::SpawnSingleThunder()
 	desc.vOrigin = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	m_pOneshotThunderSpawner->Trigger(desc);
+
+	m_pGameInstance->Play_OneShot_Delayed(0, m_iSoundHash_OneShotThunder, 1.f, 0.5f);
 }
 
 void CXibi_GimmikController::On_SpawnThunderRandom()
@@ -418,6 +443,8 @@ void CXibi_GimmikController::On_SpawnThunderRandom()
 	desc.vOrigin = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	m_pRandomThunderSpawner->Trigger(desc);
+
+	m_pGameInstance->Play_OneShot_Delayed(0, m_iSoundHash_OneShotThunder, 1.f, 0.5f);
 }
 
 void CXibi_GimmikController::On_SpawnThunder3way()
@@ -449,6 +476,8 @@ void CXibi_GimmikController::On_SpawnCircle360()
 	desc.vOrigin.y += 0.55f;
 	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	m_p360CircleSpawner->Trigger(desc);
+
+	m_pGameInstance->Play_OneShot(0, m_iSoundHash_Ball, 0.8f);
 }
 
 void CXibi_GimmikController::On_SpawnThunder360()
@@ -464,6 +493,8 @@ void CXibi_GimmikController::On_SpawnThunder360()
 	desc.vOrigin = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
 	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	m_p360ThunderSpawner->Trigger(desc);
+
+	m_pGameInstance->Play_OneShot(0, m_iSoundHash_OneShotThunder, 0.5f);
 }
 
 void CXibi_GimmikController::On_Spawn8Gate()
@@ -486,6 +517,8 @@ void CXibi_GimmikController::On_Spawn8Gate()
 	desc.pTarget = pPlayer;
 
 	m_pGateSpawner->Trigger(desc);
+
+	m_pGameInstance->Play_OneShot(0, m_iSoundHash_Dummy, 0.5f);
 }
 
 HRESULT CXibi_GimmikController::Ready_Spawner()

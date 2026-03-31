@@ -77,6 +77,17 @@ private:
 	CProjectileSpawner_Radial360* m_p360CircleSpawner{ nullptr };
 	CProjectileSpawner_Radial360* m_p360ThunderSpawner{ nullptr };
 	CXibi_GateSpawner* m_pGateSpawner{ nullptr };
+
+	// sound hash Ä³½Ì
+private:
+	_uint m_iSoundHash_OneShotThunder = {};
+	_uint m_iSoundHash_MovingThunder = {};
+	_uint m_iSoundHash_Dummy = {};
+	_uint m_iSoundHash_Ball = {};
+
+	_uint m_iSoundHash_Dissappear = {  };
+	_uint m_iSoundHash_Appear = {  };
+
 public:
 	static CXibi_GimmikController* Create();
 	virtual CComponent* Clone(void* pArg) override;

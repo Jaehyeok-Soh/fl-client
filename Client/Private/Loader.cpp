@@ -470,6 +470,8 @@ HRESULT CLoader::Loading_For_Logo()
 			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Twist")))
 			return E_FAIL;
+		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/Effect_FBX/Animal")))
+			return E_FAIL;
 		if (FAILED(Make_StaticObject_Prototype(ELevelType::STATIC, L"../../Resources/Models/SkyBox")))
 			return E_FAIL;
 
@@ -1749,6 +1751,10 @@ HRESULT CLoader::Ready_Sounds()
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::Voice, L"../../Resources/Sounds/SFX/Voice")))
 		return E_FAIL;
 
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Die
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Die")))
+		return E_FAIL;
+
 	/* player sounds */
 	if (FAILED(Ready_Sounds_Player()))
 	{
@@ -1756,6 +1762,12 @@ HRESULT CLoader::Ready_Sounds()
 		return E_FAIL;
 	}
 
+	/* boss sounds */
+	if (FAILED(Ready_Sounds_Boss()))
+	{
+		MSG_BOX("CLoader::Ready_Sounds, Boss Sounds Fail");
+		return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -1842,6 +1854,19 @@ HRESULT CLoader::Ready_Sounds_PlayerFoot(ELevelType eType)
 	//Resources\Sounds\SFX\Monster\Veteran
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Monster/Veteran")))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Sounds_Boss()
+{
+	// xibi
+	//C:\Users\admin\Eunbi\04.Final\Resources\Sounds\SFX\Boss\Xibi
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Boss/Xibi")))
+		return E_FAIL;
+	//// lian
+	//if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit/Lian")))
+	//	return E_FAIL;
 
 	return S_OK;
 }

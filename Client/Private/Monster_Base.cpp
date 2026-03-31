@@ -396,6 +396,15 @@ CTransform* CMonster_Base::Get_CameraAnchorOwnerTransform()
 	return Get_Component<CTransform>();
 }
 
+_bool CMonster_Base::Monster_IsGroggy()
+{
+	CMonsterControlContext* pControl = static_cast<CMonsterControlContext*>(Get_Component<CControlContext>());
+	if (pControl == nullptr)
+		return false;
+
+	return  pControl->IsGroggy();
+}
+
 HRESULT CMonster_Base::Ready_BaseStates()
 {
 	CMonsterActionState* pActionState = { nullptr };
