@@ -2199,7 +2199,7 @@ HRESULT CPlayer::Ready_PartCollider()
 
 HRESULT CPlayer::Ready_Interact_PartCollider()
 {
-    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc;
+    CTriggerCollidePart::TRIGGER_COLLIDEPART_DESC tPartColliDesc = {};
     {
         PHYSICSRIGIDBODY_DESC tRigiDesc = {};
         {
