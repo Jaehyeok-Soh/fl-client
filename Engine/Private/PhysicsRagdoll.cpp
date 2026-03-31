@@ -290,7 +290,7 @@ void CPhysicsRagdoll::ApplyHitImpulse(Vec3 vDir, _float fPower)
 	else
 		vDir.Normalize();
 
-	vDir.y += 1.5f;
+	vDir.y += 5.f;
 	vDir.Normalize();
 
 	PxVec3 pxImpulse = ToPxVec3(vDir) * fPower;
