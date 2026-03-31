@@ -1,8 +1,8 @@
 {
     "Clouds": {
-        "Base Texture": "Texture_T_AL_Clo_Land03_DH_2",
-        "Mix DH Tile Texture": "Texture_T_AL_Clo_Land03_DH_Array",
-        "Mix NBR Tile Texture": "Texture_T_AL_Clo_Land03_NBR_Array",
+        "Base Texture": "Texture_Texture_T_AL_Clo_Land03_DH_2",
+        "Mix DH Tile Texture": "Texture_Texture_T_AL_Clo_Land03_DH_Array",
+        "Mix NBR Tile Texture": "Texture_Texture_T_AL_Clo_Land03_NBR_Array",
         "Mix RGBA Info": [
             {
                 "A": {
@@ -29,7 +29,7 @@
                     "RGBA Mix Height Force": 0.009999999776482582,
                     "Use Flags": 0
                 },
-                "RGBA Texture": "Texture_T_Clouds_Tint"
+                "RGBA Texture": "Texture_Texture_T_Clouds_Tint"
             }
         ]
     },
@@ -69,8 +69,8 @@
     },
     "Kuangkeng": {
         "Base Texture": "Texture_LandScape_Default_White",
-        "Mix DH Tile Texture": "Texture_T_AL_Clo_Land03_DH_Array",
-        "Mix NBR Tile Texture": "Texture_T_AL_Clo_Land03_NBR_Array",
+        "Mix DH Tile Texture": "Texture_Texture_T_AL_Clo_Land03_DH_Array",
+        "Mix NBR Tile Texture": "Texture_Texture_T_AL_Clo_Land03_NBR_Array",
         "Mix RGBA Info": [
             {
                 "A": {
