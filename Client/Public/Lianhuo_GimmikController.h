@@ -36,7 +36,6 @@ private:
 private:
 	HRESULT Ready_Spawner();
 	void Spawn_RandomSkill(const _float fTimeDelta);
-	void Trigger_FirePlain();
 	void Trigger_ChainThron();
 protected:
 	///////////////
@@ -48,10 +47,8 @@ private:
 	Vec3 m_vSpawnPosition{ Vec3::Zero };
 	_float m_fFieldMaxRange{ 15.f };
 
-	TIME_LINE m_tFirePlainTimer{};
 	TIME_LINE m_tChainThronTimer{};
 
-	CSkillObjectSpawner_RandomXZ* m_pRandomFirePlain = { nullptr };
 	CSkillObjectSpawner_RandomXZ* m_pRandomChainThron = { nullptr };
 	CSingleSkillSpawner* m_pXSpaceSpawner = { nullptr };
 	CSingleSkillSpawner* m_pStunChainSpawner = { nullptr };

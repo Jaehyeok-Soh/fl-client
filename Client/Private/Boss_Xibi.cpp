@@ -265,14 +265,16 @@ _bool CBoss_Xibi::On_Hit(const HIT_DESC& hitDesc)
 					// Condemn
 					if (pActionState->Get_CurrentStateIndex() == ENUM_TO_UINT(CPlayer::State::CONDEMN))
 					{
-						pComBoss->Add_Health(-500.f);
+						pComBoss->Add_Health(-1247.f);
 						_float fHpRatio = pComBoss->Get_Rate(CMyStat::STAT_TYPE::HP);
 						if (fHpRatio <= g_XMEpsilon.f[0])
+						{
 							Change_State_ForDirecting(EStateForDirecting::Condemned_Die);
+							m_pGameInstance->Broadcast<BOSS_UI_OFF>();
+						}
 						else
 						{
 							Change_State_ForDirecting(EStateForDirecting::Condemned_Attacked);
-							//m_pGameInstance->Broadcast<BOSS_UI_OFF>();
 						}
 					}
 				}
@@ -334,7 +336,7 @@ HRESULT CBoss_Xibi::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 300000.f;
+	desc.fMaxHp = 290000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 

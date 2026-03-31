@@ -54,14 +54,12 @@ HRESULT CLianhuo_GimmikController::Awake(const _uint iCurLevelIndex)
 	m_vSpawnPosition = pSphere->Center;
 	m_fFieldMaxRange = pSphere->Radius * 2.f;
 
-	m_tFirePlainTimer.Start(30.f);
-	m_tChainThronTimer.Start(35.f);
+	m_tChainThronTimer.Start(30.f);
 	return S_OK;
 }
 void CLianhuo_GimmikController::Update(const _float fTimeDelta)
 {
 	Spawn_RandomSkill(fTimeDelta);
-	m_pRandomFirePlain->Update(fTimeDelta);
 	m_pRandomChainThron->Update(fTimeDelta);
 	m_pXSpaceSpawner->Update(fTimeDelta);
 	m_pStunChainSpawner->Update(fTimeDelta);
@@ -124,24 +122,6 @@ HRESULT CLianhuo_GimmikController::Ready_Spawner()
 
 		m_pRandomChainThron = static_cast<CSkillObjectSpawner_RandomXZ*>(pResult);
 	}
-	// Rand FirePlain
-	{
-		CSkillObjectSpawner_RandomXZ::SPAWNER_RAND_COPY_DESC desc{};
-		desc.iLevelIndex = iLevelId;
-		desc.iSpawnLevelIndex = iLevelId;
-		desc.fRadiusMin = 2.f;
-		desc.fRadiusMax = m_fFieldMaxRange;
-		desc.iPerTick = 1;
-		desc.fDurationSec = 0.15f;
-		desc.bUseForwardDir = false;
-
-		CBase* pResult = m_pGameInstance->Clone_Prototype(EPrototypeType::GAMEOBJECT,
-			iLevelId, g_wszSpawner_LianhuoSpawnerFirePlain, &desc);
-		if (pResult == nullptr)
-			return E_FAIL;
-
-		m_pRandomFirePlain = static_cast<CSkillObjectSpawner_RandomXZ*>(pResult);
-	}
 	// Oneshot
 	{
 		CSingleSkillSpawner::SPAWNER_COPY_DESC desc{};
@@ -177,13 +157,6 @@ void CLianhuo_GimmikController::Spawn_RandomSkill(const _float fTimeDelta)
 	if (pOwner == nullptr || pOwner->IsDead())
 		return;
 
-	if (m_tFirePlainTimer.Tick(fTimeDelta))
-	{
-		Trigger_FirePlain();
-
-		const _float fNextDelay = m_pGameInstance->Rand_Float(8.f, 17.f);
-		m_tFirePlainTimer.Start(fNextDelay);
-	}
 	if (m_tChainThronTimer.Tick(fTimeDelta))
 	{
 		Trigger_ChainThron();
@@ -191,21 +164,6 @@ void CLianhuo_GimmikController::Spawn_RandomSkill(const _float fTimeDelta)
 		const _float fNextDelay = m_pGameInstance->Rand_Float(8.f, 18.f);
 		m_tChainThronTimer.Start(fNextDelay);
 	}
-}
-
-void CLianhuo_GimmikController::Trigger_FirePlain()
-{
-	_uint iLevelIndex = m_pGameInstance->Get_CurrentLevelIndex();
-	CGameObject* pOwner = Get_Owner();
-	if (pOwner->IsDead())
-		return;
-
-	CSkillObjectSpawnerBase::SPAWNER_COPY_DESC desc{};
-	desc.iLevelIndex = iLevelIndex;
-	desc.iSpawnLevelIndex = iLevelIndex;
-	desc.vOrigin = m_vSpawnPosition;
-	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
-	m_pRandomFirePlain->Trigger(desc);
 }
 
 void CLianhuo_GimmikController::Trigger_ChainThron()
@@ -252,7 +210,6 @@ CComponent* CLianhuo_GimmikController::Clone(void* pArg)
 
 void CLianhuo_GimmikController::Free()
 {
-	Safe_Release(m_pRandomFirePlain);
 	Safe_Release(m_pRandomChainThron);
 	Safe_Release(m_pXSpaceSpawner);
 	Safe_Release(m_pStunChainSpawner);

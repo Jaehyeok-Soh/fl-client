@@ -56,6 +56,7 @@ private:
 	HRESULT Ready_CustomStates();
 	void Set_GhostTrailDesc();
 private:
+	_bool m_bFirst = { false };
 	array<_int, (size_t)EStateForDirecting::COUNT> m_arrStateIndex;
 	Vec3 vPos{ Vec3::Zero };
 public:

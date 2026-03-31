@@ -440,6 +440,14 @@ HRESULT CLevel_Lianhuo::Ready_Boss_Layer(const wstring& wstrLayerTag)
 			ENUM_TO_UINT(ELevelType::LIANHUO),
 			g_wszBossLayer, &monsterDesc)))
 			return E_FAIL;
+
+		{
+			UI_PREFAB_DATA ePrefabData = {};
+			UI_BOSS_NAMEPLATE_PREFAB_DATA Desc = {};
+			Desc.pTarget = pResult;
+			ePrefabData.Data = Desc;
+			CUI_Manager::GetInstance()->Request_Add_Prefab(ENUM_TO_UINT(ELevelType::LIANHUO), EUIPrefabType::BOSS_NAMEPLATE, ENUM_TO_UINT(ELevelType::LIANHUO), &ePrefabData);
+		}
 	}
 
 	return S_OK;
