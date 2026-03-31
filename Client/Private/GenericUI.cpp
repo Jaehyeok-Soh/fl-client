@@ -456,22 +456,29 @@ void CGenericUI::Bind_Events()
 {
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DEFAULT_UI_VISIBLE>([this]()
-			{
+			{				
+				if (m_strName == "Quest_Title_Icon")
+					int a = 0;
 				if (m_isEventVisible)
 				{
 					Set_Active(true);
 					this->Set_Visible();
 					m_isEventVisible = false;
+					m_fAlpha_Ratio = m_fOriginAlpha;
 				}
 			}));
 
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DEFAULT_UI_INVISIBLE>([this]()
 			{
+				if (m_strName == "Quest_Title_Icon")
+					int a = 0;
 				if (this->m_isVisible)
 				{
 					this->Set_Invisible();
 					m_isEventVisible = true;
+					m_fOriginAlpha = m_fAlpha_Ratio;
+					m_fAlpha_Ratio = 0.f;
 				}
 			}));
 }
