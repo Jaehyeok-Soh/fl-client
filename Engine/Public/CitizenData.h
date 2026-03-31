@@ -512,6 +512,8 @@ public:
 }; 
 struct ENGINE_DLL CitizenWayPointOriginData
 {
+	static inline _int iCurWayPointIndex{0};
+
 	static inline std::map<std::string, vector<Citizen_WayPoint_Data>> mapCitizenWapointDatas{};
 
 	static HRESULT	Load_CitizenWayPointDatas(ID3D11Device* pDeivce, ID3D11DeviceContext* pContext);

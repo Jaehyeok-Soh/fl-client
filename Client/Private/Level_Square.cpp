@@ -580,7 +580,7 @@ void CLevel_Square::Update(const _float fTimeDelta)
 	m_fAccTime += fTimeDelta;
 
 
-	if (m_fAccTime >= 10.f)
+	if (m_fAccTime >= 5.5f)
 	{
 		Setting_Citizen();
 		m_fAccTime = 0.f;

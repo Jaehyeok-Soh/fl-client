@@ -276,7 +276,7 @@ HRESULT CitizenWayPointOriginData::Save_CitizenWayPointDatas()
 	ofs << SaveRootJson.dump(4);
 	ofs.close();
 
-	return S_OK;
+	return S_OK; 
 }
 
 
@@ -304,7 +304,11 @@ const Citizen_WayPoint_Data* CitizenWayPointOriginData::Get_RandomWayPointOrignD
 	if (iPathCount == 0)
 		return nullptr;
 
-	int iRandomIndex = rand() % iPathCount;
+	int iRandomIndex = iCurWayPointIndex;
+	iCurWayPointIndex++;
+
+	if (iCurWayPointIndex >= (int)vecPaths.size())
+		iCurWayPointIndex = 0;
 
 	return &vecPaths[iRandomIndex];
 }
