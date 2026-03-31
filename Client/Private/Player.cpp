@@ -520,6 +520,14 @@ void CPlayer::Change_WeaponState(_uint iWeaponType, _uint iState)
     {
         Set_CurPartWeapon_State(EWEAPON::MELEE, ENUM_TO_UINT(CWeapon::State::HOLD));
     }
+
+
+    // ui 및 stat에게 정보 바꿔주기 위함
+    if (Can_AttackWeapon(ENUM_TO_UINT(EWEAPON::MELEE)))
+        Start_Attack(State::COMBO);
+    else if(Can_AttackWeapon(ENUM_TO_UINT(EWEAPON::RANGE)))
+        Start_Attack(State::GUNIDLE);
+
 }
 
 _int CPlayer::Get_CurWeaponIdx(_uint iWeaponType)
