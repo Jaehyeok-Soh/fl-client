@@ -78,6 +78,7 @@ HRESULT CBoss_Lianhuo::Initialize(void* pArg)
 	if (FAILED(Ready_StateIndexForDirecting()))
 		return E_FAIL;
 
+	Set_GhostTrailDesc();
 	return S_OK;
 }
 
