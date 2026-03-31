@@ -19,9 +19,9 @@
                 0.0,
                 1.0,
                 0.0,
-                252.8677215576172,
-                270.0,
-                -250.0,
+                232.5267333984375,
+                258.48150634765625,
+                -245.03968811035156,
                 1.0
             ],
             "_ChildData": [
@@ -95,8 +95,8 @@
                     "NormalTexture_Tag": "",
                     "ParentsName": "ENV_FireFlies",
                     "ParticleSize": {
-                        "x": 0.27000001072883606,
-                        "y": 0.4099999964237213
+                        "x": 0.05000000074505806,
+                        "y": 0.15000000596046448
                     },
                     "ParticleSystem": 2,
                     "PartsName": "Particle",
@@ -301,7 +301,7 @@
                         1.0
                     ],
                     "_Effect_SubMaskTexture_Tag": "",
-                    "_Effect_Tool_UseLifeDissolve": false,
+                    "_Effect_Tool_UseLifeDissolve": true,
                     "_Effect_UVXPower": 0,
                     "_Effect_UVYPower": 0,
                     "_Use_Effect_Continue": false,

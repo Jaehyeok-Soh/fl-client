@@ -153,6 +153,34 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
+                    "fStartTrackPosition": 38.0,
+                    "iAnimIndex": 31,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill10",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Veteran_Growl_Effect2",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 3.5,
+                        "z": -4.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 180.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
                     "fStartTrackPosition": 40.0,
                     "iAnimIndex": 27,
                     "iBoneFlag": 0,
@@ -193,7 +221,7 @@
                     "strEffectTag": "Monster_Veteran_SmashAttack2",
                     "vOffset": {
                         "x": 0.0,
-                        "y": 0.10000000149011612,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "vRotation": {
@@ -349,34 +377,6 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
-                    "fStartTrackPosition": 38.0,
-                    "iAnimIndex": 31,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_Monster_Veteran_Skill10",
-                    "strDescription": "",
-                    "strEffectTag": "Monster_Veteran_Growl_Effect2",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 3.5,
-                        "z": -4.5
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 180.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 1.0,
                     "fStartTrackPosition": 55.0,
                     "iAnimIndex": 33,
                     "iBoneFlag": 4,
@@ -433,34 +433,6 @@
                     "eEventType": 1,
                     "ePhase": "Immediatley",
                     "fDuration": 1.0,
-                    "fStartTrackPosition": 58.0,
-                    "iAnimIndex": 33,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_Monster_Veteran_Skill12",
-                    "strDescription": "",
-                    "strEffectTag": "Monster_Veteran_RollEnd",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": -1.0,
-                        "z": 5.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 10.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
-                    "fDuration": 1.0,
                     "fStartTrackPosition": 91.0,
                     "iAnimIndex": 32,
                     "iBoneFlag": 0,
@@ -501,7 +473,7 @@
                     "strEffectTag": "Monster_Veteran_SmashAttack2",
                     "vOffset": {
                         "x": 0.0,
-                        "y": 0.10000000149011612,
+                        "y": 0.0,
                         "z": 1.0
                     },
                     "vRotation": {
@@ -531,6 +503,34 @@
                         "x": 0.0,
                         "y": 5.5,
                         "z": 1.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 14.0,
+                    "iAnimIndex": 26,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill05",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Veteran_Jump",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "vRotation": {
                         "x": 0.0,
@@ -712,34 +712,6 @@
                     "bUseChildBone": false,
                     "eEventType": 1,
                     "ePhase": "Immediatley",
-                    "fDuration": 1.0,
-                    "fStartTrackPosition": 14.0,
-                    "iAnimIndex": 26,
-                    "iBoneFlag": 0,
-                    "iBoneIndex": -1,
-                    "iChildBoneIndex": -1,
-                    "iNotifyId": 4,
-                    "iSimulationType": 1,
-                    "strAnimTag": "Animation_Monster_Veteran_Skill05",
-                    "strDescription": "",
-                    "strEffectTag": "Monster_Veteran_Jump",
-                    "vOffset": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "vRotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "ChildPartNumber": -1,
-                    "bFollowBone": true,
-                    "bUseChildBone": false,
-                    "eEventType": 1,
-                    "ePhase": "Immediatley",
                     "fDuration": 0.0,
                     "fStartTrackPosition": 27.0,
                     "iAnimIndex": 23,
@@ -781,7 +753,7 @@
                     "strEffectTag": "Monster_Veteran_SmashAttack2",
                     "vOffset": {
                         "x": 0.0,
-                        "y": 0.10000000149011612,
+                        "y": 0.0,
                         "z": 2.0
                     },
                     "vRotation": {
@@ -1012,6 +984,34 @@
                         "x": 0.0,
                         "y": 0.0,
                         "z": 15.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 58.0,
+                    "iAnimIndex": 33,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Monster_Veteran_Skill12",
+                    "strDescription": "",
+                    "strEffectTag": "Monster_Veteran_RollEnd",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 5.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 10.0,
+                        "z": 0.0
                     }
                 }
             ]
