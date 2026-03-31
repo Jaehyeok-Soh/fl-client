@@ -2036,6 +2036,22 @@
                     "strAnimTag": "Animation_PlayerMoon_Light_Skill02_Red",
                     "strDescription": "New Sound Event",
                     "strSoundTag": "voice_kr_char_NvzhuLight_vo_skill02_r"
+                },
+                {
+                    "bLoop": false,
+                    "bSteal": false,
+                    "eCommand": "OneShot",
+                    "eEventType": 2,
+                    "ePhase": "Immediatley",
+                    "fDelay": 0.0,
+                    "fPitch": 1.0,
+                    "fStartTrackPosition": 2.179673671722412,
+                    "fVolume": 1.0,
+                    "iAnimIndex": 147,
+                    "iControlledId": -1,
+                    "strAnimTag": "Animation_PlayerMoon_Stun_Common_Loop",
+                    "strDescription": "New Sound Event",
+                    "strSoundTag": "sfx_boss_Lianhuo_skill07_fx_lock_loop"
                 }
             ]
         }
