@@ -90,7 +90,7 @@ protected:
 	HRESULT				Setting_NPCText(_uint iCurrentLevelID);
 public:
 	const _wstring&	Get_SoundTag()		const { return m_wstrSoundTag; }
-	const _wstring& Get_UITExtContext() const { return m_wstrContents; }
+	const _wstring& Get_UITextContext() const { return m_wstrContents; }
 protected:
 	
 	// IQuest을(를) 통해 상속됨

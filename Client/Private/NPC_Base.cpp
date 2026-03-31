@@ -106,10 +106,6 @@ HRESULT CNPC_Base::Initialize(void* pArg)
 	if (pDesc->bHasQuest)
 		Ready_Quest(&pDesc->tQuestObjectDesc);
 
-
-
-
-
 	return S_OK;
 }
 
@@ -120,7 +116,7 @@ HRESULT CNPC_Base::Awake(const _uint iCurrentLevelID)
 
 	if (!m_isMakeUIText)
 	{
-		if (FAILED(Setting_NPCText(ENUM_TO_UINT(ELevelType::SQUARE))))
+		if (FAILED(Setting_NPCText(iCurrentLevelID)))
 			return E_FAIL;
 		m_isMakeUIText = true;
 	}

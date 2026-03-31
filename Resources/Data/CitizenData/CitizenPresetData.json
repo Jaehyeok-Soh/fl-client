@@ -119,6 +119,186 @@
                     "Name": "Child/Female/Hair/CM_YNF_Hair01_SM"
                 }
             }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.9382239580154419,
+                    "Z": 0.9382239580154419
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 0.7027027010917664,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.6254825592041016,
+                    "Z": 0.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_YNM_Body01_SM_Npc_Younian_Dual_Wait_For_Caught",
+            "Model Name": "Child/Male/CM_YNM_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 0.2494596242904663,
+                        "Z": 0.023166000843048096
+                    },
+                    "Name": "Child/Male/Hair/CM_YNM_Hair01_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.7413126826286316,
+                    "Z": 0.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_QNF_Body01_SM_Npc_Qingnian_F_Dual_Wait_For_Caught",
+            "Model Name": "Youth/Female/CM_QNF_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 0.46332043409347534,
+                        "Z": 0.0
+                    },
+                    "Name": "Youth/Female/Hair/CM_QNF_Hair04_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.5971288681030273,
+                    "Z": 0.09266406297683716
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_LNM_Body01_SM_Npc_Laonian_M_Dual_Wait_For_Caught",
+            "Model Name": "Old/Male/CM_LNM_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": "Old/Male/Beard/CM_LNM_Beard03_SM"
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": "Old/Male/Hair/CM_LNM_Hair01_SM"
+                }
+            }
         }
     ]
 }

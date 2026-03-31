@@ -78,6 +78,7 @@
 #include "GameInstance.h"
 #include "QuestManager.h"
 #include "DialogueManager.h"
+#include "UIQTE_Manager.h"
 #include "UITutorial_Manager.h"
 
 CLevel_Tutorial_Boss::CLevel_Tutorial_Boss(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -552,6 +553,10 @@ HRESULT CLevel_Tutorial_Boss::Awake(const _uint iLevelID)
 	//if (FAILED(m_pGameInstance->Bake_StaticShadow()))
 	//	return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
+		return E_FAIL;
+
+
 	if (FAILED(m_pGameInstance->Set_Layer_UnscaledDomain(m_pGameInstance->Get_CurrentLevelIndex(), g_wszUILayer)))
 		return E_FAIL;
 
@@ -612,6 +617,9 @@ void CLevel_Tutorial_Boss::Update(const _float fTimeDelta)
 	}*/
 
 	CUITutorial_Manager::GetInstance()->Tutorial_Update(fTimeDelta);
+
+	CUIQTE_Manager::GetInstance()->Tick_QTE(fTimeDelta);
+
 }
 
 

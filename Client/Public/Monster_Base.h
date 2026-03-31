@@ -83,7 +83,29 @@ public:
 			END
 		};
 	};
-
+	struct HitSoundHashNum
+	{
+		enum Enum
+		{
+			SWORD_NORMAL,
+			SWORD_HEAVY,
+			DUAL_NORMAL,
+			DUAL_HEAVY,
+			GUN_FLESH,
+			GUN_FLYBASE,
+			GUN_DEATH_HIT,
+			SHIELD_HIT,
+			ENERGY_HIT,
+			LIGHTING_HIT,
+			WEAPONHIT_METAL,
+			CRITICAL,
+			DEATH01_VO,
+			DEATH02_VO,
+			HURT01_VO,
+			HURT02_VO,
+			END
+		};
+	};
 protected:
 	CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CMonster_Base(const CMonster_Base& rhs);
@@ -113,10 +135,17 @@ public:
 	virtual void		Try_Attack(const HIT_DESC& hitDesc) override;
 
 	void				Set_RootMotion_Apply(_bool bApply);
+
+	void				Trigger_Dissolve();
+
 public:
 	// Camera Interface
 	virtual ICameraAnchorProvider* Get_CameraAnchorProvider(_int iPartIndex = 0) override;
 	virtual CTransform* Get_CameraAnchorOwnerTransform() override;
+
+public:
+	_bool Monster_IsGroggy();
+
 protected:
 	HRESULT				Ready_BaseStates();
 	HRESULT				Ready_PartObjects(void* pArg);
@@ -133,12 +162,15 @@ protected:
 	void				OnHit_Gun(const HIT_DESC& hitDesc);
 	void				OnHit_Skill(const HIT_DESC& hitDesc);
 
+	void				Hit_Sound(EPlayerAttackFlag eFlag, DTO::EHitType eHitType);
+
 protected:
 	void				Compute_MonsterEmotionUV(EMonster_Emontion_State_Type eType);
 protected:
 
 	EMonster_Type			m_eMonsterType{ EMonster_Type::END};
 	class CEffectHandler*	m_pEffectHandler = { nullptr };
+	array<_uint, HitSoundHashNum::END> m_arrHitSoundHash;
 public:
 	void SetSpawnPos(CTransform::TRANSFORM_DESC tTransformDesc);
 public:
