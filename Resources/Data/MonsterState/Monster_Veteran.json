@@ -585,7 +585,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 6.0,
+                        "fMinTime": 10.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [
@@ -615,7 +615,7 @@
                             },
                             "feat": {
                                 "IsExecuted": false,
-                                "IsOnce": false,
+                                "IsOnce": true,
                                 "strFeature": "feat_trigger_dissolve",
                                 "tParam": {
                                     "bParam": [

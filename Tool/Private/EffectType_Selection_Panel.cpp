@@ -357,6 +357,23 @@ void CEffectType_Selection_Panel::TransformEffect(CToolObject* pGo)
 			m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
 		}
 
+		else if (ImGui::Button("Xibi"))
+		{
+			Position = Vec3(250.f, 270, -250.f);
+			pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+
+			m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+		}
+
+
+		else if (ImGui::Button("LianHuo"))
+		{
+			Position = Vec3(0.f, 750.f, 0.f);
+			pTransform->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+
+			m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_Info(TRANSFORM_INFO_STATE::POS, Position);
+		}
+
 		ImGui::SameLine(); 
 
 		if (ImGui::Button("RollBack"))
