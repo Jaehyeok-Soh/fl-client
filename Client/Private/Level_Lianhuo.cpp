@@ -470,7 +470,7 @@ HRESULT CLevel_Lianhuo::Ready_Lights()
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
+		desc.vDirection = Vec3{ 0.016, -0.418, 0.909 };
 		desc.vDiffuse = Vec4(0.9f, 0.8f, 0.7f, 1.f);
 		desc.vAmbient = Vec4(0.3f, 0.1f, 0.1f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
@@ -584,6 +584,7 @@ HRESULT CLevel_Lianhuo::Ready_Octree()
 
 	return S_OK;
 }
+
 HRESULT CLevel_Lianhuo::Ready_Camera_Setting(const _uint iLevelIndex)
 {
 	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);

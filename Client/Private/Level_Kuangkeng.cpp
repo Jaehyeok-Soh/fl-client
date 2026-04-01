@@ -382,13 +382,30 @@ HRESULT CLevel_Kuangkeng::Ready_Lights()
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vDirection = Vec3{ 0.577f, -0.577f, 0.577f };
+		desc.vDiffuse = Vec4(0.58f, 0.66f, 0.78f, 1.f);
+		desc.vAmbient = Vec4(0.07f, 0.08f, 0.12f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
 			return E_FAIL;
+	}
+
+	// Fog
+	{
+		auto& fogDesc = m_pGameInstance->Get_FogParamDesc();
+		fogDesc.vHighColor = Vec4(0.53f, 0.53f, 1.f, 1.f);
+		fogDesc.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
+		fogDesc.fFogStart = 25.5f;
+		fogDesc.fFogEnd = 500.f;
+		fogDesc.fFogDensity = 0.f;
+		fogDesc.fFogMaxOpacity = 0.2f;
+		fogDesc.fFogBaseHeight = -35.387f;
+		fogDesc.fFogHeightFalloff = 0.111f;
+		fogDesc.fFogHeightDensity = 0.0127f;
+		fogDesc.fFogNoiseScale = 1.f;
+		fogDesc.fFogNoiseSpeed = 0.189f;
+		m_pGameInstance->Commit_FogParam();
 	}
 
 	return S_OK;
