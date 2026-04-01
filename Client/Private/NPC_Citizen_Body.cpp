@@ -227,7 +227,7 @@ void CNPC_Citizen_Body::Update_Priority(_float fTimeDelta)
 
 void CNPC_Citizen_Body::Update(_float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
+	//Super::Update(fTimeDelta);
 
 	m_tDissolveDesc.Update(fTimeDelta);
 }
