@@ -121,6 +121,16 @@ HRESULT CBoss_Lianhuo::Ready_GlobalEvent()
 						}
 						return S_OK;
 					}
+					case TO_HASH("ResetDirection"):
+					{
+						/* Setting */
+						Change_State_ForDirecting(EStateForDirecting::Idle);
+						CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>();
+						pCCT->SetFootPosition(Vec3(3.473f,600.256f,-7.031f));
+						CTransform* pTs = Get_Component<CTransform>();
+						pTs->Rotation(0.f,0.f,0.f);
+					}
+					break;
 					default:
 						break;
 					}
