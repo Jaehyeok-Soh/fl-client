@@ -118,6 +118,9 @@ HRESULT CBoss_Xibi::Ready_GlobalEvent()
 							MSG_BOX(" Boss 연출 Direction 실패 ");
 							return E_FAIL;
 						}
+
+						m_pGameInstance->Play_OneShot(ENUM_TO_UINT(ELevelType::STATIC), TO_HASH("sfx_boss_Xibi_vo_kr_skill07_Direction"), 1.f , 1.f);
+
 						return S_OK;
 					}
 					default:

@@ -31,14 +31,15 @@
 #include "GameInstance.h"
 
 CBoss_Lianhuo::CBoss_Lianhuo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: Super(pDevice, pDeviceContext)
+	: Super(pDevice, pDeviceContext), m_isDirectingSoundStart{false}
+	, m_fAccDT{0.f}
 {
 	m_eMonsterType = EMonster_Type::Lianhuo;
 }
 
 
 CBoss_Lianhuo::CBoss_Lianhuo(const CBoss_Lianhuo& rhs)
-	: Super(rhs)
+	: Super(rhs) , m_isDirectingSoundStart{rhs.m_isDirectingSoundStart }, m_fAccDT{rhs.m_fAccDT }
 {
 	m_arrStateIndex.fill(-1);
 }
@@ -119,8 +120,14 @@ HRESULT CBoss_Lianhuo::Ready_GlobalEvent()
 							MSG_BOX("Lianhuo Boss Direction State ½ÇÆÐ ");
 							return E_FAIL;
 						}
+
+						m_pGameInstance->Play_OneShot(ENUM_TO_UINT(ELevelType::STATIC), TO_HASH("sfx_boss_Lianhuo_skill03_pre"), 1.f, 1.f);
+
+						m_isDirectingSoundStart = true;
+
 						return S_OK;
 					}
+					break;
 					case TO_HASH("ResetDirection"):
 					{
 						/* Setting */
@@ -129,6 +136,11 @@ HRESULT CBoss_Lianhuo::Ready_GlobalEvent()
 						pCCT->SetFootPosition(Vec3(3.473f,600.256f,-7.031f));
 						CTransform* pTs = Get_Component<CTransform>();
 						pTs->Rotation(0.f,0.f,0.f);
+					}
+					case TO_HASH("DirectionSound"):
+					{
+
+						return S_OK;
 					}
 					break;
 					default:
@@ -213,6 +225,19 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 	{
 		_int iIndex = pActionState->Get_StateIndex("GimmikCamera");
 		pActionState->Change_State(iIndex);
+	}
+
+
+
+	if (m_isDirectingSoundStart == true)
+	{
+		m_fAccDT += fTimeDelta;
+		if (m_fAccDT >= 1.f)
+		{
+			m_pGameInstance->Play_OneShot(ENUM_TO_UINT(ELevelType::LIANHUO), TO_HASH("sfx_boss_Lianhuo_skill03_cast"), 0.3f, 1.f);
+			m_isDirectingSoundStart = false;
+			m_fAccDT = 0.f;
+		}
 	}
 }
 
