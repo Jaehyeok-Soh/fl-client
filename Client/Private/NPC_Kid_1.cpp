@@ -207,7 +207,7 @@ CNPC_Base::NPC_DESC CNPC_Kid_1::Get_PreSetDesc(_uint iLevelId)
 
 	npcDesc.wstrNPCText.clear();
 	npcDesc.wstrNPCName = L"울고있는 아이";
-	npcDesc.vUITextrOffset = { 0.f,2.f,0.f };
+	npcDesc.vUITextrOffset = { 0.f,1.5f,0.f };
 
 
 	npcDesc.wstrBodyModelTag = g_wszNPC_Kid_1_Model_Prototype_Tag;

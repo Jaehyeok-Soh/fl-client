@@ -207,7 +207,7 @@ CNPC_Base::NPC_DESC CNPC_Veteran::Get_PreSetDesc(_uint iLevelId)
 
 	npcDesc.wstrNPCText.clear();
 	npcDesc.wstrNPCName = L"º£Å×¶û ¿ù¼® »ç³É²Û";
-	npcDesc.vUITextrOffset = { 0.f,3.f,0.f };
+	npcDesc.vUITextrOffset = { 0.f,2.f,0.f };
 
 	npcDesc.wstrBodyModelTag = g_wszNPC_Veteran_Model_Prototype_Tag;
 	npcDesc.wstrPartBodyPrototypeTag = g_wszNPC_Veteran_Body_Prototype_Tag;
