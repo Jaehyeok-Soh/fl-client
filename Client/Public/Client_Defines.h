@@ -821,6 +821,11 @@ namespace Client
 
 	}UI_QTE_PREFAB_DATA;
 
+	typedef struct tagUIBossSkillPrefabData
+	{
+
+	}UI_BOSS_SKILL_PREFAB_DATA;
+
 	typedef std::variant<
 		UI_NAMEPLATE_PREFAB_DATA,
 		UI_DAMAGEFONT_PREFAB_DATA,
@@ -830,7 +835,8 @@ namespace Client
 		UI_TUTORIAL_POPUP_PREFAB_DATA,
 		UI_LEVEL_FADE_PREFAB_DATA,
 		UI_NPC_TEXT_BUBBLE_PREFAB_DATA,
-		UI_QTE_PREFAB_DATA
+		UI_QTE_PREFAB_DATA,
+		UI_BOSS_SKILL_PREFAB_DATA
 	> UI_PREFAB_VARIANT;
 
 	typedef struct tagUIPrefabData

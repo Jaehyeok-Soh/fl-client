@@ -350,6 +350,12 @@ enum class EUITextSubClassType
 	MONSTER_WAVE_TIMER_TEXT,
 	MONSTER_WAVE_END,
 
+	// 보스 스킬
+	BOSS_SKILL_BEGIN,
+	BOSS_SKILL_TEXT,
+	BOSS_SKILL_WORLD_TEXT,
+	BOSS_SKILL_END,
+	
 	END
 };
 
@@ -485,6 +491,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 		{ EUITextSubClassType::MONSTER_WAVE_TIMER_TEXT,					"MONSTER_WAVE_TIMER_TEXT" },
 		{ EUITextSubClassType::MONSTER_WAVE_END,					"MONSTER_WAVE_END" },
 
+		{ EUITextSubClassType::BOSS_SKILL_BEGIN,					"BOSS_SKILL_BEGIN" },
+		{ EUITextSubClassType::BOSS_SKILL_TEXT,					"BOSS_SKILL_TEXT" },
+		{ EUITextSubClassType::BOSS_SKILL_WORLD_TEXT,					"BOSS_SKILL_WORLD_TEXT" },
+		{ EUITextSubClassType::BOSS_SKILL_END,					"BOSS_SKILL_END" },
+
 		{ EUITextSubClassType::END,									"END" },
 	})
 	inline EUITextSubClassType StringToUITextSubClassType(const std::string& str)
@@ -617,6 +628,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUITextSubClassType,
 	else if (str == "MONSTER_WAVE_INFO_TEXT")					return EUITextSubClassType::MONSTER_WAVE_INFO_TEXT;
 	else if (str == "MONSTER_WAVE_TIMER_TEXT")					return EUITextSubClassType::MONSTER_WAVE_TIMER_TEXT;
 	else if (str == "MONSTER_WAVE_END")							return EUITextSubClassType::MONSTER_WAVE_END;
+	
+	else if (str == "BOSS_SKILL_BEGIN")							return EUITextSubClassType::BOSS_SKILL_BEGIN;
+	else if (str == "BOSS_SKILL_TEXT")							return EUITextSubClassType::BOSS_SKILL_TEXT;
+	else if (str == "BOSS_SKILL_WORLD_TEXT")							return EUITextSubClassType::BOSS_SKILL_WORLD_TEXT;
+	else if (str == "BOSS_SKILL_END")							return EUITextSubClassType::BOSS_SKILL_END;
 	
 	else if (str == "END")										return EUITextSubClassType::END;
 
@@ -756,6 +772,11 @@ inline std::string UITextSubClassTypeToString(EUITextSubClassType e)
 	case EUITextSubClassType::MONSTER_WAVE_INFO_TEXT:				return "MONSTER_WAVE_INFO_TEXT";
 	case EUITextSubClassType::MONSTER_WAVE_TIMER_TEXT:				return "MONSTER_WAVE_TIMER_TEXT";
 	case EUITextSubClassType::MONSTER_WAVE_END:						return "MONSTER_WAVE_END";
+	
+	case EUITextSubClassType::BOSS_SKILL_BEGIN:						return "BOSS_SKILL_BEGIN";
+	case EUITextSubClassType::BOSS_SKILL_TEXT:						return "BOSS_SKILL_TEXT";
+	case EUITextSubClassType::BOSS_SKILL_WORLD_TEXT:				return "BOSS_SKILL_WORLD_TEXT";
+	case EUITextSubClassType::BOSS_SKILL_END:						return "BOSS_SKILL_END";
 	
 	default:														return "END";
 	}
@@ -1112,6 +1133,14 @@ enum class EUIDImageSubClassType
 	MONSTER_WAVE_TIMER_BG,
 	MONSTER_WAVE_END,
 
+	BOSS_SKILL_BEGIN,
+	BOSS_SKILL_BG,
+	BOSS_SKILL_BG_DECO,
+	BOSS_SKILL_BG_ICON,
+	BOSS_SKILL_BG_LINE,
+	BOSS_SKILL_BG_TOP_LINE,
+	BOSS_SKILL_END,
+
 	END
 };
 
@@ -1326,6 +1355,15 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	{ EUIDImageSubClassType::MONSTER_WAVE_NODE_LINE,					"MONSTER_WAVE_NODE_LINE" },
 	{ EUIDImageSubClassType::MONSTER_WAVE_TIMER_BG,						"MONSTER_WAVE_TIMER_BG" },
 	{ EUIDImageSubClassType::MONSTER_WAVE_END,							"MONSTER_WAVE_END" },
+	
+	
+	{ EUIDImageSubClassType::BOSS_SKILL_BEGIN,							"BOSS_SKILL_BEGIN" },
+	{ EUIDImageSubClassType::BOSS_SKILL_BG,								"BOSS_SKILL_BG" },
+	{ EUIDImageSubClassType::BOSS_SKILL_BG_DECO,						"BOSS_SKILL_BG_DECO" },
+	{ EUIDImageSubClassType::BOSS_SKILL_BG_ICON,						"BOSS_SKILL_BG_ICON" },
+	{ EUIDImageSubClassType::BOSS_SKILL_BG_LINE,						"BOSS_SKILL_BG_LINE" },
+	{ EUIDImageSubClassType::BOSS_SKILL_BG_TOP_LINE,					"BOSS_SKILL_BG_TOP_LINE" },
+	{ EUIDImageSubClassType::BOSS_SKILL_END,							"BOSS_SKILL_END" },
 
 
 	{ EUIDImageSubClassType::END,								"END" }
@@ -1542,6 +1580,14 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EUIDImageSubClassType,
 	if (str == "MONSTER_WAVE_NODE_LINE")				return EUIDImageSubClassType::MONSTER_WAVE_NODE_LINE;
 	if (str == "MONSTER_WAVE_TIMER_BG")					return EUIDImageSubClassType::MONSTER_WAVE_TIMER_BG;
 	if (str == "MONSTER_WAVE_END")						return EUIDImageSubClassType::MONSTER_WAVE_END;
+	
+	if (str == "BOSS_SKILL_BEGIN")						return EUIDImageSubClassType::BOSS_SKILL_BEGIN;
+	if (str == "BOSS_SKILL_BG")							return EUIDImageSubClassType::BOSS_SKILL_BG;
+	if (str == "BOSS_SKILL_BG_DECO")					return EUIDImageSubClassType::BOSS_SKILL_BG_DECO;
+	if (str == "BOSS_SKILL_BG_ICON")					return EUIDImageSubClassType::BOSS_SKILL_BG_ICON;
+	if (str == "BOSS_SKILL_BG_LINE")					return EUIDImageSubClassType::BOSS_SKILL_BG_LINE;
+	if (str == "BOSS_SKILL_BG_TOP_LINE")				return EUIDImageSubClassType::BOSS_SKILL_BG_TOP_LINE;
+	if (str == "BOSS_SKILL_END")						return EUIDImageSubClassType::BOSS_SKILL_END;
 
 	if (str == "END")									return EUIDImageSubClassType::END;
 	return EUIDImageSubClassType::NONE_OWNER;
@@ -1760,6 +1806,14 @@ inline const char* UIDImageSubTypeToString(EUIDImageSubClassType type)
 	case EUIDImageSubClassType::MONSTER_WAVE_NODE_LINE:					return "MONSTER_WAVE_NODE_LINE";
 	case EUIDImageSubClassType::MONSTER_WAVE_TIMER_BG:					return "MONSTER_WAVE_TIMER_BG";
 	case EUIDImageSubClassType::MONSTER_WAVE_END:						return "MONSTER_WAVE_END";
+	
+	case EUIDImageSubClassType::BOSS_SKILL_BEGIN:						return "BOSS_SKILL_BEGIN";
+	case EUIDImageSubClassType::BOSS_SKILL_BG:						return "BOSS_SKILL_BG";
+	case EUIDImageSubClassType::BOSS_SKILL_BG_DECO:						return "BOSS_SKILL_BG_DECO";
+	case EUIDImageSubClassType::BOSS_SKILL_BG_ICON:						return "BOSS_SKILL_BG_ICON";
+	case EUIDImageSubClassType::BOSS_SKILL_BG_LINE:						return "BOSS_SKILL_BG_LINE";
+	case EUIDImageSubClassType::BOSS_SKILL_BG_TOP_LINE:						return "BOSS_SKILL_BG_TOP_LINE";
+	case EUIDImageSubClassType::BOSS_SKILL_END:						return "BOSS_SKILL_END";
 
 	case EUIDImageSubClassType::END:									return "END";
 	default:															return "NONE_OWNER";

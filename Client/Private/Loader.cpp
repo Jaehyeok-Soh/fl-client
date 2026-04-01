@@ -210,6 +210,7 @@
 #include "UINpcTextBubble_Text.h"
 #include "UIQTE_Text.h"
 #include "UIWaveTimer_Text.h"
+#include "UIBossSkill_Text.h"
 // 그냥 이미지
 #include "UIJust_Image.h"
 // 다이나믹 이미지 
@@ -243,6 +244,7 @@
 #include "UIQuickSlot_Image.h"
 #include "UIQTE_Image.h"
 #include "UIWaveTimer_Image.h"
+#include "UIBossSkill_Image.h"
 //=================
 // Resource
 //=================
@@ -1150,6 +1152,8 @@ HRESULT CLoader::Loading_For_Logo()
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WaveTimerImage",			CUIWaveTimer_Image::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WaveTimerText",			CUIWaveTimer_Text::Create(m_pDevice, m_pDeviceContext));
 	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_WaveTimerProgress",		CUIWaveTimer_Progress::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossSkillImage",			CUIBossSkill_Image::Create(m_pDevice, m_pDeviceContext));
+	ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_UI_BossSkillText",			CUIBossSkill_Text::Create(m_pDevice, m_pDeviceContext));
 
 #pragma endregion
 	
