@@ -356,8 +356,8 @@ void CUITutorial_Pannel_Image::Initialize_Visible_Event()
 		break;
 
 	case DTO::EUIDImageSubClassType::TUTORIAL_PANNEL_TOP_ICON:		// ? ¾ÆÀÌÄÜ
-		m_pGameInstance->Play_OneShot_Delayed(0, Engine_Utils::ToHash("UI_TUTORIAL_PANNEL_OPEN"), 1.f, 1.f);
-		m_pGameInstance->Play_OneShot(0, TO_HASH("UI_TUTORIAL_PANNEL_OPEN_TRIGGER"), 1.f);
+		m_pGameInstance->Play_OneShot_Delayed(0, Engine_Utils::ToHash("UI_TUTORIAL_PANNEL_OPEN"), 0.5f, 0.5f);
+		m_pGameInstance->Play_OneShot(0, TO_HASH("UI_TUTORIAL_PANNEL_OPEN_TRIGGER"), 0.5f);
 		Ready_Lerp_Movement(Vec2{ 0.f, 235.5 }, Vec2{ 0.f, 0.f }, 1.f, 3.f, 0.5f, true);
 		Ready_LerpChange(0.3f, 2.f, 1.f, 1.f, 0.f);
 		m_fAlpha_Ratio = 1.f;

@@ -210,7 +210,7 @@ void CUIQuest_Text::Bind_Events()
 						UIEVENT_DESC Desc = {};
 						Desc.eEventID = EUIEventID::QUEST_NAME_CHANGE;
 						m_pUIManager->Get_UIEvents().Broadcast(Desc);
-						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_QUEST_CHANGE"), 1.f);
+						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_QUEST_CHANGE"), 0.5f);
 						this->m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
 					}
 					break;
