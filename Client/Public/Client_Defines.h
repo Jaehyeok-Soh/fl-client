@@ -421,12 +421,13 @@ namespace Client
 		Rock,
 		Water,
 		Env,
-		RGBMapping,
-		DEBUG,
-		SkyBox,
-		Shadow,
-		LightObject,
-		CitizenFace,
+		RGBMapping,//10
+		DEBUG,//11
+		SkyBox,//12
+		Shadow, //13
+		LightObject, //14
+		//CitizenFace, // 15
+		RAGMapping2, // 15
 		END,
 	};
 

@@ -37,7 +37,8 @@ public:
 	enum WeaponDescFlag : Flags
 	{
 		WF_RGBMappingOn = 0x000001,
-		WF_Dissolve		= 0x000002
+		WF_Dissolve		= 0x000002,
+		WF_RGBMappingOn2 = 0x000004,
 	};
 
 	typedef struct tagWeaponDesc : public CPartObject::PARTOBJ_DESC

@@ -102,7 +102,7 @@ _bool CState_ComboBase::Can_CheckKey(const _float fTimeDelta)
 
 _bool CState_ComboBase::Can_Captablity_Special() const
 {
-	return (KEY_BUTTON_DOWN(DIK_LSHIFT));
+	return (!KEY_BUTTON_NONE(DIK_LSHIFT));
 }
 
 void CState_ComboBase::Change_NextCombo()
@@ -146,14 +146,17 @@ void CState_ComboBase::Change_NextCombo()
 	switch (m_iComboCount)
 	{
 	case ENUM_TO_UINT(ANIM::SECOND):
+		End_First();
 		Start_Second();
 		break;
 
 	case ENUM_TO_UINT(ANIM::THIRD):
+		End_Second();
 		Start_Third();
 		break;
 
 	case ENUM_TO_UINT(ANIM::FOURTH):
+		End_Third();
 		Start_Fourth();
 		break;
 	}
@@ -176,6 +179,7 @@ void CState_ComboBase::Change_FirstCombo()
 
 	m_TChargeCount.x = 0.f;
 
+	End_Fourth();
 	Start_First();
 
 	Request_ChangeAnimation(m_vecMainAnims[0], false, false, true);
@@ -217,6 +221,11 @@ void CState_ComboBase::Check_Combo()
 	{
 		Change_NextCombo();
 	}
+}
+
+void CState_ComboBase::Start_Fourth()
+{
+	//Get_OwnerObject()->Play_GhostTrail();
 }
 
 void CState_ComboBase::Update_byMainAnim(const _float fTimeDelta)

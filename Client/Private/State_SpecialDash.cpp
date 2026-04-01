@@ -89,8 +89,9 @@ void CState_SpecialDash::Update(const _float fTimeDelta)
     // pivot 갱신 및 자연스럽게 바라보도록
     if (m_fStateElapsed >= 23.f / ANIMTIC)
     {
-       Vec3 vNewPivot = static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Get_PivotPos();
+        Get_OwnerObject()->Stop_GhostTrail();
 
+       Vec3 vNewPivot = static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Get_PivotPos();
        SetupLook_PointLerp(fTimeDelta, vNewPivot, 10.f);
     }
 

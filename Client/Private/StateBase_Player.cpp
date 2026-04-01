@@ -546,16 +546,13 @@ _bool CStateBase_Player::Check_Hit(const _float fTimeDelta)
 _bool CStateBase_Player::Check_FKey(const _float fTimeDelta)
 {
 	if (static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Can_FKeyEvent() &&												// event가 켜졌는디
-		Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_CheckF) &&			// 이번 state에서 f키 check 할건디
+		Check_OnGround() &&			// 이번 state에서 f키 check 할건디
 		KEY_BUTTON_DOWN(DIK_F))														// f키를 눌렀다면
 	{
 		//todo iKeyEvent 검사후 state 관리
 		Change_PlayerState(ENUM_TO_UINT(CPlayer::State::CONDEMN));
 		return true;
 	}
-
-	else if (KEY_BUTTON_DOWN(DIK_F))
-		int a = 0;
 
 	return false;
 }

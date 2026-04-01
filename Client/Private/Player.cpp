@@ -910,8 +910,8 @@ void CPlayer::Set_GhostTrailDesc()
 
     CModel::GHOST_TRAIL_DESC desc{};
     desc.iMaxCount = 13;
-    desc.fLifeTime = 0.4f; // 0.5f
-    desc.fInterval = 0.13f;
+    desc.fLifeTime = 0.4f; // 0.5f // 0.4f // 0.3f
+    desc.fInterval = 0.11f; //0.11f
     desc.vColor = Vec4(1.00f, 0.92f, 0.70f, 0.26f);
     pBody->Get_Component<CModel>()->Set_GhostTrailDesc(desc);
 }
@@ -2067,10 +2067,10 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
         weaponDesc.bMianWeapon = false;
         weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-        weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
-        weaponDesc.vColorB = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
-        weaponDesc.vColorG = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
 
+        weaponDesc.vColorR = Vec4(0.f, 0.f, 0.f, 1.f);
+        weaponDesc.vColorG = Vec4(0.f, 0.f, 0.f, 1.f);          //0.686686f, 0.686686f, 0.686686f, 1.f
+        weaponDesc.vColorB = Vec4(0.87f, 0.87f, 0.74f, 1.f);
 
         weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
         weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));

@@ -651,7 +651,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.eType = EModelType::STATIC;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale
-		desc.wstrModelFolderName = L"Weapon_MoonSkill";					// PlayerMoon // Pino
+		desc.wstrModelFolderName = L"Weapon_MoonSkill";					// PlayerMoon // Pino //Weapon_MoonSkill//  fff
 		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSkillWeap", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
@@ -1356,6 +1356,7 @@ HRESULT CLoader::Loading_For_Lianhuo()
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 	Matrix matPreTransformScale150 = Matrix::CreateScale(1.5f, 1.5f, 1.5f);
+	Matrix matPreTransformScale100 = Matrix::CreateScale(100.f, 100.f, 100.f);
 	Matrix matPreTransformIdentity = Matrix::Identity;
 	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
 #pragma endregion
