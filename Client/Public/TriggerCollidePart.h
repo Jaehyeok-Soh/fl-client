@@ -85,7 +85,7 @@ public:
 	// getter setter funcs
 public:
 	const Vec3& Get_CollidedPos() const { return m_vCollidedPos; }
-	const Vec3& Get_Collided_ObjPos();
+	Vec3 Get_Collided_ObjPos();
 
 private:
 	HRESULT Ready_Components(TRIGGER_COLLIDEPART_DESC* pDesc);

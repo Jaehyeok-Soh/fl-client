@@ -2320,9 +2320,9 @@ RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT
 	desc.matLocalTransform = bone->Get_Transform();
 
 	CBone* child = Get_Bone(PhysicsJointNames[eChildJoint].c_str());
-	if (child != nullptr)
-		desc.fHeight = child->Get_Transform().Translation().Length();
-	else
+	//if (child != nullptr)
+	//	desc.fHeight = child->Get_Transform().Translation().Length();
+	//else
 		desc.fHeight = 0.05f;
 
 	switch (eJoint)
