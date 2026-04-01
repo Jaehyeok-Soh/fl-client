@@ -121,7 +121,7 @@ HRESULT CTriggerBox_MonsterWaveSpawner::Register_Pool(_uint iLevelId, _uint iFin
 	case DTO::EMakeMonsterType::Veteran:
 	{
 		auto desc = CMonster_Veteran::Get_PreSetDesc(iLevelId);
-		m_pGameInstance->Regist_Pool(iLevelId, g_wszPool_Monster_Veteran, g_wszMonstereLayer, ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Veteran_Prototype_Tag, &desc, numPool + 1);
+		m_pGameInstance->Regist_Pool(iLevelId, g_wszPool_Monster_Veteran, g_wszBossLayer, ENUM_TO_UINT(ELevelType::STATIC), g_wszMonster_Veteran_Prototype_Tag, &desc, numPool + 1);
 	}
 	break;
 	case DTO::EMakeMonsterType::Xibi:
