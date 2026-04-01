@@ -123,8 +123,10 @@ protected:
 	int32_t m_iFlip						= { ENUM_TO_UINT(EUIFlip::NONE) };
 	_float m_fBrightness				= {};
 
+
 private:
 	_float m_fOriginAlpha = {};
+	_float m_fAll_Controll_Alpha = { 1.f };
 private:
 	_float m_fTimeAcc = {};
 
@@ -172,7 +174,6 @@ private:
 
 	Vec4 m_vChangeColor_OriginColor = {};
 	Vec4 m_vChangeColor_OriginGradColor = {};
-
 
 	_bool m_isEventVisible = { false };
 
