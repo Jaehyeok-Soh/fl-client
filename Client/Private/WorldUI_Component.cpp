@@ -71,7 +71,6 @@ void CWorldUI_Component::Proj_World_To_Screen()
 		if (m_strBoneName == "")
 		{
 			vWorldPos = m_pTargetObject->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::POS);
-			vWorldPos += m_vTargetWorldOffset;
 		}
 		else
 		{
@@ -87,6 +86,8 @@ void CWorldUI_Component::Proj_World_To_Screen()
 	{
 		vWorldPos = m_vTargetPos;
 	}
+
+	vWorldPos += m_vTargetWorldOffset;
 
 	Vec4 clip = Vec4(vWorldPos.x, vWorldPos.y, vWorldPos.z, 1.f);
 	clip = Vec4::Transform(clip, m_pGameInstance->Get_ViewMatrix());

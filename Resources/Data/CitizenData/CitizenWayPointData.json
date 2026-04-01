@@ -242,7 +242,7 @@
             "Start PitchYawRoll": {
                 "Pitch": 0.0,
                 "Roll": 0.0,
-                "Yaw": -86.0
+                "Yaw": 0.0
             }
         },
         {
@@ -302,7 +302,7 @@
             "Start PitchYawRoll": {
                 "Pitch": 0.0,
                 "Roll": 0.0,
-                "Yaw": 90.0
+                "Yaw": 0.0
             }
         }
     ]

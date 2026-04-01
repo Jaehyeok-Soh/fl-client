@@ -737,6 +737,7 @@ HRESULT CBuilder_Map::Batch_Player(const DTO::TMap_MapObjectData& tData)
 	pCCT->SetFootPosition(tSRT.vPosition);
 	pTs->Set_Info(TRANSFORM_INFO_STATE::POS, pCCT->GetFootPosition());
 
+	pTs->Rotation(tSRT.vQuat);
 
 	return S_OK;
 }

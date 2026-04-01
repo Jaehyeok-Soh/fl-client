@@ -16,7 +16,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Linear",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -25,6 +28,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Linear",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "On Reach Event": [
@@ -51,7 +56,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -60,6 +68,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -78,7 +88,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -87,6 +100,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -105,7 +120,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -114,6 +132,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -132,7 +152,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -141,6 +164,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -159,7 +184,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -168,6 +196,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -186,7 +216,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -195,6 +228,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -213,7 +248,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -222,6 +260,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -240,7 +280,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -249,6 +292,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -267,7 +312,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -276,6 +324,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -294,7 +344,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -303,6 +356,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -321,7 +376,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -330,6 +388,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -348,7 +408,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -357,6 +420,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -375,7 +440,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -384,6 +452,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -402,7 +472,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -411,6 +484,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -429,7 +504,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -438,6 +516,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -456,7 +536,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -465,6 +548,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -483,7 +568,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -492,6 +580,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -510,7 +600,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -519,6 +612,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -537,7 +632,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -546,6 +644,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -564,7 +664,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -573,6 +676,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -591,7 +696,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -600,6 +708,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -618,7 +728,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -627,6 +740,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -645,7 +760,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -654,6 +772,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -672,7 +792,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -681,6 +804,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -727,7 +852,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -736,6 +864,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -754,7 +884,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -763,6 +896,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -781,7 +916,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -790,6 +928,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -808,7 +948,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -817,6 +960,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -835,7 +980,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -844,6 +992,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -862,7 +1012,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -871,6 +1024,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -889,7 +1044,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -898,6 +1056,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -916,7 +1076,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -925,6 +1088,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -943,7 +1108,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -952,6 +1120,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -970,7 +1140,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -979,6 +1152,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -997,7 +1172,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1006,6 +1184,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1024,7 +1204,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1033,6 +1216,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1051,7 +1236,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1060,6 +1248,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1078,7 +1268,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1087,6 +1280,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1105,7 +1300,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1114,6 +1312,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1132,7 +1332,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1141,6 +1344,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1159,7 +1364,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1168,6 +1376,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1186,7 +1396,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1195,6 +1408,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1213,7 +1428,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1222,6 +1440,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1240,7 +1460,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 0.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1249,6 +1472,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "Pitch Yaw Roll": {
@@ -1267,7 +1492,10 @@
                 "Fov": 60.0,
                 "Fov Lerp Type": "NONE",
                 "HoldTime": 7.0,
+                "Is Use Rotation": true,
+                "Look At Layer Tag": "",
                 "Look At Lerp Type": "Curve",
+                "Look At Level Type": -1,
                 "Look At Offset": {
                     "X": 0.0,
                     "Y": 0.0,
@@ -1276,6 +1504,8 @@
                 "Look At Target": "DEFAULT",
                 "Look At Target Bone Index": -1,
                 "Move Lerp Type": "Curve",
+                "MoveBase Layer Tag": "",
+                "MoveBase Level Type": -1,
                 "MoveBase Target": "DEFAULT",
                 "MoveBase Target Bone Index": -1,
                 "On Reach Event": [
