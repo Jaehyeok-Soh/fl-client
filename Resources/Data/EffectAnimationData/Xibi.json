@@ -2962,11 +2962,179 @@
                     "iSimulationType": 1,
                     "strAnimTag": "Animation_Xibi_Condemned_Die",
                     "strDescription": "",
+                    "strEffectTag": "Moon_Player_WeaknessAttack_End",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 0.10000000149011612
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 42.0,
+                    "iAnimIndex": 0,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Condemned_Die",
+                    "strDescription": "",
                     "strEffectTag": "Moon_Player_WeaknessAttack_End2",
                     "vOffset": {
                         "x": 0.0,
                         "y": 1.0,
                         "z": 0.10000000149011612
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 12.699999809265137,
+                    "iAnimIndex": 2,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Condemned_EndLoop",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 4.0,
+                        "y": 0.0,
+                        "z": -4.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 17.700000762939453,
+                    "iAnimIndex": 2,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Condemned_EndLoop",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": 4.0,
+                        "y": 0.0,
+                        "z": -2.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 15.899999618530273,
+                    "iAnimIndex": 2,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Condemned_EndLoop",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": -5.0,
+                        "y": 0.0,
+                        "z": -1.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 17.600000381469727,
+                    "iAnimIndex": 2,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Condemned_EndLoop",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_Lightning_Oneshot",
+                    "vOffset": {
+                        "x": -2.0,
+                        "y": 0.0,
+                        "z": -2.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 10.0,
+                    "iAnimIndex": 2,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Xibi_Condemned_EndLoop",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_Xibi_WindLightning1",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "vRotation": {
                         "x": 0.0,
