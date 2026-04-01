@@ -184,7 +184,8 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	if (m_eState != State::NONE)
 	{
 		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
+		if (m_pGameInstance->Get_CurrentLevelIndex() != ENUM_TO_UINT(ELevelType::TAVERN))
+			m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 	}
 
 	// state에 따른 combineworld 업데이트

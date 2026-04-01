@@ -265,7 +265,8 @@ HRESULT CLevel_Square::Ready_Lights()
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
+		desc.vDirection = Vec3{ 0.3f, -1.f, 0.f };
+		desc.vDirection.Normalize();
 		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
 		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
@@ -296,8 +297,6 @@ HRESULT CLevel_Square::Ready_Lights()
 		desc.fFogNoiseSpeed = 0.2f;
 		m_pGameInstance->Commit_FogParam();
 	}
-	return S_OK;
-
 	return S_OK;
 }
 

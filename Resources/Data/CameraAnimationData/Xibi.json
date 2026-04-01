@@ -219,6 +219,221 @@
                     },
                     "strAnimTag": "Animation_Xibi_Skill10",
                     "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 129.20001220703125,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 33,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.20000000298023224,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 149.4000244140625,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 33,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.20000000298023224,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 173.0,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 33,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.20000000298023224,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 201.80003356933594,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 33,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.20000000298023224,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 219.00001525878906,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 33,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.20000000298023224,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 1.0,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 1.0
+                    },
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "New Camera Event"
                 }
             ]
         }
