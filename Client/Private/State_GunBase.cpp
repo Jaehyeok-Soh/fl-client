@@ -82,6 +82,7 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 
     // cameara state change
     static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::GUN));
+    static_cast<CPlayer*>(Get_OwnerObject())->Set_CanQuickSlopOpen(false);
 
     return S_OK;
 }
