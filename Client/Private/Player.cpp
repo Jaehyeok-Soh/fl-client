@@ -730,7 +730,7 @@ void CPlayer::Set_FKeyEvent(_uint iEvenet, _bool bOn)
     }
 }
 
-const Vec3& CPlayer::Get_CollidedMonster_Position()
+Vec3 CPlayer::Get_CollidedMonster_Position()
 {
     if (CTriggerCollidePart* pCollider = Get_Part<CTriggerCollidePart>(Part::DETECTCOLLIDER))
     {

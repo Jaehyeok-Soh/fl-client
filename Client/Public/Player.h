@@ -200,7 +200,7 @@ public:
 	_float	Get_CamPitch()const;
 
 	void				Set_FKeyEvent(_uint iEvenet, _bool bOn); // f event 활성화 onoff
-	const Vec3&			Get_CollidedMonster_Position();
+	Vec3				Get_CollidedMonster_Position();
 
 	HRESULT				Bind_PlayerInfo(class CShader* pShader = nullptr);
 	SHADER_PLAYER_INFO* Get_PlayerInfo() { return &m_tCBPlayerInfo; }		/* 임시용 */

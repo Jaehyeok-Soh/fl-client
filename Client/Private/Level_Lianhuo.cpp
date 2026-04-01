@@ -378,12 +378,12 @@ HRESULT CLevel_Lianhuo::Ready_ShaderSetting()
 	// Fog
 	{
 		auto& fogDesc = m_pGameInstance->Get_FogParamDesc();
-		fogDesc.vColor = Vec4{ 0.7f, 0.2f, 0.12f, 1.f };
-		fogDesc.vHighColor = Vec4{ 0.7f, 0.2f, 0.12f, 1.f };
+		fogDesc.vColor = Vec4{ 180.f, 80.f, 49.f, 1.f };
+		fogDesc.vHighColor = Vec4{ 0.f, 0.3f, 14.f, 1.f };
 		fogDesc.fFogStart = 0.f;
 		fogDesc.fFogEnd = 500.f;
-		fogDesc.fFogDensity = 0.002f;
-		fogDesc.fFogMaxOpacity = 0.2f;
+		fogDesc.fFogDensity = 0.236f;
+		fogDesc.fFogMaxOpacity = 0.8f;
 		fogDesc.fFogBaseHeight = -5.f;
 		fogDesc.fFogNoiseScale = 0.55f;
 		fogDesc.fFogNoiseSpeed = 0.218f;

@@ -274,6 +274,30 @@ HRESULT CLevel_Square::Ready_Lights()
 			return E_FAIL;
 	}
 
+	// FogDesc
+	{
+		SHADER_FOG_DESC& desc = m_pGameInstance->Get_FogParamDesc();
+		desc.vColor = Vec4(0.35f, 0.35f, 0.35f, 1.f);
+		desc.vHighColor = Vec4(0.31f, 0.31f, 0.31f, 1.f);
+
+		// Distance
+		desc.fFogStart = 100.f;
+		desc.fFogEnd = 430.f;
+		desc.fFogDensity = 0.f;
+		desc.fFogMaxOpacity = 0.2f;
+
+		// Height
+		desc.fFogBaseHeight = -9.f;
+		desc.fFogHeightFalloff = 0.08f;
+		desc.fFogHeightDensity = 0.015f;
+
+		// Noise
+		desc.fFogNoiseScale = 0.15f;
+		desc.fFogNoiseSpeed = 0.2f;
+		m_pGameInstance->Commit_FogParam();
+	}
+	return S_OK;
+
 	return S_OK;
 }
 
