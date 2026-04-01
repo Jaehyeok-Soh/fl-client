@@ -391,8 +391,6 @@ HRESULT CLevel_Kuangkeng::Ready_Lights()
 			return E_FAIL;
 	}
 
-
-
 	return S_OK;
 }
 

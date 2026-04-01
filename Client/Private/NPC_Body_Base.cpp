@@ -122,7 +122,8 @@ void CNPC_Body_Base::Ready_Before_Render(_float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
+	if (m_pGameInstance->Get_CurrentLevelIndex() != ENUM_TO_UINT(ELevelType::TAVERN))
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
 }
 

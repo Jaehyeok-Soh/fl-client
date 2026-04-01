@@ -357,9 +357,10 @@ HRESULT CLevel_Tavern::Ready_Lights()
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
-		desc.vDiffuse = Vec4(0.7f, 0.7f, 0.7f, 1.f);
-		desc.vAmbient = Vec4(0.3f, 0.3f, 0.3f, 1.f);
+		desc.vDirection = Vec3{ 0.2f, -1.f, 0.f };
+		desc.vDirection.Normalize();
+		desc.vDiffuse = Vec4(1.0f, 0.82f, 0.62f, 1.0f);
+		desc.vAmbient = Vec4(0.2f, 0.17f, 0.12f, 1.0f);
 		desc.vSpecular = desc.vDiffuse;
 
 		if (FAILED(m_pGameInstance->Add_Light(desc)))
