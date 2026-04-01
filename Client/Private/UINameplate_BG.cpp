@@ -197,7 +197,7 @@ void CUINameplate_BG::Initialize_InVisible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
-	Ready_Fade(1.f, 1.f, 0.f, 1.f);
+	Ready_Fade(1.f, 1.f, 0.f, 0.f);
 }
 
 _bool CUINameplate_BG::Tick_InVisible_Event(const _float fTimeDelta)
