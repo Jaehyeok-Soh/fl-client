@@ -2072,6 +2072,16 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
         weaponDesc.vColorG = Vec4(0.f, 0.f, 0.f, 1.f);          //0.686686f, 0.686686f, 0.686686f, 1.f
         weaponDesc.vColorB = Vec4(0.87f, 0.87f, 0.74f, 1.f);
 
+        //weaponDesc.vColorR = Vec4(0.f, 0.f, 0.f, 1.f);
+        //weaponDesc.vColorG = Vec4(0.f, 0.f, 0.f, 1.f);          //0.686686f, 0.686686f, 0.686686f, 1.f
+        //weaponDesc.vColorB = Vec4(0.87f, 0.87f, 0.74f, 1.f);
+
+       // weaponDesc.FDescFlag = 0;
+
+        weaponDesc.vColorR = Vec4(0.84375f, 0.84375f, 0.84375f, 1.f);
+        weaponDesc.vColorG = Vec4(0.234375f, 0.234375f, 0.234375f, 1.f);
+        weaponDesc.vColorB = Vec4(0.686686f, 0.686686f, 0.686686f, 1.f);
+
         weaponDesc.matHandOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
         weaponDesc.matHoldOffsetMatrix = Matrix::CreateRotationX(XMConvertToRadians(-90.f));
         if (FAILED(Add_Part(Part::SKILL, ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_GameObject_Part_Sword", &weaponDesc)))

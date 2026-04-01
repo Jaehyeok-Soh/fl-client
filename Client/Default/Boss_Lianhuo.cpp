@@ -351,9 +351,9 @@ HRESULT CBoss_Lianhuo::Ready_Weapon()
 		//weaponDesc.FDescFlag = 0;
 
 		weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
-		weaponDesc.vColorR = Vec4(0.f, 0.f, 0.f, 1.f);	//Vec4(0.083333f, 0.055487f, 0.052951f, 1.f);
-		weaponDesc.vColorG = Vec4(0.f, 0.f, 0.f, 1.f);		//Vec4(0.375f, 0.341628f, 0.341628f, 1.f);
-		weaponDesc.vColorB = Vec4(0.73f, 0.1f, 0.f, 1.f);	//Vec4(0.635417f, 0.117982f, 0.049642f, 1.f);
+		weaponDesc.vColorR = Vec4(0.083333f, 0.055487f, 0.052951f, 1.f);
+		weaponDesc.vColorG = Vec4(0.375f, 0.341628f, 0.341628f, 1.f);
+		weaponDesc.vColorB = Vec4(0.635417f, 0.117982f, 0.049642f, 1.f);
 
 
 		if (FAILED(Add_Part(Part::SWORD, 0, L"Prototype_GameObject_Part_Sword", &weaponDesc)))
