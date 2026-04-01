@@ -3,9 +3,9 @@
     "Objects": [
         {
             "Type": "NORMAL",
-            "eCategory": "MonsterSkill",
+            "eCategory": "BossBasic",
             "eColliderType": "Overlap",
-            "iID": 6,
+            "iID": 7,
             "strTag": "monster_veteran_normal_1",
             "tCombat": {
                 "DamageType": "Physical",
