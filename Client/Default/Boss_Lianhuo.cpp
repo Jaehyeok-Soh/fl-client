@@ -326,7 +326,7 @@ HRESULT CBoss_Lianhuo::Ready_Ability()
 	CStatCom_Boss::BOSS_STAT_DESC desc = {};
 	desc.fCriticalAttack = 30.f;
 	desc.fCriticalRate = 0.4f;
-	desc.fMaxHp = 320000.f;
+	desc.fMaxHp = 200000.f;
 	desc.FStatFlags = CMyStat::StatFlags::None;
 	desc.vecExtraComputeOrder = vector<_uint>{ 0, 2 };
 
@@ -439,8 +439,8 @@ HRESULT CBoss_Lianhuo::Ready_StateIndexForDirecting()
 		return E_FAIL;
 	if (setStateIndex(EStateForDirecting::Condemned_Attacked, "Condemnde_Attacked") == false)
 		return E_FAIL;
-	//if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
-	//	return E_FAIL;
+	if (setStateIndex(EStateForDirecting::Direction, "Screaming") == false)
+		return E_FAIL;
 
 	return S_OK;
 }

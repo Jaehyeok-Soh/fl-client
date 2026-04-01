@@ -111,6 +111,9 @@ void CGun::Update_Late(_float fTimeDelta)
 
 void CGun::Ready_Before_Render(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Ready_Before_Render(fTimeDelta);
 
 #ifdef _DEBUG

@@ -358,8 +358,8 @@ HRESULT CPlayer::Ready_GlobalEvent()
                         BossPos.y = 0.f;
                         vChangePos.y = 0.f;
                         Get_Component<CTransform>()->Look_At_Dir(BossPos - vChangePos);
-                        return S_OK;
                     }
+                    break;
                     default:
                         break;
                     }
@@ -377,27 +377,27 @@ HRESULT CPlayer::Ready_GlobalEvent()
                     case TO_HASH("Set_Active_True"):
                     {
                         Set_Active(true);
-                        return S_OK;
                     }
+                    break;
                     case TO_HASH("Set_Active_False"):
                     {
                         Set_Active(false);
                         return S_OK;
                     }
+                    break;
                     case TO_HASH("Set_KeyInput_False"):
                     {
-                        CPlayer::Change_IdleForce();
                         CControlContext* pCCC = Get_Component<CControlContext>();
                         static_cast<CPlayerControlContext*>(pCCC)->Set_AllKeyFlag(false);
-                        return S_OK;
+                        CPlayer::Change_IdleForce();
                     }
+                    break;
                     case TO_HASH("Set_KeyInput_True"):
                     {
-                        CPlayer::Change_IdleForce();
                         CControlContext* pCCC = Get_Component<CControlContext>();
-                        static_cast<CPlayerControlContext*>(pCCC)->Set_AllKeyFlag(true);
-                        return S_OK;
+                        static_cast<CPlayerControlContext*>(pCCC)->Set_PreKeyFlag();
                     }
+                    break;
                     default:
                         break;
                     }
@@ -408,6 +408,7 @@ HRESULT CPlayer::Ready_GlobalEvent()
                 break;
             }
         }
+        return S_OK;
         });
 
     return S_OK;

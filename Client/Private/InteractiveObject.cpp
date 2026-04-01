@@ -84,8 +84,12 @@ HRESULT CInteractiveObject::Ready_Component(INTERACTIVEOBJECT_DESC* pDesc)
 	tOriginDesc.wstrModelFolderName		= pathModel.wstring();	/* 부모 폴더 경로 넣어주기 */
 
 	CGameObject* pResult{nullptr};
-	if (FAILED(m_pGameInstance->Add_Prototype(pDesc->iLevelIndex, wstrModelPrototypeTag,CModel::Create(m_pDevice,m_pDeviceContext,&tOriginDesc))))
-		return E_FAIL;
+
+	if (nullptr == m_pGameInstance->Find_Prototype(tOriginDesc.iPrototypeLevelIndex, wstrModelPrototypeTag))
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(pDesc->iLevelIndex, wstrModelPrototypeTag, CModel::Create(m_pDevice, m_pDeviceContext, &tOriginDesc))))
+			return E_FAIL;
+	}
 
 	m_pGameInstance->RegisterPhysicsMesh(tOriginDesc.iPrototypeLevelIndex, wstrModelPrototypeTag);
 	CModel::MODEL_COPY_DESC tModelCopyDesc{};

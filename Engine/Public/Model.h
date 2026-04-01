@@ -35,9 +35,11 @@ public:
 
 	enum STAGEING_BONE : Flags
 	{
-		SB_ZEROBONE			= 0x001
-		, SB_ALLBONE		= 0x002
-		, SB_SPCIPICBONE	= 0x004
+		SB_ZEROBONE				= 0x001
+		, SB_ALLBONE			= 0x002
+		, SB_SPCIPICBONE		= 0x004
+		, SB_STAGEING_FOR_INT	= 0x005
+		, SB_STAGEING_FOR_NAME	= 0x006
 	};
 
 	typedef struct tagModelOriginDesc
@@ -51,6 +53,8 @@ public:
 
 		Flags				FStageBone				= { STAGEING_BONE::SB_ZEROBONE }; // STAGEING_BONE flag 이용하시면 됩니다
 		vector<_uint>		vecStageBoneIndices;	// 저장할 bone의 인덱스들. 만약 전체를 저장하고 싶다면 flag만 잘 설정하면 됨
+		vector<string>		vecStageBoneName;
+
 
 	}MODEL_ORIGIN_DESC;
 	typedef struct tagModelCopyDesc
@@ -187,6 +191,7 @@ public:
 	void Set_MoveBone_Ratio(_float fRatio) { m_tBoneMoveCB.fRatio = fRatio; }
 	void SEt_MoveBone_Matrix(const Matrix& matOffset) { m_tBoneMoveCB.matOffset = matOffset; }
 
+	_int Get_BoneIndex(const string& strName);
 	_bool Get_MoveBoneOn() const { return m_bMoveBone; }
 	const CS_CB_MU_BONEMOVE& Get_MoveInfo() const { return m_tBoneMoveCB; }
 

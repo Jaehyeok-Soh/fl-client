@@ -299,6 +299,726 @@
                     "Name": "Old/Male/Hair/CM_LNM_Hair01_SM"
                 }
             }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 1,
+                    "Select Row": 1,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 1.0,
+                    "Z": 0.548262357711792
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 0.03474903106689453,
+                    "Y": 0.29562777280807495,
+                    "Z": 1.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 0.43629342317581177,
+                    "Y": 0.07917293161153793,
+                    "Z": 0.07917293161153793
+                }
+            },
+            "Loop Animation Name": "Animation_CM_ZNM_Body01_SM_Npc_Zhongnian_M_Emo_Talk02_Loop",
+            "Model Name": "Middle/Male/CM_ZNM_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": "Middle/Male/Beard/CM_ZNM_Beard01_SM"
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    },
+                    "Name": "Middle/Male/Hair/CM_ZNM_Hair01_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": false
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.6215173006057739,
+                    "Z": 0.5482625365257263
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_ZNM_Body03_SM_Npc_Zhongnian_M_Interactive_Sit_Pose",
+            "Model Name": "Middle/Male/CM_ZNM_Body03_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": "Middle/Male/Beard/CM_ZNM_Beard02_SM"
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    },
+                    "Name": "Middle/Male/Hair/CM_ZNM_Hair07_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 0.6370656490325928,
+                    "Y": 0.48962533473968506,
+                    "Z": 0.30500438809394836
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_LNM_Body01_SM_Npc_Laonian_M_Emo_Pray_Loop",
+            "Model Name": "Old/Male/CM_LNM_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 0.3660649061203003,
+                        "Z": 0.061776041984558105
+                    },
+                    "Name": "Old/Male/Beard/CM_LNM_Beard03_SM"
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 0.9961389899253845,
+                        "Y": 0.2999955415725708,
+                        "Z": 0.0
+                    },
+                    "Name": "Old/Male/Hair/CM_LNM_Hair03_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": false
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 0.6370656490325928,
+                    "Y": 0.48962533473968506,
+                    "Z": 0.30500438809394836
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_QNM_Body01_SM_Npc_Qingnian_M_Emo_Idle",
+            "Model Name": "Youth/Male/CM_QNM_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": "Youth/Male/Hair/CM_QNM_Hair02_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 1,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_QNM_Body02_SM_Npc_Qingnian_M_Emo_Think_Loop",
+            "Model Name": "Youth/Male/CM_QNM_Body02_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 0.6459653377532959,
+                        "Z": 0.5096524953842163
+                    },
+                    "Name": "Youth/Male/Hair/CM_QNM_Hair03_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 1,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 1,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.16602319478988647,
+                    "Z": 0.16602319478988647
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 0.5945944786071777,
+                    "Z": 1.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_YNM_Body01_SM_Npc_Younian_Story_Dancing",
+            "Model Name": "Child/Male/CM_YNM_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 0.17545950412750244,
+                        "Y": 0.19397859275341034,
+                        "Z": 0.21235519647598267
+                    },
+                    "Name": "Child/Male/Hair/CM_YNM_Hair01_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 1,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 1,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.9038475751876831,
+                    "Z": 0.42084944248199463
+                }
+            },
+            "Loop Animation Name": "Animation_CM_LNF_Body01_SM_Npc_Laonian_F_Emo_Give",
+            "Model Name": "Old/Female/CM_LNF_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 2,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 1,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.9038475751876831,
+                    "Z": 0.42084944248199463
+                }
+            },
+            "Loop Animation Name": "Animation_CM_ZNM_Body01_SM_Npc_Zhongnian_M_Emo_OnGround01_Loop",
+            "Model Name": "Middle/Male/CM_ZNM_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": "Middle/Male/Hair/CM_ZNM_Hair02_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 3,
+                    "Select Row": 2,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.9660857915878296,
+                    "Z": 0.9034749269485474
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.7490347623825073,
+                    "Z": 0.7490347623825073
+                }
+            },
+            "Loop Animation Name": "Animation_CM_QNF_Body01_SM_Npc_Qingnian_F_Emo_Shock_Loop",
+            "Model Name": "Youth/Female/CM_QNF_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": "Youth/Female/Hair/CM_QNF_Hair03_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 0.4555985927581787,
+                    "Z": 1.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_YNM_Body01_SM_Npc_Younian_Story_Dancing",
+            "Model Name": "Child/Male/CM_YNM_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 0.8571428656578064,
+                        "Z": 0.0
+                    },
+                    "Name": "Child/Male/Hair/CM_YNM_Hair04_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 0.9498069286346436,
+                    "Y": 0.33777958154678345,
+                    "Z": 0.04400651156902313
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.9266408681869507,
+                    "Z": 0.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_ZNF_Body01_SM_Npc_Zhongnian_F_Emo_Sigh_Loop",
+            "Model Name": "Middle/Female/CM_ZNF_Body01_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 0.6500052213668823,
+                        "Z": 0.0038610100746154785
+                    },
+                    "Name": "Middle/Female/Hair/CM_ZNF_Hair01_SM"
+                }
+            }
+        },
+        {
+            "Atlas Datas": [
+                {
+                    "Max Colum": 4,
+                    "Max Row": 4,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                },
+                {
+                    "Max Colum": 3,
+                    "Max Row": 3,
+                    "Select Column": 0,
+                    "Select Row": 0,
+                    "Use Atlas": true
+                }
+            ],
+            "Cloth RGBA Color": {
+                "B": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "G": {
+                    "W": 1.0,
+                    "X": 0.5019304752349854,
+                    "Y": 0.9365394711494446,
+                    "Z": 1.0
+                },
+                "R": {
+                    "W": 1.0,
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                }
+            },
+            "Loop Animation Name": "Animation_CM_ZNF_Body03_SM_Npc_Zhongnian_F_Emo_Talk01_Loop",
+            "Model Name": "Middle/Female/CM_ZNF_Body03_SM",
+            "Parts Datas": {
+                "Beard": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": ""
+                },
+                "Hair": {
+                    "Color": {
+                        "W": 1.0,
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Name": "Middle/Female/Hair/CM_ZNF_Hair03_SM"
+                }
+            }
         }
     ]
 }
