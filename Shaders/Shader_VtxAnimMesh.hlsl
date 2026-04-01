@@ -170,7 +170,7 @@ PS_OUT_DEFFERED PS_MAIN(PS_IN_SKELETON input)
     
     output.vDiffuse = 1.f;
     Compute_Diffse(output.vDiffuse, input.vUV);
-    if(output.vDiffuse.a <= EPSILON)
+    if(output.vDiffuse.a <= 0.5f)
         discard;
     
     // 디졸브 디스카드
@@ -297,7 +297,7 @@ PS_OUT_DEFFERED PS_CITIZENMOUTH(PS_IN_SKELETON input)
     
     
     Compute_Diffse(output.vDiffuse, vUV);
-    if (output.vDiffuse.a <= EPSILON)
+    if (output.vDiffuse.a <= 0.5f)
         discard;
     
     Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
@@ -339,7 +339,7 @@ PS_OUT_DEFFERED PS_CITIZENEYE(PS_IN_SKELETON input)
     
     
     Compute_Diffse(output.vDiffuse, vUV);
-    if (output.vDiffuse.a <= EPSILON)
+    if (output.vDiffuse.a <= 0.5f)
         discard;
     
     Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);

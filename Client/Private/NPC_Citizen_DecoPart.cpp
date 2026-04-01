@@ -47,7 +47,9 @@ HRESULT CNPC_Citizen_DecoPart::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
-
+	// CascadeBuffer Shader¿¡ ¿¬°á
+	if (FAILED(m_pGameInstance->Set_CascadeShadowConstantBuffer(Get_Component<CShader>())))
+		return E_FAIL;
 	return S_OK;
 
 }
@@ -174,6 +176,27 @@ HRESULT CNPC_Citizen_DecoPart::Render()
 	return S_OK;
 }
 
+HRESULT CNPC_Citizen_DecoPart::Render_Shadow()
+{
+	CShader* pShader = Get_Component<CShader>();
+	_uint iPrevPass = pShader->Get_CurrentPass();
+
+	_uint iShadowPass = 15;
+
+	// Set Shadow Pass
+	pShader->Set_Pass(iShadowPass);
+	CModel* pModel = Get_Component<CModel>();
+	_uint iMeshCount = pModel->Get_MeshCount();
+	pShader->Bind_TransformData(m_matCombinedWorld);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		pShader->Apply();
+		pModel->Render(i);
+	}
+
+	pShader->Set_Pass(iPrevPass);
+	return S_OK;
+}
 
 void CNPC_Citizen_DecoPart::Update_PartsModel()
 {

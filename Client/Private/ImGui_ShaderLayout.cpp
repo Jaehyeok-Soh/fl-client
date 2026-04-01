@@ -303,7 +303,7 @@ void CImGui_ShaderLayout::Render(CGameObject* pGo)
         ImGui::TextDisabled("Density=0: Linear, >0: Exponential");
 
         ImGui::SeparatorText("Height Fog");
-        bChanged |= ImGui::SliderFloat("BaseHeight", &fog.fFogBaseHeight, -50.f, 50.f);
+        bChanged |= ImGui::SliderFloat("BaseHeight", &fog.fFogBaseHeight, -500.f, 500.f, "%.5f");
         bChanged |= ImGui::SliderFloat("HeightFalloff", &fog.fFogHeightFalloff, 0.01f, 1.f, "%.3f");
         bChanged |= ImGui::SliderFloat("HeightDensity", &fog.fFogHeightDensity, 0.f, 0.2f, "%.4f");
 

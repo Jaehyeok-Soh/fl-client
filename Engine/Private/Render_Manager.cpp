@@ -209,8 +209,8 @@ HRESULT CRender_Manager::Set_ShaderResources()
 	{
 		array<Vec4, SSAO_KERNAL> arrKernal = Build_SSAO_Kernal16();
 		::memcpy(m_tSSAOkernelDesc.vKernel, arrKernal.data(), sizeof(Vec4) * SSAO_KERNAL);
-		m_tSSAOkernelDesc.vNoiseScale.x = m_halfViewport.Width / 4;
-		m_tSSAOkernelDesc.vNoiseScale.y = m_halfViewport.Height / 4;
+		m_tSSAOkernelDesc.vNoiseScale.x = m_defaultViewport.Width / 4;
+		m_tSSAOkernelDesc.vNoiseScale.y = m_defaultViewport.Height / 4;
 
 		if (FAILED(m_pCB_SSAOkernel->Copy_Data(m_tSSAOkernelDesc)))
 			return E_FAIL;
@@ -218,7 +218,7 @@ HRESULT CRender_Manager::Set_ShaderResources()
 	
 	// SSAOparamDesc
 	{
-		m_tSSAOparamDesc.vInvSize = { 1.0f / m_halfViewport.Width, 1.0f / m_halfViewport.Height };
+		m_tSSAOparamDesc.vInvSize = { 1.0f / m_defaultViewport.Width, 1.0f / m_defaultViewport.Height };
 		m_tSSAOparamDesc.fRadius = 1.5f;
 		m_tSSAOparamDesc.fBias = 0.05f;
 		m_tSSAOparamDesc.fIntensity = 1.3f;
@@ -255,8 +255,8 @@ HRESULT CRender_Manager::Set_ShaderResources()
 	{
 		m_tOutlineparamDesc.vColor = { 0.f, 0.f, 0.f, 1.f };
 		m_tOutlineparamDesc.vInvSize = { 1.0f / m_defaultViewport.Width, 1.0f / m_defaultViewport.Height };
-		m_tOutlineparamDesc.fThicknessPx = 0.6f;
-		m_tOutlineparamDesc.fOpacity = 0.7f;
+		m_tOutlineparamDesc.fThicknessPx = 0.47f;
+		m_tOutlineparamDesc.fOpacity = 0.35f;
 		m_tOutlineparamDesc.fNormalThreshold = 1.f;
 		m_tOutlineparamDesc.fDepthThreshold = 0.015f;
 		m_tOutlineparamDesc.fNormalStrength = 1.5f;
@@ -726,13 +726,11 @@ HRESULT CRender_Manager::Render_ComputeLight_Blend()
 
 HRESULT CRender_Manager::Render_SSAO()
 {
-	m_pDeviceContext->RSSetViewports(1, &m_halfViewport);
-
 	//========================
-	// SSAO Gen -> AO_Ping
+	// SSAO Gen -> AO_Ping (full-res)
 	//========================
 	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Gen, true, false)))
-		goto FAIL;
+		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_TransformData(m_matWorld_RT)))
 		goto FAIL;
@@ -788,31 +786,9 @@ HRESULT CRender_Manager::Render_SSAO()
 	if (FAILED(m_pGameInstance->End_MRT()))
 		goto FAIL;
 
-
-	//========================
-	// Upsample -> AO_Full
-	//========================
-	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
-	if (FAILED(m_pGameInstance->Begin_MRT(EMRTLayer::SSAO_Upsample, true, false)))
-		goto FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Ping, m_pShader)))
-		goto FAIL;
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
-		goto FAIL;
-
-	m_pShader->Set_Pass(ENUM_TO_UINT(DEFFERRED::SSAO_UPSAMPLE));
-	m_pShader->Apply();
-	m_pVIBuffer->Bind_Resource();
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		goto FAIL;
-
 	return S_OK;
+
 FAIL:
-	m_pDeviceContext->RSSetViewports(1, &m_defaultViewport);
 	return E_FAIL;
 }
 
@@ -836,7 +812,7 @@ HRESULT CRender_Manager::Render_Lights()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Diffuse, m_pShader)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Full, m_pShader)))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::SSAO_Ping, m_pShader)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(ERenderTarget::Depth, m_pShader)))
@@ -1074,43 +1050,53 @@ HRESULT CRender_Manager::Create_SSAO_NoiseSRV()
 {
 	Safe_Release(m_pSSAONoiseSRV);
 
-	// 4x4 RGBA float
-	Vec4 noiseData[16]{Vec4::Zero};
+	constexpr _uint iNoiseSize = 64;
 
-	for (_int i = 0; i < 16; ++i)
+	std::vector<Vec2> noiseData;
+	noiseData.resize(iNoiseSize * iNoiseSize);
+
+	for (_uint y = 0; y < iNoiseSize; ++y)
 	{
-		Vec3 vRand
+		for (_uint x = 0; x < iNoiseSize; ++x)
 		{
-			m_pGameInstance->Rand_Float(-1.f, 1.f),
-			m_pGameInstance->Rand_Float(-1.f, 1.f),
-			0.f
-		};
+			Vec2 vRand
+			{
+				m_pGameInstance->Rand_Float(-1.f, 1.f),
+				m_pGameInstance->Rand_Float(-1.f, 1.f)
+			};
 
-		vRand.Normalize();
-		noiseData[i] = Vec4(vRand.x, vRand.y, 0.f, 0.f);
+			if (vRand.LengthSquared() <= g_XMEpsilon.f[0])
+				vRand = Vec2(1.f, 0.f);
+
+			vRand.Normalize();
+
+			const _uint iIndex = y * iNoiseSize + x;
+			noiseData[iIndex] = Vec2(vRand.x, vRand.y);
+		}
 	}
 
 	D3D11_TEXTURE2D_DESC desc{};
-	desc.Width = 4;
-	desc.Height = 4;
+	desc.Width = iNoiseSize;
+	desc.Height = iNoiseSize;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	desc.Format = DXGI_FORMAT_R16G16_FLOAT;
 	desc.SampleDesc.Count = 1;
 	desc.Usage = D3D11_USAGE_IMMUTABLE;
 	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
 	D3D11_SUBRESOURCE_DATA init{};
-	init.pSysMem = noiseData;
-	init.SysMemPitch = sizeof(Vec4) * 4;
+	init.pSysMem = noiseData.data();
+	init.SysMemPitch = sizeof(Vec2) * iNoiseSize;
 
-	ID3D11Texture2D* pTexture{ nullptr };
+	ID3D11Texture2D* pTexture = nullptr;
 	if (FAILED(m_pDevice->CreateTexture2D(&desc, &init, &pTexture)))
 		return E_FAIL;
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = desc.Format;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
 
 	if (FAILED(m_pDevice->CreateShaderResourceView(pTexture, &srvDesc, &m_pSSAONoiseSRV)))
@@ -1358,8 +1344,8 @@ HRESULT CRender_Manager::Ready_RT()
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
 		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
+		desc.iWidth = iWidth;
+		desc.iHeight = iHeight;
 		desc.vClearColor = Vec4::One;
 		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Ping, &desc)))
 			return E_FAIL;
@@ -1368,20 +1354,10 @@ HRESULT CRender_Manager::Ready_RT()
 	{
 		CRenderTarget::RENDERTARGET_DESC desc = {};
 		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
-		desc.iWidth = iHalfWidth;
-		desc.iHeight = iHalfHeight;
-		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Pong, &desc)))
-			return E_FAIL;
-	}
-	// For. Target_AO_Full
-	{
-		CRenderTarget::RENDERTARGET_DESC desc = {};
-		desc.ePixelFormat = DXGI_FORMAT_R16_FLOAT;
 		desc.iWidth = iWidth;
 		desc.iHeight = iHeight;
 		desc.vClearColor = Vec4::One;
-		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Full, &desc)))
+		if (FAILED(m_pGameInstance->Add_RenderTarget(ERenderTarget::SSAO_Pong, &desc)))
 			return E_FAIL;
 	}
 	// For. Target_Shade
@@ -1537,12 +1513,6 @@ HRESULT CRender_Manager::Ready_MRT()
 	// For. MRT_SSAO_BlurV
 	{
 		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_BlurV, ERenderTarget::SSAO_Ping)))
-			return E_FAIL;
-	}
-
-	// For. MRT_SSAO_Upsample
-	{
-		if (FAILED(m_pGameInstance->Add_MRT(EMRTLayer::SSAO_Upsample, ERenderTarget::SSAO_Full)))
 			return E_FAIL;
 	}
 
@@ -2711,7 +2681,7 @@ void CRender_Manager::Free()
 
 HRESULT CRender_Manager::Commit_SSAOParam()
 {
-	m_tSSAOparamDesc.vInvSize = { 1.f / m_halfViewport.Width, 1.f / m_halfViewport.Height };
+	m_tSSAOparamDesc.vInvSize = { 1.f / m_defaultViewport.Width, 1.f / m_defaultViewport.Height };
 	return m_pCB_SSAOparam ? m_pCB_SSAOparam->Copy_Data(m_tSSAOparamDesc) : E_FAIL;
 }
 
