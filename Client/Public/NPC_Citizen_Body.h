@@ -42,6 +42,7 @@ public:
 	virtual void			OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool			On_Hit(const HIT_DESC& hitDesc) override;
 	virtual HRESULT			Render() override;
+	virtual HRESULT			Render_Shadow() override;
 	virtual HRESULT			Ready_DissolveEffect_Setting();
 
 public:

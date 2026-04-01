@@ -465,6 +465,7 @@ void CGenericUI::Bind_Events()
 					this->Set_Visible();
 					m_isEventVisible = false;
 					m_fAll_Controll_Alpha = 1.f;
+					
 				}
 			}));
 

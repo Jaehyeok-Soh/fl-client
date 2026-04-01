@@ -133,8 +133,26 @@ HRESULT CUIMonsterStat_Progress::Attach_Personal_Info()
 		m_fAlpha_Ratio = 1.f;
 		m_fMonsterHPTimeAcc = 100.f;
 		m_isSpawned = false;
+
 		m_fCurRatio = m_pTargetStat->Get_HealthRatio();
 		m_fPreMonsterHPRatio = m_fCurRatio;
+
+		switch (m_eSubClassType)
+		{
+		case DTO::EUISubClassType::MONSTER_HP:
+			m_fProgress_Ratio = m_pTargetStat->Get_HealthRatio();
+			m_fCurRatio = m_pTargetStat->Get_HealthRatio();
+			m_fPreMonsterHPRatio = m_fCurRatio;
+			break;
+		case DTO::EUISubClassType::MONSTER_ARMOR:
+			m_fProgress_Ratio = 0.f;
+			m_fCurRatio = 0.f;
+			m_fPreMonsterHPRatio = m_fCurRatio;
+			break;
+		case DTO::EUISubClassType::END:
+		default:
+			return E_FAIL;
+		}
 	}
 	return S_OK;
 }

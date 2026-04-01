@@ -62,6 +62,10 @@ HRESULT CNPC_Body_Base::Initialize(void* pArg)
 
 	Set_RenderInfoFlag(OF_Outline, true);
 
+	// CascadeBuffer Shader¿¡ ¿¬°á
+	if (FAILED(m_pGameInstance->Set_CascadeShadowConstantBuffer(Get_Component<CShader>())))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -118,6 +122,7 @@ void CNPC_Body_Base::Ready_Before_Render(_float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 	Get_Component<CModel>()->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 	Super::Update_CombinedWorldMatrix(m_pMatParent);
 }
 
@@ -174,6 +179,32 @@ HRESULT CNPC_Body_Base::Render()
 		pModel->Render(i);
 	}
 
+	return S_OK;
+}
+
+HRESULT CNPC_Body_Base::Render_Shadow()
+{
+	CShader* pShader = Get_Component<CShader>();
+	_uint iPrevPass = pShader->Get_CurrentPass();
+
+	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+	CComputeShader* pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+
+	constexpr _uint iShadowPass = 4;
+
+	// Set Shadow Pass
+	pShader->Set_Pass(iShadowPass);
+	CModel* pModel = Get_Component<CModel>();
+	_uint iMeshCount = pModel->Get_MeshCount();
+	pShader->Bind_TransformData(m_matCombinedWorld);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		pModel->Bind_Bones(pShader, i, pBoneMeshCS, pBoneCombineCS);
+		pShader->Apply();
+		pModel->Render(i);
+	}
+
+	pShader->Set_Pass(iPrevPass);
 	return S_OK;
 }
 

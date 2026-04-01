@@ -124,8 +124,8 @@ protected:
 	_float m_fBrightness				= {};
 
 
-private:
 	_float m_fOriginAlpha = {};
+protected:
 	_float m_fAll_Controll_Alpha = { 1.f };
 private:
 	_float m_fTimeAcc = {};

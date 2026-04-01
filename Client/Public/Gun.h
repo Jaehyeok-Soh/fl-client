@@ -55,7 +55,7 @@ public:
 	virtual HRESULT			Render() override;
 
 private:
-	HRESULT Ready_Components();
+	HRESULT					Ready_Components();
 
 public:
 	void					Reload_Bullet();
