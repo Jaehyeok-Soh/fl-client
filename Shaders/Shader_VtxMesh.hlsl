@@ -343,6 +343,16 @@ VS_OUT_SHADOW VS_SHADOW(VS_IN_MESH input)
     return output;
 }
 
+VS_OUT_SHADOW VS_SHADOW_DYNAMIC(VS_IN_MESH input)
+{
+    VS_OUT_SHADOW output;
+    int iCascadeIndex = (int) cascadeParam.fCascadeIndex;
+    float4 vWorldPosition = mul(float4(input.vPosition, 1.f), W);
+    output.vPosition = mul(vWorldPosition, cascadeParam.matLightVP[iCascadeIndex]);
+    return output;
+}
+
+
 PS_OUT_DEFFERED PS_MAIN(PS_IN_MESH input)
 {
     PS_OUT_DEFFERED output;
@@ -731,7 +741,7 @@ PS_OUT_DEFFERED PS_BUSH(PS_IN_MESH input)
     
     Compute_Diffse(vDiffuse, input.vUV);
     
-    if (length(vDiffuse.rgb) < 0.1f)
+    if (length(vDiffuse.rgb) < 0.5f)
         discard;
     
     if (vDiffuse.a < 0.3f)
@@ -1219,6 +1229,7 @@ technique11 T0
     // Shadow - Index 변경되면 Render_Shadow에서 Set_Pass Index 바꿔줘야함
     PASS_RS_DS_BS_VP(Shadow, RS_Default, DS_Default, BS_Default, VS_SHADOW, PS_SHADOW) // 13
     PASS_RS_DS_BS_VP(LightObject,RS_Default, DS_Default, BS_Default, VS_MAIN, PS_LIGHTOBJECT) // 14
+    PASS_RS_DS_BS_VP(Shadow_Dynamic, RS_Default, DS_Default, BS_Default, VS_SHADOW_DYNAMIC, PS_SHADOW) // 15
 
     // RGB mapping2 : weapon 쪽에서 쓰임
 	PASS_RS_DS_BS_VP(RGBMapping2, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_RGBMUTIPLY) // 15

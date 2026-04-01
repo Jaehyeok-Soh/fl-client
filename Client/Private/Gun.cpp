@@ -89,7 +89,7 @@ void CGun::Update(_float fTimeDelta)
 	Attack_Update(fTimeDelta);
 
 	Vec3 pos = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
-	Vec3 dir = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
+	Vec3 dir = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK); 
 	_float dist = {};
 	
 	if (dir.LengthSquared() < 1e-6f)

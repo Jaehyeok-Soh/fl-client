@@ -210,7 +210,7 @@ void CUIQuest_Text::Bind_Events()
 						UIEVENT_DESC Desc = {};
 						Desc.eEventID = EUIEventID::QUEST_NAME_CHANGE;
 						m_pUIManager->Get_UIEvents().Broadcast(Desc);
-						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_QUEST_CHANGE"), 1.f);
+						m_pGameInstance->Play_OneShot(0, TO_HASH("UI_QUEST_CHANGE"), 0.5f);
 						this->m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
 					}
 					break;
@@ -316,7 +316,9 @@ void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 		auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 		if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
 		{
-			if(desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_BOSS_XIBI) != desc.tChapterInfo.eTargetType.end())
+			if (desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_BOSS_XIBI) != desc.tChapterInfo.eTargetType.end() ||
+				desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_BOSS_LIANHUO) != desc.tChapterInfo.eTargetType.end() ||
+				desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_ELITE_VETERAN) != desc.tChapterInfo.eTargetType.end())
 				m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
 			else
 			{

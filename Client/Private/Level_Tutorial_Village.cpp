@@ -157,7 +157,7 @@ void CLevel_Tutorial_Village::Ready_ShaderSetting()
 	{
 		auto& fogDesc = m_pGameInstance->Get_FogParamDesc();
 		fogDesc.vHighColor = Vec4(0.35f, 0.35f, 0.35f, 1.f);
-		fogDesc.vHighColor = Vec4(0.31f, 0.31f, 0.31f, 1.f);
+		fogDesc.vColor = Vec4(0.31f, 0.31f, 0.31f, 1.f);
 		fogDesc.fFogStart = 100.f;
 		fogDesc.fFogEnd = 500.f;
 		fogDesc.fFogDensity = 0.f;

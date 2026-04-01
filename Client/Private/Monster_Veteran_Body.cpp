@@ -66,7 +66,9 @@ void CMonster_Veteran_Body::Update_Priority(_float fTimeDelta)
 
 void CMonster_Veteran_Body::Update(_float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
+	Super::Update(fTimeDelta); 
+	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = SimpleMath::Vector3(1.4f, 0.9f, 0.2f);
+	m_tDissolveDesc.ShaderData.fDissolveEdgeWidth = 0.06f;
 }
 
 void CMonster_Veteran_Body::Update_Late(_float fTimeDelta)

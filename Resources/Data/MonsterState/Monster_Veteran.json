@@ -584,7 +584,7 @@
                         "bCountTime": true,
                         "bTimeReset": true,
                         "fMaxTime": 0.0,
-                        "fMinTime": 10.0,
+                        "fMinTime": 7.0,
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [

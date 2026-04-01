@@ -49,6 +49,7 @@ private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_StateIndexForDirecting();
 	HRESULT Ready_SoundHandler();
+	HRESULT Ready_CameraEvent();
 
 private:
 	array<_int, (size_t)EStateForDirecting::COUNT> m_arrStateIndex;

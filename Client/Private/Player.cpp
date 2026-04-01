@@ -210,7 +210,7 @@ void CPlayer::Update_Priority(const _float fTimeDelta)
     // monster control context -> is grogy
 
     // special dash on일때만 pivot 넘겨줌 : 보스전에만 가능
-    if (pPlayerState->Get_SpecialDashOn() && m_bBossStage)
+    if (pPlayerState->Get_SpecialDashOn())
     {
         CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
         if (pBoss)
@@ -730,7 +730,7 @@ void CPlayer::Set_FKeyEvent(_uint iEvenet, _bool bOn)
     }
 }
 
-const Vec3& CPlayer::Get_CollidedMonster_Position()
+Vec3 CPlayer::Get_CollidedMonster_Position()
 {
     if (CTriggerCollidePart* pCollider = Get_Part<CTriggerCollidePart>(Part::DETECTCOLLIDER))
     {

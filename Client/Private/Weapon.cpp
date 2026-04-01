@@ -99,6 +99,10 @@ HRESULT CWeapon::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
+	// CascadeBuffer Shader에 연결
+	if (FAILED(m_pGameInstance->Set_CascadeShadowConstantBuffer(Get_Component<CShader>())))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -177,8 +181,11 @@ void CWeapon::Ready_Before_Render(_float fTimeDelta)
 	Super::Ready_Before_Render(fTimeDelta);
 	
 	// none일때는 그리지 않음
-	if(m_eState != State::NONE)
+	if (m_eState != State::NONE)
+	{
 		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
+	}
 
 	// state에 따른 combineworld 업데이트
 	switch (m_eState)
@@ -274,6 +281,40 @@ HRESULT CWeapon::Render()
 		break;
 	}
 
+	return S_OK;
+}
+
+HRESULT CWeapon::Render_Shadow()
+{
+	CShader* pShader = Get_Component<CShader>();
+	_uint iPrevPass = pShader->Get_CurrentPass();
+
+	_uint iShadowPass = 0;
+	switch (m_eModleType)
+	{
+	case Weapon_ModelType::STATIC:
+		iShadowPass = 15;
+		break;
+
+	case Weapon_ModelType::ANIM:
+		iShadowPass = 4;
+		break;
+	}
+
+	// Set Shadow Pass
+	pShader->Set_Pass(iShadowPass);
+	CModel* pModel = Get_Component<CModel>();
+	_uint iMeshCount = pModel->Get_MeshCount();
+	pShader->Bind_TransformData(m_matCombinedWorld);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		if(m_eModleType == Weapon_ModelType::ANIM)
+			pModel->Bind_Bones(pShader, i, m_pBoneMeshCS, m_pBoneCombineCS);
+		pShader->Apply();
+		pModel->Render(i);
+	}
+
+	pShader->Set_Pass(iPrevPass);
 	return S_OK;
 }
 

@@ -90,7 +90,7 @@ public:
 	virtual void OnTrigger_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo) override;
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual HRESULT Render() override;
-
+	virtual HRESULT Render_Shadow();
 public:
 	void Change_WeaponAnim(_uint iAnimIdx, _bool bLoop, _bool bForce, _bool bBlend =false);
 

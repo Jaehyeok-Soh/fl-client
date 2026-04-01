@@ -45,7 +45,8 @@ HRESULT CLianhuo_XSpace::Ready_Modules()
 		{
 			if (FAILED(Add_EffectModule(
 				0 /* static */,
-				"WarningCircle1",
+				//"WarningCircle1",
+				"Boss_LianHuo_Dangerous_Space_Start",
 				L"Prototype_GameObject_Effect_WarningCircle",
 				ENUM_TO_UINT(EState::WARNING))))
 				return E_FAIL;
@@ -55,6 +56,7 @@ HRESULT CLianhuo_XSpace::Ready_Modules()
 		{
 			if (FAILED(Add_EffectModule(
 				0 /* static */,
+				//"Boss_LianHuo_XSpace_Single",
 				"Boss_LianHuo_XSpace",
 				wstrDefaultPrototypeTag,
 				ENUM_TO_UINT(EState::STRIKE))))

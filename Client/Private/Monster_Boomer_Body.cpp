@@ -106,6 +106,7 @@ void CMonster_Boomer_Body::Update_Priority(_float fTimeDelta)
 void CMonster_Boomer_Body::Update(_float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
 }
 
 void CMonster_Boomer_Body::Update_Late(_float fTimeDelta)
@@ -176,8 +177,8 @@ HRESULT CMonster_Boomer_Body::Ready_DissolveEffect_Setting()
 	m_tDissolveDesc.Set_ObjectType(DS::DISSOLVE_OBJECTTYPE::TYPE_MONSTER);
 
 	// 스폰 시간 & 디졸브 시간
-	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = SimpleMath::Vector3(9.56f, 0.11f, 0.f);	
-	m_tDissolveDesc.ShaderData.fDissolveEdgeWidth = 0.1f;
+	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = SimpleMath::Vector3(0.3f, 0.005f, 0.005f);
+	m_tDissolveDesc.ShaderData.fDissolveEdgeWidth = 0.08f;
 
 	return S_OK;
 }

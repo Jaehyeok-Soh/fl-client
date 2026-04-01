@@ -444,8 +444,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isTitle				= (Type >= DTO::EUIDImageSubClassType::TITLE_BEGIN && Type <= DTO::EUIDImageSubClassType::TITLE_END);
 		const _bool isEnterGame			= (Type >= DTO::EUIDImageSubClassType::ENTERGAME_BEGIN&& Type <= DTO::EUIDImageSubClassType::ENTERGAME_END);
 		const _bool isQuickSlot			= (Type >= DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_BEGIN&& Type <= DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_END);
-		const _bool isWaveTimer			= (Type >= DTO::EUIDImageSubClassType::MONSTER_WAVE_BEGIN&& Type <= DTO::EUIDImageSubClassType::MONSTER_WAVE_END);
-		const _bool isBossSkill			= (Type >= DTO::EUIDImageSubClassType::BOSS_SKILL_BEGIN&& Type <= DTO::EUIDImageSubClassType::BOSS_SKILL_END);
+		const _bool isWaveTimer			= (Type >= DTO::EUIDImageSubClassType::MONSTER_WAVE_BEGIN && Type <= DTO::EUIDImageSubClassType::MONSTER_WAVE_END);
+		const _bool isBossSkill			= (Type >= DTO::EUIDImageSubClassType::BOSS_SKILL_BEGIN	&& Type <= DTO::EUIDImageSubClassType::BOSS_SKILL_END);
 
 		if (isPlayerSkill)
 		{
