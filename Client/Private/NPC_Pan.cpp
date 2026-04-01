@@ -91,6 +91,8 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 
 	Bind_Events();
 
+	Ready_StateIndexForDirecting();
+
 	return S_OK;
 }
 
@@ -211,6 +213,43 @@ HRESULT CNPC_Pan::Ready_Components(void* pArg)
 	//	if (FAILED(Add_Script_Component(L"UIIconComp", L"Prototype_ScriptComponent_UIIcon", &Desc)))
 	//		return E_FAIL;
 	//}
+	return S_OK;
+}
+
+HRESULT CNPC_Pan::Ready_StateIndexForDirecting()
+{
+	CMonsterActionState* pActionState = Get_Component<CMonsterActionState>();
+	if (pActionState == nullptr)
+		return E_FAIL;
+
+	_uint idleIndex = { 0 };
+
+	auto setStateIndex = [&](_uint& iStateIndex, const string& strStateName)->_bool
+		{
+			_uint iIndex = pActionState->Get_StateIndex(strStateName);
+			if (iIndex < 0)
+				return false;
+			iStateIndex = iIndex;
+			return true;
+		};
+
+	if (setStateIndex(idleIndex, "Idle") == false)
+		return E_FAIL;
+
+	Change_State_ForDirecting(idleIndex);
+
+	return S_OK;
+}
+
+HRESULT CNPC_Pan::Change_State_ForDirecting(_int iStateIdx)
+{
+	CActionState* pActionState = Get_Component<CActionState>();
+	if (pActionState == nullptr)
+		return E_FAIL;
+
+	if (FAILED(pActionState->Change_State(iStateIdx, true)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

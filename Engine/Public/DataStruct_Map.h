@@ -962,6 +962,42 @@ public:
 	virtual void to_Json(json& SaveJson);
 };
 
+/// <summary>
+/// 환경 사운드
+/// </summary>
+
+struct ENGINE_DLL TRIGGERBOX_ENVJUKEBOX_DESC : public TRIGGERBOX_DESC
+{
+	using Super = TRIGGERBOX_DESC;
+public:
+	ENV_JUKEBOX_TYPE::Enum eType = ENV_JUKEBOX_TYPE::RANGE;
+	string strSoundTag = {};
+	_uint iSoundHash = {};
+	_float fRadius = {};
+public:
+	explicit TRIGGERBOX_ENVJUKEBOX_DESC()
+		: TRIGGERBOX_DESC(),
+		eType{ ENV_JUKEBOX_TYPE::RANGE },
+		strSoundTag{ "" },
+		iSoundHash{ 0 },
+		fRadius{ 0.f }
+	{
+	}
+	explicit TRIGGERBOX_ENVJUKEBOX_DESC(const TRIGGERBOX_ENVJUKEBOX_DESC& rhs)
+		: TRIGGERBOX_DESC(rhs),
+		eType{ rhs.eType },
+		strSoundTag{ rhs.strSoundTag },
+		iSoundHash{ rhs.iSoundHash },
+		fRadius{ rhs.fRadius }
+	{
+		return;
+	}
+	virtual ~TRIGGERBOX_ENVJUKEBOX_DESC() {};
+public:
+	virtual void from_Json(const json& LoadJson);
+	virtual void to_Json(json& SaveJson);
+};
+
 #pragma endregion
 
 
@@ -1221,6 +1257,8 @@ enum class EClientMakePath
 
 	/* 맵 기능 관련 */
 	Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
+
+	TriggerBox_EnvJukebox,
 	END
 };
 
@@ -1289,6 +1327,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EMapObject_DrawType,
 			{EClientMakePath::TriggerBox_GlobalEvent_BroadCaster,	"TriggerBox_GlobalEvent_BroadCaster"},
 			{EClientMakePath::TriggerBox_TutorialUIEvent,			"TriggerBox_TutorialUIEvent"},
 			{EClientMakePath::TriggerBox_CinematicPlayer,			"TriggerBox_CinematicPlayer"},
+			{EClientMakePath::TriggerBox_EnvJukebox,				"TriggerBox_EnvJukebox"},
 
 			{EClientMakePath::Invisible_Wall,						"Invisible_Wall"},
 

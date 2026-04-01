@@ -121,6 +121,12 @@ _bool CPhysicsAttackRaycast::Aimming(Vec3 vWorldPos, Vec3 vDir, _float fMaxDist,
 	if (m_pGameInstance->Is_ChangeLevelSequence() || m_pGameInstance->Is_DestroyEngineSequence())
 		return false;
 	
+	if (!m_pScene)
+		return false;
+
+	if (vDir.LengthSquared() < 1e-6f)
+		return false;
+
 	PxVec3 o3 = ToPxVec3(vWorldPos);
 
 	vDir.Normalize();

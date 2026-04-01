@@ -65,6 +65,11 @@ CPanel_MapObjectList::CPanel_MapObjectList(const _char* pLabel, CLevel* pOwner, 
 		::strcpy_s(m_szObjectTagNames[i], MAX_PATH, EObjectEnumTag::ToString(g_arrAllObjectTags[i]).c_str());
 	}
 
+	for (_uint i = 0; i < ARRAYSIZE(g_arrAllJukeboxTypeTags); ++i)
+	{
+		::strcpy_s(m_szJukeboxTypeTagNames[i], MAX_PATH, ENV_JUKEBOX_TYPE::ToString(g_arrAllJukeboxTypeTags[i]).c_str());
+	}
+
 }
 
 
@@ -1023,6 +1028,7 @@ HRESULT CPanel_MapObjectList::Render_Description()
 	case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	ImGuiUpdate_TriggerBox_GlobalEvent_BroadCaster(static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pDesc));			return S_OK;
 	case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:			ImGuiUpdate_TriggerBox_TutorialUIEvent(static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pDesc));					return S_OK;
 	case Tool::EClientMakePath::TriggerBox_CinematicPlayer:         ImGuiUpdate_TriggerBox_CinematicPlayer(static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pDesc));					return S_OK;
+	case Tool::EClientMakePath::TriggerBox_EnvJukebox:				ImGuiUpdate_EnvJukebox(static_cast<TRIGGERBOX_ENVJUKEBOX_DESC*>(pDesc));									return S_OK;
 
 	case Tool::EClientMakePath::Batch_NPC:							ImGuiUpdate_NPC(static_cast<BATCH_NPC_DESC*>(pDesc));									return S_OK;
 	default:																																													return S_OK;
@@ -2670,6 +2676,95 @@ void CPanel_MapObjectList::ImGuiUPdate_CitizenPresetPopup(DTO::CITIZEN_DATA& cur
 
 		ImGui::EndPopup();
 	}
+}
+
+void CPanel_MapObjectList::ImGuiUpdate_EnvJukebox(TRIGGERBOX_ENVJUKEBOX_DESC* pDesc)
+{
+	if (pDesc == nullptr) return;
+
+	// 기본 TriggerBox 공통 데이터 (Extents 등)
+	ImGuiUpdate_TriggerBox(pDesc);
+
+	ImGui::SeparatorText(" Environment jukebox ");
+
+	ImGui::Spacing();
+
+	ImGui::Separator(); // 줄 하나 예쁘게 그어주기
+
+	string strBuffer = ENV_JUKEBOX_TYPE::ToString(pDesc->eType);
+
+	if (ImGui::BeginCombo("Jukebox Type", strBuffer.c_str()))
+	{
+		for (_uint i = 0; i < ARRAYSIZE(g_arrAllJukeboxTypeTags); ++i)
+		{
+			ENV_JUKEBOX_TYPE::Enum eType = g_arrAllJukeboxTypeTags[i];
+
+			string strTypeName = ENV_JUKEBOX_TYPE::ToString(eType);
+
+			// 이 항목이 현재 Desc에 저장된 타입인지 체크 (선택된 항목 파란색 하이라이트용)
+			bool isSelected = (pDesc->eType == eType);
+
+			// 유저가 이 항목을 클릭했다면 Selectable이 true를 반환합니다!
+			if (ImGui::Selectable(strTypeName.c_str(), isSelected))
+			{
+				// 클릭했으니 Desc의 타입을 갱신해줍니다.
+				pDesc->eType = eType;
+			}
+
+			// 콤보박스가 열렸을 때, 현재 선택된 항목으로 스크롤을 맞춰줍니다. (ImGui 국룰 최적화)
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	// Sound Tag
+	const auto vecSoundMetas = CGameInstance::GetInstance()->Get_SoundMetas(ENUM_TO_UINT(ELevelType::MAP));
+
+	const char* previewLabel = pDesc->strSoundTag.empty() ? "<None>" : pDesc->strSoundTag.c_str();
+
+	if (ImGui::BeginCombo("Sound Tag", previewLabel))
+	{
+		bool bSelectedNone = pDesc->strSoundTag.empty();
+		if (ImGui::Selectable("<None>", bSelectedNone))
+			pDesc->strSoundTag.clear();
+		if (bSelectedNone)
+			ImGui::SetItemDefaultFocus();
+
+		ImGui::Separator();
+
+		for (const auto& meta : vecSoundMetas)
+		{
+			bool bSelected = (pDesc->strSoundTag == meta.strTag);
+
+			if (ImGui::Selectable(meta.strTag.c_str(), bSelected))
+			{
+				pDesc->strSoundTag = meta.strTag;
+				pDesc->iSoundHash = Engine_Utils::ToHash(pDesc->strSoundTag.c_str());
+			}
+
+			if (bSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+
+		ImGui::EndCombo();
+	}
+
+	if (!pDesc->strSoundTag.empty())
+	{
+		_uint iHash = Engine_Utils::ToHash(pDesc->strSoundTag.c_str());
+		ImGui::Text("Resolved Hash: %u", iHash);
+	}
+	else
+	{
+		ImGui::TextDisabled("Resolved Hash: <None>");
+	}
+
+	ImGui::DragFloat("Radius", &pDesc->fRadius);
+
+	ImGui::Separator(); // 줄 하나 예쁘게 그어주기
 }
 
 void CPanel_MapObjectList::ImGuiUpdate_TriggerBox_MonsterSpawner(TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc)

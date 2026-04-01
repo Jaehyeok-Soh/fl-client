@@ -492,6 +492,8 @@ namespace Tool
 		/* 맵 기능 관련 */
 		Invisible_Wall,			/* 플레이어나 오브젝들이 못가게막아주는 투명벽 */
 
+		TriggerBox_EnvJukebox,
+
 		END,
 	};
 
@@ -559,6 +561,8 @@ namespace Tool
 
 		case Tool::EClientMakePath::Batch_NPC:								return "Batch_NPC";
 
+		case Tool::EClientMakePath::TriggerBox_EnvJukebox:					return "TriggerBox_EnvJukebox";
+
 		default:															return "Unknown";
 		}
 	};
@@ -597,6 +601,8 @@ namespace Tool
 		if (strType == "Invisible_Wall")									return EClientMakePath::Invisible_Wall;
 
 		if (strType == "Batch_NPC")											return EClientMakePath::Batch_NPC;
+
+		if (strType == "TriggerBox_EnvJukebox")								return EClientMakePath::TriggerBox_EnvJukebox;
 
 
 		return EClientMakePath::END;

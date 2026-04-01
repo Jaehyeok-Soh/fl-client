@@ -12,6 +12,29 @@ PxQueryHitType::Enum CPhysics_QueryFilterCallback_Gun::preFilter(const PxFilterD
 	if (shape == nullptr || actor == nullptr)
 		return PxQueryHitType::eNONE;
 
+	// shape 유효성 검사
+	PxRigidActor* shapeActor = shape->getActor();
+	if (shapeActor == nullptr)
+	{
+		// shape가 actor에서 분리됨 - dangling pointer
+		OutputDebugStringA("ERROR: shape has no actor (dangling)\n");
+		return PxQueryHitType::eNONE;
+	}
+
+	if (shapeActor != actor)
+	{
+		OutputDebugStringA("ERROR: shape actor mismatch\n");
+		return PxQueryHitType::eNONE;
+	}
+
+	PxFilterData shapeFilter = shape->getQueryFilterData();
+
+	if (shapeFilter.word0 & PHYSICSFILTERGROUP::MAP)
+		return PxQueryHitType::eNONE;
+
+	if (filterData.word1 & shapeFilter.word0)
+		return PxQueryHitType::eBLOCK;
+
 	if (actor->userData == nullptr)
 		return PxQueryHitType::eNONE;
 
@@ -21,14 +44,6 @@ PxQueryHitType::Enum CPhysics_QueryFilterCallback_Gun::preFilter(const PxFilterD
 	CGameObject* pTarget = static_cast<CGameObject*>(actor->userData);
 	if (pTarget && !pTarget->IsAlive())
 		return PxQueryHitType::eNONE;
-
-	PxFilterData shapeFilter = shape->getQueryFilterData();
-
-	if (shapeFilter.word0 & PHYSICSFILTERGROUP::MAP)
-		return PxQueryHitType::eNONE;
-
-	if (filterData.word1 & shapeFilter.word0)
-		return PxQueryHitType::eBLOCK;
 
 	return PxQueryHitType::eNONE;
 }

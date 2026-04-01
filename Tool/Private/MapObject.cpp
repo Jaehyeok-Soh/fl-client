@@ -1139,6 +1139,7 @@ void CMapObject::Check_ClientMakePathAndDrawType_TriggerBox()
         case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
         case Tool::EClientMakePath::TriggerBox_TutorialUIEvent:
         case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
+        case Tool::EClientMakePath::TriggerBox_EnvJukebox:
             MSG_BOX(" Trigger Box 관련 Client Make Path는 Draw Type으로 Collider로 자동 지정 됩니다 ");
             m_eMapObjectDrawType = EMapObject_DrawType::Collider;
             break;
@@ -1799,6 +1800,9 @@ HRESULT CMapObject::Render()
     case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
         hr = Render_Collider();
         break;
+    case Tool::EClientMakePath::TriggerBox_EnvJukebox:
+        hr = Render_Collider();
+        break;
     case Tool::EClientMakePath::Invisible_Wall:
         hr = Render_StaticObject();
         break;
@@ -2003,6 +2007,7 @@ HRESULT CMapObject::Check_DrawType_ByClientPath()
     case Tool::EClientMakePath::TriggerBox_MonsterWaveSpawner:
     case Tool::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:
     case Tool::EClientMakePath::TriggerBox_CinematicPlayer:
+    case Tool::EClientMakePath::TriggerBox_EnvJukebox:
     case Tool::EClientMakePath::LightObject:
     {
         if (m_eMapObjectDrawType == EMapObject_DrawType::Instance)

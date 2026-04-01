@@ -949,7 +949,7 @@
                     "strEffectTag": "Boss_LianHuo_GaeJiRal_End",
                     "vOffset": {
                         "x": 0.0,
-                        "y": -5.0,
+                        "y": -6.300000190734863,
                         "z": 10.0
                     },
                     "vRotation": {
@@ -1369,13 +1369,97 @@
                     "strEffectTag": "Boss_LianHuo_Catch_End",
                     "vOffset": {
                         "x": 0.0,
-                        "y": 0.0,
+                        "y": -2.5999999046325684,
                         "z": 0.0
                     },
                     "vRotation": {
                         "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 31.0,
+                    "iAnimIndex": 15,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Particle",
+                    "vOffset": {
+                        "x": -2.0,
+                        "y": 2.0,
+                        "z": 3.5
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": -30.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 62.0,
+                    "iAnimIndex": 15,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Particle",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 5.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 90.0
+                    }
+                },
+                {
+                    "ChildPartNumber": -1,
+                    "bFollowBone": true,
+                    "bUseChildBone": false,
+                    "eEventType": 1,
+                    "ePhase": "Immediatley",
+                    "fDuration": 1.0,
+                    "fStartTrackPosition": 110.0,
+                    "iAnimIndex": 15,
+                    "iBoneFlag": 0,
+                    "iBoneIndex": -1,
+                    "iChildBoneIndex": -1,
+                    "iNotifyId": 4,
+                    "iSimulationType": 1,
+                    "strAnimTag": "Animation_Lianhuo_Skill01",
+                    "strDescription": "",
+                    "strEffectTag": "Boss_LianHuo_Particle",
+                    "vOffset": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 5.0
+                    },
+                    "vRotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 90.0
                     }
                 }
             ]
