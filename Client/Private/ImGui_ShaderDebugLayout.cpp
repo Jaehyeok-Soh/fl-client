@@ -38,7 +38,7 @@ void CImGui_ShaderDebugLayout::Render(CGameObject* pGo)
 		{"Specular", ERenderTarget::Specular},
         {"Emissive", ERenderTarget::Emissive},
 		{"Depth", ERenderTarget::Depth},
-		{"SSAO_Full", ERenderTarget::SSAO_Full},
+		{"SSAO_Full", ERenderTarget::SSAO_Ping},
 		{"SceneHDR", ERenderTarget::SceneHDR},
 		{"Bloom_Ping", ERenderTarget::Bloom_Ping},
         {"Cascade_0", ERenderTarget::Cascade_0},

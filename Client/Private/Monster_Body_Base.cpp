@@ -273,9 +273,6 @@ HRESULT CMonster_Body_Base::Render()
 
 HRESULT CMonster_Body_Base::Render_Shadow()
 {
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
 	CShader* pShader = Get_Component<CShader>();
 	_uint iPrevPass = pShader->Get_CurrentPass();
 

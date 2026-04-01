@@ -16,7 +16,6 @@ enum class ERenderTarget : _uint
 	Emissive,
 	SSAO_Ping,
 	SSAO_Pong,
-	SSAO_Full,
 	SceneHDR,
 	SceneHDR_Copy,	// 유니티에서 SceneTexture라고 함. Effect 전용
 	Bloom_Ping,
@@ -37,7 +36,6 @@ enum class EMRTLayer : _uint
 	SSAO_Gen,
 	SSAO_BlurH,
 	SSAO_BlurV,
-	SSAO_Upsample,
 	CombineHDR,
 	SceneHDR_Acc,
 	Bloom_Extract,
