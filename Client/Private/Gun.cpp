@@ -86,6 +86,12 @@ void CGun::Update(_float fTimeDelta)
 	Vec3 dir = m_pCameraTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	_float dist = {};
 	
+	if (dir.LengthSquared() < 1e-6f)
+		return;
+
+	if (pos == Vec3::Zero)
+		return;
+
 	m_bOnTarget = m_pAttackRaycast->Aimming(pos, dir, 500.f, &dist);
 }
 
