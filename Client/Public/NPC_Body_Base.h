@@ -44,6 +44,7 @@ public:
 	virtual void OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther) override;
 	virtual _bool On_Hit(const HIT_DESC& hitDesc) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Shadow() override;
 public:
 	CBone* Get_Bone(CNPC_Body_Base::EBone eBone);
 	const Matrix* Get_SocketMatrix(const _char* szBoneName);

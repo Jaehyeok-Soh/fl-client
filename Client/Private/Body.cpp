@@ -145,7 +145,7 @@ HRESULT CBody::Initialize(void* pArg)
 	if (FAILED(m_pGameInstance->Set_CascadeShadowConstantBuffer(Get_Component<CShader>())))
 		return E_FAIL;
 
-	Set_RenderInfoFlag(OF_SpecialSkill, true);
+	// Set_RenderInfoFlag(OF_SpecialSkill, true);
 	Set_RenderInfoFlag(OF_Outline, true);
 	Set_RenderInfoFlag(OF_Rim, true);
 	return S_OK;
@@ -267,9 +267,6 @@ HRESULT CBody::Render()
 
 HRESULT CBody::Render_Shadow()
 {
-	if (FAILED(Super::Render()))
-		return E_FAIL;
-
 	CShader* pShader = Get_Component<CShader>();
 	_uint iPrevPass = pShader->Get_CurrentPass();
 
