@@ -193,7 +193,6 @@ void CUIQTE_Image::Bind_Events()
 						case DTO::EUIDImageSubClassType::QTE_LINE:
 						{
 							this->Set_Invisible();
-							CLOG_INFO("INVISIBLE");
 						}
 							break;
 

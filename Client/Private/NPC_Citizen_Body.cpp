@@ -71,6 +71,10 @@ HRESULT CNPC_Citizen_Body::Initialize(void* pArg)
 
 	m_pGameInstance->Bind_DissolveTexture(Get_Component<CShader>());
 
+	// CascadeBuffer Shader¿¡ ¿¬°á
+	if (FAILED(m_pGameInstance->Set_CascadeShadowConstantBuffer(Get_Component<CShader>())))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -247,6 +251,7 @@ void CNPC_Citizen_Body::Ready_Before_Render(_float fTimeDelta)
 
 
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
+	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 }
 
 void CNPC_Citizen_Body::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
@@ -305,6 +310,32 @@ HRESULT CNPC_Citizen_Body::Render()
 	SHADER_DISSOLVE_EFFECT_DESC Desc = {};
 	pShader->Bind_DissolveEffectData(Desc);
 
+	return S_OK;
+}
+
+HRESULT CNPC_Citizen_Body::Render_Shadow()
+{
+	CShader* pShader = Get_Component<CShader>();
+	_uint iPrevPass = pShader->Get_CurrentPass();
+
+	CComputeShader* pBoneMeshCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneMesh")));
+	CComputeShader* pBoneCombineCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
+
+	constexpr _uint iShadowPass = 4;
+
+	// Set Shadow Pass
+	pShader->Set_Pass(iShadowPass);
+	CModel* pModel = Get_Component<CModel>();
+	_uint iMeshCount = pModel->Get_MeshCount();
+	pShader->Bind_TransformData(m_matCombinedWorld);
+	for (_uint i = 0; i < iMeshCount; ++i)
+	{
+		pModel->Bind_Bones(pShader, i, pBoneMeshCS, pBoneCombineCS);
+		pShader->Apply();
+		pModel->Render(i);
+	}
+
+	pShader->Set_Pass(iPrevPass);
 	return S_OK;
 }
 

@@ -157,6 +157,7 @@ void CUIQuickSlot_Image::Tick_By_Type(const _float fTimeDelta)
 			m_pUIManager->Set_isCursor_Visible(false);
 
 			m_pGameInstance->Deactivate_SloMo();
+			CUIQuickSlot_Manager::GetInstance()->Request_Change_Weapon(m_pParentCanvasCache->Get_CommonParam_uint()[UINT_SLOT_CURRENT_SLOT_INDEX]);
 		}
 
 	}
@@ -171,11 +172,10 @@ void CUIQuickSlot_Image::Tick_By_Type(const _float fTimeDelta)
 		break;
 	case DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_SIDE_SLOT:
 	{
-		if (!m_pParentCanvasCache->Get_CommonParam_bool()[BOOLEAN_SLOT_Z_KEY_HOLDING])
+		if (!m_pParentCanvasCache->Get_CommonParam_bool()[BOOLEAN_SLOT_Z_KEY_HOLDING] || !CUIQuickSlot_Manager::GetInstance()->Get_QuickSlotOpen())
 			break;
 
 		WeaponType_To_Icon();
-		CUIQuickSlot_Manager::GetInstance()->Request_Change_Weapon(m_pParentCanvasCache->Get_CommonParam_uint()[UINT_SLOT_CURRENT_SLOT_INDEX]);
 	}
 		break;
 	}

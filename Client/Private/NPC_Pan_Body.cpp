@@ -59,7 +59,7 @@ HRESULT CNPC_Pan_Body::Awake(const _uint iCurrentLevelIndex)
 	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
 	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
 
-	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, 0.06f,
+	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, 1.f,
 		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pAnimMix);
 
 	return S_OK;

@@ -185,42 +185,42 @@ void CLevel_Test::Update(const _float fTimeDelta)
 //		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 //	}
 //
-	if (KEY_BUTTON_DOWN(DIK_4))
-	{
-		m_pGameInstance->Broadcast<MINIGAME_CIRCLE_ON>();
-	}
-	if (KEY_BUTTON_DOWN(DIK_5))
-	{
-		UI_LEVEL_FADE_PREFAB_DATA Desc = {};
-		Desc.eNextLevelID = ELevelType::TUTORIAL_VILLAGE;
-		Desc.fDelay		= 0.f;
-		Desc.fDuration	= 0.5f;
-		Desc.isEased	= true;
-		Desc.fEaseValue = 2.f;
-		Desc.isFadeIn	= false;
-		Desc.fEndDelay	= 2.f;
-		CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
-	}
+	//if (KEY_BUTTON_DOWN(DIK_4))
+	//{
+	//	m_pGameInstance->Broadcast<MINIGAME_CIRCLE_ON>();
+	//}
+	//if (KEY_BUTTON_DOWN(DIK_5))
+	//{
+	//	UI_LEVEL_FADE_PREFAB_DATA Desc = {};
+	//	Desc.eNextLevelID = ELevelType::TUTORIAL_VILLAGE;
+	//	Desc.fDelay		= 0.f;
+	//	Desc.fDuration	= 0.5f;
+	//	Desc.isEased	= true;
+	//	Desc.fEaseValue = 2.f;
+	//	Desc.isFadeIn	= false;
+	//	Desc.fEndDelay	= 2.f;
+	//	CUI_Manager::GetInstance()->Request_LevelChange_With_Fade(Desc);
+	//}
 
-	if (m_pGameInstance->KeyButton_Down(DIK_9))
-	{
-		EFFECT_LINE_DESC Desc = {};
-		Desc.Set_LinePosition(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 30.f, 0.f));
-		m_pGameInstance->Request_Effect("Boss_LianHuo_DashPanel", Desc);
-	}
+	//if (m_pGameInstance->KeyButton_Down(DIK_9))
+	//{
+	//	EFFECT_LINE_DESC Desc = {};
+	//	Desc.Set_LinePosition(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 30.f, 0.f));
+	//	m_pGameInstance->Request_Effect("Boss_LianHuo_DashPanel", Desc);
+	//}
 
-	if (KEY_BUTTON_DOWN(DIK_6))
-	{
-		UI_PREFAB_DATA tPrefabData = {};
-		UI_QTE_PREFAB_DATA Desc = {};
-		tPrefabData.Data = Desc;
-		CUI_Manager::GetInstance()->Request_Add_Prefab(m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::QTE, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
-	}
+	//if (KEY_BUTTON_DOWN(DIK_6))
+	//{
+	//	UI_PREFAB_DATA tPrefabData = {};
+	//	UI_QTE_PREFAB_DATA Desc = {};
+	//	tPrefabData.Data = Desc;
+	//	CUI_Manager::GetInstance()->Request_Add_Prefab(m_pGameInstance->Get_CurrentLevelIndex(), EUIPrefabType::QTE, m_pGameInstance->Get_CurrentLevelIndex(), &tPrefabData);
+	//}
 
-	if (KEY_BUTTON_DOWN(DIK_7))
-	{
-		CUIQTE_Manager::GetInstance()->Start_QTE(5);
-	}
+	//if (KEY_BUTTON_DOWN(DIK_7))
+	//{
+	//	CUIQTE_Manager::GetInstance()->Start_QTE(5);
+	//}
 	CUIQTE_Manager::GetInstance()->Tick_QTE(fTimeDelta);
 }
 

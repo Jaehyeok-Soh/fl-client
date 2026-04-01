@@ -49,6 +49,7 @@ PS_OUT PS_MAIN(PS_IN_POS_TEX input)
     
     vBaseColor.rgb *= g_fBrightness;
     output.vColor = vBaseColor;
+    output.vColor.a *= g_fAllUIControllAlpha;
     return output;
 }
 
@@ -77,6 +78,7 @@ PS_OUT PS_COLOR(PS_IN_POS_TEX input)
     if (vBaseColor.a < 0.001f)
         discard;
     output.vColor = vBaseColor;
+    output.vColor.a *= g_fAllUIControllAlpha;
     return output;
 }
 
@@ -117,6 +119,8 @@ PS_OUT PS_PROGRESS(PS_IN_POS_TEX input)
         discard;
 
     output.vColor = vBaseColor;
+    
+    output.vColor.a *= g_fAllUIControllAlpha;
     return output;
 }
 
@@ -150,6 +154,7 @@ PS_OUT PS_DISOLVE(PS_IN_POS_TEX input)
     output.vColor.a *= Edge;
     output.vColor.a *= Alpha;
     output.vColor.a *= g_fAlphaRatio;
+    output.vColor.a *= g_fAllUIControllAlpha;
     return output;
 }
 
@@ -173,6 +178,7 @@ PS_OUT PS_NOISE(PS_IN_POS_TEX input)
     if (vBaseColor.a < 0.001f)
         discard;
     output.vColor = vBaseColor;
+    output.vColor.a *= g_fAllUIControllAlpha;
     return output;
 }
 
@@ -213,6 +219,7 @@ PS_OUT PS_GLOW(PS_IN_POS_TEX input)
     float a = glowTex.a * g_fGlowIntensity * flicker;
 
     output.vColor   = float4(glowColor * a, a);
+    output.vColor.a *= g_fAllUIControllAlpha;
     return output;
 }
 
@@ -228,6 +235,7 @@ PS_OUT PS_SPRITE_ANIMATION(PS_IN_POS_TEX input)
     
     vBaseColor.rgb *= g_fBrightness;
     output.vColor = vBaseColor;
+    output.vColor.a *= g_fAllUIControllAlpha;
     return output;
 }
 

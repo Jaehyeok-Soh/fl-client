@@ -41,7 +41,8 @@ private:
 	void Resolve_DashDirection();
 	void Spawn_Line(const Vec3& vStart, const Vec3& vEnd);
 private:
-	_bool Build_DashLines();
+	_bool Build_DashLines(_uint iIndex);
+	Vec3 Sample_PlayerPosition();
 private:
 	CMonsterActionState* m_pOwnerActionState{ nullptr };
 	CMonsterControlContext* m_pOwnerControlContext{ nullptr };
@@ -61,7 +62,7 @@ private:
 	_int m_iDashIndex = 0;
 	ERunPhase m_ePhase = ERunPhase::Dash;
 
-	_float m_fDashMovePerSec = 5.f;
+	_float m_fDashMovePerSec = 10.f;
 	_float m_fArriveTolerance = 0.2f;
 
 	_bool m_bPathReady = { false };

@@ -36,21 +36,21 @@ struct MONSTER_DEAD_EVENT_START { using Signature = void(CGameObject*); }; // 몬
 
 // 연출관련으로 Delegate를 들고있고 
 
-struct CINEMATIC_START { using Signature = void(); };			// UI 위 아래 나오는 연출
-struct CINEMATIC_END { using Signature = void(); };				// UI 위 아래 들어가는 연출
+struct CINEMATIC_START { using Signature = void(); };						// UI 위 아래 나오는 연출
+struct CINEMATIC_END { using Signature = void(); };							// UI 위 아래 들어가는 연출
 
-struct BOSS_ACTION_ON { using Signature = void(const _uint iObjectID); };		// UI 보스 이름 띄우기
+struct BOSS_ACTION_ON { using Signature = void(const _uint iObjectID); };	// UI 보스 이름 띄우기
 struct BOSS_ACTION_OFF { using Signature = void(const _uint iObjectID); };	// UI 보스 이름 넣기
 
-struct BOSS_UI_ON { using Signature = void(); };			// 시빌라 체력바 켜기
-struct BOSS_UI_OFF { using Signature = void(); };		// 끄기
+struct BOSS_UI_ON { using Signature = void(); };							// 시빌라 체력바 켜기
+struct BOSS_UI_OFF { using Signature = void(); };							// 끄기
 
-struct BOSS_GROGGY { using Signature = void(); }; // 약점 노출
+struct BOSS_GROGGY { using Signature = void(); };							// 약점 노출
 
-struct GUN_ON_HIT { using Signature = void(); };	// 총알을 적중했을 때  
+struct GUN_ON_HIT { using Signature = void(); };							// 총알을 적중했을 때  
 
-struct TUTORIAL_POPUP_TRIGGER{ using Signature = void(EUITutorialPopUpTypeID ID); }; // 튜토리얼 팝업 띄우기
-struct TUTORIAL_POPUP_CLEAR{ using Signature = void(EUITutorialPopUpTypeID ID); }; // 튜토리얼 팝업 내리고 클리어 띄우기
+struct TUTORIAL_POPUP_TRIGGER{ using Signature = void(EUITutorialPopUpTypeID ID); };	// 튜토리얼 팝업 띄우기
+struct TUTORIAL_POPUP_CLEAR{ using Signature = void(EUITutorialPopUpTypeID ID); };		// 튜토리얼 팝업 내리고 클리어 띄우기
 
 struct MINIGAME_CIRCLE_ON { using Signature = void(); };
 struct MINIGAME_CIRCLE_CLEAR { using Signature = void(); };
