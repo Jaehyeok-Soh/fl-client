@@ -40,6 +40,9 @@ private:
 	HRESULT Ready_PartObjects();
 	HRESULT Ready_Components(void* pArg);
 
+	HRESULT Ready_StateIndexForDirecting();
+	HRESULT Change_State_ForDirecting(_int iStateIdx);
+
 public:
 	static NPC_DESC Get_PreSetDesc(_uint iLevelId);
 

@@ -1129,6 +1129,7 @@ namespace Client
 	inline constexpr wchar_t g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_GlobalEvent_BroadCaster" };
 	inline constexpr wchar_t g_wszTriggerBox_TutorialUIEvent_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_TutorialUIEvent" };
 	inline constexpr wchar_t g_wszTriggerBox_CinematicPlayer_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_CinematicPlayer" };
+	inline constexpr wchar_t g_wszTriggerBox_EnvJukebox_PrototypeTag[]{ L"Prototype_GameObject_TriggerBox_EnvJukebox" };
 #pragma endregion
 
 #pragma region Monster ฐüทร	

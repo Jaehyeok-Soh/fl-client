@@ -137,6 +137,7 @@
 #include "TriggerBox_GlobalEvent_BroadCaster.h"
 #include "TriggerBox_TutorialUIEvent.h"
 #include "TriggerBox_CinematicPlayer.h"
+#include "TriggerBox_EnvJukebox.h"
 
 /* --------------------- */
 //=================
@@ -1002,6 +1003,7 @@ HRESULT CLoader::Loading_For_Logo()
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_GlobalEvent_BroadCaster_PrototypeTag, CTriggerBox_GlobalEvent_BroadCaster::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_TutorialUIEvent_PrototypeTag,			CTriggerBox_TutorialUIEvent::Create(m_pDevice, m_pDeviceContext));
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_CinematicPlayer_PrototypeTag,			CTriggerBox_CinematicPlayer::Create(m_pDevice, m_pDeviceContext));
+		ADD_PROTOTYPE(ELevelType::STATIC, g_wszTriggerBox_EnvJukebox_PrototypeTag,				CTriggerBox_EnvJukebox::Create(m_pDevice, m_pDeviceContext));
 #pragma endregion
 
 		/* Weapons */
@@ -1820,6 +1822,22 @@ HRESULT CLoader::Ready_Sounds_Player()
 	
 	// voice
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Voice")))
+		return E_FAIL;
+
+	//Resources\Sounds\SFX\Env
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Env")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Player\FootSound\EnvGrass
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/FootSound/EnvGrass")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Player\FootSound\EnvSand
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/FootSound/EnvSand")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Player\FootSound\EnvWater
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/FootSound/EnvWater")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Player\FootSound\EnvWood
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/FootSound/EnvWood")))
 		return E_FAIL;
 
 	return S_OK;

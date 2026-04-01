@@ -181,8 +181,17 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 			m_bStageBones = false;
 		}
 
+		if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_STAGEING_FOR_NAME))
+		{
+			// string vector를 int vector로 치환 해준다
+			for (auto& Name : pDesc->vecStageBoneName)
+			{
+				pDesc->vecStageBoneIndices.push_back(Get_BoneIndex(Name));
+			}
+		}
+
 		// 빼돌릴건데 모든 뼈를 빼돌리고 싶다면
-		else if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ALLBONE))
+		if (Engine_Utils::Has_Flag(FStageBone, STAGEING_BONE::SB_ALLBONE))
 		{
 			pDesc->vecStageBoneIndices.reserve(Get_BoneCount());
 
@@ -194,8 +203,6 @@ HRESULT CModel::Initialize_Prototype(void* pArg)
 
 		// staging 정보 생성
 		//Make_Staging(pDesc);
-
-		// 
 		if (m_bStageBones)
 		{
 			// 재귀로 지정뼈 ~ 부모뼈 update on
@@ -930,6 +937,22 @@ _int CModel::Get_AnimationIndex(const wstring& wstrName)
 		return -1;
 
 	return static_cast<_int>(itr->second);
+}
+
+_int CModel::Get_BoneIndex(const string& strName)
+{
+	_int iOutBoneIndex{ -1 };
+
+
+	for (_uint i = 0; i < static_cast<_uint>(m_vecBones.size()); ++i)
+	{
+		if (strName == m_vecBones[i]->Get_Name())
+		{
+			iOutBoneIndex = i;
+			break;
+		}
+	}
+	return iOutBoneIndex;
 }
 
 wstring CModel::Get_MaterialName(_uint iIndex) const
@@ -2297,48 +2320,50 @@ RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT
 	desc.matLocalTransform = bone->Get_Transform();
 
 	CBone* child = Get_Bone(PhysicsJointNames[eChildJoint].c_str());
-	//if (child != nullptr)
-	//	desc.fHeight = child->Get_Transform().Translation().Length();
+	if (child != nullptr)
+		desc.fHeight = child->Get_Transform().Translation().Length();
+	else
+		desc.fHeight = 0.05f;
 
 	switch (eJoint)
 	{
 	case Engine::ERagdollJoint::PELVIS:
 		desc.fRadius = 0.25f;
 		desc.fMass = 1.f;
-		desc.fHeight = 0.25f;
+		//desc.fHeight = 0.25f;
 		break;
 	case Engine::ERagdollJoint::SPINE_02:
 		desc.fRadius = 0.05f;
-		desc.fHeight = 0.05f;
+		//desc.fHeight = 0.05f;
 		break;
 	case Engine::ERagdollJoint::HEAD:
 		desc.fRadius = 0.1f;
 		desc.fMass = 5.f;
-		desc.fHeight = 0.1f;
+		//desc.fHeight = 0.1f;
 		break;
 	case Engine::ERagdollJoint::UPPERARM_L:
 	case Engine::ERagdollJoint::UPPERARM_R:
 		desc.fRadius = 0.1f;
 		desc.fMass = 0.1f;
-		desc.fHeight = 0.1f;
+		//desc.fHeight = 0.1f;
 		break;
 	case Engine::ERagdollJoint::LOWERARM_L:
 	case Engine::ERagdollJoint::LOWERARM_R:
 		desc.fRadius = 0.1f;
 		desc.fMass = 0.1f;
-		desc.fHeight = 0.1f;
+		//desc.fHeight = 0.1f;
 		break;
 	case Engine::ERagdollJoint::THIGH_L:
 	case Engine::ERagdollJoint::THIGH_R:
 		desc.fRadius = 0.1f;
 		desc.fMass = 0.1f;
-		desc.fHeight = 0.1f;
+		//desc.fHeight = 0.1f;
 		break;
 	case Engine::ERagdollJoint::CALF_L:
 	case Engine::ERagdollJoint::CALF_R:
 		desc.fRadius = 0.05f;
 		desc.fMass = 0.1f;
-		desc.fHeight = 0.05f;
+		//desc.fHeight = 0.05f;
 		break;
 	case Engine::ERagdollJoint::FOOT_L:
 	case Engine::ERagdollJoint::FOOT_R:
@@ -2347,7 +2372,7 @@ RAGDOLLBONEDESC CModel::Set_Ragdoll_Bone(RAGDOLLJOINT::Enum eJoint, RAGDOLLJOINT
 		break;
 	}
 
-	desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f), PxQuat(PxHalfPi, PxVec3(1, 0, 0)));
+	desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight, 0.f), PxQuat(PxHalfPi, PxVec3(0, 0, 1)));
 	//desc.matOffsetTransform = PxTransform(PxVec3(0.f, -desc.fHeight * 0.5f, 0.f),
 	//	PxQuat(PxHalfPi, PxVec3(0, 0, 1)));
 

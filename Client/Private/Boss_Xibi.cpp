@@ -127,6 +127,7 @@ HRESULT CBoss_Xibi::Ready_GlobalEvent()
 				break;
 			}
 		}
+		return S_OK;
 		});
 
 

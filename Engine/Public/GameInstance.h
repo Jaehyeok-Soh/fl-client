@@ -242,6 +242,7 @@ public:
 	_bool KeyButton_Up(_ubyte key);
 	_bool KeyButton_None(_ubyte eKeyID);
 
+	void  Clear_AllKeyInput();
 	_bool Mouse_Down(MOUSEKEYSTATE eMouseKeyID);
 	_bool Mouse_Up(MOUSEKEYSTATE eMouseKeyID);
 	_bool Mouse_Pressing(MOUSEKEYSTATE eMouseKeyID);

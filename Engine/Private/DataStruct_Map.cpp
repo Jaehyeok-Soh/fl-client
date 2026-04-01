@@ -493,6 +493,7 @@ inline CLIENT_MAKEPATH_DESC_BASE* Create_ClientMakePathDesc(DTO::EClientMakePath
 	case DTO::EClientMakePath::TriggerBox_GlobalEvent_BroadCaster:	return pSource == nullptr ? new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC : new TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC(*static_cast<TRIGGERBOX_GLOBALEVENT_BROADCASTER_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_TutorialUIEvent:			return pSource == nullptr ? new TRIGGERBOX_TUTORIALUIEVENT_DESC			: new TRIGGERBOX_TUTORIALUIEVENT_DESC(*static_cast<TRIGGERBOX_TUTORIALUIEVENT_DESC*>(pSource));
 	case DTO::EClientMakePath::TriggerBox_CinematicPlayer:			return pSource == nullptr ? new TRIGGERBOX_CINEMATICPLAYER_DESC			: new TRIGGERBOX_CINEMATICPLAYER_DESC(*static_cast<TRIGGERBOX_CINEMATICPLAYER_DESC*>(pSource));
+	case DTO::EClientMakePath::TriggerBox_EnvJukebox:				return pSource == nullptr ? new TRIGGERBOX_ENVJUKEBOX_DESC				: new TRIGGERBOX_ENVJUKEBOX_DESC(*static_cast<TRIGGERBOX_ENVJUKEBOX_DESC*>(pSource));
 
 
 
@@ -2037,12 +2038,32 @@ BATCH_OBJECT_DESC_BASE* Make_BatchObject_Desc(DTO::EMakeObjectType eBatchObjectT
 	return nullptr;
 }
 
-
 #pragma endregion
+
+void TRIGGERBOX_ENVJUKEBOX_DESC::from_Json(const json& LoadJson)
+{
+	Super::from_Json(LoadJson);
+
+	string strType = {};
+	LoadJson.at("eType").get_to(strType);
+	this->eType = ENV_JUKEBOX_TYPE::ToEnum(strType);
+
+	LoadJson.at("strSoundTag").get_to(this->strSoundTag);
+	LoadJson.at("iSoundHash").get_to(this->iSoundHash);
+	LoadJson.at("fRadius").get_to(this->fRadius);
+}
+
+void TRIGGERBOX_ENVJUKEBOX_DESC::to_Json(json& SaveJson)
+{
+	Super::to_Json(SaveJson);
+
+	SaveJson["eType"] = ENV_JUKEBOX_TYPE::ToString(this->eType);
+	SaveJson["strSoundTag"] = this->strSoundTag;
+	SaveJson["iSoundHash"] = this->iSoundHash;
+	SaveJson["fRadius"] = this->fRadius;
+}
 
 #pragma endregion
 
 
 NS_END
-
-

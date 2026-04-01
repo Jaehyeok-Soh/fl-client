@@ -216,6 +216,7 @@
     <ClInclude Include="..\Public\State_SPHitStart.h" />
     <ClInclude Include="..\Public\State_Stun.h" />
     <ClInclude Include="..\Public\UIAmbSound_Manager.h" />
+    <ClInclude Include="..\Public\TriggerBox_EnvJukebox.h" />
     <ClInclude Include="..\Public\UIBossSkill_Image.h" />
     <ClInclude Include="..\Public\UIBossSkill_Text.h" />
     <ClInclude Include="..\Public\UIEnterGame_Image.h" />
@@ -531,6 +532,7 @@
     <ClCompile Include="..\Private\State_SPHitStart.cpp" />
     <ClCompile Include="..\Private\State_Stun.cpp" />
     <ClCompile Include="..\Private\UIAmbSound_Manager.cpp" />
+    <ClCompile Include="..\Private\TriggerBox_EnvJukebox.cpp" />
     <ClCompile Include="..\Private\UIBossSkill_Image.cpp" />
     <ClCompile Include="..\Private\UIBossSkill_Text.cpp" />
     <ClCompile Include="..\Private\UIEnterGame_Image.cpp" />

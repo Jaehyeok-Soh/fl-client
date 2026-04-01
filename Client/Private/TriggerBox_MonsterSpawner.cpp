@@ -50,9 +50,6 @@ HRESULT CTriggerBox_MonsterSpawner::Initialize(void* pArg)
     if (FAILED(Super::Initialize(pArg)))
         return E_FAIL;
 
-
-
-
 	TRIGGERBOX_MONSTERSPAWNER_DESC* pDesc = static_cast<TRIGGERBOX_MONSTERSPAWNER_DESC*>(pArg);
 
 	m_vecMonsterSpawnData = pDesc->vecMonsterSpawnData;
@@ -145,7 +142,6 @@ void CTriggerBox_MonsterSpawner::Update_Priority(const _float fTimeDelta)
 void CTriggerBox_MonsterSpawner::Update(const _float fTimeDelta)
 {
     Super::Update(fTimeDelta);
-
 }
 
 void CTriggerBox_MonsterSpawner::Update_Late(const _float fTimeDelta)
@@ -172,8 +168,6 @@ void CTriggerBox_MonsterSpawner::OnCollision(_uint iMyColliderLayer, _uint iOthe
 void CTriggerBox_MonsterSpawner::OnCollision_Enter(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther, const COL_HIT_INFO& tHitInfo)
 {
     Super::OnCollision_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
-
-
 }
 
 void CTriggerBox_MonsterSpawner::OnCollision_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)

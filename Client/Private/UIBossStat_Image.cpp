@@ -153,6 +153,8 @@ void CUIBossStat_Image::Bind_Events()
 			}
 			}));
 
+
+
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<BOSS_UI_ON>([this]()
 		{

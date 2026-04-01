@@ -87,7 +87,7 @@ protected:
 	HRESULT				Ready_CCT(void* pArgs);
 	void				Ready_Quest(vector<DTO::QUEST_CHAPTERDESC>* pQuestDesc);
 protected:
-	HRESULT				Setting_NPCText(_uint iCurrentLevelID);
+	virtual HRESULT		Setting_NPCText(_uint iCurrentLevelID);
 public:
 	const _wstring&	Get_SoundTag()		const { return m_wstrSoundTag; }
 	const _wstring& Get_UITextContext() const { return m_wstrContents; }

@@ -1036,6 +1036,9 @@
     <Filter Include="03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager">
       <UniqueIdentifier>{cda240a0-3f3c-4c4d-aca0-450799e4722f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\TriggerBox\06. TiggerObx_EnvJukebox">
+      <UniqueIdentifier>{f769402a-c7aa-431f-bd8b-2b6d95d21d8e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\26.Boss Skill">
       <UniqueIdentifier>{bca628df-c306-431e-88a2-4c925353951d}</UniqueIdentifier>
     </Filter>
@@ -1959,6 +1962,9 @@
     <ClInclude Include="..\Public\UIAmbSound_Manager.h">
       <Filter>03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox_EnvJukebox.h">
+      <Filter>03. GameObject\TriggerBox\06. TiggerObx_EnvJukebox</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UIBossSkill_Image.h">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\26.Boss Skill</Filter>
     </ClInclude>
@@ -2869,6 +2875,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIAmbSound_Manager.cpp">
       <Filter>03. GameObject\UIObjects\00.Manager\04.UI Ambience Sound Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox_EnvJukebox.cpp">
+      <Filter>03. GameObject\TriggerBox\06. TiggerObx_EnvJukebox</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIBossSkill_Image.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\26.Boss Skill</Filter>

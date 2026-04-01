@@ -96,6 +96,23 @@ HRESULT CLevel_Map::Initialize()
 	if (FAILED(m_pMapToolManager->Ready_CitizenDatas()))
 		return E_FAIL;
 
+	_uint iLevelID = ENUM_TO_UINT(ELevelType::MAP);
+	//Resources\Sounds\SFX\Env
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Env")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Player\FootSound\EnvGrass
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/FootSound/EnvGrass")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Player\FootSound\EnvSand
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/FootSound/EnvSand")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Player\FootSound\EnvWater
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/FootSound/EnvWater")))
+		return E_FAIL;
+	//Resources\Sounds\SFX\Player\FootSound\EnvWood
+	if (FAILED(m_pGameInstance->Load_Sounds(iLevelID, ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/FootSound/EnvWood")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

@@ -164,6 +164,11 @@ HRESULT CLevel_Square::Awake(const _uint iLevelID)
 	}
 
 	m_pGameInstance->Play_OneShot(0, TO_HASH("SQUARE_BGM"), 0.5f);
+
+
+	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -577,7 +582,7 @@ void CLevel_Square::Update(const _float fTimeDelta)
 	m_fAccTime += fTimeDelta;
 
 
-	if (m_fAccTime >= 10.f)
+	if (m_fAccTime >= 5.5f)
 	{
 		Setting_Citizen();
 		m_fAccTime = 0.f;
