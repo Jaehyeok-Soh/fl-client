@@ -164,8 +164,17 @@ void CUINpcTextBubble_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
 			{
-				if (m_isNoText)
-					return;
+				switch (m_eTextSubClassType)
+				{
+				case DTO::EUITextSubClassType::NPC_TEXT_BUBBLE_NAME_TEXT:
+					break;
+				case DTO::EUITextSubClassType::NPC_TEXT_BUBBLE_CONTENT_TEXT:
+				{
+					if (m_isNoText)
+						return;
+				}
+					break;
+				}
 
 				if (m_pTargetNPC == pObj)
 				{

@@ -33,6 +33,7 @@ HRESULT CState_GimmikCamera::Start(void* pArg, _bool bForce)
 		return E_FAIL;
 
 	CCameraPreset_Manager::GetInstance()->Play_Preset("GimmikCamera", Get_OwnerObject());
+	m_pGameInstance->Broadcast<BOSS_SKILL_ON>();
 	m_fElapsed = 0.f;
 	return S_OK;
 }
@@ -52,6 +53,8 @@ void CState_GimmikCamera::Update(const _float fTimeDelta)
 
 HRESULT CState_GimmikCamera::End()
 {
+	m_pGameInstance->Broadcast<BOSS_SKILL_OFF>();
+
 	return Super::End();
 }
 

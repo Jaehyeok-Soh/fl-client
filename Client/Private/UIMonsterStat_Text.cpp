@@ -214,7 +214,7 @@ void CUIMonsterStat_Text::Initialize_InVisible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event = false;
-	Ready_Fade(1.f, 1.f, 0.f, 1.f);
+	Ready_Fade(1.f, 1.f, 0.f, 0.f);
 }
 
 _bool CUIMonsterStat_Text::Tick_Visible_Event(const _float fTimeDelta)

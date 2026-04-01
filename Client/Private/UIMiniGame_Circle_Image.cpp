@@ -14,15 +14,18 @@
 #include "GameInstance.h"
 
 #define CURRENT_RADIAN_SLOT 0
+#define CURRENT_SPEED_SLOT 1
+
 
 #define ALL_POINT_CLEAR_SLOT 6
 #define FAILED_TO_CLEAR_SLOT 7
 
 // Common Value
-// bool // 0 ~ 5 -> 플레이어가 각도에 맞게 스페이스 잘 눌렀으면 true 
-//		// 6 -> 전부 눌렸는지
-//		// 7 -> 시간 내에 성공 못했는지
-// float // 0 -> 현재 커서 각도 (Radian)
+// bool		// 0 ~ 5 -> 플레이어가 각도에 맞게 스페이스 잘 눌렀으면 true 
+//			// 6 -> 전부 눌렸는지
+//			// 7 -> 시간 내에 성공 못했는지
+// float	// 0 -> 현재 커서 각도 (Radian)
+// float	// 0 -> 현재 커서 각도 (Radian)
 
 CUIMiniGame_Circle_Image::CUIMiniGame_Circle_Image(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	:CUIDynamic_Image(pDevice, pDeviceContext)
@@ -192,7 +195,7 @@ void CUIMiniGame_Circle_Image::Bind_Events()
 				std::fill(vecbool.begin(), vecbool.end(), false);
 
 				auto& vecfloat = m_pParentCanvasCache->Get_CommonParam_float_Ref();
-				std::fill(vecfloat.begin(), vecfloat.end(), false);
+				std::fill(vecfloat.begin(), vecfloat.end(), 1.f);
 
 				Set_Active(true);
 				m_isFirstEntered = false;
@@ -351,6 +354,8 @@ void CUIMiniGame_Circle_Image::Tick_For_Point(const _float fTimeDelta)
 			if (!m_isFirstEntered)
 			{
 				m_fRotateSpeed = m_pGameInstance->Rand_Float(1.f, 10.f);
+				m_pParentCanvasCache->Get_CommonParam_float_Ref()[CURRENT_SPEED_SLOT] = m_fRotateSpeed;
+
 				Set_Invisible();
 				m_isFirstEntered = true;
 			}
@@ -363,6 +368,7 @@ void CUIMiniGame_Circle_Image::Tick_For_Cursor(const _float fTimeDelta)
 	if (m_pParentCanvasCache->Get_CommonParam_bool()[FAILED_TO_CLEAR_SLOT])
 		m_fRotateSpeed = 30.f;
 
+	m_fRotateSpeed = m_pParentCanvasCache->Get_CommonParam_float()[CURRENT_SPEED_SLOT];
 	m_fRad += fTimeDelta * m_fRotateSpeed;
 
 	if (m_fRad >= (XM_PI * 2.f))

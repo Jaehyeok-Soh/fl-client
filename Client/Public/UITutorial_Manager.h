@@ -45,8 +45,7 @@ private:
 	class CPlayerControlContext* Get_PlayerCtrCtx();
 
 public:
-	_bool Get_isFirstTutorial() const { return m_isFirstTutorial; }
-
+	_bool Get_isFirstTutorial() const;
 	void Set_isFirstTutorial(_bool is) { m_isFirstTutorial = is; }
 
 private:
