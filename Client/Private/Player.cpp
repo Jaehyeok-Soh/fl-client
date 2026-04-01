@@ -223,15 +223,15 @@ void CPlayer::Update(const _float fTimeDelta)
     // boss stage일때는 groggy를 체크 한다
     if (m_bBossStage)
     {
-        //CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
-        //if (pBoss &&
-        //    static_cast<CMonster_Base*>(pBoss)->Monster_IsGroggy())
+        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
+        if (pBoss &&
+            static_cast<CMonster_Base*>(pBoss)->Monster_IsGroggy())
         {
             Set_FKeyEvent(0, true);
         }
 
-        //else
-        //    Set_FKeyEvent(0, false);
+        else
+            Set_FKeyEvent(0, false);
     }
 
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
