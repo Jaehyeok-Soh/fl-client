@@ -15,6 +15,8 @@
 #include "Model.h"
 #include "ComputeShader.h"
 
+#include "PhysicsCCT.h"
+
 CNPC_Pan_Body::CNPC_Pan_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: Super(pDevice, pDeviceContext)
 {
@@ -52,9 +54,13 @@ HRESULT CNPC_Pan_Body::Awake(const _uint iCurrentLevelIndex)
 	if (FAILED(Super::Awake(iCurrentLevelIndex)))
 		return E_FAIL;
 
+	CComputeShader* pBonCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_BoneCombine")));
 	CComputeShader* pAnimECS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimE")));
+	CComputeShader* pAnimBCS = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimB")));
+	CComputeShader* pAnimMix = static_cast<CComputeShader*>(Get_Script_Component(TEXT("ComputeShader_AnimMix")));
 
-	Get_Component<CModel>()->Change_Animation(pAnimECS, 1, true, true, false);
+	Get_Component<CModel>()->Update_Animation(pBonCS, pAnimECS, 0.06f,
+		Get_Parent()->Get_Component<CTransform>(), Get_Parent()->Get_Component<CPhysicsCCT>(), pAnimBCS, pAnimMix);
 
 	return S_OK;
 }
