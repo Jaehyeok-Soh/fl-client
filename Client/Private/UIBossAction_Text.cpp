@@ -187,11 +187,13 @@ void CUIBossAction_Text::Bind_Events()
 						{
 						case TO_HASH("Xibi_Begin"):
 						{
+							m_wstrText = L"½Ãºô¶ó";
 							this->Set_Visible();
 						}
 						break;
 						case TO_HASH("Lianhuo_Begin"):
 						{
+							m_wstrText = L"Áö¿ÁºÒ ±³µµ¼ÒÀå";
 							this->Set_Visible();
 						}
 						break;

@@ -458,13 +458,16 @@ void CGenericUI::Bind_Events()
 {
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DEFAULT_UI_VISIBLE>([this]()
-			{				
+			{		
+				if (this->Get_Name() == "Quest_Title_Icon")
+					int a = 0;
+
 				if (m_isEventVisible)
 				{
 					Set_Active(true);
 					this->Set_Visible();
 					m_isEventVisible = false;
-					m_fAll_Controll_Alpha = 1.f;
+				m_fAll_Controll_Alpha = 1.f;
 					
 				}
 			}));
@@ -472,11 +475,14 @@ void CGenericUI::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<DEFAULT_UI_INVISIBLE>([this]()
 			{
+				if (this->Get_Name() == "Quest_Title_Icon")
+					int a = 0;
+
 				if (this->m_isVisible)
 				{
 					this->Set_Invisible();
 					m_isEventVisible = true;
-					m_fAll_Controll_Alpha = 0.f;
+				m_fAll_Controll_Alpha = 0.f;
 				}
 			}));
 }

@@ -191,7 +191,7 @@ HRESULT CNPC_Citizen::Setting_NPCText(_uint iCurrentLevelID)
 	UI_PREFAB_DATA tPrefabData = {};
 	UI_NPC_TEXT_BUBBLE_PREFAB_DATA Desc = {};
 	Desc.pTarget = this;
-	Desc.vOffset = {0.f,0.5f,0.f};
+	Desc.vOffset = {0.f,1.0f,0.f};
 	Desc.wstrContents = m_wstrContents;
 	Desc.strTargetBoneName = "head";
 	tPrefabData.Data = Desc;

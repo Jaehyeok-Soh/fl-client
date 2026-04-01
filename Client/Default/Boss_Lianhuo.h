@@ -57,6 +57,8 @@ private:
 	HRESULT Ready_SoundHandler();
 	void Set_GhostTrailDesc();
 private:
+	_float m_fAccDT{false};
+	_bool m_isDirectingSoundStart{false};
 	_bool m_bFirst = { false };
 	array<_int, (size_t)EStateForDirecting::COUNT> m_arrStateIndex;
 	Vec3 vPos{ Vec3::Zero };
