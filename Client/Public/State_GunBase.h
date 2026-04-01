@@ -118,6 +118,7 @@ protected:
 	// 움직임 관련 함수
 private:
 	void	GunMove(const _float fTimeDelta);
+	void	JumpMove(const _float fTimeDelta);
 
 public:
 	virtual void Free() override;

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "State_Stun.h"
 
+#include "GameInstance.h"
+
 CState_Stun::CState_Stun(CActionState* pOwnerComponent)
     : Super(pOwnerComponent, "SpHit_Stun")
 {
@@ -26,6 +28,8 @@ HRESULT CState_Stun::Start(void* pArg, _bool bForce)
 {
     if (FAILED(Super::Start(pArg, bForce)))
         return E_FAIL;
+
+    m_pGameInstance->Play_OneShot(0, m_iSoundHash, 1.f);
 
     return S_OK;
 }

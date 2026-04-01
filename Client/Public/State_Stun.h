@@ -26,6 +26,7 @@ protected:
 
 private:
 	const _float m_fStunCoolTime = { 6.f };
+	const _uint  m_iSoundHash = { TO_HASH("sfx_boss_Lianhuo_skill07_fx_cast") };
 
 public:
 	static CState_Stun* Create(CActionState* pOwnerComponent, void* pArg = nullptr);

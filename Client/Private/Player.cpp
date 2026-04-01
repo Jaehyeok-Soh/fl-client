@@ -223,15 +223,15 @@ void CPlayer::Update(const _float fTimeDelta)
     // boss stage일때는 groggy를 체크 한다
     if (m_bBossStage)
     {
-        CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
-        if (pBoss &&
-            static_cast<CMonster_Base*>(pBoss)->Monster_IsGroggy())
+        //CGameObject* pBoss = m_pGameInstance->Get_GameObject_Front(m_pGameInstance->Get_CurrentLevelIndex(), g_wszBossLayer);
+        //if (pBoss &&
+        //    static_cast<CMonster_Base*>(pBoss)->Monster_IsGroggy())
         {
             Set_FKeyEvent(0, true);
         }
 
-        else
-            Set_FKeyEvent(0, false);
+        //else
+        //    Set_FKeyEvent(0, false);
     }
 
     if (CPlayerActionState* pPlayerState = Get_Component<CPlayerActionState>())
@@ -909,7 +909,8 @@ void CPlayer::Set_GhostTrailDesc()
 
     CModel::GHOST_TRAIL_DESC desc{};
     desc.iMaxCount = 13;
-    desc.fLifeTime = 0.5f;
+    desc.fLifeTime = 0.4f; // 0.5f
+    desc.fInterval = 0.13f;
     desc.vColor = Vec4(1.00f, 0.92f, 0.70f, 0.26f);
     pBody->Get_Component<CModel>()->Set_GhostTrailDesc(desc);
 }
@@ -2097,7 +2098,7 @@ HRESULT CPlayer::Ready_PartWeapon(PLAYER_DESC* pDesc)
 
         weaponDesc.fAllBullet = 1000.f;
         weaponDesc.fCurBullet = 10.f; // 500
-        weaponDesc.fAttackCoolTime = 0.18f; // 0.15 넘 빠름 // 0.3 너무 느림
+        weaponDesc.fAttackCoolTime = 0.15f; // 0.15 넘 빠름 // 0.3 너무 느림
         weaponDesc.iFireSoundHash = TO_HASH("sfx_weapon_Machinegun_Chixing_shoot_fire_r");
 
         weaponDesc.matHandOffsetMatrix = Matrix::CreateFromYawPitchRoll(XMConvertToRadians(180.f), XMConvertToRadians(90.f), XMConvertToRadians(0.f));

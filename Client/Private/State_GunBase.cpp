@@ -519,6 +519,11 @@ void CState_GunBase::GunMove(const _float fTimeDelta)
    // pCamTrans->Add_Position(vDir * fTimeDelta * pPlayerTrans->Get_MovePerSec());
 }
 
+void CState_GunBase::JumpMove(const _float fTimeDelta)
+{
+
+}
+
 void CState_GunBase::Free()
 {
     Super::Free();

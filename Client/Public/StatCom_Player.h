@@ -154,6 +154,10 @@ private:
 	_int			m_iDashCount	= { 2 };
 	_uint			m_iComboCount	= { 0 };
 
+	const _uint		m_iCombo_CRank = { 40 };
+	const _uint		m_iCombo_BRank = { 70 };
+	const _uint		m_iCombo_ARank = { 120 };
+
 	// 공격 관련 
 private:
 	Flags						m_FAttState		= { 0 };

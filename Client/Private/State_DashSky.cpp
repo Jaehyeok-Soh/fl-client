@@ -4,6 +4,8 @@
 
 #include "ControlContext.h"
 
+#include "GameInstance.h"
+
 CState_DashSky::CState_DashSky(CActionState* pOwnerComponent)
 	: Super(pOwnerComponent, "DashSky")
 {
@@ -50,6 +52,13 @@ HRESULT CState_DashSky::Start(void* pArg, _bool bForce)
 
 	Set_YLerp(false);
 
+	// 40ÆÛ¼¾Æ® È®·ü·Î ÀÜ»ó
+	{
+		_float fRate = m_pGameInstance->Rand_Float(0.f, 1.f);
+		if (fRate <= 0.4f)
+			Get_OwnerObject()->Play_GhostTrail();
+	}
+
 	return S_OK;
 }
 
@@ -65,6 +74,7 @@ void CState_DashSky::Update(const _float fTimeDelta)
 			return;
 		}
 		Set_ApplyGravity(true);
+		Get_OwnerObject()->Stop_GhostTrail();
 	}
 }
 
@@ -78,6 +88,8 @@ HRESULT CState_DashSky::End()
 	Set_ApplyGravity(true);
 
 	Set_YLerp(true);
+
+	Get_OwnerObject()->Stop_GhostTrail();
 
 	return S_OK;
 }

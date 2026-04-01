@@ -470,11 +470,22 @@ _bool CStateBase_Player::Check_SkillKey(const _float fTimeDelta)
 _bool CStateBase_Player::Check_Hit(const _float fTimeDelta)
 {
 	CPlayerActionState* pActionState = static_cast<CPlayerActionState*>(m_pOwnerStateComp);
+
+	Flags fAttackFlag = pActionState->Get_AttackFlag();
+
+	// hit 검사 여부 상관없이 -> stun hit를 맞았고, on ground이면
+	if (Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Stun) &&
+		Check_OnGround())
+	{
+		Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::STUN_START));
+		return true;
+	}
+
 	// hit 검사 할건디
 	// action state에서 hit 되었는지 체크를 한번 한다
 	if (Can_BeAttacked() && pActionState->Is_OnHit())
 	{
-		Flags fAttackFlag = pActionState->Get_AttackFlag();
+		
 
 		HITSTATE_START_DESC tStartDesc = {};
 		tStartDesc.vHitDir = pActionState->Get_HitNormal();
@@ -491,12 +502,7 @@ _bool CStateBase_Player::Check_Hit(const _float fTimeDelta)
 			return true;
 		}
 
-		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_StunHit) &&
-			Engine_Utils::Has_Flag(fAttackFlag, CPlayerActionState::AttackFlag::AF_Stun))
-		{
-			Change_PlayerHitState(ENUM_TO_UINT(CPlayer::State::STUN_START));
-			return true;
-		}
+
 
 				// strong은 이제 지면 충돌 검사 후 fly, strong 전환 
 		if (Engine_Utils::Has_Flag(m_FCollisions, COLLISIONFLAGS::C_Strong) &&
