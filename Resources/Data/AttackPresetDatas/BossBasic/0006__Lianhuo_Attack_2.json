@@ -10,7 +10,7 @@
             "tCombat": {
                 "DamageType": "Fire",
                 "HitType": "Additive",
-                "fBaseDamage": 533.0,
+                "fBaseDamage": 433.0,
                 "fHitStopSec": 0.0,
                 "fHitStunSec": 0.0,
                 "fImpulse": 2.0,

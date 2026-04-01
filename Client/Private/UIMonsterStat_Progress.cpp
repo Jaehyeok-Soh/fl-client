@@ -152,7 +152,7 @@ void CUIMonsterStat_Progress::Initialize_InVisible_Event()
 {
 	m_isActive = false;
 	m_isFin_Event	= false;
-	Ready_Fade(1.f, 1.f, 0.f, 1.f);
+	Ready_Fade(1.f, 1.f, 0.f, 0.f);
 }
 
 _bool CUIMonsterStat_Progress::Tick_Visible_Event(const _float fTimeDelta)
@@ -294,7 +294,7 @@ HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 	switch (m_eSubClassType)
 	{
 	case DTO::EUISubClassType::MONSTER_HP:
-		m_fCurRatio = m_pTargetStat->Get_HealthRatio();
+		m_fProgress_Ratio = m_pTargetStat->Get_HealthRatio();
 		break;
 	case DTO::EUISubClassType::MONSTER_ARMOR:
 		break;
@@ -302,12 +302,12 @@ HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 	default:
 		return E_FAIL;
 	}
-	if (fabsf(m_fPreMonsterHPRatio - m_fCurRatio) > 0.f)
+	if (fabsf(m_fPreMonsterHPRatio - m_fProgress_Ratio) > 0.f)
 	{
 		m_fMonsterHPTimeAcc = 0.f;
 	}
 
-	m_fPreMonsterHPRatio = m_fCurRatio;
+	m_fPreMonsterHPRatio = m_fProgress_Ratio;
 
 	return S_OK;
 }

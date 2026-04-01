@@ -269,6 +269,19 @@ HRESULT CLevel_Lianhuo::Build_Files()
 			return E_FAIL;
 	}
 
+	strUIFolderPath = L"../../Resources/Data/UIData/LastBoss/";
+	for (auto& iter : std::filesystem::recursive_directory_iterator(strUIFolderPath))
+	{
+		if (!iter.is_regular_file())
+			continue;
+
+		if (FAILED(m_pGameInstance->Load_File_Json(iLevelID, eCategory, iter.path())))
+			return E_FAIL;
+
+		if (FAILED(Build_File(iLevelID, eCategory, iter.path().stem().string())))
+			return E_FAIL;
+	}
+
 	eCategory = DTO::ECategory::UI_PREFAB;
 	if (FAILED(m_pGameInstance->Regist_Document<CDataDocument_UI>(iLevelID, eCategory)))
 		return E_FAIL;
@@ -385,12 +398,12 @@ HRESULT CLevel_Lianhuo::Ready_ShaderSetting()
 	// Fog
 	{
 		auto& fogDesc = m_pGameInstance->Get_FogParamDesc();
-		fogDesc.vColor = Vec4{ 0.7f, 0.2f, 0.12f, 1.f };
-		fogDesc.vHighColor = Vec4{ 0.7f, 0.2f, 0.12f, 1.f };
+		fogDesc.vColor = Vec4{ 180.f, 80.f, 49.f, 1.f };
+		fogDesc.vHighColor = Vec4{ 0.f, 0.3f, 14.f, 1.f };
 		fogDesc.fFogStart = 0.f;
 		fogDesc.fFogEnd = 500.f;
-		fogDesc.fFogDensity = 0.002f;
-		fogDesc.fFogMaxOpacity = 0.2f;
+		fogDesc.fFogDensity = 0.236f;
+		fogDesc.fFogMaxOpacity = 0.8f;
 		fogDesc.fFogBaseHeight = -5.f;
 		fogDesc.fFogNoiseScale = 0.55f;
 		fogDesc.fFogNoiseSpeed = 0.218f;

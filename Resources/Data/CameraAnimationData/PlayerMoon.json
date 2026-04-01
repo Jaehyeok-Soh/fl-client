@@ -82,11 +82,11 @@
                         "fYawDeg": 0.0
                     },
                     "shake": {
-                        "fDuration": 0.20000000298023224,
+                        "fDuration": 0.30000001192092896,
                         "fFrequency": 25.0,
-                        "fPitchAmplitudeDeg": 2.0,
+                        "fPitchAmplitudeDeg": 3.0,
                         "fPosAmplitude": 0.05000000074505806,
-                        "fYawAmplitudeDeg": 2.0
+                        "fYawAmplitudeDeg": 3.0
                     },
                     "strAnimTag": "Animation_PlayerMoon_Sword_FallAttack_End",
                     "strDescription": "New Camera Event"
@@ -113,7 +113,7 @@
                         "vOffset": {
                             "x": 0.0,
                             "y": 0.0,
-                            "z": 0.4000000059604645
+                            "z": 0.5
                         }
                     },
                     "rotationOffset": {
@@ -181,7 +181,7 @@
                     "eCommand": "RotationOffset",
                     "eEventType": 3,
                     "ePhase": "Immediatley",
-                    "fStartTrackPosition": 5.5,
+                    "fStartTrackPosition": 1.320380449295044,
                     "fov": {
                         "bRestoreOnFinish": true,
                         "eMode": "Delta",
@@ -414,7 +414,7 @@
                         "vOffset": {
                             "x": 0.0,
                             "y": 0.0,
-                            "z": 0.800000011920929
+                            "z": 1.0
                         }
                     },
                     "rotationOffset": {
@@ -457,7 +457,7 @@
                         "vOffset": {
                             "x": 0.0,
                             "y": 0.0,
-                            "z": -0.800000011920929
+                            "z": -1.0
                         }
                     },
                     "rotationOffset": {
@@ -514,9 +514,9 @@
                     "shake": {
                         "fDuration": 0.25,
                         "fFrequency": 25.0,
-                        "fPitchAmplitudeDeg": 1.0,
+                        "fPitchAmplitudeDeg": 2.0,
                         "fPosAmplitude": 0.05000000074505806,
-                        "fYawAmplitudeDeg": 1.0
+                        "fYawAmplitudeDeg": 2.0
                     },
                     "strAnimTag": "Animation_PlayerMoon_Dualblade_RunAttack_04",
                     "strDescription": "New Camera Event"
@@ -586,7 +586,7 @@
                         "vOffset": {
                             "x": 0.0,
                             "y": 0.0,
-                            "z": 0.699999988079071
+                            "z": 1.0
                         }
                     },
                     "rotationOffset": {
@@ -643,9 +643,9 @@
                     "shake": {
                         "fDuration": 0.25,
                         "fFrequency": 25.0,
-                        "fPitchAmplitudeDeg": 1.0,
+                        "fPitchAmplitudeDeg": 1.5,
                         "fPosAmplitude": 0.5,
-                        "fYawAmplitudeDeg": 1.0
+                        "fYawAmplitudeDeg": 1.5
                     },
                     "strAnimTag": "Animation_PlayerMoon_Dualblade_HeavyAttack_End",
                     "strDescription": "New Camera Event"
@@ -684,13 +684,99 @@
                         "fYawDeg": 0.0
                     },
                     "shake": {
-                        "fDuration": 0.15000000596046448,
+                        "fDuration": 0.20000000298023224,
                         "fFrequency": 25.0,
-                        "fPitchAmplitudeDeg": 1.0,
+                        "fPitchAmplitudeDeg": 2.0,
                         "fPosAmplitude": 0.20000000298023224,
-                        "fYawAmplitudeDeg": 1.0
+                        "fYawAmplitudeDeg": 2.0
                     },
                     "strAnimTag": "Animation_PlayerMoon_Sword_HeavyAttack_End",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "Shake",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 2.417961597442627,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 13,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.30000001192092896,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 3.0,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 3.0
+                    },
+                    "strAnimTag": "Animation_PlayerMoon_Dualblade_FallAttack_End",
+                    "strDescription": "New Camera Event"
+                },
+                {
+                    "eCommand": "PositionOffset",
+                    "eEventType": 3,
+                    "ePhase": "Immediatley",
+                    "fStartTrackPosition": 3.626943588256836,
+                    "fov": {
+                        "bRestoreOnFinish": true,
+                        "eMode": "Delta",
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fValueDeg": 0.0
+                    },
+                    "iAnimIndex": 13,
+                    "positionOffset": {
+                        "eSpace": "Camera_Local",
+                        "fBlendInTime": 0.10000000149011612,
+                        "fBlendOutTime": 1.0,
+                        "fHoldTime": 0.20000000298023224,
+                        "vOffset": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.6000000238418579
+                        }
+                    },
+                    "rotationOffset": {
+                        "fBlendInTime": 0.05000000074505806,
+                        "fBlendOutTime": 0.05000000074505806,
+                        "fHoldTime": 0.0,
+                        "fPitchDeg": 0.0,
+                        "fRollDeg": 0.0,
+                        "fYawDeg": 0.0
+                    },
+                    "shake": {
+                        "fDuration": 0.15000000596046448,
+                        "fFrequency": 25.0,
+                        "fPitchAmplitudeDeg": 0.5,
+                        "fPosAmplitude": 0.05000000074505806,
+                        "fYawAmplitudeDeg": 0.5
+                    },
+                    "strAnimTag": "Animation_PlayerMoon_Dualblade_FallAttack_End",
                     "strDescription": "New Camera Event"
                 }
             ]

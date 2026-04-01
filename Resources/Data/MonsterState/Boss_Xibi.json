@@ -4844,8 +4844,8 @@
                     "tStateCoolDownTime": {
                         "bCountTime": true,
                         "bTimeReset": true,
-                        "fMaxTime": 15.0,
-                        "fMinTime": 15.0,
+                        "fMaxTime": 23.0,
+                        "fMinTime": 23.0,
                         "fTimeAcc": 0.0
                     },
                     "tStateLifeTime": {
@@ -6712,56 +6712,6 @@
                         "fTimeAcc": 0.0
                     },
                     "vecConditionFeature": [
-                        {
-                            "cond": {
-                                "strCondition": "condition_animation_finish",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            },
-                            "feat": {
-                                "IsExecuted": false,
-                                "IsOnce": false,
-                                "strFeature": "feat_trigger_dissolve",
-                                "tParam": {
-                                    "bParam": [
-                                        false,
-                                        false,
-                                        false,
-                                        false
-                                    ],
-                                    "fParam": [
-                                        0.0,
-                                        0.0,
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "iParam": [
-                                        0,
-                                        0,
-                                        0,
-                                        0
-                                    ]
-                                }
-                            }
-                        },
                         {
                             "cond": {
                                 "strCondition": "condition_is_dissolve_ended",

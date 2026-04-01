@@ -197,7 +197,7 @@ HRESULT CTriggerCollidePart::Render()
 	return S_OK;
 }
 
-const Vec3& CTriggerCollidePart::Get_Collided_ObjPos()
+Vec3 CTriggerCollidePart::Get_Collided_ObjPos()
 {
 	// render 전에 캐싱 유효 검사
 	if (m_pCollidedObj)
