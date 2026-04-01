@@ -139,7 +139,7 @@ void CUICommunity_Text::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<INTERACT_DETECT>([this](CGameObject* pObj)
 			{			
-				if (pObj->Get_ID() == ENUM_TO_UINT(EObjectEnumTag::Enum::NPC_CITIZEN))
+				if (pObj->Get_Object_Enum_Tag() == (EObjectEnumTag::Enum::NPC_CITIZEN))
 					return;
 
 				Set_Active(true);

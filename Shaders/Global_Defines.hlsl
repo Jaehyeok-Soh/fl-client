@@ -33,6 +33,7 @@ float   g_fDelay;
 int     g_iFlip;
 
 float   g_fBrightness;
+float g_fAllUIControllAlpha;
 
 float2  g_vOffset;
 float2   g_vScale;

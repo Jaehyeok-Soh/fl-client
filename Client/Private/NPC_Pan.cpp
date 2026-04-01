@@ -73,6 +73,7 @@ HRESULT CNPC_Pan::Initialize(void* pArg)
 
 HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 {
+	m_vUITextOffset = Vec3{ 0.f, 1.f, 0.f };
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 
@@ -84,6 +85,7 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 	//	tPrefabData.Data = Desc;
 	//	CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::MONSTER_NAMEPLATE, iCurrentLevelID, &tPrefabData);
 	//}
+
 
 	CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>();
 	PxController* pController = pCCT->GetController();
