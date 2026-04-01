@@ -1,0 +1,161 @@
+{
+    "Category": "MAP",
+    "Level Data": {
+        "Env Data": {
+            "Env Color": {
+                "W": 1.0,
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            },
+            "Sky Box": {
+                "Cloud Base Color": {
+                    "W": 1.0,
+                    "X": 0.800000011920929,
+                    "Y": 0.800000011920929,
+                    "Z": 0.800000011920929
+                },
+                "Cloud Highlight Color": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "Cloud Highlight Power": 1.0,
+                "Cloud Shadow Color": {
+                    "W": 1.0,
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "Cloud Shadow Power": 1.0,
+                "Model Name": "SM_Env",
+                "PitchYawRoll": {
+                    "Pitch": -0.0,
+                    "Roll": -0.0,
+                    "Yaw": 0.0
+                },
+                "Polar Radiuse Scale": 1.0,
+                "Position Offset": {
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                },
+                "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                },
+                "Sky Color": {
+                    "W": 1.0,
+                    "X": 0.30000001192092896,
+                    "Y": 0.699999988079071,
+                    "Z": 0.800000011920929
+                },
+                "Texture Name": "T_Com_Sky_02A_D",
+                "Texture Shape Type": 1,
+                "UV Speed": {
+                    "X": 0.0024999999441206455,
+                    "Y": 0.0
+                },
+                "Use ChannelPacking": false
+            },
+            "Wind Data": {
+                "Direction": {
+                    "X": 1.0,
+                    "Y": 0.10000000149011612,
+                    "Z": 1.0
+                },
+                "Power": 0.10000000149011612
+            }
+        },
+        "Level Type": "TEST",
+        "Map Box": {
+            "Center": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Extents": {
+                "X": 100.0,
+                "Y": 100.0,
+                "Z": 100.0
+            }
+        },
+        "Texture Splating Info": "None",
+        "strTag": "0"
+    },
+    "Objects": [
+        {
+            "Client Level Type": "LOGO",
+            "Client Make Path": "LightObject",
+            "Client Make Path Desc": [
+                {
+                    "Light Data": {
+                        "Ambient": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        },
+                        "Diffuse": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        },
+                        "Emissive Power": 1.0,
+                        "Flicker": {
+                            "Min": 0.5,
+                            "Speed": 2.0
+                        },
+                        "Offset Position": {
+                            "X": 0.0,
+                            "Y": 0.0,
+                            "Z": 0.0
+                        },
+                        "Range": 3.0,
+                        "Specular": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        },
+                        "Type": "POINT"
+                    }
+                }
+            ],
+            "Draw Type": "Default",
+            "Model Path": "..\\..\\Resources\\Models\\Map\\Level\\EN001_Ailixian\\Jingjiedao\\JJD_Village\\Mesh\\Model\\SM_Vil_Nos01.mesh",
+            "SRT": [
+                {
+                    "Position": {
+                        "X": -46.73783493041992,
+                        "Y": 102.66085815429688,
+                        "Z": -55.09693145751953
+                    },
+                    "Quaternion": {
+                        "W": 1.0,
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    },
+                    "Scale": {
+                        "X": 1.0,
+                        "Y": 1.0,
+                        "Z": 1.0
+                    },
+                    "Scale_Isolate": {
+                        "X": 0.0,
+                        "Y": 0.0,
+                        "Z": 0.0
+                    }
+                }
+            ],
+            "Section Number": 0,
+            "UE Loaded": false,
+            "UE Raw Data Path": "",
+            "strTag": "SM_Vil_Nos01_LightObject463"
+        }
+    ]
+}
