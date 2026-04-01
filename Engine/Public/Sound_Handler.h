@@ -8,6 +8,20 @@ class CModel;
 
 class ENGINE_DLL CSound_Handler final : public CComponent
 {
+public:
+    typedef struct EFootSoundType
+    {
+        enum Enum
+        {
+            GRASS,
+            SAND,
+            WATER,
+            WOOD,
+            END,
+            NONE
+        };
+    }EFOOTSOUNDTYPE;
+private:
     using Super = CComponent;
 public:
     constexpr static EComponentType _ID = EComponentType::SOUNDHANDLER;
@@ -34,6 +48,8 @@ public:
     void Setup_ForOwner(CModel* pModel);
     void Release_Event();
 
+    void Set_EnvFootSound(EFOOTSOUNDTYPE::Enum eType) { m_eCurrentEnvFootStep = eType; }
+
 private:
     HRESULT Ready_Desc(void* pArg);
     HRESULT Ready_SoundState();
@@ -41,6 +57,8 @@ private:
 
     AnimNotifyKey Build_SoundNotifyKey(const DTO::SOUNDEVENT& event) const;
     void CallbackEvent(const AnimNotifyKey& key);
+
+    void EnvFootSound(_uint iSoundHash, _float fVolume, _float fPitch, _bool bSteal);
 
 private:
     SOUND_HANDLER_DESC m_tDesc{};
@@ -52,6 +70,9 @@ private:
 
     const _uint m_iPlayerFootSoundHash = { TO_HASH("footstep") };
     const _uint m_iPlayerLandSoundHash = { TO_HASH("landHeavy") };
+
+    array<_uint, EFOOTSOUNDTYPE::END> m_iPlayerSecondFootSoundHash;
+    EFOOTSOUNDTYPE::Enum m_eCurrentEnvFootStep = { EFOOTSOUNDTYPE::NONE };
 
 public:
     static CSound_Handler* Create();

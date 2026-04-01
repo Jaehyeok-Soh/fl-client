@@ -1011,6 +1011,43 @@ namespace Engine
 
 #pragma endregion
 
+#pragma region Environment jukebox type
+	typedef struct EEnvJukeboxType
+	{
+		enum Enum
+		{
+			RANGE,
+			TRIGGER,
+			FOOTSTEP,
+			END
+		};
+	public:
+		static Enum		ToEnum(const string& strType)
+		{
+			if (strType == "RANGE") return ENV_JUKEBOX_TYPE::RANGE;
+			if (strType == "TRIGGER") return ENV_JUKEBOX_TYPE::TRIGGER;
+			if (strType == "FOOTSTEP") return ENV_JUKEBOX_TYPE::FOOTSTEP;
+			return ENV_JUKEBOX_TYPE::RANGE;
+		}
+		static string	ToString(Enum eType)
+		{
+			switch (eType)
+			{
+			case ENV_JUKEBOX_TYPE::RANGE: return "RANGE";
+			case ENV_JUKEBOX_TYPE::TRIGGER: return "TRIGGER";
+			case ENV_JUKEBOX_TYPE::FOOTSTEP: return "FOOTSTEP";
+			default: return "RANGE";
+			}
+		}
+	}ENV_JUKEBOX_TYPE;
+
+	inline static const ENV_JUKEBOX_TYPE::Enum g_arrAllJukeboxTypeTags[] = {
+		ENV_JUKEBOX_TYPE::RANGE,
+		ENV_JUKEBOX_TYPE::TRIGGER,
+		ENV_JUKEBOX_TYPE::FOOTSTEP
+	};
+#pragma endregion
+
 #pragma region
 
 

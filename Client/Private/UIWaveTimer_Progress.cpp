@@ -178,42 +178,43 @@ HRESULT CUIWaveTimer_Progress::Convert_Stat_To_Ratio()
 	if (nullptr == pWaveData)
 		return E_FAIL;
 
-	if (pWaveData->vecWaveInfo.empty())
+
+	_float fWaveStart = {};
+	_float fWaveEnd = {};
+
+
+	_float fDuration = {};
+
+	switch (pWaveData->iCurrentWaveCount)
 	{
-		m_fCurRatio = 0.f;
+	case 0: // 개
+		fWaveStart = 0.f;
+		fWaveEnd = pWaveData->vecWaveInfo[1].fSpawnTime;
+		break;
+
+	case 1: // 오징어 
+		fWaveStart = pWaveData->vecWaveInfo[1].fSpawnTime;
+		fWaveEnd = pWaveData->vecWaveInfo[2].fSpawnTime; 
+		break;
+
+	case 2: // 부머
+		fWaveStart = pWaveData->vecWaveInfo[2].fSpawnTime;
+		fWaveEnd = pWaveData->vecWaveInfo[3].fSpawnTime; 
+		break;
+
+	case 3: // 엘리트
+		m_fProgress_Ratio = 1.f;
+		break;
+
+	default:
+		m_fProgress_Ratio = 1.f;
 		return S_OK;
 	}
+	_float fCurrentTime = max(0.f, (pWaveData->fCurrentWaveTime - fWaveStart)); // 0 ~ wavetime까지 
 
-	_int iNextWaveIndex = pWaveData->iCurrentWaveCount;
+	fDuration = fWaveEnd - fWaveStart;
 
-	if (iNextWaveIndex < 0)
-		iNextWaveIndex = 0;
-
-	if (iNextWaveIndex >= static_cast<_int>(pWaveData->vecWaveInfo.size()))
-	{
-		m_fCurRatio = 0.f;
-		return S_OK;
-	}
-
-	_float fPrevSpawnTime = 0.f;
-	if (iNextWaveIndex > 0)
-		fPrevSpawnTime = pWaveData->vecWaveInfo[iNextWaveIndex - 1].fSpawnTime;
-
-	_float fNextSpawnTime = pWaveData->vecWaveInfo[iNextWaveIndex].fSpawnTime;
-	_float fCurrentTime = pWaveData->fCurrentWaveTime;
-
-	fPrevSpawnTime = max(0.f, fPrevSpawnTime);
-	fNextSpawnTime = max(0.f, fNextSpawnTime);
-	fCurrentTime = max(0.f, fCurrentTime);
-
-	_float fSectionTime = fNextSpawnTime - fPrevSpawnTime;
-	_float fRemainTime = fNextSpawnTime - fCurrentTime;
-
-	fSectionTime = max(0.f, fSectionTime);
-	fRemainTime = max(0.f, fRemainTime);
-
-	m_fCurRatio = (fSectionTime > 0.f) ? (fRemainTime / fSectionTime) : 0.f;
-	m_fCurRatio = max(0.f, std::min(1.f, m_fCurRatio));
+	m_fProgress_Ratio = 1.f - fCurrentTime / fDuration ;
 
 	return S_OK;
 }

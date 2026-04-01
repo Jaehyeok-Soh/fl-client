@@ -118,7 +118,7 @@ void CPhysicsRagdoll::Awake(vector<CChannel*>& vecChannels)
 		//}
 
 		//m_tRagdollElements.pArticulation->updateKinematic(PxArticulationKinematicFlag::ePOSITION);
-		
+
 		m_tRagdollElements.pArticulation->setRootGlobalPose(pxGlobal, false);
 
 		m_pGameInstance->AddRagdoll(m_tRagdollElements.pArticulation);
@@ -177,7 +177,7 @@ void CPhysicsRagdoll::Awake()
 
 			//link.first->setGlobalPose(pxBoneWorld, false);
 
-			if(i == 0)
+			if (i == 0)
 				m_tRagdollElements.pArticulation->setRootGlobalPose(pxGlobal, false);
 			//else
 			//	link.first->setGlobalPose(pxGlobal, false);
@@ -354,10 +354,10 @@ HRESULT CPhysicsRagdoll::Bind_RagDollCS_ImmuData(CComputeShader* pRagDollCS)
 
 	for (size_t i = 0; i < (size_t)iRagDollSize; i++)
 	{
-		pInitialData[i].iBoneIndex			= m_tRagdollElements.vecPhysicsLink[i].second.iBoneIndex;
-		pInitialData[i].iTotalBoneNums		= iBoneNums;
-		pInitialData[i].iRagDollBoneNums	= iRagDollSize;
-		pInitialData[i].Padding0			= 0;
+		pInitialData[i].iBoneIndex = m_tRagdollElements.vecPhysicsLink[i].second.iBoneIndex;
+		pInitialData[i].iTotalBoneNums = iBoneNums;
+		pInitialData[i].iRagDollBoneNums = iRagDollSize;
+		pInitialData[i].Padding0 = 0;
 	}
 
 	// 2. 바로 바인딩
@@ -557,8 +557,48 @@ CComponent* CPhysicsRagdoll::Clone(void* pArg)
 
 void CPhysicsRagdoll::Free()
 {
-	Super::Free();
+	if (m_tRagdollElements.pArticulation)
+	{
+		PxScene* pScene = m_pGameInstance->GetPhysicsScene();
+		if (pScene)
+			pScene->lockWrite();
+
+		m_pGameInstance->RemoveRagdoll(m_tRagdollElements.pArticulation);
+
+		for (_int i = 0; i < RAGDOLLJOINT::END; i++)
+		{
+			PxArticulationLink* pLink = m_tRagdollElements.vecPhysicsLink[i].first;
+			if (pLink)
+			{
+				pLink->userData = nullptr;
+
+				PxU32 nbShapes = pLink->getNbShapes();
+				if (nbShapes > 0)
+				{
+					std::vector<PxShape*> shapes(nbShapes);
+					pLink->getShapes(shapes.data(), nbShapes);
+					for (auto& shape : shapes)
+					{
+						shape->userData = nullptr;
+					}
+				}
+			}
+		}
+
+		m_tRagdollElements.pArticulation->release();
+		m_tRagdollElements.pArticulation = nullptr;
+
+		if (pScene)
+			pScene->unlockWrite();
+	}
+
+	//for (_int i = 0; i < RAGDOLLJOINT::END; i++)
+	//{
+	//	m_tRagdollElements.vecPhysicsLink[i].first = nullptr;
+	//}
 
 	Safe_Release(m_pMatrixBuffer);
 	Safe_Release(m_pMatrixSB_SRV);
+
+	Super::Free();
 }
