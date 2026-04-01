@@ -132,6 +132,9 @@ void CWeapon::Update_Priority(_float fTimeDelta)
 
 void CWeapon::Update(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Update(fTimeDelta);
 
 	// scale이 죽었을때 다시 살리기 위함
