@@ -28,6 +28,7 @@
 #include "UITitle_Text.h"
 #include "UIEnterGame_Text.h"
 #include "UIWaveTimer_Text.h"
+#include "UIBossSkill_Text.h"
 // 다이나믹 이미지 클래스
 #include "UIMenu_Image.h"
 #include "UIHover_Image.h"
@@ -54,6 +55,7 @@
 #include "UIEnterGame_Image.h"
 #include "UIQuickSlot_Image.h"
 #include "UIWaveTimer_Image.h"
+#include "UIBossSkill_Image.h"
 
 #include "WorldUI_Component.h"
 
@@ -272,6 +274,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isTitle				= (Type >= DTO::EUITextSubClassType::TITLE_BEGIN && Type <= DTO::EUITextSubClassType::TITLE_END);
 		const _bool isEnterGame			= (Type >= DTO::EUITextSubClassType::ENTERGAME_BEGIN && Type <= DTO::EUITextSubClassType::ENTERGAME_END);
 		const _bool isWaveTimer			= (Type >= DTO::EUITextSubClassType::MONSTER_WAVE_BEGIN&& Type <= DTO::EUITextSubClassType::MONSTER_WAVE_END);
+		const _bool isBossSkill			= (Type >= DTO::EUITextSubClassType::BOSS_SKILL_BEGIN&& Type <= DTO::EUITextSubClassType::BOSS_SKILL_END);
 
 		static_cast<CGenericUI::GENERIC_UI_DESC&>(TextDesc) = DefaultDesc;
 		TextDesc.eTextSubClass	= Type;
@@ -282,7 +285,8 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		TextDesc.ePivot			= iter->second.ePivot;
 		TextDesc.fRotate		= iter->second.fRotate;
 		TextDesc.fScale			= iter->second.fScale * m_vAspect.x;
-
+		//Prototype_UI_BossSkillImage
+		//Prototype_UI_BossSkillText
 		if (isPlayerStat)
 		{
 			CUIPlayerStat_Text::PLAYER_STAT_DESC Desc = {};
@@ -383,6 +387,13 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WaveTimerText", m_iLevelID, g_wszUILayer, &Desc);
 		}
+		else if (isBossSkill)
+		{
+			CUIBossSkill_Text::BOSS_SKILL_TEXT_DESC Desc = {};
+			static_cast<CUIText::UI_TEXT_DESC&>(Desc) = TextDesc;
+			Desc.iNumbering = iter->second.iParam0;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossSkillText", m_iLevelID, g_wszUILayer, &Desc);
+		}
 		else
 		{
 			_wstring wstr = Engine_Utils::ToWString(data.strTag) + L" <- 얘가 문제";
@@ -434,6 +445,7 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 		const _bool isEnterGame			= (Type >= DTO::EUIDImageSubClassType::ENTERGAME_BEGIN&& Type <= DTO::EUIDImageSubClassType::ENTERGAME_END);
 		const _bool isQuickSlot			= (Type >= DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_BEGIN&& Type <= DTO::EUIDImageSubClassType::WEAPON_QUIKSLOT_END);
 		const _bool isWaveTimer			= (Type >= DTO::EUIDImageSubClassType::MONSTER_WAVE_BEGIN&& Type <= DTO::EUIDImageSubClassType::MONSTER_WAVE_END);
+		const _bool isBossSkill			= (Type >= DTO::EUIDImageSubClassType::BOSS_SKILL_BEGIN&& Type <= DTO::EUIDImageSubClassType::BOSS_SKILL_END);
 
 		if (isPlayerSkill)
 		{
@@ -609,6 +621,14 @@ HRESULT CBuilder_UI::Register_Class(DTO::EUIClassType eClassType, const DTO::TUI
 			Desc.eSubClassType = Type;
 			Desc.iNumbering = iter->second.iParams0;;
 			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_WaveTimerImage", m_iLevelID, g_wszUILayer, &Desc);
+		}
+		else if (isBossSkill)
+		{
+			CUIBossSkill_Image::BOSS_SKILL_IMAGE_DESC Desc = {};
+			static_cast<CGenericUI::GENERIC_UI_DESC&>(Desc) = DefaultDesc;
+			Desc.eSubClassType = Type;
+			Desc.iNumbering = iter->second.iParams0;;
+			pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_UI_BossSkillImage", m_iLevelID, g_wszUILayer, &Desc);
 		}
 		else
 		{

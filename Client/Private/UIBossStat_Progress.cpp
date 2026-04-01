@@ -151,7 +151,6 @@ void CUIBossStat_Progress::Tick_By_Type(const _float fTimeDelta)
 		}
 	}
 }
-
 void CUIBossStat_Progress::Bind_Events()
 {
 	Super::Bind_Events();
@@ -209,6 +208,8 @@ void CUIBossStat_Progress::Bind_Events()
 			{
 				this->Set_Invisible();
 			}));
+
+	return;
 }
 
 void CUIBossStat_Progress::Initialize_Visible_Event()

@@ -61,6 +61,9 @@ struct DEFAULT_UI_INVISIBLE{ using Signature = void(); };
 
 struct QTE_CLEAR { using Signature = void(); };
 
+struct BOSS_SKILL_ON{ using Signature = void(); };
+struct BOSS_SKILL_OFF{ using Signature = void(); };
+
 // 퀘스트 이벤트
 struct QUEST_NOTIFY{ using Signature = void(DTO::QUEST_EVENT_SIGNATURE ID); }; // 퀘스트 업데이트
 struct QUEST_CHANGE_SCENARIO_NOTIFY{ using Signature = void(); }; // 퀘스트 시나리오 바뀜

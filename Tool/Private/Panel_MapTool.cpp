@@ -1359,6 +1359,8 @@ HRESULT CPanel_MapTool::Render_WindSetting()
 
 	return S_OK;
 }
+
+
 HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 {
 	if (m_pMapToolManager->m_pCamCinematicSequence == nullptr) return E_FAIL;
@@ -1366,11 +1368,10 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	auto& pCamCinematicSequence = m_pMapToolManager->m_pCamCinematicSequence;
 
 	// =========================================================================
-	// [1] 파일 로드 / 저장 / 재생 툴바 영역 (한눈에 보이도록 상단 배치)
+	// [1] 파일 로드 / 저장 / 재생 툴바 영역
 	// =========================================================================
 	ImGui::SeparatorText(" [ Camera Cinematic Sequence : Toolbar ] ");
 
-	// 이름 목록 콤보
 	if (m_pMapToolManager->m_vecCamCinematicSequenceNames.empty())
 		m_strBuffer = "Empty";
 	else
@@ -1403,18 +1404,41 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 			MSG_BOX(" Load Camera Cinematic Sequence 실패");
 	}
 
-	ImGui::SameLine();
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 1.0f, 1.0f)); // 파란색 저장 버튼
-	if (ImGui::Button("Save Data", ImVec2(100, 0)))
+	// =========================================================
+	// 1. 메모리(Map)에 갱신하는 버튼
+	// =========================================================
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 0.8f, 1.0f)); // 약간 밝은 파란색
+	if (ImGui::Button("Apply to Data", ImVec2(100, 0)))
 	{
-		if (FAILED(m_pMapToolManager->Save_Camera_Cinematic_Sequence(Engine_Utils::ToWString(pCamCinematicSequence->strName))))
-			MSG_BOX(" Save Camera Cinematic Sequence 실패");
+		wstring wstrFindKey = Engine_Utils::ToWString(pCamCinematicSequence->strName);
+		if (FAILED(m_pGameInstance->Save_CameraCinematicSequence(wstrFindKey, pCamCinematicSequence)))
+		{
+			MSG_BOX("Map 구조에 Camera Cinematic Sequence 적용 실패");
+		}
 	}
 	ImGui::PopStyleColor();
 
+	// =========================================================
+	// 2. 실제 Json 파일로 덤프(저장)하는 버튼
+	// =========================================================
 	ImGui::SameLine();
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f)); // 초록색 재생 버튼
-	if (ImGui::Button("▶ Play Test", ImVec2(100, 0)))
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.4f, 1.0f, 1.0f)); // 짙은 파란색
+	if (ImGui::Button("Save Json", ImVec2(100, 0)))
+	{
+		if (FAILED(m_pGameInstance->Save_CameraCinematicSequence(g_wszCameraCinematicData_JsonPath)))
+		{
+			MSG_BOX("Json 파일로 Camera Cinematic Sequence 데이터 덤프 실패");
+		}
+		else
+		{
+			MSG_BOX("Camera Cinematic Sequence Json 파일 저장 완료!");
+		}
+	}
+	ImGui::PopStyleColor();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f));
+	if (ImGui::Button("Play Test", ImVec2(100, 0)))
 	{
 		m_pGameInstance->Play_CameraCinematic(m_pMapToolManager->m_pCamCinematicSequence);
 	}
@@ -1431,14 +1455,12 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 
 	ImGui::PushItemWidth(300.f);
 	ImGui::InputText("Sequence Name", &pCamCinematicSequence->strName);
-	ImGui::PopItemWidth();
 
-	ImGui::SameLine(ImGui::GetWindowWidth() - 300.f);
 	static bool bShowManifestEditor = false;
 	if (ImGui::Button("Open Event Manifest Editor", ImVec2(180, 0))) {
 		bShowManifestEditor = !bShowManifestEditor;
 	}
-	ImGui::SameLine();
+
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
 	if (ImGui::Button("Reset All", ImVec2(80, 0))) {
 		pCamCinematicSequence->Reset_KeyFrameData();
@@ -1453,7 +1475,6 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	static vector<string> s_vecTempActions;
 	static bool s_bTriggerPopup = false;
 
-	// (주의: 람다 함수는 원본 그대로 유지했습니다)
 #pragma region CCS Event Manifest 람다
 	auto RenderEventListUI = [&](const char* szLabel, vector<CCS_EVENT_DESC>& vecEvents)
 		{
@@ -1632,22 +1653,19 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 	}
 	else
 	{
-		// 지연 처리를 위한 인덱스 변수들 (루프 밖에 한 번만 선언!)
 		_int iDeleteIndex{ -1 };
 		_int iResetIndex{ -1 };
 		_int iCopyCameraIndex{ -1 };
 		_int iInsertIndex{ -1 };
 		bool bInsertWithCam{ false };
 
-		// 키프레임 리스트 순회
 		for (_uint i = 0; i < pCamCinematicSequence->vecCamKeyFrameDatas.size(); )
 		{
 			ImGui::PushID(i);
 
 			string strTreeNodeName = "KeyFrame [ " + std::to_string(i) + " ]";
-			bool bNodeOpen = ImGui::TreeNodeEx(strTreeNodeName.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
-
-			// 트리 노드 옆에 삭제 버튼을 우측 정렬로 깔끔하게 배치
+			bool bNodeOpen = ImGui::TreeNodeEx(strTreeNodeName.c_str(), 0);
+			// Delete 버튼은 트리 노드 우측 끝에 배치
 			ImGui::SameLine(ImGui::GetWindowWidth() - 80.f);
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
 			if (ImGui::Button(" Delete ")) {
@@ -1655,42 +1673,48 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 			}
 			ImGui::PopStyleColor();
 
+			// =======================================================
+			// [핵심 개선] 노드 밖으로 빠져나온 1줄짜리 퀵 액션 바
+			// =======================================================
+			// 노드가 닫혀있을 때도 열려있을 때와 동일한 들여쓰기를 유지하기 위함
+			if (!bNodeOpen) ImGui::Indent();
+
+			// 높이를 38 정도로 주어 버튼 1줄이 딱 들어가게 세팅
+			ImGui::BeginChild("KeyFrameActions", ImVec2(0, 38), true);
+
+			if (ImGui::Button("Insert Next", ImVec2(90, 0))) {
+				if (iInsertIndex == -1) { iInsertIndex = i; bInsertWithCam = false; }
+			}
+			ImGui::SameLine();
+			// 버튼 이름 폭 축소 (1줄 렌더링 유지 위함)
+			if (ImGui::Button("Insert(Cam)", ImVec2(90, 0))) {
+				if (iInsertIndex == -1) { iInsertIndex = i; bInsertWithCam = true; }
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Overwrite(Cam)", ImVec2(110, 0))) {
+				if (iCopyCameraIndex == -1) iCopyCameraIndex = i;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Reset", ImVec2(50, 0))) {
+				if (iResetIndex == -1) iResetIndex = i;
+			}
+			ImGui::SameLine();
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 0.2f, 1.0f));
+			if (ImGui::Button("▶ Move Cam Here", ImVec2(120, 0))) {
+				m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_WorldMatrix(pCamCinematicSequence->vecCamKeyFrameDatas[i].Get_WorldMatrix());
+			}
+			ImGui::PopStyleColor();
+
+			ImGui::EndChild();
+
+			// 닫혀있었으면 다시 들여쓰기 해제 (다른 UI에 영향 없도록)
+			if (!bNodeOpen) ImGui::Unindent();
+
+			// =======================================================
+			// 노드 내부 상세 속성 (열렸을 때만 노출)
+			// =======================================================
 			if (bNodeOpen)
 			{
-				// -------------------------------------------------------------------
-				// [UX 개선] 키프레임 제어 버튼들을 그룹 박스로 묶어서 관리
-				// -------------------------------------------------------------------
-				ImGui::Spacing();
-				ImGui::BeginChild("KeyFrameActions", ImVec2(0, 45), true);
-
-				if (ImGui::Button("Insert Next", ImVec2(100, 0))) {
-					if (iInsertIndex == -1) { iInsertIndex = i; bInsertWithCam = false; }
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Insert Next(Cam)", ImVec2(130, 0))) {
-					if (iInsertIndex == -1) { iInsertIndex = i; bInsertWithCam = true; }
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Overwrite(Cam)", ImVec2(120, 0))) {
-					if (iCopyCameraIndex == -1) iCopyCameraIndex = i;
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Reset", ImVec2(60, 0))) {
-					if (iResetIndex == -1) iResetIndex = i;
-				}
-
-				ImGui::SameLine();
-				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.6f, 0.2f, 1.0f));
-				if (ImGui::Button("▶ Move Cam Here", ImVec2(130, 0))) {
-					m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>()->Set_WorldMatrix(pCamCinematicSequence->vecCamKeyFrameDatas[i].Get_WorldMatrix());
-				}
-				ImGui::PopStyleColor();
-				ImGui::EndChild();
-				ImGui::Spacing();
-
-				// -------------------------------------------------------------------
-				// 세부 파라미터 영역
-				// -------------------------------------------------------------------
 				auto& KeyFrame = pCamCinematicSequence->vecCamKeyFrameDatas[i];
 
 				ImGui::SeparatorText("Time & FOV Info");
@@ -1698,53 +1722,90 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 				ImGui::DragFloat("Hold Time (Sec)", &KeyFrame.fHoldTime, 0.1f, 0.f, 100.f, "%.2f");
 				ImGui::DragFloat("FOV", &KeyFrame.fFov, 0.5f, 10.f, 180.f, "%.1f");
 
+				// [ Move Info ]
 				ImGui::SeparatorText("Move Info");
-				string strPreviewMove = OBJECT_ENUM_TAG::ToString(KeyFrame.eMoveBaseTarget);
-				if (ImGui::BeginCombo("Move Base Target", strPreviewMove.c_str()))
+
+				char szMoveTag[256] = "";
+				string strMoveTag = Engine_Utils::ToString(KeyFrame.wstrMoveBaseLayerTag);
+				strcpy_s(szMoveTag, strMoveTag.c_str());
+				if (ImGui::InputText("Move Base Layer Tag", szMoveTag, sizeof(szMoveTag))) {
+					KeyFrame.wstrMoveBaseLayerTag = Engine_Utils::ToWString(szMoveTag);
+				}
+
+				if (false == KeyFrame.wstrMoveBaseLayerTag.empty())
 				{
-					for (int j = 0; j < sizeof(g_arrAllObjectTags) / sizeof(g_arrAllObjectTags[0]); ++j)
+					ImGui::Indent();
+					ImGui::InputInt("Level Type", &KeyFrame.iMoveBaseLevelType);
+
+					string strPreviewMove = OBJECT_ENUM_TAG::ToString(KeyFrame.eMoveBaseTarget);
+					if (ImGui::BeginCombo("Target Enum Tag", strPreviewMove.c_str()))
 					{
-						OBJECT_ENUM_TAG::Enum eVal = g_arrAllObjectTags[j];
-						bool bSelected = (KeyFrame.eMoveBaseTarget == eVal);
-						string strName = OBJECT_ENUM_TAG::ToString(eVal);
-						if (ImGui::Selectable(strName.c_str(), bSelected)) {
-							KeyFrame.eMoveBaseTarget = eVal;
+						for (int j = 0; j < sizeof(g_arrAllObjectTags) / sizeof(g_arrAllObjectTags[0]); ++j)
+						{
+							OBJECT_ENUM_TAG::Enum eVal = g_arrAllObjectTags[j];
+							bool bSelected = (KeyFrame.eMoveBaseTarget == eVal);
+							if (ImGui::Selectable(OBJECT_ENUM_TAG::ToString(eVal).c_str(), bSelected)) {
+								KeyFrame.eMoveBaseTarget = eVal;
+							}
+							if (bSelected) ImGui::SetItemDefaultFocus();
 						}
-						if (bSelected) ImGui::SetItemDefaultFocus();
+						ImGui::EndCombo();
 					}
-					ImGui::EndCombo();
+
+					if (ImGui::InputInt("Bone Index", &KeyFrame.iMoveBaseTargetBoneIndex)) {
+						if (KeyFrame.iMoveBaseTargetBoneIndex < -1) KeyFrame.iMoveBaseTargetBoneIndex = -1;
+					}
+					ImGui::Unindent();
 				}
 
-				if (ImGui::InputInt("Move Bone Index", &KeyFrame.iMoveBaseTargetBoneIndex)) {
-					if (KeyFrame.iMoveBaseTargetBoneIndex < -1) KeyFrame.iMoveBaseTargetBoneIndex = -1;
-				}
-				ImGui::DragFloat3("Position", (float*)&KeyFrame.vPosition, 0.1f);
+				const char* szPosLabel = KeyFrame.wstrMoveBaseLayerTag.empty() ? "World Position" : "Target Offset Position";
+				ImGui::DragFloat3(szPosLabel, (float*)&KeyFrame.vPosition, 0.1f);
 
-				ImGui::SeparatorText("LookAt Info");
-				// ★ [주의] 원본 코드에서 LookAt인데 eMoveBaseTarget을 사용하고 있었습니다. 
-				// 만약 eLookAtTarget 같은 별도 변수가 있다면 그걸로 교체하시는 것을 권장합니다!
-				strPreviewMove = OBJECT_ENUM_TAG::ToString(KeyFrame.eMoveBaseTarget);
-				if (ImGui::BeginCombo("LookAt Target", strPreviewMove.c_str()))
+
+				// [ LookAt & Rotation Info ]
+				ImGui::SeparatorText("LookAt & Rotation Info");
+
+				char szLookAtTag[256] = "";
+				string strLookAtTag = Engine_Utils::ToString(KeyFrame.wstrLookAtLayerTag);
+				strcpy_s(szLookAtTag, strLookAtTag.c_str());
+				if (ImGui::InputText("LookAt Layer Tag", szLookAtTag, sizeof(szLookAtTag))) {
+					KeyFrame.wstrLookAtLayerTag = Engine_Utils::ToWString(szLookAtTag);
+				}
+
+				if (false == KeyFrame.wstrLookAtLayerTag.empty())
 				{
-					for (int j = 0; j < sizeof(g_arrAllObjectTags) / sizeof(g_arrAllObjectTags[0]); ++j)
+					ImGui::Indent();
+					ImGui::InputInt("LookAt Level Type", &KeyFrame.iLookAtLevelType);
+
+					string strPreviewLookAt = OBJECT_ENUM_TAG::ToString(KeyFrame.eLookAtTarget);
+					if (ImGui::BeginCombo("LookAt Enum Tag", strPreviewLookAt.c_str()))
 					{
-						OBJECT_ENUM_TAG::Enum eVal = g_arrAllObjectTags[j];
-						bool bSelected = (KeyFrame.eMoveBaseTarget == eVal); // 여기도 확인 필요
-						string strName = OBJECT_ENUM_TAG::ToString(eVal);
-						if (ImGui::Selectable(strName.c_str(), bSelected)) {
-							KeyFrame.eMoveBaseTarget = eVal; // 여기도 확인 필요
+						for (int j = 0; j < sizeof(g_arrAllObjectTags) / sizeof(g_arrAllObjectTags[0]); ++j)
+						{
+							OBJECT_ENUM_TAG::Enum eVal = g_arrAllObjectTags[j];
+							bool bSelected = (KeyFrame.eLookAtTarget == eVal);
+							if (ImGui::Selectable(OBJECT_ENUM_TAG::ToString(eVal).c_str(), bSelected)) {
+								KeyFrame.eLookAtTarget = eVal;
+							}
+							if (bSelected) ImGui::SetItemDefaultFocus();
 						}
-						if (bSelected) ImGui::SetItemDefaultFocus();
+						ImGui::EndCombo();
 					}
-					ImGui::EndCombo();
+
+					if (ImGui::InputInt("LookAt Bone Index", &KeyFrame.iLookAtBoneIndex)) {
+						if (KeyFrame.iLookAtBoneIndex < -1) KeyFrame.iLookAtBoneIndex = -1;
+					}
+					ImGui::Unindent();
+
+					ImGui::DragFloat3("LookAt Target Offset", (float*)&KeyFrame.vLookAtOffset, 0.1f);
+				}
+				else
+				{
+					ImGui::DragFloat3("LookAt World Position", (float*)&KeyFrame.vLookAtOffset, 0.1f);
+					ImGui::DragFloat3("Pitch / Yaw / Roll", (float*)&KeyFrame.vPitchYawRoll, 0.1f);
 				}
 
-				if (ImGui::InputInt("LookAt Bone Index", &KeyFrame.iLookAtBoneIndex)) {
-					if (KeyFrame.iLookAtBoneIndex < -1) KeyFrame.iLookAtBoneIndex = -1;
-				}
-				ImGui::DragFloat3("LookAt Offset", (float*)&KeyFrame.vLookAtOffset, 0.1f);
-				ImGui::DragFloat3("Pitch / Yaw / Roll", (float*)&KeyFrame.vPitchYawRoll, 0.1f);
-
+				// [ Lerp & Events ]
 				ImGui::SeparatorText("Lerp Types");
 				ImGui::Combo("Move Lerp", (int*)&KeyFrame.eMoveLerpType, Engine_Utils::g_szLerpTypes, (int)Engine::ELerpType::END);
 				ImGui::Combo("LookAt Lerp", (int*)&KeyFrame.eLookAtLerpType, Engine_Utils::g_szLerpTypes, (int)Engine::ELerpType::END);
@@ -1767,11 +1828,10 @@ HRESULT CPanel_MapTool::Render_CameraCinematicSequnce()
 		}
 
 		// =========================================================================
-		// [4] 지연된 명령 실행 영역 (터짐 방지)
+		// [4] 지연된 명령 실행 영역
 		// =========================================================================
 		if (iInsertIndex != -1)
 		{
-			// 앞서 수정한 Insert_KeyFrameData (nullptr 체크 수정 버전)이 여기서 실행됩니다.
 			m_pMapToolManager->m_pCamCinematicSequence->Insert_KeyFrameData(iInsertIndex, bInsertWithCam ? m_pGameInstance->Get_MainCamera() : nullptr);
 		}
 		else if (iCopyCameraIndex != -1)

@@ -64,6 +64,7 @@ void CPlayerControlContext::Set_AllKeyFlag(_bool bOn)
 
 	else
 	{
+		m_pGameInstance->Clear_AllKeyInput();
 		m_FPreKeys = m_FKeys;
 		m_FKeys = 0;
 	}

@@ -1039,6 +1039,12 @@
     <Filter Include="03. GameObject\TriggerBox\06. TiggerObx_EnvJukebox">
       <UniqueIdentifier>{f769402a-c7aa-431f-bd8b-2b6d95d21d8e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Image\Dynamic Image\26.Boss Skill">
+      <UniqueIdentifier>{bca628df-c306-431e-88a2-4c925353951d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\UIObjects\02.UI\Text\19.Boss Skill">
+      <UniqueIdentifier>{8708c1a9-83fd-4f86-a5f1-e67e676c2758}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1959,6 +1965,12 @@
     <ClInclude Include="..\Public\TriggerBox_EnvJukebox.h">
       <Filter>03. GameObject\TriggerBox\06. TiggerObx_EnvJukebox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIBossSkill_Image.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\26.Boss Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossSkill_Text.h">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\19.Boss Skill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2866,6 +2878,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBox_EnvJukebox.cpp">
       <Filter>03. GameObject\TriggerBox\06. TiggerObx_EnvJukebox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossSkill_Image.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Image\Dynamic Image\26.Boss Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossSkill_Text.cpp">
+      <Filter>03. GameObject\UIObjects\02.UI\Text\19.Boss Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

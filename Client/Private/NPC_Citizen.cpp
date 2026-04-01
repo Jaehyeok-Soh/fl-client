@@ -5,6 +5,7 @@
 #include "Bone.h"
 #include "Model.h"
 #include "PhysicsCCT.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 
 
@@ -21,6 +22,7 @@ CNPC_Citizen::CNPC_Citizen(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCo
 	, m_fDisloveRange{}
 	, m_isOnReachWayPointtDissloveStart{ false }
 {
+	m_eObject_Enum_Tag = EObjectEnumTag::Enum::NPC_CITIZEN;
 }
 
 CNPC_Citizen::CNPC_Citizen(const CNPC_Citizen& rhs)
@@ -36,6 +38,7 @@ CNPC_Citizen::CNPC_Citizen(const CNPC_Citizen& rhs)
 	, m_fDisloveRange{rhs.m_fDisloveRange }
 	, m_isOnReachWayPointtDissloveStart{rhs.m_isOnReachWayPointtDissloveStart }
 {
+	m_eObject_Enum_Tag = EObjectEnumTag::Enum::NPC_CITIZEN;
 }
 
 HRESULT CNPC_Citizen::Initialize_Prototype()
@@ -82,6 +85,8 @@ HRESULT CNPC_Citizen::Initialize(void* pArg)
 	if (FAILED(Ready_Component(pDesc)))
 		return E_FAIL;
 
+
+
 	return S_OK;
 }
 
@@ -109,6 +114,7 @@ HRESULT CNPC_Citizen::Ready_CitizenParts(CNPC_Citizen::NPC_CITIZEN_DESC* pDesc)
 	tDecoDesc.pBoneSocket	= &m_vecPartObjects[ENUM_TO_UINT(CNPC_Citizen::Part::Body)]->Get_Component<CModel>()->Get_Bone("Jiao")->Get_CombinedTransformMatrix();
 	tDecoDesc.pMatParent	= Get_Component<CTransform>()->Get_WorldMatrixPtr();
 	tDecoDesc.iLevelIndex	= pDesc->iLevelIndex;
+
 	_uint i = 0;
 	for (auto& PartData : pDesc->tCitizenData.arrayPartDatas)
 	{
@@ -174,6 +180,22 @@ HRESULT CNPC_Citizen::Change_WalkCitizenModel(const DTO::CITIZEN_DATA& tData)
 			return E_FAIL;
 		++i;
 	}
+
+	return S_OK;
+}
+
+HRESULT CNPC_Citizen::Setting_NPCText(_uint iCurrentLevelID)
+{
+	/* 추후에 이름이 바뀌면 Set_Name으로 이름바꾸기 , Text가 바뀐다면 ? 모르겠다 */
+
+	UI_PREFAB_DATA tPrefabData = {};
+	UI_NPC_TEXT_BUBBLE_PREFAB_DATA Desc = {};
+	Desc.pTarget = this;
+	Desc.vOffset = {0.f,0.5f,0.f};
+	Desc.wstrContents = m_wstrContents;
+	Desc.strTargetBoneName = "head";
+	tPrefabData.Data = Desc;
+	CUI_Manager::GetInstance()->Request_Add_Prefab(iCurrentLevelID, EUIPrefabType::NPC_TEXT_BUBBLE, iCurrentLevelID, &tPrefabData);
 
 	return S_OK;
 }

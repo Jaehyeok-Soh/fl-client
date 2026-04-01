@@ -160,7 +160,7 @@ static const Vec3 g_CitizenPartOffsetTable[ENUM_TO_UINT(CITIZEN_TYPE::END)][ENUM
 {
 	// [Male]
 	{
-		{ 0.0f, -0.025f, 1.530f }, // Hair
+		{ 0.0f, 0.025f, 1.530f }, // Hair
 		{ 0.0f,  0.0f,   0.0f }    // Beard (¾øÀ½)
 	},
 	// [Female]
@@ -512,6 +512,8 @@ public:
 }; 
 struct ENGINE_DLL CitizenWayPointOriginData
 {
+	static inline _int iCurWayPointIndex{0};
+
 	static inline std::map<std::string, vector<Citizen_WayPoint_Data>> mapCitizenWapointDatas{};
 
 	static HRESULT	Load_CitizenWayPointDatas(ID3D11Device* pDeivce, ID3D11DeviceContext* pContext);
