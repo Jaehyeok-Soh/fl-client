@@ -1085,7 +1085,12 @@ HRESULT CBuilder_Map::Create_TriggerBox_EnvJukebox(const DTO::TMap_MapObjectData
 	if (tDesc.bHasQuest = pOrigin->bHasQuest)
 		tDesc.tQuestObjectDesc = pOrigin->tQuestObjectDesc;
 
-	m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszTriggerBox_EnvJukebox_PrototypeTag, ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &tDesc);
+	CGameObject* pResult{nullptr};
+	pResult = m_pGameInstance->Add_GameObject(ENUM_TO_UINT(ELevelType::STATIC), g_wszTriggerBox_EnvJukebox_PrototypeTag, ENUM_TO_UINT(m_eLevelType), g_wszTriggerBoxLayer, &tDesc);
+	if (pResult == nullptr)
+		return E_FAIL;
+	
+	
 	return S_OK;
 }
 

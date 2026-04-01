@@ -131,6 +131,9 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Register_CinematicCamera(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszDynamicCameraLayer)))
+		return E_FAIL;
+
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
@@ -141,6 +144,8 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 		return E_FAIL;
 
 	CQuestManager::GetInstance()->Start_Quest(5, 1);
+
+	m_pGameInstance->Play_CameraCinematic(L"Lianhuo_Cinematic");
 
 	m_pGameInstance->PlayBGM(0, TO_HASH("LIANHUO_BOSS_BGM"), 0.5f);
 	return S_OK;

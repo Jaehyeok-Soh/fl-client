@@ -118,5 +118,14 @@
             }
         ],
         "Subscriber Name": "CameraMan_Targeter"
+    },
+    {
+        "Action Infos": [
+            {
+                "Explain": "디렉션 스테이트 실행",
+                "Name": "Direction"
+            }
+        ],
+        "Subscriber Name": "Lianhuo_Cinematic_State"
     }
 ]

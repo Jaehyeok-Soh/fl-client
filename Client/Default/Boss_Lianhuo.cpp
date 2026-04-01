@@ -84,6 +84,58 @@ HRESULT CBoss_Lianhuo::Initialize(void* pArg)
 
 HRESULT CBoss_Lianhuo::Ready_GlobalEvent()
 {
+	/* Xibi_Cinematic Event 구독 */
+	m_pGameInstance->Subscribe<XIBI_CHANGE_STATE_BOSS_DIRECTION>([this]() {
+		Set_Render(true);
+		if (FAILED(Change_State_ForDirecting(CBoss_Lianhuo::EStateForDirecting::Direction)))
+		{
+			MSG_BOX(" Boss 연출 Direction 실패 ");
+			return E_FAIL;
+		}
+
+		return S_OK;
+		});
+
+	m_pGameInstance->Subscribe<CCS_EVENT>([this](const CCS_BROADCAST_DESC& tDesc) {
+		Set_Render(true);
+
+		for (auto& CCS_Event : tDesc.vecCCS_Event_Desc)
+		{
+			_uint iSubscribeHash = TO_HASH(CCS_Event.strSubscriberName.c_str());
+
+			switch (iSubscribeHash)
+			{
+			case TO_HASH("Lianhuo_Cinematic_State"):
+			{
+				for (auto& Action : CCS_Event.vecActionNames)
+				{
+					_uint iActionHash = TO_HASH(Action.c_str());
+					switch (iActionHash)
+					{
+					case TO_HASH("Direction"):
+					{
+						if (FAILED(Change_State_ForDirecting(CBoss_Lianhuo::EStateForDirecting::Direction)))
+						{
+							MSG_BOX("Lianhuo Boss Direction State 실패 ");
+							return E_FAIL;
+						}
+						return S_OK;
+					}
+					default:
+						break;
+					}
+
+				}
+			}
+			break;
+			default:
+				break;
+			}
+		}
+		return S_OK;
+		});
+
+
 	return S_OK;
 }
 
