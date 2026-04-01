@@ -212,11 +212,11 @@ void CMainPlayer::Update_Priority(const _float fTimeDelta)
         Get_Part<CBody>(Part::BODY)->Get_Component<CModel>()->Enable_GhostTrail();
     }
 
-    // stat 公利 toggle 虐
-    if (KEY_BUTTON_DOWN(DIK_V))
-    {
-        static_cast<CPlayerControlContext*>(Get_Component<CControlContext>())->Set_AllKeyFlag(false);
-    }
+    //// stat 公利 toggle 虐
+    //if (KEY_BUTTON_DOWN(DIK_V))
+    //{
+    //    static_cast<CPlayerControlContext*>(Get_Component<CControlContext>())->Set_AllKeyFlag(false);
+    //}
 
     // stat 公利 toggle 虐
     if (KEY_BUTTON_DOWN(DIK_B))

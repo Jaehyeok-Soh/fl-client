@@ -80,7 +80,11 @@ HRESULT CWeapon::Initialize(void* pArg)
 	}
 
 	if (!m_bMainWeapon)
+	{
 		Set_WeaponState(State::NONE);
+		Set_Active(false);
+	}
+
 
 	//Get_Component<CTransform>()->Set_Scale(0.1f, 0.1f, 0.1f);
 	//Get_Component<CTransform>()->Rotation(0.f, ::XMConvertToRadians(90.f), 0.f);
@@ -108,6 +112,9 @@ HRESULT CWeapon::Awake(const _uint iCurrentLevelIndex)
 
 void CWeapon::Update_Priority(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Update_Priority(fTimeDelta);	
 	//_matrix matSocket = ::XMLoadFloat4x4(m_pMatSocket);
 	//// Right, Up, Look 노멀라이즈로 스케일 죽이기
@@ -132,6 +139,9 @@ void CWeapon::Update_Priority(_float fTimeDelta)
 
 void CWeapon::Update(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Update(fTimeDelta);
 
 	// scale이 죽었을때 다시 살리기 위함
@@ -151,6 +161,9 @@ void CWeapon::Update(_float fTimeDelta)
 
 void CWeapon::Update_Late(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Update_Late(fTimeDelta);
 
 	if (m_bPlayOnceYet == false)
@@ -288,6 +301,9 @@ void CWeapon::Set_DefaultSocket()
 
 void CWeapon::Set_WeaponState(State eState)
 {
+	if(eState == State::NONE)
+		Set_Active(false);
+
 	if (m_eState != eState)
 	{
 		m_eState = eState;
@@ -315,6 +331,9 @@ void CWeapon::Set_WeaponState(State eState)
 void CWeapon::Set_WeaponState(_uint iState)
 {
 	State eNewState = static_cast<State>(iState);
+
+	if (eNewState == State::NONE)
+		Set_Active(false);
 
 	if (m_eState != eNewState)
 	{

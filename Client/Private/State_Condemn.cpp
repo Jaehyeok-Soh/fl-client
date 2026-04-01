@@ -78,7 +78,7 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 	pPlayerTransform->Look_At_Dir(vDir);
 
 	pPlayer->Change_MainWeapon(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), 0);
-	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HAND));
+	Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::CONDEMN));
 	//Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::CONDEMN), ENUM_TO_UINT(CWeapon::State::HAND));
 
 	m_tTurnData.vFirstLookDir = vDir;

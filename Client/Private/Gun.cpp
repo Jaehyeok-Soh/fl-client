@@ -65,11 +65,17 @@ HRESULT CGun::Awake(const _uint iCurrentLevelIndex)
 
 void CGun::Update_Priority(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Update_Priority(fTimeDelta);
 }
 
 void CGun::Update(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Update(fTimeDelta);
 
 	m_pCameraTransform = m_pGameInstance->Get_MainCamera()->Get_Component<CTransform>();
@@ -85,6 +91,9 @@ void CGun::Update(_float fTimeDelta)
 
 void CGun::Update_Late(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Update_Late(fTimeDelta);
 }
 
