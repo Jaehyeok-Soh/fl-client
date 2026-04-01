@@ -26,7 +26,7 @@ public:
 	//
 	enum class State : _uint
 	{
-		NONE, HOLD, HAND, HAND_ONLY_POS, HAND_ONLY_POS_SCALE, CONDEMN
+		NONE, HOLD, HAND, HAND_ONLY_POS, HAND_ONLY_POS_SCALE, CONDEMN, END
 	};
 
 	enum class AnimState : _uint
@@ -37,7 +37,8 @@ public:
 	enum WeaponDescFlag : Flags
 	{
 		WF_RGBMappingOn = 0x000001,
-		WF_Dissolve		= 0x000002
+		WF_Dissolve		= 0x000002,
+		WF_RGBMappingOn2 = 0x000004,
 	};
 
 	typedef struct tagWeaponDesc : public CPartObject::PARTOBJ_DESC
@@ -106,7 +107,7 @@ public:
 	_int	Get_AnimationIndex(const wstring& wstrName);
 
 protected:
-	State				m_eState = { State::NONE };
+	State				m_eState = { State::END };
 	AnimState			m_eAnimState = { AnimState::STOP };
 
 	Weapon_Type			m_eWaeponType = { Weapon_Type::SWORD };

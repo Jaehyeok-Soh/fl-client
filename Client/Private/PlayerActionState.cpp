@@ -48,8 +48,8 @@ HRESULT CPlayerActionState::Initialize_Prototype()
     m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::ElectricSamll)] = { TO_HASH("sfx_common_player_electrict_small_hit_r"),1.f };
     m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::ElectricBall)]  = { TO_HASH("sfx_boss_Xibi_electricBall_hit_r"),1.f };
                                                                   
-    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::HeavySword)]    = { TO_HASH("sfx_common_player_heavySwordHit_heavy_r"),0.8f };
-    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::Fire)]          =  { TO_HASH("sfx_player_Nvzhu_fire_hit_r"),0.8f };
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::HeavySword)]    = { TO_HASH("sfx_common_player_heavySwordHit_heavy_r"),1.f };
+    m_arrHitSoundHashes[ENUM_TO_SZET(HIT_SOUND::Fire)]          =  { TO_HASH("sfx_player_Nvzhu_fire_hit_r"),1.f };
 
 	return S_OK;
 }
@@ -164,7 +164,8 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
         m_fAttackFlag |= AF_Strong;
         m_fAttackFlag |= AF_Fly;
 
-        m_eHitSound = HIT_SOUND::WhipHeavy;
+        Set_BossHitSound(tHit.attackDesc.pAttackPreset->tCombat.eDamageType, HIT_SOUND::HeavySword, HIT_SOUND::WhipHeavy);
+
         break;
     }
     case DTO::EAttackPresetCategory::BossSkill:
@@ -174,15 +175,14 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
         case DTO::EHitType::Additive:
             m_fAttackFlag |= AF_Addtive;
 
-            m_eHitSound = HIT_SOUND::ElectricSamll;
+            Set_BossHitSound(tHit.attackDesc.pAttackPreset->tCombat.eDamageType, HIT_SOUND::HeavySword, HIT_SOUND::ElectricSamll);
             break;
 
         case DTO::EHitType::Heavy:
             m_fAttackFlag |= AF_Strong;
             m_fAttackFlag |= AF_Fly;
 
-            // sound
-            m_eHitSound = HIT_SOUND::ElectricBall; break; // xibi
+            Set_BossHitSound(tHit.attackDesc.pAttackPreset->tCombat.eDamageType, HIT_SOUND::Fire, HIT_SOUND::ElectricBall);
             break;
         }
     }
@@ -195,14 +195,14 @@ void CPlayerActionState::Set_HitDesc(const HIT_DESC& tHit)
         case DTO::EHitType::Additive:
             m_fAttackFlag |= AF_Addtive;
 
-            m_eHitSound = HIT_SOUND::ElectricSamll;
+            Set_BossHitSound(tHit.attackDesc.pAttackPreset->tCombat.eDamageType, HIT_SOUND::Projectile, HIT_SOUND::ElectricSamll);
             break;
 
         case DTO::EHitType::Heavy:
             m_fAttackFlag |= AF_Strong;
             m_fAttackFlag |= AF_Fly;
 
-            m_eHitSound = HIT_SOUND::ElectricSamll;
+            Set_BossHitSound(tHit.attackDesc.pAttackPreset->tCombat.eDamageType, HIT_SOUND::Fire, HIT_SOUND::ElectricSamll);
             break;
         }
     }
@@ -450,6 +450,15 @@ void CPlayerActionState::Play_HitSound()
 
     // sound °ª ¸®¼Â
     m_eHitSound = HIT_SOUND::END;
+}
+
+void CPlayerActionState::Set_BossHitSound(DTO::EDamageType eDamegeType, HIT_SOUND eFireSound, HIT_SOUND eElectrickSound)
+{
+    switch (eDamegeType)
+    {
+    case DTO::EDamageType::Fire: m_eHitSound = eFireSound; break;
+    case DTO::EDamageType::Electric: m_eHitSound = eElectrickSound; break;
+    }
 }
 
 CPlayerActionState* CPlayerActionState::Create()

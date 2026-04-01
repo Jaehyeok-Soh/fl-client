@@ -275,6 +275,7 @@ void CUICombo_Image::Bind_Events()
 	m_vecEventHandles.push_back(
 		m_pGameInstance->Subscribe<COMBO_ATTACK_EVENT_START>([this]()
 			{
+				Set_Active(true);
 				this->Set_Visible();
 			}));
 
@@ -306,6 +307,7 @@ void CUICombo_Image::Initialize_InVisible_Event()
 
 _bool CUICombo_Image::Tick_InVisible_Event(const _float fTimeDelta)
 {
+	Set_Active(false);
 	return true;
 }
 

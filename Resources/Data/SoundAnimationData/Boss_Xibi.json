@@ -804,6 +804,54 @@
                     "strAnimTag": "Animation_Xibi_Skill10",
                     "strDescription": "New Sound Event",
                     "strSoundTag": "sfx_boss_Xibi_skill06_01_attack"
+                },
+                {
+                    "bLoop": false,
+                    "bSteal": false,
+                    "eCommand": "OneShot",
+                    "eEventType": 2,
+                    "ePhase": "Immediatley",
+                    "fDelay": 0.0,
+                    "fPitch": 1.0,
+                    "fStartTrackPosition": 182.0,
+                    "fVolume": 1.0,
+                    "iAnimIndex": 33,
+                    "iControlledId": -1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "xibi360Thunder",
+                    "strSoundTag": "sfx_boss_Xibi_skill07_attack"
+                },
+                {
+                    "bLoop": false,
+                    "bSteal": false,
+                    "eCommand": "OneShot",
+                    "eEventType": 2,
+                    "ePhase": "Immediatley",
+                    "fDelay": 0.0,
+                    "fPitch": 1.0,
+                    "fStartTrackPosition": 203.0,
+                    "fVolume": 1.0,
+                    "iAnimIndex": 33,
+                    "iControlledId": -1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "xibi360Thunder",
+                    "strSoundTag": "sfx_boss_Xibi_skill07_attack"
+                },
+                {
+                    "bLoop": false,
+                    "bSteal": false,
+                    "eCommand": "OneShot",
+                    "eEventType": 2,
+                    "ePhase": "Immediatley",
+                    "fDelay": 0.0,
+                    "fPitch": 1.0,
+                    "fStartTrackPosition": 130.0,
+                    "fVolume": 1.0,
+                    "iAnimIndex": 33,
+                    "iControlledId": -1,
+                    "strAnimTag": "Animation_Xibi_Skill10",
+                    "strDescription": "xibi360Thunder",
+                    "strSoundTag": "sfx_boss_Xibi_skill07_attack"
                 }
             ]
         }

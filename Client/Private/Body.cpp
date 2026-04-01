@@ -198,7 +198,8 @@ void CBody::Ready_Before_Render(_float fTimeDelta)
 	CModel *pModel = Get_Component<CModel>();
 	pModel->Emit_Notifies(EAnimNotifyPhase::PreRender);
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
+	if (m_pGameInstance->Get_CurrentLevelIndex() != ENUM_TO_UINT(ELevelType::TAVERN))
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 	if (pModel->Has_GhostTrailSnapshots() || pModel->Is_ActiveGhostTrail())
 	{
 		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::GHOST_TRAIL, this);

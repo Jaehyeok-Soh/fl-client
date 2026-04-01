@@ -131,6 +131,12 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 	if (FAILED(Ready_Camera_Setting(iLevelID)))
 		return E_FAIL;
 
+	if (FAILED(Bind_Subscribe()))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Register_CinematicCamera(ENUM_TO_UINT(ELevelType::STATIC), g_wszCinematicCamera_PrototypeTag, ENUM_TO_UINT(ELevelType::TUTORIAL_BOSS), g_wszDynamicCameraLayer)))
+		return E_FAIL;
+
 	m_eCursorMode = ECursorMode::LockedHiddenCenter;
 	m_pGameInstance->Request_CursorMode(m_eCursorMode);
 
@@ -140,7 +146,12 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 	if (FAILED(m_pGameInstance->Bake_StaticShadow(m_pGameInstance->Get_MapMinMaxBounding())))
 		return E_FAIL;
 
+
 	CQuestManager::GetInstance()->Start_Quest(5, 1);
+
+
+
+	m_pGameInstance->Play_CameraCinematic(L"Lianhuo_Cinematic");
 
 	m_pGameInstance->PlayBGM(0, TO_HASH("LIANHUO_BOSS_BGM"), 0.5f);
 	return S_OK;
@@ -174,6 +185,15 @@ void CLevel_Lianhuo::Update(const _float fTimeDelta)
 #endif
 		m_pGameInstance->Request_CursorMode(m_eCursorMode);
 	}*/
+
+
+
+	if (KEY_BUTTON_UP(DIK_F6))
+		m_pGameInstance->Play_CameraCinematic(L"Lianhuo_Cinematic");
+
+	if (KEY_BUTTON_UP(DIK_F7))
+		m_pGameInstance->Load_CameraCinematicSequence(g_wszCameraCinematicData_JsonPath);
+
 }
 
 HRESULT CLevel_Lianhuo::Render()
@@ -375,7 +395,20 @@ HRESULT CLevel_Lianhuo::Ready_Camera_Layer(const wstring& wstrLayerTag)
 
 HRESULT CLevel_Lianhuo::Ready_ShaderSetting()
 {
-
+	// Fog
+	{
+		auto& fogDesc = m_pGameInstance->Get_FogParamDesc();
+		fogDesc.vColor = Vec4{ 0.7f, 0.2f, 0.12f, 1.f };
+		fogDesc.vHighColor = Vec4{ 0.7f, 0.2f, 0.12f, 1.f };
+		fogDesc.fFogStart = 0.f;
+		fogDesc.fFogEnd = 500.f;
+		fogDesc.fFogDensity = 0.002f;
+		fogDesc.fFogMaxOpacity = 0.2f;
+		fogDesc.fFogBaseHeight = -5.f;
+		fogDesc.fFogNoiseScale = 0.55f;
+		fogDesc.fFogNoiseSpeed = 0.218f;
+		m_pGameInstance->Commit_FogParam();
+	}
 	return S_OK;
 }
 
@@ -387,7 +420,7 @@ HRESULT CLevel_Lianhuo::Ready_Boss_Layer(const wstring& wstrLayerTag)
 		CMonster_Base::MONSTER_DESC monsterDesc = {};
 		monsterDesc.iLevelIndex = ENUM_TO_UINT(ELevelType::LIANHUO);
 		CTransform::TRANSFORM_DESC transformDesc = {};
-		transformDesc.TranslationMatrix = Matrix::CreateTranslation(-2.f, 600.f, -8.f);
+		transformDesc.TranslationMatrix = Matrix::CreateTranslation(3.473f, 600.256f, -7.031f);
 		monsterDesc.pTransform_Desc = &transformDesc;
 		{
 			////////////////////
@@ -457,7 +490,7 @@ HRESULT CLevel_Lianhuo::Ready_Lights()
 	{
 		LIGHT_DESC desc = {};
 		desc.eType = LIGHT_TYPE::DIRECTIONAL;
-		desc.vDirection = Vec3{ 1.f, -1.f, 1.f };
+		desc.vDirection = Vec3{ 0.016, -0.418, 0.909 };
 		desc.vDiffuse = Vec4(0.9f, 0.8f, 0.7f, 1.f);
 		desc.vAmbient = Vec4(0.3f, 0.1f, 0.1f, 1.f);
 		desc.vSpecular = desc.vDiffuse;
@@ -571,6 +604,7 @@ HRESULT CLevel_Lianhuo::Ready_Octree()
 
 	return S_OK;
 }
+
 HRESULT CLevel_Lianhuo::Ready_Camera_Setting(const _uint iLevelIndex)
 {
 	CGameObject* pMainCamera = m_pGameInstance->Get_GameObject_Front(iLevelIndex, g_wszDynamicCameraLayer);
@@ -643,6 +677,126 @@ HRESULT CLevel_Lianhuo::Ready_SkillObjectLayer()
 			5)))
 			return E_FAIL;
 	}
+	return S_OK;
+}
+
+HRESULT CLevel_Lianhuo::Bind_Subscribe()
+{
+	m_pGameInstance->Subscribe<CCS_EVENT>([this](const CCS_BROADCAST_DESC& tDesc) {
+
+		for (auto& EventDesc : tDesc.vecCCS_Event_Desc)
+		{
+			_int iHash = TO_HASH(EventDesc.strSubscriberName.c_str());
+			switch (iHash)
+			{
+			case	TO_HASH("TimeScale"):
+			{
+				for (auto& ActionName : EventDesc.vecActionNames)
+				{
+					_int iHash = TO_HASH(ActionName.c_str());
+
+					switch (iHash)
+					{
+					case TO_HASH("1"):
+					{
+					}
+					break;
+					case TO_HASH("2"):
+					{
+
+					}
+					break;
+					case TO_HASH("3"):
+					{
+
+					}
+					break;
+					case TO_HASH("4"):
+					{
+
+					}
+					break;
+					case TO_HASH("5"):
+					{
+
+					}
+					break;
+					default:
+						break;
+					}
+				}
+			}
+			break;
+			case TO_HASH("CameraShaking"):
+			{
+				for (auto& ActionName : EventDesc.vecActionNames)
+				{
+					_int iHash = TO_HASH(ActionName.c_str());
+
+					switch (iHash)
+					{
+					case TO_HASH("0_5"):
+					{
+						CAMERA_SHAKE_DESC tDesc{};
+						tDesc.fDuration = 0.5f;
+						m_pGameInstance->Request_MainCameraShake(tDesc);
+					}
+					break;
+					case TO_HASH("1"):
+					{
+						CAMERA_SHAKE_DESC tDesc{};
+						tDesc.fDuration = 1.f;
+						m_pGameInstance->Request_MainCameraShake(tDesc);
+					}
+					break;
+					case TO_HASH("1_5"):
+					{
+						CAMERA_SHAKE_DESC tDesc{};
+						tDesc.fDuration = 1.5f;
+						m_pGameInstance->Request_MainCameraShake(tDesc);
+					}
+					break;
+					case TO_HASH("2_0"):
+					{
+						CAMERA_SHAKE_DESC tDesc{};
+						tDesc.fDuration = 2.0f;
+						m_pGameInstance->Request_MainCameraShake(tDesc);
+					}
+					break;
+					case TO_HASH("2_5"):
+					{
+						CAMERA_SHAKE_DESC tDesc{};
+						tDesc.fDuration = 2.5f;
+						m_pGameInstance->Request_MainCameraShake(tDesc);
+					}
+					break;
+					case TO_HASH("3"):
+					{
+						CAMERA_SHAKE_DESC tDesc{};
+						tDesc.fDuration = 3.f;
+						m_pGameInstance->Request_MainCameraShake(tDesc);
+					}
+					break;
+					case TO_HASH("3_5"):
+					{
+						CAMERA_SHAKE_DESC tDesc{};
+						tDesc.fDuration = 3.5f;
+						m_pGameInstance->Request_MainCameraShake(tDesc);
+					}
+					break;
+					default:
+						break;
+					}
+				}
+			}
+			break;
+			default:
+				break;
+			}
+		}
+		});
+
+
 	return S_OK;
 }
 

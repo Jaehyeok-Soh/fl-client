@@ -40,8 +40,13 @@ public:
 
 public:
 	virtual void Start_Third() override;
+	virtual void Update_Second(const _float fTimeDelta) override;
 	virtual void Update_Third(const _float fTimeDelta) override;
 
+	virtual void End_Second() override;
+
+private:
+	_bool m_bOnce = { false };
 public:
 	static CState_DualCombo* Create(CActionState* pOwnerComponent, void* pArg = nullptr);
 	virtual void Free() override;

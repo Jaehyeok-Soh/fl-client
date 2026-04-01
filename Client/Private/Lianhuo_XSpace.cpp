@@ -79,7 +79,7 @@ HRESULT CLianhuo_XSpace::Ready_Modules()
 		colliderDesc.bIsActive = true;
 		colliderDesc.vCenter = { 0.f, 1.f, 0.f };
 		colliderDesc.vExtents = { 4.f, 3.f, 10.f };
-		colliderDesc.strAttackPresetTag = "Xibi_Thunder";
+		colliderDesc.strAttackPresetTag = "Lianhuo_XSpace";
 		PHYSICSMATERIAL_DESC mtrlDesc{};
 		mtrlDesc.eMaterial = EPhysicsMaterial::CONCRETE;
 		colliderDesc.tMaterial = mtrlDesc;

@@ -227,7 +227,7 @@ void CNPC_Citizen_Body::Update_Priority(_float fTimeDelta)
 
 void CNPC_Citizen_Body::Update(_float fTimeDelta)
 {
-	Super::Update(fTimeDelta);
+	//Super::Update(fTimeDelta);
 
 	m_tDissolveDesc.Update(fTimeDelta);
 }
@@ -251,7 +251,8 @@ void CNPC_Citizen_Body::Ready_Before_Render(_float fTimeDelta)
 
 
 	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-	m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
+	if(m_pGameInstance->Get_CurrentLevelIndex() != ENUM_TO_UINT(ELevelType::TAVERN))
+		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 }
 
 void CNPC_Citizen_Body::OnCollision(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)

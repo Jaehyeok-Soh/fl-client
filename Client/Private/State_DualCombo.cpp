@@ -77,6 +77,7 @@ HRESULT CState_DualCombo::Start(void* pArg, _bool bForce)
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
+	m_bOnce = true;
 	return S_OK;
 }
 
@@ -95,13 +96,15 @@ HRESULT CState_DualCombo::End()
 	CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 	pCCT->EnableCollision(true);
 
+	Get_OwnerObject()->Stop_GhostTrail();
+
 	return S_OK;
 }
 
 void CState_DualCombo::Start_Third()
 {
-	Get_OwnerObject()->Set_Render(false);
- 
+	//Get_OwnerObject()->Set_Render(false);
+	
 	// 좀 더 앞으로 셋
 	CGameObject* pObj = Get_OwnerObject();
 	CTransform* pTransform = pObj->Get_Component<CTransform>();
@@ -130,16 +133,42 @@ void CState_DualCombo::Start_Third()
 	}
 }
 
+void CState_DualCombo::Update_Second(const _float fTimeDelta)
+{
+	//const _float fTimeDistance = 0.032f;
+	//_float fCheck = 15.f / ANIMTIC_3;
+	//if (m_bOnce == false && ((fCheck - fTimeDistance) < m_fStateElapsed))
+	//{
+	//	Get_OwnerObject()->Play_GhostTrail();
+
+	//	m_bOnce = true;
+	//}
+}
+
 void CState_DualCombo::Update_Third(const _float fTimeDelta)
 {
 	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime - 0.1f)
 	{
+		//Get_OwnerObject()->Stop_GhostTrail();
 		Get_OwnerObject()->Set_Render(true);
 		CPhysicsCCT* pCCT = Get_OwnerObject()->Get_Component<CPhysicsCCT>();
 		pCCT->EnableCollision(true);
 	}
 
+	else if (m_bOnce && m_fStateElapsed >= 0.1f)
+	{
+		Get_OwnerObject()->Set_Render(false);
+		//Get_OwnerObject()->Stop_GhostTrail();
+		m_bOnce = false;
+	}
+
 	// render onoff 관리
+}
+
+void CState_DualCombo::End_Second()
+{
+	m_bOnce = true;
+	Get_OwnerObject()->Play_GhostTrail();
 }
 
 CState_DualCombo* CState_DualCombo::Create(CActionState* pOwnerComponent, void* pArg)

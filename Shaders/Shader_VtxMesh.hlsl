@@ -218,6 +218,12 @@ float3 Get_DissolveEdgeEmissive(float2 uv)
     return g_DissolveEffect.g_vDissolveEdgeColor * edge * 3.0f;
 }
 
+float3 MixMultiply(float3 vColor1, float3 vColor2, float factor)
+{
+    float3 multiplied = vColor1 * vColor2;
+    return lerp(vColor1, multiplied, factor);
+}
+
 
 VS_OUT_MESH VS_MAIN(VS_IN_MESH input)
 {
@@ -1125,6 +1131,64 @@ PS_OUT_DEFFERED PS_LIGHTOBJECT(PS_IN_MESH input)
 }
 
 
+PS_OUT_DEFFERED PS_RGBMUTIPLY(PS_IN_MESH input)
+{
+    PS_OUT_DEFFERED output;
+    
+    float4 vDiffuse = float4(1.f, 1.f, 1.f, 1.f);
+    
+    Compute_Diffse(vDiffuse, input.vUV);
+    
+    float3 final =
+    (vDiffuse.r * Color_R.rgb *2.f) +
+    (vDiffuse.g * Color_G.rgb * 2.f) +
+    (vDiffuse.b * Color_B.rgb * 2.f);
+    
+    float luminance = dot(final, float3(0.3, 0.59, 0.11));
+    float3 finalRGB = final * luminance;
+    float4 finalDiffuse = float4(saturate(finalRGB), vDiffuse.a);
+    
+    saturate(finalDiffuse);
+
+    output.vDiffuse = finalDiffuse;
+    
+    // 디졸브 디스카드
+    //Apply_Dissolve_Discard_And_Alpha(input, output.vDiffuse);
+    
+    float3 vNormal = input.vNormal;
+    Compute_Normal(vNormal, input.vTangent, input.vBinormal, input.vUV);
+    output.vNormal = float4(vNormal * 0.5f + 0.5f, 1.f);
+    
+    float3 vSpecMask = DEFAULT_SPECMASK_FLOAT3;
+    if (Has(g_iMaterialMask, METALNESS))
+        vSpecMask = g_MaterialTextures[METALNESS].Sample(LinearSampler, input.vUV).xyz;
+    output.vSpecularMask = float4(vSpecMask, 1.f);
+    output.vObjectInfo = PackObjectInfo(objectInfo.iObjectID, objectInfo.iFlags);
+    output.vDepth = float4(input.vProjPos.z / input.vProjPos.w, input.vProjPos.w, 0.f, 0.f);
+    float3 vEmissive = float3(0.f, 0.f, 0.f);
+    if (Has(g_iMaterialMask, EMISSIVE))
+    {
+        vEmissive = g_MaterialTextures[EMISSIVE].Sample(LinearSampler, input.vUV).xyz;
+        float fMask = max(vEmissive.r, max(vEmissive.g, vEmissive.b));
+        vEmissive = output.vDiffuse.rgb * fMask * 4.5f;
+    }
+    
+    ////림라이트
+    //float fresnel = pow(1.0 - saturate(dot(N, V)), 0.7); // FresnelRange = 0.7
+    //float3 fresnelColor = fresnel * (0.1, 0, 0) * 200; // (0.1,0,0) * 200
+
+    ////이미시브
+    //float3 emission = vEmissive.rgb * (1, 0, 0) * 25; // (1,0,0) * 25
+    // emission += fresnelColor;
+    
+    
+    output.vEmissive = float4(vEmissive, 1.f);
+    //output.vEmissive = float4(emission, 1.f);
+    
+    return output;
+}
+
+
 technique11 T0
 {
 
@@ -1167,4 +1231,6 @@ technique11 T0
     PASS_RS_DS_BS_VP(LightObject,RS_Default, DS_Default, BS_Default, VS_MAIN, PS_LIGHTOBJECT) // 14
     PASS_RS_DS_BS_VP(Shadow_Dynamic, RS_Default, DS_Default, BS_Default, VS_SHADOW_DYNAMIC, PS_SHADOW) // 15
 
+    // RGB mapping2 : weapon 쪽에서 쓰임
+	PASS_RS_DS_BS_VP(RGBMapping2, RS_Default_CullNone, DS_Default, BS_Default, VS_MAIN, PS_RGBMUTIPLY) // 15
 };

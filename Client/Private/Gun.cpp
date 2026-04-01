@@ -67,6 +67,7 @@ void CGun::Update_Priority(_float fTimeDelta)
 {
 	if (m_eState == State::NONE)
 		return;
+
 	Super::Update_Priority(fTimeDelta);
 }
 

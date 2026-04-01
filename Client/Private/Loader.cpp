@@ -651,7 +651,7 @@ HRESULT CLoader::Loading_For_Logo()
 		desc.eType = EModelType::STATIC;
 		desc.iPrototypeLevelIndex = ENUM_TO_UINT(ELevelType::STATIC);
 		desc.pMatPreTransform = &(matPreTransformScale);	// matPreTransformScale
-		desc.wstrModelFolderName = L"Weapon_MoonSkill";					// PlayerMoon // Pino
+		desc.wstrModelFolderName = L"SkillWeapon";					// PlayerMoon // Pino //Weapon_MoonSkill//  fff
 		desc.FStageBone = CModel::STAGEING_BONE::SB_ZEROBONE;
 
 		m_pGameInstance->Add_Prototype(ENUM_TO_UINT(ELevelType::STATIC), L"Prototype_Component_Model_MoonSkillWeap", CModel::Create(m_pDevice, m_pDeviceContext, &desc));
@@ -1356,6 +1356,7 @@ HRESULT CLoader::Loading_For_Lianhuo()
 	Matrix matPreTransformScaleTest = Matrix::CreateScale(100.f, 100.f, 100.f);
 	Matrix matPreTransformScale = Matrix::CreateScale(0.01f, 0.01f, 0.01f);
 	Matrix matPreTransformScale150 = Matrix::CreateScale(1.5f, 1.5f, 1.5f);
+	Matrix matPreTransformScale100 = Matrix::CreateScale(100.f, 100.f, 100.f);
 	Matrix matPreTransformIdentity = Matrix::Identity;
 	Matrix matPreTransformTurn90 = matPreTransformScale * Matrix::CreateFromYawPitchRoll(XMConvertToRadians(90.f), 0.f, 0.f);
 #pragma endregion
@@ -1791,8 +1792,8 @@ HRESULT CLoader::Ready_Sounds_Player()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Sword")))
 		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Gun")))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Gun")))
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Condemn")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Combat/Common")))
@@ -1893,8 +1894,8 @@ HRESULT CLoader::Ready_Sounds_Boss()
 	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Boss/Xibi")))
 		return E_FAIL;
 	//// lian
-	//if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Player/Static/Hit/Lian")))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Load_Sounds(ENUM_TO_UINT(ELevelType::STATIC), ESoundCategory::SFX, L"../../Resources/Sounds/SFX/Boss/Lian")))
+		return E_FAIL;
 
 	return S_OK;
 }

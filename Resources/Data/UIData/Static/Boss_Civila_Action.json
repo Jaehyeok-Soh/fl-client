@@ -289,7 +289,7 @@
             "strFontTag": "TitleKO32",
             "strOwnerName": "Boss_Civila_Name",
             "strTag": "Boss_Civila_Name_TextData",
-            "strText": "시빌라",
+            "strText": "",
             "vFontColor": {
                 "w": 0.9607843160629272,
                 "x": 1.0,

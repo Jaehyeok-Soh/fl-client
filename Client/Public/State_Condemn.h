@@ -17,6 +17,9 @@ public:
 	virtual void Update(const _float fTimeDelta) override;
 	virtual HRESULT End() override;
 
+public:
+	virtual _uint	Get_Capabilities() const override { return 0; } // ¹«Àû
+
 private:
 	CCameraMan_Targeter::TURNCAM_DATA m_tTurnData = {};
 

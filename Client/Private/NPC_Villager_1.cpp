@@ -206,7 +206,7 @@ CNPC_Base::NPC_DESC CNPC_Villager_1::Get_PreSetDesc(_uint iLevelId)
 
 	npcDesc.wstrNPCText.clear();
 	npcDesc.wstrNPCName = L"아이를 찾는 주민";
-	npcDesc.vUITextrOffset = { 0.f,4.f,0.f };
+	npcDesc.vUITextrOffset = { 0.f,3.f,0.f };
 
 	npcDesc.wstrBodyModelTag = g_wszNPC_Villager_1_Model_Prototype_Tag;
 	npcDesc.wstrPartBodyPrototypeTag = g_wszNPC_Villager_1_Body_Prototype_Tag;

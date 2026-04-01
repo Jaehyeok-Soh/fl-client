@@ -32,6 +32,10 @@ public:
 		_float	fSheild		= { 0.f };
 
 		Flags	FStatFlags	= 0;		// StatFlags 이용하시길
+
+		_float fHpUpdate_Rate = { 1.f };
+		_float fMentalUpdate_Rate = { 1.f };
+		_float fDefenseUpdate_Rate = { 1.f };
 	}STAT_DESC;
 
 protected:
@@ -123,6 +127,10 @@ protected:
 
 	Flags			m_FStatFlags = { 0 };
 
+	_float			m_fHpUpdate_Rate		= { 1.f };
+	_float			m_fMentalUpdate_Rate	= { 1.f };
+	_float			m_fDefenseUpdate_Rate	= { 1.f };
+
 
 	inline static Vec2		m_vDummy{0.f,0.f};
 
@@ -137,6 +145,11 @@ protected:
 	virtual void Update_Hp(const _float fTimeDelta);
 	virtual void Update_Defense(const _float fTimeDelta);
 	virtual void Update_Mental(const _float fTimeDelta);
+
+	virtual _bool Can_HpUpdatec(const _float fTimeDelta) { return true; }
+	virtual _bool Can_MentalUpdatec(const _float fTimeDelta) { return true; }
+	virtual _bool Can_DefencseUpdatec(const _float fTimeDelta) { return true; }
+
 
 public:
 	static CMyStat* Create();

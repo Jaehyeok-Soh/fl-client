@@ -82,6 +82,7 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 
     // cameara state change
     static_cast<CPlayer*>(Get_OwnerObject())->Change_CamState(ENUM_TO_UINT(Client::TargeterState::GUN));
+    static_cast<CPlayer*>(Get_OwnerObject())->Set_CanQuickSlopOpen(false);
 
     return S_OK;
 }
@@ -100,7 +101,7 @@ void CState_GunBase::Update(const _float fTimeDelta)
     }
 
     // 0. 만약 r button 눌림이 끝났다면 gun state 탈출
-    if (m_fStateElapsed > 0.45f &&
+    if (m_fStateElapsed > 0.45f && m_bMouseInputCheck &&
         !(MOUSE_RBUTTON_DOWN || MOUSE_RBUTTON_HOLD)) // 최소 유지 타임 : 0.5f if you need it? desc
     {
         // move 상태에 따라
@@ -517,6 +518,11 @@ void CState_GunBase::GunMove(const _float fTimeDelta)
     SetCCTInputDirection(vDir);
 
    // pCamTrans->Add_Position(vDir * fTimeDelta * pPlayerTrans->Get_MovePerSec());
+}
+
+void CState_GunBase::JumpMove(const _float fTimeDelta)
+{
+
 }
 
 void CState_GunBase::Free()

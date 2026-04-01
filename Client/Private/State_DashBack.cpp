@@ -54,7 +54,7 @@ HRESULT CState_DashBack::End()
 
 _uint CState_DashBack::Get_Capabilities() const
 {
-	if (m_fStateElapsed > 0.3f)
+	if (m_fStateElapsed > 0.4f)
 	{
 		return	Super::Get_Capabilities();
 	}

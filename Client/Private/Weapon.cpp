@@ -80,7 +80,11 @@ HRESULT CWeapon::Initialize(void* pArg)
 	}
 
 	if (!m_bMainWeapon)
+	{
 		Set_WeaponState(State::NONE);
+		Set_Active(false);
+	}
+
 
 	//Get_Component<CTransform>()->Set_Scale(0.1f, 0.1f, 0.1f);
 	//Get_Component<CTransform>()->Rotation(0.f, ::XMConvertToRadians(90.f), 0.f);
@@ -112,6 +116,9 @@ HRESULT CWeapon::Awake(const _uint iCurrentLevelIndex)
 
 void CWeapon::Update_Priority(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Update_Priority(fTimeDelta);	
 	//_matrix matSocket = ::XMLoadFloat4x4(m_pMatSocket);
 	//// Right, Up, Look 노멀라이즈로 스케일 죽이기
@@ -158,6 +165,9 @@ void CWeapon::Update(_float fTimeDelta)
 
 void CWeapon::Update_Late(_float fTimeDelta)
 {
+	if (m_eState == State::NONE)
+		return;
+
 	Super::Update_Late(fTimeDelta);
 
 	if (m_bPlayOnceYet == false)
@@ -169,12 +179,13 @@ void CWeapon::Update_Late(_float fTimeDelta)
 void CWeapon::Ready_Before_Render(_float fTimeDelta)
 {
 	Super::Ready_Before_Render(fTimeDelta);
-
+	
 	// none일때는 그리지 않음
 	if (m_eState != State::NONE)
 	{
 		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::NONEBLEND, this);
-		m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
+		if (m_pGameInstance->Get_CurrentLevelIndex() != ENUM_TO_UINT(ELevelType::TAVERN))
+			m_pGameInstance->Push_RenderObject(RENDER_CATEGORY::SHADOW_DYNAMIC, this);
 	}
 
 	// state에 따른 combineworld 업데이트
@@ -332,6 +343,9 @@ void CWeapon::Set_DefaultSocket()
 
 void CWeapon::Set_WeaponState(State eState)
 {
+	if(eState == State::NONE)
+		Set_Active(false);
+
 	if (m_eState != eState)
 	{
 		m_eState = eState;
@@ -359,6 +373,9 @@ void CWeapon::Set_WeaponState(State eState)
 void CWeapon::Set_WeaponState(_uint iState)
 {
 	State eNewState = static_cast<State>(iState);
+
+	if (eNewState == State::NONE)
+		Set_Active(false);
 
 	if (m_eState != eNewState)
 	{
@@ -419,6 +436,20 @@ HRESULT CWeapon::Ready_Components(WEAPON_DESC* pDesc)
 		_uint iPass = 0;
 		if (m_eModleType == Weapon_ModelType::STATIC)
 			iPass = ENUM_TO_UINT(EMapObjectShaderPass::RGBMapping);
+		else
+			iPass = 2;
+
+		Get_Component<CShader>()->Set_Pass(iPass);
+		m_tColorDesc.vColorR = pDesc->vColorR;
+		m_tColorDesc.vColorG = pDesc->vColorG;
+		m_tColorDesc.vColorB = pDesc->vColorB;
+	}
+
+	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn2))
+	{
+		_uint iPass = 0;
+		if (m_eModleType == Weapon_ModelType::STATIC)
+			iPass = ENUM_TO_UINT(EMapObjectShaderPass::RAGMapping2);
 		else
 			iPass = 2;
 
@@ -556,10 +587,12 @@ HRESULT CWeapon::Render_StaticWeap()
 	_uint iMeshCount = pModel->Get_MeshCount();
 
 	// rgb mapping
-	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn))
+	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn | WeaponDescFlag::WF_RGBMappingOn2))
 	{
 		pShader->Bind_RGBColorData(m_tColorDesc);
 	}
+	else
+		int a = 0;
 
 	// 디졸브 data 넘겨주기
 	if(Is_Dissolve())
@@ -592,7 +625,7 @@ HRESULT CWeapon::Render_AnimWeap()
 	CModel*				pModel			= Get_Component<CModel>();
 	_uint				iMeshCount		= pModel->Get_MeshCount();
 
-	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn))
+	if (Engine_Utils::Has_Flag(m_FDescFlags, WeaponDescFlag::WF_RGBMappingOn | WeaponDescFlag::WF_RGBMappingOn2))
 	{
 		pShader->Bind_RGBColorData(m_tColorDesc);
 	}

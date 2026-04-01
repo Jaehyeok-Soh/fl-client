@@ -82,14 +82,11 @@ HRESULT CMonster_Dog::Awake(const _uint iCurrentLevelID)
 	}
 
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 10000.f);
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 8000.f);
 	}
 
 	Ready_StateIndexForDirecting();
-
 	
-
-
 	if (FAILED(Get_Component<CMonster_GimmikController>()->Awake(iCurrentLevelID)))
 		return E_FAIL;
 

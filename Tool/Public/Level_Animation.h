@@ -88,6 +88,7 @@ private:
 private:
 	HRESULT Ready_PlayerSound();
 	HRESULT Ready_XibiSound();
+	HRESULT Ready_LianSound();
 
 private:
 	wstring m_wstrLayer = { L"Animation_Model_Layer" };

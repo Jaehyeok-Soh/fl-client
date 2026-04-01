@@ -3,6 +3,9 @@
 #include "PhysicsCollider.h"
 #include "PhysicsRigidBody.h"
 
+// 접근 headers
+#include "StatCom_Player.h"
+
 // manager
 #include "UI_Manager.h"
 #include "GameInstance.h"
@@ -62,8 +65,19 @@ void CMoon_SkillE_Obj::Handle_Hit(_uint iMyLayer, _uint iOtherLayer, Engine::CGa
 	desc.pOther = pOther;
 	desc.tHitInfo = tHitInfo;
 
-	EXTRA_ATTACK_DESC tExtra = {};
+ 	EXTRA_ATTACK_DESC tExtra = {};
 	{
+		// 랜덤 값을 받기 위함
+		CGameObject* pPlayer = m_pGameInstance->Get_GameObject_Front(0, g_wszPlayerLayer);
+		if (pPlayer)
+		{
+			CStatCom_Player* pComp = static_cast<CStatCom_Player*>(pPlayer->Get_Component<CMyStat>());
+			if (pComp)
+			{
+				tExtra = pComp->Get_ExtraAttack_Desc();
+			}
+		}
+
 		tExtra.iDamageFlag = ENUM_TO_UINT(EPlayerAttackFlag::SWORD) | ENUM_TO_UINT(EPlayerAttackFlag::SKILLE);
 
 		desc.tExtraDesc = tExtra;

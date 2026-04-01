@@ -61,13 +61,18 @@ protected:
 	virtual void Start_First() {};
 	virtual void Start_Second() {};
 	virtual void Start_Third() {};
-	virtual void Start_Fourth() {};
+	virtual void Start_Fourth();
 
 	virtual void Update_First(const _float fTimeDelta) {};
 	virtual void Update_Slide(const _float fTimeDelta) {};
 	virtual void Update_Second(const _float fTimeDelta) {};
 	virtual void Update_Third(const _float fTimeDelta) {};
 	virtual void Update_Fourth(const _float fTimeDelta) {};
+
+	virtual void End_First() {};
+	virtual void End_Second() {};
+	virtual void End_Third() {};
+	virtual void End_Fourth() {};
 
 private:
 	void			Count_ComboTime(const _float fTimeDelta);

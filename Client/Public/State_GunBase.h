@@ -90,6 +90,8 @@ protected:
 	TimeCount m_TJumpTime = { 0.f, 0.28f };
 	TimeCount m_TLandTime = { 0.f, 1.f };
 
+	_bool m_bMouseInputCheck = { true };
+
 protected:
 	virtual void Change_PlayerState(STATEKEY eKey, _bool bForce = false) override;
 
@@ -116,6 +118,7 @@ protected:
 	// 움직임 관련 함수
 private:
 	void	GunMove(const _float fTimeDelta);
+	void	JumpMove(const _float fTimeDelta);
 
 public:
 	virtual void Free() override;

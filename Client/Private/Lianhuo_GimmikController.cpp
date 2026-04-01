@@ -16,6 +16,11 @@ CLianhuo_GimmikController::CLianhuo_GimmikController()
 
 CLianhuo_GimmikController::CLianhuo_GimmikController(const CLianhuo_GimmikController& rhs)
 	: Super(rhs)
+	, m_iSoundHash_X0(rhs.m_iSoundHash_X0)
+	, m_iSoundHash_X1(rhs.m_iSoundHash_X1)
+	, m_iSoundHash_X2(rhs.m_iSoundHash_X2)
+	, m_iSoundHash_Chain0(rhs.m_iSoundHash_Chain0)
+	, m_iSoundHash_Chain1(rhs.m_iSoundHash_Chain1)
 {
 }
 
@@ -23,6 +28,13 @@ HRESULT CLianhuo_GimmikController::Initialize_Prototype()
 {
 	if (FAILED(Super::Initialize_Prototype()))
 		return E_FAIL;
+
+	m_iSoundHash_X0 = TO_HASH("sfx_boss_Lianhuo_skill05_pre");
+	m_iSoundHash_X1 = TO_HASH("sfx_boss_Lianhuo_skill03_pre");
+	m_iSoundHash_X2 = TO_HASH("sfx_boss_Lianhuo_skill03_cast");
+
+	m_iSoundHash_Chain0 = TO_HASH("sfx_boss_Lianhuo_skill05_pre");
+	m_iSoundHash_Chain1 = TO_HASH("sfx_boss_Lianhuo_skill08_explode_r");
 
 	return S_OK;
 }
@@ -78,6 +90,8 @@ void CLianhuo_GimmikController::Trigger_XSpace(const Vec3 &vPosition)
 	desc.vOrigin = vPosition;
 	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	m_pXSpaceSpawner->Trigger(desc);
+
+	Play_EffectSound(EEffectType::XSpace);
 }
 
 void CLianhuo_GimmikController::Trigger_StunChain(const Vec3& vPosition)
@@ -93,6 +107,8 @@ void CLianhuo_GimmikController::Trigger_StunChain(const Vec3& vPosition)
 	desc.vOrigin = vPosition;
 	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	m_pStunChainSpawner->Trigger(desc);
+
+	Play_EffectSound(EEffectType::StunChanin);
 }
 
 HRESULT CLianhuo_GimmikController::Bind_Events()
@@ -179,6 +195,30 @@ void CLianhuo_GimmikController::Trigger_ChainThron()
 	desc.vOrigin = m_vSpawnPosition;
 	desc.vForward = pOwner->Get_Component<CTransform>()->Get_Info(TRANSFORM_INFO_STATE::LOOK);
 	m_pRandomChainThron->Trigger(desc);
+
+	Play_EffectSound(EEffectType::ChainThron);
+}
+
+void CLianhuo_GimmikController::Play_EffectSound(EEffectType eType)
+{
+	switch (eType)
+	{
+	case EEffectType::XSpace:
+		//sfx_boss_Lianhuo_hard_fx_columns_r01
+
+		//sfx_boss_Lianhuo_skill03_pre
+		//sfx_boss_Lianhuo_skill03_cast
+		m_pGameInstance->Play_OneShot_Delayed(0, m_iSoundHash_X0, 0.f, 1.f);
+		m_pGameInstance->Play_OneShot_Delayed(0, m_iSoundHash_X1, 0.2f, 1.f);
+		m_pGameInstance->Play_OneShot_Delayed(0, m_iSoundHash_X2, 2.f + 0.5f, 1.f);
+		break;
+
+	case EEffectType::StunChanin:
+	case EEffectType::ChainThron:
+		m_pGameInstance->Play_OneShot_Delayed(0, m_iSoundHash_Chain0, 0.2f, 1.f);
+		m_pGameInstance->Play_OneShot_Delayed(0, m_iSoundHash_Chain1, 1.f, 1.f);
+		break;
+	}
 }
 
 void CLianhuo_GimmikController::On_ModelAnimNotify(const AnimNotifyKey& key)

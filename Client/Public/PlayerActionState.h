@@ -186,6 +186,7 @@ private:
 private:
 	void Check_DialogueBegin(_int iId);
 	void Play_HitSound();
+	void Set_BossHitSound(DTO::EDamageType eDamegeType, HIT_SOUND eFireSound, HIT_SOUND eElectrickSound);
 
 public:
 	static CPlayerActionState* Create();

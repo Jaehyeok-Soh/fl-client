@@ -126,6 +126,9 @@ _bool CState_MoonSkill::SkillE_Update(const _float fTimeDelta)
 	if (m_fStateElapsed >= (70.f / (ANIMTIC)))
 	{
 		{
+			if (Check_Collis(fTimeDelta))
+				return true;
+
 			if (Check_MoveKey(fTimeDelta))
 				return true;
 
@@ -166,6 +169,9 @@ _bool CState_MoonSkill::SkillQ_Update(const _float fTimeDelta)
 	if (m_fStateElapsed >= (130.f / (ANIMTIC)))
 	{
 		{
+			if (Check_Collis(fTimeDelta))
+				return true;
+
 			if (Check_MoveKey(fTimeDelta))
 				return true;
 

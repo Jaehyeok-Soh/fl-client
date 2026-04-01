@@ -64,12 +64,18 @@ HRESULT CState_GimmikRunLoop::Start(void* pArg, _bool bForce)
 	Spawn_Line(m_arrDashLine[m_iDashIndex].vStart, m_arrDashLine[m_iDashIndex].vEnd);
 	pGo->Set_Render(true);
 	Get_OwnerObject()->Play_GhostTrail();
+
+	m_TSoundTimer.x = m_TSoundTimer.y;
+
 	return S_OK;
 }
 
 void CState_GimmikRunLoop::Update(const _float fTimeDelta)
 {
 	Super::Update(fTimeDelta);
+
+	Play_RunSound(fTimeDelta);
+
 	CGameObject* pOwner = Get_OwnerObject();
 	CTransform* pTransform = pOwner->Get_Component<CTransform>();
 	CPhysicsCCT* pCCT = pOwner->Get_Component<CPhysicsCCT>();
@@ -263,6 +269,19 @@ _bool CState_GimmikRunLoop::Build_DashLines(_uint iIndex)
 		PointOnCircleXZ(m_vFieldCenter, fEndRadius, fAxisAngle + XM_PI + fEndJitter);
 
 	return true;
+}
+
+void CState_GimmikRunLoop::Play_RunSound(const _float fTimeDelta)
+{
+	if (m_TSoundTimer.x >= m_TSoundTimer.y)
+	{
+		m_pGameInstance->Play_OneShot(0, m_iSoundHash_Run, 1.f);
+
+		m_TSoundTimer.x = 0.f;
+	}
+
+	else
+		m_TSoundTimer.x += fTimeDelta;
 }
 
 CState_GimmikRunLoop* CState_GimmikRunLoop::Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg)

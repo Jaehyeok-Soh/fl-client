@@ -1046,65 +1046,38 @@ array<Vec4, SSAO_KERNAL> CRender_Manager::Build_SSAO_Kernal16()
 	return arrKernel;
 }
 
-HRESULT CRender_Manager::Create_SSAO_NoiseSRV()
-{
+HRESULT CRender_Manager::Create_SSAO_NoiseSRV() {
 	Safe_Release(m_pSSAONoiseSRV);
+	// 4x4 RGBA float
 
-	constexpr _uint iNoiseSize = 64;
-
-	std::vector<Vec2> noiseData;
-	noiseData.resize(iNoiseSize * iNoiseSize);
-
-	for (_uint y = 0; y < iNoiseSize; ++y)
+	Vec4 noiseData[16]{Vec4::Zero};
+	for (_int i = 0; i < 16; ++i)
 	{
-		for (_uint x = 0; x < iNoiseSize; ++x)
-		{
-			Vec2 vRand
-			{
-				m_pGameInstance->Rand_Float(-1.f, 1.f),
-				m_pGameInstance->Rand_Float(-1.f, 1.f)
-			};
-
-			if (vRand.LengthSquared() <= g_XMEpsilon.f[0])
-				vRand = Vec2(1.f, 0.f);
-
-			vRand.Normalize();
-
-			const _uint iIndex = y * iNoiseSize + x;
-			noiseData[iIndex] = Vec2(vRand.x, vRand.y);
-		}
+		Vec3 vRand { m_pGameInstance->Rand_Float(-1.f, 1.f), m_pGameInstance->Rand_Float(-1.f, 1.f), 0.f };
+		vRand.Normalize(); noiseData[i] = Vec4(vRand.x, vRand.y, 0.f, 0.f);
 	}
-
 	D3D11_TEXTURE2D_DESC desc{};
-	desc.Width = iNoiseSize;
-	desc.Height = iNoiseSize;
+	desc.Width = 4;
+	desc.Height = 4;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R16G16_FLOAT;
+	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	desc.SampleDesc.Count = 1;
 	desc.Usage = D3D11_USAGE_IMMUTABLE;
 	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-
 	D3D11_SUBRESOURCE_DATA init{};
-	init.pSysMem = noiseData.data();
-	init.SysMemPitch = sizeof(Vec2) * iNoiseSize;
+	init.pSysMem = noiseData;
+	init.SysMemPitch = sizeof(Vec4) * 4; ID3D11Texture2D* pTexture{ nullptr };
 
-	ID3D11Texture2D* pTexture = nullptr;
 	if (FAILED(m_pDevice->CreateTexture2D(&desc, &init, &pTexture)))
-		return E_FAIL;
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		return E_FAIL; D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = desc.Format;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
-
 	if (FAILED(m_pDevice->CreateShaderResourceView(pTexture, &srvDesc, &m_pSSAONoiseSRV)))
 	{
-		Safe_Release(pTexture);
-		return E_FAIL;
+		Safe_Release(pTexture); return E_FAIL;
 	}
-
 	Safe_Release(pTexture);
 	return S_OK;
 }

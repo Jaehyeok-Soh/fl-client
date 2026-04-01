@@ -232,6 +232,16 @@ void CStatCom_Player::Add_ComboCount()
 	m_iComboCount++;
 	m_tComboTimeCounter.fTimeAcc = 0.f;
 	m_tComboTimeCounter.bCountTime = false;
+
+	if (m_iComboCount == m_iCombo_CRank)
+		Get_Owner()->Play_GhostTrail();
+
+	else if (m_iComboCount == m_iCombo_BRank)
+		Get_Owner()->Play_GhostTrail();
+
+	else if (m_iComboCount == m_iCombo_ARank)
+		Get_Owner()->Play_GhostTrail();
+
 }
 
 void CStatCom_Player::Sub_DashCount()

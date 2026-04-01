@@ -17,6 +17,8 @@ private:
 	{
 		END
 	};
+
+	enum class EEffectType { XSpace, StunChanin, ChainThron };
 private:
 	CLianhuo_GimmikController();
 	CLianhuo_GimmikController(const CLianhuo_GimmikController& rhs);
@@ -37,6 +39,9 @@ private:
 	HRESULT Ready_Spawner();
 	void Spawn_RandomSkill(const _float fTimeDelta);
 	void Trigger_ChainThron();
+private:
+	void Play_EffectSound(EEffectType eType);
+
 protected:
 	///////////////
 	//// Event ////
@@ -52,6 +57,14 @@ private:
 	CSkillObjectSpawner_RandomXZ* m_pRandomChainThron = { nullptr };
 	CSingleSkillSpawner* m_pXSpaceSpawner = { nullptr };
 	CSingleSkillSpawner* m_pStunChainSpawner = { nullptr };
+private:
+	_uint m_iSoundHash_X0		= {};
+	_uint m_iSoundHash_X1		= {};
+	_uint m_iSoundHash_X2		= {};
+
+	_uint m_iSoundHash_Chain0	= {};
+	_uint m_iSoundHash_Chain1	= {};
+
 public:
 	static CLianhuo_GimmikController* Create();
 	virtual CComponent* Clone(void* pArg) override;

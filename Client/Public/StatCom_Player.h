@@ -145,10 +145,18 @@ public:
 	void Set_Attack_AddRate(_float fRate) { m_fAttack = m_fAttack *(1.f + fRate); }
 	void Set_Critical_AddRate(_float fRate) { m_fCirticalRate_Add = fRate; }
 
+	// hp가 다 full일때만
+protected:
+	virtual _bool Can_DefencseUpdatec(const _float fTimeDelta) { return (m_vHealth.x == m_vHealth.y); }
+
 	// counts
 private:
 	_int			m_iDashCount	= { 2 };
 	_uint			m_iComboCount	= { 0 };
+
+	const _uint		m_iCombo_CRank = { 40 };
+	const _uint		m_iCombo_BRank = { 70 };
+	const _uint		m_iCombo_ARank = { 120 };
 
 	// 공격 관련 
 private:

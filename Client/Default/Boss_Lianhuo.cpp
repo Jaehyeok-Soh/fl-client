@@ -16,6 +16,8 @@
 #include "UIIcon_Component.h"
 #include "CameraEventBinder.h"
 #include "MyStat.h"
+#include "SoundEventBinder.h"
+#include "Body.h"
 #include "Lianhuo_GimmikController.h"
 
 // CustomState
@@ -31,14 +33,15 @@
 #include "GameInstance.h"
 
 CBoss_Lianhuo::CBoss_Lianhuo(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: Super(pDevice, pDeviceContext)
+	: Super(pDevice, pDeviceContext), m_isDirectingSoundStart{false}
+	, m_fAccDT{0.f}
 {
 	m_eMonsterType = EMonster_Type::Lianhuo;
 }
 
 
 CBoss_Lianhuo::CBoss_Lianhuo(const CBoss_Lianhuo& rhs)
-	: Super(rhs)
+	: Super(rhs) , m_isDirectingSoundStart{rhs.m_isDirectingSoundStart }, m_fAccDT{rhs.m_fAccDT }
 {
 	m_arrStateIndex.fill(-1);
 }
@@ -75,6 +78,9 @@ HRESULT CBoss_Lianhuo::Initialize(void* pArg)
 	if (FAILED(Ready_CustomStates()))
 		return E_FAIL;
 
+	if (FAILED(Ready_SoundHandler()))
+		return E_FAIL;
+
 	if (FAILED(Ready_StateIndexForDirecting()))
 		return E_FAIL;
 
@@ -84,6 +90,79 @@ HRESULT CBoss_Lianhuo::Initialize(void* pArg)
 
 HRESULT CBoss_Lianhuo::Ready_GlobalEvent()
 {
+	/* Xibi_Cinematic Event 구독 */
+	m_pGameInstance->Subscribe<XIBI_CHANGE_STATE_BOSS_DIRECTION>([this]() {
+		Set_Render(true);
+		if (FAILED(Change_State_ForDirecting(CBoss_Lianhuo::EStateForDirecting::Direction)))
+		{
+			MSG_BOX(" Boss 연출 Direction 실패 ");
+			return E_FAIL;
+		}
+
+		return S_OK;
+		});
+
+	m_pGameInstance->Subscribe<CCS_EVENT>([this](const CCS_BROADCAST_DESC& tDesc) {
+		Set_Render(true);
+
+		for (auto& CCS_Event : tDesc.vecCCS_Event_Desc)
+		{
+			_uint iSubscribeHash = TO_HASH(CCS_Event.strSubscriberName.c_str());
+
+			switch (iSubscribeHash)
+			{
+			case TO_HASH("Lianhuo_Cinematic_State"):
+			{
+				for (auto& Action : CCS_Event.vecActionNames)
+				{
+					_uint iActionHash = TO_HASH(Action.c_str());
+					switch (iActionHash)
+					{
+					case TO_HASH("Direction"):
+					{
+						if (FAILED(Change_State_ForDirecting(CBoss_Lianhuo::EStateForDirecting::Direction)))
+						{
+							MSG_BOX("Lianhuo Boss Direction State 실패 ");
+							return E_FAIL;
+						}
+
+						m_pGameInstance->Play_OneShot(ENUM_TO_UINT(ELevelType::STATIC), TO_HASH("sfx_boss_Lianhuo_skill03_pre"), 1.f, 1.f);
+
+						m_isDirectingSoundStart = true;
+
+						return S_OK;
+					}
+					break;
+					case TO_HASH("ResetDirection"):
+					{
+						/* Setting */
+						Change_State_ForDirecting(EStateForDirecting::Idle);
+						CPhysicsCCT* pCCT = Get_Component<CPhysicsCCT>();
+						pCCT->SetFootPosition(Vec3(3.473f,600.256f,-7.031f));
+						CTransform* pTs = Get_Component<CTransform>();
+						pTs->Rotation(0.f,0.f,0.f);
+					}
+					case TO_HASH("DirectionSound"):
+					{
+
+						return S_OK;
+					}
+					break;
+					default:
+						break;
+					}
+
+				}
+			}
+			break;
+			default:
+				break;
+			}
+		}
+		return S_OK;
+		});
+
+
 	return S_OK;
 }
 
@@ -151,6 +230,19 @@ void CBoss_Lianhuo::Update(const _float fTimeDelta)
 	{
 		_int iIndex = pActionState->Get_StateIndex("GimmikCamera");
 		pActionState->Change_State(iIndex);
+	}
+
+
+
+	if (m_isDirectingSoundStart == true)
+	{
+		m_fAccDT += fTimeDelta;
+		if (m_fAccDT >= 1.f)
+		{
+			m_pGameInstance->Play_OneShot(ENUM_TO_UINT(ELevelType::LIANHUO), TO_HASH("sfx_boss_Lianhuo_skill03_cast"), 0.3f, 1.f);
+			m_isDirectingSoundStart = false;
+			m_fAccDT = 0.f;
+		}
 	}
 }
 
@@ -342,7 +434,15 @@ HRESULT CBoss_Lianhuo::Ready_Weapon()
 		weaponDesc.eModel = CWeapon::Weapon_ModelType::STATIC;
 		weaponDesc.eState = CWeapon::State::HAND;
 		weaponDesc.bMianWeapon = true;
-		weaponDesc.FDescFlag = 0;
+
+		//weaponDesc.FDescFlag = 0;
+
+		weaponDesc.FDescFlag = CWeapon::WeaponDescFlag::WF_RGBMappingOn;
+		weaponDesc.vColorR = Vec4(0.083333f, 0.055487f, 0.052951f, 1.f);
+		weaponDesc.vColorG = Vec4(0.375f, 0.341628f, 0.341628f, 1.f);
+		weaponDesc.vColorB = Vec4(0.635417f, 0.117982f, 0.049642f, 1.f);
+
+
 		if (FAILED(Add_Part(Part::SWORD, 0, L"Prototype_GameObject_Part_Sword", &weaponDesc)))
 			return E_FAIL;
 	}
@@ -501,6 +601,22 @@ HRESULT CBoss_Lianhuo::Ready_CustomStates()
 	if (FAILED(ADD_CUSTOM_STATE(CState_SpawnAttack, "SpawnAttack")))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CBoss_Lianhuo::Ready_SoundHandler()
+{
+	CBody* pBody = Get_Part<CBody>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CSoundEventBinder* pResult = CSoundEventBinder::Create(0, this, pAnimModel, L"../../Resources/Data/SoundAnimationData/Boss_Lian.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+	Safe_Release(pResult);
 	return S_OK;
 }
 

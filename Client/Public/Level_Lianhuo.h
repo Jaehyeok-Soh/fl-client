@@ -34,6 +34,7 @@ private:
 	HRESULT Ready_Octree();
 	HRESULT Ready_Dissolve();
 	HRESULT Ready_SkillObjectLayer();
+	HRESULT	Bind_Subscribe();
 private:
 	ECursorMode m_eCursorMode = ECursorMode::LockedHiddenCenter;
 public:

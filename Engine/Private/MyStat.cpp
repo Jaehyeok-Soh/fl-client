@@ -46,6 +46,10 @@ HRESULT CMyStat::Initialize(void* pArg)
 
 	m_FStatFlags = pDesc->FStatFlags;
 
+	m_fHpUpdate_Rate = pDesc->fHpUpdate_Rate;
+	m_fMentalUpdate_Rate = pDesc->fMentalUpdate_Rate;
+	m_fDefenseUpdate_Rate = pDesc->fDefenseUpdate_Rate;
+
 	return S_OK;
 }
 
@@ -145,14 +149,14 @@ void CMyStat::Fill_StatFull(STAT_TYPE eType)
 
 void CMyStat::Update_Stat(const _float fTimeDelta)
 {
-	if (Engine_Utils::Has_Flag(m_FStatFlags, StatFlags::HpUpdate))
-		Update_Hp(fTimeDelta);
+	if (Engine_Utils::Has_Flag(m_FStatFlags, StatFlags::HpUpdate) && Can_HpUpdatec(fTimeDelta))
+		Update_Hp(fTimeDelta * m_fHpUpdate_Rate);
 
-	if (Engine_Utils::Has_Flag(m_FStatFlags, StatFlags::DefenseUpdtae))
-		Update_Defense(fTimeDelta);
+	if (Engine_Utils::Has_Flag(m_FStatFlags, StatFlags::DefenseUpdtae) && Can_DefencseUpdatec(fTimeDelta))
+		Update_Defense(fTimeDelta * m_fDefenseUpdate_Rate);
 
-	if (Engine_Utils::Has_Flag(m_FStatFlags, StatFlags::MentalUpdate))
-		Update_Mental(fTimeDelta);
+	if (Engine_Utils::Has_Flag(m_FStatFlags, StatFlags::MentalUpdate) && Can_MentalUpdatec(fTimeDelta))
+		Update_Mental(fTimeDelta * m_fMentalUpdate_Rate);
 }
 
 void CMyStat::Set_Flag(_uint iFlag, _bool bOn)
