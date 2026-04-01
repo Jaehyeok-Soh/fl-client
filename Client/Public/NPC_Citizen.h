@@ -43,6 +43,8 @@ protected:
 	HRESULT					Ready_CitizenParts(CNPC_Citizen::NPC_CITIZEN_DESC* pDesc);
 	HRESULT					Ready_Component(CNPC_Citizen::NPC_CITIZEN_DESC* pArgs);
 	HRESULT					Change_WalkCitizenModel(const DTO::CITIZEN_DATA& tData);
+
+	virtual HRESULT			Setting_NPCText(_uint iCurrentLevelID)override;
 public:
 	virtual HRESULT			Awake(const _uint iCurrentLevelID) override;
 	virtual void			Update_Priority(const _float fTimeDelta) override;

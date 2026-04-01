@@ -163,6 +163,8 @@ void CUIBossAction_Image::Bind_Events()
 					break;
 				}
 			}
+
+			return S_OK;
 			}));
 	}
 		break;

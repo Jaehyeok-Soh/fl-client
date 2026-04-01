@@ -137,6 +137,15 @@ CPlayerControlContext* CUITutorial_Manager::Get_PlayerCtrCtx()
 	return pPlayerControlContext;
 }
 
+_bool CUITutorial_Manager::Get_isFirstTutorial() const
+{
+	if (m_pGameInstance->Get_CurrentLevelIndex() != ENUM_TO_UINT(ELevelType::TUTORIAL_VILLAGE))
+		return true;
+
+	return m_isFirstTutorial;
+}
+
+
 void CUITutorial_Manager::Free()
 {
 	Safe_Release(m_pGameInstance);
