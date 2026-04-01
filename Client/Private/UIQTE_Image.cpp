@@ -250,6 +250,8 @@ void CUIQTE_Image::Tick_By_Type(const _float fTimeDelta)
 		Vec2 vDir = m_vCurrentNodePosOffset - m_vPrevNodePosOffset;
 		m_vMoveOffset = (m_vCurrentNodePosOffset + m_vPrevNodePosOffset) * 0.5f;
 		m_fWidth = vDir.Length();
+		if (m_fWidth <= 0.2f)
+			m_fWidth = 0.2f;
 		m_fHeight = 2.f;
 		m_fRotate = atan2f(vDir.y, vDir.x);
 	}
@@ -506,10 +508,16 @@ HRESULT CUIQTE_Image::Spawn_FromPool(void* pArg)
 		{
 		case DTO::EUIDImageSubClassType::QTE_BG:
 		case DTO::EUIDImageSubClassType::QTE_BG_DECO:
+		{
+			m_vCurrentNodePosOffset = pQTEData->vSpawnOffset;
+			m_vPrevNodePosOffset = pQTEData->vPreSpawnOffset;
+		}
+		break;
 		case DTO::EUIDImageSubClassType::QTE_LINE:
 		{
 			m_vCurrentNodePosOffset = pQTEData->vSpawnOffset;
 			m_vPrevNodePosOffset = pQTEData->vPreSpawnOffset;
+			m_fWidth = 0.2f;
 		}
 			break;
 		case DTO::EUIDImageSubClassType::QTE_KEYICON:

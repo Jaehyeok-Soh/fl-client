@@ -316,7 +316,9 @@ void CUIQuest_Text::Tick_By_Type(const _float fTimeDelta)
 		auto desc = CQuestManager::GetInstance()->Get_QuestInfo();
 		if (desc.tChapterInfo.eEvent == DTO::EQuestEvent::MONSTER_KILL)
 		{
-			if(desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_BOSS_XIBI) != desc.tChapterInfo.eTargetType.end())
+			if (desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_BOSS_XIBI) != desc.tChapterInfo.eTargetType.end() ||
+				desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_BOSS_LIANHUO) != desc.tChapterInfo.eTargetType.end() ||
+				desc.tChapterInfo.eTargetType.find(Engine::EObjectEnumTag::Enum::MONSTER_ELITE_VETERAN) != desc.tChapterInfo.eTargetType.end())
 				m_wstrText = desc.tChapterInfo.tQuestDesc.wstrTitle;
 			else
 			{
