@@ -210,11 +210,26 @@ HRESULT CUIMonsterStat_Progress::Spawn_FromPool(void* pArg)
 	}
 
 	m_isSpawned = true;
-	m_fCurRatio				= m_pTargetStat->Get_HealthRatio();
-	m_fPreMonsterHPRatio	= m_fCurRatio;
-	
+
+
+	switch (m_eSubClassType)
+	{
+	case DTO::EUISubClassType::MONSTER_HP:
+		m_fProgress_Ratio = m_pTargetStat->Get_HealthRatio();
+		m_fCurRatio = m_pTargetStat->Get_HealthRatio();
+		m_fPreMonsterHPRatio = m_fCurRatio;
+		break;
+	case DTO::EUISubClassType::MONSTER_ARMOR:
+		m_fProgress_Ratio = 0.f;
+		m_fCurRatio = 0.f;
+		m_fPreMonsterHPRatio = m_fCurRatio;
+		break;
+	case DTO::EUISubClassType::END:
+	default:
+		return E_FAIL;
+	}
+
 	m_isDeadRequest = false;
-	m_fProgress_Ratio = 1.f;
 	return S_OK;
 }
 
@@ -297,6 +312,7 @@ HRESULT CUIMonsterStat_Progress::Convert_Stat_To_Ratio()
 		m_fProgress_Ratio = m_pTargetStat->Get_HealthRatio();
 		break;
 	case DTO::EUISubClassType::MONSTER_ARMOR:
+		m_fProgress_Ratio = 0.f;
 		break;
 	case DTO::EUISubClassType::END:
 	default:
