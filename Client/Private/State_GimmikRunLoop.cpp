@@ -54,7 +54,7 @@ HRESULT CState_GimmikRunLoop::Start(void* pArg, _bool bForce)
 	m_vFieldCenter = pGimmik->Get_BattleFieldCenter();
 	m_fFieldRadius = pGimmik->Get_BattleFiledMaxRange() / 2.f;
 
-	m_bPathReady = Build_DashLines();
+	m_bPathReady = Build_DashLines(0);
 	if (m_bPathReady == false)
 		return E_FAIL;
 
@@ -119,7 +119,8 @@ void CState_GimmikRunLoop::Update(const _float fTimeDelta)
 		{
 			++m_iDashIndex;
 
-			if (m_iDashIndex >= DASH_COUNT)
+			if (m_iDashIndex >= DASH_COUNT ||
+				Build_DashLines(m_iDashIndex) == false)
 			{
 				Change_MonsterState(m_umapState["GimmikAttack"]);
 				return;
@@ -209,42 +210,59 @@ void CState_GimmikRunLoop::Spawn_Line(const Vec3& vStart, const Vec3& vEnd)
 		&desc);
 }
 
-_bool CState_GimmikRunLoop::Build_DashLines()
+Vec3 CState_GimmikRunLoop::Sample_PlayerPosition()
 {
-	_float fBaseAxis = ::XMConvertToRadians(
-		m_pGameInstance->Rand_Float(0.f, 180.f));
+	CGameObject* pTarget = Get_Target();
+	if (pTarget == nullptr)
+		return m_vFieldCenter;
+	CTransform* pTargetTransform = pTarget->Get_Component<CTransform>();
+	return pTargetTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+}
 
-	const _float fSector = XM_PI / 3.f; // 60도 간격
+_bool CState_GimmikRunLoop::Build_DashLines(_uint iIndex)
+{
+	_float fAxisAngle = 0.f;
+	const _float kPlayerTrackChance = 0.7f;
 
-	for (_int i = 0; i < DASH_COUNT; ++i)
+	_bool bTrackPlayer = (m_pGameInstance->Rand_Float(0.f, 1.f) < kPlayerTrackChance);
+	if (bTrackPlayer)
 	{
-		_float fAxisAngle = fBaseAxis + fSector * i;
+		// 플레이어 방향 기준 축
+		Vec3 vPlayer = Sample_PlayerPosition();
+		fAxisAngle = AngleXZ(m_vFieldCenter, vPlayer);
 
-		_float fJitter = ::XMConvertToRadians(
-			m_pGameInstance->Rand_Float(-12.f, 12.f));
-
-		fAxisAngle += fJitter;
-
-		// 라인은 방향이 아니라 축이므로 [0, PI) 범위로 정규화
-		if (fAxisAngle >= XM_PI)
-			fAxisAngle -= XM_PI;
-		else if (fAxisAngle < 0.f)
-			fAxisAngle += XM_PI;
-
-		_float fStartRadius = m_pGameInstance->Rand_Float(
-			m_fFieldRadius * m_fOuterRadiusMin,
-			m_fFieldRadius * m_fOuterRadiusMax);
-
-		_float fEndRadius = m_pGameInstance->Rand_Float(
-			m_fFieldRadius * m_fOuterRadiusMin,
-			m_fFieldRadius * m_fOuterRadiusMax);
-
-		m_arrDashLine[i].vStart = PointOnCircleXZ(m_vFieldCenter, fStartRadius, fAxisAngle);
-		m_arrDashLine[i].vEnd = PointOnCircleXZ(m_vFieldCenter, fEndRadius, fAxisAngle + XM_PI);
+		// 조준 지터: 너무 정확하면 단조로우니 25 이내로 흔들기
+		fAxisAngle += XMConvertToRadians(
+			m_pGameInstance->Rand_Float(-25.f, 25.f));
+	}
+	else
+	{
+		// 완전 랜덤 축
+		fAxisAngle = XMConvertToRadians(
+			m_pGameInstance->Rand_Float(0.f, 180.f));
 	}
 
-	return true;
+	// 축은 [0, PI) 범위로 정규화 (방향 아닌 축이므로)
+	while (fAxisAngle >= XM_PI)  fAxisAngle -= XM_PI;
+	while (fAxisAngle < 0.f)    fAxisAngle += XM_PI;
 
+	// 시작/끝 반지름: 경계 위 or 살짝 바깥
+	// 0.95 ~ 1.10 범위 → 원 안쪽으로 파고들지 않음
+	_float fStartRadius = m_fFieldRadius *
+		m_pGameInstance->Rand_Float(0.95f, 1.10f);
+	_float fEndRadius = m_fFieldRadius *
+		m_pGameInstance->Rand_Float(0.95f, 1.10f);
+
+	// 반대쪽 끝점에도 소량 지터 → 완전한 지름이 아닌 비대칭 현(chord)
+	_float fEndJitter = XMConvertToRadians(
+		m_pGameInstance->Rand_Float(-15.f, 15.f));
+
+	m_arrDashLine[iIndex].vStart =
+		PointOnCircleXZ(m_vFieldCenter, fStartRadius, fAxisAngle);
+	m_arrDashLine[iIndex].vEnd =
+		PointOnCircleXZ(m_vFieldCenter, fEndRadius, fAxisAngle + XM_PI + fEndJitter);
+
+	return true;
 }
 
 CState_GimmikRunLoop* CState_GimmikRunLoop::Create(CActionState* pOwnerComponent, _uint iStateIndex, void* pArg)
