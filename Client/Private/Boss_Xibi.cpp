@@ -17,6 +17,7 @@
 #include "UIIcon_Component.h"
 #include "SoundEventBinder.h"
 #include "Body.h"
+#include "CameraEventBinder.h"
 
 #include "GameInstance.h"
 
@@ -69,6 +70,9 @@ HRESULT CBoss_Xibi::Initialize(void* pArg)
 	if (FAILED(Ready_SoundHandler()))
 		return E_FAIL;
 	
+	if (FAILED(Ready_CameraEvent()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -458,6 +462,24 @@ HRESULT CBoss_Xibi::Ready_StateIndexForDirecting()
 	if (setStateIndex(EStateForDirecting::Direction, "Direction") == false)
 		return E_FAIL;
 	 
+	return S_OK;
+}
+
+HRESULT CBoss_Xibi::Ready_CameraEvent()
+{
+	_uint iLevelID = m_pGameInstance->Get_CurrentLevelIndex();
+	CBoss_Xibi_Body* pBody = Get_Part<CBoss_Xibi_Body>(ENUM_TO_UINT(Part::BODY));
+	if (pBody == nullptr)
+		return E_FAIL;
+	CModel* pAnimModel = pBody->Get_Component<CModel>();
+	if (pAnimModel == nullptr)
+		return E_FAIL;
+	// 내부에서 Add_Component 해줌
+	CCameraEventBinder* pResult = CCameraEventBinder::Create(iLevelID, this, pAnimModel, L"../../Resources/Data/CameraAnimationData/Xibi.json");
+	if (pResult == nullptr)
+		return E_FAIL;
+
+	Safe_Release(pResult);
 	return S_OK;
 }
 

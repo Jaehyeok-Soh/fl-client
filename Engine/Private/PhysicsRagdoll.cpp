@@ -557,48 +557,48 @@ CComponent* CPhysicsRagdoll::Clone(void* pArg)
 
 void CPhysicsRagdoll::Free()
 {
-	if (m_tRagdollElements.pArticulation)
-	{
-		PxScene* pScene = m_pGameInstance->GetPhysicsScene();
-		if (pScene)
-			pScene->lockWrite();
+	//if (m_tRagdollElements.pArticulation)
+	//{
+	//	PxScene* pScene = m_pGameInstance->GetPhysicsScene();
+	//	if (pScene)
+	//		pScene->lockWrite();
 
-		m_pGameInstance->RemoveRagdoll(m_tRagdollElements.pArticulation);
+	//	m_pGameInstance->RemoveRagdoll(m_tRagdollElements.pArticulation);
 
-		for (_int i = 0; i < RAGDOLLJOINT::END; i++)
-		{
-			PxArticulationLink* pLink = m_tRagdollElements.vecPhysicsLink[i].first;
-			if (pLink)
-			{
-				pLink->userData = nullptr;
+	//	for (_int i = 0; i < RAGDOLLJOINT::END; i++)
+	//	{
+	//		PxArticulationLink* pLink = m_tRagdollElements.vecPhysicsLink[i].first;
+	//		if (pLink)
+	//		{
+	//			pLink->userData = nullptr;
 
-				PxU32 nbShapes = pLink->getNbShapes();
-				if (nbShapes > 0)
-				{
-					std::vector<PxShape*> shapes(nbShapes);
-					pLink->getShapes(shapes.data(), nbShapes);
-					for (auto& shape : shapes)
-					{
-						shape->userData = nullptr;
-					}
-				}
-			}
-		}
+	//			PxU32 nbShapes = pLink->getNbShapes();
+	//			if (nbShapes > 0)
+	//			{
+	//				std::vector<PxShape*> shapes(nbShapes);
+	//				pLink->getShapes(shapes.data(), nbShapes);
+	//				for (auto& shape : shapes)
+	//				{
+	//					shape->userData = nullptr;
+	//				}
+	//			}
+	//		}
+	//	}
 
-		m_tRagdollElements.pArticulation->release();
-		m_tRagdollElements.pArticulation = nullptr;
+	//	m_tRagdollElements.pArticulation->release();
+	//	m_tRagdollElements.pArticulation = nullptr;
 
-		if (pScene)
-			pScene->unlockWrite();
-	}
+	//	if (pScene)
+	//		pScene->unlockWrite();
+	//}
 
 	//for (_int i = 0; i < RAGDOLLJOINT::END; i++)
 	//{
 	//	m_tRagdollElements.vecPhysicsLink[i].first = nullptr;
 	//}
 
+	Super::Free();
+
 	Safe_Release(m_pMatrixBuffer);
 	Safe_Release(m_pMatrixSB_SRV);
-
-	Super::Free();
 }

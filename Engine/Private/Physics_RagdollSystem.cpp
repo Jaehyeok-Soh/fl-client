@@ -54,7 +54,7 @@ RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAG
 {
 	RAGDOLLELEMENTS elements{};
 	elements.pArticulation = m_pPhysics->createArticulationReducedCoordinate(); // RCA : Featherstone's algorithm
-	elements.pArticulation->setSolverIterationCounts(8, 2);
+	elements.pArticulation->setSolverIterationCounts(32, 8);
 	elements.pArticulation->setSleepThreshold(0.5f);
 	//elements.setsta
 
@@ -88,6 +88,8 @@ RAGDOLLELEMENTS CPhysics_RagdollSystem::CreateRagdoll(array<RAGDOLLBONEDESC, RAG
 	//}
 
 	elements.vecPhysicsLink[arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS].eJoint] = std::make_pair(link, arrRagdollBoneDesc[RAGDOLLJOINT::PELVIS]);
+
+	PxRigidBodyExt::updateMassAndInertia(*link, 10.0f);
 
 	for (_int i = RAGDOLLJOINT::PELVIS + 1; i < RAGDOLLJOINT::END; i++)
 	{
@@ -165,7 +167,7 @@ void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<
 	link->setActorFlag(PxActorFlag::eSEND_SLEEP_NOTIFIES, true);
 	link->setLinearDamping(1.5f);
 	link->setAngularDamping(3.f);
-	link->setMaxLinearVelocity(50.f);
+	link->setMaxLinearVelocity(20.f);
 	link->setMaxAngularVelocity(5.f);
 	link->setMaxDepenetrationVelocity(1.5f);
 
@@ -262,6 +264,8 @@ void CPhysics_RagdollSystem::CreateRagdollLink(RAGDOLLELEMENTS* elements, array<
 	articulationJoint->setChildPose(PxTransform(PxIdentity));
 
 	elements->vecPhysicsLink[arrRagdollBoneDesc[index].eJoint] = std::make_pair(link, arrRagdollBoneDesc[index]);
+
+	PxRigidBodyExt::updateMassAndInertia(*link, 10.0f);
 
 	if (index + 1 >= RAGDOLLJOINT::END)
 		return;

@@ -105,12 +105,12 @@ HRESULT CBoss_Lianhuo_Body::Ready_DissolveEffect_Setting()
 	using DS = DissolveEffectDesc;
 	m_tDissolveDesc.Reset();
 	m_tDissolveDesc.Add_DissolveFlag(DS::BIT_SPAWN_START,/* DS::BIT_USE_ALPHA_FADE, */DS::BIT_USE_DISSOLVE_MAP);
-	m_tDissolveDesc.Set_Dissolve_Setting(10.f, 1.f);
+	m_tDissolveDesc.Set_Dissolve_Setting(8.f, 1.f);
 	m_tDissolveDesc.Set_Spawn_Setting(1.f, 1.f);
 	m_tDissolveDesc.Set_ObjectType(DS::DISSOLVE_OBJECTTYPE::TYPE_BOSS);
 
 	// 스폰 시간 & 디졸브 시간
-	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = SimpleMath::Vector3(0.11f, 1.56f, 0.f);
+	m_tDissolveDesc.ShaderData.fDissolveEdgeColor = SimpleMath::Vector3(1.56f, 0.11f, 0.f);
 	m_tDissolveDesc.ShaderData.fDissolveEdgeWidth = 0.05f;
 
 	return S_OK;
