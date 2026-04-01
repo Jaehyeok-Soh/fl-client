@@ -187,6 +187,9 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint i
 
     Super::OnTrigger_Enter(iMyColliderLayer, iOtherLayer, pOther, tHitInfo);
 
+    if (m_isTriggerEventPlay == true) return;
+
+
 	if (iOtherLayer & PHYSICSFILTERGROUP::PLAYER)
 	{
 		if (FAILED(SpawnMonster()))
@@ -194,8 +197,6 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint i
 			MSG_BOX("Mosnter Spawner 작동 오류");
 			return;
 		}
-
-        Set_Dead();
 	}
 
     if (Super::m_bHasQuest)
@@ -203,6 +204,9 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint i
         m_bLockedEnter = true;
         CallQuestEvent(Get_Object_Enum_Tag(), 1);
     }
+
+
+    m_isTriggerEventPlay = true;
 }
 
 void CTriggerBox_MonsterSpawner::OnTrigger_Exit(_uint iMyColliderLayer, _uint iOtherLayer, CGameObject* pOther)
