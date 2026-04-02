@@ -194,8 +194,6 @@ void CTriggerBox_MonsterSpawner::OnTrigger_Enter(_uint iMyColliderLayer, _uint i
 			MSG_BOX("Mosnter Spawner 작동 오류");
 			return;
 		}
-
-        Set_Dead();
 	}
 
     if (Super::m_bHasQuest)

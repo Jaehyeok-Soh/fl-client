@@ -94,7 +94,7 @@ HRESULT CNPC_Pan::Awake(const _uint iCurrentLevelID)
 	Bind_Events();
 
 	Ready_StateIndexForDirecting();
-
+	
 	return S_OK;
 }
 
