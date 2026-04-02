@@ -2161,8 +2161,8 @@ BAKED_SECTION_BUILD_RESULT CRender_Manager::Build_BakedSection(const BAKED_SECTI
 	// - receiver와 너무 멀리 떨어진 caster는 제외
 	// - accepted caster의 Z union도 clamp
 	// ===========================================================
-	const _float fCasterPadFront = 120.f; // light 진행 방향 앞쪽 여유
-	const _float fCasterPadBack = 40.f;  // 뒤쪽 여유
+	const _float fCasterPadFront = 60.f; // light 진행 방향 앞쪽 여유
+	const _float fCasterPadBack = 25.f;  // 뒤쪽 여유
 
 	const _float fReceiverMinZ = vReceiverLSMin.z;
 	const _float fReceiverMaxZ = vReceiverLSMax.z;

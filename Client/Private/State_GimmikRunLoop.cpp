@@ -52,7 +52,7 @@ HRESULT CState_GimmikRunLoop::Start(void* pArg, _bool bForce)
 
 	CLianhuo_GimmikController* pGimmik = pGo->Get_Component<CLianhuo_GimmikController>();
 	m_vFieldCenter = pGimmik->Get_BattleFieldCenter();
-	m_fFieldRadius = pGimmik->Get_BattleFiledMaxRange() / 2.f;
+	m_fFieldRadius = pGimmik->Get_BattleFiledMaxRange() / 2.f - 4.f;
 
 	m_bPathReady = Build_DashLines(0);
 	if (m_bPathReady == false)
