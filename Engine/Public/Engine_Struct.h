@@ -416,7 +416,7 @@ namespace Engine
 	{
 		SimpleMath::Matrix matLightVP{ SimpleMath::Matrix::Identity };
 		SimpleMath::Vector2 vShadowMapInvSize = { SimpleMath::Vector2::Zero };
-		float fShadowBias = { 0.0001f };
+		float fShadowBias = { 0.0003f };
 		float fShadowStrength = { 0.8f };
 	}SHADER_BAKED_SHADOW_DESC;
 

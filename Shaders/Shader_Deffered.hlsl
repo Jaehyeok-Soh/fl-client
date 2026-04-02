@@ -24,7 +24,7 @@ int Find_BakedSection(float3 vWorldPos)
 float SampleBakedShadowSection(float3 vWorldPos, float3 vWorldNormal, float fNDotL, int iSection)
 {
     ShaderBakedSection section = shaderBakedSectionParam.sections[iSection];
-    float fNormalOffset = 0.1f * (1.0f - fNDotL);
+    float fNormalOffset = 0.2f * (1.0f - fNDotL);
     
     float3 vBiasedPos = vWorldPos + vWorldNormal * fNormalOffset;
     
@@ -42,7 +42,7 @@ float SampleBakedShadowSection(float3 vWorldPos, float3 vWorldNormal, float fNDo
         return 1.f;
 
     float fCurrentDepth = vLightNDC.z;
-    float fBias = section.vShadowParams.x;
+    float fBias = section.vShadowParams.x * lerp(1.0f, 4.0f, 1.0f - fNDotL);
     float fStrength = section.vShadowParams.y;
     float2 vInvSize = section.vShadowParams.zw;
     float fSlice = (float) section.iArraySlice;
