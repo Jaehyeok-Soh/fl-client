@@ -78,7 +78,7 @@ HRESULT CMonster_Veteran::Awake(const _uint iCurrentLevelID)
 	if (FAILED(Super::Awake(iCurrentLevelID)))
 		return E_FAIL;
 	{
-		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 160000.f); // 시연회 때 35만으로 설정하면 좋을 듯.
+		Get_Component<CMyStat>()->Set_Stat(CMyStat::STAT_TYPE::HP, 200000.f); // 시연회 때 35만으로 설정하면 좋을 듯.
 	}
 
 	Ready_StateIndexForDirecting();
