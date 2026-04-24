@@ -27,10 +27,11 @@ private:
 		std::function<_bool(const DTO::STATE_PARAM&)> func;
 		DTO::STATE_PARAM tParam{};
 	}BOUND_CONDITION;
+
 	// For. ConditionFeature
 	typedef struct tagBoundConditionFeature
 	{
-		std::function<_bool(const DTO::STATE_PARAM&)>               condition;
+		std::function<_bool(const DTO::STATE_PARAM&)> condition;
 		std::function<void(const _float&, const DTO::STATE_PARAM&)> feature;
 
 		_bool bIsOnce = { false };
@@ -39,6 +40,7 @@ private:
 		DTO::STATE_PARAM condParam;
 		DTO::STATE_PARAM featParam;
 	}BOUND_CONDFEATURE;
+
 	// For. Feature
 	typedef struct tagBoundFeature
 	{

@@ -32,11 +32,11 @@ HRESULT CPhysics_Module::Initialize()
 	}
 
 #ifdef _DEBUG
-	m_pPvd = PxCreatePvd(*m_pFoundation);
-	//PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
-	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+	//m_pPvd = PxCreatePvd(*m_pFoundation);
+	////PxPvdTransport* transport = PxDefaultPvdFileTransportCreate("D:\\PVD_Record\\phyXDebug.pxd2");
+	//PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+	////m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 	//m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-	m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 #endif // _DEBUG
 
 	if (!(m_pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, PxTolerancesScale(), true, m_pPvd)))
@@ -112,9 +112,9 @@ HRESULT CPhysics_Module::Initialize()
 			sceneDesc.broadPhaseType = PxBroadPhaseType::ePABP;
 
 #ifdef _DEBUG
-			sceneDesc.staticNbObjectsPerNode = 12;
-			sceneDesc.dynamicNbObjectsPerNode = 12;
-			sceneDesc.dynamicTreeRebuildRateHint = 300;
+			//sceneDesc.staticNbObjectsPerNode = 12;
+			//sceneDesc.dynamicNbObjectsPerNode = 12;
+			//sceneDesc.dynamicTreeRebuildRateHint = 300;
 #endif // _DEBUG
 		}
 
@@ -151,13 +151,13 @@ HRESULT CPhysics_Module::Initialize()
 	}
 
 #ifdef _DEBUG
-	PxPvdSceneClient* pvdClient = m_pScene->getScenePvdClient();
-	if (pvdClient)
-	{
-		//pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-		//pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-	}
+	//PxPvdSceneClient* pvdClient = m_pScene->getScenePvdClient();
+	//if (pvdClient)
+	//{
+	//	//pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+	//	//pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+	//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+	//}
 #endif // _DEBUG
 
 #ifdef _DEBUG
