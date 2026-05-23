@@ -67,7 +67,7 @@ __pycache__/
 
 # Visual Studio Release/Debug outputs
 **/x64/Debug/
-!**/*.vcxproj.filters
+#!**/*.vcxproj.filters
 
 # ImGui
 imgui.ini

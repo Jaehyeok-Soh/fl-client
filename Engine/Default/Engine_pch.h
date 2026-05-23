@@ -81,6 +81,8 @@ using std::unordered_set;
 using std::thread;
 using std::future;
 using std::mutex;
+using std::lock_guard;
+using std::queue;
 using std::condition_variable;
 using std::filesystem::path;
 
