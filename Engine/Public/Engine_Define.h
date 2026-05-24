@@ -36,6 +36,9 @@ constexpr const wchar_t* g_wszCinematicCamera_PrototypeTag = L"Prototype_GameObj
 /* Event µî·Ï */
 struct CCS_EVENT { using Signature = void(const Engine::CCS_BROADCAST_DESC& tDesc); };
 
+const int MAX_CHAT_MSG_SIZE = 256;
+const int MAX_USER_ID_LEN = 32;
+const int MAX_USER_PW_LEN = 32;
 
 #pragma warning(disable : 4251)
 

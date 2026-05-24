@@ -1057,6 +1057,7 @@ namespace Engine
 			//SYSTEM
 			SYS_USER_CONNECT = 11,
 			SYS_USER_DISCONNECT = 12,
+			SYS_USER_CONNECT_RESPONSE = 13,
 			SYS_END = 30,
 
 			//DB

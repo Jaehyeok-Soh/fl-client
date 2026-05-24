@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+#include <Engine_Define.h>
 
 struct PACKET_HEADER
 {

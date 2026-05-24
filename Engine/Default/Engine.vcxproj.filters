@@ -559,6 +559,27 @@
     <Filter Include="00. System\05. Component\Camera\AnchorInterface">
       <UniqueIdentifier>{a8d1c514-3070-4683-95a8-e4b2c1b669de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\16. Network">
+      <UniqueIdentifier>{9b004e36-4cb0-4da5-84fc-dca6edc9b15a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\16. Network\Packet">
+      <UniqueIdentifier>{833399df-8ce8-458c-9eb9-a377739428a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\16. Network\Packet\Login">
+      <UniqueIdentifier>{e05da226-6c6a-4200-a20c-2685d33a0fa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\16. Network\Packet\Room">
+      <UniqueIdentifier>{b77df118-9ff5-479d-9a8f-cf8d8234e752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\16. Network\Packet\RoomChat">
+      <UniqueIdentifier>{ba3997cd-9ec4-4e50-bd59-6f12e9357a46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\16. Network\Packet\CharacterSync">
+      <UniqueIdentifier>{9b6439f9-aacb-44d7-9ca2-729945ff2d5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\16. Network\Packet\System">
+      <UniqueIdentifier>{2bf4f8c9-ac65-4798-aeb4-73c7d820723d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -1119,6 +1140,9 @@
     </ClCompile>
     <ClCompile Include="..\private\CameraAnchorResolver.cpp">
       <Filter>00. System\05. Component\Camera\AnchorInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Network_Manager.cpp">
+      <Filter>00. System\16. Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1740,6 +1764,30 @@
     </ClInclude>
     <ClInclude Include="..\public\CameraAnchorResolver.h">
       <Filter>00. System\05. Component\Camera\AnchorInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network_Manager.h">
+      <Filter>00. System\16. Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PacketHeader.h">
+      <Filter>00. System\16. Network\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PacketInfo.h">
+      <Filter>00. System\16. Network\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LoginPacket.h">
+      <Filter>00. System\16. Network\Packet\Login</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoomPacket.h">
+      <Filter>00. System\16. Network\Packet\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoomChatPacket.h">
+      <Filter>00. System\16. Network\Packet\RoomChat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CharacterSyncPacket.h">
+      <Filter>00. System\16. Network\Packet\CharacterSync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sys_ConnectResponsePacket.h">
+      <Filter>00. System\16. Network\Packet\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

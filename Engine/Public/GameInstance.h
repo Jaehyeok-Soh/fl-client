@@ -47,7 +47,6 @@ class CFxShaderVariant;
 class CEffectHandler;
 class CBounding_AABB;
 
-
 class ENGINE_DLL CGameInstance final : public CBase
 {
 	using Super = CBase;
@@ -498,6 +497,12 @@ public:
 	const unordered_map<_uint, DTO::TAttackPreset_Data>& Get_AttackPresetsData_ForDebug() const;
 #pragma endregion
 
+#pragma region NETWORK_MANAGER
+	void NetworkUpdate();
+	void SendTCP(char* pData, UINT32 size);
+	void SendUDP(char* pData, UINT32 size);
+#pragma endregion
+
 public:
 	void SetChangeLevelSequence(_bool bVal) { m_bChangeLevelSequence = bVal; }
 	_bool Is_ChangeLevelSequence() { return m_bChangeLevelSequence; }
@@ -534,6 +539,7 @@ private:
 	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 	class CJudgementSystem* m_pJudgementSystem = { nullptr };
 	class CCinematic_Manager* m_pCinematicManager = { nullptr };
+	class CNetwork_Manager* m_pNetworkManager = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 

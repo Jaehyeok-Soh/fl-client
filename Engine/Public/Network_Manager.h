@@ -1,11 +1,9 @@
 #pragma once
 
-#pragma comment(lib, "ws2_32")
-#include <winSock2.h>
-#include <ws2tcpip.h>
-
-
 #include "Base.h"
+
+NS_BEGIN(Engine)
+
 class CNetwork_Manager :
     public CBase
 {
@@ -49,3 +47,4 @@ public:
     virtual void Free() override;
 };
 
+NS_END

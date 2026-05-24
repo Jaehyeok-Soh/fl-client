@@ -185,6 +185,7 @@
     <ClCompile Include="..\Private\ColliderModule.cpp" />
     <ClCompile Include="..\private\DataDocument_SoundEvent.cpp" />
     <ClCompile Include="..\private\DataStruct_SoundEvent.cpp" />
+    <ClCompile Include="..\Private\Network_Manager.cpp" />
     <ClCompile Include="..\Private\PhysicsRagdoll.cpp" />
     <ClCompile Include="..\Private\EffectBase.cpp" />
     <ClCompile Include="..\private\EffectHandler.cpp" />
@@ -379,6 +380,7 @@
     <ClInclude Include="..\public\CameraModifier_RotationOffset.h" />
     <ClInclude Include="..\public\CameraModifier_Shake.h" />
     <ClInclude Include="..\public\CameraEvent_Handler.h" />
+    <ClInclude Include="..\Public\CharacterSyncPacket.h" />
     <ClInclude Include="..\Public\CitizenData.h" />
     <ClInclude Include="..\public\DataDocument_CameraControlEvent.h" />
     <ClInclude Include="..\public\DataStruct_CameraControlEvent.h" />
@@ -486,6 +488,7 @@
     <ClInclude Include="..\Public\Level_Manager.h" />
     <ClInclude Include="..\Public\Light.h" />
     <ClInclude Include="..\Public\Light_Manager.h" />
+    <ClInclude Include="..\Public\LoginPacket.h" />
     <ClInclude Include="..\Public\Material.h" />
     <ClInclude Include="..\Public\MaterialInstance.h" />
     <ClInclude Include="..\Public\Mesh.h" />
@@ -495,11 +498,14 @@
     <ClInclude Include="..\Public\MonoBehaviour.h" />
     <ClInclude Include="..\Public\MulticastDelegate.h" />
     <ClInclude Include="..\Public\Navigation.h" />
+    <ClInclude Include="..\Public\Network_Manager.h" />
     <ClInclude Include="..\public\ObjectDataBase.h" />
     <ClInclude Include="..\public\ObjectPool_Manager.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\ObjectPool.h" />
     <ClInclude Include="..\public\Octree_Manager.h" />
+    <ClInclude Include="..\Public\PacketInfo.h" />
+    <ClInclude Include="..\Public\PacketHeader.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\Public\PhysicsAttackOverlap.h" />
     <ClInclude Include="..\Public\PhysicsAttackRaycast.h" />
@@ -535,6 +541,8 @@
     <ClInclude Include="..\Public\Render_Manager.h" />
     <ClInclude Include="..\Public\ResourceBase.h" />
     <ClInclude Include="..\Public\Resource_Manager.h" />
+    <ClInclude Include="..\Public\RoomChatPacket.h" />
+    <ClInclude Include="..\Public\RoomPacket.h" />
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\public\ShaderAsset_Manager.h" />
     <ClInclude Include="..\public\SingleSkillSpawner.h" />
@@ -547,6 +555,7 @@
     <ClInclude Include="..\Public\MyStat.h" />
     <ClInclude Include="..\Public\StateBase.h" />
     <ClInclude Include="..\Public\StructuredBuffer.h" />
+    <ClInclude Include="..\Public\Sys_ConnectResponsePacket.h" />
     <ClInclude Include="..\Public\Texture.h" />
     <ClInclude Include="..\Public\TextureBase.h" />
     <ClInclude Include="..\public\ThreadPool.h" />

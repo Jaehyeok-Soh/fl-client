@@ -2,9 +2,6 @@
 
 #include "PacketHeader.h"
 
-const int MAX_USER_ID_LEN = 32;
-const int MAX_USER_PW_LEN = 32;
-
 #pragma pack(push, 1)
 struct LOGIN_REQUEST_PACKET : public PACKET_HEADER
 {

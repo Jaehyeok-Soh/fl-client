@@ -33,6 +33,7 @@
 #include "GameData_Struct.h"
 #include "JudgementSystem.h"
 #include "Cinematic_Manager.h"
+#include "Network_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -141,6 +142,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pCinematicManager = CCinematic_Manager::Create(*ppDevice,*ppContext)))
 		return E_FAIL;
 
+	if (!(m_pNetworkManager = CNetwork_Manager::Create("127.0.0.1", 9000, 9090)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -154,6 +158,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pLevel_Manager->Update(fUnscaledTimeDelta);
 	m_pObject_Manager->Update_Priority(fUnscaledTimeDelta, fScaledTimeDelta);
 	m_pObject_Manager->Update(fUnscaledTimeDelta, fScaledTimeDelta);
+	m_pNetworkManager->Update();
 	m_pObject_Manager->Update_Late(fUnscaledTimeDelta, fScaledTimeDelta);
 
 	// 피직스 시뮬레이트
@@ -1543,6 +1548,18 @@ HRESULT CGameInstance::Upsert_AttackPresetData(const DTO::TAttackPreset_Data& in
 const unordered_map<_uint, DTO::TAttackPreset_Data>& CGameInstance::Get_AttackPresetsData_ForDebug() const
 {
 	return m_pGameData_Manager->Get_AttackPresetsData_ForDebug();
+}
+void CGameInstance::NetworkUpdate()
+{
+	m_pNetworkManager->Update();
+}
+void CGameInstance::SendTCP(char* pData, UINT32 size)
+{
+	m_pNetworkManager->SendTCP(pData, size);
+}
+void CGameInstance::SendUDP(char* pData, UINT32 size)
+{
+	m_pNetworkManager->SendUDP(pData, size);
 }
 #pragma endregion
 
