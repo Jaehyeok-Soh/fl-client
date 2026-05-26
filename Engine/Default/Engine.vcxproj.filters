@@ -580,6 +580,15 @@
     <Filter Include="00. System\16. Network\Packet\System">
       <UniqueIdentifier>{2bf4f8c9-ac65-4798-aeb4-73c7d820723d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\17. PacketManager">
+      <UniqueIdentifier>{efe06d11-df34-48e1-8383-944f5eadc85d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\16. Network\ObjectModel">
+      <UniqueIdentifier>{082037e7-e9ad-49ba-8423-d87a25b683d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\16. Network\ObjectModel\User">
+      <UniqueIdentifier>{97065114-597c-4171-8186-c2ca96fa5942}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -1788,6 +1797,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Sys_ConnectResponsePacket.h">
       <Filter>00. System\16. Network\Packet\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UserModel.h">
+      <Filter>00. System\16. Network\ObjectModel\User</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

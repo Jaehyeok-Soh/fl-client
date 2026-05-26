@@ -95,6 +95,7 @@ using std::queue;
 using std::condition_variable;
 using std::filesystem::path;
 
+using namespace std;
 using namespace DirectX;
 using namespace SimpleMath;
 

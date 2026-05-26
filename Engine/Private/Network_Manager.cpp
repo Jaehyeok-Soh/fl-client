@@ -73,12 +73,25 @@ void CNetwork_Manager::Update()
 			auto* pRes = reinterpret_cast<SYS_CONNECT_RESPONSE_PACKET*>(packet.data());
 			CEngineConsole::Log(ELogLevel::Info, "Connect");
 			SetClientIndex(pRes->ClientId);
+			
+			LOGIN_REQUEST_PACKET loginResPacket = {};
+			loginResPacket.PacketId = PACKET_ID::LOGIN_REQUEST;
+			loginResPacket.PacketLength = sizeof(LOGIN_REQUEST_PACKET);
+			m_strUserId = ::to_string(m_iClientIndex);
+			strcpy_s(loginResPacket.UserID, m_strUserId.c_str());
+			SendTCP(reinterpret_cast<char*>(&loginResPacket), loginResPacket.PacketLength);
 		}
 		break;
 		case PACKET_ID::LOGIN_RESPONSE:
 		{
 			auto* pRes = reinterpret_cast<LOGIN_RESPONSE_PACKET*>(packet.data());
 			CEngineConsole::Log(ELogLevel::Info, "Login");
+
+			ROOM_ENTER_REQUEST_PACKET roomEnterResPacket = {};
+			roomEnterResPacket.PacketId = PACKET_ID::ROOM_ENTER_REQUEST;
+			roomEnterResPacket.PacketLength = sizeof(ROOM_ENTER_REQUEST_PACKET);
+			roomEnterResPacket.RoomNumber = 0;
+			SendTCP(reinterpret_cast<char*>(&roomEnterResPacket), roomEnterResPacket.PacketLength);
 		}
 		break;
 		case PACKET_ID::CHARACTER_SYNC:
@@ -86,6 +99,16 @@ void CNetwork_Manager::Update()
 			auto* pPos = reinterpret_cast<CHARACTER_SYNC_PACKET*>(packet.data());
 			if (pPos->ClientIndex == m_iClientIndex)
 				break;
+		}
+		break;
+		case PACKET_ID::ROOM_JOIN_NOTIFY:
+		{
+			RoomJoinUser(packet.data());
+		}
+		break;
+		case PACKET_ID::ROOM_LEAVE_NOTIFY:
+		{
+			RoomLeaveUser(packet.data());
 		}
 		break;
 		}
@@ -152,6 +175,25 @@ void CNetwork_Manager::RecvUDPThread()
 		lock_guard<mutex> lock(m_RecvMutex);
 		m_RecvQueue.push(packet);
 	}
+}
+
+void CNetwork_Manager::RoomJoinUser(char* pData)
+{
+	auto* pRes = reinterpret_cast<ROOM_JOIN_PACKET*>(pData);
+	auto pUser = make_shared<UserModel>();
+	pUser->ClientIndex = pRes->ClientIndex;
+	strncpy_s(pUser->UserID, pRes->UserID, sizeof(pRes->UserID));
+	m_UserList.push_back(pUser);
+}
+
+void CNetwork_Manager::RoomLeaveUser(char* pData)
+{
+	auto* pRes = reinterpret_cast<ROOM_LEAVE_PACKET*>(pData);
+
+	m_UserList.remove_if([leaveUserId = pRes->ClientIndex](shared_ptr<UserModel> pUser)
+		{
+			return leaveUserId == pUser->ClientIndex;
+		});
 }
 
 CNetwork_Manager* CNetwork_Manager::Create(const char* ip, int tcpPort, int udpPort)

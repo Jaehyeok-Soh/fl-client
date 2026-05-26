@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include "UserModel.h"
 
 NS_BEGIN(Engine)
 
@@ -28,6 +29,10 @@ private:
     void RecvTCPThread();
     void RecvUDPThread();
 
+    //TODO: packet manager
+    void RoomJoinUser(char* pData);
+    void RoomLeaveUser(char* pData);
+
     SOCKET m_TCPSocket = INVALID_SOCKET;
     SOCKET m_UDPSocket = INVALID_SOCKET;
     SOCKADDR_IN m_ServerUDPAddr = {};
@@ -37,10 +42,12 @@ private:
     bool m_bIsRunning = false;
 
     INT32 m_iClientIndex = { -1 };
+    string m_strUserId = { "" };
 
     mutex m_RecvMutex;
     queue<vector<char>> m_RecvQueue;
 
+    list<shared_ptr<struct UserModel>> m_UserList;
 
 public:
     static CNetwork_Manager* Create(const char* ip, int tcpPort, int udpPort);

@@ -565,6 +565,7 @@
     <ClInclude Include="..\public\TimeScale_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />
     <ClInclude Include="..\Public\UIObject.h" />
+    <ClInclude Include="..\Public\UserModel.h" />
     <ClInclude Include="..\Public\VertexData.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />
     <ClInclude Include="..\Public\VIBuffer_Cube_Color.h" />
