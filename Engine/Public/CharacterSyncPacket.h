@@ -2,6 +2,8 @@
 
 #include "PacketHeader.h"
 
+NS_BEGIN(Engine)
+
 #pragma pack(push, 1)
 struct CHARACTER_SYNC_PACKET : public PACKET_HEADER
 {
@@ -19,3 +21,5 @@ struct CHARACTER_SYNC_PACKET : public PACKET_HEADER
     UINT32  AnimIndex = 0;
 };
 #pragma pack(pop)
+
+NS_END

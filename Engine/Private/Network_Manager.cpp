@@ -8,7 +8,6 @@
 #include "LoginPacket.h"
 #include "RoomChatPacket.h"
 #include "RoomPacket.h"
-#include "CharacterSyncPacket.h"
 
 CNetwork_Manager::CNetwork_Manager()
 {
@@ -94,11 +93,13 @@ void CNetwork_Manager::Update()
 			SendTCP(reinterpret_cast<char*>(&roomEnterResPacket), roomEnterResPacket.PacketLength);
 		}
 		break;
-		case PACKET_ID::CHARACTER_SYNC:
+		case PACKET_ID::CHARACTER_SYNC_BROADCAST:
 		{
 			auto* pPos = reinterpret_cast<CHARACTER_SYNC_PACKET*>(packet.data());
 			if (pPos->ClientIndex == m_iClientIndex)
 				break;
+			else
+				m_DicUserSync[pPos->ClientIndex] = *pPos;
 		}
 		break;
 		case PACKET_ID::ROOM_JOIN_NOTIFY:

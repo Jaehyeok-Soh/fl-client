@@ -34,6 +34,7 @@
 #include "JudgementSystem.h"
 #include "Cinematic_Manager.h"
 #include "Network_Manager.h"
+#include "CharacterSyncPacket.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -1560,6 +1561,14 @@ void CGameInstance::SendTCP(char* pData, UINT32 size)
 void CGameInstance::SendUDP(char* pData, UINT32 size)
 {
 	m_pNetworkManager->SendUDP(pData, size);
+}
+UINT32 CGameInstance::GetClientID()
+{
+	return m_pNetworkManager->GetClientIndex();
+}
+CHARACTER_SYNC_PACKET CGameInstance::GetUserSyncData(UINT32 clientID)
+{
+	return m_pNetworkManager->GetUserSyncData(clientID);
 }
 #pragma endregion
 

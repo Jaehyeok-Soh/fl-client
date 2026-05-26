@@ -501,6 +501,8 @@ public:
 	void NetworkUpdate();
 	void SendTCP(char* pData, UINT32 size);
 	void SendUDP(char* pData, UINT32 size);
+	UINT32 GetClientID();
+	struct CHARACTER_SYNC_PACKET GetUserSyncData(UINT32 clientID);
 #pragma endregion
 
 public:

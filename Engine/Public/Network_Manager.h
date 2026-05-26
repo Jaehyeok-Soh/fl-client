@@ -2,8 +2,11 @@
 
 #include "Base.h"
 #include "UserModel.h"
+#include "CharacterSyncPacket.h"
 
 NS_BEGIN(Engine)
+
+struct CHARACTER_SYNC_PACKET;
 
 class CNetwork_Manager :
     public CBase
@@ -24,6 +27,8 @@ public:
 
     INT32 GetClientIndex() { return m_iClientIndex; }
     void SetClientIndex(INT32 idx) { m_iClientIndex = idx; }
+
+    CHARACTER_SYNC_PACKET GetUserSyncData(UINT32 clientID) { return m_DicUserSync[clientID]; }
 
 private:
     void RecvTCPThread();
@@ -47,7 +52,8 @@ private:
     mutex m_RecvMutex;
     queue<vector<char>> m_RecvQueue;
 
-    list<shared_ptr<struct UserModel>> m_UserList;
+    list<shared_ptr<UserModel>> m_UserList;
+    unordered_map<int, CHARACTER_SYNC_PACKET> m_DicUserSync;
 
 public:
     static CNetwork_Manager* Create(const char* ip, int tcpPort, int udpPort);

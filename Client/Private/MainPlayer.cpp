@@ -61,6 +61,8 @@
 // Test
 #include "ImGui_ClientDebug.h"
 
+#include "CharacterSyncPacket.h"
+
 #define ANIMTPS     24.f
 #define ANIMTIC     (24.f * 1.2f)
 #define ANIMTIC_3   (24.f * 1.3f)
@@ -260,6 +262,26 @@ void CMainPlayer::Update(const _float fTimeDelta)
         desc.matWorld = XMMatrixTranslationFromVector(HitPosition);
 
         m_pGameInstance->Request_Effect("VFX_Sword_Hit", desc);
+    }
+
+    {
+        CHARACTER_SYNC_PACKET charSyncPacket = {};
+        charSyncPacket.PacketId = PACKET_ID::CHARACTER_SYNC;
+        charSyncPacket.PacketLength = sizeof(CHARACTER_SYNC_PACKET);
+        charSyncPacket.ClientIndex = m_pGameInstance->GetClientID();
+        charSyncPacket.Sequence = { 0 }; //TODO: sequence
+
+        CTransform* pTransform = Get_Component<CTransform>();
+        auto pos = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+        charSyncPacket.PosX = pos.x;
+        charSyncPacket.PosY = pos.y;
+        charSyncPacket.PosZ = pos.z;
+
+        auto look = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+        look.Normalize();
+        charSyncPacket.RotY = atan2f(look.x, look.z);
+
+        m_pGameInstance->SendTCP(reinterpret_cast<char*>(&charSyncPacket), charSyncPacket.PacketLength);
     }
 }
 
