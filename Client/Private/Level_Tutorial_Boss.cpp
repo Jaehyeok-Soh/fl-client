@@ -82,7 +82,7 @@
 #include "UITutorial_Manager.h"
 
 CLevel_Tutorial_Boss::CLevel_Tutorial_Boss(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CLevel(pDevice , pDeviceContext)
+	: Super(pDevice , pDeviceContext)
 {
 }
 

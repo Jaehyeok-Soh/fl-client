@@ -85,12 +85,6 @@ void CNetwork_Manager::Update()
 		{
 			auto* pRes = reinterpret_cast<LOGIN_RESPONSE_PACKET*>(packet.data());
 			CEngineConsole::Log(ELogLevel::Info, "Login");
-
-			ROOM_ENTER_REQUEST_PACKET roomEnterResPacket = {};
-			roomEnterResPacket.PacketId = PACKET_ID::ROOM_ENTER_REQUEST;
-			roomEnterResPacket.PacketLength = sizeof(ROOM_ENTER_REQUEST_PACKET);
-			roomEnterResPacket.RoomNumber = 0;
-			SendTCP(reinterpret_cast<char*>(&roomEnterResPacket), roomEnterResPacket.PacketLength);
 		}
 		break;
 		case PACKET_ID::CHARACTER_SYNC_BROADCAST:
@@ -136,6 +130,15 @@ void CNetwork_Manager::SendTCP(char* pData, UINT32 size)
 void CNetwork_Manager::SendUDP(char* pData, UINT32 size)
 {
 	::sendto(m_UDPSocket, pData, size, 0, (SOCKADDR*)&m_ServerUDPAddr, sizeof(m_ServerUDPAddr));
+}
+
+void CNetwork_Manager::RoomEnterRequest()
+{
+	ROOM_ENTER_REQUEST_PACKET roomEnterResPacket = {};
+	roomEnterResPacket.PacketId = PACKET_ID::ROOM_ENTER_REQUEST;
+	roomEnterResPacket.PacketLength = sizeof(ROOM_ENTER_REQUEST_PACKET);
+	roomEnterResPacket.RoomNumber = 0;
+	SendTCP(reinterpret_cast<char*>(&roomEnterResPacket), roomEnterResPacket.PacketLength);
 }
 
 void CNetwork_Manager::RecvTCPThread()
@@ -185,6 +188,8 @@ void CNetwork_Manager::RoomJoinUser(char* pData)
 	pUser->ClientIndex = pRes->ClientIndex;
 	strncpy_s(pUser->UserID, pRes->UserID, sizeof(pRes->UserID));
 	m_UserList.push_back(pUser);
+
+	m_funcJoinedUser(*pUser);
 }
 
 void CNetwork_Manager::RoomLeaveUser(char* pData)
@@ -195,6 +200,8 @@ void CNetwork_Manager::RoomLeaveUser(char* pData)
 		{
 			return leaveUserId == pUser->ClientIndex;
 		});
+
+	m_funcLeftUser(pRes->ClientIndex);
 }
 
 CNetwork_Manager* CNetwork_Manager::Create(const char* ip, int tcpPort, int udpPort)

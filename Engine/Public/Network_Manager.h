@@ -25,10 +25,15 @@ public:
     void SendTCP(char* pData, UINT32 size);
     void SendUDP(char* pData, UINT32 size);
 
+    void RoomEnterRequest();
+
     INT32 GetClientIndex() { return m_iClientIndex; }
     void SetClientIndex(INT32 idx) { m_iClientIndex = idx; }
 
     CHARACTER_SYNC_PACKET GetUserSyncData(UINT32 clientID) { return m_DicUserSync[clientID]; }
+
+    function<void(UserModel)> m_funcJoinedUser;
+    function<void(UINT32)> m_funcLeftUser;
 
 private:
     void RecvTCPThread();

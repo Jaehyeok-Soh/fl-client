@@ -67,7 +67,7 @@
 #include "DialogueManager.h"
 
 CLevel_Square::CLevel_Square(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CLevel(pDevice , pDeviceContext)
+	: Super(pDevice , pDeviceContext)
 	, m_fAccTime{0.f}
 {
 }

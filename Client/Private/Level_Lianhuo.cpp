@@ -154,6 +154,7 @@ HRESULT CLevel_Lianhuo::Awake(const _uint iLevelID)
 	m_pGameInstance->Play_CameraCinematic(L"Lianhuo_Cinematic");
 
 	m_pGameInstance->PlayBGM(0, TO_HASH("LIANHUO_BOSS_BGM"), 0.5f);
+
 	return S_OK;
 }
 

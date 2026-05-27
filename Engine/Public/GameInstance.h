@@ -8,6 +8,7 @@
 #include "Anim_Event_Hitbox.h"
 #include "CameraRuntimeTypes.h"
 #include "PhysicsAttackRaycast.h"
+#include "UserModel.h"
 
 NS_BEGIN(Engine)
  
@@ -501,8 +502,11 @@ public:
 	void NetworkUpdate();
 	void SendTCP(char* pData, UINT32 size);
 	void SendUDP(char* pData, UINT32 size);
+	void RoomEnterRequest();
 	UINT32 GetClientID();
 	struct CHARACTER_SYNC_PACKET GetUserSyncData(UINT32 clientID);
+	void BindNetworkJoinedUser(std::function<void(struct UserModel)> func);
+	void BindNetworkLeftUser(std::function<void(UINT32)> func);
 #pragma endregion
 
 public:

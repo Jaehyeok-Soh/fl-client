@@ -277,7 +277,7 @@ void CMainPlayer::Update(const _float fTimeDelta)
         charSyncPacket.PosY = pos.y;
         charSyncPacket.PosZ = pos.z;
 
-        auto look = pTransform->Get_Info(TRANSFORM_INFO_STATE::POS);
+        auto look = pTransform->Get_Info(TRANSFORM_INFO_STATE::LOOK);
         look.Normalize();
         charSyncPacket.RotY = atan2f(look.x, look.z);
 
@@ -317,7 +317,6 @@ HRESULT CMainPlayer::Render()
 {
     if (FAILED(Super::Render()))
         return E_FAIL;
-
 
     return S_OK;
 }

@@ -79,6 +79,7 @@
 #include "LightObject.h"
 #include "ChangeLevelObject.h"
 #include "CinematicCamera.h"
+#include "RemotePlayer.h"
 
 //=================
 //	EFFECT
@@ -946,6 +947,8 @@ HRESULT CLoader::Loading_For_Logo()
 		// For. Prototype_GameObject_ColliderModule
 		ADD_PROTOTYPE(ELevelType::STATIC, g_wszColliderModule_Prototype_Tag, 			CColliderModule::Create(m_pDevice, m_pDeviceContext));
 
+		// For. Prototype_GameObject_RemotePlayer
+		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_RemotePlayer", CRemotePlayer::Create(m_pDevice, m_pDeviceContext));
 
 		// ¿Ã∆Â∆Æ Object
 		ADD_PROTOTYPE(ELevelType::STATIC, L"Prototype_GameObject_Effect",				Effect::Create(m_pDevice, m_pDeviceContext));

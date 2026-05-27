@@ -77,7 +77,7 @@
 #include "QuestManager.h"
 
 CLevel_Tutorial_Village::CLevel_Tutorial_Village(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CLevel(pDevice , pDeviceContext)
+	: Super(pDevice , pDeviceContext)
 {
 }
 

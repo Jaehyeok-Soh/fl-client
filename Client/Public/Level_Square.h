@@ -1,11 +1,11 @@
 #pragma once
-#include "Level.h"
+#include "Level_Client.h"
 
 NS_BEGIN(Client)
 
-class CLevel_Square : public CLevel
+class CLevel_Square : public CLevel_Client
 {
-	using Super = CLevel;
+	using Super = CLevel_Client;
 private:
 	explicit CLevel_Square(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual ~CLevel_Square() = default;

@@ -25,6 +25,13 @@ public:
 public:
 	HRESULT Ready_Builder(DTO::ECategory eCategory, CBuilderBase* pBuilder);
 	HRESULT Build_File(_uint iLevelID, DTO::ECategory eCategory, string strFileKey);
+
+protected:
+	virtual void Bind_Network() = 0;
+	virtual void Ready_Network() = 0;
+	virtual void SpawnRemotePlayer(struct UserModel userModel) = 0;
+	virtual void DespawnRemotePlayer(UINT32 clientId) = 0;
+
 protected:
 	Vec4 m_vClearColor = { 0.f, 0.f, 1.f, 1.f };
 	CGameInstance* m_pGameInstance = { nullptr };

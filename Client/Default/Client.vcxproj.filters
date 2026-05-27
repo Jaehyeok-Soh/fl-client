@@ -1045,6 +1045,12 @@
     <Filter Include="03. GameObject\UIObjects\02.UI\Text\19.Boss Skill">
       <UniqueIdentifier>{8708c1a9-83fd-4f86-a5f1-e67e676c2758}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. GameObject\ContainerObjects\RemotePlayer">
+      <UniqueIdentifier>{51fadebd-296b-438a-b100-6e4c285e8fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Level\Client_Level_Base">
+      <UniqueIdentifier>{5b5c798c-e970-409a-9d48-09e321e0b8eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -1971,6 +1977,12 @@
     <ClInclude Include="..\Public\UIBossSkill_Text.h">
       <Filter>03. GameObject\UIObjects\02.UI\Text\19.Boss Skill</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RemotePlayer.h">
+      <Filter>03. GameObject\ContainerObjects\RemotePlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Client.h">
+      <Filter>02. Level\Client_Level_Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2884,6 +2896,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIBossSkill_Text.cpp">
       <Filter>03. GameObject\UIObjects\02.UI\Text\19.Boss Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RemotePlayer.cpp">
+      <Filter>03. GameObject\ContainerObjects\RemotePlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Client.cpp">
+      <Filter>02. Level\Client_Level_Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

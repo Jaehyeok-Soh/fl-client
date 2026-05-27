@@ -1562,6 +1562,10 @@ void CGameInstance::SendUDP(char* pData, UINT32 size)
 {
 	m_pNetworkManager->SendUDP(pData, size);
 }
+void CGameInstance::RoomEnterRequest()
+{
+	m_pNetworkManager->RoomEnterRequest();
+}
 UINT32 CGameInstance::GetClientID()
 {
 	return m_pNetworkManager->GetClientIndex();
@@ -1569,6 +1573,14 @@ UINT32 CGameInstance::GetClientID()
 CHARACTER_SYNC_PACKET CGameInstance::GetUserSyncData(UINT32 clientID)
 {
 	return m_pNetworkManager->GetUserSyncData(clientID);
+}
+void CGameInstance::BindNetworkJoinedUser(std::function<void(struct UserModel)> func)
+{
+	m_pNetworkManager->m_funcJoinedUser = func;
+}
+void CGameInstance::BindNetworkLeftUser(std::function<void(UINT32)> func)
+{
+	m_pNetworkManager->m_funcLeftUser = func;
 }
 #pragma endregion
 
