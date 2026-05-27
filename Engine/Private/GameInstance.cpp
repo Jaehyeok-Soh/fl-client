@@ -1114,6 +1114,7 @@ void CGameInstance::Push_CollidedData(const COLLIDED_DESC& desc)
 void CGameInstance::Destroy_Engine()
 {
 	SetDestroyEngineSequence(true);
+	Safe_Release(m_pNetworkManager);
 	Safe_Release(m_pJudgementSystem);
 	Safe_Release(m_pFrustrum);
 	Safe_Release(m_pInput_Manager);
@@ -1588,6 +1589,7 @@ void CGameInstance::BindNetworkLeftUser(std::function<void(UINT32)> func)
 void CGameInstance::Free()
 {
 	SetDestroyEngineSequence(true);
+	Safe_Release(m_pNetworkManager);
 	Safe_Release(m_pJudgementSystem);
 	Safe_Release(m_pCinematicManager);
 	Safe_Release(m_pFrustrum);
