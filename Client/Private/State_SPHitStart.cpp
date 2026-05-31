@@ -26,6 +26,14 @@ HRESULT CState_SPHitStart::Awake(const _uint iLevelIndex)
 
 HRESULT CState_SPHitStart::Start(void* pArg, _bool bForce)
 {
+    if (IsRemotePlayer())
+    {
+        if (FAILED(Super::Start(pArg, bForce)))
+            return E_FAIL;
+
+        return S_OK;
+    }
+
     if (FAILED(Super::Start(pArg, bForce)))
         return E_FAIL;
 
@@ -42,6 +50,12 @@ HRESULT CState_SPHitStart::Start(void* pArg, _bool bForce)
 
 void CState_SPHitStart::Update(const _float fTimeDelta)
 {
+    if (IsRemotePlayer())
+    {
+        Super::Update(fTimeDelta);
+        return;
+    }
+
     Super::Update(fTimeDelta);
     if (m_bOnce == false && Is_AnimTrackPositionBetweenRaw(55.f, 65.f))
     {

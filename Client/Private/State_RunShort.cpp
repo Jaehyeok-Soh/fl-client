@@ -31,6 +31,14 @@ HRESULT CState_RunShort::Awake(const _uint iLevelIndex)
 
 HRESULT CState_RunShort::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
@@ -43,6 +51,12 @@ HRESULT CState_RunShort::Start(void* pArg, _bool bForce)
 
 void CState_RunShort::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	// °­Á¦·Î state change
 	if (m_fStateElapsed >= 10.f / ANIMTIC)
 	{

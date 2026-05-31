@@ -29,6 +29,14 @@ HRESULT CState_Slide::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Slide::Start(void* pArg, _bool bForce)
 {
+    if (IsRemotePlayer())
+    {
+        if (FAILED(Super::Start(pArg, bForce)))
+            return E_FAIL;
+
+        return S_OK;
+    }
+
     if (FAILED(Super::Start(pArg, bForce)))
         return E_FAIL;
 
@@ -60,6 +68,12 @@ HRESULT CState_Slide::Start(void* pArg, _bool bForce)
 
 void CState_Slide::Update(const _float fTimeDelta)
 {
+    if (IsRemotePlayer())
+    {
+        Super::Update(fTimeDelta);
+        return;
+    }
+
     //// pre끝나고 own move를 하도록
     //if (Engine_Utils::Has_Flag(m_FAniFlags, STATEANI_FLAG::SA_PreAniDone))
     //{

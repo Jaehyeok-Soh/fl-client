@@ -31,6 +31,14 @@ HRESULT CState_DashSky::Start(void* pArg, _bool bForce)
 {
 	CheckAni_WhenStart();
 
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	STATE_START_DESC* pDesc = static_cast<STATE_START_DESC*>(pArg);
 	pDesc->iMainAnimIdx = m_iMainAnimIdx;
 
@@ -64,6 +72,12 @@ HRESULT CState_DashSky::Start(void* pArg, _bool bForce)
 
 void CState_DashSky::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 
 	if (Get_AnimElpasedTimeSeconds() > 0.45f)

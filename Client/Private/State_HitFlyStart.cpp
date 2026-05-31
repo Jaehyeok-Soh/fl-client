@@ -26,6 +26,14 @@ HRESULT CState_HitFlyStart::Awake(const _uint iLevelIndex)
 
 HRESULT CState_HitFlyStart::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
@@ -48,6 +56,12 @@ HRESULT CState_HitFlyStart::Start(void* pArg, _bool bForce)
 
 void CState_HitFlyStart::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 
 	// 바닥 충돌 검사 후 change

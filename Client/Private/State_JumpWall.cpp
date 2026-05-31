@@ -28,6 +28,14 @@ HRESULT CState_JumpWall::Awake(const _uint iLevelIndex)
 
 HRESULT CState_JumpWall::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
@@ -45,6 +53,12 @@ HRESULT CState_JumpWall::Start(void* pArg, _bool bForce)
 
 void CState_JumpWall::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	//// 바닥 충돌 검사 후 change
 	//if (m_fStateElapsed > 0.6f &&
 	//	Check_OnGround(0.1f))

@@ -32,6 +32,14 @@ HRESULT CState_Idle::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Idle::Start(void *pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (Key_Input(ENUM_TO_UINT(CControlContext::CONTROL_KEY::MOVE)))
 	{
 		Change_PlayerState(STATEKEY::MOVE);
@@ -49,6 +57,12 @@ HRESULT CState_Idle::Start(void *pArg, _bool bForce)
 
 void CState_Idle::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 }
 

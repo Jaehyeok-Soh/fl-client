@@ -74,6 +74,12 @@ HRESULT CState_GunIdle::Start(void* pArg, _bool bForce)
 
 void CState_GunIdle::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 }
 

@@ -27,6 +27,14 @@ HRESULT CState_HitStrong::Awake(const _uint iLevelIndex)
 
 HRESULT CState_HitStrong::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	HITSTATE_START_DESC* pDesc = static_cast<HITSTATE_START_DESC*>(pArg);
 
 	/* 충돌 방향을 통해 재생 애니메이션 인덱스 설정 */
@@ -64,6 +72,12 @@ HRESULT CState_HitStrong::Start(void* pArg, _bool bForce)
 
 void CState_HitStrong::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 }
 

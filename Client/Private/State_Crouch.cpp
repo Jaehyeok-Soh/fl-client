@@ -27,16 +27,28 @@ HRESULT CState_Crouch::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Crouch::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
-
-
 
 	return S_OK;
 }
 
 void CState_Crouch::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 }
 

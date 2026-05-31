@@ -281,6 +281,8 @@ void CMainPlayer::Update(const _float fTimeDelta)
         look.Normalize();
         charSyncPacket.RotY = atan2f(look.x, look.z);
 
+        charSyncPacket.StateFlag = Get_Component<CPlayerActionState>()->Get_CurrentStateIndex();
+
         m_pGameInstance->SendTCP(reinterpret_cast<char*>(&charSyncPacket), charSyncPacket.PacketLength);
     }
 }

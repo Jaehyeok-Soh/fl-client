@@ -34,6 +34,14 @@ HRESULT CState_SpecialDash::Awake(const _uint iLevelIndex)
 
 HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
 {
+    if (IsRemotePlayer())
+    {
+        if (FAILED(Super::Start(pArg, bForce)))
+            return E_FAIL;
+
+        return S_OK;
+    }
+
     if (FAILED(Super::Start(pArg, bForce)))
         return E_FAIL;
 
@@ -73,6 +81,12 @@ HRESULT CState_SpecialDash::Start(void* pArg, _bool bForce)
 
 void CState_SpecialDash::Update(const _float fTimeDelta)
 {
+    if (IsRemotePlayer())
+    {
+        Super::Update(fTimeDelta);
+        return;
+    }
+
     // animation Àü ¹Ì¸® Å»Ãâ
     if (m_fStateElapsed >= (23.f / ANIMTIC) + 0.5f)
     {

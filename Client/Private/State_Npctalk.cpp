@@ -32,6 +32,14 @@ HRESULT CState_Npctalk::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Npctalk::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
@@ -40,7 +48,14 @@ HRESULT CState_Npctalk::Start(void* pArg, _bool bForce)
 
 void CState_Npctalk::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
+	
 
 	SetupLook_PointLerp(fTimeDelta, m_vPivot, 5.f);
 }

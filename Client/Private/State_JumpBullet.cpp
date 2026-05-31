@@ -30,6 +30,14 @@ HRESULT CState_JumpBullet::Awake(const _uint iLevelIndex)
 
 HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
@@ -79,6 +87,12 @@ HRESULT CState_JumpBullet::Start(void* pArg, _bool bForce)
 
 void CState_JumpBullet::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 
 	if (Get_AnimElpasedTimeSeconds() > 0.8f)

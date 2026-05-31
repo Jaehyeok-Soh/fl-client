@@ -214,6 +214,8 @@ public:
 	virtual void Stop_GhostTrail() override;
 	virtual void Clear_GhostTrail() override;
 
+	bool GetIsRemote() { return m_bIsRemote; }
+
 	// Weapon Quick Slot
 public:
 	const array<WEAPON_INFO, ENUM_TO_SZET(MELEE::END)>& Get_MeleeInfo() const { return m_arrMeleeInfo; }
@@ -246,6 +248,10 @@ protected:
 	array<WEAPON_INFO, ENUM_TO_SZET(RANGE::END)>	m_arrRangeInfo;
 	array<WEAPON_INFO, ENUM_TO_SZET(RANGE::END)>	m_arrSkillInfo;
 	array<WEAPON_INFO, ENUM_TO_SZET(CONDEMN::END)>	m_arrCondemnInfo;
+
+	//Network
+protected:
+	bool m_bIsRemote = { false };
 
 private:
 	HRESULT		Ready_WeaponInfo();

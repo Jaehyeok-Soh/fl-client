@@ -225,6 +225,9 @@ protected:
 protected:
 	HRESULT Start_AttackState(void* pArg);
 
+	class CPlayer* Get_OwnerPlayer();
+	_bool IsRemotePlayer();
+
 private:
 	CGun*					m_pOwnerGun = { nullptr };
 

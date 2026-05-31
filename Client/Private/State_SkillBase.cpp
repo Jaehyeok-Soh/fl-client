@@ -76,6 +76,14 @@ HRESULT CState_SkillBase::Awake(const _uint iLevelIndex)
 
 HRESULT CState_SkillBase::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Start_AttackState(pArg)))
 		return E_FAIL;
 
@@ -86,6 +94,12 @@ HRESULT CState_SkillBase::Start(void* pArg, _bool bForce)
 
 void CState_SkillBase::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+	
 	Super::Update(fTimeDelta);
 
 	if (m_fStateElapsed >= m_tKeyTimer.fMaxTime + 0.6f)

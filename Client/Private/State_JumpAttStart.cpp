@@ -29,6 +29,14 @@ HRESULT CState_JumpAttStart::Awake(const _uint iLevelIndex)
 
 HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Start_AttackState(pArg)))
 		return E_FAIL;
 
@@ -64,6 +72,12 @@ HRESULT CState_JumpAttStart::Start(void* pArg, _bool bForce)
 
 void CState_JumpAttStart::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		CStateBase::Update(fTimeDelta);
+		return;
+	}
+
 	CStateBase::Update(fTimeDelta);
 
 	CTransform* pPlayerTrans = Get_OwnerObject()->Get_Component<CTransform>();

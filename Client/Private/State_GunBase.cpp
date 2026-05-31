@@ -56,6 +56,14 @@ HRESULT CState_GunBase::Awake(const _uint iLevelIndex)
 
 HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 {
+    if (IsRemotePlayer())
+    {
+        if (FAILED(Super::Start(pArg, bForce)))
+            return E_FAIL;
+
+        return S_OK;
+    }
+
     if(FAILED(Start_AttackState(pArg)))
         return E_FAIL;
 
@@ -90,6 +98,12 @@ HRESULT CState_GunBase::Start(void* pArg, _bool bForce)
 void CState_GunBase::Update(const _float fTimeDelta)
 {
     m_fStateElapsed += fTimeDelta;
+
+    if (IsRemotePlayer())
+    {
+        Super::Update(fTimeDelta);
+        return;
+    }
 
     // 항시 hit 판정 먼저
     if (Check_Hit(fTimeDelta))

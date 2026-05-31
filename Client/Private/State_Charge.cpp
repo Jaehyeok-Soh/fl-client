@@ -32,6 +32,14 @@ HRESULT CState_Charge::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Charge::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Start_AttackState(pArg)))
 		return E_FAIL;
 
@@ -48,6 +56,12 @@ HRESULT CState_Charge::Start(void* pArg, _bool bForce)
 
 void CState_Charge::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 
 	// monster ÃßÀû

@@ -39,6 +39,12 @@ HRESULT CState_DashBack::Start(void* pArg, _bool bForce)
 
 void CState_DashBack::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 }
 

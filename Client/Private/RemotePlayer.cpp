@@ -19,6 +19,7 @@
 #include "SkillBase_MoonQ.h"
 #include "RenderFx.h"
 #include "PlayerActionState.h"
+#include "PlayerControlContext.h"
 
 #pragma region State
 #include "State_MoonCombo.h"
@@ -61,6 +62,8 @@ HRESULT CRemotePlayer::Initialize(void* pArg)
 
 	Set_Name("Remote_Player");
 
+    m_bIsRemote = true;
+
     REMOTE_PLAYER_DESC* pDesc = static_cast<REMOTE_PLAYER_DESC*>(pArg);
     m_tagUserData = pDesc->tUserModel;
 
@@ -72,6 +75,16 @@ HRESULT CRemotePlayer::Initialize(void* pArg)
 
 	Get_Component<CEffectHandler>()->Setup_ForOwner(this, Get_Part<CBody>(ENUM_TO_UINT(Part::BODY))->Get_Component<CModel>());
 
+    CPlayerControlContext::PLAYER_CONTROLCONTEXT_DESC tDesc = {};
+    tDesc.FKeys = CPlayerControlContext::KEYFLAGS::MOVE | CPlayerControlContext::KEYFLAGS::JUMP
+        | CPlayerControlContext::KEYFLAGS::DASH | CPlayerControlContext::KEYFLAGS::SPECIAL
+        | CPlayerControlContext::KEYFLAGS::COMBO | CPlayerControlContext::KEYFLAGS::SKILL1
+        | CPlayerControlContext::KEYFLAGS::SKILL2 | CPlayerControlContext::KEYFLAGS::INTERACT
+        | CPlayerControlContext::KEYFLAGS::GUN;
+
+    if (FAILED(Add_Component<CPlayerControlContext>(0 /*static*/, L"Prototype_Component_ControlContext_Player", &tDesc)))
+        return E_FAIL;
+
 	return S_OK;
 }
 
@@ -79,6 +92,13 @@ HRESULT CRemotePlayer::Awake(const _uint iCurrentLevelID)
 {
 	if (FAILED(CContainerObject::Awake(iCurrentLevelID)))
 		return E_FAIL;
+
+    //CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
+    //if (pControlContext != nullptr)
+    //{
+    //    pControlContext->Block_AllState();
+    //    pControlContext->Set_AllKeyFlag(false);
+    //}
 
 	m_pGameInstance->Add_Actor_Object(this);
 
@@ -127,6 +147,13 @@ void CRemotePlayer::Update_Priority(const _float fTimeDelta)
 void CRemotePlayer::Update(const _float fTimeDelta)
 {
 	CContainerObject::Update(fTimeDelta);
+
+    //CPlayerControlContext* pControlContext = Get_Component<CPlayerControlContext>();
+    //if (pControlContext != nullptr)
+    //{
+    //    pControlContext->Block_AllState();
+    //    pControlContext->Set_AllKeyFlag(false);
+    //}
 }
 
 void CRemotePlayer::Update_Late(const _float fTimeDelta)
@@ -155,6 +182,15 @@ void CRemotePlayer::Synchronize_State()
 
 	m_vServerTargetpos = Vec3(charSyncPkt.PosX, charSyncPkt.PosY, charSyncPkt.PosZ);
 	m_fServerTargetYaw = charSyncPkt.RotY;
+
+    CPlayerActionState* pActionState = Get_Component<CPlayerActionState>();
+    if (pActionState != nullptr)
+    {
+        _uint iCurrentState = pActionState->Get_CurrentStateIndex();
+
+        if (iCurrentState != charSyncPkt.StateFlag)
+            pActionState->Change_State(charSyncPkt.StateFlag, false);
+    }
 }
 
 HRESULT CRemotePlayer::Ready_Ability()

@@ -39,6 +39,14 @@ HRESULT CState_Condemn::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
@@ -92,6 +100,12 @@ HRESULT CState_Condemn::Start(void* pArg, _bool bForce)
 
 void CState_Condemn::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	if (m_fStateElapsed >= 95.f / ANIMTIC)
 	{
 		//Change_WeaponState(ENUM_TO_UINT(CPlayer::EWEAPON::MELEE), ENUM_TO_UINT(CWeapon::State::HOLD));

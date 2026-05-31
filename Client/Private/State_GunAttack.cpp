@@ -30,6 +30,14 @@ HRESULT CState_GunAttack::Awake(const _uint iLevelIndex)
 
 HRESULT CState_GunAttack::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
@@ -44,6 +52,12 @@ HRESULT CState_GunAttack::Start(void* pArg, _bool bForce)
 
 void CState_GunAttack::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	Super::Update(fTimeDelta);
 
 	// 만약 쏠 수 없다면?

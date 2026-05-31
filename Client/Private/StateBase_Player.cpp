@@ -864,6 +864,16 @@ HRESULT CStateBase_Player::Start_AttackState(void* pArg)
 	return S_OK;
 }
 
+CPlayer* CStateBase_Player::Get_OwnerPlayer()
+{
+	return static_cast<CPlayer*>(m_pOwnerStateComp->Get_Owner());
+}
+
+_bool CStateBase_Player::IsRemotePlayer()
+{
+	return Get_OwnerPlayer()->GetIsRemote();
+}
+
 _bool CStateBase_Player::KeyFlag_On(_uint iKeyFlag)
 {
 	return static_cast<CPlayerActionState*>(m_pOwnerStateComp)->Get_KeyFlag(iKeyFlag);

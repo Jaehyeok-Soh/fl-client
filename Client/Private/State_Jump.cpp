@@ -30,6 +30,14 @@ HRESULT CState_Jump::Awake(const _uint iLevelIndex)
 
 HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 {
+	if (IsRemotePlayer())
+	{
+		if (FAILED(Super::Start(pArg, bForce)))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
 	if (FAILED(Super::Start(pArg, bForce)))
 		return E_FAIL;
 
@@ -47,6 +55,12 @@ HRESULT CState_Jump::Start(void* pArg, _bool bForce)
 
 void CState_Jump::Update(const _float fTimeDelta)
 {
+	if (IsRemotePlayer())
+	{
+		Super::Update(fTimeDelta);
+		return;
+	}
+
 	// 바닥 충돌 검사 후 change
 	if (m_fStateElapsed > 12.f / ANIMTIC &&
 		(Check_OnGround(0.1f) || IsOn_CCTFlag(PxControllerCollisionFlag::Enum::eCOLLISION_SIDES)))
