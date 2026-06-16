@@ -43,6 +43,11 @@ private:
     void RoomJoinUser(char* pData);
     void RoomLeaveUser(char* pData);
 
+    void RecvChat(char* pData);
+
+private:
+    class CGameInstance* m_pGameInstance = { nullptr };
+
     SOCKET m_TCPSocket = INVALID_SOCKET;
     SOCKET m_UDPSocket = INVALID_SOCKET;
     SOCKADDR_IN m_ServerUDPAddr = {};

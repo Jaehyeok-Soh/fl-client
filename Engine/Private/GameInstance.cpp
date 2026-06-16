@@ -35,6 +35,7 @@
 #include "Cinematic_Manager.h"
 #include "Network_Manager.h"
 #include "CharacterSyncPacket.h"
+#include "ChattingManager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -151,6 +152,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 		return E_FAIL;
 #endif // _DEBUG
 
+	if (!(m_pChattingManager = CChattingManager::Create()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -161,6 +165,15 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pSound_Manager->Update(fTimeDelta);
 	m_pInput_Manager->Update();
+
+	if (m_pChattingManager != nullptr)
+	{
+		const _bool bChatConsumedInput = m_pChattingManager->Update(fUnscaledTimeDelta);
+
+		if (bChatConsumedInput)
+			m_pInput_Manager->Clear();
+	}
+
 	m_pLevel_Manager->Update(fUnscaledTimeDelta);
 	m_pObject_Manager->Update_Priority(fUnscaledTimeDelta, fScaledTimeDelta);
 	m_pObject_Manager->Update(fUnscaledTimeDelta, fScaledTimeDelta);
@@ -1078,6 +1091,9 @@ HRESULT CGameInstance::Request_DrawFont(FONT_DESC Desc)
 }
 HRESULT CGameInstance::Render_Fonts()
 {
+	if (m_pChattingManager != nullptr)
+		m_pChattingManager->Render();
+
 	return m_pFont_Manager->Render_Fonts();
 }
 
@@ -1587,6 +1603,22 @@ void CGameInstance::BindNetworkJoinedUser(std::function<void(struct UserModel)> 
 void CGameInstance::BindNetworkLeftUser(std::function<void(UINT32)> func)
 {
 	m_pNetworkManager->m_funcLeftUser = func;
+}
+#pragma endregion
+
+#pragma region
+void CGameInstance::RecvChat(pair<string, string> msg)
+{
+	m_pChattingManager->RecvChat(msg);
+}
+void CGameInstance::On_ChatCharInput(wchar_t ch)
+{
+	if (m_pChattingManager != nullptr)
+		m_pChattingManager->On_CharInput(ch);
+}
+_bool CGameInstance::Is_ChatInputMode() const
+{
+	return m_pChattingManager != nullptr && m_pChattingManager->Is_InputMode();
 }
 #pragma endregion
 

@@ -9,8 +9,12 @@
 #include "RoomChatPacket.h"
 #include "RoomPacket.h"
 
+#include "GameInstance.h"
+
 CNetwork_Manager::CNetwork_Manager()
+	: m_pGameInstance(CGameInstance::GetInstance())
 {
+	Safe_AddRef(m_pGameInstance);
 }
 
 CNetwork_Manager::~CNetwork_Manager()
@@ -154,6 +158,16 @@ void CNetwork_Manager::Update()
 			RoomLeaveUser(packet.data());
 		}
 		break;
+		case PACKET_ID::ROOM_CHAT_RESPONSE:
+		{
+
+		}
+		break;
+		case PACKET_ID::ROOM_CHAT_NOTIFY:
+		{
+			RecvChat(packet.data());
+		}
+		break;
 		}
 	}
 }
@@ -234,7 +248,7 @@ void CNetwork_Manager::RecvUDPThread()
 
 void CNetwork_Manager::RoomJoinUser(char* pData)
 {
-	auto* pRes = reinterpret_cast<ROOM_JOIN_PACKET*>(pData);
+	auto pRes = reinterpret_cast<ROOM_JOIN_PACKET*>(pData);
 	auto pUser = make_shared<UserModel>();
 	pUser->ClientIndex = pRes->ClientIndex;
 	strncpy_s(pUser->UserID, pRes->UserID, sizeof(pRes->UserID));
@@ -245,7 +259,7 @@ void CNetwork_Manager::RoomJoinUser(char* pData)
 
 void CNetwork_Manager::RoomLeaveUser(char* pData)
 {
-	auto* pRes = reinterpret_cast<ROOM_LEAVE_PACKET*>(pData);
+	auto pRes = reinterpret_cast<ROOM_LEAVE_PACKET*>(pData);
 
 	m_UserList.remove_if([leaveUserId = pRes->ClientIndex](shared_ptr<UserModel> pUser)
 		{
@@ -253,6 +267,13 @@ void CNetwork_Manager::RoomLeaveUser(char* pData)
 		});
 
 	m_funcLeftUser(pRes->ClientIndex);
+}
+
+void CNetwork_Manager::RecvChat(char* pData)
+{
+	auto pRes = reinterpret_cast<ROOM_CHAT_NOTIFY_PACKET*>(pData);
+	
+	m_pGameInstance->RecvChat({ pRes->UserID , pRes->Msg });
 }
 
 CNetwork_Manager* CNetwork_Manager::Create(const char* ip, int tcpPort, int udpPort)
@@ -271,4 +292,7 @@ CNetwork_Manager* CNetwork_Manager::Create(const char* ip, int tcpPort, int udpP
 void CNetwork_Manager::Free()
 {
 	Destroy();
+	Safe_Release(m_pGameInstance);
+
+	Super::Free();
 }

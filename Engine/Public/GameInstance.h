@@ -509,6 +509,13 @@ public:
 	void BindNetworkLeftUser(std::function<void(UINT32)> func);
 #pragma endregion
 
+#pragma region
+	void RecvChat(std::pair<string, string> msg);
+
+	void On_ChatCharInput(wchar_t ch);
+	_bool Is_ChatInputMode() const;
+#pragma endregion
+
 public:
 	void SetChangeLevelSequence(_bool bVal) { m_bChangeLevelSequence = bVal; }
 	_bool Is_ChangeLevelSequence() { return m_bChangeLevelSequence; }
@@ -546,6 +553,7 @@ private:
 	class CJudgementSystem* m_pJudgementSystem = { nullptr };
 	class CCinematic_Manager* m_pCinematicManager = { nullptr };
 	class CNetwork_Manager* m_pNetworkManager = { nullptr };
+	class CChattingManager* m_pChattingManager = { nullptr };
 private:
 	std::mt19937_64 m_rng;
 

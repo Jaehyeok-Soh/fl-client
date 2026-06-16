@@ -160,6 +160,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
+    case WM_CHAR:
+    {
+        if (g_bStart)
+        {
+            wchar_t ch = static_cast<wchar_t>(wParam);
+
+            if (ch > 0x20)
+            {
+                CGameInstance::GetInstance()->On_ChatCharInput(ch);
+                return 0;
+            }
+        }
+    }
+    break;
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
@@ -191,6 +205,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case VK_ESCAPE:
         {
+            if (g_bStart && CGameInstance::GetInstance()->Is_ChatInputMode())
+                return 0;
+
             ::DestroyWindow(hWnd);
         } break;
         }
