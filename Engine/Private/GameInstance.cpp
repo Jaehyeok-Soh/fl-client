@@ -143,8 +143,13 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& Engine_Desc, _Inout_
 	if (!(m_pCinematicManager = CCinematic_Manager::Create(*ppDevice,*ppContext)))
 		return E_FAIL;
 
+#ifdef _DEBUG
 	if (!(m_pNetworkManager = CNetwork_Manager::Create("127.0.0.1", 9000, 9090)))
 		return E_FAIL;
+#else
+	if (!(m_pNetworkManager = CNetwork_Manager::Create("sso550.duckdns.org", 9000, 9090)))
+		return E_FAIL;
+#endif // _DEBUG
 
 	return S_OK;
 }

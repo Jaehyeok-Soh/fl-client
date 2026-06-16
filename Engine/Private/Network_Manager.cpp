@@ -22,11 +22,62 @@ HRESULT CNetwork_Manager::Initialize(const char* ip, int tcpPort, int udpPort)
 	WSADATA wsaData;
 	::WSAStartup(MAKEWORD(2, 2), &wsaData);
 
+#ifdef _DEBUG
 	m_TCPSocket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	SOCKADDR_IN serverAddr = {};
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = ::htons(tcpPort);
+
+	//IP
 	::inet_pton(AF_INET, ip, &serverAddr.sin_addr);
+	if (::connect(m_TCPSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
+	{
+		CEngineConsole::Log(ELogLevel::Error, "TCP Connect failed");
+		return E_FAIL;
+	}
+
+	CEngineConsole::Log(ELogLevel::Info, "TCP Connect Success");
+
+	m_ServerUDPAddr = {};
+	m_ServerUDPAddr.sin_family = AF_INET;
+	m_ServerUDPAddr.sin_port = ::htons(udpPort);
+	::inet_pton(AF_INET, ip, &m_ServerUDPAddr.sin_addr);
+
+	m_UDPSocket = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+	SOCKADDR_IN localAddr = {};
+	localAddr.sin_family = AF_INET;
+	localAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
+	localAddr.sin_port = ::htons(0);
+	::bind(m_UDPSocket, (SOCKADDR*)&localAddr, sizeof(localAddr));
+#else
+	m_TCPSocket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	SOCKADDR_IN serverAddr = {};
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = ::htons(tcpPort);
+
+	//DNS
+	ADDRINFO hints = {};
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+
+	ADDRINFO* result = nullptr;
+	if (::getaddrinfo(ip, nullptr, &hints, &result) != 0)
+	{
+		CEngineConsole::Log(ELogLevel::Error, "DNS Resolution failed");
+		return E_FAIL;
+	}
+
+	SOCKADDR_IN* ipv4 = (SOCKADDR_IN*)result->ai_addr;
+	serverAddr.sin_addr = ipv4->sin_addr;
+
+	m_ServerUDPAddr = {};
+	m_ServerUDPAddr.sin_family = AF_INET;
+	m_ServerUDPAddr.sin_port = ::htons(udpPort);
+	m_ServerUDPAddr.sin_addr = ipv4->sin_addr;
+	//::inet_pton(AF_INET, ip, &m_ServerUDPAddr.sin_addr);
+
+	::freeaddrinfo(result);
 
 	if (::connect(m_TCPSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 	{
@@ -34,19 +85,16 @@ HRESULT CNetwork_Manager::Initialize(const char* ip, int tcpPort, int udpPort)
 		return E_FAIL;
 	}
 
-	CEngineConsole::Log(ELogLevel::Info, "TCP Connect failed");
+	CEngineConsole::Log(ELogLevel::Info, "TCP Connect Success");
 
 	m_UDPSocket = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	m_ServerUDPAddr = {};
-	m_ServerUDPAddr.sin_family = AF_INET;
-	m_ServerUDPAddr.sin_port = ::htons(udpPort);
-	::inet_pton(AF_INET, ip, &m_ServerUDPAddr.sin_addr);
 
 	SOCKADDR_IN localAddr = {};
 	localAddr.sin_family = AF_INET;
 	localAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
 	localAddr.sin_port = ::htons(0);
 	::bind(m_UDPSocket, (SOCKADDR*)&localAddr, sizeof(localAddr));
+#endif // _DEBUG
 
 	m_bIsRunning = true;
 	m_TCPRecvThread = thread([this]() { RecvTCPThread(); });
@@ -172,6 +220,9 @@ void CNetwork_Manager::RecvUDPThread()
 	while (m_bIsRunning)
 	{
 		int recvLen = ::recvfrom(m_UDPSocket, buf, sizeof(buf), 0, (SOCKADDR*)&fromAddr, &fromLen);
+		if (recvLen == SOCKET_ERROR)
+			break;
+		
 		if (recvLen == 0)
 			continue;
 
