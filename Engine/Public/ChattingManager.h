@@ -43,6 +43,8 @@ private:
     _float m_fCursorBlinkAcc = 0.f;
     _bool m_bShowCursor = true;
 
+    _bool m_bWaitEnterRelease = false;
+
     static constexpr size_t MAX_INPUT_LENGTH = MAX_CHAT_MSG_SIZE;
 
 public:

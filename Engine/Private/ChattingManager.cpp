@@ -23,20 +23,31 @@ HRESULT CChattingManager::Initialize()
 
 _bool CChattingManager::Update(_float fTimeDelta)
 {
+	const _bool bWaitEnterRelease = m_bWaitEnterRelease;
+
+	if (m_bWaitEnterRelease)
+	{
+		if (m_pGameInstance->KeyButton_Up(DIK_RETURN) ||
+			m_pGameInstance->KeyButton_None(DIK_RETURN))
+		{
+			m_bWaitEnterRelease = false;
+		}
+	}
+
 	if (!m_bInputMode)
 	{
-		if (m_pGameInstance->KeyButton_Down(DIK_RETURN))
+		if (!m_bWaitEnterRelease && m_pGameInstance->KeyButton_Down(DIK_RETURN))
 		{
 			Begin_Input();
 			return true;
 		}
 
-		return false;
+		return bWaitEnterRelease;
 	}
 
 	Update_CursorBlink(fTimeDelta);
 
-	if (m_pGameInstance->KeyButton_Down(DIK_RETURN))
+	if (!m_bWaitEnterRelease && m_pGameInstance->KeyButton_Down(DIK_RETURN))
 	{
 		Submit_Input();
 		return true;
@@ -146,6 +157,8 @@ void CChattingManager::Begin_Input()
 	m_bInputMode = true;
 	m_wstrInputBuffer.clear();
 
+	m_bWaitEnterRelease = true;
+
 	m_fCursorBlinkAcc = 0.f;
 	m_bShowCursor = true;
 }
@@ -161,6 +174,8 @@ void CChattingManager::Cancel_Input()
 
 void CChattingManager::Submit_Input()
 {
+	m_bWaitEnterRelease = true;
+
 	string message = Make_SendMessageUtf8();
 
 	if (message.empty())
